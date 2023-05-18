@@ -5,7 +5,7 @@ import { useState } from 'react';
 const StyledDiv = styled.div`
   position: absolute;
   display: flex;
-  margin-left: -23px;
+  margin-left: -10px;
   align-items: center;
 `;
 

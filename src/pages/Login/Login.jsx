@@ -231,7 +231,8 @@ const InputBottomWrap = styled.div`
   margin-top: 10px;
   span {
     text-decoration: underline;
-    color: #000000;
+    color: black;
+    cursor: pointer;
   }
 
   p {
@@ -244,6 +245,9 @@ const InputBottomWrap = styled.div`
 `;
 const IbwLeft = styled.div`
   float: left;
+  margin-left: 12px;
+  font-weight: 600;
+  color: black;
 `;
 const IbwRight = styled.div`
   float: right;
@@ -273,9 +277,9 @@ const LoginBtn = styled.button`
 
 const LoginBottom = styled.div`
   text-align: center;
-  font-size: 12px;
-  margin-left: 60px;
-  margin-right: 60px;
+  font-size: 13px;
+  margin-left: 50px;
+  margin-right: 50px;
   margin-top: 10px;
 `;
 
