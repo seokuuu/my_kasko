@@ -8,10 +8,10 @@ import GlobalStyle from './styles/GlobalStyle'
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
 	<>
-	<GlobalStyle />
-		<ThemeProvider theme={KaskoTheme}>
-		<Router />
-	</ThemeProvider>
+		<GlobalStyle />
+			<ThemeProvider theme={KaskoTheme}>
+			<Router />
+		</ThemeProvider>
 	</>
 
 );

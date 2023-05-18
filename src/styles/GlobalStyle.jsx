@@ -2,14 +2,14 @@ import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
   /* font cdn */
-  @import url('https://fonts.googleapis.com/css?family=Mukta:400,500,600,700,800&display=swap');
-  @import url('https://fonts.googleapis.com/css?family=Noto+Sans+TC:100,300,400,500,700,900&display=swap');
-  @import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR:100,300,400,500,700,900&display=swap&subset=korean');
-  @import url("https://fonts.googleapis.com/css?family=Pacifico");
-  @import url("//fonts.googleapis.com/earlyaccess/jejumyeongjo.css");
+  @import url('https://webfontworld.github.io/sunn/SUIT.css');
   @font-face {
-    font-family: 'SEBANG_Gothic_Bold';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2104@1.0/SEBANG_Gothic_Bold.woff') format('woff');
+    font-family: 'SUIT';
+    src: url('https://cdn.jsdelivr.net/gh/webfontworld/sunn/SUIT-Medium.eot');
+    src: url('https://cdn.jsdelivr.net/gh/webfontworld/sunn/SUIT-Medium.eot?#iefix') format('embedded-opentype'),
+        url('https://cdn.jsdelivr.net/gh/webfontworld/sunn/SUIT-Medium.woff2') format('woff2'),
+        url('https://cdn.jsdelivr.net/gh/webfontworld/sunn/SUIT-Medium.woff') format('woff'),
+        url('https://cdn.jsdelivr.net/gh/webfontworld/sunn/SUIT-Medium.ttf') format("truetype");
     font-weight: normal;
     font-style: normal;
   }
@@ -21,7 +21,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     width:100%; 
     font-size: calc( 12px + 0.4vw ); 
-    font-family:'Noto Sans KR', sans-serif;
+    font-family: 'SUIT';
     text-align: center;
     font-weight: 100;
     text-align: center;
@@ -46,7 +46,7 @@ const GlobalStyle = createGlobalStyle`
   h4, 
   h5, 
   h6 {
-    font-family:'Noto Sans KR', sans-serif;
+    font-family: 'SUIT';
     font-size:1rem;
     font-weight: 100;
   }
@@ -93,7 +93,7 @@ const GlobalStyle = createGlobalStyle`
   button {
     margin:0;
     padding:0;
-    font-family:'Noto Sans KR', sans-serif;
+    font-family: 'SUIT';
     font-size:1em;
   }
   input[type="submit"] {
@@ -104,7 +104,7 @@ const GlobalStyle = createGlobalStyle`
   }
   textarea, 
   select {
-    font-family:'Noto Sans KR', sans-serif;
+    font-family: 'SUIT';
     font-size:1em;
   }
   select {
