@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
   /* font cdn */
@@ -95,6 +95,9 @@ const GlobalStyle = createGlobalStyle`
     padding:0;
     font-family: 'SUIT';
     font-size:1em;
+  }
+  input{
+    padding-left: 10px;
   }
   input[type="submit"] {
     cursor:pointer

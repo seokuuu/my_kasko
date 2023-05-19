@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import CheckImg from '../../common/check/CheckImg';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   const [id, setId] = useState('');
@@ -118,7 +119,7 @@ const Login = () => {
               <CheckImg />
               <IbwLeft>아이디 저장</IbwLeft>
               <IbwRight>
-                <a>아이디 찾기</a> / <a>비밀번호 초기화</a>
+                <a>아이디 찾기</a> / <a>비밀번호 재발급</a>
               </IbwRight>
               <LoginBtnWrap>
                 {buttonDisabled ? (
@@ -127,9 +128,12 @@ const Login = () => {
                   <LoginBtn>로그인</LoginBtn>
                 )}
               </LoginBtnWrap>
-              <p>
-                아직 회원이 아니세요? <span>회원가입</span>
-              </p>
+              <IbwTxt>
+                아직 회원이 아니세요?
+                <Link to={`/signup`}>
+                  <span style={{ marginLeft: '5px' }}>회원가입</span>
+                </Link>
+              </IbwTxt>
             </InputBottomWrap>
           </LoginSubContainer>
         </LoginContainer>
@@ -180,7 +184,7 @@ const Title = styled.div`
 
 const LoginContainer = styled.div`
   max-width: 100%;
-  height: 300px;
+  height: 320px;
   border: 1px solid #d7d7d7;
   padding: 20px;
 `;
@@ -229,11 +233,6 @@ const InputBottomWrap = styled.div`
   margin-right: auto;
   text-align: center;
   margin-top: 10px;
-  span {
-    text-decoration: underline;
-    color: black;
-    cursor: pointer;
-  }
 
   p {
     margin-top: 10px;
@@ -245,7 +244,7 @@ const InputBottomWrap = styled.div`
 `;
 const IbwLeft = styled.div`
   float: left;
-  margin-left: 12px;
+  margin-left: 15px;
   font-weight: 600;
   color: black;
 `;
@@ -255,6 +254,18 @@ const IbwRight = styled.div`
   a {
     color: #6b6b6b;
     cursor: pointer;
+  }
+`;
+
+const IbwTxt = styled.div`
+  margin-top: 20px;
+  span {
+    text-decoration: underline;
+    color: black;
+    cursor: pointer;
+    &:hover {
+      font-weight: 900;
+    }
   }
 `;
 
@@ -268,7 +279,7 @@ const LoginBtn = styled.button`
   font-size: large;
   width: 100%;
   height: 45px;
-  margin-top: 20px;
+  margin-top: 30px;
   background-color: ${props => (props.disabled ? 'gray' : '#061737')};
   color: white;
   border: none;

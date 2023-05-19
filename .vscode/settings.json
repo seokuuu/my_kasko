@@ -7,7 +7,8 @@
   },
   "javascript.format.enable": false,
   "eslint.alwaysShowStatus": true,
-  "files.autoSave": "onFocusChange",
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
   "[javascriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
