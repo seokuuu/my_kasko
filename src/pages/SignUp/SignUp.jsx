@@ -38,7 +38,7 @@ const SignUp = () => {
   const [idPlaceholder, setIdPlaceholder] = useState('');
   const [idPlaceholderColor, setIdPlaceholderColor] = useState('');
   const [buttonDisabled, setButtonDisabled] = useState(false);
-  const idRegex = /^[a-z0-9]{4,12}$/;
+  const idRegex = /^(?=.*[a-z])(?=.*\d)[a-z0-9]{4,12}$/;
   const isIdValid = idRegex.test(id);
   const [isFocused, setIsFocused] = useState(false);
   const [dupleCheck, setDupleCheck] = useState(false);
@@ -51,13 +51,13 @@ const SignUp = () => {
 
       if (isIdValid === false) {
         setIdPlaceholderColor('red');
-        setIdPlaceholder('8~12자리 양식 맞춰라');
+        setIdPlaceholder('4~12자리 소문자와 숫자 조합으로 입력해주세요.');
       } else {
         setIdPlaceholderColor('red');
-        setIdPlaceholder('잘맞춤 근데 중복확인 필요');
+        setIdPlaceholder('중복 확인이 필요해요.');
       }
     },
-    [id, isIdValid]
+    [isIdValid]
   );
 
   // ID Focus & Blur 스위치
@@ -70,17 +70,22 @@ const SignUp = () => {
 
   // ID 중복 확인
   const handleDuplicateCheck = () => {
-    setDupleCheck(true);
-    if (dummy.userID === id) {
+    const isDuplicate = id === dummy.userID;
+    if (isDuplicate) {
+      setDupleCheck(false);
       setIdPlaceholderColor('blue');
       setIdPlaceholder('이미 사용중인 아이디 입니다.');
     } else {
-      setIdPlaceholder('중복 체크 완료띠');
+      setDupleCheck(true);
+      setIdPlaceholder('사용 가능한 아이디입니다.');
+      //  여기에 중복체크 상태와 data에 아이디도 넣기
     }
   };
 
   useEffect(() => {}, [idPlaceholder]);
   console.log('idPlaceholder =>', idPlaceholder);
+
+  console.log('dupleCheck =>', dupleCheck);
 
   return (
     <Container>
