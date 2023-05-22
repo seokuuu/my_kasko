@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const TxtInput = styled.input`
   width: 320px;
@@ -7,9 +7,22 @@ export const TxtInput = styled.input`
 `;
 
 export const TxtCheckInput = styled.input`
+  outline: none;
   width: 220px;
   height: 40px;
   border: 1px solid #c1c1c1c5;
+
+  &:focus {
+    border: 1px solid #c1c1c1c5;
+    ${props =>
+      props.borderColor &&
+      css`
+        border: 1px solid ${props.borderColor};
+      `}
+    &::placeholder {
+      color: #d92f2f;
+    }
+  }
 `;
 
 export const TxtDropInput = styled.input`

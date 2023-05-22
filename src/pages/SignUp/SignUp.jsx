@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   Container,
@@ -34,6 +34,54 @@ const SignUp = () => {
     },
   ];
 
+  const [id, setId] = useState('');
+  const [idPlaceholder, setIdPlaceholder] = useState('');
+  const [idPlaceholderColor, setIdPlaceholderColor] = useState('');
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const idRegex = /^[a-z0-9]{4,12}$/;
+  const isIdValid = idRegex.test(id);
+  const [isFocused, setIsFocused] = useState(false);
+  const [dupleCheck, setDupleCheck] = useState(false);
+
+  // ID event 및 정규식 체크
+  const handleIdChange = useCallback(
+    e => {
+      const value = e.target.value;
+      setId(value);
+
+      if (isIdValid === false) {
+        setIdPlaceholderColor('red');
+        setIdPlaceholder('8~12자리 양식 맞춰라');
+      } else {
+        setIdPlaceholderColor('red');
+        setIdPlaceholder('잘맞춤 근데 중복확인 필요');
+      }
+    },
+    [id, isIdValid]
+  );
+
+  // ID Focus & Blur 스위치
+  const handleIdFocus = useCallback(() => {
+    setIsFocused(true);
+  }, []);
+  const handleIdBlur = useCallback(() => {
+    setIsFocused(false);
+  }, []);
+
+  // ID 중복 확인
+  const handleDuplicateCheck = () => {
+    setDupleCheck(true);
+    if (dummy.userID === id) {
+      setIdPlaceholderColor('blue');
+      setIdPlaceholder('이미 사용중인 아이디 입니다.');
+    } else {
+      setIdPlaceholder('중복 체크 완료띠');
+    }
+  };
+
+  useEffect(() => {}, [idPlaceholder]);
+  console.log('idPlaceholder =>', idPlaceholder);
+
   return (
     <Container>
       <SignupContainer>
@@ -44,8 +92,30 @@ const SignUp = () => {
               <Part>
                 <h4>아이디</h4>
                 <div>
-                  <TxtCheckInput />
-                  <CheckBtn>중복확인</CheckBtn>
+                  <p>
+                    {isFocused && idPlaceholder && id ? (
+                      <p style={{ color: idPlaceholderColor }}>
+                        {idPlaceholder}
+                      </p>
+                    ) : dupleCheck && idPlaceholder && !isFocused && id ? (
+                      <p style={{ color: 'blue' }}>{idPlaceholder}</p>
+                    ) : null}
+                  </p>
+                  <TxtCheckInput
+                    type="text"
+                    value={id}
+                    onChange={handleIdChange}
+                    onFocus={handleIdFocus}
+                    onBlur={handleIdBlur}
+                    borderColor={idPlaceholderColor}
+                  />
+                  {isIdValid === false ? (
+                    <CheckBtn disabled>중복 확인</CheckBtn>
+                  ) : (
+                    <CheckBtn onClick={handleDuplicateCheck} type="button">
+                      중복 확인
+                    </CheckBtn>
+                  )}
                 </div>
               </Part>
               <Part>

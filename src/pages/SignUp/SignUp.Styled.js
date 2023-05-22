@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   width: 100%;
@@ -143,7 +143,7 @@ export const BottomP = styled.div`
 export const CheckBtn = styled.button`
   width: 95px;
   height: 40px;
-  background-color: white;
-  border: 1px solid black;
+  background-color: ${props => (props.disabled ? 'grey' : 'white')};
+  border: 1px solid ${props => (props.disabled ? 'grey' : '#6b6b6b')};
   margin-left: 5px;
 `;
