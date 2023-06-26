@@ -12,6 +12,16 @@ const Login = () => {
   const [pwPlaceholderColor, setPwPlaceholderColor] = useState('');
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [check, setCheck] = useState(Array.from({ length: 1 }, () => false)); // 체크 박스
+  const [idBottom, setIdBottom] = useState('');
+  const [bottomColor, setBottomColor] = useState('');
+  const [pwBottom, setPwBottom] = useState('');
+
+  const idRegex = /^[a-z0-9]{4,12}$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[0-9])[a-z0-9]{8,12}$/;
+
+  const idDummy = {
+    userId: ['wkdqaz', 'solskjaer73', 'asd123'],
+  };
 
   const handleIdChange = useCallback(e => {
     const value = e.target.value;
@@ -23,18 +33,35 @@ const Login = () => {
     setPw(value);
   }, []);
 
+  const isIdValid = idRegex.test(id);
+  const isPasswordValid = passwordRegex.test(pw);
+
   useEffect(() => {
-    const idRegex = /^[a-z0-9]{4,12}$/;
-    const passwordRegex = /^(?=.*[a-z])(?=.*[0-9])[a-z0-9]{8,12}$/;
-
-    const isIdValid = idRegex.test(id);
-    const isPasswordValid = passwordRegex.test(pw);
-
     setButtonDisabled(!isIdValid || !isPasswordValid);
+
+    if (id.length > 1 && !isIdValid) {
+      setIdBottom('올바른 내용이 아닙니다.');
+      setBottomColor('#d92f2f');
+      setIdPlaceholderColor('#d92f2f');
+    } else if (pw.length > 1 && isIdValid) {
+      setIdBottom('');
+    }
+
+    if (pw.length > 1 && !isPasswordValid) {
+      setPwBottom('영문, 숫자 조합 4~12자리로 입력해 주세요');
+      setBottomColor('#d92f2f');
+      setPwPlaceholderColor('#d92f2f');
+    } else if (pw.length > 1 && isPasswordValid) {
+      setIdBottom('');
+    }
   }, [id, pw]);
 
+  const handleIdArea = useCallback(() => {});
+
+  const handlePwArea = useCallback(() => {});
+
   useEffect(() => {
-    if (id) {
+    if (id && isIdValid) {
       setIdPlaceholderColor('#4ca9ff');
     } else {
       setIdPlaceholderColor('#d92f2f');
@@ -67,7 +94,7 @@ const Login = () => {
   const handlePwFocus = useCallback(() => {
     if (pw === '') {
       setPwPlaceholderColor('#d92f2f');
-      setPwPlaceholder('영문, 숫자 조합 8~12자리로 입력해 주세요');
+      // setPwPlaceholder('영문, 숫자 조합 8~12자리로 입력해 주세요');
     }
   }, [pw]);
 
@@ -102,6 +129,7 @@ const Login = () => {
                 style={{ color: id === '' ? idPlaceholderColor : 'black' }}
               />
             </InputWrap>
+            <InputBtmWrap bottomColor={bottomColor}>{idBottom}</InputBtmWrap>
             <InputWrap>
               <img src="/svg/Login_pw_icon.svg" />
               <Input
@@ -115,6 +143,7 @@ const Login = () => {
                 style={{ color: pw === '' ? pwPlaceholderColor : 'black' }}
               />
             </InputWrap>
+            <InputBtmWrap bottomColor={bottomColor}>{pwBottom}</InputBtmWrap>
             <InputBottomWrap>
               <CheckImg />
               <IbwLeft>아이디 저장</IbwLeft>
@@ -313,4 +342,11 @@ const ImgWrap = styled.div`
   p {
     margin-top: 30px;
   }
+`;
+
+const InputBtmWrap = styled.div`
+  display: flex;
+  margin-left: 30px;
+  margin-bottom: 5px;
+  color: ${props => props.bottomColor};
 `;
