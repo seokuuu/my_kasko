@@ -39,22 +39,24 @@ const Login = () => {
   useEffect(() => {
     setButtonDisabled(!isIdValid || !isPasswordValid);
 
-    if (id.length > 1 && !isIdValid) {
+    if (id && !isIdValid) {
       setIdBottom('올바른 내용이 아닙니다.');
       setBottomColor('#d92f2f');
       setIdPlaceholderColor('#d92f2f');
-    } else if (pw.length > 1 && isIdValid) {
+    } else if (id && isIdValid) {
       setIdBottom('');
+      setIdPlaceholderColor('#4ca9ff');
     }
 
-    if (pw.length > 1 && !isPasswordValid) {
+    if (pw && !isPasswordValid) {
       setPwBottom('영문, 숫자 조합 4~12자리로 입력해 주세요');
       setBottomColor('#d92f2f');
       setPwPlaceholderColor('#d92f2f');
-    } else if (pw.length > 1 && isPasswordValid) {
-      setIdBottom('');
+    } else if (pw && isPasswordValid) {
+      setPwBottom('');
+      setPwPlaceholderColor('#4ca9ff');
     }
-  }, [id, pw]);
+  }, [id, pw, idBottom, pwBottom]);
 
   const handleIdArea = useCallback(() => {});
 
@@ -197,7 +199,8 @@ const SubContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
   margin-top: 100px;
-  width: 27vw;
+  width: 27%;
+  min-width: 500px;
   height: 35vw;
 `;
 const Title = styled.div`
@@ -213,7 +216,7 @@ const Title = styled.div`
 
 const LoginContainer = styled.div`
   max-width: 100%;
-  height: 320px;
+  max-height: 4000px;
   border: 1px solid #d7d7d7;
   padding: 20px;
 `;
