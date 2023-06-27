@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import CheckImg from '../../common/check/CheckImg';
+import CheckImg from '../../common/Check/CheckImg';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
