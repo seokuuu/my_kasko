@@ -26,7 +26,7 @@ export const TxtCheckInput = styled.input`
 `;
 
 export const TxtDropInput = styled.input`
-  width: 220px;
+  width: 195px;
   height: 40px;
   border: 1px solid #c1c1c1c5;
 `;
@@ -36,3 +36,4 @@ export const SInput = styled.input`
   height: 40px;
   border: 1px solid #c1c1c1c5;
 `;
+

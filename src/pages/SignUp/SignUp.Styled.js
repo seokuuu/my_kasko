@@ -121,11 +121,18 @@ export const BottomItem = styled.div`
 `;
 
 export const TxtDiv = styled.div`
+  display: flex;
   width: 320px;
   height: 40px;
-  border: 1px solid red;
-  background-color: aliceblue;
+  border: 1px solid #c1c1c1c5;
+
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+
+  p {
+    margin-left: 10px;
+  }
 `;
 
 export const SDropDown = styled.div`
@@ -146,4 +153,16 @@ export const CheckBtn = styled.button`
   background-color: ${props => (props.disabled ? 'grey' : 'white')};
   border: 1px solid ${props => (props.disabled ? 'grey' : '#6b6b6b')};
   margin-left: 5px;
+`;
+
+export const SubmitBtn = styled.button`
+  width: 320px;
+  height: 40px;
+  background-color: ${props => (props.disabled ? 'grey' : 'white')};
+  border: 1px solid ${props => (props.disabled ? 'grey' : '#6b6b6b')};
+`;
+
+export const DropWrap = styled.div`
+  display: flex;
+  width: 320px;
 `;

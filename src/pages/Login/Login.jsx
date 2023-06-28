@@ -1,7 +1,13 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import CheckImg from '../../common/Check/CheckImg';
+
 import { Link } from 'react-router-dom';
+import {
+  StyledCheckMainDiv,
+  StyledCheckSubDiv,
+  CheckImg,
+} from '../../common/Check/CheckImg';
+import { CheckBox } from '../../common/Check/Checkbox';
 
 const Login = () => {
   const [id, setId] = useState('');
@@ -147,7 +153,16 @@ const Login = () => {
             </InputWrap>
             <InputBtmWrap bottomColor={bottomColor}>{pwBottom}</InputBtmWrap>
             <InputBottomWrap>
-              <CheckImg />
+              <StyledCheckMainDiv>
+                <StyledCheckSubDiv
+                  onClick={() =>
+                    setCheck(CheckBox(check, check.length, 1, true))
+                  }
+                  isChecked={check[1]}
+                >
+                  <CheckImg src="/svg/check.svg" />
+                </StyledCheckSubDiv>
+              </StyledCheckMainDiv>
               <IbwLeft>아이디 저장</IbwLeft>
               <IbwRight>
                 <a>아이디 찾기</a> / <a>비밀번호 재발급</a>
