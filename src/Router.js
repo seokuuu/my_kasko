@@ -11,8 +11,6 @@ const Router = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/test" element={<Test />} />
-        <Route path="/d" element={<DaumPost />} />
       </Routes>
     </BrowserRouter>
   );

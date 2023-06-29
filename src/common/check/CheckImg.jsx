@@ -3,10 +3,11 @@ import { CheckBox } from './Checkbox';
 import { useState } from 'react';
 
 export const StyledCheckMainDiv = styled.div`
-  position: absolute;
   display: flex;
-  margin-left: -10px;
-  align-items: center;
+
+  p {
+    margin-left: 5px;
+  }
 `;
 
 //원형 체크

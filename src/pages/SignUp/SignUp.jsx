@@ -25,26 +25,30 @@ import {
   TxtDropInput,
   SInput,
 } from '../../common/Input/Input';
-import { idRegex, pwRegex } from '../../common/Regex/Regex';
+import {
+  idRegex,
+  pwRegex,
+  busIdRegex,
+  phoneRegex,
+} from '../../common/Regex/Regex';
 import DaumPostcode from 'react-daum-postcode';
 import Select from 'react-select';
 import {
   StyledCheckMainDiv,
   StyledCheckSubSquDiv,
+  StyledCheckSubDiv,
   CheckImg,
   CheckImg2,
 } from '../../common/Check/CheckImg';
 import { CheckBox } from '../../common/Check/Checkbox';
 
 const SignUp = () => {
+  //checkBox
   const [radio, setRadio] = useState(Array.from({ length: 3 }, () => false));
   const [check, setCheck] = useState(Array.from({ length: 2 }, () => false));
-  const [inputs, setInputs] = useState({
-    id: '',
-    pw: '',
-  });
   const dummy = {
-    userID: ['test1', 'wkdqaz'],
+    userId: ['test1', 'wkdqaz'],
+    busId: ['1231212345'],
   };
 
   //modal
@@ -63,6 +67,7 @@ const SignUp = () => {
     setPostFind(true);
     setAddress('');
     setDetailAddress('');
+    setInput({ ...input, address: '', addressDetail: '' });
   };
 
   const openModal = () => {
@@ -73,12 +78,22 @@ const SignUp = () => {
     setModalIsOpen(false);
     setAddress('');
     setDetailAddress('');
+    setInput({ ...input, address: '', addressDetail: '' });
   };
 
   const comfirmPost = () => {
     setModalIsOpen(false);
+    setInput({ ...input, address: address, addressDetail: detailAddress });
   };
 
+  // 가입하기 grey 버튼
+  const [greyBtn, setGreyBtn] = useState(false);
+
+  useEffect(() => {
+    if (input.value === '') {
+      console.log('빈값이 있숩니다');
+    }
+  }, [greyBtn]);
   //daum post code
   const [isDaumPostOpen, setIsDaumPostOpen] = useState(false);
 
@@ -104,6 +119,13 @@ const SignUp = () => {
     setDetailAddress(value);
   };
 
+  //total msg
+  const [msg, setMsg] = useState({});
+
+  //total color
+  const [txtColor, setTxtColor] = useState('');
+  console.log('msg !!!', msg);
+
   // ID
   const [id, setId] = useState('');
   const [idMsg, setIdMsg] = useState('');
@@ -119,7 +141,7 @@ const SignUp = () => {
   const [pwMsg, setPwMsg] = useState('');
   const [pwMsgColor, setPwMsgColor] = useState('');
 
-  const isPwValid = idRegex.test(id);
+  const isPwValid = pwRegex.test(pw);
   const [pwFocused, setPwFocused] = useState(false);
 
   // PW Duple
@@ -137,16 +159,57 @@ const SignUp = () => {
   const [repFocused, setRepFocused] = useState(false);
   const [repMsg, setRepMsg] = useState('');
 
+  //Business Number
+  const [busId, setBusId] = useState('');
+  const [busIdMsg, setBusIdMsg] = useState('');
+  const [busIdMsgColor, setBusIdMsgColor] = useState('');
+
+  const busIdValid = busIdRegex.test(busId);
+  const [busIdFocused, setBusIdFocused] = useState(false);
+  const [busIdDupleCheck, setBusIdDupleCheck] = useState(false);
+
+  //Phone Number
+  //deposit
+  //account
+  //release
+
+  const [auctionPhone, setAuctionPhone] = useState(''); //경매
+  const [depositPhone, setDepositPhone] = useState(''); //입금
+  const [releasePhone, setReleasePhone] = useState(''); //출고
+  const [phoneMsg, setPhoneMsg] = useState('');
+
+  const init = {
+    id: '',
+    password: '',
+    title: '',
+    name: '',
+    email: '',
+    phone: '',
+    type: '',
+    customerName: '',
+    ceoName: '',
+    customerPhone: '',
+    fax: '',
+    address: '',
+    addressDetail: '',
+    businessType: [],
+    businessNumber: '',
+    bank: '',
+    accountNumber: '',
+    depositManagerTitle: '',
+    depositManagerName: '',
+    depositManagerPhone: '',
+    releaseManagerTitle: '',
+    releaseManagerName: '',
+    releaseManagerPhone: '',
+  };
+
+  //total input
+  const [input, setInput] = useState(init);
+
   /// Common ///
   //Color
   const [statusColor, setStatusColor] = useState('');
-
-  // SDropDown;
-
-  // <DepositSelect
-  //   options={depositOptions}
-  //   defaultValue={depositOptions[0]}
-  // />;
 
   // option
   const depositOptions = [
@@ -156,6 +219,8 @@ const SignUp = () => {
     { value: 'ask3', label: '3' },
     { value: 'ask4', label: '4' },
   ];
+
+  console.log('depositOptions', depositOptions);
   const auctionOptions = [
     { value: 'ask0', label: '직함 선택 ' },
     { value: 'ask1', label: '1' },
@@ -163,6 +228,8 @@ const SignUp = () => {
     { value: 'ask3', label: '3' },
     { value: 'ask4', label: '4' },
   ];
+
+  console.log('@@', auctionOptions);
   const releaseOptions = [
     { value: 'ask0', label: '직함 선택 ' },
     { value: 'ask1', label: '1' },
@@ -178,12 +245,21 @@ const SignUp = () => {
     { value: 'ask4', label: '4' },
   ];
   const emailOptions = [
-    { value: 'ask0', label: '도메인 선택 ' },
+    { value: 'ask0', label: '도메인 선택' },
     { value: 'ask1', label: 'naver.com' },
     { value: 'ask2', label: 'gmail.com' },
     { value: 'ask3', label: 'kakao.com' },
     { value: 'ask4', label: 'nate.com' },
   ];
+
+  const handleSelectChange = (selectedOption, name) => {
+    setInput(prevState => ({
+      ...prevState,
+      [name]: selectedOption.label,
+    }));
+  };
+
+  console.log('input.email', input.email);
 
   // ID 관련
   // ID Focus & Blur 스위치
@@ -215,7 +291,7 @@ const SignUp = () => {
 
   // ID 중복 확인
   const handleDuplicateCheck = () => {
-    const isDuplicate = dummy.userID.includes(id);
+    const isDuplicate = dummy.userId.includes(id);
     if (isDuplicate) {
       setIdDupleCheck(false);
       setIdMsgColor('red');
@@ -224,6 +300,7 @@ const SignUp = () => {
       setIdDupleCheck(true);
       setIdMsgColor('blue');
       setIdMsg('사용 가능한 아이디입니다.');
+      setInput({ ...input, id: id });
       setTimeout(() => {
         setIdMsg('');
       }, 3000);
@@ -233,7 +310,7 @@ const SignUp = () => {
 
   /// PW 관련
 
-  // 1.정규식 맞는지 확인하기 2.비번확인은 단순히 비번과 같은지 확인하자
+  // PW 핸들러
   const handlePwChange = useCallback(
     e => {
       const value = e.target.value;
@@ -249,6 +326,7 @@ const SignUp = () => {
     [pwFocused]
   );
 
+  //
   const handlePwDupleCheck = useCallback(e => {
     const value = e.target.value;
     setPwDuple(value);
@@ -262,6 +340,7 @@ const SignUp = () => {
       setStatusColor('red');
     } else if (pwDupleFocused && dupleValid) {
       setDupMsg('');
+      setInput({ ...input, password: pw });
     }
   }, [pw, pwDuple, pwDupleFocused]);
 
@@ -281,9 +360,65 @@ const SignUp = () => {
     [repFocused]
   );
 
+  // 사업자 번호 handler
+  const handleBusIdChange = useCallback(e => {
+    const value = e.target.value;
+    setBusId(value);
+    const isValid = busIdRegex.test(value);
+    if (!isValid) {
+      setBusIdMsgColor('red');
+      setBusIdMsg('10자리의 숫자를 입력해주세요.');
+    } else if (isValid && !idDupleCheck) {
+      setBusIdMsgColor('red');
+      setBusIdMsg('중복 확인이 필요해요.');
+    } else if (isValid && idDupleCheck) {
+      setIdMsg('');
+    }
+  });
+
+  // 사업자 번호 중복 체크
+  const handleBusIdDupleCheck = () => {
+    const isDuplicate = dummy.busId.includes(busId);
+
+    console.log('isDuplicate', isDuplicate);
+    if (busId && isDuplicate) {
+      setBusIdMsgColor('red');
+      setBusIdMsg('이미 등록된 사업자 번호입니다.');
+    } else if (busId && !isDuplicate) {
+      setBusIdMsgColor('blue');
+      setBusIdMsg('사용 가능한 사업자 번호입니다.');
+      setTimeout(() => {
+        setBusIdMsg('');
+      }, 3000);
+    }
+  };
+
+  /// 휴대폰 번호 (경매 / 입금 / 출고)
+  const phoneHandler = useCallback(
+    e => {
+      const { name, value } = e.target;
+      setInput({ ...input, [name]: value });
+      const isValid = phoneRegex.test(value);
+      if (!isValid) {
+        setMsg({ ...msg, [name]: '10 ~ 11자리의 숫자를 입력해주세요.' });
+        setTxtColor('red');
+      } else if (isValid) {
+        setMsg({ ...msg, [name]: '' });
+        setTxtColor('');
+      }
+    },
+    [input]
+  );
+
+  //회사 명, 대표자 성명, 대표 연락처, 팩스 번호 handler
+  const companyHandler = useCallback(e => {
+    const { name, value } = e.target;
+    setInput({ ...input, [name]: value });
+  });
+
+  // 폼 제출 로직
   const handleSubmit = useCallback(e => {
     e.preventDefault();
-    // 폼 제출 로직
   }, []);
 
   return (
@@ -370,29 +505,44 @@ const SignUp = () => {
             </PartBlock>
             <PartBlock>
               <Part>
-                <h4>사업자 구분</h4>
-                <input type="radio"></input>ㅋㅋ
-                <input type="radio"></input>ㅋㅋ
-                <input type="radio"></input>ㅋㅋ
+                <h4>업태 선택</h4>
+                {/* <CheckWrap>
+                  <StyledCheckMainDiv>
+                    <StyledCheckSubDiv
+                      onClick={() =>
+                        setCheck(CheckBox(check, check.length, 1, true))
+                      }
+                      isChecked={check[1]}
+                    >
+                      <CheckImg2 src="/svg/check.svg" />
+                    </StyledCheckSubDiv>
+                    <p>유통</p>
+                  </StyledCheckMainDiv>
+
+                  <StyledCheckMainDiv>
+                    <StyledCheckSubSquDiv
+                      onClick={() =>
+                        setCheck(CheckBox(check, check.length, 2, true))
+                      }
+                      isChecked={check[2]}
+                    >
+                      <CheckImg2 src="/svg/check.svg" />
+                    </StyledCheckSubSquDiv>
+                    <p>제조</p>
+                  </StyledCheckMainDiv>
+                </CheckWrap> */}
               </Part>
               <Part>
                 <Title>
                   <h4>회사 명</h4>
-                  {companyFocused && !company ? (
-                    <p style={{ color: 'red' }}>{companyMsg}</p>
-                  ) : null}
+                  <p>ㅋㅋ</p>
                 </Title>
-
                 <div>
                   <TxtInput
                     type="text"
-                    onClick={handleCompanyChange}
-                    onFocus={() => {
-                      setCompanyFocused(true);
-                    }}
-                    onBlur={() => {
-                      setCompanyFocused(false);
-                    }}
+                    name="customerName"
+                    value={input.customerName}
+                    onChange={companyHandler}
                   />
                 </div>
               </Part>
@@ -405,14 +555,9 @@ const SignUp = () => {
                 <div>
                   <TxtInput
                     type="text"
-                    onChange={handleRepChange}
-                    value={rep}
-                    onFocus={() => {
-                      setRepFocused(true);
-                    }}
-                    onBlur={() => {
-                      setRepFocused(false);
-                    }}
+                    name="ceoName"
+                    value={input.ceoName}
+                    onChange={companyHandler}
                   />
                 </div>
               </Part>
@@ -421,9 +566,14 @@ const SignUp = () => {
                   <h4>대표 연락처</h4>
                   <p>ㅋㅋ</p>
                 </Title>
-
                 <div>
-                  <TxtInput placeholder="연락처 입력('-' 제외)" />
+                  <TxtInput
+                    type="text"
+                    name="customerPhone"
+                    value={input.customerPhone}
+                    onChange={companyHandler}
+                    placeholder="연락처 입력('-' 제외)"
+                  />
                 </div>
               </Part>
               <Part>
@@ -433,7 +583,13 @@ const SignUp = () => {
                 </Title>
 
                 <div>
-                  <TxtInput placeholder="팩스번호 입력('-' 제외)" />
+                  <TxtInput
+                    type="text"
+                    name="fax"
+                    value={input.fax}
+                    onChange={companyHandler}
+                    placeholder="팩스번호 입력('-' 제외)"
+                  />
                 </div>
               </Part>
               <Part>
@@ -441,7 +597,7 @@ const SignUp = () => {
                   <h4>주소</h4>
                   <p>ㅋㅋ</p>
                 </Title>
-
+                {console.log('address', address)}
                 <div>
                   <TxtCheckInput
                     type="text"
@@ -551,13 +707,24 @@ const SignUp = () => {
                   <DepositSelect
                     options={depositOptions}
                     defaultValue={depositOptions[0]}
+                    onChange={selectedOption =>
+                      handleSelectChange(selectedOption, 'depositManagerTitle')
+                    }
                   />
                   <TxtDropInput placeholder="담당자 성함 입력" />
                 </DropWrap>
               </Part>
               <Part>
-                <h4>휴대폰 번호</h4>
-                <TxtInput placeholder="연락처 입력('-' 제외)" />
+                <Title>
+                  <h4>휴대폰 번호</h4>
+                  <p style={{ color: txtColor }}>{msg.depositPhoneNum}</p>
+                </Title>
+                <TxtInput
+                  placeholder="연락처 입력('-' 제외)"
+                  name="depositPhoneNum"
+                  value={input.depositPhoneNum}
+                  onChange={phoneHandler}
+                />
                 <BottomP>
                   <input type="checkbox" style={{ marginRight: '5px' }} />
                   경매 담당자 정보와 동일
@@ -576,6 +743,9 @@ const SignUp = () => {
                   <DepositSelect
                     options={auctionOptions}
                     defaultValue={auctionOptions[0]}
+                    onChange={selectedOption =>
+                      handleSelectChange(selectedOption, 'title')
+                    }
                   />
                   <TxtDropInput placeholder="담당자 성함 입력" />
                 </DropWrap>
@@ -593,18 +763,29 @@ const SignUp = () => {
                   <EmailSelect
                     options={emailOptions}
                     defaultValue={emailOptions[0]}
+                    onChange={selectedOption =>
+                      handleSelectChange(selectedOption, 'email')
+                    }
                   />
                 </div>
               </Part>
               <Part>
-                <h4>휴대폰 번호</h4>
-                <TxtInput placeholder="연락처 입력('-' 제외)" />
+                <Title>
+                  <h4>휴대폰 번호</h4>
+                  <p style={{ color: txtColor }}>{msg.actionPhoneNum}</p>
+                </Title>
+                <TxtInput
+                  placeholder="연락처 입력('-' 제외)"
+                  name="actionPhoneNum"
+                  value={input.actionPhoneNum}
+                  onChange={phoneHandler}
+                />
               </Part>
             </PartBlock>
             <PartBlock>
               <Part>
+                <h4>업태 선택</h4>
                 <CheckWrap>
-                  <h4>업태 선택</h4>
                   <StyledCheckMainDiv>
                     <StyledCheckSubSquDiv
                       onClick={() =>
@@ -614,8 +795,9 @@ const SignUp = () => {
                     >
                       <CheckImg2 src="/svg/check.svg" />
                     </StyledCheckSubSquDiv>
+                    <p>유통</p>
                   </StyledCheckMainDiv>
-                  <p>유통</p>
+
                   <StyledCheckMainDiv>
                     <StyledCheckSubSquDiv
                       onClick={() =>
@@ -625,15 +807,22 @@ const SignUp = () => {
                     >
                       <CheckImg2 src="/svg/check.svg" />
                     </StyledCheckSubSquDiv>
+                    <p>제조</p>
                   </StyledCheckMainDiv>
-                  <p>제조</p>
                 </CheckWrap>
               </Part>
               <Part>
-                <h4>사업자 번호</h4>
+                <Title>
+                  <h4>사업자 번호</h4>
+                  <p style={{ color: busIdMsgColor }}>{busIdMsg}</p>
+                  {console.log('busIdMsg', busIdMsg)}
+                </Title>
                 <div>
-                  <TxtCheckInput placeholder="사업자 번호 입력('-' 제외)" />
-                  <CheckBtn>중복확인</CheckBtn>
+                  <TxtCheckInput
+                    onChange={handleBusIdChange}
+                    placeholder="사업자 번호 입력('-' 제외)"
+                  />
+                  <CheckBtn onClick={handleBusIdDupleCheck}>중복확인</CheckBtn>
                 </div>
               </Part>
               <Part>
@@ -655,6 +844,9 @@ const SignUp = () => {
                 <AccountSelect
                   options={accountOptions}
                   defaultValue={accountOptions[0]}
+                  onChange={selectedOption =>
+                    handleSelectChange(selectedOption, 'bank')
+                  }
                 />
                 <TxtInput
                   style={{ marginTop: '5px' }}
@@ -669,13 +861,25 @@ const SignUp = () => {
                   <DepositSelect
                     options={releaseOptions}
                     defaultValue={releaseOptions[0]}
+                    onChange={selectedOption =>
+                      handleSelectChange(selectedOption, 'releaseManagerTitle ')
+                    }
                   />
                   <TxtDropInput placeholder="담당자 성함 입력" />
                 </DropWrap>
               </Part>
               <Part>
-                <h4>휴대폰 번호</h4>
-                <TxtInput placeholder="연락처 입력('-' 제외)" />
+                <Title>
+                  <h4>휴대폰 번호</h4>
+
+                  <p style={{ color: txtColor }}>{msg.releasePhoneNum}</p>
+                </Title>
+                <TxtInput
+                  placeholder="연락처 입력('-' 제외)"
+                  name="releasePhoneNum"
+                  value={input.releasePhoneNum}
+                  onChange={phoneHandler}
+                />
                 <BottomP>
                   <input type="checkbox" style={{ marginRight: '5px' }} />
                   경매 담당자 정보와 동일
@@ -710,7 +914,15 @@ const SignUp = () => {
             </div>
           </BottomItem>
           <BottomItem>
-            <button>가입하기</button>
+            <button
+              type="button"
+              onClick={() => {
+                setGreyBtn(true);
+              }}
+            >
+              가입하기
+            </button>
+            {console.log('input =>', input)}
           </BottomItem>
         </Bottom>
       </SignupContainer>
@@ -818,7 +1030,6 @@ const AccountSelect = styled(Select)`
 `;
 
 const CheckWrap = styled.div`
-  border: 1px solid black;
   display: flex;
-  flex-direction: row;
+  justify-content: space-around;
 `;
