@@ -41,16 +41,17 @@ export const Top = styled.div`
 `;
 
 export const Main = styled.div`
-  width: 100%;
+  position: relative;
+  width: 80%;
   margin-top: 50px;
-  padding-left: 50px;
-  padding-right: 50px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 export const Left = styled.div`
   float: left;
-  width: 50%;
-  margin-left: 50px;
+  width: 320px;
+  margin-left: 30px;
 
   .div {
     display: flex;
@@ -59,8 +60,8 @@ export const Left = styled.div`
 
 export const Right = styled.div`
   float: right;
-  width: 34.5%;
-  margin-right: 50px;
+  width: 320px;
+  margin-right: 30px;
 `;
 
 export const Init = styled.div`
@@ -144,7 +145,8 @@ export const SDropDown = styled.div`
 export const BottomP = styled.div`
   margin-top: 5px;
   display: flex;
-  margin-left: 170px;
+  justify-content: flex-end;
+  width: 320px;
 `;
 
 export const CheckBtn = styled.button`

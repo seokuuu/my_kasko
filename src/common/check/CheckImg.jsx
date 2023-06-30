@@ -4,7 +4,6 @@ import { useState } from 'react';
 
 export const StyledCheckMainDiv = styled.div`
   display: flex;
-
   p {
     margin-left: 5px;
   }

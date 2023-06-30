@@ -41,14 +41,58 @@ import {
   CheckImg2,
 } from '../../common/Check/CheckImg';
 import { CheckBox } from '../../common/Check/Checkbox';
+import {
+  RadioCircleDiv,
+  RadioInnerCircleDiv,
+  RadioMainDiv,
+} from '../../common/Check/RadioImg';
 
 const SignUp = () => {
+  //radioBox
+  const radioDummy = ['개인', '법인(주)', '법인(유)'];
+  const [checkRadio, setCheckRadio] = useState(
+    Array.from({ length: radioDummy.length }, () => false)
+  );
+  const [savedRadioValue, setSavedRadioValue] = useState('');
+
+  useEffect(() => {
+    const checkedIndex = checkRadio.findIndex(
+      (isChecked, index) => isChecked && index < radioDummy.length
+    );
+    if (checkedIndex !== -1) {
+      const selectedValue = radioDummy[checkedIndex];
+      setSavedRadioValue(selectedValue);
+      setInput({ ...input, type: selectedValue });
+    }
+  }, [checkRadio]);
+
   //checkBox
-  const [radio, setRadio] = useState(Array.from({ length: 3 }, () => false));
-  const [check, setCheck] = useState(Array.from({ length: 2 }, () => false));
+  const checkDummy = ['유통', '제조'];
+  const [check, setCheck] = useState(
+    Array.from({ length: checkDummy.length }, () => false)
+  );
+  const [checkData, setCheckData] = useState(
+    Array.from({ length: checkDummy.length }, () => '')
+  );
+
+  useEffect(() => {
+    const updatedCheck = checkDummy.map((value, index) => {
+      return check[index] ? value : '';
+    });
+    // 그냥 배열에 담을 때
+    const filteredCheck = updatedCheck.filter(item => item !== '');
+    setCheckData(filteredCheck);
+
+    // 전송용 input에 담을 때
+    setInput({
+      ...input,
+      businessType: updatedCheck.filter(item => item !== ''),
+    });
+  }, [check]);
+
   const dummy = {
     userId: ['test1', 'wkdqaz'],
-    busId: ['1231212345'],
+    busId: ['1234512345'],
   };
 
   //modal
@@ -219,8 +263,6 @@ const SignUp = () => {
     { value: 'ask3', label: '3' },
     { value: 'ask4', label: '4' },
   ];
-
-  console.log('depositOptions', depositOptions);
   const auctionOptions = [
     { value: 'ask0', label: '직함 선택 ' },
     { value: 'ask1', label: '1' },
@@ -229,7 +271,6 @@ const SignUp = () => {
     { value: 'ask4', label: '4' },
   ];
 
-  console.log('@@', auctionOptions);
   const releaseOptions = [
     { value: 'ask0', label: '직함 선택 ' },
     { value: 'ask1', label: '1' },
@@ -252,6 +293,24 @@ const SignUp = () => {
     { value: 'ask4', label: 'nate.com' },
   ];
 
+  //이메일 & 도메인
+  const [emailFirst, setEmailFirst] = useState('');
+  const [emailDomain, setEmailDomain] = useState('');
+
+  console.log('check', check);
+  useEffect(() => {
+    const checkIndex = check.findIndex(
+      (isChecked, index) => isChecked && index < checkDummy.length
+    );
+
+    console.log('checkIndex', checkIndex);
+    if (checkIndex !== -1) {
+      const selectedValue = checkDummy[checkIndex];
+
+      console.log('selectedValue', selectedValue);
+    }
+  }, [check]);
+
   const handleSelectChange = (selectedOption, name) => {
     setInput(prevState => ({
       ...prevState,
@@ -259,7 +318,16 @@ const SignUp = () => {
     }));
   };
 
-  console.log('input.email', input.email);
+  const emailHandler = useCallback(e => {
+    const value = e.target.value;
+    setEmailFirst(value);
+  });
+
+  useEffect(() => {
+    if (emailFirst && emailDomain) {
+      setInput({ ...input, email: emailFirst + '@' + emailDomain });
+    }
+  }, [emailFirst, emailDomain]);
 
   // ID 관련
   // ID Focus & Blur 스위치
@@ -331,7 +399,6 @@ const SignUp = () => {
     const value = e.target.value;
     setPwDuple(value);
   }, []);
-
   useEffect(() => {
     const dupleValid = pw === pwDuple;
     console.log('dupleValid', dupleValid);
@@ -343,22 +410,6 @@ const SignUp = () => {
       setInput({ ...input, password: pw });
     }
   }, [pw, pwDuple, pwDupleFocused]);
-
-  const handleCompanyChange = useCallback(
-    e => {
-      const value = e.target.value;
-      setCompany(value);
-    },
-    [companyFocused]
-  );
-
-  const handleRepChange = useCallback(
-    e => {
-      const value = e.target.value;
-      setRep(value);
-    },
-    [repFocused]
-  );
 
   // 사업자 번호 handler
   const handleBusIdChange = useCallback(e => {
@@ -374,7 +425,7 @@ const SignUp = () => {
     } else if (isValid && idDupleCheck) {
       setIdMsg('');
     }
-  });
+  }, []);
 
   // 사업자 번호 중복 체크
   const handleBusIdDupleCheck = () => {
@@ -387,6 +438,7 @@ const SignUp = () => {
     } else if (busId && !isDuplicate) {
       setBusIdMsgColor('blue');
       setBusIdMsg('사용 가능한 사업자 번호입니다.');
+      setInput({ ...input, businessNumber: busId });
       setTimeout(() => {
         setBusIdMsg('');
       }, 3000);
@@ -397,24 +449,27 @@ const SignUp = () => {
   const phoneHandler = useCallback(
     e => {
       const { name, value } = e.target;
-      setInput({ ...input, [name]: value });
       const isValid = phoneRegex.test(value);
       if (!isValid) {
         setMsg({ ...msg, [name]: '10 ~ 11자리의 숫자를 입력해주세요.' });
         setTxtColor('red');
       } else if (isValid) {
         setMsg({ ...msg, [name]: '' });
+        setInput({ ...input, [name]: value });
         setTxtColor('');
       }
     },
     [input]
   );
 
-  //회사 명, 대표자 성명, 대표 연락처, 팩스 번호 handler
-  const companyHandler = useCallback(e => {
-    const { name, value } = e.target;
-    setInput({ ...input, [name]: value });
-  });
+  //회사 명, 대표자 성명, 대표 연락처, 팩스 번호, 휴대폰 번호, 계좌 번호 handler
+  const commonHandler = useCallback(
+    e => {
+      const { name, value } = e.target;
+      setInput({ ...input, [name]: value });
+    },
+    [input]
+  );
 
   // 폼 제출 로직
   const handleSubmit = useCallback(e => {
@@ -451,13 +506,10 @@ const SignUp = () => {
                     onBlur={handleIdBlur}
                     borderColor={idMsgColor}
                   />
-                  {isIdValid === false ? (
-                    <CheckBtn disabled>중복 확인</CheckBtn>
-                  ) : (
-                    <CheckBtn onClick={handleDuplicateCheck} type="button">
-                      중복 확인
-                    </CheckBtn>
-                  )}
+
+                  <CheckBtn onClick={handleDuplicateCheck} type="button">
+                    중복 확인
+                  </CheckBtn>
                 </div>
               </Part>
               <Part>
@@ -505,44 +557,38 @@ const SignUp = () => {
             </PartBlock>
             <PartBlock>
               <Part>
-                <h4>업태 선택</h4>
-                {/* <CheckWrap>
-                  <StyledCheckMainDiv>
-                    <StyledCheckSubDiv
-                      onClick={() =>
-                        setCheck(CheckBox(check, check.length, 1, true))
-                      }
-                      isChecked={check[1]}
-                    >
-                      <CheckImg2 src="/svg/check.svg" />
-                    </StyledCheckSubDiv>
-                    <p>유통</p>
-                  </StyledCheckMainDiv>
-
-                  <StyledCheckMainDiv>
-                    <StyledCheckSubSquDiv
-                      onClick={() =>
-                        setCheck(CheckBox(check, check.length, 2, true))
-                      }
-                      isChecked={check[2]}
-                    >
-                      <CheckImg2 src="/svg/check.svg" />
-                    </StyledCheckSubSquDiv>
-                    <p>제조</p>
-                  </StyledCheckMainDiv>
-                </CheckWrap> */}
+                <h4>사업자 구분</h4>
+                <RadioContainer>
+                  {radioDummy.map((text, index) => (
+                    <RadioMainDiv key={index}>
+                      <RadioCircleDiv
+                        isChecked={checkRadio[index]}
+                        onClick={() => {
+                          setCheckRadio(
+                            CheckBox(checkRadio, checkRadio.length, index)
+                          );
+                        }}
+                      >
+                        <RadioInnerCircleDiv />
+                      </RadioCircleDiv>
+                      <div style={{ display: 'flex', marginLeft: '5px' }}>
+                        {text}
+                      </div>
+                    </RadioMainDiv>
+                  ))}
+                </RadioContainer>
               </Part>
               <Part>
                 <Title>
                   <h4>회사 명</h4>
-                  <p>ㅋㅋ</p>
+                  <p></p>
                 </Title>
                 <div>
                   <TxtInput
                     type="text"
                     name="customerName"
                     value={input.customerName}
-                    onChange={companyHandler}
+                    onChange={commonHandler}
                   />
                 </div>
               </Part>
@@ -557,21 +603,20 @@ const SignUp = () => {
                     type="text"
                     name="ceoName"
                     value={input.ceoName}
-                    onChange={companyHandler}
+                    onChange={commonHandler}
                   />
                 </div>
               </Part>
               <Part>
                 <Title>
                   <h4>대표 연락처</h4>
-                  <p>ㅋㅋ</p>
+                  <p></p>
                 </Title>
                 <div>
                   <TxtInput
-                    type="text"
                     name="customerPhone"
                     value={input.customerPhone}
-                    onChange={companyHandler}
+                    onChange={commonHandler}
                     placeholder="연락처 입력('-' 제외)"
                   />
                 </div>
@@ -579,7 +624,7 @@ const SignUp = () => {
               <Part>
                 <Title>
                   <h4>팩스 번호</h4>
-                  <p>ㅋㅋ</p>
+                  <p></p>
                 </Title>
 
                 <div>
@@ -587,7 +632,7 @@ const SignUp = () => {
                     type="text"
                     name="fax"
                     value={input.fax}
-                    onChange={companyHandler}
+                    onChange={commonHandler}
                     placeholder="팩스번호 입력('-' 제외)"
                   />
                 </div>
@@ -595,7 +640,7 @@ const SignUp = () => {
               <Part>
                 <Title>
                   <h4>주소</h4>
-                  <p>ㅋㅋ</p>
+                  <p></p>
                 </Title>
                 {console.log('address', address)}
                 <div>
@@ -614,6 +659,7 @@ const SignUp = () => {
                   <TxtInput
                     placeholder="상세 주소를 입력해 주세요."
                     value={detailAddress}
+                    style={{ marginTop: '5px' }}
                   />
                 </div>
               </Part>
@@ -701,7 +747,7 @@ const SignUp = () => {
               <Part>
                 <Title>
                   <h4>입금 담당자 정보</h4>
-                  <p>ㅋㅋ</p>
+                  <p></p>
                 </Title>
                 <DropWrap>
                   <DepositSelect
@@ -711,7 +757,12 @@ const SignUp = () => {
                       handleSelectChange(selectedOption, 'depositManagerTitle')
                     }
                   />
-                  <TxtDropInput placeholder="담당자 성함 입력" />
+                  <TxtDropInput
+                    name="depositManagerName"
+                    value={input.depositManagerName}
+                    onChange={commonHandler}
+                    placeholder="담당자 성함 입력"
+                  />
                 </DropWrap>
               </Part>
               <Part>
@@ -724,6 +775,7 @@ const SignUp = () => {
                   name="depositPhoneNum"
                   value={input.depositPhoneNum}
                   onChange={phoneHandler}
+                  maxLength="11"
                 />
                 <BottomP>
                   <input type="checkbox" style={{ marginRight: '5px' }} />
@@ -737,7 +789,7 @@ const SignUp = () => {
               <Part>
                 <Title>
                   <h4>경매 담당자 정보</h4>
-                  <p>ㅋㅋ</p>
+                  <p></p>
                 </Title>
                 <DropWrap>
                   <DepositSelect
@@ -747,7 +799,13 @@ const SignUp = () => {
                       handleSelectChange(selectedOption, 'title')
                     }
                   />
-                  <TxtDropInput placeholder="담당자 성함 입력" />
+                  <TxtDropInput
+                    type="text"
+                    name="name"
+                    value={input.name}
+                    onChange={commonHandler}
+                    placeholder="담당자 성함 입력"
+                  />
                 </DropWrap>
               </Part>
               <Part>
@@ -759,14 +817,16 @@ const SignUp = () => {
                     width: '320px',
                   }}
                 >
-                  <SInput /> <p style={{ margin: '0 5px' }}>@</p>
+                  <SInput onChange={emailHandler} />{' '}
+                  <p style={{ margin: '0 5px' }}>@</p>
                   <EmailSelect
                     options={emailOptions}
                     defaultValue={emailOptions[0]}
-                    onChange={selectedOption =>
-                      handleSelectChange(selectedOption, 'email')
-                    }
+                    onChange={selectedOption => {
+                      setEmailDomain(selectedOption.label);
+                    }}
                   />
+                  {console.log('emailDomain', emailDomain)}
                 </div>
               </Part>
               <Part>
@@ -779,6 +839,7 @@ const SignUp = () => {
                   name="actionPhoneNum"
                   value={input.actionPhoneNum}
                   onChange={phoneHandler}
+                  maxLength="11"
                 />
               </Part>
             </PartBlock>
@@ -786,29 +847,19 @@ const SignUp = () => {
               <Part>
                 <h4>업태 선택</h4>
                 <CheckWrap>
-                  <StyledCheckMainDiv>
-                    <StyledCheckSubSquDiv
-                      onClick={() =>
-                        setCheck(CheckBox(check, check.length, 1, true))
-                      }
-                      isChecked={check[1]}
-                    >
-                      <CheckImg2 src="/svg/check.svg" />
-                    </StyledCheckSubSquDiv>
-                    <p>유통</p>
-                  </StyledCheckMainDiv>
-
-                  <StyledCheckMainDiv>
-                    <StyledCheckSubSquDiv
-                      onClick={() =>
-                        setCheck(CheckBox(check, check.length, 2, true))
-                      }
-                      isChecked={check[2]}
-                    >
-                      <CheckImg2 src="/svg/check.svg" />
-                    </StyledCheckSubSquDiv>
-                    <p>제조</p>
-                  </StyledCheckMainDiv>
+                  {checkDummy.map((x, index) => (
+                    <StyledCheckMainDiv>
+                      <StyledCheckSubSquDiv
+                        onClick={() =>
+                          setCheck(CheckBox(check, check.length, index, true))
+                        }
+                        isChecked={check[index]}
+                      >
+                        <CheckImg2 src="/svg/check.svg" />
+                      </StyledCheckSubSquDiv>
+                      <p>{x}</p>
+                    </StyledCheckMainDiv>
+                  ))}
                 </CheckWrap>
               </Part>
               <Part>
@@ -817,12 +868,12 @@ const SignUp = () => {
                   <p style={{ color: busIdMsgColor }}>{busIdMsg}</p>
                   {console.log('busIdMsg', busIdMsg)}
                 </Title>
-                <div>
+                <div style={{ width: '320px' }}>
                   <TxtCheckInput
                     onChange={handleBusIdChange}
                     placeholder="사업자 번호 입력('-' 제외)"
                   />
-                  <CheckBtn onClick={handleBusIdDupleCheck}>중복확인</CheckBtn>
+                  <CheckBtn onClick={handleBusIdDupleCheck}>중복 확인</CheckBtn>
                 </div>
               </Part>
               <Part>
@@ -851,6 +902,9 @@ const SignUp = () => {
                 <TxtInput
                   style={{ marginTop: '5px' }}
                   placeholder="(계좌번호 입력('-' 제외)"
+                  name="accountNumber"
+                  value={input.accountNumber}
+                  onChange={commonHandler}
                 />
               </Part>
             </PartBlock>
@@ -865,7 +919,12 @@ const SignUp = () => {
                       handleSelectChange(selectedOption, 'releaseManagerTitle ')
                     }
                   />
-                  <TxtDropInput placeholder="담당자 성함 입력" />
+                  <TxtDropInput
+                    name="releaseManagerName"
+                    value={input.releaseManagerName}
+                    onChange={commonHandler}
+                    placeholder="담당자 성함 입력"
+                  />
                 </DropWrap>
               </Part>
               <Part>
@@ -879,6 +938,7 @@ const SignUp = () => {
                   name="releasePhoneNum"
                   value={input.releasePhoneNum}
                   onChange={phoneHandler}
+                  maxLength="11"
                 />
                 <BottomP>
                   <input type="checkbox" style={{ marginRight: '5px' }} />
@@ -1030,6 +1090,16 @@ const AccountSelect = styled(Select)`
 `;
 
 const CheckWrap = styled.div`
+  margin-top: 10px;
+  width: 320px;
   display: flex;
-  justify-content: space-around;
+  gap: 50px;
+`;
+
+const RadioContainer = styled.div`
+  width: 320px;
+  display: flex;
+  gap: 50px;
+  margin-left: 5px;
+  margin-top: 10px;
 `;
