@@ -29,24 +29,24 @@ const Find = () => {
 
   const [alert, setAlert] = useState(normalAlert);
 
-  const findHadler = () => {
-    if (!info.id) {
-      return setAlert(prevState => ({
-        ...prevState,
-        open: true,
-        content: '아이디를 입력해 주세요.',
-        isReload: false,
-      }));
-    }
-    if (!info.password) {
-      return setAlert(prevState => ({
-        ...prevState,
-        open: true,
-        content: '비밀번호를 정확히 입력해 주세요.',
-        isReload: false,
-      }));
-    }
-  };
+  // const findHadler = () => {
+  //   if (!info.id) {
+  //     return setAlert(prevState => ({
+  //       ...prevState,
+  //       open: true,
+  //       content: '아이디를 입력해 주세요.',
+  //       isReload: false,
+  //     }));
+  //   }
+  //   if (!info.password) {
+  //     return setAlert(prevState => ({
+  //       ...prevState,
+  //       open: true,
+  //       content: '비밀번호를 정확히 입력해 주세요.',
+  //       isReload: false,
+  //     }));
+  //   }
+  // };
   return (
     <Container>
       <SubContainer>
