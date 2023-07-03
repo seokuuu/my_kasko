@@ -18,6 +18,7 @@ import {
   Init,
   SubmitBtn,
   DropWrap,
+  Title,
 } from './SignUp.Styled';
 import {
   TxtInput,
@@ -46,6 +47,23 @@ import {
   RadioInnerCircleDiv,
   RadioMainDiv,
 } from '../../common/Check/RadioImg';
+import {
+  ModalOverlay,
+  ModalSubContainer,
+  ModalRadioWrap,
+  ModalCloseBtn,
+  ModalContainer,
+} from '../../modal/Common/Common.Styled';
+import SignUpPost from '../../modal/SignUp/SignUpPost';
+
+import {
+  depositOptions,
+  auctionOptions,
+  emailOptions,
+  releaseOptions,
+  accountOptions,
+} from '../../common/Option/SignUp';
+import LoginModal from '../../modal/Login/LoginModal';
 
 const SignUp = () => {
   //radioBox
@@ -209,18 +227,11 @@ const SignUp = () => {
   const [busIdMsgColor, setBusIdMsgColor] = useState('');
 
   const busIdValid = busIdRegex.test(busId);
-  const [busIdFocused, setBusIdFocused] = useState(false);
-  const [busIdDupleCheck, setBusIdDupleCheck] = useState(false);
 
   //Phone Number
   //deposit
   //account
   //release
-
-  const [auctionPhone, setAuctionPhone] = useState(''); //경매
-  const [depositPhone, setDepositPhone] = useState(''); //입금
-  const [releasePhone, setReleasePhone] = useState(''); //출고
-  const [phoneMsg, setPhoneMsg] = useState('');
 
   const init = {
     id: '',
@@ -256,42 +267,6 @@ const SignUp = () => {
   const [statusColor, setStatusColor] = useState('');
 
   // option
-  const depositOptions = [
-    { value: 'ask0', label: '직함 선택 ' },
-    { value: 'ask1', label: '1' },
-    { value: 'ask2', label: '2' },
-    { value: 'ask3', label: '3' },
-    { value: 'ask4', label: '4' },
-  ];
-  const auctionOptions = [
-    { value: 'ask0', label: '직함 선택 ' },
-    { value: 'ask1', label: '1' },
-    { value: 'ask2', label: '2' },
-    { value: 'ask3', label: '3' },
-    { value: 'ask4', label: '4' },
-  ];
-
-  const releaseOptions = [
-    { value: 'ask0', label: '직함 선택 ' },
-    { value: 'ask1', label: '1' },
-    { value: 'ask2', label: '2' },
-    { value: 'ask3', label: '3' },
-    { value: 'ask4', label: '4' },
-  ];
-  const accountOptions = [
-    { value: 'ask0', label: '은행 선택 ' },
-    { value: 'ask1', label: '1' },
-    { value: 'ask2', label: '2' },
-    { value: 'ask3', label: '3' },
-    { value: 'ask4', label: '4' },
-  ];
-  const emailOptions = [
-    { value: 'ask0', label: '도메인 선택' },
-    { value: 'ask1', label: 'naver.com' },
-    { value: 'ask2', label: 'gmail.com' },
-    { value: 'ask3', label: 'kakao.com' },
-    { value: 'ask4', label: 'nate.com' },
-  ];
 
   //이메일 & 도메인
   const [emailFirst, setEmailFirst] = useState('');
@@ -462,7 +437,7 @@ const SignUp = () => {
     [input]
   );
 
-  //회사 명, 대표자 성명, 대표 연락처, 팩스 번호, 휴대폰 번호, 계좌 번호 handler
+  //회사 명, 대표자 성명, 대표 연락처, 팩스 번호, 휴대폰 번호, 계좌 번호 ... 등 그 외 handler
   const commonHandler = useCallback(
     e => {
       const { name, value } = e.target;
@@ -642,7 +617,6 @@ const SignUp = () => {
                   <h4>주소</h4>
                   <p></p>
                 </Title>
-                {console.log('address', address)}
                 <div>
                   <TxtCheckInput
                     type="text"
@@ -664,83 +638,19 @@ const SignUp = () => {
                 </div>
               </Part>
               {modalIsOpen && (
-                <>
-                  <ModalOverlay />
-                  <ModalContainer>
-                    <ModalSubContainer>
-                      <Part>
-                        <Title>
-                          <h4>주소</h4>
-                          <ModalRadioWrap>
-                            <input
-                              type="radio"
-                              name="post"
-                              onChange={postCheck}
-                              defaultChecked
-                            />
-                            <p>찾기</p>
-                          </ModalRadioWrap>
-                          <ModalRadioWrap>
-                            <input
-                              type="radio"
-                              name="post"
-                              onChange={directCheck}
-                            />
-                            <p>직접 입력</p>
-                          </ModalRadioWrap>
-                        </Title>
-                        {!postFind ? (
-                          <>
-                            <TxtCheckInput
-                              type="text"
-                              value={address}
-                              readOnly
-                            />
-
-                            <CheckBtn
-                              style={{
-                                backgroundColor: 'black',
-                                color: 'white',
-                              }}
-                              onClick={daumPostHandleBtn}
-                            >
-                              찾기
-                            </CheckBtn>
-                            <TxtInput
-                              placeholder="상세 주소를 입력해 주세요."
-                              type="text"
-                              value={detailAddress}
-                              onChange={detailAddressHandler}
-                            />
-                          </>
-                        ) : (
-                          <div>
-                            <TxtInput
-                              placeholder="주소를 입력해 주세요."
-                              value={detailAddress}
-                              onChange={detailAddressHandler}
-                            />
-                          </div>
-                        )}
-                      </Part>
-
-                      <SubmitBtn onClick={comfirmPost}>확인</SubmitBtn>
-                      <ModalCloseBtn
-                        onClick={closeModal}
-                        src="/svg/btn_close.svg"
-                      />
-                    </ModalSubContainer>
-                    {isDaumPostOpen && (
-                      <PostWrap>
-                        <DaumPostcode onComplete={daumPostHandleComplete} />
-                        <PostModalCloseBtn
-                          onClick={daumPosthandleClose}
-                          src="/svg/btn_close.svg"
-                        />
-                      </PostWrap>
-                    )}
-                  </ModalContainer>
-                </>
+                <SignUpPost
+                  postCheck={postCheck}
+                  directCheck={directCheck}
+                  postFind={postFind}
+                  address={address}
+                  daumPostHandleBtn={daumPostHandleBtn}
+                  detailAddress={detailAddress}
+                  detailAddressHandler={detailAddressHandler}
+                  comfirmPost={comfirmPost}
+                  closeModal={closeModal}
+                  isDaumPostOpen={isDaumPostOpen}
+                  daumPosthandleClose={daumPosthandleClose}
+                />
               )}
             </PartBlock>
             <PartBlock>
@@ -992,27 +902,6 @@ const SignUp = () => {
 
 export default SignUp;
 
-const Title = styled.div`
-  display: flex;
-
-  p {
-    position: relative;
-    top: 1px;
-    margin-left: 4px;
-  }
-`;
-
-const ModalContainer = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  width: 400px;
-  height: 280px;
-  z-index: 9999;
-`;
-
 const ModalTitle = styled.h2`
   color: black;
 `;
@@ -1024,50 +913,6 @@ const ModalContent = styled.p`
 const CloseButton = styled.button`
   background-color: black;
   color: white;
-`;
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 9998;
-`;
-
-const ModalSubContainer = styled.div`
-  padding: 10%;
-`;
-
-const ModalRadioWrap = styled.div`
-  display: flex;
-
-  input {
-    margin-bottom: 5px;
-    margin-left: 10px;
-  }
-`;
-
-const ModalCloseBtn = styled.img`
-  width: 6%;
-  position: absolute;
-  left: 365px;
-  bottom: 240px;
-  cursor: pointer;
-`;
-
-const PostModalCloseBtn = styled.img`
-  width: 6%;
-  position: relative;
-  left: 340px;
-  bottom: 30px;
-  cursor: pointer;
-`;
-
-const PostWrap = styled.div`
-  position: relative;
-  top: -300px;
 `;
 
 const DepositSelect = styled(Select)`

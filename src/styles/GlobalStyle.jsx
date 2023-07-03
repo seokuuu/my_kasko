@@ -2,7 +2,7 @@ import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
   /* font cdn */
-  @import url('https://webfontworld.github.io/sunn/SUIT.css');
+
   @font-face {
     font-family: 'SUIT';
     src: url('https://cdn.jsdelivr.net/gh/webfontworld/sunn/SUIT-Medium.eot');

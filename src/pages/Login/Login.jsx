@@ -8,6 +8,25 @@ import {
   CheckImg,
 } from '../../common/Check/CheckImg';
 import { CheckBox } from '../../common/Check/Checkbox';
+import {
+  Container,
+  SubContainer,
+  Title,
+  LoginContainer,
+  LoginSubContainer,
+  InputWrap,
+  Input,
+  InputBtmWrap,
+  InputBottomWrap,
+  IbwLeft,
+  IbwRight,
+  LoginBtnWrap,
+  LoginBtn,
+  IbwTxt,
+  LoginBottom,
+  LoginBottom2,
+  ImgWrap,
+} from './Login.Styled';
 
 const Login = () => {
   const [id, setId] = useState('');
@@ -17,7 +36,7 @@ const Login = () => {
   const [pwPlaceholder, setPwPlaceholder] = useState('비밀번호');
   const [pwPlaceholderColor, setPwPlaceholderColor] = useState('');
   const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [check, setCheck] = useState(Array.from({ length: 1 }, () => false)); // 체크 박스
+  const [check, setCheck] = useState(false);
   const [idBottom, setIdBottom] = useState('');
   const [bottomColor, setBottomColor] = useState('');
   const [pwBottom, setPwBottom] = useState('');
@@ -41,6 +60,42 @@ const Login = () => {
 
   const isIdValid = idRegex.test(id);
   const isPasswordValid = passwordRegex.test(pw);
+
+  console.log('check', check);
+
+  // 아이디 저장
+
+  const saveIdToLocalStorage = id => {
+    return localStorage.setItem('savedId', id);
+  };
+
+  const removeSavedIdFromLocalStorage = () => {
+    return localStorage.removeItem('savedId');
+  };
+
+  const getSavedIdFromLocalStorage = () => {
+    return localStorage.getItem('savedId');
+  };
+
+  useEffect(() => {
+    const savedId = getSavedIdFromLocalStorage();
+    if (savedId) {
+      setId(savedId);
+      setCheck(true);
+    }
+  }, []);
+
+  const handleSaveId = () => {
+    setCheck(prev => !prev);
+    console.log('함수 안!!', check);
+    if (!check) {
+      saveIdToLocalStorage(id);
+    } else {
+      removeSavedIdFromLocalStorage();
+    }
+  };
+
+  console.log('함수 밖', check);
 
   useEffect(() => {
     setButtonDisabled(!isIdValid || !isPasswordValid);
@@ -155,18 +210,21 @@ const Login = () => {
             <InputBottomWrap>
               <StyledCheckMainDiv>
                 <StyledCheckSubDiv
-                  onClick={() =>
-                    setCheck(CheckBox(check, check.length, 1, true))
-                  }
-                  isChecked={check[1]}
+                  style={{ backgroundColor: check ? '#00B7AA' : '#E6E6E6' }}
+                  onClick={() => {
+                    handleSaveId();
+                  }}
+                  isChecked={check[0]}
+                  id="rememberId"
                 >
                   <CheckImg src="/svg/check.svg" />
                 </StyledCheckSubDiv>
+                <IbwLeft>아이디 저장</IbwLeft>
+                <IbwRight>
+                  <Link to={`/find`}>아이디 찾기</Link> / <a>비밀번호 재발급</a>
+                </IbwRight>
               </StyledCheckMainDiv>
-              <IbwLeft>아이디 저장</IbwLeft>
-              <IbwRight>
-                <a>아이디 찾기</a> / <a>비밀번호 재발급</a>
-              </IbwRight>
+
               <LoginBtnWrap>
                 {buttonDisabled ? (
                   <LoginBtn disabled>로그인</LoginBtn>
@@ -202,169 +260,3 @@ const Login = () => {
 };
 
 export default Login;
-
-const Container = styled.div`
-  width: 100%;
-  font-size: 12px;
-  color: #6b6b6b;
-  font-size: 14px;
-`;
-const SubContainer = styled.div`
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 100px;
-  width: 27%;
-  min-width: 500px;
-  height: 35vw;
-`;
-const Title = styled.div`
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-  height: 70px;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-`;
-
-const LoginContainer = styled.div`
-  max-width: 100%;
-  max-height: 4000px;
-  border: 1px solid #d7d7d7;
-  padding: 20px;
-`;
-
-const LoginSubContainer = styled.div`
-  width: 100%;
-  height: 90%;
-`;
-
-const InputWrap = styled.div`
-  display: flex;
-
-  img {
-    position: absolute;
-    margin-top: 17px;
-    margin-left: 5px;
-    z-index: 100;
-  }
-`;
-
-const Input = styled.input`
-  outline: none;
-  width: 98%;
-  height: 50px;
-  border-bottom: 1px solid black;
-  margin: 5px;
-  padding-left: 30px;
-
-  &:focus {
-    border-bottom-color: #4ca9ff;
-    ${props =>
-      props.borderColor &&
-      css`
-        border-bottom-color: ${props.borderColor};
-      `}
-    &::placeholder {
-      color: #d92f2f;
-    }
-  }
-`;
-
-const InputBottomWrap = styled.div`
-  width: 90%;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-  margin-top: 10px;
-
-  p {
-    margin-top: 10px;
-
-    &:hover {
-      font-weight: 900;
-    }
-  }
-`;
-const IbwLeft = styled.div`
-  float: left;
-  margin-left: 15px;
-  font-weight: 600;
-  color: black;
-`;
-const IbwRight = styled.div`
-  float: right;
-
-  a {
-    color: #6b6b6b;
-    cursor: pointer;
-  }
-`;
-
-const IbwTxt = styled.div`
-  margin-top: 20px;
-  span {
-    text-decoration: underline;
-    color: black;
-    cursor: pointer;
-    &:hover {
-      font-weight: 900;
-    }
-  }
-`;
-
-const LoginBtnWrap = styled.div`
-  float: none;
-  clear: both;
-  text-align: center;
-`;
-
-const LoginBtn = styled.button`
-  font-size: large;
-  width: 100%;
-  height: 45px;
-  margin-top: 30px;
-  background-color: ${props => (props.disabled ? 'gray' : '#061737')};
-  color: white;
-  border: none;
-  cursor: ${props => (props.disabled ? 'default' : 'pointer')};
-`;
-
-const LoginBottom = styled.div`
-  text-align: center;
-  font-size: 13px;
-  margin-left: 50px;
-  margin-right: 50px;
-  margin-top: 10px;
-`;
-
-const LoginBottom2 = styled.div`
-  text-align: center;
-  justify-content: center;
-  margin-top: 10px;
-  display: flex;
-
-  p {
-    margin: 10px;
-  }
-`;
-const ImgWrap = styled.div`
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  margin-top: 30px;
-
-  p {
-    margin-top: 30px;
-  }
-`;
-
-const InputBtmWrap = styled.div`
-  display: flex;
-  margin-left: 30px;
-  margin-bottom: 5px;
-  color: ${props => props.bottomColor};
-`;

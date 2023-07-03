@@ -1,9 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login/Login';
-import Main from './pages/Main/Main';
 import SignUp from './pages/SignUp/SignUp';
+import Find from './pages/Login/Find';
 import Test from './pages/Test/Test';
-import DaumPost from './modal/DaumPost';
 
 const Router = () => {
   return (
@@ -11,6 +10,8 @@ const Router = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/find" element={<Find />} />
+        <Route path="/test" element={<Test />} />
       </Routes>
     </BrowserRouter>
   );

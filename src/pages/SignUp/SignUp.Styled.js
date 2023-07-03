@@ -12,6 +12,16 @@ export const Container = styled.div`
   }
 `;
 
+export const Title = styled.div`
+  display: flex;
+
+  p {
+    position: relative;
+    top: 1px;
+    margin-left: 4px;
+  }
+`;
+
 export const SignupContainer = styled.div`
   display: block;
   margin-left: auto;
