@@ -27,15 +27,22 @@ export const Title = styled.div`
 `;
 
 export const LoginContainer = styled.div`
+  margin-left: auto;
+  margin-right: auto;
   max-width: 100%;
   max-height: 4000px;
   border: 1px solid #d7d7d7;
   padding: 20px;
+  span {
+    color: #4c83d6;
+  }
 `;
 
 export const LoginSubContainer = styled.div`
   width: 100%;
   height: 90%;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 export const InputWrap = styled.div`
@@ -95,7 +102,7 @@ export const IbwLeft = styled.div`
 `;
 export const IbwRight = styled.div`
   line-height: 14px;
-  margin-left: 150px;
+  margin-left: 170px;
   a {
     color: #6b6b6b;
     cursor: pointer;

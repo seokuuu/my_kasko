@@ -210,7 +210,10 @@ const Login = () => {
             <InputBottomWrap>
               <StyledCheckMainDiv>
                 <StyledCheckSubDiv
-                  style={{ backgroundColor: check ? '#00B7AA' : '#E6E6E6' }}
+                  style={{
+                    backgroundColor: check ? '#4c83d6' : '#E6E6E6',
+                    marginTop: '-2px',
+                  }}
                   onClick={() => {
                     handleSaveId();
                   }}

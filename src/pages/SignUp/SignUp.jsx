@@ -725,6 +725,7 @@ const SignUp = () => {
                     display: 'flex',
                     lineHeight: '40px',
                     width: '320px',
+
                   }}
                 >
                   <SInput onChange={emailHandler} />{' '}

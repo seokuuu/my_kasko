@@ -11,5 +11,4 @@ export const busIdRegex = /^[0-9]{3}[0-9]{2}[0-9]{5}$/;
 export const koreanAccountNumberRegex = /^[0-9]{3}[0-9]{2}[0-9]{6,12}$/;
 
 //휴대폰 번호
-
 export const phoneRegex = /^01([0|1|6|7|8|9])(\d{4})(\d{4})$/;
