@@ -94,15 +94,20 @@ export const InputBottomWrap = styled.div`
   }
 `;
 
+export const IbwWrap = styled.div`
+  display: flex;
+
+  justify-content: space-between;
+`;
+
 export const IbwLeft = styled.div`
+  display: flex;
   line-height: 14px;
-  margin-left: 8px;
   font-weight: 600;
   color: black;
 `;
 export const IbwRight = styled.div`
   line-height: 14px;
-  margin-left: 170px;
   a {
     color: #6b6b6b;
     cursor: pointer;

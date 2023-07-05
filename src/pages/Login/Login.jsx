@@ -26,6 +26,7 @@ import {
   LoginBottom,
   LoginBottom2,
   ImgWrap,
+  IbwWrap,
 } from './Login.Styled';
 
 const Login = () => {
@@ -208,25 +209,29 @@ const Login = () => {
             </InputWrap>
             <InputBtmWrap bottomColor={bottomColor}>{pwBottom}</InputBtmWrap>
             <InputBottomWrap>
-              <StyledCheckMainDiv>
-                <StyledCheckSubDiv
-                  style={{
-                    backgroundColor: check ? '#4c83d6' : '#E6E6E6',
-                    marginTop: '-2px',
-                  }}
-                  onClick={() => {
-                    handleSaveId();
-                  }}
-                  isChecked={check[0]}
-                  id="rememberId"
-                >
-                  <CheckImg src="/svg/check.svg" />
-                </StyledCheckSubDiv>
-                <IbwLeft>아이디 저장</IbwLeft>
+              <IbwWrap>
+                <IbwLeft>
+                  <StyledCheckMainDiv>
+                    <StyledCheckSubDiv
+                      style={{
+                        backgroundColor: check ? '#4c83d6' : '#E6E6E6',
+                        marginTop: '-2px',
+                      }}
+                      onClick={() => {
+                        handleSaveId();
+                      }}
+                      isChecked={check[0]}
+                      id="rememberId"
+                    >
+                      <CheckImg src="/svg/check.svg" />
+                    </StyledCheckSubDiv>
+                  </StyledCheckMainDiv>
+                  <div style={{ marginLeft: '5px' }}>아이디 저장</div>
+                </IbwLeft>
                 <IbwRight>
                   <Link to={`/find`}>아이디 찾기</Link> / <a>비밀번호 재발급</a>
                 </IbwRight>
-              </StyledCheckMainDiv>
+              </IbwWrap>
 
               <LoginBtnWrap>
                 {buttonDisabled ? (
