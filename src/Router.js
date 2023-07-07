@@ -4,7 +4,7 @@ import SignUp from './pages/SignUp/SignUp';
 import Find from './pages/Login/Find';
 import Test from './pages/Test/Test';
 import Reissue from './pages/Reissue/Reissue';
-
+import CalendarModal from './modal/Calender/Calendar';
 const Router = () => {
   return (
     <BrowserRouter>
@@ -14,6 +14,7 @@ const Router = () => {
         <Route path="/find" element={<Find />} />
         <Route path="/test" element={<Test />} />
         <Route path="/reissue" element={<Reissue />} />
+        <Route path="/cal" element={<CalendarModal />} />
       </Routes>
     </BrowserRouter>
   );
