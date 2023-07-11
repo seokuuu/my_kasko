@@ -14,7 +14,6 @@ export const Container = styled.div`
 
 export const Title = styled.div`
   display: flex;
-
   p {
     position: relative;
     top: 1px;
@@ -36,6 +35,7 @@ export const PartBlock = styled.div`
 
 export const Part = styled.div`
   margin-bottom: 20px;
+  border: 1px solid black;
 `;
 
 export const Top = styled.div`

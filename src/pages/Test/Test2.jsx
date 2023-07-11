@@ -1,7 +1,16 @@
 import React from 'react';
 import { styled } from 'styled-components';
+import { storageOptions } from '../../common/Option/SignUp';
+import { DefaultSelect } from '../../common/Option/SignUp';
+import Select from 'react-select';
 
 const Test2 = () => {
+  const handleSelectChange = (selectedOption, name) => {
+    // setInput(prevState => ({
+    //   ...prevState,
+    //   [name]: selectedOption.label,
+    // }));
+  };
   return (
     <FilterContianer>
       <FilterHeader>
@@ -11,10 +20,13 @@ const Test2 = () => {
       <FilterSubcontianer>
         <FilterLeft>
           <FilterWrap>
-            <div>
+            <SelectWrap>
               창고 구분
-              <input />
-            </div>
+              <DefaultSelect
+                options={storageOptions}
+                defaultValue={storageOptions[0]}
+              />
+            </SelectWrap>
             <div>
               매입처 <input />
             </div>
@@ -24,11 +36,7 @@ const Test2 = () => {
             </div>
           </FilterWrap>
           <FilterWrap>
-            <div>
-              판매 구분 <input />
-              <input />
-              <input />
-            </div>
+            <div>판매 구분</div>
             <div>
               운송 진행 <input />
               <input />
@@ -100,6 +108,7 @@ export const FilterWrap = styled.div`
   margin: 10px 0px 10px 0px;
   border: 1px solid skyblue;
 
+  // 이건 지워도 됨
   input {
     width: 100px;
     height: 30px;
@@ -111,4 +120,12 @@ export const FilterWrap = styled.div`
 export const FilterFooter = styled.div`
   border: 1px solid blue;
   height: fit-content;
+`;
+
+const SelectWrap = styled.div`
+  display: flex;
+  border: 1px solid black;
+  text-align: center;
+  align-items: center;
+  line-height: 14.5px;
 `;

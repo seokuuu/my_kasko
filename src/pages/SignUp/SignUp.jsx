@@ -725,7 +725,6 @@ const SignUp = () => {
                     display: 'flex',
                     lineHeight: '40px',
                     width: '320px',
-
                   }}
                 >
                   <SInput onChange={emailHandler} />{' '}
@@ -919,7 +918,7 @@ const CloseButton = styled.button`
 const DepositSelect = styled(Select)`
   width: 120px;
   text-align: center;
-  line-height: 26px;
+  line-height: 11px;
   margin-right: 5px;
 `;
 
