@@ -22,6 +22,7 @@ const GlobalStyle = createGlobalStyle`
     width:100%; 
     font-size: calc( 12px + 0.4vw ); 
     font-family: 'SUIT';
+
     font-weight: 100;
   }
   html, 

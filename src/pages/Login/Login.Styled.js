@@ -115,6 +115,7 @@ export const IbwRight = styled.div`
 `;
 
 export const IbwTxt = styled.div`
+  text-align: center;
   margin-top: 20px;
   span {
     text-decoration: underline;
