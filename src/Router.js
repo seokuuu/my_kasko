@@ -8,6 +8,7 @@ import Test2 from './pages/Test/Test2';
 import Reissue from './pages/Reissue/Reissue';
 import CalendarModal from './modal/Calender/Calendar';
 import Test3 from './pages/Test/Test3';
+import Test4 from './pages/Test/Test4';
 const Router = () => {
   return (
     <BrowserRouter>
@@ -18,6 +19,7 @@ const Router = () => {
         <Route path="/test" element={<Test />} />
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
+        <Route path="/test4" element={<Test4 />} />
         <Route path="/reissue" element={<Reissue />} />
         <Route path="/cal" element={<CalendarModal />} />
       </Routes>

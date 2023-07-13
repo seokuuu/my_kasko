@@ -49,6 +49,9 @@ const GlobalStyle = createGlobalStyle`
     font-size:1rem;
     font-weight: 100;
   }
+  p,h1,h2,h3,h4,h5,h6,span {
+    transform: rotate(0.03deg);
+  }
   article, 
   aside, 
   details, 
