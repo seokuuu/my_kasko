@@ -22,6 +22,27 @@ const Viewer = styled.div`
   border: 2px solid gray;
 `;
 
+function uploadImageCallBack(file) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'https://api.imgur.com/3/image');
+    xhr.setRequestHeader('Authorization', 'Client-ID f0e6784563ad243');
+    const data = new FormData();
+    data.append('image', file);
+    xhr.send(data);
+    xhr.addEventListener('load', () => {
+      const response = JSON.parse(xhr.responseText);
+      console.log(response);
+      resolve(response);
+    });
+    xhr.addEventListener('error', () => {
+      const error = JSON.parse(xhr.responseText);
+      console.log(error);
+      reject(error);
+    });
+  });
+}
+
 const TestEditorForm = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [htmlString, setHtmlString] = useState('');
@@ -44,7 +65,7 @@ const TestEditorForm = () => {
           editorState={editorState}
           onEditorStateChange={updateTextDescription}
           toolbar={{
-            image: { uploadCallback: uploadCallback },
+            image: { uploadCallback: uploadImageCallBack },
           }}
           localization={{ locale: 'ko' }}
           editorStyle={{
@@ -55,10 +76,10 @@ const TestEditorForm = () => {
           }}
         />
       </Container>
-      <RowBox>
+      {/* <RowBox>
         <Viewer dangerouslySetInnerHTML={{ __html: htmlString }} />
         <Viewer>{htmlString}</Viewer>
-      </RowBox>
+      </RowBox> */}
     </>
   );
 };
