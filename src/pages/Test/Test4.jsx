@@ -116,11 +116,12 @@ export const CRWMainBottom = styled.div`
 `;
 
 export const CMBLeft = styled.div`
-  max-width: 50%;
+  width: 50%;
 
   > div {
     width: 400px;
     display: flex;
+    margin: 10px auto;
     justify-content: space-between;
   }
   height: fit-content;
