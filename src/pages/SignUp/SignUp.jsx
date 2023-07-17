@@ -62,6 +62,9 @@ import {
   emailOptions,
   releaseOptions,
   accountOptions,
+  DepositSelect,
+  EmailSelect,
+  AccountSelect,
 } from '../../common/Option/SignUp';
 import LoginModal from '../../modal/Login/LoginModal';
 
@@ -915,25 +918,6 @@ const CloseButton = styled.button`
   color: white;
 `;
 
-const DepositSelect = styled(Select)`
-  width: 120px;
-  text-align: center;
-  line-height: 11px;
-  margin-right: 5px;
-`;
-
-const EmailSelect = styled(Select)`
-  width: 200px;
-  text-align: center;
-  line-height: 26.5px;
-`;
-
-const AccountSelect = styled(Select)`
-  width: 320px;
-  text-align: center;
-  line-height: 26.5px;
-`;
-
 const CheckWrap = styled.div`
   margin-top: 10px;
   width: 320px;
@@ -941,7 +925,7 @@ const CheckWrap = styled.div`
   gap: 50px;
 `;
 
-const RadioContainer = styled.div`
+export const RadioContainer = styled.div`
   width: 320px;
   display: flex;
   gap: 50px;

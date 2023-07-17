@@ -21,10 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-yarn.lock
-yarn.lock
 package.json
-package.json
-yarn.lock
 yarn.lock
 .gitignore

@@ -2,7 +2,11 @@ import React from 'react';
 import { styled } from 'styled-components';
 import TextEditor from './TestEditorForm';
 import DateGrid from './DateGrid';
+import { claimOngoingStatus, ClaimSelect } from '../../common/Option/ClaimPost';
+import { BlackBtn, WhiteBtn } from '../../common/Button/Button';
+import { CenterRectangleWrap } from '../../common/OnePage/OnePage.Styled';
 
+// 클레임 등록
 const Test4 = () => {
   const titleData = [
     '제품 번호',
@@ -48,10 +52,13 @@ const Test4 = () => {
               </div>
             </CMBLeft>
             <CMBLeft>
-              <div>
+              <SelectWrap>
                 <DateTitle>클레임 진행 상태</DateTitle>
-                <DateGrid />
-              </div>
+                <ClaimSelect
+                  options={claimOngoingStatus}
+                  defaultValue={claimOngoingStatus[0]}
+                />
+              </SelectWrap>
               <div>
                 <DateTitle>반품 진행</DateTitle>
                 <div>checkbox X 2</div>
@@ -67,8 +74,14 @@ const Test4 = () => {
             </CMBLeft>
           </CRWMainBottom>
           <CRWSub>
-            <button>돌아가기</button>
-            <button>저장</button>
+            <BtnWrap>
+              <WhiteBtn width={90} height={50} style={{ marginRight: '10px' }}>
+                돌아가기
+              </WhiteBtn>
+              <BlackBtn width={90} height={50}>
+                저장
+              </BlackBtn>
+            </BtnWrap>
           </CRWSub>
         </CRWMain>
       </CenterRectangleWrap>
@@ -77,14 +90,6 @@ const Test4 = () => {
 };
 
 export default Test4;
-
-export const CenterRectangleWrap = styled.div`
-  width: 50%;
-  height: min-content;
-
-  display: flex;
-  justify-content: center;
-`;
 
 export const CRWMain = styled.div`
   width: 100%;
@@ -172,4 +177,18 @@ export const DateTitle = styled.div`
   max-width: 230px;
   padding: 10px;
   font-size: 16px;
+`;
+
+const SelectWrap = styled.div`
+  font-size: 16px;
+  width: 300px;
+`;
+
+const BtnWrap = styled.div`
+  display: flex;
+  width: 500px;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
 `;

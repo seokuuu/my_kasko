@@ -113,10 +113,12 @@ const Reissue = () => {
               </EmailContainer>
             </LoginSubContainer>
             <div style={{ textAlign: 'center' }}>
-              <BlueBtn style={{ width: '90%' }}>비밀번호 재발급</BlueBtn>
+              <BlueBtn width={90} height={40} fontSize={16}>
+                비밀번호 재발급
+              </BlueBtn>
               <IbwTxt>
                 아이디가 기억 안나시나요?
-                <Link to={`/reissue`}>
+                <Link to={`/find`}>
                   <span> 아이디 찾기</span>
                 </Link>
               </IbwTxt>

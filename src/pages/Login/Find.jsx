@@ -164,6 +164,9 @@ const Find = () => {
                   onClick={() => {
                     setFindPageNum(1);
                   }}
+                  width={100}
+                  height={40}
+                  fontSize={16}
                 >
                   아이디 찾기
                 </BlueBtn>
@@ -188,18 +191,24 @@ const Find = () => {
               </Title>
               <LoginContainer style={{ width: '450px' }}>
                 <FindIdResult>
-                  아이디 : <span>멀라</span>
+                  아이디 : <span> www</span>
                 </FindIdResult>
-                <BlueBtn type="button">로그인</BlueBtn>
-                <WhiteBtn
-                  onClick={() => {
-                    navigate('/reissue');
-                  }}
-                  type="button"
-                  style={{ marginTop: '10px' }}
-                >
-                  비밀번호 재발급
-                </WhiteBtn>
+                <BtnWrap>
+                  <BlueBtn height={40} width={90} fontSize={16} type="button">
+                    로그인
+                  </BlueBtn>
+                  <WhiteBtn
+                    onClick={() => {
+                      navigate('/reissue');
+                    }}
+                    type="button"
+                    height={40}
+                    width={90}
+                    fontSize={16}
+                  >
+                    비밀번호 재발급
+                  </WhiteBtn>
+                </BtnWrap>
               </LoginContainer>
             </SubContainer>
           </Container>
@@ -255,8 +264,18 @@ const FindIdResult = styled.div`
   justify-content: center;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 20px;
   width: 90%;
   height: 100px;
   border: 1px solid black;
   font-size: 18px;
+`;
+
+const BtnWrap = styled.div`
+  position: relative;
+  left: 20px;
+
+  button {
+    margin-bottom: 10px;
+  }
 `;

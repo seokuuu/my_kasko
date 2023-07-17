@@ -229,7 +229,8 @@ const Login = () => {
                   <div style={{ marginLeft: '5px' }}>아이디 저장</div>
                 </IbwLeft>
                 <IbwRight>
-                  <Link to={`/find`}>아이디 찾기</Link> / <a>비밀번호 재발급</a>
+                  <Link to={`/find`}>아이디 찾기</Link> /
+                  <Link to={`/reissue`}>비밀번호 재발급</Link>
                 </IbwRight>
               </IbwWrap>
 

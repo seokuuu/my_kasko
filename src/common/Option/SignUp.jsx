@@ -53,3 +53,23 @@ export const DefaultSelect = styled(Select)`
   line-height: 26px;
   margin-right: 5px;
 `;
+
+export const DepositSelect = styled(Select)`
+  width: 120px;
+  text-align: center;
+  line-height: 11px;
+  margin-right: 5px;
+`;
+
+export const EmailSelect = styled(Select)`
+  width: 200px;
+  text-align: center;
+  line-height: 26.5px;
+`;
+
+export const AccountSelect = styled(Select)`
+  width: 320px;
+  text-align: center;
+  line-height: 26.5px;
+`;
+
