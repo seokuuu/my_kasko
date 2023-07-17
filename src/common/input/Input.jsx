@@ -37,3 +37,14 @@ export const SInput = styled.input`
   border: 1px solid #c1c1c1c5;
 `;
 
+export const Input35 = styled.input`
+  width: 120px;
+  height: 40px;
+  border: 1px solid #c1c1c1c5;
+`;
+
+export const Input65 = styled.input`
+  width: 195px;
+  height: 40px;
+  border: 1px solid #c1c1c1c5;
+`;
