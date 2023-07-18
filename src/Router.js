@@ -10,6 +10,10 @@ import Test3 from './pages/Test/Test3';
 import Test4 from './pages/Test/Test4';
 import DateGrid from './pages/Test/DateGrid';
 import User from './pages/User/User';
+import Destination from './pages/User/Destination';
+import CarrierPost from './pages/User/CarrierManage/CarrierPost';
+import PrivacyEdit from './pages/User/CarrierManage/PrivacyEdit';
+import Operate from './pages/Operate/FAQ/Operate';
 
 const Router = () => {
   return (
@@ -26,6 +30,10 @@ const Router = () => {
         <Route path="/test5" element={<DateGrid />} />
         <Route path="/cal" element={<CalendarModal />} />
         <Route path="/user" element={<User />} />
+        <Route path="/destination" element={<Destination />} />
+        <Route path="/carrierpost" element={<CarrierPost />} />
+        <Route path="/privacyedit" element={<PrivacyEdit />} />
+        <Route path="/operate" element={<Operate />} />
       </Routes>
     </BrowserRouter>
   );

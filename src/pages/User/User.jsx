@@ -14,9 +14,9 @@ import {
   Contour,
   OnePageSelect,
 } from '../../common/OnePage/OnePage.Styled';
-import { TxtInput, Input65, Input35 } from '../../common/Input/Input';
+import { TxtInput, InputA, Inputa } from '../../common/Input/Input';
 import { emailOptions } from '../../common/Option/SignUp';
-import { OverallSelect } from '../../common/Option/Main';
+import { CustomSelect } from '../../common/Option/Main';
 
 import {
   RadioMainDiv,
@@ -53,6 +53,7 @@ const User = () => {
     }
   }, [checkRadio]);
 
+  // ------------------------------
   // Check 관련
   const checkDummy = [
     '재고관리',
@@ -110,8 +111,8 @@ const User = () => {
                 <h4>사용자 정보</h4>
                 <p></p>
               </Title>
-              <Input35 style={{ marginRight: '5px' }} />
-              <Input65 />
+              <Inputa style={{ marginRight: '5px' }} />
+              <InputA />
             </Part>
             <Part>
               <Title>
@@ -119,9 +120,9 @@ const User = () => {
                 <p></p>
               </Title>
               <div style={{ display: 'flex' }}>
-                <Input35 /> <span>@</span>
+                <Inputa /> <span>@</span>
                 <div>
-                  <OverallSelect
+                  <CustomSelect
                     width={180}
                     options={emailOptions}
                     defaultValue={emailOptions[0]}
@@ -173,14 +174,19 @@ const User = () => {
                 <h4>창고 구분</h4>
                 <p></p>
               </Title>
-              <OverallSelect width={200} />
+              <CustomSelect
+                width={180}
+                options={emailOptions}
+                defaultValue={emailOptions[0]}
+              />
             </Part>
           </Right>
         </HalfWrap>
+
+        <Title>권한 설정</Title>
         <FullWrap>
-          <Title>권한 설정</Title>
           {checkDummy.map((x, index) => (
-            <StyledCheckMainDiv>
+            <UserCheckDiv>
               <StyledCheckSubSquDiv
                 onClick={() =>
                   setCheck(CheckBox(check, check.length, index, true))
@@ -189,8 +195,8 @@ const User = () => {
               >
                 <CheckImg2 src="/svg/check.svg" />
               </StyledCheckSubSquDiv>
-              <p>{x}</p>
-            </StyledCheckMainDiv>
+              <CheckTxt>{x}</CheckTxt>
+            </UserCheckDiv>
           ))}
         </FullWrap>
       </OnePageSubContainer>
@@ -200,10 +206,22 @@ const User = () => {
 
 export default User;
 
-const RadioContainer = styled.div`
+export const RadioContainer = styled.div`
   width: 115%;
   display: flex;
   gap: 20px;
   margin-left: 5px;
   margin-top: 10px;
+`;
+
+const CheckTxt = styled.div`
+  min-width: 100px;
+  height: 200px;
+`;
+
+const UserCheckDiv = styled.div`
+  display: flex;
+  width: 100px;
+  height: 30px;
+  border: 1px solid magenta;
 `;

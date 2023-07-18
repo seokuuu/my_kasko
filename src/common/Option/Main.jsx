@@ -75,9 +75,10 @@ export const MainSelect = styled(Select)`
   line-height: 20px;
 `;
 
-export const OverallSelect = styled(Select)`
+export const CustomSelect = styled(Select)`
   width: ${props => props.width}px;
   text-align: center;
   line-height: 26px;
   margin-right: 5px;
+  font-size: 16px;
 `;

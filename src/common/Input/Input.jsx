@@ -4,6 +4,7 @@ export const TxtInput = styled.input`
   width: 320px;
   height: 40px;
   border: 1px solid #c1c1c1c5;
+  font-size: 16px;
 `;
 
 export const TxtCheckInput = styled.input`
@@ -37,14 +38,33 @@ export const SInput = styled.input`
   border: 1px solid #c1c1c1c5;
 `;
 
-export const Input35 = styled.input`
+export const Inputa = styled.input`
   width: 120px;
+  height: 40px;
+  border: 1px solid #c1c1c1c5;
+  font-size: 16px;
+`;
+
+export const InputA = styled.input`
+  width: 195px;
+  height: 40px;
+  border: 1px solid #c1c1c1c5;
+  font-size: 16px;
+`;
+
+export const CustomInput = styled.input`
+  font-size: 16px;
+  width: ${props => props.width}px;
   height: 40px;
   border: 1px solid #c1c1c1c5;
 `;
 
-export const Input65 = styled.input`
-  width: 195px;
-  height: 40px;
-  border: 1px solid #c1c1c1c5;
+
+export const CustomTextArea = styled.textarea`
+  display: flex;
+  width: 100%;
+  height: 50vh;
+  resize: none;
+  padding: 20px;
+  border: 1px solid black;
 `;

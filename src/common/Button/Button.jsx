@@ -15,7 +15,7 @@ export const BlackBtn = styled.button`
   font-size: ${props => props.fontSize}px;
   width: ${props => props.width}%;
   height: ${props => props.height}px;
-  margin: ${props => props.margin};
+  margin: ${props => props.margin}px;
   background-color: black;
   color: white;
   cursor: pointer;
@@ -26,7 +26,7 @@ export const BlueBtn = styled.button`
   font-size: ${props => props.fontSize}px;
   width: ${props => props.width}%;
   height: ${props => props.height}px;
-  margin: ${props => props.margin};
+  margin: ${props => props.margin}px;
   background-color: #061737;
   color: white;
   cursor: pointer;
