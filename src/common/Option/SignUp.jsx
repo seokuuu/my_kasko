@@ -47,6 +47,18 @@ export const storageOptions = [
   { value: 'ask4', label: '4' },
 ];
 
+// FAQ
+
+export const faqOptions = [
+  { value: 'ask0', label: '카테고리' },
+  { value: 'ask1', label: '경매' },
+  { value: 'ask2', label: '상시판매' },
+  { value: 'ask3', label: '입금' },
+  { value: 'ask4', label: '출고' },
+  { value: 'ask4', label: '약관' },
+  { value: 'ask4', label: '기타' },
+];
+
 export const DefaultSelect = styled(Select)`
   width: 120px;
   text-align: center;
@@ -72,4 +84,3 @@ export const AccountSelect = styled(Select)`
   text-align: center;
   line-height: 26.5px;
 `;
-

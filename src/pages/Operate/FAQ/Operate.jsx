@@ -15,7 +15,7 @@ import {
 
 import { CustomInput, CustomTextArea } from '../../../common/Input/Input';
 import { CustomSelect } from '../../../common/Option/Main';
-import { emailOptions } from '../../../common/Option/SignUp';
+import { faqOptions } from '../../../common/Option/SignUp';
 
 const Operate = () => {
   return (
@@ -26,8 +26,8 @@ const Operate = () => {
           <div style={{ display: 'flex', margin: '10px auto' }}>
             <CustomSelect
               width={200}
-              options={emailOptions}
-              defaultValue={emailOptions[0]}
+              options={faqOptions}
+              defaultValue={faqOptions[0]}
             />
             <CustomInput
               placeholder="질문 내용을 입력해주세요."
