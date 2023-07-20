@@ -81,7 +81,12 @@ const Test3 = () => {
   }, []);
   const isExternalFilterPresent = useCallback(() => {
     // if ageType is not everyone or either minAge or maxAge is set, then we are filtering
-    return ageType !== 'everyone' || minAge !== null || maxAge !== null;
+    return (
+      ageType !== 'everyone' ||
+      minAge !== null ||
+      maxAge !== null ||
+      countryFilter !== null
+    );
   }, []);
 
   const onMinAgeChange = useCallback(event => {
@@ -94,9 +99,16 @@ const Test3 = () => {
     gridRef.current.api.onFilterChanged();
   }, []);
 
+  // const onCountryFilterChange = useCallback(event => {
+  //   const newCountryFilter = event.target.value.trim();
+  //   countryFilter = newCountryFilter !== '' ? newCountryFilter : null;
+  //   gridRef.current.api.onFilterChanged();
+  // }, []);
+
   const onCountryFilterChange = useCallback(event => {
     const newCountryFilter = event.target.value.trim();
-    countryFilter = newCountryFilter !== '' ? newCountryFilter : null;
+    const filters = newCountryFilter.split(/,|\n/).map(filter => filter.trim());
+    countryFilter = filters.length > 0 ? filters : null;
     gridRef.current.api.onFilterChanged();
   }, []);
 
@@ -127,8 +139,15 @@ const Test3 = () => {
 
         if (countryFilter !== null) {
           const countryValue = node.data.country.toLowerCase(); // Case-insensitive comparison
-          if (!countryValue.includes(countryFilter.toLowerCase())) {
+          if (Array.isArray(countryFilter)) {
+            for (const filter of countryFilter) {
+              if (countryValue.includes(filter.toLowerCase())) {
+                return true;
+              }
+            }
             return false;
+          } else {
+            return countryValue.includes(countryFilter.toLowerCase());
           }
         }
       }
@@ -209,7 +228,7 @@ const Test3 = () => {
           </label>
           <label>
             Country Filter:
-            <input
+            <textarea
               type="text"
               onChange={onCountryFilterChange}
               style={{ marginLeft: '5px' }}
