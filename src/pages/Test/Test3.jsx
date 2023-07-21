@@ -5,6 +5,7 @@ import 'ag-grid-enterprise';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { styled } from 'styled-components';
+import { ContentBlock } from 'draft-js';
 
 var dateFilterParams = {
   comparator: (filterLocalDateAtMidnight, cellValue) => {
@@ -37,6 +38,8 @@ const asDate = dateAsString => {
 };
 
 const Test3 = () => {
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [filterText, setFilterText] = useState(''); // 필터 텍스트를 저장하는 상태 변수
   const gridRef = useRef();
   const containerStyle = useMemo(
     () => ({ width: '100%', height: '500px' }),
@@ -44,6 +47,7 @@ const Test3 = () => {
   );
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
   const [rowData, setRowData] = useState();
+
   const [columnDefs, setColumnDefs] = useState([
     { field: 'athlete', minWidth: 180 },
     { field: 'age', filter: 'agNumberColumnFilter', maxWidth: 80 },
@@ -74,6 +78,12 @@ const Test3 = () => {
         setRowData(data);
       });
   }, []);
+
+  const countries = rowData?.map(item => item.country);
+  const uniqueCountriesSet = new Set(countries);
+  const uniqueCountries = Array.from(uniqueCountriesSet);
+  const sortedCountries = uniqueCountries.sort();
+  console.log(sortedCountries);
 
   const externalFilterChanged = useCallback(newValue => {
     ageType = newValue;
@@ -107,9 +117,28 @@ const Test3 = () => {
 
   const onCountryFilterChange = useCallback(event => {
     const newCountryFilter = event.target.value.trim();
-    const filters = newCountryFilter.split(/,|\n/).map(filter => filter.trim());
+    const filters = newCountryFilter.split(/,|\n/).map(filter => filter.trim()); // 스페이스 요청시 (/,|\n|\s+/) 이걸로 바꾸자.
     countryFilter = filters.length > 0 ? filters : null;
     gridRef.current.api.onFilterChanged();
+  }, []);
+
+  const onFindButtonClick = () => {
+    const newCountryFilter = filterText.trim();
+    const gridApi = gridRef.current.api;
+
+    // 입력한 국가명으로 grid의 Country 필터를 작동
+    gridApi.setFilterModel({
+      country: {
+        type: 'set',
+        values: [newCountryFilter],
+      },
+    });
+    gridApi.onFilterChanged();
+  };
+
+  const handleResultBlockClick = useCallback(country => {
+    setSelectedCountry(country);
+    setFilterText(country); // 클릭한 국가로 필터 텍스트를 설정합니다
   }, []);
 
   const doesExternalFilterPass = useCallback(
@@ -156,6 +185,13 @@ const Test3 = () => {
     },
     [ageType, minAge, maxAge, countryFilter]
   );
+
+  // filter 된 것을 보여주는
+  const filteredCountries = useMemo(() => {
+    return sortedCountries.filter(country =>
+      country.toLowerCase().includes(filterText.toLowerCase())
+    );
+  }, [filterText, sortedCountries]);
 
   return (
     <div style={containerStyle}>
@@ -249,6 +285,28 @@ const Test3 = () => {
           />
         </div>
       </TestContainer>
+      <FindSpec>
+        <FSTitle>
+          <div>검색</div>
+          <RBInput
+            value={filterText}
+            onChange={e => setFilterText(e.target.value)}
+          />
+          <button onClick={onFindButtonClick}>찾기</button>
+        </FSTitle>
+        <FSResult>
+          {filteredCountries.map((x, index) => {
+            return (
+              <ResultBlock
+                key={index}
+                onClick={() => handleResultBlockClick(x)}
+              >
+                {x}
+              </ResultBlock>
+            );
+          })}
+        </FSResult>
+      </FindSpec>
     </div>
   );
 };
@@ -270,3 +328,55 @@ const TestHeader = styled.div`
   padding: 10px;
   border-radius: 5px;
 `;
+
+const FindSpec = styled.div`
+  width: 500px;
+  height: 500px;
+  border: 1px solid black;
+`;
+
+const FSTitle = styled.div`
+  width: 100%;
+  height: 50px;
+  border: 1px solid blue;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+
+  input {
+    border: 1px solid black;
+    height: 30px;
+  }
+
+  button {
+    border: 1px solid black;
+  }
+`;
+
+const FSResult = styled.div`
+  width: 100%;
+  height: 500px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 5px;
+  overflow: scroll;
+`;
+
+const ResultBlock = styled.div`
+  width: 24%;
+  height: 50px;
+  border: 1px solid black;
+  cursor: pointer;
+  font-size: 16px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  display: flex;
+
+  &:hover {
+    background-color: #eee;
+  }
+`;
+
+const RBInput = styled.input``;
