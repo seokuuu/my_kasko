@@ -34,7 +34,15 @@ const Router = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        {/* 다른 페이지들 */}
+
+        {/* 컴포넌트 전부 정리하기 */}
+        {/* <Route path="/A/*">
+          <Route path="/A/a" element={<ComponentA />} />
+          <Route path="/A/b" element={<ComponentB />} />
+          <Route path="/A/c" element={<ComponentC />} />
+          <Route path="/A/d" element={<ComponentD />} />
+        </Route> */}
+
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
