@@ -1,5 +1,12 @@
 import { useState, useCallback, useEffect } from 'react';
 import { styled } from 'styled-components';
+// import {
+//   Container,
+//   SubContainer,
+//   Title,
+//   LoginContainer,
+//   LoginSubContainer,
+// } from '../Login/Login.Styled';
 import {
   Container,
   SubContainer,
@@ -7,16 +14,17 @@ import {
   LoginContainer,
   LoginSubContainer,
 } from '../Login/Login.Styled';
-import { FindMsg, FindContainer, FindTitleMsg } from '../Login/Find';
-import { BlueBtn } from '../../common/Button/Button';
+import { FindMsg, FindContainer, FindTitleMsg } from '../FindId/FindId';
+import { BlueBtn } from '../../../common/Button/Button';
 import { IbwTxt } from '../Login/Login.Styled';
 import { Link, useNavigate } from 'react-router-dom';
 import Select from 'react-select';
-import { emailOptions } from '../../common/Option/SignUp';
-import { SInput } from '../../common/Input/Input';
+import { emailOptions } from '../../../common/Option/SignUp';
+import { SInput } from '../../../common/Input/Input';
+
 import { Part } from '../SignUp/SignUp.Styled';
 
-const Reissue = () => {
+const ReissuePw = () => {
   const init = {
     id: '',
     name: '',
@@ -130,7 +138,7 @@ const Reissue = () => {
   );
 };
 
-export default Reissue;
+export default ReissuePw;
 
 const Wrap = styled.div`
   width: 200px;

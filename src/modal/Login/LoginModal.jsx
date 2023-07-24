@@ -5,10 +5,10 @@ import {
   ModalRadioWrap,
   ModalContainer,
 } from '../Common/Common.Styled';
-import { Part, Title } from '../../pages/SignUp/SignUp.Styled';
-import { styled } from 'styled-components';
-import { IbwTxt } from '../../pages/Login/Login.Styled';
 
+import { Part, Title } from '../../pages/User/SignUp/SignUp.Styled';
+import { styled } from 'styled-components';
+import { IbwTxt } from '../../pages/User/Login/Login.Styled';
 const LoginModal = ({ closeModal }) => {
   const [modalTest, setModalTest] = useState(1);
 

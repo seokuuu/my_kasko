@@ -7,13 +7,14 @@ import {
   Title,
   LoginContainer,
   LoginSubContainer,
-} from './Login.Styled';
+} from '../Login/Login.Styled';
 
-import { IbwTxt } from './Login.Styled';
-import { busIdRegex, phoneRegex } from '../../common/Regex/Regex';
-import { BlueBtn, WhiteBtn } from '../../common/Button/Button';
+import { IbwTxt } from '../Login/Login.Styled';
+import { busIdRegex, phoneRegex } from '../../../common/Regex/Regex';
+// import { BlueBtn, WhiteBtn } from '../../common/Button/Button';
+import { BlueBtn, WhiteBtn } from '../../../common/Button/Button';
 
-const Find = () => {
+const FindId = () => {
   const navigate = useNavigate();
 
   const [findPageNum, setFindPageNum] = useState(0);
@@ -218,7 +219,7 @@ const Find = () => {
   );
 };
 
-export default Find;
+export default FindId;
 
 export const FindContainer = styled.div`
   color: black;

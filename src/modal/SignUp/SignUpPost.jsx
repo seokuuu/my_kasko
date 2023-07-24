@@ -14,7 +14,7 @@ import {
   Part,
   Title,
   SubmitBtn,
-} from '../../pages/SignUp/SignUp.Styled';
+} from '../../pages/User/SignUp/SignUp.Styled';
 import DaumPostcode from 'react-daum-postcode';
 
 const SignUpPost = ({

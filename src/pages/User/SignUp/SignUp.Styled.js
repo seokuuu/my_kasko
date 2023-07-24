@@ -35,7 +35,6 @@ export const PartBlock = styled.div`
 
 export const Part = styled.div`
   margin-bottom: 20px;
-  border: 1px solid black;
 `;
 
 export const Top = styled.div`

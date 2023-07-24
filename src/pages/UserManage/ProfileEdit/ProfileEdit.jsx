@@ -16,7 +16,7 @@ import { CustomSelect } from '../../../common/Option/Main';
 import { emailOptions } from '../../../common/Option/SignUp';
 import { styled } from 'styled-components';
 
-const PrivacyEdit = () => {
+const ProfileEdit = () => {
   return (
     <OnePageContainer>
       <MainTitle>개인정보 수정</MainTitle>
@@ -96,4 +96,4 @@ const PrivacyEdit = () => {
   );
 };
 
-export default PrivacyEdit;
+export default ProfileEdit;

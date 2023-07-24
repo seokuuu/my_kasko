@@ -1,4 +1,5 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useContext } from 'react';
+import { HeadFootLeftSwitch } from '../../../Router';
 import styled, { createGlobalStyle } from 'styled-components';
 import {
   Container,
@@ -25,13 +26,13 @@ import {
   TxtCheckInput,
   TxtDropInput,
   SInput,
-} from '../../common/Input/Input';
+} from '../../../common/Input/Input';
 import {
   idRegex,
   pwRegex,
   busIdRegex,
   phoneRegex,
-} from '../../common/Regex/Regex';
+} from '../../../common/Regex/Regex';
 import DaumPostcode from 'react-daum-postcode';
 import Select from 'react-select';
 import {
@@ -40,21 +41,22 @@ import {
   StyledCheckSubDiv,
   CheckImg,
   CheckImg2,
-} from '../../common/Check/CheckImg';
-import { CheckBox } from '../../common/Check/Checkbox';
+} from '../../../common/Check/CheckImg';
+import { CheckBox } from '../../../common/Check/Checkbox';
 import {
   RadioCircleDiv,
   RadioInnerCircleDiv,
   RadioMainDiv,
-} from '../../common/Check/RadioImg';
+} from '../../../common/Check/RadioImg';
 import {
   ModalOverlay,
   ModalSubContainer,
   ModalRadioWrap,
   ModalCloseBtn,
   ModalContainer,
-} from '../../modal/Common/Common.Styled';
-import SignUpPost from '../../modal/SignUp/SignUpPost';
+} from '../../../modal/Common/Common.Styled';
+
+import SignUpPost from '../../../modal/SignUp/SignUpPost';
 
 import {
   depositOptions,
@@ -65,10 +67,19 @@ import {
   DepositSelect,
   EmailSelect,
   AccountSelect,
-} from '../../common/Option/SignUp';
-import LoginModal from '../../modal/Login/LoginModal';
+} from '../../../common/Option/SignUp';
+
+import LoginModal from '../../../modal/Login/LoginModal';
+
+import { useAtom } from 'jotai';
+
+import { headerAtom, accordionAtom } from '../../../store/Layout/Layout';
 
 const SignUp = () => {
+  const [showHeader, setShowHeader] = useAtom(headerAtom);
+  const [showAccordion, setShowAccordion] = useAtom(accordionAtom);
+  setShowHeader(false);
+  setShowAccordion(false);
   //radioBox
   const radioDummy = ['개인', '법인(주)', '법인(유)'];
   const [checkRadio, setCheckRadio] = useState(

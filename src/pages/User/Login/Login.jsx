@@ -1,13 +1,14 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useContext } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Link } from 'react-router-dom';
+
 import {
   StyledCheckMainDiv,
   StyledCheckSubDiv,
   CheckImg,
-} from '../../common/Check/CheckImg';
-import { CheckBox } from '../../common/Check/Checkbox';
+} from '../../../common/Check/CheckImg';
+import { CheckBox } from '../../../common/Check/Checkbox';
 import {
   Container,
   SubContainer,
@@ -29,7 +30,16 @@ import {
   IbwWrap,
 } from './Login.Styled';
 
+import { useAtom } from 'jotai';
+import { headerAtom, accordionAtom } from '../../../store/Layout/Layout';
+
 const Login = () => {
+  const [showHeader, setShowHeader] = useAtom(headerAtom);
+  const [showAccordion, setShowAccordion] = useAtom(accordionAtom);
+  setShowHeader(false);
+  setShowAccordion(false);
+  // // HeadFootLeftSwitch 막기
+
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
   const [idPlaceholder, setIdPlaceholder] = useState('아이디');
