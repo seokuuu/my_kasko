@@ -127,7 +127,7 @@ const Destination = () => {
               <CustomInput
                 placeholder="담당자 휴대폰 번호 입력 ('-' 제외)"
                 width={340}
-                style={{ marginTop: '5px'  }}
+                style={{ marginTop: '5px' }}
               />
 
               <Alert style={{ margin: '5px auto' }}>

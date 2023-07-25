@@ -126,7 +126,7 @@ const ReissuePw = () => {
               </BlueBtn>
               <IbwTxt>
                 아이디가 기억 안나시나요?
-                <Link to={`/find`}>
+                <Link to={`/findid`}>
                   <span> 아이디 찾기</span>
                 </Link>
               </IbwTxt>

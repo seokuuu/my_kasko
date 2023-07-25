@@ -12,7 +12,10 @@ import {
   TodayBtnWrap,
   TodayWrap,
   TodayTxt,
+  CalWrap,
 } from './Calendar.Styled';
+
+import { styled } from 'styled-components';
 
 const CalendarModal = () => {
   const [mark, setMark] = useState(['2023-07-04', '2023-07-05', '2023-07-06']);
@@ -102,7 +105,7 @@ const CalendarModal = () => {
   }
 
   return (
-    <div>
+    <CalWrap>
       <StyledCalendar
         calendarType="US"
         locale={'ko'}
@@ -119,9 +122,6 @@ const CalendarModal = () => {
       />
       <CalBtnWrap>
         <CalBtn type="button">일정 등록</CalBtn>
-      </CalBtnWrap>
-
-      <TodayBtnWrap>
         <TodayWrap>
           <span>today</span> <span>{formattedDate}</span>
         </TodayWrap>
@@ -135,8 +135,8 @@ const CalendarModal = () => {
             <TodayTxt>추가 경매</TodayTxt>
           </Dot>
         </DotWrap>
-      </TodayBtnWrap>
-    </div>
+      </CalBtnWrap>
+    </CalWrap>
   );
 };
 

@@ -32,7 +32,7 @@ import {
 
 import { CheckImg2 } from '../../common/Check/CheckImg';
 
-const User = () => {
+const Register = () => {
   // Radio 관련
   const radioDummy = ['창고', '운송사', '현대제철', '카스코 철강']; // 더미 데이터
   const [checkRadio, setCheckRadio] = useState(
@@ -204,7 +204,7 @@ const User = () => {
   );
 };
 
-export default User;
+export default Register;
 
 export const RadioContainer = styled.div`
   width: 115%;

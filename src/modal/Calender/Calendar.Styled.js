@@ -15,18 +15,22 @@ export const StyledCalendar = styled(Calendar)`
     border-radius: 8px;
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
     line-height: 1.125em;
+    display: flex;
   }
 
   .react-calendar__month-view__weekdays__weekday {
     border-bottom: 1px solid black;
+    font-weight: bold;
   }
 
   .react-calendar__month-view__weekdays__weekday:first-child {
     color: #d10000;
+    font-weight: bold;
   }
 
   .react-calendar__month-view__weekdays__weekday:nth-child(7) {
     color: #2875ea;
+    font-weight: bold;
   }
 
   .react-calendar__month-view__days__day:not(
@@ -40,7 +44,7 @@ export const StyledCalendar = styled(Calendar)`
 
   .react-calendar__navigation {
     position: absolute;
-    left: 1050px;
+    left: 1350px;
     flex-direction: column;
   }
 
@@ -114,7 +118,7 @@ export const StyledCalendar = styled(Calendar)`
     background: #91bbff;
     border-radius: 6px;
 
-    color: 91bbff;
+    color: white;
   }
   .react-calendar__tile--now:enabled:hover,
   .react-calendar__tile--now:enabled:focus {
@@ -227,12 +231,15 @@ export const Wrap = styled.div`
   right: 0px;
 `;
 
+export const CalWrap = styled.div`
+  width: 1300px;
+  display: flex;
+`;
+
 export const CalBtnWrap = styled.div`
-  position: absolute;
-  left: 1010px;
-  top: 130px;
-  border-top: 2px solid black;
-  width: 230px;
+  position: relative;
+  top: 120px;
+  left: 15px;
 `;
 
 export const CalBtn = styled.button`
@@ -269,7 +276,13 @@ export const TodayBtnWrap = styled.div`
 `;
 
 export const TodayWrap = styled.div`
-  margin: 10px;
+  margin: 20px;
+  margin-left: 30px;
+
+  span {
+    color: #4c83d6;
+    font-weight: bold;
+  }
 `;
 
 export const TodayTxt = styled.p`
