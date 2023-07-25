@@ -73,13 +73,19 @@ import LoginModal from '../../../modal/Login/LoginModal';
 
 import { useAtom } from 'jotai';
 
-import { headerAtom, accordionAtom } from '../../../store/Layout/Layout';
+import {
+  headerAtom,
+  accordionAtom,
+  subHeaderAtom,
+} from '../../../store/Layout/Layout';
 
 const SignUp = () => {
   const [showHeader, setShowHeader] = useAtom(headerAtom);
   const [showAccordion, setShowAccordion] = useAtom(accordionAtom);
+  const [showSubHeader, setShowSubHeader] = useAtom(subHeaderAtom);
   setShowHeader(false);
   setShowAccordion(false);
+  setShowSubHeader(false);
   //radioBox
   const radioDummy = ['개인', '법인(주)', '법인(유)'];
   const [checkRadio, setCheckRadio] = useState(

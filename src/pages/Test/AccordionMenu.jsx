@@ -97,7 +97,14 @@ const data = [
 const AccordionMenu = () => {
   return (
     <AccordionWrap>
-      <AcTop></AcTop>
+      <AcTop>
+        <AcTopCal>
+          <div>경매 캘린더</div>
+          <div>
+            <img src="/img/calender.png" />
+          </div>
+        </AcTopCal>
+      </AcTop>
       {data.map((item, index) => (
         <StyledAccordion key={index}>
           <StyledAccordionSummary
@@ -125,11 +132,6 @@ const AccordionMenu = () => {
 };
 
 export default AccordionMenu;
-
-const AcTop = styled.div`
-  width: 300px;
-  height: 100px;
-`;
 
 const AccordionWrap = styled.div`
   display: block;
@@ -192,4 +194,23 @@ const TypoContent = styled.div`
 
 const Depth2 = styled.a`
   font-size: 20px;
+`;
+
+const AcTop = styled.div`
+  width: 300px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const AcTopCal = styled.div`
+  display: flex;
+  justify-content: space-around;
+  width: 200px;
+  height: 50px;
+  align-items: center;
+  border-bottom: 2px solid #c8c8c8;
+  border-radius: 2px;
+  background-color: #1e2533;
 `;

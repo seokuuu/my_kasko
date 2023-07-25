@@ -21,6 +21,7 @@
     "draftjs-to-html": "^0.9.1",
     "jotai": "^2.2.2",
     "moment": "^2.29.4",
+    "moment-timezone": "^0.5.43",
     "mui": "^0.0.1",
     "quill-html-edit-button": "^2.2.12",
     "quill-image-compress": "^1.2.30",

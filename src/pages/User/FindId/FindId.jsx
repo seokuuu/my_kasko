@@ -13,8 +13,20 @@ import { IbwTxt } from '../Login/Login.Styled';
 import { busIdRegex, phoneRegex } from '../../../common/Regex/Regex';
 // import { BlueBtn, WhiteBtn } from '../../common/Button/Button';
 import { BlueBtn, WhiteBtn } from '../../../common/Button/Button';
+import { useAtom } from 'jotai';
+import {
+  headerAtom,
+  accordionAtom,
+  subHeaderAtom,
+} from '../../../store/Layout/Layout';
 
 const FindId = () => {
+  const [showHeader, setShowHeader] = useAtom(headerAtom);
+  const [showAccordion, setShowAccordion] = useAtom(accordionAtom);
+  const [showSubHeader, setShowSubHeader] = useAtom(subHeaderAtom);
+  setShowHeader(false);
+  setShowAccordion(false);
+  setShowSubHeader(false);
   const navigate = useNavigate();
 
   const [findPageNum, setFindPageNum] = useState(0);
@@ -173,7 +185,7 @@ const FindId = () => {
                 </BlueBtn>
                 <IbwTxt>
                   아이디가 기억나셨나요?{' '}
-                  <Link to={`/reissue`}>비밀번호 재발급</Link>
+                  <Link to={`/reissuepw`}>비밀번호 재발급</Link>
                 </IbwTxt>
               </LoginSubContainer>
             </LoginContainer>

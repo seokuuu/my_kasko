@@ -19,14 +19,20 @@ import Operate from './pages/Operate/FAQ/Operate';
 import AccordionMenu from './pages/Test/AccordionMenu';
 import Header from './components/Header/Header';
 
-import { headerAtom, accordionAtom } from './store/Layout/Layout';
+import {
+  headerAtom,
+  accordionAtom,
+  subHeaderAtom,
+} from './store/Layout/Layout';
 import NotFound from './pages/NotFound';
 
 import { styled } from 'styled-components';
+import SubHeader from './components/Header/SubHeader';
 
 const Router = () => {
   const [showHeader, setShowHeader] = useAtom(headerAtom);
   const [showAccordion, setShowAccordion] = useAtom(accordionAtom);
+  const [showSubHeader, setShowSubHeader] = useAtom(subHeaderAtom);
 
   return (
     <BrowserRouter>
@@ -34,6 +40,7 @@ const Router = () => {
       <DefaultMainWrap>
         {showAccordion && <AccordionMenu />}
         <DefaultContentWrap>
+          {showSubHeader && <SubHeader />}
           <Routes>
             {/* 테스트 URL */}
             <Route path="/test" element={<Test />} />

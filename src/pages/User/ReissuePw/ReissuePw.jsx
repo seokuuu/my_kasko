@@ -24,7 +24,21 @@ import { SInput } from '../../../common/Input/Input';
 
 import { Part } from '../SignUp/SignUp.Styled';
 
+import { useAtom } from 'jotai';
+
+import {
+  headerAtom,
+  accordionAtom,
+  subHeaderAtom,
+} from '../../../store/Layout/Layout';
+
 const ReissuePw = () => {
+  const [showHeader, setShowHeader] = useAtom(headerAtom);
+  const [showAccordion, setShowAccordion] = useAtom(accordionAtom);
+  const [showSubHeader, setShowSubHeader] = useAtom(subHeaderAtom);
+  setShowHeader(false);
+  setShowAccordion(false);
+  setShowSubHeader(false);
   const init = {
     id: '',
     name: '',

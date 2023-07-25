@@ -31,13 +31,19 @@ import {
 } from './Login.Styled';
 
 import { useAtom } from 'jotai';
-import { headerAtom, accordionAtom } from '../../../store/Layout/Layout';
+import {
+  headerAtom,
+  accordionAtom,
+  subHeaderAtom,
+} from '../../../store/Layout/Layout';
 
 const Login = () => {
   const [showHeader, setShowHeader] = useAtom(headerAtom);
   const [showAccordion, setShowAccordion] = useAtom(accordionAtom);
+  const [showSubHeader, setShowSubHeader] = useAtom(subHeaderAtom);
   setShowHeader(false);
   setShowAccordion(false);
+  setShowSubHeader(false);
   // // HeadFootLeftSwitch 막기
 
   const [id, setId] = useState('');
