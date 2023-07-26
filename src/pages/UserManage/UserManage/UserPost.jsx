@@ -13,26 +13,28 @@ import {
   Right,
   Contour,
   OnePageSelect,
-} from '../../common/OnePage/OnePage.Styled';
-import { TxtInput, InputA, Inputa } from '../../common/Input/Input';
-import { emailOptions } from '../../common/Option/SignUp';
-import { CustomSelect } from '../../common/Option/Main';
+} from '../../../common/OnePage/OnePage.Styled';
+import { TxtInput, InputA, Inputa } from '../../../common/Input/Input';
+import { emailOptions } from '../../../common/Option/SignUp';
+import { CustomSelect } from '../../../common/Option/Main';
 
 import {
   RadioMainDiv,
   RadioCircleDiv,
   RadioInnerCircleDiv,
-} from '../../common/Check/RadioImg';
-import { CheckBox } from '../../common/Check/Checkbox';
+} from '../../../common/Check/RadioImg';
+import { CheckBox } from '../../../common/Check/Checkbox';
 
 import {
   StyledCheckMainDiv,
   StyledCheckSubSquDiv,
-} from '../../common/Check/CheckImg';
+} from '../../../common/Check/CheckImg';
 
-import { CheckImg2 } from '../../common/Check/CheckImg';
+import { CheckImg2 } from '../../../common/Check/CheckImg';
 
-const Register = () => {
+import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button';
+
+const UserPost = () => {
   // Radio 관련
   const radioDummy = ['창고', '운송사', '현대제철', '카스코 철강']; // 더미 데이터
   const [checkRadio, setCheckRadio] = useState(
@@ -184,7 +186,7 @@ const Register = () => {
         </HalfWrap>
 
         <Title>권한 설정</Title>
-        <FullWrap>
+        <CheckWrap>
           {checkDummy.map((x, index) => (
             <UserCheckDiv>
               <StyledCheckSubSquDiv
@@ -195,23 +197,37 @@ const Register = () => {
               >
                 <CheckImg2 src="/svg/check.svg" />
               </StyledCheckSubSquDiv>
-              <CheckTxt>{x}</CheckTxt>
+              <CheckTxt style={{ marginLeft: '5px' }}>{x}</CheckTxt>
             </UserCheckDiv>
           ))}
-        </FullWrap>
+        </CheckWrap>
       </OnePageSubContainer>
+      <BtnWrap bottom={-200}>
+        <WhiteBtn width={40} height={40}>
+          돌아가기
+        </WhiteBtn>
+        <BlackBtn width={40} height={40}>
+          저장
+        </BlackBtn>
+      </BtnWrap>
     </OnePageContainer>
   );
 };
 
-export default Register;
+export default UserPost;
 
 export const RadioContainer = styled.div`
-  width: 115%;
+  width: max-content;
   display: flex;
   gap: 20px;
   margin-left: 5px;
   margin-top: 10px;
+`;
+
+const CheckWrap = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
 `;
 
 const CheckTxt = styled.div`
@@ -221,7 +237,6 @@ const CheckTxt = styled.div`
 
 const UserCheckDiv = styled.div`
   display: flex;
-  width: 100px;
+  width: 150px;
   height: 30px;
-  border: 1px solid magenta;
 `;

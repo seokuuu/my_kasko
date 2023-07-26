@@ -14,7 +14,8 @@ import {
 import { CustomInput } from '../../../common/Input/Input';
 import { CustomSelect } from '../../../common/Option/Main';
 import { emailOptions } from '../../../common/Option/SignUp';
-import { styled } from 'styled-components';
+
+import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button';
 
 const ProfileEdit = () => {
   return (
@@ -92,6 +93,14 @@ const ProfileEdit = () => {
           </Right>
         </HalfWrap>
       </OnePageSubContainer>
+      <BtnWrap bottom={-200}>
+        <WhiteBtn width={40} height={40}>
+          돌아가기
+        </WhiteBtn>
+        <BlackBtn width={40} height={40}>
+          저장
+        </BlackBtn>
+      </BtnWrap>
     </OnePageContainer>
   );
 };

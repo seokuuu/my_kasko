@@ -69,7 +69,7 @@ export const DefaultSelect = styled(Select)`
 export const DepositSelect = styled(Select)`
   width: 120px;
   text-align: center;
-  line-height: 11px;
+  line-height: 26px;
   margin-right: 5px;
 `;
 

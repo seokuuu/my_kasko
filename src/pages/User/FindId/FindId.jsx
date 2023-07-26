@@ -33,7 +33,7 @@ const FindId = () => {
 
   const dummy = [
     {
-      name: '장석원',
+      name: '가숙호',
       busId: '1234512345',
       contact: '01012341234',
     },

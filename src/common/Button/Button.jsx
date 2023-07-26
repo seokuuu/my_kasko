@@ -31,3 +31,29 @@ export const BlueBtn = styled.button`
   color: white;
   cursor: pointer;
 `;
+
+export const BtnWrap = styled.div`
+  display: flex;
+  width: 400px;
+  height: 50px;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+
+  position: relative;
+  bottom: ${props => props.bottom}px;
+`;
+
+// <BtnWrap>
+//   <WhiteBtn
+//     width={90}
+//     height={50}
+//     style={{ marginRight: '10px' }}
+//   >
+//     돌아가기
+//   </WhiteBtn>
+//   <BlackBtn width={90} height={50}>
+//     저장
+//   </BlackBtn>
+// </BtnWrap>;

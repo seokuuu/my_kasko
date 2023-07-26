@@ -4,6 +4,7 @@ import { storageOptions } from '../../common/Option/SignUp';
 import { DefaultSelect } from '../../common/Option/SignUp';
 import Select from 'react-select';
 import { MainSelect } from '../../common/Option/Main';
+import { BlackBtn, BtnWrap } from '../../common/Button/Button';
 
 const Test2 = () => {
   const handleSelectChange = (selectedOption, name) => {
@@ -81,9 +82,18 @@ const Test2 = () => {
         </FilterRight>
       </FilterSubcontianer>
       <FilterFooter>
-        <div>초기화</div>
         <div>
-          <button>검색</button>
+          초기화
+          <img
+            src="/img/reset.png"
+            style={{ marginLeft: '10px', marginRight: '20px' }}
+          />
+        </div>
+
+        <div style={{ width: '180px' }}>
+          <BlackBtn width={100} height={40}>
+            검색
+          </BlackBtn>
         </div>
       </FilterFooter>
     </FilterContianer>
@@ -95,8 +105,6 @@ export default Test2;
 // 검색 필터 최상단 div
 export const FilterContianer = styled.div`
   width: 100%;
-
-  border: 1px solid black;
 `;
 
 export const FilterHeader = styled.div`
@@ -107,16 +115,19 @@ export const FilterHeader = styled.div`
 // 검색 필터
 export const FilterSubcontianer = styled.div`
   width: 100%;
-  border: 1px solid black;
+  border: 1px solid #c8c8c8;
   display: flex;
+  padding: 30px;
 `;
 
 //초기화 , 검색 버튼 div
 export const FilterFooter = styled.div`
-  border: 1px solid blue;
+  border: 1px solid #c8c8c8;
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 50px;
+  background-color: #f0f1f6;
 `;
 
 // 검색 필터 Left
@@ -131,20 +142,20 @@ export const RowWrap = styled.div`
   text-align: center;
   align-items: center;
   margin: 10px 0px 10px 0px;
-  border: 1px solid skyblue;
-
+  border-bottom: 1px solid #c8c8c8;
+  padding-bottom: 10px;
   // 이건 지워도 됨
   input {
     width: 100px;
     height: 25px;
-    border: 1px solid black;
+    border: 1px solid #c8c8c8;
   }
 `;
 
 const PartWrap = styled.div`
   margin-right: 30px;
   display: flex;
-  border: 1px solid black;
+
   text-align: center;
   align-items: center;
   line-height: 14.5px;

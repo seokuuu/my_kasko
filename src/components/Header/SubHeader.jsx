@@ -5,7 +5,7 @@ const SubHeader = () => {
   return (
     <SubHeaderContainer>
       <SubHeadLeft>[알림] 1회차 14:00시 경매 진행 중 입니다.</SubHeadLeft>
-      <SubHeadRight></SubHeadRight>
+      <SubHeadRight> Countdown </SubHeadRight>
     </SubHeaderContainer>
   );
 };
@@ -19,6 +19,8 @@ const SubHeaderContainer = styled.div`
   align-items: center;
   padding: 0px 50px;
   justify-content: space-between;
+  border: 1px solid #bfbfbf;
+  background-color: white;
 `;
 
 const SubHeadLeft = styled.div`

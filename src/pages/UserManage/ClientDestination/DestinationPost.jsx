@@ -9,21 +9,22 @@ import {
   Title,
   Part,
   Alert,
-} from '../../common/OnePage/OnePage.Styled';
+} from '../../../common/OnePage/OnePage.Styled';
 
-import { TxtInput, CustomInput } from '../../common/Input/Input';
+import { TxtInput, CustomInput } from '../../../common/Input/Input';
 
-import { BlackBtn } from '../../common/Button/Button';
 import { styled } from 'styled-components';
 import {
   RadioMainDiv,
   RadioCircleDiv,
   RadioInnerCircleDiv,
-} from '../../common/Check/RadioImg';
+} from '../../../common/Check/RadioImg';
 
-import { CheckBox } from '../../common/Check/Checkbox';
+import { CheckBox } from '../../../common/Check/Checkbox';
 
-const Destination = () => {
+import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button';
+
+const DestinationPost = () => {
   const radioDummy = ['지정', '미지정']; // 더미 데이터
   const [checkRadio, setCheckRadio] = useState(
     Array.from({ length: radioDummy.length }, () => false)
@@ -149,11 +150,19 @@ const Destination = () => {
           </Right>
         </HalfWrap>
       </OnePageSubContainer>
+      <BtnWrap bottom={-200}>
+        <WhiteBtn width={40} height={40}>
+          돌아가기
+        </WhiteBtn>
+        <BlackBtn width={40} height={40}>
+          저장
+        </BlackBtn>
+      </BtnWrap>
     </OnePageContainer>
   );
 };
 
-export default Destination;
+export default DestinationPost;
 
 const RadioContainer = styled.div`
   display: flex;

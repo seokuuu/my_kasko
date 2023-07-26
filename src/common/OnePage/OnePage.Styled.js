@@ -7,20 +7,28 @@ export const CenterRectangleWrap = styled.div`
   height: min-content;
   display: flex;
   justify-content: center;
-  border: 1px solid black;
+  background-color: white;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
 `;
 
 export const OnePageContainer = styled.div`
-  width: 50%;
-  border: 1px solid black;
+  width: 65%;
   font-size: 18px;
+  background-color: white;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid black;
+  min-height: 88vh;
+  max-height: 100vh;
 `;
 
 export const OnePageSubContainer = styled.div`
   padding-left: 10%;
   padding-right: 10%;
   width: 100%;
-  border: 1px solid magenta;
+
   margin-left: auto;
   margin-right: auto;
 `;
@@ -36,7 +44,6 @@ export const FullWrap = styled.div`
   display: flex;
   width: 100%;
   height: 100px;
-  border: 1px solid black;
 `;
 
 export const HalfWrap = styled.div`
@@ -60,6 +67,7 @@ export const Contour = styled.div`
 
 export const Part = styled.div`
   margin-bottom: 20px;
+  max-width: 345px;
 `;
 
 export const Title = styled.div`

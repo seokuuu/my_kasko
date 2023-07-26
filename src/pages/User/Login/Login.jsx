@@ -276,7 +276,9 @@ const Login = () => {
           </LoginBottom2>
         </LoginBottom>
         <ImgWrap>
-          <img src="/img/login_kasko.png" />
+          <Link to={`/main`}>
+            <img src="/img/login_kasko.png" />
+          </Link>
           <p>Copyright 2023 카스코철강. All Rights Reserved.</p>
         </ImgWrap>
       </SubContainer>

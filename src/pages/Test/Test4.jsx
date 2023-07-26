@@ -5,6 +5,10 @@ import DateGrid from './DateGrid';
 import { claimOngoingStatus, ClaimSelect } from '../../common/Option/ClaimPost';
 import { BlackBtn, WhiteBtn } from '../../common/Button/Button';
 import { CenterRectangleWrap } from '../../common/OnePage/OnePage.Styled';
+import Header from '../../components/Header/Header';
+import { OverAllMain, OverAllSub } from '../../common/Overall/Overall.styled';
+import AccordionMenu from './AccordionMenu';
+import SubHeader from '../../components/Header/SubHeader';
 
 // 클레임 등록
 const Test4 = () => {
@@ -23,68 +27,84 @@ const Test4 = () => {
 
   return (
     <>
-      <CenterRectangleWrap>
-        <CRWMain>
-          <h5>클레임 등록</h5>
-          <ClaimTable>
-            {[0, 1, 2].map(index => (
-              <ClaimRow key={index}>
-                {titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
-                  <React.Fragment agmentkey={title}>
-                    <ClaimTitle>{title}</ClaimTitle>
-                    <ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
-                  </React.Fragment>
+      <Header />
+      <OverAllMain>
+        <AccordionMenu />
+        <OverAllSub>
+          <SubHeader />
+
+          <CenterRectangleWrap>
+            <CRWMain>
+              <h5>클레임 등록</h5>
+              <ClaimTable>
+                {[0, 1, 2].map(index => (
+                  <ClaimRow key={index}>
+                    {titleData
+                      .slice(index * 3, index * 3 + 3)
+                      .map((title, idx) => (
+                        <React.Fragment agmentkey={title}>
+                          <ClaimTitle>{title}</ClaimTitle>
+                          <ClaimContent>
+                            {contentData[index * 3 + idx]}
+                          </ClaimContent>
+                        </React.Fragment>
+                      ))}
+                  </ClaimRow>
                 ))}
-              </ClaimRow>
-            ))}
-          </ClaimTable>
-          <h4>내용</h4>
-          <TextEditor />
-          <CRWMainBottom>
-            <CMBLeft>
-              <div>
-                <DateTitle>클레임 요청 일자</DateTitle>
-                <DateGrid />
-              </div>
-              <div>
-                <DateTitle>현대 재철 클레임 등록 일자</DateTitle>
-                <DateGrid />
-              </div>
-            </CMBLeft>
-            <CMBLeft>
-              <SelectWrap>
-                <DateTitle>클레임 진행 상태</DateTitle>
-                <ClaimSelect
-                  options={claimOngoingStatus}
-                  defaultValue={claimOngoingStatus[0]}
-                />
-              </SelectWrap>
-              <div>
-                <DateTitle>반품 진행</DateTitle>
-                <div>checkbox X 2</div>
-              </div>
-              <div>
-                <DateTitle>카스코 반품일자</DateTitle>
-                <DateGrid />
-              </div>
-              <div>
-                <DateTitle>현대제철 반품일자</DateTitle>
-                <DateGrid />
-              </div>
-            </CMBLeft>
-          </CRWMainBottom>
-          <CRWSub>
-            <BtnWrap>
-              <WhiteBtn width={90} height={50} style={{ marginRight: '10px' }}>
-                돌아가기
-              </WhiteBtn>
-              <BlackBtn width={90} height={50}>
-                저장
-              </BlackBtn>
-            </BtnWrap>
-          </CRWSub>
-        </CRWMain>
-      </CenterRectangleWrap>
+              </ClaimTable>
+              <h4>내용</h4>
+              <TextEditor />
+              <CRWMainBottom>
+                <CMBLeft>
+                  <div>
+                    <DateTitle>클레임 요청 일자</DateTitle>
+                    <DateGrid />
+                  </div>
+                  <div>
+                    <DateTitle>현대 재철 클레임 등록 일자</DateTitle>
+                    <DateGrid />
+                  </div>
+                </CMBLeft>
+                <CMBLeft>
+                  <SelectWrap>
+                    <DateTitle>클레임 진행 상태</DateTitle>
+                    <ClaimSelect
+                      options={claimOngoingStatus}
+                      defaultValue={claimOngoingStatus[0]}
+                    />
+                  </SelectWrap>
+                  <div>
+                    <DateTitle>반품 진행</DateTitle>
+                    <div>checkbox X 2</div>
+                  </div>
+                  <div>
+                    <DateTitle>카스코 반품일자</DateTitle>
+                    <DateGrid />
+                  </div>
+                  <div>
+                    <DateTitle>현대제철 반품일자</DateTitle>
+                    <DateGrid />
+                  </div>
+                </CMBLeft>
+              </CRWMainBottom>
+              <CRWSub>
+                <BtnWrap>
+                  <WhiteBtn
+                    width={90}
+                    height={50}
+                    style={{ marginRight: '10px' }}
+                  >
+                    돌아가기
+                  </WhiteBtn>
+                  <BlackBtn width={90} height={50}>
+                    저장
+                  </BlackBtn>
+                </BtnWrap>
+              </CRWSub>
+            </CRWMain>
+          </CenterRectangleWrap>
+        </OverAllSub>
+      </OverAllMain>
     </>
   );
 };
