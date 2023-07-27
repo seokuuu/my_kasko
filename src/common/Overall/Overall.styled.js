@@ -8,7 +8,7 @@ export const OverAllMain = styled.div`
 export const OverAllSub = styled.div`
   width: 100%;
   display: block;
-  background-color: #dbe2f0;
+  background-color: ${props => props.theme.colors.BgPrimary};
 `;
 
 export const OverAllTable = styled.div`

@@ -105,47 +105,53 @@ const data = [
 
 const AccordionMenu = () => {
   return (
-    <AccordionWrap>
-      <AcTop style={{ backgroundColor: '#2B3344' }}>
-        <AcTopCal>
-          <div>경매 캘린더</div>
-          <div>
-            <img src="/img/calender.png" />
-          </div>
-        </AcTopCal>
-      </AcTop>
-      {data.map((item, index) => (
-        <StyledAccordion key={index}>
-          <StyledAccordionSummary
-            expandIcon={<AccSwitch />}
-            aria-controls={`panel${index + 1}-content`}
-            id={`panel${index + 1}-header`}
-          >
-            <StyledTypography>{item.depth1}</StyledTypography>
-          </StyledAccordionSummary>
-          <StyledAccordionDetails>
-            <Typography>
-              {item.depth2.map((subItem, subIndex) => (
-                <TypoContent key={subIndex}>
-                  <Link to={`/${subItem.link}`}>
-                    <Depth2>{subItem.title}</Depth2>
-                  </Link>
-                </TypoContent>
-              ))}
-            </Typography>
-          </StyledAccordionDetails>
-        </StyledAccordion>
-      ))}
-    </AccordionWrap>
+    <SideBar>
+      <AccordionWrap>
+        <AcTop style={{ backgroundColor: '#2B3344' }}>
+          <AcTopCal>
+            <div>경매 캘린더</div>
+            <div>
+              <img src="/img/calender.png" />
+            </div>
+          </AcTopCal>
+        </AcTop>
+        {data.map((item, index) => (
+          <StyledAccordion key={index}>
+            <StyledAccordionSummary
+              expandIcon={<AccSwitch />}
+              aria-controls={`panel${index + 1}-content`}
+              id={`panel${index + 1}-header`}
+            >
+              <StyledTypography>{item.depth1}</StyledTypography>
+            </StyledAccordionSummary>
+            <StyledAccordionDetails>
+              <Typography>
+                {item.depth2.map((subItem, subIndex) => (
+                  <TypoContent key={subIndex}>
+                    <Link to={`/${subItem.link}`}>
+                      <Depth2>{subItem.title}</Depth2>
+                    </Link>
+                  </TypoContent>
+                ))}
+              </Typography>
+            </StyledAccordionDetails>
+          </StyledAccordion>
+        ))}
+      </AccordionWrap>
+    </SideBar>
   );
 };
 
 export default AccordionMenu;
 
+const SideBar = styled.div`
+  width: 280px;
+`;
+
 const AccordionWrap = styled.div`
   display: block;
   position: relative;
-  width: 300px;
+  width: 100%;
   height: 93.5vh;
   justify-content: center;
   align-items: center;
@@ -208,7 +214,7 @@ const Depth2 = styled.a`
 `;
 
 const AcTop = styled.div`
-  width: 300px;
+  width: 100%;
   height: 100px;
   display: flex;
   justify-content: center;

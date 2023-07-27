@@ -112,6 +112,10 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'SUIT';
     font-size:1em;
   }
+  textarea {
+    resize: none;
+    padding: 5px;
+  }
   select {
     margin:0;
   }

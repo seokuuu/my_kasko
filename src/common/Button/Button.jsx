@@ -32,6 +32,16 @@ export const BlueBtn = styled.button`
   cursor: pointer;
 `;
 
+export const GreyBtn = styled.button`
+  font-size: ${props => props.fontSize}px;
+  width: ${props => props.width}%;
+  height: ${props => props.height}px;
+  margin: ${props => props.margin}px;
+  background-color: #6b6b6b;
+  color: white;
+  cursor: pointer;
+`;
+
 export const BtnWrap = styled.div`
   display: flex;
   width: 400px;
@@ -40,7 +50,6 @@ export const BtnWrap = styled.div`
   align-items: center;
   margin-left: auto;
   margin-right: auto;
-
   position: relative;
   bottom: ${props => props.bottom}px;
 `;

@@ -7,13 +7,14 @@ import { styled } from 'styled-components';
 // CSS Modules, react-datepicker-cssmodules.css
 // import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
-const DateGrid = () => {
+const DateGrid = ({ left, bgColor, fontSize }) => {
   const [startDate, setStartDate] = useState(new Date());
   return (
     <>
       <label>
-        <PickerWrap>
+        <PickerWrap left={left} bgColor={bgColor}>
           <SDatePicker
+            fontSize={fontSize}
             dateFormat="yyyy년 MM월 dd일"
             selected={startDate}
             onChange={date => setStartDate(date)}
@@ -33,21 +34,19 @@ export default DateGrid;
 const PickerWrap = styled.div`
   display: flex;
   position: relative;
-  left: -35px;
-  max-width: 200px;
   min-width: 180px;
   height: 40px;
   border: 1px solid #c8c8c8;
+  left: ${props => props.left}px;
+  background-color: ${props => props.bgColor};
 `;
 
 const SDatePicker = styled(DatePicker)`
-  width: 160px;
+  width: 140px;
   height: 30px;
   top: 5px;
-
   position: relative;
-  font-size: 16px;
-
+  font-size: ${props => props.fontSize}px;
   .react-datapicker-wrapper {
     display: flex;
   }
@@ -55,7 +54,7 @@ const SDatePicker = styled(DatePicker)`
 
 const PickerImg = styled.img`
   position: relative;
-  right: 5px;
+  right: -5px;
   width: 20px;
 
   cursor: pointer;

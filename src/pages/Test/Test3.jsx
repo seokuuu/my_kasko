@@ -48,8 +48,23 @@ const Test3 = () => {
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
   const [rowData, setRowData] = useState();
 
+  var checkboxSelection = function (params) {
+    // we put checkbox on the name if we are not doing grouping
+    return params.columnApi.getRowGroupColumns().length === 0;
+  };
+
+  var headerCheckboxSelection = function (params) {
+    // we put checkbox on the name if we are not doing grouping
+    return params.columnApi.getRowGroupColumns().length === 0;
+  };
+
   const [columnDefs, setColumnDefs] = useState([
-    { field: 'athlete', minWidth: 180 },
+    {
+      field: 'athlete',
+      minWidth: 180,
+      checkboxSelection: checkboxSelection,
+      headerCheckboxSelection: headerCheckboxSelection,
+    },
     { field: 'age', filter: 'agNumberColumnFilter', maxWidth: 80 },
     { field: 'country' },
     { field: 'year', maxWidth: 90 },
@@ -74,7 +89,7 @@ const Test3 = () => {
     fetch('https://www.ag-grid.com/example-assets/olympic-winners.json')
       .then(resp => resp.json())
       .then(data => {
-        document.querySelector('#everyone').checked = true;
+        // document.querySelector('#everyone').checked = true;
         setRowData(data);
       });
   }, []);
@@ -122,8 +137,7 @@ const Test3 = () => {
     gridRef.current.api.onFilterChanged();
   }, []);
 
-
-  // 
+  //
   const onFindButtonClick = () => {
     const newCountryFilter = filterText.trim();
     const gridApi = gridRef.current.api;
@@ -195,10 +209,30 @@ const Test3 = () => {
     );
   }, [filterText, sortedCountries]);
 
+  const autoGroupColumnDef = useMemo(() => {
+    return {
+      headerName: 'Group',
+      minWidth: 170,
+      field: 'athlete',
+      valueGetter: params => {
+        if (params.node.group) {
+          return params.node.key;
+        } else {
+          return params.data[params.colDef.field];
+        }
+      },
+      headerCheckboxSelection: true,
+      cellRenderer: 'agGroupCellRenderer',
+      cellRendererParams: {
+        checkbox: true,
+      },
+    };
+  }, []);
+
   return (
     <div style={containerStyle}>
       <TestContainer>
-        <TestHeader>
+        {/* <TestHeader>
           <label>
             <input
               type="radio"
@@ -272,22 +306,27 @@ const Test3 = () => {
               style={{ marginLeft: '5px' }}
             />
           </label>
-        </TestHeader>
+        </TestHeader> */}
 
         <div style={gridStyle} className="ag-theme-alpine">
           <AgGridReact
-            ref={gridRef}
             rowData={rowData}
             columnDefs={columnDefs}
+            autoGroupColumnDef={autoGroupColumnDef}
             defaultColDef={defaultColDef}
-            animateRows={true}
+            suppressRowClickSelection={true}
+            groupSelectsChildren={true}
+            rowSelection={'multiple'}
+            rowGroupPanelShow={'always'}
+            pivotPanelShow={'always'}
+            pagination={true}
+            onGridReady={onGridReady}
             isExternalFilterPresent={isExternalFilterPresent}
             doesExternalFilterPass={doesExternalFilterPass}
-            onGridReady={onGridReady}
           />
         </div>
       </TestContainer>
-      <FindSpec>
+      {/* <FindSpec>
         <FSTitle>
           <div>검색</div>
           <RBInput
@@ -308,7 +347,7 @@ const Test3 = () => {
             );
           })}
         </FSResult>
-      </FindSpec>
+      </FindSpec> */}
     </div>
   );
 };

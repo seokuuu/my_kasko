@@ -55,11 +55,11 @@ const ClaimRegister = () => {
             <CMBLeft>
               <div>
                 <DateTitle>클레임 요청 일자</DateTitle>
-                <DateGrid />
+                <DateGrid left={-30} fontSize={17} />
               </div>
               <div>
                 <DateTitle>현대 재철 클레임 등록 일자</DateTitle>
-                <DateGrid />
+                <DateGrid left={-30} fontSize={17} />
               </div>
             </CMBLeft>
             <CMBLeft>
@@ -76,11 +76,11 @@ const ClaimRegister = () => {
               </div>
               <div>
                 <DateTitle>카스코 반품일자</DateTitle>
-                <DateGrid />
+                <DateGrid left={-30} fontSize={17} />
               </div>
               <div>
                 <DateTitle>현대제철 반품일자</DateTitle>
-                <DateGrid />
+                <DateGrid left={-30} fontSize={17} />
               </div>
             </CMBLeft>
           </CRWMainBottom>
