@@ -3,7 +3,7 @@
 //   OverAllSub,
 // } from '../../../common/Overall/Overall.styled';
 
-// import AccordionMenu from '../../../components/Left/AccordionMenu';
+// import SideBar from '../../../components/Left/SideBar';
 // import Header from '../../../components/Header/Header';
 // import SubHeader from '../../../components/Header/SubHeader';
 
@@ -13,21 +13,20 @@ import {
   OverAllTable,
 } from '../../common/Overall/Overall.styled';
 
-import AccordionMenu from '../../components/Left/AccordionMenu';
+import SideBar from '../../components/Left/SideBar';
 import Header from '../../components/Header/Header';
 import SubHeader from '../../components/Header/SubHeader';
-import Test2 from '../Test/Test2';
 
 const MainPage = () => {
   return (
     <>
       <Header />
       <OverAllMain>
-        <AccordionMenu />
+        <SideBar />
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <Test2 />
+            <div>메인 페이지입니다</div>
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>

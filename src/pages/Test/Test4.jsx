@@ -7,7 +7,7 @@ import { BlackBtn, WhiteBtn } from '../../common/Button/Button';
 import { CenterRectangleWrap } from '../../common/OnePage/OnePage.Styled';
 import Header from '../../components/Header/Header';
 import { OverAllMain, OverAllSub } from '../../common/Overall/Overall.styled';
-import AccordionMenu from './AccordionMenu';
+import SideBar from '../../components/Left/SideBar';
 import SubHeader from '../../components/Header/SubHeader';
 
 // 클레임 등록
@@ -29,7 +29,7 @@ const Test4 = () => {
     <>
       <Header />
       <OverAllMain>
-        <AccordionMenu />
+        <SideBar />
         <OverAllSub>
           <SubHeader />
 

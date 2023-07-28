@@ -14,7 +14,7 @@ import {
   OverAllMain,
   OverAllSub,
 } from '../../../common/Overall/Overall.styled';
-import AccordionMenu from '../../Test/AccordionMenu';
+import SideBar from '../../../components/Left/SideBar';
 import SubHeader from '../../../components/Header/SubHeader';
 
 // 클레임 등록

@@ -5,7 +5,7 @@ import {
   OverAllSub,
 } from '../../../common/Overall/Overall.styled';
 
-import AccordionMenu from '../../../components/Left/AccordionMenu';
+import SideBar from '../../../components/Left/SideBar';
 import Header from '../../../components/Header/Header';
 import SubHeader from '../../../components/Header/SubHeader';
 
@@ -16,7 +16,7 @@ const FAQPostPage = () => {
     <>
       <Header />
       <OverAllMain>
-        <AccordionMenu />
+        <SideBar />
         <OverAllSub>
           <SubHeader />
           <FAQPost />

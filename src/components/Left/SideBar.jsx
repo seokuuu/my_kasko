@@ -8,6 +8,9 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { styled } from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useAtom } from 'jotai';
+import { calendarAtom } from '../../store/Layout/Layout';
+import CalendarModal from '../../modal/Calender/Calendar';
 
 const data = [
   {
@@ -79,10 +82,11 @@ const data = [
     //UserManage
     depth1: '사용자 관리',
     depth2: [
-      { title: '고객사 관리', link: 'users/client' },
-      { title: '고객사 목적지 관리', link: 'users/clientdestination' },
-      { title: '사용자 관리', link: 'users/operate' },
-      { title: '개인정보 수정', link: 'users/profile' },
+      { title: '운송사 등록', link: 'usermanage/carrierpost' },
+      { title: '고객사 관리', link: 'usermanage/client' },
+      { title: '고객사 목적지 관리', link: 'usermanage/clientdestination' },
+      { title: '사용자 관리', link: 'usermanage/operate' },
+      { title: '개인정보 수정', link: 'usermanage/profileedit' },
     ],
   },
   {
@@ -103,48 +107,56 @@ const data = [
   },
 ];
 
-const AccordionMenu = () => {
+const SideBar = () => {
+  const [calModal, setCalModal] = useAtom(calendarAtom);
   return (
-    <SideBar>
-      <AccordionWrap>
-        <AcTop style={{ backgroundColor: '#2B3344' }}>
-          <AcTopCal>
-            <div>경매 캘린더</div>
-            <div>
-              <img src="/img/calender.png" />
-            </div>
-          </AcTopCal>
-        </AcTop>
-        {data.map((item, index) => (
-          <StyledAccordion key={index}>
-            <StyledAccordionSummary
-              expandIcon={<AccSwitch />}
-              aria-controls={`panel${index + 1}-content`}
-              id={`panel${index + 1}-header`}
-            >
-              <StyledTypography>{item.depth1}</StyledTypography>
-            </StyledAccordionSummary>
-            <StyledAccordionDetails>
-              <Typography>
-                {item.depth2.map((subItem, subIndex) => (
-                  <TypoContent key={subIndex}>
-                    <Link to={`/${subItem.link}`}>
-                      <Depth2>{subItem.title}</Depth2>
-                    </Link>
-                  </TypoContent>
-                ))}
-              </Typography>
-            </StyledAccordionDetails>
-          </StyledAccordion>
-        ))}
-      </AccordionWrap>
-    </SideBar>
+    <>
+      {/* {calModal && (
+        <CalWrap>
+          <CalendarModal />
+        </CalWrap>
+      )} */}
+      <SideBarWrap>
+        <AccordionWrap>
+          <AcTop style={{ backgroundColor: '#2B3344' }}>
+            <AcTopCal onClick={() => setCalModal(true)}>
+              <div>경매 캘린더</div>
+              <div>
+                <img src="/img/calender.png" />
+              </div>
+            </AcTopCal>
+          </AcTop>
+          {data.map((item, index) => (
+            <StyledAccordion key={index}>
+              <StyledAccordionSummary
+                expandIcon={<AccSwitch />}
+                aria-controls={`panel${index + 1}-content`}
+                id={`panel${index + 1}-header`}
+              >
+                <StyledTypography>{item.depth1}</StyledTypography>
+              </StyledAccordionSummary>
+              <StyledAccordionDetails>
+                <Typography>
+                  {item.depth2.map((subItem, subIndex) => (
+                    <TypoContent key={subIndex}>
+                      <Link to={`/${subItem.link}`}>
+                        <Depth2>{subItem.title}</Depth2>
+                      </Link>
+                    </TypoContent>
+                  ))}
+                </Typography>
+              </StyledAccordionDetails>
+            </StyledAccordion>
+          ))}
+        </AccordionWrap>
+      </SideBarWrap>
+    </>
   );
 };
 
-export default AccordionMenu;
+export default SideBar;
 
-const SideBar = styled.div`
+const SideBarWrap = styled.div`
   width: 280px;
 `;
 
@@ -152,7 +164,8 @@ const AccordionWrap = styled.div`
   display: block;
   position: relative;
   width: 100%;
-  height: 93.5vh;
+  min-height: 93.5vh;
+  height: 100%;
   justify-content: center;
   align-items: center;
   background-color: #2b3344;
@@ -230,4 +243,11 @@ const AcTopCal = styled.div`
   border-bottom: 2px solid #c8c8c8;
   border-radius: 2px;
   background-color: #1e2533;
+  cursor: pointer;
+`;
+
+const CalWrap = styled.div`
+  position: absolute;
+  z-index: 1000;
+  border: 1px solid black;
 `;
