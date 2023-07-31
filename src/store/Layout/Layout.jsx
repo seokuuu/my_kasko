@@ -8,6 +8,8 @@ export const toggleAtom = atom(true);
 
 export const calendarAtom = atom(false);
 
+export const blueModalAtom = atom(false);
+
 // 아코디언 열기, 닫기
 export const accordionOpenAtom = atom(false);
 export const useAccordionOpenAtom = () => useAtom(accordionOpenAtom);

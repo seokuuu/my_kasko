@@ -10,6 +10,10 @@ import { GreyBtn } from '../../../common/Button/Button';
 import Test3 from '../../Test/Test3';
 import HeaderToggle from '../../../components/Toggle/HeaderToggle';
 import { toggleAtom } from '../../../store/Layout/Layout';
+import BlueBar from '../../../modal/BlueBar/BlueBar';
+import { blueModalAtom } from '../../../store/Layout/Layout';
+import { useAtom } from 'jotai';
+import { FilterWrap } from '../../../modal/External/ExternalFilter';
 
 const Incoming = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -37,117 +41,133 @@ const Incoming = ({}) => {
     }
   };
 
+  const [isModal, setIsModal] = useAtom(blueModalAtom);
+
+  console.log('isModal =>', isModal);
+
+  const modalOpen = () => {
+    setIsModal(true);
+  };
+
   return (
     <FilterContianer>
-      <FilterHeader>
-        <h1>입고 관리</h1>
-        {/* 토글 쓰기 */}
-        <HeaderToggle
-          exFilterToggle={exFilterToggle}
-          toggleBtnClick={toggleBtnClick}
-          toggleMsg={toggleMsg}
-        />
-      </FilterHeader>
-      {exFilterToggle && (
-        <>
-          <FilterSubcontianer>
-            <FilterLeft>
-              <RowWrap>
-                <PartWrap>
-                  <h6>창고 구분</h6>
-                  <PWRight>
-                    <MainSelect
-                      options={storageOptions}
-                      defaultValue={storageOptions[0]}
-                    />
-                  </PWRight>
-                </PartWrap>
-                <PartWrap>
-                  <h6>매입처</h6>
-                  <PWRight>
-                    <MainSelect
-                      options={storageOptions}
-                      defaultValue={storageOptions[0]}
-                    />
-                  </PWRight>
-                </PartWrap>
-                <PartWrap>
-                  <h6>규격 약호</h6>
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap>
-                <PartWrap>
-                  <h6>입고일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
-                </PartWrap>
+      <div>
+        <FilterHeader>
+          <h1>입고 관리</h1>
+          {/* 토글 쓰기 */}
+          <HeaderToggle
+            exFilterToggle={exFilterToggle}
+            toggleBtnClick={toggleBtnClick}
+            toggleMsg={toggleMsg}
+          />
+        </FilterHeader>
+        {exFilterToggle && (
+          <FilterWrap>
+            <FilterSubcontianer>
+              <FilterLeft>
+                <RowWrap>
+                  <PartWrap>
+                    <h6>창고 구분</h6>
+                    <PWRight>
+                      <MainSelect
+                        options={storageOptions}
+                        defaultValue={storageOptions[0]}
+                      />
+                    </PWRight>
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>매입처</h6>
+                    <PWRight>
+                      <MainSelect
+                        options={storageOptions}
+                        defaultValue={storageOptions[0]}
+                      />
+                    </PWRight>
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>규격 약호</h6>
+                    <Input />
+                    <GreyBtn
+                      style={{ width: '70px' }}
+                      height={35}
+                      margin={10}
+                      onClick={modalOpen}
+                    >
+                      찾기
+                    </GreyBtn>
+                  </PartWrap>
+                </RowWrap>
+                <RowWrap>
+                  <PartWrap>
+                    <h6>입고일자</h6>
+                    <GridWrap>
+                      <DateGrid bgColor={'white'} fontSize={17} />
+                      <Tilde>~</Tilde>
+                      <DateGrid bgColor={'white'} fontSize={17} />
+                    </GridWrap>
+                  </PartWrap>
 
-                <PartWrap>
-                  <h6>구분</h6>
-                  <MainSelect />
-                  <MainSelect />
-                  <MainSelect />
-                </PartWrap>
-              </RowWrap>
-              <RowWrap>
-                <PartWrap>
-                  <h6>구분2</h6>
-                  <MainSelect />
-                  <MainSelect />
-                </PartWrap>
-                <PartWrap>
-                  <h6>두께(CM)</h6>
-                  <Input /> <Tilde>~</Tilde>
-                  <Input />
-                </PartWrap>
-              </RowWrap>
-              <RowWrap>
-                <PartWrap>
-                  <h6>길이(CM)</h6>
-                  <MainSelect />
-                  <MainSelect />
-                </PartWrap>
-                <PartWrap>
-                  <h6>폭(CM)</h6>
-                  <Input /> <Tilde>~</Tilde>
-                  <Input />
-                </PartWrap>
-              </RowWrap>
-            </FilterLeft>
-            <FilterRight>
-              <DoubleWrap>
-                <p>제품 번호 </p>
-                <textarea style={{ height: '100px' }} />
-              </DoubleWrap>
-            </FilterRight>
-          </FilterSubcontianer>
-          <FilterFooter>
-            <div style={{ display: 'flex' }}>
-              <p>초기화</p>
-              <ResetImg
-                src="/img/reset.png"
-                style={{ marginLeft: '10px', marginRight: '20px' }}
-                onClick={handleImageClick}
-                className={isRotated ? 'rotate' : ''}
-              />
-            </div>
-            <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40}>
-                검색
-              </BlackBtn>
-            </div>
-          </FilterFooter>
-        </>
-      )}
+                  <PartWrap>
+                    <h6>구분</h6>
+                    <MainSelect />
+                    <MainSelect />
+                    <MainSelect />
+                  </PartWrap>
+                </RowWrap>
+                <RowWrap>
+                  <PartWrap>
+                    <h6>구분2</h6>
+                    <MainSelect />
+                    <MainSelect />
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>두께(CM)</h6>
+                    <Input /> <Tilde>~</Tilde>
+                    <Input />
+                  </PartWrap>
+                </RowWrap>
+                <RowWrap>
+                  <PartWrap>
+                    <h6>길이(CM)</h6>
+                    <MainSelect />
+                    <MainSelect />
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>폭(CM)</h6>
+                    <Input /> <Tilde>~</Tilde>
+                    <Input />
+                  </PartWrap>
+                </RowWrap>
+              </FilterLeft>
+              <FilterRight>
+                <DoubleWrap>
+                  <p>제품 번호 </p>
+                  <textarea style={{ height: '100px' }} />
+                </DoubleWrap>
+              </FilterRight>
+            </FilterSubcontianer>
+            <FilterFooter>
+              <div style={{ display: 'flex' }}>
+                <p>초기화</p>
+                <ResetImg
+                  src="/img/reset.png"
+                  style={{ marginLeft: '10px', marginRight: '20px' }}
+                  onClick={handleImageClick}
+                  className={isRotated ? 'rotate' : ''}
+                />
+              </div>
+              <div style={{ width: '180px' }}>
+                <BlackBtn width={100} height={40}>
+                  검색
+                </BlackBtn>
+              </div>
+            </FilterFooter>
+          </FilterWrap>
+        )}
+      </div>
+
       <TableContianer>
-        <Test3 />
+        <Test3 title={'규격 약호 찾기'} />
       </TableContianer>
     </FilterContianer>
   );
@@ -158,6 +178,7 @@ export default Incoming;
 // 검색 필터 최상단 div
 export const FilterContianer = styled.div`
   width: 100%;
+  border: 1px solid magenta;
 `;
 
 export const FilterHeader = styled.div`
@@ -222,10 +243,11 @@ export const RowWrap = styled.div`
 `;
 
 const PWRight = styled.div`
-  width: 240px;
+  width: 200px;
 `;
 
 const PartWrap = styled.div`
+  min-width: 150px;
   margin-right: 30px;
   display: flex;
   align-items: center;
@@ -240,10 +262,18 @@ const PartWrap = styled.div`
 `;
 
 const DoubleWrap = styled.div`
-  padding: 20px;
+  padding-left: 20px;
+  padding-top: 20px;
   height: 140px;
   display: flex;
-  gap: 10px;
+
+  p {
+    width: 30%;
+  }
+
+  textarea {
+    width: 70%;
+  }
 `;
 
 const GridWrap = styled.div`

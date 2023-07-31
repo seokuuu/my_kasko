@@ -6,6 +6,22 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { styled } from 'styled-components';
 import { ContentBlock } from 'draft-js';
+import BlueBar from '../../modal/BlueBar/BlueBar';
+import { BlackBtn, GreyBtn } from '../../common/Button/Button';
+
+import {
+  ModalContainer,
+  NonFadeOverlay,
+  BlueBarHeader,
+  BlueSubContainer,
+  WhiteCloseBtn,
+  BSCSWrap,
+  ModalOverlay,
+  BlueBarBtnWrap,
+} from '../../modal/Common/Common.Styled';
+
+import { blueModalAtom } from '../../store/Layout/Layout';
+import { useAtom } from 'jotai';
 
 var dateFilterParams = {
   comparator: (filterLocalDateAtMidnight, cellValue) => {
@@ -37,7 +53,7 @@ const asDate = dateAsString => {
   );
 };
 
-const Test3 = () => {
+const Test3 = ({ title }) => {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [filterText, setFilterText] = useState(''); // 필터 텍스트를 저장하는 상태 변수
   const gridRef = useRef();
@@ -229,6 +245,16 @@ const Test3 = () => {
     };
   }, []);
 
+  const [isModal, setIsModal] = useAtom(blueModalAtom);
+
+  const modalOpen = () => {
+    setIsModal(true);
+  };
+
+  const modalClose = () => {
+    setIsModal(false);
+  };
+
   return (
     <div style={containerStyle}>
       <TestContainer>
@@ -326,28 +352,63 @@ const Test3 = () => {
           />
         </div>
       </TestContainer>
-      {/* <FindSpec>
-        <FSTitle>
-          <div>검색</div>
-          <RBInput
-            value={filterText}
-            onChange={e => setFilterText(e.target.value)}
-          />
-          <button onClick={onFindButtonClick}>찾기</button>
-        </FSTitle>
-        <FSResult>
-          {filteredCountries.map((x, index) => {
-            return (
-              <ResultBlock
-                key={index}
-                onClick={() => handleResultBlockClick(x)}
-              >
-                {x}
-              </ResultBlock>
-            );
-          })}
-        </FSResult>
-      </FindSpec> */}
+      {isModal && (
+        <>
+          <NonFadeOverlay />
+          <ModalContainer width={550}>
+            <BlueBarHeader>
+              <div>{title}</div>
+              <div>
+                <WhiteCloseBtn
+                  onClick={modalClose}
+                  src="/svg/white_btn_close.svg"
+                />
+              </div>
+            </BlueBarHeader>
+            <BlueSubContainer>
+              {title === '규격 약호 찾기' && (
+                <>
+                  <FindSpec>
+                    <FSTitle>
+                      <div>검색</div>
+                      <RBInput
+                        placeholder="회사 명"
+                        value={filterText}
+                        onChange={e => setFilterText(e.target.value)}
+                      />
+                      <GreyBtn
+                        width={15}
+                        height={30}
+                        fontSize={16}
+                        onClick={onFindButtonClick}
+                      >
+                        찾기
+                      </GreyBtn>
+                    </FSTitle>
+                    <FSResult>
+                      {filteredCountries.map((x, index) => {
+                        return (
+                          <ResultBlock
+                            key={index}
+                            onClick={() => handleResultBlockClick(x)}
+                          >
+                            {x}
+                          </ResultBlock>
+                        );
+                      })}
+                    </FSResult>
+                  </FindSpec>
+                </>
+              )}
+            </BlueSubContainer>
+            <BlueBarBtnWrap>
+              <BlackBtn onClick={modalClose} width={30} height={40}>
+                확인
+              </BlackBtn>
+            </BlueBarBtnWrap>
+          </ModalContainer>
+        </>
+      )}
     </div>
   );
 };
@@ -371,37 +432,34 @@ const TestHeader = styled.div`
 `;
 
 const FindSpec = styled.div`
-  width: 500px;
-  height: 500px;
-  border: 1px solid black;
+  width: 100%;
+  height: 300px;
 `;
 
 const FSTitle = styled.div`
   width: 100%;
   height: 50px;
-  border: 1px solid blue;
+  border: 1px solid #c8c8c8;
   display: flex;
-  gap: 20px;
   align-items: center;
+  justify-content: space-around;
 
   input {
-    border: 1px solid black;
+    border: 1px solid #c8c8c8;
     height: 30px;
-  }
-
-  button {
-    border: 1px solid black;
+    width: 300px;
   }
 `;
 
 const FSResult = styled.div`
   width: 100%;
-  height: 500px;
+  height: 295px;
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
   padding: 5px;
   overflow: scroll;
+  border: 1px solid #c8c8c8;
 `;
 
 const ResultBlock = styled.div`
@@ -420,4 +478,6 @@ const ResultBlock = styled.div`
   }
 `;
 
-const RBInput = styled.input``;
+const RBInput = styled.input`
+  font-size: 16px;
+`;

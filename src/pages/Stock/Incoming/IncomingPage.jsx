@@ -9,7 +9,6 @@ import Header from '../../../components/Header/Header';
 import SubHeader from '../../../components/Header/SubHeader';
 import Incoming from './Incoming';
 
-
 const IncomingPage = () => {
   return (
     <>

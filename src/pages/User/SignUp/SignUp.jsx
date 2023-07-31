@@ -78,6 +78,7 @@ import {
   accordionAtom,
   subHeaderAtom,
 } from '../../../store/Layout/Layout';
+import { Height } from '@mui/icons-material';
 
 const SignUp = () => {
   const [showHeader, setShowHeader] = useAtom(headerAtom);

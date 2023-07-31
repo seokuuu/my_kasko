@@ -34,7 +34,7 @@ const SignUpPost = ({
   return (
     <>
       <ModalOverlay />
-      <ModalContainer>
+      <ModalContainer width={400} height={280}>
         <ModalSubContainer>
           <Part>
             <Title>
