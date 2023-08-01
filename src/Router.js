@@ -34,6 +34,17 @@ import NotFound from './pages/NotFound';
 import { styled } from 'styled-components';
 import MainPage from './pages/Main/MainPage';
 
+import RoundPage from './pages/Auction/Round/RoundPage';
+import BiddingPage from './pages/Auction/Bidding/BiddingPage';
+import DetailProgressPage from './pages/Auction/DetailProgress/DetailProgressPage';
+import ProgressPage from './pages/Auction/Progress/ProgressPage';
+import StartPricePage from './pages/Auction/StartPrice/StartPricePage';
+import WinningPage from './pages/Auction/Winning/WinningPage';
+
+import OrderPage from './pages/Order/OrderPage';
+
+import RegisterPage from './pages/Shipping/Register/RegisterPage';
+
 const Router = () => {
   return (
     <BrowserRouter>
@@ -56,15 +67,29 @@ const Router = () => {
           <Route path="/stock/inventory" element={<InventoryPage />} />
         </Route>
         {/* 판매 제품 관리 */}
-        <Route path="/auction/*"></Route>
+        <Route path="/product/"></Route>
         {/* 경매 관리  */}
-        <Route path="/auction"></Route>
+        <Route path="/auction">
+          <Route path="/auction/round" element={<RoundPage />}></Route>
+          <Route path="/auction/bidding" element={<BiddingPage />}></Route>
+          <Route path="/auction/progress" element={<ProgressPage />}></Route>
+          <Route
+            path="/auction/detailprogress"
+            element={<DetailProgressPage />}
+          ></Route>
+          <Route path="/auction/winning" element={<WinningPage />}></Route>
+          <Route
+            path="/auction/startprice"
+            element={<StartPricePage />}
+          ></Route>
+        </Route>
         {/* 상시 판매 관리 */}
         <Route path="/sales/*"></Route>
         {/* 주문 관리 */}
-        <Route path="/order/*"></Route>
+        <Route path="/order" element={<OrderPage />}></Route>
         {/* 출고 관리 */}
         <Route path="/shipping">
+          <Route path="/shipping/register" element={<RegisterPage />} />
           <Route
             path="/shipping/claim/register"
             element={<ClaimRegisterPage />}

@@ -148,7 +148,7 @@ export const TxtDiv = styled.div`
 export const SDropDown = styled.div`
   width: 100px;
   height: 40px;
-  border: 1px solid magenta;
+
 `;
 
 export const BottomP = styled.div`

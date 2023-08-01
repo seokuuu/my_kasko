@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
 
@@ -11,7 +11,88 @@ import Test3 from '../../Test/Test3';
 import HeaderToggle from '../../../components/Toggle/HeaderToggle';
 import { toggleAtom } from '../../../store/Layout/Layout';
 
+import { CheckBox } from '../../../common/Check/Checkbox';
+import {
+  StyledCheckMainDiv,
+  StyledCheckSubSquDiv,
+  CheckImg2,
+} from '../../../common/Check/CheckImg';
+
+import {
+  FilterContianer,
+  FilterHeader,
+  FilterFooter,
+  FilterSubcontianer,
+  FilterLeft,
+  FilterRight,
+  RowWrap,
+  PartWrap,
+  PWRight,
+  Input,
+  GridWrap,
+  Tilde,
+  DoubleWrap,
+  ResetImg,
+  TableContianer,
+  ExCheckWrap,
+  ExCheckDiv,
+  ExInputsWrap,
+} from '../../../modal/External/ExternalFilter';
+
 const Inventory = ({}) => {
+  const checkSales = ['전체', '판매재', '판매제외제'];
+
+  const checkShips = ['전체', '출고완료', '미출고'];
+
+  //checkSales
+  const [check1, setCheck1] = useState(
+    Array.from({ length: checkSales.length }, () => false)
+  );
+  const [check2, setCheck2] = useState(
+    Array.from({ length: checkShips.length }, () => false)
+  );
+
+  //checkShips
+  const [checkData1, setCheckData1] = useState(
+    Array.from({ length: checkSales.length }, () => '')
+  );
+
+  const [checkData2, setCheckData2] = useState(
+    Array.from({ length: checkShips.length }, () => '')
+  );
+
+  useEffect(() => {
+    // true에 해당되면, value를, false면 빈값을 반환
+    const updatedCheck = checkSales.map((value, index) => {
+      return check1[index] ? value : '';
+    });
+    // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
+    const filteredCheck = updatedCheck.filter(item => item !== '');
+    setCheckData1(filteredCheck);
+
+    // 전송용 input에 담을 때
+    // setInput({
+    //   ...input,
+    //   businessType: updatedCheck.filter(item => item !== ''),
+    // });
+  }, [check1]);
+
+  useEffect(() => {
+    // true에 해당되면, value를, false면 빈값을 반환
+    const updatedCheck = checkShips.map((value, index) => {
+      return check2[index] ? value : '';
+    });
+    // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
+    const filteredCheck = updatedCheck.filter(item => item !== '');
+    setCheckData2(filteredCheck);
+
+    // 전송용 input에 담을 때
+    // setInput({
+    //   ...input,
+    //   businessType: updatedCheck.filter(item => item !== ''),
+    // });
+  }, [check2]);
+
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -90,34 +171,89 @@ const Inventory = ({}) => {
                 </PartWrap>
 
                 <PartWrap>
+                  <h6>출고일자</h6>
+                  <GridWrap>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                  </GridWrap>
+                </PartWrap>
+              </RowWrap>
+              <RowWrap>
+                <PartWrap>
+                  <h6>판매 구분</h6>
+                  <ExCheckWrap>
+                    {checkSales.map((x, index) => (
+                      <ExCheckDiv>
+                        <StyledCheckSubSquDiv
+                          onClick={() =>
+                            setCheck1(
+                              CheckBox(check1, check1.length, index, true)
+                            )
+                          }
+                          isChecked={check1[index]}
+                        >
+                          <CheckImg2 src="/svg/check.svg" />
+                        </StyledCheckSubSquDiv>
+                        <p>{x}</p>
+                      </ExCheckDiv>
+                    ))}
+                  </ExCheckWrap>
+                </PartWrap>
+                <PartWrap>
+                  <h6>운송 진행</h6>
+                  <ExCheckWrap>
+                    {checkShips.map((x, index) => (
+                      <ExCheckDiv>
+                        <StyledCheckSubSquDiv
+                          onClick={() =>
+                            setCheck2(
+                              CheckBox(check2, check2.length, index, true)
+                            )
+                          }
+                          isChecked={check1[index]}
+                        >
+                          <CheckImg2 src="/svg/check.svg" />
+                        </StyledCheckSubSquDiv>
+                        <p>{x}</p>
+                      </ExCheckDiv>
+                    ))}
+                  </ExCheckWrap>
+                </PartWrap>
+              </RowWrap>
+
+              <RowWrap>
+                <PartWrap>
                   <h6>구분</h6>
                   <MainSelect />
                   <MainSelect />
                   <MainSelect />
                 </PartWrap>
               </RowWrap>
+
               <RowWrap>
                 <PartWrap>
-                  <h6>구분2</h6>
-                  <MainSelect />
-                  <MainSelect />
+                  <h6>길이(CM)</h6>
+                  <ExInputsWrap>
+                    <Input /> <Tilde>~</Tilde>
+                    <Input />
+                  </ExInputsWrap>
                 </PartWrap>
                 <PartWrap>
-                  <h6>두께(CM)</h6>
-                  <Input /> <Tilde>~</Tilde>
-                  <Input />
+                  <h6>길이(CM)</h6>
+                  <ExInputsWrap>
+                    <Input /> <Tilde>~</Tilde>
+                    <Input />
+                  </ExInputsWrap>
                 </PartWrap>
               </RowWrap>
               <RowWrap>
                 <PartWrap>
                   <h6>길이(CM)</h6>
-                  <MainSelect />
-                  <MainSelect />
-                </PartWrap>
-                <PartWrap>
-                  <h6>폭(CM)</h6>
-                  <Input /> <Tilde>~</Tilde>
-                  <Input />
+                  <ExInputsWrap>
+                    <Input /> <Tilde>~</Tilde>
+                    <Input />
+                  </ExInputsWrap>
                 </PartWrap>
               </RowWrap>
             </FilterLeft>
@@ -154,120 +290,3 @@ const Inventory = ({}) => {
 };
 
 export default Inventory;
-
-// 검색 필터 최상단 div
-export const FilterContianer = styled.div`
-  width: 100%;
-`;
-
-export const FilterHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding-left: 5px;
-  padding-right: 5px;
-  height: 65px;
-  align-items: center;
-
-  h1 {
-    font-weight: bold;
-    font-size: 24px;
-  }
-`;
-
-// 검색 필터
-export const FilterSubcontianer = styled.div`
-  width: 100%;
-  border: 1px solid #c8c8c8;
-  display: flex;
-  padding: 10px;
-  padding-left: 30px;
-  background-color: #dbe2f0;
-  justify-content: space-around;
-  color: ${props => props.theme.colors.TxtAlter};
-`;
-
-const TableContianer = styled.div`
-  width: 100%;
-  height: 100%;
-  border: 1px solid #c8c8c8;
-  display: flex;
-  padding: 10px;
-`;
-
-//초기화 , 검색 버튼 div
-export const FilterFooter = styled.div`
-  border: 1px solid #c8c8c8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 70px;
-  background-color: #f0f1f6;
-`;
-
-// 검색 필터 Left
-export const FilterLeft = styled.div``;
-
-// 검색 필터 Right
-export const FilterRight = styled.div``;
-
-//검색 필터 내 한 줄 div
-export const RowWrap = styled.div`
-  display: flex;
-  text-align: center;
-  align-items: center;
-  margin: 10px 0px 10px 0px;
-  border-bottom: 1px solid #c8c8c8;
-  padding-bottom: 10px;
-  // 이건 지워도 됨
-`;
-
-const PWRight = styled.div`
-  width: 240px;
-`;
-
-const PartWrap = styled.div`
-  margin-right: 30px;
-  display: flex;
-  align-items: center;
-  line-height: 14.5px;
-  height: 50px;
-  justify-content: space-around;
-  h6 {
-    width: 90px;
-    display: flex;
-    justify-content: start;
-  }
-`;
-
-const DoubleWrap = styled.div`
-  padding: 20px;
-  height: 140px;
-  display: flex;
-  gap: 10px;
-`;
-
-const GridWrap = styled.div`
-  width: 400px;
-  display: flex;
-  padding: 15px;
-`;
-
-const Input = styled.input`
-  width: 100px;
-  height: 37px;
-  border-radius: 3px;
-  border: 1px solid #c8c8c8;
-`;
-
-const Tilde = styled.div`
-  margin: 10px;
-`;
-
-const ResetImg = styled.img`
-  transition: transform 1s ease; /* Add a smooth transition effect */
-  cursor: pointer;
-
-  &.rotate {
-    transform: rotate(540deg);
-  }
-`;

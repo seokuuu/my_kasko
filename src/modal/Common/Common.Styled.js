@@ -76,7 +76,7 @@ export const BSCSWrap = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-around;
-  border-bottom: 1px solid magenta;
+
   /* height: 50px; */
   height: 100%;
 

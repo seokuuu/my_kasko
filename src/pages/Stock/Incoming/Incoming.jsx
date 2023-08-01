@@ -14,6 +14,23 @@ import BlueBar from '../../../modal/BlueBar/BlueBar';
 import { blueModalAtom } from '../../../store/Layout/Layout';
 import { useAtom } from 'jotai';
 import { FilterWrap } from '../../../modal/External/ExternalFilter';
+import {
+  FilterContianer,
+  FilterHeader,
+  FilterFooter,
+  FilterSubcontianer,
+  FilterLeft,
+  FilterRight,
+  RowWrap,
+  PartWrap,
+  PWRight,
+  Input,
+  GridWrap,
+  Tilde,
+  DoubleWrap,
+  ResetImg,
+  TableContianer,
+} from '../../../modal/External/ExternalFilter';
 
 const Incoming = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -174,130 +191,3 @@ const Incoming = ({}) => {
 };
 
 export default Incoming;
-
-// 검색 필터 최상단 div
-export const FilterContianer = styled.div`
-  width: 100%;
-  border: 1px solid magenta;
-`;
-
-export const FilterHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding-left: 5px;
-  padding-right: 5px;
-  height: 65px;
-  align-items: center;
-
-  h1 {
-    font-weight: bold;
-    font-size: 24px;
-  }
-`;
-
-// 검색 필터
-export const FilterSubcontianer = styled.div`
-  width: 100%;
-  border: 1px solid #c8c8c8;
-  display: flex;
-  padding: 10px;
-  padding-left: 30px;
-  background-color: #dbe2f0;
-  justify-content: space-around;
-  color: ${props => props.theme.colors.TxtAlter};
-`;
-
-const TableContianer = styled.div`
-  width: 100%;
-  height: 100%;
-  border: 1px solid #c8c8c8;
-  display: flex;
-  padding: 10px;
-`;
-
-//초기화 , 검색 버튼 div
-export const FilterFooter = styled.div`
-  border: 1px solid #c8c8c8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 70px;
-  background-color: #f0f1f6;
-`;
-
-// 검색 필터 Left
-export const FilterLeft = styled.div``;
-
-// 검색 필터 Right
-export const FilterRight = styled.div``;
-
-//검색 필터 내 한 줄 div
-export const RowWrap = styled.div`
-  display: flex;
-  text-align: center;
-  align-items: center;
-  margin: 10px 0px 10px 0px;
-  border-bottom: 1px solid #c8c8c8;
-  padding-bottom: 10px;
-  // 이건 지워도 됨
-`;
-
-const PWRight = styled.div`
-  width: 200px;
-`;
-
-const PartWrap = styled.div`
-  min-width: 150px;
-  margin-right: 30px;
-  display: flex;
-  align-items: center;
-  line-height: 14.5px;
-  height: 50px;
-  justify-content: space-around;
-  h6 {
-    width: 90px;
-    display: flex;
-    justify-content: start;
-  }
-`;
-
-const DoubleWrap = styled.div`
-  padding-left: 20px;
-  padding-top: 20px;
-  height: 140px;
-  display: flex;
-
-  p {
-    width: 30%;
-  }
-
-  textarea {
-    width: 70%;
-  }
-`;
-
-const GridWrap = styled.div`
-  width: 400px;
-  display: flex;
-  padding: 15px;
-`;
-
-const Input = styled.input`
-  width: 100px;
-  height: 37px;
-  border-radius: 3px;
-  border: 1px solid #c8c8c8;
-`;
-
-const Tilde = styled.div`
-  margin: 10px;
-`;
-
-const ResetImg = styled.img`
-  transition: transform 1s ease; /* Add a smooth transition effect */
-  cursor: pointer;
-
-  &.rotate {
-    transform: rotate(540deg);
-  }
-`;
