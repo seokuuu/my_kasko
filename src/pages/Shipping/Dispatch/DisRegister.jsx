@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
@@ -34,39 +35,23 @@ import {
   DoubleWrap,
   ResetImg,
   TableContianer,
-  ExCheckWrap,
-  ExCheckDiv,
-  ExInputsWrap,
   ExRadioWrap,
   SubTitle,
+  FilterHeaderAlert,
+  FHALeft,
+  ExInputsWrap,
 } from '../../../modal/External/ExternalFilter';
 
 import {
-  RadioMainDiv,
-  RadioCircleDiv,
-  RadioInnerCircleDiv,
-} from '../../../common/Check/RadioImg';
+  ClaimTable,
+  ClaimRow,
+  ClaimTitle,
+  ClaimContent,
+} from '../Claim/ClaimRegister';
 
-const Round = ({}) => {
-  const radioDummy = ['전체', '미진행', '진행중', '종료'];
-  const [checkRadio, setCheckRadio] = useState(
-    Array.from({ length: radioDummy.length }, () => false)
-  );
-
-  const [savedRadioValue, setSavedRadioValue] = useState('');
-  useEffect(() => {
-    const checkedIndex = checkRadio.findIndex(
-      (isChecked, index) => isChecked && index < radioDummy.length
-    );
-
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
-  }, [checkRadio]);
-
+const DisRegister = ({}) => {
+  const titleData = ['제품 중량(kg)', '제품 공급가액', '운반비 공급가액'];
+  const contentData = ['986,742', '986,742', '986,742'];
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -95,13 +80,7 @@ const Round = ({}) => {
   return (
     <FilterContianer>
       <FilterHeader>
-        <div style={{ display: 'flex' }}>
-          <h1>경매 회차 관리</h1>
-          <SubTitle>
-            <h5>단일</h5>
-            <h6>패키지</h6>
-          </SubTitle>
-        </div>
+        <h1>배차/출고 등록</h1>
         {/* 토글 쓰기 */}
         <HeaderToggle
           exFilterToggle={exFilterToggle}
@@ -109,49 +88,55 @@ const Round = ({}) => {
           toggleMsg={toggleMsg}
         />
       </FilterHeader>
+
       {exFilterToggle && (
         <>
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
                 <PartWrap>
-                  <h6>입고일자</h6>
+                  <h6>창고 구분</h6>
+                  <PWRight>
+                    <MainSelect
+                      options={storageOptions}
+                      defaultValue={storageOptions[0]}
+                    />
+                  </PWRight>
+                </PartWrap>
+
+                <PartWrap>
+                  <h6>고객사</h6>
+                  <Input />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10}>
+                    찾기
+                  </GreyBtn>
+                </PartWrap>
+
+                <PartWrap>
+                  <h6>목적지</h6>
+                  <Input />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10}>
+                    찾기
+                  </GreyBtn>
+                </PartWrap>
+              </RowWrap>
+              <RowWrap>
+                <PartWrap>
+                  <h6 style={{ width: '120px' }}>출고 요청 일자</h6>
                   <GridWrap>
                     <DateGrid bgColor={'white'} fontSize={17} />
                     <Tilde>~</Tilde>
                     <DateGrid bgColor={'white'} fontSize={17} />
                   </GridWrap>
                 </PartWrap>
-
                 <PartWrap>
-                  <h6 style={{ width: '150px' }}>경매 회차 번호</h6>
-                  <Input style={{ width: '150px' }} />
-                </PartWrap>
-                <PartWrap />
-              </RowWrap>
-
-              <RowWrap>
-                <PartWrap>
-                  <h6>진행 상태</h6>
-                  <ExRadioWrap>
-                    {radioDummy.map((text, index) => (
-                      <RadioMainDiv key={index}>
-                        <RadioCircleDiv
-                          isChecked={checkRadio[index]}
-                          onClick={() => {
-                            setCheckRadio(
-                              CheckBox(checkRadio, checkRadio.length, index)
-                            );
-                          }}
-                        >
-                          <RadioInnerCircleDiv />
-                        </RadioCircleDiv>
-                        <div style={{ display: 'flex', marginLeft: '5px' }}>
-                          {text}
-                        </div>
-                      </RadioMainDiv>
-                    ))}
-                  </ExRadioWrap>
+                  <h6 style={{ width: '50px' }}>구분</h6>
+                  <PWRight>
+                    <MainSelect
+                      options={storageOptions}
+                      defaultValue={storageOptions[0]}
+                    />
+                  </PWRight>
                 </PartWrap>
               </RowWrap>
             </FilterLeft>
@@ -180,6 +165,7 @@ const Round = ({}) => {
           </FilterFooter>
         </>
       )}
+
       <TableContianer>
         <Test3 />
       </TableContianer>
@@ -187,4 +173,8 @@ const Round = ({}) => {
   );
 };
 
-export default Round;
+export default DisRegister;
+
+const TableWrap = styled.div`
+  margin: 30px auto;
+`;

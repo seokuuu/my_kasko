@@ -82,10 +82,10 @@ const data = [
     //UserManage
     depth1: '사용자 관리',
     depth2: [
-      { title: '운송사 등록', link: 'usermanage/carrierpost' },
       { title: '고객사 관리', link: 'usermanage/client' },
       { title: '고객사 목적지 관리', link: 'usermanage/clientdestination' },
-      { title: '사용자 관리', link: 'usermanage/operate' },
+      { title: '사용자 관리', link: 'usermanage/usermanage' },
+      { title: '운송사 관리', link: 'usermanage/carriermanage' },
       { title: '개인정보 수정', link: 'usermanage/profileedit' },
     ],
   },

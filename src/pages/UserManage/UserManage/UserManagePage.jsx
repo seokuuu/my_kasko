@@ -7,9 +7,9 @@ import {
 import SideBar from '../../../components/Left/SideBar';
 import Header from '../../../components/Header/Header';
 import SubHeader from '../../../components/Header/SubHeader';
-import Dispatch from './Dispatch';
+import UserManage from './UserManage';
 
-const DispatchPage = () => {
+const UserManagePage = () => {
   return (
     <>
       <Header />
@@ -18,7 +18,7 @@ const DispatchPage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <Dispatch />
+            <UserManage />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>
@@ -26,4 +26,4 @@ const DispatchPage = () => {
   );
 };
 
-export default DispatchPage;
+export default UserManagePage;

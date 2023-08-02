@@ -7,9 +7,9 @@ import {
 import SideBar from '../../../components/Left/SideBar';
 import Header from '../../../components/Header/Header';
 import SubHeader from '../../../components/Header/SubHeader';
-import Dispatch from './Dispatch';
+import DisRegister from './DisRegister';
 
-const DispatchPage = () => {
+const DisRegisterPage = () => {
   return (
     <>
       <Header />
@@ -18,7 +18,7 @@ const DispatchPage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <Dispatch />
+            <DisRegister />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>
@@ -26,4 +26,4 @@ const DispatchPage = () => {
   );
 };
 
-export default DispatchPage;
+export default DisRegisterPage;

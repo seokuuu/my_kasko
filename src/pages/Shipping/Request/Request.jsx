@@ -50,6 +50,28 @@ import {
 } from '../Claim/ClaimRegister';
 
 const Request = ({}) => {
+  const titleData = [
+    '제품 중량(kg)',
+    '제품 공급가액',
+    '운반비 공급가액',
+    '제품 중량(kg)',
+    '제품 공급가액',
+    '운반비 공급가액',
+    '제품 중량(kg)',
+    '제품 공급가액',
+    '운반비 공급가액',
+  ];
+  const contentData = [
+    '986,742',
+    '986,742',
+    '986,742',
+    '986,742',
+    '986,742',
+    '986,742',
+    '986,742',
+    '986,742',
+    '986,742',
+  ];
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -78,7 +100,7 @@ const Request = ({}) => {
   return (
     <FilterContianer>
       <FilterHeader>
-        <h1>출하지시 등록</h1>
+        <h1>출고 요청</h1>
         {/* 토글 쓰기 */}
         <HeaderToggle
           exFilterToggle={exFilterToggle}
@@ -173,6 +195,28 @@ const Request = ({}) => {
           </FilterFooter>
         </>
       )}
+
+      <TableContianer>
+        <Test3 />
+      </TableContianer>
+      <FilterHeader style={{}}>
+        <h1>합짐</h1>
+        {/* 토글 쓰기 */}
+      </FilterHeader>
+      <TableWrap style={{ marginTop: '5px' }}>
+        <ClaimTable>
+          {[0, 1, 2].map(index => (
+            <ClaimRow key={index}>
+              {titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
+                <React.Fragment agmentkey={title}>
+                  <ClaimTitle>{title}</ClaimTitle>
+                  <ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
+                </React.Fragment>
+              ))}
+            </ClaimRow>
+          ))}
+        </ClaimTable>
+      </TableWrap>
 
       <TableContianer>
         <Test3 />

@@ -34,43 +34,18 @@ import {
   DoubleWrap,
   ResetImg,
   TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
   ExCheckWrap,
   ExCheckDiv,
+  ExInputsWrap,
+  SubTitle,
 } from '../../../modal/External/ExternalFilter';
 
-import {
-  RadioMainDiv,
-  RadioCircleDiv,
-  RadioInnerCircleDiv,
-} from '../../../common/Check/RadioImg';
+const SingleProduct = ({}) => {
+  const checkSales = ['전체', '판매재', '판매제외제', '카스코 추천 제품'];
 
-const Client = ({}) => {
-  const radioDummy = ['전체', '대표', '대표'];
-  const [checkRadio, setCheckRadio] = useState(
-    Array.from({ length: radioDummy.length }, () => false)
-  );
+  const checkShips = ['전체', '경매대상재', '상시판매 대상재'];
 
-  const [savedRadioValue, setSavedRadioValue] = useState('');
-  useEffect(() => {
-    const checkedIndex = checkRadio.findIndex(
-      (isChecked, index) => isChecked && index < radioDummy.length
-    );
-
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
-  }, [checkRadio]);
-  const checkSales = ['일반', '장기 미접속', '장기 미낙찰', '폐업', '정지'];
-
-  const checkShips = ['전체', '승인', '미승인', '대기'];
+  const checkTypes = ['전체', '특가', '일반'];
 
   //checkSales
   const [check1, setCheck1] = useState(
@@ -80,6 +55,10 @@ const Client = ({}) => {
     Array.from({ length: checkShips.length }, () => false)
   );
 
+  const [check3, setCheck3] = useState(
+    Array.from({ length: checkTypes.length }, () => false)
+  );
+
   //checkShips
   const [checkData1, setCheckData1] = useState(
     Array.from({ length: checkSales.length }, () => '')
@@ -87,6 +66,10 @@ const Client = ({}) => {
 
   const [checkData2, setCheckData2] = useState(
     Array.from({ length: checkShips.length }, () => '')
+  );
+
+  const [checkData3, setCheckData3] = useState(
+    Array.from({ length: checkTypes.length }, () => '')
   );
 
   useEffect(() => {
@@ -121,6 +104,22 @@ const Client = ({}) => {
     // });
   }, [check2]);
 
+  useEffect(() => {
+    // true에 해당되면, value를, false면 빈값을 반환
+    const updatedCheck = checkTypes.map((value, index) => {
+      return check3[index] ? value : '';
+    });
+    // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
+    const filteredCheck = updatedCheck.filter(item => item !== '');
+    setCheckData3(filteredCheck);
+
+    // 전송용 input에 담을 때
+    // setInput({
+    //   ...input,
+    //   businessType: updatedCheck.filter(item => item !== ''),
+    // });
+  }, [check3]);
+
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -150,50 +149,75 @@ const Client = ({}) => {
     <FilterContianer>
       <FilterHeader>
         <div style={{ display: 'flex' }}>
-          <h1>고객사 관리</h1>
+          <h1>단일 제품 관리</h1>
+          <SubTitle>
+            <h5>전체</h5>
+            <h6>현대제철</h6>
+            <h6>판매제품</h6>
+          </SubTitle>
         </div>
-        {/* 토글 쓰기 */}
         <HeaderToggle
           exFilterToggle={exFilterToggle}
           toggleBtnClick={toggleBtnClick}
           toggleMsg={toggleMsg}
         />
       </FilterHeader>
-
       {exFilterToggle && (
         <>
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
                 <PartWrap>
-                  <h6>고객 구분</h6>
-                  <ExRadioWrap>
-                    {radioDummy.map((text, index) => (
-                      <RadioMainDiv key={index}>
-                        <RadioCircleDiv
-                          isChecked={checkRadio[index]}
-                          onClick={() => {
-                            setCheckRadio(
-                              CheckBox(checkRadio, checkRadio.length, index)
-                            );
-                          }}
-                        >
-                          <RadioInnerCircleDiv />
-                        </RadioCircleDiv>
-                        <div style={{ display: 'flex', marginLeft: '5px' }}>
-                          <p>{text}</p>
-                        </div>
-                      </RadioMainDiv>
-                    ))}
-                  </ExRadioWrap>
+                  <h6>창고 구분</h6>
+                  <PWRight>
+                    <MainSelect
+                      options={storageOptions}
+                      defaultValue={storageOptions[0]}
+                    />
+                  </PWRight>
+                </PartWrap>
+                <PartWrap>
+                  <h6>매입처</h6>
+                  <PWRight>
+                    <MainSelect
+                      options={storageOptions}
+                      defaultValue={storageOptions[0]}
+                    />
+                  </PWRight>
+                </PartWrap>
+                <PartWrap>
+                  <h6>규격 약호</h6>
+                  <Input />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10}>
+                    찾기
+                  </GreyBtn>
                 </PartWrap>
               </RowWrap>
               <RowWrap>
                 <PartWrap>
-                  <h6>회원 상태</h6>
+                  <h6>입고일자</h6>
+                  <GridWrap>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                  </GridWrap>
+                </PartWrap>
+
+                <PartWrap>
+                  <h6>출고일자</h6>
+                  <GridWrap>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                  </GridWrap>
+                </PartWrap>
+              </RowWrap>
+              <RowWrap>
+                <PartWrap>
+                  <h6>판매 구분</h6>
                   <ExCheckWrap>
                     {checkSales.map((x, index) => (
-                      <ExCheckDiv>
+                      <ExCheckDiv style={{ marginRight: '5px', gap: '0px' }}>
                         <StyledCheckSubSquDiv
                           onClick={() =>
                             setCheck1(
@@ -209,11 +233,8 @@ const Client = ({}) => {
                     ))}
                   </ExCheckWrap>
                 </PartWrap>
-                <PartWrap />
-              </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
                 <PartWrap>
-                  <h6>승인 상태</h6>
+                  <h6>판매 유형</h6>
                   <ExCheckWrap>
                     {checkShips.map((x, index) => (
                       <ExCheckDiv>
@@ -232,18 +253,70 @@ const Client = ({}) => {
                     ))}
                   </ExCheckWrap>
                 </PartWrap>
+              </RowWrap>
+
+              <RowWrap>
                 <PartWrap>
-                  <h6>회원 상태</h6>
-                  <MainSelect />
-                  <Input style={{ marginLeft: '5px' }} />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10}>
-                    찾기
-                  </GreyBtn>
+                  <h6 style={{ width: '100px' }}>판매가 유형</h6>
+                  <ExCheckWrap>
+                    {checkTypes.map((x, index) => (
+                      <ExCheckDiv>
+                        <StyledCheckSubSquDiv
+                          onClick={() =>
+                            setCheck2(
+                              CheckBox(check2, check2.length, index, true)
+                            )
+                          }
+                          isChecked={check1[index]}
+                        >
+                          <CheckImg2 src="/svg/check.svg" />
+                        </StyledCheckSubSquDiv>
+                        <p>{x}</p>
+                      </ExCheckDiv>
+                    ))}
+                  </ExCheckWrap>
                 </PartWrap>
-                <PartWrap />
-                <PartWrap />
+              </RowWrap>
+
+              <RowWrap style={{ borderBottom: '0px' }}>
+                <PartWrap>
+                  <h6>두께(CM)</h6>
+                  <ExInputsWrap>
+                    <Input /> <Tilde>~</Tilde>
+                    <Input />
+                  </ExInputsWrap>
+                </PartWrap>
+                <PartWrap>
+                  <h6>폭(CM)</h6>
+                  <ExInputsWrap>
+                    <Input /> <Tilde>~</Tilde>
+                    <Input />
+                  </ExInputsWrap>
+                </PartWrap>
+              </RowWrap>
+              <RowWrap>
+                <PartWrap>
+                  <h6>길이(CM)</h6>
+                  <ExInputsWrap>
+                    <Input /> <Tilde>~</Tilde>
+                    <Input />
+                  </ExInputsWrap>
+                </PartWrap>
+                <PartWrap>
+                  <h6>유찰 횟수</h6>
+                  <ExInputsWrap>
+                    <Input /> <Tilde>~</Tilde>
+                    <Input />
+                  </ExInputsWrap>
+                </PartWrap>
               </RowWrap>
             </FilterLeft>
+            <FilterRight>
+              <DoubleWrap>
+                <p>제품 번호 </p>
+                <textarea style={{ height: '100px' }} />
+              </DoubleWrap>
+            </FilterRight>
           </FilterSubcontianer>
           <FilterFooter>
             <div style={{ display: 'flex' }}>
@@ -270,4 +343,4 @@ const Client = ({}) => {
   );
 };
 
-export default Client;
+export default SingleProduct;

@@ -34,7 +34,7 @@ import {
   FilterHeaderAlert,
 } from '../../../modal/External/ExternalFilter';
 
-const Destination = ({}) => {
+const Package = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -72,7 +72,7 @@ const Destination = ({}) => {
     <FilterContianer>
       <div>
         <FilterHeader>
-          <h1>목적지 관리</h1>
+          <h1>상시 판매 패키지</h1>
           {/* 토글 쓰기 */}
           <HeaderToggle
             exFilterToggle={exFilterToggle}
@@ -80,13 +80,29 @@ const Destination = ({}) => {
             toggleMsg={toggleMsg}
           />
         </FilterHeader>
+        <FilterHeaderAlert>
+          <div style={{ display: 'flex' }}>
+            <div style={{ marginRight: '20px' }}>
+              <img src="/img/notice.png" />
+            </div>
+            <div style={{ marginTop: '6px' }}>
+              <div>· 주의사항 영역</div>
+              <div style={{ marginTop: '6px' }}>· 주의사항 영역</div>
+            </div>
+          </div>
+
+          <div>
+            수정
+            <img style={{ marginLeft: '10px' }} src="/img/setting.png" />
+          </div>
+        </FilterHeaderAlert>
         {exFilterToggle && (
           <FilterWrap>
             <FilterSubcontianer>
               <FilterLeft>
                 <RowWrap>
                   <PartWrap>
-                    <h6>목적지</h6>
+                    <h6>규격 약호</h6>
                     <Input />
                     <GreyBtn
                       style={{ width: '70px' }}
@@ -97,14 +113,40 @@ const Destination = ({}) => {
                       찾기
                     </GreyBtn>
                   </PartWrap>
-                  <PartWrap />
-                  <PartWrap />
-                  <PartWrap />
-                  <PartWrap />
-                  <PartWrap />
+                  <PartWrap>
+                    <h6>구분</h6>
+                    <MainSelect />
+                    <MainSelect />
+                  </PartWrap>
                   <PartWrap />
                 </RowWrap>
+
+                <RowWrap style={{ border: '0px' }}>
+                  <PartWrap>
+                    <h6>두께(CM)</h6>
+                    <Input /> <Tilde>~</Tilde>
+                    <Input />
+                  </PartWrap>
+                </RowWrap>
+                <RowWrap>
+                  <PartWrap>
+                    <h6>길이(CM)</h6>
+                    <Input /> <Tilde>~</Tilde>
+                    <Input />
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>폭(CM)</h6>
+                    <Input /> <Tilde>~</Tilde>
+                    <Input />
+                  </PartWrap>
+                </RowWrap>
               </FilterLeft>
+              <FilterRight>
+                <DoubleWrap>
+                  <p>제품 번호 </p>
+                  <textarea style={{ height: '100px' }} />
+                </DoubleWrap>
+              </FilterRight>
             </FilterSubcontianer>
             <FilterFooter>
               <div style={{ display: 'flex' }}>
@@ -133,4 +175,4 @@ const Destination = ({}) => {
   );
 };
 
-export default Destination;
+export default Package;

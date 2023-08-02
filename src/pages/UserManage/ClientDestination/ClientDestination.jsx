@@ -34,7 +34,7 @@ import {
   FilterHeaderAlert,
 } from '../../../modal/External/ExternalFilter';
 
-const Consolidation = ({}) => {
+const ClientDestination = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -72,9 +72,59 @@ const Consolidation = ({}) => {
     <FilterContianer>
       <div>
         <FilterHeader>
-          <h1>합짐비 관리</h1>
+          <h1>고객사 목적지 관리</h1>
           {/* 토글 쓰기 */}
+          <HeaderToggle
+            exFilterToggle={exFilterToggle}
+            toggleBtnClick={toggleBtnClick}
+            toggleMsg={toggleMsg}
+          />
         </FilterHeader>
+        {exFilterToggle && (
+          <FilterWrap>
+            <FilterSubcontianer>
+              <FilterLeft>
+                <RowWrap>
+                  <PartWrap>
+                    <h6>고객사</h6>
+                    <MainSelect />
+                    <Input />
+                    <GreyBtn
+                      style={{ width: '70px' }}
+                      height={35}
+                      margin={10}
+                      onClick={modalOpen}
+                    >
+                      찾기
+                    </GreyBtn>
+                  </PartWrap>
+
+                  <PartWrap />
+                  <PartWrap />
+                  <PartWrap />
+                  <PartWrap />
+                  <PartWrap />
+                </RowWrap>
+              </FilterLeft>
+            </FilterSubcontianer>
+            <FilterFooter>
+              <div style={{ display: 'flex' }}>
+                <p>초기화</p>
+                <ResetImg
+                  src="/img/reset.png"
+                  style={{ marginLeft: '10px', marginRight: '20px' }}
+                  onClick={handleImageClick}
+                  className={isRotated ? 'rotate' : ''}
+                />
+              </div>
+              <div style={{ width: '180px' }}>
+                <BlackBtn width={100} height={40}>
+                  검색
+                </BlackBtn>
+              </div>
+            </FilterFooter>
+          </FilterWrap>
+        )}
       </div>
 
       <TableContianer>
@@ -84,4 +134,4 @@ const Consolidation = ({}) => {
   );
 };
 
-export default Consolidation;
+export default ClientDestination;

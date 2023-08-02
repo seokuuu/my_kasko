@@ -75,7 +75,8 @@ export const PartWrap = styled.div`
   h6 {
     width: 90px;
     max-width: 150px;
-    display: block;
+
+    display: flex;
     text-align: left;
   }
 `;
@@ -142,10 +143,14 @@ export const ExRadioWrap = styled.div`
 export const ExCheckWrap = styled.div`
   display: flex;
   gap: 5px;
-
   margin-left: 13px;
   justify-content: center;
   align-items: center;
+
+  p {
+    font-size: 17px;
+    margin-left: 3px;
+  }
 `;
 
 // 체크박스 각각 div
@@ -178,6 +183,30 @@ export const SubTitle = styled.div`
   h5 {
     font-weight: bold;
   }
+
+  h6 {
+    color: #6b6b6b;
+  }
+`;
+
+export const TableTitle = styled.div`
+  margin-left: 20px;
+  padding: 20px 0px 10px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  margin-top: 3px;
+  h5 {
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  h6 {
+    color: #6b6b6b;
+
+    font-size: 18px;
+  }
 `;
 
 // 테이블 부분 새로 만들어라 ------------------
@@ -190,7 +219,6 @@ export const TableContianer = styled.div`
   display: flex;
   padding: 10px;
 `;
-
 
 // 흰색 배경 알림 창
 export const FilterHeaderAlert = styled.div`
@@ -208,4 +236,9 @@ export const FilterHeaderAlert = styled.div`
 
 export const FHALeft = styled.div`
   display: flex;
+`;
+
+export const InputStartWrap = styled.div`
+  display: flex;
+  margin-left: 15px;
 `;
