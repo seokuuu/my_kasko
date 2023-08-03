@@ -318,10 +318,10 @@ const Inventory = ({}) => {
 
               <RowWrap>
                 <PartWrap>
-                  <h6>운송 진행</h6>
+                  <h6>운송 진행 </h6>
                   <ExCheckWrap>
                     {checkTransits.map((x, index) => (
-                      <ExCheckDiv style={{ marginRight: '10px' }}>
+                      <ExCheckDiv style={{ marginRight: '5px' }}>
                         <StyledCheckSubSquDiv
                           onClick={() =>
                             setCheck4(
