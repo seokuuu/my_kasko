@@ -9,12 +9,20 @@ import Header from '../../../components/Header/Header';
 import SubHeader from '../../../components/Header/SubHeader';
 import Incoming from './Incoming';
 
+import { useState } from 'react';
+
 const IncomingPage = () => {
+  const [expanded, setExpanded] = useState('재고 관리');
+  const [depth2Color, setDepth2Color] = useState('입고 관리');
   return (
     <>
       <Header />
       <OverAllMain>
-        <SideBar />
+        <SideBar
+          expanded={expanded}
+          setExpanded={setExpanded}
+          depth2Color={depth2Color}
+        />
         <OverAllSub>
           <SubHeader />
           <OverAllTable>

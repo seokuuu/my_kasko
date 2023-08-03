@@ -71,6 +71,18 @@ import ProfileEditPage from './pages/UserManage/ProfileEdit/ProfileEditPage';
 import DestinationPostPage from './pages/UserManage/ClientDestination/DestinationPostPage';
 import UserPostPage from './pages/UserManage/UserManage/UserPostPage';
 
+// 운영 관리
+import OperationPage from './pages/Operate/Operation/OperationPage';
+import InventoryOperPage from './pages/Operate/Inventory/InventoryPage';
+import ClaimPage from './pages/Operate/Claim/ClaimPage';
+import PopupPage from './pages/Operate/Popup/PopupPage';
+import FAQPage from './pages/Operate/FAQ/FAQPage';
+import NoticeBoardPage from './pages/Operate/NoticeBoard/NoticeBoardPage';
+import NoticePage from './pages/Operate/Notice/NoticePage';
+import DataSheetPage from './pages/Operate/Datasheet/DatasheetPage';
+import TermsPage from './pages/Operate/Terms/TermsPage';
+import FooterManagePage from './pages/Operate/FooterManage/FooterManagePage';
+
 const Router = () => {
   return (
     <BrowserRouter>
@@ -189,6 +201,23 @@ const Router = () => {
         </Route>
         {/* 운영 관리 */}
         <Route path="/operate">
+          <Route path="/operate/operation" element={<OperationPage />}></Route>
+          <Route
+            path="/operate/inventory"
+            element={<InventoryOperPage />}
+          ></Route>
+          <Route path="/operate/claim" element={<ClaimPage />}></Route>
+          <Route path="/operate/popup" element={<PopupPage />}></Route>
+          <Route path="/operate/faq" element={<FAQPage />}></Route>
+          <Route
+            path="/operate/noticeboard"
+            element={<NoticeBoardPage />}
+          ></Route>
+          <Route path="/operate/notice" element={<NoticePage />}></Route>
+          <Route path="/operate/datasheet" element={<DataSheetPage />}></Route>
+          <Route path="/operate/terms" element={<TermsPage />}></Route>
+          <Route path="/operate/footer" element={<FooterManagePage />}></Route>
+
           <Route path="/operate/faq/faqpost" element={<FAQPostPage />}></Route>
         </Route>
         <Route path="/*" element={<NotFound />} />

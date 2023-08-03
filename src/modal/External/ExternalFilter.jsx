@@ -216,8 +216,22 @@ export const TableContianer = styled.div`
   width: 100%;
   height: 100%;
   border: 1px solid #c8c8c8;
+  padding: 30px;
+  padding-top: 10px;
+  background-color: #fcfcfc;
+`;
+
+export const TCSubContainer = styled.div`
   display: flex;
-  padding: 10px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0px 10px 2px;
+  border-bottom: ${({ bor }) => (bor ? '1px solid #c8c8c8' : 'none')};
+  font-size: 16px;
+
+  span {
+    color: ${props => props.theme.colors.PriNormal};
+  }
 `;
 
 // 흰색 배경 알림 창

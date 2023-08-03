@@ -7,13 +7,13 @@ import {
 import SideBar from '../../../components/Left/SideBar';
 import Header from '../../../components/Header/Header';
 import SubHeader from '../../../components/Header/SubHeader';
-import DetailProgress from './DetailProgress';
+import Claim from './Claim';
 
 import { useState } from 'react';
 
-const DetailProgressPage = () => {
-  const [expanded, setExpanded] = useState('경매 관리');
-  const [depth2Color, setDepth2Color] = useState('경매 진행 상세 조회');
+const ClaimPage = () => {
+  const [expanded, setExpanded] = useState('운영 관리');
+  const [depth2Color, setDepth2Color] = useState('클레임 관리');
   return (
     <>
       <Header />
@@ -26,7 +26,7 @@ const DetailProgressPage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <DetailProgress />
+            <Claim />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>
@@ -34,4 +34,4 @@ const DetailProgressPage = () => {
   );
 };
 
-export default DetailProgressPage;
+export default ClaimPage;

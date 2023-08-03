@@ -28,7 +28,6 @@ export const OnePageSubContainer = styled.div`
   padding-left: 10%;
   padding-right: 10%;
   width: 100%;
-
   margin-left: auto;
   margin-right: auto;
 `;
@@ -37,13 +36,59 @@ export const MainTitle = styled.div`
   display: flex;
   justify-content: center;
   font-size: 24px;
-  margin: 20px auto;
+  margin: 40px auto;
+`;
+
+export const Titles = styled.div`
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 24px;
+  margin: 40px auto;
+`;
+
+export const TitleChild = styled.div`
+  font-size: 20px;
+  width: 33%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: ${({ bor }) => (bor ? '1px solid #17479E' : '1px solid #e1e1e1')};
+  color: ${({ bor }) => (bor ? '#17479e' : 'black')};
+
+  &:hover {
+    border: 1px solid #17479e;
+    color: 1px solid #17479e;
+    cursor: pointer;
+  }
 `;
 
 export const FullWrap = styled.div`
   display: flex;
   width: 100%;
   height: 100px;
+  border: 1px solid black;
+
+  > textarea {
+    border: 1px solid #c8c8c8;
+    width: 100%;
+  }
+`;
+
+export const FWTitle = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0px 10px 10px 10px;
+  border-bottom: 2px solid black;
+
+  h6 {
+    font-size: 16px;
+    color: #6b6b6b;
+  }
 `;
 
 export const HalfWrap = styled.div`

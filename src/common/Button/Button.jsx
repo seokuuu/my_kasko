@@ -42,6 +42,31 @@ export const GreyBtn = styled.button`
   cursor: pointer;
 `;
 
+export const WhiteRedBtn = styled.button`
+  font-size: ${props => props.fontSize}px;
+  width: ${props => props.width}%;
+  height: ${props => props.height}px;
+  margin: ${props => props.margin}px;
+  border: 1px solid ${props => props.theme.colors.StatAlert};
+  background-color: inherit;
+  color: ${props => props.theme.colors.StatAlert};
+  cursor: pointer;
+  padding: 5px 10px 5px 10px;
+  border-radius: 3px;
+`;
+
+export const SkyBtn = styled.button`
+  font-size: ${props => props.fontSize}px;
+  width: ${props => props.width}%;
+  height: ${props => props.height}px;
+  margin: ${props => props.margin}px;
+  background-color: ${props => props.theme.colors.PriNormal};
+  color: white;
+  cursor: pointer;
+  padding: 5px 10px 5px 10px;
+  border-radius: 3px;
+`;
+
 export const BtnWrap = styled.div`
   display: flex;
   width: 400px;

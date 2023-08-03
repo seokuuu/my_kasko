@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import {
   Accordion,
   AccordionSummary,
@@ -98,8 +98,8 @@ const data = [
       { title: '클레임 관리', link: 'operate/claim' },
       { title: '팝업 관리', link: 'operate/popup' },
       { title: 'FAQ 관리', link: 'operate/faq' },
-      { title: '전광판 관리', link: 'operate/notice' },
-      { title: '공지사항', link: 'operate/noticeboard' },
+      { title: '전광판 관리', link: 'operate/noticeboard' },
+      { title: '공지사항', link: 'operate/notice' },
       { title: '자료실', link: 'operate/datasheet' },
       { title: '이용 약관', link: 'operate/terms' },
       { title: '푸터 관리', link: 'operate/footer' },
@@ -107,8 +107,12 @@ const data = [
   },
 ];
 
-const SideBar = () => {
+const SideBar = ({ expanded, setExpanded, depth2Color }) => {
   const [calModal, setCalModal] = useAtom(calendarAtom);
+
+  const handleChange = panel => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
   return (
     <>
       {/* {calModal && (
@@ -127,7 +131,11 @@ const SideBar = () => {
             </AcTopCal>
           </AcTop>
           {data.map((item, index) => (
-            <StyledAccordion key={index}>
+            <StyledAccordion
+              key={index}
+              expanded={expanded === item.depth1}
+              onChange={handleChange(item.depth1)}
+            >
               <StyledAccordionSummary
                 expandIcon={<AccSwitch />}
                 aria-controls={`panel${index + 1}-content`}
@@ -138,7 +146,10 @@ const SideBar = () => {
               <StyledAccordionDetails>
                 <Typography>
                   {item.depth2.map((subItem, subIndex) => (
-                    <TypoContent key={subIndex}>
+                    <TypoContent
+                      key={subIndex}
+                      isIncoming={subItem.title === depth2Color}
+                    >
                       <Link to={`/${subItem.link}`}>
                         <Depth2>{subItem.title}</Depth2>
                       </Link>
@@ -210,7 +221,7 @@ const StyledAccordionDetails = styled(AccordionDetails)`
 const TypoContent = styled.div`
   margin: 15px 10px;
   a {
-    color: #acacac;
+    color: ${props => (props.isIncoming ? '#64b5ff' : '#acacac')};
 
     &:hover {
       color: #64b5ff;

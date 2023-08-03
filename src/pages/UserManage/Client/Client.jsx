@@ -223,7 +223,7 @@ const Client = ({}) => {
                               CheckBox(check2, check2.length, index, true)
                             )
                           }
-                          isChecked={check1[index]}
+                          isChecked={check2[index]}
                         >
                           <CheckImg2 src="/svg/check.svg" />
                         </StyledCheckSubSquDiv>

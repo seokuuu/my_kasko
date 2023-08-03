@@ -17,13 +17,14 @@ const GlobalStyle = createGlobalStyle`
   * {
     margin:0;padding:0;border:0;
   }
+
   html, 
   body {
     width:100%; 
     font-size: calc( 12px + 0.4vw ); 
     font-family: 'SUIT';
-
     font-weight: 100;
+    
   }
   html, 
   h1, 
