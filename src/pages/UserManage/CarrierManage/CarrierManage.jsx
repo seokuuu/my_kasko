@@ -3,7 +3,12 @@ import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
 
 import { MainSelect } from '../../../common/Option/Main';
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button';
+import {
+  BlackBtn,
+  BtnWrap,
+  WhiteRedBtn,
+  WhiteSkyBtn,
+} from '../../../common/Button/Button';
 import DateGrid from '../../../components/DateGrid/DateGrid';
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
 import { GreyBtn } from '../../../common/Button/Button';
@@ -15,6 +20,7 @@ import { blueModalAtom } from '../../../store/Layout/Layout';
 import { useAtom } from 'jotai';
 import { FilterWrap } from '../../../modal/External/ExternalFilter';
 import {
+  TCSubContainer,
   FilterContianer,
   FilterHeader,
   FilterFooter,
@@ -128,7 +134,28 @@ const CarrierManage = ({}) => {
       </div>
 
       <TableContianer>
-        <Test3 title={'규격 약호 찾기'} />
+        <TCSubContainer bor>
+          <div>
+            조회 목록 (선택 <span>2</span> / 50개 )
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}></div>
+        </TCSubContainer>
+        <TCSubContainer>
+          <div>
+            선택 중량<span> 2 </span>kg / 총 중량 kg
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteRedBtn>
+              <img src="/img/delete_member.png" />
+              운송사 삭제
+            </WhiteRedBtn>
+            <WhiteSkyBtn>
+              <img src="/img/add_member.png" />
+              운송사 등록
+            </WhiteSkyBtn>
+          </div>
+        </TCSubContainer>
+        <Test3 />
       </TableContianer>
     </FilterContianer>
   );

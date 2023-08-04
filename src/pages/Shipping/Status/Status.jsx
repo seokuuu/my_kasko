@@ -4,7 +4,13 @@ import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
 
 import { MainSelect } from '../../../common/Option/Main';
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button';
+import {
+  BlackBtn,
+  BtnWrap,
+  WhiteRedBtn,
+  WhiteSkyBtn,
+  WhiteBlackBtn,
+} from '../../../common/Button/Button';
 import DateGrid from '../../../components/DateGrid/DateGrid';
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
 import { GreyBtn } from '../../../common/Button/Button';
@@ -20,6 +26,7 @@ import {
 } from '../../../common/Check/CheckImg';
 
 import {
+  TCSubContainer,
   FilterContianer,
   FilterHeader,
   FilterFooter,
@@ -155,7 +162,26 @@ const Status = ({}) => {
       )}
 
       <TableContianer>
+        <TCSubContainer bor>
+          <div>
+            조회 목록 (선택 <span>2</span> / 50개 )
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}></div>
+        </TCSubContainer>
+        <TCSubContainer>
+          <div></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteRedBtn>출고 취소</WhiteRedBtn>
+          </div>
+        </TCSubContainer>
         <Test3 />
+        <TCSubContainer>
+          <div></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteBlackBtn>운송 완료</WhiteBlackBtn>
+            <WhiteSkyBtn>수취서 출력</WhiteSkyBtn>
+          </div>
+        </TCSubContainer>
       </TableContianer>
     </FilterContianer>
   );

@@ -3,7 +3,14 @@ import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
 
 import { MainSelect } from '../../../common/Option/Main';
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button';
+import {
+  BlackBtn,
+  BtnWrap,
+  ExcelBtn,
+  TGreyBtn,
+  WhiteRedBtn,
+  WhiteSkyBtn,
+} from '../../../common/Button/Button';
 import DateGrid from '../../../components/DateGrid/DateGrid';
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
 import { GreyBtn } from '../../../common/Button/Button';
@@ -20,6 +27,7 @@ import {
   FilterFooter,
   FilterSubcontianer,
   FilterLeft,
+  TableBottomWrap,
   FilterRight,
   RowWrap,
   PartWrap,
@@ -34,6 +42,7 @@ import {
   FilterHeaderAlert,
   TableTitle,
   SubTitle,
+  TCSubContainer,
 } from '../../../modal/External/ExternalFilter';
 
 const Transport = ({}) => {
@@ -148,7 +157,33 @@ const Transport = ({}) => {
         <h6>매출 운반비</h6>
       </TableTitle>
       <TableContianer>
-        <Test3 title={'규격 약호 찾기'} />
+        <TCSubContainer bor>
+          <div>
+            조회 목록 (선택 <span>2</span> / 50개 )
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <ExcelBtn>
+              <div>
+                <img src="/img/excel.png" />
+              </div>
+              엑셀 다운로드
+            </ExcelBtn>
+          </div>
+        </TCSubContainer>
+        <TCSubContainer>
+          <div></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <TGreyBtn>적용</TGreyBtn>
+            <WhiteRedBtn>운반비 삭제</WhiteRedBtn>
+            <WhiteSkyBtn>운반비 등록</WhiteSkyBtn>
+          </div>
+        </TCSubContainer>
+        <Test3 />
+        <TableBottomWrap>
+          <BlackBtn width={15} height={40}>
+            저장
+          </BlackBtn>
+        </TableBottomWrap>
       </TableContianer>
     </FilterContianer>
   );

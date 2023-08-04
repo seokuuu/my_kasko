@@ -3,10 +3,17 @@ import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
 
 import { MainSelect } from '../../../common/Option/Main';
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button';
+import {
+  BlackBtn,
+  BtnWrap,
+  ExcelBtn,
+  WhiteBlackBtn,
+  WhiteRedBtn,
+  WhiteSkyBtn,
+} from '../../../common/Button/Button';
 import DateGrid from '../../../components/DateGrid/DateGrid';
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
-import { GreyBtn } from '../../../common/Button/Button';
+import { GreyBtn, SwitchBtn } from '../../../common/Button/Button';
 import Test3 from '../../Test/Test3';
 import HeaderToggle from '../../../components/Toggle/HeaderToggle';
 import { toggleAtom } from '../../../store/Layout/Layout';
@@ -30,6 +37,7 @@ import {
   DoubleWrap,
   ResetImg,
   TableContianer,
+  TCSubContainer,
 } from '../../../modal/External/ExternalFilter';
 
 const Incoming = ({}) => {
@@ -159,7 +167,10 @@ const Incoming = ({}) => {
               <FilterRight>
                 <DoubleWrap>
                   <p>제품 번호 </p>
-                  <textarea style={{ height: '100px' }} />
+                  <textarea
+                    placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
+                    style={{ height: '100px' }}
+                  />
                 </DoubleWrap>
               </FilterRight>
             </FilterSubcontianer>
@@ -184,7 +195,37 @@ const Incoming = ({}) => {
       </div>
 
       <TableContianer>
+        <TCSubContainer bor>
+          <div>
+            조회 목록 (선택 <span>2</span> / 50개 )
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <ExcelBtn>
+              <div>
+                <img src="/img/excel.png" />
+              </div>
+              엑셀 다운로드
+            </ExcelBtn>
+          </div>
+        </TCSubContainer>
+        <TCSubContainer>
+          <div>
+            선택 중량<span> 2 </span>kg / 총 중량 kg
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <SwitchBtn>입고 확정</SwitchBtn>
+          </div>
+        </TCSubContainer>
+
         <Test3 title={'규격 약호 찾기'} />
+        <TCSubContainer>
+          <div></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteBlackBtn>제품 등록</WhiteBlackBtn>
+            <WhiteRedBtn>제품 삭제</WhiteRedBtn>
+            <WhiteSkyBtn>재고 수신</WhiteSkyBtn>
+          </div>
+        </TCSubContainer>
       </TableContianer>
     </FilterContianer>
   );

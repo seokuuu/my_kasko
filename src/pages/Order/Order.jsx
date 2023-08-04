@@ -3,7 +3,14 @@ import { styled } from 'styled-components';
 import { storageOptions } from '../../common/Option/SignUp';
 
 import { MainSelect } from '../../common/Option/Main';
-import { BlackBtn, BtnWrap } from '../../common/Button/Button';
+import {
+  BlackBtn,
+  BtnWrap,
+  ExcelBtn,
+  WhiteRedBtn,
+  WhiteSkyBtn,
+  SkyBtn,
+} from '../../common/Button/Button';
 import DateGrid from '../../components/DateGrid/DateGrid';
 import { ToggleBtn, Circle, Wrapper } from '../../common/Toggle/Toggle';
 import { GreyBtn } from '../../common/Button/Button';
@@ -28,6 +35,7 @@ import {
   RowWrap,
   PartWrap,
   PWRight,
+  TCSubContainer,
   Input,
   GridWrap,
   Tilde,
@@ -184,7 +192,35 @@ const Order = ({}) => {
         </>
       )}
       <TableContianer>
+        <TCSubContainer bor>
+          <div>
+            조회 목록 (선택 <span>2</span> / 50개 )
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <ExcelBtn>
+              <div>
+                <img src="/img/excel.png" />
+              </div>
+              엑셀 다운로드
+            </ExcelBtn>
+          </div>
+        </TCSubContainer>
+        <TCSubContainer>
+          <div>
+            선택 중량<span> 2 </span>kg / 총 중량 kg
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteRedBtn>주문 취소</WhiteRedBtn>
+            <SkyBtn>확정 전송</SkyBtn>
+          </div>
+        </TCSubContainer>
         <Test3 />
+        <TCSubContainer>
+          <div></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteRedBtn>입금 취소</WhiteRedBtn>
+          </div>
+        </TCSubContainer>
       </TableContianer>
     </FilterContianer>
   );

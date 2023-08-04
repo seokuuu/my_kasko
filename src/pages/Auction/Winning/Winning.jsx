@@ -3,7 +3,14 @@ import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
 
 import { MainSelect } from '../../../common/Option/Main';
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button';
+import {
+  BlackBtn,
+  BtnWrap,
+  ExcelBtn,
+  SkyBtn,
+  WhiteBlackBtn,
+  WhiteRedBtn,
+} from '../../../common/Button/Button';
 import DateGrid from '../../../components/DateGrid/DateGrid';
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
 import { GreyBtn } from '../../../common/Button/Button';
@@ -41,6 +48,7 @@ import {
   ExInputsWrap,
   ExCheckWrap,
   ExCheckDiv,
+  TCSubContainer,
 } from '../../../modal/External/ExternalFilter';
 
 import {
@@ -230,7 +238,10 @@ const Winning = ({}) => {
             <FilterRight>
               <DoubleWrap>
                 <p>제품 번호 </p>
-                <textarea style={{ height: '100px' }} />
+                <textarea
+                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
+                  style={{ height: '100px' }}
+                />
               </DoubleWrap>
             </FilterRight>
           </FilterSubcontianer>
@@ -253,7 +264,35 @@ const Winning = ({}) => {
         </>
       )}
       <TableContianer>
+        <TCSubContainer bor>
+          <div>
+            조회 목록 (선택 <span>2</span> / 50개 )
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <ExcelBtn>
+              <div>
+                <img src="/img/excel.png" />
+              </div>
+              엑셀 다운로드
+            </ExcelBtn>
+          </div>
+        </TCSubContainer>
+        <TCSubContainer>
+          <div>
+            선택 중량<span> 2 </span>kg / 총 중량 kg
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteBlackBtn>낙찰 생성</WhiteBlackBtn>
+            <WhiteRedBtn>낙찰 취소</WhiteRedBtn>
+          </div>
+        </TCSubContainer>
         <Test3 />
+        <TCSubContainer>
+          <div></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <SkyBtn>입금확인</SkyBtn>
+          </div>
+        </TCSubContainer>
       </TableContianer>
     </FilterContianer>
   );

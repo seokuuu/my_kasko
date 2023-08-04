@@ -125,7 +125,10 @@ const Test2 = () => {
             <FilterRight>
               <DoubleWrap>
                 <p>제품 번호 </p>
-                <textarea style={{ height: '100px' }} />
+                <textarea
+                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
+                  style={{ height: '100px' }}
+                />
               </DoubleWrap>
             </FilterRight>
           </FilterSubcontianer>

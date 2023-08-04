@@ -11,7 +11,7 @@ import ClientDestination from './ClientDestination';
 import { useState } from 'react';
 const ClientDestinationPage = () => {
   const [expanded, setExpanded] = useState('사용자 관리');
-  const [depth2Color, setDepth2Color] = useState('고객사 목적지지 관리');
+  const [depth2Color, setDepth2Color] = useState('고객사 목적지 관리');
   return (
     <>
       <Header />

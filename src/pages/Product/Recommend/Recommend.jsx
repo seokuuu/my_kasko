@@ -10,7 +10,9 @@ import {
   FilterHeader,
   TableContianer,
   SubTitle,
+  TCSubContainer,
 } from '../../../modal/External/ExternalFilter';
+import { WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button';
 
 const Recommend = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -51,6 +53,23 @@ const Recommend = ({}) => {
       </FilterHeader>
 
       <TableContianer>
+        <TCSubContainer bor>
+          <div>
+            조회 목록 (선택 <span>2</span> / 50개 )
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}></div>
+        </TCSubContainer>
+        <TCSubContainer>
+          <div>
+            선택 중량<span> 2 </span>kg / 총 중량 kg
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteBlackBtn>
+              <img src="/img/belly.png" /> 순서 변경
+            </WhiteBlackBtn>
+            <WhiteRedBtn>추천 상품 해제</WhiteRedBtn>
+          </div>
+        </TCSubContainer>
         <Test3 />
       </TableContianer>
     </FilterContianer>

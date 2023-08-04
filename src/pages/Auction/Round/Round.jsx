@@ -3,10 +3,20 @@ import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
 
 import { MainSelect } from '../../../common/Option/Main';
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button';
+import {
+  BlackBtn,
+  BtnWrap,
+  WhiteRedBtn,
+  WhiteSkyBtn,
+} from '../../../common/Button/Button';
 import DateGrid from '../../../components/DateGrid/DateGrid';
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
-import { GreyBtn } from '../../../common/Button/Button';
+import {
+  GreyBtn,
+  ExcelBtn,
+  YellBtn,
+  TGreyBtn,
+} from '../../../common/Button/Button';
 import Test3 from '../../Test/Test3';
 import HeaderToggle from '../../../components/Toggle/HeaderToggle';
 import { toggleAtom } from '../../../store/Layout/Layout';
@@ -31,6 +41,7 @@ import {
   Input,
   GridWrap,
   Tilde,
+  TableBottomWrap,
   DoubleWrap,
   ResetImg,
   TableContianer,
@@ -39,6 +50,7 @@ import {
   ExInputsWrap,
   ExRadioWrap,
   SubTitle,
+  TCSubContainer,
 } from '../../../modal/External/ExternalFilter';
 
 import {
@@ -158,7 +170,10 @@ const Round = ({}) => {
             <FilterRight>
               <DoubleWrap>
                 <p>제품 번호 </p>
-                <textarea style={{ height: '100px' }} />
+                <textarea
+                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
+                  style={{ height: '100px' }}
+                />
               </DoubleWrap>
             </FilterRight>
           </FilterSubcontianer>
@@ -181,7 +196,32 @@ const Round = ({}) => {
         </>
       )}
       <TableContianer>
+        <TCSubContainer bor>
+          <div>
+            조회 목록 (선택 <span>2</span> / 50개 )
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <ExcelBtn>
+              <div>
+                <img src="/img/excel.png" />
+              </div>
+              엑셀 다운로드
+            </ExcelBtn>
+          </div>
+        </TCSubContainer>
+        <TCSubContainer>
+          <div></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteRedBtn>회차 삭제</WhiteRedBtn>
+            <WhiteSkyBtn>경매 회차 등록</WhiteSkyBtn>
+          </div>
+        </TCSubContainer>
         <Test3 />
+        <TableBottomWrap>
+          <BlackBtn width={15} height={40}>
+            제품 추가
+          </BlackBtn>
+        </TableBottomWrap>
       </TableContianer>
     </FilterContianer>
   );

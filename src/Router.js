@@ -12,7 +12,6 @@ import Test4 from './pages/Test/Test4';
 
 import ClaimRegisterPage from './pages/Shipping/Claim/ClaimRegisterPage';
 import CarrierPostPage from './pages/UserManage/CarrierManage/CarrierPostPage';
-import FAQPostPage from './pages/Operate/FAQ/FAQPostPage';
 
 import IncomingPage from './pages/Stock/Incoming/IncomingPage';
 import InventoryPage from './pages/Stock/Inventory/InventoryPage';
@@ -72,14 +71,21 @@ import DestinationPostPage from './pages/UserManage/ClientDestination/Destinatio
 import UserPostPage from './pages/UserManage/UserManage/UserPostPage';
 
 // 운영 관리
-import OperationPage from './pages/Operate/Operation/OperationPage';
-import InventoryOperPage from './pages/Operate/Inventory/InventoryPage';
-import ClaimPage from './pages/Operate/Claim/ClaimPage';
-import PopupPage from './pages/Operate/Popup/PopupPage';
-import FAQPage from './pages/Operate/FAQ/FAQPage';
-import NoticeBoardPage from './pages/Operate/NoticeBoard/NoticeBoardPage';
-import NoticePage from './pages/Operate/Notice/NoticePage';
-import DataSheetPage from './pages/Operate/Datasheet/DatasheetPage';
+import OperationPage from './pages/Operate/Operation/Operation/OperationPage';
+import InventoryOperPage from './pages/Operate/Operation/Inventory/InventoryPage';
+
+//운영 관리 - 노출 관리
+import PopupPage from './pages/Operate/Exposure/Popup/PopupPage';
+import NoticeBoardPage from './pages/Operate/Exposure/NoticeBoard/NoticeBoardPage';
+
+//운영 관리 - 일반 관리
+import ClaimPage from './pages/Operate/Common/Claim/ClaimPage';
+import FAQPage from './pages/Operate/Common/FAQ/FAQPage';
+import FAQPostPage from './pages/Operate/Common/FAQ/FAQPostPage';
+import NoticePage from './pages/Operate/Common/Notice/NoticePage';
+import DataSheetPage from './pages/Operate/Common/Datasheet/DatasheetPage';
+
+// 이용약관, 푸터
 import TermsPage from './pages/Operate/Terms/TermsPage';
 import FooterManagePage from './pages/Operate/FooterManage/FooterManagePage';
 
@@ -206,8 +212,8 @@ const Router = () => {
             path="/operate/inventory"
             element={<InventoryOperPage />}
           ></Route>
-          <Route path="/operate/claim" element={<ClaimPage />}></Route>
-          <Route path="/operate/popup" element={<PopupPage />}></Route>
+          <Route path="/operate/common" element={<ClaimPage />}></Route>
+          <Route path="/operate/exposure" element={<PopupPage />}></Route>
           <Route path="/operate/faq" element={<FAQPage />}></Route>
           <Route
             path="/operate/noticeboard"

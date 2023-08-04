@@ -3,7 +3,12 @@ import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
 
 import { MainSelect } from '../../../common/Option/Main';
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button';
+import {
+  BlackBtn,
+  BtnWrap,
+  ExcelBtn,
+  TGreyBtn,
+} from '../../../common/Button/Button';
 import DateGrid from '../../../components/DateGrid/DateGrid';
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
 import { GreyBtn } from '../../../common/Button/Button';
@@ -23,6 +28,7 @@ import {
   FilterHeader,
   FilterFooter,
   FilterSubcontianer,
+  TableBottomWrap,
   FilterLeft,
   FilterRight,
   RowWrap,
@@ -41,6 +47,7 @@ import {
   ExInputsWrap,
   ExCheckWrap,
   ExCheckDiv,
+  TCSubContainer,
 } from '../../../modal/External/ExternalFilter';
 
 import {
@@ -189,7 +196,31 @@ const StartPrice = ({}) => {
         </>
       )}
       <TableContianer>
+        <TCSubContainer bor>
+          <div>
+            조회 목록 (선택 <span>2</span> / 50개 )
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <ExcelBtn>
+              <div>
+                <img src="/img/excel.png" />
+              </div>
+              엑셀 다운로드
+            </ExcelBtn>
+          </div>
+        </TCSubContainer>
+        <TCSubContainer>
+          <div></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <TGreyBtn>적용</TGreyBtn>
+          </div>
+        </TCSubContainer>
         <Test3 />
+        <TableBottomWrap>
+          <BlackBtn width={15} height={40}>
+            저장
+          </BlackBtn>
+        </TableBottomWrap>
       </TableContianer>
     </FilterContianer>
   );

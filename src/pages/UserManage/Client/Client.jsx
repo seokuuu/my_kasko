@@ -3,7 +3,14 @@ import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
 
 import { MainSelect } from '../../../common/Option/Main';
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button';
+import {
+  BlackBtn,
+  BtnWrap,
+  ExcelBtn,
+  WhiteRedBtn,
+  WhiteSkyBtn,
+  BtnBound,
+} from '../../../common/Button/Button';
 import DateGrid from '../../../components/DateGrid/DateGrid';
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
 import { GreyBtn } from '../../../common/Button/Button';
@@ -19,6 +26,7 @@ import {
 } from '../../../common/Check/CheckImg';
 
 import {
+  TCSubContainer,
   FilterContianer,
   FilterHeader,
   FilterFooter,
@@ -264,6 +272,30 @@ const Client = ({}) => {
         </>
       )}
       <TableContianer>
+        <TCSubContainer bor>
+          <div>
+            조회 목록 (선택 <span>2</span> / 50개 )
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <ExcelBtn>
+              <div>
+                <img src="/img/excel.png" />
+              </div>
+              엑셀 다운로드
+            </ExcelBtn>
+          </div>
+        </TCSubContainer>
+        <TCSubContainer>
+          <div>
+            선택 중량<span> 2 </span>kg / 총 중량 kg
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteRedBtn>회원 제한</WhiteRedBtn>
+            <BtnBound />
+            <WhiteRedBtn>회원 삭제</WhiteRedBtn>
+            <WhiteSkyBtn>회원 생성</WhiteSkyBtn>
+          </div>
+        </TCSubContainer>
         <Test3 />
       </TableContianer>
     </FilterContianer>

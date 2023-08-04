@@ -98,6 +98,7 @@ export const DoubleWrap = styled.div`
 
   textarea {
     width: 70%;
+    font-size: 18px;
   }
 `;
 
@@ -186,6 +187,10 @@ export const SubTitle = styled.div`
 
   h6 {
     color: #6b6b6b;
+
+    &:hover {
+      font-weight: bold;
+    }
   }
 `;
 
@@ -255,4 +260,15 @@ export const FHALeft = styled.div`
 export const InputStartWrap = styled.div`
   display: flex;
   margin-left: 15px;
+`;
+
+export const TableBottomWrap = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-top: 15px;
+  button {
+    margin-left: auto;
+    margin-right: auto;
+  }
 `;

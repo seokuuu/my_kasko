@@ -3,7 +3,12 @@ import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
 
 import { MainSelect } from '../../../common/Option/Main';
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button';
+import {
+  BlackBtn,
+  BtnWrap,
+  ExcelBtn,
+  WhiteRedBtn,
+} from '../../../common/Button/Button';
 import DateGrid from '../../../components/DateGrid/DateGrid';
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
 import { GreyBtn } from '../../../common/Button/Button';
@@ -38,6 +43,7 @@ import {
   ExCheckDiv,
   ExInputsWrap,
   SubTitle,
+  TCSubContainer,
 } from '../../../modal/External/ExternalFilter';
 
 const Prono = ({}) => {
@@ -298,7 +304,10 @@ const Prono = ({}) => {
             <FilterRight>
               <DoubleWrap>
                 <p>제품 번호 </p>
-                <textarea style={{ height: '100px' }} />
+                <textarea
+                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
+                  style={{ height: '100px' }}
+                />
               </DoubleWrap>
             </FilterRight>
           </FilterSubcontianer>
@@ -321,6 +330,25 @@ const Prono = ({}) => {
         </>
       )}
       <TableContianer>
+        <TCSubContainer bor>
+          <div>
+            조회 목록 (선택 <span>2</span> / 50개 )
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <ExcelBtn>
+              <div>
+                <img src="/img/excel.png" />
+              </div>
+              엑셀 다운로드
+            </ExcelBtn>
+          </div>
+        </TCSubContainer>
+        <TCSubContainer>
+          <div></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteRedBtn>Pro. No 삭제</WhiteRedBtn>
+          </div>
+        </TCSubContainer>
         <Test3 />
       </TableContianer>
     </FilterContianer>

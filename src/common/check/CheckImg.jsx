@@ -25,7 +25,6 @@ export const StyledCheckSubSquDiv = styled.div`
   width: 12.5%;
   display: flex;
   justify-content: center;
-
   width: 1rem;
   height: 1rem;
   background-color: ${({ isChecked }) => (isChecked ? '#4c83d6' : '#E6E6E6')};

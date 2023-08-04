@@ -3,7 +3,12 @@ import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
 
 import { MainSelect } from '../../../common/Option/Main';
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button';
+import {
+  BlackBtn,
+  BtnWrap,
+  ExcelBtn,
+  WhiteBlackBtn,
+} from '../../../common/Button/Button';
 import DateGrid from '../../../components/DateGrid/DateGrid';
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
 import { GreyBtn } from '../../../common/Button/Button';
@@ -24,6 +29,7 @@ import {
   RowWrap,
   PartWrap,
   PWRight,
+  TableBottomWrap,
   Input,
   GridWrap,
   Tilde,
@@ -31,6 +37,7 @@ import {
   ResetImg,
   TableContianer,
   InputStartWrap,
+  TCSubContainer,
   FilterHeaderAlert,
 } from '../../../modal/External/ExternalFilter';
 
@@ -174,7 +181,10 @@ const Single = ({}) => {
               <FilterRight>
                 <DoubleWrap>
                   <p>제품 번호 </p>
-                  <textarea style={{ height: '100px' }} />
+                  <textarea
+                    placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
+                    style={{ height: '100px' }}
+                  />
                 </DoubleWrap>
               </FilterRight>
             </FilterSubcontianer>
@@ -199,7 +209,33 @@ const Single = ({}) => {
       </div>
 
       <TableContianer>
+        <TCSubContainer bor>
+          <div>
+            조회 목록 (선택 <span>2</span> / 50개 )
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <ExcelBtn>
+              <div>
+                <img src="/img/excel.png" />
+              </div>
+              엑셀 다운로드
+            </ExcelBtn>
+          </div>
+        </TCSubContainer>
+        <TCSubContainer>
+          <div>
+            선택 중량<span> 2 </span>kg / 총 중량 kg
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteBlackBtn>노출 상태 변경</WhiteBlackBtn>
+          </div>
+        </TCSubContainer>
         <Test3 title={'규격 약호 찾기'} />
+        <TableBottomWrap>
+          <BlackBtn width={15} height={40}>
+            저장
+          </BlackBtn>
+        </TableBottomWrap>
       </TableContianer>
     </FilterContianer>
   );
