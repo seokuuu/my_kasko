@@ -5,10 +5,6 @@ import { CheckBox } from './Checkbox';
 export const RadioMainDiv = styled.div`
   display: flex;
   align-items: center;
-
-  p {
-    font-size: 17px;
-  }
 `;
 
 export const RadioCircleDiv = styled.div`
