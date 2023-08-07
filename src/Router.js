@@ -89,6 +89,36 @@ import DataSheetPage from './pages/Operate/Common/Datasheet/DatasheetPage';
 import TermsPage from './pages/Operate/Terms/TermsPage';
 import FooterManagePage from './pages/Operate/FooterManage/FooterManagePage';
 
+/// 사용자 페이지
+// 공지  & 자료실
+import UNotice from './userpages/UserNotiDocs/Notice/NoticePage';
+import UDocs from './userpages/UserNotiDocs/Docs/DocsPage';
+
+// 경매
+import UAuctionSingle from './userpages/UserAuction/Single/SinglePage';
+import UAuctionPackage from './userpages/UserAuction/Package/PackagePage';
+import UAuctionStatus from './userpages/UserAuction/Status/StatusPage';
+import UAuctionWinning from './userpages/UserAuction/Winning/WinningPage';
+
+// 상시 판매
+import USalesSingle from './userpages/UserSales/Single/SinglePage';
+import USalesPackage from './userpages/UserSales/Package/PackagePage';
+import USalesCart from './userpages/UserSales/Cart/CartPage';
+import USalesOrder from './userpages/UserSales/Order/OrderPage';
+
+// 출고 실적 조회
+import UPerformance from './userpages/UserPerformance/UserPerformance/UserPerformancePage';
+
+// 마이페이지
+import UUserManage from './userpages/UserMyPage/UserManage/UserManagePage';
+import UProfile from './userpages/UserMyPage/Profile/ProfilePage';
+import UDestination from './userpages/UserMyPage/Destination/DestinationPage';
+import UPrefer from './userpages/UserMyPage/Prefer/PreferPage';
+
+// 고객센터
+import UFAQ from './userpages/UserCustomer/FAQ/FAQPage';
+import UTerms from './userpages/UserCustomer/Terms/TermsPage';
+
 const Router = () => {
   return (
     <BrowserRouter>
@@ -226,7 +256,62 @@ const Router = () => {
 
           <Route path="/operate/faq/faqpost" element={<FAQPostPage />}></Route>
         </Route>
-        <Route path="/*" element={<NotFound />} />
+
+        {/* 사용자 페이지 */}
+        {/* 사용자 페이지는 관리자 페이지와 다르게 /userpage/* 로 단일 구성된다 */}
+
+        {/* 공지 & 자료실 */}
+        <Route path="/userpage">
+          <Route path="/userpage/notice" element={<UNotice />}></Route>
+          <Route path="/userpage/docs" element={<UDocs />}></Route>
+
+          {/* 경매 */}
+          <Route
+            path="/userpage/actionsingle"
+            element={<UAuctionSingle />}
+          ></Route>
+          <Route
+            path="/userpage/auctionpackage"
+            element={<UAuctionPackage />}
+          ></Route>
+          <Route
+            path="/userpage/actionstatus"
+            element={<UAuctionStatus />}
+          ></Route>
+          <Route
+            path="/userpage/auctionwinning"
+            element={<UAuctionWinning />}
+          ></Route>
+
+          {/* 상시 판매 */}
+          <Route
+            path="/userpage/salessingle"
+            element={<USalesSingle />}
+          ></Route>
+          <Route
+            path="/userpage/salespackage"
+            element={<USalesPackage />}
+          ></Route>
+          <Route path="/userpage/salescart" element={<USalesCart />}></Route>
+          <Route path="/userpage/salesorder" element={<USalesOrder />}></Route>
+
+          {/* 출고 실적 조회 */}
+          <Route
+            path="/userpage/performance"
+            element={<UPerformance />}
+          ></Route>
+
+          {/* 마이 페이지 */}
+          <Route path="/userpage/usermanage" element={<UUserManage />}></Route>
+
+          <Route path="/userpage/userprofile" element={<UProfile />}></Route>
+          <Route path="/userpage/userdestination" element={<UDestination />}></Route>
+          <Route path="/userpage/userprefer" element={<UPrefer />}></Route>
+
+          {/* 고객 센터 */}
+          <Route path="/userpage/userfaq" element={<UFAQ />}></Route>
+          <Route path="/userpage/userterms" element={<UTerms />}></Route>
+        </Route>
       </Routes>
     </BrowserRouter>
   );

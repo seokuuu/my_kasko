@@ -35,6 +35,17 @@ export const FilterSubcontianer = styled.div`
   color: ${props => props.theme.colors.TxtAlter};
 `;
 
+// FilterWrap에 한 줄만 있을 때, FilterSubContainer / FilterLeft / FilterRight 없이 단독으로 쓰임, + RowWrap에 none
+export const FilterSubOneContainer = styled.div`
+  width: 100%;
+  border: 1px solid #c8c8c8;
+  display: flex;
+  padding: 10px;
+  padding-left: 30px;
+  background-color: #dbe2f0;
+  color: ${props => props.theme.colors.TxtAlter};
+`;
+
 //초기화 , 검색 버튼 하단 영역 div
 export const FilterFooter = styled.div`
   border: 1px solid #c8c8c8;
@@ -46,12 +57,12 @@ export const FilterFooter = styled.div`
 `;
 
 // 검색 필터 Left
-export const FilterLeft = styled.div`
-  align-items: flex-start;
-`;
+export const FilterLeft = styled.div``;
 
 // 검색 필터 Right
-export const FilterRight = styled.div``;
+export const FilterRight = styled.div`
+  min-width: 200px;
+`;
 
 //검색 필터 내 한 '줄' 영역 div
 export const RowWrap = styled.div`
@@ -59,7 +70,7 @@ export const RowWrap = styled.div`
   text-align: center;
   align-items: center;
   margin: 10px 0px 10px 0px;
-  border-bottom: 1px solid #c8c8c8;
+  border-bottom: ${({ none }) => (none ? 'none' : '1px solid #c8c8c8')};
   padding-bottom: 10px;
 `;
 
@@ -237,6 +248,25 @@ export const TCSubContainer = styled.div`
   span {
     color: ${props => props.theme.colors.PriNormal};
   }
+
+  > div {
+    display: flex;
+  }
+`;
+
+export const HiddenBtn = styled.div`
+  display: flex;
+  color: ${props => props.theme.colors.TxtAlter};
+  margin-left: 10px;
+
+  img {
+    display: flex;
+  }
+`;
+
+export const PageSelect = styled.select`
+  border: 1px solid #c8c8c8;
+  padding-right: 20px;
 `;
 
 // 흰색 배경 알림 창
@@ -251,6 +281,11 @@ export const FilterHeaderAlert = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 17px;
+`;
+
+export const FilterAlterTxt = styled.div`
+  font-size: 18px;
+  margin-top: 10px;
 `;
 
 export const FHALeft = styled.div`

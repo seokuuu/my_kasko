@@ -192,7 +192,9 @@ const Login = () => {
     <Container>
       <SubContainer>
         <Title>
-          <img src="/img/login_logo.png" alt="" />
+          <Link to={`/userpage/notice`}>
+            <img src="/img/login_logo.png" alt="" />
+          </Link>
         </Title>
         <LoginContainer>
           <LoginSubContainer>

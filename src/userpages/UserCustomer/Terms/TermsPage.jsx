@@ -7,13 +7,13 @@ import {
 import UserSideBar from '../../../components/Left/UserSideBar';
 import Header from '../../../components/Header/Header';
 import SubHeader from '../../../components/Header/SubHeader';
-import Cart from './Cart';
+import Terms from './Terms';
 
 import { useState } from 'react';
 
-const CartPage = () => {
-  const [expanded, setExpanded] = useState('상시판매');
-  const [depth2Color, setDepth2Color] = useState('장바구니');
+const TermsPage = () => {
+  const [expanded, setExpanded] = useState('고객센터');
+  const [depth2Color, setDepth2Color] = useState('이용약관');
   return (
     <>
       <Header />
@@ -26,7 +26,7 @@ const CartPage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <Cart />
+            <Terms />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>
@@ -34,4 +34,4 @@ const CartPage = () => {
   );
 };
 
-export default CartPage;
+export default TermsPage;

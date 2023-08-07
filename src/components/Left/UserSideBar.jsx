@@ -25,51 +25,46 @@ const data = [
   {
     depth1: '공지 & 자료실',
     depth2: [
-      { title: '공지사항', link: 'usernotidocs/notice' },
-      { title: '자료실', link: 'usernotidocs/docs' },
+      { title: '공지사항', link: 'userpage/notice' },
+      { title: '자료실', link: 'userpage/docs' },
     ],
   },
   {
     depth1: '경매',
     depth2: [
-      { title: '경매(일반)', link: 'userauction/general' },
-      { title: '경매(패키지)', link: 'userauction/package' },
-      { title: '경매 진행상황', link: 'userauction/status' },
-      { title: '낙찰 확인', link: 'userauction/winning' },
+      { title: '경매(단일)', link: 'userpage/actionsingle' },
+      { title: '경매(패키지)', link: 'userpage/auctionpackage' },
+      { title: '경매 진행 조회', link: 'userpage/actionstatus' },
+      { title: '낙찰 확인', link: 'userpage/auctionwinning' },
     ],
   },
   {
     depth1: '상시판매',
     depth2: [
-      { title: '단일', link: 'usersales/single' },
-      { title: '패키지', link: 'usersales/package' },
-      { title: '장바구니', link: 'usersales/cart' },
-      { title: '주문확인', link: 'usersales/order' },
+      { title: '단일', link: 'userpage/salessingle' },
+      { title: '패키지', link: 'userpage/salespackage' },
+      { title: '장바구니', link: 'userpage/salescart' },
+      { title: '주문확인', link: 'userpage/salesorder' },
     ],
   },
   {
     depth1: '출고 실적 조회',
-    depth2: [
-      { title: '단일', link: 'userorder/single' },
-      { title: '패키지', link: 'userorder/package' },
-      { title: '장바구니', link: 'userorder/cart' },
-      { title: '주문확인', link: 'userorder/orderconfirm' },
-    ],
+    depth2: [{ title: '출고 실적 조회', link: 'userpage/performance' }],
   },
   {
     depth1: '마이페이지',
     depth2: [
-      { title: '사용자 관리', link: 'usermypage/usermanage' },
-      { title: '개인정보수정', link: 'usermypage/profile' },
-      { title: '목적지 관리', link: 'usermypage/destination' },
-      { title: '즐겨찾기', link: 'usermypage/bookmark' },
+      { title: '사용자 관리', link: 'userpage/usermanage' },
+      { title: '개인정보수정', link: 'userpage/userprofile' },
+      { title: '목적지 관리', link: 'userpage/userdestination' },
+      { title: '선호 제품 관리', link: 'userpage/userprefer' },
     ],
   },
   {
     depth1: '고객센터',
     depth2: [
-      { title: 'FAQ', link: 'usercustomer/faq' },
-      { title: '이용약관', link: 'usercustomer/terms' },
+      { title: 'FAQ', link: 'userpage/userfaq' },
+      { title: '이용약관', link: 'userpage/userterms' },
     ],
   },
 ];

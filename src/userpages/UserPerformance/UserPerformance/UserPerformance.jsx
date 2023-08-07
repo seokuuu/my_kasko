@@ -17,7 +17,7 @@ import {
   TGreyBtn,
   TWhiteBtn,
 } from '../../../common/Button/Button';
-import Test3 from '../../Test/Test3';
+import Test3 from '../../../pages/Test/Test3';
 import HeaderToggle from '../../../components/Toggle/HeaderToggle';
 import { toggleAtom } from '../../../store/Layout/Layout';
 
@@ -58,7 +58,7 @@ import {
   RadioInnerCircleDiv,
 } from '../../../common/Check/RadioImg';
 
-const Bidding = ({}) => {
+const UserPerformance = ({}) => {
   const radioDummy = ['전체', '미진행', '진행중', '종료'];
   const [checkRadio, setCheckRadio] = useState(
     Array.from({ length: radioDummy.length }, () => false)
@@ -288,4 +288,4 @@ const Bidding = ({}) => {
   );
 };
 
-export default Bidding;
+export default UserPerformance;

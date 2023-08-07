@@ -5,7 +5,7 @@ const SubHeader = () => {
   return (
     <SubHeaderContainer>
       <SubHeadLeft>[알림] 1회차 14:00시 경매 진행 중 입니다.</SubHeadLeft>
-      <SubHeadRight> Countdown </SubHeadRight>
+      <SubHeadRight>Countdown </SubHeadRight>
     </SubHeaderContainer>
   );
 };
