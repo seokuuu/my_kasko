@@ -31,7 +31,7 @@ export const FilterSubcontianer = styled.div`
   padding: 10px;
   padding-left: 30px;
   background-color: #dbe2f0;
-  justify-content: space-around;
+  justify-content: space-between;
   color: ${props => props.theme.colors.TxtAlter};
 `;
 
@@ -61,7 +61,7 @@ export const FilterLeft = styled.div``;
 
 // 검색 필터 Right
 export const FilterRight = styled.div`
-  min-width: 200px;
+  width: 300px;
 `;
 
 //검색 필터 내 한 '줄' 영역 div
@@ -98,17 +98,14 @@ export const PWRight = styled.div`
 `;
 
 export const DoubleWrap = styled.div`
-  padding-left: 20px;
-  padding-top: 20px;
-  height: 140px;
   display: flex;
-
+  padding: 10px 10px 0px 0px;
   p {
-    width: 30%;
+    width: 120px;
   }
 
   textarea {
-    width: 70%;
+    width: 300px;
     font-size: 18px;
   }
 `;
@@ -247,6 +244,7 @@ export const TCSubContainer = styled.div`
 
   span {
     color: ${props => props.theme.colors.PriNormal};
+    margin: 0px 4px;
   }
 
   > div {
@@ -272,11 +270,10 @@ export const PageSelect = styled.select`
 // 흰색 배경 알림 창
 export const FilterHeaderAlert = styled.div`
   width: 100%;
-
   border: 2px solid #c8c8c8;
   background-color: white;
   margin-bottom: 10px;
-  padding: 10px 20px;
+  padding: 15px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -305,5 +302,15 @@ export const TableBottomWrap = styled.div`
   button {
     margin-left: auto;
     margin-right: auto;
+  }
+`;
+
+export const AlertImg = styled.div`
+  position: relative;
+  top: -20px;
+  cursor: pointer;
+
+  &:hover {
+    font-weight: bold;
   }
 `;

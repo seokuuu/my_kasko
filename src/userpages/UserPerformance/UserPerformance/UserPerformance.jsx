@@ -107,11 +107,7 @@ const UserPerformance = ({}) => {
     <FilterContianer>
       <FilterHeader>
         <div style={{ display: 'flex' }}>
-          <h1>경매 응찰</h1>
-          <SubTitle>
-            <h5>단일</h5>
-            <h6>패키지</h6>
-          </SubTitle>
+          <h1>출고 실적 조회</h1>
         </div>
         {/* 토글 쓰기 */}
         <HeaderToggle
@@ -120,30 +116,6 @@ const UserPerformance = ({}) => {
           toggleMsg={toggleMsg}
         />
       </FilterHeader>
-      <FilterHeaderAlert>
-        <div style={{ display: 'flex' }}>
-          <div style={{ marginRight: '20px' }}>
-            <img src="/img/notice.png" />
-          </div>
-          <div style={{ marginTop: '6px' }}>
-            <div>
-              · 경매 남은 시간은 본 화면에서 발생되는 메시지 창에 따라 다소
-              지연될 수 있습니다. 경매 남은 시간을 최신으로 갱신하려면 다시
-              조회해 주세요.
-            </div>
-            <div style={{ marginTop: '6px' }}>
-              · 처음 경매 참여하신 고객은 왼쪽 메뉴 경매 관리 {'>'} 고객 목적지
-              등록 화면에서 배송 목적지를 반드시 등록한 후 응찰에 참여해 주시길
-              부탁드립니다.
-            </div>
-          </div>
-        </div>
-
-        <div>
-          수정
-          <img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-        </div>
-      </FilterHeaderAlert>
       {exFilterToggle && (
         <>
           <FilterSubcontianer>

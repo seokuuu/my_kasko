@@ -57,13 +57,20 @@ import {
   RadioCircleDiv,
   RadioInnerCircleDiv,
 } from '../../../common/Check/RadioImg';
+import Hidden from '../../../components/TableInner/Hidden';
+import PageDropdown from '../../../components/TableInner/PageDropdown';
 
 const Winning = ({}) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기'];
+  const radioDummy = ['전체', '낙찰', '낙찰 취소', '낙찰 확정'];
 
   //checkSales
   const [check1, setCheck1] = useState(
     Array.from({ length: checkSales.length }, () => false)
+  );
+
+  const [checkRadio, setCheckRadio] = useState(
+    Array.from({ length: radioDummy.length }, () => false)
   );
 
   //checkShips
@@ -173,7 +180,6 @@ const Winning = ({}) => {
                     />
                   </PWRight>
                 </PartWrap>
-
                 <PartWrap>
                   <h6>고객사</h6>
                   <Input />
@@ -184,56 +190,26 @@ const Winning = ({}) => {
               </RowWrap>
               <RowWrap style={{ borderBottom: '0px' }}>
                 <PartWrap>
-                  <h6>구분</h6>
-                  <PWRight>
-                    <MainSelect
-                      options={storageOptions}
-                      defaultValue={storageOptions[0]}
-                    />
-                  </PWRight>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>주문 상태</h6>
-                  <ExCheckWrap>
-                    {checkSales.map((x, index) => (
-                      <ExCheckDiv>
-                        <StyledCheckSubSquDiv
-                          onClick={() =>
-                            setCheck1(
-                              CheckBox(check1, check1.length, index, true)
-                            )
-                          }
-                          isChecked={check1[index]}
+                  <h6>진행 상태</h6>
+                  <ExRadioWrap>
+                    {radioDummy.map((text, index) => (
+                      <RadioMainDiv key={index}>
+                        <RadioCircleDiv
+                          isChecked={checkRadio[index]}
+                          onClick={() => {
+                            setCheckRadio(
+                              CheckBox(checkRadio, checkRadio.length, index)
+                            );
+                          }}
                         >
-                          <CheckImg2 src="/svg/check.svg" />
-                        </StyledCheckSubSquDiv>
-                        <p>{x}</p>
-                      </ExCheckDiv>
+                          <RadioInnerCircleDiv />
+                        </RadioCircleDiv>
+                        <div style={{ display: 'flex', marginLeft: '5px' }}>
+                          {text}
+                        </div>
+                      </RadioMainDiv>
                     ))}
-                  </ExCheckWrap>
-                </PartWrap>
-                <PartWrap />
-              </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
-                  <h6 style={{ width: '130px' }}>확정 전송 일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6 style={{ marginLeft: '20px' }}>주문 일자</h6>
-                  <ExInputsWrap>
-                    <GridWrap>
-                      <DateGrid bgColor={'white'} fontSize={17} />
-                      <Tilde>~</Tilde>
-                      <DateGrid bgColor={'white'} fontSize={17} />
-                    </GridWrap>
-                  </ExInputsWrap>
+                  </ExRadioWrap>
                 </PartWrap>
               </RowWrap>
             </FilterLeft>
@@ -269,8 +245,10 @@ const Winning = ({}) => {
         <TCSubContainer bor>
           <div>
             조회 목록 (선택 <span>2</span> / 50개 )
+            <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
+            <PageDropdown />
             <ExcelBtn>
               <div>
                 <img src="/img/excel.png" />
@@ -283,10 +261,7 @@ const Winning = ({}) => {
           <div>
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteBlackBtn>낙찰 생성</WhiteBlackBtn>
-            <WhiteRedBtn>낙찰 취소</WhiteRedBtn>
-          </div>
+          <div style={{ display: 'flex', gap: '10px' }}></div>
         </TCSubContainer>
         <Test3 />
         <TCSubContainer>

@@ -107,11 +107,7 @@ const Package = ({}) => {
     <FilterContianer>
       <FilterHeader>
         <div style={{ display: 'flex' }}>
-          <h1>경매 응찰</h1>
-          <SubTitle>
-            <h5>단일</h5>
-            <h6>패키지</h6>
-          </SubTitle>
+          <h1>패키지</h1>
         </div>
         {/* 토글 쓰기 */}
         <HeaderToggle
@@ -126,15 +122,9 @@ const Package = ({}) => {
             <img src="/img/notice.png" />
           </div>
           <div style={{ marginTop: '6px' }}>
-            <div>
-              · 경매 남은 시간은 본 화면에서 발생되는 메시지 창에 따라 다소
-              지연될 수 있습니다. 경매 남은 시간을 최신으로 갱신하려면 다시
-              조회해 주세요.
-            </div>
+            <div>· 주의사항 영역</div>
             <div style={{ marginTop: '6px' }}>
-              · 처음 경매 참여하신 고객은 왼쪽 메뉴 경매 관리 {'>'} 고객 목적지
-              등록 화면에서 배송 목적지를 반드시 등록한 후 응찰에 참여해 주시길
-              부탁드립니다.
+              <div>· 주의사항 영역</div>
             </div>
           </div>
         </div>
@@ -179,13 +169,6 @@ const Package = ({}) => {
               </RowWrap>
               <RowWrap style={{ borderBottom: '0px' }}>
                 <PartWrap>
-                  <h6>구분2</h6>
-                  <MainSelect />
-                  <span style={{ margin: '0px -10px 0px 5px' }}>~</span>
-                  <MainSelect />
-                </PartWrap>
-
-                <PartWrap>
                   <h6>두께(CM)</h6>
                   <ExInputsWrap>
                     <Input /> <Tilde>~</Tilde>
@@ -212,9 +195,16 @@ const Package = ({}) => {
                 </PartWrap>
               </RowWrap>
             </FilterLeft>
-            <FilterRight>
-              <DoubleWrap>
+            <FilterRight style={{ height: '240px' }}>
+              <DoubleWrap style={{ paddingTop: '0px' }}>
                 <p>제품 번호 </p>
+                <textarea
+                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
+                  style={{ height: '100px' }}
+                />
+              </DoubleWrap>
+              <DoubleWrap style={{ paddingTop: '0px' }}>
+                <p>패키지 번호 </p>
                 <textarea
                   placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
                   style={{ height: '100px' }}
@@ -252,12 +242,6 @@ const Package = ({}) => {
               </div>
               엑셀 다운로드
             </ExcelBtn>
-            <WhiteGrnBtn>
-              <div>
-                <img src="/img/grnstar.png" />
-              </div>
-              관심상품 등록
-            </WhiteGrnBtn>
           </div>
         </TCSubContainer>
         <TCSubContainer bor>
@@ -271,15 +255,12 @@ const Package = ({}) => {
               alignItems: 'center',
             }}
           >
-            <TWhiteBtn height={30} width={25}>
-              찾기
-            </TWhiteBtn>
-            <TGreyBtn height={30} width={25}>
-              적용
-            </TGreyBtn>
-            <SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50}>
-              응찰
-            </SkyBtn>
+            <WhiteGrnBtn>
+              <div>
+                <img src="/img/grnstar.png" />
+              </div>
+              관심상품 등록
+            </WhiteGrnBtn>
           </div>
         </TCSubContainer>
         <Test3 />

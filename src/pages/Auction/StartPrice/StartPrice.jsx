@@ -161,7 +161,6 @@ const StartPrice = ({}) => {
                     <DateGrid bgColor={'white'} fontSize={17} />
                   </GridWrap>
                 </PartWrap>
-                <PartWrap />
 
                 <PartWrap>
                   <h6>유찰 횟수</h6>

@@ -53,7 +53,7 @@ const asDate = dateAsString => {
   );
 };
 
-const Test3 = ({ title }) => {
+const Test3 = ({ title, hei }) => {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [filterText, setFilterText] = useState(''); // 필터 텍스트를 저장하는 상태 변수
   const gridRef = useRef();
@@ -257,7 +257,7 @@ const Test3 = ({ title }) => {
 
   return (
     <div style={containerStyle}>
-      <TestContainer>
+      <TestContainer hei={hei}>
         {/* <TestHeader>
           <label>
             <input
@@ -416,9 +416,9 @@ const Test3 = ({ title }) => {
 export default Test3;
 
 const TestContainer = styled.div`
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: ${({ hei }) => (hei ? `${hei}%` : '100%')};
 `;
 
 const TestHeader = styled.div`

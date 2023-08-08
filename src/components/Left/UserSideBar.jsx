@@ -54,7 +54,6 @@ const data = [
   {
     depth1: '마이페이지',
     depth2: [
-      { title: '사용자 관리', link: 'userpage/usermanage' },
       { title: '개인정보수정', link: 'userpage/userprofile' },
       { title: '목적지 관리', link: 'userpage/userdestination' },
       { title: '선호 제품 관리', link: 'userpage/userprefer' },
@@ -84,14 +83,17 @@ const UserSideBar = ({ expanded, setExpanded, depth2Color }) => {
       )} */}
       <SideBarWrap>
         <AccordionWrap>
-          <AcTop style={{ backgroundColor: '#2B3344' }}>
-            <AcTopCal onClick={() => setCalModal(true)}>
-              <div>경매 캘린더</div>
-              <div>
-                <img src="/img/calender.png" />
-              </div>
-            </AcTopCal>
-          </AcTop>
+          <Link to={`/userpage/main`}>
+            <AcTop style={{ backgroundColor: '#2B3344' }}>
+              <AcTopCal style={{ justifyContent: 'center', gap: '10px' }}>
+                <div>
+                  <img src="/img/home.png" />
+                </div>
+                <div style={{ color: 'white' }}>메인 페이지</div>
+              </AcTopCal>
+            </AcTop>
+          </Link>
+
           {data.map((item, index) => (
             <StyledAccordion
               key={index}

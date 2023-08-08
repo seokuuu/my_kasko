@@ -119,6 +119,9 @@ import UPrefer from './userpages/UserMyPage/Prefer/PreferPage';
 import UFAQ from './userpages/UserCustomer/FAQ/FAQPage';
 import UTerms from './userpages/UserCustomer/Terms/TermsPage';
 
+//사용자 메인페이지
+import UserMainPage from './userpages/MainPage';
+
 const Router = () => {
   return (
     <BrowserRouter>
@@ -260,6 +263,8 @@ const Router = () => {
         {/* 사용자 페이지 */}
         {/* 사용자 페이지는 관리자 페이지와 다르게 /userpage/* 로 단일 구성된다 */}
 
+        <Route path="/userpage/main" element={<UserMainPage />}></Route>
+
         {/* 공지 & 자료실 */}
         <Route path="/userpage">
           <Route path="/userpage/notice" element={<UNotice />}></Route>
@@ -305,7 +310,10 @@ const Router = () => {
           <Route path="/userpage/usermanage" element={<UUserManage />}></Route>
 
           <Route path="/userpage/userprofile" element={<UProfile />}></Route>
-          <Route path="/userpage/userdestination" element={<UDestination />}></Route>
+          <Route
+            path="/userpage/userdestination"
+            element={<UDestination />}
+          ></Route>
           <Route path="/userpage/userprefer" element={<UPrefer />}></Route>
 
           {/* 고객 센터 */}

@@ -41,6 +41,8 @@ import {
   PageSelect,
   HiddenBtn,
 } from '../../../modal/External/ExternalFilter';
+import Hidden from '../../../components/TableInner/Hidden';
+import PageDropdown from '../../../components/TableInner/PageDropdown';
 
 const Notice = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -132,16 +134,10 @@ const Notice = ({}) => {
         <TCSubContainer bor>
           <div>
             조회 목록 (선택 <span>2</span> / 50개 )
-            <HiddenBtn>
-              숨긴 항목
-              <img src="/img/arrow_B.png" />
-            </HiddenBtn>
+            <Hidden />
           </div>
           <div style={{ gap: '10px' }}>
-            <PageSelect name="pagenation">
-              <option value="">50개씩</option>
-              <option value="dog">100개씩</option>
-            </PageSelect>
+            <PageDropdown />
           </div>
         </TCSubContainer>
 

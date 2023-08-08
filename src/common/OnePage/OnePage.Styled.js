@@ -24,6 +24,31 @@ export const OnePageContainer = styled.div`
   max-height: 100vh;
 `;
 
+export const OnePageFlexContainer = styled.div`
+  width: 1200px;
+  font-size: 18px;
+  background-color: white;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid black;
+  min-height: 88vh;
+  height: fit-content;
+`;
+
+export const OnePageFlexSubContainer = styled.div`
+  padding-left: 3%;
+  padding-right: 3%;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: space-between;
+
+  h1 {
+    font-size: 20px;
+  }
+`;
+
 export const OnePageSubContainer = styled.div`
   padding-left: 10%;
   padding-right: 10%;
@@ -92,7 +117,7 @@ export const FWTitle = styled.div`
 `;
 
 export const HalfWrap = styled.div`
-  justify-content: space-between;
+  justify-content: space-evenly;
   display: flex;
 `;
 
@@ -124,6 +149,26 @@ export const Title = styled.div`
   }
 `;
 
+export const FlexPart = styled.div`
+  width: 500px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+
+  span {
+    color: ${props => props.theme.colors.StatAlert};
+  }
+`;
+
+export const FlexTitle = styled.div`
+  width: 35%;
+`;
+
+export const FlexContent = styled.div`
+  width: 65%;
+  display: flex;
+`;
+
 export const OnePageSelect = styled(Select)`
   width: 200px;
   text-align: center;
@@ -143,4 +188,32 @@ export const At = styled.div`
 export const FullWrap2 = styled.div`
   width: 100%;
   height: fit-content;
+`;
+
+export const Bar = styled.div`
+  border-bottom: 2px solid #f1f1f1;
+  width: 103%;
+  margin: 30px 0px;
+`;
+
+export const EqualCheckWrap = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 99%;
+  font-size: 16px;
+  margin-bottom: 5px;
+`;
+
+export const AddBtn = styled.div`
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${props => props.theme.colors.PriNormal};
+  border: 1px solid ${props => props.theme.colors.PriNormal};
+  cursor: pointer;
+  &:hover {
+    border: 2px solid ${props => props.theme.colors.PriNormal};
+  }
 `;

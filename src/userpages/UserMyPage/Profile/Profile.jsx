@@ -1,291 +1,437 @@
 import { useState, useEffect } from 'react';
-import { styled } from 'styled-components';
-import { storageOptions } from '../../../common/Option/SignUp';
-
-import { MainSelect } from '../../../common/Option/Main';
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button';
-import DateGrid from '../../../components/DateGrid/DateGrid';
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
 import {
-  GreyBtn,
-  ExcelBtn,
-  WhiteGrnBtn,
-  IndigoBtn,
-  BlueBtn,
-  SkyBtn,
-  SwitchBtn,
-  TGreyBtn,
-  TWhiteBtn,
-} from '../../../common/Button/Button';
-import Test3 from '../../../pages/Test/Test3';
-import HeaderToggle from '../../../components/Toggle/HeaderToggle';
-import { toggleAtom } from '../../../store/Layout/Layout';
+  OnePageContainer,
+  OnePageSubContainer,
+  MainTitle,
+  HalfWrap,
+  Left,
+  Right,
+  Title,
+  Part,
+  At,
+  FlexPart,
+  FlexTitle,
+  OnePageFlexContainer,
+  OnePageFlexSubContainer,
+  FlexContent,
+  Bar,
+  EqualCheckWrap,
+  AddBtn,
+} from '../../../common/OnePage/OnePage.Styled';
 
-import { CheckBox } from '../../../common/Check/Checkbox';
-import {
-  StyledCheckMainDiv,
-  StyledCheckSubSquDiv,
-  CheckImg2,
-} from '../../../common/Check/CheckImg';
+import { CustomInput, FlexInput } from '../../../common/Input/Input';
+import { CustomSelect } from '../../../common/Option/Main';
+import { emailOptions, accountOptions } from '../../../common/Option/SignUp';
+import { AccountSelect } from '../../../common/Option/SignUp';
+import { EditSelect, depositOptions } from '../../../common/Option/SignUp';
 
-import {
-  FilterContianer,
-  FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  TCSubContainer,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-} from '../../../modal/External/ExternalFilter';
+import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button';
+import { BottomP } from '../../../pages/User/SignUp/SignUp.Styled';
 
+import { RadioContainer } from '../../../pages/User/SignUp/SignUp';
+
+import { TxtDiv } from '../../../pages/User/SignUp/SignUp.Styled';
 import {
   RadioMainDiv,
   RadioCircleDiv,
   RadioInnerCircleDiv,
 } from '../../../common/Check/RadioImg';
 
-const Profile = ({}) => {
-  const radioDummy = ['전체', '미진행', '진행중', '종료'];
+import { CheckBox } from '../../../common/Check/Checkbox';
+import { CheckBtn } from '../../../pages/User/SignUp/SignUp.Styled';
+
+import {
+  StyledCheckMainDiv,
+  StyledCheckSubSquDiv,
+  CheckImg2,
+} from '../../../common/Check/CheckImg';
+
+const ProfileEdit = () => {
+  const [input, setInput] = useState('');
+  const handleSelectChange = (selectedOption, name) => {
+    setInput(prevState => ({
+      ...prevState,
+      [name]: selectedOption.label,
+    }));
+  };
+
+  const radioDummy = ['법인사업자', '개인사업자'];
   const [checkRadio, setCheckRadio] = useState(
     Array.from({ length: radioDummy.length }, () => false)
   );
-
   const [savedRadioValue, setSavedRadioValue] = useState('');
+
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex(
       (isChecked, index) => isChecked && index < radioDummy.length
     );
-
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
+    if (checkedIndex !== -1) {
+      const selectedValue = radioDummy[checkedIndex];
+      setSavedRadioValue(selectedValue);
+      setInput({ ...input, type: selectedValue });
+    }
   }, [checkRadio]);
 
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  };
-  const [isRotated, setIsRotated] = useState(false);
+  const checkDummy = ['유통', '제조'];
+  const [check, setCheck] = useState(
+    Array.from({ length: checkDummy.length }, () => false)
+  );
+  const [checkData, setCheckData] = useState(
+    Array.from({ length: checkDummy.length }, () => '')
+  );
 
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated(prevIsRotated => !prevIsRotated);
-  };
+  useEffect(() => {
+    const updatedCheck = checkDummy.map((value, index) => {
+      return check[index] ? value : '';
+    });
+    // 그냥 배열에 담을 때
+    const filteredCheck = updatedCheck.filter(item => item !== '');
+    setCheckData(filteredCheck);
 
-  // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom);
-  const [toggleMsg, setToggleMsg] = useState('On');
-  const toggleBtnClick = () => {
-    setExfilterToggle(prev => !prev);
-    if (exFilterToggle === true) {
-      setToggleMsg('Off');
-    } else {
-      setToggleMsg('On');
-    }
-  };
+    // 전송용 input에 담을 때
+    // setInput({
+    //   ...input,
+    //   businessType: updatedCheck.filter(item => item !== ''),
+    // });
+  }, [check]);
 
   return (
-    <FilterContianer>
-      <FilterHeader>
-        <div style={{ display: 'flex' }}>
-          <h1>경매 응찰</h1>
-          <SubTitle>
-            <h5>단일</h5>
-            <h6>패키지</h6>
-          </SubTitle>
-        </div>
-        {/* 토글 쓰기 */}
-        <HeaderToggle
-          exFilterToggle={exFilterToggle}
-          toggleBtnClick={toggleBtnClick}
-          toggleMsg={toggleMsg}
-        />
-      </FilterHeader>
-      <FilterHeaderAlert>
-        <div style={{ display: 'flex' }}>
-          <div style={{ marginRight: '20px' }}>
-            <img src="/img/notice.png" />
-          </div>
-          <div style={{ marginTop: '6px' }}>
-            <div>
-              · 경매 남은 시간은 본 화면에서 발생되는 메시지 창에 따라 다소
-              지연될 수 있습니다. 경매 남은 시간을 최신으로 갱신하려면 다시
-              조회해 주세요.
-            </div>
-            <div style={{ marginTop: '6px' }}>
-              · 처음 경매 참여하신 고객은 왼쪽 메뉴 경매 관리 {'>'} 고객 목적지
-              등록 화면에서 배송 목적지를 반드시 등록한 후 응찰에 참여해 주시길
-              부탁드립니다.
-            </div>
-          </div>
-        </div>
+    <OnePageFlexContainer>
+      <MainTitle>개인정보 수정</MainTitle>
+      <div>
+        {' '}
+        <OnePageFlexSubContainer>
+          <Left>
+            <h1>회원정보</h1>
+            <Bar />
+            <FlexPart>
+              <FlexTitle>
+                아이디<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <FlexInput disabled />
+              </FlexContent>
+            </FlexPart>
 
-        <div>
-          수정
-          <img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-        </div>
-      </FilterHeaderAlert>
-      {exFilterToggle && (
-        <>
-          <FilterSubcontianer>
-            <FilterLeft>
-              <RowWrap>
-                <PartWrap>
-                  <h6>창고 구분</h6>
-                  <PWRight>
-                    <MainSelect
-                      options={storageOptions}
-                      defaultValue={storageOptions[0]}
-                    />
-                  </PWRight>
-                </PartWrap>
+            <FlexPart>
+              <FlexTitle>
+                새 비밀번호<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <FlexInput />
+              </FlexContent>
+            </FlexPart>
 
-                <PartWrap>
-                  <h6>매입처</h6>
-                  <PWRight>
-                    <MainSelect
-                      options={storageOptions}
-                      defaultValue={storageOptions[0]}
-                    />
-                  </PWRight>
-                </PartWrap>
+            <FlexPart>
+              <FlexTitle>
+                새 비밀번호 확인<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <FlexInput />
+              </FlexContent>
+            </FlexPart>
 
-                <PartWrap>
-                  <h6>규격 약호</h6>
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
-                  <h6>구분2</h6>
-                  <MainSelect />
-                  <span style={{ margin: '0px -10px 0px 5px' }}>~</span>
-                  <MainSelect />
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>두께(CM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
-                <PartWrap />
-              </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
-                  <h6>폭(CM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>길이(CM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
-              </RowWrap>
-            </FilterLeft>
-            <FilterRight>
-              <DoubleWrap>
-                <p>제품 번호 </p>
-                <textarea
-                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                  style={{ height: '100px' }}
+            <FlexPart>
+              <FlexTitle>
+                경매 담당자 정보<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <CustomInput placeholder="직함 입력" width={130} />
+                <CustomInput
+                  placeholder=" 성함 입력"
+                  width={188}
+                  style={{ marginLeft: '5px' }}
                 />
-              </DoubleWrap>
-            </FilterRight>
-          </FilterSubcontianer>
-          <FilterFooter>
-            <div style={{ display: 'flex' }}>
-              <p>초기화</p>
-              <ResetImg
-                src="/img/reset.png"
-                style={{ marginLeft: '10px', marginRight: '20px' }}
-                onClick={handleImageClick}
-                className={isRotated ? 'rotate' : ''}
-              />
-            </div>
-            <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40}>
-                검색
-              </BlackBtn>
-            </div>
-          </FilterFooter>
-        </>
-      )}
-      <TableContianer>
-        <TCSubContainer bor>
-          <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <ExcelBtn>
-              <div>
-                <img src="/img/excel.png" />
-              </div>
-              엑셀 다운로드
-            </ExcelBtn>
-            <WhiteGrnBtn>
-              <div>
-                <img src="/img/grnstar.png" />
-              </div>
-              관심상품 등록
-            </WhiteGrnBtn>
-          </div>
-        </TCSubContainer>
-        <TCSubContainer bor>
-          <div>
-            선택 중량<span> 2 </span>kg / 총 중량 kg
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              gap: '10px',
-              alignItems: 'center',
-            }}
-          >
-            <TWhiteBtn height={30} width={25}>
-              찾기
-            </TWhiteBtn>
-            <TGreyBtn height={30} width={25}>
-              적용
-            </TGreyBtn>
-            <SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50}>
-              응찰
-            </SkyBtn>
-          </div>
-        </TCSubContainer>
-        <Test3 />
-      </TableContianer>
-    </FilterContianer>
+              </FlexContent>
+            </FlexPart>
+
+            <FlexPart>
+              <FlexTitle>
+                이메일<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <FlexInput />
+              </FlexContent>
+            </FlexPart>
+
+            <FlexPart>
+              <FlexTitle>
+                휴대폰 번호<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <FlexInput />
+              </FlexContent>
+            </FlexPart>
+            <Bar />
+            <EqualCheckWrap>
+              <input type="checkbox" style={{ marginRight: '5px' }} />
+              가입 정보와 동일
+            </EqualCheckWrap>
+            <FlexPart>
+              <FlexTitle>
+                입금 담당자 정보<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <EditSelect
+                  options={depositOptions}
+                  defaultValue={depositOptions[0]}
+                  onChange={selectedOption =>
+                    handleSelectChange(selectedOption, 'depositManagerTitle')
+                  }
+                />
+                <CustomInput placeholder="담당자 성함 입력" width={190} />
+              </FlexContent>
+            </FlexPart>
+
+            <FlexPart>
+              <FlexTitle>
+                휴대폰 번호<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <FlexInput placeholder="연락처 입력 ('-' 제외)" />
+              </FlexContent>
+            </FlexPart>
+            <EqualCheckWrap>
+              <input type="checkbox" style={{ marginRight: '5px' }} />
+              가입 정보와 동일
+            </EqualCheckWrap>
+            <FlexPart>
+              <FlexTitle>
+                출고 담당자 정보<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <EditSelect
+                  options={depositOptions}
+                  defaultValue={depositOptions[0]}
+                  onChange={selectedOption =>
+                    handleSelectChange(selectedOption, 'depositManagerTitle')
+                  }
+                />
+                <CustomInput placeholder=" 담당자 성함 입력" width={190} />
+              </FlexContent>
+            </FlexPart>
+
+            <FlexPart>
+              <FlexTitle>
+                휴대폰 번호<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <FlexInput placeholder="연락처 입력 ('-' 제외)" />
+              </FlexContent>
+            </FlexPart>
+
+            <FlexPart>
+              <FlexTitle>담당자 추가</FlexTitle>
+              <FlexContent>
+                <AddBtn>추가하기</AddBtn>
+              </FlexContent>
+            </FlexPart>
+          </Left>
+          {/* -------------------------------------------------------------- */}
+          <Right>
+            <h1>비즈니스 정보</h1>
+            <Bar />
+            <FlexPart>
+              <FlexTitle>
+                사업자 구분<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '80px',
+                    width: '100%',
+                  }}
+                >
+                  {radioDummy.map((text, index) => (
+                    <RadioMainDiv key={index}>
+                      <RadioCircleDiv
+                        isChecked={checkRadio[index]}
+                        onClick={() => {
+                          setCheckRadio(
+                            CheckBox(checkRadio, checkRadio.length, index)
+                          );
+                        }}
+                      >
+                        <RadioInnerCircleDiv />
+                      </RadioCircleDiv>
+                      <div style={{ display: 'flex', marginLeft: '5px' }}>
+                        {text}
+                      </div>
+                    </RadioMainDiv>
+                  ))}
+                </div>
+              </FlexContent>
+            </FlexPart>
+
+            <FlexPart>
+              <FlexTitle>
+                회사 명<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <FlexInput />
+              </FlexContent>
+            </FlexPart>
+
+            <FlexPart>
+              <FlexTitle>
+                대표자 성명<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <FlexInput />
+              </FlexContent>
+            </FlexPart>
+
+            <FlexPart>
+              <FlexTitle>
+                대표 연락처<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <FlexInput />
+              </FlexContent>
+            </FlexPart>
+
+            <FlexPart>
+              <FlexTitle>
+                팩스번호<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <FlexInput />
+              </FlexContent>
+            </FlexPart>
+
+            <FlexPart style={{ marginBottom: '5px' }}>
+              <FlexTitle>
+                주소<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <CustomInput width={223} />
+                <CheckBtn
+                  style={{
+                    backgroundColor: 'black',
+                    color: 'white',
+                    fontSize: '16px',
+                  }}
+                >
+                  찾기
+                </CheckBtn>
+              </FlexContent>
+            </FlexPart>
+            <FlexPart>
+              <FlexTitle></FlexTitle>
+              <FlexContent>
+                <FlexInput />
+              </FlexContent>
+            </FlexPart>
+
+            <FlexPart>
+              <FlexTitle>
+                업태 선택<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '120px',
+                    width: '100%',
+                  }}
+                >
+                  {checkDummy.map((x, index) => (
+                    <StyledCheckMainDiv>
+                      <StyledCheckSubSquDiv
+                        onClick={() =>
+                          setCheck(CheckBox(check, check.length, index, true))
+                        }
+                        isChecked={check[index]}
+                      >
+                        <CheckImg2 src="/svg/check.svg" />
+                      </StyledCheckSubSquDiv>
+                      <p>{x}</p>
+                    </StyledCheckMainDiv>
+                  ))}
+                </div>
+              </FlexContent>
+            </FlexPart>
+
+            <FlexPart>
+              <FlexTitle>
+                사업자 번호<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <CustomInput width={223} />
+                <CheckBtn style={{ fontSize: '16px' }}>중복확인</CheckBtn>
+              </FlexContent>
+            </FlexPart>
+
+            <FlexPart style={{ marginBottom: '5px' }}>
+              <FlexTitle>
+                사업자등록증<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <FlexInput />
+              </FlexContent>
+            </FlexPart>
+            <FlexPart>
+              <FlexTitle></FlexTitle>
+              <FlexContent>
+                <TxtDiv style={{ width: '100%' }}>
+                  <img src="/svg/Upload.svg" />
+                  <p>파일 첨부</p>
+                </TxtDiv>
+              </FlexContent>
+            </FlexPart>
+
+            <FlexPart style={{ marginBottom: '5px' }}>
+              <FlexTitle>
+                통장사본<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <FlexInput />
+              </FlexContent>
+            </FlexPart>
+            <FlexPart>
+              <FlexTitle></FlexTitle>
+              <FlexContent>
+                <TxtDiv style={{ width: '100%' }}>
+                  <img src="/svg/Upload.svg" />
+                  <p>파일 첨부</p>
+                </TxtDiv>
+              </FlexContent>
+            </FlexPart>
+
+            <FlexPart style={{ marginBottom: '5px' }}>
+              <FlexTitle>
+                계좌번호<span>*</span>
+              </FlexTitle>
+              <FlexContent>
+                <AccountSelect
+                  options={accountOptions}
+                  defaultValue={accountOptions[0]}
+                  onChange={selectedOption =>
+                    handleSelectChange(selectedOption, 'bank')
+                  }
+                />
+              </FlexContent>
+            </FlexPart>
+            <FlexPart>
+              <FlexTitle></FlexTitle>
+              <FlexContent>
+                <FlexInput style={{ width: '99%' }} />
+              </FlexContent>
+            </FlexPart>
+          </Right>
+        </OnePageFlexSubContainer>
+      </div>
+      <BtnWrap style={{ height: '120px' }}>
+        <WhiteBtn width={40} height={40}>
+          돌아가기
+        </WhiteBtn>
+        <BlackBtn width={40} height={40}>
+          저장
+        </BlackBtn>
+      </BtnWrap>
+    </OnePageFlexContainer>
   );
 };
 
-export default Profile;
+export default ProfileEdit;

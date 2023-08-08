@@ -84,3 +84,11 @@ export const AccountSelect = styled(Select)`
   text-align: center;
   line-height: 26.5px;
 `;
+
+export const EditSelect = styled(Select)`
+  width: 140px;
+  text-align: center;
+  line-height: 26px;
+  margin-right: 5px;
+  font-size: 16px;
+`;
