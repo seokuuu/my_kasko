@@ -241,7 +241,7 @@ export const CalWrap = styled.div`
   width: 1300px;
   display: flex;
   position: absolute;
-  left: -700px;
+  left: -690px;
   top: -425px;
   border-right: 13px solid ${props => props.theme.colors.PriNormal};
   background-color: white;

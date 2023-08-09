@@ -9,7 +9,7 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export const SideBarWrap = styled.div`
-  width: 230px;
+  width: 260px;
 `;
 
 export const AccordionWrap = styled.div`
@@ -63,10 +63,11 @@ export const StyledAccordionDetails = styled(AccordionDetails)`
 `;
 
 export const TypoContent = styled.div`
-  margin: 15px 10px;
+  margin: 15px 6px;
   a {
     color: ${props => (props.isIncoming ? '#64b5ff' : '#acacac')};
     font-size: 18px;
+    justify-content: flex-start;
 
     &:hover {
       color: #64b5ff;
@@ -83,7 +84,7 @@ export const Depth2 = styled.a`
 `;
 
 export const AcTop = styled.div`
-  width: 180px;
+  width: 200px;
   height: 130px;
   display: flex;
   margin-left: auto;
@@ -123,4 +124,9 @@ export const AcTopLeft = styled.div`
 export const ACTopRight = styled.div`
   display: flex;
   gap: 15px;
+
+  img {
+    position: relative;
+    left: -5px;
+  }
 `;

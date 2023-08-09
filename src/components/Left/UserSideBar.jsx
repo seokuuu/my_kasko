@@ -121,4 +121,3 @@ const UserSideBar = ({ expanded, setExpanded, depth2Color }) => {
 };
 
 export default UserSideBar;
-

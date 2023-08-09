@@ -12,7 +12,7 @@ export const OverAllSub = styled.div`
 `;
 
 export const OverAllTable = styled.div`
-  width: 93%;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
 `;
