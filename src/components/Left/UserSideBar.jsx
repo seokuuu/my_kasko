@@ -69,23 +69,16 @@ const data = [
 ];
 
 const UserSideBar = ({ expanded, setExpanded, depth2Color }) => {
-  const [calModal, setCalModal] = useAtom(calendarAtom);
-
   const handleChange = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
   return (
     <>
-      {/* {calModal && (
-        <CalWrap>
-          <CalendarModal />
-        </CalWrap>
-      )} */}
       <SideBarWrap>
         <AccordionWrap>
           <Link to={`/userpage/main`}>
             <AcTop style={{ backgroundColor: '#2B3344' }}>
-              <AcTopCal style={{ justifyContent: 'center', gap: '10px' }}>
+              <AcTopCal style={{ justifyContent: 'center', gap: '15px' }}>
                 <div>
                   <img src="/img/home.png" />
                 </div>

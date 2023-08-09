@@ -19,6 +19,8 @@ import {
   Depth2,
   AcTop,
   AcTopCal,
+  AcTopLeft,
+  ACTopRight,
 } from './SideBar.Style';
 
 const data = [
@@ -114,24 +116,39 @@ const data = [
 const SideBar = ({ expanded, setExpanded, depth2Color }) => {
   const [calModal, setCalModal] = useAtom(calendarAtom);
 
+  const closeModal = () => {
+    setCalModal(false);
+  };
+
+  const handleModalClick = event => {
+    event.stopPropagation();
+  };
+
   const handleChange = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
   return (
     <>
-      {/* {calModal && (
-        <CalWrap>
-          <CalendarModal />
-        </CalWrap>
-      )} */}
+      {calModal && (
+        <ModalBg onClick={closeModal}>
+          <CalModalWrap onClick={handleModalClick}>
+            <CalendarModal />
+          </CalModalWrap>
+        </ModalBg>
+      )}
       <SideBarWrap>
         <AccordionWrap>
-          <AcTop style={{ backgroundColor: '#2B3344' }}>
-            <AcTopCal onClick={() => setCalModal(true)}>
-              <div>경매 캘린더</div>
-              <div>
+          <AcTop>
+            <AcTopCal>
+              <Link to={`/main`}>
+                <AcTopLeft>
+                  <img src="/img/home.png" />
+                </AcTopLeft>
+              </Link>
+              <ACTopRight onClick={() => setCalModal(true)}>
+                <div>경매 캘린더</div>
                 <img src="/img/calender.png" />
-              </div>
+              </ACTopRight>
             </AcTopCal>
           </AcTop>
           {data.map((item, index) => (
@@ -171,7 +188,20 @@ const SideBar = ({ expanded, setExpanded, depth2Color }) => {
 
 export default SideBar;
 
-const CalWrap = styled.div`
+const ModalBg = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); // 어두운 배경 색상
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; // 모달보다 높은 z-index
+`;
+
+const CalModalWrap = styled.div`
   position: absolute;
   z-index: 1000;
   border: 1px solid black;

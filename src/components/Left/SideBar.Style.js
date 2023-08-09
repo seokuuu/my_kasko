@@ -98,3 +98,22 @@ export const AcTopCal = styled.div`
   cursor: pointer;
 `;
 
+export const AcTopLeft = styled.div`
+  position: relative;
+  left: -5px;
+  height: 45px;
+  width: 45px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${props => props.theme.colors.PriHeavy};
+  img {
+    height: 70%;
+  }
+`;
+
+export const ACTopRight = styled.div`
+  display: flex;
+  gap: 15px;
+`;

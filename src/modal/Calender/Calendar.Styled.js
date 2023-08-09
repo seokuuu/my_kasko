@@ -6,6 +6,9 @@ export const StyledCalendar = styled(Calendar)`
   /* 캘린더 전체 스타일 */
   border-radius: 6px;
   width: 1000px;
+  border: none;
+  margin-left: 30px;
+  margin-top: 30px;
   .react-calendar {
     /* 캘린더 컨테이너 스타일 */
     height: 40rem;
@@ -44,7 +47,9 @@ export const StyledCalendar = styled(Calendar)`
 
   .react-calendar__navigation {
     position: absolute;
-    left: 1350px;
+    left: 1060px;
+    top: -5px;
+    margin-left: 5px;
     flex-direction: column;
   }
 
@@ -54,6 +59,7 @@ export const StyledCalendar = styled(Calendar)`
     font-size: 25px;
     margin-top: 8px;
     position: relative;
+    margin-left: 10px;
   }
 
   .react-calendar__navigation button:nth-child(4) {
@@ -231,15 +237,23 @@ export const Wrap = styled.div`
   right: 0px;
 `;
 
+// 모달창 그 자체
 export const CalWrap = styled.div`
   width: 1300px;
   display: flex;
+  position: absolute;
+  left: -780px;
+  top: -480px;
+  border-right: 10px solid ${props => props.theme.colors.PriNormal};
+  background-color: white;
 `;
 
 export const CalBtnWrap = styled.div`
   position: relative;
   top: 120px;
-  left: 15px;
+  left: 30px;
+  border-top: 1px solid black;
+  height: fit-content;
 `;
 
 export const CalBtn = styled.button`
