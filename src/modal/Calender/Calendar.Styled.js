@@ -107,8 +107,7 @@ export const StyledCalendar = styled(Calendar)`
 
   .react-calendar__tile {
     position: relative;
-    min-height: 160px;
-    max-height: 1000px;
+    min-height: 140px;
     border-bottom: 1px solid gainsboro;
   }
 
@@ -242,9 +241,9 @@ export const CalWrap = styled.div`
   width: 1300px;
   display: flex;
   position: absolute;
-  left: -780px;
-  top: -480px;
-  border-right: 10px solid ${props => props.theme.colors.PriNormal};
+  left: -700px;
+  top: -425px;
+  border-right: 13px solid ${props => props.theme.colors.PriNormal};
   background-color: white;
 `;
 

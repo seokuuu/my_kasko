@@ -73,59 +73,52 @@ const UserSideBar = ({ expanded, setExpanded, depth2Color }) => {
     setExpanded(isExpanded ? panel : false);
   };
   return (
-    <>
-      <SideBarWrap>
-        <AccordionWrap>
-          <Link to={`/userpage/main`}>
-            <AcTop style={{ backgroundColor: '#2B3344' }}>
-              <AcTopCal style={{ justifyContent: 'center', gap: '15px' }}>
-                <div>
-                  <img src="/img/home.png" />
-                </div>
-                <div style={{ color: 'white' }}>메인 페이지</div>
-              </AcTopCal>
-            </AcTop>
-          </Link>
+    <SideBarWrap>
+      <AccordionWrap>
+        <Link to={`/userpage/main`}>
+          <AcTop style={{ backgroundColor: '#2B3344' }}>
+            <AcTopCal style={{ justifyContent: 'center', gap: '15px' }}>
+              <div>
+                <img src="/img/home.png" />
+              </div>
+              <div style={{ color: 'white' }}>메인 페이지</div>
+            </AcTopCal>
+          </AcTop>
+        </Link>
 
-          {data.map((item, index) => (
-            <StyledAccordion
-              key={index}
-              expanded={expanded === item.depth1}
-              onChange={handleChange(item.depth1)}
+        {data.map((item, index) => (
+          <StyledAccordion
+            key={index}
+            expanded={expanded === item.depth1}
+            onChange={handleChange(item.depth1)}
+          >
+            <StyledAccordionSummary
+              expandIcon={<AccSwitch />}
+              aria-controls={`panel${index + 1}-content`}
+              id={`panel${index + 1}-header`}
             >
-              <StyledAccordionSummary
-                expandIcon={<AccSwitch />}
-                aria-controls={`panel${index + 1}-content`}
-                id={`panel${index + 1}-header`}
-              >
-                <StyledTypography>{item.depth1}</StyledTypography>
-              </StyledAccordionSummary>
-              <StyledAccordionDetails>
-                <Typography>
-                  {item.depth2.map((subItem, subIndex) => (
-                    <TypoContent
-                      key={subIndex}
-                      isIncoming={subItem.title === depth2Color}
-                    >
-                      <Link to={`/${subItem.link}`}>
-                        <Depth2>{subItem.title}</Depth2>
-                      </Link>
-                    </TypoContent>
-                  ))}
-                </Typography>
-              </StyledAccordionDetails>
-            </StyledAccordion>
-          ))}
-        </AccordionWrap>
-      </SideBarWrap>
-    </>
+              <StyledTypography>{item.depth1}</StyledTypography>
+            </StyledAccordionSummary>
+            <StyledAccordionDetails>
+              <Typography>
+                {item.depth2.map((subItem, subIndex) => (
+                  <TypoContent
+                    key={subIndex}
+                    isIncoming={subItem.title === depth2Color}
+                  >
+                    <Link to={`/${subItem.link}`}>
+                      <Depth2>{subItem.title}</Depth2>
+                    </Link>
+                  </TypoContent>
+                ))}
+              </Typography>
+            </StyledAccordionDetails>
+          </StyledAccordion>
+        ))}
+      </AccordionWrap>
+    </SideBarWrap>
   );
 };
 
 export default UserSideBar;
 
-const CalWrap = styled.div`
-  position: absolute;
-  z-index: 1000;
-  border: 1px solid black;
-`;

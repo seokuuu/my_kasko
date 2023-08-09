@@ -128,7 +128,7 @@ const SideBar = ({ expanded, setExpanded, depth2Color }) => {
     setExpanded(isExpanded ? panel : false);
   };
   return (
-    <>
+    <SideBarWrap>
       {calModal && (
         <ModalBg onClick={closeModal}>
           <CalModalWrap onClick={handleModalClick}>
@@ -136,53 +136,51 @@ const SideBar = ({ expanded, setExpanded, depth2Color }) => {
           </CalModalWrap>
         </ModalBg>
       )}
-      <SideBarWrap>
-        <AccordionWrap>
-          <AcTop>
-            <AcTopCal>
-              <Link to={`/main`}>
-                <AcTopLeft>
-                  <img src="/img/home.png" />
-                </AcTopLeft>
-              </Link>
-              <ACTopRight onClick={() => setCalModal(true)}>
-                <div>경매 캘린더</div>
-                <img src="/img/calender.png" />
-              </ACTopRight>
-            </AcTopCal>
-          </AcTop>
-          {data.map((item, index) => (
-            <StyledAccordion
-              key={index}
-              expanded={expanded === item.depth1}
-              onChange={handleChange(item.depth1)}
+      <AccordionWrap>
+        <AcTop style={{ backgroundColor: '#2B3344' }}>
+          <AcTopCal>
+            <Link to={`/main`}>
+              <AcTopLeft>
+                <img src="/img/home.png" />
+              </AcTopLeft>
+            </Link>
+            <ACTopRight onClick={() => setCalModal(true)}>
+              <div>경매 캘린더</div>
+              <img src="/img/calender.png" />
+            </ACTopRight>
+          </AcTopCal>
+        </AcTop>
+        {data.map((item, index) => (
+          <StyledAccordion
+            key={index}
+            expanded={expanded === item.depth1}
+            onChange={handleChange(item.depth1)}
+          >
+            <StyledAccordionSummary
+              expandIcon={<AccSwitch />}
+              aria-controls={`panel${index + 1}-content`}
+              id={`panel${index + 1}-header`}
             >
-              <StyledAccordionSummary
-                expandIcon={<AccSwitch />}
-                aria-controls={`panel${index + 1}-content`}
-                id={`panel${index + 1}-header`}
-              >
-                <StyledTypography>{item.depth1}</StyledTypography>
-              </StyledAccordionSummary>
-              <StyledAccordionDetails>
-                <Typography>
-                  {item.depth2.map((subItem, subIndex) => (
-                    <TypoContent
-                      key={subIndex}
-                      isIncoming={subItem.title === depth2Color}
-                    >
-                      <Link to={`/${subItem.link}`}>
-                        <Depth2>{subItem.title}</Depth2>
-                      </Link>
-                    </TypoContent>
-                  ))}
-                </Typography>
-              </StyledAccordionDetails>
-            </StyledAccordion>
-          ))}
-        </AccordionWrap>
-      </SideBarWrap>
-    </>
+              <StyledTypography>{item.depth1}</StyledTypography>
+            </StyledAccordionSummary>
+            <StyledAccordionDetails>
+              <Typography>
+                {item.depth2.map((subItem, subIndex) => (
+                  <TypoContent
+                    key={subIndex}
+                    isIncoming={subItem.title === depth2Color}
+                  >
+                    <Link to={`/${subItem.link}`}>
+                      <Depth2>{subItem.title}</Depth2>
+                    </Link>
+                  </TypoContent>
+                ))}
+              </Typography>
+            </StyledAccordionDetails>
+          </StyledAccordion>
+        ))}
+      </AccordionWrap>
+    </SideBarWrap>
   );
 };
 

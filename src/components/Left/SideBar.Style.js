@@ -9,7 +9,7 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export const SideBarWrap = styled.div`
-  width: 280px;
+  width: 230px;
 `;
 
 export const AccordionWrap = styled.div`
@@ -20,6 +20,7 @@ export const AccordionWrap = styled.div`
   height: 100%;
   justify-content: center;
   align-items: center;
+
   background-color: #2b3344;
 
   //depth1 영역
@@ -31,8 +32,10 @@ export const AccordionWrap = styled.div`
 
   //depth1 font
   p {
-    font-size: 20px;
+    font-size: 19px;
     letter-spacing: -1px;
+    margin-left: 10px;
+    margin-top: 5px;
   }
 `;
 
@@ -63,6 +66,7 @@ export const TypoContent = styled.div`
   margin: 15px 10px;
   a {
     color: ${props => (props.isIncoming ? '#64b5ff' : '#acacac')};
+    font-size: 18px;
 
     &:hover {
       color: #64b5ff;
@@ -79,11 +83,14 @@ export const Depth2 = styled.a`
 `;
 
 export const AcTop = styled.div`
-  width: 100%;
-  height: 100px;
+  width: 180px;
+  height: 130px;
   display: flex;
+  margin-left: auto;
+  margin-right: auto;
   justify-content: center;
   align-items: center;
+  background-color: #2b3344;
 `;
 
 export const AcTopCal = styled.div`

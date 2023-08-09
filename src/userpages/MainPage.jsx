@@ -123,7 +123,7 @@ const Left = styled.div`
 
 const LeftSub1 = styled.div`
   width: 99%;
-  height: 48%;
+  height: 380px;
 
   padding: 20px;
 
@@ -135,7 +135,7 @@ const LeftSub2 = styled.div`
   padding: 20px;
   background-color: White;
   width: 99%;
-  height: 46%;
+  height: 380px;
   border: 1px solid #c8c8c8;
 `;
 const Right = styled.div`
@@ -148,7 +148,7 @@ const RightSub = styled.div`
   padding: 20px;
   gap: 10px;
   width: 99%;
-  height: calc(100% - 30px);
+  height: 780px;
   background-color: White;
 `;
 
