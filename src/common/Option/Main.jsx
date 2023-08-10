@@ -73,6 +73,11 @@ export const MainSelect = styled(Select)`
   margin-left: 15px;
   width: 150px;
   line-height: 20px;
+  font-size: 17px;
+
+  input {
+    color: black;
+  }
 `;
 
 export const CustomSelect = styled(Select)`

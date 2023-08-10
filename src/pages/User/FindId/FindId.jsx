@@ -212,7 +212,7 @@ const FindId = () => {
                   </BlueBtn>
                   <WhiteBtn
                     onClick={() => {
-                      navigate('/reissue');
+                      navigate('/reissuepw');
                     }}
                     type="button"
                     height={40}

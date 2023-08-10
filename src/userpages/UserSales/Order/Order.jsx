@@ -160,7 +160,12 @@ const Order = ({}) => {
                 <PartWrap>
                   <h6>고객사</h6>
                   <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10}>
+                  <GreyBtn
+                    style={{ width: '70px' }}
+                    height={35}
+                    margin={10}
+                    fontSize={17}
+                  >
                     찾기
                   </GreyBtn>
                 </PartWrap>

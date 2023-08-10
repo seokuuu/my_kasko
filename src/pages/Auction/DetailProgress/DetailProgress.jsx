@@ -123,7 +123,12 @@ const DetailProgress = ({}) => {
                 <PartWrap>
                   <h6>고객사 명</h6>
                   <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10}>
+                  <GreyBtn
+                    style={{ width: '70px' }}
+                    height={35}
+                    margin={10}
+                    fontSize={17}
+                  >
                     찾기
                   </GreyBtn>
                 </PartWrap>
@@ -131,7 +136,12 @@ const DetailProgress = ({}) => {
                 <PartWrap>
                   <h6>규격 약호</h6>
                   <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10}>
+                  <GreyBtn
+                    style={{ width: '70px' }}
+                    height={35}
+                    margin={10}
+                    fontSize={17}
+                  >
                     찾기
                   </GreyBtn>
                 </PartWrap>

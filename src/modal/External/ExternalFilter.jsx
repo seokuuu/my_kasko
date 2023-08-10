@@ -86,9 +86,9 @@ export const PartWrap = styled.div`
   h6 {
     width: 90px;
     max-width: 150px;
-
     display: flex;
     text-align: left;
+    color: #454545;
   }
 `;
 
@@ -170,6 +170,10 @@ export const ExCheckDiv = styled.div`
   padding-left: 5px;
   justify-content: center;
   align-items: center;
+
+  p {
+    color: black;
+  }
 `;
 
 // input들 div

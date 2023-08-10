@@ -108,7 +108,7 @@ const Destination = ({}) => {
       <div>
         <FilterHeader>
           <div style={{ display: 'flex' }}>
-            <h1>ahrwjrwl rhksfl</h1>
+            <h1>목적지 관리</h1>
           </div>
         </FilterHeader>
       </div>

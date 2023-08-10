@@ -163,7 +163,12 @@ const Inventory = ({}) => {
                 <PartWrap>
                   <h6>규격 약호</h6>
                   <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10}>
+                  <GreyBtn
+                    style={{ width: '70px' }}
+                    height={35}
+                    margin={10}
+                    fontSize={17}
+                  >
                     찾기
                   </GreyBtn>
                 </PartWrap>

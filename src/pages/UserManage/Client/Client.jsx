@@ -244,7 +244,12 @@ const Client = ({}) => {
                   <h6>회원 상태</h6>
                   <MainSelect />
                   <Input style={{ marginLeft: '5px' }} />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10}>
+                  <GreyBtn
+                    style={{ width: '70px' }}
+                    height={35}
+                    margin={10}
+                    fontSize={17}
+                  >
                     찾기
                   </GreyBtn>
                 </PartWrap>
