@@ -250,7 +250,7 @@ const SingleProduct = ({}) => {
                               CheckBox(check2, check2.length, index, true)
                             )
                           }
-                          isChecked={check1[index]}
+                          isChecked={check2[index]}
                         >
                           <CheckImg2 src="/svg/check.svg" />
                         </StyledCheckSubSquDiv>
@@ -269,11 +269,11 @@ const SingleProduct = ({}) => {
                       <ExCheckDiv>
                         <StyledCheckSubSquDiv
                           onClick={() =>
-                            setCheck2(
-                              CheckBox(check2, check2.length, index, true)
+                            setCheck3(
+                              CheckBox(check3, check3.length, index, true)
                             )
                           }
-                          isChecked={check1[index]}
+                          isChecked={check3[index]}
                         >
                           <CheckImg2 src="/svg/check.svg" />
                         </StyledCheckSubSquDiv>

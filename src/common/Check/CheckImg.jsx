@@ -25,10 +25,10 @@ export const StyledCheckSubSquDiv = styled.div`
   width: 12.5%;
   display: flex;
   justify-content: center;
-
   width: 1rem;
   height: 1rem;
   background-color: ${({ isChecked }) => (isChecked ? '#4c83d6' : '#cedcf2')};
+  border: 1px solid #afc9f0;
 `;
 
 //로그인 체크이미지
