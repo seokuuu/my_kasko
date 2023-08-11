@@ -11,6 +11,7 @@ export const FilterWrap = styled.div``;
 // 외부 필터 헤드
 export const FilterHeader = styled.div`
   display: flex;
+
   justify-content: space-between;
   padding-left: 5px;
   padding-right: 5px;
@@ -32,12 +33,14 @@ export const FilterSubcontianer = styled.div`
   padding-left: 30px;
   background-color: #dbe2f0;
   justify-content: space-between;
+  flex-wrap: wrap;
   color: ${props => props.theme.colors.TxtAlter};
 `;
 
 // FilterWrap에 한 줄만 있을 때, FilterSubContainer / FilterLeft / FilterRight 없이 단독으로 쓰임, + RowWrap에 none
 export const FilterSubOneContainer = styled.div`
   width: 100%;
+
   border: 1px solid #c8c8c8;
   display: flex;
   padding: 10px;
@@ -67,6 +70,7 @@ export const FilterRight = styled.div`
 //검색 필터 내 한 '줄' 영역 div
 export const RowWrap = styled.div`
   display: flex;
+
   text-align: center;
   align-items: center;
   margin: 10px 0px 10px 0px;
@@ -99,13 +103,22 @@ export const PWRight = styled.div`
 
 export const DoubleWrap = styled.div`
   display: flex;
+  min-width: 400px;
   padding: 10px 10px 0px 0px;
   p {
-    width: 120px;
+    width: 90px;
+    max-width: 150px;
+    display: flex;
+    text-align: left;
+    color: #454545;
+
+    @media (max-width: 1844px) {
+      width: 110px;
+    }
   }
 
   textarea {
-    width: 300px;
+    width: 210px;
     font-size: 18px;
   }
 `;

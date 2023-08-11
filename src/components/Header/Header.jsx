@@ -19,7 +19,7 @@ export default Header;
 
 const HeaderWrap = styled.div`
   display: flex;
-  width: 100%;
+  min-width: 1335px;
   height: 65px;
   background-color: #061737;
   border: 1px solid black;
