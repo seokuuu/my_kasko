@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
-
+import Excel from '../../../components/TableInner/Excel';
 import { MainSelect } from '../../../common/Option/Main';
 import {
   BlackBtn,
