@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
+import Excel from '../../../components/TableInner/Excel';
 import { storageOptions } from '../../../common/Option/SignUp';
 import { Link } from 'react-router-dom';
 import { MainSelect } from '../../../common/Option/Main';
