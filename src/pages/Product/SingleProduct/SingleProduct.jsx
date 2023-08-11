@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
-
+import { Link } from 'react-router-dom';
 import { MainSelect } from '../../../common/Option/Main';
 import { BlackBtn, BtnWrap } from '../../../common/Button/Button';
 import DateGrid from '../../../components/DateGrid/DateGrid';
@@ -153,8 +153,12 @@ const SingleProduct = ({}) => {
           <h1>단일 제품 관리</h1>
           <SubTitle>
             <h5>전체</h5>
-            <h6>현대제철</h6>
-            <h6>판매제품</h6>
+            <Link to={`/product/hyundai`}>
+              <h6>현대제철</h6>
+            </Link>
+            <Link to={`/product/salesproduct`}>
+              <h6>판매제품</h6>
+            </Link>
           </SubTitle>
         </div>
         <HeaderToggle
@@ -351,12 +355,7 @@ const SingleProduct = ({}) => {
             조회 목록 (선택 <span>2</span> / 50개 )
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <ExcelBtn>
-              <div>
-                <img src="/img/excel.png" />
-              </div>
-              엑셀 다운로드
-            </ExcelBtn>
+            <Excel />
           </div>
         </TCSubContainer>
         <TCSubContainer bor>

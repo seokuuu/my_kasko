@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
-
+import { Link } from 'react-router-dom';
 import { MainSelect } from '../../../common/Option/Main';
 import { BlackBtn, BtnWrap } from '../../../common/Button/Button';
 import DateGrid from '../../../components/DateGrid/DateGrid';
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
+import Excel from '../../../components/TableInner/Excel';
 import {
   GreyBtn,
   ExcelBtn,
@@ -110,7 +111,9 @@ const Single = ({}) => {
           <h1>경매 응찰</h1>
           <SubTitle>
             <h5>단일</h5>
-            <h6>패키지</h6>
+            <Link to={`/userpage/auctionpackage`}>
+              <h6>패키지</h6>
+            </Link>
           </SubTitle>
         </div>
         {/* 토글 쓰기 */}
@@ -251,12 +254,7 @@ const Single = ({}) => {
             조회 목록 (선택 <span>2</span> / 50개 )
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <ExcelBtn>
-              <div>
-                <img src="/img/excel.png" />
-              </div>
-              엑셀 다운로드
-            </ExcelBtn>
+            <Excel />
             <WhiteGrnBtn>
               <div>
                 <img src="/img/grnstar.png" />
@@ -276,9 +274,6 @@ const Single = ({}) => {
               alignItems: 'center',
             }}
           >
-            <TWhiteBtn height={30} width={25}>
-              찾기
-            </TWhiteBtn>
             <TGreyBtn height={30} width={25}>
               적용
             </TGreyBtn>

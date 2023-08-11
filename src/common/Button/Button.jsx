@@ -182,6 +182,10 @@ export const ExcelBtn = styled.div`
   border: 1px solid #c8c8c8;
   padding: 0px 5px 0px 5px;
   cursor: pointer;
+
+  img {
+    margin-right: 3px;
+  }
 `;
 
 export const SwitchBtn = styled.button`

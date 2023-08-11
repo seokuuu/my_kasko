@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
-import Excel from '../../../components/TableInner/Excel';
+import { Link } from 'react-router-dom';
 import { MainSelect } from '../../../common/Option/Main';
 import {
   BlackBtn,
+  BtnBound,
   BtnWrap,
-  ExcelBtn,
+  TGreyBtn,
+  WhiteBlackBtn,
   WhiteRedBtn,
+  WhiteSkyBtn,
 } from '../../../common/Button/Button';
 import DateGrid from '../../../components/DateGrid/DateGrid';
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
-import { GreyBtn } from '../../../common/Button/Button';
+import { GreyBtn, ExcelBtn, YellBtn } from '../../../common/Button/Button';
 import Test3 from '../../Test/Test3';
 import HeaderToggle from '../../../components/Toggle/HeaderToggle';
 import { toggleAtom } from '../../../store/Layout/Layout';
@@ -44,9 +47,13 @@ import {
   ExInputsWrap,
   SubTitle,
   TCSubContainer,
+  TableBottomWrap,
 } from '../../../modal/External/ExternalFilter';
+import Hidden from '../../../components/TableInner/Hidden';
+import PageDropdown from '../../../components/TableInner/PageDropdown';
+import Excel from '../../../components/TableInner/Excel';
 
-const Prono = ({}) => {
+const SalesProduct = ({}) => {
   const checkSales = ['전체', '판매재', '판매제외제', '카스코 추천 제품'];
 
   const checkShips = ['전체', '경매대상재', '상시판매 대상재'];
@@ -154,7 +161,19 @@ const Prono = ({}) => {
   return (
     <FilterContianer>
       <FilterHeader>
-        <h1>Pro.No 관리</h1>
+        <div style={{ display: 'flex' }}>
+          <h1>단일 제품 관리</h1>
+          <SubTitle>
+            <Link to={`/product/single`}>
+              <h6>전체</h6>
+            </Link>
+            <Link to={`/product/hyundai`}>
+              <h6>현대제철</h6>
+            </Link>
+
+            <h5>판매제품</h5>
+          </SubTitle>
+        </div>
         <HeaderToggle
           exFilterToggle={exFilterToggle}
           toggleBtnClick={toggleBtnClick}
@@ -239,7 +258,7 @@ const Prono = ({}) => {
                               CheckBox(check2, check2.length, index, true)
                             )
                           }
-                          isChecked={check1[index]}
+                          isChecked={check2[index]}
                         >
                           <CheckImg2 src="/svg/check.svg" />
                         </StyledCheckSubSquDiv>
@@ -258,11 +277,11 @@ const Prono = ({}) => {
                       <ExCheckDiv>
                         <StyledCheckSubSquDiv
                           onClick={() =>
-                            setCheck2(
-                              CheckBox(check2, check2.length, index, true)
+                            setCheck3(
+                              CheckBox(check3, check3.length, index, true)
                             )
                           }
-                          isChecked={check1[index]}
+                          isChecked={check3[index]}
                         >
                           <CheckImg2 src="/svg/check.svg" />
                         </StyledCheckSubSquDiv>
@@ -338,21 +357,43 @@ const Prono = ({}) => {
         <TCSubContainer bor>
           <div>
             조회 목록 (선택 <span>2</span> / 50개 )
+            <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
+            <PageDropdown />
             <Excel />
           </div>
         </TCSubContainer>
-        <TCSubContainer>
-          <div></div>
+        <TCSubContainer bor>
+          <div>
+            선택 중량<span> 2 </span>kg / 총 중량 kg
+          </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>Pro. No 삭제</WhiteRedBtn>
+            <TGreyBtn>적용</TGreyBtn>
+            <BtnBound />
+            <WhiteSkyBtn>Pro. no 생성</WhiteSkyBtn>
+            <BtnBound />
+            <WhiteBlackBtn>판매 구분 변경</WhiteBlackBtn>
+            <BtnBound />
+            <WhiteBlackBtn>판매 유형 변경</WhiteBlackBtn>
           </div>
         </TCSubContainer>
         <Test3 />
+        <TCSubContainer bor>
+          <div></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteRedBtn>제품 삭제</WhiteRedBtn>
+            <WhiteBlackBtn>제품 등록</WhiteBlackBtn>
+          </div>
+        </TCSubContainer>
+        <TableBottomWrap>
+          <BlackBtn width={15} height={40}>
+            저장
+          </BlackBtn>
+        </TableBottomWrap>
       </TableContianer>
     </FilterContianer>
   );
 };
 
-export default Prono;
+export default SalesProduct;

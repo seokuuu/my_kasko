@@ -214,12 +214,7 @@ const Single = ({}) => {
             조회 목록 (선택 <span>2</span> / 50개 )
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <ExcelBtn>
-              <div>
-                <img src="/img/excel.png" />
-              </div>
-              엑셀 다운로드
-            </ExcelBtn>
+            <Excel />
           </div>
         </TCSubContainer>
         <TCSubContainer>
