@@ -134,10 +134,9 @@ const Round = ({}) => {
                     <DateGrid bgColor={'white'} fontSize={17} />
                   </GridWrap>
                 </PartWrap>
-
                 <PartWrap>
                   <h6 style={{ width: '150px' }}>경매 회차 번호</h6>
-                  <Input style={{ width: '150px' }} />
+                  <Input />
                 </PartWrap>
                 <PartWrap />
               </RowWrap>
