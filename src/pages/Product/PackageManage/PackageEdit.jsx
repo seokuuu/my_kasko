@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useAtom } from 'jotai';
 import { styled } from 'styled-components';
 import { storageOptions } from '../../../common/Option/SignUp';
 import Excel from '../../../components/TableInner/Excel';
 import { MainSelect } from '../../../common/Option/Main';
-import { Link } from 'react-router-dom';
 import {
   BlackBtn,
   BtnWrap,
   YellBtn,
   BtnBound,
   WhiteRedBtn,
+  SkyBtn,
+  WhiteBtn,
 } from '../../../common/Button/Button';
 import DateGrid from '../../../components/DateGrid/DateGrid';
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
@@ -52,21 +52,46 @@ import {
   ExInputsWrap,
   SubTitle,
   TCSubContainer,
+  FilterTopContainer,
+  FilterTCTop,
+  FilterTCBottom,
+  FilterTCBSub,
 } from '../../../modal/External/ExternalFilter';
-import { packageCEAtom } from '../../../store/Layout/Layout';
 
-const PackageManage = ({}) => {
-  const [packBtn, setPackBtn] = useAtom(packageCEAtom);
+import { ExRadioWrap } from '../../../modal/External/ExternalFilter';
 
-  const onClickPostHandler = () => {
-    setPackBtn('post');
-  };
+import {
+  RadioMainDiv,
+  RadioCircleDiv,
+  RadioInnerCircleDiv,
+} from '../../../common/Check/RadioImg';
 
+const PackageEdit = ({}) => {
   const checkSales = ['전체', '판매재', '판매제외제', '카스코 추천 제품'];
 
   const checkShips = ['전체', '경매대상재', '상시판매 대상재'];
 
   const checkTypes = ['전체', '특가', '일반'];
+
+  const radioDummy = ['경매', '상시'];
+
+  const [checkRadio, setCheckRadio] = useState(
+    Array.from({ length: radioDummy.length }, () => false)
+  );
+
+  const [savedRadioValue, setSavedRadioValue] = useState('');
+  useEffect(() => {
+    const checkedIndex = checkRadio.findIndex(
+      (isChecked, index) => isChecked && index < radioDummy.length
+    );
+
+    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
+    // if (checkedIndex !== -1) {
+    //   const selectedValue = radioDummy[checkedIndex];
+    //   setSavedRadioValue(selectedValue); //내 state에 반환
+    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
+    // }
+  }, [checkRadio]);
 
   //checkSales
   const [check1, setCheck1] = useState(
@@ -169,7 +194,7 @@ const PackageManage = ({}) => {
   return (
     <FilterContianer>
       <FilterHeader>
-        <h1>패키지 관리</h1>
+        <h1>패키지 생성</h1>
         {/* 토글 쓰기 */}
         <HeaderToggle
           exFilterToggle={exFilterToggle}
@@ -179,6 +204,52 @@ const PackageManage = ({}) => {
       </FilterHeader>
       {exFilterToggle && (
         <>
+          <FilterTopContainer>
+            <FilterTCTop>
+              <h6>패키지 번호</h6>
+              <p>PK00003</p>
+            </FilterTCTop>
+            <FilterTCBottom>
+              <FilterTCBSub>
+                <div>
+                  <h6>판매 구분</h6>
+                  <div style={{ marginTop: '2px' }}>
+                    <ExRadioWrap>
+                      {radioDummy.map((text, index) => (
+                        <RadioMainDiv key={index}>
+                          <RadioCircleDiv
+                            isChecked={checkRadio[index]}
+                            onClick={() => {
+                              setCheckRadio(
+                                CheckBox(checkRadio, checkRadio.length, index)
+                              );
+                            }}
+                          >
+                            <RadioInnerCircleDiv />
+                          </RadioCircleDiv>
+                          <div style={{ display: 'flex', marginLeft: '5px' }}>
+                            {text}
+                          </div>
+                        </RadioMainDiv>
+                      ))}
+                    </ExRadioWrap>
+                  </div>
+                </div>
+                <div>
+                  <h6>패키지 명 지정</h6>
+                  <div>
+                    <Input />
+                  </div>
+                </div>
+                <div>
+                  <h6>시작가/판매가</h6>
+                  <div>
+                    <Input />
+                  </div>
+                </div>
+              </FilterTCBSub>
+            </FilterTCBottom>
+          </FilterTopContainer>
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
@@ -325,32 +396,36 @@ const PackageManage = ({}) => {
           <div>
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <YellBtn>추천제품지정 (0 / 10)</YellBtn>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            시작가 일괄 변경
+            <Input style={{ height: '30px' }} />
+            <GreyBtn
+              style={{ padding: '5px 10px 5px 10px', borderRadius: '3px' }}
+            >
+              적용
+            </GreyBtn>
             <BtnBound />
-            <WhiteBlackBtn>판매 구분 변경</WhiteBlackBtn>
-            <BtnBound />
-            <WhiteRedBtn>패키지 해제</WhiteRedBtn>
-
-            <WhiteSkyBtn onClick={onClickPostHandler}>
-              <Link to="/product/packagecreate" style={{ color: '#4C83D6' }}>
-                패키지 생성
-              </Link>
-            </WhiteSkyBtn>
+            <SkyBtn>제품 추가</SkyBtn>
           </div>
         </TCSubContainer>
         <Test3 />
         <TCSubContainer bor>
-          <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
-          </div>
+          <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <Excel />
+            <WhiteRedBtn>선택 목록 제거</WhiteRedBtn>
           </div>
         </TCSubContainer>
       </TableContianer>
+      <BtnWrap bottom={-30}>
+        <WhiteBtn width={40} height={40}>
+          돌아가기
+        </WhiteBtn>
+        <BlackBtn width={40} height={40}>
+          저장
+        </BlackBtn>
+      </BtnWrap>
     </FilterContianer>
   );
 };
 
-export default PackageManage;
+export default PackageEdit;

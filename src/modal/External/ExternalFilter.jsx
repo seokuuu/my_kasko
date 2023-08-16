@@ -37,10 +37,56 @@ export const FilterSubcontianer = styled.div`
   color: ${props => props.theme.colors.TxtAlter};
 `;
 
+// 패키지 생성 / 수정에 쓰이는 Fitler 최상단 div
+export const FilterTopContainer = styled.div`
+  width: 100%;
+`;
+
+export const FilterTCTop = styled.div`
+  border: 1px solid #c8c8c8;
+  margin-bottom: 10px;
+  background-color: white;
+  padding-left: 30px;
+  display: flex;
+  height: 50px;
+  align-items: center;
+  font-weight: bold;
+
+  p {
+    margin-left: 20px;
+    color: ${props => props.theme.colors.PriNormal};
+  }
+`;
+
+export const FilterTCBottom = styled.div`
+  border: 1px solid #c8c8c8;
+  background-color: #dbe2f0;
+  margin-bottom: 20px;
+`;
+
+export const FilterTCBSub = styled.div`
+  display: flex;
+  background-color: white;
+  height: 64px;
+  margin: 24px;
+
+  justify-content: space-around;
+  align-items: center;
+
+  h6 {
+    padding: 0px 20px;
+  }
+
+  > div {
+    display: flex;
+
+    align-items: center;
+  }
+`;
+
 // FilterWrap에 한 줄만 있을 때, FilterSubContainer / FilterLeft / FilterRight 없이 단독으로 쓰임, + RowWrap에 none
 export const FilterSubOneContainer = styled.div`
   width: 100%;
-
   border: 1px solid #c8c8c8;
   display: flex;
   padding: 10px;

@@ -567,8 +567,8 @@ const SignUp = () => {
                       >
                         <RadioInnerCircleDiv />
                       </RadioCircleDiv>
-                      <div style={{ display: 'flex', marginLeft: '5px' }}>
-                        {text}
+                      <div style={{ display: 'flex', marginLeft: '3px' }}>
+                        <p>{text}</p>
                       </div>
                     </RadioMainDiv>
                   ))}
@@ -941,6 +941,12 @@ const CheckWrap = styled.div`
   width: 320px;
   display: flex;
   gap: 50px;
+
+  p {
+    font-size: 18px;
+    line-height: 15px;
+    margin-top: 1px;
+  }
 `;
 
 export const RadioContainer = styled.div`

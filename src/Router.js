@@ -50,6 +50,7 @@ import RecommendPage from './pages/Product/Recommend/RecommendPage';
 import PronoPage from './pages/Product/Prono/PronoPage';
 import HyundaiPage from './pages/Product/SingleProduct/HyundaiPage';
 import SalesProductPage from './pages/Product/SingleProduct/SalesProductPage';
+import PackageCreatePage from './pages/Product/PackageManage/PackageCreatePage';
 
 // 상시 판매 관리
 import SinglePage from './pages/Sales/Single/SinglePage';
@@ -153,10 +154,17 @@ const Router = () => {
             path="/product/salesproduct"
             element={<SalesProductPage />}
           ></Route>
-
           <Route
             path="/product/package"
             element={<PackageManagePage />}
+          ></Route>
+          <Route
+            path="/product/packagecreate"
+            element={<PackageCreatePage />}
+          ></Route>
+          <Route
+            path="/product/packageedit"
+            element={<PackageCreatePage />}
           ></Route>
           <Route path="/product/recommend" element={<RecommendPage />}></Route>
           <Route path="/product/prono" element={<PronoPage />}></Route>
