@@ -116,7 +116,7 @@ export const FilterRight = styled.div`
 //검색 필터 내 한 '줄' 영역 div
 export const RowWrap = styled.div`
   display: flex;
-
+  flex-wrap: wrap;
   text-align: center;
   align-items: center;
   margin: 10px 0px 10px 0px;
@@ -182,11 +182,20 @@ export const Input = styled.input`
   height: 37px;
   border-radius: 3px;
   border: 1px solid #c8c8c8;
+
+  @media (max-width: 1500px) {
+    width: 110px;
+    margin-left: 15px;
+  }
 `;
 
 // 물결표
 export const Tilde = styled.div`
   margin: 10px;
+
+  @media (max-width: 1500px) {
+    margin-right: 5px;
+  }
 `;
 
 // 초기화 이미지
@@ -239,6 +248,9 @@ export const ExCheckDiv = styled.div`
 export const ExInputsWrap = styled.div`
   display: flex;
   padding-left: 15px;
+  @media (max-width: 1500px) {
+    padding-left: 0px;
+  }
 `;
 
 export const SubTitle = styled.div`
