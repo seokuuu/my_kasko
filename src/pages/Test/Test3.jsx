@@ -6,22 +6,17 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { styled } from 'styled-components';
 import { ContentBlock } from 'draft-js';
-import BlueBar from '../../modal/BlueBar/BlueBar';
-import { BlackBtn, GreyBtn } from '../../common/Button/Button';
-
+import { useAtom } from 'jotai';
+import { blueModalAtom } from '../../store/Layout/Layout';
 import {
-  ModalContainer,
   NonFadeOverlay,
+  ModalContainer,
   BlueBarHeader,
-  BlueSubContainer,
   WhiteCloseBtn,
-  BSCSWrap,
-  ModalOverlay,
+  BlueSubContainer,
   BlueBarBtnWrap,
 } from '../../modal/Common/Common.Styled';
-
-import { blueModalAtom } from '../../store/Layout/Layout';
-import { useAtom } from 'jotai';
+import { GreyBtn, BlackBtn } from '../../common/Button/Button';
 
 var dateFilterParams = {
   comparator: (filterLocalDateAtMidnight, cellValue) => {
@@ -53,7 +48,7 @@ const asDate = dateAsString => {
   );
 };
 
-const Test3 = ({ title, hei }) => {
+const Test3 = ({ hei }) => {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [filterText, setFilterText] = useState(''); // 필터 텍스트를 저장하는 상태 변수
   const gridRef = useRef();
@@ -153,7 +148,6 @@ const Test3 = ({ title, hei }) => {
     gridRef.current.api.onFilterChanged();
   }, []);
 
-  //
   const onFindButtonClick = () => {
     const newCountryFilter = filterText.trim();
     const gridApi = gridRef.current.api;
@@ -336,10 +330,12 @@ const Test3 = ({ title, hei }) => {
 
         <div style={gridStyle} className="ag-theme-alpine">
           <AgGridReact
+            ref={gridRef}
             rowData={rowData}
             columnDefs={columnDefs}
             autoGroupColumnDef={autoGroupColumnDef}
             defaultColDef={defaultColDef}
+            animateRows={true}
             suppressRowClickSelection={true}
             groupSelectsChildren={true}
             rowSelection={'multiple'}
@@ -352,12 +348,13 @@ const Test3 = ({ title, hei }) => {
           />
         </div>
       </TestContainer>
+
       {isModal && (
         <>
           <NonFadeOverlay />
           <ModalContainer width={550}>
             <BlueBarHeader>
-              <div>{title}</div>
+              <div>규격 약호 찾기</div>
               <div>
                 <WhiteCloseBtn
                   onClick={modalClose}
@@ -366,40 +363,36 @@ const Test3 = ({ title, hei }) => {
               </div>
             </BlueBarHeader>
             <BlueSubContainer>
-              {title === '규격 약호 찾기' && (
-                <>
-                  <FindSpec>
-                    <FSTitle>
-                      <div>검색</div>
-                      <RBInput
-                        placeholder="회사 명"
-                        value={filterText}
-                        onChange={e => setFilterText(e.target.value)}
-                      />
-                      <GreyBtn
-                        width={15}
-                        height={30}
-                        fontSize={16}
-                        onClick={onFindButtonClick}
+              <FindSpec>
+                <FSTitle>
+                  <div>검색</div>
+                  <RBInput
+                    placeholder="회사 명"
+                    value={filterText}
+                    onChange={e => setFilterText(e.target.value)}
+                  />
+                  <GreyBtn
+                    width={15}
+                    height={30}
+                    fontSize={16}
+                    onClick={onFindButtonClick}
+                  >
+                    찾기
+                  </GreyBtn>
+                </FSTitle>
+                <FSResult>
+                  {filteredCountries.map((x, index) => {
+                    return (
+                      <ResultBlock
+                        key={index}
+                        onClick={() => handleResultBlockClick(x)}
                       >
-                        찾기
-                      </GreyBtn>
-                    </FSTitle>
-                    <FSResult>
-                      {filteredCountries.map((x, index) => {
-                        return (
-                          <ResultBlock
-                            key={index}
-                            onClick={() => handleResultBlockClick(x)}
-                          >
-                            {x}
-                          </ResultBlock>
-                        );
-                      })}
-                    </FSResult>
-                  </FindSpec>
-                </>
-              )}
+                        {x}
+                      </ResultBlock>
+                    );
+                  })}
+                </FSResult>
+              </FindSpec>
             </BlueSubContainer>
             <BlueBarBtnWrap>
               <BlackBtn onClick={modalClose} width={30} height={40}>
@@ -414,7 +407,6 @@ const Test3 = ({ title, hei }) => {
 };
 
 export default Test3;
-
 const TestContainer = styled.div`
   display: flex;
   flex-direction: column;

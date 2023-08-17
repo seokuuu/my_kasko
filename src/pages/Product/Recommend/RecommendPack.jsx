@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-
+import { Link } from 'react-router-dom';
 import Test3 from '../../Test/Test3';
 import HeaderToggle from '../../../components/Toggle/HeaderToggle';
 import { toggleAtom } from '../../../store/Layout/Layout';
@@ -13,9 +13,8 @@ import {
   TCSubContainer,
 } from '../../../modal/External/ExternalFilter';
 import { WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button';
-import { Link } from 'react-router-dom';
 
-const Recommend = ({}) => {
+const RecommendPack = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -47,10 +46,10 @@ const Recommend = ({}) => {
         <div style={{ display: 'flex' }}>
           <h1>카스코 추천 제품 관리</h1>
           <SubTitle>
-            <h5>단일</h5>
-            <Link to={`/product/recommendpkg`}>
-              <h6>패키지</h6>
+            <Link to={`/product/recommend`}>
+              <h6>단일</h6>
             </Link>
+            <h5>패키지</h5>
           </SubTitle>
         </div>
       </FilterHeader>
@@ -79,4 +78,4 @@ const Recommend = ({}) => {
   );
 };
 
-export default Recommend;
+export default RecommendPack;

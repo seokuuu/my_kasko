@@ -37,7 +37,6 @@ const MainPage = () => {
                     <h6>패키지</h6>
                   </Title>
                   <div>
-                    {' '}
                     <Test3 hei={60} />
                   </div>
                 </LeftSub1>

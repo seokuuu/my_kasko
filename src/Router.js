@@ -47,6 +47,7 @@ import Achievement from './pages/Shipping/Achievement/AchievementPage';
 import SingleProductPage from './pages/Product/SingleProduct/SingleProductPage';
 import PackageManagePage from './pages/Product/PackageManage/PackageManagePage';
 import RecommendPage from './pages/Product/Recommend/RecommendPage';
+import RecommendPackPage from './pages/Product/Recommend/RecommendPackPage';
 import PronoPage from './pages/Product/Prono/PronoPage';
 import HyundaiPage from './pages/Product/SingleProduct/HyundaiPage';
 import SalesProductPage from './pages/Product/SingleProduct/SalesProductPage';
@@ -167,6 +168,10 @@ const Router = () => {
             element={<PackageCreatePage />}
           ></Route>
           <Route path="/product/recommend" element={<RecommendPage />}></Route>
+          <Route
+            path="/product/recommendpkg"
+            element={<RecommendPackPage />}
+          ></Route>
           <Route path="/product/prono" element={<PronoPage />}></Route>
         </Route>
         {/* 경매 관리  */}

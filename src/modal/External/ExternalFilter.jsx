@@ -35,6 +35,7 @@ export const FilterSubcontianer = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   color: ${props => props.theme.colors.TxtAlter};
+  overflow-x: hidden;
 `;
 
 // 패키지 생성 / 수정에 쓰이는 Fitler 최상단 div

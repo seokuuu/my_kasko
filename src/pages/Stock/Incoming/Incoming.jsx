@@ -68,11 +68,10 @@ const Incoming = ({}) => {
 
   const [isModal, setIsModal] = useAtom(blueModalAtom);
 
-  console.log('isModal =>', isModal);
-
   const modalOpen = () => {
     setIsModal(true);
   };
+  
 
   return (
     <FilterContianer>
@@ -212,7 +211,7 @@ const Incoming = ({}) => {
           </div>
         </TCSubContainer>
 
-        <Test3 title={'규격 약호 찾기'} />
+        <Test3 />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
