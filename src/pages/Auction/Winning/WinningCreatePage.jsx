@@ -7,8 +7,7 @@ import {
 import SideBar from '../../../components/Left/SideBar';
 import Header from '../../../components/Header/Header';
 import SubHeader from '../../../components/Header/SubHeader';
-import Winning from './Winning';
-import WinningDetail from './WinningCreate';
+import WinningCreate from './WinningCreate';
 
 import { useState } from 'react';
 
@@ -28,7 +27,7 @@ const WinningPage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <Winning />
+            <WinningCreate />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>

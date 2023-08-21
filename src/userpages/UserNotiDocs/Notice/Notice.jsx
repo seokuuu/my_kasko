@@ -1,24 +1,19 @@
-import { useState } from 'react';
-import { styled } from 'styled-components';
-import { storageOptions } from '../../../common/Option/SignUp';
+import { useState } from 'react'
+import { styled } from 'styled-components'
+import { storageOptions } from '../../../common/Option/SignUp'
 
-import { MainSelect } from '../../../common/Option/Main';
-import {
-  BlackBtn,
-  BtnWrap,
-  WhiteRedBtn,
-  WhiteSkyBtn,
-} from '../../../common/Button/Button';
-import DateGrid from '../../../components/DateGrid/DateGrid';
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
-import { GreyBtn } from '../../../common/Button/Button';
-import Test3 from '../../../pages/Test/Test3';
-import HeaderToggle from '../../../components/Toggle/HeaderToggle';
-import { toggleAtom } from '../../../store/Layout/Layout';
-import BlueBar from '../../../modal/BlueBar/BlueBar';
-import { blueModalAtom } from '../../../store/Layout/Layout';
-import { useAtom } from 'jotai';
-import { FilterWrap } from '../../../modal/External/ExternalFilter';
+import { MainSelect } from '../../../common/Option/Main'
+import { BlackBtn, BtnWrap, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import DateGrid from '../../../components/DateGrid/DateGrid'
+import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
+import { GreyBtn } from '../../../common/Button/Button'
+import Test3 from '../../../pages/Test/Test3'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { toggleAtom } from '../../../store/Layout/Layout'
+import BlueBar from '../../../modal/BlueBar/BlueBar'
+import { blueModalAtom } from '../../../store/Layout/Layout'
+import { useAtom } from 'jotai'
+import { FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
   TCSubContainer,
   FilterContianer,
@@ -40,9 +35,9 @@ import {
   FilterHeaderAlert,
   PageSelect,
   HiddenBtn,
-} from '../../../modal/External/ExternalFilter';
-import Hidden from '../../../components/TableInner/Hidden';
-import PageDropdown from '../../../components/TableInner/PageDropdown';
+} from '../../../modal/External/ExternalFilter'
+import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 const Notice = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -50,33 +45,33 @@ const Notice = ({}) => {
     //   ...prevState,
     //   [name]: selectedOption.label,
     // }));
-  };
-  const [isRotated, setIsRotated] = useState(false);
+  }
+  const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
-    setIsRotated(prevIsRotated => !prevIsRotated);
-  };
+    setIsRotated((prevIsRotated) => !prevIsRotated)
+  }
 
   // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom);
-  const [toggleMsg, setToggleMsg] = useState('On');
+  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+  const [toggleMsg, setToggleMsg] = useState('On')
   const toggleBtnClick = () => {
-    setExfilterToggle(prev => !prev);
+    setExfilterToggle((prev) => !prev)
     if (exFilterToggle === true) {
-      setToggleMsg('Off');
+      setToggleMsg('Off')
     } else {
-      setToggleMsg('On');
+      setToggleMsg('On')
     }
-  };
+  }
 
-  const [isModal, setIsModal] = useAtom(blueModalAtom);
+  const [isModal, setIsModal] = useAtom(blueModalAtom)
 
-  console.log('isModal =>', isModal);
+  console.log('isModal =>', isModal)
 
   const modalOpen = () => {
-    setIsModal(true);
-  };
+    setIsModal(true)
+  }
 
   return (
     <FilterContianer>
@@ -84,11 +79,7 @@ const Notice = ({}) => {
         <FilterHeader>
           <h1>공지사항</h1>
           {/* 토글 쓰기 */}
-          <HeaderToggle
-            exFilterToggle={exFilterToggle}
-            toggleBtnClick={toggleBtnClick}
-            toggleMsg={toggleMsg}
-          />
+          <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
         </FilterHeader>
         {exFilterToggle && (
           <FilterWrap>
@@ -98,12 +89,7 @@ const Notice = ({}) => {
                   <h6 style={{ width: '100px' }}> 검색</h6>
                   <MainSelect />
                   <Input style={{ marginLeft: '10px' }} />
-                  <GreyBtn
-                    style={{ width: '70px' }}
-                    height={35}
-                    margin={10}
-                    onClick={modalOpen}
-                  >
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen}>
                     찾기
                   </GreyBtn>
                 </PartWrap>
@@ -144,7 +130,7 @@ const Notice = ({}) => {
         <Test3 />
       </TableContianer>
     </FilterContianer>
-  );
-};
+  )
+}
 
-export default Notice;
+export default Notice

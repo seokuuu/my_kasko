@@ -1,12 +1,12 @@
-import { styled } from 'styled-components';
+import { styled } from 'styled-components'
 
 //외부 필터 영역 전체 + 테이블 영역 전체 (페이지 본문 div)
 export const FilterContianer = styled.div`
   width: 100%;
-`;
+`
 
 // 외부 필터 영역 (검색필터로 사라지는 부분)
-export const FilterWrap = styled.div``;
+export const FilterWrap = styled.div``
 
 // 외부 필터 헤드
 export const FilterHeader = styled.div`
@@ -22,7 +22,7 @@ export const FilterHeader = styled.div`
     font-weight: bold;
     font-size: 24px;
   }
-`;
+`
 
 // 외부 필터 메인
 export const FilterSubcontianer = styled.div`
@@ -34,14 +34,14 @@ export const FilterSubcontianer = styled.div`
   background-color: #dbe2f0;
   justify-content: space-between;
   flex-wrap: wrap;
-  color: ${props => props.theme.colors.TxtAlter};
+  color: ${(props) => props.theme.colors.TxtAlter};
   overflow-x: hidden;
-`;
+`
 
 // 패키지 생성 / 수정에 쓰이는 Fitler 최상단 div
 export const FilterTopContainer = styled.div`
   width: 100%;
-`;
+`
 
 export const FilterTCTop = styled.div`
   border: 1px solid #c8c8c8;
@@ -55,35 +55,48 @@ export const FilterTCTop = styled.div`
 
   p {
     margin-left: 20px;
-    color: ${props => props.theme.colors.PriNormal};
+    color: ${(props) => props.theme.colors.PriNormal};
   }
-`;
+`
 
 export const FilterTCBottom = styled.div`
   border: 1px solid #c8c8c8;
   background-color: #dbe2f0;
   margin-bottom: 20px;
-`;
+  padding: 30px;
+`
 
 export const FilterTCBSub = styled.div`
   display: flex;
   background-color: white;
   height: 64px;
-  margin: 24px;
 
   justify-content: space-around;
   align-items: center;
-
   h6 {
     padding: 0px 20px;
   }
-
   > div {
     display: flex;
-
     align-items: center;
   }
-`;
+`
+
+export const FilterTCBSubdiv = styled.div`
+  display: flex;
+  background-color: white;
+  height: 70px;
+  padding: 20px;
+  padding-left: 30px;
+  align-items: center;
+  h6 {
+    padding: 0px 20px;
+  }
+  > div {
+    display: flex;
+    align-items: center;
+  }
+`
 
 // FilterWrap에 한 줄만 있을 때, FilterSubContainer / FilterLeft / FilterRight 없이 단독으로 쓰임, + RowWrap에 none
 export const FilterSubOneContainer = styled.div`
@@ -93,8 +106,8 @@ export const FilterSubOneContainer = styled.div`
   padding: 10px;
   padding-left: 30px;
   background-color: #dbe2f0;
-  color: ${props => props.theme.colors.TxtAlter};
-`;
+  color: ${(props) => props.theme.colors.TxtAlter};
+`
 
 //초기화 , 검색 버튼 하단 영역 div
 export const FilterFooter = styled.div`
@@ -104,15 +117,15 @@ export const FilterFooter = styled.div`
   justify-content: center;
   height: 70px;
   background-color: #f0f1f6;
-`;
+`
 
 // 검색 필터 Left
-export const FilterLeft = styled.div``;
+export const FilterLeft = styled.div``
 
 // 검색 필터 Right
 export const FilterRight = styled.div`
   width: 300px;
-`;
+`
 
 //검색 필터 내 한 '줄' 영역 div
 export const RowWrap = styled.div`
@@ -123,7 +136,7 @@ export const RowWrap = styled.div`
   margin: 10px 0px 10px 0px;
   border-bottom: ${({ none }) => (none ? 'none' : '1px solid #c8c8c8')};
   padding-bottom: 10px;
-`;
+`
 
 // 말 그대로 파트 랩 (제목 + 내용 한 '칸'짜리 div)
 export const PartWrap = styled.div`
@@ -141,12 +154,12 @@ export const PartWrap = styled.div`
     text-align: left;
     color: #454545;
   }
-`;
+`
 
 // PartWrap의 오른쪽 부분 (제목 말고 내용)
 export const PWRight = styled.div`
   width: 200px;
-`;
+`
 
 export const DoubleWrap = styled.div`
   display: flex;
@@ -168,14 +181,14 @@ export const DoubleWrap = styled.div`
     width: 210px;
     font-size: 18px;
   }
-`;
+`
 
 // dataGrid 범위 div
 export const GridWrap = styled.div`
   width: 400px;
   display: flex;
   padding: 15px;
-`;
+`
 
 // externalFitler 공용 input
 export const Input = styled.input`
@@ -183,12 +196,21 @@ export const Input = styled.input`
   height: 37px;
   border-radius: 3px;
   border: 1px solid #c8c8c8;
+  font-size: 18px;
 
   @media (max-width: 1500px) {
     width: 110px;
     margin-left: 15px;
   }
-`;
+`
+
+export const CustomInput = styled.input`
+  width: ${(props) => props.width}%;
+  height: ${(props) => props.height}px;
+  border-radius: 3px;
+  border: 1px solid #c8c8c8;
+  font-size: 18px;
+`
 
 // 물결표
 export const Tilde = styled.div`
@@ -197,7 +219,7 @@ export const Tilde = styled.div`
   @media (max-width: 1500px) {
     margin-right: 5px;
   }
-`;
+`
 
 // 초기화 이미지
 export const ResetImg = styled.img`
@@ -207,7 +229,7 @@ export const ResetImg = styled.img`
   &.rotate {
     transform: rotate(540deg);
   }
-`;
+`
 
 // 라디오박스 전체 div
 export const ExRadioWrap = styled.div`
@@ -215,7 +237,7 @@ export const ExRadioWrap = styled.div`
   justify-content: center;
   gap: 20px;
   padding-left: 15px;
-`;
+`
 
 // 체크박스 전체 div
 export const ExCheckWrap = styled.div`
@@ -229,7 +251,7 @@ export const ExCheckWrap = styled.div`
     font-size: 17px;
     margin-left: 3px;
   }
-`;
+`
 
 // 체크박스 각각 div
 export const ExCheckDiv = styled.div`
@@ -243,7 +265,7 @@ export const ExCheckDiv = styled.div`
   p {
     color: black;
   }
-`;
+`
 
 // input들 div
 export const ExInputsWrap = styled.div`
@@ -252,7 +274,7 @@ export const ExInputsWrap = styled.div`
   @media (max-width: 1500px) {
     padding-left: 0px;
   }
-`;
+`
 
 export const SubTitle = styled.div`
   margin-left: 20px;
@@ -276,7 +298,7 @@ export const SubTitle = styled.div`
       font-weight: bold;
     }
   }
-`;
+`
 
 export const TableTitle = styled.div`
   margin-left: 20px;
@@ -296,7 +318,7 @@ export const TableTitle = styled.div`
 
     font-size: 18px;
   }
-`;
+`
 
 // 테이블 부분 새로 만들어라 ------------------
 // 테이블 부분 (하단) 컨테이너 ->
@@ -308,7 +330,7 @@ export const TableContianer = styled.div`
   padding: 30px;
   padding-top: 10px;
   background-color: #fcfcfc;
-`;
+`
 
 export const TCSubContainer = styled.div`
   display: flex;
@@ -319,29 +341,29 @@ export const TCSubContainer = styled.div`
   font-size: 16px;
 
   span {
-    color: ${props => props.theme.colors.PriNormal};
+    color: ${(props) => props.theme.colors.PriNormal};
     margin: 0px 4px;
   }
 
   > div {
     display: flex;
   }
-`;
+`
 
 export const HiddenBtn = styled.div`
   display: flex;
-  color: ${props => props.theme.colors.TxtAlter};
+  color: ${(props) => props.theme.colors.TxtAlter};
   margin-left: 10px;
 
   img {
     display: flex;
   }
-`;
+`
 
 export const PageSelect = styled.select`
   border: 1px solid #c8c8c8;
   padding-right: 20px;
-`;
+`
 
 // 흰색 배경 알림 창
 export const FilterHeaderAlert = styled.div`
@@ -354,21 +376,21 @@ export const FilterHeaderAlert = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 17px;
-`;
+`
 
 export const FilterAlterTxt = styled.div`
   font-size: 18px;
   margin-top: 10px;
-`;
+`
 
 export const FHALeft = styled.div`
   display: flex;
-`;
+`
 
 export const InputStartWrap = styled.div`
   display: flex;
   margin-left: 15px;
-`;
+`
 
 export const TableBottomWrap = styled.div`
   display: flex;
@@ -379,7 +401,7 @@ export const TableBottomWrap = styled.div`
     margin-left: auto;
     margin-right: auto;
   }
-`;
+`
 
 export const AlertImg = styled.div`
   position: relative;
@@ -389,4 +411,4 @@ export const AlertImg = styled.div`
   &:hover {
     font-weight: bold;
   }
-`;
+`

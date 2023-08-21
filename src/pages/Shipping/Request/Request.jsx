@@ -1,28 +1,19 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { styled } from 'styled-components';
-import { storageOptions } from '../../../common/Option/SignUp';
+import React from 'react'
+import { useState, useEffect } from 'react'
+import { styled } from 'styled-components'
+import { storageOptions } from '../../../common/Option/SignUp'
 
-import { MainSelect } from '../../../common/Option/Main';
-import {
-  BlackBtn,
-  BtnWrap,
-  WhiteRedBtn,
-  WhiteSkyBtn,
-} from '../../../common/Button/Button';
-import DateGrid from '../../../components/DateGrid/DateGrid';
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
-import { GreyBtn } from '../../../common/Button/Button';
-import Test3 from '../../Test/Test3';
-import HeaderToggle from '../../../components/Toggle/HeaderToggle';
-import { toggleAtom } from '../../../store/Layout/Layout';
+import { MainSelect } from '../../../common/Option/Main'
+import { BlackBtn, BtnWrap, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import DateGrid from '../../../components/DateGrid/DateGrid'
+import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
+import { GreyBtn } from '../../../common/Button/Button'
+import Test3 from '../../Test/Test3'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { toggleAtom } from '../../../store/Layout/Layout'
 
-import { CheckBox } from '../../../common/Check/Checkbox';
-import {
-  StyledCheckMainDiv,
-  StyledCheckSubSquDiv,
-  CheckImg2,
-} from '../../../common/Check/CheckImg';
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 
 import {
   TCSubContainer,
@@ -46,14 +37,9 @@ import {
   FilterHeaderAlert,
   FHALeft,
   ExInputsWrap,
-} from '../../../modal/External/ExternalFilter';
-
-import {
-  ClaimTable,
-  ClaimRow,
-  ClaimTitle,
-  ClaimContent,
-} from '../Claim/ClaimRegister';
+} from '../../../modal/External/ExternalFilter'
+import Hidden from '../../../components/TableInner/Hidden'
+import { ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../Claim/ClaimRegister'
 
 const Request = ({}) => {
   const titleData = [
@@ -66,7 +52,7 @@ const Request = ({}) => {
     '제품 중량(kg)',
     '제품 공급가액',
     '운반비 공급가액',
-  ];
+  ]
   const contentData = [
     '986,742',
     '986,742',
@@ -77,42 +63,38 @@ const Request = ({}) => {
     '986,742',
     '986,742',
     '986,742',
-  ];
+  ]
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
     //   [name]: selectedOption.label,
     // }));
-  };
-  const [isRotated, setIsRotated] = useState(false);
+  }
+  const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
-    setIsRotated(prevIsRotated => !prevIsRotated);
-  };
+    setIsRotated((prevIsRotated) => !prevIsRotated)
+  }
 
   // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom);
-  const [toggleMsg, setToggleMsg] = useState('On');
+  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+  const [toggleMsg, setToggleMsg] = useState('On')
   const toggleBtnClick = () => {
-    setExfilterToggle(prev => !prev);
+    setExfilterToggle((prev) => !prev)
     if (exFilterToggle === true) {
-      setToggleMsg('Off');
+      setToggleMsg('Off')
     } else {
-      setToggleMsg('On');
+      setToggleMsg('On')
     }
-  };
+  }
 
   return (
     <FilterContianer>
       <FilterHeader>
         <h1>출고 요청</h1>
         {/* 토글 쓰기 */}
-        <HeaderToggle
-          exFilterToggle={exFilterToggle}
-          toggleBtnClick={toggleBtnClick}
-          toggleMsg={toggleMsg}
-        />
+        <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
       </FilterHeader>
 
       {exFilterToggle && (
@@ -123,22 +105,14 @@ const Request = ({}) => {
                 <PartWrap>
                   <h6>창고 구분</h6>
                   <PWRight>
-                    <MainSelect
-                      options={storageOptions}
-                      defaultValue={storageOptions[0]}
-                    />
+                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
                 </PartWrap>
 
                 <PartWrap>
                   <h6>고객사</h6>
                   <Input />
-                  <GreyBtn
-                    style={{ width: '70px' }}
-                    height={35}
-                    margin={10}
-                    fontSize={17}
-                  >
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
                   </GreyBtn>
                 </PartWrap>
@@ -146,12 +120,7 @@ const Request = ({}) => {
                 <PartWrap>
                   <h6>목적지</h6>
                   <Input />
-                  <GreyBtn
-                    style={{ width: '70px' }}
-                    height={35}
-                    margin={10}
-                    fontSize={17}
-                  >
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
                   </GreyBtn>
                 </PartWrap>
@@ -178,10 +147,7 @@ const Request = ({}) => {
                 <PartWrap>
                   <h6>구분</h6>
                   <PWRight>
-                    <MainSelect
-                      options={storageOptions}
-                      defaultValue={storageOptions[0]}
-                    />
+                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
                 </PartWrap>
               </RowWrap>
@@ -224,7 +190,7 @@ const Request = ({}) => {
       </FilterHeader>
       <TableWrap style={{ marginTop: '5px' }}>
         <ClaimTable>
-          {[0, 1, 2].map(index => (
+          {[0, 1, 2].map((index) => (
             <ClaimRow key={index}>
               {titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
                 <React.Fragment agmentkey={title}>
@@ -241,6 +207,7 @@ const Request = ({}) => {
         <TCSubContainer bor>
           <div>
             조회 목록 (선택 <span>2</span> / 50개 )
+            <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}></div>
         </TCSubContainer>
@@ -256,11 +223,11 @@ const Request = ({}) => {
         <Test3 />
       </TableContianer>
     </FilterContianer>
-  );
-};
+  )
+}
 
-export default Request;
+export default Request
 
 const TableWrap = styled.div`
   margin: 30px auto;
-`;
+`

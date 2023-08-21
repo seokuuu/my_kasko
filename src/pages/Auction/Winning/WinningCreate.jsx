@@ -3,21 +3,11 @@ import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
+import { BlackBtn, BlueBtn, BtnWrap, ExcelBtn, SkyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import {
-  GreyBtn,
-  ExcelBtn,
-  WhiteGrnBtn,
-  IndigoBtn,
-  BlueBtn,
-  SkyBtn,
-  SwitchBtn,
-  TGreyBtn,
-  TWhiteBtn,
-} from '../../../common/Button/Button'
-import Test3 from '../../../pages/Test/Test3'
+import { GreyBtn } from '../../../common/Button/Button'
+import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
 
@@ -35,7 +25,6 @@ import {
   PartWrap,
   PWRight,
   Input,
-  TCSubContainer,
   GridWrap,
   Tilde,
   DoubleWrap,
@@ -46,28 +35,44 @@ import {
   FilterHeaderAlert,
   FHALeft,
   ExInputsWrap,
+  ExCheckWrap,
+  ExCheckDiv,
+  TCSubContainer,
+  FilterTopContainer,
+  FilterTCTop,
+  FilterTCBottom,
+  FilterTCBSub,
+  FilterTCBSubdiv,
 } from '../../../modal/External/ExternalFilter'
 
-import PageDropdown from '../../../components/TableInner/PageDropdown'
-
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
 
-const Status = ({}) => {
-  const radioDummy = ['전체', '미진행', '진행중', '종료']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+const WinningCreate = ({}) => {
+  const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 
-  const [savedRadioValue, setSavedRadioValue] = useState('')
+  //checkSales
+  const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
+
+  //checkShips
+  const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
+
   useEffect(() => {
-    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
+    // true에 해당되면, value를, false면 빈값을 반환
+    const updatedCheck = checkSales.map((value, index) => {
+      return check1[index] ? value : ''
+    })
+    // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
+    const filteredCheck = updatedCheck.filter((item) => item !== '')
+    setCheckData1(filteredCheck)
 
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
-  }, [checkRadio])
+    // 전송용 input에 담을 때
+    // setInput({
+    //   ...input,
+    //   businessType: updatedCheck.filter(item => item !== ''),
+    // });
+  }, [check1])
 
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
@@ -97,13 +102,66 @@ const Status = ({}) => {
   return (
     <FilterContianer>
       <FilterHeader>
-        <h1>경매 진행 조회</h1>
+        <div style={{ display: 'flex' }}>
+          <h1>낙찰 생성</h1>
+        </div>
         {/* 토글 쓰기 */}
         <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
       </FilterHeader>
 
       {exFilterToggle && (
         <>
+          <FilterTopContainer>
+            <FilterTCTop>
+              <h6>경매 번호</h6>
+              <p>2023041050</p>
+            </FilterTCTop>
+            <FilterTCBottom>
+              <FilterTCBSubdiv>
+                <div>
+                  <h6>고객사</h6>
+                  <Input />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                    찾기
+                  </GreyBtn>
+                </div>
+
+                <div>
+                  <h6>목적지</h6>
+                  <Input placeholder="코드" style={{ width: '60px', marginRight: '10px' }} />
+                  <Input placeholder="목적지명" style={{ width: '120px', marginRight: '10px' }} />
+                  <Input placeholder="하차지명" style={{ width: '130px', marginRight: '10px' }} />
+                  <Input placeholder="하차지 연락처" style={{ width: '130px', marginRight: '10px' }} />
+                  <Input placeholder="주소" style={{ width: '130px', marginRight: '10px' }} />
+
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                    찾기
+                  </GreyBtn>
+                </div>
+              </FilterTCBSubdiv>
+              <FilterTCBSubdiv>
+                <div style={{ marginRight: '10px' }}>
+                  <h6>낙찰가 총액</h6>
+                  <InputContainer>
+                    <Inputs type="text" />
+                    <Unit>원</Unit>
+                  </InputContainer>
+                </div>
+                <div style={{ marginRight: '10px' }}>
+                  <h6>총 중량</h6>
+                  <Input />
+                </div>
+
+                <div style={{ marginRight: '10px' }}>
+                  <h6>확정전송 총액</h6>
+                  <InputContainer>
+                    <Inputs type="text" />
+                    <Unit>원</Unit>
+                  </InputContainer>
+                </div>
+              </FilterTCBSubdiv>
+            </FilterTCBottom>
+          </FilterTopContainer>
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
@@ -115,11 +173,10 @@ const Status = ({}) => {
                 </PartWrap>
 
                 <PartWrap>
-                  <h6>고객사 명</h6>
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
+                  <h6>매입처 </h6>
+                  <PWRight>
+                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
+                  </PWRight>
                 </PartWrap>
 
                 <PartWrap>
@@ -132,7 +189,7 @@ const Status = ({}) => {
               </RowWrap>
               <RowWrap style={{ borderBottom: '0px' }}>
                 <PartWrap>
-                  <h6>구분2</h6>
+                  <h6>구분</h6>
                   <MainSelect />
                   <span style={{ margin: '0px -10px 0px 5px' }}>~</span>
                   <MainSelect />
@@ -145,7 +202,6 @@ const Status = ({}) => {
                     <Input />
                   </ExInputsWrap>
                 </PartWrap>
-                <PartWrap />
               </RowWrap>
               <RowWrap style={{ borderBottom: '0px' }}>
                 <PartWrap>
@@ -204,10 +260,47 @@ const Status = ({}) => {
             <Excel />
           </div>
         </TCSubContainer>
+        <TCSubContainer>
+          <div>
+            선택 중량<span> 2 </span>kg / 총 중량 kg
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <SkyBtn>제품 추가</SkyBtn>
+          </div>
+        </TCSubContainer>
         <Test3 />
+        <TCSubContainer>
+          <div></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <SkyBtn>입금확인</SkyBtn>
+          </div>
+        </TCSubContainer>
       </TableContianer>
     </FilterContianer>
   )
 }
 
-export default Status
+export default WinningCreate
+
+const InputContainer = styled.div`
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  width: 200px; /* 원하는 너비로 조절 */
+`
+
+const Inputs = styled.input`
+  flex: 1;
+  border: none;
+  outline: none;
+  width: 100%; /* flex 아이템의 너비를 100%로 설정 */
+`
+
+const Unit = styled.span`
+  position: relative;
+  font-size: 16px;
+  margin-left: 5px;
+  margin-right: 5px;
+`

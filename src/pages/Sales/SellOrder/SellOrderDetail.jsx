@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import React from 'react'
 import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
@@ -9,22 +10,22 @@ import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import {
   GreyBtn,
   ExcelBtn,
-  WhiteGrnBtn,
-  IndigoBtn,
-  BlueBtn,
+  WhiteBlackBtn,
+  WhiteRedBtn,
   SkyBtn,
-  SwitchBtn,
+  WhiteSkyBtn,
+  BtnBound,
   TGreyBtn,
-  TWhiteBtn,
 } from '../../../common/Button/Button'
-import Test3 from '../../../pages/Test/Test3'
+import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
-
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-
+import BlueBar from '../../../modal/BlueBar/BlueBar'
+import { blueModalAtom } from '../../../store/Layout/Layout'
+import { useAtom } from 'jotai'
+import { FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
+  TCSubContainer,
   FilterContianer,
   FilterHeader,
   FilterFooter,
@@ -35,40 +36,23 @@ import {
   PartWrap,
   PWRight,
   Input,
-  TCSubContainer,
   GridWrap,
   Tilde,
   DoubleWrap,
   ResetImg,
   TableContianer,
-  ExRadioWrap,
-  SubTitle,
+  InputStartWrap,
   FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
+  FilterTCTop,
 } from '../../../modal/External/ExternalFilter'
-
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
-
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
 
-const Cart = ({}) => {
-  const radioDummy = ['전체', '미진행', '진행중', '종료']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+import { TableWrap, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../Shipping/Claim/ClaimRegister'
 
-  const [savedRadioValue, setSavedRadioValue] = useState('')
-  useEffect(() => {
-    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
-
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
-  }, [checkRadio])
-
+const SellOrderDetail = ({}) => {
+  const titleData = ['주문 번호', '고객사', '고객코드', '총 수량', '총 중량', '입금 요청 금액']
+  const contentData = ['2023040558', '4,685,798', 'K00000', '30', '4,685,798', '54,685,798']
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -94,38 +78,74 @@ const Cart = ({}) => {
     }
   }
 
+  const [isModal, setIsModal] = useAtom(blueModalAtom)
+
+  console.log('isModal =>', isModal)
+
+  const modalOpen = () => {
+    setIsModal(true)
+  }
+
   return (
     <FilterContianer>
       <div>
         <FilterHeader>
-          <div style={{ display: 'flex' }}>
-            <h1>장바구니</h1>
-          </div>
+          <h1>상시 판매 주문 확인 상세</h1>
         </FilterHeader>
+        <FilterTCTop>
+          <h6>경매 번호</h6>
+          <p>2023041050</p>
+        </FilterTCTop>
+
+        <TableWrap>
+          <ClaimTable>
+            {[0, 1].map((index) => (
+              <ClaimRow key={index}>
+                {titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
+                  <React.Fragment agmentkey={title}>
+                    <ClaimTitle>{title}</ClaimTitle>
+                    <ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
+                  </React.Fragment>
+                ))}
+              </ClaimRow>
+            ))}
+          </ClaimTable>
+        </TableWrap>
       </div>
+
       <TableContianer>
         <TCSubContainer bor>
           <div>
             조회 목록 (선택 <span>2</span> / 50개 )
             <Hidden />
           </div>
-          <div>
+          <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown />
             <Excel />
           </div>
         </TCSubContainer>
         <TCSubContainer>
           <div>
-            선택 <span> 2 </span>개
+            선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <Input style={{ width: '60px' }} />
+            <Input style={{ width: '120px' }} />
+            <Input style={{ width: '120px' }} />
+            <TGreyBtn>적용</TGreyBtn>
+            <BtnBound />
+            <WhiteBlackBtn>목적지 승인 요청</WhiteBlackBtn>
+            <BtnBound />
+            <WhiteRedBtn>목적지 변경 반려</WhiteRedBtn>
+            <WhiteSkyBtn>목적지 변경 반려</WhiteSkyBtn>
+          </div>
         </TCSubContainer>
-
-        <Test3 title={'규격 약호 찾기'} />
+        <Test3 />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <SkyBtn>선택 제품 주문</SkyBtn>
+            <WhiteRedBtn>부분 주문 취소</WhiteRedBtn>
+            <SkyBtn>부분 입금 확인</SkyBtn>
           </div>
         </TCSubContainer>
       </TableContianer>
@@ -133,4 +153,4 @@ const Cart = ({}) => {
   )
 }
 
-export default Cart
+export default SellOrderDetail
