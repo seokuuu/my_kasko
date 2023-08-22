@@ -23,7 +23,7 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import BlueBar from '../../../modal/BlueBar/BlueBar'
 import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { FilterWrap } from '../../../modal/External/ExternalFilter'
+import { CustomInput, FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
   TCSubContainer,
   FilterContianer,
@@ -48,7 +48,9 @@ import {
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
 
-import { TableWrap, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../Shipping/Claim/ClaimRegister'
+import {  ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../components/MapTable/MapTable'
+
+import { TableWrap } from '../../../components/MapTable/MapTable'
 
 const SellOrderDetail = ({}) => {
   const titleData = ['주문 번호', '고객사', '고객코드', '총 수량', '총 중량', '입금 요청 금액']
@@ -129,9 +131,10 @@ const SellOrderDetail = ({}) => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <Input style={{ width: '60px' }} />
-            <Input style={{ width: '120px' }} />
-            <Input style={{ width: '120px' }} />
+            <P>목적지</P>
+            <CustomInput placeholder="h50" width={60} />
+            <CustomInput placeholder="목적지명" width={120} />
+            <CustomInput placeholder="도착지 연락처" width={120} />
             <TGreyBtn>적용</TGreyBtn>
             <BtnBound />
             <WhiteBlackBtn>목적지 승인 요청</WhiteBlackBtn>
@@ -154,3 +157,8 @@ const SellOrderDetail = ({}) => {
 }
 
 export default SellOrderDetail
+
+const P = styled.p`
+  position: relative;
+  top: 5px;
+`

@@ -205,11 +205,11 @@ export const Input = styled.input`
 `
 
 export const CustomInput = styled.input`
-  width: ${(props) => props.width}%;
+  width: ${(props) => props.width}px;
   height: ${(props) => props.height}px;
   border-radius: 3px;
   border: 1px solid #c8c8c8;
-  font-size: 18px;
+  font-size: 14px;
 `
 
 // 물결표
@@ -315,7 +315,6 @@ export const TableTitle = styled.div`
 
   h6 {
     color: #6b6b6b;
-
     font-size: 18px;
   }
 `

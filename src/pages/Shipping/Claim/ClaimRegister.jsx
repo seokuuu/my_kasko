@@ -11,6 +11,8 @@ import { OverAllMain, OverAllSub } from '../../../common/Overall/Overall.styled'
 import SideBar from '../../../components/Left/SideBar'
 import SubHeader from '../../../components/Header/SubHeader'
 
+import { DateTitle, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../components/MapTable/MapTable'
+
 // 클레임 등록
 const ClaimRegister = () => {
   const titleData = [
@@ -147,42 +149,6 @@ export const CMBRight = styled.div`
 
 export const CRWSub = styled.div`
   display: flex;
-`
-
-export const TableWrap = styled.div`
-  margin: 30px auto;
-`
-
-export const ClaimTable = styled.div`
-  display: block;
-`
-export const ClaimRow = styled.div`
-  width: 100%;
-  height: 40px;
-  display: flex;
-  font-size: 16px;
-`
-export const ClaimTitle = styled.div`
-  display: flex;
-  border: 1px solid #c8c8c8;
-  background-color: #dbe2f0;
-  width: 16.66%;
-  justify-content: center;
-  align-items: center;
-`
-export const ClaimContent = styled.div`
-  display: flex;
-  border: 1px solid #c8c8c8;
-  width: 16.66%;
-  justify-content: center;
-  align-items: center;
-`
-
-export const DateTitle = styled.div`
-  min-width: 200px;
-  max-width: 230px;
-  padding: 10px;
-  font-size: 16px;
 `
 
 const SelectWrap = styled.div`

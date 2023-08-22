@@ -155,7 +155,16 @@ const Transport = ({}) => {
           </div>
         </TCSubContainer>
         <TCSubContainer>
-          <div></div>
+          <TCSubDiv>
+            <div>
+              <h6>적용일자</h6>
+            </div>
+            <div>
+              {' '}
+              <h6>단가 일괄 수정</h6>
+            </div>
+            <div></div>
+          </TCSubDiv>
           <div style={{ display: 'flex', gap: '10px' }}>
             <TGreyBtn>적용</TGreyBtn>
             <WhiteRedBtn>운반비 삭제</WhiteRedBtn>
@@ -174,3 +183,5 @@ const Transport = ({}) => {
 }
 
 export default Transport
+
+const TCSubDiv = styled.div``

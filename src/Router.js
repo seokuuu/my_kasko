@@ -31,13 +31,16 @@ import WinningPage from './pages/Auction/Winning/WinningPage'
 import WinningCreatePage from './pages/Auction/Winning/WinningCreatePage'
 
 import OrderPage from './pages/Order/OrderPage'
+import OrderDetailPage from './pages/Order/OrderDetailPage'
 
 // 출고 관리
 import RegisterPage from './pages/Shipping/Register/RegisterPage'
 import RequestPage from './pages/Shipping/Request/RequestPage'
 import DispatchPage from './pages/Shipping/Dispatch/DispatchPage'
 import DisRegisterPage from './pages/Shipping/Dispatch/DisRegisterPage'
+import DisRegisterDetailPage from './pages/Shipping/Dispatch/DisRegisterDetailPage'
 import StatusPage from './pages/Shipping/Status/StatusPage'
+import StatusDetailPage from './pages/Shipping/Status/StatusDetailPage'
 import Achievement from './pages/Shipping/Achievement/AchievementPage'
 
 // 판매 제품 관리
@@ -171,7 +174,7 @@ const Router = () => {
         <Route path="/sales">
           <Route path="/sales/single" element={<SinglePage />}></Route>
           <Route path="/sales/package" element={<PackagePage />}></Route>
-          <Route path="/sales/order" element={<SellOrderDetailPage />}></Route>
+          <Route path="/sales/order" element={<SellOrderPage />}></Route>
         </Route>
         {/* 주문 관리 */}
         <Route path="/order" element={<OrderPage />}></Route>
@@ -181,7 +184,7 @@ const Router = () => {
           <Route path="/shipping/request" element={<RequestPage />} />
           <Route path="/shipping/dispatch" element={<DispatchPage />} />
           <Route path="/shipping/dispatch/register" element={<DisRegisterPage />} />
-          <Route path="/shipping/status" element={<StatusPage />} />
+          <Route path="/shipping/status" element={<StatusDetailPage />} />
           <Route path="/shipping/achievement" element={<Achievement />} />
           <Route path="/shipping/claim/register" element={<ClaimRegisterPage />} />
         </Route>
