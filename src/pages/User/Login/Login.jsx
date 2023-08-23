@@ -37,6 +37,8 @@ import {
   subHeaderAtom,
 } from '../../../store/Layout/Layout';
 
+import AlertModal from '../../../modal/Common/AlertModal';
+
 const Login = () => {
   const [showHeader, setShowHeader] = useAtom(headerAtom);
   const [showAccordion, setShowAccordion] = useAtom(accordionAtom);

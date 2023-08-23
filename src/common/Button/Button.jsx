@@ -16,7 +16,18 @@ export const BlackBtn = styled.button`
   width: ${(props) => props.width}%;
   height: ${(props) => props.height}px;
   margin: ${(props) => props.margin}px;
-  background-color: black;
+  background-color: #202020;
+  color: white;
+  cursor: pointer;
+  border: 1px solid #e1e1e1;
+`
+
+export const RedBtn = styled.button`
+  font-size: ${(props) => props.fontSize}px;
+  width: ${(props) => props.width}%;
+  height: ${(props) => props.height}px;
+  margin: ${(props) => props.margin}px;
+  background-color: #b02525;
   color: white;
   cursor: pointer;
   border: 1px solid #e1e1e1;
