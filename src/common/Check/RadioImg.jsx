@@ -24,6 +24,9 @@ export const RadioInnerCircleDiv = styled.div`
   border-radius: 100%;
   width: 10px;
   height: 10px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 `
 
 // const [checkRadio, setCheckRadio] = useState(

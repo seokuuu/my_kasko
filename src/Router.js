@@ -128,8 +128,8 @@ import UTerms from './userpages/UserCustomer/Terms/TermsPage'
 import UserMainPage from './userpages/MainPage'
 
 // test
-
-import CommonTest from './modal/Common/CommonTest'
+import BidAgreement from './modal/Common/BidAgreement'
+import BlueModal from './modal/Common/BlueModal'
 
 const Router = () => {
   return (
@@ -140,7 +140,7 @@ const Router = () => {
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
         <Route path="/test4" element={<Test4 />} />
-        <Route path="/common" element={<CommonTest />} />
+        <Route path="/common" element={<BlueModal />} />
         {/* 로그인, 회원가입, 아이디 찾기, 비밀번호 재발급, 캘린더, 메인 */}
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />

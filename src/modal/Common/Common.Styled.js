@@ -22,6 +22,7 @@ export const ModalContainer = styled.div`
   /* height: ${(props) => props.height}px; */
   height: max-content;
   z-index: 9999;
+  border: 1px solid black;
 `
 
 export const ModalSubContainer = styled.div`
@@ -66,19 +67,88 @@ export const BlueBarHeader = styled.div`
   color: white;
 `
 
-export const BlueSubContainer = styled.div`
-  margin: 10% auto;
-  width: 90%;
-  height: 100%;
+export const Agreement = styled.div`
+  background-color: #eef3fb;
+  width: 100%;
+
+  > h6 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 600;
+    height: 80px;
+  }
 `
+
+export const AgreementTop = styled.div`
+  padding: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 90%;
+  background-color: white;
+  font-size: 16px;
+
+  > div {
+    display: flex;
+    margin: 25px;
+
+    h6 {
+      font-weight: 600;
+      width: 110px;
+      font-size: 18px;
+    }
+
+    p {
+      margin-bottom: 3px;
+    }
+
+    span {
+      color: ${(props) => props.theme.colors.StatAlert};
+      font-size: 14px;
+      display: block;
+      margin-top: 3px;
+    }
+
+    h5 {
+      color: ${(props) => props.theme.colors.TxtAlter};
+      margin-left: 17px;
+      font-size: 14px;
+    }
+
+    > div {
+      display: block;
+      position: relative;
+      top: 1px;
+    }
+  }
+`
+
+export const AgreementBottom = styled.div`
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: ${(props) => props.theme.colors.PriStrong};
+`
+
+export const BlueSubContainer = styled.div`
+  /* width: 90%;
+  height: 100%; */
+`
+
+export const BSCSubContainer = styled.div``
 
 export const BSCSWrap = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-around;
-
-  /* height: 50px; */
-  height: 100%;
+  height: 50px;
+  /* height: 100%; */
+  margin-bottom: 10px;
 
   > input {
     border: 1px solid #c8c8c8;
@@ -94,8 +164,19 @@ export const BlueBarBtnWrap = styled.div`
   display: flex;
   width: 100%;
   justify-content: center;
-  padding: 20px 0px;
+  padding: 60px 0px 20px 0px;
 `
+
+export const BlueMainDiv = styled.div`
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px;
+  margin: 20px auto;
+  border: 1px solid magenta;
+`
+
+// 단순 alert 창
 export const ModalTitle = styled.h1`
   text-align: center;
   white-space: pre-line;
