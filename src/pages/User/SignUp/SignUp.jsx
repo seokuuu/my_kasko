@@ -1,6 +1,5 @@
-import React, { useCallback, useState, useEffect, useContext } from 'react';
-import { HeadFootLeftSwitch } from '../../../Router';
-import styled, { createGlobalStyle } from 'styled-components';
+import React, { useCallback, useState, useEffect } from 'react';
+import styled from 'styled-components';
 import {
   Container,
   SignupContainer,
@@ -13,11 +12,9 @@ import {
   Bottom,
   BottomItem,
   TxtDiv,
-  SDropDown,
   BottomP,
   CheckBtn,
   Init,
-  SubmitBtn,
   DropWrap,
   Title,
 } from './SignUp.Styled';
@@ -79,6 +76,7 @@ import {
   subHeaderAtom,
 } from '../../../store/Layout/Layout';
 import { Height } from '@mui/icons-material';
+import {businessNumberDuplication, idDuplication} from "../../../api/auth";
 
 const SignUp = () => {
   const [showHeader, setShowHeader] = useAtom(headerAtom);
@@ -129,18 +127,12 @@ const SignUp = () => {
     });
   }, [check]);
 
-  const dummy = {
-    userId: ['test1', 'wkdqaz'],
-    busId: ['1234512345'],
-  };
 
   //modal
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   //post
   const [postFind, setPostFind] = useState(false);
-
-  console.log('postFind', postFind);
 
   const postCheck = () => {
     setPostFind(false);
@@ -293,17 +285,13 @@ const SignUp = () => {
   const [emailFirst, setEmailFirst] = useState('');
   const [emailDomain, setEmailDomain] = useState('');
 
-  console.log('check', check);
   useEffect(() => {
     const checkIndex = check.findIndex(
       (isChecked, index) => isChecked && index < checkDummy.length
     );
 
-    console.log('checkIndex', checkIndex);
     if (checkIndex !== -1) {
       const selectedValue = checkDummy[checkIndex];
-
-      console.log('selectedValue', selectedValue);
     }
   }, [check]);
 
@@ -354,21 +342,22 @@ const SignUp = () => {
   );
 
   // ID 중복 확인
-  const handleDuplicateCheck = () => {
-    const isDuplicate = dummy.userId.includes(id);
-    if (isDuplicate) {
-      setIdDupleCheck(false);
-      setIdMsgColor('red');
-      setIdMsg('이미 사용중인 아이디 입니다.');
-    } else {
+  const handleDuplicateCheck = async () => {
+    try {
+      await idDuplication(id);
       setIdDupleCheck(true);
       setIdMsgColor('blue');
       setIdMsg('사용 가능한 아이디입니다.');
-      setInput({ ...input, id: id });
+      setInput({ ...input, id });
       setTimeout(() => {
         setIdMsg('');
       }, 3000);
-      //  +++ 여기에 중복체크 상태와 data에 아이디도 넣기 +++
+    } catch (e) {
+      if(e.data.status === 409) {
+        setIdDupleCheck(false);
+        setIdMsgColor('red');
+        setIdMsg('이미 사용중인 아이디 입니다.');
+      }
     }
   };
 
@@ -397,7 +386,6 @@ const SignUp = () => {
   }, []);
   useEffect(() => {
     const dupleValid = pw === pwDuple;
-    console.log('dupleValid', dupleValid);
     if (pwDupleFocused && pwDuple && !dupleValid) {
       setDupMsg('비밀번호가 일치하지 않습니다');
       setStatusColor('red');
@@ -424,20 +412,18 @@ const SignUp = () => {
   }, []);
 
   // 사업자 번호 중복 체크
-  const handleBusIdDupleCheck = () => {
-    const isDuplicate = dummy.busId.includes(busId);
-
-    console.log('isDuplicate', isDuplicate);
-    if (busId && isDuplicate) {
-      setBusIdMsgColor('red');
-      setBusIdMsg('이미 등록된 사업자 번호입니다.');
-    } else if (busId && !isDuplicate) {
+  const handleBusIdDupleCheck = async () => {
+    try {
+      await businessNumberDuplication(busId);
       setBusIdMsgColor('blue');
       setBusIdMsg('사용 가능한 사업자 번호입니다.');
       setInput({ ...input, businessNumber: busId });
       setTimeout(() => {
         setBusIdMsg('');
       }, 3000);
+    } catch (e) {
+      setBusIdMsgColor('red');
+      setBusIdMsg('이미 등록된 사업자 번호입니다.');
     }
   };
 
@@ -797,7 +783,6 @@ const SignUp = () => {
                 <Title>
                   <h4>사업자 번호</h4>
                   <p style={{ color: busIdMsgColor }}>{busIdMsg}</p>
-                  {console.log('busIdMsg', busIdMsg)}
                 </Title>
                 <div style={{ width: '320px' }}>
                   <TxtCheckInput

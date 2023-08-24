@@ -1,14 +1,11 @@
-import React, { useState, useCallback, useEffect, useContext } from 'react';
-import styled, { css } from 'styled-components';
-
-import { Link } from 'react-router-dom';
+import React, { useState, useCallback, useEffect } from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 
 import {
   StyledCheckMainDiv,
   StyledCheckSubDiv,
   CheckImg,
 } from '../../../common/Check/CheckImg';
-import { CheckBox } from '../../../common/Check/Checkbox';
 import {
   Container,
   SubContainer,
@@ -36,11 +33,17 @@ import {
   accordionAtom,
   subHeaderAtom,
 } from '../../../store/Layout/Layout';
+import {login} from "../../../api/auth";
+import {useAuth, useUpdateAuth} from "../../../store/auth";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [showHeader, setShowHeader] = useAtom(headerAtom);
   const [showAccordion, setShowAccordion] = useAtom(accordionAtom);
   const [showSubHeader, setShowSubHeader] = useAtom(subHeaderAtom);
+  const auth = useAuth();
+  const updateAuth = useUpdateAuth();
+
   setShowHeader(false);
   setShowAccordion(false);
   setShowSubHeader(false);
@@ -57,9 +60,11 @@ const Login = () => {
   const [idBottom, setIdBottom] = useState('');
   const [bottomColor, setBottomColor] = useState('');
   const [pwBottom, setPwBottom] = useState('');
+  const [isLogin, setIsLogin] = useState(false);
 
   const idRegex = /^[a-z0-9]{4,12}$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[0-9])[a-z0-9]{8,12}$/;
+  // const passwordRegex = /^(?=.*[a-z])(?=.*[0-9])[a-z0-9]{4,12}$/;
+  const passwordRegex = /^[a-z0-9]{4,12}$/;
 
   const idDummy = {
     userId: ['wkdqaz', 'solskjaer73', 'asd123'],
@@ -78,10 +83,7 @@ const Login = () => {
   const isIdValid = idRegex.test(id);
   const isPasswordValid = passwordRegex.test(pw);
 
-  console.log('check', check);
-
   // 아이디 저장
-
   const saveIdToLocalStorage = id => {
     return localStorage.setItem('savedId', id);
   };
@@ -104,7 +106,6 @@ const Login = () => {
 
   const handleSaveId = () => {
     setCheck(prev => !prev);
-    console.log('함수 안!!', check);
     if (!check) {
       saveIdToLocalStorage(id);
     } else {
@@ -112,15 +113,15 @@ const Login = () => {
     }
   };
 
-  console.log('함수 밖', check);
-
   useEffect(() => {
+
     setButtonDisabled(!isIdValid || !isPasswordValid);
 
     if (id && !isIdValid) {
       setIdBottom('올바른 내용이 아닙니다.');
       setBottomColor('#d92f2f');
       setIdPlaceholderColor('#d92f2f');
+      setIsLogin(false);
     } else if (id && isIdValid) {
       setIdBottom('');
       setIdPlaceholderColor('#4ca9ff');
@@ -130,11 +131,19 @@ const Login = () => {
       setPwBottom('영문, 숫자 조합 4~12자리로 입력해 주세요');
       setBottomColor('#d92f2f');
       setPwPlaceholderColor('#d92f2f');
+      setIsLogin(false);
     } else if (pw && isPasswordValid) {
       setPwBottom('');
       setPwPlaceholderColor('#4ca9ff');
     }
-  }, [id, pw, idBottom, pwBottom]);
+
+    if (isIdValid && isPasswordValid && isLogin) {
+      setPwBottom('등록되지 않은 회원입니다.');
+      setBottomColor('#d92f2f');
+      setPwPlaceholderColor('#d92f2f');
+    }
+
+  }, [id, pw, idBottom, pwBottom, isLogin]);
 
   const handleIdArea = useCallback(() => {});
 
@@ -183,10 +192,24 @@ const Login = () => {
     setPwPlaceholder('비밀번호');
   }, []);
 
-  const handleSubmit = useCallback(e => {
+  /** 로그인 */
+  const handleSubmit = useCallback(async  (e) => {
     e.preventDefault();
-    // 폼 제출 로직
-  }, []);
+    const requestData = {
+      id: id,
+      password: pw,
+    }
+    try {
+      const { data: res } = await login(requestData);
+      console.log('로그인 된 정보 : ', res);
+      sessionStorage.setItem('accessToken', res.data?.accessToken);
+      localStorage.setItem('refreshToken', res.data?.refreshToken);
+      await updateAuth();
+      navigate('/main');
+    } catch (e) {
+      setIsLogin(true);
+    }
+  }, [id, pw]);
 
   return (
     <Container>
@@ -211,7 +234,7 @@ const Login = () => {
                 style={{ color: id === '' ? idPlaceholderColor : 'black' }}
               />
             </InputWrap>
-            <InputBtmWrap bottomColor={bottomColor}>{idBottom}</InputBtmWrap>
+            {idBottom && <InputBtmWrap bottomColor={bottomColor}>{idBottom}</InputBtmWrap>}
             <InputWrap>
               <img src="/svg/Login_pw_icon.svg" />
               <Input
@@ -225,7 +248,7 @@ const Login = () => {
                 style={{ color: pw === '' ? pwPlaceholderColor : 'black' }}
               />
             </InputWrap>
-            <InputBtmWrap bottomColor={bottomColor}>{pwBottom}</InputBtmWrap>
+            {pwBottom && <InputBtmWrap bottomColor={bottomColor}>{pwBottom}</InputBtmWrap>}
             <InputBottomWrap>
               <IbwWrap>
                 <IbwLeft>
@@ -256,7 +279,7 @@ const Login = () => {
                 {buttonDisabled ? (
                   <LoginBtn disabled>로그인</LoginBtn>
                 ) : (
-                  <LoginBtn>로그인</LoginBtn>
+                  <LoginBtn onClick={handleSubmit}>로그인</LoginBtn>
                 )}
               </LoginBtnWrap>
               <IbwTxt>
