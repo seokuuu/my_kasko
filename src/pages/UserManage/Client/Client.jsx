@@ -1,29 +1,18 @@
-import { useState, useEffect } from 'react';
-import { styled } from 'styled-components';
-import { storageOptions } from '../../../common/Option/SignUp';
-import Excel from '../../../components/TableInner/Excel';
-import { MainSelect } from '../../../common/Option/Main';
-import {
-  BlackBtn,
-  BtnWrap,
-  ExcelBtn,
-  WhiteRedBtn,
-  WhiteSkyBtn,
-  BtnBound,
-} from '../../../common/Button/Button';
-import DateGrid from '../../../components/DateGrid/DateGrid';
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
-import { GreyBtn } from '../../../common/Button/Button';
-import Test3 from '../../Test/Test3';
-import HeaderToggle from '../../../components/Toggle/HeaderToggle';
-import { toggleAtom } from '../../../store/Layout/Layout';
+import { useState, useEffect } from 'react'
+import { styled } from 'styled-components'
+import { storageOptions } from '../../../common/Option/SignUp'
+import Excel from '../../../components/TableInner/Excel'
+import { MainSelect } from '../../../common/Option/Main'
+import { BlackBtn, BtnWrap, ExcelBtn, WhiteRedBtn, WhiteSkyBtn, BtnBound } from '../../../common/Button/Button'
+import DateGrid from '../../../components/DateGrid/DateGrid'
+import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
+import { GreyBtn } from '../../../common/Button/Button'
+import Test3 from '../../Test/Test3'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { toggleAtom } from '../../../store/Layout/Layout'
 
-import { CheckBox } from '../../../common/Check/Checkbox';
-import {
-  StyledCheckMainDiv,
-  StyledCheckSubSquDiv,
-  CheckImg2,
-} from '../../../common/Check/CheckImg';
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 
 import {
   TCSubContainer,
@@ -49,25 +38,20 @@ import {
   ExInputsWrap,
   ExCheckWrap,
   ExCheckDiv,
-} from '../../../modal/External/ExternalFilter';
+} from '../../../modal/External/ExternalFilter'
 
-import {
-  RadioMainDiv,
-  RadioCircleDiv,
-  RadioInnerCircleDiv,
-} from '../../../common/Check/RadioImg';
+import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import Hidden from '../../../components/TableInner/Hidden'
 
 const Client = ({}) => {
-  const radioDummy = ['전체', '대표', '대표'];
-  const [checkRadio, setCheckRadio] = useState(
-    Array.from({ length: radioDummy.length }, () => false)
-  );
+  const radioDummy = ['전체', '대표', '대표']
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
 
-  const [savedRadioValue, setSavedRadioValue] = useState('');
+  const [savedRadioValue, setSavedRadioValue] = useState('')
   useEffect(() => {
-    const checkedIndex = checkRadio.findIndex(
-      (isChecked, index) => isChecked && index < radioDummy.length
-    );
+    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
 
     // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
     // if (checkedIndex !== -1) {
@@ -75,84 +59,76 @@ const Client = ({}) => {
     //   setSavedRadioValue(selectedValue); //내 state에 반환
     //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
     // }
-  }, [checkRadio]);
-  const checkSales = ['일반', '장기 미접속', '장기 미낙찰', '폐업', '정지'];
+  }, [checkRadio])
+  const checkSales = ['일반', '장기 미접속', '장기 미낙찰', '폐업', '정지']
 
-  const checkShips = ['전체', '승인', '미승인', '대기'];
+  const checkShips = ['전체', '승인', '미승인', '대기']
 
   //checkSales
-  const [check1, setCheck1] = useState(
-    Array.from({ length: checkSales.length }, () => false)
-  );
-  const [check2, setCheck2] = useState(
-    Array.from({ length: checkShips.length }, () => false)
-  );
+  const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
+  const [check2, setCheck2] = useState(Array.from({ length: checkShips.length }, () => false))
 
   //checkShips
-  const [checkData1, setCheckData1] = useState(
-    Array.from({ length: checkSales.length }, () => '')
-  );
+  const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
 
-  const [checkData2, setCheckData2] = useState(
-    Array.from({ length: checkShips.length }, () => '')
-  );
+  const [checkData2, setCheckData2] = useState(Array.from({ length: checkShips.length }, () => ''))
 
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
     const updatedCheck = checkSales.map((value, index) => {
-      return check1[index] ? value : '';
-    });
+      return check1[index] ? value : ''
+    })
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-    const filteredCheck = updatedCheck.filter(item => item !== '');
-    setCheckData1(filteredCheck);
+    const filteredCheck = updatedCheck.filter((item) => item !== '')
+    setCheckData1(filteredCheck)
 
     // 전송용 input에 담을 때
     // setInput({
     //   ...input,
     //   businessType: updatedCheck.filter(item => item !== ''),
     // });
-  }, [check1]);
+  }, [check1])
 
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
     const updatedCheck = checkShips.map((value, index) => {
-      return check2[index] ? value : '';
-    });
+      return check2[index] ? value : ''
+    })
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-    const filteredCheck = updatedCheck.filter(item => item !== '');
-    setCheckData2(filteredCheck);
+    const filteredCheck = updatedCheck.filter((item) => item !== '')
+    setCheckData2(filteredCheck)
 
     // 전송용 input에 담을 때
     // setInput({
     //   ...input,
     //   businessType: updatedCheck.filter(item => item !== ''),
     // });
-  }, [check2]);
+  }, [check2])
 
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
     //   [name]: selectedOption.label,
     // }));
-  };
-  const [isRotated, setIsRotated] = useState(false);
+  }
+  const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
-    setIsRotated(prevIsRotated => !prevIsRotated);
-  };
+    setIsRotated((prevIsRotated) => !prevIsRotated)
+  }
 
   // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom);
-  const [toggleMsg, setToggleMsg] = useState('On');
+  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+  const [toggleMsg, setToggleMsg] = useState('On')
   const toggleBtnClick = () => {
-    setExfilterToggle(prev => !prev);
+    setExfilterToggle((prev) => !prev)
     if (exFilterToggle === true) {
-      setToggleMsg('Off');
+      setToggleMsg('Off')
     } else {
-      setToggleMsg('On');
+      setToggleMsg('On')
     }
-  };
+  }
 
   return (
     <FilterContianer>
@@ -161,11 +137,7 @@ const Client = ({}) => {
           <h1>고객사 관리</h1>
         </div>
         {/* 토글 쓰기 */}
-        <HeaderToggle
-          exFilterToggle={exFilterToggle}
-          toggleBtnClick={toggleBtnClick}
-          toggleMsg={toggleMsg}
-        />
+        <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
       </FilterHeader>
 
       {exFilterToggle && (
@@ -181,9 +153,7 @@ const Client = ({}) => {
                         <RadioCircleDiv
                           isChecked={checkRadio[index]}
                           onClick={() => {
-                            setCheckRadio(
-                              CheckBox(checkRadio, checkRadio.length, index)
-                            );
+                            setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                           }}
                         >
                           <RadioInnerCircleDiv />
@@ -203,11 +173,7 @@ const Client = ({}) => {
                     {checkSales.map((x, index) => (
                       <ExCheckDiv>
                         <StyledCheckSubSquDiv
-                          onClick={() =>
-                            setCheck1(
-                              CheckBox(check1, check1.length, index, true)
-                            )
-                          }
+                          onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
                           isChecked={check1[index]}
                         >
                           <CheckImg2 src="/svg/check.svg" />
@@ -226,11 +192,7 @@ const Client = ({}) => {
                     {checkShips.map((x, index) => (
                       <ExCheckDiv>
                         <StyledCheckSubSquDiv
-                          onClick={() =>
-                            setCheck2(
-                              CheckBox(check2, check2.length, index, true)
-                            )
-                          }
+                          onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
                           isChecked={check2[index]}
                         >
                           <CheckImg2 src="/svg/check.svg" />
@@ -244,12 +206,7 @@ const Client = ({}) => {
                   <h6>회원 상태</h6>
                   <MainSelect />
                   <Input style={{ marginLeft: '5px' }} />
-                  <GreyBtn
-                    style={{ width: '70px' }}
-                    height={35}
-                    margin={10}
-                    fontSize={17}
-                  >
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
                   </GreyBtn>
                 </PartWrap>
@@ -280,8 +237,10 @@ const Client = ({}) => {
         <TCSubContainer bor>
           <div>
             조회 목록 (선택 <span>2</span> / 50개 )
+            <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
+            <PageDropdown />
             <Excel />
           </div>
         </TCSubContainer>
@@ -299,7 +258,7 @@ const Client = ({}) => {
         <Test3 />
       </TableContianer>
     </FilterContianer>
-  );
-};
+  )
+}
 
-export default Client;
+export default Client

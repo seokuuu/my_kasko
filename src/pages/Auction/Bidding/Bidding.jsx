@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { styled } from 'styled-components';
-import { storageOptions } from '../../../common/Option/SignUp';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react'
+import { styled } from 'styled-components'
+import { storageOptions } from '../../../common/Option/SignUp'
+import { Link } from 'react-router-dom'
 
-import { MainSelect } from '../../../common/Option/Main';
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button';
-import DateGrid from '../../../components/DateGrid/DateGrid';
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
+import { MainSelect } from '../../../common/Option/Main'
+import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
+import DateGrid from '../../../components/DateGrid/DateGrid'
+import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import {
   GreyBtn,
   ExcelBtn,
@@ -17,17 +17,15 @@ import {
   SwitchBtn,
   TGreyBtn,
   TWhiteBtn,
-} from '../../../common/Button/Button';
-import Test3 from '../../Test/Test3';
-import HeaderToggle from '../../../components/Toggle/HeaderToggle';
-import { toggleAtom } from '../../../store/Layout/Layout';
+} from '../../../common/Button/Button'
+import Test3 from '../../Test/Test3'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { toggleAtom } from '../../../store/Layout/Layout'
 
-import { CheckBox } from '../../../common/Check/Checkbox';
-import {
-  StyledCheckMainDiv,
-  StyledCheckSubSquDiv,
-  CheckImg2,
-} from '../../../common/Check/CheckImg';
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import Hidden from '../../../components/TableInner/Hidden'
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 
 import {
   FilterContianer,
@@ -51,26 +49,18 @@ import {
   FilterHeaderAlert,
   FHALeft,
   ExInputsWrap,
-} from '../../../modal/External/ExternalFilter';
+} from '../../../modal/External/ExternalFilter'
 
-import {
-  RadioMainDiv,
-  RadioCircleDiv,
-  RadioInnerCircleDiv,
-} from '../../../common/Check/RadioImg';
-import Excel from '../../../components/TableInner/Excel';
+import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import Excel from '../../../components/TableInner/Excel'
 
 const Bidding = ({}) => {
-  const radioDummy = ['전체', '미진행', '진행중', '종료'];
-  const [checkRadio, setCheckRadio] = useState(
-    Array.from({ length: radioDummy.length }, () => false)
-  );
+  const radioDummy = ['전체', '미진행', '진행중', '종료']
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
 
-  const [savedRadioValue, setSavedRadioValue] = useState('');
+  const [savedRadioValue, setSavedRadioValue] = useState('')
   useEffect(() => {
-    const checkedIndex = checkRadio.findIndex(
-      (isChecked, index) => isChecked && index < radioDummy.length
-    );
+    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
 
     // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
     // if (checkedIndex !== -1) {
@@ -78,32 +68,32 @@ const Bidding = ({}) => {
     //   setSavedRadioValue(selectedValue); //내 state에 반환
     //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
     // }
-  }, [checkRadio]);
+  }, [checkRadio])
 
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
     //   [name]: selectedOption.label,
     // }));
-  };
-  const [isRotated, setIsRotated] = useState(false);
+  }
+  const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
-    setIsRotated(prevIsRotated => !prevIsRotated);
-  };
+    setIsRotated((prevIsRotated) => !prevIsRotated)
+  }
 
   // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom);
-  const [toggleMsg, setToggleMsg] = useState('On');
+  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+  const [toggleMsg, setToggleMsg] = useState('On')
   const toggleBtnClick = () => {
-    setExfilterToggle(prev => !prev);
+    setExfilterToggle((prev) => !prev)
     if (exFilterToggle === true) {
-      setToggleMsg('Off');
+      setToggleMsg('Off')
     } else {
-      setToggleMsg('On');
+      setToggleMsg('On')
     }
-  };
+  }
 
   return (
     <FilterContianer>
@@ -116,11 +106,7 @@ const Bidding = ({}) => {
           </SubTitle>
         </div>
         {/* 토글 쓰기 */}
-        <HeaderToggle
-          exFilterToggle={exFilterToggle}
-          toggleBtnClick={toggleBtnClick}
-          toggleMsg={toggleMsg}
-        />
+        <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
       </FilterHeader>
       <FilterHeaderAlert>
         <div style={{ display: 'flex' }}>
@@ -129,14 +115,12 @@ const Bidding = ({}) => {
           </div>
           <div style={{ marginTop: '6px' }}>
             <div>
-              · 경매 남은 시간은 본 화면에서 발생되는 메시지 창에 따라 다소
-              지연될 수 있습니다. 경매 남은 시간을 최신으로 갱신하려면 다시
-              조회해 주세요.
+              · 경매 남은 시간은 본 화면에서 발생되는 메시지 창에 따라 다소 지연될 수 있습니다. 경매 남은 시간을
+              최신으로 갱신하려면 다시 조회해 주세요.
             </div>
             <div style={{ marginTop: '6px' }}>
-              · 처음 경매 참여하신 고객은 왼쪽 메뉴 경매 관리 {'>'} 고객 목적지
-              등록 화면에서 배송 목적지를 반드시 등록한 후 응찰에 참여해 주시길
-              부탁드립니다.
+              · 처음 경매 참여하신 고객은 왼쪽 메뉴 경매 관리 {'>'} 고객 목적지 등록 화면에서 배송 목적지를 반드시
+              등록한 후 응찰에 참여해 주시길 부탁드립니다.
             </div>
           </div>
         </div>
@@ -154,32 +138,21 @@ const Bidding = ({}) => {
                 <PartWrap>
                   <h6>창고 구분</h6>
                   <PWRight>
-                    <MainSelect
-                      options={storageOptions}
-                      defaultValue={storageOptions[0]}
-                    />
+                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
                 </PartWrap>
 
                 <PartWrap>
                   <h6>매입처</h6>
                   <PWRight>
-                    <MainSelect
-                      options={storageOptions}
-                      defaultValue={storageOptions[0]}
-                    />
+                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
                 </PartWrap>
 
                 <PartWrap>
                   <h6>규격 약호</h6>
                   <Input />
-                  <GreyBtn
-                    style={{ width: '70px' }}
-                    height={35}
-                    margin={10}
-                    fontSize={17}
-                  >
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
                   </GreyBtn>
                 </PartWrap>
@@ -251,8 +224,10 @@ const Bidding = ({}) => {
         <TCSubContainer bor>
           <div>
             조회 목록 (선택 <span>2</span> / 50개 )
+            <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
+            <PageDropdown />
             <Excel />
             <WhiteGrnBtn>
               <div>
@@ -287,7 +262,7 @@ const Bidding = ({}) => {
         <Test3 />
       </TableContianer>
     </FilterContianer>
-  );
-};
+  )
+}
 
-export default Bidding;
+export default Bidding

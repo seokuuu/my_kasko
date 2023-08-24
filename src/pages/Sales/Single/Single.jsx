@@ -1,24 +1,19 @@
-import { useState } from 'react';
-import { styled } from 'styled-components';
-import { storageOptions } from '../../../common/Option/SignUp';
-import Excel from '../../../components/TableInner/Excel';
-import { MainSelect } from '../../../common/Option/Main';
-import {
-  BlackBtn,
-  BtnWrap,
-  ExcelBtn,
-  WhiteBlackBtn,
-} from '../../../common/Button/Button';
-import DateGrid from '../../../components/DateGrid/DateGrid';
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
-import { GreyBtn } from '../../../common/Button/Button';
-import Test3 from '../../Test/Test3';
-import HeaderToggle from '../../../components/Toggle/HeaderToggle';
-import { toggleAtom } from '../../../store/Layout/Layout';
-import BlueBar from '../../../modal/BlueBar/BlueBar';
-import { blueModalAtom } from '../../../store/Layout/Layout';
-import { useAtom } from 'jotai';
-import { FilterWrap } from '../../../modal/External/ExternalFilter';
+import { useState } from 'react'
+import { styled } from 'styled-components'
+import { storageOptions } from '../../../common/Option/SignUp'
+import Excel from '../../../components/TableInner/Excel'
+import { MainSelect } from '../../../common/Option/Main'
+import { BlackBtn, BtnWrap, ExcelBtn, WhiteBlackBtn } from '../../../common/Button/Button'
+import DateGrid from '../../../components/DateGrid/DateGrid'
+import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
+import { GreyBtn } from '../../../common/Button/Button'
+import Test3 from '../../Test/Test3'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { toggleAtom } from '../../../store/Layout/Layout'
+import BlueBar from '../../../modal/BlueBar/BlueBar'
+import { blueModalAtom } from '../../../store/Layout/Layout'
+import { useAtom } from 'jotai'
+import { FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
   FilterContianer,
   FilterHeader,
@@ -39,7 +34,10 @@ import {
   InputStartWrap,
   TCSubContainer,
   FilterHeaderAlert,
-} from '../../../modal/External/ExternalFilter';
+} from '../../../modal/External/ExternalFilter'
+
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import Hidden from '../../../components/TableInner/Hidden'
 
 const Single = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -47,33 +45,33 @@ const Single = ({}) => {
     //   ...prevState,
     //   [name]: selectedOption.label,
     // }));
-  };
-  const [isRotated, setIsRotated] = useState(false);
+  }
+  const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
-    setIsRotated(prevIsRotated => !prevIsRotated);
-  };
+    setIsRotated((prevIsRotated) => !prevIsRotated)
+  }
 
   // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom);
-  const [toggleMsg, setToggleMsg] = useState('On');
+  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+  const [toggleMsg, setToggleMsg] = useState('On')
   const toggleBtnClick = () => {
-    setExfilterToggle(prev => !prev);
+    setExfilterToggle((prev) => !prev)
     if (exFilterToggle === true) {
-      setToggleMsg('Off');
+      setToggleMsg('Off')
     } else {
-      setToggleMsg('On');
+      setToggleMsg('On')
     }
-  };
+  }
 
-  const [isModal, setIsModal] = useAtom(blueModalAtom);
+  const [isModal, setIsModal] = useAtom(blueModalAtom)
 
-  console.log('isModal =>', isModal);
+  console.log('isModal =>', isModal)
 
   const modalOpen = () => {
-    setIsModal(true);
-  };
+    setIsModal(true)
+  }
 
   return (
     <FilterContianer>
@@ -81,11 +79,7 @@ const Single = ({}) => {
         <FilterHeader>
           <h1>상시 판매 단일</h1>
           {/* 토글 쓰기 */}
-          <HeaderToggle
-            exFilterToggle={exFilterToggle}
-            toggleBtnClick={toggleBtnClick}
-            toggleMsg={toggleMsg}
-          />
+          <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
         </FilterHeader>
         <FilterHeaderAlert>
           <div style={{ display: 'flex' }}>
@@ -111,30 +105,19 @@ const Single = ({}) => {
                   <PartWrap>
                     <h6>창고 구분</h6>
                     <PWRight>
-                      <MainSelect
-                        options={storageOptions}
-                        defaultValue={storageOptions[0]}
-                      />
+                      <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                     </PWRight>
                   </PartWrap>
                   <PartWrap>
                     <h6>매입처</h6>
                     <PWRight>
-                      <MainSelect
-                        options={storageOptions}
-                        defaultValue={storageOptions[0]}
-                      />
+                      <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                     </PWRight>
                   </PartWrap>
                   <PartWrap>
                     <h6>규격 약호</h6>
                     <Input />
-                    <GreyBtn
-                      style={{ width: '70px' }}
-                      height={35}
-                      margin={10}
-                      onClick={modalOpen}
-                    >
+                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen}>
                       찾기
                     </GreyBtn>
                   </PartWrap>
@@ -212,8 +195,10 @@ const Single = ({}) => {
         <TCSubContainer bor>
           <div>
             조회 목록 (선택 <span>2</span> / 50개 )
+            <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
+            <PageDropdown />
             <Excel />
           </div>
         </TCSubContainer>
@@ -233,7 +218,7 @@ const Single = ({}) => {
         </TableBottomWrap>
       </TableContianer>
     </FilterContianer>
-  );
-};
+  )
+}
 
-export default Single;
+export default Single

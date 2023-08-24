@@ -36,6 +36,8 @@ import {
 import {login} from "../../../api/auth";
 import {useAuth, useUpdateAuth} from "../../../store/auth";
 
+import AlertModal from '../../../modal/Common/AlertModal';
+
 const Login = () => {
   const navigate = useNavigate();
   const [showHeader, setShowHeader] = useAtom(headerAtom);

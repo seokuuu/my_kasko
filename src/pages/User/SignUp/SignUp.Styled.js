@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from 'styled-components'
 
 export const Container = styled.div`
   width: 100%;
@@ -10,7 +10,7 @@ export const Container = styled.div`
     font-size: 17px;
     margin-bottom: 5px;
   }
-`;
+`
 
 export const Title = styled.div`
   display: flex;
@@ -19,7 +19,7 @@ export const Title = styled.div`
     top: 1px;
     margin-left: 4px;
   }
-`;
+`
 
 export const SignupContainer = styled.div`
   display: block;
@@ -27,15 +27,19 @@ export const SignupContainer = styled.div`
   margin-right: auto;
   width: 55vw;
   height: 90vw;
-`;
+`
 
 export const PartBlock = styled.div`
   margin-bottom: 50px;
-`;
+`
 
 export const Part = styled.div`
   margin-bottom: 20px;
-`;
+`
+
+export const ModalPart = styled.div`
+  margin: 10px 0px 30px 0px;
+`
 
 export const Top = styled.div`
   font-size: 40px;
@@ -47,36 +51,31 @@ export const Top = styled.div`
   margin-right: auto;
   padding-top: 50px;
   border-bottom: 1px solid black;
-`;
+`
 
 export const Main = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 75%;
   position: relative;
-  width: 80%;
   margin-top: 50px;
   margin-left: auto;
   margin-right: auto;
-`;
+
+  @media (max-width: 1000px) {
+    display: block;
+    margin-left: 100px;
+    margin-right: 0px;
+  }
+`
 
 export const Left = styled.div`
-  float: left;
-  width: 320px;
-  margin-left: 30px;
-
   .div {
     display: flex;
   }
-`;
+`
 
-export const Right = styled.div`
-  float: right;
-  width: 320px;
-  margin-right: 30px;
-`;
-
-export const Init = styled.div`
-  float: none;
-  clear: both;
-`;
+export const Right = styled.div``
 
 export const Bottom = styled.div`
   width: 80%;
@@ -90,7 +89,7 @@ export const Bottom = styled.div`
   justify-content: center;
   align-items: center;
   padding: 5px;
-`;
+`
 
 export const BottomItem = styled.div`
   flex-grow: 1;
@@ -128,7 +127,7 @@ export const BottomItem = styled.div`
     background-color: #6b6b6b;
     color: white;
   }
-`;
+`
 
 export const TxtDiv = styled.div`
   display: flex;
@@ -143,37 +142,36 @@ export const TxtDiv = styled.div`
   p {
     margin-left: 10px;
   }
-`;
+`
 
 export const SDropDown = styled.div`
   width: 100px;
   height: 40px;
-
-`;
+`
 
 export const BottomP = styled.div`
   margin-top: 5px;
   display: flex;
   justify-content: flex-end;
   width: 320px;
-`;
+`
 
 export const CheckBtn = styled.button`
   width: 95px;
   height: 40px;
-  background-color: ${props => (props.disabled ? 'grey' : 'white')};
-  border: 1px solid ${props => (props.disabled ? 'grey' : '#6b6b6b')};
+  background-color: ${(props) => (props.disabled ? 'grey' : 'white')};
+  border: 1px solid ${(props) => (props.disabled ? 'grey' : '#6b6b6b')};
   margin-left: 5px;
-`;
+`
 
 export const SubmitBtn = styled.button`
   width: 320px;
   height: 40px;
-  background-color: ${props => (props.disabled ? 'grey' : 'white')};
-  border: 1px solid ${props => (props.disabled ? 'grey' : '#6b6b6b')};
-`;
+  background-color: ${(props) => (props.disabled ? 'grey' : 'white')};
+  border: 1px solid ${(props) => (props.disabled ? 'grey' : '#6b6b6b')};
+`
 
 export const DropWrap = styled.div`
   display: flex;
   width: 320px;
-`;
+`

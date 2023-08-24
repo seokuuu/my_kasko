@@ -19,9 +19,14 @@ export default Header;
 
 const HeaderWrap = styled.div`
   display: flex;
-  width: 100%;
   height: 65px;
+  width: 100%;
+  min-width: 100%;
   background-color: #061737;
   border: 1px solid black;
   align-items: center;
+
+  @media (max-width: 1844px) {
+    width: 1200px;
+  }
 `;

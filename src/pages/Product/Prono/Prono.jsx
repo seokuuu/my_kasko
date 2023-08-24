@@ -1,28 +1,19 @@
-import { useState, useEffect } from 'react';
-import { styled } from 'styled-components';
-import { storageOptions } from '../../../common/Option/SignUp';
-import Excel from '../../../components/TableInner/Excel';
-import { MainSelect } from '../../../common/Option/Main';
-import {
-  BlackBtn,
-  BtnWrap,
-  ExcelBtn,
-  WhiteRedBtn,
-} from '../../../common/Button/Button';
-import DateGrid from '../../../components/DateGrid/DateGrid';
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
-import { GreyBtn } from '../../../common/Button/Button';
-import Test3 from '../../Test/Test3';
-import HeaderToggle from '../../../components/Toggle/HeaderToggle';
-import { toggleAtom } from '../../../store/Layout/Layout';
+import { useState, useEffect } from 'react'
+import { styled } from 'styled-components'
+import { storageOptions } from '../../../common/Option/SignUp'
+import Excel from '../../../components/TableInner/Excel'
+import { MainSelect } from '../../../common/Option/Main'
+import { BlackBtn, BtnWrap, ExcelBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import DateGrid from '../../../components/DateGrid/DateGrid'
+import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
+import { GreyBtn } from '../../../common/Button/Button'
+import Test3 from '../../Test/Test3'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { toggleAtom } from '../../../store/Layout/Layout'
 
-import { CheckBox } from '../../../common/Check/Checkbox';
-import {
-  StyledCheckMainDiv,
-  StyledCheckSubSquDiv,
-  CheckImg2,
-} from '../../../common/Check/CheckImg';
-
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 import {
   FilterContianer,
   FilterHeader,
@@ -44,122 +35,106 @@ import {
   ExInputsWrap,
   SubTitle,
   TCSubContainer,
-} from '../../../modal/External/ExternalFilter';
-
+} from '../../../modal/External/ExternalFilter'
+import Hidden from '../../../components/TableInner/Hidden'
 const Prono = ({}) => {
-  const checkSales = ['전체', '판매재', '판매제외제', '카스코 추천 제품'];
+  const checkSales = ['전체', '판매재', '판매제외제', '카스코 추천 제품']
 
-  const checkShips = ['전체', '경매대상재', '상시판매 대상재'];
+  const checkShips = ['전체', '경매대상재', '상시판매 대상재']
 
-  const checkTypes = ['전체', '특가', '일반'];
+  const checkTypes = ['전체', '특가', '일반']
 
   //checkSales
-  const [check1, setCheck1] = useState(
-    Array.from({ length: checkSales.length }, () => false)
-  );
-  const [check2, setCheck2] = useState(
-    Array.from({ length: checkShips.length }, () => false)
-  );
+  const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
+  const [check2, setCheck2] = useState(Array.from({ length: checkShips.length }, () => false))
 
-  const [check3, setCheck3] = useState(
-    Array.from({ length: checkTypes.length }, () => false)
-  );
+  const [check3, setCheck3] = useState(Array.from({ length: checkTypes.length }, () => false))
 
   //checkShips
-  const [checkData1, setCheckData1] = useState(
-    Array.from({ length: checkSales.length }, () => '')
-  );
+  const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
 
-  const [checkData2, setCheckData2] = useState(
-    Array.from({ length: checkShips.length }, () => '')
-  );
+  const [checkData2, setCheckData2] = useState(Array.from({ length: checkShips.length }, () => ''))
 
-  const [checkData3, setCheckData3] = useState(
-    Array.from({ length: checkTypes.length }, () => '')
-  );
+  const [checkData3, setCheckData3] = useState(Array.from({ length: checkTypes.length }, () => ''))
 
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
     const updatedCheck = checkSales.map((value, index) => {
-      return check1[index] ? value : '';
-    });
+      return check1[index] ? value : ''
+    })
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-    const filteredCheck = updatedCheck.filter(item => item !== '');
-    setCheckData1(filteredCheck);
+    const filteredCheck = updatedCheck.filter((item) => item !== '')
+    setCheckData1(filteredCheck)
 
     // 전송용 input에 담을 때
     // setInput({
     //   ...input,
     //   businessType: updatedCheck.filter(item => item !== ''),
     // });
-  }, [check1]);
+  }, [check1])
 
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
     const updatedCheck = checkShips.map((value, index) => {
-      return check2[index] ? value : '';
-    });
+      return check2[index] ? value : ''
+    })
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-    const filteredCheck = updatedCheck.filter(item => item !== '');
-    setCheckData2(filteredCheck);
+    const filteredCheck = updatedCheck.filter((item) => item !== '')
+    setCheckData2(filteredCheck)
 
     // 전송용 input에 담을 때
     // setInput({
     //   ...input,
     //   businessType: updatedCheck.filter(item => item !== ''),
     // });
-  }, [check2]);
+  }, [check2])
 
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
     const updatedCheck = checkTypes.map((value, index) => {
-      return check3[index] ? value : '';
-    });
+      return check3[index] ? value : ''
+    })
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-    const filteredCheck = updatedCheck.filter(item => item !== '');
-    setCheckData3(filteredCheck);
+    const filteredCheck = updatedCheck.filter((item) => item !== '')
+    setCheckData3(filteredCheck)
 
     // 전송용 input에 담을 때
     // setInput({
     //   ...input,
     //   businessType: updatedCheck.filter(item => item !== ''),
     // });
-  }, [check3]);
+  }, [check3])
 
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
     //   [name]: selectedOption.label,
     // }));
-  };
-  const [isRotated, setIsRotated] = useState(false);
+  }
+  const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
-    setIsRotated(prevIsRotated => !prevIsRotated);
-  };
+    setIsRotated((prevIsRotated) => !prevIsRotated)
+  }
 
   // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom);
-  const [toggleMsg, setToggleMsg] = useState('On');
+  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+  const [toggleMsg, setToggleMsg] = useState('On')
   const toggleBtnClick = () => {
-    setExfilterToggle(prev => !prev);
+    setExfilterToggle((prev) => !prev)
     if (exFilterToggle === true) {
-      setToggleMsg('Off');
+      setToggleMsg('Off')
     } else {
-      setToggleMsg('On');
+      setToggleMsg('On')
     }
-  };
+  }
 
   return (
     <FilterContianer>
       <FilterHeader>
         <h1>Pro.No 관리</h1>
-        <HeaderToggle
-          exFilterToggle={exFilterToggle}
-          toggleBtnClick={toggleBtnClick}
-          toggleMsg={toggleMsg}
-        />
+        <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
       </FilterHeader>
       {exFilterToggle && (
         <>
@@ -169,30 +144,19 @@ const Prono = ({}) => {
                 <PartWrap>
                   <h6>창고 구분</h6>
                   <PWRight>
-                    <MainSelect
-                      options={storageOptions}
-                      defaultValue={storageOptions[0]}
-                    />
+                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
                 </PartWrap>
                 <PartWrap>
                   <h6>매입처</h6>
                   <PWRight>
-                    <MainSelect
-                      options={storageOptions}
-                      defaultValue={storageOptions[0]}
-                    />
+                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
                 </PartWrap>
                 <PartWrap>
                   <h6>규격 약호</h6>
                   <Input />
-                  <GreyBtn
-                    style={{ width: '70px' }}
-                    height={35}
-                    margin={10}
-                    fontSize={17}
-                  >
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
                   </GreyBtn>
                 </PartWrap>
@@ -214,11 +178,7 @@ const Prono = ({}) => {
                     {checkSales.map((x, index) => (
                       <ExCheckDiv style={{ marginRight: '5px', gap: '0px' }}>
                         <StyledCheckSubSquDiv
-                          onClick={() =>
-                            setCheck1(
-                              CheckBox(check1, check1.length, index, true)
-                            )
-                          }
+                          onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
                           isChecked={check1[index]}
                         >
                           <CheckImg2 src="/svg/check.svg" />
@@ -234,11 +194,7 @@ const Prono = ({}) => {
                     {checkShips.map((x, index) => (
                       <ExCheckDiv>
                         <StyledCheckSubSquDiv
-                          onClick={() =>
-                            setCheck2(
-                              CheckBox(check2, check2.length, index, true)
-                            )
-                          }
+                          onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
                           isChecked={check1[index]}
                         >
                           <CheckImg2 src="/svg/check.svg" />
@@ -257,11 +213,7 @@ const Prono = ({}) => {
                     {checkTypes.map((x, index) => (
                       <ExCheckDiv>
                         <StyledCheckSubSquDiv
-                          onClick={() =>
-                            setCheck2(
-                              CheckBox(check2, check2.length, index, true)
-                            )
-                          }
+                          onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
                           isChecked={check1[index]}
                         >
                           <CheckImg2 src="/svg/check.svg" />
@@ -338,8 +290,10 @@ const Prono = ({}) => {
         <TCSubContainer bor>
           <div>
             조회 목록 (선택 <span>2</span> / 50개 )
+            <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
+            <PageDropdown />
             <Excel />
           </div>
         </TCSubContainer>
@@ -352,7 +306,7 @@ const Prono = ({}) => {
         <Test3 />
       </TableContianer>
     </FilterContianer>
-  );
-};
+  )
+}
 
-export default Prono;
+export default Prono

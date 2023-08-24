@@ -1,26 +1,19 @@
-import { useState } from 'react';
-import { styled } from 'styled-components';
-import { storageOptions } from '../../../common/Option/SignUp';
-import Excel from '../../../components/TableInner/Excel';
-import { MainSelect } from '../../../common/Option/Main';
-import {
-  BlackBtn,
-  BtnWrap,
-  ExcelBtn,
-  TGreyBtn,
-  WhiteRedBtn,
-  WhiteSkyBtn,
-} from '../../../common/Button/Button';
-import DateGrid from '../../../components/DateGrid/DateGrid';
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
-import { GreyBtn } from '../../../common/Button/Button';
-import Test3 from '../../Test/Test3';
-import HeaderToggle from '../../../components/Toggle/HeaderToggle';
-import { toggleAtom } from '../../../store/Layout/Layout';
-import BlueBar from '../../../modal/BlueBar/BlueBar';
-import { blueModalAtom } from '../../../store/Layout/Layout';
-import { useAtom } from 'jotai';
-import { FilterWrap } from '../../../modal/External/ExternalFilter';
+import { useState } from 'react'
+import { styled } from 'styled-components'
+import { storageOptions } from '../../../common/Option/SignUp'
+import Excel from '../../../components/TableInner/Excel'
+import { MainSelect } from '../../../common/Option/Main'
+import { BlackBtn, BtnWrap, ExcelBtn, TGreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import DateGrid from '../../../components/DateGrid/DateGrid'
+import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
+import { GreyBtn } from '../../../common/Button/Button'
+import Test3 from '../../Test/Test3'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { toggleAtom } from '../../../store/Layout/Layout'
+import BlueBar from '../../../modal/BlueBar/BlueBar'
+import { blueModalAtom } from '../../../store/Layout/Layout'
+import { useAtom } from 'jotai'
+import { FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
   FilterContianer,
   FilterHeader,
@@ -43,7 +36,10 @@ import {
   TableTitle,
   SubTitle,
   TCSubContainer,
-} from '../../../modal/External/ExternalFilter';
+} from '../../../modal/External/ExternalFilter'
+
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import Hidden from '../../../components/TableInner/Hidden'
 
 const Transport = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -51,33 +47,33 @@ const Transport = ({}) => {
     //   ...prevState,
     //   [name]: selectedOption.label,
     // }));
-  };
-  const [isRotated, setIsRotated] = useState(false);
+  }
+  const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
-    setIsRotated(prevIsRotated => !prevIsRotated);
-  };
+    setIsRotated((prevIsRotated) => !prevIsRotated)
+  }
 
   // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom);
-  const [toggleMsg, setToggleMsg] = useState('On');
+  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+  const [toggleMsg, setToggleMsg] = useState('On')
   const toggleBtnClick = () => {
-    setExfilterToggle(prev => !prev);
+    setExfilterToggle((prev) => !prev)
     if (exFilterToggle === true) {
-      setToggleMsg('Off');
+      setToggleMsg('Off')
     } else {
-      setToggleMsg('On');
+      setToggleMsg('On')
     }
-  };
+  }
 
-  const [isModal, setIsModal] = useAtom(blueModalAtom);
+  const [isModal, setIsModal] = useAtom(blueModalAtom)
 
-  console.log('isModal =>', isModal);
+  console.log('isModal =>', isModal)
 
   const modalOpen = () => {
-    setIsModal(true);
-  };
+    setIsModal(true)
+  }
 
   return (
     <FilterContianer>
@@ -90,11 +86,7 @@ const Transport = ({}) => {
               <h6>할증 관리</h6>
             </SubTitle>
           </div>
-          <HeaderToggle
-            exFilterToggle={exFilterToggle}
-            toggleBtnClick={toggleBtnClick}
-            toggleMsg={toggleMsg}
-          />
+          <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
         </FilterHeader>
         {exFilterToggle && (
           <FilterWrap>
@@ -108,12 +100,7 @@ const Transport = ({}) => {
                   <PartWrap>
                     <h6>목적지</h6>
                     <Input />
-                    <GreyBtn
-                      style={{ width: '70px' }}
-                      height={35}
-                      margin={10}
-                      onClick={modalOpen}
-                    >
+                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen}>
                       찾기
                     </GreyBtn>
                   </PartWrap>
@@ -160,13 +147,24 @@ const Transport = ({}) => {
         <TCSubContainer bor>
           <div>
             조회 목록 (선택 <span>2</span> / 50개 )
+            <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
+            <PageDropdown />
             <Excel />
           </div>
         </TCSubContainer>
         <TCSubContainer>
-          <div></div>
+          <TCSubDiv>
+            <div>
+              <h6>적용일자</h6>
+            </div>
+            <div>
+              {' '}
+              <h6>단가 일괄 수정</h6>
+            </div>
+            <div></div>
+          </TCSubDiv>
           <div style={{ display: 'flex', gap: '10px' }}>
             <TGreyBtn>적용</TGreyBtn>
             <WhiteRedBtn>운반비 삭제</WhiteRedBtn>
@@ -181,7 +179,9 @@ const Transport = ({}) => {
         </TableBottomWrap>
       </TableContianer>
     </FilterContianer>
-  );
-};
+  )
+}
 
-export default Transport;
+export default Transport
+
+const TCSubDiv = styled.div``

@@ -1,21 +1,10 @@
-import React from 'react';
-import { styled } from 'styled-components';
-import {
-  ModalOverlay,
-  ModalSubContainer,
-  ModalRadioWrap,
-  ModalCloseBtn,
-  ModalContainer,
-} from '../Common/Common.Styled';
-import { TxtCheckInput, TxtInput } from '../../common/Input/Input';
+import React from 'react'
+import { styled } from 'styled-components'
+import { ModalOverlay, ModalSubContainer, ModalRadioWrap, ModalCloseBtn, ModalContainer } from '../Common/Common.Styled'
+import { TxtCheckInput, TxtInput } from '../../common/Input/Input'
 
-import {
-  CheckBtn,
-  Part,
-  Title,
-  SubmitBtn,
-} from '../../pages/User/SignUp/SignUp.Styled';
-import DaumPostcode from 'react-daum-postcode';
+import { CheckBtn, Part, Title, SubmitBtn } from '../../pages/User/SignUp/SignUp.Styled'
+import DaumPostcode from 'react-daum-postcode'
 
 const SignUpPost = ({
   postCheck,
@@ -24,6 +13,7 @@ const SignUpPost = ({
   address,
   daumPostHandleBtn,
   detailAddress,
+  setDetailAddress,
   comfirmPost,
   closeModal,
   isDaumPostOpen,
@@ -35,17 +25,12 @@ const SignUpPost = ({
     <>
       <ModalOverlay />
       <ModalContainer width={400} height={280}>
-        <ModalSubContainer>
+        <ModalSubContainer style={{ padding: '10%' }}>
           <Part>
             <Title>
               <h4>주소</h4>
               <ModalRadioWrap>
-                <input
-                  type="radio"
-                  name="post"
-                  onChange={postCheck}
-                  defaultChecked
-                />
+                <input type="radio" name="post" onChange={postCheck} defaultChecked />
                 <p>찾기</p>
               </ModalRadioWrap>
               <ModalRadioWrap>
@@ -75,11 +60,7 @@ const SignUpPost = ({
               </>
             ) : (
               <div>
-                <TxtInput
-                  placeholder="주소를 입력해 주세요."
-                  value={detailAddress}
-                  onChange={detailAddressHandler}
-                />
+                <TxtInput placeholder="주소를 입력해 주세요." value={detailAddress} onChange={detailAddressHandler} />
               </div>
             )}
           </Part>
@@ -88,30 +69,37 @@ const SignUpPost = ({
           <ModalCloseBtn onClick={closeModal} src="/svg/btn_close.svg" />
         </ModalSubContainer>
         {isDaumPostOpen && (
-          <PostWrap>
-            <DaumPostcode onComplete={daumPostHandleComplete} />
-            <PostModalCloseBtn
-              onClick={daumPosthandleClose}
-              src="/svg/btn_close.svg"
-            />
-          </PostWrap>
+          <div>
+            <PostContainer>
+              <PostWrap>
+                <DaumPostcode onComplete={daumPostHandleComplete} />
+                <PostModalCloseBtn onClick={daumPosthandleClose} src="/svg/btn_close.svg" />
+              </PostWrap>
+            </PostContainer>
+          </div>
         )}
       </ModalContainer>
     </>
-  );
-};
+  )
+}
 
-export default SignUpPost;
+export default SignUpPost
 
 export const PostWrap = styled.div`
   position: relative;
-  top: -300px;
-`;
+  top: -150px;
+`
 
 export const PostModalCloseBtn = styled.img`
   width: 6%;
   position: relative;
-  left: 340px;
+  top: -440px;
+  left: 510px;
   bottom: 30px;
   cursor: pointer;
-`;
+`
+const PostContainer = styled.div`
+  position: absolute;
+  width: 500px;
+  top: 100px;
+`

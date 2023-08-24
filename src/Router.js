@@ -1,128 +1,135 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
-import Login from './pages/User/Login/Login';
-import SignUp from './pages/User/SignUp/SignUp';
-import FindId from './pages/User/FindId/FindId';
-import Test from './pages/Test/Test';
-import Test2 from './pages/Test/Test2';
-import ReissuePw from './pages/User/ReissuePw/ReissuePw';
-import CalendarModal from './modal/Calender/Calendar';
-import Test3 from './pages/Test/Test3';
-import Test4 from './pages/Test/Test4';
+import Login from './pages/User/Login/Login'
+import SignUp from './pages/User/SignUp/SignUp'
+import FindId from './pages/User/FindId/FindId'
+import Test from './pages/Test/Test'
+import Test2 from './pages/Test/Test2'
+import ReissuePw from './pages/User/ReissuePw/ReissuePw'
+import CalendarModal from './modal/Calender/Calendar'
+import Test3 from './pages/Test/Test3'
+import Test4 from './pages/Test/Test4'
 
-import ClaimRegisterPage from './pages/Shipping/Claim/ClaimRegisterPage';
-import CarrierPostPage from './pages/UserManage/CarrierManage/CarrierPostPage';
+import ClaimRegisterPage from './pages/Shipping/Claim/ClaimRegisterPage'
+import CarrierPostPage from './pages/UserManage/CarrierManage/CarrierPostPage'
 
-import IncomingPage from './pages/Stock/Incoming/IncomingPage';
-import InventoryPage from './pages/Stock/Inventory/InventoryPage';
+import IncomingPage from './pages/Stock/Incoming/IncomingPage'
+import InventoryPage from './pages/Stock/Inventory/InventoryPage'
 
-import {
-  headerAtom,
-  accordionAtom,
-  subHeaderAtom,
-} from './store/Layout/Layout';
-import NotFound from './pages/NotFound';
+import { headerAtom, accordionAtom, subHeaderAtom } from './store/Layout/Layout'
+import NotFound from './pages/NotFound'
 
-import { styled } from 'styled-components';
-import MainPage from './pages/Main/MainPage';
+import { styled } from 'styled-components'
+import MainPage from './pages/Main/MainPage'
 
-import RoundPage from './pages/Auction/Round/RoundPage';
-import BiddingPage from './pages/Auction/Bidding/BiddingPage';
-import DetailProgressPage from './pages/Auction/DetailProgress/DetailProgressPage';
-import ProgressPage from './pages/Auction/Progress/ProgressPage';
-import StartPricePage from './pages/Auction/StartPrice/StartPricePage';
-import WinningPage from './pages/Auction/Winning/WinningPage';
+import RoundPage from './pages/Auction/Round/RoundPage'
+import BiddingPage from './pages/Auction/Bidding/BiddingPage'
+import DetailProgressPage from './pages/Auction/DetailProgress/DetailProgressPage'
+import ProgressPage from './pages/Auction/Progress/ProgressPage'
+import StartPricePage from './pages/Auction/StartPrice/StartPricePage'
+import WinningPage from './pages/Auction/Winning/WinningPage'
+import WinningCreatePage from './pages/Auction/Winning/WinningCreatePage'
 
-import OrderPage from './pages/Order/OrderPage';
+import OrderPage from './pages/Order/OrderPage'
+import OrderDetailPage from './pages/Order/OrderDetailPage'
 
 // 출고 관리
-import RegisterPage from './pages/Shipping/Register/RegisterPage';
-import RequestPage from './pages/Shipping/Request/RequestPage';
-import DispatchPage from './pages/Shipping/Dispatch/DispatchPage';
-import DisRegisterPage from './pages/Shipping/Dispatch/DisRegisterPage';
-import StatusPage from './pages/Shipping/Status/StatusPage';
-import Achievement from './pages/Shipping/Achievement/AchievementPage';
+import RegisterPage from './pages/Shipping/Register/RegisterPage'
+import RequestPage from './pages/Shipping/Request/RequestPage'
+import DispatchPage from './pages/Shipping/Dispatch/DispatchPage'
+import DisRegisterPage from './pages/Shipping/Dispatch/DisRegisterPage'
+import DisRegisterDetailPage from './pages/Shipping/Dispatch/DisRegisterDetailPage'
+import StatusPage from './pages/Shipping/Status/StatusPage'
+import StatusDetailPage from './pages/Shipping/Status/StatusDetailPage'
+import Achievement from './pages/Shipping/Achievement/AchievementPage'
 
 // 판매 제품 관리
-import SingleProductPage from './pages/Product/SingleProduct/SingleProductPage';
-import PackageManagePage from './pages/Product/PackageManage/PackageManagePage';
-import RecommendPage from './pages/Product/Recommend/RecommendPage';
-import PronoPage from './pages/Product/Prono/PronoPage';
-import HyundaiPage from './pages/Product/SingleProduct/HyundaiPage';
-import SalesProductPage from './pages/Product/SingleProduct/SalesProductPage';
+import SingleProductPage from './pages/Product/SingleProduct/SingleProductPage'
+import PackageManagePage from './pages/Product/PackageManage/PackageManagePage'
+import RecommendPage from './pages/Product/Recommend/RecommendPage'
+import RecommendPackPage from './pages/Product/Recommend/RecommendPackPage'
+import PronoPage from './pages/Product/Prono/PronoPage'
+import HyundaiPage from './pages/Product/SingleProduct/HyundaiPage'
+import SalesProductPage from './pages/Product/SingleProduct/SalesProductPage'
+import PackageCreatePage from './pages/Product/PackageManage/PackageCreatePage'
 
 // 상시 판매 관리
-import SinglePage from './pages/Sales/Single/SinglePage';
-import PackagePage from './pages/Sales/Package/PackagePage';
-import SellOrderPage from './pages/Sales/SellOrder/SellOrderPage';
+import SinglePage from './pages/Sales/Single/SinglePage'
+import PackagePage from './pages/Sales/Package/PackagePage'
+import SellOrderPage from './pages/Sales/SellOrder/SellOrderPage'
+import SellOrderDetailPage from './pages/Sales/SellOrder/SellOrderDetailPage'
 
 // 기준 관리
-import DestinationPage from './pages/Standard/Destination/DestinationPage';
-import TransportPage from './pages/Standard/Transport/TransportPage';
-import ConsolidationPage from './pages/Standard/Consolidation/ConsolidationPage';
+import DestinationPage from './pages/Standard/Destination/DestinationPage'
+import TransportPage from './pages/Standard/Transport/TransportPage'
+import ConsolidationPage from './pages/Standard/Consolidation/ConsolidationPage'
 
 // 사용자 관리
-import ClientPage from './pages/UserManage/Client/ClientPage';
-import ClientDestiantionPage from './pages/UserManage/ClientDestination/ClientDestinationPage';
-import UserManagePage from './pages/UserManage/UserManage/UserManagePage';
-import CarrierManagePage from './pages/UserManage/CarrierManage/CarrierManagePage';
+import ClientPage from './pages/UserManage/Client/ClientPage'
+import ClientDestiantionPage from './pages/UserManage/ClientDestination/ClientDestinationPage'
+import UserManagePage from './pages/UserManage/UserManage/UserManagePage'
+import CarrierManagePage from './pages/UserManage/CarrierManage/CarrierManagePage'
 
-import ProfileEditPage from './pages/UserManage/ProfileEdit/ProfileEditPage';
+import ProfileEditPage from './pages/UserManage/ProfileEdit/ProfileEditPage'
 
-import DestinationPostPage from './pages/UserManage/ClientDestination/DestinationPostPage';
-import UserPostPage from './pages/UserManage/UserManage/UserPostPage';
+import DestinationPostPage from './pages/UserManage/ClientDestination/DestinationPostPage'
+import UserPostPage from './pages/UserManage/UserManage/UserPostPage'
 
 // 운영 관리
-import OperationPage from './pages/Operate/Operation/Operation/OperationPage';
-import InventoryOperPage from './pages/Operate/Operation/Inventory/InventoryPage';
+import OperationPage from './pages/Operate/Operation/Operation/OperationPage'
+import InventoryOperPage from './pages/Operate/Operation/Inventory/InventoryPage'
 
 //운영 관리 - 노출 관리
-import PopupPage from './pages/Operate/Exposure/Popup/PopupPage';
-import NoticeBoardPage from './pages/Operate/Exposure/NoticeBoard/NoticeBoardPage';
+import PopupPage from './pages/Operate/Exposure/Popup/PopupPage'
+import NoticeBoardPage from './pages/Operate/Exposure/NoticeBoard/NoticeBoardPage'
 
 //운영 관리 - 일반 관리
-import ClaimPage from './pages/Operate/Common/Claim/ClaimPage';
-import FAQPage from './pages/Operate/Common/FAQ/FAQPage';
-import FAQPostPage from './pages/Operate/Common/FAQ/FAQPostPage';
-import NoticePage from './pages/Operate/Common/Notice/NoticePage';
-import DataSheetPage from './pages/Operate/Common/Datasheet/DatasheetPage';
+import ClaimPage from './pages/Operate/Common/Claim/ClaimPage'
+import FAQPage from './pages/Operate/Common/FAQ/FAQPage'
+import FAQPostPage from './pages/Operate/Common/FAQ/FAQPostPage'
+import NoticePage from './pages/Operate/Common/Notice/NoticePage'
+import DataSheetPage from './pages/Operate/Common/Datasheet/DatasheetPage'
 
 // 이용약관, 푸터
-import TermsPage from './pages/Operate/Terms/TermsPage';
-import FooterManagePage from './pages/Operate/FooterManage/FooterManagePage';
+import TermsPage from './pages/Operate/Terms/TermsPage'
+import FooterManagePage from './pages/Operate/FooterManage/FooterManagePage'
 
 /// 사용자 페이지
 // 공지  & 자료실
-import UNotice from './userpages/UserNotiDocs/Notice/NoticePage';
-import UDocs from './userpages/UserNotiDocs/Docs/DocsPage';
+import UNotice from './userpages/UserNotiDocs/Notice/NoticePage'
+import UDocs from './userpages/UserNotiDocs/Docs/DocsPage'
 
 // 경매
-import UAuctionSingle from './userpages/UserAuction/Single/SinglePage';
-import UAuctionPackage from './userpages/UserAuction/Package/PackagePage';
-import UAuctionStatus from './userpages/UserAuction/Status/StatusPage';
-import UAuctionWinning from './userpages/UserAuction/Winning/WinningPage';
+import UAuctionSingle from './userpages/UserAuction/Single/SinglePage'
+import UAuctionPackage from './userpages/UserAuction/Package/PackagePage'
+import UAuctionStatus from './userpages/UserAuction/Status/StatusPage'
+import UAuctionWinning from './userpages/UserAuction/Winning/WinningPage'
 
 // 상시 판매
-import USalesSingle from './userpages/UserSales/Single/SinglePage';
-import USalesPackage from './userpages/UserSales/Package/PackagePage';
-import USalesCart from './userpages/UserSales/Cart/CartPage';
-import USalesOrder from './userpages/UserSales/Order/OrderPage';
+import USalesSingle from './userpages/UserSales/Single/SinglePage'
+import USalesPackage from './userpages/UserSales/Package/PackagePage'
+import USalesCart from './userpages/UserSales/Cart/CartPage'
+import USalesOrder from './userpages/UserSales/Order/OrderPage'
 
 // 출고 실적 조회
-import UPerformance from './userpages/UserPerformance/UserPerformance/UserPerformancePage';
+import UPerformance from './userpages/UserPerformance/UserPerformance/UserPerformancePage'
 
 // 마이페이지
-import UUserManage from './userpages/UserMyPage/UserManage/UserManagePage';
-import UProfile from './userpages/UserMyPage/Profile/ProfilePage';
-import UDestination from './userpages/UserMyPage/Destination/DestinationPage';
-import UPrefer from './userpages/UserMyPage/Prefer/PreferPage';
+import UUserManage from './userpages/UserMyPage/UserManage/UserManagePage'
+import UProfile from './userpages/UserMyPage/Profile/ProfilePage'
+import UDestination from './userpages/UserMyPage/Destination/DestinationPage'
+import UPrefer from './userpages/UserMyPage/Prefer/PreferPage'
 
 // 고객센터
-import UFAQ from './userpages/UserCustomer/FAQ/FAQPage';
-import UTerms from './userpages/UserCustomer/Terms/TermsPage';
+import UFAQ from './userpages/UserCustomer/FAQ/FAQPage'
+import UTerms from './userpages/UserCustomer/Terms/TermsPage'
 
 //사용자 메인페이지
-import UserMainPage from './userpages/MainPage';
+import UserMainPage from './userpages/MainPage'
+
+// test
+
+import CommonTest from './modal/Common/CommonTest'
 
 const Router = () => {
   return (
@@ -133,6 +140,7 @@ const Router = () => {
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
         <Route path="/test4" element={<Test4 />} />
+        <Route path="/common" element={<CommonTest />} />
         {/* 로그인, 회원가입, 아이디 찾기, 비밀번호 재발급, 캘린더, 메인 */}
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
@@ -149,16 +157,12 @@ const Router = () => {
         <Route path="/product/">
           <Route path="/product/single" element={<SingleProductPage />}></Route>
           <Route path="/product/hyundai" element={<HyundaiPage />}></Route>
-          <Route
-            path="/product/salesproduct"
-            element={<SalesProductPage />}
-          ></Route>
-
-          <Route
-            path="/product/package"
-            element={<PackageManagePage />}
-          ></Route>
+          <Route path="/product/salesproduct" element={<SalesProductPage />}></Route>
+          <Route path="/product/package" element={<PackageManagePage />}></Route>
+          <Route path="/product/packagecreate" element={<PackageCreatePage />}></Route>
+          <Route path="/product/packageedit" element={<PackageCreatePage />}></Route>
           <Route path="/product/recommend" element={<RecommendPage />}></Route>
+          <Route path="/product/recommendpkg" element={<RecommendPackPage />}></Route>
           <Route path="/product/prono" element={<PronoPage />}></Route>
         </Route>
         {/* 경매 관리  */}
@@ -166,15 +170,10 @@ const Router = () => {
           <Route path="/auction/round" element={<RoundPage />}></Route>
           <Route path="/auction/bidding" element={<BiddingPage />}></Route>
           <Route path="/auction/progress" element={<ProgressPage />}></Route>
-          <Route
-            path="/auction/detailprogress"
-            element={<DetailProgressPage />}
-          ></Route>
+          <Route path="/auction/detailprogress" element={<DetailProgressPage />}></Route>
           <Route path="/auction/winning" element={<WinningPage />}></Route>
-          <Route
-            path="/auction/startprice"
-            element={<StartPricePage />}
-          ></Route>
+          <Route path="/auction/winningcreate" element={<WinningCreatePage />}></Route>
+          <Route path="/auction/startprice" element={<StartPricePage />}></Route>
         </Route>
         {/* 상시 판매 관리 */}
         <Route path="/sales">
@@ -189,77 +188,41 @@ const Router = () => {
           <Route path="/shipping/register" element={<RegisterPage />} />
           <Route path="/shipping/request" element={<RequestPage />} />
           <Route path="/shipping/dispatch" element={<DispatchPage />} />
-          <Route
-            path="/shipping/dispatch/register"
-            element={<DisRegisterPage />}
-          />
-          <Route path="/shipping/status" element={<StatusPage />} />
+          <Route path="/shipping/dispatch/register" element={<DisRegisterPage />} />
+          <Route path="/shipping/status" element={<StatusDetailPage />} />
           <Route path="/shipping/achievement" element={<Achievement />} />
-          <Route
-            path="/shipping/claim/register"
-            element={<ClaimRegisterPage />}
-          />
+          <Route path="/shipping/claim/register" element={<ClaimRegisterPage />} />
         </Route>
         {/* 기준 관리 */}
         <Route path="/standard">
           <Route path="/standard/destination" element={<DestinationPage />} />
           <Route path="/standard/transportation" element={<TransportPage />} />
-          <Route
-            path="/standard/consolidation"
-            element={<ConsolidationPage />}
-          />
+          <Route path="/standard/consolidation" element={<ConsolidationPage />} />
         </Route>
         {/* 사용자 관리 */}
         <Route path="/usermanage">
           {/* 사용자 관리 - 사용자 등록 버튼 - 사용자 등록 */}
-          <Route
-            path="/usermanage/usermanage/userpost"
-            element={<UserPostPage />}
-          ></Route>
+          <Route path="/usermanage/usermanage/userpost" element={<UserPostPage />}></Route>
           {/* 고객사 목적지 관리 - 버튼 - 고객사 목적지 등록 */}
-          <Route
-            path="/usermanage/clientdestination/destinationpost"
-            element={<DestinationPostPage />}
-          ></Route>
+          <Route path="/usermanage/clientdestination/destinationpost" element={<DestinationPostPage />}></Route>
           {/* 운송사 관리 - 운송사 등록 */}
-          <Route
-            path="/usermanage/carrierpost"
-            element={<CarrierPostPage />}
-          ></Route>
+          <Route path="/usermanage/carrierpost" element={<CarrierPostPage />}></Route>
           <Route path="/usermanage/client" element={<ClientPage />}></Route>
-          <Route
-            path="/usermanage/clientdestination"
-            element={<ClientDestiantionPage />}
-          ></Route>
-          <Route
-            path="/usermanage/usermanage"
-            element={<UserManagePage />}
-          ></Route>
-          <Route
-            path="/usermanage/carriermanage"
-            element={<CarrierManagePage />}
-          ></Route>
+          <Route path="/usermanage/clientdestination" element={<ClientDestiantionPage />}></Route>
+          <Route path="/usermanage/usermanage" element={<UserManagePage />}></Route>
+          <Route path="/usermanage/carriermanage" element={<CarrierManagePage />}></Route>
 
           {/* 개인정보 수정 완 */}
-          <Route
-            path="/usermanage/profileedit"
-            element={<ProfileEditPage />}
-          ></Route>
+          <Route path="/usermanage/profileedit" element={<ProfileEditPage />}></Route>
         </Route>
         {/* 운영 관리 */}
         <Route path="/operate">
           <Route path="/operate/operation" element={<OperationPage />}></Route>
-          <Route
-            path="/operate/inventory"
-            element={<InventoryOperPage />}
-          ></Route>
+          <Route path="/operate/inventory" element={<InventoryOperPage />}></Route>
           <Route path="/operate/common" element={<ClaimPage />}></Route>
           <Route path="/operate/exposure" element={<PopupPage />}></Route>
           <Route path="/operate/faq" element={<FAQPage />}></Route>
-          <Route
-            path="/operate/noticeboard"
-            element={<NoticeBoardPage />}
-          ></Route>
+          <Route path="/operate/noticeboard" element={<NoticeBoardPage />}></Route>
           <Route path="/operate/notice" element={<NoticePage />}></Route>
           <Route path="/operate/datasheet" element={<DataSheetPage />}></Route>
           <Route path="/operate/terms" element={<TermsPage />}></Route>
@@ -279,49 +242,25 @@ const Router = () => {
           <Route path="/userpage/docs" element={<UDocs />}></Route>
 
           {/* 경매 */}
-          <Route
-            path="/userpage/actionsingle"
-            element={<UAuctionSingle />}
-          ></Route>
-          <Route
-            path="/userpage/auctionpackage"
-            element={<UAuctionPackage />}
-          ></Route>
-          <Route
-            path="/userpage/actionstatus"
-            element={<UAuctionStatus />}
-          ></Route>
-          <Route
-            path="/userpage/auctionwinning"
-            element={<UAuctionWinning />}
-          ></Route>
+          <Route path="/userpage/actionsingle" element={<UAuctionSingle />}></Route>
+          <Route path="/userpage/auctionpackage" element={<UAuctionPackage />}></Route>
+          <Route path="/userpage/actionstatus" element={<UAuctionStatus />}></Route>
+          <Route path="/userpage/auctionwinning" element={<UAuctionWinning />}></Route>
 
           {/* 상시 판매 */}
-          <Route
-            path="/userpage/salessingle"
-            element={<USalesSingle />}
-          ></Route>
-          <Route
-            path="/userpage/salespackage"
-            element={<USalesPackage />}
-          ></Route>
+          <Route path="/userpage/salessingle" element={<USalesSingle />}></Route>
+          <Route path="/userpage/salespackage" element={<USalesPackage />}></Route>
           <Route path="/userpage/salescart" element={<USalesCart />}></Route>
           <Route path="/userpage/salesorder" element={<USalesOrder />}></Route>
 
           {/* 출고 실적 조회 */}
-          <Route
-            path="/userpage/performance"
-            element={<UPerformance />}
-          ></Route>
+          <Route path="/userpage/performance" element={<UPerformance />}></Route>
 
           {/* 마이 페이지 */}
           <Route path="/userpage/usermanage" element={<UUserManage />}></Route>
 
           <Route path="/userpage/userprofile" element={<UProfile />}></Route>
-          <Route
-            path="/userpage/userdestination"
-            element={<UDestination />}
-          ></Route>
+          <Route path="/userpage/userdestination" element={<UDestination />}></Route>
           <Route path="/userpage/userprefer" element={<UPrefer />}></Route>
 
           {/* 고객 센터 */}
@@ -330,7 +269,7 @@ const Router = () => {
         </Route>
       </Routes>
     </BrowserRouter>
-  );
-};
+  )
+}
 
-export default Router;
+export default Router

@@ -1,5 +1,6 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useCallback, useState, useEffect, useContext } from 'react'
+import { HeadFootLeftSwitch } from '../../../Router'
+import styled, { createGlobalStyle } from 'styled-components'
 import {
   Container,
   SignupContainer,
@@ -12,48 +13,36 @@ import {
   Bottom,
   BottomItem,
   TxtDiv,
+  SDropDown,
   BottomP,
   CheckBtn,
   Init,
+  SubmitBtn,
   DropWrap,
   Title,
-} from './SignUp.Styled';
-import {
-  TxtInput,
-  TxtCheckInput,
-  TxtDropInput,
-  SInput,
-} from '../../../common/Input/Input';
-import {
-  idRegex,
-  pwRegex,
-  busIdRegex,
-  phoneRegex,
-} from '../../../common/Regex/Regex';
-import DaumPostcode from 'react-daum-postcode';
-import Select from 'react-select';
+} from './SignUp.Styled'
+import { TxtInput, TxtCheckInput, TxtDropInput, SInput } from '../../../common/Input/Input'
+import { idRegex, pwRegex, busIdRegex, phoneRegex } from '../../../common/Regex/Regex'
+import DaumPostcode from 'react-daum-postcode'
+import Select from 'react-select'
 import {
   StyledCheckMainDiv,
   StyledCheckSubSquDiv,
   StyledCheckSubDiv,
   CheckImg,
   CheckImg2,
-} from '../../../common/Check/CheckImg';
-import { CheckBox } from '../../../common/Check/Checkbox';
-import {
-  RadioCircleDiv,
-  RadioInnerCircleDiv,
-  RadioMainDiv,
-} from '../../../common/Check/RadioImg';
+} from '../../../common/Check/CheckImg'
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import {
   ModalOverlay,
   ModalSubContainer,
   ModalRadioWrap,
   ModalCloseBtn,
   ModalContainer,
-} from '../../../modal/Common/Common.Styled';
+} from '../../../modal/Common/Common.Styled'
 
-import SignUpPost from '../../../modal/SignUp/SignUpPost';
+import SignUpPost from '../../../modal/SignUp/SignUpPost'
 
 import {
   depositOptions,
@@ -64,182 +53,175 @@ import {
   DepositSelect,
   EmailSelect,
   AccountSelect,
-} from '../../../common/Option/SignUp';
+} from '../../../common/Option/SignUp'
 
-import LoginModal from '../../../modal/Login/LoginModal';
+import LoginModal from '../../../modal/Login/LoginModal'
 
-import { useAtom } from 'jotai';
+import { useAtom } from 'jotai'
 
-import {
-  headerAtom,
-  accordionAtom,
-  subHeaderAtom,
-} from '../../../store/Layout/Layout';
-import { Height } from '@mui/icons-material';
-import {businessNumberDuplication, idDuplication} from "../../../api/auth";
+import { headerAtom, accordionAtom, subHeaderAtom } from '../../../store/Layout/Layout'
+import { Height } from '@mui/icons-material'
 
 const SignUp = () => {
-  const [showHeader, setShowHeader] = useAtom(headerAtom);
-  const [showAccordion, setShowAccordion] = useAtom(accordionAtom);
-  const [showSubHeader, setShowSubHeader] = useAtom(subHeaderAtom);
-  setShowHeader(false);
-  setShowAccordion(false);
-  setShowSubHeader(false);
+  const [showHeader, setShowHeader] = useAtom(headerAtom)
+  const [showAccordion, setShowAccordion] = useAtom(accordionAtom)
+  const [showSubHeader, setShowSubHeader] = useAtom(subHeaderAtom)
+  setShowHeader(false)
+  setShowAccordion(false)
+  setShowSubHeader(false)
   //radioBox
-  const radioDummy = ['개인', '법인(주)', '법인(유)'];
-  const [checkRadio, setCheckRadio] = useState(
-    Array.from({ length: radioDummy.length }, () => false)
-  );
-  const [savedRadioValue, setSavedRadioValue] = useState('');
+  const radioDummy = ['개인', '법인(주)', '법인(유)']
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [savedRadioValue, setSavedRadioValue] = useState('')
 
   useEffect(() => {
-    const checkedIndex = checkRadio.findIndex(
-      (isChecked, index) => isChecked && index < radioDummy.length
-    );
+    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
     if (checkedIndex !== -1) {
-      const selectedValue = radioDummy[checkedIndex];
-      setSavedRadioValue(selectedValue);
-      setInput({ ...input, type: selectedValue });
+      const selectedValue = radioDummy[checkedIndex]
+      setSavedRadioValue(selectedValue)
+      setInput({ ...input, type: selectedValue })
     }
-  }, [checkRadio]);
+  }, [checkRadio])
 
   //checkBox
-  const checkDummy = ['유통', '제조'];
-  const [check, setCheck] = useState(
-    Array.from({ length: checkDummy.length }, () => false)
-  );
-  const [checkData, setCheckData] = useState(
-    Array.from({ length: checkDummy.length }, () => '')
-  );
+  const checkDummy = ['유통', '제조']
+  const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
+  const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
 
   useEffect(() => {
     const updatedCheck = checkDummy.map((value, index) => {
-      return check[index] ? value : '';
-    });
+      return check[index] ? value : ''
+    })
     // 그냥 배열에 담을 때
-    const filteredCheck = updatedCheck.filter(item => item !== '');
-    setCheckData(filteredCheck);
+    const filteredCheck = updatedCheck.filter((item) => item !== '')
+    setCheckData(filteredCheck)
 
     // 전송용 input에 담을 때
     setInput({
       ...input,
-      businessType: updatedCheck.filter(item => item !== ''),
-    });
-  }, [check]);
+      businessType: updatedCheck.filter((item) => item !== ''),
+    })
+  }, [check])
 
+  const dummy = {
+    userId: ['test1', 'wkdqaz'],
+    busId: ['1234512345'],
+  }
 
   //modal
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false)
 
   //post
-  const [postFind, setPostFind] = useState(false);
+  const [postFind, setPostFind] = useState(false)
+
+  console.log('postFind', postFind)
 
   const postCheck = () => {
-    setPostFind(false);
-  };
+    setPostFind(false)
+  }
 
   const directCheck = () => {
-    setPostFind(true);
-    setAddress('');
-    setDetailAddress('');
-    setInput({ ...input, address: '', addressDetail: '' });
-  };
+    setPostFind(true)
+    setAddress('')
+    setDetailAddress('')
+    setInput({ ...input, address: '', addressDetail: '' })
+  }
 
   const openModal = () => {
-    setModalIsOpen(true);
-  };
+    setModalIsOpen(true)
+  }
 
   const closeModal = () => {
-    setModalIsOpen(false);
-    setAddress('');
-    setDetailAddress('');
-    setInput({ ...input, address: '', addressDetail: '' });
-  };
+    setModalIsOpen(false)
+    setAddress('')
+    setDetailAddress('')
+    setInput({ ...input, address: '', addressDetail: '' })
+  }
 
   const comfirmPost = () => {
-    setModalIsOpen(false);
-    setInput({ ...input, address: address, addressDetail: detailAddress });
-  };
+    setModalIsOpen(false)
+    setInput({ ...input, address: address, addressDetail: detailAddress })
+  }
 
   // 가입하기 grey 버튼
-  const [greyBtn, setGreyBtn] = useState(false);
+  const [greyBtn, setGreyBtn] = useState(false)
 
   useEffect(() => {
     if (input.value === '') {
-      console.log('빈값이 있숩니다');
+      console.log('빈값이 있숩니다')
     }
-  }, [greyBtn]);
+  }, [greyBtn])
   //daum post code
-  const [isDaumPostOpen, setIsDaumPostOpen] = useState(false);
+  const [isDaumPostOpen, setIsDaumPostOpen] = useState(false)
 
-  const [address, setAddress] = useState('');
-  const [detailAddress, setDetailAddress] = useState('');
+  const [address, setAddress] = useState('')
+  const [detailAddress, setDetailAddress] = useState('')
 
   const daumPostHandleBtn = () => {
-    setIsDaumPostOpen(true);
-  };
+    setIsDaumPostOpen(true)
+  }
 
-  const daumPostHandleComplete = data => {
-    const { address } = data;
-    setAddress(address);
-    setIsDaumPostOpen(false);
-  };
+  const daumPostHandleComplete = (data) => {
+    const { address } = data
+    setAddress(address)
+    setIsDaumPostOpen(false)
+  }
 
   const daumPosthandleClose = () => {
-    setIsDaumPostOpen(false);
-  };
+    setIsDaumPostOpen(false)
+  }
 
-  const detailAddressHandler = e => {
-    const value = e.target.value;
-    setDetailAddress(value);
-  };
+  const detailAddressHandler = (e) => {
+    const value = e.target.value
+    setDetailAddress(value)
+  }
 
   //total msg
-  const [msg, setMsg] = useState({});
+  const [msg, setMsg] = useState({})
 
   //total color
-  const [txtColor, setTxtColor] = useState('');
-  console.log('msg !!!', msg);
+  const [txtColor, setTxtColor] = useState('')
+  console.log('msg !!!', msg)
 
   // ID
-  const [id, setId] = useState('');
-  const [idMsg, setIdMsg] = useState('');
-  const [idMsgColor, setIdMsgColor] = useState('');
-  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [id, setId] = useState('')
+  const [idMsg, setIdMsg] = useState('')
+  const [idMsgColor, setIdMsgColor] = useState('')
+  const [buttonDisabled, setButtonDisabled] = useState(false)
 
-  const isIdValid = idRegex.test(id);
-  const [isFocused, setIsFocused] = useState(false);
-  const [idDupleCheck, setIdDupleCheck] = useState(false);
+  const isIdValid = idRegex.test(id)
+  const [isFocused, setIsFocused] = useState(false)
+  const [idDupleCheck, setIdDupleCheck] = useState(false)
 
   // PW
-  const [pw, setPw] = useState('');
-  const [pwMsg, setPwMsg] = useState('');
-  const [pwMsgColor, setPwMsgColor] = useState('');
+  const [pw, setPw] = useState('')
+  const [pwMsg, setPwMsg] = useState('')
+  const [pwMsgColor, setPwMsgColor] = useState('')
 
-  const isPwValid = pwRegex.test(pw);
-  const [pwFocused, setPwFocused] = useState(false);
+  const isPwValid = pwRegex.test(pw)
+  const [pwFocused, setPwFocused] = useState(false)
 
   // PW Duple
-  const [pwDuple, setPwDuple] = useState('');
-  const [pwDupMsg, setDupMsg] = useState('');
-  const [pwDupleFocused, setDuplePwFocused] = useState(false);
+  const [pwDuple, setPwDuple] = useState('')
+  const [pwDupMsg, setDupMsg] = useState('')
+  const [pwDupleFocused, setDuplePwFocused] = useState(false)
 
   // Company
-  const [company, setCompany] = useState('');
-  const [companyFocused, setCompanyFocused] = useState(false);
-  const [companyMsg, setCompanyMsg] = useState('');
+  const [company, setCompany] = useState('')
+  const [companyFocused, setCompanyFocused] = useState(false)
+  const [companyMsg, setCompanyMsg] = useState('')
 
   // Represent
-  const [rep, setRep] = useState('');
-  const [repFocused, setRepFocused] = useState(false);
-  const [repMsg, setRepMsg] = useState('');
+  const [rep, setRep] = useState('')
+  const [repFocused, setRepFocused] = useState(false)
+  const [repMsg, setRepMsg] = useState('')
 
   //Business Number
-  const [busId, setBusId] = useState('');
-  const [busIdMsg, setBusIdMsg] = useState('');
-  const [busIdMsgColor, setBusIdMsgColor] = useState('');
+  const [busId, setBusId] = useState('')
+  const [busIdMsg, setBusIdMsg] = useState('')
+  const [busIdMsgColor, setBusIdMsgColor] = useState('')
 
-  const busIdValid = busIdRegex.test(busId);
+  const busIdValid = busIdRegex.test(busId)
 
   //Phone Number
   //deposit
@@ -270,193 +252,197 @@ const SignUp = () => {
     releaseManagerTitle: '',
     releaseManagerName: '',
     releaseManagerPhone: '',
-  };
+  }
 
   //total input
-  const [input, setInput] = useState(init);
+  const [input, setInput] = useState(init)
 
   /// Common ///
   //Color
-  const [statusColor, setStatusColor] = useState('');
+  const [statusColor, setStatusColor] = useState('')
 
   // option
 
   //이메일 & 도메인
-  const [emailFirst, setEmailFirst] = useState('');
-  const [emailDomain, setEmailDomain] = useState('');
+  const [emailFirst, setEmailFirst] = useState('')
+  const [emailDomain, setEmailDomain] = useState('')
 
+  console.log('check', check)
   useEffect(() => {
-    const checkIndex = check.findIndex(
-      (isChecked, index) => isChecked && index < checkDummy.length
-    );
+    const checkIndex = check.findIndex((isChecked, index) => isChecked && index < checkDummy.length)
 
+    console.log('checkIndex', checkIndex)
     if (checkIndex !== -1) {
-      const selectedValue = checkDummy[checkIndex];
+      const selectedValue = checkDummy[checkIndex]
+
+      console.log('selectedValue', selectedValue)
     }
-  }, [check]);
+  }, [check])
 
   const handleSelectChange = (selectedOption, name) => {
-    setInput(prevState => ({
+    setInput((prevState) => ({
       ...prevState,
       [name]: selectedOption.label,
-    }));
-  };
+    }))
+  }
 
-  const emailHandler = useCallback(e => {
-    const value = e.target.value;
-    setEmailFirst(value);
-  });
+  const emailHandler = useCallback((e) => {
+    const value = e.target.value
+    setEmailFirst(value)
+  })
 
   useEffect(() => {
     if (emailFirst && emailDomain) {
-      setInput({ ...input, email: emailFirst + '@' + emailDomain });
+      setInput({ ...input, email: emailFirst + '@' + emailDomain })
     }
-  }, [emailFirst, emailDomain]);
+  }, [emailFirst, emailDomain])
 
   // ID 관련
   // ID Focus & Blur 스위치
   const handleIdFocus = useCallback(() => {
-    setIsFocused(true);
-  }, []);
+    setIsFocused(true)
+  }, [])
   const handleIdBlur = useCallback(() => {
-    setIsFocused(false);
-  }, []);
+    setIsFocused(false)
+  }, [])
 
   // ID event 및 정규식 체크
   const handleIdChange = useCallback(
-    e => {
-      const value = e.target.value;
-      setId(value);
-      const isValid = idRegex.test(value); // 입력된 값의 유효성 검사
+    (e) => {
+      const value = e.target.value
+      setId(value)
+      const isValid = idRegex.test(value) // 입력된 값의 유효성 검사
       if (!isValid) {
-        setIdMsgColor('red');
-        setIdMsg('4~12자리 소문자와 숫자 조합으로 입력해주세요.');
+        setIdMsgColor('red')
+        setIdMsg('4~12자리 소문자와 숫자 조합으로 입력해주세요.')
       } else if (isValid && !idDupleCheck) {
-        setIdMsgColor('red');
-        setIdMsg('중복 확인이 필요해요.');
+        setIdMsgColor('red')
+        setIdMsg('중복 확인이 필요해요.')
       } else if (isValid && idDupleCheck) {
-        setIdMsg('');
+        setIdMsg('')
       }
     },
-    [idDupleCheck]
-  );
+    [idDupleCheck],
+  )
 
   // ID 중복 확인
-  const handleDuplicateCheck = async () => {
-    try {
-      await idDuplication(id);
-      setIdDupleCheck(true);
-      setIdMsgColor('blue');
-      setIdMsg('사용 가능한 아이디입니다.');
-      setInput({ ...input, id });
+  const handleDuplicateCheck = () => {
+    const isDuplicate = dummy.userId.includes(id)
+    if (isDuplicate) {
+      setIdDupleCheck(false)
+      setIdMsgColor('red')
+      setIdMsg('이미 사용중인 아이디 입니다.')
+    } else {
+      setIdDupleCheck(true)
+      setIdMsgColor('blue')
+      setIdMsg('사용 가능한 아이디입니다.')
+      setInput({ ...input, id: id })
       setTimeout(() => {
-        setIdMsg('');
-      }, 3000);
-    } catch (e) {
-      if(e.data.status === 409) {
-        setIdDupleCheck(false);
-        setIdMsgColor('red');
-        setIdMsg('이미 사용중인 아이디 입니다.');
-      }
+        setIdMsg('')
+      }, 3000)
+      //  +++ 여기에 중복체크 상태와 data에 아이디도 넣기 +++
     }
-  };
+  }
 
   /// PW 관련
 
   // PW 핸들러
   const handlePwChange = useCallback(
-    e => {
-      const value = e.target.value;
-      setPw(value);
-      const pwValid = pwRegex.test(value); // 입력된 값의 유효성 검사
+    (e) => {
+      const value = e.target.value
+      setPw(value)
+      const pwValid = pwRegex.test(value) // 입력된 값의 유효성 검사
       if (pwFocused && !pw && !pwValid) {
-        setPwMsgColor('red');
-        setPwMsg('4~12자리 소문자와 숫자 조합으로 입력해주세요.');
+        setPwMsgColor('red')
+        setPwMsg('4~12자리 소문자와 숫자 조합으로 입력해주세요.')
       } else if (pwFocused && pwValid) {
-        setPwMsg('');
+        setPwMsg('')
       }
     },
-    [pwFocused]
-  );
+    [pwFocused],
+  )
 
   //
-  const handlePwDupleCheck = useCallback(e => {
-    const value = e.target.value;
-    setPwDuple(value);
-  }, []);
+  const handlePwDupleCheck = useCallback((e) => {
+    const value = e.target.value
+    setPwDuple(value)
+  }, [])
   useEffect(() => {
-    const dupleValid = pw === pwDuple;
+    const dupleValid = pw === pwDuple
+    console.log('dupleValid', dupleValid)
     if (pwDupleFocused && pwDuple && !dupleValid) {
-      setDupMsg('비밀번호가 일치하지 않습니다');
-      setStatusColor('red');
+      setDupMsg('비밀번호가 일치하지 않습니다')
+      setStatusColor('red')
     } else if (pwDupleFocused && dupleValid) {
-      setDupMsg('');
-      setInput({ ...input, password: pw });
+      setDupMsg('')
+      setInput({ ...input, password: pw })
     }
-  }, [pw, pwDuple, pwDupleFocused]);
+  }, [pw, pwDuple, pwDupleFocused])
 
   // 사업자 번호 handler
-  const handleBusIdChange = useCallback(e => {
-    const value = e.target.value;
-    setBusId(value);
-    const isValid = busIdRegex.test(value);
+  const handleBusIdChange = useCallback((e) => {
+    const value = e.target.value
+    setBusId(value)
+    const isValid = busIdRegex.test(value)
     if (!isValid) {
-      setBusIdMsgColor('red');
-      setBusIdMsg('10자리의 숫자를 입력해주세요.');
+      setBusIdMsgColor('red')
+      setBusIdMsg('10자리의 숫자를 입력해주세요.')
     } else if (isValid && !idDupleCheck) {
-      setBusIdMsgColor('red');
-      setBusIdMsg('중복 확인이 필요해요.');
+      setBusIdMsgColor('red')
+      setBusIdMsg('중복 확인이 필요해요.')
     } else if (isValid && idDupleCheck) {
-      setIdMsg('');
+      setIdMsg('')
     }
-  }, []);
+  }, [])
 
   // 사업자 번호 중복 체크
-  const handleBusIdDupleCheck = async () => {
-    try {
-      await businessNumberDuplication(busId);
-      setBusIdMsgColor('blue');
-      setBusIdMsg('사용 가능한 사업자 번호입니다.');
-      setInput({ ...input, businessNumber: busId });
+  const handleBusIdDupleCheck = () => {
+    const isDuplicate = dummy.busId.includes(busId)
+
+    console.log('isDuplicate', isDuplicate)
+    if (busId && isDuplicate) {
+      setBusIdMsgColor('red')
+      setBusIdMsg('이미 등록된 사업자 번호입니다.')
+    } else if (busId && !isDuplicate) {
+      setBusIdMsgColor('blue')
+      setBusIdMsg('사용 가능한 사업자 번호입니다.')
+      setInput({ ...input, businessNumber: busId })
       setTimeout(() => {
-        setBusIdMsg('');
-      }, 3000);
-    } catch (e) {
-      setBusIdMsgColor('red');
-      setBusIdMsg('이미 등록된 사업자 번호입니다.');
+        setBusIdMsg('')
+      }, 3000)
     }
-  };
+  }
 
   /// 휴대폰 번호 (경매 / 입금 / 출고)
   const phoneHandler = useCallback(
-    e => {
-      const { name, value } = e.target;
-      const isValid = phoneRegex.test(value);
+    (e) => {
+      const { name, value } = e.target
+      const isValid = phoneRegex.test(value)
       if (!isValid) {
-        setMsg({ ...msg, [name]: '10 ~ 11자리의 숫자를 입력해주세요.' });
-        setTxtColor('red');
+        setMsg({ ...msg, [name]: '10 ~ 11자리의 숫자를 입력해주세요.' })
+        setTxtColor('red')
       } else if (isValid) {
-        setMsg({ ...msg, [name]: '' });
-        setInput({ ...input, [name]: value });
-        setTxtColor('');
+        setMsg({ ...msg, [name]: '' })
+        setInput({ ...input, [name]: value })
+        setTxtColor('')
       }
     },
-    [input]
-  );
+    [input],
+  )
 
   //회사 명, 대표자 성명, 대표 연락처, 팩스 번호, 휴대폰 번호, 계좌 번호 ... 등 그 외 handler
   const commonHandler = useCallback(
-    e => {
-      const { name, value } = e.target;
-      setInput({ ...input, [name]: value });
+    (e) => {
+      const { name, value } = e.target
+      setInput({ ...input, [name]: value })
     },
-    [input]
-  );
+    [input],
+  )
 
   // 폼 제출 로직
-  const handleSubmit = useCallback(e => {
-    e.preventDefault();
-  }, []);
+  const handleSubmit = useCallback((e) => {
+    e.preventDefault()
+  }, [])
 
   return (
     <Container>
@@ -507,10 +493,10 @@ const SignUp = () => {
                     borderColor={statusColor}
                     onChange={handlePwChange}
                     onFocus={() => {
-                      setPwFocused(true);
+                      setPwFocused(true)
                     }}
                     onBlur={() => {
-                      setPwFocused(false);
+                      setPwFocused(false)
                     }}
                   />
                 </div>
@@ -528,10 +514,10 @@ const SignUp = () => {
                     borderColor={statusColor}
                     onChange={handlePwDupleCheck}
                     onFocus={() => {
-                      setDuplePwFocused(true);
+                      setDuplePwFocused(true)
                     }}
                     onBlur={() => {
-                      setDuplePwFocused(false);
+                      setDuplePwFocused(false)
                     }}
                   />
                 </div>
@@ -546,15 +532,13 @@ const SignUp = () => {
                       <RadioCircleDiv
                         isChecked={checkRadio[index]}
                         onClick={() => {
-                          setCheckRadio(
-                            CheckBox(checkRadio, checkRadio.length, index)
-                          );
+                          setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                         }}
                       >
                         <RadioInnerCircleDiv />
                       </RadioCircleDiv>
-                      <div style={{ display: 'flex', marginLeft: '5px' }}>
-                        {text}
+                      <div style={{ display: 'flex', marginLeft: '3px' }}>
+                        <p>{text}</p>
                       </div>
                     </RadioMainDiv>
                   ))}
@@ -566,12 +550,7 @@ const SignUp = () => {
                   <p></p>
                 </Title>
                 <div>
-                  <TxtInput
-                    type="text"
-                    name="customerName"
-                    value={input.customerName}
-                    onChange={commonHandler}
-                  />
+                  <TxtInput type="text" name="customerName" value={input.customerName} onChange={commonHandler} />
                 </div>
               </Part>
               <Part>
@@ -581,12 +560,7 @@ const SignUp = () => {
                 </Title>
 
                 <div>
-                  <TxtInput
-                    type="text"
-                    name="ceoName"
-                    value={input.ceoName}
-                    onChange={commonHandler}
-                  />
+                  <TxtInput type="text" name="ceoName" value={input.ceoName} onChange={commonHandler} />
                 </div>
               </Part>
               <Part>
@@ -625,22 +599,15 @@ const SignUp = () => {
                   <p></p>
                 </Title>
                 <div>
-                  <TxtCheckInput
-                    type="text"
-                    value={address}
-                    placeholder="찾기 버튼 클릭"
-                    readOnly
-                  />
-                  <CheckBtn
-                    style={{ backgroundColor: 'black', color: 'white' }}
-                    onClick={openModal}
-                  >
+                  <TxtCheckInput type="text" value={address} placeholder="찾기 버튼 클릭" readOnly />
+                  <CheckBtn style={{ backgroundColor: 'black', color: 'white' }} onClick={openModal}>
                     찾기
                   </CheckBtn>
                   <TxtInput
                     placeholder="상세 주소를 입력해 주세요."
                     value={detailAddress}
                     style={{ marginTop: '5px' }}
+                    onChange={detailAddressHandler}
                   />
                 </div>
               </Part>
@@ -652,11 +619,13 @@ const SignUp = () => {
                   address={address}
                   daumPostHandleBtn={daumPostHandleBtn}
                   detailAddress={detailAddress}
+                  setDetailAddress={setDetailAddress}
                   detailAddressHandler={detailAddressHandler}
                   comfirmPost={comfirmPost}
                   closeModal={closeModal}
                   isDaumPostOpen={isDaumPostOpen}
                   daumPosthandleClose={daumPosthandleClose}
+                  daumPostHandleComplete={daumPostHandleComplete}
                 />
               )}
             </PartBlock>
@@ -670,9 +639,7 @@ const SignUp = () => {
                   <DepositSelect
                     options={depositOptions}
                     defaultValue={depositOptions[0]}
-                    onChange={selectedOption =>
-                      handleSelectChange(selectedOption, 'depositManagerTitle')
-                    }
+                    onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
                   />
                   <TxtDropInput
                     name="depositManagerName"
@@ -712,9 +679,7 @@ const SignUp = () => {
                   <DepositSelect
                     options={auctionOptions}
                     defaultValue={auctionOptions[0]}
-                    onChange={selectedOption =>
-                      handleSelectChange(selectedOption, 'title')
-                    }
+                    onChange={(selectedOption) => handleSelectChange(selectedOption, 'title')}
                   />
                   <TxtDropInput
                     type="text"
@@ -734,13 +699,12 @@ const SignUp = () => {
                     width: '320px',
                   }}
                 >
-                  <SInput onChange={emailHandler} />{' '}
-                  <p style={{ margin: '0 5px' }}>@</p>
+                  <SInput onChange={emailHandler} /> <p style={{ margin: '0 5px' }}>@</p>
                   <EmailSelect
                     options={emailOptions}
                     defaultValue={emailOptions[0]}
-                    onChange={selectedOption => {
-                      setEmailDomain(selectedOption.label);
+                    onChange={(selectedOption) => {
+                      setEmailDomain(selectedOption.label)
                     }}
                   />
                   {console.log('emailDomain', emailDomain)}
@@ -767,9 +731,7 @@ const SignUp = () => {
                   {checkDummy.map((x, index) => (
                     <StyledCheckMainDiv>
                       <StyledCheckSubSquDiv
-                        onClick={() =>
-                          setCheck(CheckBox(check, check.length, index, true))
-                        }
+                        onClick={() => setCheck(CheckBox(check, check.length, index, true))}
                         isChecked={check[index]}
                       >
                         <CheckImg2 src="/svg/check.svg" />
@@ -783,12 +745,10 @@ const SignUp = () => {
                 <Title>
                   <h4>사업자 번호</h4>
                   <p style={{ color: busIdMsgColor }}>{busIdMsg}</p>
+                  {console.log('busIdMsg', busIdMsg)}
                 </Title>
                 <div style={{ width: '320px' }}>
-                  <TxtCheckInput
-                    onChange={handleBusIdChange}
-                    placeholder="사업자 번호 입력('-' 제외)"
-                  />
+                  <TxtCheckInput onChange={handleBusIdChange} placeholder="사업자 번호 입력('-' 제외)" />
                   <CheckBtn onClick={handleBusIdDupleCheck}>중복 확인</CheckBtn>
                 </div>
               </Part>
@@ -811,9 +771,7 @@ const SignUp = () => {
                 <AccountSelect
                   options={accountOptions}
                   defaultValue={accountOptions[0]}
-                  onChange={selectedOption =>
-                    handleSelectChange(selectedOption, 'bank')
-                  }
+                  onChange={(selectedOption) => handleSelectChange(selectedOption, 'bank')}
                 />
                 <TxtInput
                   style={{ marginTop: '5px' }}
@@ -831,9 +789,7 @@ const SignUp = () => {
                   <DepositSelect
                     options={releaseOptions}
                     defaultValue={releaseOptions[0]}
-                    onChange={selectedOption =>
-                      handleSelectChange(selectedOption, 'releaseManagerTitle ')
-                    }
+                    onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle ')}
                   />
                   <TxtDropInput
                     name="releaseManagerName"
@@ -863,7 +819,7 @@ const SignUp = () => {
               </Part>
             </PartBlock>
           </Right>
-          <Init></Init>
+
         </Main>
         <Bottom>
           <BottomItem>
@@ -893,7 +849,7 @@ const SignUp = () => {
             <button
               type="button"
               onClick={() => {
-                setGreyBtn(true);
+                setGreyBtn(true)
               }}
             >
               가입하기
@@ -903,30 +859,36 @@ const SignUp = () => {
         </Bottom>
       </SignupContainer>
     </Container>
-  );
-};
+  )
+}
 
-export default SignUp;
+export default SignUp
 
 const ModalTitle = styled.h2`
   color: black;
-`;
+`
 
 const ModalContent = styled.p`
   color: black;
-`;
+`
 
 const CloseButton = styled.button`
   background-color: black;
   color: white;
-`;
+`
 
 const CheckWrap = styled.div`
   margin-top: 10px;
   width: 320px;
   display: flex;
   gap: 50px;
-`;
+
+  p {
+    font-size: 18px;
+    line-height: 15px;
+    margin-top: 1px;
+  }
+`
 
 export const RadioContainer = styled.div`
   width: 320px;
@@ -934,4 +896,4 @@ export const RadioContainer = styled.div`
   gap: 50px;
   margin-left: 5px;
   margin-top: 10px;
-`;
+`

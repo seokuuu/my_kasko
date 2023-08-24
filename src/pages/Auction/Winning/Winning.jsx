@@ -1,29 +1,18 @@
-import { useState, useEffect } from 'react';
-import { styled } from 'styled-components';
-import { storageOptions } from '../../../common/Option/SignUp';
-import Excel from '../../../components/TableInner/Excel';
-import { MainSelect } from '../../../common/Option/Main';
-import {
-  BlackBtn,
-  BtnWrap,
-  ExcelBtn,
-  SkyBtn,
-  WhiteBlackBtn,
-  WhiteRedBtn,
-} from '../../../common/Button/Button';
-import DateGrid from '../../../components/DateGrid/DateGrid';
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
-import { GreyBtn } from '../../../common/Button/Button';
-import Test3 from '../../Test/Test3';
-import HeaderToggle from '../../../components/Toggle/HeaderToggle';
-import { toggleAtom } from '../../../store/Layout/Layout';
+import { useState, useEffect } from 'react'
+import { styled } from 'styled-components'
+import { storageOptions } from '../../../common/Option/SignUp'
+import Excel from '../../../components/TableInner/Excel'
+import { MainSelect } from '../../../common/Option/Main'
+import { BlackBtn, BtnWrap, ExcelBtn, SkyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import DateGrid from '../../../components/DateGrid/DateGrid'
+import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
+import { GreyBtn } from '../../../common/Button/Button'
+import Test3 from '../../Test/Test3'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { toggleAtom } from '../../../store/Layout/Layout'
 
-import { CheckBox } from '../../../common/Check/Checkbox';
-import {
-  StyledCheckMainDiv,
-  StyledCheckSubSquDiv,
-  CheckImg2,
-} from '../../../common/Check/CheckImg';
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 
 import {
   FilterContianer,
@@ -49,67 +38,66 @@ import {
   ExCheckWrap,
   ExCheckDiv,
   TCSubContainer,
-} from '../../../modal/External/ExternalFilter';
+} from '../../../modal/External/ExternalFilter'
 
-import {
-  RadioMainDiv,
-  RadioCircleDiv,
-  RadioInnerCircleDiv,
-} from '../../../common/Check/RadioImg';
+import { winningAtom } from '../../../store/Layout/Layout'
+import { useAtom } from 'jotai'
+import { Link } from 'react-router-dom'
+
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import Hidden from '../../../components/TableInner/Hidden'
 
 const Winning = ({}) => {
-  const checkSales = ['전체', '확정 전송', '확정 전송 대기'];
+  const checkSales = ['전체', '확정 전송', '확정 전송 대기']
+
+  const [winningCreate, setWinningCreate] = useAtom(winningAtom)
 
   //checkSales
-  const [check1, setCheck1] = useState(
-    Array.from({ length: checkSales.length }, () => false)
-  );
+  const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
 
   //checkShips
-  const [checkData1, setCheckData1] = useState(
-    Array.from({ length: checkSales.length }, () => '')
-  );
+  const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
 
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
     const updatedCheck = checkSales.map((value, index) => {
-      return check1[index] ? value : '';
-    });
+      return check1[index] ? value : ''
+    })
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-    const filteredCheck = updatedCheck.filter(item => item !== '');
-    setCheckData1(filteredCheck);
+    const filteredCheck = updatedCheck.filter((item) => item !== '')
+    setCheckData1(filteredCheck)
 
     // 전송용 input에 담을 때
     // setInput({
     //   ...input,
     //   businessType: updatedCheck.filter(item => item !== ''),
     // });
-  }, [check1]);
+  }, [check1])
 
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
     //   [name]: selectedOption.label,
     // }));
-  };
-  const [isRotated, setIsRotated] = useState(false);
+  }
+  const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
-    setIsRotated(prevIsRotated => !prevIsRotated);
-  };
+    setIsRotated((prevIsRotated) => !prevIsRotated)
+  }
 
   // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom);
-  const [toggleMsg, setToggleMsg] = useState('On');
+  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+  const [toggleMsg, setToggleMsg] = useState('On')
   const toggleBtnClick = () => {
-    setExfilterToggle(prev => !prev);
+    setExfilterToggle((prev) => !prev)
     if (exFilterToggle === true) {
-      setToggleMsg('Off');
+      setToggleMsg('Off')
     } else {
-      setToggleMsg('On');
+      setToggleMsg('On')
     }
-  };
+  }
 
   return (
     <FilterContianer>
@@ -118,11 +106,7 @@ const Winning = ({}) => {
           <h1>경매 낙찰 관리</h1>
         </div>
         {/* 토글 쓰기 */}
-        <HeaderToggle
-          exFilterToggle={exFilterToggle}
-          toggleBtnClick={toggleBtnClick}
-          toggleMsg={toggleMsg}
-        />
+        <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
       </FilterHeader>
       <FilterHeaderAlert>
         <div style={{ display: 'flex' }}>
@@ -131,24 +115,18 @@ const Winning = ({}) => {
           </div>
           <div style={{ marginTop: '6px' }}>
             <div>
-              · 입금계좌번호 : 우리은행 1005-301-817070, 신한은행
-              140-013-498612, 기업은행 070-8889-3456, 예금주 : 카스코철강
+              · 입금계좌번호 : 우리은행 1005-301-817070, 신한은행 140-013-498612, 기업은행 070-8889-3456, 예금주 :
+              카스코철강
+            </div>
+            <div style={{ marginTop: '6px' }}>· 경매일 익일 12:00시 내 입금 필수 (낙찰 확정)</div>
+            <div style={{ marginTop: '6px' }}>
+              · 낙찰 후 지정 입금 요청일까지 미 입금 시 2주간 경매 참여가 제한되며, 경매 제한 3회 발생 시 당사 경매가
+              참여가 불가하오니 주의하시기 바랍니다.
             </div>
             <div style={{ marginTop: '6px' }}>
-              · 경매일 익일 12:00시 내 입금 필수 (낙찰 확정)
+              · 낙찰금액은 제품대공급가, 제품대부가세를 합한 금액입니다. (상세화면 참조)
             </div>
-            <div style={{ marginTop: '6px' }}>
-              · 낙찰 후 지정 입금 요청일까지 미 입금 시 2주간 경매 참여가
-              제한되며, 경매 제한 3회 발생 시 당사 경매가 참여가 불가하오니
-              주의하시기 바랍니다.
-            </div>
-            <div style={{ marginTop: '6px' }}>
-              · 낙찰금액은 제품대공급가, 제품대부가세를 합한 금액입니다.
-              (상세화면 참조)
-            </div>
-            <div style={{ marginTop: '6px' }}>
-              · 운반금액은 운반비공급가, 운반비부가세를 합한 금액입니다.
-            </div>
+            <div style={{ marginTop: '6px' }}>· 운반금액은 운반비공급가, 운반비부가세를 합한 금액입니다.</div>
           </div>
         </div>
 
@@ -165,22 +143,14 @@ const Winning = ({}) => {
                 <PartWrap>
                   <h6>창고 구분</h6>
                   <PWRight>
-                    <MainSelect
-                      options={storageOptions}
-                      defaultValue={storageOptions[0]}
-                    />
+                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
                 </PartWrap>
 
                 <PartWrap>
                   <h6>고객사</h6>
                   <Input />
-                  <GreyBtn
-                    style={{ width: '70px' }}
-                    height={35}
-                    margin={10}
-                    fontSize={17}
-                  >
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
                   </GreyBtn>
                 </PartWrap>
@@ -189,10 +159,7 @@ const Winning = ({}) => {
                 <PartWrap>
                   <h6>구분</h6>
                   <PWRight>
-                    <MainSelect
-                      options={storageOptions}
-                      defaultValue={storageOptions[0]}
-                    />
+                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
                 </PartWrap>
 
@@ -202,11 +169,7 @@ const Winning = ({}) => {
                     {checkSales.map((x, index) => (
                       <ExCheckDiv>
                         <StyledCheckSubSquDiv
-                          onClick={() =>
-                            setCheck1(
-                              CheckBox(check1, check1.length, index, true)
-                            )
-                          }
+                          onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
                           isChecked={check1[index]}
                         >
                           <CheckImg2 src="/svg/check.svg" />
@@ -272,8 +235,10 @@ const Winning = ({}) => {
         <TCSubContainer bor>
           <div>
             조회 목록 (선택 <span>2</span> / 50개 )
+            <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
+            <PageDropdown />
             <Excel />
           </div>
         </TCSubContainer>
@@ -282,7 +247,9 @@ const Winning = ({}) => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteBlackBtn>낙찰 생성</WhiteBlackBtn>
+            <Link to={`/auction/winningcreate`}>
+              <WhiteBlackBtn>낙찰 생성</WhiteBlackBtn>
+            </Link>
             <WhiteRedBtn>낙찰 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
@@ -295,7 +262,7 @@ const Winning = ({}) => {
         </TCSubContainer>
       </TableContianer>
     </FilterContianer>
-  );
-};
+  )
+}
 
-export default Winning;
+export default Winning

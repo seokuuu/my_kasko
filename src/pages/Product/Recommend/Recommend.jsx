@@ -1,9 +1,9 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React from 'react'
+import { useState, useEffect } from 'react'
 
-import Test3 from '../../Test/Test3';
-import HeaderToggle from '../../../components/Toggle/HeaderToggle';
-import { toggleAtom } from '../../../store/Layout/Layout';
+import Test3 from '../../Test/Test3'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { toggleAtom } from '../../../store/Layout/Layout'
 
 import {
   FilterContianer,
@@ -11,8 +11,11 @@ import {
   TableContianer,
   SubTitle,
   TCSubContainer,
-} from '../../../modal/External/ExternalFilter';
-import { WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button';
+} from '../../../modal/External/ExternalFilter'
+import { WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { Link } from 'react-router-dom'
+
+import Hidden from '../../../components/TableInner/Hidden'
 
 const Recommend = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -20,25 +23,25 @@ const Recommend = ({}) => {
     //   ...prevState,
     //   [name]: selectedOption.label,
     // }));
-  };
-  const [isRotated, setIsRotated] = useState(false);
+  }
+  const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
-    setIsRotated(prevIsRotated => !prevIsRotated);
-  };
+    setIsRotated((prevIsRotated) => !prevIsRotated)
+  }
 
   // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom);
-  const [toggleMsg, setToggleMsg] = useState('On');
+  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+  const [toggleMsg, setToggleMsg] = useState('On')
   const toggleBtnClick = () => {
-    setExfilterToggle(prev => !prev);
+    setExfilterToggle((prev) => !prev)
     if (exFilterToggle === true) {
-      setToggleMsg('Off');
+      setToggleMsg('Off')
     } else {
-      setToggleMsg('On');
+      setToggleMsg('On')
     }
-  };
+  }
 
   return (
     <FilterContianer>
@@ -47,7 +50,9 @@ const Recommend = ({}) => {
           <h1>카스코 추천 제품 관리</h1>
           <SubTitle>
             <h5>단일</h5>
-            <h6>패키지</h6>
+            <Link to={`/product/recommendpkg`}>
+              <h6>패키지</h6>
+            </Link>
           </SubTitle>
         </div>
       </FilterHeader>
@@ -56,6 +61,7 @@ const Recommend = ({}) => {
         <TCSubContainer bor>
           <div>
             조회 목록 (선택 <span>2</span> / 50개 )
+            <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}></div>
         </TCSubContainer>
@@ -73,7 +79,7 @@ const Recommend = ({}) => {
         <Test3 />
       </TableContianer>
     </FilterContianer>
-  );
-};
+  )
+}
 
-export default Recommend;
+export default Recommend
