@@ -67,7 +67,7 @@ export const BlueBarHeader = styled.div`
   color: white;
 `
 
-export const Agreement = styled.div`
+export const AgreementMain = styled.div`
   background-color: #eef3fb;
   width: 100%;
 
@@ -171,9 +171,24 @@ export const BlueMainDiv = styled.div`
   width: 90%;
   margin-left: auto;
   margin-right: auto;
-  padding: 10px;
+  padding: 7px 5px 7px 10px;
   margin: 20px auto;
-  border: 1px solid magenta;
+  border: 1px solid #c8c8c8;
+  align-items: center;
+`
+export const BlueSubDiv = styled.div`
+  width: 100%;
+  height: 60px;
+  border-top: ${({ bor }) => (bor ? '1px solid #c8c8c8' : 'none')};
+  display: flex;
+  align-items: center;
+  padding: 0px 10px;
+  margin-top: ${({ bor }) => (bor ? 'none' : '5px')};
+
+  h6 {
+    font-size: 18px;
+    width: 120px;
+  }
 `
 
 // 단순 alert 창

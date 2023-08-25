@@ -12,7 +12,7 @@ import {
   Agreement,
   AgreementBottom,
   AgreementTop,
-} from './Common.Styled'
+} from '../Common/Common.Styled'
 
 import { blueModalAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
@@ -23,7 +23,7 @@ import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/
 import { CheckBox } from '../../common/Check/Checkbox'
 import { styled } from 'styled-components'
 
-const BidAgreement = () => {
+const Bidding = () => {
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
   const modalClose = () => {
@@ -158,7 +158,7 @@ const BidAgreement = () => {
   )
 }
 
-export default BidAgreement
+export default Bidding
 
 const BottomA = styled.div`
   display: flex;
