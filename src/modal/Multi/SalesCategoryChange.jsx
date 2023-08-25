@@ -18,14 +18,14 @@ import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/
 
 import { CheckBox } from '../../common/Check/Checkbox'
 
-const Inventory = () => {
+const SalesCategoryChange = () => {
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
   const modalClose = () => {
     setIsModal(false)
   }
 
-  const radioDummy = ['판매재', '판매 제외 재']
+  const radioDummy = ['판매재', '판매 제외 재', '장기재']
   const radioDummy2 = ['불량', '제외 요청', '기타 사유']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
 
@@ -46,7 +46,7 @@ const Inventory = () => {
         </BlueBarHeader>
         <BlueSubContainer>
           <div>
-            <BlueMainDiv>
+            {/* <BlueMainDiv>
               <BlueSubDiv>
                 <h6>판매 구분</h6>
                 <ExRadioWrap>
@@ -63,6 +63,7 @@ const Inventory = () => {
                       <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
                     </RadioMainDiv>
                   ))}
+
                 </ExRadioWrap>
               </BlueSubDiv>
               {checkRadio[1] && (
@@ -85,7 +86,7 @@ const Inventory = () => {
                   </ExRadioWrap>
                 </BlueSubDiv>
               )}
-            </BlueMainDiv>
+            </BlueMainDiv> */}
           </div>
         </BlueSubContainer>
       </ModalContainer>
@@ -93,4 +94,4 @@ const Inventory = () => {
   )
 }
 
-export default Inventory
+export default SalesCategoryChange

@@ -128,7 +128,7 @@ import UTerms from './userpages/UserCustomer/Terms/TermsPage'
 import UserMainPage from './userpages/MainPage'
 
 // test
-import Inventory from './modal/Multi/Inventory'
+import Inventory from './modal/Multi/SalesCategoryChange'
 import SalesProduct from './modal/Multi/SalesProduct'
 
 const Router = () => {
