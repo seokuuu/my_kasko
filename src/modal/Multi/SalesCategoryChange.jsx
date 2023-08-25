@@ -8,6 +8,7 @@ import {
   BlueBarHeader,
   BlueMainDiv,
   BlueSubDiv,
+  BlueRadioWrap,
 } from '../Common/Common.Styled'
 
 import { blueModalAtom } from '../../store/Layout/Layout'
@@ -46,10 +47,10 @@ const SalesCategoryChange = () => {
         </BlueBarHeader>
         <BlueSubContainer>
           <div>
-            {/* <BlueMainDiv>
+            <BlueMainDiv>
               <BlueSubDiv>
                 <h6>판매 구분</h6>
-                <ExRadioWrap>
+                <BlueRadioWrap>
                   {radioDummy.map((text, index) => (
                     <RadioMainDiv key={index}>
                       <RadioCircleDiv
@@ -63,13 +64,12 @@ const SalesCategoryChange = () => {
                       <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
                     </RadioMainDiv>
                   ))}
-
-                </ExRadioWrap>
+                </BlueRadioWrap>
               </BlueSubDiv>
               {checkRadio[1] && (
                 <BlueSubDiv bor>
                   <h6>판매 제외 사유</h6>
-                  <ExRadioWrap>
+                  <BlueRadioWrap>
                     {radioDummy2.map((text, index) => (
                       <RadioMainDiv key={index}>
                         <RadioCircleDiv
@@ -83,10 +83,10 @@ const SalesCategoryChange = () => {
                         <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
                       </RadioMainDiv>
                     ))}
-                  </ExRadioWrap>
+                  </BlueRadioWrap>
                 </BlueSubDiv>
               )}
-            </BlueMainDiv> */}
+            </BlueMainDiv>
           </div>
         </BlueSubContainer>
       </ModalContainer>

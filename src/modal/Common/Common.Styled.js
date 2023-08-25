@@ -191,6 +191,12 @@ export const BlueSubDiv = styled.div`
   }
 `
 
+export const BlueRadioWrap = styled.div`
+  display: flex;
+  gap: 20px;
+  padding-left: 15px;
+`
+
 // 단순 alert 창
 export const ModalTitle = styled.h1`
   text-align: center;

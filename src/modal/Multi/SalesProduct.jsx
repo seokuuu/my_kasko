@@ -14,6 +14,7 @@ import { blueModalAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
 import { ExRadioWrap } from '../External/ExternalFilter'
+import { BlueRadioWrap } from '../Common/Common.Styled'
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
 
 import { CheckBox } from '../../common/Check/Checkbox'
@@ -47,7 +48,7 @@ const SalesProduct = () => {
             <BlueMainDiv>
               <BlueSubDiv>
                 <h6>판매 구분</h6>
-                <ExRadioWrap>
+                <BlueRadioWrap>
                   {radioDummy.map((text, index) => (
                     <RadioMainDiv key={index}>
                       <RadioCircleDiv
@@ -61,7 +62,7 @@ const SalesProduct = () => {
                       <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
                     </RadioMainDiv>
                   ))}
-                </ExRadioWrap>
+                </BlueRadioWrap>
               </BlueSubDiv>
             </BlueMainDiv>
           </div>

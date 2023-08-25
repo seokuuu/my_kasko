@@ -130,6 +130,7 @@ import UserMainPage from './userpages/MainPage'
 // test
 import Inventory from './modal/Multi/SalesCategoryChange'
 import SalesProduct from './modal/Multi/SalesProduct'
+import SalesCategoryChange from './modal/Multi/SalesCategoryChange'
 
 const Router = () => {
   return (
@@ -140,7 +141,7 @@ const Router = () => {
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
         <Route path="/test4" element={<Test4 />} />
-        <Route path="/common" element={<Inventory />} />
+        <Route path="/common" element={<SalesProduct />} />
         {/* 로그인, 회원가입, 아이디 찾기, 비밀번호 재발급, 캘린더, 메인 */}
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
