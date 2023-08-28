@@ -167,6 +167,7 @@ export const BlueBarBtnWrap = styled.div`
   padding: 60px 0px 20px 0px;
 `
 
+// 모달 전체 큰 테두리 및 div
 export const BlueMainDiv = styled.div`
   width: 90%;
   margin-left: auto;
@@ -176,6 +177,8 @@ export const BlueMainDiv = styled.div`
   border: 1px solid #c8c8c8;
   align-items: center;
 `
+
+// 모달 한 줄
 export const BlueSubDiv = styled.div`
   width: 100%;
   height: 60px;
@@ -191,10 +194,42 @@ export const BlueSubDiv = styled.div`
   }
 `
 
+//모달 인풋
+export const BlueInput = styled.input`
+  width: 60%;
+  height: 35px;
+  border: 1px solid #c8c8c8;
+  font-size: 16px;
+`
+
+// 모달 라디오 div
 export const BlueRadioWrap = styled.div`
   display: flex;
   gap: 20px;
   padding-left: 15px;
+`
+// 모달 하단 Black 버튼
+export const BlueBtnWrap = styled.div`
+  width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+export const BlueDateDiv = styled.div`
+  display: flex;
+  align-items: center;
+
+  p {
+    margin: 0px 5px;
+  }
+`
+export const BlueBlackBtn = styled.button`
+  width: 200px;
+  height: 40px;
+  background-color: black;
+  color: white;
 `
 
 // 단순 alert 창
