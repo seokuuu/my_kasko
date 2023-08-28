@@ -16,17 +16,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-#      - name: Set up Node.js
-#        uses: actions/setup-node@v3
-#        with:
-#          node-version: 18
-
-#      - name: Install dependencies
-#        run: yarn install
-#
-#      - name: Build the project
-#        run: yarn build
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -64,7 +53,7 @@ jobs:
           script: |
             sudo docker login -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }} ${{ secrets.NCP_CONTAINER_REGISTRY }}
             sudo docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/reactjs-docker:latest
-            sudo docker stop reactjs-docker
-            sudo docker rm reactjs-docker
+            sudo docker stop $(docker ps -a -q)
+            sudo docker rm $(docker ps -a -q)
             sudo docker run -d -p 3000:80 ${{ secrets.NCP_CONTAINER_REGISTRY }}/reactjs-docker:latest
             sudo docker image prune -f
