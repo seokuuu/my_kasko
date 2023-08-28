@@ -51,7 +51,6 @@ jobs:
           password: ${{ secrets.DEPLOYMENT_PASSWORD }}
           port: ${{ secrets.DEPLOYMENT_PORT }}
           script: |
-            sudo docker login -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }} ${{ secrets.NCP_CONTAINER_REGISTRY }}
             sudo docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/reactjs-docker:latest
             sudo docker stop $(docker ps -a -q)
             sudo docker rm $(docker ps -a -q)
