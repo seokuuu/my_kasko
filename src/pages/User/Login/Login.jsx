@@ -324,7 +324,6 @@ const Login = () => {
             <img src="/img/login_kasko.png" />
           </Link>
           <p>Copyright 2023 카스코철강. All Rights Reserved.</p>
-          <p>{process.env.NODE_ENV}</p>
         </ImgWrap>
       </SubContainer>
     </Container>
