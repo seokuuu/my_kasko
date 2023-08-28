@@ -1,5 +1,5 @@
 import React from 'react'
-import { ModalContainer, ModalOverlay, ModalSubContainer, ModalTitle, ModalText } from './Common.Styled'
+import { ModalContainer, ModalOverlay, ModalSubContainer, ModalTitle, ModalText } from '../Common/Common.Styled'
 import { ModalPart, Title } from '../../pages/User/SignUp/SignUp.Styled'
 import { BlackBtn, RedBtn, WhiteBtn } from '../../common/Button/Button'
 

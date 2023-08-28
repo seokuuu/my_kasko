@@ -6,18 +6,18 @@ import {
   BlueSubContainer,
   WhiteCloseBtn,
   BSCSWrap,
-} from '../Common/Common.Styled';
+} from '../Common/Common.Styled'
 
-import { blueModalAtom } from '../../store/Layout/Layout';
-import { useAtom } from 'jotai';
-import { GreyBtn } from '../../common/Button/Button';
+import { blueModalAtom } from '../../store/Layout/Layout'
+import { useAtom } from 'jotai'
+import { GreyBtn } from '../../common/Button/Button'
 
 const BlueBar = ({ title }) => {
-  const [isModal, setIsModal] = useAtom(blueModalAtom);
+  const [isModal, setIsModal] = useAtom(blueModalAtom)
 
   const modalClose = () => {
-    setIsModal(false);
-  };
+    setIsModal(false)
+  }
 
   return (
     <>
@@ -26,10 +26,7 @@ const BlueBar = ({ title }) => {
         <BlueBarHeader>
           <div>{title}</div>
           <div>
-            <WhiteCloseBtn
-              onClick={modalClose}
-              src="/svg/white_btn_close.svg"
-            />
+            <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
           </div>
         </BlueBarHeader>
         <BlueSubContainer>
@@ -45,7 +42,7 @@ const BlueBar = ({ title }) => {
         </BlueSubContainer>
       </ModalContainer>
     </>
-  );
-};
+  )
+}
 
-export default BlueBar;
+export default BlueBar
