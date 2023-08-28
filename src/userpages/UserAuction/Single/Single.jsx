@@ -168,7 +168,7 @@ const Single = ({}) => {
                 </PartWrap>
 
                 <PartWrap>
-                  <h6>두께(CM)</h6>
+                  <h6>두께(MM)</h6>
                   <ExInputsWrap>
                     <Input /> <Tilde>~</Tilde>
                     <Input />
@@ -178,7 +178,7 @@ const Single = ({}) => {
               </RowWrap>
               <RowWrap style={{ borderBottom: '0px' }}>
                 <PartWrap>
-                  <h6>폭(CM)</h6>
+                  <h6>폭(MM)</h6>
                   <ExInputsWrap>
                     <Input /> <Tilde>~</Tilde>
                     <Input />
@@ -186,7 +186,7 @@ const Single = ({}) => {
                 </PartWrap>
 
                 <PartWrap>
-                  <h6>길이(CM)</h6>
+                  <h6>길이(MM)</h6>
                   <ExInputsWrap>
                     <Input /> <Tilde>~</Tilde>
                     <Input />

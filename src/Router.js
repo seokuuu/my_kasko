@@ -136,6 +136,7 @@ import PackageManage from './modal/Multi/PackageManage'
 import AuctionRound from './modal/Multi/AuctionRound'
 import SalesPackage from './modal/Multi/SalesPackage'
 import DispatchPost from './modal/Multi/DispatchPost'
+import DispatchEdit from './modal/Multi/DispatchEdit'
 
 const Router = () => {
   return (

@@ -206,14 +206,14 @@ const Inventory = ({}) => {
 
               <RowWrap>
                 <PartWrap>
-                  <h6>길이(CM)</h6>
+                  <h6>두께(MM)</h6>
                   <ExInputsWrap>
                     <Input /> <Tilde>~</Tilde>
                     <Input />
                   </ExInputsWrap>
                 </PartWrap>
                 <PartWrap>
-                  <h6>길이(CM)</h6>
+                  <h6>폭(MM)</h6>
                   <ExInputsWrap>
                     <Input /> <Tilde>~</Tilde>
                     <Input />
@@ -222,7 +222,7 @@ const Inventory = ({}) => {
               </RowWrap>
               <RowWrap>
                 <PartWrap>
-                  <h6>길이(CM)</h6>
+                  <h6>길이(MM)</h6>
                   <ExInputsWrap>
                     <Input /> <Tilde>~</Tilde>
                     <Input />
