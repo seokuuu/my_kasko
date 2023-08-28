@@ -217,6 +217,7 @@ export const BlueBtnWrap = styled.div`
   align-items: center;
 `
 
+//datePicker div
 export const BlueDateDiv = styled.div`
   display: flex;
   align-items: center;
@@ -225,6 +226,37 @@ export const BlueDateDiv = styled.div`
     margin: 0px 5px;
   }
 `
+
+//
+export const BlueOneDiv = styled.div`
+  display: block;
+  padding: 10px;
+  border-bottom: ${({ bor }) => (bor ? '1px solid #e1e1e1' : 'none')};
+  margin-bottom: 10px;
+
+  h6 {
+    margin-bottom: 5px;
+  }
+`
+
+export const BlueHalfDiv = styled.div`
+  display: flex;
+
+  padding: 10px;
+
+  input {
+    width: 90%;
+  }
+
+  > div {
+    width: 100%;
+  }
+
+  h6 {
+    margin-bottom: 5px;
+  }
+`
+
 export const BlueBlackBtn = styled.button`
   width: 200px;
   height: 40px;
