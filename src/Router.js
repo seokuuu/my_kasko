@@ -126,11 +126,16 @@ import UTerms from './userpages/UserCustomer/Terms/TermsPage'
 
 //사용자 메인페이지
 import UserMainPage from './userpages/MainPage'
+import ClaimRegister from './pages/Shipping/Claim/ClaimRegister'
 
 // test
 import Inventory from './modal/Multi/SalesCategoryChange'
 import SalesProduct from './modal/Multi/SalesProduct'
 import SalesCategoryChange from './modal/Multi/SalesCategoryChange'
+import PackageManage from './modal/Multi/PackageManage'
+import AuctionRound from './modal/Multi/AuctionRound'
+import SalesPackage from './modal/Multi/SalesPackage'
+import DispatchPost from './modal/Multi/DispatchPost'
 
 const Router = () => {
   return (
@@ -141,7 +146,7 @@ const Router = () => {
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
         <Route path="/test4" element={<Test4 />} />
-        <Route path="/common" element={<SalesProduct />} />
+        <Route path="/common" element={<DispatchPost />} />
         {/* 로그인, 회원가입, 아이디 찾기, 비밀번호 재발급, 캘린더, 메인 */}
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
