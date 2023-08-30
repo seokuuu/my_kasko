@@ -41,7 +41,7 @@ import DisRegisterPage from './pages/Shipping/Dispatch/DisRegisterPage'
 import DisRegisterDetailPage from './pages/Shipping/Dispatch/DisRegisterDetailPage'
 import StatusPage from './pages/Shipping/Status/StatusPage'
 import StatusDetailPage from './pages/Shipping/Status/StatusDetailPage'
-import Achievement from './pages/Shipping/Achievement/AchievementPage'
+import AchievementPage from './pages/Shipping/Achievement/AchievementPage'
 
 // 판매 제품 관리
 import SingleProductPage from './pages/Product/SingleProduct/SingleProductPage'
@@ -137,6 +137,8 @@ import AuctionRound from './modal/Multi/AuctionRound'
 import SalesPackage from './modal/Multi/SalesPackage'
 import DispatchPost from './modal/Multi/DispatchPost'
 import DispatchEdit from './modal/Multi/DispatchEdit'
+import Hyundai from './modal/Multi/Hyundai'
+import Achievement from './modal/Multi/Achievement'
 
 const Router = () => {
   return (
@@ -147,7 +149,7 @@ const Router = () => {
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
         <Route path="/test4" element={<Test4 />} />
-        <Route path="/common" element={<DispatchPost />} />
+        <Route path="/common" element={<Achievement />} />
         {/* 로그인, 회원가입, 아이디 찾기, 비밀번호 재발급, 캘린더, 메인 */}
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
@@ -197,7 +199,7 @@ const Router = () => {
           <Route path="/shipping/dispatch" element={<DispatchPage />} />
           <Route path="/shipping/dispatch/register" element={<DisRegisterPage />} />
           <Route path="/shipping/status" element={<StatusDetailPage />} />
-          <Route path="/shipping/achievement" element={<Achievement />} />
+          <Route path="/shipping/achievement" element={<AchievementPage />} />
           <Route path="/shipping/claim/register" element={<ClaimRegisterPage />} />
         </Route>
         {/* 기준 관리 */}
