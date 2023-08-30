@@ -61,6 +61,7 @@ import { useAtom } from 'jotai'
 
 import { headerAtom, accordionAtom, subHeaderAtom } from '../../../store/Layout/Layout'
 import { Height } from '@mui/icons-material'
+import { useValidation } from '../../../hooks/useValidation'
 
 const SignUp = () => {
   const [showHeader, setShowHeader] = useAtom(headerAtom)
@@ -114,7 +115,7 @@ const SignUp = () => {
   //post
   const [postFind, setPostFind] = useState(false)
 
-  console.log('postFind', postFind)
+  // console.log('postFind', postFind)
 
   const postCheck = () => {
     setPostFind(false)
@@ -181,7 +182,7 @@ const SignUp = () => {
 
   //total color
   const [txtColor, setTxtColor] = useState('')
-  console.log('msg !!!', msg)
+  // console.log('msg !!!', msg)
 
   // ID
   const [id, setId] = useState('')
@@ -267,7 +268,7 @@ const SignUp = () => {
   const [emailFirst, setEmailFirst] = useState('')
   const [emailDomain, setEmailDomain] = useState('')
 
-  console.log('check', check)
+  // console.log('check', check)
   useEffect(() => {
     const checkIndex = check.findIndex((isChecked, index) => isChecked && index < checkDummy.length)
 
@@ -444,6 +445,76 @@ const SignUp = () => {
     e.preventDefault()
   }, [])
 
+  // 예외처리 - useValidation으로 조건문 관리
+  const [inputObj, setInputObj] = useState({ name: '', text: '' })
+  const [inputObj2, setInputObj2] = useState({ name: '', text: '' })
+  const [inputObj3, setInputObj3] = useState({ name: '', text: '' })
+  const [inputObj4, setInputObj4] = useState({ name: '', text: '' })
+  const [inputObj5, setInputObj5] = useState({ name: '', text: '' })
+  const [inputObj6, setInputObj6] = useState({ name: '', text: '' })
+  const [inputObj7, setInputObj7] = useState({ name: '', text: '' })
+  const [inputObj8, setInputObj8] = useState({ name: '', text: '' })
+  const [inputObj9, setInputObj9] = useState({ name: '', text: '' })
+  const [inputObj10, setInputObj10] = useState({ name: '', text: '' })
+  const [inputObj11, setInputObj11] = useState({ name: '', text: '' })
+  const [inputObj12, setInputObj12] = useState({ name: '', text: '' })
+
+  const commonChange = (e) => {
+    const { name, value } = e.target
+    const file = e.target.files ? e.target.files : null
+    // console.log(name, value)
+
+    if (name === 'customerName') {
+      setInputObj({ name: name, text: value })
+    }
+    if (name === 'ceoName') {
+      setInputObj2({ name: name, text: value })
+    }
+    if (name === 'customerPhone') {
+      setInputObj3({ name: name, text: value })
+    }
+    if (name === 'fax') {
+      setInputObj4({ name: name, text: value })
+    }
+    if (name === 'address') {
+      setInputObj5({ name: name, text: value })
+    }
+    if (name === 'depositManagerName') {
+      setInputObj6({ name: name, text: value })
+    }
+    if (name === 'depositManager') {
+      setInputObj7({ name: name, text: value })
+    }
+    if (name === 'depositManagerEmail') {
+      setInputObj8({ name: name, text: value })
+    }
+    if (name === 'businessfile' && file) {
+      setInputObj9({ name: name, text: value })
+    }
+    if (name === 'businessBankAddress' && file) {
+      setInputObj10({ name: name, text: value })
+    }
+    if (name === 'accountNumber') {
+      setInputObj11({ name: name, text: value })
+    }
+    if (name === 'releaseManagerName') {
+      setInputObj12({ name: name, text: value })
+    }
+  }
+
+  const customerNameValidate = useValidation(inputObj)
+  const ceoNameValidate = useValidation(inputObj2)
+  const customerPhoneValidate = useValidation(inputObj3)
+  const faxValidate = useValidation(inputObj4)
+  const addressValidate = useValidation(inputObj5)
+  const depositManagerNameValidate = useValidation(inputObj6)
+  const depositManagerValidate = useValidation(inputObj7)
+  const depositManagerEmailValidate = useValidation(inputObj8)
+  const businessfileValidate = useValidation(inputObj9)
+  const businessBankAddressValidate = useValidation(inputObj10)
+  const accountNumberValidate = useValidation(inputObj11)
+  const releaseManagerNameValidate = useValidation(inputObj12)
+
   return (
     <Container>
       <SignupContainer>
@@ -547,32 +618,35 @@ const SignUp = () => {
               <Part>
                 <Title>
                   <h4>회사 명</h4>
+                  <p style={{ color: 'red' }}>{customerNameValidate || ''}</p>
                   <p></p>
                 </Title>
                 <div>
-                  <TxtInput type="text" name="customerName" value={input.customerName} onChange={commonHandler} />
+                  {/* <TxtInput type="text" name="customerName" value={input.customerName} onChange={commonHandler} /> */}
+                  <TxtInput type="text" name="customerName" value={inputObj.value} onChange={commonChange} />
                 </div>
               </Part>
               <Part>
                 <Title>
                   <h4>대표자 성명</h4>
-                  <p style={{ color: 'red' }}>{repMsg}</p>
+                  <p style={{ color: 'red' }}>{ceoNameValidate || ''}</p>
                 </Title>
 
                 <div>
-                  <TxtInput type="text" name="ceoName" value={input.ceoName} onChange={commonHandler} />
+                  {/* <TxtInput type="text" name="ceoName" value={input.ceoName} onChange={commonHandler} /> */}
+                  <TxtInput type="text" name="ceoName" value={inputObj.value} onChange={commonChange} />
                 </div>
               </Part>
               <Part>
                 <Title>
                   <h4>대표 연락처</h4>
-                  <p></p>
+                  <p style={{ color: 'red' }}>{customerPhoneValidate || ''}</p>
                 </Title>
                 <div>
                   <TxtInput
                     name="customerPhone"
-                    value={input.customerPhone}
-                    onChange={commonHandler}
+                    value={inputObj.customerPhone}
+                    onChange={commonChange}
                     placeholder="연락처 입력('-' 제외)"
                   />
                 </div>
@@ -580,15 +654,15 @@ const SignUp = () => {
               <Part>
                 <Title>
                   <h4>팩스 번호</h4>
-                  <p></p>
+                  <p style={{ color: 'red' }}>{faxValidate || ''}</p>
                 </Title>
 
                 <div>
                   <TxtInput
                     type="text"
                     name="fax"
-                    value={input.fax}
-                    onChange={commonHandler}
+                    value={inputObj.fax}
+                    onChange={commonChange}
                     placeholder="팩스번호 입력('-' 제외)"
                   />
                 </div>
@@ -596,7 +670,7 @@ const SignUp = () => {
               <Part>
                 <Title>
                   <h4>주소</h4>
-                  <p></p>
+                  <p style={{ color: 'red' }}>{addressValidate || ''}</p>
                 </Title>
                 <div>
                   <TxtCheckInput type="text" value={address} placeholder="찾기 버튼 클릭" readOnly />
@@ -605,9 +679,11 @@ const SignUp = () => {
                   </CheckBtn>
                   <TxtInput
                     placeholder="상세 주소를 입력해 주세요."
-                    value={detailAddress}
+                    name="address"
+                    // value={detailAddress}
+                    value={inputObj.address}
                     style={{ marginTop: '5px' }}
-                    onChange={detailAddressHandler}
+                    onChange={commonChange}
                   />
                 </div>
               </Part>
@@ -633,7 +709,7 @@ const SignUp = () => {
               <Part>
                 <Title>
                   <h4>입금 담당자 정보</h4>
-                  <p></p>
+                  <p style={{ color: 'red' }}>{depositManagerNameValidate || ''}</p>
                 </Title>
                 <DropWrap>
                   <DepositSelect
@@ -643,8 +719,8 @@ const SignUp = () => {
                   />
                   <TxtDropInput
                     name="depositManagerName"
-                    value={input.depositManagerName}
-                    onChange={commonHandler}
+                    value={inputObj.depositManagerName}
+                    onChange={commonChange}
                     placeholder="담당자 성함 입력"
                   />
                 </DropWrap>
@@ -673,7 +749,7 @@ const SignUp = () => {
               <Part>
                 <Title>
                   <h4>경매 담당자 정보</h4>
-                  <p></p>
+                  <p style={{ color: 'red' }}>{depositManagerValidate || ''}</p>
                 </Title>
                 <DropWrap>
                   <DepositSelect
@@ -683,15 +759,18 @@ const SignUp = () => {
                   />
                   <TxtDropInput
                     type="text"
-                    name="name"
-                    value={input.name}
-                    onChange={commonHandler}
+                    name="depositManager"
+                    value={inputObj.depositManagerName}
+                    onChange={commonChange}
                     placeholder="담당자 성함 입력"
                   />
                 </DropWrap>
               </Part>
               <Part>
-                <h4>이메일</h4>
+                <Title>
+                  <h4>이메일</h4>
+                  <p style={{ color: 'red' }}>{depositManagerEmailValidate || ''}</p>
+                </Title>
                 <div
                   style={{
                     display: 'flex',
@@ -699,7 +778,8 @@ const SignUp = () => {
                     width: '320px',
                   }}
                 >
-                  <SInput onChange={emailHandler} /> <p style={{ margin: '0 5px' }}>@</p>
+                  <SInput onChange={(emailHandler, commonChange)} name="depositManagerEmail" />{' '}
+                  <p style={{ margin: '0 5px' }}>@</p>
                   <EmailSelect
                     options={emailOptions}
                     defaultValue={emailOptions[0]}
@@ -707,7 +787,7 @@ const SignUp = () => {
                       setEmailDomain(selectedOption.label)
                     }}
                   />
-                  {console.log('emailDomain', emailDomain)}
+                  {/* {console.log('emailDomain', emailDomain)} */}
                 </div>
               </Part>
               <Part>
@@ -733,6 +813,7 @@ const SignUp = () => {
                       <StyledCheckSubSquDiv
                         onClick={() => setCheck(CheckBox(check, check.length, index, true))}
                         isChecked={check[index]}
+                        name="businessChoice"
                       >
                         <CheckImg2 src="/svg/check.svg" />
                       </StyledCheckSubSquDiv>
@@ -745,29 +826,62 @@ const SignUp = () => {
                 <Title>
                   <h4>사업자 번호</h4>
                   <p style={{ color: busIdMsgColor }}>{busIdMsg}</p>
-                  {console.log('busIdMsg', busIdMsg)}
+                  {/* {console.log('busIdMsg', busIdMsg)} */}
                 </Title>
                 <div style={{ width: '320px' }}>
-                  <TxtCheckInput onChange={handleBusIdChange} placeholder="사업자 번호 입력('-' 제외)" />
+                  <TxtCheckInput
+                    onChange={handleBusIdChange}
+                    placeholder="사업자 번호 입력('-' 제외)"
+                    name="businessNumber"
+                  />
                   <CheckBtn onClick={handleBusIdDupleCheck}>중복 확인</CheckBtn>
                 </div>
               </Part>
               <Part>
                 <h4>사업자 등록증</h4>
+                <p style={{ color: 'red' }}>{businessfileValidate || ''}</p>
                 <TxtDiv>
-                  <img src="/svg/Upload.svg" />
-                  <p>파일 첨부</p>
+                  <label htmlFor="ex_file">
+                    <div className="btnStart">
+                      <img src="/svg/Upload.svg" alt="btnStart" />
+                      <p htmlFor="ex_file">파일 첨부</p>
+                    </div>
+                  </label>
+                  {/* <img src="/svg/Upload.svg" alt="Upload" /> */}
+                  <input
+                    id="ex_file"
+                    type="file"
+                    accept="image/jpg, image/png, image/jpeg"
+                    style={{ display: 'none' }}
+                    onChange={commonChange}
+                    name="businessNumber"
+                  ></input>
                 </TxtDiv>
               </Part>
               <Part>
                 <h4>통장 사본</h4>
+                <p style={{ color: 'red' }}>{businessBankAddressValidate || ''}</p>
                 <TxtDiv>
-                  <img src="/svg/Upload.svg" />
-                  <p>파일 첨부</p>
+                  <label htmlFor="ex_file2">
+                    <div className="btnStart">
+                      <img src="/svg/Upload.svg" alt="btnStart" />
+                      <p htmlFor="ex_file2">파일 첨부</p>
+                    </div>
+                  </label>
+                  {/* <img src="/svg/Upload.svg" alt="Upload" /> */}
+                  <input
+                    id="ex_file2"
+                    type="file"
+                    accept="image/jpg, image/png, image/jpeg"
+                    style={{ display: 'none' }}
+                  ></input>
                 </TxtDiv>
               </Part>
               <Part>
-                <h4>계좌번호</h4>
+                <Title>
+                  <h4>계좌번호</h4>
+                  <p style={{ color: 'red' }}>{accountNumberValidate || ''}</p>
+                </Title>
                 <AccountSelect
                   options={accountOptions}
                   defaultValue={accountOptions[0]}
@@ -777,14 +891,17 @@ const SignUp = () => {
                   style={{ marginTop: '5px' }}
                   placeholder="(계좌번호 입력('-' 제외)"
                   name="accountNumber"
-                  value={input.accountNumber}
-                  onChange={commonHandler}
+                  value={inputObj.accountNumber}
+                  onChange={commonChange}
                 />
               </Part>
             </PartBlock>
             <PartBlock style={{ marginTop: '138px' }}>
               <Part>
-                <h4>출고 담당자 정보</h4>
+                <Title>
+                  <h4>출고 담당자 정보</h4>
+                  <p style={{ color: 'red' }}>{releaseManagerNameValidate || ''}</p>
+                </Title>
                 <DropWrap>
                   <DepositSelect
                     options={releaseOptions}
@@ -793,8 +910,8 @@ const SignUp = () => {
                   />
                   <TxtDropInput
                     name="releaseManagerName"
-                    value={input.releaseManagerName}
-                    onChange={commonHandler}
+                    value={inputObj.releaseManagerName}
+                    onChange={commonChange}
                     placeholder="담당자 성함 입력"
                   />
                 </DropWrap>
@@ -802,7 +919,6 @@ const SignUp = () => {
               <Part>
                 <Title>
                   <h4>휴대폰 번호</h4>
-
                   <p style={{ color: txtColor }}>{msg.releasePhoneNum}</p>
                 </Title>
                 <TxtInput
@@ -819,7 +935,6 @@ const SignUp = () => {
               </Part>
             </PartBlock>
           </Right>
-
         </Main>
         <Bottom>
           <BottomItem>
@@ -854,7 +969,7 @@ const SignUp = () => {
             >
               가입하기
             </button>
-            {console.log('input =>', input)}
+            {/* {console.log('input =>', input)} */}
           </BottomItem>
         </Bottom>
       </SignupContainer>
