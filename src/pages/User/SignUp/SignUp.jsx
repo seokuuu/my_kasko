@@ -62,6 +62,8 @@ import { useAtom } from 'jotai'
 import { headerAtom, accordionAtom, subHeaderAtom } from '../../../store/Layout/Layout'
 import { Height } from '@mui/icons-material'
 import { useValidation } from '../../../hooks/useValidation'
+import { signup } from '../../../api/auth'
+import axios from 'axios'
 
 const SignUp = () => {
   const [showHeader, setShowHeader] = useAtom(headerAtom)
@@ -234,14 +236,14 @@ const SignUp = () => {
   const init = {
     id: '',
     password: '',
-    title: '',
-    name: '',
-    email: '',
-    phone: '',
+    memberTitle: '',
+    memberName: '',
+    memberEmail: '',
+    memberPhone: '',
     type: '',
-    customerName: '',
+    name: '',
     ceoName: '',
-    customerPhone: '',
+    phone: '',
     fax: '',
     address: '',
     addressDetail: '',
@@ -283,9 +285,10 @@ const SignUp = () => {
   }, [check])
 
   const handleSelectChange = (selectedOption, name) => {
+    console.log(name)
     setInput((prevState) => ({
       ...prevState,
-      [name]: selectedOption.label,
+      name: selectedOption.label,
     }))
   }
 
@@ -340,6 +343,7 @@ const SignUp = () => {
       setIdMsgColor('blue')
       setIdMsg('사용 가능한 아이디입니다.')
       setInput({ ...input, id: id })
+      // console.log(input)
       setTimeout(() => {
         setIdMsg('')
       }, 3000)
@@ -386,6 +390,7 @@ const SignUp = () => {
   const handleBusIdChange = useCallback((e) => {
     const value = e.target.value
     setBusId(value)
+    // console.log(value)
     const isValid = busIdRegex.test(value)
     if (!isValid) {
       setBusIdMsgColor('red')
@@ -427,6 +432,7 @@ const SignUp = () => {
       } else if (isValid) {
         setMsg({ ...msg, [name]: '' })
         setInput({ ...input, [name]: value })
+        // console.log(input)
         setTxtColor('')
       }
     },
@@ -442,73 +448,66 @@ const SignUp = () => {
     [input],
   )
 
-  //   {
-  //     "id": "test2",
-  //     "password": "1234",
-  //     "memberTitle": "직함2",
-  //     "memberName": "이름2",
-  //     "memberEmail": "이메일2",
-  //     "memberPhone": "연락처2",
-  //     "type": "법인사업자",
-  //     "name": "회사명2",
-  //     "ceoName": "대표자명2",
-  //     "phone": "대표연락처2",
-  //     "fax": "팩스번호2",
-  //     "address": "주소2",
-  //     "addressDetail": "상세주소2",
-  //     "businessType": ["유통", "제조"],
-  //     "businessNumber": "사업자번호2",
-  //     "bank": "은행2",
-  //     "accountNumber": "계좌번호2",
-  //     "depositManagerTitle": "입금담당자 직함2",
-  //     "depositManagerName": "입금담당자 이름2",
-  //     "depositManagerPhone": "입금담당자 연락처2",
-  //     "releaseManagerTitle": "출고담당자 직함2",
-  //     "releaseManagerName": "출고담당자 이름2",
-  //     "releaseManagerPhone": "출고담당자 연락처2"
-  // }
-  const checkSubmitWithSchema = {
-    id: 'customerName',
-    password: 'password',
-    //경매 담당자
-    memberTitle: '', //input
-    memberName: 'depositManagerName',
-    memberEmail: '', //input
-    memberPhone: 'depositPhoneNum',
-    type: '', //input
-    name: 'customerName',
-    ceoName: 'ceoName',
-    phone: 'customerPhone',
-    fax: 'fax',
-    address: '', //input
-    addressDetail: 'address',
-    businessType: [''], //input
-    businessNumber: 'businessNumber',
-    bank: 'businessBankAddress',
-    accountNumber: 'accountNumber',
-    depositManagerTitle: '', //input
-    depositManagerName: 'depositManagerName',
-    depositManagerPhone: 'depositPhoneNum',
-    releaseManagerTitle: '', //input
-    releaseManagerName: 'releaseManagerName',
-    releaseManagerPhone: 'releasePhoneNum',
+  // const checkSubmitWithSchema = {
+  //   id: 'customerName',
+  //   password: 'password',
+  //   //경매 담당자
+  //   memberTitle: '', //input
+  //   memberName: 'depositManagerName',
+  //   memberEmail: '', //input
+  //   memberPhone: 'depositPhoneNum',
+  //   type: '', //input
+  //   name: 'customerName',
+  //   ceoName: 'ceoName',
+  //   phone: 'customerPhone',
+  //   fax: 'fax',
+  //   address: '', //input
+  //   addressDetail: 'address',
+  //   businessType: [''], //input
+  //   businessNumber: 'businessNumber',
+  //   bank: 'businessBankAddress',
+  //   accountNumber: 'accountNumber',
+  //   depositManagerTitle: '', //input
+  //   depositManagerName: 'depositManagerName',
+  //   depositManagerPhone: 'depositPhoneNum',
+  //   releaseManagerTitle: '', //input
+  //   releaseManagerName: 'releaseManagerName',
+  //   releaseManagerPhone: 'releasePhoneNum',
+  //
+  const test = {
+    id: 'test2',
+    password: '1234',
+    memberTitle: '직함2',
+    memberName: '이름2',
+    memberEmail: '이메일2',
+    memberPhone: '연락처2',
+    type: '법인사업자',
+    name: '회사명2',
+    ceoName: '대표자명2',
+    phone: '대표연락처2',
+    fax: '팩스번호2',
+    address: '주소2',
+    addressDetail: '상세주소2',
+    businessType: ['유통', '제조'],
+    businessNumber: '사업자번호2',
+    bank: '은행2',
+    accountNumber: '계좌번호2',
+    depositManagerTitle: '입금담당자 직함2',
+    depositManagerName: '입금담당자 이름2',
+    depositManagerPhone: '입금담당자 연락처2',
+    releaseManagerTitle: '출고담당자 직함2',
+    releaseManagerName: '출고담당자 이름2',
+    releaseManagerPhone: '출고담당자 연락처2',
   }
 
   // 폼 제출 로직 (form태그를 추가해서 진행 및 체크박스,email는 기존 input STATE를 활용)
   const handleSubmit = useCallback(
-    (e) => {
+    async (e) => {
       e.preventDefault()
-      const formData = new FormData(e.target)
       console.log('input', input)
-      console.log(savedRadioValue)
-      formData.forEach((value, key) => {
-        let submitObj = {}
-
-        // console.log(submitObj)
-        // if ('customerName' === key) console.log(key)
-        // return
-        console.log(`${key}: ${value}`)
-      })
+      const data = input
+      const response = await signup({ data })
+      console.log(response.data)
     },
     [input],
   )
@@ -530,30 +529,29 @@ const SignUp = () => {
   const commonChange = (e) => {
     const { name, value } = e.target
     const file = e.target.files ? e.target.files : null
-    // console.log(name, value)
 
-    if (name === 'customerName') {
+    if (name === 'name') {
       setInputObj({ name: name, text: value })
     }
     if (name === 'ceoName') {
       setInputObj2({ name: name, text: value })
     }
-    if (name === 'customerPhone') {
+    if (name === 'phone') {
       setInputObj3({ name: name, text: value })
     }
     if (name === 'fax') {
       setInputObj4({ name: name, text: value })
     }
-    if (name === 'address') {
+    if (name === 'addressDetail') {
       setInputObj5({ name: name, text: value })
     }
     if (name === 'depositManagerName') {
       setInputObj6({ name: name, text: value })
     }
-    if (name === 'depositManager') {
+    if (name === 'memberName') {
       setInputObj7({ name: name, text: value })
     }
-    if (name === 'depositManagerEmail') {
+    if (name === 'memberEmail') {
       setInputObj8({ name: name, text: value })
     }
     if (name === 'businessfile' && file) {
@@ -568,6 +566,8 @@ const SignUp = () => {
     if (name === 'releaseManagerName') {
       setInputObj12({ name: name, text: value })
     }
+    setInput({ ...input, [name]: value }) //***submit form***
+    // businessfile, businessBankAddress는 file Object 일단 주석처리 하였음
   }
 
   const customerNameValidate = useValidation(inputObj)
@@ -693,7 +693,7 @@ const SignUp = () => {
                   </Title>
                   <div>
                     {/* <TxtInput type="text" name="customerName" value={input.customerName} onChange={commonHandler} /> */}
-                    <TxtInput type="text" name="customerName" value={inputObj.value} onChange={commonChange} />
+                    <TxtInput type="text" name="name" value={inputObj.value} onChange={commonChange} />
                   </div>
                 </Part>
                 <Part>
@@ -714,7 +714,7 @@ const SignUp = () => {
                   </Title>
                   <div>
                     <TxtInput
-                      name="customerPhone"
+                      name="phone"
                       value={inputObj.customerPhone}
                       onChange={commonChange}
                       placeholder="연락처 입력('-' 제외)"
@@ -749,7 +749,7 @@ const SignUp = () => {
                     </CheckBtn>
                     <TxtInput
                       placeholder="상세 주소를 입력해 주세요."
-                      name="address"
+                      name="addressDetail"
                       // value={detailAddress}
                       value={inputObj.address}
                       style={{ marginTop: '5px' }}
@@ -802,7 +802,8 @@ const SignUp = () => {
                   </Title>
                   <TxtInput
                     placeholder="연락처 입력('-' 제외)"
-                    name="depositPhoneNum"
+                    name="depositManagerPhone"
+                    // name="depositPhoneNum"
                     value={input.depositPhoneNum}
                     onChange={phoneHandler}
                     maxLength="11"
@@ -825,11 +826,11 @@ const SignUp = () => {
                     <DepositSelect
                       options={auctionOptions}
                       defaultValue={auctionOptions[0]}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'title')}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'memberTitle')}
                     />
                     <TxtDropInput
                       type="text"
-                      name="depositManager"
+                      name="memberName"
                       value={inputObj.depositManagerName}
                       onChange={commonChange}
                       placeholder="담당자 성함 입력"
@@ -853,7 +854,7 @@ const SignUp = () => {
                         emailHandler(e)
                         commonChange(e)
                       }}
-                      name="depositManagerEmail"
+                      name="memberEmail"
                     />{' '}
                     <p style={{ margin: '0 5px' }}>@</p>
                     <EmailSelect
@@ -873,7 +874,7 @@ const SignUp = () => {
                   </Title>
                   <TxtInput
                     placeholder="연락처 입력('-' 제외)"
-                    name="actionPhoneNum"
+                    name="memberPhone"
                     value={input.actionPhoneNum}
                     onChange={phoneHandler}
                     maxLength="11"
@@ -902,11 +903,13 @@ const SignUp = () => {
                   <Title>
                     <h4>사업자 번호</h4>
                     <p style={{ color: busIdMsgColor }}>{busIdMsg}</p>
-                    {/* {console.log('busIdMsg', busIdMsg)} */}
                   </Title>
                   <div style={{ width: '320px' }}>
                     <TxtCheckInput
-                      onChange={handleBusIdChange}
+                      onChange={(e) => {
+                        handleBusIdChange(e)
+                        // commonChange(e)
+                      }}
                       placeholder="사업자 번호 입력('-' 제외)"
                       name="businessNumber"
                     />
@@ -930,7 +933,7 @@ const SignUp = () => {
                       accept="image/jpg, image/png, image/jpeg"
                       style={{ display: 'none' }}
                       onChange={commonChange}
-                      name="businessNumber"
+                      // name="businessfile"
                     ></input>
                   </TxtDiv>
                 </Part>
@@ -950,6 +953,8 @@ const SignUp = () => {
                       type="file"
                       accept="image/jpg, image/png, image/jpeg"
                       style={{ display: 'none' }}
+                      onChange={commonChange}
+                      // name="businessBankAddress"
                     ></input>
                   </TxtDiv>
                 </Part>
