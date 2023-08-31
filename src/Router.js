@@ -137,12 +137,12 @@ import AuctionRound from './modal/Multi/AuctionRound'
 import SalesPackage from './modal/Multi/SalesPackage'
 import DispatchPost from './modal/Multi/DispatchPost'
 import DispatchEdit from './modal/Multi/DispatchEdit'
-<<<<<<< HEAD
-import DispatchDetail from './modal/Multi/DispatchDetail'
-=======
 import Hyundai from './modal/Multi/Hyundai'
 import Achievement from './modal/Multi/Achievement'
->>>>>>> 27559a5224b9260ec5839d4cd452ded67c4331aa
+import DispatchDetail from './modal/Multi/DispatchDetail'
+import Transport from './modal/Multi/Transport'
+import Consolidation from './modal/Multi/Consolidation'
+import Client from './modal/Multi/Client'
 
 const Router = () => {
   return (
@@ -153,14 +153,10 @@ const Router = () => {
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
         <Route path="/test4" element={<Test4 />} />
-<<<<<<< HEAD
-        <Route path="/common" element={<DispatchDetail />} />
-=======
-        <Route path="/common" element={<Achievement />} />
->>>>>>> 27559a5224b9260ec5839d4cd452ded67c4331aa
+        <Route path="/common" element={<SalesProduct />} />
         {/* 로그인, 회원가입, 아이디 찾기, 비밀번호 재발급, 캘린더, 메인 */}
         <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route path="/signup" element={<SignUp />} /> 
         <Route path="/findid" element={<FindId />} />
         <Route path="/reissuepw" element={<ReissuePw />} />
         <Route path="/calander" element={<CalendarModal />} />
