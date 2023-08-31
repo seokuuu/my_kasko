@@ -501,16 +501,31 @@ const SignUp = () => {
   }
 
   // 폼 제출 로직 (form태그를 추가해서 진행 및 체크박스,email는 기존 input STATE를 활용)
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault()
-      console.log('input', input)
-      const data = input
-      const response = await signup({ data })
+  // const handleSubmit = useCallback(
+  //   async (e) => {
+  //     e.preventDefault()
+  //     // console.log('input', input)
+  //     try {
+  //       const response = await signup(input)
+  //       console.log(response.data)
+  //     } catch (err) {
+  //       alert('ERROR:등록되지 않았습니다!')
+  //       console.log(err.data)
+  //     }
+  //   },
+  //   [input],
+  // )
+  const handleSubmitSignUp = async (e) => {
+    e.preventDefault()
+    console.log('input', input)
+    try {
+      const response = await signup(input)
       console.log(response.data)
-    },
-    [input],
-  )
+    } catch (err) {
+      alert('ERROR:등록되지 않았습니다!')
+      console.log(err.data)
+    }
+  }
 
   // 예외처리 - useValidation으로 조건문 관리
   const [inputObj, setInputObj] = useState({ name: '', text: '' })
@@ -586,7 +601,7 @@ const SignUp = () => {
   return (
     <Container>
       <SignupContainer>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmitSignUp}>
           <Top>회원가입</Top>
           <Main>
             <Left>
@@ -744,7 +759,7 @@ const SignUp = () => {
                   </Title>
                   <div>
                     <TxtCheckInput type="text" value={address} placeholder="찾기 버튼 클릭" readOnly />
-                    <CheckBtn style={{ backgroundColor: 'black', color: 'white' }} onClick={openModal}>
+                    <CheckBtn style={{ backgroundColor: 'black', color: 'white' }} onClick={openModal} type="button">
                       찾기
                     </CheckBtn>
                     <TxtInput
@@ -913,7 +928,9 @@ const SignUp = () => {
                       placeholder="사업자 번호 입력('-' 제외)"
                       name="businessNumber"
                     />
-                    <CheckBtn onClick={handleBusIdDupleCheck}>중복 확인</CheckBtn>
+                    <CheckBtn onClick={handleBusIdDupleCheck} type="button">
+                      중복 확인
+                    </CheckBtn>
                   </div>
                 </Part>
                 <Part>
