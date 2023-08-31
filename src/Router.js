@@ -137,6 +137,7 @@ import AuctionRound from './modal/Multi/AuctionRound'
 import SalesPackage from './modal/Multi/SalesPackage'
 import DispatchPost from './modal/Multi/DispatchPost'
 import DispatchEdit from './modal/Multi/DispatchEdit'
+import DispatchDetail from './modal/Multi/DispatchDetail'
 
 const Router = () => {
   return (
@@ -147,7 +148,7 @@ const Router = () => {
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
         <Route path="/test4" element={<Test4 />} />
-        <Route path="/common" element={<DispatchPost />} />
+        <Route path="/common" element={<DispatchDetail />} />
         {/* 로그인, 회원가입, 아이디 찾기, 비밀번호 재발급, 캘린더, 메인 */}
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
