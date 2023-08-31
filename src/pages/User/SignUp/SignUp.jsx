@@ -517,7 +517,7 @@ const SignUp = () => {
   // )
   const handleSubmitSignUp = async (e) => {
     e.preventDefault()
-    console.log('input', input)
+    // console.log('input', input)
     try {
       const response = await signup(input)
       console.log(response.data)
