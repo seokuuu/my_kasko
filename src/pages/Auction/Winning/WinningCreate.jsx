@@ -49,6 +49,8 @@ import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../comm
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
 
+import { InputContainer, NoOutInput, Unit } from '../../../common/Input/Input'
+
 const WinningCreate = ({}) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 
@@ -143,7 +145,7 @@ const WinningCreate = ({}) => {
                 <div style={{ marginRight: '10px' }}>
                   <h6>낙찰가 총액</h6>
                   <InputContainer>
-                    <Inputs type="text" />
+                    <NoOutInput type="text" />
                     <Unit>원</Unit>
                   </InputContainer>
                 </div>
@@ -155,7 +157,7 @@ const WinningCreate = ({}) => {
                 <div style={{ marginRight: '10px' }}>
                   <h6>확정전송 총액</h6>
                   <InputContainer>
-                    <Inputs type="text" />
+                    <NoOutInput type="text" />
                     <Unit>원</Unit>
                   </InputContainer>
                 </div>
@@ -281,26 +283,3 @@ const WinningCreate = ({}) => {
 }
 
 export default WinningCreate
-
-const InputContainer = styled.div`
-  display: flex;
-  align-items: center;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 5px;
-  width: 200px; /* 원하는 너비로 조절 */
-`
-
-const Inputs = styled.input`
-  flex: 1;
-  border: none;
-  outline: none;
-  width: 100%; /* flex 아이템의 너비를 100%로 설정 */
-`
-
-const Unit = styled.span`
-  position: relative;
-  font-size: 16px;
-  margin-left: 5px;
-  margin-right: 5px;
-`

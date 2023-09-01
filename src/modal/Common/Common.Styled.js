@@ -280,3 +280,13 @@ export const ModalText = styled.p`
   white-space: pre-line;
   line-height: 1.4;
 `
+
+export const Bar = styled.div`
+  display: flex;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  width: ${(props) => props.width}%;
+  border-bottom: 1px solid ${(props) => props.color || 'black'};
+  top: ${(props) => props.top}px;
+`
