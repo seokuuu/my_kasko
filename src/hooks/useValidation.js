@@ -10,6 +10,32 @@ import {
   koreanAccountNumberRegex,
 } from '../common/Regex/Regex'
 
+const init = {
+  id: '',
+  password: '',
+  memberTitle: '',
+  memberName: '',
+  memberEmail: '',
+  memberPhone: '',
+  type: '',
+  name: '',
+  ceoName: '',
+  phone: '',
+  fax: '',
+  address: '',
+  addressDetail: '',
+  businessType: [],
+  businessNumber: '',
+  bank: '',
+  accountNumber: '',
+  depositManagerTitle: '',
+  depositManagerName: '',
+  depositManagerPhone: '',
+  releaseManagerTitle: '',
+  releaseManagerName: '',
+  releaseManagerPhone: '',
+}
+
 const validateMsg = {
   name: '내용을 확인해주세요.',
   ceoName: '내용을 확인해주세요.',
@@ -29,31 +55,6 @@ const validateMsg = {
   releaseManagerName: '내용을 확인해 주세요.',
   releaseManagerPhone: '올바른 번호가 아닙니다',
 }
-// const init = {
-//   id: '',
-//   password: '',
-//   memberTitle: '',
-//   memberName: '',
-//   memberEmail: '',
-//   memberPhone: '',
-//   type: '',
-//   name: '',
-//   ceoName: '',
-//   phone: '',
-//   fax: '',
-//   address: '',
-//   addressDetail: '',
-//   businessType: [],
-//   businessNumber: '',
-//   bank: '',
-//   accountNumber: '',
-//   depositManagerTitle: '',
-//   depositManagerName: '',
-//   depositManagerPhone: '',
-//   releaseManagerTitle: '',
-//   releaseManagerName: '',
-//   releaseManagerPhone: '',
-// }
 
 // 비활성 useState로 추가!?
 export const useValidation = (inputObj) => {

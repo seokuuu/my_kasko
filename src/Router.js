@@ -115,7 +115,7 @@ import USalesOrder from './userpages/UserSales/Order/OrderPage'
 import UPerformance from './userpages/UserPerformance/UserPerformance/UserPerformancePage'
 
 // 마이페이지
-import UUserManage from './userpages/UserMyPage/UserManage/UserManagePage'
+// import UUserManage from './userpages/UserMyPage/UserManage/UserManagePage'
 import UProfile from './userpages/UserMyPage/Profile/ProfilePage'
 import UDestination from './userpages/UserMyPage/Destination/DestinationPage'
 import UPrefer from './userpages/UserMyPage/Prefer/PreferPage'
@@ -263,7 +263,7 @@ const Router = () => {
           <Route path="/userpage/performance" element={<UPerformance />}></Route>
 
           {/* 마이 페이지 */}
-          <Route path="/userpage/usermanage" element={<UUserManage />}></Route>
+          {/* <Route path="/userpage/usermanage" element={<UUserManage />}></Route> */}
 
           <Route path="/userpage/userprofile" element={<UProfile />}></Route>
           <Route path="/userpage/userdestination" element={<UDestination />}></Route>

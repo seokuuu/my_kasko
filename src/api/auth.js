@@ -28,8 +28,9 @@ export function businessNumberDuplication(data) {
     회원가입
 ============================== */
 export async function signup(data) {
-  const jsonData = { request: data }
-  console.log(jsonData)
+  // const jsonData = { request: data }
+  // console.log(jsonData)
+  console.log(data)
   const form = new FormData()
   form.append(
     // request라는 키에 value를 두번째인자로
@@ -39,7 +40,7 @@ export async function signup(data) {
       type: 'application/json',
     }),
   ) //request: 바이너리형태
-  return await client.post(urls.signup, jsonData, { headers }) //파싱형태 백엔드랑 상의필요
+  return await client.post(urls.signup, form, { headers }) //파싱형태 백엔드랑 상의필요
 }
 
 /* ==============================

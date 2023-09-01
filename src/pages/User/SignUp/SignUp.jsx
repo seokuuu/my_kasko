@@ -64,6 +64,7 @@ import { Height } from '@mui/icons-material'
 import { useValidation } from '../../../hooks/useValidation'
 import { signup } from '../../../api/auth'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const SignUp = () => {
   const [showHeader, setShowHeader] = useAtom(headerAtom)
@@ -285,10 +286,10 @@ const SignUp = () => {
   }, [check])
 
   const handleSelectChange = (selectedOption, name) => {
-    console.log(name)
+    console.log(name, selectedOption)
     setInput((prevState) => ({
       ...prevState,
-      name: selectedOption.label,
+      [name]: selectedOption.label,
     }))
   }
 
@@ -448,85 +449,6 @@ const SignUp = () => {
     [input],
   )
 
-  // const checkSubmitWithSchema = {
-  //   id: 'customerName',
-  //   password: 'password',
-  //   //경매 담당자
-  //   memberTitle: '', //input
-  //   memberName: 'depositManagerName',
-  //   memberEmail: '', //input
-  //   memberPhone: 'depositPhoneNum',
-  //   type: '', //input
-  //   name: 'customerName',
-  //   ceoName: 'ceoName',
-  //   phone: 'customerPhone',
-  //   fax: 'fax',
-  //   address: '', //input
-  //   addressDetail: 'address',
-  //   businessType: [''], //input
-  //   businessNumber: 'businessNumber',
-  //   bank: 'businessBankAddress',
-  //   accountNumber: 'accountNumber',
-  //   depositManagerTitle: '', //input
-  //   depositManagerName: 'depositManagerName',
-  //   depositManagerPhone: 'depositPhoneNum',
-  //   releaseManagerTitle: '', //input
-  //   releaseManagerName: 'releaseManagerName',
-  //   releaseManagerPhone: 'releasePhoneNum',
-  //
-  const test = {
-    id: 'test2',
-    password: '1234',
-    memberTitle: '직함2',
-    memberName: '이름2',
-    memberEmail: '이메일2',
-    memberPhone: '연락처2',
-    type: '법인사업자',
-    name: '회사명2',
-    ceoName: '대표자명2',
-    phone: '대표연락처2',
-    fax: '팩스번호2',
-    address: '주소2',
-    addressDetail: '상세주소2',
-    businessType: ['유통', '제조'],
-    businessNumber: '사업자번호2',
-    bank: '은행2',
-    accountNumber: '계좌번호2',
-    depositManagerTitle: '입금담당자 직함2',
-    depositManagerName: '입금담당자 이름2',
-    depositManagerPhone: '입금담당자 연락처2',
-    releaseManagerTitle: '출고담당자 직함2',
-    releaseManagerName: '출고담당자 이름2',
-    releaseManagerPhone: '출고담당자 연락처2',
-  }
-
-  // 폼 제출 로직 (form태그를 추가해서 진행 및 체크박스,email는 기존 input STATE를 활용)
-  // const handleSubmit = useCallback(
-  //   async (e) => {
-  //     e.preventDefault()
-  //     // console.log('input', input)
-  //     try {
-  //       const response = await signup(input)
-  //       console.log(response.data)
-  //     } catch (err) {
-  //       alert('ERROR:등록되지 않았습니다!')
-  //       console.log(err.data)
-  //     }
-  //   },
-  //   [input],
-  // )
-  const handleSubmitSignUp = async (e) => {
-    e.preventDefault()
-    // console.log('input', input)
-    try {
-      const response = await signup(input)
-      console.log(response.data)
-    } catch (err) {
-      alert('ERROR:등록되지 않았습니다!')
-      console.log(err.data)
-    }
-  }
-
   // 예외처리 - useValidation으로 조건문 관리
   const [inputObj, setInputObj] = useState({ name: '', text: '' })
   const [inputObj2, setInputObj2] = useState({ name: '', text: '' })
@@ -581,7 +503,8 @@ const SignUp = () => {
     if (name === 'releaseManagerName') {
       setInputObj12({ name: name, text: value })
     }
-    setInput({ ...input, [name]: value }) //***submit form***
+    //***submit form***
+    setInput({ ...input, [name]: value })
     // businessfile, businessBankAddress는 file Object 일단 주석처리 하였음
   }
 
@@ -597,6 +520,29 @@ const SignUp = () => {
   const businessBankAddressValidate = useValidation(inputObj10)
   const accountNumberValidate = useValidation(inputObj11)
   const releaseManagerNameValidate = useValidation(inputObj12)
+
+  // 폼 제출 로직 (form태그를 추가해서 진행 및 체크박스,email는 기존 input STATE를 활용)
+  const handleSubmitSignUp = async (e) => {
+    // const navigate = useNavigate()
+    e.preventDefault()
+    console.log('input', input)
+    const allKeysHaveValue = Object.keys(input).every((key) => {
+      return input[key] !== null && input[key] !== undefined && input[key] !== ''
+    })
+
+    if (allKeysHaveValue) console.log(' ✅모든 input작성 완료')
+
+    try {
+      const response = await signup(input)
+      console.log(response.data)
+      alert('회원가입되었습니다!')
+      // navigate('/')
+    } catch (err) {
+      // alert('ERROR::등록되지 않았습니다!')
+      alert(err.data.message)
+      console.log(err.data)
+    }
+  }
 
   return (
     <Container>
@@ -901,7 +847,7 @@ const SignUp = () => {
                   <h4>업태 선택</h4>
                   <CheckWrap>
                     {checkDummy.map((x, index) => (
-                      <StyledCheckMainDiv>
+                      <StyledCheckMainDiv key={index}>
                         <StyledCheckSubSquDiv
                           onClick={() => setCheck(CheckBox(check, check.length, index, true))}
                           isChecked={check[index]}
@@ -1004,7 +950,7 @@ const SignUp = () => {
                     <DepositSelect
                       options={releaseOptions}
                       defaultValue={releaseOptions[0]}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle ')}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
                     />
                     <TxtDropInput
                       name="releaseManagerName"
@@ -1021,8 +967,8 @@ const SignUp = () => {
                   </Title>
                   <TxtInput
                     placeholder="연락처 입력('-' 제외)"
-                    name="releasePhoneNum"
-                    value={input.releasePhoneNum}
+                    name="releaseManagerPhone"
+                    value={inputObj.releaseManagerPhone}
                     onChange={phoneHandler}
                     maxLength="11"
                   />

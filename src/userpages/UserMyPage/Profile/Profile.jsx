@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react'
 import {
   OnePageContainer,
   OnePageSubContainer,
@@ -17,83 +17,110 @@ import {
   Bar,
   EqualCheckWrap,
   AddBtn,
-} from '../../../common/OnePage/OnePage.Styled';
+} from '../../../common/OnePage/OnePage.Styled'
 
-import { CustomInput, FlexInput } from '../../../common/Input/Input';
-import { CustomSelect } from '../../../common/Option/Main';
-import { emailOptions, accountOptions } from '../../../common/Option/SignUp';
-import { AccountSelect } from '../../../common/Option/SignUp';
-import { EditSelect, depositOptions } from '../../../common/Option/SignUp';
+import { CustomInput, FlexInput } from '../../../common/Input/Input'
+import { CustomSelect } from '../../../common/Option/Main'
+import { emailOptions, accountOptions } from '../../../common/Option/SignUp'
+import { AccountSelect } from '../../../common/Option/SignUp'
+import { EditSelect, depositOptions } from '../../../common/Option/SignUp'
 
-import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button';
-import { BottomP } from '../../../pages/User/SignUp/SignUp.Styled';
+import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
+import { BottomP } from '../../../pages/User/SignUp/SignUp.Styled'
 
-import { RadioContainer } from '../../../pages/User/SignUp/SignUp';
+import { RadioContainer } from '../../../pages/User/SignUp/SignUp'
 
-import { TxtDiv } from '../../../pages/User/SignUp/SignUp.Styled';
-import {
-  RadioMainDiv,
-  RadioCircleDiv,
-  RadioInnerCircleDiv,
-} from '../../../common/Check/RadioImg';
+import { TxtDiv } from '../../../pages/User/SignUp/SignUp.Styled'
+import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 
-import { CheckBox } from '../../../common/Check/Checkbox';
-import { CheckBtn } from '../../../pages/User/SignUp/SignUp.Styled';
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { CheckBtn } from '../../../pages/User/SignUp/SignUp.Styled'
 
-import {
-  StyledCheckMainDiv,
-  StyledCheckSubSquDiv,
-  CheckImg2,
-} from '../../../common/Check/CheckImg';
+import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
+
+const init = {
+  id: '',
+  password: '',
+  memberTitle: '',
+  memberName: '',
+  memberEmail: '',
+  memberPhone: '',
+  type: '',
+  name: '',
+  ceoName: '',
+  phone: '',
+  fax: '',
+  address: '',
+  addressDetail: '',
+  businessType: [],
+  businessNumber: '',
+  bank: '',
+  accountNumber: '',
+  depositManagerTitle: '',
+  depositManagerName: '',
+  depositManagerPhone: '',
+  releaseManagerTitle: '',
+  releaseManagerName: '',
+  releaseManagerPhone: '',
+}
 
 const ProfileEdit = () => {
-  const [input, setInput] = useState('');
-  const handleSelectChange = (selectedOption, name) => {
-    setInput(prevState => ({
-      ...prevState,
-      [name]: selectedOption.label,
-    }));
-  };
+  const [input, setInput] = useState(init)
+  const [isUser, setIsUser] = useState(false)
 
-  const radioDummy = ['법인사업자', '개인사업자'];
-  const [checkRadio, setCheckRadio] = useState(
-    Array.from({ length: radioDummy.length }, () => false)
-  );
-  const [savedRadioValue, setSavedRadioValue] = useState('');
+  const test = useCallback((e) => {
+    // console.log(e.target.name)
+    // console.log(e.target.value)
+  }, [])
 
   useEffect(() => {
-    const checkedIndex = checkRadio.findIndex(
-      (isChecked, index) => isChecked && index < radioDummy.length
-    );
-    if (checkedIndex !== -1) {
-      const selectedValue = radioDummy[checkedIndex];
-      setSavedRadioValue(selectedValue);
-      setInput({ ...input, type: selectedValue });
+    const token = {
+      access: sessionStorage.getItem('accessToken'),
+      refresh: localStorage.getItem('refreshToken'),
     }
-  }, [checkRadio]);
+    if (token.access) setIsUser(true)
+    console.log('로그인여부:', isUser)
+    // console.log(token.access)
+  }, [isUser])
 
-  const checkDummy = ['유통', '제조'];
-  const [check, setCheck] = useState(
-    Array.from({ length: checkDummy.length }, () => false)
-  );
-  const [checkData, setCheckData] = useState(
-    Array.from({ length: checkDummy.length }, () => '')
-  );
+  const handleSelectChange = (selectedOption, name) => {
+    setInput((prevState) => ({
+      ...prevState,
+      [name]: selectedOption.label,
+    }))
+  }
+
+  const radioDummy = ['법인사업자', '개인사업자']
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [savedRadioValue, setSavedRadioValue] = useState('')
+
+  useEffect(() => {
+    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
+    if (checkedIndex !== -1) {
+      const selectedValue = radioDummy[checkedIndex]
+      setSavedRadioValue(selectedValue)
+      setInput({ ...input, type: selectedValue })
+    }
+  }, [checkRadio])
+
+  const checkDummy = ['유통', '제조']
+  const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
+  const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
 
   useEffect(() => {
     const updatedCheck = checkDummy.map((value, index) => {
-      return check[index] ? value : '';
-    });
+      return check[index] ? value : ''
+    })
     // 그냥 배열에 담을 때
-    const filteredCheck = updatedCheck.filter(item => item !== '');
-    setCheckData(filteredCheck);
+    const filteredCheck = updatedCheck.filter((item) => item !== '')
+    setCheckData(filteredCheck)
 
     // 전송용 input에 담을 때
     // setInput({
     //   ...input,
     //   businessType: updatedCheck.filter(item => item !== ''),
     // });
-  }, [check]);
+  }, [check])
 
   return (
     <OnePageFlexContainer>
@@ -109,7 +136,7 @@ const ProfileEdit = () => {
                 아이디<span>*</span>
               </FlexTitle>
               <FlexContent>
-                <FlexInput disabled />
+                <FlexInput disabled name={init.id} />
               </FlexContent>
             </FlexPart>
 
@@ -123,11 +150,11 @@ const ProfileEdit = () => {
             </FlexPart>
 
             <FlexPart>
-              <FlexTitle>
+              <FlexTitle name="">
                 새 비밀번호 확인<span>*</span>
               </FlexTitle>
               <FlexContent>
-                <FlexInput />
+                <FlexInput name="password" onChange={test} />
               </FlexContent>
             </FlexPart>
 
@@ -136,12 +163,8 @@ const ProfileEdit = () => {
                 경매 담당자 정보<span>*</span>
               </FlexTitle>
               <FlexContent>
-                <CustomInput placeholder="직함 입력" width={130} />
-                <CustomInput
-                  placeholder=" 성함 입력"
-                  width={188}
-                  style={{ marginLeft: '5px' }}
-                />
+                <CustomInput name="memberTitle" placeholder="직함 입력" width={130} />
+                <CustomInput name="memberName" placeholder=" 성함 입력" width={188} style={{ marginLeft: '5px' }} />
               </FlexContent>
             </FlexPart>
 
@@ -150,7 +173,7 @@ const ProfileEdit = () => {
                 이메일<span>*</span>
               </FlexTitle>
               <FlexContent>
-                <FlexInput />
+                <FlexInput name="memberEmail" />
               </FlexContent>
             </FlexPart>
 
@@ -159,7 +182,7 @@ const ProfileEdit = () => {
                 휴대폰 번호<span>*</span>
               </FlexTitle>
               <FlexContent>
-                <FlexInput />
+                <FlexInput name="memberPhone" />
               </FlexContent>
             </FlexPart>
             <Bar />
@@ -173,13 +196,12 @@ const ProfileEdit = () => {
               </FlexTitle>
               <FlexContent>
                 <EditSelect
+                  name="depositManagerTitle"
                   options={depositOptions}
                   defaultValue={depositOptions[0]}
-                  onChange={selectedOption =>
-                    handleSelectChange(selectedOption, 'depositManagerTitle')
-                  }
+                  onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
                 />
-                <CustomInput placeholder="담당자 성함 입력" width={190} />
+                <CustomInput name="depositManagerName" placeholder="담당자 성함 입력" width={190} />
               </FlexContent>
             </FlexPart>
 
@@ -188,7 +210,7 @@ const ProfileEdit = () => {
                 휴대폰 번호<span>*</span>
               </FlexTitle>
               <FlexContent>
-                <FlexInput placeholder="연락처 입력 ('-' 제외)" />
+                <FlexInput name="depositManagerPhone" placeholder="연락처 입력 ('-' 제외)" />
               </FlexContent>
             </FlexPart>
             <EqualCheckWrap>
@@ -201,13 +223,12 @@ const ProfileEdit = () => {
               </FlexTitle>
               <FlexContent>
                 <EditSelect
+                  name="releaseManagerTitle"
                   options={depositOptions}
                   defaultValue={depositOptions[0]}
-                  onChange={selectedOption =>
-                    handleSelectChange(selectedOption, 'depositManagerTitle')
-                  }
+                  onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
                 />
-                <CustomInput placeholder=" 담당자 성함 입력" width={190} />
+                <CustomInput name="releaseManagerName" placeholder=" 담당자 성함 입력" width={190} />
               </FlexContent>
             </FlexPart>
 
@@ -216,7 +237,7 @@ const ProfileEdit = () => {
                 휴대폰 번호<span>*</span>
               </FlexTitle>
               <FlexContent>
-                <FlexInput placeholder="연락처 입력 ('-' 제외)" />
+                <FlexInput name="releaseManagerPhone" placeholder="연락처 입력 ('-' 제외)" />
               </FlexContent>
             </FlexPart>
 
@@ -246,18 +267,15 @@ const ProfileEdit = () => {
                   {radioDummy.map((text, index) => (
                     <RadioMainDiv key={index}>
                       <RadioCircleDiv
+                        name="type"
                         isChecked={checkRadio[index]}
                         onClick={() => {
-                          setCheckRadio(
-                            CheckBox(checkRadio, checkRadio.length, index)
-                          );
+                          setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                         }}
                       >
                         <RadioInnerCircleDiv />
                       </RadioCircleDiv>
-                      <div style={{ display: 'flex', marginLeft: '5px' }}>
-                        {text}
-                      </div>
+                      <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
                     </RadioMainDiv>
                   ))}
                 </div>
@@ -269,7 +287,7 @@ const ProfileEdit = () => {
                 회사 명<span>*</span>
               </FlexTitle>
               <FlexContent>
-                <FlexInput />
+                <FlexInput name="name" />
               </FlexContent>
             </FlexPart>
 
@@ -278,7 +296,7 @@ const ProfileEdit = () => {
                 대표자 성명<span>*</span>
               </FlexTitle>
               <FlexContent>
-                <FlexInput />
+                <FlexInput name="ceoName" />
               </FlexContent>
             </FlexPart>
 
@@ -287,7 +305,7 @@ const ProfileEdit = () => {
                 대표 연락처<span>*</span>
               </FlexTitle>
               <FlexContent>
-                <FlexInput />
+                <FlexInput name="phone" />
               </FlexContent>
             </FlexPart>
 
@@ -296,7 +314,7 @@ const ProfileEdit = () => {
                 팩스번호<span>*</span>
               </FlexTitle>
               <FlexContent>
-                <FlexInput />
+                <FlexInput name="fax" />
               </FlexContent>
             </FlexPart>
 
@@ -305,7 +323,7 @@ const ProfileEdit = () => {
                 주소<span>*</span>
               </FlexTitle>
               <FlexContent>
-                <CustomInput width={223} />
+                <CustomInput name="address" width={223} />
                 <CheckBtn
                   style={{
                     backgroundColor: 'black',
@@ -320,7 +338,7 @@ const ProfileEdit = () => {
             <FlexPart>
               <FlexTitle></FlexTitle>
               <FlexContent>
-                <FlexInput />
+                <FlexInput name="addressDetail" />
               </FlexContent>
             </FlexPart>
 
@@ -339,9 +357,8 @@ const ProfileEdit = () => {
                   {checkDummy.map((x, index) => (
                     <StyledCheckMainDiv>
                       <StyledCheckSubSquDiv
-                        onClick={() =>
-                          setCheck(CheckBox(check, check.length, index, true))
-                        }
+                        name="businessType"
+                        onClick={() => setCheck(CheckBox(check, check.length, index, true))}
                         isChecked={check[index]}
                       >
                         <CheckImg2 src="/svg/check.svg" />
@@ -358,7 +375,7 @@ const ProfileEdit = () => {
                 사업자 번호<span>*</span>
               </FlexTitle>
               <FlexContent>
-                <CustomInput width={223} />
+                <CustomInput name="businessNumber" width={223} />
                 <CheckBtn style={{ fontSize: '16px' }}>중복확인</CheckBtn>
               </FlexContent>
             </FlexPart>
@@ -405,18 +422,17 @@ const ProfileEdit = () => {
               </FlexTitle>
               <FlexContent>
                 <AccountSelect
+                  name="bank"
                   options={accountOptions}
                   defaultValue={accountOptions[0]}
-                  onChange={selectedOption =>
-                    handleSelectChange(selectedOption, 'bank')
-                  }
+                  onChange={(selectedOption) => handleSelectChange(selectedOption, 'bank')}
                 />
               </FlexContent>
             </FlexPart>
             <FlexPart>
               <FlexTitle></FlexTitle>
               <FlexContent>
-                <FlexInput style={{ width: '99%' }} />
+                <FlexInput name="accountNumber" style={{ width: '99%' }} />
               </FlexContent>
             </FlexPart>
           </Right>
@@ -431,7 +447,7 @@ const ProfileEdit = () => {
         </BlackBtn>
       </BtnWrap>
     </OnePageFlexContainer>
-  );
-};
+  )
+}
 
-export default ProfileEdit;
+export default ProfileEdit
