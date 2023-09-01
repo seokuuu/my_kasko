@@ -130,7 +130,6 @@ export const WhiteSkyBtn = styled.div`
   cursor: pointer;
   padding: 5px 10px 5px 10px;
   border-radius: 3px;
-  display: flex;
 
   img {
     margin-right: 5px;

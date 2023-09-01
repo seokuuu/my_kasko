@@ -154,9 +154,11 @@ const Router = () => {
         <Route path="/test3" element={<Test3 />} />
         <Route path="/test4" element={<Test4 />} />
         <Route path="/common" element={<SalesProduct />} />
+
+        <Route path="/*" element={<NotFound />} />
         {/* 로그인, 회원가입, 아이디 찾기, 비밀번호 재발급, 캘린더, 메인 */}
         <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} /> 
+        <Route path="/signup" element={<SignUp />} />
         <Route path="/findid" element={<FindId />} />
         <Route path="/reissuepw" element={<ReissuePw />} />
         <Route path="/calander" element={<CalendarModal />} />
