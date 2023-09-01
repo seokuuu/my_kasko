@@ -286,6 +286,8 @@ const SignUp = () => {
   }, [check])
 
   const handleSelectChange = (selectedOption, name) => {
+    // const isCheck = selectedOption.label
+    // if (isCheck === '직함 선택') return
     console.log(name, selectedOption)
     setInput((prevState) => ({
       ...prevState,
