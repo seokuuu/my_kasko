@@ -46,6 +46,7 @@ import {
 import { ExRadioWrap } from '../../../modal/External/ExternalFilter'
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import Hidden from "../../../components/TableInner/Hidden";
 
 const PackageCreate = ({}) => {
   const checkSales = ['전체', '판매재', '판매제외제', '카스코 추천 제품']

@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import React, { useState, useCallback } from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {
   Container,
   SubContainer,
@@ -12,13 +12,14 @@ import {
 import { IbwTxt } from '../Login/Login.Styled';
 import { busIdRegex, phoneRegex } from '../../../common/Regex/Regex';
 // import { BlueBtn, WhiteBtn } from '../../common/Button/Button';
-import { BlueBtn, WhiteBtn } from '../../../common/Button/Button';
+import {BlueBtn, GreyBtn, WhiteBtn} from '../../../common/Button/Button';
 import { useAtom } from 'jotai';
 import {
   headerAtom,
   accordionAtom,
   subHeaderAtom,
 } from '../../../store/Layout/Layout';
+import {findById} from "../../../api/auth";
 
 const FindId = () => {
   const [showHeader, setShowHeader] = useAtom(headerAtom);
@@ -29,6 +30,8 @@ const FindId = () => {
   setShowSubHeader(false);
   const navigate = useNavigate();
 
+  const [finder, setFinder] = useState(null);
+  const [isActive, setIsActive] = useState(false);
   const [findPageNum, setFindPageNum] = useState(0);
 
   const dummy = [
@@ -46,8 +49,6 @@ const FindId = () => {
   };
 
   const [input, setInput] = useState(info);
-
-  console.log(input);
 
   const normalAlert = {
     alertColor: '',
@@ -122,6 +123,22 @@ const FindId = () => {
     [input, info]
   );
 
+  /** 아이디 찾기 */
+  const onFindId = async () => {
+    const requestData = {
+      name: input.name,
+      businessNumber: input.busNum,
+      phone: input.contact
+    }
+    try {
+      const { data: res } = await findById(requestData);
+      setFinder(res.data);
+      setFindPageNum(1);
+    } catch (e) {
+      window.alert(e.data.message || '찾을 수 없는 회원입니다.');
+    }
+  }
+
   return (
     <>
       {findPageNum === 0 && (
@@ -172,17 +189,15 @@ const FindId = () => {
                     value={input.contact}
                   ></input>
                 </FindContainer>
-                <BlueBtn
-                  type="button"
-                  onClick={() => {
-                    setFindPageNum(1);
-                  }}
-                  width={100}
-                  height={40}
-                  fontSize={16}
-                >
-                  아이디 찾기
-                </BlueBtn>
+                    <BlueBtn
+                        type="button"
+                        onClick={onFindId}
+                        width={100}
+                        height={40}
+                        fontSize={16}
+                    >
+                      아이디 찾기
+                    </BlueBtn>
                 <IbwTxt>
                   아이디가 기억나셨나요?{' '}
                   <Link to={`/reissuepw`}>비밀번호 재발급</Link>
@@ -204,10 +219,10 @@ const FindId = () => {
               </Title>
               <LoginContainer style={{ width: '450px' }}>
                 <FindIdResult>
-                  아이디 : <span> www</span>
+                  아이디 : <span> {finder}</span>
                 </FindIdResult>
                 <BtnWrap>
-                  <BlueBtn height={40} width={90} fontSize={16} type="button">
+                  <BlueBtn onClick={() => navigate('/')} height={40} width={90} fontSize={16} type="button">
                     로그인
                   </BlueBtn>
                   <WhiteBtn
@@ -236,7 +251,7 @@ export default FindId;
 export const FindContainer = styled.div`
   color: black;
   text-align: left;
-  margin-bottom: 15px;
+  margin-bottom: 24px;
 
   h4 {
     font-size: 18px;

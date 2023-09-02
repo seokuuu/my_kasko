@@ -96,8 +96,8 @@ export const InputBottomWrap = styled.div`
 
 export const IbwWrap = styled.div`
   display: flex;
-
   justify-content: space-between;
+  margin-top: 24px;
 `;
 
 export const IbwLeft = styled.div`
@@ -180,7 +180,6 @@ export const ImgWrap = styled.div`
 
 export const InputBtmWrap = styled.div`
   display: flex;
-  margin-left: 30px;
-  margin-bottom: 5px;
+  margin: 4px 24px;
   color: ${props => props.bottomColor};
 `;
