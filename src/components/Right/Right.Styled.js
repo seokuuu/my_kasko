@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 export const RightBarWrap = styled.div`
   position: absolute;
   right: 0;
-  top: 43%;
+  bottom: 35%;
   width: 100px;
   height: 250px;
   display: flex;
