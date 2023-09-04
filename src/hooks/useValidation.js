@@ -10,32 +10,6 @@ import {
   koreanAccountNumberRegex,
 } from '../common/Regex/Regex'
 
-const init = {
-  id: '',
-  password: '',
-  memberTitle: '',
-  memberName: '',
-  memberEmail: '',
-  memberPhone: '',
-  type: '',
-  name: '',
-  ceoName: '',
-  phone: '',
-  fax: '',
-  address: '',
-  addressDetail: '',
-  businessType: [],
-  businessNumber: '',
-  bank: '',
-  accountNumber: '',
-  depositManagerTitle: '',
-  depositManagerName: '',
-  depositManagerPhone: '',
-  releaseManagerTitle: '',
-  releaseManagerName: '',
-  releaseManagerPhone: '',
-}
-
 const validateMsg = {
   name: '내용을 확인해주세요.',
   ceoName: '내용을 확인해주세요.',

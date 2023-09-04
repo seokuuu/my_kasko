@@ -8,6 +8,7 @@ const urls = {
   findId: '/main/find-id',
   resetPw: '/main/reset-pw',
   refresh: '/refresh',
+  updateCustomer: '/member/privacy',
 }
 const headers = { 'Content-Type': 'multipart/form-data' }
 /* ==============================
@@ -71,4 +72,10 @@ export function refresh(refreshToken) {
   return client.refresh(urls.login, {
     headers: { RefreshToken: `Bearer ${refreshToken}` },
   })
+}
+/* ==============================
+    유저 정보 업데이트
+============================== */
+export function updateCustomer(data, header) {
+  return client.patch(urls.updateCustomer, data)
 }

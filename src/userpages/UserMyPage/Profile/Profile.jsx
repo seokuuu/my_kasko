@@ -37,6 +37,7 @@ import { CheckBox } from '../../../common/Check/Checkbox'
 import { CheckBtn } from '../../../pages/User/SignUp/SignUp.Styled'
 
 import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
+import { updateCustomer } from '../../../api/auth'
 
 const init = {
   id: '',
@@ -67,11 +68,7 @@ const init = {
 const ProfileEdit = () => {
   const [input, setInput] = useState(init)
   const [isUser, setIsUser] = useState(false)
-
-  const test = useCallback((e) => {
-    // console.log(e.target.name)
-    // console.log(e.target.value)
-  }, [])
+  const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
 
   useEffect(() => {
     const token = {
@@ -94,7 +91,7 @@ const ProfileEdit = () => {
   }
 
   // checked 빼고 submit하기 (checkbox는 따로 useState로 하였음)
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const checkboxType = ['bank', 'depositManagerTitle', 'releaseManagerTitle']
     const formData = new FormData(e.target)
@@ -106,11 +103,38 @@ const ProfileEdit = () => {
       }
     })
 
+    for (let i in updatedInput) {
+      if (updatedInput.hasOwnProperty(i)) {
+        console.log(`Input 체크 안되었습니다 ***${i}***`)
+        // return
+      }
+    }
     setInput({ ...input, ...updatedInput })
-    console.log('input:', input) //두번 눌러야함
+    setShouldUpdateCustomer(true)
   }
-  // TODO : 로그인 id 정보 읽어와야함
 
+  useEffect(() => {
+    const updateCustomerData = async () => {
+      if (shouldUpdateCustomer) {
+        try {
+          const accessToken = sessionStorage.getItem('accessToken')
+          const header = {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+          const response = await updateCustomer(input, header) //raw
+          console.log(response.data)
+          alert('회원가입이 수정되셨습니다.')
+        } catch (err) {
+          console.log(err)
+        }
+        setShouldUpdateCustomer(false)
+      }
+    }
+
+    updateCustomerData()
+  }, [shouldUpdateCustomer])
   // -------------------------------------------------------------------------------
 
   const radioDummy = ['법인사업자', '개인사업자']
@@ -178,7 +202,7 @@ const ProfileEdit = () => {
                   새 비밀번호 확인<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="password" onChange={test} />
+                  <FlexInput name="password" />
                 </FlexContent>
               </FlexPart>
 
