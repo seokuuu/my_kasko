@@ -3,8 +3,11 @@ FROM node:18-alpine as builder
 # 컨테이너 내부 작업 디렉토리 설정
 WORKDIR /app
 
+ARG YARN_VERSION=1.22.19
+RUN npm install -g yarn@$YARN_VERSION
+
 # 컨테이너 내부로 package.json 파일들을 복사
-COPY package.json yarn.lock ./
+COPY package.json package-lock.json yarn.lock ./
 
 # package.json 및 package-lock.json 파일에 명시된 의존성 패키지들을 설치
 RUN yarn
