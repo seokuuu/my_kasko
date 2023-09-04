@@ -16,7 +16,7 @@ RUN yarn
 COPY . .
 
 # build
-RUN yarn dev
+RUN yarn build
 
 # prod environment
 FROM nginx:stable-alpine
