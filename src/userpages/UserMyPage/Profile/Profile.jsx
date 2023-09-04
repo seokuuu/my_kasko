@@ -128,6 +128,7 @@ const ProfileEdit = () => {
           alert('회원가입이 수정되셨습니다.')
         } catch (err) {
           console.log(err)
+          alert('ERROR:', err.data)
         }
         setShouldUpdateCustomer(false)
       }
