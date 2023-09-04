@@ -4,10 +4,10 @@ FROM node:18-alpine as builder
 WORKDIR /app
 
 # 컨테이너 내부로 package.json 파일들을 복사
-COPY package.json ./
+COPY package.json yarn.lock ./
 
 # package.json 및 package-lock.json 파일에 명시된 의존성 패키지들을 설치
-RUN yarn install
+RUN yarn
 
 # 호스트 머신의 현재 디렉토리 파일들을 컨테이너 내부로 전부 복사
 COPY . .
