@@ -12,7 +12,9 @@ export const OverAllSub = styled.div`
 `
 
 export const OverAllTable = styled.div`
-  width: 90%;
+  width: 89%;
+  position: relative;
+  left: -15px;
   margin-left: auto;
   margin-right: auto;
 `
