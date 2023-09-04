@@ -18,7 +18,6 @@ import {
   EqualCheckWrap,
   AddBtn,
 } from '../../../common/OnePage/OnePage.Styled'
-
 import { CustomInput, FlexInput } from '../../../common/Input/Input'
 import { CustomSelect } from '../../../common/Option/Main'
 import { emailOptions, accountOptions } from '../../../common/Option/SignUp'
@@ -26,7 +25,7 @@ import { AccountSelect } from '../../../common/Option/SignUp'
 import { EditSelect, depositOptions } from '../../../common/Option/SignUp'
 
 import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
-import { BottomP } from '../../../pages/User/SignUp/SignUp.Styled'
+import { BottomP, TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
 
 import { RadioContainer } from '../../../pages/User/SignUp/SignUp'
 
@@ -38,18 +37,21 @@ import { CheckBtn } from '../../../pages/User/SignUp/SignUp.Styled'
 
 import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 import { updateCustomer } from '../../../api/auth'
+import SignUpPost from '../../../modal/SignUp/SignUpPost'
 
 const init = {
-  id: '',
+  uid: 1,
   password: '',
-  memberTitle: '',
-  memberName: '',
-  memberEmail: '',
-  memberPhone: '',
-  type: '',
+  title: '',
   name: '',
-  ceoName: '',
+  email: '',
   phone: '',
+
+  customerUid: 2,
+  type: '',
+  customerName: '',
+  ceoName: '',
+  customerPhone: '',
   fax: '',
   address: '',
   addressDetail: '',
@@ -64,6 +66,34 @@ const init = {
   releaseManagerName: '',
   releaseManagerPhone: '',
 }
+// const test = {
+//   uid: 1,
+// password: '12345678',
+// title: '직함111',
+// name: '이름111',
+// email: '이메일111',
+// phone: '연락처111',
+
+// customerUid: 2,
+// type: '법인',
+// customerName: '회사명1',
+// ceoName: '대표자명1',
+// customerPhone: '01012341234',
+// fax: '12341234',
+// address: '주소1',
+// addressDetail: '상세주소1',
+// businessType: [''],
+// businessNumber: '123455',
+// bank: '은행1',
+// accountNumber: '123123-123123',
+// depositManagerTitle: '입금직함1',
+// depositManagerName: '입금이름1',
+// depositManagerPhone: '입금연락처1',
+// releaseManagerTitle: '출고직함1',
+// releaseManagerName: '출고이름1',
+// releaseManagerPhone: '출고연락처1',
+// }
+//modal
 
 const ProfileEdit = () => {
   const [input, setInput] = useState(init)
@@ -113,17 +143,25 @@ const ProfileEdit = () => {
     setShouldUpdateCustomer(true)
   }
 
+  // useEffect(() => {
+  //   const accessToken = sessionStorage.getItem('accessToken')
+  //   console.log(accessToken)
+  // }, [])
+  //
+
+  //TODO: 파일 추가 후에 왜 test1만 바뀌는지
   useEffect(() => {
     const updateCustomerData = async () => {
       if (shouldUpdateCustomer) {
         try {
           const accessToken = sessionStorage.getItem('accessToken')
-          const header = {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-          const response = await updateCustomer(input, header) //raw
+          console.log(accessToken)
+          // const header = {
+          //   headers: {
+          //     Authorization: `Bearer ${accessToken}`,
+          //   },
+          // }
+          const response = await updateCustomer(input) //raw
           console.log(response.data)
           alert('회원가입이 수정되셨습니다.')
         } catch (err) {
@@ -133,11 +171,58 @@ const ProfileEdit = () => {
         setShouldUpdateCustomer(false)
       }
     }
-
     updateCustomerData()
   }, [shouldUpdateCustomer])
   // -------------------------------------------------------------------------------
+  const [postFind, setPostFind] = useState(false)
+  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [address, setAddress] = useState('')
+  const [detailAddress, setDetailAddress] = useState('')
+  const [isDaumPostOpen, setIsDaumPostOpen] = useState(false)
+  const postCheck = () => {
+    setPostFind(false)
+  }
 
+  const directCheck = () => {
+    setPostFind(true)
+    setAddress('')
+    setDetailAddress('')
+    setInput({ ...input, address: '', addressDetail: '' })
+  }
+
+  const closeModal = () => {
+    setModalIsOpen(false)
+    setAddress('')
+    setDetailAddress('')
+    setInput({ ...input, address: '', addressDetail: '' })
+  }
+
+  const comfirmPost = () => {
+    setModalIsOpen(false)
+    setInput({ ...input, address: address, addressDetail: detailAddress })
+  }
+
+  const openModal = () => {
+    setModalIsOpen(true)
+  }
+  const daumPostHandleBtn = () => {
+    setIsDaumPostOpen(true)
+  }
+
+  const daumPostHandleComplete = (data) => {
+    const { address } = data
+    setAddress(address)
+    setIsDaumPostOpen(false)
+  }
+
+  const daumPosthandleClose = () => {
+    setIsDaumPostOpen(false)
+  }
+
+  const detailAddressHandler = (e) => {
+    const value = e.target.value
+    setDetailAddress(value)
+  }
   const radioDummy = ['법인사업자', '개인사업자']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
   const [savedRadioValue, setSavedRadioValue] = useState('')
@@ -212,8 +297,8 @@ const ProfileEdit = () => {
                   경매 담당자 정보<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <CustomInput name="memberTitle" placeholder="직함 입력" width={130} />
-                  <CustomInput name="memberName" placeholder=" 성함 입력" width={188} style={{ marginLeft: '5px' }} />
+                  <CustomInput name="title" placeholder="직함 입력" width={130} />
+                  <CustomInput name="name" placeholder=" 성함 입력" width={188} style={{ marginLeft: '5px' }} />
                 </FlexContent>
               </FlexPart>
 
@@ -222,7 +307,7 @@ const ProfileEdit = () => {
                   이메일<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="memberEmail" />
+                  <FlexInput name="email" />
                 </FlexContent>
               </FlexPart>
 
@@ -231,7 +316,7 @@ const ProfileEdit = () => {
                   휴대폰 번호<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="memberPhone" />
+                  <FlexInput name="customerPhone" />
                 </FlexContent>
               </FlexPart>
               <Bar />
@@ -296,6 +381,11 @@ const ProfileEdit = () => {
                   <AddBtn>추가하기</AddBtn>
                 </FlexContent>
               </FlexPart>
+              <FlexPart>
+                {/* <FlexContent>
+                  <FlexInput name="releaseManagerPhone" placeholder="연락처 입력 ('-' 제외)" />
+                </FlexContent> */}
+              </FlexPart>
             </Left>
             {/* -------------------------------------------------------------- */}
             <Right>
@@ -336,7 +426,7 @@ const ProfileEdit = () => {
                   회사 명<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="name" />
+                  <FlexInput name="customerName" />
                 </FlexContent>
               </FlexPart>
 
@@ -372,13 +462,15 @@ const ProfileEdit = () => {
                   주소<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <CustomInput name="address" width={223} />
+                  <CustomInput name="address" width={223} value={address} />
                   <CheckBtn
+                    type="button"
                     style={{
                       backgroundColor: 'black',
                       color: 'white',
                       fontSize: '16px',
                     }}
+                    onClick={openModal}
                   >
                     찾기
                   </CheckBtn>
@@ -387,9 +479,27 @@ const ProfileEdit = () => {
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  <FlexInput name="addressDetail" />
+                  <FlexInput name="addressDetail" value={detailAddress} />
                 </FlexContent>
               </FlexPart>
+
+              {modalIsOpen && (
+                <SignUpPost
+                  postCheck={postCheck}
+                  directCheck={directCheck}
+                  postFind={postFind}
+                  address={address}
+                  daumPostHandleBtn={daumPostHandleBtn}
+                  detailAddress={detailAddress}
+                  setDetailAddress={setDetailAddress}
+                  detailAddressHandler={detailAddressHandler}
+                  comfirmPost={comfirmPost}
+                  closeModal={closeModal}
+                  isDaumPostOpen={isDaumPostOpen}
+                  daumPosthandleClose={daumPosthandleClose}
+                  daumPostHandleComplete={daumPostHandleComplete}
+                />
+              )}
 
               <FlexPart>
                 <FlexTitle>
@@ -425,7 +535,9 @@ const ProfileEdit = () => {
                 </FlexTitle>
                 <FlexContent>
                   <CustomInput name="businessNumber" width={223} />
-                  <CheckBtn style={{ fontSize: '16px' }}>중복확인</CheckBtn>
+                  <CheckBtn style={{ fontSize: '16px' }} type="button">
+                    중복확인
+                  </CheckBtn>
                 </FlexContent>
               </FlexPart>
 
@@ -440,10 +552,28 @@ const ProfileEdit = () => {
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  <TxtDiv style={{ width: '100%' }}>
+                  {' '}
+                  <TxtDivNoborder className="no-border">
+                    <label htmlFor="ex_file">
+                      <div className="btnStart">
+                        <img src="/svg/Upload.svg" alt="btnStart" />
+                        <p htmlFor="ex_file">파일 첨부</p>
+                      </div>
+                    </label>
+                    {/* <img src="/svg/Upload.svg" alt="Upload" /> */}
+                    <input
+                      id="ex_file"
+                      type="file"
+                      accept="image/jpg, image/png, image/jpeg"
+                      style={{ display: 'none' }}
+                      // onChange={commonChange}
+                      // name="businessfile"
+                    ></input>
+                  </TxtDivNoborder>
+                  {/* <TxtDiv style={{ width: '100%' }}>
                     <img src="/svg/Upload.svg" />
                     <p>파일 첨부</p>
-                  </TxtDiv>
+                  </TxtDiv> */}
                 </FlexContent>
               </FlexPart>
 
@@ -458,10 +588,27 @@ const ProfileEdit = () => {
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  <TxtDiv style={{ width: '100%' }}>
+                  <TxtDivNoborder className="no-border">
+                    <label htmlFor="ex_file">
+                      <div className="btnStart">
+                        <img src="/svg/Upload.svg" alt="btnStart" />
+                        <p htmlFor="ex_file">파일 첨부</p>
+                      </div>
+                    </label>
+                    {/* <img src="/svg/Upload.svg" alt="Upload" /> */}
+                    <input
+                      id="ex_file"
+                      type="file"
+                      accept="image/jpg, image/png, image/jpeg"
+                      style={{ display: 'none' }}
+                      // onChange={commonChange}
+                      // name="businessfile"
+                    ></input>
+                  </TxtDivNoborder>
+                  {/* <TxtDiv style={{ width: '100%' }}>
                     <img src="/svg/Upload.svg" />
                     <p>파일 첨부</p>
-                  </TxtDiv>
+                  </TxtDiv> */}
                 </FlexContent>
               </FlexPart>
 

@@ -145,6 +145,22 @@ export const TxtDiv = styled.div`
   }
 `
 
+export const TxtDivNoborder = styled.div`
+  .btnStart {
+    display: flex;
+    width: 320px;
+    height: 40px;
+    border: none;
+
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  p {
+    margin-left: 10px;
+  }
+`
+
 export const SDropDown = styled.div`
   width: 100px;
   height: 40px;

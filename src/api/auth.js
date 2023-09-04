@@ -77,5 +77,6 @@ export function refresh(refreshToken) {
     유저 정보 업데이트
 ============================== */
 export function updateCustomer(data, header) {
+  console.log(data)
   return client.patch(urls.updateCustomer, data)
 }

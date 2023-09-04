@@ -465,6 +465,8 @@ const SignUp = () => {
   const [inputObj11, setInputObj11] = useState({ name: '', text: '' })
   const [inputObj12, setInputObj12] = useState({ name: '', text: '' })
 
+  const [files, setFiles] = useState({ registration: '', bankBook: '' })
+
   const commonChange = (e) => {
     const { name, value } = e.target
     const file = e.target.files ? e.target.files : null
@@ -494,10 +496,14 @@ const SignUp = () => {
       setInputObj8({ name: name, text: value })
     }
     if (name === 'businessfile' && file) {
-      setInputObj9({ name: name, text: value })
+      // setInputObj9({ name: name, text: value })
+      setFiles({ ...files, registration: file })
+      return
     }
     if (name === 'businessBankAddress' && file) {
-      setInputObj10({ name: name, text: value })
+      // setInputObj10({ name: name, text: value })
+      setFiles({ ...files, bankBook: file })
+      return
     }
     if (name === 'accountNumber') {
       setInputObj11({ name: name, text: value })
@@ -508,6 +514,8 @@ const SignUp = () => {
     //***submit form***
     setInput({ ...input, [name]: value })
     // businessfile, businessBankAddress는 file Object 일단 주석처리 하였음
+
+    //registration:businessfile, bankbook:businessBankAddress는
   }
 
   const customerNameValidate = useValidation(inputObj)
@@ -533,15 +541,15 @@ const SignUp = () => {
     })
 
     if (allKeysHaveValue) console.log(' ✅모든 input작성 완료')
-
     try {
-      const response = await signup(input)
+      const data = Object.assign(input, files)
+      const response = await signup(data)
       console.log(response.data)
       alert('회원가입되었습니다!')
       // navigate('/')
     } catch (err) {
       // alert('ERROR::등록되지 않았습니다!')
-      alert(err.data.message)
+      // alert(err.data.message)
       console.log(err.data)
     }
   }
@@ -713,8 +721,8 @@ const SignUp = () => {
                     <TxtInput
                       placeholder="상세 주소를 입력해 주세요."
                       name="addressDetail"
-                      // value={detailAddress}
-                      value={inputObj.address}
+                      value={detailAddress}
+                      // value={}
                       style={{ marginTop: '5px' }}
                       onChange={commonChange}
                     />
@@ -898,7 +906,7 @@ const SignUp = () => {
                       accept="image/jpg, image/png, image/jpeg"
                       style={{ display: 'none' }}
                       onChange={commonChange}
-                      // name="businessfile"
+                      name="businessfile"
                     ></input>
                   </TxtDiv>
                 </Part>
@@ -919,7 +927,7 @@ const SignUp = () => {
                       accept="image/jpg, image/png, image/jpeg"
                       style={{ display: 'none' }}
                       onChange={commonChange}
-                      // name="businessBankAddress"
+                      name="businessBankAddress"
                     ></input>
                   </TxtDiv>
                 </Part>

@@ -48,7 +48,7 @@ export const useValidation = (inputObj) => {
 
   if (!numberEnglishRegex.test(text) && ['memberEmail'].includes(check)) return validateMsg[check]
 
-  if (['businessfile', 'businessBankAddress'].includes(check)) return validateMsg[check]
+  if (!text && ['businessfile', 'businessBankAddress'].includes(check)) return validateMsg[check]
 
   if (!koreanAccountNumberRegex.test(text) && ['accountNumber'].includes(check)) return validateMsg[check]
 
