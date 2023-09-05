@@ -76,7 +76,26 @@ export function refresh(refreshToken) {
 /* ==============================
     유저 정보 업데이트
 ============================== */
-export function updateCustomer(data, header) {
-  console.log(data)
-  return client.patch(urls.updateCustomer, data)
+export function updateCustomer(input, fileForms) {
+  console.log('input', input)
+  console.log('fileForms', fileForms)
+  const form = new FormData()
+  form.append(
+    'request',
+    new Blob([JSON.stringify(input)], {
+      type: 'application/json',
+    }),
+  )
+  // fileForms에 있는 파일 정보 추가
+  if (fileForms.deleteBusinessNumberFile instanceof File) {
+    form.append('deleteBusinessNumberFile', fileForms.deleteBusinessNumberFile)
+  }
+  if (fileForms.deleteBankbookFile instanceof File) {
+    form.append('deleteBankbookFile', fileForms.deleteBankbookFile)
+  }
+  return client.patch(urls.updateCustomer, form, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
 }

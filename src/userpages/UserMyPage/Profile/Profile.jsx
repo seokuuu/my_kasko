@@ -40,14 +40,12 @@ import { updateCustomer } from '../../../api/auth'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
 
 const init = {
-  uid: 1,
   password: '',
   title: '',
   name: '',
   email: '',
   phone: '',
-
-  customerUid: 2,
+  customerUid: 17,
   type: '',
   customerName: '',
   ceoName: '',
@@ -65,40 +63,40 @@ const init = {
   releaseManagerTitle: '',
   releaseManagerName: '',
   releaseManagerPhone: '',
+  deleteBusinessNumberFile: '',
+  deleteBankbookFile: '',
 }
-// const test = {
-//   uid: 1,
-// password: '12345678',
-// title: '직함111',
-// name: '이름111',
-// email: '이메일111',
-// phone: '연락처111',
-
-// customerUid: 2,
-// type: '법인',
-// customerName: '회사명1',
-// ceoName: '대표자명1',
-// customerPhone: '01012341234',
-// fax: '12341234',
-// address: '주소1',
-// addressDetail: '상세주소1',
-// businessType: [''],
-// businessNumber: '123455',
-// bank: '은행1',
-// accountNumber: '123123-123123',
-// depositManagerTitle: '입금직함1',
-// depositManagerName: '입금이름1',
-// depositManagerPhone: '입금연락처1',
-// releaseManagerTitle: '출고직함1',
-// releaseManagerName: '출고이름1',
-// releaseManagerPhone: '출고연락처1',
-// }
-//modal
 
 const ProfileEdit = () => {
   const [input, setInput] = useState(init)
   const [isUser, setIsUser] = useState(false)
   const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
+  const [checkFileName, setCheckFileName] = useState({ deleteBusinessNumberFile: '', deleteBankbookFile: '' })
+  const [fileForms, setFileForms] = useState({ registration: '', bankbook: '' })
+
+  const handleFiles = (e) => {
+    const name = e.target.name
+    const file = e.target.files[0]
+    const fileName = e.target.files[0].name
+    if (checkFileName.hasOwnProperty(name)) {
+      setCheckFileName((prev) => ({
+        ...prev,
+        [name]: fileName,
+      }))
+      if (name === 'deleteBusinessNumberFile') {
+        setFileForms((prev) => ({
+          ...prev,
+          registration: file,
+        }))
+      }
+      if (name === 'deleteBankbookFile') {
+        setFileForms((prev) => ({
+          ...prev,
+          bankbook: file,
+        }))
+      }
+    }
+  }
 
   useEffect(() => {
     const token = {
@@ -120,15 +118,16 @@ const ProfileEdit = () => {
     }))
   }
 
-  // checked 빼고 submit하기 (checkbox는 따로 useState로 하였음)
+  // checked,file 빼고 submit하기 (checkbox는 따로 useState로 하였음)
   const handleSubmit = async (e) => {
     e.preventDefault()
     const checkboxType = ['bank', 'depositManagerTitle', 'releaseManagerTitle']
+    const fileType = ['deleteBusinessNumberFile', 'deleteBankbookFile']
     const formData = new FormData(e.target)
     const updatedInput = { ...input }
 
     formData.forEach((value, key) => {
-      if (input.hasOwnProperty(key) && value && !checkboxType.includes(key)) {
+      if (input.hasOwnProperty(key) && value && !checkboxType.includes(key) && !fileType.includes(key)) {
         updatedInput[key] = value
       }
     })
@@ -139,29 +138,17 @@ const ProfileEdit = () => {
         // return
       }
     }
-    setInput({ ...input, ...updatedInput })
+    setInput({ ...input, ...updatedInput, ...checkFileName })
+    console.log('input', input)
     setShouldUpdateCustomer(true)
   }
-
-  // useEffect(() => {
-  //   const accessToken = sessionStorage.getItem('accessToken')
-  //   console.log(accessToken)
-  // }, [])
-  //
 
   //TODO: 파일 추가 후에 왜 test1만 바뀌는지
   useEffect(() => {
     const updateCustomerData = async () => {
       if (shouldUpdateCustomer) {
         try {
-          const accessToken = sessionStorage.getItem('accessToken')
-          console.log(accessToken)
-          // const header = {
-          //   headers: {
-          //     Authorization: `Bearer ${accessToken}`,
-          //   },
-          // }
-          const response = await updateCustomer(input) //raw
+          const response = await updateCustomer(input, fileForms)
           console.log(response.data)
           alert('회원가입이 수정되셨습니다.')
         } catch (err) {
@@ -546,7 +533,12 @@ const ProfileEdit = () => {
                   사업자등록증<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput />
+                  {/* <FlexInput></FlexInput> */}
+                  {checkFileName.deleteBusinessNumberFile ? (
+                    checkFileName.deleteBusinessNumberFile
+                  ) : (
+                    <FlexInput></FlexInput>
+                  )}
                 </FlexContent>
               </FlexPart>
               <FlexPart>
@@ -566,6 +558,8 @@ const ProfileEdit = () => {
                       type="file"
                       accept="image/jpg, image/png, image/jpeg"
                       style={{ display: 'none' }}
+                      onChange={handleFiles}
+                      name="deleteBusinessNumberFile"
                       // onChange={commonChange}
                       // name="businessfile"
                     ></input>
@@ -582,14 +576,15 @@ const ProfileEdit = () => {
                   통장사본<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput />
+                  {/* <FlexInput></FlexInput> */}
+                  {checkFileName.deleteBankbookFile ? checkFileName.deleteBankbookFile : <FlexInput></FlexInput>}
                 </FlexContent>
               </FlexPart>
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
                   <TxtDivNoborder className="no-border">
-                    <label htmlFor="ex_file">
+                    <label htmlFor="ex_file2">
                       <div className="btnStart">
                         <img src="/svg/Upload.svg" alt="btnStart" />
                         <p htmlFor="ex_file">파일 첨부</p>
@@ -597,12 +592,12 @@ const ProfileEdit = () => {
                     </label>
                     {/* <img src="/svg/Upload.svg" alt="Upload" /> */}
                     <input
-                      id="ex_file"
+                      id="ex_file2"
                       type="file"
                       accept="image/jpg, image/png, image/jpeg"
                       style={{ display: 'none' }}
-                      // onChange={commonChange}
-                      // name="businessfile"
+                      onChange={handleFiles}
+                      name="deleteBankbookFile"
                     ></input>
                   </TxtDivNoborder>
                   {/* <TxtDiv style={{ width: '100%' }}>
