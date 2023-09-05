@@ -5,6 +5,10 @@ export const TxtInput = styled.input`
   height: 40px;
   border: 1px solid #c1c1c1c5;
   font-size: 16px;
+
+  &[disabled] {
+    background: #c8c8c8;
+  }
 `
 
 export const TxtCheckInput = styled.input`
@@ -97,4 +101,11 @@ export const Unit = styled.span`
   font-size: 16px;
   margin-left: 5px;
   margin-right: 5px;
+`
+
+export const PropsInput = styled.input`
+  font-size: 16px;
+  width: ${(props) => (props.per ? `${props.per}%` : props.px ? `${props.px}px` : '100%')};
+  height: 40px;
+  border: 1px solid #c1c1c1c5;
 `

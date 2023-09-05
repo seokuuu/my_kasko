@@ -25,9 +25,9 @@ import { StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/
 
 import { CheckImg2 } from '../../../common/Check/CheckImg'
 
-import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
+import { BtnWrap, BlackBtn, WhiteBtn, WhiteRedBtn } from '../../../common/Button/Button'
 
-const UserPost = () => {
+const UserEdit = () => {
   // Radio 관련
   const radioDummy = ['창고', '운송사', '현대제철', '카스코 철강'] // 더미 데이터
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
@@ -73,7 +73,7 @@ const UserPost = () => {
 
   return (
     <OnePageContainer>
-      <MainTitle>사용자 등록</MainTitle>
+      <MainTitle>사용자 수정</MainTitle>
       <OnePageSubContainer>
         <HalfWrap>
           <Left>
@@ -82,14 +82,16 @@ const UserPost = () => {
                 <h4>아이디</h4>
                 <p></p>
               </Title>
-              <TxtInput />
+              <TxtInput disabled />
             </Part>
             <Part>
               <Title>
                 <h4>비밀번호</h4>
                 <p></p>
               </Title>
-              <TxtInput />
+              <WhiteRedBtn style={{ width: '320px' }} height={40}>
+                비밀번호 초기화
+              </WhiteRedBtn>
             </Part>
           </Left>
           <Right>
@@ -106,8 +108,8 @@ const UserPost = () => {
                 <h4>이메일</h4>
                 <p></p>
               </Title>
-              <div style={{ display: 'flex' }}>
-                <Inputa /> <span>@</span>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Inputa /> <span style={{ margin: '5px' }}>@</span>
                 <div>
                   <CustomSelect width={180} options={emailOptions} defaultValue={emailOptions[0]} />
                 </div>
@@ -186,7 +188,7 @@ const UserPost = () => {
   )
 }
 
-export default UserPost
+export default UserEdit
 
 export const RadioContainer = styled.div`
   width: max-content;

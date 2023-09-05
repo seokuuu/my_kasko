@@ -12,6 +12,7 @@ import Test4 from './pages/Test/Test4'
 
 import ClaimRegisterPage from './pages/Shipping/Claim/ClaimRegisterPage'
 import CarrierPostPage from './pages/UserManage/CarrierManage/CarrierPostPage'
+import CarrierEditPage from './pages/UserManage/CarrierManage/CarrierEditPage'
 
 import IncomingPage from './pages/Stock/Incoming/IncomingPage'
 import InventoryPage from './pages/Stock/Inventory/InventoryPage'
@@ -74,6 +75,7 @@ import ProfileEditPage from './pages/UserManage/ProfileEdit/ProfileEditPage'
 
 import DestinationPostPage from './pages/UserManage/ClientDestination/DestinationPostPage'
 import UserPostPage from './pages/UserManage/UserManage/UserPostPage'
+import UserEditPage from './pages/UserManage/UserManage/UserEditPage'
 
 // 운영 관리
 import OperationPage from './pages/Operate/Operation/Operation/OperationPage'
@@ -82,6 +84,7 @@ import InventoryOperPage from './pages/Operate/Operation/Inventory/InventoryPage
 //운영 관리 - 노출 관리
 import PopupPage from './pages/Operate/Exposure/Popup/PopupPage'
 import NoticeBoardPage from './pages/Operate/Exposure/NoticeBoard/NoticeBoardPage'
+import PopupPostPage from './pages/Operate/Exposure/Popup/PopupPostPage'
 
 //운영 관리 - 일반 관리
 import ClaimPage from './pages/Operate/Common/Claim/ClaimPage'
@@ -218,10 +221,13 @@ const Router = () => {
         <Route path="/usermanage">
           {/* 사용자 관리 - 사용자 등록 버튼 - 사용자 등록 */}
           <Route path="/usermanage/usermanage/userpost" element={<UserPostPage />}></Route>
+          <Route path="/usermanage/usermanage/useredit" element={<UserEditPage />}></Route>
+
           {/* 고객사 목적지 관리 - 버튼 - 고객사 목적지 등록 */}
           <Route path="/usermanage/clientdestination/destinationpost" element={<DestinationPostPage />}></Route>
           {/* 운송사 관리 - 운송사 등록 */}
           <Route path="/usermanage/carrierpost" element={<CarrierPostPage />}></Route>
+          <Route path="/usermanage/carrieredit" element={<CarrierEditPage />}></Route>
           <Route path="/usermanage/client" element={<ClientPage />}></Route>
           <Route path="/usermanage/clientdestination" element={<ClientDestiantionPage />}></Route>
           <Route path="/usermanage/usermanage" element={<UserManagePage />}></Route>
@@ -236,6 +242,7 @@ const Router = () => {
           <Route path="/operate/inventory" element={<InventoryOperPage />}></Route>
           <Route path="/operate/common" element={<ClaimPage />}></Route>
           <Route path="/operate/exposure" element={<PopupPage />}></Route>
+          <Route path="/operate/popuppost" element={<PopupPostPage />}></Route>
           <Route path="/operate/faq" element={<FAQPage />}></Route>
           <Route path="/operate/noticeboard" element={<NoticeBoardPage />}></Route>
           <Route path="/operate/notice" element={<NoticePage />}></Route>

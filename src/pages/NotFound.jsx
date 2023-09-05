@@ -1,4 +1,4 @@
-import useState from 'react'
+import { useState, startTransition } from 'react'
 import { useAtom } from 'jotai'
 import { headerAtom, accordionAtom, subHeaderAtom } from '../store/Layout/Layout'
 import { styled } from 'styled-components'
@@ -14,6 +14,13 @@ const NotFound = () => {
   setShowAccordion(false)
   setShowSubHeader(false)
   const navigate = useNavigate()
+
+  const goToHome = () => {
+    startTransition(() => {
+      navigate('/')
+    })
+  }
+
   return (
     <Wrap>
       <NotFoundWrap>
@@ -37,10 +44,8 @@ const NotFound = () => {
               >
                 이전페이지
               </SkyBtn>
-              <SkyBtn width={35} height={40} fontSize={18}>
-                <Link to={`/`} style={{ color: 'white' }}>
-                  카스코 철강 홈
-                </Link>
+              <SkyBtn onClick={goToHome} width={35} height={40} fontSize={18}>
+                카스코 철강 홈
               </SkyBtn>
             </BtnWrap>
           </div>
