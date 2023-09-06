@@ -1,9 +1,9 @@
-import { styled } from 'styled-components';
-import Select from 'react-select';
-import KaskoTheme from '../../styles/KaskoTheme';
+import { styled } from 'styled-components'
+import Select from 'react-select'
+import KaskoTheme from '../../styles/KaskoTheme'
 
 export const CenterRectangleWrap = styled.div`
-  width: 50%;
+  width: 60%;
   height: min-content;
   display: flex;
   justify-content: center;
@@ -11,7 +11,7 @@ export const CenterRectangleWrap = styled.div`
   margin-left: auto;
   margin-right: auto;
   padding: 20px;
-`;
+`
 
 export const OnePageContainer = styled.div`
   width: 65%;
@@ -22,7 +22,7 @@ export const OnePageContainer = styled.div`
   border: 1px solid black;
   min-height: 88vh;
   max-height: 100vh;
-`;
+`
 
 export const OnePageFlexContainer = styled.div`
   width: 1200px;
@@ -33,7 +33,7 @@ export const OnePageFlexContainer = styled.div`
   border: 1px solid black;
   min-height: 88vh;
   height: fit-content;
-`;
+`
 
 export const OnePageFlexSubContainer = styled.div`
   padding-left: 3%;
@@ -47,7 +47,7 @@ export const OnePageFlexSubContainer = styled.div`
   h1 {
     font-size: 20px;
   }
-`;
+`
 
 export const OnePageSubContainer = styled.div`
   padding-left: 10%;
@@ -55,14 +55,14 @@ export const OnePageSubContainer = styled.div`
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-`;
+`
 
 export const MainTitle = styled.div`
   display: flex;
   justify-content: center;
   font-size: 24px;
   margin: 40px auto;
-`;
+`
 
 export const Titles = styled.div`
   width: 80%;
@@ -72,7 +72,7 @@ export const Titles = styled.div`
   gap: 10px;
   font-size: 24px;
   margin: 40px auto;
-`;
+`
 
 export const TitleChild = styled.div`
   font-size: 20px;
@@ -89,7 +89,7 @@ export const TitleChild = styled.div`
     color: 1px solid #17479e;
     cursor: pointer;
   }
-`;
+`
 
 export const FullWrap = styled.div`
   display: flex;
@@ -101,7 +101,7 @@ export const FullWrap = styled.div`
     border: 1px solid #c8c8c8;
     width: 100%;
   }
-`;
+`
 
 export const FWTitle = styled.div`
   display: flex;
@@ -114,31 +114,31 @@ export const FWTitle = styled.div`
     font-size: 16px;
     color: #6b6b6b;
   }
-`;
+`
 
 export const HalfWrap = styled.div`
   justify-content: space-evenly;
   display: flex;
-`;
+`
 
 export const Left = styled.div`
   width: 45%;
-`;
+`
 
 export const Right = styled.div`
   width: 45%;
-`;
+`
 
 export const Contour = styled.div`
   width: 95%;
   border-bottom: 1px solid #c1c1c1c5;
   margin: 20px auto;
-`;
+`
 
 export const Part = styled.div`
   margin-bottom: 20px;
   max-width: 345px;
-`;
+`
 
 export const Title = styled.div`
   display: flex;
@@ -147,7 +147,7 @@ export const Title = styled.div`
     position: relative;
     margin-left: 4px;
   }
-`;
+`
 
 export const FlexPart = styled.div`
   width: 500px;
@@ -156,45 +156,45 @@ export const FlexPart = styled.div`
   align-items: center;
 
   span {
-    color: ${props => props.theme.colors.StatAlert};
+    color: ${(props) => props.theme.colors.StatAlert};
   }
-`;
+`
 
 export const FlexTitle = styled.div`
   width: 35%;
-`;
+`
 
 export const FlexContent = styled.div`
   width: 65%;
   display: flex;
-`;
+`
 
 export const OnePageSelect = styled(Select)`
   width: 200px;
   text-align: center;
   line-height: 26px;
   margin-right: 5px;
-`;
+`
 
 export const Alert = styled.p`
   font-size: 16px;
   color: ${KaskoTheme.colors.StatAlert};
-`;
+`
 
 export const At = styled.div`
   margin: 7px 7px;
-`;
+`
 
 export const FullWrap2 = styled.div`
   width: 100%;
   height: fit-content;
-`;
+`
 
 export const Bar = styled.div`
   border-bottom: 2px solid #f1f1f1;
   width: 103%;
   margin: 30px 0px;
-`;
+`
 
 export const EqualCheckWrap = styled.div`
   display: flex;
@@ -202,7 +202,7 @@ export const EqualCheckWrap = styled.div`
   width: 99%;
   font-size: 16px;
   margin-bottom: 5px;
-`;
+`
 
 export const AddBtn = styled.div`
   width: 100%;
@@ -210,10 +210,11 @@ export const AddBtn = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${props => props.theme.colors.PriNormal};
-  border: 1px solid ${props => props.theme.colors.PriNormal};
+  color: ${(props) => props.theme.colors.PriNormal};
+  border: 1px solid ${(props) => props.theme.colors.PriNormal};
   cursor: pointer;
   &:hover {
-    border: 2px solid ${props => props.theme.colors.PriNormal};
+    border: 2px solid ${(props) => props.theme.colors.PriNormal};
   }
-`;
+`
+

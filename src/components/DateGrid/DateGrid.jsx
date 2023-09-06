@@ -30,6 +30,7 @@ export default DateGrid
 
 const PickerWrap = styled.div`
   display: flex;
+  justify-content: space-between;
   position: relative;
   min-width: 180px;
   height: 40px;
@@ -52,7 +53,7 @@ const SDatePicker = styled(DatePicker)`
 
 const PickerImg = styled.img`
   position: relative;
-  right: -5px;
+  right: 5px;
   width: 20px;
 
   cursor: pointer;
