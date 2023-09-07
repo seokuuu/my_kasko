@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { Typography } from '@mui/material';
+import { useState } from 'react'
+import { Typography } from '@mui/material'
 
-import { styled } from 'styled-components';
-import { Link } from 'react-router-dom';
-import { useAtom } from 'jotai';
-import { calendarAtom } from '../../store/Layout/Layout';
-import CalendarModal from '../../modal/Calender/Calendar';
+import { styled, css } from 'styled-components'
+import { Link } from 'react-router-dom'
+import { useAtom } from 'jotai'
+import { calendarAtom } from '../../store/Layout/Layout'
+import CalendarModal from '../../modal/Calender/Calendar'
 
 import {
   SideBarWrap,
@@ -21,7 +21,7 @@ import {
   AcTopCal,
   AcTopLeft,
   ACTopRight,
-} from './SideBar.Style';
+} from './SideBar.Style'
 
 const data = [
   {
@@ -111,22 +111,22 @@ const data = [
       { title: '푸터 관리', link: 'operate/footer' },
     ],
   },
-];
+]
 
 const SideBar = ({ expanded, setExpanded, depth2Color }) => {
-  const [calModal, setCalModal] = useAtom(calendarAtom);
+  const [calModal, setCalModal] = useAtom(calendarAtom)
 
   const closeModal = () => {
-    setCalModal(false);
-  };
+    setCalModal(false)
+  }
 
-  const handleModalClick = event => {
-    event.stopPropagation();
-  };
+  const handleModalClick = (event) => {
+    event.stopPropagation()
+  }
 
-  const handleChange = panel => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false)
+  }
   return (
     <SideBarWrap>
       {calModal && (
@@ -151,11 +151,7 @@ const SideBar = ({ expanded, setExpanded, depth2Color }) => {
           </AcTopCal>
         </AcTop>
         {data.map((item, index) => (
-          <StyledAccordion
-            key={index}
-            expanded={expanded === item.depth1}
-            onChange={handleChange(item.depth1)}
-          >
+          <StyledAccordion key={index} expanded={expanded === item.depth1} onChange={handleChange(item.depth1)}>
             <StyledAccordionSummary
               expandIcon={<AccSwitch />}
               aria-controls={`panel${index + 1}-content`}
@@ -166,10 +162,7 @@ const SideBar = ({ expanded, setExpanded, depth2Color }) => {
             <StyledAccordionDetails>
               <Typography>
                 {item.depth2.map((subItem, subIndex) => (
-                  <TypoContent
-                    key={subIndex}
-                    isIncoming={subItem.title === depth2Color}
-                  >
+                  <TypoContent key={subIndex} isIncoming={subItem.title === depth2Color}>
                     <Link to={`/${subItem.link}`}>
                       <Depth2>{subItem.title}</Depth2>
                     </Link>
@@ -181,10 +174,10 @@ const SideBar = ({ expanded, setExpanded, depth2Color }) => {
         ))}
       </AccordionWrap>
     </SideBarWrap>
-  );
-};
+  )
+}
 
-export default SideBar;
+export default SideBar
 
 const ModalBg = styled.div`
   position: fixed;
@@ -197,10 +190,10 @@ const ModalBg = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 1000; // 모달보다 높은 z-index
-`;
+`
 
 const CalModalWrap = styled.div`
   position: absolute;
   z-index: 1000;
   border: 1px solid black;
-`;
+`

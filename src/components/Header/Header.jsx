@@ -1,21 +1,26 @@
-import React from 'react';
-import { styled } from 'styled-components';
-import { Link } from 'react-router-dom';
+import React, { startTransition } from 'react'
+import { styled } from 'styled-components'
+import { useNavigate } from 'react-router-dom'
 
 const Header = () => {
+  const navigate = useNavigate()
+
+  const goToHome = () => {
+    startTransition(() => {
+      navigate('/')
+    })
+  }
   //Header에 headerAtom 관리하는 스위치 만들어놓자
   return (
     <HeaderWrap>
       <div style={{ marginLeft: '20px' }}>
-        <Link to={`/`}>
-          <img src="/img/header_logo.png" />
-        </Link>
+        <img src="/img/header_logo.png" onClick={goToHome} style={{ cursor: 'pointer' }} />
       </div>
     </HeaderWrap>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header
 
 const HeaderWrap = styled.div`
   display: flex;
@@ -29,4 +34,4 @@ const HeaderWrap = styled.div`
   @media (max-width: 1844px) {
     width: 1200px;
   }
-`;
+`
