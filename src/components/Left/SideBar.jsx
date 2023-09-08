@@ -150,8 +150,14 @@ const SideBar = ({ expanded, setExpanded, depth2Color }) => {
             </ACTopRight>
           </AcTopCal>
         </AcTop>
+
         {data.map((item, index) => (
-          <StyledAccordion key={index} expanded={expanded === item.depth1} onChange={handleChange(item.depth1)}>
+          <StyledAccordion
+            style={{ margin: '0px' }}
+            key={index}
+            expanded={expanded === item.depth1}
+            onChange={handleChange(item.depth1)}
+          >
             <StyledAccordionSummary
               expandIcon={<AccSwitch />}
               aria-controls={`panel${index + 1}-content`}
