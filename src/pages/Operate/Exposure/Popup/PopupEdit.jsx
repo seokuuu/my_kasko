@@ -44,7 +44,7 @@ const PopupPost = () => {
     <>
       <CenterRectangleWrap>
         <CRWMain>
-          <h5>팝업 등록</h5>
+          <h5>팝업 수정</h5>
           <div style={{ marginBottom: '10px' }}>
             <PropsInput placeholder="제목을 입력해 주세요." />
           </div>
@@ -99,7 +99,7 @@ const PopupPost = () => {
                 돌아가기
               </WhiteBtn>
               <BlackBtn width={90} height={50}>
-                저장
+                수정 완료
               </BlackBtn>
             </BtnWrap>
           </CRWSub>

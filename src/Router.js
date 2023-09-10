@@ -146,6 +146,7 @@ import DispatchDetail from './modal/Multi/DispatchDetail'
 import Transport from './modal/Multi/Transport'
 import Consolidation from './modal/Multi/Consolidation'
 import Client from './modal/Multi/Client'
+import Countdown from './components/Countdown/Countdown'
 
 const Router = () => {
   return (
@@ -155,7 +156,7 @@ const Router = () => {
         <Route path="/test" element={<Test />} />
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
-        <Route path="/test4" element={<Test4 />} />
+        <Route path="/test4" element={<Countdown />} />
         <Route path="/common" element={<SalesProduct />} />
 
         <Route path="/*" element={<NotFound />} />

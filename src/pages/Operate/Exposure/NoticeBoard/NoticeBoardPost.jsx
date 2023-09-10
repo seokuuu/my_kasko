@@ -14,12 +14,14 @@ import { CheckBox } from '../../../../common/Check/Checkbox'
 import { CheckImg2 } from '../../../../common/Check/CheckImg'
 
 import { DateTitle, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../../components/MapTable/MapTable'
-import { CustomInput, InputA, PropsInput } from '../../../../common/Input/Input'
+import { CustomInput, InputA, PropsInput, PropsTextArea } from '../../../../common/Input/Input'
 import { ExCheckWrap } from '../../../../modal/External/ExternalFilter'
 import { Input } from '../../../User/Login/Login.Styled'
 import { CustomSelect } from '../../../../common/Option/Main'
+import { ExRadioWrap } from '../../../../modal/External/ExternalFilter'
+import { RadioMainDiv, RadioInnerCircleDiv, RadioCircleDiv } from '../../../../common/Check/RadioImg'
 // 클레임 등록
-const PopupPost = () => {
+const NoticeBoardPost = () => {
   const checkDummy = ['노출 안함']
 
   const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
@@ -40,55 +42,53 @@ const PopupPost = () => {
     // });
   }, [check])
 
+  const radioDummy = ['노출', '미노출']
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+
   return (
     <>
       <CenterRectangleWrap>
         <CRWMain>
-          <h5>팝업 등록</h5>
-          <div style={{ marginBottom: '10px' }}>
-            <PropsInput placeholder="제목을 입력해 주세요." />
+          <h5>전광판 등록</h5>
+          <div style={{ marginBottom: '10px', display: 'flex' }}>
+            <PropsTextArea
+              style={{ marginLeft: 'auto', marginRight: 'auto' }}
+              per={90}
+              height={260}
+              placeholder="질문 내용을 입력해주세요. 띄어쓰기 포함하여 최대 80자까지 가능합니다."
+              maxLength={80}
+            />
           </div>
 
-          <TextEditor />
-          <BottomWrap>
-            <BottomOne style={{ marginTop: '20px' }}>
-              <div>노출 기간</div>
-              <div>
-                <ExCheckWrap>
-                  {checkDummy.map((x, index) => (
-                    <StyledCheckMainDiv>
-                      <StyledCheckSubSquDiv
-                        onClick={() => setCheck(CheckBox(check, check.length, index, true))}
-                        isChecked={check[index]}
+          <BottomWrap style={{ width: '100%', display: 'flex', height: '450px' }}>
+            <BottomOne
+              style={{
+                width: '90%',
+
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                alignItems: 'normal',
+                paddingTop: '50px',
+                display: 'block',
+              }}
+            >
+              <div style={{ fontSize: '18px' }}>전광판 노출 여부</div>
+              <div style={{ display: 'flex' }}>
+                <ExRadioWrap style={{ padding: '0', marginTop: '10px', gap: '300px' }}>
+                  {radioDummy.map((text, index) => (
+                    <RadioMainDiv key={index}>
+                      <RadioCircleDiv
+                        isChecked={checkRadio[index]}
+                        onClick={() => {
+                          setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
+                        }}
                       >
-                        <CheckImg2 src="/svg/check.svg" />
-                      </StyledCheckSubSquDiv>
-                      <p style={{ fontSize: '16px' }}>{x}</p>
-                    </StyledCheckMainDiv>
+                        <RadioInnerCircleDiv />
+                      </RadioCircleDiv>
+                      <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
+                    </RadioMainDiv>
                   ))}
-                </ExCheckWrap>
-              </div>
-            </BottomOne>
-            <BottomOne>
-              <div style={{ width: '48%' }}>
-                <DateGrid />
-              </div>
-              <div style={{ width: '48%' }}>
-                <DateGrid />
-              </div>
-            </BottomOne>
-            <BottomOne style={{ margin: '20px 0px' }}>
-              <div style={{ width: '48%' }}>
-                <p style={{ marginBottom: '5px' }}>메인 팝업</p>
-                <div>
-                  <CustomSelect style={{ width: '100%' }} />
-                </div>
-              </div>
-              <div style={{ width: '48%' }}>
-                <p style={{ marginBottom: '5px' }}>팝업 링크</p>
-                <div style={{ width: '48%' }}>
-                  <InputA style={{ width: '209%' }} placeholder="http://kasco.co.kr" />
-                </div>
+                </ExRadioWrap>
               </div>
             </BottomOne>
           </BottomWrap>
@@ -109,7 +109,7 @@ const PopupPost = () => {
   )
 }
 
-export default PopupPost
+export default NoticeBoardPost
 
 export const CRWMain = styled.div`
   width: 100%;

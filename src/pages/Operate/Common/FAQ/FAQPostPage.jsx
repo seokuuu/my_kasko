@@ -1,15 +1,12 @@
-import React from 'react';
+import React from 'react'
 
-import {
-  OverAllMain,
-  OverAllSub,
-} from '../../../../common/Overall/Overall.styled';
+import { OverAllMain, OverAllSub } from '../../../../common/Overall/Overall.styled'
 
-import SideBar from '../../../../components/Left/SideBar';
-import Header from '../../../../components/Header/Header';
-import SubHeader from '../../../../components/Header/SubHeader';
+import SideBar from '../../../../components/Left/SideBar'
+import Header from '../../../../components/Header/Header'
+import SubHeader from '../../../../components/Header/SubHeader'
 
-import FAQPost from './FAQPost';
+import FAQPost from './FAQPost'
 
 const FAQPostPage = () => {
   return (
@@ -23,7 +20,7 @@ const FAQPostPage = () => {
         </OverAllSub>
       </OverAllMain>
     </>
-  );
-};
+  )
+}
 
-export default FAQPostPage;
+export default FAQPostPage

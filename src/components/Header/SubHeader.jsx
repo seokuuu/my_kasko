@@ -1,16 +1,19 @@
-import React from 'react';
-import { styled } from 'styled-components';
+import React from 'react'
+import { styled } from 'styled-components'
+import Countdown from '../Countdown/Countdown'
 
 const SubHeader = () => {
   return (
     <SubHeaderContainer>
       <SubHeadLeft>[알림] 1회차 14:00시 경매 진행 중 입니다.</SubHeadLeft>
-      <SubHeadRight>Countdown </SubHeadRight>
+      <SubHeadRight>
+        <Countdown />
+      </SubHeadRight>
     </SubHeaderContainer>
-  );
-};
+  )
+}
 
-export default SubHeader;
+export default SubHeader
 
 const SubHeaderContainer = styled.div`
   width: 100%;
@@ -21,12 +24,12 @@ const SubHeaderContainer = styled.div`
   justify-content: space-between;
   border: 1px solid #bfbfbf;
   background-color: white;
-`;
+`
 
 const SubHeadLeft = styled.div`
   color: red;
-`;
+`
 
 const SubHeadRight = styled.div`
   color: blue;
-`;
+`

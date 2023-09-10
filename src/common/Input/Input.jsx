@@ -109,3 +109,10 @@ export const PropsInput = styled.input`
   height: 40px;
   border: 1px solid #c1c1c1c5;
 `
+export const PropsTextArea = styled.textarea`
+  font-size: 16px;
+  width: ${(props) => (props.per ? `${props.per}%` : props.px ? `${props.px}px` : '100%')};
+  height: ${(props) => props.height}px;
+  border: 1px solid #c1c1c1c5;
+  padding: 12px 24px 12px 24px;
+`
