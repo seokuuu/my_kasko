@@ -130,7 +130,6 @@ export const WhiteSkyBtn = styled.div`
   cursor: pointer;
   padding: 5px 10px 5px 10px;
   border-radius: 3px;
-  display: flex;
 
   img {
     margin-right: 5px;
@@ -169,6 +168,9 @@ export const WhiteRedBtn = styled.div`
   padding: 5px 10px 5px 10px;
   border-radius: 3px;
   display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
 
   img {
     margin-right: 5px;

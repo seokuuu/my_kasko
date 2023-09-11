@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { styled } from 'styled-components';
-import { storageOptions } from '../../common/Option/SignUp';
-import { DefaultSelect } from '../../common/Option/SignUp';
-import Select from 'react-select';
-import { MainSelect } from '../../common/Option/Main';
-import { BlackBtn, BtnWrap } from '../../common/Button/Button';
-import DateGrid from '../../components/DateGrid/DateGrid';
-import { ToggleBtn, Circle, Wrapper } from '../../common/Toggle/Toggle';
-import { GreyBtn } from '../../common/Button/Button';
-import Test3 from './Test3';
+import { useState } from 'react'
+import { styled } from 'styled-components'
+import { storageOptions } from '../../common/Option/SignUp'
+import { DefaultSelect } from '../../common/Option/SignUp'
+import Select from 'react-select'
+import { MainSelect } from '../../common/Option/Main'
+import { BlackBtn, BtnWrap } from '../../common/Button/Button'
+import DateGrid from '../../components/DateGrid/DateGrid'
+import { ToggleBtn, Circle, Wrapper } from '../../common/Toggle/Toggle'
+import { GreyBtn } from '../../common/Button/Button'
+import Test3 from './Test3'
 
 const Test2 = () => {
   const handleSelectChange = (selectedOption, name) => {
@@ -16,25 +16,25 @@ const Test2 = () => {
     //   ...prevState,
     //   [name]: selectedOption.label,
     // }));
-  };
-  const [isRotated, setIsRotated] = useState(false);
+  }
+  const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
-    setIsRotated(prevIsRotated => !prevIsRotated);
-  };
+    setIsRotated((prevIsRotated) => !prevIsRotated)
+  }
 
-  const [exFilterToggle, setExfilterToggle] = useState(true);
-  const [toggleMsg, setToggleMsg] = useState('On');
+  const [exFilterToggle, setExfilterToggle] = useState(true)
+  const [toggleMsg, setToggleMsg] = useState('On')
   const toggleBtnClick = () => {
-    setExfilterToggle(prev => !prev);
+    setExfilterToggle((prev) => !prev)
     if (exFilterToggle === true) {
-      setToggleMsg('Off');
+      setToggleMsg('Off')
     } else {
-      setToggleMsg('On');
+      setToggleMsg('On')
     }
-  };
-  console.log('exFilterToggle =>', exFilterToggle);
+  }
+  console.log('exFilterToggle =>', exFilterToggle)
 
   return (
     <FilterContianer>
@@ -57,30 +57,19 @@ const Test2 = () => {
                 <PartWrap>
                   <h6>창고 구분</h6>
                   <PWRight>
-                    <MainSelect
-                      options={storageOptions}
-                      defaultValue={storageOptions[0]}
-                    />
+                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
                 </PartWrap>
                 <PartWrap>
                   <h6>매입처</h6>
                   <PWRight>
-                    <MainSelect
-                      options={storageOptions}
-                      defaultValue={storageOptions[0]}
-                    />
+                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
                 </PartWrap>
                 <PartWrap>
                   <h6>규격 약호</h6>
                   <Input />
-                  <GreyBtn
-                    style={{ width: '70px' }}
-                    height={35}
-                    margin={10}
-                    fontSize={17}
-                  >
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
                   </GreyBtn>
                 </PartWrap>
@@ -109,19 +98,19 @@ const Test2 = () => {
                   <MainSelect />
                 </PartWrap>
                 <PartWrap>
-                  <h6>두께(CM)</h6>
+                  <h6>두께(MM)</h6>
                   <Input /> <Tilde>~</Tilde>
                   <Input />
                 </PartWrap>
               </RowWrap>
               <RowWrap>
                 <PartWrap>
-                  <h6>길이(CM)</h6>
+                  <h6>길이(MM)</h6>
                   <MainSelect />
                   <MainSelect />
                 </PartWrap>
                 <PartWrap>
-                  <h6>폭(CM)</h6>
+                  <h6>폭(MM)</h6>
                   <Input /> <Tilde>~</Tilde>
                   <Input />
                 </PartWrap>
@@ -159,15 +148,15 @@ const Test2 = () => {
         <Test3 />
       </TableContianer>
     </FilterContianer>
-  );
-};
+  )
+}
 
-export default Test2;
+export default Test2
 
 // 검색 필터 최상단 div
 export const FilterContianer = styled.div`
   width: 100%;
-`;
+`
 
 export const FilterHeader = styled.div`
   display: flex;
@@ -181,7 +170,7 @@ export const FilterHeader = styled.div`
     font-weight: bold;
     font-size: 24px;
   }
-`;
+`
 
 // 검색 필터
 export const FilterSubcontianer = styled.div`
@@ -192,8 +181,8 @@ export const FilterSubcontianer = styled.div`
   padding-left: 30px;
   background-color: #dbe2f0;
   justify-content: space-around;
-  color: ${props => props.theme.colors.TxtAlter};
-`;
+  color: ${(props) => props.theme.colors.TxtAlter};
+`
 
 const TableContianer = styled.div`
   width: 100%;
@@ -201,7 +190,7 @@ const TableContianer = styled.div`
   border: 1px solid #c8c8c8;
   display: flex;
   padding: 10px;
-`;
+`
 
 //초기화 , 검색 버튼 div
 export const FilterFooter = styled.div`
@@ -211,13 +200,13 @@ export const FilterFooter = styled.div`
   justify-content: center;
   height: 70px;
   background-color: #f0f1f6;
-`;
+`
 
 // 검색 필터 Left
-export const FilterLeft = styled.div``;
+export const FilterLeft = styled.div``
 
 // 검색 필터 Right
-export const FilterRight = styled.div``;
+export const FilterRight = styled.div``
 
 //검색 필터 내 한 줄 div
 export const RowWrap = styled.div`
@@ -228,11 +217,11 @@ export const RowWrap = styled.div`
   border-bottom: 1px solid #c8c8c8;
   padding-bottom: 10px;
   // 이건 지워도 됨
-`;
+`
 
 const PWRight = styled.div`
   width: 240px;
-`;
+`
 
 const PartWrap = styled.div`
   margin-right: 30px;
@@ -246,31 +235,31 @@ const PartWrap = styled.div`
     display: flex;
     justify-content: start;
   }
-`;
+`
 
 const DoubleWrap = styled.div`
   padding: 20px;
   height: 140px;
   display: flex;
   gap: 10px;
-`;
+`
 
 const GridWrap = styled.div`
   width: 400px;
   display: flex;
   padding: 15px;
-`;
+`
 
 const Input = styled.input`
   width: 100px;
   height: 37px;
   border-radius: 3px;
   border: 1px solid #c8c8c8;
-`;
+`
 
 const Tilde = styled.div`
   margin: 10px;
-`;
+`
 
 const ResetImg = styled.img`
   transition: transform 1s ease; /* Add a smooth transition effect */
@@ -279,4 +268,4 @@ const ResetImg = styled.img`
   &.rotate {
     transform: rotate(540deg);
   }
-`;
+`

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { styled } from 'styled-components'
 
 import TextEditor from '../../../components/Editor/TextEditor'
@@ -6,16 +6,18 @@ import DateGrid from '../../../components/DateGrid/DateGrid'
 import { claimOngoingStatus, ClaimSelect } from '../../../common/Option/ClaimPost'
 import { BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 import { CenterRectangleWrap } from '../../../common/OnePage/OnePage.Styled'
-import Header from '../../../components/Header/Header'
-import { OverAllMain, OverAllSub } from '../../../common/Overall/Overall.styled'
-import SideBar from '../../../components/Left/SideBar'
-import SubHeader from '../../../components/Header/SubHeader'
+
+import { StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+
+import { CheckBox } from '../../../common/Check/Checkbox'
+
+import { CheckImg2 } from '../../../common/Check/CheckImg'
 
 import { DateTitle, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../components/MapTable/MapTable'
 
 // 클레임 등록
 const ClaimRegister = () => {
-  const titleData = [
+const titleData = [
     '제품 번호',
     '클레임 등록 일자',
     '클레임 수정 일자',
@@ -27,6 +29,25 @@ const ClaimRegister = () => {
     '매입처',
   ]
   const contentData = ['가', '나', '다', '라', '마', '바', '사', '아', '자']
+  const checkDummy = ['카스코 반품', '현대제철 반품']
+
+  const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
+  const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
+
+  useEffect(() => {
+    const updatedCheck = checkDummy.map((value, index) => {
+      return check[index] ? value : ''
+    })
+    // 그냥 배열에 담을 때
+    const filteredCheck = updatedCheck.filter((item) => item !== '')
+    setCheckData(filteredCheck)
+
+    // 전송용 input에 담을 때
+    // setInput({
+    //   ...input,
+    //   businessType: updatedCheck.filter(item => item !== ''),
+    // });
+  }, [check])
 
   return (
     <>
@@ -57,6 +78,10 @@ const ClaimRegister = () => {
                 <DateTitle>현대 재철 클레임 등록 일자</DateTitle>
                 <DateGrid left={-30} fontSize={17} />
               </div>
+              <div>
+                <DateTitle>클레임 완료 일자</DateTitle>
+                <DateGrid left={-30} fontSize={17} />
+              </div>
             </CMBLeft>
             <CMBLeft>
               <SelectWrap>
@@ -65,7 +90,19 @@ const ClaimRegister = () => {
               </SelectWrap>
               <div>
                 <DateTitle>반품 진행</DateTitle>
-                <div>checkbox X 2</div>
+                <CheckWrap>
+                  {checkDummy.map((x, index) => (
+                    <StyledCheckMainDiv>
+                      <StyledCheckSubSquDiv
+                        onClick={() => setCheck(CheckBox(check, check.length, index, true))}
+                        isChecked={check[index]}
+                      >
+                        <CheckImg2 src="/svg/check.svg" />
+                      </StyledCheckSubSquDiv>
+                      <p>{x}</p>
+                    </StyledCheckMainDiv>
+                  ))}
+                </CheckWrap>
               </div>
               <div>
                 <DateTitle>카스코 반품일자</DateTitle>
@@ -163,4 +200,14 @@ const BtnWrap = styled.div`
   align-items: center;
   margin-left: auto;
   margin-right: auto;
+`
+
+const CheckWrap = styled.div`
+  display: flex;
+  position: relative;
+  left: -25px;
+  font-size: 17px;
+  align-items: center;
+  min-width: 250px;
+  gap: 10px;
 `

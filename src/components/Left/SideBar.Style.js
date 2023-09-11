@@ -1,16 +1,11 @@
-import { styled } from 'styled-components';
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-} from '@mui/material';
+import { styled } from 'styled-components'
+import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material'
 
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 export const SideBarWrap = styled.div`
   width: 260px;
-`;
+`
 
 export const AccordionWrap = styled.div`
   display: block;
@@ -37,35 +32,36 @@ export const AccordionWrap = styled.div`
     margin-left: 10px;
     margin-top: 5px;
   }
-`;
+`
 
 export const StyledAccordion = styled(Accordion)`
   background-color: #f0f0f0;
   color: #acacac;
-`;
+`
 
 // AccordionSummary 컴포넌트를 스타일드 컴포넌트로 꾸미기
 export const StyledAccordionSummary = styled(AccordionSummary)`
   background-color: #e0e0e0;
-`;
+`
 
 // Typography 컴포넌트를 스타일드 컴포넌트로 꾸미기
-export const StyledTypography = styled(Typography)``;
+export const StyledTypography = styled(Typography)``
 
 export const AccSwitch = styled(ExpandMoreIcon)`
   color: white;
-`;
+`
 
 // AccordionDetails 컴포넌트를 스타일드 컴포넌트로 꾸미기
 //depth2 전체 영역
 export const StyledAccordionDetails = styled(AccordionDetails)`
   background-color: #35425c;
-`;
+  
+`
 
 export const TypoContent = styled.div`
   margin: 15px 6px;
   a {
-    color: ${props => (props.isIncoming ? '#64b5ff' : '#acacac')};
+    color: ${(props) => (props.isIncoming ? '#64b5ff' : '#acacac')};
     font-size: 18px;
     justify-content: flex-start;
 
@@ -77,11 +73,12 @@ export const TypoContent = styled.div`
   > p {
     font-size: 10px;
   }
-`;
+`
 
 export const Depth2 = styled.a`
   font-size: 20px;
-`;
+  
+`
 
 export const AcTop = styled.div`
   width: 200px;
@@ -92,7 +89,7 @@ export const AcTop = styled.div`
   justify-content: center;
   align-items: center;
   background-color: #2b3344;
-`;
+`
 
 export const AcTopCal = styled.div`
   display: flex;
@@ -104,7 +101,7 @@ export const AcTopCal = styled.div`
   border-radius: 2px;
   background-color: #1e2533;
   cursor: pointer;
-`;
+`
 
 export const AcTopLeft = styled.div`
   position: relative;
@@ -115,11 +112,11 @@ export const AcTopLeft = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${props => props.theme.colors.PriHeavy};
+  background-color: ${(props) => props.theme.colors.PriHeavy};
   img {
     height: 70%;
   }
-`;
+`
 
 export const ACTopRight = styled.div`
   display: flex;
@@ -129,4 +126,4 @@ export const ACTopRight = styled.div`
     position: relative;
     left: -5px;
   }
-`;
+`

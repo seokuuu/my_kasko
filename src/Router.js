@@ -12,6 +12,7 @@ import Test4 from './pages/Test/Test4'
 
 import ClaimRegisterPage from './pages/Shipping/Claim/ClaimRegisterPage'
 import CarrierPostPage from './pages/UserManage/CarrierManage/CarrierPostPage'
+import CarrierEditPage from './pages/UserManage/CarrierManage/CarrierEditPage'
 
 import IncomingPage from './pages/Stock/Incoming/IncomingPage'
 import InventoryPage from './pages/Stock/Inventory/InventoryPage'
@@ -41,7 +42,7 @@ import DisRegisterPage from './pages/Shipping/Dispatch/DisRegisterPage'
 import DisRegisterDetailPage from './pages/Shipping/Dispatch/DisRegisterDetailPage'
 import StatusPage from './pages/Shipping/Status/StatusPage'
 import StatusDetailPage from './pages/Shipping/Status/StatusDetailPage'
-import Achievement from './pages/Shipping/Achievement/AchievementPage'
+import AchievementPage from './pages/Shipping/Achievement/AchievementPage'
 
 // 판매 제품 관리
 import SingleProductPage from './pages/Product/SingleProduct/SingleProductPage'
@@ -74,6 +75,7 @@ import ProfileEditPage from './pages/UserManage/ProfileEdit/ProfileEditPage'
 
 import DestinationPostPage from './pages/UserManage/ClientDestination/DestinationPostPage'
 import UserPostPage from './pages/UserManage/UserManage/UserPostPage'
+import UserEditPage from './pages/UserManage/UserManage/UserEditPage'
 
 // 운영 관리
 import OperationPage from './pages/Operate/Operation/Operation/OperationPage'
@@ -82,6 +84,7 @@ import InventoryOperPage from './pages/Operate/Operation/Inventory/InventoryPage
 //운영 관리 - 노출 관리
 import PopupPage from './pages/Operate/Exposure/Popup/PopupPage'
 import NoticeBoardPage from './pages/Operate/Exposure/NoticeBoard/NoticeBoardPage'
+import PopupPostPage from './pages/Operate/Exposure/Popup/PopupPostPage'
 
 //운영 관리 - 일반 관리
 import ClaimPage from './pages/Operate/Common/Claim/ClaimPage'
@@ -136,6 +139,14 @@ import PackageManage from './modal/Multi/PackageManage'
 import AuctionRound from './modal/Multi/AuctionRound'
 import SalesPackage from './modal/Multi/SalesPackage'
 import DispatchPost from './modal/Multi/DispatchPost'
+import DispatchEdit from './modal/Multi/DispatchEdit'
+import Hyundai from './modal/Multi/Hyundai'
+import Achievement from './modal/Multi/Achievement'
+import DispatchDetail from './modal/Multi/DispatchDetail'
+import Transport from './modal/Multi/Transport'
+import Consolidation from './modal/Multi/Consolidation'
+import Client from './modal/Multi/Client'
+import Countdown from './components/Countdown/Countdown'
 
 const Router = () => {
   return (
@@ -145,8 +156,10 @@ const Router = () => {
         <Route path="/test" element={<Test />} />
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
-        <Route path="/test4" element={<Test4 />} />
-        <Route path="/common" element={<DispatchPost />} />
+        <Route path="/test4" element={<Countdown />} />
+        <Route path="/common" element={<SalesProduct />} />
+
+        <Route path="/*" element={<NotFound />} />
         {/* 로그인, 회원가입, 아이디 찾기, 비밀번호 재발급, 캘린더, 메인 */}
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
@@ -196,7 +209,7 @@ const Router = () => {
           <Route path="/shipping/dispatch" element={<DispatchPage />} />
           <Route path="/shipping/dispatch/register" element={<DisRegisterPage />} />
           <Route path="/shipping/status" element={<StatusDetailPage />} />
-          <Route path="/shipping/achievement" element={<Achievement />} />
+          <Route path="/shipping/achievement" element={<AchievementPage />} />
           <Route path="/shipping/claim/register" element={<ClaimRegisterPage />} />
         </Route>
         {/* 기준 관리 */}
@@ -209,10 +222,13 @@ const Router = () => {
         <Route path="/usermanage">
           {/* 사용자 관리 - 사용자 등록 버튼 - 사용자 등록 */}
           <Route path="/usermanage/usermanage/userpost" element={<UserPostPage />}></Route>
+          <Route path="/usermanage/usermanage/useredit" element={<UserEditPage />}></Route>
+
           {/* 고객사 목적지 관리 - 버튼 - 고객사 목적지 등록 */}
           <Route path="/usermanage/clientdestination/destinationpost" element={<DestinationPostPage />}></Route>
           {/* 운송사 관리 - 운송사 등록 */}
           <Route path="/usermanage/carrierpost" element={<CarrierPostPage />}></Route>
+          <Route path="/usermanage/carrieredit" element={<CarrierEditPage />}></Route>
           <Route path="/usermanage/client" element={<ClientPage />}></Route>
           <Route path="/usermanage/clientdestination" element={<ClientDestiantionPage />}></Route>
           <Route path="/usermanage/usermanage" element={<UserManagePage />}></Route>
@@ -227,6 +243,7 @@ const Router = () => {
           <Route path="/operate/inventory" element={<InventoryOperPage />}></Route>
           <Route path="/operate/common" element={<ClaimPage />}></Route>
           <Route path="/operate/exposure" element={<PopupPage />}></Route>
+          <Route path="/operate/popuppost" element={<PopupPostPage />}></Route>
           <Route path="/operate/faq" element={<FAQPage />}></Route>
           <Route path="/operate/noticeboard" element={<NoticeBoardPage />}></Route>
           <Route path="/operate/notice" element={<NoticePage />}></Route>
