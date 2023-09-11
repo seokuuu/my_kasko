@@ -3,7 +3,7 @@ import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/O
 import UserSideBar from '../../../components/Left/UserSideBar'
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
-import NoticeDetail from './NoticeDetail'
+import Notice from './Notice'
 
 import { useState } from 'react'
 
@@ -18,7 +18,7 @@ const NoticePage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <NoticeDetail />
+            <Notice />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>

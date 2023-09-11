@@ -37,6 +37,7 @@ import {
   HiddenBtn,
 } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 const Docs = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -122,11 +123,7 @@ const Docs = ({}) => {
             <Hidden />
           </div>
           <div style={{ gap: '10px' }}>
-            <PageSelect name="pagenation">
-              <option value="">50개씩</option>
-              <option value="dog">100개씩</option>
-              <option value="cat">Cat</option>
-            </PageSelect>
+            <PageDropdown />
           </div>
         </TCSubContainer>
 
