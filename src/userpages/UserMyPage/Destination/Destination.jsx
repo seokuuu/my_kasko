@@ -53,7 +53,7 @@ import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../comm
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
 
-const Destination = ({}) => {
+const Destination = ({ setChoiceComponent }) => {
   const radioDummy = ['전체', '미진행', '진행중', '종료']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
 
@@ -94,6 +94,13 @@ const Destination = ({}) => {
     }
   }
 
+  const openPost = () => {
+    setChoiceComponent('등록')
+  }
+  const openEdit = () => {
+    setChoiceComponent('')
+  }
+
   return (
     <FilterContianer>
       <div>
@@ -119,8 +126,8 @@ const Destination = ({}) => {
             선택 <span> 2 </span>개
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>목적지 삭제</WhiteRedBtn>
-            <SkyBtn>목적지 등록</SkyBtn>
+            <WhiteRedBtn onClick={openEdit}>목적지 삭제</WhiteRedBtn>
+            <SkyBtn onClick={openPost}>목적지 등록</SkyBtn>
           </div>
         </TCSubContainer>
 

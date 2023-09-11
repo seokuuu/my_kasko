@@ -10,17 +10,31 @@ import {
   Part,
   Alert,
 } from '../../../common/OnePage/OnePage.Styled'
-
 import { TxtInput, CustomInput } from '../../../common/Input/Input'
-
 import { styled } from 'styled-components'
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
-
 import { CheckBox } from '../../../common/Check/Checkbox'
-
 import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
+import { postDestination } from '../../../api/auth'
+import { isEmptyObj } from '../../../lib'
+import { async } from 'q'
 
-const DestinationPost = () => {
+const init = {
+  represent: '',
+  destinationUid: '',
+  address: '',
+  name: '',
+  phone: '',
+  managerTitle: '',
+  managerName: '',
+  managerPhone: '',
+  memo: '',
+}
+
+// TODO: 목적지 조회 기능
+
+const DestinationPost = ({ setChoiceComponent }) => {
+  const [input, setInput] = useState(init) //summit input 데이터
   const radioDummy = ['지정', '미지정'] // 더미 데이터
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
   const [savedRadioValue, setSavedRadioValue] = useState('')
@@ -30,11 +44,35 @@ const DestinationPost = () => {
 
     // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
     if (checkedIndex !== -1) {
+      let newSavedRadioValue = ''
       const selectedValue = radioDummy[checkedIndex]
-      setSavedRadioValue(selectedValue) //내 state에 반환
-      // setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
+      if (selectedValue === '지정') newSavedRadioValue = 1
+      if (selectedValue === '미지정') newSavedRadioValue = 0
+
+      setSavedRadioValue(newSavedRadioValue)
+      setInput({ ...input, represent: newSavedRadioValue })
     }
   }, [checkRadio])
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setInput({ ...input, [name]: value })
+  }
+
+  const submit = async () => {
+    if (!isEmptyObj(input)) return alert('빈값을 채워주세요!')
+    try {
+      const { data: res } = await postDestination(input)
+      console.log('로그인 된 정보 : ', res)
+      alert('✅완료되었습니다.')
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const backComponent = () => {
+    setChoiceComponent('리스트')
+  }
   return (
     <OnePageContainer>
       <MainTitle>목적지 등록</MainTitle>
@@ -68,9 +106,10 @@ const DestinationPost = () => {
                 <h4>목적지</h4>
                 <p></p>
               </Title>
-              <CustomInput width={120} />
+              <CustomInput width={120} name="destinationUid" onChange={handleChange} />
               <span style={{ margin: 'auto 5px' }}>-</span>
               <CustomInput width={120} />
+              {/* TODO : 일단 왼쪽 input 입력 추후에 수정예정 */}
               <BlackBtn width={20} height={40} style={{ marginLeft: '10px' }}>
                 조회
               </BlackBtn>
@@ -80,7 +119,7 @@ const DestinationPost = () => {
                 <h4>전체 주소</h4>
                 <p></p>
               </Title>
-              <CustomInput placeholder="전체 주소 입력" width={340} />
+              <CustomInput placeholder="전체 주소 입력" width={340} name="address" onChange={handleChange} />
             </Part>
           </Left>
           <Right>
@@ -89,19 +128,36 @@ const DestinationPost = () => {
                 <h4>하차지 명</h4>
                 <p></p>
               </Title>
-              <CustomInput placeholder="전체 주소 입력" width={340} />
+              <CustomInput placeholder="전체 주소 입력" width={340} name="name" onChange={handleChange} />
             </Part>
             <Part>
               <Title>
                 <h4>하차지 담당자 정보</h4>
                 <p></p>
               </Title>
-              <CustomInput placeholder="직함 입력" width={135} />
-              <CustomInput placeholder="담당자 성함 입력" width={200} style={{ marginLeft: '5px' }} />
-              <CustomInput placeholder="담당자 휴대폰 번호 입력 ('-' 제외)" width={340} style={{ marginTop: '5px' }} />
+              <CustomInput placeholder="직함 입력" width={135} name="managerTitle" onChange={handleChange} />
+              <CustomInput
+                placeholder="담당자 성함 입력"
+                width={200}
+                style={{ marginLeft: '5px' }}
+                name="managerName"
+                onChange={handleChange}
+              />
+              <CustomInput
+                placeholder="담당자 휴대폰 번호 입력 ('-' 제외)"
+                width={340}
+                style={{ marginTop: '5px' }}
+                name="managerPhone"
+                onChange={handleChange}
+              />
 
               <Alert style={{ margin: '5px auto' }}>*하차지 연락처 미입력 시 토요일 하차 불가</Alert>
-              <CustomInput placeholder="하차지 연락처 입력 ('-' 제외)" width={340} />
+              <CustomInput
+                placeholder="하차지 연락처 입력 ('-' 제외)"
+                width={340}
+                name="phone"
+                onChange={handleChange}
+              />
             </Part>
 
             <Part>
@@ -109,16 +165,16 @@ const DestinationPost = () => {
                 <h4>비고</h4>
                 <p></p>
               </Title>
-              <CustomInput placeholder="비고 작성" width={340} />
+              <CustomInput placeholder="비고 작성" width={340} name="memo" onChange={handleChange} />
             </Part>
           </Right>
         </HalfWrap>
       </OnePageSubContainer>
       <BtnWrap bottom={-200}>
-        <WhiteBtn width={40} height={40}>
+        <WhiteBtn width={40} height={40} onClick={backComponent}>
           돌아가기
         </WhiteBtn>
-        <BlackBtn width={40} height={40}>
+        <BlackBtn width={40} height={40} onClick={submit}>
           저장
         </BlackBtn>
       </BtnWrap>

@@ -9,6 +9,7 @@ const urls = {
   resetPw: '/main/reset-pw',
   refresh: '/refresh',
   updateCustomer: '/member/privacy',
+  postDestination: '/member/destination',
 }
 const headers = { 'Content-Type': 'multipart/form-data' }
 /* ==============================
@@ -98,4 +99,11 @@ export function updateCustomer(input, fileForms) {
       'Content-Type': 'multipart/form-data',
     },
   })
+}
+/* ==============================
+    마이페이지 - 목적지 관리 - 목적지 등록
+============================== */
+export function postDestination(data) {
+  console.log(data)
+  return client.post(urls.postDestination, data)
 }

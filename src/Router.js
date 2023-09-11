@@ -147,6 +147,7 @@ import Transport from './modal/Multi/Transport'
 import Consolidation from './modal/Multi/Consolidation'
 import Client from './modal/Multi/Client'
 import Countdown from './components/Countdown/Countdown'
+import DestinationPost from './userpages/UserMyPage/Destination/DestinationPost'
 
 const Router = () => {
   return (
