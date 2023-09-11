@@ -100,7 +100,7 @@ const Order = ({}) => {
     <FilterContianer>
       <FilterHeader>
         <div style={{ display: 'flex' }}>
-          <h1>낙찰 확인</h1>
+          <h1>주문 확인</h1>
         </div>
         {/* 토글 쓰기 */}
         <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />

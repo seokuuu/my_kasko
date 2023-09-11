@@ -13,7 +13,7 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import BlueBar from '../../../modal/BlueBar/BlueBar'
 import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { FilterWrap } from '../../../modal/External/ExternalFilter'
+import { CustomInput, FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
   FilterContianer,
   FilterHeader,
@@ -40,6 +40,7 @@ import {
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import { Link } from 'react-router-dom'
 
 const Transport = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -83,7 +84,9 @@ const Transport = ({}) => {
             <h1>운반비 관리</h1>
             <SubTitle>
               <h5>운반비 관리</h5>
-              <h6>할증 관리</h6>
+              <Link to={'/standard/surcharge'}>
+                <h6>할증 관리</h6>
+              </Link>
             </SubTitle>
           </div>
           <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
@@ -157,20 +160,30 @@ const Transport = ({}) => {
         <TCSubContainer>
           <TCSubDiv>
             <div>
-              <h6>적용일자</h6>
+              선택 <span>0</span>(개)
             </div>
-            <div>
-              {' '}
-              <h6>단가 일괄 수정</h6>
-            </div>
-            <div></div>
           </TCSubDiv>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <TGreyBtn>적용</TGreyBtn>
             <WhiteRedBtn>운반비 삭제</WhiteRedBtn>
             <WhiteSkyBtn>운반비 등록</WhiteSkyBtn>
           </div>
         </TCSubContainer>
+        <TCSubContainer>
+          <TCGreyDiv>
+            <div>
+              <p>적용일자</p>
+              <DateGrid width={130} bgColor={'white'} fontSize={15} />
+            </div>
+            <div>
+              <p>단가 일괄 수정</p>
+            </div>
+            <div></div>
+            <CustomInput />
+            <TGreyBtn>적용</TGreyBtn>
+          </TCGreyDiv>
+          <div style={{ display: 'flex', gap: '10px' }}></div>
+        </TCSubContainer>
+
         <Test3 />
         <TableBottomWrap>
           <BlackBtn width={15} height={40}>
@@ -185,3 +198,19 @@ const Transport = ({}) => {
 export default Transport
 
 const TCSubDiv = styled.div``
+
+const TCGreyDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid;
+
+  > div {
+    display: flex;
+    align-items: center;
+  }
+
+  p {
+    font-size: 16px;
+  }
+`

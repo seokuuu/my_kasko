@@ -1,24 +1,23 @@
 import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
 
-import UserSideBar from '../../../components/Left/UserSideBar'
+import SideBar from '../../../components/Left/SideBar'
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
-import Winning from './Winning'
-
+import Surcharge from './Surcharge'
 import { useState } from 'react'
 
-const SinglePage = () => {
-  const [expanded, setExpanded] = useState('경매')
-  const [depth2Color, setDepth2Color] = useState('낙찰 확인')
+const SurchargePage = () => {
+  const [expanded, setExpanded] = useState('기준 관리')
+  const [depth2Color, setDepth2Color] = useState('운반비 관리')
   return (
     <>
       <Header />
       <OverAllMain>
-        <UserSideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
+        <SideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <Winning />
+            <Surcharge />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>
@@ -26,4 +25,4 @@ const SinglePage = () => {
   )
 }
 
-export default SinglePage
+export default SurchargePage

@@ -17,7 +17,7 @@ import {
   BtnBound,
   TGreyBtn,
 } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
+import Test3 from '../../../pages/Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
 import BlueBar from '../../../modal/BlueBar/BlueBar'
@@ -52,9 +52,9 @@ import { ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../compone
 
 import { TableWrap } from '../../../components/MapTable/MapTable'
 
-const SellOrderDetail = ({}) => {
-  const titleData = ['주문 번호', '고객사', '고객코드', '총 수량', '총 중량(KG)', '입금 요청 금액(원)']
-  const contentData = ['2023040558', '4,685,798', 'K00000', '30', '4,685,798', '54,685,798']
+const WinningDetail = ({}) => {
+  const titleData = ['고객사 명', '고객 코드', '', '총 수량', '총 중량(KG)', '입금 요청 금액(원)']
+  const contentData = ['(주) 아이덴잇', 'K00-0012', '', '30', '4,685,798', '54,685,798']
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -92,7 +92,7 @@ const SellOrderDetail = ({}) => {
     <FilterContianer>
       <div>
         <FilterHeader>
-          <h1>상시 판매 주문 확인 상세</h1>
+          <h1>낙찰 확인 상세</h1>
         </FilterHeader>
         <FilterTCTop>
           <h6>경매 번호</h6>
@@ -135,20 +135,17 @@ const SellOrderDetail = ({}) => {
             <CustomInput placeholder="h50" width={60} />
             <CustomInput placeholder="목적지명" width={120} />
             <CustomInput placeholder="도착지 연락처" width={120} />
+            <WhiteBlackBtn>찾기</WhiteBlackBtn>
             <TGreyBtn>적용</TGreyBtn>
             <BtnBound />
             <WhiteBlackBtn>목적지 승인 요청</WhiteBlackBtn>
-            <BtnBound />
-            <WhiteRedBtn>목적지 변경 반려</WhiteRedBtn>
-            <WhiteSkyBtn>목적지 변경 반려</WhiteSkyBtn>
           </div>
         </TCSubContainer>
         <Test3 />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>부분 주문 취소</WhiteRedBtn>
-            <SkyBtn>부분 입금 확인</SkyBtn>
+            <WhiteSkyBtn>입금 요청서 발행</WhiteSkyBtn>
           </div>
         </TCSubContainer>
       </TableContianer>
@@ -156,7 +153,7 @@ const SellOrderDetail = ({}) => {
   )
 }
 
-export default SellOrderDetail
+export default WinningDetail
 
 const P = styled.p`
   position: relative;

@@ -22,7 +22,9 @@ import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 import { Tilde } from '../../../modal/External/ExternalFilter'
 import { CustomSelect } from '../../../common/Option/Main'
 
-const PreferPost = () => {
+const PreferEdit = () => {
+  const radioDummy = ['지정', '미지정'] // 더미 데이터
+
   return (
     <OnePageContainer>
       <MainTitle>선호제품 등록</MainTitle>
@@ -129,7 +131,7 @@ const PreferPost = () => {
   )
 }
 
-export default PreferPost
+export default PreferEdit
 
 const RadioContainer = styled.div`
   display: flex;

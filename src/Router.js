@@ -63,6 +63,7 @@ import SellOrderDetailPage from './pages/Sales/SellOrder/SellOrderDetailPage'
 // 기준 관리
 import DestinationPage from './pages/Standard/Destination/DestinationPage'
 import TransportPage from './pages/Standard/Transport/TransportPage'
+import SurchargePage from './pages/Standard/Surcharge/SurchargePage'
 import ConsolidationPage from './pages/Standard/Consolidation/ConsolidationPage'
 
 // 사용자 관리
@@ -157,7 +158,7 @@ const Router = () => {
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
         <Route path="/test4" element={<Countdown />} />
-        <Route path="/common" element={<SalesProduct />} />
+        <Route path="/common" element={<SellOrderDetailPage />} />
 
         <Route path="/*" element={<NotFound />} />
         {/* 로그인, 회원가입, 아이디 찾기, 비밀번호 재발급, 캘린더, 메인 */}
@@ -216,6 +217,7 @@ const Router = () => {
         <Route path="/standard">
           <Route path="/standard/destination" element={<DestinationPage />} />
           <Route path="/standard/transportation" element={<TransportPage />} />
+          <Route path="/standard/surcharge" element={<SurchargePage />} />
           <Route path="/standard/consolidation" element={<ConsolidationPage />} />
         </Route>
         {/* 사용자 관리 */}
