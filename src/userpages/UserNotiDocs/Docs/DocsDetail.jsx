@@ -16,7 +16,7 @@ import { BtnBound } from '../../../common/Button/Button'
 import { TxtDiv } from '../../../pages/User/SignUp/SignUp.Styled'
 import { FileUpload } from '@mui/icons-material'
 // 클레임 등록
-const NoticeDetail = () => {
+const DocsDetail = () => {
   const radioDummy = ['노출', '미노출']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
 
@@ -73,7 +73,7 @@ const NoticeDetail = () => {
   )
 }
 
-export default NoticeDetail
+export default DocsDetail
 
 export const CRWMain = styled.div`
   width: 100%;
