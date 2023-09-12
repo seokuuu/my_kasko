@@ -42,7 +42,15 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
 import { Link } from 'react-router-dom'
 
+import { ExRadioWrap } from '../../../modal/External/ExternalFilter'
+
+import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import { CheckBox } from '../../../common/Check/Checkbox'
+
 const Transport = ({}) => {
+  const radioDummy = ['증가', '감소']
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -171,14 +179,29 @@ const Transport = ({}) => {
         <TCSubContainer>
           <TCGreyDiv>
             <div>
-              <p>적용일자</p>
-              <DateGrid width={130} bgColor={'white'} fontSize={15} />
+              <p style={{ marginRight: '10px' }}>적용일자</p>
+              <DateGrid height={30} width={130} bgColor={'white'} fontSize={15} />
             </div>
             <div>
-              <p>단가 일괄 수정</p>
+              <p style={{ marginLeft: ' 20px' }}>단가 일괄 수정</p>
+              <div style={{ display: 'flex', gap: '10px', margin: '0px 15px', padding: '5px' }}>
+                {radioDummy.map((text, index) => (
+                  <RadioMainDiv key={index}>
+                    <RadioCircleDiv
+                      isChecked={checkRadio[index]}
+                      onClick={() => {
+                        setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
+                      }}
+                    >
+                      <RadioInnerCircleDiv />
+                    </RadioCircleDiv>
+                    <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
+                  </RadioMainDiv>
+                ))}
+              </div>
             </div>
             <div></div>
-            <CustomInput />
+            <CustomInput placeholder="% 입력" style={{ marginRight: '5px' }} width={140} height={30} />
             <TGreyBtn>적용</TGreyBtn>
           </TCGreyDiv>
           <div style={{ display: 'flex', gap: '10px' }}></div>
@@ -203,7 +226,6 @@ const TCGreyDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid;
 
   > div {
     display: flex;
@@ -211,6 +233,7 @@ const TCGreyDiv = styled.div`
   }
 
   p {
+    color: ${(props) => props.theme.colors.TxtAlter};
     font-size: 16px;
   }
 `
