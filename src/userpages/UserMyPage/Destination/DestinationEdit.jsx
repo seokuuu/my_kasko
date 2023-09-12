@@ -20,7 +20,7 @@ import { CheckBox } from '../../../common/Check/Checkbox'
 
 import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 
-const DestinationEdit = () => {
+const DestinationEdit = ({ setChoiceComponent }) => {
   const radioDummy = ['지정', '미지정'] // 더미 데이터
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
   const [savedRadioValue, setSavedRadioValue] = useState('')
@@ -35,6 +35,10 @@ const DestinationEdit = () => {
       // setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
     }
   }, [checkRadio])
+
+  const backComponent = () => {
+    setChoiceComponent('리스트')
+  }
   return (
     <OnePageContainer>
       <MainTitle>목적지 수정</MainTitle>
@@ -115,7 +119,7 @@ const DestinationEdit = () => {
         </HalfWrap>
       </OnePageSubContainer>
       <BtnWrap bottom={-200}>
-        <WhiteBtn width={40} height={40}>
+        <WhiteBtn width={40} height={40} onClick={backComponent}>
           돌아가기
         </WhiteBtn>
         <BlackBtn width={40} height={40}>
