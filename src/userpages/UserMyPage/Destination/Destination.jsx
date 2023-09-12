@@ -52,6 +52,8 @@ import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../comm
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import { getDestination } from '../../../api/myPage'
+import useReactQuery from '../../../hooks/useReactQuery'
 
 const Destination = ({ setChoiceComponent }) => {
   const radioDummy = ['전체', '미진행', '진행중', '종료']
@@ -94,13 +96,44 @@ const Destination = ({ setChoiceComponent }) => {
     }
   }
 
+  const [destination, setDestination] = useState('')
+  const 임의데이터 = {
+    pageNum: 1,
+    pageSize: 20,
+    category: '목적지명',
+    keyword: '인천',
+  }
+  const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터)
+
+  useEffect(() => {
+    if (isSuccess && data?.data?.data?.list) {
+      let test = data?.data?.data?.list
+
+      if (Array.isArray(test)) {
+        const newArray = test.map((item) => ({
+          '고객 코드': item.uid,
+          대표: item.represent,
+          '목적지 코드': item.destinationCode,
+          '목적지 명': item.destinationName,
+          '담당자 연락처': item.managerPhone,
+          '하차지 명': item.name,
+          '도착지 연락처': item.phone,
+          '상세 주소': item.address,
+          비고란: item.memo,
+        }))
+        setDestination(newArray)
+      }
+    }
+  }, [isSuccess, data])
+
   const openPost = () => {
     setChoiceComponent('등록')
   }
-  const openEdit = () => {
-    setChoiceComponent('')
+  const openEdit = async () => {
+    setChoiceComponent('수정')
   }
 
+  // 목적지에 따른 조회
   return (
     <FilterContianer>
       <div>
@@ -131,7 +164,7 @@ const Destination = ({ setChoiceComponent }) => {
           </div>
         </TCSubContainer>
 
-        <Test3 title={'규격 약호 찾기'} />
+        <Test3 title={'규격 약호 찾기'} destination={destination} />
       </TableContianer>
     </FilterContianer>
   )

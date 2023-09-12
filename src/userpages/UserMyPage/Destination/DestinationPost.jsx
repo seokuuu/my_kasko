@@ -15,7 +15,7 @@ import { styled } from 'styled-components'
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
-import { postDestination } from '../../../api/auth'
+import { postDestination } from '../../../api/myPage'
 import { isEmptyObj } from '../../../lib'
 import { async } from 'q'
 
@@ -73,6 +73,8 @@ const DestinationPost = ({ setChoiceComponent }) => {
   const backComponent = () => {
     setChoiceComponent('리스트')
   }
+
+  // ✅destinationUid : 2로 일단 설정해줘야 등록됩니다.
   return (
     <OnePageContainer>
       <MainTitle>목적지 등록</MainTitle>

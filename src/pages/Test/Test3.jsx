@@ -1,13 +1,13 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { createRoot } from 'react-dom/client';
-import { AgGridReact } from 'ag-grid-react';
-import 'ag-grid-enterprise';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { styled } from 'styled-components';
-import { ContentBlock } from 'draft-js';
-import { useAtom } from 'jotai';
-import { blueModalAtom } from '../../store/Layout/Layout';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createRoot } from 'react-dom/client'
+import { AgGridReact } from 'ag-grid-react'
+import 'ag-grid-enterprise'
+import 'ag-grid-community/styles/ag-grid.css'
+import 'ag-grid-community/styles/ag-theme-alpine.css'
+import { styled } from 'styled-components'
+import { ContentBlock } from 'draft-js'
+import { useAtom } from 'jotai'
+import { blueModalAtom } from '../../store/Layout/Layout'
 import {
   NonFadeOverlay,
   ModalContainer,
@@ -15,125 +15,165 @@ import {
   WhiteCloseBtn,
   BlueSubContainer,
   BlueBarBtnWrap,
-} from '../../modal/Common/Common.Styled';
-import { GreyBtn, BlackBtn } from '../../common/Button/Button';
+} from '../../modal/Common/Common.Styled'
+import { GreyBtn, BlackBtn } from '../../common/Button/Button'
 
 var dateFilterParams = {
   comparator: (filterLocalDateAtMidnight, cellValue) => {
-    var cellDate = asDate(cellValue);
+    var cellDate = asDate(cellValue)
     if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
-      return 0;
+      return 0
     }
     if (cellDate < filterLocalDateAtMidnight) {
-      return -1;
+      return -1
     }
     if (cellDate > filterLocalDateAtMidnight) {
-      return 1;
+      return 1
     }
-    return 0;
+    return 0
   },
-};
+}
 
-var ageType = 'everyone';
-var minAge = null;
-var maxAge = null;
-var countryFilter = null;
+var ageType = 'everyone'
+var minAge = null
+var maxAge = null
+var countryFilter = null
 
-const asDate = dateAsString => {
-  var splitFields = dateAsString.split('/');
-  return new Date(
-    Number.parseInt(splitFields[2]),
-    Number.parseInt(splitFields[1]) - 1,
-    Number.parseInt(splitFields[0])
-  );
-};
+const asDate = (dateAsString) => {
+  var splitFields = dateAsString.split('/')
+  return new Date(Number.parseInt(splitFields[2]), Number.parseInt(splitFields[1]) - 1, Number.parseInt(splitFields[0]))
+}
 
-const Test3 = ({ hei }) => {
-  const [selectedCountry, setSelectedCountry] = useState(null);
-  const [filterText, setFilterText] = useState(''); // 필터 텍스트를 저장하는 상태 변수
-  const gridRef = useRef();
-  const containerStyle = useMemo(
-    () => ({ width: '100%', height: '500px' }),
-    []
-  );
-  const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
-  const [rowData, setRowData] = useState();
+const Test3 = ({ hei, destination }) => {
+  const [selectedCountry, setSelectedCountry] = useState(null)
+  const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
+  const gridRef = useRef()
+  const containerStyle = useMemo(() => ({ width: '100%', height: '500px' }), [])
+  const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
+  const [rowData, setRowData] = useState()
 
   var checkboxSelection = function (params) {
     // we put checkbox on the name if we are not doing grouping
-    return params.columnApi.getRowGroupColumns().length === 0;
-  };
+    return params.columnApi.getRowGroupColumns().length === 0
+  }
 
   var headerCheckboxSelection = function (params) {
     // we put checkbox on the name if we are not doing grouping
-    return params.columnApi.getRowGroupColumns().length === 0;
-  };
+    return params.columnApi.getRowGroupColumns().length === 0
+  }
 
+  // ---------------------------------------------------------------------
+
+  // const [columnDefs, setColumnDefs] = useState([
+  //   {
+  //     field: 'athlete',
+  //     minWidth: 180,
+  //     checkboxSelection: checkboxSelection,
+  //     headerCheckboxSelection: headerCheckboxSelection,
+  //   },
+  //   { field: 'age', filter: 'agNumberColumnFilter', maxWidth: 80 }, //숫자
+  //   { field: 'country' },
+  //   { field: 'year', maxWidth: 90 },
+  //   {
+  //     field: 'date',
+  //     filter: 'agDateColumnFilter',
+  //     filterParams: dateFilterParams,
+  //   },
+  //   { field: 'gold', filter: 'agNumberColumnFilter' },
+  //   { field: 'silver', filter: 'agNumberColumnFilter' },
+  //   { field: 'bronze', filter: 'agNumberColumnFilter' },
+  // ])
+
+  //고객코드/대표/목적지 코드/ 목적지 명/ 담당자 연락처/ 하차지 명/ 도착지 연락처/ 상세 주소/ 비고란
+  // AgGrid => 1. row, col 데이터 2. filter해주기?
   const [columnDefs, setColumnDefs] = useState([
     {
-      field: 'athlete',
+      field: '고객 코드',
       minWidth: 180,
       checkboxSelection: checkboxSelection,
       headerCheckboxSelection: headerCheckboxSelection,
     },
-    { field: 'age', filter: 'agNumberColumnFilter', maxWidth: 80 },
-    { field: 'country' },
-    { field: 'year', maxWidth: 90 },
+    { field: '대표', maxWidth: 80 }, //숫자
+    { field: '목적지 코드' },
+    { field: '목적지 명', maxWidth: 90 },
     {
-      field: 'date',
-      filter: 'agDateColumnFilter',
-      filterParams: dateFilterParams,
+      field: '담당자 연락처',
     },
-    { field: 'gold', filter: 'agNumberColumnFilter' },
-    { field: 'silver', filter: 'agNumberColumnFilter' },
-    { field: 'bronze', filter: 'agNumberColumnFilter' },
-  ]);
+    {
+      field: '하차지 명',
+    },
+    { field: '도착지 연락처' },
+    { field: '상세 주소' },
+    { field: '비고란' },
+  ])
   const defaultColDef = useMemo(() => {
     return {
       flex: 1,
       minWidth: 120,
       filter: true,
-    };
-  }, []);
+    }
+  }, [])
 
-  const onGridReady = useCallback(params => {
-    fetch('https://www.ag-grid.com/example-assets/olympic-winners.json')
-      .then(resp => resp.json())
-      .then(data => {
-        // document.querySelector('#everyone').checked = true;
-        setRowData(data);
-      });
-  }, []);
+  const dummyD = {
+    '고객 코드': 'nope',
+    대표: 'nope',
+    '목적지 코드': 'nope',
+    '목적지 명': 'nope',
+    '담당자 연락처': 'nope',
+    '하차지 명': 'nope',
+    '도착지 연락처': 'nope',
+    '상세 주소': 'nope',
+    비고란: 'nope',
+  }
 
-  const countries = rowData?.map(item => item.country);
-  const uniqueCountriesSet = new Set(countries);
-  const uniqueCountries = Array.from(uniqueCountriesSet);
-  const sortedCountries = uniqueCountries.sort();
-  console.log(sortedCountries);
+  const dummyData = Array(100).fill(dummyD)
 
-  const externalFilterChanged = useCallback(newValue => {
-    ageType = newValue;
-    gridRef.current.api.onFilterChanged();
-  }, []);
+  useEffect(() => {
+    if (destination && destination.length > 0) {
+      setRowData(destination)
+    } else {
+      setRowData(dummyData)
+    }
+  }, [destination])
+
+  const onGridReady = useCallback(
+    (params) => {
+      // 리액트쿼리 활용하여 데이터받기
+      // fetch('https://www.ag-grid.com/example-assets/olympic-winners.json')
+      //   .then((resp) => resp.json())
+      //   .then((data) => {
+      //     // document.querySelector('#everyone').checked = true;
+      //   })
+    },
+    [destination],
+  )
+
+  // ---------------------------------------------------------------------
+
+  const countries = rowData?.map((item) => item.country)
+  const uniqueCountriesSet = new Set(countries)
+  const uniqueCountries = Array.from(uniqueCountriesSet)
+  const sortedCountries = uniqueCountries.sort()
+  // console.log(sortedCountries)
+
+  const externalFilterChanged = useCallback((newValue) => {
+    ageType = newValue
+    gridRef.current.api.onFilterChanged()
+  }, [])
   const isExternalFilterPresent = useCallback(() => {
     // if ageType is not everyone or either minAge or maxAge is set, then we are filtering
-    return (
-      ageType !== 'everyone' ||
-      minAge !== null ||
-      maxAge !== null ||
-      countryFilter !== null
-    );
-  }, []);
+    return ageType !== 'everyone' || minAge !== null || maxAge !== null || countryFilter !== null
+  }, [])
 
-  const onMinAgeChange = useCallback(event => {
-    minAge = event.target.value !== '' ? parseInt(event.target.value) : null;
-    gridRef.current.api.onFilterChanged();
-  }, []);
+  const onMinAgeChange = useCallback((event) => {
+    minAge = event.target.value !== '' ? parseInt(event.target.value) : null
+    gridRef.current.api.onFilterChanged()
+  }, [])
 
-  const onMaxAgeChange = useCallback(event => {
-    maxAge = event.target.value !== '' ? parseInt(event.target.value) : null;
-    gridRef.current.api.onFilterChanged();
-  }, []);
+  const onMaxAgeChange = useCallback((event) => {
+    maxAge = event.target.value !== '' ? parseInt(event.target.value) : null
+    gridRef.current.api.onFilterChanged()
+  }, [])
 
   // const onCountryFilterChange = useCallback(event => {
   //   const newCountryFilter = event.target.value.trim();
@@ -141,16 +181,16 @@ const Test3 = ({ hei }) => {
   //   gridRef.current.api.onFilterChanged();
   // }, []);
 
-  const onCountryFilterChange = useCallback(event => {
-    const newCountryFilter = event.target.value.trim();
-    const filters = newCountryFilter.split(/,|\n/).map(filter => filter.trim()); // 스페이스 요청시 (/,|\n|\s+/) 이걸로 바꾸자.
-    countryFilter = filters.length > 0 ? filters : null;
-    gridRef.current.api.onFilterChanged();
-  }, []);
+  const onCountryFilterChange = useCallback((event) => {
+    const newCountryFilter = event.target.value.trim()
+    const filters = newCountryFilter.split(/,|\n/).map((filter) => filter.trim()) // 스페이스 요청시 (/,|\n|\s+/) 이걸로 바꾸자.
+    countryFilter = filters.length > 0 ? filters : null
+    gridRef.current.api.onFilterChanged()
+  }, [])
 
   const onFindButtonClick = () => {
-    const newCountryFilter = filterText.trim();
-    const gridApi = gridRef.current.api;
+    const newCountryFilter = filterText.trim()
+    const gridApi = gridRef.current.api
 
     // 입력한 국가명으로 grid의 Country 필터를 작동
     gridApi.setFilterModel({
@@ -158,96 +198,94 @@ const Test3 = ({ hei }) => {
         type: 'set',
         values: [newCountryFilter],
       },
-    });
-    gridApi.onFilterChanged();
-  };
+    })
+    gridApi.onFilterChanged()
+  }
 
-  const handleResultBlockClick = useCallback(country => {
-    setSelectedCountry(country);
-    setFilterText(country); // 클릭한 국가로 필터 텍스트를 설정합니다
-  }, []);
+  const handleResultBlockClick = useCallback((country) => {
+    setSelectedCountry(country)
+    setFilterText(country) // 클릭한 국가로 필터 텍스트를 설정합니다
+  }, [])
 
-  const doesExternalFilterPass = useCallback(
-    node => {
-      if (node.data) {
-        // Apply ageType filter
-        switch (ageType) {
-          case 'below25':
-            if (node.data.age >= 25) return false;
-            break;
-          case 'between25and50':
-            if (node.data.age < 25 || node.data.age > 50) return false;
-            break;
-          case 'above50':
-            if (node.data.age <= 50) return false;
-            break;
-          case 'dateAfter2008':
-            if (asDate(node.data.date) <= new Date(2008, 0, 1)) return false;
-            break;
-          default:
-            break;
-        }
+  // const doesExternalFilterPass = useCallback(
+  //   (node) => {
+  //     if (node.data) {
+  //       // Apply ageType filter
+  //       switch (ageType) {
+  //         case 'below25':
+  //           if (node.data.age >= 25) return false
+  //           break
+  //         case 'between25and50':
+  //           if (node.data.age < 25 || node.data.age > 50) return false
+  //           break
+  //         case 'above50':
+  //           if (node.data.age <= 50) return false
+  //           break
+  //         case 'dateAfter2008':
+  //           if (asDate(node.data.date) <= new Date(2008, 0, 1)) return false
+  //           break
+  //         default:
+  //           break
+  //       }
 
-        // Apply minAge and maxAge filters
-        if (minAge !== null && node.data.age < minAge) return false;
-        if (maxAge !== null && node.data.age > maxAge) return false;
+  //       // Apply minAge and maxAge filters
+  //       if (minAge !== null && node.data.age < minAge) return false
+  //       if (maxAge !== null && node.data.age > maxAge) return false
 
-        if (countryFilter !== null) {
-          const countryValue = node.data.country.toLowerCase(); // Case-insensitive comparison
-          if (Array.isArray(countryFilter)) {
-            for (const filter of countryFilter) {
-              if (countryValue.includes(filter.toLowerCase())) {
-                return true;
-              }
-            }
-            return false;
-          } else {
-            return countryValue.includes(countryFilter.toLowerCase());
-          }
-        }
-      }
+  //       if (countryFilter !== null) {
+  //         const countryValue = node.data.country.toLowerCase() // Case-insensitive comparison
+  //         if (Array.isArray(countryFilter)) {
+  //           for (const filter of countryFilter) {
+  //             if (countryValue.includes(filter.toLowerCase())) {
+  //               return true
+  //             }
+  //           }
+  //           return false
+  //         } else {
+  //           return countryValue.includes(countryFilter.toLowerCase())
+  //         }
+  //       }
+  //     }
 
-      return true;
-    },
-    [ageType, minAge, maxAge, countryFilter]
-  );
+  //     return true
+  //   },
+  //   [ageType, minAge, maxAge, countryFilter],
+  // )
 
   // filter 된 것을 보여주는
-  const filteredCountries = useMemo(() => {
-    return sortedCountries.filter(country =>
-      country.toLowerCase().includes(filterText.toLowerCase())
-    );
-  }, [filterText, sortedCountries]);
+  // const filteredCountries = useMemo(() => {
+  //   return sortedCountries.filter((country) => country.toLowerCase().includes(filterText.toLowerCase()))
+  // }, [filterText, sortedCountries])
 
-  const autoGroupColumnDef = useMemo(() => {
-    return {
-      headerName: 'Group',
-      minWidth: 170,
-      field: 'athlete',
-      valueGetter: params => {
-        if (params.node.group) {
-          return params.node.key;
-        } else {
-          return params.data[params.colDef.field];
-        }
-      },
-      headerCheckboxSelection: true,
-      cellRenderer: 'agGroupCellRenderer',
-      cellRendererParams: {
-        checkbox: true,
-      },
-    };
-  }, []);
+  // const autoGroupColumnDef = useMemo(() => {
+  //   return {
+  //     headerName: 'Group',
+  //     minWidth: 170,
+  //     field: 'athlete',
+  //     valueGetter: (params) => {
+  //       if (params.node.group) {
+  //         return params.node.key
+  //       } else {
+  //         return params.data[params.colDef.field]
+  //       }
+  //     },
+  //     headerCheckboxSelection: true,
+  //     cellRenderer: 'agGroupCellRenderer',
+  //     cellRendererParams: {
+  //       checkbox: true,
+  //     },
+  //   }
+  // }, [])
 
-  const [isModal, setIsModal] = useAtom(blueModalAtom);
+  const [isModal, setIsModal] = useAtom(blueModalAtom)
 
   const modalOpen = () => {
-    setIsModal(true);
-  };
+    setIsModal(true)
+  }
 
   const modalClose = () => {
-    setIsModal(false);
-  };
+    setIsModal(false)
+  }
 
   return (
     <div style={containerStyle}>
@@ -333,7 +371,7 @@ const Test3 = ({ hei }) => {
             ref={gridRef}
             rowData={rowData}
             columnDefs={columnDefs}
-            autoGroupColumnDef={autoGroupColumnDef}
+            // autoGroupColumnDef={autoGroupColumnDef}
             defaultColDef={defaultColDef}
             animateRows={true}
             suppressRowClickSelection={true}
@@ -344,7 +382,7 @@ const Test3 = ({ hei }) => {
             pagination={true}
             onGridReady={onGridReady}
             isExternalFilterPresent={isExternalFilterPresent}
-            doesExternalFilterPass={doesExternalFilterPass}
+            // doesExternalFilterPass={doesExternalFilterPass}
           />
         </div>
       </TestContainer>
@@ -356,41 +394,26 @@ const Test3 = ({ hei }) => {
             <BlueBarHeader>
               <div>규격 약호 찾기</div>
               <div>
-                <WhiteCloseBtn
-                  onClick={modalClose}
-                  src="/svg/white_btn_close.svg"
-                />
+                <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
               </div>
             </BlueBarHeader>
             <BlueSubContainer>
               <FindSpec>
                 <FSTitle>
                   <div>검색</div>
-                  <RBInput
-                    placeholder="회사 명"
-                    value={filterText}
-                    onChange={e => setFilterText(e.target.value)}
-                  />
-                  <GreyBtn
-                    width={15}
-                    height={30}
-                    fontSize={16}
-                    onClick={onFindButtonClick}
-                  >
+                  <RBInput placeholder="회사 명" value={filterText} onChange={(e) => setFilterText(e.target.value)} />
+                  <GreyBtn width={15} height={30} fontSize={16} onClick={onFindButtonClick}>
                     찾기
                   </GreyBtn>
                 </FSTitle>
                 <FSResult>
-                  {filteredCountries.map((x, index) => {
+                  {/* {filteredCountries.map((x, index) => {
                     return (
-                      <ResultBlock
-                        key={index}
-                        onClick={() => handleResultBlockClick(x)}
-                      >
+                      <ResultBlock key={index} onClick={() => handleResultBlockClick(x)}>
                         {x}
                       </ResultBlock>
-                    );
-                  })}
+                    )
+                  })} */}
                 </FSResult>
               </FindSpec>
             </BlueSubContainer>
@@ -403,15 +426,15 @@ const Test3 = ({ hei }) => {
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Test3;
+export default Test3
 const TestContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: ${({ hei }) => (hei ? `${hei}%` : '100%')};
-`;
+`
 
 const TestHeader = styled.div`
   font-size: 13px;
@@ -421,12 +444,12 @@ const TestHeader = styled.div`
   border: 1px solid grey;
   padding: 10px;
   border-radius: 5px;
-`;
+`
 
 const FindSpec = styled.div`
   width: 100%;
   height: 300px;
-`;
+`
 
 const FSTitle = styled.div`
   width: 100%;
@@ -441,7 +464,7 @@ const FSTitle = styled.div`
     height: 30px;
     width: 300px;
   }
-`;
+`
 
 const FSResult = styled.div`
   width: 100%;
@@ -452,7 +475,7 @@ const FSResult = styled.div`
   padding: 5px;
   overflow: scroll;
   border: 1px solid #c8c8c8;
-`;
+`
 
 const ResultBlock = styled.div`
   width: 24%;
@@ -468,8 +491,8 @@ const ResultBlock = styled.div`
   &:hover {
     background-color: #eee;
   }
-`;
+`
 
 const RBInput = styled.input`
   font-size: 16px;
-`;
+`

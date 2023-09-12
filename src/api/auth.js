@@ -100,10 +100,3 @@ export function updateCustomer(input, fileForms) {
     },
   })
 }
-/* ==============================
-    마이페이지 - 목적지 관리 - 목적지 등록
-============================== */
-export function postDestination(data) {
-  console.log(data)
-  return client.post(urls.postDestination, data)
-}

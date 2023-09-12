@@ -35,6 +35,7 @@ const DestinationEdit = ({ setChoiceComponent }) => {
       // setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
     }
   }, [checkRadio])
+
   const backComponent = () => {
     setChoiceComponent('리스트')
   }
