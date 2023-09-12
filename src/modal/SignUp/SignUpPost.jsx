@@ -43,6 +43,7 @@ const SignUpPost = ({
                 <TxtCheckInput type="text" value={address} readOnly />
 
                 <CheckBtn
+                  type="button"
                   style={{
                     backgroundColor: 'black',
                     color: 'white',

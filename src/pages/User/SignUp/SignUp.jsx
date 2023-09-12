@@ -61,6 +61,10 @@ import { useAtom } from 'jotai'
 
 import { headerAtom, accordionAtom, subHeaderAtom } from '../../../store/Layout/Layout'
 import { Height } from '@mui/icons-material'
+import { useValidation } from '../../../hooks/useValidation'
+import { signup } from '../../../api/auth'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const SignUp = () => {
   const [showHeader, setShowHeader] = useAtom(headerAtom)
@@ -80,6 +84,7 @@ const SignUp = () => {
       const selectedValue = radioDummy[checkedIndex]
       setSavedRadioValue(selectedValue)
       setInput({ ...input, type: selectedValue })
+      console.log(input)
     }
   }, [checkRadio])
 
@@ -101,6 +106,7 @@ const SignUp = () => {
       ...input,
       businessType: updatedCheck.filter((item) => item !== ''),
     })
+    console.log(input)
   }, [check])
 
   const dummy = {
@@ -114,7 +120,7 @@ const SignUp = () => {
   //post
   const [postFind, setPostFind] = useState(false)
 
-  console.log('postFind', postFind)
+  // console.log('postFind', postFind)
 
   const postCheck = () => {
     setPostFind(false)
@@ -181,7 +187,7 @@ const SignUp = () => {
 
   //total color
   const [txtColor, setTxtColor] = useState('')
-  console.log('msg !!!', msg)
+  // console.log('msg !!!', msg)
 
   // ID
   const [id, setId] = useState('')
@@ -231,14 +237,14 @@ const SignUp = () => {
   const init = {
     id: '',
     password: '',
-    title: '',
-    name: '',
-    email: '',
-    phone: '',
+    memberTitle: '',
+    memberName: '',
+    memberEmail: '',
+    memberPhone: '',
     type: '',
-    customerName: '',
+    name: '',
     ceoName: '',
-    customerPhone: '',
+    phone: '',
     fax: '',
     address: '',
     addressDetail: '',
@@ -267,7 +273,7 @@ const SignUp = () => {
   const [emailFirst, setEmailFirst] = useState('')
   const [emailDomain, setEmailDomain] = useState('')
 
-  console.log('check', check)
+  // console.log('check', check)
   useEffect(() => {
     const checkIndex = check.findIndex((isChecked, index) => isChecked && index < checkDummy.length)
 
@@ -280,6 +286,9 @@ const SignUp = () => {
   }, [check])
 
   const handleSelectChange = (selectedOption, name) => {
+    // const isCheck = selectedOption.label
+    // if (isCheck === '직함 선택') return
+    console.log(name, selectedOption)
     setInput((prevState) => ({
       ...prevState,
       [name]: selectedOption.label,
@@ -337,6 +346,7 @@ const SignUp = () => {
       setIdMsgColor('blue')
       setIdMsg('사용 가능한 아이디입니다.')
       setInput({ ...input, id: id })
+      // console.log(input)
       setTimeout(() => {
         setIdMsg('')
       }, 3000)
@@ -383,6 +393,7 @@ const SignUp = () => {
   const handleBusIdChange = useCallback((e) => {
     const value = e.target.value
     setBusId(value)
+    // console.log(value)
     const isValid = busIdRegex.test(value)
     if (!isValid) {
       setBusIdMsgColor('red')
@@ -424,6 +435,7 @@ const SignUp = () => {
       } else if (isValid) {
         setMsg({ ...msg, [name]: '' })
         setInput({ ...input, [name]: value })
+        // console.log(input)
         setTxtColor('')
       }
     },
@@ -439,424 +451,582 @@ const SignUp = () => {
     [input],
   )
 
-  // 폼 제출 로직
-  const handleSubmit = useCallback((e) => {
+  // 예외처리 - useValidation으로 조건문 관리
+  const [inputObj, setInputObj] = useState({ name: '', text: '' })
+  const [inputObj2, setInputObj2] = useState({ name: '', text: '' })
+  const [inputObj3, setInputObj3] = useState({ name: '', text: '' })
+  const [inputObj4, setInputObj4] = useState({ name: '', text: '' })
+  const [inputObj5, setInputObj5] = useState({ name: '', text: '' })
+  const [inputObj6, setInputObj6] = useState({ name: '', text: '' })
+  const [inputObj7, setInputObj7] = useState({ name: '', text: '' })
+  const [inputObj8, setInputObj8] = useState({ name: '', text: '' })
+  const [inputObj9, setInputObj9] = useState({ name: '', text: '' })
+  const [inputObj10, setInputObj10] = useState({ name: '', text: '' })
+  const [inputObj11, setInputObj11] = useState({ name: '', text: '' })
+  const [inputObj12, setInputObj12] = useState({ name: '', text: '' })
+
+  const [files, setFiles] = useState({ registration: '', bankBook: '' })
+
+  const commonChange = (e) => {
+    const { name, value } = e.target
+    const file = e.target.files ? e.target.files : null
+
+    if (name === 'name') {
+      setInputObj({ name: name, text: value })
+    }
+    if (name === 'ceoName') {
+      setInputObj2({ name: name, text: value })
+    }
+    if (name === 'phone') {
+      setInputObj3({ name: name, text: value })
+    }
+    if (name === 'fax') {
+      setInputObj4({ name: name, text: value })
+    }
+    if (name === 'addressDetail') {
+      setInputObj5({ name: name, text: value })
+    }
+    if (name === 'depositManagerName') {
+      setInputObj6({ name: name, text: value })
+    }
+    if (name === 'memberName') {
+      setInputObj7({ name: name, text: value })
+    }
+    if (name === 'memberEmail') {
+      setInputObj8({ name: name, text: value })
+    }
+    if (name === 'businessfile' && file) {
+      // setInputObj9({ name: name, text: value })
+      setFiles({ ...files, registration: file })
+      return
+    }
+    if (name === 'businessBankAddress' && file) {
+      // setInputObj10({ name: name, text: value })
+      setFiles({ ...files, bankBook: file })
+      return
+    }
+    if (name === 'accountNumber') {
+      setInputObj11({ name: name, text: value })
+    }
+    if (name === 'releaseManagerName') {
+      setInputObj12({ name: name, text: value })
+    }
+    //***submit form***
+    setInput({ ...input, [name]: value })
+    // businessfile, businessBankAddress는 file Object 일단 주석처리 하였음
+
+    //registration:businessfile, bankbook:businessBankAddress는
+  }
+
+  const customerNameValidate = useValidation(inputObj)
+  const ceoNameValidate = useValidation(inputObj2)
+  const customerPhoneValidate = useValidation(inputObj3)
+  const faxValidate = useValidation(inputObj4)
+  const addressValidate = useValidation(inputObj5)
+  const depositManagerNameValidate = useValidation(inputObj6)
+  const depositManagerValidate = useValidation(inputObj7)
+  const depositManagerEmailValidate = useValidation(inputObj8)
+  const businessfileValidate = useValidation(inputObj9)
+  const businessBankAddressValidate = useValidation(inputObj10)
+  const accountNumberValidate = useValidation(inputObj11)
+  const releaseManagerNameValidate = useValidation(inputObj12)
+
+  // 폼 제출 로직 (form태그를 추가해서 진행 및 체크박스,email는 기존 input STATE를 활용)
+  const handleSubmitSignUp = async (e) => {
+    // const navigate = useNavigate()
     e.preventDefault()
-  }, [])
+    console.log('input', input)
+    const allKeysHaveValue = Object.keys(input).every((key) => {
+      return input[key] !== null && input[key] !== undefined && input[key] !== ''
+    })
+
+    if (allKeysHaveValue) console.log(' ✅모든 input작성 완료')
+    try {
+      const data = Object.assign(input, files)
+      const response = await signup(data)
+      console.log(response.data)
+      alert('회원가입되었습니다!')
+      // navigate('/')
+    } catch (err) {
+      // alert('ERROR::등록되지 않았습니다!')
+      // alert(err.data.message)
+      console.log(err.data)
+    }
+  }
 
   return (
     <Container>
       <SignupContainer>
-        <Top>회원가입</Top>
-        <Main>
-          <Left>
-            <PartBlock>
-              <Part>
-                <Title>
-                  <h4>아이디</h4>
-                  <p>
-                    {isFocused && idMsg && id ? (
-                      <p style={{ color: idMsgColor }}>{idMsg}</p>
-                    ) : idDupleCheck && idMsg && !isFocused && id ? (
-                      <p style={{ color: idMsgColor }}>{idMsg}</p>
-                    ) : !idDupleCheck && idMsg && !isFocused && id ? (
-                      <p style={{ color: idMsgColor }}>{idMsg}</p>
-                    ) : null}
-                  </p>
-                </Title>
+        <form onSubmit={handleSubmitSignUp}>
+          <Top>회원가입</Top>
+          <Main>
+            <Left>
+              <PartBlock>
+                <Part>
+                  <Title>
+                    <h4>아이디</h4>
+                    <p>
+                      {isFocused && idMsg && id ? (
+                        <p style={{ color: idMsgColor }}>{idMsg}</p>
+                      ) : idDupleCheck && idMsg && !isFocused && id ? (
+                        <p style={{ color: idMsgColor }}>{idMsg}</p>
+                      ) : !idDupleCheck && idMsg && !isFocused && id ? (
+                        <p style={{ color: idMsgColor }}>{idMsg}</p>
+                      ) : null}
+                    </p>
+                  </Title>
 
-                <div>
-                  <TxtCheckInput
-                    type="text"
-                    value={id}
-                    onChange={handleIdChange}
-                    onFocus={handleIdFocus}
-                    onBlur={handleIdBlur}
-                    borderColor={idMsgColor}
-                  />
+                  <div>
+                    <TxtCheckInput
+                      type="text"
+                      value={id}
+                      onChange={handleIdChange}
+                      onFocus={handleIdFocus}
+                      onBlur={handleIdBlur}
+                      borderColor={idMsgColor}
+                    />
 
-                  <CheckBtn onClick={handleDuplicateCheck} type="button">
-                    중복 확인
-                  </CheckBtn>
-                </div>
-              </Part>
-              <Part>
-                <Title>
-                  <h4>비밀번호</h4>
-                  <p style={{ color: pwMsgColor }}>{pwMsg}</p>
-                </Title>
-                <div>
-                  <TxtInput
-                    placeholder="영문, 숫자 조합 8~12자리"
-                    type="password"
-                    value={pw}
-                    borderColor={statusColor}
-                    onChange={handlePwChange}
-                    onFocus={() => {
-                      setPwFocused(true)
-                    }}
-                    onBlur={() => {
-                      setPwFocused(false)
-                    }}
-                  />
-                </div>
-              </Part>
-              <Part>
-                <Title>
-                  <h4>비밀번호 확인</h4>
-                  <p style={{ color: statusColor }}>{pwDupMsg}</p>
-                </Title>
-                <div>
-                  <TxtInput
-                    placeholder="비밀번호 재입력"
-                    type="password"
-                    value={pwDuple}
-                    borderColor={statusColor}
-                    onChange={handlePwDupleCheck}
-                    onFocus={() => {
-                      setDuplePwFocused(true)
-                    }}
-                    onBlur={() => {
-                      setDuplePwFocused(false)
-                    }}
-                  />
-                </div>
-              </Part>
-            </PartBlock>
-            <PartBlock>
-              <Part>
-                <h4>사업자 구분</h4>
-                <RadioContainer>
-                  {radioDummy.map((text, index) => (
-                    <RadioMainDiv key={index}>
-                      <RadioCircleDiv
-                        isChecked={checkRadio[index]}
-                        onClick={() => {
-                          setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-                        }}
-                      >
-                        <RadioInnerCircleDiv />
-                      </RadioCircleDiv>
-                      <div style={{ display: 'flex', marginLeft: '3px' }}>
-                        <p>{text}</p>
-                      </div>
-                    </RadioMainDiv>
-                  ))}
-                </RadioContainer>
-              </Part>
-              <Part>
-                <Title>
-                  <h4>회사 명</h4>
-                  <p></p>
-                </Title>
-                <div>
-                  <TxtInput type="text" name="customerName" value={input.customerName} onChange={commonHandler} />
-                </div>
-              </Part>
-              <Part>
-                <Title>
-                  <h4>대표자 성명</h4>
-                  <p style={{ color: 'red' }}>{repMsg}</p>
-                </Title>
+                    <CheckBtn onClick={handleDuplicateCheck} type="button">
+                      중복 확인
+                    </CheckBtn>
+                  </div>
+                </Part>
+                <Part>
+                  <Title>
+                    <h4>비밀번호</h4>
+                    <p style={{ color: pwMsgColor }}>{pwMsg}</p>
+                  </Title>
+                  <div>
+                    <TxtInput
+                      placeholder="영문, 숫자 조합 8~12자리"
+                      type="password"
+                      value={pw}
+                      borderColor={statusColor}
+                      onChange={handlePwChange}
+                      name="password"
+                      onFocus={() => {
+                        setPwFocused(true)
+                      }}
+                      onBlur={() => {
+                        setPwFocused(false)
+                      }}
+                    />
+                  </div>
+                </Part>
+                <Part>
+                  <Title>
+                    <h4>비밀번호 확인</h4>
+                    <p style={{ color: statusColor }}>{pwDupMsg}</p>
+                  </Title>
+                  <div>
+                    <TxtInput
+                      placeholder="비밀번호 재입력"
+                      type="password"
+                      value={pwDuple}
+                      borderColor={statusColor}
+                      onChange={handlePwDupleCheck}
+                      onFocus={() => {
+                        setDuplePwFocused(true)
+                      }}
+                      onBlur={() => {
+                        setDuplePwFocused(false)
+                      }}
+                    />
+                  </div>
+                </Part>
+              </PartBlock>
+              <PartBlock>
+                <Part>
+                  <h4>사업자 구분</h4>
+                  <RadioContainer>
+                    {radioDummy.map((text, index) => (
+                      <RadioMainDiv key={index}>
+                        <RadioCircleDiv
+                          isChecked={checkRadio[index]}
+                          onClick={() => {
+                            setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
+                          }}
+                        >
+                          <RadioInnerCircleDiv />
+                        </RadioCircleDiv>
+                        <div style={{ display: 'flex', marginLeft: '3px' }}>
+                          <p>{text}</p>
+                        </div>
+                      </RadioMainDiv>
+                    ))}
+                  </RadioContainer>
+                </Part>
+                <Part>
+                  <Title>
+                    <h4>회사 명</h4>
+                    <p style={{ color: 'red' }}>{customerNameValidate || ''}</p>
+                    <p></p>
+                  </Title>
+                  <div>
+                    {/* <TxtInput type="text" name="customerName" value={input.customerName} onChange={commonHandler} /> */}
+                    <TxtInput type="text" name="name" value={inputObj.value} onChange={commonChange} />
+                  </div>
+                </Part>
+                <Part>
+                  <Title>
+                    <h4>대표자 성명</h4>
+                    <p style={{ color: 'red' }}>{ceoNameValidate || ''}</p>
+                  </Title>
 
-                <div>
-                  <TxtInput type="text" name="ceoName" value={input.ceoName} onChange={commonHandler} />
-                </div>
-              </Part>
-              <Part>
-                <Title>
-                  <h4>대표 연락처</h4>
-                  <p></p>
-                </Title>
-                <div>
+                  <div>
+                    {/* <TxtInput type="text" name="ceoName" value={input.ceoName} onChange={commonHandler} /> */}
+                    <TxtInput type="text" name="ceoName" value={inputObj.value} onChange={commonChange} />
+                  </div>
+                </Part>
+                <Part>
+                  <Title>
+                    <h4>대표 연락처</h4>
+                    <p style={{ color: 'red' }}>{customerPhoneValidate || ''}</p>
+                  </Title>
+                  <div>
+                    <TxtInput
+                      name="phone"
+                      value={inputObj.customerPhone}
+                      onChange={commonChange}
+                      placeholder="연락처 입력('-' 제외)"
+                    />
+                  </div>
+                </Part>
+                <Part>
+                  <Title>
+                    <h4>팩스 번호</h4>
+                    <p style={{ color: 'red' }}>{faxValidate || ''}</p>
+                  </Title>
+
+                  <div>
+                    <TxtInput
+                      type="text"
+                      name="fax"
+                      value={inputObj.fax}
+                      onChange={commonChange}
+                      placeholder="팩스번호 입력('-' 제외)"
+                    />
+                  </div>
+                </Part>
+                <Part>
+                  <Title>
+                    <h4>주소</h4>
+                    <p style={{ color: 'red' }}>{addressValidate || ''}</p>
+                  </Title>
+                  <div>
+                    <TxtCheckInput type="text" value={address} placeholder="찾기 버튼 클릭" readOnly />
+                    <CheckBtn style={{ backgroundColor: 'black', color: 'white' }} onClick={openModal} type="button">
+                      찾기
+                    </CheckBtn>
+                    <TxtInput
+                      placeholder="상세 주소를 입력해 주세요."
+                      name="addressDetail"
+                      value={detailAddress}
+                      // value={}
+                      style={{ marginTop: '5px' }}
+                      onChange={commonChange}
+                    />
+                  </div>
+                </Part>
+                {modalIsOpen && (
+                  <SignUpPost
+                    postCheck={postCheck}
+                    directCheck={directCheck}
+                    postFind={postFind}
+                    address={address}
+                    daumPostHandleBtn={daumPostHandleBtn}
+                    detailAddress={detailAddress}
+                    setDetailAddress={setDetailAddress}
+                    detailAddressHandler={detailAddressHandler}
+                    comfirmPost={comfirmPost}
+                    closeModal={closeModal}
+                    isDaumPostOpen={isDaumPostOpen}
+                    daumPosthandleClose={daumPosthandleClose}
+                    daumPostHandleComplete={daumPostHandleComplete}
+                  />
+                )}
+              </PartBlock>
+              <PartBlock>
+                <Part>
+                  <Title>
+                    <h4>입금 담당자 정보</h4>
+                    <p style={{ color: 'red' }}>{depositManagerNameValidate || ''}</p>
+                  </Title>
+                  <DropWrap>
+                    <DepositSelect
+                      options={depositOptions}
+                      defaultValue={depositOptions[0]}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
+                    />
+                    <TxtDropInput
+                      name="depositManagerName"
+                      value={inputObj.depositManagerName}
+                      onChange={commonChange}
+                      placeholder="담당자 성함 입력"
+                    />
+                  </DropWrap>
+                </Part>
+                <Part>
+                  <Title>
+                    <h4>휴대폰 번호</h4>
+                    <p style={{ color: txtColor }}>{msg.depositPhoneNum}</p>
+                  </Title>
                   <TxtInput
-                    name="customerPhone"
-                    value={input.customerPhone}
-                    onChange={commonHandler}
                     placeholder="연락처 입력('-' 제외)"
+                    name="depositManagerPhone"
+                    // name="depositPhoneNum"
+                    value={input.depositPhoneNum}
+                    onChange={phoneHandler}
+                    maxLength="11"
                   />
-                </div>
-              </Part>
-              <Part>
-                <Title>
-                  <h4>팩스 번호</h4>
-                  <p></p>
-                </Title>
-
-                <div>
-                  <TxtInput
-                    type="text"
-                    name="fax"
-                    value={input.fax}
-                    onChange={commonHandler}
-                    placeholder="팩스번호 입력('-' 제외)"
-                  />
-                </div>
-              </Part>
-              <Part>
-                <Title>
-                  <h4>주소</h4>
-                  <p></p>
-                </Title>
-                <div>
-                  <TxtCheckInput type="text" value={address} placeholder="찾기 버튼 클릭" readOnly />
-                  <CheckBtn style={{ backgroundColor: 'black', color: 'white' }} onClick={openModal}>
-                    찾기
-                  </CheckBtn>
-                  <TxtInput
-                    placeholder="상세 주소를 입력해 주세요."
-                    value={detailAddress}
-                    style={{ marginTop: '5px' }}
-                    onChange={detailAddressHandler}
-                  />
-                </div>
-              </Part>
-              {modalIsOpen && (
-                <SignUpPost
-                  postCheck={postCheck}
-                  directCheck={directCheck}
-                  postFind={postFind}
-                  address={address}
-                  daumPostHandleBtn={daumPostHandleBtn}
-                  detailAddress={detailAddress}
-                  setDetailAddress={setDetailAddress}
-                  detailAddressHandler={detailAddressHandler}
-                  comfirmPost={comfirmPost}
-                  closeModal={closeModal}
-                  isDaumPostOpen={isDaumPostOpen}
-                  daumPosthandleClose={daumPosthandleClose}
-                  daumPostHandleComplete={daumPostHandleComplete}
-                />
-              )}
-            </PartBlock>
-            <PartBlock>
-              <Part>
-                <Title>
-                  <h4>입금 담당자 정보</h4>
-                  <p></p>
-                </Title>
-                <DropWrap>
-                  <DepositSelect
-                    options={depositOptions}
-                    defaultValue={depositOptions[0]}
-                    onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
-                  />
-                  <TxtDropInput
-                    name="depositManagerName"
-                    value={input.depositManagerName}
-                    onChange={commonHandler}
-                    placeholder="담당자 성함 입력"
-                  />
-                </DropWrap>
-              </Part>
-              <Part>
-                <Title>
-                  <h4>휴대폰 번호</h4>
-                  <p style={{ color: txtColor }}>{msg.depositPhoneNum}</p>
-                </Title>
-                <TxtInput
-                  placeholder="연락처 입력('-' 제외)"
-                  name="depositPhoneNum"
-                  value={input.depositPhoneNum}
-                  onChange={phoneHandler}
-                  maxLength="11"
-                />
-                <BottomP>
-                  <input type="checkbox" style={{ marginRight: '5px' }} />
-                  경매 담당자 정보와 동일
-                </BottomP>
-              </Part>
-            </PartBlock>
-          </Left>
-          <Right>
-            <PartBlock>
-              <Part>
-                <Title>
-                  <h4>경매 담당자 정보</h4>
-                  <p></p>
-                </Title>
-                <DropWrap>
-                  <DepositSelect
-                    options={auctionOptions}
-                    defaultValue={auctionOptions[0]}
-                    onChange={(selectedOption) => handleSelectChange(selectedOption, 'title')}
-                  />
-                  <TxtDropInput
-                    type="text"
-                    name="name"
-                    value={input.name}
-                    onChange={commonHandler}
-                    placeholder="담당자 성함 입력"
-                  />
-                </DropWrap>
-              </Part>
-              <Part>
-                <h4>이메일</h4>
-                <div
-                  style={{
-                    display: 'flex',
-                    lineHeight: '40px',
-                    width: '320px',
-                  }}
-                >
-                  <SInput onChange={emailHandler} /> <p style={{ margin: '0 5px' }}>@</p>
-                  <EmailSelect
-                    options={emailOptions}
-                    defaultValue={emailOptions[0]}
-                    onChange={(selectedOption) => {
-                      setEmailDomain(selectedOption.label)
+                  <BottomP>
+                    <input type="checkbox" style={{ marginRight: '5px' }} />
+                    경매 담당자 정보와 동일
+                  </BottomP>
+                </Part>
+              </PartBlock>
+            </Left>
+            <Right>
+              <PartBlock>
+                <Part>
+                  <Title>
+                    <h4>경매 담당자 정보</h4>
+                    <p style={{ color: 'red' }}>{depositManagerValidate || ''}</p>
+                  </Title>
+                  <DropWrap>
+                    <DepositSelect
+                      options={auctionOptions}
+                      defaultValue={auctionOptions[0]}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'memberTitle')}
+                    />
+                    <TxtDropInput
+                      type="text"
+                      name="memberName"
+                      value={inputObj.depositManagerName}
+                      onChange={commonChange}
+                      placeholder="담당자 성함 입력"
+                    />
+                  </DropWrap>
+                </Part>
+                <Part>
+                  <Title>
+                    <h4>이메일</h4>
+                    <p style={{ color: 'red' }}>{depositManagerEmailValidate || ''}</p>
+                  </Title>
+                  <div
+                    style={{
+                      display: 'flex',
+                      lineHeight: '40px',
+                      width: '320px',
                     }}
+                  >
+                    <SInput
+                      onChange={(e) => {
+                        emailHandler(e)
+                        commonChange(e)
+                      }}
+                      name="memberEmail"
+                    />{' '}
+                    <p style={{ margin: '0 5px' }}>@</p>
+                    <EmailSelect
+                      options={emailOptions}
+                      defaultValue={emailOptions[0]}
+                      onChange={(selectedOption) => {
+                        setEmailDomain(selectedOption.label)
+                      }}
+                    />
+                    {/* {console.log('emailDomain', emailDomain)} */}
+                  </div>
+                </Part>
+                <Part>
+                  <Title>
+                    <h4>휴대폰 번호</h4>
+                    <p style={{ color: txtColor }}>{msg.actionPhoneNum}</p>
+                  </Title>
+                  <TxtInput
+                    placeholder="연락처 입력('-' 제외)"
+                    name="memberPhone"
+                    value={input.actionPhoneNum}
+                    onChange={phoneHandler}
+                    maxLength="11"
                   />
-                  {console.log('emailDomain', emailDomain)}
-                </div>
-              </Part>
-              <Part>
-                <Title>
-                  <h4>휴대폰 번호</h4>
-                  <p style={{ color: txtColor }}>{msg.actionPhoneNum}</p>
-                </Title>
-                <TxtInput
-                  placeholder="연락처 입력('-' 제외)"
-                  name="actionPhoneNum"
-                  value={input.actionPhoneNum}
-                  onChange={phoneHandler}
-                  maxLength="11"
-                />
-              </Part>
-            </PartBlock>
-            <PartBlock>
-              <Part>
-                <h4>업태 선택</h4>
-                <CheckWrap>
-                  {checkDummy.map((x, index) => (
-                    <StyledCheckMainDiv>
-                      <StyledCheckSubSquDiv
-                        onClick={() => setCheck(CheckBox(check, check.length, index, true))}
-                        isChecked={check[index]}
-                      >
-                        <CheckImg2 src="/svg/check.svg" />
-                      </StyledCheckSubSquDiv>
-                      <p>{x}</p>
-                    </StyledCheckMainDiv>
-                  ))}
-                </CheckWrap>
-              </Part>
-              <Part>
-                <Title>
-                  <h4>사업자 번호</h4>
-                  <p style={{ color: busIdMsgColor }}>{busIdMsg}</p>
-                  {console.log('busIdMsg', busIdMsg)}
-                </Title>
-                <div style={{ width: '320px' }}>
-                  <TxtCheckInput onChange={handleBusIdChange} placeholder="사업자 번호 입력('-' 제외)" />
-                  <CheckBtn onClick={handleBusIdDupleCheck}>중복 확인</CheckBtn>
-                </div>
-              </Part>
-              <Part>
-                <h4>사업자 등록증</h4>
-                <TxtDiv>
-                  <img src="/svg/Upload.svg" />
-                  <p>파일 첨부</p>
-                </TxtDiv>
-              </Part>
-              <Part>
-                <h4>통장 사본</h4>
-                <TxtDiv>
-                  <img src="/svg/Upload.svg" />
-                  <p>파일 첨부</p>
-                </TxtDiv>
-              </Part>
-              <Part>
-                <h4>계좌번호</h4>
-                <AccountSelect
-                  options={accountOptions}
-                  defaultValue={accountOptions[0]}
-                  onChange={(selectedOption) => handleSelectChange(selectedOption, 'bank')}
-                />
-                <TxtInput
-                  style={{ marginTop: '5px' }}
-                  placeholder="(계좌번호 입력('-' 제외)"
-                  name="accountNumber"
-                  value={input.accountNumber}
-                  onChange={commonHandler}
-                />
-              </Part>
-            </PartBlock>
-            <PartBlock style={{ marginTop: '138px' }}>
-              <Part>
-                <h4>출고 담당자 정보</h4>
-                <DropWrap>
-                  <DepositSelect
-                    options={releaseOptions}
-                    defaultValue={releaseOptions[0]}
-                    onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle ')}
+                </Part>
+              </PartBlock>
+              <PartBlock>
+                <Part>
+                  <h4>업태 선택</h4>
+                  <CheckWrap>
+                    {checkDummy.map((x, index) => (
+                      <StyledCheckMainDiv key={index}>
+                        <StyledCheckSubSquDiv
+                          onClick={() => setCheck(CheckBox(check, check.length, index, true))}
+                          isChecked={check[index]}
+                          name="businessChoice"
+                        >
+                          <CheckImg2 src="/svg/check.svg" />
+                        </StyledCheckSubSquDiv>
+                        <p>{x}</p>
+                      </StyledCheckMainDiv>
+                    ))}
+                  </CheckWrap>
+                </Part>
+                <Part>
+                  <Title>
+                    <h4>사업자 번호</h4>
+                    <p style={{ color: busIdMsgColor }}>{busIdMsg}</p>
+                  </Title>
+                  <div style={{ width: '320px' }}>
+                    <TxtCheckInput
+                      onChange={(e) => {
+                        handleBusIdChange(e)
+                        // commonChange(e)
+                      }}
+                      placeholder="사업자 번호 입력('-' 제외)"
+                      name="businessNumber"
+                    />
+                    <CheckBtn onClick={handleBusIdDupleCheck} type="button">
+                      중복 확인
+                    </CheckBtn>
+                  </div>
+                </Part>
+                <Part>
+                  <h4>사업자 등록증</h4>
+                  <p style={{ color: 'red' }}>{businessfileValidate || ''}</p>
+                  <TxtDiv>
+                    <label htmlFor="ex_file">
+                      <div className="btnStart">
+                        <img src="/svg/Upload.svg" alt="btnStart" />
+                        <p htmlFor="ex_file">파일 첨부</p>
+                      </div>
+                    </label>
+                    {/* <img src="/svg/Upload.svg" alt="Upload" /> */}
+                    <input
+                      id="ex_file"
+                      type="file"
+                      accept="image/jpg, image/png, image/jpeg"
+                      style={{ display: 'none' }}
+                      onChange={commonChange}
+                      name="businessfile"
+                    ></input>
+                  </TxtDiv>
+                </Part>
+                <Part>
+                  <h4>통장 사본</h4>
+                  <p style={{ color: 'red' }}>{businessBankAddressValidate || ''}</p>
+                  <TxtDiv>
+                    <label htmlFor="ex_file2">
+                      <div className="btnStart">
+                        <img src="/svg/Upload.svg" alt="btnStart" />
+                        <p htmlFor="ex_file2">파일 첨부</p>
+                      </div>
+                    </label>
+                    {/* <img src="/svg/Upload.svg" alt="Upload" /> */}
+                    <input
+                      id="ex_file2"
+                      type="file"
+                      accept="image/jpg, image/png, image/jpeg"
+                      style={{ display: 'none' }}
+                      onChange={commonChange}
+                      name="businessBankAddress"
+                    ></input>
+                  </TxtDiv>
+                </Part>
+                <Part>
+                  <Title>
+                    <h4>계좌번호</h4>
+                    <p style={{ color: 'red' }}>{accountNumberValidate || ''}</p>
+                  </Title>
+                  <AccountSelect
+                    options={accountOptions}
+                    defaultValue={accountOptions[0]}
+                    onChange={(selectedOption) => handleSelectChange(selectedOption, 'bank')}
                   />
-                  <TxtDropInput
-                    name="releaseManagerName"
-                    value={input.releaseManagerName}
-                    onChange={commonHandler}
-                    placeholder="담당자 성함 입력"
+                  <TxtInput
+                    style={{ marginTop: '5px' }}
+                    placeholder="(계좌번호 입력('-' 제외)"
+                    name="accountNumber"
+                    value={inputObj.accountNumber}
+                    onChange={commonChange}
                   />
-                </DropWrap>
-              </Part>
-              <Part>
-                <Title>
-                  <h4>휴대폰 번호</h4>
-
-                  <p style={{ color: txtColor }}>{msg.releasePhoneNum}</p>
-                </Title>
-                <TxtInput
-                  placeholder="연락처 입력('-' 제외)"
-                  name="releasePhoneNum"
-                  value={input.releasePhoneNum}
-                  onChange={phoneHandler}
-                  maxLength="11"
-                />
-                <BottomP>
-                  <input type="checkbox" style={{ marginRight: '5px' }} />
-                  경매 담당자 정보와 동일
-                </BottomP>
-              </Part>
-            </PartBlock>
-          </Right>
-
-        </Main>
-        <Bottom>
-          <BottomItem>
-            <h4>약관 동의</h4>
-          </BottomItem>
-          <BottomItem style={{ flexGrow: '6' }}>
-            <div>
-              <input type="checkbox" />
-              <h4>전체 동의합니다</h4>
-            </div>
-            <div>
-              <input type="checkbox" />
-              <p>
-                개인정보 활용에 동의 <span>(필수)</span>
-              </p>
-              <a>약관 보기</a>
-            </div>
-            <div>
-              <input type="checkbox" />
-              <p>
-                이용약관 동의 <span>(필수)</span>
-              </p>
-              <a style={{ marginLeft: '55px' }}>약관 보기</a>
-            </div>
-          </BottomItem>
-          <BottomItem>
-            <button
-              type="button"
-              onClick={() => {
-                setGreyBtn(true)
-              }}
-            >
-              가입하기
-            </button>
-            {console.log('input =>', input)}
-          </BottomItem>
-        </Bottom>
+                </Part>
+              </PartBlock>
+              <PartBlock style={{ marginTop: '138px' }}>
+                <Part>
+                  <Title>
+                    <h4>출고 담당자 정보</h4>
+                    <p style={{ color: 'red' }}>{releaseManagerNameValidate || ''}</p>
+                  </Title>
+                  <DropWrap>
+                    <DepositSelect
+                      options={releaseOptions}
+                      defaultValue={releaseOptions[0]}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
+                    />
+                    <TxtDropInput
+                      name="releaseManagerName"
+                      value={inputObj.releaseManagerName}
+                      onChange={commonChange}
+                      placeholder="담당자 성함 입력"
+                    />
+                  </DropWrap>
+                </Part>
+                <Part>
+                  <Title>
+                    <h4>휴대폰 번호</h4>
+                    <p style={{ color: txtColor }}>{msg.releasePhoneNum}</p>
+                  </Title>
+                  <TxtInput
+                    placeholder="연락처 입력('-' 제외)"
+                    name="releaseManagerPhone"
+                    value={inputObj.releaseManagerPhone}
+                    onChange={phoneHandler}
+                    maxLength="11"
+                  />
+                  <BottomP>
+                    <input type="checkbox" style={{ marginRight: '5px' }} />
+                    경매 담당자 정보와 동일
+                  </BottomP>
+                </Part>
+              </PartBlock>
+            </Right>
+          </Main>
+          <Bottom>
+            <BottomItem>
+              <h4>약관 동의</h4>
+            </BottomItem>
+            <BottomItem style={{ flexGrow: '6' }}>
+              <div>
+                <input type="checkbox" />
+                <h4>전체 동의합니다</h4>
+              </div>
+              <div>
+                <input type="checkbox" />
+                <p>
+                  개인정보 활용에 동의 <span>(필수)</span>
+                </p>
+                <a>약관 보기</a>
+              </div>
+              <div>
+                <input type="checkbox" />
+                <p>
+                  이용약관 동의 <span>(필수)</span>
+                </p>
+                <a style={{ marginLeft: '55px' }}>약관 보기</a>
+              </div>
+            </BottomItem>
+            <BottomItem>
+              <button
+                type="submit"
+                onClick={() => {
+                  setGreyBtn(true)
+                }}
+              >
+                가입하기
+              </button>
+              {/* {console.log('input =>', input)} */}
+            </BottomItem>
+          </Bottom>
+        </form>
       </SignupContainer>
     </Container>
   )

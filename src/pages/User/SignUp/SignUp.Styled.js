@@ -130,15 +130,32 @@ export const BottomItem = styled.div`
 `
 
 export const TxtDiv = styled.div`
-  display: flex;
-  width: 320px;
-  height: 40px;
-  border: 1px solid #c1c1c1c5;
+  .btnStart {
+    display: flex;
+    width: 320px;
+    height: 40px;
+    border: 1px solid #c1c1c1c5;
 
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  p {
+    margin-left: 10px;
+  }
+`
 
+export const TxtDivNoborder = styled.div`
+  .btnStart {
+    display: flex;
+    width: 320px;
+    height: 40px;
+    border: none;
+
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
   p {
     margin-left: 10px;
   }
