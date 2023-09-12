@@ -1,25 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { styled } from 'styled-components'
 
-import TextEditor from '../../../components/Editor/TextEditor'
-
 import { BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 import { Bar, CenterRectangleWrap } from '../../../common/OnePage/OnePage.Styled'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
-
-import { CustomInput, InputA, PropsInput } from '../../../common/Input/Input'
-import { ExRadioWrap } from '../../../modal/External/ExternalFilter'
-import { RadioMainDiv, RadioInnerCircleDiv, RadioCircleDiv } from '../../../common/Check/RadioImg'
-
 import { BtnBound } from '../../../common/Button/Button'
-import { TxtDiv } from '../../../pages/User/SignUp/SignUp.Styled'
-import { FileUpload } from '@mui/icons-material'
-// 클레임 등록
-const DocsDetail = () => {
-  const radioDummy = ['노출', '미노출']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
 
+// 클레임 등록
+const FAQDetail = () => {
   return (
     <>
       <CenterRectangleWrap style={{ height: '88vh', padding: '10px 50px' }}>
@@ -73,7 +61,7 @@ const DocsDetail = () => {
   )
 }
 
-export default DocsDetail
+export default FAQDetail
 
 export const CRWMain = styled.div`
   width: 100%;

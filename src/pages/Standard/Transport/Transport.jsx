@@ -13,7 +13,7 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import BlueBar from '../../../modal/BlueBar/BlueBar'
 import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { FilterWrap } from '../../../modal/External/ExternalFilter'
+import { CustomInput, FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
   FilterContianer,
   FilterHeader,
@@ -40,8 +40,17 @@ import {
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import { Link } from 'react-router-dom'
+
+import { ExRadioWrap } from '../../../modal/External/ExternalFilter'
+
+import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import { CheckBox } from '../../../common/Check/Checkbox'
 
 const Transport = ({}) => {
+  const radioDummy = ['증가', '감소']
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -83,7 +92,9 @@ const Transport = ({}) => {
             <h1>운반비 관리</h1>
             <SubTitle>
               <h5>운반비 관리</h5>
-              <h6>할증 관리</h6>
+              <Link to={'/standard/surcharge'}>
+                <h6>할증 관리</h6>
+              </Link>
             </SubTitle>
           </div>
           <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
@@ -157,20 +168,45 @@ const Transport = ({}) => {
         <TCSubContainer>
           <TCSubDiv>
             <div>
-              <h6>적용일자</h6>
+              선택 <span>0</span>(개)
             </div>
-            <div>
-              {' '}
-              <h6>단가 일괄 수정</h6>
-            </div>
-            <div></div>
           </TCSubDiv>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <TGreyBtn>적용</TGreyBtn>
             <WhiteRedBtn>운반비 삭제</WhiteRedBtn>
             <WhiteSkyBtn>운반비 등록</WhiteSkyBtn>
           </div>
         </TCSubContainer>
+        <TCSubContainer>
+          <TCGreyDiv>
+            <div>
+              <p style={{ marginRight: '10px' }}>적용일자</p>
+              <DateGrid height={30} width={130} bgColor={'white'} fontSize={15} />
+            </div>
+            <div>
+              <p style={{ marginLeft: ' 20px' }}>단가 일괄 수정</p>
+              <div style={{ display: 'flex', gap: '10px', margin: '0px 15px', padding: '5px' }}>
+                {radioDummy.map((text, index) => (
+                  <RadioMainDiv key={index}>
+                    <RadioCircleDiv
+                      isChecked={checkRadio[index]}
+                      onClick={() => {
+                        setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
+                      }}
+                    >
+                      <RadioInnerCircleDiv />
+                    </RadioCircleDiv>
+                    <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
+                  </RadioMainDiv>
+                ))}
+              </div>
+            </div>
+            <div></div>
+            <CustomInput placeholder="% 입력" style={{ marginRight: '5px' }} width={140} height={30} />
+            <TGreyBtn>적용</TGreyBtn>
+          </TCGreyDiv>
+          <div style={{ display: 'flex', gap: '10px' }}></div>
+        </TCSubContainer>
+
         <Test3 />
         <TableBottomWrap>
           <BlackBtn width={15} height={40}>
@@ -185,3 +221,19 @@ const Transport = ({}) => {
 export default Transport
 
 const TCSubDiv = styled.div``
+
+const TCGreyDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  > div {
+    display: flex;
+    align-items: center;
+  }
+
+  p {
+    color: ${(props) => props.theme.colors.TxtAlter};
+    font-size: 16px;
+  }
+`
