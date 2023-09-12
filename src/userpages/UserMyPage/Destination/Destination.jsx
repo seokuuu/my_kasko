@@ -107,10 +107,10 @@ const Destination = ({ setChoiceComponent }) => {
 
   useEffect(() => {
     if (isSuccess && data?.data?.data?.list) {
-      let test = data?.data?.data?.list
+      let getData = data?.data?.data?.list
 
-      if (Array.isArray(test)) {
-        const newArray = test.map((item) => ({
+      if (Array.isArray(getData)) {
+        const newArray = getData.map((item) => ({
           '고객 코드': item.uid,
           대표: item.represent,
           '목적지 코드': item.destinationCode,
