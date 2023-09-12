@@ -9,6 +9,7 @@ const urls = {
   resetPw: '/main/reset-pw',
   refresh: '/refresh',
   updateCustomer: '/member/privacy',
+  postDestination: '/member/destination',
 }
 const headers = { 'Content-Type': 'multipart/form-data' }
 /* ==============================
