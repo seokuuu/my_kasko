@@ -44,7 +44,7 @@ const asDate = (dateAsString) => {
   return new Date(Number.parseInt(splitFields[2]), Number.parseInt(splitFields[1]) - 1, Number.parseInt(splitFields[0]))
 }
 
-const Test3 = ({ hei, destination }) => {
+const Test3 = ({ hei, getRow, getCol }) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
   const gridRef = useRef()
@@ -86,6 +86,8 @@ const Test3 = ({ hei, destination }) => {
 
   //고객코드/대표/목적지 코드/ 목적지 명/ 담당자 연락처/ 하차지 명/ 도착지 연락처/ 상세 주소/ 비고란
   // AgGrid => 1. row, col 데이터 2. filter해주기?
+  // console.log('row데이터', getRow)
+  // console.log('get데이터', getCol)
   const [columnDefs, setColumnDefs] = useState([
     {
       field: '고객 코드',
@@ -106,6 +108,13 @@ const Test3 = ({ hei, destination }) => {
     { field: '상세 주소' },
     { field: '비고란' },
   ])
+
+  useEffect(() => {
+    if (getCol) {
+      setColumnDefs(getCol)
+    }
+  }, [getCol])
+
   const defaultColDef = useMemo(() => {
     return {
       flex: 1,
@@ -129,12 +138,12 @@ const Test3 = ({ hei, destination }) => {
   const dummyData = Array(100).fill(dummyD)
 
   useEffect(() => {
-    if (destination && destination.length > 0) {
-      setRowData(destination)
+    if (getRow && getRow.length > 0) {
+      setRowData(getRow)
     } else {
       setRowData(dummyData)
     }
-  }, [destination])
+  }, [getRow])
 
   const onGridReady = useCallback(
     (params) => {
@@ -145,7 +154,7 @@ const Test3 = ({ hei, destination }) => {
       //     // document.querySelector('#everyone').checked = true;
       //   })
     },
-    [destination],
+    [getRow],
   )
 
   // ---------------------------------------------------------------------

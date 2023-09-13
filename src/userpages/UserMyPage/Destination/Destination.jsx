@@ -103,7 +103,8 @@ const Destination = ({ setChoiceComponent }) => {
     category: '목적지명',
     keyword: '인천',
   }
-  const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터)
+
+  const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터, getDestination)
 
   useEffect(() => {
     if (isSuccess && data?.data?.data?.list) {
@@ -164,7 +165,7 @@ const Destination = ({ setChoiceComponent }) => {
           </div>
         </TCSubContainer>
 
-        <Test3 title={'규격 약호 찾기'} destination={destination} />
+        <Test3 title={'규격 약호 찾기'} getRow={destination} />
       </TableContianer>
     </FilterContianer>
   )

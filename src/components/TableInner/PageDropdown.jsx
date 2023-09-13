@@ -1,13 +1,13 @@
 import React from 'react'
 import { PageSelect } from '../../modal/External/ExternalFilter'
 
-const PageDropdown = () => {
+const PageDropdown = ({ handleDropdown }) => {
   return (
-    <PageSelect name="pagenation">
-      <option value="">50개씩</option>
-      <option value="">100개씩</option>
-      <option value="">500개씩</option>
-      <option value="">1000개씩</option>
+    <PageSelect name="pagenation" onChange={handleDropdown}>
+      <option value="50">50개씩</option>
+      <option value="100">100개씩</option>
+      <option value="500">500개씩</option>
+      <option value="1000">1000개씩</option>
     </PageSelect>
   )
 }
