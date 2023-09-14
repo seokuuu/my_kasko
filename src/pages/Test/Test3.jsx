@@ -89,7 +89,7 @@ const Test3 = ({ hei, destination }) => {
   const [columnDefs, setColumnDefs] = useState([
     {
       field: '고객 코드',
-      minWidth: 180,
+      minWidth: 150,
       checkboxSelection: checkboxSelection,
       headerCheckboxSelection: headerCheckboxSelection,
     },
