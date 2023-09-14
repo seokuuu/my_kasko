@@ -9,7 +9,7 @@ import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn, ExcelBtn, YellBtn, TGreyBtn } from '../../../common/Button/Button'
 import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
@@ -42,8 +42,9 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
-import { getAuction } from '../../../api/auction/round'
+import { deleteAuction, getAuction } from '../../../api/auction/round'
 import useReactQuery from '../../../hooks/useReactQuery'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
 const Round = ({}) => {
   const radioDummy = ['전체', '미진행', '진행중', '종료']
@@ -104,7 +105,7 @@ const Round = ({}) => {
     type: '단일',
   })
 
-  const { isLoading, isError, data, isSuccess } = useReactQuery(inputParams, getAuction)
+  const { isLoading, isError, data, isSuccess } = useReactQuery(inputParams, 'auction', getAuction)
 
   //  ✅ Props로 test3컴포넌트(테이블) row랑 col 데이터를 넘기는 방식
   useEffect(() => {
@@ -140,7 +141,14 @@ const Round = ({}) => {
       pageSize: page,
     })
   }
+  const 임의의UID = 22 //임의의 uid값 * 현재 에러나옴
+  const mutation = useMutationQuery('auction', () => deleteAuction(임의의UID))
 
+  const handleRemoveBtn = useCallback(() => {
+    mutation.mutate()
+  }, [mutation])
+
+  
   return (
     <FilterContianer>
       <FilterHeader>
@@ -237,7 +245,7 @@ const Round = ({}) => {
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>회차 삭제</WhiteRedBtn>
+            <WhiteRedBtn onClick={handleRemoveBtn}>회차 삭제</WhiteRedBtn>
             <WhiteSkyBtn>경매 회차 등록</WhiteSkyBtn>
           </div>
         </TCSubContainer>

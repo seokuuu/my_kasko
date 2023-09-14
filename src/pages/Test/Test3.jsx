@@ -7,7 +7,7 @@ import 'ag-grid-community/styles/ag-theme-alpine.css'
 import { styled } from 'styled-components'
 import { ContentBlock } from 'draft-js'
 import { useAtom } from 'jotai'
-import { blueModalAtom } from '../../store/Layout/Layout'
+import { blueModalAtom, doubleClickedRowAtom, selectedRowsAtom } from '../../store/Layout/Layout'
 import {
   NonFadeOverlay,
   ModalContainer,
@@ -17,6 +17,7 @@ import {
   BlueBarBtnWrap,
 } from '../../modal/Common/Common.Styled'
 import { GreyBtn, BlackBtn } from '../../common/Button/Button'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 var dateFilterParams = {
   comparator: (filterLocalDateAtMidnight, cellValue) => {
@@ -145,17 +146,17 @@ const Test3 = ({ hei, getRow, getCol }) => {
     }
   }, [getRow])
 
-  const onGridReady = useCallback(
-    (params) => {
-      // 리액트쿼리 활용하여 데이터받기
-      // fetch('https://www.ag-grid.com/example-assets/olympic-winners.json')
-      //   .then((resp) => resp.json())
-      //   .then((data) => {
-      //     // document.querySelector('#everyone').checked = true;
-      //   })
-    },
-    [getRow],
-  )
+  // const onGridReady = useCallback(
+  //   (params) => {
+  //     // 리액트쿼리 활용하여 데이터받기
+  //     // fetch('https://www.ag-grid.com/example-assets/olympic-winners.json')
+  //     //   .then((resp) => resp.json())
+  //     //   .then((data) => {
+  //     //     // document.querySelector('#everyone').checked = true;
+  //     //   })
+  //   },
+  //   [getRow],
+  // )
 
   // ---------------------------------------------------------------------
 
@@ -287,6 +288,12 @@ const Test3 = ({ hei, getRow, getCol }) => {
   // }, [])
 
   const [isModal, setIsModal] = useAtom(blueModalAtom)
+  const location = useLocation()
+
+  // 페이지 이동시에 테이블 선택이 겹칠 수 있으므로 초기화
+  useEffect(() => {
+    setSelectedRows(null)
+  }, [location])
 
   const modalOpen = () => {
     setIsModal(true)
@@ -294,6 +301,35 @@ const Test3 = ({ hei, getRow, getCol }) => {
 
   const modalClose = () => {
     setIsModal(false)
+  }
+
+  const [gridApi, setGridApi] = useState(null)
+  const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
+  const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
+  const navigate = useNavigate()
+
+  // 일단 router 이동 등록
+  const onRowDoubleClicked = (event) => {
+    const path = event.data['고객 코드']
+    setDetailRow(event.data)
+    console.log('저장', detailRow)
+    navigate(`/userpage/userdestination/${path}`)
+    // console.log('Double clicked row UID: ', event.data)
+  }
+
+  // Grid api 설정확인
+  const onGridReady = (params) => {
+    setGridApi(params.api)
+  }
+
+  // 체크했을때 jotai 전역상태값 설정
+  const onSelectionChanged = () => {
+    if (gridApi) {
+      const selectedNodes = gridApi.getSelectedNodes()
+      const selectedData = selectedNodes.map((node) => node.data)
+      setSelectedRows(selectedData)
+      console.log(selectedRows)
+    }
   }
 
   return (
@@ -380,6 +416,7 @@ const Test3 = ({ hei, getRow, getCol }) => {
             ref={gridRef}
             rowData={rowData}
             columnDefs={columnDefs}
+            onRowDoubleClicked={onRowDoubleClicked}
             // autoGroupColumnDef={autoGroupColumnDef}
             defaultColDef={defaultColDef}
             animateRows={true}
@@ -389,9 +426,10 @@ const Test3 = ({ hei, getRow, getCol }) => {
             rowGroupPanelShow={'always'}
             pivotPanelShow={'always'}
             pagination={true}
-            onGridReady={onGridReady}
             isExternalFilterPresent={isExternalFilterPresent}
             // doesExternalFilterPass={doesExternalFilterPass}
+            onGridReady={onGridReady}
+            onSelectionChanged={onSelectionChanged}
           />
         </div>
       </TestContainer>

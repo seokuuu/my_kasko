@@ -9,3 +9,7 @@ const urls = {
 export function getAuction(data) {
   return client.get(`${urls.getAuction}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&type=${data.type}`)
 }
+
+export function deleteAuction(id) {
+  return client.delete(`${urls.getAuction}/${id}`)
+}

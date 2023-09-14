@@ -29,3 +29,10 @@ export const rightSwitch = atom(false)
 // 아코디언 열기, 닫기
 export const accordionOpenAtom = atom(false)
 export const useAccordionOpenAtom = () => useAtom(accordionOpenAtom)
+
+// test3 테이블 체크했을시
+export const selectedRowsAtom = atom([])
+
+// test3 테이블 더블클릭시
+// test3 테이블 체크했을시
+export const doubleClickedRowAtom = atom([])

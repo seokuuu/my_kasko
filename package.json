@@ -23,6 +23,7 @@
     "env-cmd": "^10.1.0",
     "flipclock": "^0.10.8",
     "jotai": "^2.2.2",
+    "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
     "mui": "^0.0.1",

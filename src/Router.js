@@ -148,6 +148,8 @@ import Consolidation from './modal/Multi/Consolidation'
 import Client from './modal/Multi/Client'
 import Countdown from './components/Countdown/Countdown'
 import DestinationPost from './userpages/UserMyPage/Destination/DestinationPost'
+import DestinationEdit from './userpages/UserMyPage/Destination/DestinationEdit'
+import DestinationEditPage from './userpages/UserMyPage/Destination/DestinationEditPage'
 
 const Router = () => {
   return (
@@ -282,9 +284,9 @@ const Router = () => {
 
           {/* 마이 페이지 */}
           {/* <Route path="/userpage/usermanage" element={<UUserManage />}></Route> */}
-
           <Route path="/userpage/userprofile" element={<UProfile />}></Route>
           <Route path="/userpage/userdestination" element={<UDestination />}></Route>
+          <Route path="/userpage/userdestination/:id" element={<DestinationEditPage />} />
           <Route path="/userpage/userprefer" element={<UPrefer />}></Route>
 
           {/* 고객 센터 */}
