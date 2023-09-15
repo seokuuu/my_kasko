@@ -134,6 +134,7 @@ const Destination = ({ setChoiceComponent }) => {
     }
   }, [isSuccess, data])
 
+  // 컴포넌트 이동
   const openPost = () => {
     setChoiceComponent('등록')
   }

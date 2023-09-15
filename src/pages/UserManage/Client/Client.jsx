@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
@@ -9,7 +9,7 @@ import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn } from '../../../common/Button/Button'
 import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
@@ -44,6 +44,13 @@ import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../comm
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import Table from '../../Table/Table'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { deleteCustomer, getCustomer } from '../../../api/userManage'
+import { useAtom } from 'jotai'
+import { useCallback } from 'react'
+import { isArray } from 'lodash'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 const Client = ({}) => {
   const radioDummy = ['전체', '대표', '대표']
@@ -129,6 +136,100 @@ const Client = ({}) => {
       setToggleMsg('On')
     }
   }
+
+  // ✅1.col 2.row => 그냥 명시적으로 코드 작업함
+  // 필드이름 설정(col)
+  const 테이블필드 = useRef([
+    {
+      field: '순번',
+      minWidth: 100,
+      checkboxSelection: checkboxSelection,
+      headerCheckboxSelection: headerCheckboxSelection,
+    },
+    { field: '고객 구분', minWidth: 100 }, //숫자
+    { field: '회원 상태', minWidth: 100 },
+    { field: '고객 코드', minWidth: 100 },
+    {
+      field: '고객사 명',
+      minWidth: 200,
+    },
+    {
+      field: '사업자번호',
+      minWidth: 100,
+    },
+    { field: '연락처', minWidth: 100 },
+    { field: '승인 여부', minWidth: 100 },
+    { field: '회원 제한 상태', minWidth: 100 },
+  ])
+  const getCol = 테이블필드.current
+
+  // ⚠️필터 디자인 확정 후 작업
+  const [getRow, setGetRow] = useState('')
+  // const [filterCheck, setFilterCheck] = useState({
+  //   '고객 구분': '',
+  //   '회원 상태': '',
+  //   '승인 여부': '',
+  //   '회원 상태': '',
+  // })
+  // console.log(filterCheck)
+
+  const 임의데이터 = {
+    pageNum: 1,
+    pageSize: 5,
+    category: '목적지명',
+    keyword: '인천',
+  }
+
+  const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터, 'getClient', getCustomer)
+
+  const responseData = data?.data?.list
+  useEffect(() => {
+    if (isSuccess && responseData) {
+      let getData = responseData
+
+      // 데이터와 테이블 필드 일치작업
+      if (Array.isArray(getData)) {
+        const newArray = getData.map((item) => ({
+          순번: item.uid,
+          '고객 구분': item.memberUid,
+          '회원 상태': item.status,
+          '고객 코드': item.code,
+          '고객사 명': item.name,
+          사업자번호: item.businessNumber,
+          연락처: item.phone,
+          '승인 여부': item.approvalStatus,
+          '회원 제한 상태': item.auctionStatus,
+        }))
+        setGetRow(newArray)
+      }
+    }
+  }, [isSuccess, data])
+
+  if (isError) {
+    console.log('데이터 request ERROR')
+  }
+
+  // ✅mutation delete작업
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+  const queryClient = useQueryClient()
+  const mutation = useMutation(deleteCustomer, {
+    onSuccess: () => {
+      console.log('삭제되었습니다')
+      queryClient.invalidateQueries('getClient')
+    },
+  })
+
+  const handleRemoveBtn = useCallback(() => {
+    if (isArray(checkedArray) && checkedArray.length > 0) {
+      if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
+        checkedArray.forEach((item) => {
+          mutation.mutate(item['순번']) //mutation.mutate로 api 인자 전해줌
+        })
+      }
+    } else {
+      alert('선택해주세요!')
+    }
+  }, [checkedArray])
 
   return (
     <FilterContianer>
@@ -236,7 +337,7 @@ const Client = ({}) => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
+            고객 정보 목록 (선택 <span>2</span> / 50개 )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -251,14 +352,25 @@ const Client = ({}) => {
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn>회원 제한</WhiteRedBtn>
             <BtnBound />
-            <WhiteRedBtn>회원 삭제</WhiteRedBtn>
+            <WhiteRedBtn onClick={handleRemoveBtn}>회원 삭제</WhiteRedBtn>
             <WhiteSkyBtn>회원 생성</WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getCol={getCol} getRow={getRow} />
+        {/* <Test3 /> */}
       </TableContianer>
     </FilterContianer>
   )
 }
 
 export default Client
+
+var checkboxSelection = function (params) {
+  // we put checkbox on the name if we are not doing grouping
+  return params.columnApi.getRowGroupColumns().length === 0
+}
+
+var headerCheckboxSelection = function (params) {
+  // we put checkbox on the name if we are not doing grouping
+  return params.columnApi.getRowGroupColumns().length === 0
+}
