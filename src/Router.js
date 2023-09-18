@@ -149,6 +149,7 @@ import Consolidation from './modal/Multi/Consolidation'
 import Client from './modal/Multi/Client'
 import Countdown from './components/Countdown/Countdown'
 import DestinationPost from './userpages/UserMyPage/Destination/DestinationPost'
+import Test5 from './pages/Test/Test5'
 
 const Router = () => {
   return (
@@ -159,6 +160,7 @@ const Router = () => {
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
         <Route path="/test4" element={<Countdown />} />
+        <Route path="/test5" element={<Test5 />} />
         <Route path="/common" element={<SellOrderDetailPage />} />
 
         <Route path="/*" element={<NotFound />} />

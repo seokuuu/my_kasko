@@ -16,7 +16,7 @@ import Hidden from '../../../components/TableInner/Hidden'
 
 import useReactQuery from '../../../hooks/useReactQuery'
 
-import { useGetDestinationQuery } from '../../../hooks/queries/user/Mypage'
+import { useGetUserDestinationQuery } from '../../../hooks/queries/user/Mypage'
 
 const Destination = ({ setChoiceComponent }) => {
   const radioDummy = ['전체', '미진행', '진행중', '종료']
@@ -94,6 +94,7 @@ const Destination = ({ setChoiceComponent }) => {
   const openPost = () => {
     setChoiceComponent('등록')
   }
+
   const openEdit = async () => {
     setChoiceComponent('수정')
   }
@@ -105,7 +106,7 @@ const Destination = ({ setChoiceComponent }) => {
     keyword: '인천',
   }
 
-  const { data: DestinationGetList } = useGetDestinationQuery(dummy)
+  const { data: DestinationGetList } = useGetUserDestinationQuery(dummy)
   console.log('userInfo: ', DestinationGetList)
 
   // 목적지에 따른 조회

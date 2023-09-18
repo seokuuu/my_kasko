@@ -19,7 +19,7 @@ import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 import { postDestination } from '../../../service/user/Mypage'
 import { isEmptyObj } from '../../../lib'
 import { async } from 'q'
-import { usePostDestinationQuery } from '../../../hooks/queries/user/Mypage'
+import { usePostUserDestinationQuery } from '../../../hooks/queries/user/Mypage'
 
 const init = {
   represent: '',
@@ -78,7 +78,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
     setChoiceComponent('리스트')
   }
 
-  const { mutate: regi, status, error } = usePostDestinationQuery()
+  const { mutate: regi, status, error } = usePostUserDestinationQuery()
 
   const submit = () => {
     regi(input)

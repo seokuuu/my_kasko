@@ -16,5 +16,6 @@ export function getDestination(data) {
     `${urls.Destination}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&category=${data.category}&keyword=${data.keyword}`,
   )
 }
+
 // return client.post(`${urls.businessNumberDuplication}?businessNumber=${data}`)
 // /api/member/destination?pageNum=1&pageSize=20&category=목적지명&keyword=인천
