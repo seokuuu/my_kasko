@@ -61,18 +61,18 @@ const DestinationPost = ({ setChoiceComponent }) => {
     setInput({ ...input, [name]: value })
   }
 
-  console.log('input =>', input)
 
-  // const submit = async () => {
-  //   if (!isEmptyObj(input)) return alert('빈값을 채워주세요!')
-  //   try {
-  //     const { data: res } = await postDestination(input)
-  //     console.log('로그인 된 정보 : ', res)
-  //     alert('✅완료되었습니다.')
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  // }
+  const submit = async () => {
+    if (!isEmptyObj(input)) return alert('빈값을 채워주세요!')
+    try {
+      const { data: res } = await postDestination(input)
+      console.log('업데이트 : ', res)
+      alert('✅완료되었습니다.')
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
 
   const backComponent = () => {
     setChoiceComponent('리스트')

@@ -7,14 +7,22 @@ import { WhiteRedBtn } from '../../../common/Button/Button'
 import { SkyBtn } from '../../../common/Button/Button'
 import Test3 from '../../../pages/Test/Test3'
 
-import { toggleAtom } from '../../../store/Layout/Layout'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { dowbleClickedRowAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
-import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
+
+import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
 
 import useReactQuery from '../../../hooks/useReactQuery'
+import { useCallback } from 'react'
+import { atom, useAtom } from 'jotai'
+import { isArray, isEmptyArray } from '../../../lib'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import { deleteDestination } from '../../../api/myPage/userDestination'
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { useGetUserDestinationQuery } from '../../../hooks/queries/user/Mypage'
 
@@ -59,6 +67,7 @@ const Destination = ({ setChoiceComponent }) => {
     }
   }
 
+  const { userUid, setUserUid } = useState('')
   const [destination, setDestination] = useState('')
   const 임의데이터 = {
     pageNum: 1,
@@ -66,7 +75,8 @@ const Destination = ({ setChoiceComponent }) => {
     category: '목적지명',
     keyword: '인천',
   }
-  const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터)
+
+  const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터, 'destination', getDestination)
 
   useEffect(() => {
     if (isSuccess && data?.data?.data?.list) {
@@ -91,6 +101,7 @@ const Destination = ({ setChoiceComponent }) => {
     }
   }, [isSuccess, data])
 
+  // 컴포넌트 이동
   const openPost = () => {
     setChoiceComponent('등록')
   }
@@ -99,17 +110,29 @@ const Destination = ({ setChoiceComponent }) => {
     setChoiceComponent('수정')
   }
 
-  const dummy = {
-    pageNum: 1,
-    pageSize: 5,
-    category: '목적지명',
-    keyword: '인천',
-  }
+  const queryClient = useQueryClient()
+  const mutation = useMutation(deleteDestination, {
+    onSuccess: () => {
+      // console.log('삭제되었습니다')
+      queryClient.invalidateQueries('destination')
+    },
+  })
 
-  const { data: DestinationGetList } = useGetUserDestinationQuery(dummy)
-  console.log('userInfo: ', DestinationGetList)
+  const checkedArray = useAtom(selectedRowsAtom)[0]
 
-  // 목적지에 따른 조회
+  const handleRemoveBtn = useCallback(() => {
+    if (isArray(checkedArray) && checkedArray.length > 0) {
+      if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
+        checkedArray.forEach((item) => {
+          mutation.mutate(item['고객 코드']) //mutation.mutate로 api 인자 전해줌
+        })
+      }
+    } else {
+      alert('선택해주세요!')
+    }
+  }, [checkedArray])
+
+
   return (
     <FilterContianer>
       <div>
@@ -135,12 +158,13 @@ const Destination = ({ setChoiceComponent }) => {
             선택 <span> 2 </span>개
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn onClick={openEdit}>목적지 삭제</WhiteRedBtn>
+            <WhiteRedBtn onClick={handleRemoveBtn}>목적지 삭제</WhiteRedBtn>
+            {/* <SkyBtn onClick={openEdit}>목적지 수정</SkyBtn> */}
             <SkyBtn onClick={openPost}>목적지 등록</SkyBtn>
           </div>
         </TCSubContainer>
 
-        <Test3 title={'규격 약호 찾기'} destination={destination} />
+        <Test3 title={'규격 약호 찾기'} getRow={destination} />
       </TableContianer>
     </FilterContianer>
   )

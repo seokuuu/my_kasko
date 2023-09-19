@@ -19,8 +19,14 @@ import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../comm
 import { CheckBox } from '../../../common/Check/Checkbox'
 
 import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
+import { useNavigate } from 'react-router-dom'
+import { useAtom } from 'jotai'
+import { doubleClickedRowAtom } from '../../../store/Layout/Layout'
+import { isEmptyObj } from '../../../lib'
+import { patchDestination } from '../../../api/myPage'
 
 const DestinationEdit = ({ setChoiceComponent }) => {
+  const navigate = useNavigate()
   const radioDummy = ['지정', '미지정'] // 더미 데이터
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
   const [savedRadioValue, setSavedRadioValue] = useState('')
@@ -33,11 +39,45 @@ const DestinationEdit = ({ setChoiceComponent }) => {
       const selectedValue = radioDummy[checkedIndex]
       setSavedRadioValue(selectedValue) //내 state에 반환
       // setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
+      setInput({ ...input, represent: selectedValue })
     }
   }, [checkRadio])
 
   const backComponent = () => {
-    setChoiceComponent('리스트')
+    navigate('/userpage/userdestination')
+    // setChoiceComponent('리스트')
+  }
+  const uid = useAtom(doubleClickedRowAtom)[0]['고객 코드']
+  console.log('uid', uid)
+
+  const init = {
+    represent: '',
+    destinationUid: '',
+    address: '',
+    name: '',
+    phone: '',
+    managerTitle: '',
+    managerName: '',
+    managerPhone: '',
+    memo: '',
+  }
+
+  const [input, setInput] = useState(init) //summit input 데이터
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setInput({ ...input, [name]: value })
+    console.log(input)
+  }
+  const submit = async () => {
+    // if (!isEmptyObj(input)) return alert('빈값을 채워주세요!')
+    try {
+      const { data: res } = await patchDestination(input)
+      console.log('로그인 된 정보 : ', res)
+      alert('✅완료되었습니다.')
+    } catch (err) {
+      console.log(err)
+    }
   }
   return (
     <OnePageContainer>
@@ -72,7 +112,7 @@ const DestinationEdit = ({ setChoiceComponent }) => {
                 <h4>목적지</h4>
                 <p></p>
               </Title>
-              <CustomInput width={120} />
+              <CustomInput width={120} name="destinationUid" onChange={handleChange} />
               <span style={{ margin: 'auto 5px' }}>-</span>
               <CustomInput width={120} />
               <BlackBtn width={20} height={40} style={{ marginLeft: '10px' }}>
@@ -84,7 +124,7 @@ const DestinationEdit = ({ setChoiceComponent }) => {
                 <h4>전체 주소</h4>
                 <p></p>
               </Title>
-              <CustomInput placeholder="전체 주소 입력" width={340} />
+              <CustomInput placeholder="전체 주소 입력" width={340} name="address" onChange={handleChange} />
             </Part>
           </Left>
           <Right>
@@ -93,16 +133,28 @@ const DestinationEdit = ({ setChoiceComponent }) => {
                 <h4>하차지 명</h4>
                 <p></p>
               </Title>
-              <CustomInput placeholder="전체 주소 입력" width={340} />
+              <CustomInput placeholder="전체 주소 입력" width={340} name="name" onChange={handleChange} />
             </Part>
             <Part>
               <Title>
                 <h4>하차지 담당자 정보</h4>
                 <p></p>
               </Title>
-              <CustomInput placeholder="직함 입력" width={135} />
-              <CustomInput placeholder="담당자 성함 입력" width={200} style={{ marginLeft: '5px' }} />
-              <CustomInput placeholder="담당자 휴대폰 번호 입력 ('-' 제외)" width={340} style={{ marginTop: '5px' }} />
+              <CustomInput placeholder="직함 입력" width={135} name="managerTitle" onChange={handleChange} />
+              <CustomInput
+                placeholder="담당자 성함 입력"
+                width={200}
+                style={{ marginLeft: '5px' }}
+                name="managerName"
+                onChange={handleChange}
+              />
+              <CustomInput
+                placeholder="담당자 휴대폰 번호 입력 ('-' 제외)"
+                width={340}
+                style={{ marginTop: '5px' }}
+                name="managerPhone"
+                onChange={handleChange}
+              />
 
               <Alert style={{ margin: '5px auto' }}>*하차지 연락처 미입력 시 토요일 하차 불가</Alert>
               <CustomInput placeholder="하차지 연락처 입력 ('-' 제외)" width={340} />
@@ -113,7 +165,7 @@ const DestinationEdit = ({ setChoiceComponent }) => {
                 <h4>비고</h4>
                 <p></p>
               </Title>
-              <CustomInput placeholder="비고 작성" width={340} />
+              <CustomInput placeholder="비고 작성" width={340} name="memo" onChange={handleChange} />
             </Part>
           </Right>
         </HalfWrap>
@@ -122,7 +174,7 @@ const DestinationEdit = ({ setChoiceComponent }) => {
         <WhiteBtn width={40} height={40} onClick={backComponent}>
           돌아가기
         </WhiteBtn>
-        <BlackBtn width={40} height={40}>
+        <BlackBtn width={40} height={40} onClick={submit}>
           저장
         </BlackBtn>
       </BtnWrap>

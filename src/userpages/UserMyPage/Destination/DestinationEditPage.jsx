@@ -8,27 +8,11 @@ import DestinationPost from './DestinationPost'
 import DestinationEdit from './DestinationEdit'
 
 import { useState } from 'react'
-import { useAtom } from 'jotai'
-import { selectedRowsAtom } from '../../../store/Layout/Layout'
-import { useEffect } from 'react'
 
-const DestinationPage = () => {
+const DestinationEditPage = () => {
   const [expanded, setExpanded] = useState('마이페이지')
   const [depth2Color, setDepth2Color] = useState('목적지 관리')
   const [choiceComponent, setChoiceComponent] = useState('리스트')
-
-  const renderChoiceComponent = () => {
-    switch (choiceComponent) {
-      case '리스트':
-        return <Destination setChoiceComponent={setChoiceComponent} />
-      case '등록':
-        return <DestinationPost setChoiceComponent={setChoiceComponent} />
-      // case '수정':
-      //   return <DestinationEdit setChoiceComponent={setChoiceComponent} />
-      default:
-        return <Destination setChoiceComponent={setChoiceComponent} />
-    }
-  }
 
   return (
     <>
@@ -37,11 +21,13 @@ const DestinationPage = () => {
         <UserSideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
         <OverAllSub>
           <SubHeader />
-          <OverAllTable>{renderChoiceComponent()}</OverAllTable>
+          <OverAllTable>
+            <DestinationEdit />
+          </OverAllTable>
         </OverAllSub>
       </OverAllMain>
     </>
   )
 }
 
-export default DestinationPage
+export default DestinationEditPage

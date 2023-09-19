@@ -9,7 +9,7 @@ import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn } from '../../../common/Button/Button'
 import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import BlueBar from '../../../modal/BlueBar/BlueBar'
 import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
@@ -37,6 +37,16 @@ import {
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import { delete_clientDestination, get_clientDestination } from '../../../api/userManage'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { useEffect } from 'react'
+import { useRef } from 'react'
+import { 사용자관리_고객사목적지관리_fieds, 사용자관리_고객사목적지관리_fieds_Cols } from '../../../constants/fields'
+import { add_element_field } from '../../../lib/tableHelpers'
+import Table from '../../Table/Table'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useCallback } from 'react'
+import { isArray } from 'lodash'
 
 const ClientDestination = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -46,12 +56,9 @@ const ClientDestination = ({}) => {
     // }));
   }
   const [isRotated, setIsRotated] = useState(false)
-
-  // Function to handle image click and toggle rotation
   const handleImageClick = () => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
   }
-
   // 토글 쓰기
   const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
   const [toggleMsg, setToggleMsg] = useState('On')
@@ -63,14 +70,56 @@ const ClientDestination = ({}) => {
       setToggleMsg('On')
     }
   }
-
   const [isModal, setIsModal] = useAtom(blueModalAtom)
-
-  console.log('isModal =>', isModal)
-
   const modalOpen = () => {
     setIsModal(true)
   }
+  // ---------------------------------------------------------------------------------------------
+  const [getRow, setGetRow] = useState('')
+  const 테이블필드 = useRef(사용자관리_고객사목적지관리_fieds_Cols)
+  const getCol = 테이블필드.current
+  const queryClient = useQueryClient()
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  const 임의데이터 = {
+    pageNum: 1,
+    pageSize: 20,
+  }
+
+  const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터, 'clientDestination', get_clientDestination)
+  const resData = data?.data?.data?.list
+
+  if (isError) {
+    console.log('데이터 request ERROR')
+  }
+
+  useEffect(() => {
+    let getData = resData
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, 사용자관리_고객사목적지관리_fieds))
+    }
+  }, [isSuccess, resData])
+
+  // 삭제
+  const mutation = useMutation(delete_clientDestination, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('clientDestination')
+    },
+  })
+
+  const handleRemoveBtn = useCallback(() => {
+    if (isArray(checkedArray) && checkedArray.length > 0) {
+      if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
+        checkedArray.forEach((item) => {
+          mutation.mutate(item['uid']) //mutation.mutate로 api 인자 전해줌
+        })
+      }
+    } else {
+      alert('선택해주세요!')
+    }
+  }, [checkedArray])
 
   return (
     <FilterContianer>
@@ -137,11 +186,12 @@ const ClientDestination = ({}) => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>목적지 삭제</WhiteRedBtn>
+            <WhiteRedBtn onClick={handleRemoveBtn}>목적지 삭제</WhiteRedBtn>
             <SkyBtn>목적지 등록</SkyBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        {/* <Test3 getCol={getCol} getRow={getRow} /> */}
+        <Table getCol={getCol} getRow={getRow} />
       </TableContianer>
     </FilterContianer>
   )
