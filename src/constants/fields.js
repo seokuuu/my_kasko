@@ -55,11 +55,9 @@ export const 사용자관리_고객사목적지관리_fieds = {
   비고란: 'memo',
 }
 export const 사용자관리_고객사목적지관리_fieds_Cols = [
+  { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   {
     field: '고객 코드',
-    minWidth: 100,
-    checkboxSelection: checkboxSelection,
-    headerCheckboxSelection: headerCheckboxSelection,
   },
   { field: '대표', minWidth: 100 }, //숫자
   { field: '목적지 코드', minWidth: 100 },
