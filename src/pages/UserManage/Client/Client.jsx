@@ -51,6 +51,8 @@ import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 import { isArray } from 'lodash'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { 사용자관리_고객사관리_fieds, 사용자관리_고객사관리_fieds_Cols } from '../../../constants/fields'
 
 const Client = ({}) => {
   const radioDummy = ['전체', '대표', '대표']
@@ -137,30 +139,8 @@ const Client = ({}) => {
     }
   }
 
-  // ✅1.col 2.row => 그냥 명시적으로 코드 작업함
-  // 필드이름 설정(col)
-  const 테이블필드 = useRef([
-    {
-      field: '순번',
-      minWidth: 100,
-      checkboxSelection: checkboxSelection,
-      headerCheckboxSelection: headerCheckboxSelection,
-    },
-    { field: '고객 구분', minWidth: 100 }, //숫자
-    { field: '회원 상태', minWidth: 100 },
-    { field: '고객 코드', minWidth: 100 },
-    {
-      field: '고객사 명',
-      minWidth: 200,
-    },
-    {
-      field: '사업자번호',
-      minWidth: 100,
-    },
-    { field: '연락처', minWidth: 100 },
-    { field: '승인 여부', minWidth: 100 },
-    { field: '회원 제한 상태', minWidth: 100 },
-  ])
+  // ✅필드이름 설정(col)
+  const 테이블필드 = useRef(사용자관리_고객사관리_fieds_Cols)
   const getCol = 테이블필드.current
 
   // ⚠️필터 디자인 확정 후 작업
@@ -175,46 +155,30 @@ const Client = ({}) => {
 
   const 임의데이터 = {
     pageNum: 1,
-    pageSize: 5,
-    category: '목적지명',
-    keyword: '인천',
+    pageSize: 50,
   }
 
   const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터, 'getClient', getCustomer)
-
   const responseData = data?.data?.list
-  useEffect(() => {
-    if (isSuccess && responseData) {
-      let getData = responseData
-
-      // 데이터와 테이블 필드 일치작업
-      if (Array.isArray(getData)) {
-        const newArray = getData.map((item) => ({
-          순번: item.uid,
-          '고객 구분': item.memberUid,
-          '회원 상태': item.status,
-          '고객 코드': item.code,
-          '고객사 명': item.name,
-          사업자번호: item.businessNumber,
-          연락처: item.phone,
-          '승인 여부': item.approvalStatus,
-          '회원 제한 상태': item.auctionStatus,
-        }))
-        setGetRow(newArray)
-      }
-    }
-  }, [isSuccess, data])
 
   if (isError) {
     console.log('데이터 request ERROR')
   }
+
+  useEffect(() => {
+    let getData = responseData
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !responseData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, 사용자관리_고객사관리_fieds))
+    }
+  }, [isSuccess])
 
   // ✅mutation delete작업
   const checkedArray = useAtom(selectedRowsAtom)[0]
   const queryClient = useQueryClient()
   const mutation = useMutation(deleteCustomer, {
     onSuccess: () => {
-      console.log('삭제되었습니다')
       queryClient.invalidateQueries('getClient')
     },
   })
