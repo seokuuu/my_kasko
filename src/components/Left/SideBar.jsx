@@ -153,7 +153,7 @@ const SideBar = ({ expanded, setExpanded, depth2Color }) => {
 
         {data.map((item, index) => (
           <StyledAccordion
-            style={{ margin: '0px' }}
+            style={{ margin: '1px' }}
             key={index}
             expanded={expanded === item.depth1}
             onChange={handleChange(item.depth1)}

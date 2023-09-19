@@ -15,9 +15,11 @@ import { styled } from 'styled-components'
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
-import { postDestination } from '../../../api/myPage'
+// import { postDestination } from '../../../api/myPage'
+import { postDestination } from '../../../service/user/Mypage'
 import { isEmptyObj } from '../../../lib'
 import { async } from 'q'
+import { usePostUserDestinationQuery } from '../../../hooks/queries/user/Mypage'
 
 const init = {
   represent: '',
@@ -59,6 +61,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
     setInput({ ...input, [name]: value })
   }
 
+
   const submit = async () => {
     if (!isEmptyObj(input)) return alert('빈값을 채워주세요!')
     try {
@@ -70,9 +73,18 @@ const DestinationPost = ({ setChoiceComponent }) => {
     }
   }
 
+
   const backComponent = () => {
     setChoiceComponent('리스트')
   }
+
+  const { mutate: regi, status, error } = usePostUserDestinationQuery()
+
+  const submit = () => {
+    regi(input)
+  }
+
+  console.log('error =>', error, status)
 
   // ✅destinationUid : 2로 일단 설정해줘야 등록됩니다.
   return (
