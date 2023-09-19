@@ -10,8 +10,7 @@ import Test3 from '../../../pages/Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { dowbleClickedRowAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
-
-import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter
+import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
@@ -23,8 +22,8 @@ import { isArray, isEmptyArray } from '../../../lib'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { deleteDestination } from '../../../api/myPage/userDestination'
 import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
-
 import { useGetUserDestinationQuery } from '../../../hooks/queries/user/Mypage'
+import { getDestination } from '../../../api/myPage'
 
 const Destination = ({ setChoiceComponent }) => {
   const radioDummy = ['전체', '미진행', '진행중', '종료']
@@ -131,7 +130,6 @@ const Destination = ({ setChoiceComponent }) => {
       alert('선택해주세요!')
     }
   }, [checkedArray])
-
 
   return (
     <FilterContianer>

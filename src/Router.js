@@ -152,7 +152,6 @@ import DestinationPost from './userpages/UserMyPage/Destination/DestinationPost'
 import DestinationEdit from './userpages/UserMyPage/Destination/DestinationEdit'
 import DestinationEditPage from './userpages/UserMyPage/Destination/DestinationEditPage'
 
-
 const Router = () => {
   return (
     <BrowserRouter>
@@ -162,7 +161,7 @@ const Router = () => {
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
         <Route path="/test4" element={<Countdown />} />
-        <Route path="/test5" element={<Test5 />} />
+
         <Route path="/common" element={<SellOrderDetailPage />} />
 
         <Route path="/*" element={<NotFound />} />
