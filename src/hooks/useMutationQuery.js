@@ -13,7 +13,8 @@ function useMutationQuery(queryKeys, api, options = {}) {
     },
     onError: (error) => {
       console.log('ERROR')
-      console.error(error)
+      // console.error(error)
+      alert(`에러가 발생했습니다: ${error.message}`)
       options.onError && options.onError(error)
     },
     onSettled: options.onSettled,

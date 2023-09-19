@@ -41,14 +41,14 @@ import { delete_clientDestination, get_clientDestination } from '../../../api/us
 import useReactQuery from '../../../hooks/useReactQuery'
 import { useEffect } from 'react'
 import { useRef } from 'react'
-import { 사용자관리_고객사목적지관리_fieds, 사용자관리_고객사목적지관리_fieds_Cols } from '../../../constants/fields'
+import { 사용자관리_고객사목적지관리_fields_Cols, 사용자관리_고객사목적지관리_fields } from '../../../constants/fields'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../Table/Table'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import { isArray } from 'lodash'
 
-const ClientDestination = ({}) => {
+const ClientDestination = ({ setChoiceComponent }) => {
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -76,14 +76,14 @@ const ClientDestination = ({}) => {
   }
   // ---------------------------------------------------------------------------------------------
   const [getRow, setGetRow] = useState('')
-  const 테이블필드 = useRef(사용자관리_고객사목적지관리_fieds_Cols)
-  const getCol = 테이블필드.current
+  const tableField = useRef(사용자관리_고객사목적지관리_fields_Cols)
+  const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
 
   const 임의데이터 = {
     pageNum: 1,
-    pageSize: 20,
+    pageSize: 50,
   }
 
   const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터, 'clientDestination', get_clientDestination)
@@ -98,7 +98,7 @@ const ClientDestination = ({}) => {
     //타입, 리액트쿼리, 데이터 확인 후 실행
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
-      setGetRow(add_element_field(getData, 사용자관리_고객사목적지관리_fieds))
+      setGetRow(add_element_field(getData, 사용자관리_고객사목적지관리_fields))
     }
   }, [isSuccess, resData])
 
@@ -120,6 +120,10 @@ const ClientDestination = ({}) => {
       alert('선택해주세요!')
     }
   }, [checkedArray])
+
+  const setPostPage = () => {
+    setChoiceComponent('등록')
+  }
 
   return (
     <FilterContianer>
@@ -187,11 +191,11 @@ const ClientDestination = ({}) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn onClick={handleRemoveBtn}>목적지 삭제</WhiteRedBtn>
-            <SkyBtn>목적지 등록</SkyBtn>
+            <SkyBtn onClick={setPostPage}>목적지 등록</SkyBtn>
           </div>
         </TCSubContainer>
         {/* <Test3 getCol={getCol} getRow={getRow} /> */}
-        <Table getCol={getCol} getRow={getRow} />
+        <Table getCol={getCol} getRow={getRow} setChoiceComponent={setChoiceComponent}/>
       </TableContianer>
     </FilterContianer>
   )

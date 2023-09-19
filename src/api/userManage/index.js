@@ -32,4 +32,11 @@ export function delete_clientDestination(id) {
   return client.delete(`${urls.clientDestination}/${id}`)
 }
 
+export function post_clientDestination(data) {
+  return client.post(urls.clientDestination, data)
+}
+
+export function patch_clientDestination(data) {
+  return client.patch(urls.clientDestination, data)
+}
 // {{dev}}/api/admin/customer-destination?pageNum=1&pageSize=5
