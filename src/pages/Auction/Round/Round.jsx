@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
@@ -9,7 +9,7 @@ import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn, ExcelBtn, YellBtn, TGreyBtn } from '../../../common/Button/Button'
 import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
@@ -42,6 +42,9 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import { deleteAuction, getAuction } from '../../../api/auction/round'
+import useReactQuery from '../../../hooks/useReactQuery'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
 const Round = ({}) => {
   const radioDummy = ['전체', '미진행', '진행중', '종료']
@@ -52,11 +55,20 @@ const Round = ({}) => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
 
     // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
+    if (checkedIndex !== -1) {
+      const selectedValue = radioDummy[checkedIndex]
+      setSavedRadioValue(selectedValue) //내 state에 반환
+
+      if (Array.isArray(originalRow) && originalRow.length) {
+        if (selectedValue === '전체') {
+          setRow(originalRow) // 전체를 선택하면 원본 배열을 복원
+        } else {
+          setRow(
+            (prevRow) => originalRow.filter((item) => item.status === selectedValue), // 특정 상태를 선택하면 그 상태만 필터링
+          )
+        }
+      }
+    }
   }, [checkRadio])
 
   const handleSelectChange = (selectedOption, name) => {
@@ -84,6 +96,59 @@ const Round = ({}) => {
     }
   }
 
+  // api호출, 리액트쿼리 / filter
+  const [row, setRow] = useState('')
+  const [originalRow, setOriginalRow] = useState([]) //원본 row를 저장해서 radio check에러 막기
+  const [inputParams, setInputParams] = useState({
+    pageNum: 1,
+    pageSize: 50,
+    type: '단일',
+  })
+
+  const { isLoading, isError, data, isSuccess } = useReactQuery(inputParams, 'auction', getAuction)
+
+  //  ✅ Props로 test3컴포넌트(테이블) row랑 col 데이터를 넘기는 방식
+  useEffect(() => {
+    if (isSuccess) {
+      const responseData = data?.data?.data?.list
+      setRow(responseData)
+      setOriginalRow(responseData)
+    }
+  }, [isSuccess, data])
+  const getCol = [
+    {
+      field: 'uid',
+      minWidth: 180,
+    },
+    { field: 'number', maxWidth: 80 }, //숫자
+    { field: 'startDate' },
+    { field: 'status', maxWidth: 90 },
+    {
+      field: 'productCount',
+    },
+    {
+      field: 'successfulBidCount',
+    },
+    {
+      field: 'failBidCount',
+    },
+  ]
+
+  const handleDropdown = (e) => {
+    const page = e.target.value
+    setInputParams({
+      ...inputParams,
+      pageSize: page,
+    })
+  }
+  const 임의의UID = 22 //임의의 uid값 * 현재 에러나옴
+  const mutation = useMutationQuery('auction', () => deleteAuction(임의의UID))
+
+  const handleRemoveBtn = useCallback(() => {
+    mutation.mutate()
+  }, [mutation])
+
+  
   return (
     <FilterContianer>
       <FilterHeader>
@@ -173,18 +238,18 @@ const Round = ({}) => {
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown handleDropdown={handleDropdown} />
             <Excel />
           </div>
         </TCSubContainer>
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>회차 삭제</WhiteRedBtn>
+            <WhiteRedBtn onClick={handleRemoveBtn}>회차 삭제</WhiteRedBtn>
             <WhiteSkyBtn>경매 회차 등록</WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Test3 getRow={row} getCol={getCol} />
         <TableBottomWrap>
           <BlackBtn width={15} height={40}>
             제품 추가

@@ -63,7 +63,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
     if (!isEmptyObj(input)) return alert('빈값을 채워주세요!')
     try {
       const { data: res } = await postDestination(input)
-      console.log('로그인 된 정보 : ', res)
+      console.log('업데이트 : ', res)
       alert('✅완료되었습니다.')
     } catch (err) {
       console.log(err)
