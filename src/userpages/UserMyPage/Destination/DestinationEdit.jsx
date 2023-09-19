@@ -24,12 +24,14 @@ import { useAtom } from 'jotai'
 import { doubleClickedRowAtom } from '../../../store/Layout/Layout'
 import { isEmptyObj } from '../../../lib'
 import { patchDestination } from '../../../api/myPage'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
 const DestinationEdit = ({ setChoiceComponent }) => {
   const navigate = useNavigate()
   const radioDummy = ['지정', '미지정'] // 더미 데이터
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
   const [savedRadioValue, setSavedRadioValue] = useState('')
+  const mutation = useMutationQuery('', patchDestination)
   // checkRadio의 true값과 radioDummy를이용해 해당 부분을 반환할 공간
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
@@ -70,14 +72,15 @@ const DestinationEdit = ({ setChoiceComponent }) => {
     console.log(input)
   }
   const submit = async () => {
-    // if (!isEmptyObj(input)) return alert('빈값을 채워주세요!')
-    try {
-      const { data: res } = await patchDestination(input)
-      console.log('로그인 된 정보 : ', res)
-      alert('✅완료되었습니다.')
-    } catch (err) {
-      console.log(err)
-    }
+    if (!isEmptyObj(input)) return alert('빈값을 채워주세요!')
+    mutation.mutate(input)
+    // try {
+    //   const { data: res } = await patchDestination(input)
+    //   console.log('로그인 된 정보 : ', res)
+    //   alert('✅완료되었습니다.')
+    // } catch (err) {
+    //   console.log(err)
+    // }
   }
   return (
     <OnePageContainer>

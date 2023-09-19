@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 
@@ -7,6 +7,7 @@ import { BlackBtn, BtnWrap, WhiteRedBtn, WhiteSkyBtn, WhiteBlackBtn } from '../.
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn } from '../../../common/Button/Button'
+import Test5 from '../../Test/Test5'
 import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
@@ -35,8 +36,16 @@ import {
   TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
+import { useGetAdminDestinationQuery } from '../../../hooks/queries/admin/Standard'
+
+import { adminDestinationList } from '../../../store/Table/Table'
 
 const Destination = ({}) => {
+  const dummy = {
+    pageNum: 1,
+    pageSize: 5,
+  }
+
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -69,6 +78,39 @@ const Destination = ({}) => {
   const modalOpen = () => {
     setIsModal(true)
   }
+
+  const [destination, setDestination] = useState(adminDestinationList)
+  const dummyDest = {
+    pageNum: 1,
+    pageSize: 20,
+    category: '목적지명',
+    keyword: '인천',
+  }
+
+  const { data: DestinationGetList } = useGetAdminDestinationQuery(dummy)
+
+  useEffect(() => {
+    if (DestinationGetList?.data?.list) {
+      let getData = DestinationGetList?.data?.list
+
+      console.log('getData =>', getData)
+
+      if (Array.isArray(getData)) {
+        const newArray = getData.map((item) => ({
+          '목적지 고유번호': item.uid,
+          '목적지 코드': item.code,
+          '목적지 명': item.name,
+          작성자: item.createMember,
+          작성일: item.createDate,
+          수정자: item.updateMember,
+          수정일: item.updateMember,
+        }))
+        setDestination(newArray)
+      }
+    }
+  }, [DestinationGetList])
+
+  console.log('DestinationGetList', DestinationGetList)
 
   return (
     <FilterContianer>
@@ -136,7 +178,7 @@ const Destination = ({}) => {
             <WhiteSkyBtn>목적지 등록</WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Test5 destination={destination} />
       </TableContianer>
     </FilterContianer>
   )

@@ -18,6 +18,7 @@ import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 import { postDestination } from '../../../api/myPage'
 import { isEmptyObj } from '../../../lib'
 import { async } from 'q'
+import { usePostUserDestinationQuery } from '../../../hooks/queries/user/Mypage'
 
 const init = {
   represent: '',
@@ -73,6 +74,10 @@ const DestinationPost = ({ setChoiceComponent }) => {
   const backComponent = () => {
     setChoiceComponent('리스트')
   }
+
+  const { mutate: regi, status, error } = usePostUserDestinationQuery()
+
+  console.log('error =>', error, status)
 
   // ✅destinationUid : 2로 일단 설정해줘야 등록됩니다.
   return (

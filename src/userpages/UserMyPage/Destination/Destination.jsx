@@ -1,58 +1,20 @@
 import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
+
 import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteRedBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import {
-  GreyBtn,
-  ExcelBtn,
-  WhiteGrnBtn,
-  IndigoBtn,
-  BlueBtn,
-  SkyBtn,
-  SwitchBtn,
-  TGreyBtn,
-  TWhiteBtn,
-} from '../../../common/Button/Button'
+
+import { WhiteRedBtn } from '../../../common/Button/Button'
+
+import { SkyBtn } from '../../../common/Button/Button'
 import Test3 from '../../../pages/Test/Test3'
+
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { dowbleClickedRowAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-
-import {
-  FilterContianer,
-  FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  TCSubContainer,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-} from '../../../modal/External/ExternalFilter'
-
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
-import { getDestination } from '../../../api/myPage'
+
 import useReactQuery from '../../../hooks/useReactQuery'
 import { useCallback } from 'react'
 import { atom, useAtom } from 'jotai'
@@ -60,6 +22,8 @@ import { isArray, isEmptyArray } from '../../../lib'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { deleteDestination } from '../../../api/myPage/userDestination'
 import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useGetUserDestinationQuery } from '../../../hooks/queries/user/Mypage'
+import { getDestination } from '../../../api/myPage'
 
 const Destination = ({ setChoiceComponent }) => {
   const radioDummy = ['전체', '미진행', '진행중', '종료']
@@ -117,6 +81,8 @@ const Destination = ({ setChoiceComponent }) => {
     if (isSuccess && data?.data?.data?.list) {
       let getData = data?.data?.data?.list
 
+      console.log('getData =>', getData)
+
       if (Array.isArray(getData)) {
         const newArray = getData.map((item) => ({
           '고객 코드': item.uid,
@@ -138,6 +104,7 @@ const Destination = ({ setChoiceComponent }) => {
   const openPost = () => {
     setChoiceComponent('등록')
   }
+
   const openEdit = async () => {
     setChoiceComponent('수정')
   }

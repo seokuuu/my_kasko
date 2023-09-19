@@ -195,7 +195,7 @@ const ClientDestination = ({ setChoiceComponent }) => {
           </div>
         </TCSubContainer>
         {/* <Test3 getCol={getCol} getRow={getRow} /> */}
-        <Table getCol={getCol} getRow={getRow} setChoiceComponent={setChoiceComponent}/>
+        <Table getCol={getCol} getRow={getRow} setChoiceComponent={setChoiceComponent} />
       </TableContianer>
     </FilterContianer>
   )

@@ -92,7 +92,7 @@ const Test3 = ({ hei, getRow, getCol }) => {
   const [columnDefs, setColumnDefs] = useState([
     {
       field: '고객 코드',
-      minWidth: 180,
+      minWidth: 150,
       checkboxSelection: checkboxSelection,
       headerCheckboxSelection: headerCheckboxSelection,
     },
@@ -400,7 +400,7 @@ const Test3 = ({ hei, getRow, getCol }) => {
               onChange={onMaxAgeChange}
               style={{ width: '50px', marginLeft: '5px' }}
             />
-          </label>
+          </label>k
           <label>
             Country Filter:
             <textarea
