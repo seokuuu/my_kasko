@@ -68,3 +68,7 @@ export function patch_userManage(data) {
 export function patchProfile(data) {
   return client.patch(urls.profileEdit, data)
 }
+
+export function getProfile() {
+  return client.get(urls.profileEdit)
+}

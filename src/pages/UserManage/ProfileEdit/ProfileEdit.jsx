@@ -17,7 +17,8 @@ import { emailOptions } from '../../../common/Option/SignUp'
 
 import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 import useMutationQuery from '../../../hooks/useMutationQuery'
-import { patchProfile } from '../../../api/userManage'
+import { getProfile, patchProfile } from '../../../api/userManage'
+import useReactQuery from '../../../hooks/useReactQuery'
 
 const init = {
   title: '',
@@ -32,7 +33,13 @@ const init = {
 const ProfileEdit = () => {
   const [submitData, setSubmitData] = useState(init)
   const [emailPrefix, setEmailPrefix] = useState('')
+
   const mutation = useMutationQuery('', patchProfile)
+  const { isSuccess, isError, data } = useReactQuery('', 'getProfile', getProfile)
+  const resData = data?.data?.data
+
+  if (isSuccess) console.log('SUCCESS')
+  if (isError) alert('ERROR')
 
   const eventHandle = (e) => {
     const { name, value } = e.target
@@ -66,7 +73,7 @@ const ProfileEdit = () => {
                 <h4>아이디</h4>
                 <p></p>
               </Title>
-              <CustomInput disabled width={340} name="id" />
+              <CustomInput disabled width={340} name="id" value={resData && resData.id} />
             </Part>
             <Part>
               <Title>
@@ -108,7 +115,7 @@ const ProfileEdit = () => {
                 <h4>연락처</h4>
                 <p></p>
               </Title>
-              <CustomInput placeholder="01012341234" width={340} name="phone" onChange={eventHandle} />
+              <CustomInput placeholder={resData && resData.phone} width={340} name="phone" onChange={eventHandle} />
             </Part>
             <Part>
               <Title>
