@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
@@ -45,10 +45,9 @@ import { 사용자관리_고객사목적지관리_fieds, 사용자관리_고객�
 import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../Table/Table'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useCallback } from 'react'
 import { isArray } from 'lodash'
 
-const ClientDestination = ({}) => {
+const ClientDestination = ({ }) => {
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
