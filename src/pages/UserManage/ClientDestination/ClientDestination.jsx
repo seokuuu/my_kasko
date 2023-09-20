@@ -89,6 +89,8 @@ const ClientDestination = ({}) => {
   const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터, 'clientDestination', get_clientDestination)
   const resData = data?.data?.data?.list
 
+  console.log('resData =>', resData)
+
   if (isError) {
     console.log('데이터 request ERROR')
   }
@@ -101,6 +103,8 @@ const ClientDestination = ({}) => {
       setGetRow(add_element_field(getData, 사용자관리_고객사목적지관리_fieds))
     }
   }, [isSuccess, resData])
+
+  console.log('getRow =>', getRow)
 
   // 삭제
   const mutation = useMutation(delete_clientDestination, {
@@ -142,7 +146,6 @@ const ClientDestination = ({}) => {
                       찾기
                     </GreyBtn>
                   </PartWrap>
-
                   <PartWrap />
                   <PartWrap />
                   <PartWrap />
