@@ -39,6 +39,8 @@ import Hidden from '../../../components/TableInner/Hidden'
 import { useGetAdminDestinationQuery } from '../../../hooks/queries/admin/Standard'
 
 import { adminDestinationList } from '../../../store/Table/Table'
+import { useRef } from 'react'
+import { StandardDestinaionFieldsCols } from '../../../constants/admin/Standard'
 
 const Destination = ({}) => {
   const dummy = {
@@ -79,38 +81,12 @@ const Destination = ({}) => {
     setIsModal(true)
   }
 
-  const [destination, setDestination] = useState(adminDestinationList)
-  const dummyDest = {
+  // ---------------------------------------------------------------------------------------------
+
+  const 임의데이터 = {
     pageNum: 1,
     pageSize: 20,
-    category: '목적지명',
-    keyword: '인천',
   }
-
-  const { data: DestinationGetList } = useGetAdminDestinationQuery(dummy)
-
-  useEffect(() => {
-    if (DestinationGetList?.data?.list) {
-      let getData = DestinationGetList?.data?.list
-
-      console.log('getData =>', getData)
-
-      if (Array.isArray(getData)) {
-        const newArray = getData.map((item) => ({
-          '목적지 고유번호': item.uid,
-          '목적지 코드': item.code,
-          '목적지 명': item.name,
-          작성자: item.createMember,
-          작성일: item.createDate,
-          수정자: item.updateMember,
-          수정일: item.updateMember,
-        }))
-        setDestination(newArray)
-      }
-    }
-  }, [DestinationGetList])
-
-  console.log('DestinationGetList', DestinationGetList)
 
   return (
     <FilterContianer>
@@ -178,7 +154,7 @@ const Destination = ({}) => {
             <WhiteSkyBtn>목적지 등록</WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Test5 destination={destination} />
+        <Test5 />
       </TableContianer>
     </FilterContianer>
   )
