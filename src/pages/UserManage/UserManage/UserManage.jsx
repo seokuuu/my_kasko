@@ -40,7 +40,7 @@ import { delete_userManage, get_userManage } from '../../../api/userManage'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { useEffect } from 'react'
 import { useRef } from 'react'
-import { 사용자관리_사용자관리_fields, 사용자관리_사용자관리_fields_Cols } from '../../../constants/fields'
+import { UserManageFields, UserManageFieldsCols } from '../../../constants/admin/UserManage'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { useQueryClient } from '@tanstack/react-query'
 import useMutationQuery from '../../../hooks/useMutationQuery'
@@ -82,7 +82,7 @@ const UserManage = ({ setChoiceComponent }) => {
 
   // -----------------------------------------------------------------------------------
   const [getRow, setGetRow] = useState('')
-  const tableField = useRef(사용자관리_사용자관리_fields_Cols)
+  const tableField = useRef(UserManageFieldsCols)
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
@@ -100,7 +100,7 @@ const UserManage = ({ setChoiceComponent }) => {
     let getData = resData
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
-      setGetRow(add_element_field(getData, 사용자관리_사용자관리_fields))
+      setGetRow(add_element_field(getData, UserManageFields))
     }
   }, [isSuccess, resData])
 

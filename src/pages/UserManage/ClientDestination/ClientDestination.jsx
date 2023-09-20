@@ -41,7 +41,10 @@ import { delete_clientDestination, get_clientDestination } from '../../../api/us
 import useReactQuery from '../../../hooks/useReactQuery'
 import { useEffect } from 'react'
 import { useRef } from 'react'
-import { 사용자관리_고객사목적지관리_fields_Cols, 사용자관리_고객사목적지관리_fields } from '../../../constants/fields'
+import {
+  UserManageCustomerDestinationManageFields,
+  UserManageCustomerDestinationManageFieldsCols,
+} from '../../../constants/admin/UserManage'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../Table/Table'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -76,7 +79,7 @@ const ClientDestination = ({ setChoiceComponent }) => {
   }
   // ---------------------------------------------------------------------------------------------
   const [getRow, setGetRow] = useState('')
-  const tableField = useRef(사용자관리_고객사목적지관리_fields_Cols)
+  const tableField = useRef(UserManageCustomerDestinationManageFieldsCols)
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
@@ -89,8 +92,6 @@ const ClientDestination = ({ setChoiceComponent }) => {
   const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터, 'clientDestination', get_clientDestination)
   const resData = data?.data?.data?.list
 
-  console.log('resData =>', resData)
-
   if (isError) {
     console.log('데이터 request ERROR')
   }
@@ -100,11 +101,9 @@ const ClientDestination = ({ setChoiceComponent }) => {
     //타입, 리액트쿼리, 데이터 확인 후 실행
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
-      setGetRow(add_element_field(getData, 사용자관리_고객사목적지관리_fields))
+      setGetRow(add_element_field(getData, UserManageCustomerDestinationManageFields))
     }
   }, [isSuccess, resData])
-
-  console.log('getRow =>', getRow)
 
   // 삭제
   const mutation = useMutation(delete_clientDestination, {

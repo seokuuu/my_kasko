@@ -8,7 +8,7 @@ var headerCheckboxSelection = function (params) {
   return params.columnApi.getRowGroupColumns().length === 0
 }
 
-export const 사용자관리_고객사관리_fields = {
+export const UserManageCustomerManageFields = {
   순번: 'uid',
   '고객 구분': 'memberUid',
   '회원 상태': 'status',
@@ -19,7 +19,7 @@ export const 사용자관리_고객사관리_fields = {
   '승인 여부': 'approvalStatus',
   '회원 제한 상태': 'auctionStatus',
 }
-export const 사용자관리_고객사관리_fields_Cols = [
+export const UserManageCustomerManageFieldsCols = [
   {
     field: '순번',
     minWidth: 100,
@@ -42,7 +42,7 @@ export const 사용자관리_고객사관리_fields_Cols = [
   { field: '회원 제한 상태', minWidth: 100 },
 ]
 
-export const 사용자관리_고객사목적지관리_fields = {
+export const UserManageCustomerDestinationManageFields = {
   uid: 'uid',
   '고객 코드': 'code',
   대표: 'represent',
@@ -55,7 +55,7 @@ export const 사용자관리_고객사목적지관리_fields = {
   비고란: 'memo',
 }
 
-export const 사용자관리_고객사목적지관리_fields_Cols = [
+export const UserManageCustomerDestinationManageFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   {
     field: '고객 코드',
@@ -75,14 +75,14 @@ export const 사용자관리_고객사목적지관리_fields_Cols = [
   { field: '상세 주소', minWidth: 100 },
   { field: '비고란' },
 ]
-export const 사용자관리_사용자관리_fields = {
+export const UserManageFields = {
   순번: 'uid',
   이름: 'name',
   아이디: 'id',
   '관리자 분류': 'role',
   '가입 일시': 'createDate',
 }
-export const 사용자관리_사용자관리_fields_Cols = [
+export const UserManageFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   {
     field: '순번',
