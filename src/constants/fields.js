@@ -54,6 +54,7 @@ export const 사용자관리_고객사목적지관리_fields = {
   '상세 주소': 'address',
   비고란: 'memo',
 }
+
 export const 사용자관리_고객사목적지관리_fields_Cols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   {
@@ -73,4 +74,24 @@ export const 사용자관리_고객사목적지관리_fields_Cols = [
   { field: '하차지 명', minWidth: 100 },
   { field: '상세 주소', minWidth: 100 },
   { field: '비고란' },
+]
+export const 사용자관리_사용자관리_fields = {
+  순번: 'uid',
+  이름: 'name',
+  아이디: 'id',
+  '관리자 분류': 'role',
+  '가입 일시': 'createDate',
+}
+export const 사용자관리_사용자관리_fields_Cols = [
+  { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  {
+    field: '순번',
+  },
+  { field: '이름', minWidth: 100 }, //숫자
+  { field: '아이디', minWidth: 100 },
+  { field: '관리자 분류', minWidth: 100 },
+  {
+    field: '가입 일시',
+    minWidth: 200,
+  },
 ]

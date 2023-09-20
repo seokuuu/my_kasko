@@ -9,7 +9,7 @@ import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn } from '../../../common/Button/Button'
 import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import BlueBar from '../../../modal/BlueBar/BlueBar'
 import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
@@ -35,8 +35,20 @@ import {
   TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
+import Table from '../../Table/Table'
+import { delete_userManage, get_userManage } from '../../../api/userManage'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { useEffect } from 'react'
+import { useRef } from 'react'
+import { 사용자관리_사용자관리_fields, 사용자관리_사용자관리_fields_Cols } from '../../../constants/fields'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { useQueryClient } from '@tanstack/react-query'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import { useCallback } from 'react'
+// import { isArray } from 'lodash'
+import { isArray, isEmptyArray } from '../../../lib'
 
-const UserManage = ({}) => {
+const UserManage = ({ setChoiceComponent }) => {
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -64,10 +76,48 @@ const UserManage = ({}) => {
 
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
-  console.log('isModal =>', isModal)
-
   const modalOpen = () => {
     setIsModal(true)
+  }
+
+  // -----------------------------------------------------------------------------------
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(사용자관리_사용자관리_fields_Cols)
+  const getCol = tableField.current
+  const queryClient = useQueryClient()
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  const 임의데이터 = {
+    pageNum: 1,
+    pageSize: 50,
+  }
+  const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터, 'userManage', get_userManage)
+  const resData = data?.data?.data?.list
+
+  if (isError) console.log('데이터 request ERROR')
+
+  useEffect(() => {
+    let getData = resData
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, 사용자관리_사용자관리_fields))
+    }
+  }, [isSuccess, resData])
+
+  // // 삭제
+  const mutation = useMutationQuery('userManage', delete_userManage)
+  const handleRemoveBtn = useCallback(() => {
+    if (!isArray(checkedArray) || checkedArray.length === 0) return alert('선택해주세요!')
+
+    if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
+      checkedArray.forEach((item) => {
+        mutation.mutate(item['순번']) //mutation.mutate로 api 인자 전해줌
+      })
+    }
+  }, [checkedArray])
+
+  const goPostPage = () => {
+    setChoiceComponent('등록')
   }
 
   return (
@@ -132,11 +182,11 @@ const UserManage = ({}) => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>사용자 삭제</WhiteRedBtn>
-            <SkyBtn>사용자 등록</SkyBtn>
+            <WhiteRedBtn onClick={handleRemoveBtn}>사용자 삭제</WhiteRedBtn>
+            <SkyBtn onClick={goPostPage}>사용자 등록</SkyBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table setChoiceComponent={setChoiceComponent} getCol={getCol} getRow={getRow} />
       </TableContianer>
     </FilterContianer>
   )

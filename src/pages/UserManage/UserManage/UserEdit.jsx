@@ -26,21 +26,49 @@ import { StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/
 import { CheckImg2 } from '../../../common/Check/CheckImg'
 
 import { BtnWrap, BlackBtn, WhiteBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { patch_clientDestination, patch_userManage } from '../../../api/userManage'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import { isEmptyObj } from '../../../lib'
+import { useAtom } from 'jotai'
+import { doubleClickedRowAtom } from '../../../store/Layout/Layout'
 
-const UserEdit = () => {
-  // Radio 관련
+const init = {
+  uid: '',
+  title: '',
+  name: '',
+  email: '',
+  phone: '',
+  type: '',
+  managerRoleList: [],
+}
+// {
+//   "uid": 25,
+//   "name": "이름111111",
+//   "title": "대리",
+//   "email": "test12@naver.com",
+//   "phone": "01011111111",
+//   "managerRoleList": ["재고관리"]
+// }
+
+const UserEdit = ({ setChoiceComponent }) => {
   const radioDummy = ['창고', '운송사', '현대제철', '카스코 철강'] // 더미 데이터
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
   const [savedRadioValue, setSavedRadioValue] = useState('')
-  // checkRadio의 true값과 radioDummy를이용해 해당 부분을 반환할 공간
+  const [submitData, setSubmitData] = useState(init)
+  const [selectedData, setSelectedData] = useAtom(doubleClickedRowAtom)
+
+  useEffect(() => {
+    const uid = selectedData.순번
+    setSubmitData((prevState) => ({ ...prevState, uid: uid }))
+  }, [selectedData])
+
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
 
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
     if (checkedIndex !== -1) {
       const selectedValue = radioDummy[checkedIndex]
       setSavedRadioValue(selectedValue) //내 state에 반환
-      // setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
+      setSubmitData((prevState) => ({ ...prevState, type: selectedValue }))
     }
   }, [checkRadio])
 
@@ -62,15 +90,43 @@ const UserEdit = () => {
   const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => '')) // 1과 2를 대조하여 true에 해당하는 값 반환할 그릇!
 
   useEffect(() => {
-    // true에 해당되면, value를, false면 빈값을 반환
     const updatedCheck = checkDummy.map((value, index) => {
       return check[index] ? value : ''
     })
-    // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData(filteredCheck)
+    setSubmitData((prevState) => ({ ...prevState, managerRoleList: filteredCheck }))
   }, [check])
 
+  const [emailPrefix, setEmailPrefix] = useState('') // 이메일 접두사를 저장하는 새로운 상태 변수를 추가합니다.
+  const mutation = useMutationQuery('', patch_userManage)
+
+  const eventHandle = (e) => {
+    const { name, value } = e.target
+
+    if (name === 'email') setEmailPrefix(e.target.value)
+    setSubmitData({ ...submitData, [name]: value })
+    console.log(submitData)
+  }
+
+  const handleDomainChange = (option) => {
+    const label = option.label
+    const emailForm = `${emailPrefix}@${label}`
+    setSubmitData({ ...submitData, email: emailForm })
+  }
+
+  const submitHandle = (e) => {
+    if (isEmptyObj(submitData)) {
+      setChoiceComponent('리스트')
+      mutation.mutate(submitData)
+    } else {
+      alert('내용을 모두 기입해주세요.')
+    }
+  }
+
+  const goBack = () => {
+    setChoiceComponent('리스트')
+  }
   return (
     <OnePageContainer>
       <MainTitle>사용자 수정</MainTitle>
@@ -89,7 +145,7 @@ const UserEdit = () => {
                 <h4>비밀번호</h4>
                 <p></p>
               </Title>
-              <WhiteRedBtn style={{ width: '320px' }} height={40}>
+              <WhiteRedBtn style={{ width: '320px' }} height={40} name="password" onChange={eventHandle}>
                 비밀번호 초기화
               </WhiteRedBtn>
             </Part>
@@ -100,8 +156,8 @@ const UserEdit = () => {
                 <h4>사용자 정보</h4>
                 <p></p>
               </Title>
-              <Inputa style={{ marginRight: '5px' }} />
-              <InputA />
+              <Inputa style={{ marginRight: '5px' }} name="title" onChange={eventHandle} placeholder="직함 입력" />
+              <InputA name="name" onChange={eventHandle} placeholder="성함 입력" />
             </Part>
             <Part>
               <Title>
@@ -109,9 +165,14 @@ const UserEdit = () => {
                 <p></p>
               </Title>
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Inputa /> <span style={{ margin: '5px' }}>@</span>
+                <Inputa name="email" onChange={eventHandle} /> <span style={{ margin: '5px' }}>@</span>
                 <div>
-                  <CustomSelect width={180} options={emailOptions} defaultValue={emailOptions[0]} />
+                  <CustomSelect
+                    width={180}
+                    options={emailOptions}
+                    defaultValue={emailOptions[0]}
+                    onChange={handleDomainChange}
+                  />
                 </div>
               </div>
             </Part>
@@ -120,7 +181,7 @@ const UserEdit = () => {
                 <h4>연락처</h4>
                 <p></p>
               </Title>
-              <TxtInput />
+              <TxtInput name="phone" onChange={eventHandle} />
             </Part>
           </Right>
         </HalfWrap>
@@ -177,10 +238,10 @@ const UserEdit = () => {
         </CheckContainer>
       </OnePageSubContainer>
       <BtnWrap bottom={-200}>
-        <WhiteBtn width={40} height={40}>
+        <WhiteBtn width={40} height={40} onClick={goBack}>
           돌아가기
         </WhiteBtn>
-        <BlackBtn width={40} height={40}>
+        <BlackBtn width={40} height={40} onClick={submitHandle}>
           저장
         </BlackBtn>
       </BtnWrap>
