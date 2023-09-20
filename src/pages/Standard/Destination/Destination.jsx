@@ -41,6 +41,7 @@ import { useGetAdminDestinationQuery } from '../../../hooks/queries/admin/Standa
 import { adminDestinationList } from '../../../store/Table/Table'
 import { useRef } from 'react'
 
+import { StandardDestinaionFields, StandardDestinaionFieldsCols } from '../../../constants/admin/Standard'
 
 const Destination = ({}) => {
   const dummy = {
