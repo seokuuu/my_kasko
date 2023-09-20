@@ -4,6 +4,7 @@ const urls = {
   customer: 'admin/customer',
   clientDestination: 'admin/customer-destination',
   userManage: 'admin/member',
+  profileEdit: 'admin/privacy',
 }
 /* ==============================
     사용자관리 - 고객사 관리
@@ -59,4 +60,11 @@ export function post_userManage(data) {
 
 export function patch_userManage(data) {
   return client.patch(urls.userManage, data)
+}
+
+/* ==============================
+    사용자관리 - 개인정보 수정
+============================== */
+export function patchProfile(data) {
+  return client.patch(urls.profileEdit, data)
 }
