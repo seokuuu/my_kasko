@@ -45,6 +45,7 @@ import { getAdminDestination, deleteAdminDestination } from '../../../service/ad
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { isArray } from 'lodash'
+import Test3 from '../../Test/Test3'
 
 const Destination = ({ }) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -90,7 +91,7 @@ const Destination = ({ }) => {
 
   const Param = {
     pageNum: 1,
-    pageSize: 20,
+    pageSize: 10,
   }
 
   // GET
@@ -197,6 +198,7 @@ const Destination = ({ }) => {
           </div>
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} />
+
       </TableContianer>
     </FilterContianer>
   )
