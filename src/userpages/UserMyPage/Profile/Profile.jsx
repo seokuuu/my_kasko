@@ -36,8 +36,9 @@ import { CheckBox } from '../../../common/Check/Checkbox'
 import { CheckBtn } from '../../../pages/User/SignUp/SignUp.Styled'
 
 import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-import { updateCustomer } from '../../../api/auth'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
+import { checkBusinessNumber, getCustomerPrivacy, updateCustomer } from '../../../api/myPage'
+import useReactQuery from '../../../hooks/useReactQuery'
 
 const init = {
   password: '',
@@ -45,7 +46,7 @@ const init = {
   name: '',
   email: '',
   phone: '',
-  customerUid: 17,
+  customerUid: '',
   type: '',
   customerName: '',
   ceoName: '',
@@ -73,6 +74,48 @@ const ProfileEdit = () => {
   const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
   const [checkFileName, setCheckFileName] = useState({ deleteBusinessNumberFile: '', deleteBankbookFile: '' })
   const [fileForms, setFileForms] = useState({ registration: '', bankbook: '' })
+  const [businessNumber, setBusinessNumber] = useState('')
+
+  // TODO : 중복체크 response 없음
+  const { isError, isSuccess, data } = useReactQuery('getCustomerPrivacy', {}, getCustomerPrivacy)
+  // const {
+  //   isError: isBusinessNumberError,
+  //   isSuccess: isBusinessNumberSuccess,
+  //   data: businessNumberData,
+  // } = useReactQuery('checkBusinessNumber', businessNumber, checkBusinessNumber, {
+  //   enabled: false,
+  // })
+  const [user, setUser] = useState('')
+  const resData = data?.data?.data
+
+  const checkBusiness = () => {
+    try {
+      checkBusinessNumber(businessNumber)
+      console.log('done')
+    } catch (err) {
+      console.log(err)
+    }
+
+    // if (isBusinessNumberSuccess) {
+    //   alert('확인되셨습니다.')
+    // }
+    // if (isBusinessNumberError) {
+    //   alert('중복되었습니다.')
+    // }
+  }
+  const handleCheck = (e) => {
+    setBusinessNumber(e.target.value)
+    console.log(businessNumber)
+  }
+
+  if (isError) console.log('ERROR')
+
+  useEffect(() => {
+    if (isSuccess) {
+      setUser(resData)
+      // setBusinessNumber(resData.customer.businessNumber)
+    }
+  }, [resData])
 
   const handleFiles = (e) => {
     const name = e.target.name
@@ -97,16 +140,6 @@ const ProfileEdit = () => {
       }
     }
   }
-
-  useEffect(() => {
-    const token = {
-      access: sessionStorage.getItem('accessToken'),
-      refresh: localStorage.getItem('refreshToken'),
-    }
-    if (token.access) setIsUser(true)
-    console.log('로그인여부:', isUser)
-    // console.log(token.access)
-  }, [isUser])
 
   const handleSelectChange = (selectedOption, name) => {
     // const isCheck = selectedOption.label
@@ -257,7 +290,7 @@ const ProfileEdit = () => {
                   아이디<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput disabled name={init.id} />
+                  <FlexInput disabled name={init.id} value={user && user.member.id} />
                 </FlexContent>
               </FlexPart>
 
@@ -266,7 +299,7 @@ const ProfileEdit = () => {
                   새 비밀번호<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput />
+                  <FlexInput type="password" />
                 </FlexContent>
               </FlexPart>
 
@@ -275,7 +308,7 @@ const ProfileEdit = () => {
                   새 비밀번호 확인<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="password" />
+                  <FlexInput name="password" type="password" />
                 </FlexContent>
               </FlexPart>
 
@@ -521,8 +554,9 @@ const ProfileEdit = () => {
                   사업자 번호<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <CustomInput name="businessNumber" width={223} />
-                  <CheckBtn style={{ fontSize: '16px' }} type="button">
+                  {/* input데이터 넣기 value={resData && resData.customer.businessNumber} */}
+                  <CustomInput name="businessNumber" width={223} onChange={handleCheck} />
+                  <CheckBtn style={{ fontSize: '16px' }} type="button" onClick={checkBusiness}>
                     중복확인
                   </CheckBtn>
                 </FlexContent>
@@ -532,6 +566,28 @@ const ProfileEdit = () => {
                 <FlexTitle>
                   사업자등록증<span>*</span>
                 </FlexTitle>
+                <TxtDivNoborder className="no-border" style={{ border: '1px solid #000000' }}>
+                  <label htmlFor="ex_file">
+                    <div className="btnStart">
+                      <img src="/svg/Upload.svg" alt="btnStart" />
+                      <p htmlFor="ex_file">파일 첨부</p>
+                    </div>
+                  </label>
+                  {/* <img src="/svg/Upload.svg" alt="Upload" /> */}
+                  <input
+                    id="ex_file"
+                    type="file"
+                    accept="image/jpg, image/png, image/jpeg"
+                    style={{ display: 'none' }}
+                    onChange={handleFiles}
+                    name="deleteBusinessNumberFile"
+                    // onChange={commonChange}
+                    // name="businessfile"
+                  ></input>
+                </TxtDivNoborder>
+              </FlexPart>
+              <FlexPart>
+                <FlexTitle></FlexTitle>
                 <FlexContent>
                   {/* <FlexInput></FlexInput> */}
                   {checkFileName.deleteBusinessNumberFile ? (
@@ -541,49 +597,13 @@ const ProfileEdit = () => {
                   )}
                 </FlexContent>
               </FlexPart>
-              <FlexPart>
-                <FlexTitle></FlexTitle>
-                <FlexContent>
-                  {' '}
-                  <TxtDivNoborder className="no-border">
-                    <label htmlFor="ex_file">
-                      <div className="btnStart">
-                        <img src="/svg/Upload.svg" alt="btnStart" />
-                        <p htmlFor="ex_file">파일 첨부</p>
-                      </div>
-                    </label>
-                    {/* <img src="/svg/Upload.svg" alt="Upload" /> */}
-                    <input
-                      id="ex_file"
-                      type="file"
-                      accept="image/jpg, image/png, image/jpeg"
-                      style={{ display: 'none' }}
-                      onChange={handleFiles}
-                      name="deleteBusinessNumberFile"
-                      // onChange={commonChange}
-                      // name="businessfile"
-                    ></input>
-                  </TxtDivNoborder>
-                  {/* <TxtDiv style={{ width: '100%' }}>
-                    <img src="/svg/Upload.svg" />
-                    <p>파일 첨부</p>
-                  </TxtDiv> */}
-                </FlexContent>
-              </FlexPart>
 
               <FlexPart style={{ marginBottom: '5px' }}>
                 <FlexTitle>
                   통장사본<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  {/* <FlexInput></FlexInput> */}
-                  {checkFileName.deleteBankbookFile ? checkFileName.deleteBankbookFile : <FlexInput></FlexInput>}
-                </FlexContent>
-              </FlexPart>
-              <FlexPart>
-                <FlexTitle></FlexTitle>
-                <FlexContent>
-                  <TxtDivNoborder className="no-border">
+                  <TxtDivNoborder className="no-border" style={{ border: '1px solid #000000' }}>
                     <label htmlFor="ex_file2">
                       <div className="btnStart">
                         <img src="/svg/Upload.svg" alt="btnStart" />
@@ -604,6 +624,13 @@ const ProfileEdit = () => {
                     <img src="/svg/Upload.svg" />
                     <p>파일 첨부</p>
                   </TxtDiv> */}
+                </FlexContent>
+              </FlexPart>
+              <FlexPart>
+                <FlexTitle></FlexTitle>
+                <FlexContent>
+                  {/* <FlexInput></FlexInput> */}
+                  {checkFileName.deleteBankbookFile ? checkFileName.deleteBankbookFile : <FlexInput></FlexInput>}
                 </FlexContent>
               </FlexPart>
 

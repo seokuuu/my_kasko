@@ -27,7 +27,7 @@ const PreferEdit = () => {
 
   return (
     <OnePageContainer>
-      <MainTitle>선호제품 등록</MainTitle>
+      <MainTitle>선호제품 수정</MainTitle>
       <OnePageSubContainer>
         <HalfWrap>
           <Left>

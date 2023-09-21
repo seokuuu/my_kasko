@@ -4,6 +4,8 @@ import UserSideBar from '../../../components/Left/UserSideBar'
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
 import PreferPost from './PreferPost'
+import PreferEdit from './PreferEdit'
+import Prefer from './Prefer'
 
 import { useState } from 'react'
 
@@ -18,7 +20,9 @@ const PreferPage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
+            <Prefer />
             <PreferPost />
+            <PreferEdit />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>

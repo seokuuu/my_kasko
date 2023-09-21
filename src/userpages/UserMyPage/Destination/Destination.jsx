@@ -71,8 +71,8 @@ const Destination = ({ setChoiceComponent }) => {
   const 임의데이터 = {
     pageNum: 1,
     pageSize: 20,
-    category: '목적지명',
-    keyword: '인천',
+    // category: '목적지명',
+    // keyword: '인천',
   }
 
   const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터, 'destination', getDestination)
@@ -80,8 +80,6 @@ const Destination = ({ setChoiceComponent }) => {
   useEffect(() => {
     if (isSuccess && data?.data?.data?.list) {
       let getData = data?.data?.data?.list
-
-      console.log('getData =>', getData)
 
       if (Array.isArray(getData)) {
         const newArray = getData.map((item) => ({
@@ -112,7 +110,6 @@ const Destination = ({ setChoiceComponent }) => {
   const queryClient = useQueryClient()
   const mutation = useMutation(deleteDestination, {
     onSuccess: () => {
-      // console.log('삭제되었습니다')
       queryClient.invalidateQueries('destination')
     },
   })
@@ -123,7 +120,7 @@ const Destination = ({ setChoiceComponent }) => {
     if (isArray(checkedArray) && checkedArray.length > 0) {
       if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
         checkedArray.forEach((item) => {
-          mutation.mutate(item['고객 코드']) //mutation.mutate로 api 인자 전해줌
+          mutation.mutate(item['고객 코드'])
         })
       }
     } else {

@@ -28,20 +28,18 @@ import useMutationQuery from '../../../hooks/useMutationQuery'
 
 const DestinationEdit = ({ setChoiceComponent }) => {
   const navigate = useNavigate()
-  const radioDummy = ['지정', '미지정'] // 더미 데이터
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
+  const radioDummy = ['지정', '미지정']
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
   const [savedRadioValue, setSavedRadioValue] = useState('')
   const mutation = useMutationQuery('', patchDestination)
-  // checkRadio의 true값과 radioDummy를이용해 해당 부분을 반환할 공간
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
 
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
     if (checkedIndex !== -1) {
       const selectedValue = radioDummy[checkedIndex]
-      setSavedRadioValue(selectedValue) //내 state에 반환
-      // setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-      setInput({ ...input, represent: selectedValue })
+      setSavedRadioValue(selectedValue)
+      if (selectedValue === '지정') setInput({ ...input, represent: 1 })
+      if (selectedValue === '미지정') setInput({ ...input, represent: 0 })
     }
   }, [checkRadio])
 
@@ -50,9 +48,9 @@ const DestinationEdit = ({ setChoiceComponent }) => {
     // setChoiceComponent('리스트')
   }
   const uid = useAtom(doubleClickedRowAtom)[0]['고객 코드']
-  console.log('uid', uid)
 
   const init = {
+    uid: uid,
     represent: '',
     destinationUid: '',
     address: '',
@@ -64,7 +62,7 @@ const DestinationEdit = ({ setChoiceComponent }) => {
     memo: '',
   }
 
-  const [input, setInput] = useState(init) //summit input 데이터
+  const [input, setInput] = useState(init)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -74,13 +72,6 @@ const DestinationEdit = ({ setChoiceComponent }) => {
   const submit = async () => {
     if (!isEmptyObj(input)) return alert('빈값을 채워주세요!')
     mutation.mutate(input)
-    // try {
-    //   const { data: res } = await patchDestination(input)
-    //   console.log('로그인 된 정보 : ', res)
-    //   alert('✅완료되었습니다.')
-    // } catch (err) {
-    //   console.log(err)
-    // }
   }
   return (
     <OnePageContainer>
@@ -160,7 +151,12 @@ const DestinationEdit = ({ setChoiceComponent }) => {
               />
 
               <Alert style={{ margin: '5px auto' }}>*하차지 연락처 미입력 시 토요일 하차 불가</Alert>
-              <CustomInput placeholder="하차지 연락처 입력 ('-' 제외)" width={340} />
+              <CustomInput
+                placeholder="하차지 연락처 입력 ('-' 제외)"
+                width={340}
+                name="phone"
+                onChange={handleChange}
+              />
             </Part>
 
             <Part>
