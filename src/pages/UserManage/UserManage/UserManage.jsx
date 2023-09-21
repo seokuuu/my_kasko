@@ -84,7 +84,6 @@ const UserManage = ({ setChoiceComponent }) => {
   const [getRow, setGetRow] = useState('')
   const tableField = useRef(UserManageFieldsCols)
   const getCol = tableField.current
-  const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
 
   const 임의데이터 = {

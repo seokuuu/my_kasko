@@ -3,6 +3,7 @@ import { client } from '.'
 const urls = {
   Destination: '/member/destination',
   privacy: '/member/privacy',
+  favorite: '/member/favorite',
 }
 
 /* ==============================
@@ -56,4 +57,21 @@ export function checkBusinessNumber(data) {
   return client.post(`${urls.privacy}/business-number?businessNumber=${data}`)
 }
 
-// {{dev}}/api/member/privacy/business-number?businessNumber=123455
+/* ==============================
+    마이페이지 - 선호제품관리
+============================== */
+export function getCustomerfavorite(data) {
+  return client.get(`${urls.favorite}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
+}
+export function postCustomerfavorite(data) {
+  return client.post(urls.favorite, data)
+}
+export function getDetailCustomerfavorite(data) {
+  return client.get(`${urls.favorite}/${data}`)
+}
+export function patchCustomerfavorite(data) {
+  return client.patch(urls.favorite, data)
+}
+export function deleteCustomerfavorite(data) {
+  return client.delete(`${urls.favorite}/${data}`)
+}

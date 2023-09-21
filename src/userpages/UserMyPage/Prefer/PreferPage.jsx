@@ -12,6 +12,20 @@ import { useState } from 'react'
 const PreferPage = () => {
   const [expanded, setExpanded] = useState('마이페이지')
   const [depth2Color, setDepth2Color] = useState('선호 제품 관리')
+  const [choiceComponent, setChoiceComponent] = useState('리스트')
+
+  const renderChoiceComponent = () => {
+    switch (choiceComponent) {
+      case '리스트':
+        return <Prefer setChoiceComponent={setChoiceComponent} />
+      case '등록':
+        return <PreferPost setChoiceComponent={setChoiceComponent} />
+      case '수정':
+        return <PreferEdit setChoiceComponent={setChoiceComponent} />
+      default:
+        return <Prefer setChoiceComponent={setChoiceComponent} />
+    }
+  }
   return (
     <>
       <Header />
@@ -19,11 +33,7 @@ const PreferPage = () => {
         <UserSideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
         <OverAllSub>
           <SubHeader />
-          <OverAllTable>
-            <Prefer />
-            <PreferPost />
-            <PreferEdit />
-          </OverAllTable>
+          <OverAllTable>{renderChoiceComponent()}</OverAllTable>
         </OverAllSub>
       </OverAllMain>
     </>
