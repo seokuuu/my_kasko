@@ -35,7 +35,7 @@ import {
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import {
-  ModalOverlay,
+  FadeOverlay,
   ModalSubContainer,
   ModalRadioWrap,
   ModalCloseBtn,
@@ -75,7 +75,7 @@ const SignUp = () => {
   setShowSubHeader(false)
   //radioBox
   const radioDummy = ['개인', '법인(주)', '법인(유)']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
   const [savedRadioValue, setSavedRadioValue] = useState('')
 
   useEffect(() => {

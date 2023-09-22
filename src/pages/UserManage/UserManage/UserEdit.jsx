@@ -30,7 +30,7 @@ import { BtnWrap, BlackBtn, WhiteBtn, WhiteRedBtn } from '../../../common/Button
 const UserEdit = () => {
   // Radio 관련
   const radioDummy = ['창고', '운송사', '현대제철', '카스코 철강'] // 더미 데이터
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
   const [savedRadioValue, setSavedRadioValue] = useState('')
   // checkRadio의 true값과 radioDummy를이용해 해당 부분을 반환할 공간
   useEffect(() => {

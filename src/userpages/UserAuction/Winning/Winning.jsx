@@ -52,7 +52,7 @@ const Winning = ({}) => {
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
 
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   //checkShips
   const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))

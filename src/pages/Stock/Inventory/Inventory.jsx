@@ -37,6 +37,8 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import Multi from '../../../modal/Common/Multi'
+import { blueModalAtom } from '../../../store/Layout/Layout'
 
 const Inventory = ({}) => {
   const checkSales = ['전체', '판매재', '판매제외제']
@@ -108,6 +110,14 @@ const Inventory = ({}) => {
       setToggleMsg('On')
     }
   }
+
+  const [modalIsOpen, setModalIsOpen] = useState(false)
+
+  const openModal = () => {
+    setModalIsOpen(true)
+  }
+
+  console.log('modalIsOpen =>', modalIsOpen)
 
   return (
     <FilterContianer>
@@ -274,12 +284,13 @@ const Inventory = ({}) => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteBlackBtn>판매 구분 변경</WhiteBlackBtn>
+            <WhiteBlackBtn onClick={openModal}>판매 구분 변경</WhiteBlackBtn>
             <WhiteRedBtn>입고 확정 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
         <Test3 />
       </TableContianer>
+      <>{modalIsOpen && <Multi modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} />}</>
     </FilterContianer>
   )
 }

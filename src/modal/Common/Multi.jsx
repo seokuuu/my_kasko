@@ -8,6 +8,9 @@ import {
   BlueBarHeader,
   BlueMainDiv,
   BlueSubDiv,
+  BlueBtnWrap,
+  BlueBlackBtn,
+  FadeOverlay,
 } from '../Common/Common.Styled'
 
 import { blueModalAtom } from '../../store/Layout/Layout'
@@ -17,26 +20,24 @@ import { ExRadioWrap } from '../External/ExternalFilter'
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
 
 import { CheckBox } from '../../common/Check/Checkbox'
+import { useEffect } from 'react'
 
-const Multi = () => {
-  const [isModal, setIsModal] = useAtom(blueModalAtom)
-
+const Multi = ({ modalIsOpen, setModalIsOpen }) => {
   const modalClose = () => {
-    setIsModal(false)
+    setModalIsOpen(false)
   }
 
   const radioDummy = ['판매재', '판매 제외 재']
   const radioDummy2 = ['불량', '제외 요청', '기타 사유']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
-  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, () => false))
+  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, (_, index) => index === 0))
 
   console.log('checkRadio =>', checkRadio)
-
   return (
     // 재고 관리 - 판매 구분 변경
     <>
-      <NonFadeOverlay />
+      <FadeOverlay />
       <ModalContainer width={530}>
         <BlueBarHeader>
           <div>판매 구분 변경</div>
@@ -87,6 +88,9 @@ const Multi = () => {
               )}
             </BlueMainDiv>
           </div>
+          <BlueBtnWrap>
+            <BlueBlackBtn>저장</BlueBlackBtn>
+          </BlueBtnWrap>
         </BlueSubContainer>
       </ModalContainer>
     </>

@@ -31,7 +31,7 @@ const Bidding = () => {
   }
 
   const radioDummy = ['동의', '동의하지 않음']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   return (
     // 입찰 동의서

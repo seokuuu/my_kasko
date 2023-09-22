@@ -60,7 +60,7 @@ import { isArray } from 'lodash'
 
 const Transport = ({}) => {
   const radioDummy = ['증가', '감소']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({

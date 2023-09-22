@@ -56,7 +56,7 @@ import { 사용자관리_고객사관리_fieds, 사용자관리_고객사관리_
 
 const Client = ({}) => {
   const radioDummy = ['전체', '대표', '대표']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   const [savedRadioValue, setSavedRadioValue] = useState('')
   useEffect(() => {

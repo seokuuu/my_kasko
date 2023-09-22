@@ -34,7 +34,7 @@ const DispatchDetail = () => {
 
   const radioDummy = ['검색 ', '직접 입력']
 
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   console.log('checkRadio =>', checkRadio)
 

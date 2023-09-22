@@ -35,7 +35,7 @@ const AuctionRound = () => {
 
   const radioDummy = ['정기 경매', '추가 경매']
 
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   const checkDummy = ['오전 경매 (9:00AM - 10:00AM)', '오후 경매 (13:30PM - 14:00PM)']
   const [check1, setCheck1] = useState(Array.from({ length: checkDummy.length }, () => false))

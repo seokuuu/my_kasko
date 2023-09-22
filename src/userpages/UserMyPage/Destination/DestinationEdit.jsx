@@ -28,7 +28,7 @@ import { patchDestination } from '../../../api/myPage'
 const DestinationEdit = ({ setChoiceComponent }) => {
   const navigate = useNavigate()
   const radioDummy = ['지정', '미지정'] // 더미 데이터
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
   const [savedRadioValue, setSavedRadioValue] = useState('')
   // checkRadio의 true값과 radioDummy를이용해 해당 부분을 반환할 공간
   useEffect(() => {

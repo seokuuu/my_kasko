@@ -1,5 +1,5 @@
 import React from 'react'
-import { ModalContainer, ModalOverlay, ModalSubContainer, ModalTitle, ModalText } from '../Common/Common.Styled'
+import { ModalContainer, FadeOverlay, ModalSubContainer, ModalTitle, ModalText } from '../Common/Common.Styled'
 import { ModalPart, Title } from '../../pages/User/SignUp/SignUp.Styled'
 import { BlackBtn, RedBtn, WhiteBtn } from '../../common/Button/Button'
 
@@ -12,7 +12,7 @@ const AlertModal = ({ type, title, content }) => {
       {/* 1 : title + content 검정버튼(확인) */}
       {/* 2 : title + content 검정버튼(확인) + 흰색버튼(취소) */}
       {/* 3 : title + content 빨강버튼(삭제) + 흰색버튼(취소) */}
-      <ModalOverlay />
+      <FadeOverlay />
       <ModalContainer width={400}>
         <ModalSubContainer>
           {type === 1 && (
