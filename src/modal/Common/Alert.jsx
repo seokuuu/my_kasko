@@ -6,7 +6,6 @@ import { BlackBtn, RedBtn, WhiteBtn } from '../../common/Button/Button'
 import { useAtom } from 'jotai'
 import { alertAtom } from '../../store/Layout/Layout'
 const Alert = ({ type, title, content }) => {
-  const [modalAtom, setModalAtom] = useAtom(alertAtom)
   return (
     <>
       {/* 1 : title + content 검정버튼(확인) */}

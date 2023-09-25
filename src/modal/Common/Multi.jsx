@@ -21,6 +21,10 @@ import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/
 
 import { CheckBox } from '../../common/Check/Checkbox'
 import { useEffect } from 'react'
+import CommonTest from '../Alert/PopupMessages'
+import { popupMessages } from '../Alert/PopupMessages'
+import AlertPopup from '../Alert/AlertPopup'
+import { popupAtom } from '../../store/Layout/Layout'
 
 const Multi = ({ modalIsOpen, setModalIsOpen }) => {
   const modalClose = () => {
@@ -33,7 +37,12 @@ const Multi = ({ modalIsOpen, setModalIsOpen }) => {
 
   const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, (_, index) => index === 0))
 
-  console.log('checkRadio =>', checkRadio)
+  const [popupState, setPopupState] = useAtom(popupAtom)
+
+  console.log('popupState =>', popupState)
+
+  console.log('', (popupMessages[1].find((message) => message.num === '4') || {}).title)
+
   return (
     // 재고 관리 - 판매 구분 변경
     <>
@@ -89,7 +98,27 @@ const Multi = ({ modalIsOpen, setModalIsOpen }) => {
             </BlueMainDiv>
           </div>
           <BlueBtnWrap>
-            <BlueBlackBtn>저장</BlueBlackBtn>
+            <BlueBlackBtn
+              onClick={() => {
+                setPopupState(1)
+              }}
+            >
+              저장
+            </BlueBlackBtn>
+            {popupState === 1 && (
+              <AlertPopup
+                type={2}
+                title={(popupMessages[2].find((message) => message.num === '5') || {}).title || ''}
+                content={(popupMessages[2].find((message) => message.num === '2') || {}).content || ''}
+              />
+            )}
+            {popupState === 2 && (
+              <AlertPopup
+                type={2}
+                title={(popupMessages[2].find((message) => message.num === '5') || {}).title || ''}
+                content={(popupMessages[2].find((message) => message.num === '2') || {}).content || ''}
+              />
+            )}
           </BlueBtnWrap>
         </BlueSubContainer>
       </ModalContainer>

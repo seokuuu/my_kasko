@@ -35,3 +35,13 @@ export const selectedRowsAtom = atom([])
 
 // test3 테이블 체크했을시 데이터
 export const doubleClickedRowAtom = atom([])
+
+export const modalAtom = atom({
+  open: false,
+  func: () => {},
+})
+
+export const popupAtom = atom({
+  open: false,
+  func: () => {},
+})

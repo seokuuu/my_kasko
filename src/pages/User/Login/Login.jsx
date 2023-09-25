@@ -1,12 +1,7 @@
+import React, { useState, useCallback, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
-import React, { useState, useCallback, useEffect } from 'react';
-import {Link, useNavigate} from 'react-router-dom';
-
-import {
-  StyledCheckMainDiv,
-  StyledCheckSubDiv,
-  CheckImg,
-} from '../../../common/Check/CheckImg';
+import { StyledCheckMainDiv, StyledCheckSubDiv, CheckImg } from '../../../common/Check/CheckImg'
 
 import {
   Container,
@@ -29,50 +24,42 @@ import {
   IbwWrap,
 } from './Login.Styled'
 
+import { useAtom } from 'jotai'
+import { headerAtom, accordionAtom, subHeaderAtom } from '../../../store/Layout/Layout'
+import { login } from '../../../api/auth'
+import { useAuth, useUpdateAuth } from '../../../store/auth'
 
-import { useAtom } from 'jotai';
-import {
-  headerAtom,
-  accordionAtom,
-  subHeaderAtom,
-} from '../../../store/Layout/Layout';
-import {login} from "../../../api/auth";
-import {useAuth, useUpdateAuth} from "../../../store/auth";
-
-
-import AlertModal from '../../../modal/Alert/AlertModal'
+import AlertPopup from '../../../modal/Alert/AlertPopup'
 
 const Login = () => {
+  const navigate = useNavigate()
+  const [showHeader, setShowHeader] = useAtom(headerAtom)
+  const [showAccordion, setShowAccordion] = useAtom(accordionAtom)
+  const [showSubHeader, setShowSubHeader] = useAtom(subHeaderAtom)
+  const auth = useAuth()
+  const updateAuth = useUpdateAuth()
 
-  const navigate = useNavigate();
-  const [showHeader, setShowHeader] = useAtom(headerAtom);
-  const [showAccordion, setShowAccordion] = useAtom(accordionAtom);
-  const [showSubHeader, setShowSubHeader] = useAtom(subHeaderAtom);
-  const auth = useAuth();
-  const updateAuth = useUpdateAuth();
-
-  setShowHeader(false);
-  setShowAccordion(false);
-  setShowSubHeader(false);
+  setShowHeader(false)
+  setShowAccordion(false)
+  setShowSubHeader(false)
   // // HeadFootLeftSwitch 막기
 
-  const [id, setId] = useState('');
-  const [pw, setPw] = useState('');
-  const [idPlaceholder, setIdPlaceholder] = useState('아이디');
-  const [idPlaceholderColor, setIdPlaceholderColor] = useState('');
-  const [pwPlaceholder, setPwPlaceholder] = useState('비밀번호');
-  const [pwPlaceholderColor, setPwPlaceholderColor] = useState('');
-  const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [check, setCheck] = useState(false);
-  const [idBottom, setIdBottom] = useState('');
-  const [bottomColor, setBottomColor] = useState('');
-  const [pwBottom, setPwBottom] = useState('');
-  const [isLogin, setIsLogin] = useState(false);
+  const [id, setId] = useState('')
+  const [pw, setPw] = useState('')
+  const [idPlaceholder, setIdPlaceholder] = useState('아이디')
+  const [idPlaceholderColor, setIdPlaceholderColor] = useState('')
+  const [pwPlaceholder, setPwPlaceholder] = useState('비밀번호')
+  const [pwPlaceholderColor, setPwPlaceholderColor] = useState('')
+  const [buttonDisabled, setButtonDisabled] = useState(false)
+  const [check, setCheck] = useState(false)
+  const [idBottom, setIdBottom] = useState('')
+  const [bottomColor, setBottomColor] = useState('')
+  const [pwBottom, setPwBottom] = useState('')
+  const [isLogin, setIsLogin] = useState(false)
 
-  const idRegex = /^[a-z0-9]{4,12}$/;
+  const idRegex = /^[a-z0-9]{4,12}$/
   // const passwordRegex = /^(?=.*[a-z])(?=.*[0-9])[a-z0-9]{4,12}$/;
-  const passwordRegex = /^[a-z0-9]{4,12}$/;
-
+  const passwordRegex = /^[a-z0-9]{4,12}$/
 
   const idDummy = {
     userId: ['wkdqaz', 'solskjaer73', 'asd123'],
@@ -92,10 +79,9 @@ const Login = () => {
   const isPasswordValid = passwordRegex.test(pw)
 
   // 아이디 저장
-  const saveIdToLocalStorage = id => {
-    return localStorage.setItem('savedId', id);
-  };
-
+  const saveIdToLocalStorage = (id) => {
+    return localStorage.setItem('savedId', id)
+  }
 
   const removeSavedIdFromLocalStorage = () => {
     return localStorage.removeItem('savedId')
@@ -114,8 +100,7 @@ const Login = () => {
   }, [])
 
   const handleSaveId = () => {
-
-    setCheck(prev => !prev);
+    setCheck((prev) => !prev)
 
     if (!check) {
       saveIdToLocalStorage(id)
@@ -124,43 +109,35 @@ const Login = () => {
     }
   }
 
-
   useEffect(() => {
-
-    setButtonDisabled(!isIdValid || !isPasswordValid);
+    setButtonDisabled(!isIdValid || !isPasswordValid)
 
     if (id && !isIdValid) {
-      setIdBottom('올바른 내용이 아닙니다.');
-      setBottomColor('#d92f2f');
-      setIdPlaceholderColor('#d92f2f');
-      setIsLogin(false);
-
+      setIdBottom('올바른 내용이 아닙니다.')
+      setBottomColor('#d92f2f')
+      setIdPlaceholderColor('#d92f2f')
+      setIsLogin(false)
     } else if (id && isIdValid) {
       setIdBottom('')
       setIdPlaceholderColor('#4ca9ff')
     }
 
     if (pw && !isPasswordValid) {
-
-      setPwBottom('영문, 숫자 조합 4~12자리로 입력해 주세요');
-      setBottomColor('#d92f2f');
-      setPwPlaceholderColor('#d92f2f');
-      setIsLogin(false);
-
+      setPwBottom('영문, 숫자 조합 4~12자리로 입력해 주세요')
+      setBottomColor('#d92f2f')
+      setPwPlaceholderColor('#d92f2f')
+      setIsLogin(false)
     } else if (pw && isPasswordValid) {
       setPwBottom('')
       setPwPlaceholderColor('#4ca9ff')
     }
 
-
     if (isIdValid && isPasswordValid && isLogin) {
-      setPwBottom('등록되지 않은 회원입니다.');
-      setBottomColor('#d92f2f');
-      setPwPlaceholderColor('#d92f2f');
+      setPwBottom('등록되지 않은 회원입니다.')
+      setBottomColor('#d92f2f')
+      setPwPlaceholderColor('#d92f2f')
     }
-
-  }, [id, pw, idBottom, pwBottom, isLogin]);
-
+  }, [id, pw, idBottom, pwBottom, isLogin])
 
   const handleIdArea = useCallback(() => {})
 
@@ -209,26 +186,27 @@ const Login = () => {
     setPwPlaceholder('비밀번호')
   }, [])
 
-
   /** 로그인 */
-  const handleSubmit = useCallback(async  (e) => {
-    e.preventDefault();
-    const requestData = {
-      id: id,
-      password: pw,
-    }
-    try {
-      const { data: res } = await login(requestData);
-      console.log('로그인 된 정보 : ', res);
-      sessionStorage.setItem('accessToken', res.data?.accessToken);
-      localStorage.setItem('refreshToken', res.data?.refreshToken);
-      await updateAuth();
-      navigate('/main');
-    } catch (e) {
-      setIsLogin(true);
-    }
-  }, [id, pw]);
-
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault()
+      const requestData = {
+        id: id,
+        password: pw,
+      }
+      try {
+        const { data: res } = await login(requestData)
+        console.log('로그인 된 정보 : ', res)
+        sessionStorage.setItem('accessToken', res.data?.accessToken)
+        localStorage.setItem('refreshToken', res.data?.refreshToken)
+        await updateAuth()
+        navigate('/main')
+      } catch (e) {
+        setIsLogin(true)
+      }
+    },
+    [id, pw],
+  )
 
   return (
     <Container>
@@ -294,13 +272,11 @@ const Login = () => {
               </IbwWrap>
 
               <LoginBtnWrap>
-
                 {buttonDisabled ? (
                   <LoginBtn disabled>로그인</LoginBtn>
                 ) : (
                   <LoginBtn onClick={handleSubmit}>로그인</LoginBtn>
                 )}
-
               </LoginBtnWrap>
               <IbwTxt>
                 아직 회원이 아니세요?
