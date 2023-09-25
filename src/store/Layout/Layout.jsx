@@ -9,6 +9,7 @@ export const toggleAtom = atom(true)
 export const calendarAtom = atom(false)
 
 export const alertAtom = atom(false)
+export const alertAtom2 = atom(false)
 
 export const blueModalAtom = atom(false)
 

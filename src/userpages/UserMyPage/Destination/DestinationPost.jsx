@@ -19,6 +19,9 @@ import { postDestination } from '../../../api/myPage'
 import { isEmptyObj } from '../../../lib'
 import { async } from 'q'
 import { usePostUserDestinationQuery } from '../../../hooks/queries/user/Mypage'
+import AlertModal from '../../../modal/Alert/AlertModal'
+import { useAtom } from 'jotai'
+import { alertAtom, alertAtom2 } from '../../../store/Layout/Layout'
 
 const init = {
   represent: '',
@@ -39,7 +42,9 @@ const DestinationPost = ({ setChoiceComponent }) => {
   const radioDummy = ['지정', '미지정'] // 더미 데이터
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
   const [savedRadioValue, setSavedRadioValue] = useState('')
-  // checkRadio의 true값과 radioDummy를이용해 해당 부분을 반환할 공간
+  const [modalAtom, setModalAtom] = useAtom(alertAtom)
+  const [modalAtom2, setModalAtom2] = useAtom(alertAtom2)
+
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
 
@@ -60,24 +65,40 @@ const DestinationPost = ({ setChoiceComponent }) => {
     setInput({ ...input, [name]: value })
   }
 
-  const submit = async () => {
+  const submit = async (check) => {
     if (!isEmptyObj(input)) return alert('빈값을 채워주세요!')
+    setModalAtom2(true)
     try {
       const { data: res } = await postDestination(input)
       console.log('업데이트 : ', res)
-      alert('✅완료되었습니다.')
+      if (check === true) {
+        // 이 부분을 API 호출 성공 후로 옮깁니다.
+        setModalAtom2(false)
+        setChoiceComponent('리스트')
+      }
     } catch (err) {
       console.log(err)
+      setModalAtom2(false) // 에러 발생시 모달 닫기
     }
   }
 
-  const backComponent = () => {
-    setChoiceComponent('리스트')
+  const backComponent = (check) => {
+    setModalAtom(true)
+    if (check === true) {
+      setModalAtom(false)
+      setChoiceComponent('리스트')
+    }
+    if (check === false) {
+      setModalAtom(false)
+    }
+  }
+
+  const handleModal = (value) => {
+    setModalAtom(false)
+    console.log(value)
   }
 
   const { mutate: regi, status, error } = usePostUserDestinationQuery()
-
-  console.log('error =>', error, status)
 
   // ✅destinationUid : 2로 일단 설정해줘야 등록됩니다.
   return (
@@ -185,6 +206,15 @@ const DestinationPost = ({ setChoiceComponent }) => {
           저장
         </BlackBtn>
       </BtnWrap>
+
+      {modalAtom2 && <AlertModal type={1} title={'저장 되었습니다'} onClick={submit} />}
+      {modalAtom && (
+        <AlertModal
+          type={2}
+          title={'현재 작업 중인 내용이 저장되지 않았습니다. \n페이지를 나가시겠습니까?'}
+          onClick={backComponent}
+        />
+      )}
     </OnePageContainer>
   )
 }
