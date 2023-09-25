@@ -194,7 +194,6 @@ const Client = ({}) => {
       alert('선택해주세요!')
     }
   }, [checkedArray])
-
   return (
     <FilterContianer>
       <FilterHeader>
@@ -301,7 +300,7 @@ const Client = ({}) => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            고객 정보 목록 (선택 <span>2</span> / 50개 )
+            고객 정보 목록 (선택 <span>{checkedArray?.length || 0}</span> /{getRow?.length || 0} 개)
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -311,7 +310,8 @@ const Client = ({}) => {
         </TCSubContainer>
         <TCSubContainer>
           <div>
-            선택 중량<span> 2 </span>kg / 총 중량 kg
+            선택 <span> {checkedArray?.length || 0} </span>(명)
+            <span></span>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn>회원 제한</WhiteRedBtn>

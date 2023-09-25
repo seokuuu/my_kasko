@@ -35,3 +35,6 @@ export const selectedRowsAtom = atom([])
 
 // test3 테이블 체크했을시 데이터
 export const doubleClickedRowAtom = atom([])
+
+// 테이블 page 50/100/500 정렬
+export const pageSort = atom(50)

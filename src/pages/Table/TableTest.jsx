@@ -15,7 +15,9 @@ import {
   BlueBarBtnWrap,
 } from '../../modal/Common/Common.Styled'
 import { GreyBtn, BlackBtn } from '../../common/Button/Button'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { parsePath, useLocation, useNavigate } from 'react-router-dom'
+import Pagination from '../../components/pagination/Pagination'
+import './tableStyles.css'
 
 var dateFilterParams = {
   comparator: (filterLocalDateAtMidnight, cellValue) => {
@@ -43,7 +45,7 @@ const asDate = (dateAsString) => {
   return new Date(Number.parseInt(splitFields[2]), Number.parseInt(splitFields[1]) - 1, Number.parseInt(splitFields[0]))
 }
 
-const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
+const TableTest = ({ hei, getRow, getCol, setChoiceComponent, pagination, setQuery, pageSizeGrid }) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
   const gridRef = useRef()
@@ -52,12 +54,10 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
   const [rowData, setRowData] = useState()
 
   var checkboxSelection = function (params) {
-    // we put checkbox on the name if we are not doing grouping
     return params.columnApi.getRowGroupColumns().length === 0
   }
 
   var headerCheckboxSelection = function (params) {
-    // we put checkbox on the name if we are not doing grouping
     return params.columnApi.getRowGroupColumns().length === 0
   }
 
@@ -82,14 +82,6 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
     { field: '상세 주소' },
     { field: '비고란' },
   ])
-
-  // const defaultColDef = useMemo(() => {
-  //   return {
-  //     flex: 1,
-  //     minWidth: 120,
-  //     filter: true,
-  //   }
-  // }, [])
 
   const dummyD = {
     '고객 코드': 'nope',
@@ -123,7 +115,6 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
   const uniqueCountriesSet = new Set(countries)
   const uniqueCountries = Array.from(uniqueCountriesSet)
   const sortedCountries = uniqueCountries.sort()
-  // console.log(sortedCountries)
 
   const externalFilterChanged = useCallback((newValue) => {
     ageType = newValue
@@ -155,7 +146,6 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
     const newCountryFilter = filterText.trim()
     const gridApi = gridRef.current.api
 
-    // 입력한 국가명으로 grid의 Country 필터를 작동
     gridApi.setFilterModel({
       country: {
         type: 'set',
@@ -200,11 +190,6 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
     setChoiceComponent('수정')
     // navigate(`/userpage/userdestination/${path}`)
     // console.log('Double clicked row UID: ', event.data)
-  }
-
-  // Grid api 설정확인
-  const onGridReady = (params) => {
-    setGridApi(params.api)
   }
 
   // 체크했을때 jotai 전역상태값 설정
@@ -264,27 +249,37 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
     }
   }, [sortNum])
 
-  //Options
   const gridOptions = {
-    // other grid options
-    // rowModelType: 'serverSide',
     rowModelType: 'clientSide',
-    paginationPageSize: 10, // 요청할 페이지 사이즈
-    cacheBlockSize: 100, // 캐시에 보관할 블록 사이즈
-    maxBlocksInCache: 10, // 캐시에 최대로 보관할 블록 수
-
-    // 서버 측 데이터 요청을 처리하는 함수
-    serverSideDatasource: {
-      getRows: async function (params) {
-        // 백엔드로부터 데이터 가져오기
-        // const response = await fetch(`your/backend/endpoint?startRow=${params.startRow}&endRow=${params.endRow}`);
-        // const rowData = await response.json();
-        // ag-Grid에 데이터 설정
-        // params.successCallback(getRow)
-      },
-    },
+    paginationPageSize: pageSizeGrid, // 요청할 페이지 사이즈
   }
-  // new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
+
+  let isUpdatedPage = true
+  const nextPageSizeOption = 5 // 다음 요청사이즈 = 페이지 사이즈설정 * 2
+  let totalCount = pagination?.listCount
+  let lastPageNum = Math.ceil(totalCount / pageSizeGrid)
+
+  useEffect(() => {
+    const onPaginationChanged = () => {
+      const currentPage = gridApi?.paginationGetCurrentPage()
+      const totalPages = gridApi?.paginationGetTotalPages()
+
+      if (lastPageNum === currentPage + 1) return //마지막페이지일때 return
+
+      if (currentPage === totalPages - 1 && isUpdatedPage) {
+        setQuery((prev) => {
+          return { ...prev, pageSize: Number(prev.pageSize) + nextPageSizeOption }
+        })
+      }
+    }
+
+    gridApi?.addEventListener('paginationChanged', onPaginationChanged)
+    return () => gridApi?.removeEventListener('paginationChanged', onPaginationChanged)
+  }, [lastPageNum])
+
+  const onGridReady = (params) => {
+    setGridApi(params.api) // api 설정
+  }
 
   return (
     <div style={containerStyle}>
@@ -310,8 +305,10 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
             // doesExternalFilterPass={doesExternalFilterPass}
             onGridReady={onGridReady}
             onSelectionChanged={onSelectionChanged}
+            // suppressPaginationPanel={true} //커스터마이징하려고 페이지네이션 지움
             // sideBar={{ toolPanels: ['columns', 'filters'] }}
           />
+          <Pagination getRow={getRow} />
         </div>
       </TestContainer>
 
@@ -357,16 +354,12 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
   )
 }
 
-export default Table
+export default TableTest
 
 const TestContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: ${({ hei }) => (hei ? `${hei}%` : '100%')};
-  .ag-paging-panel {
-    justify-content: center !important;
-  }
-  
 `
 
 const TestHeader = styled.div`

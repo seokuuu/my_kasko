@@ -50,14 +50,15 @@ import Table from '../../Table/Table'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import { isArray } from 'lodash'
+import TableTest from '../../Table/TableTest'
 
 const ClientDestination = ({ setChoiceComponent }) => {
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
+  // const handleSelectChange = (selectedOption, name) => {
+  //   // setInput(prevState => ({
+  //   //   ...prevState,
+  //   //   [name]: selectedOption.label,
+  //   // }));
+  // }
   const [isRotated, setIsRotated] = useState(false)
   const handleImageClick = () => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
@@ -83,14 +84,15 @@ const ClientDestination = ({ setChoiceComponent }) => {
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
-
-  const 임의데이터 = {
+  const [pageSizeGrid, setPageSizeGrid] = useState(50)
+  const [query, setQuery] = useState({
     pageNum: 1,
     pageSize: 50,
-  }
+  })
 
-  const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터, 'clientDestination', get_clientDestination)
+  const { isLoading, isError, data, isSuccess } = useReactQuery(query, 'clientDestination', get_clientDestination)
   const resData = data?.data?.data?.list
+  const pagination = data?.data?.data?.pagination
 
   if (isError) {
     console.log('데이터 request ERROR')
@@ -123,6 +125,10 @@ const ClientDestination = ({ setChoiceComponent }) => {
       alert('선택해주세요!')
     }
   }, [checkedArray])
+
+  const handleDropdown = (e) => {
+    setPageSizeGrid(e.target.value)
+  }
 
   const setPostPage = () => {
     setChoiceComponent('등록')
@@ -179,25 +185,31 @@ const ClientDestination = ({ setChoiceComponent }) => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
+            조회 목록 (선택 <span>{checkedArray ? checkedArray.length : '0'}</span> / {pagination?.listCount} )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown handleDropdown={handleDropdown} />
             <Excel />
           </div>
         </TCSubContainer>
         <TCSubContainer>
-          <div>
-            선택 중량<span> 2 </span>kg / 총 중량 kg
-          </div>
+          <div>{/* 선택 중량<span> 2 </span>kg / 총 중량 kg */}</div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn onClick={handleRemoveBtn}>목적지 삭제</WhiteRedBtn>
             <SkyBtn onClick={setPostPage}>목적지 등록</SkyBtn>
           </div>
         </TCSubContainer>
         {/* <Test3 getCol={getCol} getRow={getRow} /> */}
-        <Table getCol={getCol} getRow={getRow} setChoiceComponent={setChoiceComponent} />
+        {/* <Table getCol={getCol} getRow={getRow} setChoiceComponent={setChoiceComponent} /> */}
+        <TableTest
+          getCol={getCol}
+          getRow={getRow}
+          setChoiceComponent={setChoiceComponent}
+          pagination={pagination}
+          setQuery={setQuery}
+          pageSizeGrid={pageSizeGrid}
+        />
       </TableContianer>
     </FilterContianer>
   )

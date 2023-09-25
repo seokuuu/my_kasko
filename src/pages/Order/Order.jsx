@@ -9,7 +9,7 @@ import { ToggleBtn, Circle, Wrapper } from '../../common/Toggle/Toggle'
 import { GreyBtn } from '../../common/Button/Button'
 import Test3 from '../Test/Test3'
 import HeaderToggle from '../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../store/Layout/Layout'
+import { pageSort, toggleAtom } from '../../store/Layout/Layout'
 
 import { CheckBox } from '../../common/Check/Checkbox'
 import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../common/Check/CheckImg'
@@ -43,6 +43,10 @@ import {
 import PageDropdown from '../../components/TableInner/PageDropdown'
 import Hidden from '../../components/TableInner/Hidden'
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
+import Table from '../Table/Table'
+import { useCallback } from 'react'
+import { useRef } from 'react'
+import { useAtom } from 'jotai'
 
 const Order = ({}) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -92,6 +96,12 @@ const Order = ({}) => {
     } else {
       setToggleMsg('On')
     }
+  }
+  // const gridRef = useRef()
+  const [sortNum, setSortNum] = useAtom(pageSort)
+
+  const handleDropdown = (e) => {
+    setSortNum(e.target.value)
   }
 
   return (
@@ -171,7 +181,7 @@ const Order = ({}) => {
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown handleDropdown={handleDropdown} />
             <Excel />
           </div>
         </TCSubContainer>
@@ -184,7 +194,8 @@ const Order = ({}) => {
             <SkyBtn>확정 전송</SkyBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table />
+        {/* <Test3 /> */}
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>

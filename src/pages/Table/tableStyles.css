@@ -1,0 +1,6 @@
+.ag-paging-panel {
+  justify-content: center !important;
+}
+.ag-paging-row-summary-panel {
+  display: none;
+}
