@@ -1,3 +1,4 @@
+import { createQueryParams, log, removeEmptyFields } from '../../lib'
 import { client } from '../index'
 
 const urls = {
@@ -10,8 +11,10 @@ const urls = {
     사용자관리 - 고객사 관리
 ============================== */
 export async function getCustomer(data) {
+  const filteredData = removeEmptyFields(data)
+  const params = createQueryParams(filteredData)
   try {
-    const response = await client.get(`${urls.customer}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
+    const response = await client.get(`${urls.customer}?${params}`)
     return response.data
   } catch (error) {
     console.error(error)

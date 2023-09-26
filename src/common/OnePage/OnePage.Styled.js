@@ -217,4 +217,3 @@ export const AddBtn = styled.div`
     border: 2px solid ${(props) => props.theme.colors.PriNormal};
   }
 `
-

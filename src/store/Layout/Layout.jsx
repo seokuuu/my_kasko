@@ -39,3 +39,6 @@ export const doubleClickedRowAtom = atom([])
 
 // 테이블 page 50/100/500 정렬
 export const pageSort = atom(50)
+
+// 대표 상세 정보 모달
+export const clientModalAtom = atom(false)

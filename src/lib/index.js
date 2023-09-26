@@ -1,5 +1,7 @@
 import _ from 'lodash'
 
+export const log = console.log
+
 export function isEmptyObj(obj) {
   // 객체 타입체크
   if (obj.constructor !== Object) {
@@ -26,13 +28,34 @@ export function isArray(arr) {
   return _.isArray(arr)
 }
 
-function isEmptyObject(obj) {
+export function isEmptyObject(obj) {
   return _.isObject(obj) && _.isEmpty(obj)
 }
 
-function isObject(obj) {
+export function isObject(obj) {
   return _.isObject(obj)
 }
+export function isValidValue(value) {
+  return value !== null && value !== undefined && value !== ''
+}
+
+// 객체 value없을때 삭제
+export function removeEmptyFields(obj) {
+  return Object.keys(obj)
+    .filter((key) => isValidValue(obj[key]))
+    .reduce((acc, key) => {
+      acc[key] = obj[key]
+      return acc
+    }, {})
+}
+
+export function createQueryParams(obj) {
+  return Object.keys(obj)
+    .map((key) => `${key}=${encodeURIComponent(obj[key])}`)
+    .join('&')
+}
+
+// 객체 return url
 
 // // 1. Array Utilities
 // export const arrayUtils = {

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
+import { MainSelect, usermanageClientStatusOptions } from '../../../common/Option/Main'
 import { BlackBtn, BtnWrap, ExcelBtn, WhiteRedBtn, WhiteSkyBtn, BtnBound } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
@@ -11,7 +11,7 @@ import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
+import { CheckBox, CheckBox2 } from '../../../common/Check/Checkbox'
 import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 
 import {
@@ -53,9 +53,11 @@ import { isArray } from 'lodash'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { UserManageCustomerManageFields, UserManageCustomerManageFieldsCols } from '../../../constants/admin/UserManage'
+import { log } from '../../../lib'
+import TableTest from '../../Table/TableTest'
 
-const Client = ({}) => {
-  const radioDummy = ['전체', '대표', '대표']
+const Client = ({ setChoiceComponent, setModal }) => {
+  const radioDummy = ['전체', '대표']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
 
   const [savedRadioValue, setSavedRadioValue] = useState('')
@@ -71,7 +73,7 @@ const Client = ({}) => {
   }, [checkRadio])
   const checkSales = ['일반', '장기 미접속', '장기 미낙찰', '폐업', '정지']
 
-  const checkShips = ['전체', '승인', '미승인', '대기']
+  const checkShips = ['전체', '승인', '미승인']
 
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
@@ -83,46 +85,23 @@ const Client = ({}) => {
   const [checkData2, setCheckData2] = useState(Array.from({ length: checkShips.length }, () => ''))
 
   useEffect(() => {
-    // true에 해당되면, value를, false면 빈값을 반환
     const updatedCheck = checkSales.map((value, index) => {
       return check1[index] ? value : ''
     })
-    // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData1(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check1])
 
   useEffect(() => {
-    // true에 해당되면, value를, false면 빈값을 반환
     const updatedCheck = checkShips.map((value, index) => {
       return check2[index] ? value : ''
     })
-    // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData2(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check2])
 
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
+  const handleSelectChange = (selectedOption, name) => {}
   const [isRotated, setIsRotated] = useState(false)
-
-  // Function to handle image click and toggle rotation
   const handleImageClick = () => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
   }
@@ -143,22 +122,19 @@ const Client = ({}) => {
   const 테이블필드 = useRef(UserManageCustomerManageFieldsCols)
   const getCol = 테이블필드.current
 
-  // ⚠️필터 디자인 확정 후 작업
-  const [getRow, setGetRow] = useState('')
-  // const [filterCheck, setFilterCheck] = useState({
-  //   '고객 구분': '',
-  //   '회원 상태': '',
-  //   '승인 여부': '',
-  //   '회원 상태': '',
-  // })
-  // console.log(filterCheck)
-
-  const 임의데이터 = {
+  const queryObject = {
     pageNum: 1,
     pageSize: 50,
+    status: '', //회원 상태 (일반 / 장기 미접속 / 장기 미낙찰 / 폐업 / 정지)
+    approvalStatus: '', //승인 여부 (0: 미승인 / 1: 승인)
+    category: '', //(고객사 / 고객 코드 / 사업자 번호)
+    keyword: '', //검색어 ex. 회사명1
   }
 
-  const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터, 'getClient', getCustomer)
+  const [query, setQuery] = useState(queryObject)
+  const [getRow, setGetRow] = useState('')
+
+  const { isLoading, isError, data, isSuccess } = useReactQuery(query, 'getClient', getCustomer)
   const responseData = data?.data?.list
 
   if (isError) {
@@ -194,6 +170,10 @@ const Client = ({}) => {
       alert('선택해주세요!')
     }
   }, [checkedArray])
+
+  const setPostPage = () => {
+    setModal(true)
+  }
   return (
     <FilterContianer>
       <FilterHeader>
@@ -237,7 +217,7 @@ const Client = ({}) => {
                     {checkSales.map((x, index) => (
                       <ExCheckDiv>
                         <StyledCheckSubSquDiv
-                          onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
+                          onClick={() => setCheck1(CheckBox2(check1, check1.length, index, false))}
                           isChecked={check1[index]}
                         >
                           <CheckImg2 src="/svg/check.svg" />
@@ -256,7 +236,7 @@ const Client = ({}) => {
                     {checkShips.map((x, index) => (
                       <ExCheckDiv>
                         <StyledCheckSubSquDiv
-                          onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
+                          onClick={() => setCheck2(CheckBox(check2, check2.length, index, false))}
                           isChecked={check2[index]}
                         >
                           <CheckImg2 src="/svg/check.svg" />
@@ -268,7 +248,7 @@ const Client = ({}) => {
                 </PartWrap>
                 <PartWrap>
                   <h6>회원 상태</h6>
-                  <MainSelect />
+                  <MainSelect options={usermanageClientStatusOptions} name="category" />
                   <Input style={{ marginLeft: '5px' }} />
                   <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
@@ -317,10 +297,10 @@ const Client = ({}) => {
             <WhiteRedBtn>회원 제한</WhiteRedBtn>
             <BtnBound />
             <WhiteRedBtn onClick={handleRemoveBtn}>회원 삭제</WhiteRedBtn>
-            <WhiteSkyBtn>회원 생성</WhiteSkyBtn>
+            <WhiteSkyBtn onClick={setPostPage}>회원 생성</WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
+        <TableTest getCol={getCol} getRow={getRow} />
         {/* <Test3 /> */}
       </TableContianer>
     </FilterContianer>

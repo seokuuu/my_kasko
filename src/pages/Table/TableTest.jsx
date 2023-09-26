@@ -255,7 +255,7 @@ const TableTest = ({ hei, getRow, getCol, setChoiceComponent, pagination, setQue
   }
 
   let isUpdatedPage = true
-  const nextPageSizeOption = 5 // 다음 요청사이즈 = 페이지 사이즈설정 * 2
+  const nextPageSizeOption = 50 // 다음 요청사이즈 = 페이지 사이즈설정 * 2
   let totalCount = pagination?.listCount
   let lastPageNum = Math.ceil(totalCount / pageSizeGrid)
 
@@ -308,7 +308,7 @@ const TableTest = ({ hei, getRow, getCol, setChoiceComponent, pagination, setQue
             // suppressPaginationPanel={true} //커스터마이징하려고 페이지네이션 지움
             // sideBar={{ toolPanels: ['columns', 'filters'] }}
           />
-          <Pagination getRow={getRow} />
+          {/* <Pagination getRow={getRow} /> */}
         </div>
       </TestContainer>
 
