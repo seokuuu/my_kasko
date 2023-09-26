@@ -26,7 +26,30 @@ import { popupMessages } from '../Alert/PopupMessages'
 import AlertPopup from '../Alert/AlertPopup'
 import { popupAtom } from '../../store/Layout/Layout'
 
+import { popupObject } from '../../store/Layout/Layout'
+import { popupDummy } from '../Alert/PopupDummy'
+import { popupTypeAtom } from '../../store/Layout/Layout'
+
 const Multi = ({ modalIsOpen, setModalIsOpen }) => {
+  const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
+  console.log('popupSwitch =>', popupSwitch)
+
+  const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
+  const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
+
+  // 처음 팝업 띄우는 컴포넌트의 onClickHandler
+  const firstPopupClick = (num) => {
+    setPopupSwitch(true)
+    const firstPopup = popupDummy.find((popup) => popup.num === num)
+    setNowPopup(firstPopup)
+  }
+
+  // 팝업 타입 최신화
+  useEffect(() => {
+    const firstType = nowPopup.num.split('-')[0]
+    setNowPopupType(firstType)
+  }, [nowPopup, nowPopupType])
+
   const modalClose = () => {
     setModalIsOpen(false)
   }
@@ -36,10 +59,6 @@ const Multi = ({ modalIsOpen, setModalIsOpen }) => {
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, (_, index) => index === 0))
-
-  const [popupState, setPopupState] = useAtom(popupAtom)
-
-  console.log('popupState =>', popupState)
 
   console.log('', (popupMessages[1].find((message) => message.num === '4') || {}).title)
 
@@ -100,25 +119,12 @@ const Multi = ({ modalIsOpen, setModalIsOpen }) => {
           <BlueBtnWrap>
             <BlueBlackBtn
               onClick={() => {
-                setPopupState(1)
+                firstPopupClick('1-1')
               }}
             >
               저장
             </BlueBlackBtn>
-            {popupState === 1 && (
-              <AlertPopup
-                type={2}
-                title={(popupMessages[2].find((message) => message.num === '5') || {}).title || ''}
-                content={(popupMessages[2].find((message) => message.num === '2') || {}).content || ''}
-              />
-            )}
-            {popupState === 2 && (
-              <AlertPopup
-                type={2}
-                title={(popupMessages[2].find((message) => message.num === '5') || {}).title || ''}
-                content={(popupMessages[2].find((message) => message.num === '2') || {}).content || ''}
-              />
-            )}
+            {popupSwitch && <AlertPopup />}
           </BlueBtnWrap>
         </BlueSubContainer>
       </ModalContainer>

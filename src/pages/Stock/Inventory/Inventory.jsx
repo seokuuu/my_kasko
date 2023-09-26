@@ -287,7 +287,7 @@ const Inventory = ({}) => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteBlackBtn onClick={() => openModal()}>저장</WhiteBlackBtn>
+            <WhiteBlackBtn onClick={() => openModal()}>판매 구분 변경</WhiteBlackBtn>
             <WhiteRedBtn>입고 확정 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
