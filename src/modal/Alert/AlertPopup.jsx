@@ -8,7 +8,9 @@ import { alertAtom } from '../../store/Layout/Layout'
 import { popupObject, popupTypeAtom } from '../../store/Layout/Layout'
 const AlertPopup = () => {
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
-  console.log('nowPopup =>', nowPopup)
+  console.log('nowPopup AlertPopup=>', nowPopup)
+  console.log('popupObject =>', popupObject)
+
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
   console.log('nowPopupType =>', nowPopupType)
 

@@ -32,9 +32,10 @@ import { popupTypeAtom } from '../../store/Layout/Layout'
 
 const Multi = ({ modalIsOpen, setModalIsOpen }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
-  console.log('popupSwitch =>', popupSwitch)
 
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
+  console.log('nowPopup MULTI =>', nowPopup)
+
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
 
   // 처음 팝업 띄우는 컴포넌트의 onClickHandler

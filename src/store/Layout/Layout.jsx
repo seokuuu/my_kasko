@@ -49,5 +49,5 @@ export const popupObject = atom({
   type: '', // type 값에 따라 버튼 구조 설정
   next: '',
   onClick: () => {},
-  func: () => {}
+  func: () => {},
 })
