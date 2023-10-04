@@ -5,14 +5,13 @@ import { BlackBtn, RedBtn, WhiteBtn } from '../../common/Button/Button'
 import { popupDummy } from './PopupDummy'
 import { useAtom } from 'jotai'
 import { alertAtom } from '../../store/Layout/Layout'
-import { popupObject, popupTypeAtom } from '../../store/Layout/Layout'
+import { popupObject, popupTypeAtom, popupAtom, modalAtom } from '../../store/Layout/Layout'
 const AlertPopup = () => {
+  const [modalIsOpen, setModalIsOpen] = useAtom(modalAtom) // 모달 스위치
+  const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
-  console.log('nowPopup AlertPopup=>', nowPopup)
-  console.log('popupObject =>', popupObject)
 
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
-  console.log('nowPopupType =>', nowPopupType)
 
   // 처음 팝업 띄우는 컴포넌트의 onClickHandler
   const firstPopupClick = (num) => {
@@ -24,6 +23,9 @@ const AlertPopup = () => {
   const showNextPopup = () => {
     if (nowPopup && nowPopup?.next) {
       firstPopupClick(nowPopup?.next)
+    } else {
+      setPopupSwitch(false)
+      setModalIsOpen(false)
     }
   }
 
@@ -38,24 +40,24 @@ const AlertPopup = () => {
       <FadeOverlay />
       <ModalContainer width={400}>
         <ModalSubContainer>
-          {nowPopupType === 1 && (
+          {nowPopupType === '1' && (
             <>
               <ModalPart>
                 <ModalTitle>{nowPopup.title}</ModalTitle>
                 <ModalText>{nowPopup.content}</ModalText>
               </ModalPart>
-              <BlackBtn width={100} height={50}>
+              <BlackBtn onClick={showNextPopup} width={100} height={50}>
                 확인
               </BlackBtn>
             </>
           )}
-          {nowPopupType === 2 && (
+          {nowPopupType === '2' && (
             <>
               <ModalPart>
                 <ModalTitle>{nowPopup.title}</ModalTitle>
                 <ModalText>{nowPopup.content}</ModalText>
               </ModalPart>
-              <BlackBtn width={100} height={50}>
+              <BlackBtn onClick={showNextPopup} width={100} height={50}>
                 확인
               </BlackBtn>
               <WhiteBtn width={100} height={50}>
@@ -63,13 +65,13 @@ const AlertPopup = () => {
               </WhiteBtn>
             </>
           )}
-          {nowPopupType === 3 && (
+          {nowPopupType === '3' && (
             <>
               <ModalPart>
                 <ModalTitle>{nowPopup.title}</ModalTitle>
                 <ModalText>{nowPopup.content}</ModalText>
               </ModalPart>
-              <RedBtn width={100} height={50}>
+              <RedBtn onClick={showNextPopup} width={100} height={50}>
                 확인
               </RedBtn>
               <WhiteBtn width={100} height={50}>

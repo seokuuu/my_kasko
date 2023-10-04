@@ -119,7 +119,7 @@ const Inventory = ({}) => {
   const [modalIsOpen, setModalIsOpen] = useAtom(modalAtom)
 
   const openModal = () => {
-    setModalIsOpen({ open: true })
+    setModalIsOpen(true)
   }
 
   return (
@@ -293,7 +293,7 @@ const Inventory = ({}) => {
         </TCSubContainer>
         <Test3 />
       </TableContianer>
-      <>{modalIsOpen.open && <Multi modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} />}</>
+      {modalIsOpen && <Multi modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} />}
     </FilterContianer>
   )
 }

@@ -34,7 +34,6 @@ const Multi = ({ modalIsOpen, setModalIsOpen }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
 
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
-  console.log('nowPopup MULTI =>', nowPopup)
 
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
 
@@ -120,7 +119,7 @@ const Multi = ({ modalIsOpen, setModalIsOpen }) => {
           <BlueBtnWrap>
             <BlueBlackBtn
               onClick={() => {
-                firstPopupClick('1-1')
+                firstPopupClick('2-3')
               }}
             >
               저장
