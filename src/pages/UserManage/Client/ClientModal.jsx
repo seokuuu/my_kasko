@@ -41,34 +41,57 @@ import { checkBusinessNumber, getCustomerPrivacy, updateCustomer } from '../../.
 import useReactQuery from '../../../hooks/useReactQuery'
 import { ModalContainer, ModalOverlay, ModalSubContainer } from '../../../modal/Common/Common.Styled'
 import { styled } from 'styled-components'
+import { log } from '../../../lib'
+import { resetCustomer } from '../../../api/userManage'
 
 const init = {
-  password: '',
-  title: '',
-  name: '',
-  email: '',
-  phone: '',
-  customerUid: '',
-  type: '',
-  customerName: '',
-  ceoName: '',
-  customerPhone: '',
-  fax: '',
-  address: '',
-  addressDetail: '',
-  businessType: [],
-  businessNumber: '',
-  bank: '',
-  accountNumber: '',
-  depositManagerTitle: '',
-  depositManagerName: '',
-  depositManagerPhone: '',
-  releaseManagerTitle: '',
-  releaseManagerName: '',
-  releaseManagerPhone: '',
-  deleteBusinessNumberFile: '',
-  deleteBankbookFile: '',
+  id: '아이디',
+  password: '비밀번호',
+  memberTitle: '직함',
+  memberName: '이름',
+  memberEmail: '이메일',
+  memberPhone: '연락처',
+  type: '사업자 구분', //(법인사업자 / 개인사업자)
+  name: '회사명',
+  ceoName: '대표자명',
+  phone: '대표연락처',
+  fax: '팩스번호',
+  addressDetail: '상세주소2',
+  businessType: '업태 목록', // (유통 / 제조)
+  businessNumber: '사업자번호',
+  bank: '은행',
+  accountNumber: '계좌번호',
+  depositManagerTitle: '입금담당자 직함',
+  depositManagerName: '입금담당자 이름',
+  depositManagerPhone: '입금담당자 연락처',
+  releaseManagerTitle: '출고담당자 직함',
+  releaseManagerName: '출고담당자 이름',
+  releaseManagerPhone: '출고담당자 연락처',
 }
+
+// id: 아이디
+// password: 비밀번호
+// memberTitle: 직함
+// memberName: 이름
+// memberEmail: 이메일
+// memberPhone: 연락처
+// type: 사업자 구분 (법인사업자 / 개인사업자)
+// name: 회사명
+// ceoName: 대표자명
+// phone: 대표연락처
+// fax: 팩스번호
+// address: 주소
+// addressDetail: 상세주소2
+// businessType: 업태 목록 (유통 / 제조)
+// businessNumber: 사업자번호
+// bank: 은행
+// accountNumber: 계좌번호
+// depositManagerTitle: 입금담당자 직함
+// depositManagerName: 입금담당자 이름
+// depositManagerPhone: 입금담당자 연락처
+// releaseManagerTitle: 출고담당자 직함
+// releaseManagerName: 출고담당자 이름
+// releaseManagerPhone: 출고담당자 연락처
 
 const ClientModal = ({ setModal }) => {
   const [input, setInput] = useState(init)
@@ -279,6 +302,35 @@ const ClientModal = ({ setModal }) => {
     })
   }, [check])
 
+  // 비밀번호 초기화 버튼
+  const resetPw = async () => {
+    const userConfirmed = window.confirm('비밀번호를 초기화하시겠습니까?')
+    const req = {
+      id: input.id,
+    }
+    if (userConfirmed) {
+      try {
+        const response = await resetCustomer(req)
+        if (response) {
+          setInput((prev) => ({ ...prev, password: response.data.data }))
+          alert(`비밀번호가 초기화되었습니다. 비밀번호 : ${response.data.data}`)
+        }
+      } catch (err) {
+        console.error(err)
+        alert(`Error : ${err.data.message}`)
+      }
+    } else {
+      // alert('비밀번호 초기화가 취소되었습니다.')
+    }
+  }
+
+  const handleSubmitForm = (e) => {
+    const value = e.target.value
+    const name = e.target.name
+    setInput((prev) => ({ ...prev, [name]: value }))
+    console.log(input)
+  }
+
   const modalOFF = () => {
     setModal(false)
   }
@@ -305,7 +357,7 @@ const ClientModal = ({ setModal }) => {
                     아이디<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput />
+                    <FlexInput name="id" onChange={handleSubmitForm} />
                   </FlexContent>
                 </FlexPart>
 
@@ -314,7 +366,9 @@ const ClientModal = ({ setModal }) => {
                     비밀번호 초기화<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInputBtn type="password">비밀번호 초기화</FlexInputBtn>
+                    <FlexInputBtn type="password" onClick={resetPw}>
+                      비밀번호 초기화
+                    </FlexInputBtn>
                   </FlexContent>
                 </FlexPart>
 
@@ -332,8 +386,14 @@ const ClientModal = ({ setModal }) => {
                     경매 담당자 정보<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <CustomInput name="title" placeholder="직함 입력" width={130} />
-                    <CustomInput name="name" placeholder=" 성함 입력" width={188} style={{ marginLeft: '5px' }} />
+                    <CustomInput name="memberTitle" placeholder="직함 입력" width={130} onChange={handleSubmitForm} />
+                    <CustomInput
+                      name="nmemberName"
+                      placeholder=" 성함 입력"
+                      width={188}
+                      style={{ marginLeft: '5px' }}
+                      onChange={handleSubmitForm}
+                    />
                   </FlexContent>
                 </FlexPart>
 
@@ -342,7 +402,7 @@ const ClientModal = ({ setModal }) => {
                     이메일<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="email" />
+                    <FlexInput name="memberEmail" onChange={handleSubmitForm} />
                   </FlexContent>
                 </FlexPart>
 
@@ -351,7 +411,7 @@ const ClientModal = ({ setModal }) => {
                     휴대폰 번호<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="customerPhone" />
+                    <FlexInput name="memberPhone" onChange={handleSubmitForm} />
                   </FlexContent>
                 </FlexPart>
                 <FlexPart>
@@ -428,7 +488,7 @@ const ClientModal = ({ setModal }) => {
                       defaultValue={depositOptions[0]}
                       onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
                     />
-                    <CustomInput name="depositManagerName" placeholder="담당자 성함 입력" width={190} />
+                    <CustomInput name="depositManagerName" placeholder="담당자 성함 입력" width={190} onChange={handleSubmitForm}/>
                   </FlexContent>
                 </FlexPart>
 
@@ -437,7 +497,7 @@ const ClientModal = ({ setModal }) => {
                     휴대폰 번호<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="depositManagerPhone" placeholder="연락처 입력 ('-' 제외)" />
+                    <FlexInput name="depositManagerPhone" placeholder="연락처 입력 ('-' 제외)" onChange={handleSubmitForm}/>
                   </FlexContent>
                 </FlexPart>
                 <EqualCheckWrap>
@@ -455,7 +515,7 @@ const ClientModal = ({ setModal }) => {
                       defaultValue={depositOptions[0]}
                       onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
                     />
-                    <CustomInput name="releaseManagerName" placeholder=" 담당자 성함 입력" width={190} />
+                    <CustomInput name="releaseManagerName" placeholder=" 담당자 성함 입력" width={190} onChange={handleSubmitForm}/>
                   </FlexContent>
                 </FlexPart>
 
@@ -464,7 +524,7 @@ const ClientModal = ({ setModal }) => {
                     휴대폰 번호<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="releaseManagerPhone" placeholder="연락처 입력 ('-' 제외)" />
+                    <FlexInput name="releaseManagerPhone" placeholder="연락처 입력 ('-' 제외)" onChange={handleSubmitForm}/>
                   </FlexContent>
                 </FlexPart>
 

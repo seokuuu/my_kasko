@@ -26,6 +26,18 @@ export function deleteCustomer(id) {
   return client.delete(`${urls.customer}/${id}`)
 }
 
+export function postChangeAuction(data) {
+  return client.post(`${urls.customer}/status`, data)
+}
+
+export function resetCustomer(data) {
+  return client.post(`${urls.customer}/reset`, data)
+}
+
+export function checkBusinessNumber(data) {
+  return client.post(`${urls.customer}/business-number?businessNumber=${data}`)
+}
+
 /* ==============================
     사용자관리 - 고객사 목적지 관리
 ============================== */

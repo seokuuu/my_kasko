@@ -1,5 +1,16 @@
 import _ from 'lodash'
 
+export const go = (a, f) => (a instanceof Promise ? a.then(f) : f(a))
+// const add5 = a => a + 5;
+
+// var r = go1(10, add5);
+// console.log(r); // 15
+
+export const pipe =
+  (...fns) =>
+  (arg) =>
+    fns.reduce((acc, fn) => fn(acc), arg)
+
 export const log = console.log
 
 export function isEmptyObj(obj) {

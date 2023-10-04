@@ -9,7 +9,13 @@ import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn } from '../../../common/Button/Button'
 import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import {
+  alertAtom,
+  alertAtom2,
+  AuctionRestrictionModal,
+  selectedRowsAtom,
+  toggleAtom,
+} from '../../../store/Layout/Layout'
 
 import { CheckBox, CheckBox2 } from '../../../common/Check/Checkbox'
 import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
@@ -46,17 +52,23 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
 import Table from '../../Table/Table'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { deleteCustomer, getCustomer } from '../../../api/userManage'
+import { deleteCustomer, getCustomer, postChangeAuction } from '../../../api/userManage'
 import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 import { isArray } from 'lodash'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { UserManageCustomerManageFields, UserManageCustomerManageFieldsCols } from '../../../constants/admin/UserManage'
-import { log } from '../../../lib'
+// import { log } from '../../../lib'
 import TableTest from '../../Table/TableTest'
+import ClientAuctionRestrictionModal from './ClientAuctionRestrictionModal'
+import { isString } from 'lodash'
+import AlertModal from '../../../modal/Alert/AlertModal'
+import RemoveCheckModal from './RemoveCheckModal'
+import { log } from '../../../lib'
 
 const Client = ({ setChoiceComponent, setModal }) => {
+  const [selectedValue, setSelectedValue] = useState('')
   const radioDummy = ['전체', '대표']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
 
@@ -81,7 +93,6 @@ const Client = ({ setChoiceComponent, setModal }) => {
 
   //checkShips
   const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
-
   const [checkData2, setCheckData2] = useState(Array.from({ length: checkShips.length }, () => ''))
 
   useEffect(() => {
@@ -142,13 +153,11 @@ const Client = ({ setChoiceComponent, setModal }) => {
   }
 
   useEffect(() => {
-    let getData = responseData
-    //타입, 리액트쿼리, 데이터 확인 후 실행
     if (!isSuccess && !responseData) return
-    if (Array.isArray(getData)) {
-      setGetRow(add_element_field(getData, UserManageCustomerManageFields))
+    if (Array.isArray(responseData)) {
+      setGetRow(add_element_field(responseData, UserManageCustomerManageFields))
     }
-  }, [isSuccess])
+  }, [isSuccess, responseData])
 
   // ✅mutation delete작업
   const checkedArray = useAtom(selectedRowsAtom)[0]
@@ -158,163 +167,214 @@ const Client = ({ setChoiceComponent, setModal }) => {
       queryClient.invalidateQueries('getClient')
     },
   })
+  const mutationAuction = useMutation(postChangeAuction, {
+    onSuccess: () => {
+      console.log('SUCCESS MUTATION')
+      queryClient.invalidateQueries('getClient')
+      queryClient.refetchQueries('getClient')
+    },
+  })
 
   const handleRemoveBtn = useCallback(() => {
-    if (isArray(checkedArray) && checkedArray.length > 0) {
-      if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
-        checkedArray.forEach((item) => {
-          mutation.mutate(item['순번']) //mutation.mutate로 api 인자 전해줌
-        })
-      }
-    } else {
-      alert('선택해주세요!')
-    }
+    if (!isArray(checkedArray) || !checkedArray.length > 0) return alert('선택해주세요!')
+    setRemoveModal(true)
   }, [checkedArray])
 
   const setPostPage = () => {
     setModal(true)
   }
-  return (
-    <FilterContianer>
-      <FilterHeader>
-        <div style={{ display: 'flex' }}>
-          <h1>고객사 관리</h1>
-        </div>
-        {/* 토글 쓰기 */}
-        <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
-      </FilterHeader>
+  const openAuctionModal = () => {
+    if (!checkedArray) return alert('고객을 선택해주세요')
+    setAuctionModal(true)
+  }
 
-      {exFilterToggle && (
-        <>
-          <FilterSubcontianer>
-            <FilterLeft>
-              <RowWrap>
-                <PartWrap>
-                  <h6>고객 구분</h6>
-                  <ExRadioWrap>
-                    {radioDummy.map((text, index) => (
-                      <RadioMainDiv key={index}>
-                        <RadioCircleDiv
-                          isChecked={checkRadio[index]}
-                          onClick={() => {
-                            setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-                          }}
-                        >
-                          <RadioInnerCircleDiv />
-                        </RadioCircleDiv>
-                        <div style={{ display: 'flex', marginLeft: '5px' }}>
-                          <p>{text}</p>
-                        </div>
-                      </RadioMainDiv>
-                    ))}
-                  </ExRadioWrap>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap>
-                <PartWrap>
-                  <h6>회원 상태</h6>
-                  <ExCheckWrap>
-                    {checkSales.map((x, index) => (
-                      <ExCheckDiv>
-                        <StyledCheckSubSquDiv
-                          onClick={() => setCheck1(CheckBox2(check1, check1.length, index, false))}
-                          isChecked={check1[index]}
-                        >
-                          <CheckImg2 src="/svg/check.svg" />
-                        </StyledCheckSubSquDiv>
-                        <p>{x}</p>
-                      </ExCheckDiv>
-                    ))}
-                  </ExCheckWrap>
-                </PartWrap>
-                <PartWrap />
-              </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
-                  <h6>승인 상태</h6>
-                  <ExCheckWrap>
-                    {checkShips.map((x, index) => (
-                      <ExCheckDiv>
-                        <StyledCheckSubSquDiv
-                          onClick={() => setCheck2(CheckBox(check2, check2.length, index, false))}
-                          isChecked={check2[index]}
-                        >
-                          <CheckImg2 src="/svg/check.svg" />
-                        </StyledCheckSubSquDiv>
-                        <p>{x}</p>
-                      </ExCheckDiv>
-                    ))}
-                  </ExCheckWrap>
-                </PartWrap>
-                <PartWrap>
-                  <h6>회원 상태</h6>
-                  <MainSelect options={usermanageClientStatusOptions} name="category" />
-                  <Input style={{ marginLeft: '5px' }} />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-                <PartWrap />
-                <PartWrap />
-              </RowWrap>
-            </FilterLeft>
-          </FilterSubcontianer>
-          <FilterFooter>
-            <div style={{ display: 'flex' }}>
-              <p>초기화</p>
-              <ResetImg
-                src="/img/reset.png"
-                style={{ marginLeft: '10px', marginRight: '20px' }}
-                onClick={handleImageClick}
-                className={isRotated ? 'rotate' : ''}
-              />
+  const clientRestrict = () => {
+    if (!selectedValue) return alert('선택해주세요 ')
+    if (isString(selectedValue)) {
+      let req = { uids: [], auctionStatus: '' }
+      checkedArray.forEach((item) => {
+        req.uids.push(item['순번'])
+        req.auctionStatus = selectedValue
+        mutationAuction.mutate(req)
+        setAuctionModal(false)
+      })
+    }
+  }
+  const confirm = (value) => {
+    if (value === true) return setCheckRemoveModal(false)
+  }
+
+  const handleCheckRemove = (value) => {
+    if (value === true) {
+      checkedArray.forEach((item) => {
+        mutation.mutate(item['고객 구분'], {
+          onError: (error) => {
+            alert('에러가 발생했습니다' + error.message)
+            setRemoveModal(false)
+          },
+          onSuccess: () => {
+            setRemoveModal(false)
+            setCheckRemoveModal(true) //재차확인 모달
+          },
+        })
+      })
+    }
+    if (value === false) return setRemoveModal(false)
+  }
+
+  //Modal
+  const [auctionModal, setAuctionModal] = useAtom(AuctionRestrictionModal)
+  const [removeModal, setRemoveModal] = useAtom(alertAtom)
+  const [checkRemoveModal, setCheckRemoveModal] = useAtom(alertAtom2)
+  return (
+    <>
+      <FilterContianer>
+        <FilterHeader>
+          <div style={{ display: 'flex' }}>
+            <h1>고객사 관리</h1>
+          </div>
+          {/* 토글 쓰기 */}
+          <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
+        </FilterHeader>
+
+        {exFilterToggle && (
+          <>
+            <FilterSubcontianer>
+              <FilterLeft>
+                <RowWrap>
+                  <PartWrap>
+                    <h6>고객 구분</h6>
+                    <ExRadioWrap>
+                      {radioDummy.map((text, index) => (
+                        <RadioMainDiv key={index}>
+                          <RadioCircleDiv
+                            isChecked={checkRadio[index]}
+                            onClick={() => {
+                              setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
+                            }}
+                          >
+                            <RadioInnerCircleDiv />
+                          </RadioCircleDiv>
+                          <div style={{ display: 'flex', marginLeft: '5px' }}>
+                            <p>{text}</p>
+                          </div>
+                        </RadioMainDiv>
+                      ))}
+                    </ExRadioWrap>
+                  </PartWrap>
+                </RowWrap>
+                <RowWrap>
+                  <PartWrap>
+                    <h6>회원 상태</h6>
+                    <ExCheckWrap>
+                      {checkSales.map((x, index) => (
+                        <ExCheckDiv>
+                          <StyledCheckSubSquDiv
+                            onClick={() => setCheck1(CheckBox2(check1, check1.length, index, false))}
+                            isChecked={check1[index]}
+                          >
+                            <CheckImg2 src="/svg/check.svg" />
+                          </StyledCheckSubSquDiv>
+                          <p>{x}</p>
+                        </ExCheckDiv>
+                      ))}
+                    </ExCheckWrap>
+                  </PartWrap>
+                  <PartWrap />
+                </RowWrap>
+                <RowWrap style={{ borderBottom: '0px' }}>
+                  <PartWrap>
+                    <h6>승인 상태</h6>
+                    <ExCheckWrap>
+                      {checkShips.map((x, index) => (
+                        <ExCheckDiv>
+                          <StyledCheckSubSquDiv
+                            onClick={() => setCheck2(CheckBox(check2, check2.length, index, false))}
+                            isChecked={check2[index]}
+                          >
+                            <CheckImg2 src="/svg/check.svg" />
+                          </StyledCheckSubSquDiv>
+                          <p>{x}</p>
+                        </ExCheckDiv>
+                      ))}
+                    </ExCheckWrap>
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>회원 상태</h6>
+                    <MainSelect options={usermanageClientStatusOptions} name="category" />
+                    <Input style={{ marginLeft: '5px' }} />
+                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                      찾기
+                    </GreyBtn>
+                  </PartWrap>
+                  <PartWrap />
+                  <PartWrap />
+                </RowWrap>
+              </FilterLeft>
+            </FilterSubcontianer>
+            <FilterFooter>
+              <div style={{ display: 'flex' }}>
+                <p>초기화</p>
+                <ResetImg
+                  src="/img/reset.png"
+                  style={{ marginLeft: '10px', marginRight: '20px' }}
+                  onClick={handleImageClick}
+                  className={isRotated ? 'rotate' : ''}
+                />
+              </div>
+              <div style={{ width: '180px' }}>
+                <BlackBtn width={100} height={40}>
+                  검색
+                </BlackBtn>
+              </div>
+            </FilterFooter>
+          </>
+        )}
+        <TableContianer>
+          <TCSubContainer bor>
+            <div>
+              고객 정보 목록 (선택 <span>{checkedArray?.length || 0}</span> /{getRow?.length || 0} 개)
+              <Hidden />
             </div>
-            <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40}>
-                검색
-              </BlackBtn>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <PageDropdown />
+              <Excel />
             </div>
-          </FilterFooter>
-        </>
+          </TCSubContainer>
+          <TCSubContainer>
+            <div>
+              선택 <span> {checkedArray?.length || 0} </span>(명)
+              <span></span>
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <WhiteRedBtn onClick={openAuctionModal}>회원 제한</WhiteRedBtn>
+              <BtnBound />
+              <WhiteRedBtn onClick={handleRemoveBtn}>회원 삭제</WhiteRedBtn>
+              <WhiteSkyBtn onClick={setPostPage}>회원 생성</WhiteSkyBtn>
+            </div>
+          </TCSubContainer>
+          <TableTest getCol={getCol} getRow={getRow} />
+          {/* <Test3 /> */}
+        </TableContianer>
+      </FilterContianer>
+      {auctionModal && (
+        <ClientAuctionRestrictionModal
+          selectedValue={selectedValue}
+          setSelectedValue={setSelectedValue}
+          setAuctionModal={setAuctionModal}
+          onClick={clientRestrict}
+        />
       )}
-      <TableContianer>
-        <TCSubContainer bor>
-          <div>
-            고객 정보 목록 (선택 <span>{checkedArray?.length || 0}</span> /{getRow?.length || 0} 개)
-            <Hidden />
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
-            <Excel />
-          </div>
-        </TCSubContainer>
-        <TCSubContainer>
-          <div>
-            선택 <span> {checkedArray?.length || 0} </span>(명)
-            <span></span>
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>회원 제한</WhiteRedBtn>
-            <BtnBound />
-            <WhiteRedBtn onClick={handleRemoveBtn}>회원 삭제</WhiteRedBtn>
-            <WhiteSkyBtn onClick={setPostPage}>회원 생성</WhiteSkyBtn>
-          </div>
-        </TCSubContainer>
-        <TableTest getCol={getCol} getRow={getRow} />
-        {/* <Test3 /> */}
-      </TableContianer>
-    </FilterContianer>
+      {checkRemoveModal && <AlertModal type={1} title={'삭제가 완료되었습니다'} onClick={confirm} />}
+
+      {removeModal && (
+        <RemoveCheckModal
+          onClick={handleCheckRemove}
+          type={2}
+          title={'사용자를 삭제하면 해당 사용자의 \n 데이터가 삭제 됩니다. 삭제 하시겠습니까?'}
+        />
+      )}
+    </>
   )
 }
-
 export default Client
-
-var checkboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
-  return params.columnApi.getRowGroupColumns().length === 0
-}
-
-var headerCheckboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
-  return params.columnApi.getRowGroupColumns().length === 0
-}
