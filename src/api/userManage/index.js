@@ -1,4 +1,5 @@
 import { createQueryParams, log, removeEmptyFields } from '../../lib'
+import isIterable from '../../lib/fxjs'
 import { client } from '../index'
 
 const urls = {

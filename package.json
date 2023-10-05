@@ -23,6 +23,7 @@
     "draftjs-to-html": "^0.9.1",
     "env-cmd": "^10.1.0",
     "flipclock": "^0.10.8",
+    "fxjs": "^0.21.3",
     "jotai": "^2.2.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",

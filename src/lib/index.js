@@ -1,17 +1,74 @@
 import _ from 'lodash'
+import { add, delay, go, reduce, rangeL } from 'fxjs'
+import * as L from 'fxjs/Lazy'
+import * as C from 'fxjs/Concurrency'
 
-export const go = (a, f) => (a instanceof Promise ? a.then(f) : f(a))
-// const add5 = a => a + 5;
+export const log = console.log
 
-// var r = go1(10, add5);
-// console.log(r); // 15
+// go(
+//   rangeL(1, 4),
+//   L.map((a) => a * a),
+//   L.map(delay(300)),
+//   C.takeAll,
+//   reduce(add),
+//   console.log,
+// )
+// const result = go(
+//   [1, 2, 3, 4, 5],
+//   L.map((a) => a * a),
+// )
+// log(result)
 
-export const pipe =
+const res = go([1,2,3,4,5],)
+
+export const go1 = (a, f) => (a instanceof Promise ? a.then(f) : f(a))
+
+export const pipe1 =
   (...fns) =>
   (arg) =>
     fns.reduce((acc, fn) => fn(acc), arg)
 
-export const log = console.log
+// exception.js 모듈
+export function exception(condition) {
+  return function (originalFunction) {
+    return function (value) {
+      try {
+        const result = originalFunction(value)
+        if (condition(result)) {
+          return result
+        }
+      } catch (e) {
+        if (condition(e)) {
+          return e
+        }
+      }
+    }
+  }
+}
+
+// error.js 모듈
+export function error() {
+  return function (originalFunction) {
+    return function (value) {
+      try {
+        return originalFunction(value)
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }
+}
+
+// nullable.js 모듈
+export function nullable() {
+  return function (originalFunction) {
+    return function (value) {
+      if (value === null || value === undefined) {
+        return originalFunction(value)
+      }
+    }
+  }
+}
 
 export function isEmptyObj(obj) {
   // 객체 타입체크
@@ -37,6 +94,10 @@ export function isEmptyArray(arr) {
 
 export function isArray(arr) {
   return _.isArray(arr)
+}
+
+export function isArrayAnd(arr) {
+  if (_.isArray(arr)) return arr
 }
 
 export function isEmptyObject(obj) {
@@ -102,39 +163,3 @@ export function createQueryParams(obj) {
 //   subtractNumbers: (a, b) => _.subtract(a, b),
 //   multiplyNumbers: (a, b) => _.multiply(a, b),
 // }
-
-// // 6. Function Utilities
-// export const functionUtils = {
-//   debounceFunc: (func, wait) => _.debounce(func, wait),
-//   throttleFunc: (func, wait) => _.throttle(func, wait),
-//   memoizeFunc: (func) => _.memoize(func),
-// }
-
-// // 7. Date Utilities
-// export const dateUtils = {
-//   now: () => _.now(),
-//   delay: (func, wait) => _.delay(func, wait),
-// }
-
-// // 8. Lang Utilities
-// export const langUtils = {
-//   isNull: (value) => _.isNull(value),
-//   isUndefined: (value) => _.isUndefined(value),
-//   isFunction: (value) => _.isFunction(value),
-// }
-
-// // 9. Math Utilities
-// export const mathUtils = {
-//   getRandom: (min, max) => _.random(min, max),
-//   meanOfArray: (arr) => _.mean(arr),
-//   sumOfArray: (arr) => _.sum(arr),
-// }
-
-// // 10. Sequence Utilities
-// export const sequenceUtils = {
-//   flowFunctions: (...funcs) => _.flow(funcs),
-//   chainSequence: (value) => _.chain(value),
-// }
-
-// // 사용 예시:
-// console.log(arrayUtils.uniqueElements([1, 2, 2, 3])) // [1, 2, 3]
