@@ -11,6 +11,7 @@ export const popupDummy = [
     next: '1-2',
     func: () => {},
   },
+
   {
     num: '1-2',
     title: '관리자에게 문의 해주세요.',

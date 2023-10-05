@@ -155,7 +155,7 @@ import DestinationEditPage from './userpages/UserMyPage/Destination/DestinationE
 import TestPopup from './modal/Common/TestPopup'
 import PopupTest from './modal/Alert/PopupTest'
 
-import Upload from './modal/Common/Upload'
+import Upload from './modal/Upload/Upload'
 const Router = () => {
   return (
     <BrowserRouter>

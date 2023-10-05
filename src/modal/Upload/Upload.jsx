@@ -163,7 +163,7 @@ const Upload = ({ modalIsOpen, setModalIsOpen, blueTitle }) => {
               {selectedFile && (
                 <UldAfterWrap>
                   <div style={{ fontSize: '16px' }}>{selectedFile.name}</div>
-                  <div style={{ display: 'flex' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
                     <progress value={uploadProgress} max="100" />
                     <div>x</div>
                   </div>
@@ -219,4 +219,5 @@ const UldAfterWrap = styled.div`
   border: 1px solid;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `
