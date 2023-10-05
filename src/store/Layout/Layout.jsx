@@ -35,3 +35,19 @@ export const selectedRowsAtom = atom([])
 
 // test3 테이블 체크했을시 데이터
 export const doubleClickedRowAtom = atom([])
+
+export const modalAtom = atom(false)
+
+export const popupAtom = atom(false)
+
+export const popupTypeAtom = atom('')
+
+export const popupObject = atom({
+  num: '', // num 값에 따라 초기 팝업 설정
+  title: '',
+  content: '',
+  type: '', // type 값에 따라 버튼 구조 설정
+  next: '',
+  onClick: () => {},
+  func: () => {},
+})

@@ -152,6 +152,10 @@ import DestinationPost from './userpages/UserMyPage/Destination/DestinationPost'
 import DestinationEdit from './userpages/UserMyPage/Destination/DestinationEdit'
 import DestinationEditPage from './userpages/UserMyPage/Destination/DestinationEditPage'
 
+import TestPopup from './modal/Common/TestPopup'
+import PopupTest from './modal/Alert/PopupTest'
+
+import Upload from './modal/Common/Upload'
 const Router = () => {
   return (
     <BrowserRouter>
@@ -161,6 +165,8 @@ const Router = () => {
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
         <Route path="/test4" element={<Countdown />} />
+        <Route path="/popup" element={<TestPopup />} />
+        <Route path="/ppap" element={<Upload />} />
 
         <Route path="/common" element={<SellOrderDetailPage />} />
 

@@ -30,7 +30,7 @@ const SalesPackage = () => {
 
   const radioDummy = ['노출 ', '비노출']
 
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   console.log('checkRadio =>', checkRadio)
 

@@ -16,6 +16,7 @@ import {
 } from '../Common/Common.Styled'
 import { TxtInput } from '../../common/Input/Input'
 import { BlackBtn, GreyBtn } from '../../common/Button/Button'
+import { FadeOverlay } from '../Common/Common.Styled'
 
 import { blueModalAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
@@ -37,7 +38,7 @@ const Achievement = () => {
 
   const radioDummy = ['해당없음', '추가', '차감']
 
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
   const checkDummy = ['공차비 추가']
   const [check1, setCheck1] = useState(Array.from({ length: checkDummy.length }, () => false))
 
@@ -46,7 +47,7 @@ const Achievement = () => {
   return (
     // 판매 제품 관리 - 패키지 관리
     <>
-      <NonFadeOverlay />
+      <FadeOverlay />
       <ModalContainer width={500}>
         <BlueBarHeader>
           <div>추가비 및 공차비 추가</div>

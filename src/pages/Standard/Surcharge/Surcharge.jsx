@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
@@ -12,9 +12,7 @@ import {
   WhiteRedBtn,
   WhiteSkyBtn,
 } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
+
 import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
@@ -25,22 +23,8 @@ import { FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
   FilterContianer,
   FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
   TableBottomWrap,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
   TableContianer,
-  InputStartWrap,
-  FilterHeaderAlert,
   TableTitle,
   SubTitle,
   TCSubContainer,
@@ -49,6 +33,16 @@ import {
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
 import { Link } from 'react-router-dom'
+
+import { StandardSurchargeFields, StandardSurchargeFieldsCols } from '../../../constants/admin/Standard'
+
+import { useQueryClient, useMutation } from '@tanstack/react-query'
+import { selectedRowsAtom } from '../../../store/Layout/Layout'
+import { getAdminSurcharge, deleteAdminSurcharge } from '../../../service/admin/Standard'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { isArray } from 'lodash'
+import Table from '../../Table/Table'
 
 const Transport = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -84,6 +78,53 @@ const Transport = ({}) => {
     setIsModal(true)
   }
 
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(StandardSurchargeFieldsCols)
+  const getCol = tableField.current
+  const queryClient = useQueryClient()
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  const Param = {
+    pageNum: 1,
+    pageSize: 20,
+    type: 0,
+  }
+
+  // GET
+  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getAdminSurcharge', getAdminSurcharge)
+  const resData = data?.data?.data?.list
+  console.log('resData => ', resData)
+
+  useEffect(() => {
+    let getData = resData
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, StandardSurchargeFields))
+    }
+  }, [isSuccess, resData])
+
+  console.log('getRow =>', getRow)
+
+  // DELETE
+  const mutation = useMutation(deleteAdminSurcharge, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('destination')
+    },
+  })
+
+  const handleRemoveBtn = useCallback(() => {
+    if (isArray(checkedArray) && checkedArray.length > 0) {
+      if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
+        checkedArray.forEach((item) => {
+          mutation.mutate(item['할증 고유 번호']) //mutation.mutate로 api 인자 전해줌
+        })
+      }
+    } else {
+      alert('선택해주세요!')
+    }
+  }, [checkedArray])
+
   return (
     <FilterContianer>
       <div>
@@ -117,11 +158,11 @@ const Transport = ({}) => {
           </div>
         </TCSubContainer>
 
-        <Test3 />
+        <Table getCol={getCol} getRow={getRow} />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>할증 삭제</WhiteRedBtn>
+            <WhiteRedBtn onClick={handleRemoveBtn}>할증 삭제</WhiteRedBtn>
             <WhiteBlackBtn>할증 등록</WhiteBlackBtn>
           </div>
         </TCSubContainer>

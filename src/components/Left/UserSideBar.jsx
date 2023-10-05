@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { Typography } from '@mui/material';
+import { useState } from 'react'
+import { Typography } from '@mui/material'
 
-import { styled } from 'styled-components';
-import { Link } from 'react-router-dom';
-import { useAtom } from 'jotai';
-import { calendarAtom } from '../../store/Layout/Layout';
-import CalendarModal from '../../modal/Calender/Calendar';
+import { styled } from 'styled-components'
+import { Link } from 'react-router-dom'
+import { useAtom } from 'jotai'
+import { calendarAtom } from '../../store/Layout/Layout'
+import CalendarModal from '../../modal/Calender/Calendar'
 
 import {
   SideBarWrap,
@@ -19,7 +19,7 @@ import {
   Depth2,
   AcTop,
   AcTopCal,
-} from './SideBar.Style';
+} from './SideBar.Style'
 
 const data = [
   {
@@ -66,12 +66,12 @@ const data = [
       { title: '이용약관', link: 'userpage/userterms' },
     ],
   },
-];
+]
 
 const UserSideBar = ({ expanded, setExpanded, depth2Color }) => {
-  const handleChange = panel => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false)
+  }
   return (
     <SideBarWrap>
       <AccordionWrap>
@@ -88,6 +88,7 @@ const UserSideBar = ({ expanded, setExpanded, depth2Color }) => {
 
         {data.map((item, index) => (
           <StyledAccordion
+            style={{ margin: '1px' }}
             key={index}
             expanded={expanded === item.depth1}
             onChange={handleChange(item.depth1)}
@@ -102,10 +103,7 @@ const UserSideBar = ({ expanded, setExpanded, depth2Color }) => {
             <StyledAccordionDetails>
               <Typography>
                 {item.depth2.map((subItem, subIndex) => (
-                  <TypoContent
-                    key={subIndex}
-                    isIncoming={subItem.title === depth2Color}
-                  >
+                  <TypoContent key={subIndex} isIncoming={subItem.title === depth2Color}>
                     <Link to={`/${subItem.link}`}>
                       <Depth2>{subItem.title}</Depth2>
                     </Link>
@@ -117,7 +115,7 @@ const UserSideBar = ({ expanded, setExpanded, depth2Color }) => {
         ))}
       </AccordionWrap>
     </SideBarWrap>
-  );
-};
+  )
+}
 
-export default UserSideBar;
+export default UserSideBar
