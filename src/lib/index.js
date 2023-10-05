@@ -19,8 +19,6 @@ export const log = console.log
 // )
 // log(result)
 
-const res = go([1,2,3,4,5],)
-
 export const go1 = (a, f) => (a instanceof Promise ? a.then(f) : f(a))
 
 export const pipe1 =
