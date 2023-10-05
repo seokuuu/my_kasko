@@ -45,7 +45,7 @@ import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../comm
 
 const DetailProgress = ({}) => {
   const radioDummy = ['전체', '미진행', '진행중', '종료']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   const [savedRadioValue, setSavedRadioValue] = useState('')
   useEffect(() => {

@@ -37,6 +37,13 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import Multi from '../../../modal/Common/Multi'
+import { blueModalAtom } from '../../../store/Layout/Layout'
+import CommonTest from '../../../modal/Alert/PopupMessages'
+import { popupMessages } from '../../../modal/Alert/PopupMessages'
+import AlertPopup from '../../../modal/Alert/AlertPopup'
+import { modalAtom } from '../../../store/Layout/Layout'
+import { useAtom } from 'jotai'
 
 const Inventory = ({}) => {
   const checkSales = ['전체', '판매재', '판매제외제']
@@ -107,6 +114,12 @@ const Inventory = ({}) => {
     } else {
       setToggleMsg('On')
     }
+  }
+
+  const [modalIsOpen, setModalIsOpen] = useAtom(modalAtom)
+
+  const openModal = () => {
+    setModalIsOpen(true)
   }
 
   return (
@@ -274,12 +287,13 @@ const Inventory = ({}) => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteBlackBtn>판매 구분 변경</WhiteBlackBtn>
+            <WhiteBlackBtn onClick={() => openModal()}>판매 구분 변경</WhiteBlackBtn>
             <WhiteRedBtn>입고 확정 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
         <Test3 />
       </TableContianer>
+      {modalIsOpen && <Multi modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} />}
     </FilterContianer>
   )
 }

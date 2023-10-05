@@ -93,7 +93,7 @@ const Request = ({}) => {
 
   const radioDummy = ['단일 합짐', '복수 합짐']
   const radioTableDummy = ['Y', 'N']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   const [savedRadioValue, setSavedRadioValue] = useState('')
   useEffect(() => {

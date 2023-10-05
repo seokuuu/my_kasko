@@ -27,9 +27,9 @@ const Hyundai = () => {
 
   const radioDummy = ['판매재', '판매 제외 재', '장기재']
   const radioDummy2 = ['불량', '제외 요청', '기타 사유']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
-  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, () => false))
+  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, (_, index) => index === 0))
 
   console.log('checkRadio =>', checkRadio)
 

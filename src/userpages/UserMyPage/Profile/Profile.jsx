@@ -244,7 +244,7 @@ const ProfileEdit = () => {
     setDetailAddress(value)
   }
   const radioDummy = ['법인사업자', '개인사업자']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
   const [savedRadioValue, setSavedRadioValue] = useState('')
 
   useEffect(() => {

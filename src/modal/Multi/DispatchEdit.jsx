@@ -39,7 +39,7 @@ const DispatchEdit = () => {
 
   const radioDummy = ['경매', '상시']
 
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   console.log('checkRadio =>', checkRadio)
 

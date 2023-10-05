@@ -22,7 +22,7 @@ import { TxtDiv } from '../../../User/SignUp/SignUp.Styled'
 // 클레임 등록
 const NoticeEdit = () => {
   const radioDummy = ['노출', '미노출']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   return (
     <>

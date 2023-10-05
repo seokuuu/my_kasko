@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 
-// 모달 오버레이
-export const ModalOverlay = styled.div`
+// 모달 오버레이 (배경 fade)
+export const FadeOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -10,12 +10,21 @@ export const ModalOverlay = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 9998;
 `
+// 모달 오버레이 (배경 Non - fade)
+export const NonFadeOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9998;
+`
 
 // 찐 모달
 export const ModalContainer = styled.div`
   position: fixed;
   top: 50%;
-  left: 50%;
+  left: 53%;
   transform: translate(-50%, -50%);
   background-color: white;
   width: ${(props) => props.width}px;
@@ -47,14 +56,6 @@ export const ModalCloseBtn = styled.img`
 `
 
 // -------BlueBar--------
-export const NonFadeOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 9998;
-`
 
 export const BlueBarHeader = styled.div`
   width: 100%;
@@ -138,6 +139,7 @@ export const AgreementBottom = styled.div`
 export const BlueSubContainer = styled.div`
   /* width: 90%;
   height: 100%; */
+  padding: 30px 0px;
 `
 
 export const BSCSubContainer = styled.div``

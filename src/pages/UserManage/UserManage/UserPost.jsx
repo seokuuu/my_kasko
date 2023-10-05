@@ -55,7 +55,7 @@ const init = {
 const UserPost = ({ setChoiceComponent }) => {
   // Radio 관련
   const radioDummy = ['창고', '운송사', '현대제철', '카스코 철강'] // 더미 데이터
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
   const [savedRadioValue, setSavedRadioValue] = useState('')
   const [submitData, setSubmitData] = useState(init)
   const mutation = useMutationQuery('', post_userManage)

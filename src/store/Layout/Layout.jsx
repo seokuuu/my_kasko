@@ -45,3 +45,19 @@ export const clientModalAtom = atom(false)
 
 //사용자 관리 - 고객사 관리파트 회원제한모달
 export const AuctionRestrictionModal = atom(false)
+
+export const modalAtom = atom(false)
+
+export const popupAtom = atom(false)
+
+export const popupTypeAtom = atom('')
+
+export const popupObject = atom({
+  num: '', // num 값에 따라 초기 팝업 설정
+  title: '',
+  content: '',
+  type: '', // type 값에 따라 버튼 구조 설정
+  next: '',
+  onClick: () => {},
+  func: () => {},
+})

@@ -1,6 +1,6 @@
 import React from 'react'
 import { styled } from 'styled-components'
-import { ModalOverlay, ModalSubContainer, ModalRadioWrap, ModalCloseBtn, ModalContainer } from '../Common/Common.Styled'
+import { FadeOverlay, ModalSubContainer, ModalRadioWrap, ModalCloseBtn, ModalContainer } from '../Common/Common.Styled'
 import { TxtCheckInput, TxtInput } from '../../common/Input/Input'
 
 import { CheckBtn, Part, Title, SubmitBtn } from '../../pages/User/SignUp/SignUp.Styled'
@@ -23,7 +23,7 @@ const SignUpPost = ({
 }) => {
   return (
     <>
-      <ModalOverlay />
+      <FadeOverlay />
       <ModalContainer width={400} height={280}>
         <ModalSubContainer style={{ padding: '10%' }}>
           <Part>
@@ -40,18 +40,20 @@ const SignUpPost = ({
             </Title>
             {!postFind ? (
               <>
-                <TxtCheckInput type="text" value={address} readOnly />
+                <div style={{ width: '320px', marginBottom: '5px' }}>
+                  <TxtCheckInput type="text" value={address} readOnly />
+                  <CheckBtn
+                    type="button"
+                    style={{
+                      backgroundColor: 'black',
+                      color: 'white',
+                    }}
+                    onClick={daumPostHandleBtn}
+                  >
+                    찾기
+                  </CheckBtn>
+                </div>
 
-                <CheckBtn
-                  type="button"
-                  style={{
-                    backgroundColor: 'black',
-                    color: 'white',
-                  }}
-                  onClick={daumPostHandleBtn}
-                >
-                  찾기
-                </CheckBtn>
                 <TxtInput
                   placeholder="상세 주소를 입력해 주세요."
                   type="text"
