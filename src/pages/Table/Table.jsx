@@ -44,7 +44,7 @@ const asDate = (dateAsString) => {
   return new Date(Number.parseInt(splitFields[2]), Number.parseInt(splitFields[1]) - 1, Number.parseInt(splitFields[0]))
 }
 
-const Table = ({ hei, getRow, getCol }) => {
+const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
   const gridRef = useRef()
@@ -176,6 +176,7 @@ const Table = ({ hei, getRow, getCol }) => {
 
   // 페이지 이동시에 테이블 선택이 겹칠 수 있으므로 초기화
   useEffect(() => {
+    setDetailRow(null)
     setSelectedRows(null)
   }, [location])
 
@@ -195,8 +196,9 @@ const Table = ({ hei, getRow, getCol }) => {
   // 일단 router 이동 등록
   const onRowDoubleClicked = (event) => {
     // const path = event.data['고객 코드']
-    // setDetailRow(event.data)
-    // console.log('저장', detailRow)
+    // console.log(event.data)
+    setDetailRow(event.data)
+    setChoiceComponent('수정')
     // navigate(`/userpage/userdestination/${path}`)
     // console.log('Double clicked row UID: ', event.data)
   }

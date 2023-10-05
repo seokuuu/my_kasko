@@ -18,13 +18,16 @@ import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../comm
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 
-import { post_clientDestination } from '../../../api/userManage'
+import { patch_clientDestination, post_clientDestination } from '../../../api/userManage'
 import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
 import { isEmptyObj } from '../../../lib'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { useQueryClient } from '@tanstack/react-query'
+import { doubleClickedRowAtom, selectedRowsAtom } from '../../../store/Layout/Layout'
+import { useAtom } from 'jotai'
 
 const init = {
+  uid: '',
   represent: '', // (0: 미지정 / 1: 지정)
   customerUid: '', //고객 고유번호
   destinationUid: '', //목적지 고유번호
@@ -36,13 +39,21 @@ const init = {
   phone: '', //하차지담당자번호
   memo: '', //메모
 }
-const DestinationPost = ({ setChoiceComponent }) => {
-  const queryClient = useQueryClient()
+const DestinationEdit = ({ setChoiceComponent }) => {
   const radioDummy = ['지정', '미지정']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
   const [savedRadioValue, setSavedRadioValue] = useState('')
   const [submitData, setSubmitData] = useState(init)
-  const mutation = useMutationQuery('', post_clientDestination)
+  const [gridApi, setGridApi] = useState(null)
+  const [selectedData, setSelectedData] = useAtom(doubleClickedRowAtom)
+
+  const queryClient = useQueryClient()
+  const mutation = useMutationQuery('', patch_clientDestination)
+
+  useEffect(() => {
+    const uid = selectedData.uid
+    setSubmitData({ ...submitData, uid: uid })
+  }, [selectedData])
 
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
@@ -77,7 +88,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
   }
   return (
     <OnePageContainer>
-      <MainTitle>고객사 목적지 등록</MainTitle>
+      <MainTitle>고객사 목적지 수정</MainTitle>
       <OnePageSubContainer>
         <HalfWrap>
           <Left>
@@ -194,7 +205,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
   )
 }
 
-export default DestinationPost
+export default DestinationEdit
 
 const RadioContainer = styled.div`
   display: flex;

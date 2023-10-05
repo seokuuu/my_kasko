@@ -8,7 +8,7 @@ var headerCheckboxSelection = function (params) {
   return params.columnApi.getRowGroupColumns().length === 0
 }
 
-export const 사용자관리_고객사관리_fieds = {
+export const UserManageCustomerManageFields = {
   순번: 'uid',
   '고객 구분': 'memberUid',
   '회원 상태': 'status',
@@ -19,7 +19,7 @@ export const 사용자관리_고객사관리_fieds = {
   '승인 여부': 'approvalStatus',
   '회원 제한 상태': 'auctionStatus',
 }
-export const 사용자관리_고객사관리_fieds_Cols = [
+export const UserManageCustomerManageFieldsCols = [
   {
     field: '순번',
     minWidth: 100,
@@ -42,7 +42,7 @@ export const 사용자관리_고객사관리_fieds_Cols = [
   { field: '회원 제한 상태', minWidth: 100 },
 ]
 
-export const 사용자관리_고객사목적지관리_fieds = {
+export const UserManageCustomerDestinationManageFields = {
   uid: 'uid',
   '고객 코드': 'code',
   대표: 'represent',
@@ -54,7 +54,8 @@ export const 사용자관리_고객사목적지관리_fieds = {
   '상세 주소': 'address',
   비고란: 'memo',
 }
-export const 사용자관리_고객사목적지관리_fieds_Cols = [
+
+export const UserManageCustomerDestinationManageFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   {
     field: '고객 코드',
@@ -73,4 +74,59 @@ export const 사용자관리_고객사목적지관리_fieds_Cols = [
   { field: '하차지 명', minWidth: 100 },
   { field: '상세 주소', minWidth: 100 },
   { field: '비고란' },
+]
+export const UserManageFields = {
+  순번: 'uid',
+  이름: 'name',
+  아이디: 'id',
+  '관리자 분류': 'role',
+  '가입 일시': 'createDate',
+}
+export const UserManageFieldsCols = [
+  { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  {
+    field: '순번',
+  },
+  { field: '이름', minWidth: 100 }, //숫자
+  { field: '아이디', minWidth: 100 },
+  { field: '관리자 분류', minWidth: 100 },
+  {
+    field: '가입 일시',
+    minWidth: 200,
+  },
+]
+
+// 마이페이지 - 선호제품관리
+//  ✅일단 최대 두께로 설정 && 비고 없음
+export const UserPageUserPreferFields = {
+  uid: 'uid',
+  '선호제품 명': 'name',
+  '두께(mm)': 'thicknessMax',
+  '폭(mm)': 'widthMax',
+  '길이(mm)': 'lengthMax',
+  규격약호: 'spec',
+  TS: 'tsMax',
+  'C%': 'cmax',
+  EL: 'elMax',
+  YP: 'ypMax',
+  비고: '',
+}
+export const UserPageUserPreferFieldsCols = [
+  { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  {
+    field: '선호제품 명',
+  },
+  { field: '두께(mm)', minWidth: 100, cellStyle: { textAlign: 'center' } }, //숫자
+  { field: '폭(mm)', minWidth: 100 },
+  { field: '길이(mm)', minWidth: 100 },
+  { field: '규격약호', minWidth: 100 }, //숫자
+  { field: 'TS', minWidth: 50 },
+  { field: 'C%', minWidth: 50 },
+  { field: 'EL', minWidth: 50 },
+  { field: 'YP', minWidth: 50 },
+  {
+    field: '비고',
+    minWidth: 300,
+    cellStyle: { textAlign: 'center' },
+  },
 ]

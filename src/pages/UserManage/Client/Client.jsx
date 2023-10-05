@@ -52,7 +52,7 @@ import { useCallback } from 'react'
 import { isArray } from 'lodash'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { add_element_field } from '../../../lib/tableHelpers'
-import { 사용자관리_고객사관리_fieds, 사용자관리_고객사관리_fieds_Cols } from '../../../constants/fields'
+import { UserManageCustomerManageFields, UserManageCustomerManageFieldsCols } from '../../../constants/admin/UserManage'
 
 const Client = ({}) => {
   const radioDummy = ['전체', '대표', '대표']
@@ -140,7 +140,7 @@ const Client = ({}) => {
   }
 
   // ✅필드이름 설정(col)
-  const 테이블필드 = useRef(사용자관리_고객사관리_fieds_Cols)
+  const 테이블필드 = useRef(UserManageCustomerManageFieldsCols)
   const getCol = 테이블필드.current
 
   // ⚠️필터 디자인 확정 후 작업
@@ -170,7 +170,7 @@ const Client = ({}) => {
     //타입, 리액트쿼리, 데이터 확인 후 실행
     if (!isSuccess && !responseData) return
     if (Array.isArray(getData)) {
-      setGetRow(add_element_field(getData, 사용자관리_고객사관리_fieds))
+      setGetRow(add_element_field(getData, UserManageCustomerManageFields))
     }
   }, [isSuccess])
 
