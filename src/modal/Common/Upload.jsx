@@ -36,9 +36,7 @@ import { useRef } from 'react'
 
 const Upload = ({ modalIsOpen, setModalIsOpen, blueTitle }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
-
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
-
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
 
   const fileInputRef = useRef(null)
@@ -85,6 +83,20 @@ const Upload = ({ modalIsOpen, setModalIsOpen, blueTitle }) => {
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   console.log('', (popupMessages[1].find((message) => message.num === '4') || {}).title)
+
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      const message = '현재 작업 중인 내용이 저장되지 않았습니다. 페이지를 나가시겠습니까?'
+      event.returnValue = message // Standard for most browsers
+      return message // For some older browsers
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [])
 
   return (
     // 재고 관리 - 판매 구분 변경
