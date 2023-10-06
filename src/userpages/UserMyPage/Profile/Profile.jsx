@@ -195,7 +195,7 @@ const ProfileEdit = () => {
   }, [shouldUpdateCustomer])
   // -------------------------------------------------------------------------------
   const [postFind, setPostFind] = useState(false)
-  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [modalSwitch, setModalSwitch] = useState(false)
   const [address, setAddress] = useState('')
   const [detailAddress, setDetailAddress] = useState('')
   const [isDaumPostOpen, setIsDaumPostOpen] = useState(false)
@@ -211,19 +211,19 @@ const ProfileEdit = () => {
   }
 
   const closeModal = () => {
-    setModalIsOpen(false)
+    setModalSwitch(false)
     setAddress('')
     setDetailAddress('')
     setInput({ ...input, address: '', addressDetail: '' })
   }
 
   const comfirmPost = () => {
-    setModalIsOpen(false)
+    setModalSwitch(false)
     setInput({ ...input, address: address, addressDetail: detailAddress })
   }
 
   const openModal = () => {
-    setModalIsOpen(true)
+    setModalSwitch(true)
   }
   const daumPostHandleBtn = () => {
     setIsDaumPostOpen(true)
@@ -503,7 +503,7 @@ const ProfileEdit = () => {
                 </FlexContent>
               </FlexPart>
 
-              {modalIsOpen && (
+              {modalSwitch && (
                 <SignUpPost
                   postCheck={postCheck}
                   directCheck={directCheck}

@@ -34,7 +34,7 @@ import styled from 'styled-components'
 import { GreyBtn } from '../../common/Button/Button'
 import { useRef } from 'react'
 
-const Upload = ({ modalIsOpen, setModalIsOpen, blueTitle }) => {
+const Upload = ({ modalSwitch, setModalSwitch, blueTitle }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
@@ -57,7 +57,7 @@ const Upload = ({ modalIsOpen, setModalIsOpen, blueTitle }) => {
   }, [nowPopup, nowPopupType])
 
   const modalClose = () => {
-    setModalIsOpen(false)
+    setModalSwitch(false)
   }
 
   const handleFileChange = (event) => {

@@ -47,7 +47,8 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import { isArray } from 'lodash'
 import Test3 from '../../Test/Test3'
 
-const Destination = ({ }) => {
+
+const Destination = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -198,7 +199,6 @@ const Destination = ({ }) => {
           </div>
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} />
-
       </TableContianer>
     </FilterContianer>
   )

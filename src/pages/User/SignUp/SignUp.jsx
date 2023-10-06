@@ -115,7 +115,7 @@ const SignUp = () => {
   }
 
   //modal
-  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [modalSwitch, setModalSwitch] = useState(false)
 
   //post
   const [postFind, setPostFind] = useState(false)
@@ -134,18 +134,18 @@ const SignUp = () => {
   }
 
   const openModal = () => {
-    setModalIsOpen(true)
+    setModalSwitch(true)
   }
 
   const closeModal = () => {
-    setModalIsOpen(false)
+    setModalSwitch(false)
     setAddress('')
     setDetailAddress('')
     setInput({ ...input, address: '', addressDetail: '' })
   }
 
   const comfirmPost = () => {
-    setModalIsOpen(false)
+    setModalSwitch(false)
     setInput({ ...input, address: address, addressDetail: detailAddress })
   }
 
@@ -728,7 +728,7 @@ const SignUp = () => {
                     />
                   </div>
                 </Part>
-                {modalIsOpen && (
+                {modalSwitch && (
                   <SignUpPost
                     postCheck={postCheck}
                     directCheck={directCheck}
