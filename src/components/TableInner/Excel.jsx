@@ -17,7 +17,14 @@ const Excel = ({ getRow }) => {
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, ws_name)
 
-    XLSX.writeFile(wb, 'exported_data.xlsx')
+    const currentDate = new Date()
+    const year = currentDate.getFullYear().toString().slice(2) // 연도의 끝 두 자리
+    const month = ('0' + (currentDate.getMonth() + 1)).slice(-2) // 월을 두 자리로
+    const day = ('0' + currentDate.getDate()).slice(-2) // 일을 두 자리로
+
+    const fileName = `kasko_${year}_${month}_${day}.xlsx`
+
+    XLSX.writeFile(wb, fileName)
   }
 
   return (
