@@ -19,10 +19,10 @@ import { useAtom } from 'jotai'
 import { modalAtom, popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Layout'
 
 const Terms = () => {
-  const [modalIsOpen, setModalIsOpen] = useAtom(modalAtom) // 모달 스위치
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
+  const [init, setInit] = useState({ now: '', type: '' })
 
   const [resData, setResData] = useState('')
   const [type, setType] = useState('이용 약관') // (이용약관 / 개인정보 처리방침 / 개인정보 수집 동의)
@@ -37,17 +37,37 @@ const Terms = () => {
     if (isSuccess && isObject(resData)) return setResData(resData)
   }, [data, type, isSuccess])
 
-  const handleSubmit = () => {
-    setResData((prev) => ({ ...prev, uid: prev.uid + 1 }))
-    mutation.mutate(resData, {
-      onSuccess: () => {
-        alert('등록되셨습니다')
-
-        setNowPopupType(2)
-        setNowPopup({ title: 'asfsdf', content: 'abcdddd' })
-        setPopupSwitch(true)
-      },
+  // 팝업 초기 설정
+  useEffect(() => {
+    setNowPopupType(2)
+    setNowPopup({
+      num: '2-1',
+      title: '저장하시겠습니까?',
+      next: '1-12',
     })
+  }, [])
+
+  useEffect(() => {
+    if (nowPopup.num === '1-12') {
+      mutation.mutate(resData, {
+        onSuccess: () => {},
+        onError: () => {
+          log('ERROR')
+        },
+
+        onSettled: () => {
+          // setPopupSwitch(false)
+          // setNowPopupType(init.type)
+          // setNowPopup(init.now)
+        },
+      })
+    }
+  }, [nowPopup])
+
+  const handleSubmit = () => {
+    setInit({ now: nowPopup, type: nowPopupType })
+    setResData((prev) => ({ ...prev, uid: prev.uid + 1 }))
+    setPopupSwitch(true)
   }
 
   // log(resData)
@@ -68,7 +88,7 @@ const Terms = () => {
       <OnePageSubContainer>
         <FWTitle>
           <h5>서비스 이용약관</h5>
-          {/* TODO : Date객체 필요 */}
+          {/* ⚠️TODO : Date객체 필요 */}
           <h6>최근 수정일 : 2023.06.12</h6>
         </FWTitle>
         <FullWrap style={{ marginTop: '30px', height: '30vw' }}>
