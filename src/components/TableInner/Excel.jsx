@@ -18,11 +18,15 @@ const Excel = ({ getRow }) => {
     XLSX.utils.book_append_sheet(wb, ws, ws_name)
 
     const currentDate = new Date()
-    const year = currentDate.getFullYear().toString().slice(2) // 연도의 끝 두 자리
-    const month = ('0' + (currentDate.getMonth() + 1)).slice(-2) // 월을 두 자리로
-    const day = ('0' + currentDate.getDate()).slice(-2) // 일을 두 자리로
+      .toLocaleDateString('ko-KR', {
+        year: '2-digit',
+        month: '2-digit',
+        day: '2-digit',
+      })
+      .replace(/\./g, '_') // 날짜 구분자를 '_'로 변경
+      .replace(/\s/g, '') // 공백 제거
 
-    const fileName = `kasko_${year}_${month}_${day}.xlsx`
+    const fileName = `kasko_${currentDate}.xlsx`
 
     XLSX.writeFile(wb, fileName)
   }
