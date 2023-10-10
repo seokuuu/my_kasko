@@ -46,8 +46,27 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { isArray } from 'lodash'
 import Test3 from '../../Test/Test3'
+import { modalAtom, popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Layout'
+import Upload from '../../../modal/Upload/Upload'
+import { popupDummy } from '../../../modal/Alert/PopupDummy'
+import AlertPopup from '../../../modal/Alert/AlertPopup'
 
 const Destination = ({}) => {
+  const [modalSwitch, setModalSwitch] = useAtom(modalAtom)
+  const openModal = () => {
+    setModalSwitch(true)
+  }
+  const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
+  console.log('popupSwitch !!!!!!!', popupSwitch)
+  const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
+
+  const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
+
+  const firstPopupClick = (num) => {
+    setPopupSwitch(true)
+    const firstPopup = popupDummy.find((popup) => popup.num === num)
+    setNowPopup(firstPopup)
+  }
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -131,6 +150,8 @@ const Destination = ({}) => {
 
   console.log('checkedArray =>', checkedArray)
 
+  console.log('popupSwitch', popupSwitch)
+
   return (
     <FilterContianer>
       <div>
@@ -193,12 +214,26 @@ const Destination = ({}) => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn onClick={handleRemoveBtn}>목적지 삭제</WhiteRedBtn>
-            <WhiteSkyBtn>목적지 등록</WhiteSkyBtn>
+            <WhiteRedBtn
+              onClick={() => {
+                firstPopupClick('1-1')
+              }}
+            >
+              목적지 삭제
+            </WhiteRedBtn>
+            <WhiteSkyBtn
+              onClick={() => {
+                openModal()
+              }}
+            >
+              목적지 등록
+            </WhiteSkyBtn>
           </div>
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} />
       </TableContianer>
+      {popupSwitch && <AlertPopup />}
+      {modalSwitch && <Upload modalSwitch={modalSwitch} setModalSwitch={setModalSwitch} title={'목적지 등록'} />}
     </FilterContianer>
   )
 }

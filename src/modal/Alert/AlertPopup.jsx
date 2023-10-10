@@ -11,6 +11,8 @@ const AlertPopup = () => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
 
+  console.log('nowPopup', nowPopup)
+
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
 
   // num / next을 받아 팝업 띄우는 컴포넌트의 onClickHandler
@@ -23,6 +25,7 @@ const AlertPopup = () => {
   // popupDummy에 next가 있으면, firstPopupClick이 실행되고
   // next가 없으면, 팝업과 해당 모달이 종료된다
   const showNextPopup = () => {
+    nowPopup.func()
     if (nowPopup && nowPopup?.next) {
       firstPopupClick(nowPopup?.next)
     } else {

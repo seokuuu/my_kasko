@@ -87,6 +87,7 @@ export const popupDummy = [
     num: '2-2',
     title: '목적지를 삭제하시겠습니까?',
     next: '3-2',
+    func: () => {},
   },
   {
     num: '2-2',

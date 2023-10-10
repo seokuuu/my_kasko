@@ -29,15 +29,15 @@ export const StandardDestinaionFields = {
 //  주석 처리 : cell 내 버튼 기능
 export const StandardDestinaionFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
-  // {
-  //   field: 'athlete',
-  //   cellRenderer: BtnCellRenderer,
-  //   cellRendererParams: {
-  //     clicked: function (field) {
-  //       alert(`${field} was clicked`)
-  //     },
-  //   },
-  // },
+  {
+    field: '수정',
+    cellRenderer: BtnCellRenderer,
+    cellRendererParams: {
+      clicked: function (field) {
+        alert(`${field} was clicked`)
+      },
+    },
+  },
   {
     field: '목적지 고유 번호',
     minWidth: 100,

@@ -40,6 +40,8 @@ export const modalAtom = atom(false)
 
 export const popupAtom = atom(false)
 
+console.log('popupAtom =>', popupAtom)
+
 export const popupTypeAtom = atom('')
 
 export const popupObject = atom({

@@ -34,7 +34,7 @@ import styled from 'styled-components'
 import { GreyBtn } from '../../common/Button/Button'
 import { useRef } from 'react'
 
-const Upload = ({ modalSwitch, setModalSwitch, blueTitle }) => {
+const Upload = ({ modalSwitch, setModalSwitch, title }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
@@ -104,7 +104,7 @@ const Upload = ({ modalSwitch, setModalSwitch, blueTitle }) => {
       <FadeOverlay />
       <ModalContainer width={850}>
         <BlueBarHeader>
-          <div>{blueTitle}</div>
+          <div>{title}</div>
           <div>
             <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
           </div>
