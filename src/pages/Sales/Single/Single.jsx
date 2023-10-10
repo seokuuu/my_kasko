@@ -13,7 +13,7 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import BlueBar from '../../../modal/BlueBar/BlueBar'
 import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { FilterWrap } from '../../../modal/External/ExternalFilter'
+import { EditGear, FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
   FilterContianer,
   FilterHeader,
@@ -67,6 +67,12 @@ const Single = ({}) => {
 
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
+  const [noticeEdit, setnoticeEdit] = useState(false)
+
+  const noticeEditOnClickHandler = () => {
+    setnoticeEdit((prev) => !prev)
+  }
+
   console.log('isModal =>', isModal)
 
   const modalOpen = () => {
@@ -86,16 +92,34 @@ const Single = ({}) => {
             <div style={{ marginRight: '20px' }}>
               <img src="/img/notice.png" />
             </div>
-            <div style={{ marginTop: '6px' }}>
-              <div>· 주의사항 영역</div>
-              <div style={{ marginTop: '6px' }}>· 주의사항 영역</div>
-            </div>
+            {noticeEdit ? (
+              <div style={{ marginTop: '6px' }}>
+                <div>
+                  <input style={{ border: '1px solid' }} />
+                </div>
+                <div>
+                  <input style={{ marginTop: '6px', border: '1px solid' }} />
+                </div>
+              </div>
+            ) : (
+              <div style={{ marginTop: '6px' }}>
+                <div>· 주의사항 영역</div>
+                <div style={{ marginTop: '6px' }}>· 주의사항 영역</div>
+              </div>
+            )}
           </div>
 
-          <div>
-            수정
-            <img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-          </div>
+          {noticeEdit ? (
+            <EditGear onClick={noticeEditOnClickHandler}>
+              완료
+              <img style={{ marginLeft: '10px' }} src="/img/setting.png" />
+            </EditGear>
+          ) : (
+            <EditGear onClick={noticeEditOnClickHandler}>
+              수정
+              <img style={{ marginLeft: '10px' }} src="/img/setting.png" />
+            </EditGear>
+          )}
         </FilterHeaderAlert>
         {exFilterToggle && (
           <FilterWrap>

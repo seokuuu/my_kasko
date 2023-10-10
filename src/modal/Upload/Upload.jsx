@@ -34,7 +34,7 @@ import styled from 'styled-components'
 import { GreyBtn } from '../../common/Button/Button'
 import { useRef } from 'react'
 
-const Upload = ({ modalIsOpen, setModalIsOpen, blueTitle }) => {
+const Upload = ({ modalSwitch, setModalSwitch, blueTitle }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
@@ -57,7 +57,7 @@ const Upload = ({ modalIsOpen, setModalIsOpen, blueTitle }) => {
   }, [nowPopup, nowPopupType])
 
   const modalClose = () => {
-    setModalIsOpen(false)
+    setModalSwitch(false)
   }
 
   const handleFileChange = (event) => {
@@ -163,7 +163,7 @@ const Upload = ({ modalIsOpen, setModalIsOpen, blueTitle }) => {
               {selectedFile && (
                 <UldAfterWrap>
                   <div style={{ fontSize: '16px' }}>{selectedFile.name}</div>
-                  <div style={{ display: 'flex' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
                     <progress value={uploadProgress} max="100" />
                     <div>x</div>
                   </div>
@@ -219,4 +219,5 @@ const UldAfterWrap = styled.div`
   border: 1px solid;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `

@@ -411,3 +411,13 @@ export const AlertImg = styled.div`
     font-weight: bold;
   }
 `
+
+export const EditGear = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    font-weight: bold;
+    text-decoration: underline;
+  }
+`

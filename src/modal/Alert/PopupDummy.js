@@ -11,6 +11,7 @@ export const popupDummy = [
     next: '1-2',
     func: () => {},
   },
+
   {
     num: '1-2',
     title: '관리자에게 문의 해주세요.',
@@ -80,6 +81,11 @@ export const popupDummy = [
     num: '2-1',
     title: '목적지를 등록하시겠습니까?',
     content: '현재 등록된 목적지가 없어 경매에 참여하실 수 없습니다.',
+    next: '3-2',
+  },
+  {
+    num: '2-2',
+    title: '목적지를 삭제하시겠습니까?',
     next: '3-2',
   },
   {
