@@ -11,15 +11,12 @@ const AlertPopup = () => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
-
-  const [checkNext, setCheckNext] = useState(false)
-  const [init, setInit] = useState({ now: '', type: '' })
+  const [checkNext, setCheckNext] = useState(false) //임시 next 작동시 reload
 
   // 처음 팝업 띄우는 컴포넌트의 onClickHandler
   const firstPopupClick = (num) => {
     const firstPopup = popupDummy.find((popup) => popup.num === num)
     setNowPopup(firstPopup)
-    // setCheckNext(true)
   }
 
   // 팝업 그 자체 컴포넌트의 확인 버튼 onClickHandler
@@ -29,25 +26,19 @@ const AlertPopup = () => {
     if (nowPopup && nowPopup?.next) {
       firstPopupClick(nowPopup?.next)
       setNowPopupType(nextType)
+      setCheckNext(true)
     } else {
+      if (checkNext === true) return window.location.reload() //임시 next 작동시 reload
+
       setPopupSwitch(false)
       setModalIsOpen(false)
     }
   }
 
   useEffect(() => {
-    setInit({ now: nowPopup, type: nowPopupType })
     const firstType = nowPopup.num?.split('-')[0]
     setNowPopupType(firstType)
   }, [])
-
-  // 팝업 타입 최신화
-  useEffect(() => {
-    // setNowPopupType(init.type)
-    // setNowPopup(init.now)
-    // console.log('nowPopupType', nowPopupType)
-    // console.log('check', nowPopup)
-  }, [checkNext])
 
   const closePopup = () => {
     setPopupSwitch(false)
