@@ -99,13 +99,13 @@ const Destination = ({ setChoiceComponent }) => {
   }, [isSuccess, data])
 
   // 컴포넌트 이동
-  const openPost = () => {
-    setChoiceComponent('등록')
-  }
+  // const openPost = () => {
+  //   setChoiceComponent('등록')
+  // }
 
-  const openEdit = async () => {
-    setChoiceComponent('수정')
-  }
+  // const openEdit = async () => {
+  //   setChoiceComponent('수정')
+  // }
 
   const queryClient = useQueryClient()
   const mutation = useMutation(deleteDestination, {
@@ -155,7 +155,8 @@ const Destination = ({ setChoiceComponent }) => {
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn onClick={handleRemoveBtn}>목적지 삭제</WhiteRedBtn>
             {/* <SkyBtn onClick={openEdit}>목적지 수정</SkyBtn> */}
-            <SkyBtn onClick={openPost}>목적지 등록</SkyBtn>
+            {/* <SkyBtn onClick={openPost}>목적지 등록</SkyBtn> */}
+            <SkyBtn>목적지 등록</SkyBtn>
           </div>
         </TCSubContainer>
 

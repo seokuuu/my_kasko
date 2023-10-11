@@ -46,8 +46,22 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { isArray } from 'lodash'
 import Test3 from '../../Test/Test3'
+import { modalAtom, popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Layout'
+import Upload from '../../../modal/Upload/Upload'
+import { popupDummy } from '../../../modal/Alert/PopupDummy'
+import AlertPopup from '../../../modal/Alert/AlertPopup'
 
-const Destination = ({ }) => {
+const Destination = ({}) => {
+  const [modalSwitch, setModalSwitch] = useAtom(modalAtom)
+  const openModal = () => {
+    setModalSwitch(true)
+  }
+  const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
+  console.log('popupSwitch !!!!!!!', popupSwitch)
+  const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
+
+  const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
+
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -110,6 +124,8 @@ const Destination = ({ }) => {
 
   console.log('getRow =>', getRow)
 
+  console.log('nowPopup', nowPopup)
+
   // DELETE
   const mutation = useMutation(deleteAdminDestination, {
     onSuccess: () => {
@@ -117,19 +133,53 @@ const Destination = ({ }) => {
     },
   })
 
-  const handleRemoveBtn = useCallback(() => {
-    if (isArray(checkedArray) && checkedArray.length > 0) {
-      if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
-        checkedArray.forEach((item) => {
-          mutation.mutate(item['목적지 고유 번호']) //mutation.mutate로 api 인자 전해줌
-        })
+  const propsRemove = () => {
+    checkedArray.forEach((item) => {
+      mutation.mutate(item['목적지 고유 번호']) //mutation.mutate로 api 인자 전해줌
+    })
+  }
+  const test = () => {
+    console.log(123)
+  }
+
+  const firstPopupClick = useCallback(
+    (num) => {
+      if (isArray(checkedArray) && checkedArray.length > 0) {
+        setPopupSwitch(true)
+        const firstPopup = popupDummy.find((popup) => popup.num === num)
+        setNowPopup({ ...firstPopup, func: propsRemove })
+      } else {
+        alert('선택해주세요!')
       }
-    } else {
-      alert('선택해주세요!')
-    }
-  }, [checkedArray])
+    },
+    [checkedArray],
+  )
+
+  // const firstPopupClick = (num) => {
+  //       if (isArray(checkedArray) && checkedArray.length > 0) {
+  //         setPopupSwitch(true)
+  //         const firstPopup = popupDummy.find((popup) => popup.num === num)
+  //         setNowPopup(firstPopup)
+  //       } else {
+  //         alert('선택해주세요!')
+  //       }
+  // }
+
+  // const handleRemoveBtn = useCallback(() => {
+  //   if (isArray(checkedArray) && checkedArray.length > 0) {
+  //     if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
+  //       checkedArray.forEach((item) => {
+  //         mutation.mutate(item['목적지 고유 번호']) //mutation.mutate로 api 인자 전해줌
+  //       })
+  //     }
+  //   } else {
+  //     alert('선택해주세요!')
+  //   }
+  // }, [checkedArray])
 
   console.log('checkedArray =>', checkedArray)
+
+  console.log('popupSwitch', popupSwitch)
 
   return (
     <FilterContianer>
@@ -193,13 +243,26 @@ const Destination = ({ }) => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn onClick={handleRemoveBtn}>목적지 삭제</WhiteRedBtn>
-            <WhiteSkyBtn>목적지 등록</WhiteSkyBtn>
+            <WhiteRedBtn
+              onClick={() => {
+                firstPopupClick('2-2')
+              }}
+            >
+              목적지 삭제
+            </WhiteRedBtn>
+            <WhiteSkyBtn
+              onClick={() => {
+                openModal()
+              }}
+            >
+              목적지 등록
+            </WhiteSkyBtn>
           </div>
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} />
-
       </TableContianer>
+      {popupSwitch && <AlertPopup propsRemove={propsRemove} />}
+      {modalSwitch && <Upload modalSwitch={modalSwitch} setModalSwitch={setModalSwitch} title={'목적지 등록'} />}
     </FilterContianer>
   )
 }

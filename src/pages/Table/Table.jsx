@@ -17,6 +17,9 @@ import {
 import { GreyBtn, BlackBtn } from '../../common/Button/Button'
 import { useLocation, useNavigate } from 'react-router-dom'
 
+import { get } from 'lodash'
+import BtnCellRenderer from './BtnCellRenderer'
+
 var dateFilterParams = {
   comparator: (filterLocalDateAtMidnight, cellValue) => {
     var cellDate = asDate(cellValue)
@@ -69,6 +72,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
       checkboxSelection: checkboxSelection,
       headerCheckboxSelection: headerCheckboxSelection,
     },
+
     { field: '대표', maxWidth: 80 }, //숫자
     { field: '목적지 코드' },
     { field: '목적지 명', maxWidth: 90 },
@@ -366,7 +370,6 @@ const TestContainer = styled.div`
   .ag-paging-panel {
     justify-content: center !important;
   }
-  
 `
 
 const TestHeader = styled.div`

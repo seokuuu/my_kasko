@@ -30,7 +30,7 @@ import { popupObject } from '../../store/Layout/Layout'
 import { popupDummy } from '../Alert/PopupDummy'
 import { popupTypeAtom } from '../../store/Layout/Layout'
 
-const Multi = ({ modalIsOpen, setModalIsOpen }) => {
+const Multi = ({ modalSwitch, setModalSwitch }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
 
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
@@ -51,7 +51,7 @@ const Multi = ({ modalIsOpen, setModalIsOpen }) => {
   }, [nowPopup, nowPopupType])
 
   const modalClose = () => {
-    setModalIsOpen(false)
+    setModalSwitch(false)
   }
 
   const radioDummy = ['판매재', '판매 제외 재']

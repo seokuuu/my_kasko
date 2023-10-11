@@ -1,3 +1,5 @@
+import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
+
 var checkboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0
@@ -24,8 +26,19 @@ export const StandardDestinaionFields = {
 }
 
 // 기준관리 - 목적지관리 fieldsCols
+//  주석 처리 : cell 내 버튼 기능
 export const StandardDestinaionFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  {
+    field: '수정',
+    maxWidth: 90,
+    cellRenderer: BtnCellRenderer,
+    cellRendererParams: {
+      clicked: function (field) {
+        alert(`${field} was clicked`)
+      },
+    },
+  },
   {
     field: '목적지 고유 번호',
     minWidth: 100,

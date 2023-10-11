@@ -57,6 +57,7 @@ import { getAdminTransportation, deleteAdminTransportation } from '../../../serv
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { isArray } from 'lodash'
+import { CSVLink } from 'react-csv'
 
 const Transport = ({}) => {
   const radioDummy = ['증가', '감소']
@@ -144,6 +145,18 @@ const Transport = ({}) => {
 
   console.log('checkedArray =>', checkedArray)
 
+  const headers = [
+    { label: 'First Name', key: 'firstname' },
+    { label: 'Last Name', key: 'lastname' },
+    { label: 'Email', key: 'email' },
+  ]
+
+  const datas = [
+    { firstname: 'Ahmed', lastname: 'Tomi', email: 'ah@smthing.co.com' },
+    { firstname: 'Raed', lastname: 'Labes', email: 'rl@smthing.co.com' },
+    { firstname: 'Yezzi', lastname: 'Min l3b', email: 'ymin@cocococo.com' },
+  ]
+
   return (
     <FilterContianer>
       <div>
@@ -222,7 +235,7 @@ const Transport = ({}) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown />
-            <Excel />
+            <Excel getRow={getRow} />
           </div>
         </TCSubContainer>
         <TCSubContainer>
