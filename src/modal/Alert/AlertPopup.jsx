@@ -48,7 +48,7 @@ const AlertPopup = ({ propsRemove }) => {
 
   const closePopup = () => {
     setPopupSwitch(false)
-    setModalIsOpen(false)
+    // setModalIsOpen(false)
   }
 
   return (
