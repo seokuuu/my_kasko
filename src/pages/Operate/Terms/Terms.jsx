@@ -9,7 +9,6 @@ import {
 } from '../../../common/OnePage/OnePage.Styled'
 
 import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
-import { log } from 'fxjs'
 import useReactQuery from './../../../hooks/useReactQuery'
 import { getPolicy, postPolicy } from '../../../api/operate'
 import { isObject } from 'lodash'
@@ -17,16 +16,16 @@ import useMutationQuery from './../../../hooks/useMutationQuery'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
 import { useAtom } from 'jotai'
 import { modalAtom, popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Layout'
+import { t } from '../../../lib/ramda'
 
 const Terms = () => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
-  const [init, setInit] = useState({ now: '', type: '' })
 
   const [resData, setResData] = useState('')
   const [type, setType] = useState('이용 약관') // (이용약관 / 개인정보 처리방침 / 개인정보 수집 동의)
-
+  // ⚠️TODO : 개인정보 수집 동의 post에러
   const { isError, isSuccess, data } = useReactQuery(type, 'getPolicy', getPolicy)
   const mutation = useMutationQuery('getPolicy', postPolicy, '')
 
@@ -49,28 +48,14 @@ const Terms = () => {
 
   useEffect(() => {
     if (nowPopup.num === '1-12') {
-      mutation.mutate(resData, {
-        onSuccess: () => {},
-        onError: () => {
-          log('ERROR')
-        },
-
-        onSettled: () => {
-          // setPopupSwitch(false)
-          // setNowPopupType(init.type)
-          // setNowPopup(init.now)
-        },
-      })
+      mutation.mutate(resData)
     }
   }, [nowPopup])
 
   const handleSubmit = () => {
-    setInit({ now: nowPopup, type: nowPopupType })
     setResData((prev) => ({ ...prev, uid: prev.uid + 1 }))
     setPopupSwitch(true)
   }
-
-  // log(resData)
 
   return (
     <OnePageContainer>

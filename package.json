@@ -32,6 +32,7 @@
     "quill-html-edit-button": "^2.2.12",
     "quill-image-compress": "^1.2.30",
     "quill-image-resize-module-react": "^3.0.0",
+    "ramda": "^0.29.1",
     "react": "^18.2.0",
     "react-calendar": "^4.3.0",
     "react-datepicker": "^4.16.0",
