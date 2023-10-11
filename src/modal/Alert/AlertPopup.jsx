@@ -6,7 +6,7 @@ import { popupDummy } from './PopupDummy'
 import { useAtom } from 'jotai'
 import { alertAtom } from '../../store/Layout/Layout'
 import { popupObject, popupTypeAtom, popupAtom, modalAtom } from '../../store/Layout/Layout'
-const AlertPopup = () => {
+const AlertPopup = ({ propsRemove }) => {
   const [modalSwitch, setModalSwitch] = useAtom(modalAtom) // 모달 스위치
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
@@ -25,8 +25,8 @@ const AlertPopup = () => {
   // popupDummy에 next가 있으면, firstPopupClick이 실행되고
   // next가 없으면, 팝업과 해당 모달이 종료된다
   const showNextPopup = () => {
-    nowPopup.func()
     if (nowPopup && nowPopup?.next) {
+      nowPopup.func()
       firstPopupClick(nowPopup?.next)
     } else {
       setPopupSwitch(false)
@@ -48,8 +48,8 @@ const AlertPopup = () => {
           {nowPopupType === '1' && (
             <>
               <ModalPart>
-                <ModalTitle>{nowPopup.title}</ModalTitle>
-                <ModalText>{nowPopup.content}</ModalText>
+                <ModalTitle>{nowPopup?.title}</ModalTitle>
+                <ModalText>{nowPopup?.content}</ModalText>
               </ModalPart>
               <BlackBtn onClick={showNextPopup} width={100} height={50}>
                 확인
@@ -59,8 +59,8 @@ const AlertPopup = () => {
           {nowPopupType === '2' && (
             <>
               <ModalPart>
-                <ModalTitle>{nowPopup.title}</ModalTitle>
-                <ModalText>{nowPopup.content}</ModalText>
+                <ModalTitle>{nowPopup?.title}</ModalTitle>
+                <ModalText>{nowPopup?.content}</ModalText>
               </ModalPart>
               <BlackBtn onClick={showNextPopup} width={100} height={50}>
                 확인
@@ -73,8 +73,8 @@ const AlertPopup = () => {
           {nowPopupType === '3' && (
             <>
               <ModalPart>
-                <ModalTitle>{nowPopup.title}</ModalTitle>
-                <ModalText>{nowPopup.content}</ModalText>
+                <ModalTitle>{nowPopup?.title}</ModalTitle>
+                <ModalText>{nowPopup?.content}</ModalText>
               </ModalPart>
               <RedBtn onClick={showNextPopup} width={100} height={50}>
                 확인

@@ -31,6 +31,7 @@ export const StandardDestinaionFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   {
     field: '수정',
+    maxWidth: 90,
     cellRenderer: BtnCellRenderer,
     cellRendererParams: {
       clicked: function (field) {

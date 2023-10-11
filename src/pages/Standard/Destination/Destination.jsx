@@ -62,11 +62,6 @@ const Destination = ({}) => {
 
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
 
-  const firstPopupClick = (num) => {
-    setPopupSwitch(true)
-    const firstPopup = popupDummy.find((popup) => popup.num === num)
-    setNowPopup(firstPopup)
-  }
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -129,6 +124,8 @@ const Destination = ({}) => {
 
   console.log('getRow =>', getRow)
 
+  console.log('nowPopup', nowPopup)
+
   // DELETE
   const mutation = useMutation(deleteAdminDestination, {
     onSuccess: () => {
@@ -136,17 +133,49 @@ const Destination = ({}) => {
     },
   })
 
-  const handleRemoveBtn = useCallback(() => {
-    if (isArray(checkedArray) && checkedArray.length > 0) {
-      if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
-        checkedArray.forEach((item) => {
-          mutation.mutate(item['목적지 고유 번호']) //mutation.mutate로 api 인자 전해줌
-        })
+  const propsRemove = () => {
+    checkedArray.forEach((item) => {
+      mutation.mutate(item['목적지 고유 번호']) //mutation.mutate로 api 인자 전해줌
+    })
+  }
+  const test = () => {
+    console.log(123)
+  }
+
+  const firstPopupClick = useCallback(
+    (num) => {
+      if (isArray(checkedArray) && checkedArray.length > 0) {
+        setPopupSwitch(true)
+        const firstPopup = popupDummy.find((popup) => popup.num === num)
+        setNowPopup({ ...firstPopup, func: propsRemove })
+      } else {
+        alert('선택해주세요!')
       }
-    } else {
-      alert('선택해주세요!')
-    }
-  }, [checkedArray])
+    },
+    [checkedArray],
+  )
+
+  // const firstPopupClick = (num) => {
+  //       if (isArray(checkedArray) && checkedArray.length > 0) {
+  //         setPopupSwitch(true)
+  //         const firstPopup = popupDummy.find((popup) => popup.num === num)
+  //         setNowPopup(firstPopup)
+  //       } else {
+  //         alert('선택해주세요!')
+  //       }
+  // }
+
+  // const handleRemoveBtn = useCallback(() => {
+  //   if (isArray(checkedArray) && checkedArray.length > 0) {
+  //     if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
+  //       checkedArray.forEach((item) => {
+  //         mutation.mutate(item['목적지 고유 번호']) //mutation.mutate로 api 인자 전해줌
+  //       })
+  //     }
+  //   } else {
+  //     alert('선택해주세요!')
+  //   }
+  // }, [checkedArray])
 
   console.log('checkedArray =>', checkedArray)
 
@@ -216,7 +245,7 @@ const Destination = ({}) => {
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn
               onClick={() => {
-                firstPopupClick('1-1')
+                firstPopupClick('2-2')
               }}
             >
               목적지 삭제
@@ -232,7 +261,7 @@ const Destination = ({}) => {
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} />
       </TableContianer>
-      {popupSwitch && <AlertPopup />}
+      {popupSwitch && <AlertPopup propsRemove={propsRemove} />}
       {modalSwitch && <Upload modalSwitch={modalSwitch} setModalSwitch={setModalSwitch} title={'목적지 등록'} />}
     </FilterContianer>
   )

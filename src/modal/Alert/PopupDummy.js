@@ -86,8 +86,8 @@ export const popupDummy = [
   {
     num: '2-2',
     title: '목적지를 삭제하시겠습니까?',
-    next: '3-2',
-    func: () => {},
+    next: '1-14',
+    func: '',
   },
   {
     num: '2-2',
@@ -107,6 +107,7 @@ export const popupDummy = [
     content: '변경된 사항을 저장하시겠습니까?',
     next: '3-2',
   },
+
   {
     num: '3-4',
     title: '팝업 등록',
