@@ -53,3 +53,5 @@ export const popupObject = atom({
   onClick: () => {},
   func: () => {},
 })
+
+export const engRowTitle = atom('')

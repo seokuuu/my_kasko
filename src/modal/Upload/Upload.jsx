@@ -33,11 +33,14 @@ import { popupTypeAtom } from '../../store/Layout/Layout'
 import styled from 'styled-components'
 import { GreyBtn } from '../../common/Button/Button'
 import { useRef } from 'react'
+import { readExcelFile } from '../../utils/ReadExcelFile'
+import { KrFiledtoEng } from '../../lib/tableHelpers'
 
-const Upload = ({ modalSwitch, setModalSwitch, title }) => {
+const Upload = ({ modalSwitch, setModalSwitch, title, originEngRowField }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
+  const [excelToJson, setExcelToJson] = useState({})
 
   const fileInputRef = useRef(null)
   const [selectedFile, setSelectedFile] = useState(null)
@@ -56,17 +59,29 @@ const Upload = ({ modalSwitch, setModalSwitch, title }) => {
     setNowPopupType(firstType)
   }, [nowPopup, nowPopupType])
 
-  const modalClose = () => {
-    setModalSwitch(false)
-  }
+  console.log('originEngRowField', originEngRowField)
 
-  const handleFileChange = (event) => {
+  const handleFileExcel = async (event) => {
     const selectedFile = event.target.files[0]
 
     if (selectedFile) {
       setSelectedFile(selectedFile)
       setUploadProgress(0)
+
+      try {
+        const jsonData = await readExcelFile(selectedFile) // Excel 파일을 JSON으로 변환
+        console.log('JSON Data:', jsonData)
+        const mappedData = KrFiledtoEng(jsonData, originEngRowField)
+        setExcelToJson(mappedData)
+        console.log('mappedData', mappedData)
+      } catch (error) {
+        console.error('Error reading Excel file:', error)
+      }
     }
+  }
+
+  const modalClose = () => {
+    setModalSwitch(false)
   }
 
   const handleCancel = () => {
@@ -90,9 +105,7 @@ const Upload = ({ modalSwitch, setModalSwitch, title }) => {
       event.returnValue = message // Standard for most browsers
       return message // For some older browsers
     }
-
     window.addEventListener('beforeunload', handleBeforeUnload)
-
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload)
     }
@@ -142,7 +155,7 @@ const Upload = ({ modalSwitch, setModalSwitch, title }) => {
                       accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                       ref={fileInputRef}
                       style={{ display: 'none' }}
-                      onChange={handleFileChange}
+                      onChange={handleFileExcel}
                     />
                     <UldWrap>
                       {selectedFile && (

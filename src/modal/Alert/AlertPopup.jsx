@@ -16,9 +16,15 @@ const AlertPopup = ({ propsRemove }) => {
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
 
   // num / next을 받아 팝업 띄우는 컴포넌트의 onClickHandler
+  
   const firstPopupClick = (num) => {
     const firstPopup = popupDummy.find((popup) => popup.num === num)
     setNowPopup(firstPopup)
+  }
+
+  const closePopup = () => {
+    setPopupSwitch(false)
+    setModalSwitch(false)
   }
 
   // 팝업 확인 버튼 onClickHandler
@@ -29,8 +35,7 @@ const AlertPopup = ({ propsRemove }) => {
       nowPopup.func()
       firstPopupClick(nowPopup?.next)
     } else {
-      setPopupSwitch(false)
-      setModalSwitch(false)
+      closePopup()
     }
   }
 
@@ -42,7 +47,7 @@ const AlertPopup = ({ propsRemove }) => {
 
   return (
     <>
-      <FadeOverlay />
+      <FadeOverlay /> v
       <ModalContainer width={400}>
         <ModalSubContainer>
           {nowPopupType === '1' && (
@@ -65,7 +70,7 @@ const AlertPopup = ({ propsRemove }) => {
               <BlackBtn onClick={showNextPopup} width={100} height={50}>
                 확인
               </BlackBtn>
-              <WhiteBtn width={100} height={50}>
+              <WhiteBtn onClick={closePopup} width={100} height={50}>
                 취소
               </WhiteBtn>
             </>
@@ -79,7 +84,7 @@ const AlertPopup = ({ propsRemove }) => {
               <RedBtn onClick={showNextPopup} width={100} height={50}>
                 확인
               </RedBtn>
-              <WhiteBtn width={100} height={50}>
+              <WhiteBtn onClick={closePopup} width={100} height={50}>
                 취소
               </WhiteBtn>
             </>

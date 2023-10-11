@@ -10,7 +10,7 @@ import { GreyBtn } from '../../../common/Button/Button'
 
 import Table from '../../Table/Table'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { engRowTitle, toggleAtom } from '../../../store/Layout/Layout'
 import BlueBar from '../../../modal/BlueBar/BlueBar'
 import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
@@ -43,7 +43,7 @@ import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { selectedRowsAtom } from '../../../store/Layout/Layout'
 import { getAdminDestination, deleteAdminDestination } from '../../../service/admin/Standard'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { add_element_field } from '../../../lib/tableHelpers'
+import { add_element_field, KrFiledtoEng } from '../../../lib/tableHelpers'
 import { isArray } from 'lodash'
 import Test3 from '../../Test/Test3'
 import { modalAtom, popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Layout'
@@ -57,17 +57,10 @@ const Destination = ({}) => {
     setModalSwitch(true)
   }
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
-  console.log('popupSwitch !!!!!!!', popupSwitch)
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
-
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
+  const [originRowTitle, setOriginRowTitle] = useState('') // Excel row to Origin row
 
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
   const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
@@ -99,9 +92,12 @@ const Destination = ({}) => {
 
   const [getRow, setGetRow] = useState('')
   const tableField = useRef(StandardDestinaionFieldsCols)
+  const originEngRowField = StandardDestinaionFields
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  console.log('tableField =>', tableField)
 
   const Param = {
     pageNum: 1,
@@ -124,7 +120,7 @@ const Destination = ({}) => {
 
   console.log('getRow =>', getRow)
 
-  console.log('nowPopup', nowPopup)
+  console.log('nowPopup ★', nowPopup)
 
   // DELETE
   const mutation = useMutation(deleteAdminDestination, {
@@ -133,21 +129,22 @@ const Destination = ({}) => {
     },
   })
 
+  // 선택한 것 삭제 요청 (해당 함수 func 인자로 전달)
   const propsRemove = () => {
     checkedArray.forEach((item) => {
       mutation.mutate(item['목적지 고유 번호']) //mutation.mutate로 api 인자 전해줌
     })
   }
-  const test = () => {
-    console.log(123)
-  }
-
   const firstPopupClick = useCallback(
     (num) => {
       if (isArray(checkedArray) && checkedArray.length > 0) {
         setPopupSwitch(true)
         const firstPopup = popupDummy.find((popup) => popup.num === num)
-        setNowPopup({ ...firstPopup, func: propsRemove })
+        setNowPopup((prevNowPopup) => ({
+          ...prevNowPopup,
+          ...firstPopup,
+          func: propsRemove,
+        }))
       } else {
         alert('선택해주세요!')
       }
@@ -261,8 +258,15 @@ const Destination = ({}) => {
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} />
       </TableContianer>
-      {popupSwitch && <AlertPopup propsRemove={propsRemove} />}
-      {modalSwitch && <Upload modalSwitch={modalSwitch} setModalSwitch={setModalSwitch} title={'목적지 등록'} />}
+      {popupSwitch && <AlertPopup />}
+      {modalSwitch && (
+        <Upload
+          modalSwitch={modalSwitch}
+          setModalSwitch={setModalSwitch}
+          title={'목적지 등록'}
+          originEngRowField={originEngRowField}
+        />
+      )}
     </FilterContianer>
   )
 }
