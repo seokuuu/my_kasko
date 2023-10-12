@@ -10,7 +10,7 @@ import { GreyBtn } from '../../../common/Button/Button'
 
 import Table from '../../Table/Table'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { engRowTitle, toggleAtom } from '../../../store/Layout/Layout'
+import { engRowTitle, excelToJsonAtom, modalObject, toggleAtom } from '../../../store/Layout/Layout'
 import BlueBar from '../../../modal/BlueBar/BlueBar'
 import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
@@ -41,7 +41,7 @@ import { StandardDestinaionFields, StandardDestinaionFieldsCols } from '../../..
 
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { selectedRowsAtom } from '../../../store/Layout/Layout'
-import { getAdminDestination, deleteAdminDestination } from '../../../service/admin/Standard'
+import { getAdminDestination, deleteAdminDestination, postAdminDestination } from '../../../service/admin/Standard'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field, KrFiledtoEng } from '../../../lib/tableHelpers'
 import { isArray } from 'lodash'
@@ -50,18 +50,20 @@ import { modalAtom, popupAtom, popupObject, popupTypeAtom } from '../../../store
 import Upload from '../../../modal/Upload/Upload'
 import { popupDummy } from '../../../modal/Alert/PopupDummy'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
 const Destination = ({}) => {
   const [modalSwitch, setModalSwitch] = useAtom(modalAtom)
-  const openModal = () => {
-    setModalSwitch(true)
-  }
+
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
+  const [nowModal, setNowModal] = useAtom(modalObject) // 모달 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
   const [originRowTitle, setOriginRowTitle] = useState('') // Excel row to Origin row
 
   const [isRotated, setIsRotated] = useState(false)
+
+  const [excelToJson, setExcelToJson] = useAtom(excelToJsonAtom)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
@@ -88,7 +90,7 @@ const Destination = ({}) => {
     setIsModal(true)
   }
 
-  // ---------------------------------------------------------------------------------------------
+  console.log('excelToJson', excelToJson)
 
   const [getRow, setGetRow] = useState('')
   const tableField = useRef(StandardDestinaionFieldsCols)
@@ -96,8 +98,6 @@ const Destination = ({}) => {
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
-
-  console.log('tableField =>', tableField)
 
   const Param = {
     pageNum: 1,
@@ -107,7 +107,6 @@ const Destination = ({}) => {
   // GET
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getAdminDestination', getAdminDestination)
   const resData = data?.data?.data?.list
-  console.log('resData => ', resData)
 
   useEffect(() => {
     let getData = resData
@@ -117,10 +116,6 @@ const Destination = ({}) => {
       setGetRow(add_element_field(getData, StandardDestinaionFields))
     }
   }, [isSuccess, resData])
-
-  console.log('getRow =>', getRow)
-
-  console.log('nowPopup ★', nowPopup)
 
   // DELETE
   const mutation = useMutation(deleteAdminDestination, {
@@ -135,6 +130,13 @@ const Destination = ({}) => {
       mutation.mutate(item['목적지 고유 번호']) //mutation.mutate로 api 인자 전해줌
     })
   }
+
+  // POST
+  const postMutation = useMutationQuery('', postAdminDestination)
+  const propsPost = () => {
+    postMutation.mutate(excelToJson)
+  }
+
   const firstPopupClick = useCallback(
     (num) => {
       if (isArray(checkedArray) && checkedArray.length > 0) {
@@ -151,6 +153,14 @@ const Destination = ({}) => {
     },
     [checkedArray],
   )
+
+  const openModal = () => {
+    setModalSwitch(true)
+    setNowPopup((prev) => ({
+      ...prev,
+      func: propsPost,
+    }))
+  }
 
   // const firstPopupClick = (num) => {
   //       if (isArray(checkedArray) && checkedArray.length > 0) {
@@ -173,10 +183,6 @@ const Destination = ({}) => {
   //     alert('선택해주세요!')
   //   }
   // }, [checkedArray])
-
-  console.log('checkedArray =>', checkedArray)
-
-  console.log('popupSwitch', popupSwitch)
 
   return (
     <FilterContianer>
@@ -265,6 +271,9 @@ const Destination = ({}) => {
           setModalSwitch={setModalSwitch}
           title={'목적지 등록'}
           originEngRowField={originEngRowField}
+          excelToJson={excelToJson}
+          setExcelToJson={setExcelToJson}
+          propsPost={propsPost}
         />
       )}
     </FilterContianer>

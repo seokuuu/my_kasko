@@ -4,19 +4,20 @@ import { ModalPart, Title } from '../../pages/User/SignUp/SignUp.Styled'
 import { BlackBtn, RedBtn, WhiteBtn } from '../../common/Button/Button'
 import { popupDummy } from './PopupDummy'
 import { useAtom } from 'jotai'
-import { alertAtom } from '../../store/Layout/Layout'
+import { alertAtom, modalObject } from '../../store/Layout/Layout'
 import { popupObject, popupTypeAtom, popupAtom, modalAtom } from '../../store/Layout/Layout'
 const AlertPopup = ({ propsRemove }) => {
   const [modalSwitch, setModalSwitch] = useAtom(modalAtom) // 모달 스위치
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
+  const [nowModal, setNowModal] = useAtom(modalObject) // 모달 객체
 
-  console.log('nowPopup', nowPopup)
+  console.log('nowPopup !!!', nowPopup)
 
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
 
   // num / next을 받아 팝업 띄우는 컴포넌트의 onClickHandler
-  
+
   const firstPopupClick = (num) => {
     const firstPopup = popupDummy.find((popup) => popup.num === num)
     setNowPopup(firstPopup)
@@ -47,7 +48,7 @@ const AlertPopup = ({ propsRemove }) => {
 
   return (
     <>
-      <FadeOverlay /> v
+      <FadeOverlay />
       <ModalContainer width={400}>
         <ModalSubContainer>
           {nowPopupType === '1' && (

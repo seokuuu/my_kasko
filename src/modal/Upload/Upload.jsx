@@ -36,11 +36,13 @@ import { useRef } from 'react'
 import { readExcelFile } from '../../utils/ReadExcelFile'
 import { KrFiledtoEng } from '../../lib/tableHelpers'
 
-const Upload = ({ modalSwitch, setModalSwitch, title, originEngRowField }) => {
+// 1. Upload를 사용하는 컴포넌트에서 originEngRowField props를 받는다
+// ex) Destination.jsx에서 StandardDestinaionFields를 받음.
+// 2. excelToJson, setExcelToJson을 Props로 내려받아, handleFileExcel에 처리된 mappedData를 set으로 받는다
+const Upload = ({ modalSwitch, setModalSwitch, title, originEngRowField, excelToJson, setExcelToJson, propsPost }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
-  const [excelToJson, setExcelToJson] = useState({})
 
   const fileInputRef = useRef(null)
   const [selectedFile, setSelectedFile] = useState(null)
@@ -50,7 +52,11 @@ const Upload = ({ modalSwitch, setModalSwitch, title, originEngRowField }) => {
   const firstPopupClick = (num) => {
     setPopupSwitch(true)
     const firstPopup = popupDummy.find((popup) => popup.num === num)
-    setNowPopup(firstPopup)
+    setNowPopup((prevNowPopup) => ({
+      ...prevNowPopup,
+      ...firstPopup,
+      func: propsPost,
+    }))
   }
 
   // 팝업 타입 최신화
@@ -58,8 +64,6 @@ const Upload = ({ modalSwitch, setModalSwitch, title, originEngRowField }) => {
     const firstType = nowPopup.num.split('-')[0]
     setNowPopupType(firstType)
   }, [nowPopup, nowPopupType])
-
-  console.log('originEngRowField', originEngRowField)
 
   const handleFileExcel = async (event) => {
     const selectedFile = event.target.files[0]
@@ -70,13 +74,10 @@ const Upload = ({ modalSwitch, setModalSwitch, title, originEngRowField }) => {
 
       try {
         const jsonData = await readExcelFile(selectedFile) // Excel 파일을 JSON으로 변환
-        console.log('JSON Data:', jsonData)
+
         const mappedData = KrFiledtoEng(jsonData, originEngRowField)
         setExcelToJson(mappedData)
-        console.log('mappedData', mappedData)
-      } catch (error) {
-        console.error('Error reading Excel file:', error)
-      }
+      } catch (error) {}
     }
   }
 
@@ -96,8 +97,6 @@ const Upload = ({ modalSwitch, setModalSwitch, title, originEngRowField }) => {
   const radioDummy = ['대량 등록', '단일 등록']
 
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-
-  console.log('', (popupMessages[1].find((message) => message.num === '4') || {}).title)
 
   useEffect(() => {
     const handleBeforeUnload = (event) => {
