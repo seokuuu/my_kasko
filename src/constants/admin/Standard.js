@@ -34,9 +34,8 @@ export const StandardDestinaionFieldsCols = [
     maxWidth: 90,
     cellRenderer: BtnCellRenderer,
     cellRendererParams: {
-      clicked: function (field) {
-        alert(`${field} was clicked`)
-      },
+      uidFieldName: '목적지 고유 번호',
+      editType: 'table',
     },
   },
   {
