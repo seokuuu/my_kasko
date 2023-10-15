@@ -44,10 +44,6 @@ const Table = ({ modalSwitch, setModalSwitch, title, originEngRowField, excelToJ
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
 
-  const fileInputRef = useRef(null)
-  const [selectedFile, setSelectedFile] = useState(null)
-  const [uploadProgress, setUploadProgress] = useState(0)
-
   // 처음 팝업 띄우는 컴포넌트의 onClickHandler
   const firstPopupClick = (num) => {
     setPopupSwitch(true)
@@ -65,56 +61,15 @@ const Table = ({ modalSwitch, setModalSwitch, title, originEngRowField, excelToJ
     setNowPopupType(firstType)
   }, [nowPopup, nowPopupType])
 
-  const handleFileExcel = async (event) => {
-    const selectedFile = event.target.files[0]
-
-    if (selectedFile) {
-      setSelectedFile(selectedFile)
-      setUploadProgress(0)
-
-      try {
-        const jsonData = await readExcelFile(selectedFile) // Excel 파일을 JSON으로 변환
-
-        const mappedData = KrFiledtoEng(jsonData, originEngRowField)
-        setExcelToJson(mappedData)
-      } catch (error) {}
-    }
-  }
-
   const modalClose = () => {
     setModalSwitch(false)
   }
-
-  const handleCancel = () => {
-    setSelectedFile(null)
-    setUploadProgress(0)
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value = null
-    }
-  }
-
-  const radioDummy = ['대량 등록', '단일 등록']
-
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-
-  useEffect(() => {
-    const handleBeforeUnload = (event) => {
-      const message = '현재 작업 중인 내용이 저장되지 않았습니다. 페이지를 나가시겠습니까?'
-      event.returnValue = message // Standard for most browsers
-      return message // For some older browsers
-    }
-    window.addEventListener('beforeunload', handleBeforeUnload)
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload)
-    }
-  }, [])
 
   return (
     // 재고 관리 - 판매 구분 변경
     <>
       <FadeOverlay />
-      <ModalContainer width={850}>
+      <ModalContainer style={{ zIndex: '9999' }} width={850}>
         <BlueBarHeader>
           <div>{title}</div>
           <div>
@@ -124,64 +79,11 @@ const Table = ({ modalSwitch, setModalSwitch, title, originEngRowField, excelToJ
         <BlueSubContainer>
           <div>
             <BlueMainDiv style={{ margin: '0px auto' }}>
-              <BlueSubDiv>
-                <ExRadioWrap>
-                  {radioDummy.map((text, index) => (
-                    <RadioMainDiv key={index}>
-                      <RadioCircleDiv
-                        isChecked={checkRadio[index]}
-                        onClick={() => {
-                          setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-                        }}
-                      >
-                        <RadioInnerCircleDiv />
-                      </RadioCircleDiv>
-                      <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
-                    </RadioMainDiv>
-                  ))}
-                </ExRadioWrap>
-              </BlueSubDiv>
+              <BlueSubDiv></BlueSubDiv>
             </BlueMainDiv>
-            <BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px', display: 'flex' }}>
-              {!selectedFile && (
-                <BlueSubDiv style={{ display: 'block' }}>
-                  <UldWrap>
-                    <UldText>
-                      업로드 최대 용량 10MB <br /> 파일의 용량에 따라 업로드 시간이 지연될 수 있습니다.
-                    </UldText>
-                    <input
-                      type="file"
-                      accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                      ref={fileInputRef}
-                      style={{ display: 'none' }}
-                      onChange={handleFileExcel}
-                    />
-                    <UldWrap>
-                      {selectedFile && (
-                        <div>
-                          <div>{selectedFile.name}</div>
-                          <div>
-                            <progress value={uploadProgress} max="100" />
-                          </div>
-                        </div>
-                      )}
-                    </UldWrap>
-                  </UldWrap>
-                  <UldWrap>
-                    <UldBtn onClick={() => fileInputRef.current.click()}> 업로드</UldBtn>
-                  </UldWrap>
-                </BlueSubDiv>
-              )}
-              {selectedFile && (
-                <UldAfterWrap>
-                  <div style={{ fontSize: '16px' }}>{selectedFile.name}</div>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <progress value={uploadProgress} max="100" />
-                    <div>x</div>
-                  </div>
-                </UldAfterWrap>
-              )}
-            </BlueMainDiv>
+            <BlueMainDiv
+              style={{ margin: '0px auto', borderTop: 'none', height: '200px', display: 'flex' }}
+            ></BlueMainDiv>
           </div>
           <BlueBtnWrap>
             <BlueBlackBtn
@@ -189,7 +91,7 @@ const Table = ({ modalSwitch, setModalSwitch, title, originEngRowField, excelToJ
                 firstPopupClick('2-3')
               }}
             >
-              저장
+              테이블 테스트
             </BlueBlackBtn>
             {popupSwitch && <AlertPopup />}
           </BlueBtnWrap>

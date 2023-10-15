@@ -142,46 +142,53 @@ const Upload = ({ modalSwitch, setModalSwitch, title, originEngRowField, excelTo
                 </ExRadioWrap>
               </BlueSubDiv>
             </BlueMainDiv>
-            <BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px', display: 'flex' }}>
-              {!selectedFile && (
-                <BlueSubDiv style={{ display: 'block' }}>
-                  <UldWrap>
-                    <UldText>
-                      업로드 최대 용량 10MB <br /> 파일의 용량에 따라 업로드 시간이 지연될 수 있습니다.
-                    </UldText>
-                    <input
-                      type="file"
-                      accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                      ref={fileInputRef}
-                      style={{ display: 'none' }}
-                      onChange={handleFileExcel}
-                    />
+            {checkRadio[0] && (
+              <BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px', display: 'flex' }}>
+                {!selectedFile && (
+                  <BlueSubDiv style={{ display: 'block' }}>
                     <UldWrap>
-                      {selectedFile && (
-                        <div>
-                          <div>{selectedFile.name}</div>
+                      <UldText>
+                        업로드 최대 용량 10MB <br /> 파일의 용량에 따라 업로드 시간이 지연될 수 있습니다.
+                      </UldText>
+                      <input
+                        type="file"
+                        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                        onChange={handleFileExcel}
+                      />
+                      <UldWrap>
+                        {selectedFile && (
                           <div>
-                            <progress value={uploadProgress} max="100" />
+                            <div>{selectedFile.name}</div>
+                            <div>
+                              <progress value={uploadProgress} max="100" />
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
+                      </UldWrap>
                     </UldWrap>
-                  </UldWrap>
-                  <UldWrap>
-                    <UldBtn onClick={() => fileInputRef.current.click()}> 업로드</UldBtn>
-                  </UldWrap>
-                </BlueSubDiv>
-              )}
-              {selectedFile && (
-                <UldAfterWrap>
-                  <div style={{ fontSize: '16px' }}>{selectedFile.name}</div>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <progress value={uploadProgress} max="100" />
-                    <div>x</div>
-                  </div>
-                </UldAfterWrap>
-              )}
-            </BlueMainDiv>
+                    <UldWrap>
+                      <UldBtn onClick={() => fileInputRef.current.click()}> 업로드</UldBtn>
+                    </UldWrap>
+                  </BlueSubDiv>
+                )}
+                {selectedFile && (
+                  <UldAfterWrap>
+                    <div style={{ fontSize: '16px' }}>{selectedFile.name}</div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <progress value={uploadProgress} max="100" />
+                      <div>x</div>
+                    </div>
+                  </UldAfterWrap>
+                )}
+              </BlueMainDiv>
+            )}
+            {checkRadio[1] && (
+              <BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px', display: 'flex' }}>
+                wmf
+              </BlueMainDiv>
+            )}
           </div>
           <BlueBtnWrap>
             <BlueBlackBtn

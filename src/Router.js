@@ -158,13 +158,14 @@ import PopupTest from './modal/Alert/PopupTest'
 import Upload from './modal/Upload/Upload'
 import TestExcel from './pages/Test/TestExcel'
 import Table from './modal/Table/Table'
+import TableTest from './modal/Table/TableTest'
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
-        <Route path="/table" element={<Table />} />
+        <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />

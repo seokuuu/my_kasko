@@ -61,3 +61,7 @@ export const modalObject = atom({
 export const engRowTitle = atom('')
 
 export const excelToJsonAtom = atom('')
+
+export const btnCellRenderAtom = atom(false)
+
+export const btnCellUidAtom = atom('')

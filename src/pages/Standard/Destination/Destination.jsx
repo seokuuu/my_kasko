@@ -46,11 +46,12 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field, KrFiledtoEng } from '../../../lib/tableHelpers'
 import { isArray } from 'lodash'
 import Test3 from '../../Test/Test3'
-import { modalAtom, popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Layout'
+import { modalAtom, popupAtom, popupObject, popupTypeAtom, btnCellRenderAtom } from '../../../store/Layout/Layout'
 import Upload from '../../../modal/Upload/Upload'
 import { popupDummy } from '../../../modal/Alert/PopupDummy'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
 import useMutationQuery from '../../../hooks/useMutationQuery'
+import TableTest from '../../../modal/Table/TableTest'
 
 const Destination = ({}) => {
   const [modalSwitch, setModalSwitch] = useAtom(modalAtom)
@@ -61,6 +62,7 @@ const Destination = ({}) => {
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
   const [originRowTitle, setOriginRowTitle] = useState('') // Excel row to Origin row
 
+  const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
   const [isRotated, setIsRotated] = useState(false)
 
   const [excelToJson, setExcelToJson] = useAtom(excelToJsonAtom)
@@ -107,6 +109,8 @@ const Destination = ({}) => {
   // GET
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getAdminDestination', getAdminDestination)
   const resData = data?.data?.data?.list
+
+  console.log('resData', resData)
 
   useEffect(() => {
     let getData = resData
@@ -183,6 +187,8 @@ const Destination = ({}) => {
   //     alert('선택해주세요!')
   //   }
   // }, [checkedArray])
+
+  console.log('btnCellModal =>', btnCellModal)
 
   return (
     <FilterContianer>
@@ -263,6 +269,7 @@ const Destination = ({}) => {
           </div>
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} />
+        {btnCellModal && <TableTest />}
       </TableContianer>
       {popupSwitch && <AlertPopup />}
       {modalSwitch && (
