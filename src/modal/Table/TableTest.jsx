@@ -1,10 +1,14 @@
 import React from 'react'
 import { styled } from 'styled-components'
+import { FadeOverlay, ModalContainer } from '../Common/Common.Styled'
 
 const TableTest = () => {
   return (
     <>
-      <TestModal>바보</TestModal>
+      <FadeOverlay />
+      <ModalContainer>
+        <TestModal>바보</TestModal>
+      </ModalContainer>
     </>
   )
 }

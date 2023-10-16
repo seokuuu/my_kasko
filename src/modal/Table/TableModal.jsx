@@ -39,7 +39,7 @@ import { KrFiledtoEng } from '../../lib/tableHelpers'
 // 1. Upload를 사용하는 컴포넌트에서 originEngRowField props를 받는다
 // ex) Destination.jsx에서 StandardDestinaionFields를 받음.
 // 2. excelToJson, setExcelToJson을 Props로 내려받아, handleFileExcel에 처리된 mappedData를 set으로 받는다
-const Table = ({ modalSwitch, setModalSwitch, title, originEngRowField, excelToJson, setExcelToJson, propsPost }) => {
+const TableModal = ({ setModalSwitch, title, btnCellModal, setBtnCellModal, propsPost }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
@@ -62,7 +62,7 @@ const Table = ({ modalSwitch, setModalSwitch, title, originEngRowField, excelToJ
   }, [nowPopup, nowPopupType])
 
   const modalClose = () => {
-    setModalSwitch(false)
+    setBtnCellModal(false)
   }
 
   return (
@@ -101,7 +101,7 @@ const Table = ({ modalSwitch, setModalSwitch, title, originEngRowField, excelToJ
   )
 }
 
-export default Table
+export default TableModal
 
 const UldWrap = styled.div`
   margin-left: auto;

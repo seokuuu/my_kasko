@@ -157,7 +157,7 @@ import PopupTest from './modal/Alert/PopupTest'
 
 import Upload from './modal/Upload/Upload'
 import TestExcel from './pages/Test/TestExcel'
-import Table from './modal/Table/Table'
+import TableModal from './modal/Table/TableModal'
 import TableTest from './modal/Table/TableTest'
 
 const Router = () => {

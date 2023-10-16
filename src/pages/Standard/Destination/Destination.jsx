@@ -51,7 +51,7 @@ import Upload from '../../../modal/Upload/Upload'
 import { popupDummy } from '../../../modal/Alert/PopupDummy'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
 import useMutationQuery from '../../../hooks/useMutationQuery'
-import TableTest from '../../../modal/Table/TableTest'
+import TableModal from '../../../modal/Table/TableModal'
 
 const Destination = ({}) => {
   const [modalSwitch, setModalSwitch] = useAtom(modalAtom)
@@ -269,7 +269,7 @@ const Destination = ({}) => {
           </div>
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} />
-        {btnCellModal && <TableTest />}
+        {btnCellModal && <TableModal btnCellModal={btnCellModal} setBtnCellModal={setBtnCellModal} />}
       </TableContianer>
       {popupSwitch && <AlertPopup />}
       {modalSwitch && (

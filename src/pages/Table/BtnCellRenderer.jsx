@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { SkyBtn } from '../../common/Button/Button'
-import Table from '../../modal/Table/Table'
+import Table from '../../modal/Table/TableModal'
 import { btnCellRenderAtom, btnCellUidAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
@@ -9,7 +9,6 @@ const BtnCellRenderer = ({ value, data, uidFieldName, editType }) => {
   const uid = data[uidFieldName]
 
   // uid를 전역으로 관리
-  //
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
 
   useEffect(() => {
