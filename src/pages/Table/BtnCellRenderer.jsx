@@ -1,35 +1,33 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SkyBtn } from '../../common/Button/Button'
-import Table from '../../modal/Table/TableModal'
 import { btnCellRenderAtom, btnCellUidAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
-// ex) StandardDestinaionFieldsCols에서 uid 역할을 하는 key값을 수정 array에 넣어주자
-const BtnCellRenderer = ({ value, data, uidFieldName, editType }) => {
+const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
   const uid = data[uidFieldName]
-
-  // uid를 전역으로 관리
+  const [overallData, setOverallData] = useState(data)
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-
-  useEffect(() => {
-    setUidAtom(uid)
-  }, [])
-  console.log('uidAtom =>', uidAtom)
-
   const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
 
+  console.log('overallData ', overallData)
+  console.log('uidAtom =>', uidAtom)
   console.log('editType', editType)
 
   const btnClickedHandler = () => {
     switch (editType) {
       case 'table':
         setBtnCellModal(true)
+        setUidAtom(uid)
+        console.log('Clicked uid:', uid)
         break
       case 'b':
+        // 추가적인 작업이 필요한 경우
         break
       case 'c':
+        // 추가적인 작업이 필요한 경우
         break
       case 'd':
+        // 추가적인 작업이 필요한 경우
         break
       default:
         break

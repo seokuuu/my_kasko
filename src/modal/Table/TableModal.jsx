@@ -39,7 +39,7 @@ import { KrFiledtoEng } from '../../lib/tableHelpers'
 // 1. Upload를 사용하는 컴포넌트에서 originEngRowField props를 받는다
 // ex) Destination.jsx에서 StandardDestinaionFields를 받음.
 // 2. excelToJson, setExcelToJson을 Props로 내려받아, handleFileExcel에 처리된 mappedData를 set으로 받는다
-const TableModal = ({ setModalSwitch, title, btnCellModal, setBtnCellModal, propsPost }) => {
+const TableModal = ({ setModalSwitch, title, btnCellModal, setBtnCellModal, propsPost, modalInTable }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
@@ -81,9 +81,24 @@ const TableModal = ({ setModalSwitch, title, btnCellModal, setBtnCellModal, prop
             <BlueMainDiv style={{ margin: '0px auto' }}>
               <BlueSubDiv></BlueSubDiv>
             </BlueMainDiv>
-            <BlueMainDiv
-              style={{ margin: '0px auto', borderTop: 'none', height: '200px', display: 'flex' }}
-            ></BlueMainDiv>
+            <BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px', padding: '0px' }}>
+              <Table>
+                <thead>
+                  <tr>
+                    {Object.keys(modalInTable)?.map((key) => (
+                      <Th key={key}>{key}</Th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    {Object.values(modalInTable)?.map((value, index) => (
+                      <Td key={index}>{value === 'auto' ? '' : <Input type="text" />}</Td>
+                    ))}
+                  </tr>
+                </tbody>
+              </Table>
+            </BlueMainDiv>
           </div>
           <BlueBtnWrap>
             <BlueBlackBtn
@@ -134,4 +149,38 @@ const UldAfterWrap = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`
+
+const Table = styled.table`
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+  font-size: 18px;
+
+  thead {
+    background-color: #dbe2f0;
+    border: 1px solid #ddd;
+  }
+`
+
+const Th = styled.th`
+  border: 1px solid #c8c8c8;
+  padding: 8px;
+  text-align: center;
+  font-weight: 100;
+`
+
+const Td = styled.td`
+  border: 1px solid #ddd;
+  text-align: center;
+  font-weight: 100;
+  width: 100px;
+  height: 35px;
+  padding: 3px;
+`
+
+const Input = styled.input`
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 `

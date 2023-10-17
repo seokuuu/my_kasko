@@ -37,7 +37,12 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
 
-import { StandardDestinaionFields, StandardDestinaionFieldsCols } from '../../../constants/admin/Standard'
+import {
+  StandardDestinaionFields,
+  StandardDestinaionFieldsCols,
+  StandardDestinationEdit,
+  StandardDestinationPost,
+} from '../../../constants/admin/Standard'
 
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { selectedRowsAtom } from '../../../store/Layout/Layout'
@@ -46,7 +51,14 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field, KrFiledtoEng } from '../../../lib/tableHelpers'
 import { isArray } from 'lodash'
 import Test3 from '../../Test/Test3'
-import { modalAtom, popupAtom, popupObject, popupTypeAtom, btnCellRenderAtom } from '../../../store/Layout/Layout'
+import {
+  modalAtom,
+  popupAtom,
+  popupObject,
+  popupTypeAtom,
+  btnCellRenderAtom,
+  btnCellUidAtom,
+} from '../../../store/Layout/Layout'
 import Upload from '../../../modal/Upload/Upload'
 import { popupDummy } from '../../../modal/Alert/PopupDummy'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
@@ -60,12 +72,15 @@ const Destination = ({}) => {
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowModal, setNowModal] = useAtom(modalObject) // 모달 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
+  const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
   const [originRowTitle, setOriginRowTitle] = useState('') // Excel row to Origin row
 
   const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
   const [isRotated, setIsRotated] = useState(false)
 
   const [excelToJson, setExcelToJson] = useAtom(excelToJsonAtom)
+
+  console.log('uidAtom', uidAtom)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
@@ -111,6 +126,8 @@ const Destination = ({}) => {
   const resData = data?.data?.data?.list
 
   console.log('resData', resData)
+
+  console.log('getRow', getRow)
 
   useEffect(() => {
     let getData = resData
@@ -189,6 +206,10 @@ const Destination = ({}) => {
   // }, [checkedArray])
 
   console.log('btnCellModal =>', btnCellModal)
+
+  const filteredData = resData?.filter((item) => item.uidAtom === uidAtom)
+
+  console.log('filteredData', filteredData)
 
   return (
     <FilterContianer>
@@ -269,7 +290,13 @@ const Destination = ({}) => {
           </div>
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} />
-        {btnCellModal && <TableModal btnCellModal={btnCellModal} setBtnCellModal={setBtnCellModal} />}
+        {btnCellModal && (
+          <TableModal
+            btnCellModal={btnCellModal}
+            setBtnCellModal={setBtnCellModal}
+            modalInTable={StandardDestinationEdit}
+          />
+        )}
       </TableContianer>
       {popupSwitch && <AlertPopup />}
       {modalSwitch && (
