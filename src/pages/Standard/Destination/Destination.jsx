@@ -46,7 +46,12 @@ import {
 
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { selectedRowsAtom } from '../../../store/Layout/Layout'
-import { getAdminDestination, deleteAdminDestination, postAdminDestination } from '../../../service/admin/Standard'
+import {
+  getAdminDestination,
+  deleteAdminDestination,
+  postAdminDestination,
+  EditAdminDestination,
+} from '../../../service/admin/Standard'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field, KrFiledtoEng } from '../../../lib/tableHelpers'
 import { isArray } from 'lodash'
@@ -205,11 +210,31 @@ const Destination = ({}) => {
   //   }
   // }, [checkedArray])
 
-  console.log('btnCellModal =>', btnCellModal)
+  // Edit
+  const editMutation = useMutationQuery('', EditAdminDestination)
+  const propsEdit = () => {
+    editMutation.mutate(editInput)
+  }
 
-  const filteredData = resData?.filter((item) => item.uidAtom === uidAtom)
+  const editInit = {
+    uid: '',
+    name: '',
+  }
 
-  console.log('filteredData', filteredData)
+  const [editInput, setEditInput] = useState(editInit)
+
+  const onEditHandler = useCallback(
+    (e) => {
+      const { name, value } = e.target
+      setEditInput({ ...editInput, uid: uidAtom, [name]: value })
+    },
+    [editInput],
+  )
+
+  console.log('editInput @@', editInput)
+  console.log('uidAtom @@', uidAtom)
+
+  console.log('resData', resData)
 
   return (
     <FilterContianer>
@@ -295,6 +320,11 @@ const Destination = ({}) => {
             btnCellModal={btnCellModal}
             setBtnCellModal={setBtnCellModal}
             modalInTable={StandardDestinationEdit}
+            title={'목적지 수정'}
+            getRow={getRow}
+            uidAtom={uidAtom}
+            onEditHandler={onEditHandler}
+            propsHandler={propsEdit}
           />
         )}
       </TableContianer>
@@ -307,7 +337,7 @@ const Destination = ({}) => {
           originEngRowField={originEngRowField}
           excelToJson={excelToJson}
           setExcelToJson={setExcelToJson}
-          propsPost={propsPost}
+          propsHandler={propsPost}
         />
       )}
     </FilterContianer>

@@ -59,7 +59,7 @@ export const StandardDestinaionFieldsCols = [
     minWidth: 100,
   },
   { field: '목적지 코드', minWidth: 100 }, //숫자
-  { field: '목적지명', minWidth: 100 },
+  { field: '목적지 명', minWidth: 100 },
   { field: '작성자', minWidth: 100 },
   {
     field: '작성일',

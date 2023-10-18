@@ -6,9 +6,9 @@ import { popupDummy } from './PopupDummy'
 import { useAtom } from 'jotai'
 import { alertAtom, modalObject } from '../../store/Layout/Layout'
 import { popupObject, popupTypeAtom, popupAtom, modalAtom } from '../../store/Layout/Layout'
-const AlertPopup = ({ propsRemove }) => {
+const AlertPopup = ({ propsRemove, setPropsPopup }) => {
   const [modalSwitch, setModalSwitch] = useAtom(modalAtom) // 모달 스위치
-  const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
+  // const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowModal, setNowModal] = useAtom(modalObject) // 모달 객체
 
@@ -24,7 +24,7 @@ const AlertPopup = ({ propsRemove }) => {
   }
 
   const closePopup = () => {
-    setPopupSwitch(false)
+    setPropsPopup(false)
     setModalSwitch(false)
   }
 
@@ -37,6 +37,7 @@ const AlertPopup = ({ propsRemove }) => {
       firstPopupClick(nowPopup?.next)
     } else {
       closePopup()
+      console.log('비상 !!!!!')
     }
   }
 

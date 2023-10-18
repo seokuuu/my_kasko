@@ -39,7 +39,15 @@ import { KrFiledtoEng } from '../../lib/tableHelpers'
 // 1. Upload를 사용하는 컴포넌트에서 originEngRowField props를 받는다
 // ex) Destination.jsx에서 StandardDestinaionFields를 받음.
 // 2. excelToJson, setExcelToJson을 Props로 내려받아, handleFileExcel에 처리된 mappedData를 set으로 받는다
-const Upload = ({ modalSwitch, setModalSwitch, title, originEngRowField, excelToJson, setExcelToJson, propsPost }) => {
+const Upload = ({
+  modalSwitch,
+  setModalSwitch,
+  title,
+  originEngRowField,
+  excelToJson,
+  setExcelToJson,
+  propsHandler,
+}) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
@@ -55,7 +63,7 @@ const Upload = ({ modalSwitch, setModalSwitch, title, originEngRowField, excelTo
     setNowPopup((prevNowPopup) => ({
       ...prevNowPopup,
       ...firstPopup,
-      func: propsPost,
+      func: propsHandler,
     }))
   }
 
@@ -198,7 +206,7 @@ const Upload = ({ modalSwitch, setModalSwitch, title, originEngRowField, excelTo
             >
               저장
             </BlueBlackBtn>
-            {popupSwitch && <AlertPopup />}
+            {popupSwitch && <AlertPopup setPropsPopup={setPopupSwitch} />}
           </BlueBtnWrap>
         </BlueSubContainer>
       </ModalContainer>

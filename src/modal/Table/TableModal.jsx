@@ -24,7 +24,7 @@ import { useEffect } from 'react'
 import CommonTest from '../Alert/PopupMessages'
 import { popupMessages } from '../Alert/PopupMessages'
 import AlertPopup from '../Alert/AlertPopup'
-import { popupAtom } from '../../store/Layout/Layout'
+import { adminDestnationPopup } from '../../store/Layout/Popup'
 
 import { popupObject } from '../../store/Layout/Layout'
 import { popupDummy } from '../Alert/PopupDummy'
@@ -36,11 +36,24 @@ import { useRef } from 'react'
 import { readExcelFile } from '../../utils/ReadExcelFile'
 import { KrFiledtoEng } from '../../lib/tableHelpers'
 
-// 1. Upload를 사용하는 컴포넌트에서 originEngRowField props를 받는다
-// ex) Destination.jsx에서 StandardDestinaionFields를 받음.
-// 2. excelToJson, setExcelToJson을 Props로 내려받아, handleFileExcel에 처리된 mappedData를 set으로 받는다
-const TableModal = ({ setModalSwitch, title, btnCellModal, setBtnCellModal, propsPost, modalInTable }) => {
-  const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
+// 1. Destination에서 key값이 한글로 매핑된 Object를 가져온다 (getRow)
+// 2.btnCellRenderAtom이 switch 역할
+//
+const TableModal = ({
+  setModalSwitch,
+  title,
+  btnCellModal,
+  setBtnCellModal,
+  propsHandler,
+  modalInTable,
+  getRow,
+  uidAtom,
+  onEditHandler,
+  editInput,
+  setEditInput,
+  propsEdit,
+}) => {
+  const [popupSwitch, setPopupSwitch] = useAtom(adminDestnationPopup) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
 
@@ -51,7 +64,7 @@ const TableModal = ({ setModalSwitch, title, btnCellModal, setBtnCellModal, prop
     setNowPopup((prevNowPopup) => ({
       ...prevNowPopup,
       ...firstPopup,
-      func: propsPost,
+      func: propsHandler,
     }))
   }
 
@@ -64,6 +77,16 @@ const TableModal = ({ setModalSwitch, title, btnCellModal, setBtnCellModal, prop
   const modalClose = () => {
     setBtnCellModal(false)
   }
+
+  const matchingRow = getRow?.find((row) => row['목적지 고유 번호'] === uidAtom)
+  const filteredRow = Object.keys(modalInTable).reduce((acc, key) => {
+    if (matchingRow[key]) {
+      acc[key] = matchingRow[key]
+    }
+    return acc
+  }, {})
+
+  console.log('filteredRow', filteredRow)
 
   return (
     // 재고 관리 - 판매 구분 변경
@@ -81,19 +104,43 @@ const TableModal = ({ setModalSwitch, title, btnCellModal, setBtnCellModal, prop
             <BlueMainDiv style={{ margin: '0px auto' }}>
               <BlueSubDiv></BlueSubDiv>
             </BlueMainDiv>
-            <BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px', padding: '0px' }}>
+            {/* <BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px', padding: '0px' }}>
               <Table>
                 <thead>
                   <tr>
-                    {Object.keys(modalInTable)?.map((key) => (
+                    {Object.keys(filteredRow)?.map((key) => (
                       <Th key={key}>{key}</Th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    {Object.values(modalInTable)?.map((value, index) => (
+                    {Object.values(filteredRow)?.map((value, index) => (
                       <Td key={index}>{value === 'auto' ? '' : <Input type="text" />}</Td>
+                    ))}
+                  </tr>
+                </tbody>
+              </Table>
+            </BlueMainDiv> */}
+            <BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px', padding: '0px' }}>
+              <Table>
+                <thead>
+                  <tr>
+                    {Object.keys(filteredRow)?.map((key) => (
+                      <Th key={key}>{key}</Th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    {Object.entries(filteredRow)?.map(([key, value], index) => (
+                      <Td key={index}>
+                        {modalInTable[key] === 'input' ? (
+                          <Input type="text" name="name" onChange={onEditHandler} />
+                        ) : (
+                          matchingRow[key]
+                        )}
+                      </Td>
                     ))}
                   </tr>
                 </tbody>
@@ -106,9 +153,9 @@ const TableModal = ({ setModalSwitch, title, btnCellModal, setBtnCellModal, prop
                 firstPopupClick('2-3')
               }}
             >
-              테이블 테스트
+              저장
             </BlueBlackBtn>
-            {popupSwitch && <AlertPopup />}
+            {popupSwitch && <AlertPopup setPropsPopup={setPopupSwitch} />}
           </BlueBtnWrap>
         </BlueSubContainer>
       </ModalContainer>
@@ -168,6 +215,7 @@ const Th = styled.th`
   padding: 8px;
   text-align: center;
   font-weight: 100;
+  font-size: 18px;
 `
 
 const Td = styled.td`
@@ -177,6 +225,7 @@ const Td = styled.td`
   width: 100px;
   height: 35px;
   padding: 3px;
+  font-size: 18px;
 `
 
 const Input = styled.input`
