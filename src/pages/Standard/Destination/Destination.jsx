@@ -316,20 +316,22 @@ const Destination = ({}) => {
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} />
         {btnCellModal && (
+          // Edit
           <TableModal
-            btnCellModal={btnCellModal}
+            btnCellModal={btnCellModal} // Modal Atom Switch
             setBtnCellModal={setBtnCellModal}
-            modalInTable={StandardDestinationEdit}
+            modalInTable={StandardDestinationEdit} // Modal 안에 들어갈 Table 매칭 디렉토리 ex)
             title={'목적지 수정'}
-            getRow={getRow}
-            uidAtom={uidAtom}
-            onEditHandler={onEditHandler}
-            propsHandler={propsEdit}
+            getRow={getRow} // 해당 컴포넌트 Table 자체 Object (한글)
+            uidAtom={uidAtom} // 수정버튼 누른 해당 object의 고유 id (btnCellRender에서 추출된 uid)
+            onEditHandler={onEditHandler} // edit 버튼의 함수를 스프레드 func를 전달
+            propsHandler={propsEdit} // 실질 patch 역할하는 함수
           />
         )}
       </TableContianer>
       {popupSwitch && <AlertPopup />}
       {modalSwitch && (
+        // Post
         <Upload
           modalSwitch={modalSwitch}
           setModalSwitch={setModalSwitch}

@@ -36,23 +36,12 @@ import { useRef } from 'react'
 import { readExcelFile } from '../../utils/ReadExcelFile'
 import { KrFiledtoEng } from '../../lib/tableHelpers'
 
+//  ****** 수정용 table을 가져오는 단일 컴포넌트 *******
+// ex) Destination으로 예를 듦
 // 1. Destination에서 key값이 한글로 매핑된 Object를 가져온다 (getRow)
-// 2.btnCellRenderAtom이 switch 역할
-//
-const TableModal = ({
-  setModalSwitch,
-  title,
-  btnCellModal,
-  setBtnCellModal,
-  propsHandler,
-  modalInTable,
-  getRow,
-  uidAtom,
-  onEditHandler,
-  editInput,
-  setEditInput,
-  propsEdit,
-}) => {
+// 2. btnCellRenderAtom이 해당 TableModal의 switch 역할 - propsHandler로 받음
+// propsHandler를 해당 firstPopupClick의 안 setNowPopup의 func 기능으로 쓴다.
+const TableModal = ({ title, setBtnCellModal, propsHandler, modalInTable, getRow, uidAtom, onEditHandler }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(adminDestnationPopup) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
@@ -78,7 +67,13 @@ const TableModal = ({
     setBtnCellModal(false)
   }
 
+  // 한글 key object의 uid에 해당하는 '목적지 고유 번호' 를 return
   const matchingRow = getRow?.find((row) => row['목적지 고유 번호'] === uidAtom)
+
+  // matchingRow에서
+  // '목적지 코드': 'auto',
+  // '목적지 명': 'input', 와 같은 data가 매칭되게끔 필터함. auto는 렌더, input은 input으로 렌더처리
+  //
   const filteredRow = Object.keys(modalInTable).reduce((acc, key) => {
     if (matchingRow[key]) {
       acc[key] = matchingRow[key]
@@ -155,7 +150,7 @@ const TableModal = ({
             >
               저장
             </BlueBlackBtn>
-            {popupSwitch && <AlertPopup setPropsPopup={setPopupSwitch} />}
+            {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
           </BlueBtnWrap>
         </BlueSubContainer>
       </ModalContainer>

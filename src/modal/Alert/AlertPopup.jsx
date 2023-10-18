@@ -6,7 +6,7 @@ import { popupDummy } from './PopupDummy'
 import { useAtom } from 'jotai'
 import { alertAtom, modalObject } from '../../store/Layout/Layout'
 import { popupObject, popupTypeAtom, popupAtom, modalAtom } from '../../store/Layout/Layout'
-const AlertPopup = ({ propsRemove, setPropsPopup }) => {
+const AlertPopup = ({ propsRemove, setPopupSwitch }) => {
   const [modalSwitch, setModalSwitch] = useAtom(modalAtom) // 모달 스위치
   // const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
@@ -23,8 +23,9 @@ const AlertPopup = ({ propsRemove, setPropsPopup }) => {
     setNowPopup(firstPopup)
   }
 
+  // 기존 modalPopup이 아닌, 다수의 modal로 인해 해당 props는 propsPopup, setPopupSwitch으로 명함.
   const closePopup = () => {
-    setPropsPopup(false)
+    setPopupSwitch(false)
     setModalSwitch(false)
   }
 
@@ -37,7 +38,6 @@ const AlertPopup = ({ propsRemove, setPropsPopup }) => {
       firstPopupClick(nowPopup?.next)
     } else {
       closePopup()
-      console.log('비상 !!!!!')
     }
   }
 

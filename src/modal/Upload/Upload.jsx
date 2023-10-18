@@ -206,7 +206,7 @@ const Upload = ({
             >
               저장
             </BlueBlackBtn>
-            {popupSwitch && <AlertPopup setPropsPopup={setPopupSwitch} />}
+            {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
           </BlueBtnWrap>
         </BlueSubContainer>
       </ModalContainer>
