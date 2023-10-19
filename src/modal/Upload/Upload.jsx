@@ -36,9 +36,13 @@ import { useRef } from 'react'
 import { readExcelFile } from '../../utils/ReadExcelFile'
 import { KrFiledtoEng } from '../../lib/tableHelpers'
 
+import { Th, Table, Td, Input } from '../Table/TableModal'
+
 // 1. Upload를 사용하는 컴포넌트에서 originEngRowField props를 받는다
 // ex) Destination.jsx에서 StandardDestinaionFields를 받음.
 // 2. excelToJson, setExcelToJson을 Props로 내려받아, handleFileExcel에 처리된 mappedData를 set으로 받는다
+
+// 목적지 등록 기획 오류로 인한 보류 !!!
 const Upload = ({
   modalSwitch,
   setModalSwitch,
@@ -47,6 +51,10 @@ const Upload = ({
   excelToJson,
   setExcelToJson,
   propsHandler,
+  modalInTable,
+  getRow,
+  uidAtom,
+  onEditHandler,
 }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
@@ -117,6 +125,16 @@ const Upload = ({
       window.removeEventListener('beforeunload', handleBeforeUnload)
     }
   }, [])
+
+  const matchingRow = getRow?.find((row) => row['목적지 고유 번호'] === uidAtom)
+
+  //
+  const filteredRow = Object.keys(modalInTable).reduce((acc, key) => {
+    if (matchingRow[key]) {
+      acc[key] = matchingRow[key]
+    }
+    return acc
+  }, {})
 
   return (
     // 재고 관리 - 판매 구분 변경
@@ -193,8 +211,29 @@ const Upload = ({
               </BlueMainDiv>
             )}
             {checkRadio[1] && (
-              <BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px', display: 'flex' }}>
-                wmf
+              <BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px' }}>
+                <Table>
+                  <thead>
+                    <tr>
+                      {Object.keys(filteredRow)?.map((key) => (
+                        <Th key={key}>{key}</Th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      {Object.entries(filteredRow)?.map(([key, value], index) => (
+                        <Td key={index}>
+                          {modalInTable[key] === 'input' ? (
+                            <Input type="text" name="name" onChange={onEditHandler} />
+                          ) : (
+                            matchingRow[key]
+                          )}
+                        </Td>
+                      ))}
+                    </tr>
+                  </tbody>
+                </Table>
               </BlueMainDiv>
             )}
           </div>

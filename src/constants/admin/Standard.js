@@ -25,13 +25,14 @@ export const StandardDestinaionFields = {
   수정일: 'updateDate',
 }
 
+// 기준관리 - 목적지관리 post
 export const StandardDestinationPost = {
   '목적지 코드': 'auto',
   '목적지 명': 'input',
   작성자: 'auto',
   작성일: 'auto',
 }
-
+// 기준관리 - 목적지관리 Edit
 export const StandardDestinationEdit = {
   '목적지 코드': 'auto',
   '목적지 명': 'input',
@@ -40,6 +41,40 @@ export const StandardDestinationEdit = {
   수정자: 'auto',
   수정일: 'auto',
 }
+
+// 기준 관리 - 운반비 관리 post
+export const StandardTransportationPost = {
+  출발지: 'auto',
+  '목적지 코드': 'auto',
+  '목적지 명': 'input',
+  '제품 구분': 'auto',
+  '단가 적용 일자': 'auto',
+  '적용 단가': 'input',
+}
+
+// 기준 관리 - 운반비 관리 Edit
+export const StandardTransportationEdit = {
+  출발지: 'auto',
+  '목적지 코드': 'auto',
+  '목적지 명': 'input',
+  '제품 구분': 'auto',
+  '이전 단가': 'auto',
+  '단가 적용 일자': 'auto',
+  '적용 단가': 'input',
+  수정자: 'auto',
+  '수정 일자': 'auto',
+}
+
+// {
+//     "uid": 15,
+//     "storage": "창고2",
+//     "destinationCode": "A",
+//     "destinationName": "인천",
+//     "spart": "후판",
+//     "effectDate": "2023-06-21",
+//     "previousCost": 0,
+//     "effectCost": 200000
+// },
 
 // 기준관리 - 목적지관리 fieldsCols
 //  주석 처리 : cell 내 버튼 기능

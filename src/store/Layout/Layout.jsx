@@ -62,6 +62,7 @@ export const popupObject = atom({
   next: '',
   onClick: () => {},
   func: () => {},
+  func2: () => {},
 })
 
 export const modalObject = atom({
@@ -72,6 +73,9 @@ export const engRowTitle = atom('')
 
 export const excelToJsonAtom = atom('')
 
+// 수정버튼 Modal
 export const btnCellRenderAtom = atom(false)
-
+// 수정버튼 Uid
 export const btnCellUidAtom = atom('')
+
+export const onClickCheckAtom = atom(false)

@@ -63,6 +63,7 @@ import {
   popupTypeAtom,
   btnCellRenderAtom,
   btnCellUidAtom,
+  onClickCheckAtom,
 } from '../../../store/Layout/Layout'
 import Upload from '../../../modal/Upload/Upload'
 import { popupDummy } from '../../../modal/Alert/PopupDummy'
@@ -84,8 +85,6 @@ const Destination = ({}) => {
   const [isRotated, setIsRotated] = useState(false)
 
   const [excelToJson, setExcelToJson] = useAtom(excelToJsonAtom)
-
-  console.log('uidAtom', uidAtom)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
@@ -340,6 +339,10 @@ const Destination = ({}) => {
           excelToJson={excelToJson}
           setExcelToJson={setExcelToJson}
           propsHandler={propsPost}
+          modalInTable={StandardDestinationPost}
+          getRow={getRow}
+          uidAtom={uidAtom}
+          onEditHandler={onEditHandler}
         />
       )}
     </FilterContianer>

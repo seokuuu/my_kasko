@@ -25,10 +25,11 @@ import CommonTest from '../Alert/PopupMessages'
 import { popupMessages } from '../Alert/PopupMessages'
 import AlertPopup from '../Alert/AlertPopup'
 import { adminDestnationPopup } from '../../store/Layout/Popup'
+import { onClickCheckAtom } from '../../store/Layout/Layout'
 
 import { popupObject } from '../../store/Layout/Layout'
 import { popupDummy } from '../Alert/PopupDummy'
-import { popupTypeAtom } from '../../store/Layout/Layout'
+import { popupTypeAtom, btnCellRenderAtom } from '../../store/Layout/Layout'
 
 import styled from 'styled-components'
 import { GreyBtn } from '../../common/Button/Button'
@@ -42,6 +43,7 @@ import { KrFiledtoEng } from '../../lib/tableHelpers'
 // 2. btnCellRenderAtom이 해당 TableModal의 switch 역할 - propsHandler로 받음
 // propsHandler를 해당 firstPopupClick의 안 setNowPopup의 func 기능으로 쓴다.
 const TableModal = ({ title, setBtnCellModal, propsHandler, modalInTable, getRow, uidAtom, onEditHandler }) => {
+  const [onClickCheck, setOnClickCheck] = useAtom(onClickCheckAtom)
   const [popupSwitch, setPopupSwitch] = useAtom(adminDestnationPopup) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
@@ -64,7 +66,11 @@ const TableModal = ({ title, setBtnCellModal, propsHandler, modalInTable, getRow
   }, [nowPopup, nowPopupType])
 
   const modalClose = () => {
-    setBtnCellModal(false)
+    if (onClickCheck) {
+      setBtnCellModal(false)
+    } else {
+      firstPopupClick('2-4')
+    }
   }
 
   // 한글 key object의 uid에 해당하는 '목적지 고유 번호' 를 return
@@ -74,6 +80,8 @@ const TableModal = ({ title, setBtnCellModal, propsHandler, modalInTable, getRow
   // '목적지 코드': 'auto',
   // '목적지 명': 'input', 와 같은 data가 매칭되게끔 필터함. auto는 렌더, input은 input으로 렌더처리
   //
+
+  console.log('matchingRow ###', matchingRow)
   const filteredRow = Object.keys(modalInTable).reduce((acc, key) => {
     if (matchingRow[key]) {
       acc[key] = matchingRow[key]
@@ -81,7 +89,7 @@ const TableModal = ({ title, setBtnCellModal, propsHandler, modalInTable, getRow
     return acc
   }, {})
 
-  console.log('filteredRow', filteredRow)
+  console.log('filteredRow ###', filteredRow)
 
   return (
     // 재고 관리 - 판매 구분 변경
@@ -160,7 +168,7 @@ const TableModal = ({ title, setBtnCellModal, propsHandler, modalInTable, getRow
 
 export default TableModal
 
-const UldWrap = styled.div`
+export const UldWrap = styled.div`
   margin-left: auto;
   margin-right: auto;
   text-align: center;
@@ -168,13 +176,13 @@ const UldWrap = styled.div`
   align-items: center;
 `
 
-const UldText = styled.div`
+export const UldText = styled.div`
   color: #b5b5b5;
   font-size: 18px;
   margin-top: -20px;
 `
 
-const UldBtn = styled.button`
+export const UldBtn = styled.button`
   width: 200px;
   height: 35px;
   color: #4c83d6;
@@ -184,7 +192,7 @@ const UldBtn = styled.button`
   margin-top: 35px;
 `
 
-const UldAfterWrap = styled.div`
+export const UldAfterWrap = styled.div`
   width: 100%;
   margin: 10px;
   border: 1px solid;
@@ -193,7 +201,7 @@ const UldAfterWrap = styled.div`
   align-items: center;
 `
 
-const Table = styled.table`
+export const Table = styled.table`
   border-collapse: collapse;
   width: 100%;
   margin-top: 20px;
@@ -205,7 +213,7 @@ const Table = styled.table`
   }
 `
 
-const Th = styled.th`
+export const Th = styled.th`
   border: 1px solid #c8c8c8;
   padding: 8px;
   text-align: center;
@@ -213,7 +221,7 @@ const Th = styled.th`
   font-size: 18px;
 `
 
-const Td = styled.td`
+export const Td = styled.td`
   border: 1px solid #ddd;
   text-align: center;
   font-weight: 100;
@@ -223,7 +231,7 @@ const Td = styled.td`
   font-size: 18px;
 `
 
-const Input = styled.input`
+export const Input = styled.input`
   width: 100%;
   height: 100%;
   box-sizing: border-box;
