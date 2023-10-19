@@ -46,7 +46,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { useCallback } from 'react'
 // import { isArray } from 'lodash'
-import { isArray, isEmptyArray } from '../../../lib'
+import { error, isArray, isArrayAnd, isEmptyArray, log, pipe } from '../../../lib'
 
 const UserManage = ({ setChoiceComponent }) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -98,6 +98,7 @@ const UserManage = ({ setChoiceComponent }) => {
   useEffect(() => {
     let getData = resData
     if (!isSuccess && !resData) return
+
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, UserManageFields))
     }

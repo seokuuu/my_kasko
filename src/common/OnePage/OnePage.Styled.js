@@ -81,8 +81,8 @@ export const TitleChild = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  border: ${({ bor }) => (bor ? '1px solid #17479E' : '1px solid #e1e1e1')};
-  color: ${({ bor }) => (bor ? '#17479e' : 'black')};
+  border: ${({ active }) => (active ? '1px solid #17479E' : '1px solid #e1e1e1')};
+  color: ${({ active }) => (active ? '#17479e' : 'black')};
 
   &:hover {
     border: 1px solid #17479e;
@@ -217,4 +217,3 @@ export const AddBtn = styled.div`
     border: 2px solid ${(props) => props.theme.colors.PriNormal};
   }
 `
-

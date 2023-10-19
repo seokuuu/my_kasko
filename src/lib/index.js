@@ -1,4 +1,72 @@
 import _ from 'lodash'
+import { add, delay, go, reduce, rangeL } from 'fxjs'
+import * as L from 'fxjs/Lazy'
+import * as C from 'fxjs/Concurrency'
+
+export const log = console.log
+
+// go(
+//   rangeL(1, 4),
+//   L.map((a) => a * a),
+//   L.map(delay(300)),
+//   C.takeAll,
+//   reduce(add),
+//   console.log,
+// )
+// const result = go(
+//   [1, 2, 3, 4, 5],
+//   L.map((a) => a * a),
+// )
+// log(result)
+
+export const go1 = (a, f) => (a instanceof Promise ? a.then(f) : f(a))
+
+export const pipe1 =
+  (...fns) =>
+  (arg) =>
+    fns.reduce((acc, fn) => fn(acc), arg)
+
+// exception.js 모듈
+export function exception(condition) {
+  return function (originalFunction) {
+    return function (value) {
+      try {
+        const result = originalFunction(value)
+        if (condition(result)) {
+          return result
+        }
+      } catch (e) {
+        if (condition(e)) {
+          return e
+        }
+      }
+    }
+  }
+}
+
+// error.js 모듈
+export function error() {
+  return function (originalFunction) {
+    return function (value) {
+      try {
+        return originalFunction(value)
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }
+}
+
+// nullable.js 모듈
+export function nullable() {
+  return function (originalFunction) {
+    return function (value) {
+      if (value === null || value === undefined) {
+        return originalFunction(value)
+      }
+    }
+  }
+}
 
 export function isEmptyObj(obj) {
   // 객체 타입체크
@@ -26,13 +94,38 @@ export function isArray(arr) {
   return _.isArray(arr)
 }
 
-function isEmptyObject(obj) {
+export function isArrayAnd(arr) {
+  if (_.isArray(arr)) return arr
+}
+
+export function isEmptyObject(obj) {
   return _.isObject(obj) && _.isEmpty(obj)
 }
 
-function isObject(obj) {
+export function isObject(obj) {
   return _.isObject(obj)
 }
+export function isValidValue(value) {
+  return value !== null && value !== undefined && value !== ''
+}
+
+// 객체 value없을때 삭제
+export function removeEmptyFields(obj) {
+  return Object.keys(obj)
+    .filter((key) => isValidValue(obj[key]))
+    .reduce((acc, key) => {
+      acc[key] = obj[key]
+      return acc
+    }, {})
+}
+
+export function createQueryParams(obj) {
+  return Object.keys(obj)
+    .map((key) => `${key}=${encodeURIComponent(obj[key])}`)
+    .join('&')
+}
+
+// 객체 return url
 
 // // 1. Array Utilities
 // export const arrayUtils = {
@@ -68,39 +161,3 @@ function isObject(obj) {
 //   subtractNumbers: (a, b) => _.subtract(a, b),
 //   multiplyNumbers: (a, b) => _.multiply(a, b),
 // }
-
-// // 6. Function Utilities
-// export const functionUtils = {
-//   debounceFunc: (func, wait) => _.debounce(func, wait),
-//   throttleFunc: (func, wait) => _.throttle(func, wait),
-//   memoizeFunc: (func) => _.memoize(func),
-// }
-
-// // 7. Date Utilities
-// export const dateUtils = {
-//   now: () => _.now(),
-//   delay: (func, wait) => _.delay(func, wait),
-// }
-
-// // 8. Lang Utilities
-// export const langUtils = {
-//   isNull: (value) => _.isNull(value),
-//   isUndefined: (value) => _.isUndefined(value),
-//   isFunction: (value) => _.isFunction(value),
-// }
-
-// // 9. Math Utilities
-// export const mathUtils = {
-//   getRandom: (min, max) => _.random(min, max),
-//   meanOfArray: (arr) => _.mean(arr),
-//   sumOfArray: (arr) => _.sum(arr),
-// }
-
-// // 10. Sequence Utilities
-// export const sequenceUtils = {
-//   flowFunctions: (...funcs) => _.flow(funcs),
-//   chainSequence: (value) => _.chain(value),
-// }
-
-// // 사용 예시:
-// console.log(arrayUtils.uniqueElements([1, 2, 2, 3])) // [1, 2, 3]

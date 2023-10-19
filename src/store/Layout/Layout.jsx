@@ -9,6 +9,7 @@ export const toggleAtom = atom(true)
 export const calendarAtom = atom(false)
 
 export const alertAtom = atom(false)
+export const alertAtom2 = atom(false)
 
 export const blueModalAtom = atom(false)
 
@@ -35,6 +36,15 @@ export const selectedRowsAtom = atom([])
 
 // test3 테이블 체크했을시 데이터
 export const doubleClickedRowAtom = atom([])
+
+// 테이블 page 50/100/500 정렬
+export const pageSort = atom(50)
+
+// 대표 상세 정보 모달
+export const clientModalAtom = atom(false)
+
+//사용자 관리 - 고객사 관리파트 회원제한모달
+export const AuctionRestrictionModal = atom(false)
 
 export const modalAtom = atom(false)
 

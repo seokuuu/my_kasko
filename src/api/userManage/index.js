@@ -1,3 +1,5 @@
+import { createQueryParams, log, removeEmptyFields } from '../../lib'
+import isIterable from '../../lib/fxjs'
 import { client } from '../index'
 
 const urls = {
@@ -10,8 +12,10 @@ const urls = {
     사용자관리 - 고객사 관리
 ============================== */
 export async function getCustomer(data) {
+  const filteredData = removeEmptyFields(data)
+  const params = createQueryParams(filteredData)
   try {
-    const response = await client.get(`${urls.customer}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
+    const response = await client.get(`${urls.customer}?${params}`)
     return response.data
   } catch (error) {
     console.error(error)
@@ -21,6 +25,18 @@ export async function getCustomer(data) {
 
 export function deleteCustomer(id) {
   return client.delete(`${urls.customer}/${id}`)
+}
+
+export function postChangeAuction(data) {
+  return client.post(`${urls.customer}/status`, data)
+}
+
+export function resetCustomer(data) {
+  return client.post(`${urls.customer}/reset`, data)
+}
+
+export function checkBusinessNumber(data) {
+  return client.post(`${urls.customer}/business-number?businessNumber=${data}`)
 }
 
 /* ==============================

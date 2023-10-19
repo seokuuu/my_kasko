@@ -21,11 +21,12 @@ export const UserManageCustomerManageFields = {
 }
 export const UserManageCustomerManageFieldsCols = [
   {
-    field: '순번',
-    minWidth: 100,
+    field: '',
+    maxWidth: 50,
     checkboxSelection: checkboxSelection,
     headerCheckboxSelection: headerCheckboxSelection,
   },
+  { field: '순번', minWidth: 100 }, //숫자
   { field: '고객 구분', minWidth: 100 }, //숫자
   { field: '회원 상태', minWidth: 100 },
   { field: '고객 코드', minWidth: 100 },

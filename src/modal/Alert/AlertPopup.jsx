@@ -15,6 +15,7 @@ const AlertPopup = ({ propsRemove, setPopupSwitch }) => {
   console.log('nowPopup !!!', nowPopup)
 
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
+  const [checkNext, setCheckNext] = useState(false) //임시 next 작동시 reload
 
   // num / next을 받아 팝업 띄우는 컴포넌트의 onClickHandler
 
@@ -33,19 +34,29 @@ const AlertPopup = ({ propsRemove, setPopupSwitch }) => {
   // popupDummy에 next가 있으면, firstPopupClick이 실행되고
   // next가 없으면, 팝업과 해당 모달이 종료된다
   const showNextPopup = () => {
+    const nextType = nowPopup.next?.split('-')[0]
+
     if (nowPopup && nowPopup?.next) {
       nowPopup.func()
       firstPopupClick(nowPopup?.next)
+      setNowPopupType(nextType)
+      setCheckNext(true)
     } else {
+
       closePopup()
+
     }
   }
 
-  // 팝업 타입 최신화
   useEffect(() => {
     const firstType = nowPopup.num?.split('-')[0]
     setNowPopupType(firstType)
   }, [])
+
+  const closePopup = () => {
+    setPopupSwitch(false)
+    // setModalIsOpen(false)
+  }
 
   return (
     <>
