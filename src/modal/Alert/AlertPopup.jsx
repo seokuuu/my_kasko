@@ -42,9 +42,7 @@ const AlertPopup = ({ propsRemove, setPopupSwitch }) => {
       setNowPopupType(nextType)
       setCheckNext(true)
     } else {
-
       closePopup()
-
     }
   }
 
@@ -52,11 +50,6 @@ const AlertPopup = ({ propsRemove, setPopupSwitch }) => {
     const firstType = nowPopup.num?.split('-')[0]
     setNowPopupType(firstType)
   }, [])
-
-  const closePopup = () => {
-    setPopupSwitch(false)
-    // setModalIsOpen(false)
-  }
 
   return (
     <>
