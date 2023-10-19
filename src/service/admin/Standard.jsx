@@ -21,6 +21,9 @@ export const getAdminDestination = (data) => {
 // 목적지 관리 - 등록 "POST"
 export const postAdminDestination = (params) => client.post(URL.Destination, params)
 
+// 목적지 관리 - 수정 'PATCH"
+export const EditAdminDestination = (params) => client.patch(URL.Destination, params)
+
 // 목적지 관리 - 삭제 "DELETE"
 export function deleteAdminDestination(id) {
   return client.delete(`${URL.Destination}/${id}`)

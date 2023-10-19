@@ -4,22 +4,30 @@ import { ModalPart, Title } from '../../pages/User/SignUp/SignUp.Styled'
 import { BlackBtn, RedBtn, WhiteBtn } from '../../common/Button/Button'
 import { popupDummy } from './PopupDummy'
 import { useAtom } from 'jotai'
-import { alertAtom } from '../../store/Layout/Layout'
+import { alertAtom, modalObject } from '../../store/Layout/Layout'
 import { popupObject, popupTypeAtom, popupAtom, modalAtom } from '../../store/Layout/Layout'
-const AlertPopup = ({ propsRemove }) => {
+const AlertPopup = ({ propsRemove, setPopupSwitch }) => {
   const [modalSwitch, setModalSwitch] = useAtom(modalAtom) // 모달 스위치
-  const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
+  // const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
+  const [nowModal, setNowModal] = useAtom(modalObject) // 모달 객체
 
-  console.log('nowPopup', nowPopup)
+  console.log('nowPopup !!!', nowPopup)
 
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
   const [checkNext, setCheckNext] = useState(false) //임시 next 작동시 reload
 
   // num / next을 받아 팝업 띄우는 컴포넌트의 onClickHandler
+
   const firstPopupClick = (num) => {
     const firstPopup = popupDummy.find((popup) => popup.num === num)
     setNowPopup(firstPopup)
+  }
+
+  // 기존 modalPopup이 아닌, 다수의 modal로 인해 해당 props는 propsPopup, setPopupSwitch으로 명함.
+  const closePopup = () => {
+    setPopupSwitch(false)
+    setModalSwitch(false)
   }
 
   // 팝업 확인 버튼 onClickHandler
@@ -34,10 +42,9 @@ const AlertPopup = ({ propsRemove }) => {
       setNowPopupType(nextType)
       setCheckNext(true)
     } else {
-      if (checkNext === true) return window.location.reload() //임시 next 작동시 reload
 
-      setPopupSwitch(false)
-      setModalSwitch(false)
+      closePopup()
+
     }
   }
 
@@ -90,7 +97,7 @@ const AlertPopup = ({ propsRemove }) => {
               <RedBtn onClick={showNextPopup} width={100} height={50}>
                 확인
               </RedBtn>
-              <WhiteBtn width={100} height={50}>
+              <WhiteBtn onClick={closePopup} width={100} height={50}>
                 취소
               </WhiteBtn>
             </>

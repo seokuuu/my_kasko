@@ -10,7 +10,7 @@ import { GreyBtn } from '../../../common/Button/Button'
 
 import Table from '../../Table/Table'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { engRowTitle, excelToJsonAtom, modalObject, toggleAtom } from '../../../store/Layout/Layout'
 import BlueBar from '../../../modal/BlueBar/BlueBar'
 import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
@@ -37,38 +37,55 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
 
-import { StandardDestinaionFields, StandardDestinaionFieldsCols } from '../../../constants/admin/Standard'
+import {
+  StandardDestinaionFields,
+  StandardDestinaionFieldsCols,
+  StandardDestinationEdit,
+  StandardDestinationPost,
+} from '../../../constants/admin/Standard'
 
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { selectedRowsAtom } from '../../../store/Layout/Layout'
-import { getAdminDestination, deleteAdminDestination } from '../../../service/admin/Standard'
+import {
+  getAdminDestination,
+  deleteAdminDestination,
+  postAdminDestination,
+  EditAdminDestination,
+} from '../../../service/admin/Standard'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { add_element_field } from '../../../lib/tableHelpers'
+import { add_element_field, KrFiledtoEng } from '../../../lib/tableHelpers'
 import { isArray } from 'lodash'
 import Test3 from '../../Test/Test3'
-import { modalAtom, popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Layout'
+import {
+  modalAtom,
+  popupAtom,
+  popupObject,
+  popupTypeAtom,
+  btnCellRenderAtom,
+  btnCellUidAtom,
+} from '../../../store/Layout/Layout'
 import Upload from '../../../modal/Upload/Upload'
 import { popupDummy } from '../../../modal/Alert/PopupDummy'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import TableModal from '../../../modal/Table/TableModal'
 
 const Destination = ({}) => {
   const [modalSwitch, setModalSwitch] = useAtom(modalAtom)
-  const openModal = () => {
-    setModalSwitch(true)
-  }
+
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
-  console.log('popupSwitch !!!!!!!', popupSwitch)
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
-
+  const [nowModal, setNowModal] = useAtom(modalObject) // 모달 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
+  const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
+  const [originRowTitle, setOriginRowTitle] = useState('') // Excel row to Origin row
 
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
+  const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
   const [isRotated, setIsRotated] = useState(false)
+
+  const [excelToJson, setExcelToJson] = useAtom(excelToJsonAtom)
+
+  console.log('uidAtom', uidAtom)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
@@ -95,10 +112,11 @@ const Destination = ({}) => {
     setIsModal(true)
   }
 
-  // ---------------------------------------------------------------------------------------------
+  console.log('excelToJson', excelToJson)
 
   const [getRow, setGetRow] = useState('')
   const tableField = useRef(StandardDestinaionFieldsCols)
+  const originEngRowField = StandardDestinaionFields
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
@@ -111,7 +129,10 @@ const Destination = ({}) => {
   // GET
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getAdminDestination', getAdminDestination)
   const resData = data?.data?.data?.list
-  console.log('resData => ', resData)
+
+  console.log('resData', resData)
+
+  console.log('getRow', getRow)
 
   useEffect(() => {
     let getData = resData
@@ -122,10 +143,6 @@ const Destination = ({}) => {
     }
   }, [isSuccess, resData])
 
-  console.log('getRow =>', getRow)
-
-  console.log('nowPopup', nowPopup)
-
   // DELETE
   const mutation = useMutation(deleteAdminDestination, {
     onSuccess: () => {
@@ -133,13 +150,17 @@ const Destination = ({}) => {
     },
   })
 
+  // 선택한 것 삭제 요청 (해당 함수 func 인자로 전달)
   const propsRemove = () => {
     checkedArray.forEach((item) => {
       mutation.mutate(item['목적지 고유 번호']) //mutation.mutate로 api 인자 전해줌
     })
   }
-  const test = () => {
-    console.log(123)
+
+  // POST
+  const postMutation = useMutationQuery('', postAdminDestination)
+  const propsPost = () => {
+    postMutation.mutate(excelToJson)
   }
 
   const firstPopupClick = useCallback(
@@ -147,13 +168,25 @@ const Destination = ({}) => {
       if (isArray(checkedArray) && checkedArray.length > 0) {
         setPopupSwitch(true)
         const firstPopup = popupDummy.find((popup) => popup.num === num)
-        setNowPopup({ ...firstPopup, func: propsRemove })
+        setNowPopup((prevNowPopup) => ({
+          ...prevNowPopup,
+          ...firstPopup,
+          func: propsRemove,
+        }))
       } else {
         alert('선택해주세요!')
       }
     },
     [checkedArray],
   )
+
+  const openModal = () => {
+    setModalSwitch(true)
+    setNowPopup((prev) => ({
+      ...prev,
+      func: propsPost,
+    }))
+  }
 
   // const firstPopupClick = (num) => {
   //       if (isArray(checkedArray) && checkedArray.length > 0) {
@@ -177,9 +210,31 @@ const Destination = ({}) => {
   //   }
   // }, [checkedArray])
 
-  console.log('checkedArray =>', checkedArray)
+  // Edit
+  const editMutation = useMutationQuery('', EditAdminDestination)
+  const propsEdit = () => {
+    editMutation.mutate(editInput)
+  }
 
-  console.log('popupSwitch', popupSwitch)
+  const editInit = {
+    uid: '',
+    name: '',
+  }
+
+  const [editInput, setEditInput] = useState(editInit)
+
+  const onEditHandler = useCallback(
+    (e) => {
+      const { name, value } = e.target
+      setEditInput({ ...editInput, uid: uidAtom, [name]: value })
+    },
+    [editInput],
+  )
+
+  console.log('editInput @@', editInput)
+  console.log('uidAtom @@', uidAtom)
+
+  console.log('resData', resData)
 
   return (
     <FilterContianer>
@@ -260,9 +315,33 @@ const Destination = ({}) => {
           </div>
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} />
+        {btnCellModal && (
+          // Edit
+          <TableModal
+            btnCellModal={btnCellModal} // Modal Atom Switch
+            setBtnCellModal={setBtnCellModal}
+            modalInTable={StandardDestinationEdit} // Modal 안에 들어갈 Table 매칭 디렉토리 ex)
+            title={'목적지 수정'}
+            getRow={getRow} // 해당 컴포넌트 Table 자체 Object (한글)
+            uidAtom={uidAtom} // 수정버튼 누른 해당 object의 고유 id (btnCellRender에서 추출된 uid)
+            onEditHandler={onEditHandler} // edit 버튼의 함수를 스프레드 func를 전달
+            propsHandler={propsEdit} // 실질 patch 역할하는 함수
+          />
+        )}
       </TableContianer>
-      {popupSwitch && <AlertPopup propsRemove={propsRemove} />}
-      {modalSwitch && <Upload modalSwitch={modalSwitch} setModalSwitch={setModalSwitch} title={'목적지 등록'} />}
+      {popupSwitch && <AlertPopup />}
+      {modalSwitch && (
+        // Post
+        <Upload
+          modalSwitch={modalSwitch}
+          setModalSwitch={setModalSwitch}
+          title={'목적지 등록'}
+          originEngRowField={originEngRowField}
+          excelToJson={excelToJson}
+          setExcelToJson={setExcelToJson}
+          propsHandler={propsPost}
+        />
+      )}
     </FilterContianer>
   )
 }

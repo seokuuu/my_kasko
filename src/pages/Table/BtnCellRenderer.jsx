@@ -1,12 +1,48 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { SkyBtn } from '../../common/Button/Button'
+import { btnCellRenderAtom, btnCellUidAtom } from '../../store/Layout/Layout'
+import { useAtom } from 'jotai'
 
-const BtnCellRenderer = ({}) => {
+const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
+  const uid = data[uidFieldName]
+  const [overallData, setOverallData] = useState(data)
+  const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
+  const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
+
+  console.log('overallData ', overallData)
+  console.log('uidAtom =>', uidAtom)
+  console.log('editType', editType)
+
   const btnClickedHandler = () => {
-    console.log('클릭 되었습니다!!!!')
+    switch (editType) {
+      case 'table':
+        setBtnCellModal(true)
+        setUidAtom(uid)
+        console.log('Clicked uid:', uid)
+        break
+      case 'b':
+        // 추가적인 작업이 필요한 경우
+        break
+      case 'c':
+        // 추가적인 작업이 필요한 경우
+        break
+      case 'd':
+        // 추가적인 작업이 필요한 경우
+        break
+      default:
+        break
+    }
   }
 
-  return <SkyBtn onClick={btnClickedHandler}>수정</SkyBtn>
+  const closeModal = () => {
+    setBtnCellModal(false)
+  }
+
+  return (
+    <>
+      <SkyBtn onClick={btnClickedHandler}>수정</SkyBtn>
+    </>
+  )
 }
 
 export default BtnCellRenderer

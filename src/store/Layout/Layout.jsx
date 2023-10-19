@@ -63,3 +63,15 @@ export const popupObject = atom({
   onClick: () => {},
   func: () => {},
 })
+
+export const modalObject = atom({
+  func: () => {},
+})
+
+export const engRowTitle = atom('')
+
+export const excelToJsonAtom = atom('')
+
+export const btnCellRenderAtom = atom(false)
+
+export const btnCellUidAtom = atom('')
