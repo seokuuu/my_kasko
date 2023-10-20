@@ -27,11 +27,12 @@ export const StandardDestinaionFields = {
 
 // 기준관리 - 목적지관리 post
 export const StandardDestinationPost = {
-  '목적지 코드': 'auto',
+  '목적지 코드': 'dropdown',
   '목적지 명': 'input',
   작성자: 'auto',
   작성일: 'auto',
 }
+
 // 기준관리 - 목적지관리 Edit
 export const StandardDestinationEdit = {
   '목적지 코드': 'auto',

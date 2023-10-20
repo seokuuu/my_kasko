@@ -4,8 +4,8 @@ const headers = { 'Content-Type': 'multipart/form-data' }
 
 const URL = {
   Destination: '/admin/destination', // 목적지 관리
-  Transportation: '/admin/freight', // 운반비 관리
-  Surcharge: 'admin/extracharge', //할증 관리
+  DestiSearch: '/search/destination', // 목적지 권역 목록 (등록 - 목적지 코드 Dropdown)
+  Surcharge: '/admin/extracharge', //할증 관리
   Consolidation: '/admin/mergecost', //합짐비 관리
 }
 
@@ -16,6 +16,11 @@ const URL = {
 // 목적지 관리 - 목록 "GET"
 export const getAdminDestination = (data) => {
   return client.get(URL.Destination, { params: data })
+}
+
+// 목적지 관리 - 목적지 권역 목록 (목적지 코드 Dropdown) "Get"
+export const getAdminDestinationSearch = async() => {
+  return client.get(URL.DestiSearch)
 }
 
 // 목적지 관리 - 등록 "POST"

@@ -4,7 +4,6 @@ import { useQuery } from '@tanstack/react-query'
 
 export default function useReactQuery(obj, key, api) {
   const { isLoading, isError, data, isSuccess } = useQuery([key, obj], () => api(obj))
-
   return { isLoading, isError, data, isSuccess }
 }
 

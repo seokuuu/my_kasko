@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
+import moment from 'moment'
 import {
   NonFadeOverlay,
   ModalContainer,
@@ -126,15 +127,7 @@ const Upload = ({
     }
   }, [])
 
-  const matchingRow = getRow?.find((row) => row['목적지 고유 번호'] === uidAtom)
-
-  //
-  const filteredRow = Object.keys(modalInTable).reduce((acc, key) => {
-    if (matchingRow[key]) {
-      acc[key] = matchingRow[key]
-    }
-    return acc
-  }, {})
+  console.log('모멘트', moment().format('YYYY-MM-DD'))
 
   return (
     // 재고 관리 - 판매 구분 변경
@@ -215,19 +208,25 @@ const Upload = ({
                 <Table>
                   <thead>
                     <tr>
-                      {Object.keys(filteredRow)?.map((key) => (
+                      {Object.keys(modalInTable)?.map((key) => (
                         <Th key={key}>{key}</Th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      {Object.entries(filteredRow)?.map(([key, value], index) => (
+                      {Object.entries(modalInTable)?.map(([key, value], index) => (
                         <Td key={index}>
-                          {modalInTable[key] === 'input' ? (
-                            <Input type="text" name="name" onChange={onEditHandler} />
+                          {value === 'input' ? (
+                            key === '작성일' ? (
+                              <div>{moment().format('YYYY-MM-DD')}</div>
+                            ) : (
+                              <Input type="text" />
+                            )
+                          ) : value === 'dropdown' ? (
+                            <Dropdown />
                           ) : (
-                            matchingRow[key]
+                            ''
                           )}
                         </Td>
                       ))}
@@ -287,3 +286,4 @@ const UldAfterWrap = styled.div`
   justify-content: space-between;
   align-items: center;
 `
+const Dropdown = styled.div``

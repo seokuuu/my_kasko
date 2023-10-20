@@ -51,6 +51,7 @@ import {
   deleteAdminDestination,
   postAdminDestination,
   EditAdminDestination,
+  getAdminDestinationSearch,
 } from '../../../service/admin/Standard'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field, KrFiledtoEng } from '../../../lib/tableHelpers'
@@ -129,9 +130,11 @@ const Destination = ({}) => {
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getAdminDestination', getAdminDestination)
   const resData = data?.data?.data?.list
 
-  console.log('resData', resData)
+  // Get 목적지 코드 Dropdown
 
-  console.log('getRow', getRow)
+  const { data: data2, isSuccess2 } = useReactQuery('', 'getAdminDestinationSearch', getAdminDestinationSearch)
+
+  console.log('data2 => ', data2)
 
   useEffect(() => {
     let getData = resData
@@ -318,7 +321,7 @@ const Destination = ({}) => {
           // Edit
           <TableModal
             btnCellModal={btnCellModal} // Modal Atom Switch
-            setBtnCellModal={setBtnCellModal}
+            setBtnCellModal={setBtnCellModal} // 수정 버튼에 대한 ag-grid event
             modalInTable={StandardDestinationEdit} // Modal 안에 들어갈 Table 매칭 디렉토리 ex)
             title={'목적지 수정'}
             getRow={getRow} // 해당 컴포넌트 Table 자체 Object (한글)
