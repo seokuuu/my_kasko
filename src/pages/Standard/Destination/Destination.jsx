@@ -159,12 +159,7 @@ const Destination = ({}) => {
     })
   }
 
-  // POST
-  const postMutation = useMutationQuery('', postAdminDestination)
-  const propsPost = () => {
-    postMutation.mutate(excelToJson)
-  }
-
+  // 팝업 '확인' 버튼 함수 (prop으로 줄 함수 선택)
   const firstPopupClick = useCallback(
     (num) => {
       if (isArray(checkedArray) && checkedArray.length > 0) {
@@ -181,6 +176,12 @@ const Destination = ({}) => {
     },
     [checkedArray],
   )
+
+  // POST
+  const postMutation = useMutationQuery('', postAdminDestination)
+  const propsPost = () => {
+    postMutation.mutate(excelToJson)
+  }
 
   const openModal = () => {
     setModalSwitch(true)
@@ -331,7 +332,7 @@ const Destination = ({}) => {
           />
         )}
       </TableContianer>
-      {popupSwitch && <AlertPopup />}
+      {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
       {modalSwitch && (
         // Post
         <Upload

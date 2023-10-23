@@ -43,29 +43,6 @@ export const StandardDestinationEdit = {
   수정일: 'auto',
 }
 
-// 기준 관리 - 운반비 관리 post
-export const StandardTransportationPost = {
-  출발지: 'auto',
-  '목적지 코드': 'auto',
-  '목적지 명': 'input',
-  '제품 구분': 'auto',
-  '단가 적용 일자': 'auto',
-  '적용 단가': 'input',
-}
-
-// 기준 관리 - 운반비 관리 Edit
-export const StandardTransportationEdit = {
-  출발지: 'auto',
-  '목적지 코드': 'auto',
-  '목적지 명': 'input',
-  '제품 구분': 'auto',
-  '이전 단가': 'auto',
-  '단가 적용 일자': 'auto',
-  '적용 단가': 'input',
-  수정자: 'auto',
-  '수정 일자': 'auto',
-}
-
 // {
 //     "uid": 15,
 //     "storage": "창고2",
@@ -92,7 +69,7 @@ export const StandardDestinaionFieldsCols = [
   },
   {
     field: '목적지 고유 번호',
-    minWidth: 100,
+    minWidth: 160,
   },
   { field: '목적지 코드', minWidth: 100 }, //숫자
   { field: '목적지 명', minWidth: 100 },
@@ -124,12 +101,44 @@ export const StandardTransportationFields = {
   적용단가: 'effectCost',
 }
 
+// 기준 관리 - 운반비 관리 post
+export const StandardTransportationPost = {
+  출발지: 'auto',
+  '목적지 코드': 'auto',
+  '목적지 명': 'input',
+  '제품 구분': 'auto',
+  '단가 적용 일자': 'auto',
+  '적용 단가': 'input',
+}
+
+// 기준 관리 - 운반비 관리 Edit
+export const StandardTransportationEdit = {
+  출발지: 'auto',
+  '목적지 코드': 'auto',
+  '목적지 명': 'input',
+  '제품 구분': 'auto',
+  '이전 단가': 'auto',
+  '단가 적용 일자': 'auto',
+  '적용 단가': 'input',
+  수정자: 'auto',
+  '수정 일자': 'auto',
+}
+
 // 기준관리 - 운반비 관리 fieldsCols
 export const StandardTransportationFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   {
+    field: '수정',
+    maxWidth: 90,
+    cellRenderer: BtnCellRenderer,
+    cellRendererParams: {
+      uidFieldName: '운반비 고유 번호',
+      editType: 'table',
+    },
+  },
+  {
     field: '운반비 고유 번호',
-    minWidth: 100,
+    minWidth: 160,
   },
   { field: '창고', minWidth: 100 },
   { field: '목적지 코드', minWidth: 100 },
@@ -161,6 +170,7 @@ export const StandardSurchargeFields = {
 
 export const StandardSurchargeFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+
   {
     field: '할증 고유 번호',
     minWidth: 100,

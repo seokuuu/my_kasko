@@ -46,11 +46,18 @@ export const clientModalAtom = atom(false)
 //사용자 관리 - 고객사 관리파트 회원제한모달
 export const AuctionRestrictionModal = atom(false)
 
+// 기준 관리
+
+//목적지 관리 - 목적지 등록 Modal
 export const modalAtom = atom(false)
 
 export const popupAtom = atom(false)
 
-console.log('popupAtom =>', popupAtom)
+//운반비 관리 - 운반비 등록 Modal
+export const destiPostModalAtom = atom(false)
+
+//운반비 관리 - 운반비 삭제 popup
+export const destiDelPopupAtom = atom(true)
 
 export const popupTypeAtom = atom('')
 

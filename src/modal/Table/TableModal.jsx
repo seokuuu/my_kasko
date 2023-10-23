@@ -235,4 +235,5 @@ export const Input = styled.input`
   width: 100%;
   height: 100%;
   box-sizing: border-box;
+  border: 1px solid #c8c8c8;
 `

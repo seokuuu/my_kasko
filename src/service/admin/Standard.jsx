@@ -7,6 +7,7 @@ const URL = {
   DestiSearch: '/search/destination', // 목적지 권역 목록 (등록 - 목적지 코드 Dropdown)
   Surcharge: '/admin/extracharge', //할증 관리
   Consolidation: '/admin/mergecost', //합짐비 관리
+  Transportation: '/admin/freight',
 }
 
 /* ==============================
@@ -19,7 +20,8 @@ export const getAdminDestination = (data) => {
 }
 
 // 목적지 관리 - 목적지 권역 목록 (목적지 코드 Dropdown) "Get"
-export const getAdminDestinationSearch = async() => {
+export const getAdminDestinationSearch = async () => {
+  console.log('!!!!', client.get(URL.DestiSearch))
   return client.get(URL.DestiSearch)
 }
 

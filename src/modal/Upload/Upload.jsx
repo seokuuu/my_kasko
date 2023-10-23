@@ -113,6 +113,8 @@ const Upload = ({
 
   const radioDummy = ['대량 등록', '단일 등록']
 
+  const date = moment().format('YYYY-MM-DD')
+
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   useEffect(() => {
@@ -218,8 +220,8 @@ const Upload = ({
                       {Object.entries(modalInTable)?.map(([key, value], index) => (
                         <Td key={index}>
                           {value === 'input' ? (
-                            key === '작성일' ? (
-                              <div>{moment().format('YYYY-MM-DD')}</div>
+                            value === '작성일' ? (
+                              <div>{date}</div>
                             ) : (
                               <Input type="text" />
                             )
