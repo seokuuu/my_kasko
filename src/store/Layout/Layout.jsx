@@ -53,11 +53,23 @@ export const modalAtom = atom(false)
 
 export const popupAtom = atom(false)
 
+//목적지 관리 - 목적지 수정버튼 Modal
+export const btnCellRenderAtom = atom(false)
+
+//목적지 관리 - 목적지 수정버튼 Uid
+export const btnCellUidAtom = atom('')
+
 //운반비 관리 - 운반비 등록 Modal
 export const destiPostModalAtom = atom(false)
 
 //운반비 관리 - 운반비 삭제 popup
-export const destiDelPopupAtom = atom(true)
+export const destiDelPopupAtom = atom(false)
+
+//운반비 관리 - 운반비 수정버튼 Modal
+export const destiEditModalAtom = atom(false)
+
+//운반비 관리 - 운반비 수정 Cell Uid
+export const destiEditCellUidAtom = atom('')
 
 export const popupTypeAtom = atom('')
 
@@ -79,10 +91,5 @@ export const modalObject = atom({
 export const engRowTitle = atom('')
 
 export const excelToJsonAtom = atom('')
-
-// 수정버튼 Modal
-export const btnCellRenderAtom = atom(false)
-// 수정버튼 Uid
-export const btnCellUidAtom = atom('')
 
 export const onClickCheckAtom = atom(false)

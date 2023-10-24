@@ -21,6 +21,9 @@ const SignUpPost = ({
   detailAddressHandler,
   daumPostHandleComplete,
 }) => {
+
+
+
   return (
     <>
       <FadeOverlay />

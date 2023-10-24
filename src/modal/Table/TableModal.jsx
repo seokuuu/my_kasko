@@ -42,7 +42,16 @@ import { KrFiledtoEng } from '../../lib/tableHelpers'
 // 1. Destination에서 key값이 한글로 매핑된 Object를 가져온다 (getRow)
 // 2. btnCellRenderAtom이 해당 TableModal의 switch 역할 - propsHandler로 받음
 // propsHandler를 해당 firstPopupClick의 안 setNowPopup의 func 기능으로 쓴다.
-const TableModal = ({ title, setBtnCellModal, propsHandler, modalInTable, getRow, uidAtom, onEditHandler }) => {
+const TableModal = ({
+  title,
+  setBtnCellModal,
+  propsHandler,
+  modalInTable,
+  getRow,
+  uidAtom,
+  onEditHandler,
+  editTitle,
+}) => {
   const [onClickCheck, setOnClickCheck] = useAtom(onClickCheckAtom)
   const [popupSwitch, setPopupSwitch] = useAtom(adminDestnationPopup) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
@@ -73,8 +82,12 @@ const TableModal = ({ title, setBtnCellModal, propsHandler, modalInTable, getRow
     }
   }
 
+  const thisTitle = editTitle
+
+  console.log('thisTitle', thisTitle)
+
   // 한글 key object의 uid에 해당하는 '목적지 고유 번호' 를 return
-  const matchingRow = getRow?.find((row) => row['목적지 고유 번호'] === uidAtom)
+  const matchingRow = getRow?.find((row) => row[editTitle] === uidAtom)
 
   // matchingRow에서
   // '목적지 코드': 'auto',
@@ -82,7 +95,8 @@ const TableModal = ({ title, setBtnCellModal, propsHandler, modalInTable, getRow
   //
 
   console.log('matchingRow ###', matchingRow)
-  const filteredRow = Object.keys(modalInTable).reduce((acc, key) => {
+
+  const filteredRow = Object?.keys(modalInTable)?.reduce((acc, key) => {
     if (matchingRow[key]) {
       acc[key] = matchingRow[key]
     }

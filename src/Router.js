@@ -159,6 +159,7 @@ import Upload from './modal/Upload/Upload'
 import TestExcel from './pages/Test/TestExcel'
 import TableModal from './modal/Table/TableModal'
 import TableTest from './modal/Table/TableTest'
+import TestPost from './pages/Test/TestPost'
 
 const Router = () => {
   return (
@@ -169,6 +170,7 @@ const Router = () => {
         <Route path="/test" element={<Test />} />
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
+        <Route path="/testpost" element={<TestPost />} />
 
         <Route path="/test4" element={<Countdown />} />
         <Route path="/popup" element={<TestPopup />} />

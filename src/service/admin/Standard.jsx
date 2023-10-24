@@ -48,6 +48,9 @@ export const getAdminTransportation = (data) => {
 // 운반비 관리 - 등록 "POST"
 export const postAdminTransportation = (params) => client.post(URL.Transportation, params)
 
+// 운반비 관리 - 수정 'PATCH"
+export const EditAdminTransportation = (params) => client.patch(URL.Transportation, params)
+
 // 운반비 관리 - 삭제 "DELETE"
 export function deleteAdminTransportation(id) {
   return client.delete(`${URL.Transportation}/${id}`)

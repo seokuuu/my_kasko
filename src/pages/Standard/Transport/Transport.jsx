@@ -1,55 +1,44 @@
-import { useEffect, useState, useCallback } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
-import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, ExcelBtn, TGreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Table from '../../Table/Table'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
-import BlueBar from '../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import Upload from '../../../modal/Upload/Upload'
+import { useCallback, useEffect, useState } from 'react'
+import { styled } from 'styled-components'
+import { BlackBtn, GreyBtn, TGreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { MainSelect } from '../../../common/Option/Main'
+import DateGrid from '../../../components/DateGrid/DateGrid'
+import Excel from '../../../components/TableInner/Excel'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
-import { CustomInput, FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
+  CustomInput,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
-  TableBottomWrap,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
+  FilterSubcontianer,
+  FilterWrap,
   GridWrap,
-  Tilde,
-  DoubleWrap,
+  Input,
+  PartWrap,
   ResetImg,
-  TableContianer,
-  InputStartWrap,
-  FilterHeaderAlert,
-  TableTitle,
+  RowWrap,
   SubTitle,
   TCSubContainer,
+  TableBottomWrap,
+  TableContianer,
+  TableTitle,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
+import Upload from '../../../modal/Upload/Upload'
+import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
+import Table from '../../Table/Table'
 
 import { popupDummy } from '../../../modal/Alert/PopupDummy'
 
-import PageDropdown from '../../../components/TableInner/PageDropdown'
-import Hidden from '../../../components/TableInner/Hidden'
 import { Link } from 'react-router-dom'
+import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
-import { ExRadioWrap } from '../../../modal/External/ExternalFilter'
-
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 import { CheckBox } from '../../../common/Check/Checkbox'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
 import { useRef } from 'react'
 
@@ -57,27 +46,33 @@ import {
   StandardTransportationFields,
   StandardTransportationFieldsCols,
   StandardTransportationPost,
+  StandardTransportationEdit,
 } from '../../../constants/admin/Standard'
 
-import { useQueryClient, useMutation } from '@tanstack/react-query'
-import {
-  selectedRowsAtom,
-  destiPostModalAtom,
-  destiDelPopupAtom,
-  popupObject,
-  popupTypeAtom,
-  btnCellRenderAtom,
-  btnCellUidAtom,
-} from '../../../store/Layout/Layout'
-import { getAdminTransportation, deleteAdminTransportation } from '../../../service/admin/Standard'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { isArray } from 'lodash'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
-import { isArray } from 'lodash'
-import { CSVLink } from 'react-csv'
+import {
+  EditAdminTransportation,
+  deleteAdminTransportation,
+  getAdminTransportation,
+} from '../../../service/admin/Standard'
+import {
+  btnCellUidAtom,
+  destiDelPopupAtom,
+  destiPostModalAtom,
+  popupObject,
+  selectedRowsAtom,
+  destiEditModalAtom,
+  btnCellRenderAtom,
+} from '../../../store/Layout/Layout'
+import TableModal from '../../../modal/Table/TableModal'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
 const Transport = ({}) => {
   const [modalSwitch, setModalSwitch] = useAtom(destiPostModalAtom)
-
+  const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
   const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
 
@@ -191,9 +186,24 @@ const Transport = ({}) => {
     }))
   }
 
+  console.log('btnCellModal', btnCellModal)
+
   const onEditHandler = useCallback((e) => {
     const { name, value } = e.target
   }, [])
+
+  // Edit
+  const editMutation = useMutationQuery('', EditAdminTransportation)
+  const propsEdit = () => {
+    editMutation.mutate(editInput)
+  }
+
+  const editInit = {
+    uid: '',
+    name: '',
+  }
+
+  const [editInput, setEditInput] = useState(editInit)
 
   return (
     <FilterContianer>
@@ -337,6 +347,20 @@ const Transport = ({}) => {
           </BlackBtn>
         </TableBottomWrap>
       </TableContianer>
+      {btnCellModal && (
+        // Edit
+        <TableModal
+          btnCellModal={btnCellModal} // Modal Atom Switch
+          setBtnCellModal={setBtnCellModal} // 수정 버튼에 대한 ag-grid event
+          modalInTable={StandardTransportationEdit} // Modal 안에 들어갈 Table 매칭 디렉토리 ex)
+          title={'운반비 수정'}
+          getRow={getRow} // 해당 컴포넌트 Table 자체 Object (한글)
+          uidAtom={uidAtom} // 수정버튼 누른 해당 object의 고유 id (btnCellRender에서 추출된 uid)
+          onEditHandler={onEditHandler} // edit 버튼의 함수를 스프레드 func를 전달
+          propsHandler={propsEdit} // 실질 patch 역할하는 함수
+          editTitle={'운반비 고유 번호'}
+        />
+      )}
       {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
       {modalSwitch && (
         // Post
