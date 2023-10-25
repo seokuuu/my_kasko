@@ -115,9 +115,9 @@ export const StandardTransportationPost = {
 export const StandardTransportationEdit = {
   창고: 'auto',
   '목적지 코드': 'auto',
-  목적지명: 'input',
+  목적지명: 'auto',
   제품군: 'auto',
-  적용일: 'auto',
+  적용일: 'date',
   적용단가: 'input',
 }
 

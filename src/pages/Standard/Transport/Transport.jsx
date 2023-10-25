@@ -54,7 +54,7 @@ import { isArray } from 'lodash'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import {
-  EditAdminTransportation,
+  editAdminTransportation,
   deleteAdminTransportation,
   getAdminTransportation,
 } from '../../../service/admin/Standard'
@@ -69,14 +69,18 @@ import {
 } from '../../../store/Layout/Layout'
 import TableModal from '../../../modal/Table/TableModal'
 import useMutationQuery from '../../../hooks/useMutationQuery'
+import moment from 'moment'
 
 const Transport = ({}) => {
   const [modalSwitch, setModalSwitch] = useAtom(destiPostModalAtom)
   const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
   const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
+  const [startDate, setStartDate] = useState(new Date()) // 수정 버튼 Date
+  const [startDate2, setStartDate2] = useState(new Date()) // 하단 적용일자 Date
 
-  console.log('nowPopup', nowPopup)
+  console.log('startDate2', moment(startDate2).format('YYYY-MM-DD'))
+
   const radioDummy = ['증가', '감소']
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
@@ -120,6 +124,9 @@ const Transport = ({}) => {
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
+  const uids = checkedArray?.map((item) => item['운반비 고유 번호'])
+
+  console.log('checkedArray', checkedArray)
 
   const Param = {
     pageNum: 1,
@@ -146,7 +153,7 @@ const Transport = ({}) => {
   // DELETE
   const mutation = useMutation(deleteAdminTransportation, {
     onSuccess: () => {
-      queryClient.invalidateQueries('destination')
+      queryClient.invalidateQueries('transportation')
     },
   })
 
@@ -188,22 +195,40 @@ const Transport = ({}) => {
 
   console.log('btnCellModal', btnCellModal)
 
-  const onEditHandler = useCallback((e) => {
-    const { name, value } = e.target
-  }, [])
-
   // Edit
-  const editMutation = useMutationQuery('', EditAdminTransportation)
+  const editMutation = useMutationQuery('', editAdminTransportation)
   const propsEdit = () => {
     editMutation.mutate(editInput)
   }
 
-  const editInit = {
+  console.log('startDate')
+
+  const [editInput, setEditInput] = useState({
     uid: '',
-    name: '',
+    effectDate: '',
+    effectCost: '',
+  })
+
+  useEffect(() => {
+    setEditInput({ ...editInput, effectDate: moment(startDate).format('YYYY-MM-DD hh:mm:ss'), uid: uidAtom })
+  }, [startDate, uidAtom])
+
+  console.log('editInput', editInput)
+  const onEditHandler = useCallback(
+    (e) => {
+      console.log('Edit input event:', e)
+      const { name, value } = e.target
+      setEditInput({ ...editInput, [name]: value })
+    },
+    [editInput],
+  )
+
+  // API에 맞게 한글 -> 영문으로 key 변경 (수정 Modal Input의 key를 변경시킨다)
+  const convertKey = {
+    적용단가: 'effectCost',
   }
 
-  const [editInput, setEditInput] = useState(editInit)
+  console.log('editInput', editInput)
 
   return (
     <FilterContianer>
@@ -313,7 +338,14 @@ const Transport = ({}) => {
           <TCGreyDiv>
             <div>
               <p style={{ marginRight: '10px' }}>적용일자</p>
-              <DateGrid height={30} width={130} bgColor={'white'} fontSize={15} />
+              <DateGrid
+                startDate={startDate2}
+                setStartDate={setStartDate2}
+                height={30}
+                width={130}
+                bgColor={'white'}
+                fontSize={15}
+              />
             </div>
             <div>
               <p style={{ marginLeft: ' 20px' }}>단가 일괄 수정</p>
@@ -359,6 +391,9 @@ const Transport = ({}) => {
           onEditHandler={onEditHandler} // edit 버튼의 함수를 스프레드 func를 전달
           propsHandler={propsEdit} // 실질 patch 역할하는 함수
           editTitle={'운반비 고유 번호'}
+          convertKey={convertKey}
+          startDate={startDate}
+          setStartDate={setStartDate}
         />
       )}
       {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}

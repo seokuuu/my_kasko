@@ -1,41 +1,28 @@
-import React from 'react'
 import { useState } from 'react'
 import {
-  NonFadeOverlay,
+  BlueBarHeader,
+  BlueBlackBtn,
+  BlueBtnWrap,
+  BlueMainDiv,
+  BlueSubContainer,
+  BlueSubDiv,
+  FadeOverlay,
   ModalContainer,
   WhiteCloseBtn,
-  BlueSubContainer,
-  BlueBarHeader,
-  BlueMainDiv,
-  BlueSubDiv,
-  BlueBtnWrap,
-  BlueBlackBtn,
-  FadeOverlay,
 } from '../Common/Common.Styled'
 
-import { blueModalAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
-import { ExRadioWrap } from '../External/ExternalFilter'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
-
-import { CheckBox } from '../../common/Check/Checkbox'
 import { useEffect } from 'react'
-import CommonTest from '../Alert/PopupMessages'
-import { popupMessages } from '../Alert/PopupMessages'
-import AlertPopup from '../Alert/AlertPopup'
-import { adminDestnationPopup } from '../../store/Layout/Popup'
 import { onClickCheckAtom } from '../../store/Layout/Layout'
+import { adminDestnationPopup } from '../../store/Layout/Popup'
+import AlertPopup from '../Alert/AlertPopup'
 
-import { popupObject } from '../../store/Layout/Layout'
+import { popupObject, popupTypeAtom } from '../../store/Layout/Layout'
 import { popupDummy } from '../Alert/PopupDummy'
-import { popupTypeAtom, btnCellRenderAtom } from '../../store/Layout/Layout'
 
 import styled from 'styled-components'
-import { GreyBtn } from '../../common/Button/Button'
-import { useRef } from 'react'
-import { readExcelFile } from '../../utils/ReadExcelFile'
-import { KrFiledtoEng } from '../../lib/tableHelpers'
+import DateGrid from '../../components/DateGrid/DateGrid'
 
 //  ****** 수정용 table을 가져오는 단일 컴포넌트 *******
 // ex) Destination으로 예를 듦
@@ -51,11 +38,14 @@ const TableModal = ({
   uidAtom,
   onEditHandler,
   editTitle,
+  convertKey,
+  startDate,
+  setStartDate,
 }) => {
   const [onClickCheck, setOnClickCheck] = useAtom(onClickCheckAtom)
   const [popupSwitch, setPopupSwitch] = useAtom(adminDestnationPopup) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
-  const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
+  const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업
 
   // 처음 팝업 띄우는 컴포넌트의 onClickHandler
   const firstPopupClick = (num) => {
@@ -81,10 +71,6 @@ const TableModal = ({
       firstPopupClick('2-4')
     }
   }
-
-  const thisTitle = editTitle
-
-  console.log('thisTitle', thisTitle)
 
   // 한글 key object의 uid에 해당하는 '목적지 고유 번호' 를 return
   const matchingRow = getRow?.find((row) => row[editTitle] === uidAtom)
@@ -153,7 +139,9 @@ const TableModal = ({
                     {Object.entries(filteredRow)?.map(([key, value], index) => (
                       <Td key={index}>
                         {modalInTable[key] === 'input' ? (
-                          <Input type="text" name="name" onChange={onEditHandler} />
+                          <Input type="text" name={convertKey[key]} onChange={onEditHandler} />
+                        ) : modalInTable[key] === 'date' ? (
+                          <DateGrid width={145} startDate={startDate} setStartDate={setStartDate} />
                         ) : (
                           matchingRow[key]
                         )}

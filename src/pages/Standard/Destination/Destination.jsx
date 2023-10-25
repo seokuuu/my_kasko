@@ -39,7 +39,7 @@ import { popupDummy } from '../../../modal/Alert/PopupDummy'
 import TableModal from '../../../modal/Table/TableModal'
 import Upload from '../../../modal/Upload/Upload'
 import {
-  EditAdminDestination,
+  editAdminDestination,
   deleteAdminDestination,
   getAdminDestination,
   getAdminDestinationSearch,
@@ -197,7 +197,7 @@ const Destination = ({}) => {
   // }, [checkedArray])
 
   // Edit
-  const editMutation = useMutationQuery('', EditAdminDestination)
+  const editMutation = useMutationQuery('', editAdminDestination)
   const propsEdit = () => {
     editMutation.mutate(editInput)
   }
