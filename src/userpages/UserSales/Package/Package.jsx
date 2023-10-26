@@ -177,18 +177,16 @@ const Package = ({}) => {
               </RowWrap>
             </FilterLeft>
             <FilterRight style={{ height: '240px' }}>
-              <DoubleWrap style={{ paddingTop: '0px' }}>
-                <p>제품 번호 </p>
+              <DoubleWrap style={{ height: '50%' }}>
+                <h6>제품 번호 </h6>
                 <textarea
                   placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                  style={{ height: '100px' }}
                 />
               </DoubleWrap>
-              <DoubleWrap style={{ paddingTop: '0px' }}>
-                <p>패키지 번호 </p>
+              <DoubleWrap style={{ height: '50%' }}>
+                <h6 style={{ width: '130px', position: 'relative', right: '10px' }}>패키지번호 </h6>
                 <textarea
                   placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                  style={{ height: '100px' }}
                 />
               </DoubleWrap>
             </FilterRight>

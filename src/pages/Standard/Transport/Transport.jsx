@@ -20,6 +20,8 @@ import {
   PartWrap,
   ResetImg,
   RowWrap,
+  StyledHeading,
+  StyledSubHeading,
   SubTitle,
   TCSubContainer,
   TableBottomWrap,
@@ -43,33 +45,32 @@ import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../comm
 import { useRef } from 'react'
 
 import {
+  StandardTransportationEdit,
   StandardTransportationFields,
   StandardTransportationFieldsCols,
   StandardTransportationPost,
-  StandardTransportationEdit,
 } from '../../../constants/admin/Standard'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isArray } from 'lodash'
+import moment from 'moment'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
+import TableModal from '../../../modal/Table/TableModal'
 import {
-  editAdminTransportation,
   deleteAdminTransportation,
+  editAdminTransportation,
   getAdminTransportation,
 } from '../../../service/admin/Standard'
 import {
+  btnCellRenderAtom,
   btnCellUidAtom,
   destiDelPopupAtom,
   destiPostModalAtom,
   popupObject,
   selectedRowsAtom,
-  destiEditModalAtom,
-  btnCellRenderAtom,
 } from '../../../store/Layout/Layout'
-import TableModal from '../../../modal/Table/TableModal'
-import useMutationQuery from '../../../hooks/useMutationQuery'
-import moment from 'moment'
 
 const Transport = ({}) => {
   const [modalSwitch, setModalSwitch] = useAtom(destiPostModalAtom)
@@ -78,8 +79,6 @@ const Transport = ({}) => {
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [startDate, setStartDate] = useState(new Date()) // 수정 버튼 Date
   const [startDate2, setStartDate2] = useState(new Date()) // 하단 적용일자 Date
-
-  console.log('startDate2', moment(startDate2).format('YYYY-MM-DD'))
 
   const radioDummy = ['증가', '감소']
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
@@ -112,8 +111,6 @@ const Transport = ({}) => {
 
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
-  console.log('isModal =>', isModal)
-
   const modalOpen = () => {
     setIsModal(true)
   }
@@ -125,13 +122,16 @@ const Transport = ({}) => {
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
   const uids = checkedArray?.map((item) => item['운반비 고유 번호'])
+  const [types, setTypes] = useState(0) // 매입 매출 구분 (0: 매입 / 1: 매출)
 
   console.log('checkedArray', checkedArray)
+
+  console.log('getRow', getRow)
 
   const Param = {
     pageNum: 1,
     pageSize: 5,
-    type: 0, // 매입 매출 구분 (0: 매입 / 1: 매출)
+    type: types, // (0: 매입 / 1: 매출)
   }
 
   // GET
@@ -195,13 +195,14 @@ const Transport = ({}) => {
 
   console.log('btnCellModal', btnCellModal)
 
+  console.log('getCol', getCol)
+  console.log('getRow', getRow)
+
   // Edit
   const editMutation = useMutationQuery('', editAdminTransportation)
   const propsEdit = () => {
     editMutation.mutate(editInput)
   }
-
-  console.log('startDate')
 
   const [editInput, setEditInput] = useState({
     uid: '',
@@ -297,8 +298,12 @@ const Transport = ({}) => {
       </div>
 
       <TableTitle>
-        <h5>매입 운반비</h5>
-        <h6>매출 운반비</h6>
+        <StyledHeading isActive={types === 0} onClick={() => setTypes(0)}>
+          매입 운반비
+        </StyledHeading>
+        <StyledSubHeading isActive={types === 1} onClick={() => setTypes(1)}>
+          매출 운반비
+        </StyledSubHeading>
       </TableTitle>
       <TableContianer>
         <TCSubContainer bor>
