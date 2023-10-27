@@ -8,6 +8,7 @@ const PageDropdown = ({ handleDropdown }) => {
       <option value="100">100개씩</option>
       <option value="500">500개씩</option>
       <option value="1000">1000개씩</option>
+      <option value="10000">10000개씩</option>
     </PageSelect>
   )
 }

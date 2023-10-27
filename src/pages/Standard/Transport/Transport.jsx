@@ -62,6 +62,7 @@ import {
   deleteAdminTransportation,
   editAdminTransportation,
   getAdminTransportation,
+  editAdminUnitCost,
 } from '../../../service/admin/Standard'
 import {
   btnCellRenderAtom,
@@ -124,11 +125,72 @@ const Transport = ({}) => {
   const uids = checkedArray?.map((item) => item['운반비 고유 번호'])
   const [types, setTypes] = useState(0) // 매입 매출 구분 (0: 매입 / 1: 매출)
 
-  console.log('checkedArray', checkedArray)
+  // 단가 일괄 수정 Patch
+  const [unitPriceEdit, setUnitPriceEdit] = useState() // 단가 일괄 수정 input 값
+  const [realUnitPriceEdit, setRealUnitPriceEdit] = useState([])
+  const onUnitEditHandler = useCallback(
+    (e) => {
+      const { name, value } = e.target
+      setUnitPriceEdit(value)
+    },
+    [unitPriceEdit],
+  )
+  const unitPriceEditDate = moment(startDate2).format('YYYY-MM-DD')
+  const unitPriceEditOnClick = () => {
+    // resData 배열을 순회하며 조건에 맞는 객체를 찾고 수정
+    const updatedResData = resData.map((item) => {
+      if (item.effectDate === unitPriceEditDate) {
+        // unitPriceEdit.percent에 따라 증가 또는 감소
+        const percentage = parseFloat(unitPriceEdit) / 100
+        const updatedEffectCost =
+          radioDummy === '증가'
+            ? item.effectCost + item?.effectCost * percentage
+            : item.effectCost - item?.effectCost * percentage
 
-  console.log('getRow', getRow)
+        // 변경된 값이 있는 경우에만 realUnitPriceEdit에 추가
+        if (item.effectCost !== updatedEffectCost) {
+          setRealUnitPriceEdit((prev) => [
+            ...prev,
+            {
+              uid: item.uid,
+              effectDate: item.effectDate,
+              effectCost: updatedEffectCost,
+            },
+          ])
+        }
 
-  console.log('types', types)
+        // 원본 객체의 effectCost 수정
+        item.effectCost = updatedEffectCost
+      }
+      return item
+    })
+
+    // 변경된 데이터로 state 업데이트
+    setGetRow(add_element_field(updatedResData, StandardTransportationFields))
+  }
+
+  const updateList = realUnitPriceEdit.map((item) => ({
+    uid: item.uid,
+    effectDate: item.effectDate,
+    effectCost: item.effectCost,
+  }))
+
+  const finalResult = {
+    updateList: realUnitPriceEdit.map((item) => {
+      return {
+        uid: item.uid,
+        effectDate: item.effectDate,
+        effectCost: item.effectCost,
+      }
+    }),
+  }
+
+  console.log('finalResult', finalResult)
+
+  const editCostMutation = useMutationQuery('', editAdminUnitCost)
+  const costEdit = () => {
+    editCostMutation.mutate(finalResult)
+  }
 
   const Param = {
     pageNum: 1,
@@ -373,15 +435,28 @@ const Transport = ({}) => {
               </div>
             </div>
             <div></div>
-            <CustomInput placeholder="% 입력" style={{ marginRight: '5px' }} width={140} height={30} />
-            <TGreyBtn>적용</TGreyBtn>
+            <CustomInput
+              placeholder="% 입력"
+              name="percent"
+              onChange={onUnitEditHandler}
+              style={{ marginRight: '5px' }}
+              width={140}
+              height={30}
+            />
+            <TGreyBtn onClick={unitPriceEditOnClick}>적용</TGreyBtn>
           </TCGreyDiv>
           <div style={{ display: 'flex', gap: '10px' }}></div>
         </TCSubContainer>
 
         <Table getCol={getCol} getRow={getRow} />
         <TableBottomWrap>
-          <BlackBtn width={15} height={40}>
+          <BlackBtn
+            width={15}
+            height={40}
+            onClick={() => {
+              costEdit()
+            }}
+          >
             저장
           </BlackBtn>
         </TableBottomWrap>

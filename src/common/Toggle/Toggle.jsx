@@ -20,7 +20,7 @@ export const Circle = styled.div`
   height: 25px;
   border-radius: 50px;
   position: absolute;
-  left: -15%;
+  left: -10%;
   transition: all 0.5s ease-in-out;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.15);
   ${(props) =>
