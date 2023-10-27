@@ -425,9 +425,9 @@ export const EditGear = styled.div`
   }
 `
 
-export const StyledHeading = styled.h5`
+export const StyledHeading = styled.p`
   font-weight: ${(props) => (props.isActive ? 'bold' : 'normal')};
-  font-size: ${(props) => (props.isActive ? '18px' : 'inherit')};
+  color: ${(props) => (props.isActive ? '' : '#6b6b6b')};
   cursor: pointer;
 
   &:hover {
@@ -435,9 +435,9 @@ export const StyledHeading = styled.h5`
   }
 `
 
-export const StyledSubHeading = styled.h6`
+export const StyledSubHeading = styled.p`
   font-weight: ${(props) => (props.isActive ? 'bold' : 'normal')};
-  font-size: ${(props) => (props.isActive ? '18px' : 'inherit')};
+  color: ${(props) => (props.isActive ? '' : '#6b6b6b')};
   cursor: pointer;
 
   &:hover {

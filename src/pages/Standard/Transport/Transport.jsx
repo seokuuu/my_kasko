@@ -128,6 +128,8 @@ const Transport = ({}) => {
 
   console.log('getRow', getRow)
 
+  console.log('types', types)
+
   const Param = {
     pageNum: 1,
     pageSize: 5,
