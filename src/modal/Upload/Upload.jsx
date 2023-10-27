@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
+import moment from 'moment'
 import {
   NonFadeOverlay,
   ModalContainer,
@@ -36,9 +37,13 @@ import { useRef } from 'react'
 import { readExcelFile } from '../../utils/ReadExcelFile'
 import { KrFiledtoEng } from '../../lib/tableHelpers'
 
+import { Th, Table, Td, Input } from '../Table/TableModal'
+
 // 1. Upload를 사용하는 컴포넌트에서 originEngRowField props를 받는다
 // ex) Destination.jsx에서 StandardDestinaionFields를 받음.
 // 2. excelToJson, setExcelToJson을 Props로 내려받아, handleFileExcel에 처리된 mappedData를 set으로 받는다
+
+// 목적지 등록 기획 오류로 인한 보류 !!!
 const Upload = ({
   modalSwitch,
   setModalSwitch,
@@ -47,6 +52,10 @@ const Upload = ({
   excelToJson,
   setExcelToJson,
   propsHandler,
+  modalInTable,
+  getRow,
+  uidAtom,
+  onEditHandler,
 }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
@@ -104,6 +113,8 @@ const Upload = ({
 
   const radioDummy = ['대량 등록', '단일 등록']
 
+  const date = moment().format('YYYY-MM-DD')
+
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   useEffect(() => {
@@ -117,6 +128,8 @@ const Upload = ({
       window.removeEventListener('beforeunload', handleBeforeUnload)
     }
   }, [])
+
+  console.log('모멘트', moment().format('YYYY-MM-DD'))
 
   return (
     // 재고 관리 - 판매 구분 변경
@@ -193,8 +206,35 @@ const Upload = ({
               </BlueMainDiv>
             )}
             {checkRadio[1] && (
-              <BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px', display: 'flex' }}>
-                wmf
+              <BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px' }}>
+                <Table>
+                  <thead>
+                    <tr>
+                      {Object.keys(modalInTable)?.map((key) => (
+                        <Th key={key}>{key}</Th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      {Object.entries(modalInTable)?.map(([key, value], index) => (
+                        <Td key={index}>
+                          {value === 'input' ? (
+                            value === '작성일' ? (
+                              <div>{date}</div>
+                            ) : (
+                              <Input type="text" />
+                            )
+                          ) : value === 'dropdown' ? (
+                            <Dropdown />
+                          ) : (
+                            ''
+                          )}
+                        </Td>
+                      ))}
+                    </tr>
+                  </tbody>
+                </Table>
               </BlueMainDiv>
             )}
           </div>
@@ -248,3 +288,4 @@ const UldAfterWrap = styled.div`
   justify-content: space-between;
   align-items: center;
 `
+const Dropdown = styled.div``

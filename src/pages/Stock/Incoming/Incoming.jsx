@@ -13,7 +13,7 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import BlueBar from '../../../modal/BlueBar/BlueBar'
 import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { FilterWrap } from '../../../modal/External/ExternalFilter'
+import { FilterRightSub, FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
   FilterContianer,
   FilterHeader,
@@ -87,7 +87,7 @@ const Incoming = ({}) => {
                     </PWRight>
                   </PartWrap>
                   <PartWrap>
-                    <h6>매입처</h6>
+                    <h6 style={{ width: '60px' }}>매입처</h6>
                     <PWRight>
                       <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                     </PWRight>
@@ -144,10 +144,9 @@ const Incoming = ({}) => {
               </FilterLeft>
               <FilterRight>
                 <DoubleWrap>
-                  <p>제품 번호 </p>
+                  <h6>제품 번호 </h6>
                   <textarea
                     placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                    style={{ height: '100px' }}
                   />
                 </DoubleWrap>
               </FilterRight>

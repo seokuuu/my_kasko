@@ -174,10 +174,9 @@ const Winning = ({}) => {
             </FilterLeft>
             <FilterRight>
               <DoubleWrap>
-                <p>제품 번호 </p>
+                <h6>제품 번호 </h6>
                 <textarea
                   placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                  style={{ height: '100px' }}
                 />
               </DoubleWrap>
             </FilterRight>

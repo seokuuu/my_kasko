@@ -1,66 +1,87 @@
-import { useEffect, useState, useCallback } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
-import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, ExcelBtn, TGreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Table from '../../Table/Table'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
-import BlueBar from '../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { CustomInput, FilterWrap } from '../../../modal/External/ExternalFilter'
+import { useCallback, useEffect, useState } from 'react'
+import { styled } from 'styled-components'
+import { BlackBtn, GreyBtn, TGreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { MainSelect } from '../../../common/Option/Main'
+import DateGrid from '../../../components/DateGrid/DateGrid'
+import Excel from '../../../components/TableInner/Excel'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import AlertPopup from '../../../modal/Alert/AlertPopup'
 import {
+  CustomInput,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
-  TableBottomWrap,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
+  FilterSubcontianer,
+  FilterWrap,
   GridWrap,
-  Tilde,
-  DoubleWrap,
+  Input,
+  PartWrap,
   ResetImg,
-  TableContianer,
-  InputStartWrap,
-  FilterHeaderAlert,
-  TableTitle,
+  RowWrap,
+  StyledHeading,
+  StyledSubHeading,
   SubTitle,
   TCSubContainer,
+  TableBottomWrap,
+  TableContianer,
+  TableTitle,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
+import Upload from '../../../modal/Upload/Upload'
+import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
+import Table from '../../Table/Table'
 
-import PageDropdown from '../../../components/TableInner/PageDropdown'
-import Hidden from '../../../components/TableInner/Hidden'
+import { popupDummy } from '../../../modal/Alert/PopupDummy'
+
 import { Link } from 'react-router-dom'
+import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
-import { ExRadioWrap } from '../../../modal/External/ExternalFilter'
-
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 import { CheckBox } from '../../../common/Check/Checkbox'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
 import { useRef } from 'react'
 
-import { StandardTransportationFields, StandardTransportationFieldsCols } from '../../../constants/admin/Standard'
+import {
+  StandardTransportationEdit,
+  StandardTransportationFields,
+  StandardTransportationFieldsCols,
+  StandardTransportationPost,
+} from '../../../constants/admin/Standard'
 
-import { useQueryClient, useMutation } from '@tanstack/react-query'
-import { selectedRowsAtom } from '../../../store/Layout/Layout'
-import { getAdminTransportation, deleteAdminTransportation } from '../../../service/admin/Standard'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { isArray } from 'lodash'
+import moment from 'moment'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
-import { isArray } from 'lodash'
-import { CSVLink } from 'react-csv'
+import TableModal from '../../../modal/Table/TableModal'
+import {
+  deleteAdminTransportation,
+  editAdminTransportation,
+  getAdminTransportation,
+} from '../../../service/admin/Standard'
+import {
+  btnCellRenderAtom,
+  btnCellUidAtom,
+  destiDelPopupAtom,
+  destiPostModalAtom,
+  popupObject,
+  selectedRowsAtom,
+} from '../../../store/Layout/Layout'
 
 const Transport = ({}) => {
+  const [modalSwitch, setModalSwitch] = useAtom(destiPostModalAtom)
+  const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
+  const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom) // 팝업 스위치
+  const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
+  const [startDate, setStartDate] = useState(new Date()) // 수정 버튼 Date
+  const [startDate2, setStartDate2] = useState(new Date()) // 하단 적용일자 Date
+
   const radioDummy = ['증가', '감소']
+  const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   const handleSelectChange = (selectedOption, name) => {
@@ -90,22 +111,29 @@ const Transport = ({}) => {
 
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
-  console.log('isModal =>', isModal)
-
   const modalOpen = () => {
     setIsModal(true)
   }
 
   const [getRow, setGetRow] = useState('')
   const tableField = useRef(StandardTransportationFieldsCols)
+  const originEngRowField = StandardTransportationFields
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
+  const uids = checkedArray?.map((item) => item['운반비 고유 번호'])
+  const [types, setTypes] = useState(0) // 매입 매출 구분 (0: 매입 / 1: 매출)
+
+  console.log('checkedArray', checkedArray)
+
+  console.log('getRow', getRow)
+
+  console.log('types', types)
 
   const Param = {
     pageNum: 1,
     pageSize: 5,
-    type: 0, // 매입 매출 구분 (0: 매입 / 1: 매출)
+    type: types, // (0: 매입 / 1: 매출)
   }
 
   // GET
@@ -127,35 +155,83 @@ const Transport = ({}) => {
   // DELETE
   const mutation = useMutation(deleteAdminTransportation, {
     onSuccess: () => {
-      queryClient.invalidateQueries('destination')
+      queryClient.invalidateQueries('transportation')
     },
   })
 
-  const handleRemoveBtn = useCallback(() => {
-    if (isArray(checkedArray) && checkedArray.length > 0) {
-      if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
-        checkedArray.forEach((item) => {
-          mutation.mutate(item['운반비 고유 번호']) //mutation.mutate로 api 인자 전해줌
-        })
+  // 선택한 것 삭제 요청 (해당 함수 func 인자로 전달)
+  const propsRemove = () => {
+    checkedArray.forEach((item) => {
+      mutation.mutate(item['운반비 고유 번호']) //mutation.mutate로 api 인자 전해줌
+    })
+  }
+
+  // 팝업 '확인' 버튼 함수 (prop으로 줄 함수 선택)
+  const firstPopupClick = useCallback(
+    (num) => {
+      if (isArray(checkedArray) && checkedArray.length > 0) {
+        setPopupSwitch(true)
+        const firstPopup = popupDummy.find((popup) => popup.num === num)
+        setNowPopup((prevNowPopup) => ({
+          ...prevNowPopup,
+          ...firstPopup,
+          func: propsRemove,
+        }))
+      } else {
+        alert('선택해주세요!')
       }
-    } else {
-      alert('선택해주세요!')
-    }
-  }, [checkedArray])
+    },
+    [checkedArray],
+  )
 
-  console.log('checkedArray =>', checkedArray)
+  const propsPost = () => {}
 
-  const headers = [
-    { label: 'First Name', key: 'firstname' },
-    { label: 'Last Name', key: 'lastname' },
-    { label: 'Email', key: 'email' },
-  ]
+  // POST
+  const openModal = () => {
+    setModalSwitch(true)
+    setNowPopup((prev) => ({
+      ...prev,
+      func: propsPost,
+    }))
+  }
 
-  const datas = [
-    { firstname: 'Ahmed', lastname: 'Tomi', email: 'ah@smthing.co.com' },
-    { firstname: 'Raed', lastname: 'Labes', email: 'rl@smthing.co.com' },
-    { firstname: 'Yezzi', lastname: 'Min l3b', email: 'ymin@cocococo.com' },
-  ]
+  console.log('btnCellModal', btnCellModal)
+
+  console.log('getCol', getCol)
+  console.log('getRow', getRow)
+
+  // Edit
+  const editMutation = useMutationQuery('', editAdminTransportation)
+  const propsEdit = () => {
+    editMutation.mutate(editInput)
+  }
+
+  const [editInput, setEditInput] = useState({
+    uid: '',
+    effectDate: '',
+    effectCost: '',
+  })
+
+  useEffect(() => {
+    setEditInput({ ...editInput, effectDate: moment(startDate).format('YYYY-MM-DD hh:mm:ss'), uid: uidAtom })
+  }, [startDate, uidAtom])
+
+  console.log('editInput', editInput)
+  const onEditHandler = useCallback(
+    (e) => {
+      console.log('Edit input event:', e)
+      const { name, value } = e.target
+      setEditInput({ ...editInput, [name]: value })
+    },
+    [editInput],
+  )
+
+  // API에 맞게 한글 -> 영문으로 key 변경 (수정 Modal Input의 key를 변경시킨다)
+  const convertKey = {
+    적용단가: 'effectCost',
+  }
+
+  console.log('editInput', editInput)
 
   return (
     <FilterContianer>
@@ -224,8 +300,12 @@ const Transport = ({}) => {
       </div>
 
       <TableTitle>
-        <h5>매입 운반비</h5>
-        <h6>매출 운반비</h6>
+        <StyledHeading isActive={types === 0} onClick={() => setTypes(0)}>
+          매입 운반비
+        </StyledHeading>
+        <StyledSubHeading isActive={types === 1} onClick={() => setTypes(1)}>
+          매출 운반비
+        </StyledSubHeading>
       </TableTitle>
       <TableContianer>
         <TCSubContainer bor>
@@ -245,15 +325,34 @@ const Transport = ({}) => {
             </div>
           </TCSubDiv>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn onClick={handleRemoveBtn}>운반비 삭제</WhiteRedBtn>
-            <WhiteSkyBtn>운반비 등록</WhiteSkyBtn>
+            <WhiteRedBtn
+              onClick={() => {
+                firstPopupClick('2-2')
+              }}
+            >
+              운반비 삭제
+            </WhiteRedBtn>
+            <WhiteSkyBtn
+              onClick={() => {
+                openModal()
+              }}
+            >
+              운반비 등록
+            </WhiteSkyBtn>
           </div>
         </TCSubContainer>
         <TCSubContainer>
           <TCGreyDiv>
             <div>
               <p style={{ marginRight: '10px' }}>적용일자</p>
-              <DateGrid height={30} width={130} bgColor={'white'} fontSize={15} />
+              <DateGrid
+                startDate={startDate2}
+                setStartDate={setStartDate2}
+                height={30}
+                width={130}
+                bgColor={'white'}
+                fontSize={15}
+              />
             </div>
             <div>
               <p style={{ marginLeft: ' 20px' }}>단가 일괄 수정</p>
@@ -287,6 +386,37 @@ const Transport = ({}) => {
           </BlackBtn>
         </TableBottomWrap>
       </TableContianer>
+      {btnCellModal && (
+        // Edit
+        <TableModal
+          btnCellModal={btnCellModal} // Modal Atom Switch
+          setBtnCellModal={setBtnCellModal} // 수정 버튼에 대한 ag-grid event
+          modalInTable={StandardTransportationEdit} // Modal 안에 들어갈 Table 매칭 디렉토리 ex)
+          title={'운반비 수정'}
+          getRow={getRow} // 해당 컴포넌트 Table 자체 Object (한글)
+          uidAtom={uidAtom} // 수정버튼 누른 해당 object의 고유 id (btnCellRender에서 추출된 uid)
+          onEditHandler={onEditHandler} // edit 버튼의 함수를 스프레드 func를 전달
+          propsHandler={propsEdit} // 실질 patch 역할하는 함수
+          editTitle={'운반비 고유 번호'}
+          convertKey={convertKey}
+          startDate={startDate}
+          setStartDate={setStartDate}
+        />
+      )}
+      {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
+      {modalSwitch && (
+        // Post
+        <Upload
+          modalSwitch={modalSwitch}
+          setModalSwitch={setModalSwitch}
+          title={'운반비 등록'}
+          propsHandler={propsPost}
+          modalInTable={StandardTransportationPost}
+          getRow={getRow}
+          uidAtom={uidAtom}
+          onEditHandler={onEditHandler}
+        />
+      )}
     </FilterContianer>
   )
 }

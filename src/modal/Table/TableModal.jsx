@@ -1,50 +1,51 @@
-import React from 'react'
 import { useState } from 'react'
 import {
-  NonFadeOverlay,
+  BlueBarHeader,
+  BlueBlackBtn,
+  BlueBtnWrap,
+  BlueMainDiv,
+  BlueSubContainer,
+  BlueSubDiv,
+  FadeOverlay,
   ModalContainer,
   WhiteCloseBtn,
-  BlueSubContainer,
-  BlueBarHeader,
-  BlueMainDiv,
-  BlueSubDiv,
-  BlueBtnWrap,
-  BlueBlackBtn,
-  FadeOverlay,
 } from '../Common/Common.Styled'
 
-import { blueModalAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
-import { ExRadioWrap } from '../External/ExternalFilter'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
-
-import { CheckBox } from '../../common/Check/Checkbox'
 import { useEffect } from 'react'
-import CommonTest from '../Alert/PopupMessages'
-import { popupMessages } from '../Alert/PopupMessages'
-import AlertPopup from '../Alert/AlertPopup'
+import { onClickCheckAtom } from '../../store/Layout/Layout'
 import { adminDestnationPopup } from '../../store/Layout/Popup'
+import AlertPopup from '../Alert/AlertPopup'
 
-import { popupObject } from '../../store/Layout/Layout'
+import { popupObject, popupTypeAtom } from '../../store/Layout/Layout'
 import { popupDummy } from '../Alert/PopupDummy'
-import { popupTypeAtom } from '../../store/Layout/Layout'
 
 import styled from 'styled-components'
-import { GreyBtn } from '../../common/Button/Button'
-import { useRef } from 'react'
-import { readExcelFile } from '../../utils/ReadExcelFile'
-import { KrFiledtoEng } from '../../lib/tableHelpers'
+import DateGrid from '../../components/DateGrid/DateGrid'
 
 //  ****** 수정용 table을 가져오는 단일 컴포넌트 *******
 // ex) Destination으로 예를 듦
 // 1. Destination에서 key값이 한글로 매핑된 Object를 가져온다 (getRow)
 // 2. btnCellRenderAtom이 해당 TableModal의 switch 역할 - propsHandler로 받음
 // propsHandler를 해당 firstPopupClick의 안 setNowPopup의 func 기능으로 쓴다.
-const TableModal = ({ title, setBtnCellModal, propsHandler, modalInTable, getRow, uidAtom, onEditHandler }) => {
+const TableModal = ({
+  title,
+  setBtnCellModal,
+  propsHandler,
+  modalInTable,
+  getRow,
+  uidAtom,
+  onEditHandler,
+  editTitle,
+  convertKey,
+  startDate,
+  setStartDate,
+}) => {
+  const [onClickCheck, setOnClickCheck] = useAtom(onClickCheckAtom)
   const [popupSwitch, setPopupSwitch] = useAtom(adminDestnationPopup) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
-  const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
+  const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업
 
   // 처음 팝업 띄우는 컴포넌트의 onClickHandler
   const firstPopupClick = (num) => {
@@ -64,24 +65,31 @@ const TableModal = ({ title, setBtnCellModal, propsHandler, modalInTable, getRow
   }, [nowPopup, nowPopupType])
 
   const modalClose = () => {
-    setBtnCellModal(false)
+    if (onClickCheck) {
+      setBtnCellModal(false)
+    } else {
+      firstPopupClick('2-4')
+    }
   }
 
   // 한글 key object의 uid에 해당하는 '목적지 고유 번호' 를 return
-  const matchingRow = getRow?.find((row) => row['목적지 고유 번호'] === uidAtom)
+  const matchingRow = getRow?.find((row) => row[editTitle] === uidAtom)
 
   // matchingRow에서
   // '목적지 코드': 'auto',
   // '목적지 명': 'input', 와 같은 data가 매칭되게끔 필터함. auto는 렌더, input은 input으로 렌더처리
   //
-  const filteredRow = Object.keys(modalInTable).reduce((acc, key) => {
+
+  console.log('matchingRow ###', matchingRow)
+
+  const filteredRow = Object?.keys(modalInTable)?.reduce((acc, key) => {
     if (matchingRow[key]) {
       acc[key] = matchingRow[key]
     }
     return acc
   }, {})
 
-  console.log('filteredRow', filteredRow)
+  console.log('filteredRow ###', filteredRow)
 
   return (
     // 재고 관리 - 판매 구분 변경
@@ -131,7 +139,9 @@ const TableModal = ({ title, setBtnCellModal, propsHandler, modalInTable, getRow
                     {Object.entries(filteredRow)?.map(([key, value], index) => (
                       <Td key={index}>
                         {modalInTable[key] === 'input' ? (
-                          <Input type="text" name="name" onChange={onEditHandler} />
+                          <Input type="text" name={convertKey[key]} onChange={onEditHandler} />
+                        ) : modalInTable[key] === 'date' ? (
+                          <DateGrid width={145} startDate={startDate} setStartDate={setStartDate} />
                         ) : (
                           matchingRow[key]
                         )}
@@ -160,7 +170,7 @@ const TableModal = ({ title, setBtnCellModal, propsHandler, modalInTable, getRow
 
 export default TableModal
 
-const UldWrap = styled.div`
+export const UldWrap = styled.div`
   margin-left: auto;
   margin-right: auto;
   text-align: center;
@@ -168,13 +178,13 @@ const UldWrap = styled.div`
   align-items: center;
 `
 
-const UldText = styled.div`
+export const UldText = styled.div`
   color: #b5b5b5;
   font-size: 18px;
   margin-top: -20px;
 `
 
-const UldBtn = styled.button`
+export const UldBtn = styled.button`
   width: 200px;
   height: 35px;
   color: #4c83d6;
@@ -184,7 +194,7 @@ const UldBtn = styled.button`
   margin-top: 35px;
 `
 
-const UldAfterWrap = styled.div`
+export const UldAfterWrap = styled.div`
   width: 100%;
   margin: 10px;
   border: 1px solid;
@@ -193,7 +203,7 @@ const UldAfterWrap = styled.div`
   align-items: center;
 `
 
-const Table = styled.table`
+export const Table = styled.table`
   border-collapse: collapse;
   width: 100%;
   margin-top: 20px;
@@ -205,7 +215,7 @@ const Table = styled.table`
   }
 `
 
-const Th = styled.th`
+export const Th = styled.th`
   border: 1px solid #c8c8c8;
   padding: 8px;
   text-align: center;
@@ -213,7 +223,7 @@ const Th = styled.th`
   font-size: 18px;
 `
 
-const Td = styled.td`
+export const Td = styled.td`
   border: 1px solid #ddd;
   text-align: center;
   font-weight: 100;
@@ -223,8 +233,9 @@ const Td = styled.td`
   font-size: 18px;
 `
 
-const Input = styled.input`
+export const Input = styled.input`
   width: 100%;
   height: 100%;
   box-sizing: border-box;
+  border: 1px solid #c8c8c8;
 `

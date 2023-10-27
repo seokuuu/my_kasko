@@ -46,11 +46,30 @@ export const clientModalAtom = atom(false)
 //사용자 관리 - 고객사 관리파트 회원제한모달
 export const AuctionRestrictionModal = atom(false)
 
+// 기준 관리
+
+//목적지 관리 - 목적지 등록 Modal
 export const modalAtom = atom(false)
 
 export const popupAtom = atom(false)
 
-console.log('popupAtom =>', popupAtom)
+//목적지 관리 - 목적지 수정버튼 Modal
+export const btnCellRenderAtom = atom(false)
+
+//목적지 관리 - 목적지 수정버튼 Uid
+export const btnCellUidAtom = atom('')
+
+//운반비 관리 - 운반비 등록 Modal
+export const destiPostModalAtom = atom(false)
+
+//운반비 관리 - 운반비 삭제 popup
+export const destiDelPopupAtom = atom(false)
+
+//운반비 관리 - 운반비 수정버튼 Modal
+export const destiEditModalAtom = atom(false)
+
+//운반비 관리 - 운반비 수정 Cell Uid
+export const destiEditCellUidAtom = atom('')
 
 export const popupTypeAtom = atom('')
 
@@ -62,6 +81,7 @@ export const popupObject = atom({
   next: '',
   onClick: () => {},
   func: () => {},
+  func2: () => {},
 })
 
 export const modalObject = atom({
@@ -72,6 +92,4 @@ export const engRowTitle = atom('')
 
 export const excelToJsonAtom = atom('')
 
-export const btnCellRenderAtom = atom(false)
-
-export const btnCellUidAtom = atom('')
+export const onClickCheckAtom = atom(false)

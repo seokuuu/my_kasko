@@ -25,13 +25,15 @@ export const StandardDestinaionFields = {
   수정일: 'updateDate',
 }
 
+// 기준관리 - 목적지관리 post
 export const StandardDestinationPost = {
-  '목적지 코드': 'auto',
+  '목적지 코드': 'dropdown',
   '목적지 명': 'input',
   작성자: 'auto',
   작성일: 'auto',
 }
 
+// 기준관리 - 목적지관리 Edit
 export const StandardDestinationEdit = {
   '목적지 코드': 'auto',
   '목적지 명': 'input',
@@ -40,6 +42,17 @@ export const StandardDestinationEdit = {
   수정자: 'auto',
   수정일: 'auto',
 }
+
+// {
+//     "uid": 15,
+//     "storage": "창고2",
+//     "destinationCode": "A",
+//     "destinationName": "인천",
+//     "spart": "후판",
+//     "effectDate": "2023-06-21",
+//     "previousCost": 0,
+//     "effectCost": 200000
+// },
 
 // 기준관리 - 목적지관리 fieldsCols
 //  주석 처리 : cell 내 버튼 기능
@@ -56,7 +69,7 @@ export const StandardDestinaionFieldsCols = [
   },
   {
     field: '목적지 고유 번호',
-    minWidth: 100,
+    minWidth: 160,
   },
   { field: '목적지 코드', minWidth: 100 }, //숫자
   { field: '목적지 명', minWidth: 100 },
@@ -88,12 +101,41 @@ export const StandardTransportationFields = {
   적용단가: 'effectCost',
 }
 
+// 기준 관리 - 운반비 관리 post
+export const StandardTransportationPost = {
+  출발지: 'auto',
+  '목적지 코드': 'auto',
+  '목적지 명': 'input',
+  '제품 구분': 'auto',
+  '단가 적용 일자': 'auto',
+  '적용 단가': 'input',
+}
+
+// 기준 관리 - 운반비 관리 Edit
+export const StandardTransportationEdit = {
+  창고: 'auto',
+  '목적지 코드': 'auto',
+  목적지명: 'auto',
+  제품군: 'auto',
+  적용일: 'date',
+  적용단가: 'input',
+}
+
 // 기준관리 - 운반비 관리 fieldsCols
 export const StandardTransportationFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   {
+    field: '수정',
+    maxWidth: 90,
+    cellRenderer: BtnCellRenderer,
+    cellRendererParams: {
+      uidFieldName: '운반비 고유 번호',
+      editType: 'table',
+    },
+  },
+  {
     field: '운반비 고유 번호',
-    minWidth: 100,
+    minWidth: 160,
   },
   { field: '창고', minWidth: 100 },
   { field: '목적지 코드', minWidth: 100 },
@@ -125,6 +167,7 @@ export const StandardSurchargeFields = {
 
 export const StandardSurchargeFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+
   {
     field: '할증 고유 번호',
     minWidth: 100,

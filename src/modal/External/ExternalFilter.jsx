@@ -163,23 +163,26 @@ export const PWRight = styled.div`
 
 export const DoubleWrap = styled.div`
   display: flex;
-  min-width: 400px;
-  padding: 10px 10px 0px 0px;
-  p {
-    width: 90px;
-    max-width: 150px;
-    display: flex;
-    text-align: left;
-    color: #454545;
+  position: relative;
+  height: 100%;
+  padding-top: 10px;
 
-    @media (max-width: 1844px) {
-      width: 110px;
-    }
+  > h6 {
+    padding: 5px;
+    width: 120px;
+    font-size: 18px;
   }
 
-  textarea {
-    width: 210px;
-    font-size: 18px;
+  > textarea {
+    margin-right: 5px;
+    height: 95%;
+    width: 100%;
+    font-size: 16px;
+    padding: 8px;
+
+    ::placeholder {
+      color: #acacac;
+    }
   }
 `
 
@@ -419,5 +422,25 @@ export const EditGear = styled.div`
   &:hover {
     font-weight: bold;
     text-decoration: underline;
+  }
+`
+
+export const StyledHeading = styled.p`
+  font-weight: ${(props) => (props.isActive ? 'bold' : 'normal')};
+  color: ${(props) => (props.isActive ? '' : '#6b6b6b')};
+  cursor: pointer;
+
+  &:hover {
+    font-weight: bold;
+  }
+`
+
+export const StyledSubHeading = styled.p`
+  font-weight: ${(props) => (props.isActive ? 'bold' : 'normal')};
+  color: ${(props) => (props.isActive ? '' : '#6b6b6b')};
+  cursor: pointer;
+
+  &:hover {
+    font-weight: bold;
   }
 `

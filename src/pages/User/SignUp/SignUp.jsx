@@ -168,6 +168,7 @@ const SignUp = () => {
   }
 
   const daumPostHandleComplete = (data) => {
+    console.log("data =>" , data)
     const { address } = data
     setAddress(address)
     setIsDaumPostOpen(false)

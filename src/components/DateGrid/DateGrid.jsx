@@ -4,8 +4,8 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { styled } from 'styled-components'
 
-const DateGrid = ({ left, bgColor, fontSize, width, height }) => {
-  const [startDate, setStartDate] = useState(new Date())
+const DateGrid = ({ left, bgColor, fontSize, width, height, startDate, setStartDate }) => {
+
   return (
     <>
       <label>

@@ -5,12 +5,20 @@ import { BlackBtn, RedBtn, WhiteBtn } from '../../common/Button/Button'
 import { popupDummy } from './PopupDummy'
 import { useAtom } from 'jotai'
 import { alertAtom, modalObject } from '../../store/Layout/Layout'
-import { popupObject, popupTypeAtom, popupAtom, modalAtom } from '../../store/Layout/Layout'
+import {
+  popupObject,
+  popupTypeAtom,
+  popupAtom,
+  modalAtom,
+  onClickCheckAtom,
+  btnCellRenderAtom,
+} from '../../store/Layout/Layout'
 const AlertPopup = ({ propsRemove, setPopupSwitch }) => {
   const [modalSwitch, setModalSwitch] = useAtom(modalAtom) // 모달 스위치
   // const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowModal, setNowModal] = useAtom(modalObject) // 모달 객체
+  const [onlyClose, setOnlyClose] = useAtom(btnCellRenderAtom)
 
   console.log('nowPopup !!!', nowPopup)
 
@@ -35,12 +43,14 @@ const AlertPopup = ({ propsRemove, setPopupSwitch }) => {
   // next가 없으면, 팝업과 해당 모달이 종료된다
   const showNextPopup = () => {
     const nextType = nowPopup.next?.split('-')[0]
-
     if (nowPopup && nowPopup?.next) {
       nowPopup.func()
       firstPopupClick(nowPopup?.next)
       setNowPopupType(nextType)
       setCheckNext(true)
+    } else if (nowPopup && !nowPopup?.next) {
+      closePopup()
+      setOnlyClose(false) // 취소 버튼엔 Modal이 꺼지면 안되므로 단독으로 처리
     } else {
       closePopup()
     }

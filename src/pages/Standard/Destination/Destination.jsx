@@ -1,41 +1,26 @@
-import { useEffect, useState, useCallback, useRef } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteRedBtn, WhiteSkyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
+import { BlackBtn, GreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 
-import Table from '../../Table/Table'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { engRowTitle, excelToJsonAtom, modalObject, toggleAtom } from '../../../store/Layout/Layout'
-import BlueBar from '../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { FilterWrap } from '../../../modal/External/ExternalFilter'
+import Hidden from '../../../components/TableInner/Hidden'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
+  FilterSubcontianer,
+  FilterWrap,
   Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
+  PartWrap,
   ResetImg,
-  TableContianer,
-  InputStartWrap,
-  FilterHeaderAlert,
+  RowWrap,
   TCSubContainer,
+  TableContianer,
 } from '../../../modal/External/ExternalFilter'
-import Hidden from '../../../components/TableInner/Hidden'
+import { blueModalAtom, excelToJsonAtom, modalObject, toggleAtom } from '../../../store/Layout/Layout'
+import Table from '../../Table/Table'
 
 import {
   StandardDestinaionFields,
@@ -44,31 +29,31 @@ import {
   StandardDestinationPost,
 } from '../../../constants/admin/Standard'
 
-import { useQueryClient, useMutation } from '@tanstack/react-query'
-import { selectedRowsAtom } from '../../../store/Layout/Layout'
-import {
-  getAdminDestination,
-  deleteAdminDestination,
-  postAdminDestination,
-  EditAdminDestination,
-} from '../../../service/admin/Standard'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { add_element_field, KrFiledtoEng } from '../../../lib/tableHelpers'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isArray } from 'lodash'
-import Test3 from '../../Test/Test3'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
+import AlertPopup from '../../../modal/Alert/AlertPopup'
+import { popupDummy } from '../../../modal/Alert/PopupDummy'
+import TableModal from '../../../modal/Table/TableModal'
+import Upload from '../../../modal/Upload/Upload'
 import {
+  editAdminDestination,
+  deleteAdminDestination,
+  getAdminDestination,
+  getAdminDestinationSearch,
+  postAdminDestination,
+} from '../../../service/admin/Standard'
+import {
+  btnCellRenderAtom,
+  btnCellUidAtom,
   modalAtom,
   popupAtom,
   popupObject,
   popupTypeAtom,
-  btnCellRenderAtom,
-  btnCellUidAtom,
+  selectedRowsAtom,
 } from '../../../store/Layout/Layout'
-import Upload from '../../../modal/Upload/Upload'
-import { popupDummy } from '../../../modal/Alert/PopupDummy'
-import AlertPopup from '../../../modal/Alert/AlertPopup'
-import useMutationQuery from '../../../hooks/useMutationQuery'
-import TableModal from '../../../modal/Table/TableModal'
 
 const Destination = ({}) => {
   const [modalSwitch, setModalSwitch] = useAtom(modalAtom)
@@ -84,8 +69,6 @@ const Destination = ({}) => {
   const [isRotated, setIsRotated] = useState(false)
 
   const [excelToJson, setExcelToJson] = useAtom(excelToJsonAtom)
-
-  console.log('uidAtom', uidAtom)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
@@ -130,9 +113,11 @@ const Destination = ({}) => {
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getAdminDestination', getAdminDestination)
   const resData = data?.data?.data?.list
 
-  console.log('resData', resData)
+  // Get 목적지 코드 Dropdown
 
-  console.log('getRow', getRow)
+  const { data: data2, isSuccess2 } = useReactQuery('', 'getAdminDestinationSearch', getAdminDestinationSearch)
+
+  console.log('data2 => ', data2)
 
   useEffect(() => {
     let getData = resData
@@ -157,12 +142,7 @@ const Destination = ({}) => {
     })
   }
 
-  // POST
-  const postMutation = useMutationQuery('', postAdminDestination)
-  const propsPost = () => {
-    postMutation.mutate(excelToJson)
-  }
-
+  // 팝업 '확인' 버튼 함수 (prop으로 줄 함수 선택)
   const firstPopupClick = useCallback(
     (num) => {
       if (isArray(checkedArray) && checkedArray.length > 0) {
@@ -179,6 +159,12 @@ const Destination = ({}) => {
     },
     [checkedArray],
   )
+
+  // POST
+  const postMutation = useMutationQuery('', postAdminDestination)
+  const propsPost = () => {
+    postMutation.mutate(excelToJson)
+  }
 
   const openModal = () => {
     setModalSwitch(true)
@@ -211,7 +197,7 @@ const Destination = ({}) => {
   // }, [checkedArray])
 
   // Edit
-  const editMutation = useMutationQuery('', EditAdminDestination)
+  const editMutation = useMutationQuery('', editAdminDestination)
   const propsEdit = () => {
     editMutation.mutate(editInput)
   }
@@ -319,17 +305,18 @@ const Destination = ({}) => {
           // Edit
           <TableModal
             btnCellModal={btnCellModal} // Modal Atom Switch
-            setBtnCellModal={setBtnCellModal}
+            setBtnCellModal={setBtnCellModal} // 수정 버튼에 대한 ag-grid event
             modalInTable={StandardDestinationEdit} // Modal 안에 들어갈 Table 매칭 디렉토리 ex)
             title={'목적지 수정'}
             getRow={getRow} // 해당 컴포넌트 Table 자체 Object (한글)
             uidAtom={uidAtom} // 수정버튼 누른 해당 object의 고유 id (btnCellRender에서 추출된 uid)
             onEditHandler={onEditHandler} // edit 버튼의 함수를 스프레드 func를 전달
             propsHandler={propsEdit} // 실질 patch 역할하는 함수
+            editTitle={'목적지 고유 번호'}
           />
         )}
       </TableContianer>
-      {popupSwitch && <AlertPopup />}
+      {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
       {modalSwitch && (
         // Post
         <Upload
@@ -340,6 +327,10 @@ const Destination = ({}) => {
           excelToJson={excelToJson}
           setExcelToJson={setExcelToJson}
           propsHandler={propsPost}
+          modalInTable={StandardDestinationPost}
+          getRow={getRow}
+          uidAtom={uidAtom}
+          onEditHandler={onEditHandler}
         />
       )}
     </FilterContianer>

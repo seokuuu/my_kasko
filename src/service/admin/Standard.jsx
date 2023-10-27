@@ -4,9 +4,10 @@ const headers = { 'Content-Type': 'multipart/form-data' }
 
 const URL = {
   Destination: '/admin/destination', // 목적지 관리
-  Transportation: '/admin/freight', // 운반비 관리
-  Surcharge: 'admin/extracharge', //할증 관리
+  DestiSearch: '/search/destination', // 목적지 권역 목록 (등록 - 목적지 코드 Dropdown)
+  Surcharge: '/admin/extracharge', //할증 관리
   Consolidation: '/admin/mergecost', //합짐비 관리
+  Transportation: '/admin/freight',
 }
 
 /* ==============================
@@ -18,11 +19,17 @@ export const getAdminDestination = (data) => {
   return client.get(URL.Destination, { params: data })
 }
 
+// 목적지 관리 - 목적지 권역 목록 (목적지 코드 Dropdown) "Get"
+export const getAdminDestinationSearch = async () => {
+  console.log('!!!!', client.get(URL.DestiSearch))
+  return client.get(URL.DestiSearch)
+}
+
 // 목적지 관리 - 등록 "POST"
 export const postAdminDestination = (params) => client.post(URL.Destination, params)
 
 // 목적지 관리 - 수정 'PATCH"
-export const EditAdminDestination = (params) => client.patch(URL.Destination, params)
+export const editAdminDestination = (params) => client.patch(URL.Destination, params)
 
 // 목적지 관리 - 삭제 "DELETE"
 export function deleteAdminDestination(id) {
@@ -40,6 +47,9 @@ export const getAdminTransportation = (data) => {
 
 // 운반비 관리 - 등록 "POST"
 export const postAdminTransportation = (params) => client.post(URL.Transportation, params)
+
+// 운반비 관리 - 수정 'PATCH"
+export const editAdminTransportation = (params) => client.patch(URL.Transportation, params)
 
 // 운반비 관리 - 삭제 "DELETE"
 export function deleteAdminTransportation(id) {
