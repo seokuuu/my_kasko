@@ -8,7 +8,7 @@ const URL = {
   Surcharge: '/admin/extracharge', //할증 관리
   Consolidation: '/admin/mergecost', //합짐비 관리
   Transportation: '/admin/freight', // 운반비 관리
-  UnitCost: '/admim/freight/cost', //운반비 관리 - 단가 일괄 수정
+  UnitCost: '/admin/freight/cost', //운반비 관리 - 단가 일괄 수정
 }
 
 /* ==============================
@@ -57,7 +57,10 @@ export function deleteAdminTransportation(id) {
   return client.delete(`${URL.Transportation}/${id}`)
 }
 // 운반비 관리 - 단가 일괄 수정 'PATCH"
-export const editAdminUnitCost = (params) => client.patch(URL.Transportation, params)
+export const editAdminUnitCost = (params) => {
+  console.log('params', params)
+  client.patch(URL.UnitCost, params)
+}
 
 /* ==============================
     기준 관리 - 할증 관리 (Surcharge)
@@ -67,6 +70,9 @@ export const editAdminUnitCost = (params) => client.patch(URL.Transportation, pa
 export const getAdminSurcharge = (data) => {
   return client.get(URL.Surcharge, { params: data })
 }
+
+// 운반비 관리 - 수정 'PATCH"
+export const editAdminSurcharge = (params) => client.patch(URL.Surcharge, params)
 
 // 할증 관리 - 등록 "POST"
 export const postAdminSurcharge = (params) => client.post(URL.Surcharge, params)

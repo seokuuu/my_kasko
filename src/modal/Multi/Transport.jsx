@@ -26,7 +26,7 @@ import { CheckBox } from '../../common/Check/Checkbox'
 
 import { InputContainer, NoOutInput, Unit } from '../../common/Input/Input'
 
-const Transport = () => {
+const TransportModal = () => {
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
   const modalClose = () => {
@@ -95,4 +95,4 @@ const Transport = () => {
   )
 }
 
-export default Transport
+export default TransportModal

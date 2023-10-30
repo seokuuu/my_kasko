@@ -142,11 +142,12 @@ const Transport = ({}) => {
       if (item.effectDate === unitPriceEditDate) {
         // unitPriceEdit.percent에 따라 증가 또는 감소
         const percentage = parseFloat(unitPriceEdit) / 100
+
         const updatedEffectCost =
-          radioDummy === '증가'
+          checkRadio[0] === true
             ? item.effectCost + item?.effectCost * percentage
             : item.effectCost - item?.effectCost * percentage
-
+        console.log('updatedEffectCost', updatedEffectCost)
         // 변경된 값이 있는 경우에만 realUnitPriceEdit에 추가
         if (item.effectCost !== updatedEffectCost) {
           setRealUnitPriceEdit((prev) => [
@@ -169,6 +170,8 @@ const Transport = ({}) => {
     setGetRow(add_element_field(updatedResData, StandardTransportationFields))
   }
 
+  console.log('realUnitPriceEdit', realUnitPriceEdit)
+
   const updateList = realUnitPriceEdit.map((item) => ({
     uid: item.uid,
     effectDate: item.effectDate,
@@ -187,7 +190,7 @@ const Transport = ({}) => {
 
   console.log('finalResult', finalResult)
 
-  const editCostMutation = useMutationQuery('', editAdminUnitCost)
+  const editCostMutation = useMutation(editAdminUnitCost)
   const costEdit = () => {
     editCostMutation.mutate(finalResult)
   }
@@ -450,13 +453,7 @@ const Transport = ({}) => {
 
         <Table getCol={getCol} getRow={getRow} />
         <TableBottomWrap>
-          <BlackBtn
-            width={15}
-            height={40}
-            onClick={() => {
-              costEdit()
-            }}
-          >
+          <BlackBtn width={15} height={40} onClick={() => costEdit()}>
             저장
           </BlackBtn>
         </TableBottomWrap>

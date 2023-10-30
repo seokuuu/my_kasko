@@ -4,6 +4,7 @@ import { btnCellRenderAtom, btnCellUidAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
 const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
+  console.log("data !!!", data)
   const uid = data[uidFieldName]
   const [overallData, setOverallData] = useState(data)
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
@@ -16,6 +17,7 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
   const btnClickedHandler = () => {
     switch (editType) {
       case 'table':
+        console.log("btnCellModal", btnCellModal)
         setBtnCellModal(true)
         setUidAtom(uid)
         console.log('Clicked uid:', uid)

@@ -73,7 +73,7 @@ const TableModal = ({
   }
 
   // 한글 key object의 uid에 해당하는 '목적지 고유 번호' 를 return
-  const matchingRow = getRow?.find((row) => row[editTitle] === uidAtom)
+  const matchingRow = getRow && getRow?.find((row) => row[editTitle] === uidAtom)
 
   // matchingRow에서
   // '목적지 코드': 'auto',
