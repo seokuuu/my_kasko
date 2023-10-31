@@ -1,51 +1,75 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import {
-  NonFadeOverlay,
-  ModalContainer,
-  WhiteCloseBtn,
-  BlueSubContainer,
   BlueBarHeader,
-  BlueMainDiv,
-  BlueSubDiv,
-  BlueRadioWrap,
-  BlueInput,
   BlueBlackBtn,
   BlueBtnWrap,
+  BlueMainDiv,
+  BlueSubContainer,
+  BlueSubDiv,
+  FadeOverlay,
+  ModalContainer,
+  WhiteCloseBtn,
 } from '../Common/Common.Styled'
 
-import { BlackBtn } from '../../common/Button/Button'
+import AlertPopup from '../Alert/AlertPopup'
 
-import { blueModalAtom } from '../../store/Layout/Layout'
+import { surEditModalAtom } from '../../store/Layout/Layout'
+
 import { useAtom } from 'jotai'
-
-import { ExRadioWrap } from '../External/ExternalFilter'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
-
-import { CheckBox } from '../../common/Check/Checkbox'
+import { blueModalAtom } from '../../store/Layout/Layout'
 
 import { InputContainer, NoOutInput, Unit } from '../../common/Input/Input'
+import { useEffect } from 'react'
 
-const TransportModal = () => {
-  const [isModal, setIsModal] = useAtom(blueModalAtom)
+import { popupAtom, popupObject, popupTypeAtom } from '../../store/Layout/Layout'
+import { popupDummy } from '../Alert/PopupDummy'
 
+const TransportModal = ({
+  onChangeHandler,
+  setBtnCellModal,
+  title,
+  data1,
+  data2,
+  data3,
+  inputValues,
+  setInputValues,
+  propsHandler,
+}) => {
+  const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
+  const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
+  const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
   const modalClose = () => {
-    setIsModal(false)
+    setBtnCellModal(false)
   }
 
-  const radioDummy = ['경매', '상시']
+  // 등록 - 수정간 input value 초기화
+  useEffect(() => {
+    setInputValues({
+      input1: '',
+      input2: '',
+      input3: '',
+      input4: '',
+      input5: '',
+    })
+  }, [surEditModalAtom])
 
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-
-  console.log('checkRadio =>', checkRadio)
+  const firstPopupClick = (num) => {
+    setPopupSwitch(true)
+    const firstPopup = popupDummy.find((popup) => popup.num === num)
+    setNowPopup((prevNowPopup) => ({
+      ...prevNowPopup,
+      ...firstPopup,
+      func: propsHandler,
+    }))
+  }
 
   return (
     // 기준 관리 -
     <>
-      <NonFadeOverlay />
+      <FadeOverlay />
       <ModalContainer width={650}>
         <BlueBarHeader>
-          <div>할증 등록</div>
+          <div>{title}</div>
           <div>
             <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
           </div>
@@ -54,40 +78,82 @@ const TransportModal = () => {
           <div>
             <BlueMainDiv>
               <BlueSubDiv style={{ height: '80px' }}>
-                <h6>패키지 번호</h6>
-                <InputContainer>
-                  <NoOutInput style={{ fontSize: '16px' }} placeholder="최소 길이" type="text" />
+                <h6>{data1}</h6>
+                <InputContainer style={{ width: '190px' }}>
+                  <NoOutInput
+                    name="input1"
+                    value={inputValues.input1}
+                    onChange={onChangeHandler}
+                    style={{ fontSize: '16px' }}
+                    placeholder="최소 길이"
+                    type="text"
+                  />
                   <Unit>M</Unit>
                 </InputContainer>
-                ~
+                <p style={{ margin: '0px 5px' }}>~</p>
                 <InputContainer>
-                  <NoOutInput style={{ fontSize: '16px' }} placeholder="최대 길이" type="text" />
+                  <NoOutInput
+                    name="input2"
+                    onChange={onChangeHandler}
+                    value={inputValues.input2}
+                    style={{ fontSize: '16px' }}
+                    placeholder="최대 길이"
+                    type="text"
+                  />
                   <Unit>M</Unit>
                 </InputContainer>
               </BlueSubDiv>
               <BlueSubDiv style={{ height: '80px' }} bor>
-                <h6>폭 입력</h6>
-                <InputContainer>
-                  <NoOutInput style={{ fontSize: '16px' }} placeholder="최소 폭" type="text" />
+                <h6>{data2}</h6>
+                <InputContainer style={{ width: '190px' }}>
+                  <NoOutInput
+                    name="input3"
+                    onChange={onChangeHandler}
+                    value={inputValues.input3}
+                    style={{ fontSize: '16px' }}
+                    placeholder="최소 폭"
+                    type="text"
+                  />
                   <Unit>M</Unit>
                 </InputContainer>
-                ~
+                <p style={{ margin: '0px 5px' }}>~</p>
                 <InputContainer>
-                  <NoOutInput style={{ fontSize: '16px' }} placeholder="최대 폭" type="text" />
+                  <NoOutInput
+                    name="input4"
+                    onChange={onChangeHandler}
+                    value={inputValues.input4}
+                    style={{ fontSize: '16px' }}
+                    placeholder="최대 폭"
+                    type="text"
+                  />
                   <Unit>M</Unit>
                 </InputContainer>
               </BlueSubDiv>
               <BlueSubDiv style={{ height: '80px' }} bor>
-                <h6>판매 구분</h6>
+                <h6>{data3}</h6>
                 <InputContainer style={{ width: '415px' }}>
-                  <NoOutInput style={{ fontSize: '16px' }} placeholder="퍼센트 값" type="text" />
+                  <NoOutInput
+                    name="input5"
+                    onChange={onChangeHandler}
+                    value={inputValues.input5}
+                    style={{ fontSize: '16px' }}
+                    placeholder="퍼센트 값"
+                    type="text"
+                  />
                   <Unit>%</Unit>
                 </InputContainer>
               </BlueSubDiv>
             </BlueMainDiv>
           </div>
           <BlueBtnWrap>
-            <BlueBlackBtn>저장</BlueBlackBtn>
+            <BlueBlackBtn
+              onClick={() => {
+                firstPopupClick('2-3')
+              }}
+            >
+              저장
+            </BlueBlackBtn>
+            {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
           </BlueBtnWrap>
         </BlueSubContainer>
       </ModalContainer>

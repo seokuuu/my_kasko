@@ -173,7 +173,7 @@ export const StandardSurchargeFieldsCols = [
     cellRenderer: BtnCellRenderer,
     cellRendererParams: {
       uidFieldName: '할증 고유 번호',
-      editType: 'table',
+      editType: 'calcul',
     },
   },
   {

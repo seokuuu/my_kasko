@@ -74,6 +74,9 @@ export const destiEditCellUidAtom = atom('')
 //합짐 관리 - 운반비 수정 버튼 Modal
 export const surEditModalAtom = atom(false)
 
+//할증 관리 - 할증 등록 /수정 버튼 타입 지정
+export const surTypeAtom = atom('')
+
 export const popupTypeAtom = atom('')
 
 export const popupObject = atom({
