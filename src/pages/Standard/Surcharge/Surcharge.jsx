@@ -123,22 +123,9 @@ const Transport = ({}) => {
     },
   })
 
-  // const handleRemoveBtn = useCallback(() => {
-  //   if (isArray(checkedArray) && checkedArray.length > 0) {
-  //     if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
-  //       checkedArray.forEach((item) => {
-  //         mutation.mutate(item['할증 고유 번호']) //mutation.mutate로 api 인자 전해줌
-  //       })
-  //     }
-  //   } else {
-  //     alert('선택해주세요!')
-  //   }
-  // }, [checkedArray])
-
-  // 선택한 것 삭제 요청 (해당 함수 func 인자로 전달)
   const propsRemove = () => {
     checkedArray.forEach((item) => {
-      mutation.mutate(item['운반비 고유 번호']) //mutation.mutate로 api 인자 전해줌
+      mutation.mutate(item['합짐 고유 번호']) //mutation.mutate로 api 인자 전해줌
     })
   }
 
@@ -199,10 +186,10 @@ const Transport = ({}) => {
   // 변환된 수정 input 값
   const transformedValues = transformInputValues(inputValues)
 
-  // for edit add Uid
+  // for edit add 'Uid'
   const forEdit = addPropertyToObject(transformedValues, 'uid', uidAtom)
 
-  // for post add type
+  // for post add 'type'
   const forPost = addPropertyToObject(transformedValues, 'type', types)
 
   // Post
@@ -252,7 +239,7 @@ const Transport = ({}) => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
+            조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / 50개 )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -288,18 +275,13 @@ const Transport = ({}) => {
           </BlackBtn>
         </TableBottomWrap>
       </TableContianer>
-      {modalMode === '등록' && btnCellModal && (
-        // Edit
+      {btnCellModal && (
         <TransportModal
-          btnCellModal={btnCellModal} // Modal Atom Switch
-          setBtnCellModal={setBtnCellModal} // 수정 버튼에 대한 ag-grid event
-          title={'할증 등록'}
-          getRow={getRow} // 해당 컴포넌트 Table 자체 Object (한글)
-          uidAtom={uidAtom} // 수정버튼 누른 해당 object의 고유 id (btnCellRender에서 추출된 uid)
-          onChangeHandler={onChangeHandler} // edit 버튼의 함수를 스프레드 func를 전달
-          propsHandler={propsPost} // 실질 patch 역할하는 함수
-          editTitle={'할증 고유 번호'}
-          convertKey={convertKey}
+          btnCellModal={btnCellModal}
+          setBtnCellModal={setBtnCellModal}
+          getRow={getRow}
+          uidAtom={uidAtom}
+          onChangeHandler={onChangeHandler}
           startDate={startDate}
           setStartDate={setStartDate}
           data1={'길이 입력'}
@@ -307,29 +289,13 @@ const Transport = ({}) => {
           data3={'할증'}
           inputValues={inputValues}
           setInputValues={setInputValues}
-        />
-      )}
-      {modalMode === '수정' && btnCellModal && (
-        // Edit
-        <TransportModal
-          btnCellModal={btnCellModal} // Modal Atom Switch
-          setBtnCellModal={setBtnCellModal} // 수정 버튼에 대한 ag-grid event
-          title={'할증 수정'}
-          getRow={getRow} // 해당 컴포넌트 Table 자체 Object (한글)
-          uidAtom={uidAtom} // 수정버튼 누른 해당 object의 고유 id (btnCellRender에서 추출된 uid)
-          onChangeHandler={onChangeHandler} // edit 버튼의 함수를 스프레드 func를 전달
-          propsHandler={propsEdit} // 실질 patch 역할하는 함수
+          title={modalMode === '등록' ? '할증 등록' : '할증 수정'}
+          propsHandler={modalMode === '등록' ? propsPost : propsEdit}
           editTitle={'할증 고유 번호'}
           convertKey={convertKey}
-          startDate={startDate}
-          setStartDate={setStartDate}
-          data1={'길이 입력'}
-          data2={'폭 입력'}
-          data3={'할증'}
-          inputValues={inputValues}
-          setInputValues={setInputValues}
         />
       )}
+
       {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
     </FilterContianer>
   )

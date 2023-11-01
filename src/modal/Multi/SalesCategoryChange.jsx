@@ -1,21 +1,19 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import {
-  NonFadeOverlay,
-  ModalContainer,
-  WhiteCloseBtn,
-  BlueSubContainer,
   BlueBarHeader,
   BlueMainDiv,
-  BlueSubDiv,
   BlueRadioWrap,
+  BlueSubContainer,
+  BlueSubDiv,
+  ModalContainer,
+  NonFadeOverlay,
+  WhiteCloseBtn,
 } from '../Common/Common.Styled'
 
-import { blueModalAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
+import { blueModalAtom } from '../../store/Layout/Layout'
 
-import { ExRadioWrap } from '../External/ExternalFilter'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 
 import { CheckBox } from '../../common/Check/Checkbox'
 

@@ -94,6 +94,9 @@ export const getAdminConsolidation = (data) => {
 // 합짐비 관리 - 등록 "POST"
 export const postAdminConsolidation = (params) => client.post(URL.Consolidation, params)
 
+// 합짐비 관리 - 수정 "EDIT"
+export const editAdminConsolidation = (params) => client.patch(URL.Consolidation, params)
+
 // 합짐비 관리 - 삭제 "DELETE"
 export function deleteAdminConsolidation(id) {
   return client.delete(`${URL.Consolidation}/${id}`)

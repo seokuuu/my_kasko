@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   BlueBarHeader,
   BlueBlackBtn,
@@ -16,10 +16,9 @@ import AlertPopup from '../Alert/AlertPopup'
 import { surEditModalAtom } from '../../store/Layout/Layout'
 
 import { useAtom } from 'jotai'
-import { blueModalAtom } from '../../store/Layout/Layout'
 
-import { InputContainer, NoOutInput, Unit } from '../../common/Input/Input'
 import { useEffect } from 'react'
+import { InputContainer, NoOutInput, Unit } from '../../common/Input/Input'
 
 import { popupAtom, popupObject, popupTypeAtom } from '../../store/Layout/Layout'
 import { popupDummy } from '../Alert/PopupDummy'

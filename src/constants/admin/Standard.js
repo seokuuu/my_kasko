@@ -217,6 +217,15 @@ export const StandardConsolidationFields = {
 export const StandardConsolidationFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   {
+    field: '수정',
+    maxWidth: 90,
+    cellRenderer: BtnCellRenderer,
+    cellRendererParams: {
+      uidFieldName: '합짐비 고유 번호',
+      editType: 'input',
+    },
+  },
+  {
     field: '합짐비 고유 번호',
     minWidth: 100,
   },
