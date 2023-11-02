@@ -1,54 +1,22 @@
-import { useState } from 'react'
-import React from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
-import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import {
-  GreyBtn,
-  ExcelBtn,
-  WhiteBlackBtn,
-  WhiteRedBtn,
-  SkyBtn,
-  WhiteSkyBtn,
-  BtnBound,
-  TGreyBtn,
-} from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
-import BlueBar from '../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { CustomInput, FilterWrap } from '../../../modal/External/ExternalFilter'
+import React, { useState } from 'react'
+import { styled } from 'styled-components'
+import { BtnBound, SkyBtn, TGreyBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import Excel from '../../../components/TableInner/Excel'
+import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 import {
-  TCSubContainer,
+  CustomInput,
   FilterContianer,
   FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  InputStartWrap,
-  FilterHeaderAlert,
   FilterTCTop,
+  TCSubContainer,
+  TableContianer,
 } from '../../../modal/External/ExternalFilter'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
-import Hidden from '../../../components/TableInner/Hidden'
+import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
+import Test3 from '../../Test/Test3'
 
-import { ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../components/MapTable/MapTable'
+import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 
 import { TableWrap } from '../../../components/MapTable/MapTable'
 

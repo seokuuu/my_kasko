@@ -1,40 +1,29 @@
-import { useState } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
-import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn, ExcelBtn, WhiteBlackBtn, WhiteRedBtn, SkyBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
-import BlueBar from '../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { FilterWrap } from '../../../modal/External/ExternalFilter'
+import { useState } from 'react'
+import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { MainSelect } from '../../../common/Option/Main'
+import Excel from '../../../components/TableInner/Excel'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
-  TCSubContainer,
+  DoubleWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
+  FilterHeaderAlert,
   FilterLeft,
   FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
+  FilterSubcontianer,
+  FilterWrap,
   Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
+  PartWrap,
   ResetImg,
+  RowWrap,
+  TCSubContainer,
   TableContianer,
-  InputStartWrap,
-  FilterHeaderAlert,
 } from '../../../modal/External/ExternalFilter'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
+import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
+import Test3 from '../../Test/Test3'
 
 import Hidden from '../../../components/TableInner/Hidden'
 

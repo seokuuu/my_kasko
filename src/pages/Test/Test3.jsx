@@ -338,14 +338,14 @@ const Test3 = ({ hei }) => {
       {isModal && (
         <>
           <NonFadeOverlay />
-          <ModalContainer width={550}>
-            <BlueBarHeader>
+          <ModalContainer width={600} style={{ borderRadius: '4px' }}>
+            <BlueBarHeader style={{ borderTopLeftRadius: '4px', borderTopRightRadius: '10px' }}>
               <div>규격 약호 찾기</div>
               <div>
                 <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
               </div>
             </BlueBarHeader>
-            <BlueSubContainer>
+            <BlueSubContainer style={{ padding: '30px' }}>
               <FindSpec>
                 <FSTitle>
                   <div>검색</div>
@@ -396,7 +396,7 @@ const TestHeader = styled.div`
 
 const FindSpec = styled.div`
   width: 100%;
-  height: 300px;
+  height: 250px;
 `
 
 const FSTitle = styled.div`
@@ -416,25 +416,26 @@ const FSTitle = styled.div`
 
 const FSResult = styled.div`
   width: 100%;
-  height: 295px;
+  height: 230px;
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
-  padding: 5px;
-  overflow: scroll;
+  gap: 10px;
+  padding: 10px;
+  overflow-y: scroll;
   border: 1px solid #c8c8c8;
 `
 
 const ResultBlock = styled.div`
-  width: 24%;
-  height: 50px;
-  border: 1px solid black;
+  width: 23%;
+  height: 45px;
+  background-color: #f1f1f1;
   cursor: pointer;
   font-size: 16px;
   justify-content: center;
   align-items: center;
   text-align: center;
   display: flex;
+  margin-left: 2px;
 
   &:hover {
     background-color: #eee;

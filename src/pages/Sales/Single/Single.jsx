@@ -1,43 +1,37 @@
+import { useAtom } from 'jotai'
 import { useState } from 'react'
-import { styled } from 'styled-components'
+import { BlackBtn, GreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
+import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, ExcelBtn, WhiteBlackBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
-import BlueBar from '../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
-import { EditGear, FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
+  DoubleWrap,
+  EditGear,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
+  FilterHeaderAlert,
   FilterLeft,
   FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  TableBottomWrap,
+  FilterSubcontianer,
+  FilterWrap,
   Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
   InputStartWrap,
+  PWRight,
+  PartWrap,
+  ResetImg,
+  RowWrap,
   TCSubContainer,
-  FilterHeaderAlert,
+  TableBottomWrap,
+  TableContianer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
+import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
+import Test3 from '../../Test/Test3'
 
-import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 const Single = ({}) => {
   const handleSelectChange = (selectedOption, name) => {

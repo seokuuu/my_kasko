@@ -161,12 +161,14 @@ import TestExcel from './pages/Test/TestExcel'
 import TableModal from './modal/Table/TableModal'
 import TableTest from './modal/Table/TableTest'
 import TestPost from './pages/Test/TestPost'
+import SellOrderDetail from './pages/Sales/SellOrder/SellOrderDetail'
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
+        <Route path="/ppap" element={<AuctionRound />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />
         <Route path="/test2" element={<Test2 />} />
@@ -175,7 +177,7 @@ const Router = () => {
 
         <Route path="/test4" element={<Countdown />} />
         <Route path="/popup" element={<TestPopup />} />
-        <Route path="/ppap" element={<Upload />} />
+
         <Route path="/excel" element={<TestExcel />} />
 
         <Route path="/common" element={<SellOrderDetailPage />} />
