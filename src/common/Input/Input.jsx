@@ -94,6 +94,7 @@ export const NoOutInput = styled.input`
   border: none;
   outline: none;
   width: 100%; /* flex 아이템의 너비를 100%로 설정 */
+  height: 25px;
 `
 
 export const Unit = styled.span`

@@ -167,7 +167,15 @@ export const StandardSurchargeFields = {
 
 export const StandardSurchargeFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
-
+  {
+    field: '수정',
+    maxWidth: 90,
+    cellRenderer: BtnCellRenderer,
+    cellRendererParams: {
+      uidFieldName: '할증 고유 번호',
+      editType: 'calcul',
+    },
+  },
   {
     field: '할증 고유 번호',
     minWidth: 100,
@@ -185,6 +193,16 @@ export const StandardSurchargeFieldsCols = [
   },
 ]
 
+// 기준 관리 - 운반비 관리 Edit
+export const StandardSurchargeEdit = {
+  창고: 'auto',
+  '목적지 코드': 'auto',
+  목적지명: 'auto',
+  제품군: 'auto',
+  적용일: 'date',
+  적용단가: 'input',
+}
+
 /* ==============================
     기준 관리 - 합짐비 관리 (Consolidation)
 ============================== */
@@ -198,6 +216,15 @@ export const StandardConsolidationFields = {
 
 export const StandardConsolidationFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  {
+    field: '수정',
+    maxWidth: 90,
+    cellRenderer: BtnCellRenderer,
+    cellRendererParams: {
+      uidFieldName: '합짐비 고유 번호',
+      editType: 'input',
+    },
+  },
   {
     field: '합짐비 고유 번호',
     minWidth: 100,

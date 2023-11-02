@@ -53,7 +53,7 @@ export const modalAtom = atom(false)
 
 export const popupAtom = atom(false)
 
-//목적지 관리 - 목적지 수정버튼 Modal
+//모든 수정 버튼의 Modal
 export const btnCellRenderAtom = atom(false)
 
 //목적지 관리 - 목적지 수정버튼 Uid
@@ -70,6 +70,15 @@ export const destiEditModalAtom = atom(false)
 
 //운반비 관리 - 운반비 수정 Cell Uid
 export const destiEditCellUidAtom = atom('')
+
+//할증 관리 - 운반비 수정 버튼 Modal
+export const surEditModalAtom = atom('')
+
+//할증 관리 - 할증 등록 /수정 버튼 타입 지정
+export const surTypeAtom = atom('')
+
+//합짐비 관리 - 합짐비 수정 버튼 Modal
+export const consolEditModalAtom = atom('')
 
 export const popupTypeAtom = atom('')
 

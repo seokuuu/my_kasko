@@ -274,7 +274,7 @@ const Destination = ({}) => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
+            조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / 50개 )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}></div>
