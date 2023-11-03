@@ -51,8 +51,6 @@ import { TableWrap, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../..
 const OrderDetail = ({}) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 
-  console.log('!!!')
-
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
 
