@@ -168,7 +168,7 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
-        <Route path="/ppap" element={<AuctionRound />} />
+        <Route path="/ppap" element={<Achievement />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />
         <Route path="/test2" element={<Test2 />} />

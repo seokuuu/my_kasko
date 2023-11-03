@@ -128,7 +128,7 @@ const UserPost = ({ setChoiceComponent }) => {
   return (
     <OnePageContainer>
       <MainTitle>사용자 등록</MainTitle>
-      <OnePageSubContainer>
+      <OnePageSubContainer style={{ padding: '0px 5%' }}>
         <HalfWrap>
           <Left>
             <Part>
@@ -161,10 +161,10 @@ const UserPost = ({ setChoiceComponent }) => {
                 <p></p>
               </Title>
               <div style={{ display: 'flex' }}>
-                <Inputa name="email" onChange={eventHandle} /> <span>@</span>
+                <Inputa name="email" onChange={eventHandle} /> <span style={{ padding: '3px' }}>@</span>
                 <div>
                   <CustomSelect
-                    width={180}
+                    width={175}
                     options={emailOptions}
                     defaultValue={emailOptions[0]}
                     onChange={handleDomainChange}

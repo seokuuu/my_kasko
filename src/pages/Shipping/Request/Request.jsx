@@ -124,7 +124,11 @@ const Request = ({}) => {
   return (
     <FilterContianer>
       <FilterHeader>
-        <h1>출고 요청</h1>
+        <div style={{ display: 'flex' }}>
+          <h1>출고 요청</h1>
+          <Subtitle2>합짐 추천</Subtitle2>
+        </div>
+
         {/* 토글 쓰기 */}
         <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
       </FilterHeader>
@@ -324,5 +328,21 @@ const SpaceDiv = styled.div`
     font-size: 16px;
     color: #6b6b6b;
     width: 100px;
+  }
+`
+
+const Subtitle2 = styled.h5`
+  margin-left: 20px;
+  display: flex;
+  justify-content: ce;
+  align-items: center;
+  gap: 20px;
+  font-size: 18px;
+  height: min-content;
+  margin-top: 3px;
+  color: #4c83d6;
+  cursor: pointer;
+  &:hover {
+    font-weight: 700;
   }
 `
