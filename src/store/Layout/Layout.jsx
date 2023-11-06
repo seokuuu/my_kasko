@@ -46,6 +46,15 @@ export const clientModalAtom = atom(false)
 //사용자 관리 - 고객사 관리파트 회원제한모달
 export const AuctionRestrictionModal = atom(false)
 
+// 경매 관리 - 경매 회차 관리 / 경매 목록 수정 Modal
+export const aucProListEditAtom = atom('수정')
+
+// 경매 관리 - 경매 회차 관리 / 경매 회차 등록 Modal
+export const roundPostModalAtom = atom(false)
+
+// 경매 목록 수정 - 제품 추가 Modal
+export const aucProAddModalAtom = atom(false)
+
 // 기준 관리
 
 //목적지 관리 - 목적지 등록 Modal

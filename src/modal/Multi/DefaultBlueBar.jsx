@@ -1,7 +1,7 @@
 import {
   ModalContainer,
   ModalSubContainer,
-  NonFadeOverlay,
+  FadeOverlay,
   BlueBarHeader,
   BlueSubContainer,
   WhiteCloseBtn,
@@ -11,41 +11,32 @@ import {
 import { blueModalAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 import { GreyBtn } from '../../common/Button/Button'
-import RoundAucListEdit from '../../pages/Auction/Round/RoundAucListEdit'
+import RoundAucProAdd from '../../pages/Auction/Round/RoundAucProAdd'
 
-const BlueBar = ({ title }) => {
+const DefaultBlueBar = ({ title, setAddModal }) => {
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
   const modalClose = () => {
-    setIsModal(false)
+    setAddModal(false)
   }
 
   return (
     <>
-      <NonFadeOverlay />
-      <ModalContainer width={1500}>
-        <BlueBarHeader>
+      <FadeOverlay />
+      <ModalContainer style={{ width: '75%', height: '98vh' }}>
+        <BlueBarHeader style={{ height: '60px' }}>
           {/* <div>{title}</div> */}
           <div>경매 제품 추가(단일)</div>
           <div>
             <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
           </div>
         </BlueBarHeader>
-        <BlueSubContainer>
-          {/* {title === '규격 약호 찾기' && (
-            <BSCSWrap>
-              <div>검색</div>
-              <input placeholder="회사 명" />
-              <GreyBtn width={15} height={30}>
-                찾기
-              </GreyBtn>
-            </BSCSWrap>
-          )} */}
-          <RoundAucListEdit />
+        <BlueSubContainer style={{ padding: '0px 30px' }}>
+          <RoundAucProAdd />
         </BlueSubContainer>
       </ModalContainer>
     </>
   )
 }
 
-export default BlueBar
+export default DefaultBlueBar

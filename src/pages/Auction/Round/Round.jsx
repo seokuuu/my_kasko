@@ -39,14 +39,21 @@ import {
   ExRadioWrap,
   SubTitle,
   TCSubContainer,
+  StyledHeading,
+  StyledSubHeading,
 } from '../../../modal/External/ExternalFilter'
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 import { deleteAuction, getAuction } from '../../../api/auction/round'
 import useReactQuery from '../../../hooks/useReactQuery'
 import useMutationQuery from '../../../hooks/useMutationQuery'
+import { roundPostModalAtom } from '../../../store/Layout/Layout'
+import { useAtom } from 'jotai'
+import AuctionRound from '../../../modal/Multi/AuctionRound'
 
 const Round = ({}) => {
+  const [roundModal, setRoundModal] = useAtom(roundPostModalAtom)
+  const [types, setTypes] = useState('단일')
   const radioDummy = ['전체', '미진행', '진행중', '종료']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
@@ -154,8 +161,12 @@ const Round = ({}) => {
         <div style={{ display: 'flex' }}>
           <h1>경매 회차 관리</h1>
           <SubTitle>
-            <h5>단일</h5>
-            <h6>패키지</h6>
+            <StyledHeading isActive={types === '단일'} onClick={() => setTypes('normal')}>
+              단일
+            </StyledHeading>
+            <StyledSubHeading isActive={types === '패키지'} onClick={() => setTypes('package')}>
+              패키지
+            </StyledSubHeading>
           </SubTitle>
         </div>
         {/* 토글 쓰기 */}
@@ -244,7 +255,13 @@ const Round = ({}) => {
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn onClick={handleRemoveBtn}>회차 삭제</WhiteRedBtn>
-            <WhiteSkyBtn>경매 회차 등록</WhiteSkyBtn>
+            <WhiteSkyBtn
+              onClick={() => {
+                setRoundModal(true)
+              }}
+            >
+              경매 회차 등록
+            </WhiteSkyBtn>
           </div>
         </TCSubContainer>
         <Test3 getRow={row} getCol={getCol} />
@@ -253,6 +270,7 @@ const Round = ({}) => {
             제품 추가
           </BlackBtn>
         </TableBottomWrap>
+        {roundModal && <AuctionRound setRoundModal={setRoundModal} />}
       </TableContianer>
     </FilterContianer>
   )

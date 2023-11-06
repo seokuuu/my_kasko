@@ -76,7 +76,7 @@ const DispatchPost = () => {
                   <h6>차량 번호</h6>
                   <div style={{ display: 'block', height: '100px' }}>
                     <BlueInput placeholder="예) 123가5678" />
-                    <BlackBtn style={{ marginTop: '5px' }} fontSize={17} width={90} height={40}>
+                    <BlackBtn style={{ marginTop: '5px' }} fontSize={17} width={100} height={40}>
                       중복 확인{' '}
                     </BlackBtn>
                   </div>

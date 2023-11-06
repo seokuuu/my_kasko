@@ -162,13 +162,20 @@ import TableModal from './modal/Table/TableModal'
 import TableTest from './modal/Table/TableTest'
 import TestPost from './pages/Test/TestPost'
 import SellOrderDetail from './pages/Sales/SellOrder/SellOrderDetail'
+import NoticePopup from './modal/Multi/NoticePopup'
+import WinningCreate from './pages/Auction/Winning/WinningCreate'
+import RoundAucListEdit from './pages/Auction/Round/RoundAucListEdit'
+import BlueBar from './modal/BlueBar/BlueBar'
+import DefaultBlueBar from './modal/Multi/DefaultBlueBar'
+
+import RoundAucListPackEdit from './pages/Auction/Round/RoundAucListPackEdit'
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
-        <Route path="/ppap" element={<Achievement />} />
+        <Route path="/ppap" element={<RoundAucListPackEdit />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />
         <Route path="/test2" element={<Test2 />} />

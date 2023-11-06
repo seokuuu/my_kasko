@@ -44,11 +44,12 @@ const asDate = (dateAsString) => {
   return new Date(Number.parseInt(splitFields[2]), Number.parseInt(splitFields[1]) - 1, Number.parseInt(splitFields[0]))
 }
 
-const Test3 = ({ hei }) => {
+const Test3 = ({ hei, hei2 }) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
   const gridRef = useRef()
-  const containerStyle = useMemo(() => ({ width: '100%', height: '500px' }), [])
+  const containerStyle = useMemo(() => ({ width: '100%', height: hei2 || '500px' }), [hei2])
+
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
   const [rowData, setRowData] = useState()
 

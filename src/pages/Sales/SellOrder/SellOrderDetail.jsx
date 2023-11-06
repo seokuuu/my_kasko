@@ -126,7 +126,7 @@ const SellOrderDetail = ({}) => {
 
 export default SellOrderDetail
 
-const P = styled.p`
+export const P = styled.p`
   position: relative;
   top: 5px;
 `

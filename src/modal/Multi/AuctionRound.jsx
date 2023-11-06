@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import {
-  NonFadeOverlay,
+  FadeOverlay,
   ModalContainer,
   WhiteCloseBtn,
   BlueSubContainer,
@@ -26,11 +26,11 @@ import DateGrid from '../../components/DateGrid/DateGrid'
 import { ExCheckWrap, ExCheckDiv } from '../External/ExternalFilter'
 import { StyledCheckSubSquDiv, CheckImg2 } from '../../common/Check/CheckImg'
 
-const AuctionRound = () => {
+const AuctionRound = ({ setRoundModal }) => {
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
   const modalClose = () => {
-    setIsModal(false)
+    setRoundModal(false)
   }
 
   const radioDummy = ['정기 경매', '추가 경매']
@@ -61,7 +61,7 @@ const AuctionRound = () => {
   return (
     // 재고 관리 - 판매 구분 변경
     <>
-      <NonFadeOverlay />
+      <FadeOverlay />
       <ModalContainer width={850}>
         <BlueBarHeader>
           <div>경매 회차 등록</div>
@@ -112,7 +112,6 @@ const AuctionRound = () => {
                   <BlueSubDiv style={{ height: '80px' }} bor>
                     <h6>시간대 선택</h6>
                     <div>
-                      {' '}
                       <ExCheckWrap style={{ margin: '0px' }}>
                         {checkDummy.map((x, index) => (
                           <ExCheckDiv>

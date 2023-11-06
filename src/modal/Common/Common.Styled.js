@@ -242,11 +242,11 @@ export const BlueOneDiv = styled.div`
 
 export const BlueHalfDiv = styled.div`
   display: flex;
-
   padding: 10px;
+  gap: 15px;
 
   input {
-    width: 90%;
+    width: 100%;
   }
 
   > div {
