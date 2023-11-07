@@ -169,13 +169,14 @@ import BlueBar from './modal/BlueBar/BlueBar'
 import DefaultBlueBar from './modal/Multi/DefaultBlueBar'
 
 import RoundAucListPackEdit from './pages/Auction/Round/RoundAucListPackEdit'
+import TableGrid from './modal/Multi/TableGrid'
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
-        <Route path="/ppap" element={<RoundAucListPackEdit />} />
+        <Route path="/ppap" element={<TableGrid />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />
         <Route path="/test2" element={<Test2 />} />

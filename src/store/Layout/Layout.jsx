@@ -104,10 +104,20 @@ export const popupObject = atom({
 
 export const modalObject = atom({
   func: () => {},
-})
+}) 
 
 export const engRowTitle = atom('')
 
 export const excelToJsonAtom = atom('')
 
 export const onClickCheckAtom = atom(false)
+
+// 테이블 모달에 대한 atom
+// 해당 모달을
+// 한 컴포넌트에서 모달 갯수가 많으면 ..? 어떻게 관리?
+// bluebar에서 관리를 하는게 좋나?
+
+//패키지 상세 보기
+export const packDetailAuctView = atom(false)
+
+export const modal1 = atom(false)

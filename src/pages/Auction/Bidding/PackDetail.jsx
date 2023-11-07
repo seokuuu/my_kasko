@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { BlackBtn, BtnBound, GreyBtn, SkyBtn, TGreyBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
@@ -34,8 +34,12 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
-// 경매 제품 추가(단일) 메인 컴포넌트
-const RoundAucProAdd = ({}) => {
+import { ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../components/MapTable/MapTable'
+
+// 패키지 상세보기 (경매)
+const PackDetail = ({}) => {
+  const titleData = ['패키지 명', '수량', '시작가']
+  const contentData = ['알뜰패키지', '50', '3598']
   const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 
@@ -95,99 +99,22 @@ const RoundAucProAdd = ({}) => {
       </FilterHeader>
       <FilterTopContainer>
         <FilterTCTop>
-          <h6>경매 번호</h6>
+          <h6>패키지 번호</h6>
           <p>2023041050</p>
         </FilterTCTop>
       </FilterTopContainer>
-      {exFilterToggle && (
-        <>
-          <FilterSubcontianer style={{ height: '200px' }}>
-            <FilterLeft>
-              <RowWrap style={{ height: '23%', flexWrap: 'nowrap' }}>
-                <PartWrap>
-                  <h6>창고 구분</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>매입처 </h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>규격 약호</h6>
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap style={{ height: '23%', flexWrap: 'nowrap' }}>
-                <PartWrap>
-                  <h6>구분</h6>
-                  <MainSelect />
-                  <span style={{ margin: '0px -10px 0px 5px' }}>~</span>
-                  <MainSelect />
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>두께(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap style={{ height: '23%', flexWrap: 'nowrap', border: 'none' }}>
-                <PartWrap>
-                  <h6>폭(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>길이(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
-              </RowWrap>
-            </FilterLeft>
-            <FilterRight>
-              <DoubleWrap>
-                <h6>제품 번호 </h6>
-                <textarea
-                  style={{ height: '80%' }}
-                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                />
-              </DoubleWrap>
-            </FilterRight>
-          </FilterSubcontianer>
-          <FilterFooter>
-            <div style={{ display: 'flex' }}>
-              <p>초기화</p>
-              <ResetImg
-                src="/img/reset.png"
-                style={{ marginLeft: '10px', marginRight: '20px' }}
-                onClick={handleImageClick}
-                className={isRotated ? 'rotate' : ''}
-              />
-            </div>
-            <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40}>
-                검색
-              </BlackBtn>
-            </div>
-          </FilterFooter>
-        </>
-      )}
+      <ClaimTable style={{ marginBottom: '30px' }}>
+        {[0].map((index) => (
+          <ClaimRow key={index}>
+            {titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
+              <React.Fragment agmentkey={title}>
+                <ClaimTitle>{title}</ClaimTitle>
+                <ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
+              </React.Fragment>
+            ))}
+          </ClaimRow>
+        ))}
+      </ClaimTable>
       <TableContianer>
         <TCSubContainer bor>
           <div>
@@ -226,4 +153,4 @@ const RoundAucProAdd = ({}) => {
   )
 }
 
-export default RoundAucProAdd
+export default PackDetail

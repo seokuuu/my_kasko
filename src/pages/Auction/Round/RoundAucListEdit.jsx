@@ -35,6 +35,7 @@ import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 import DefaultBlueBar from '../../../modal/Multi/DefaultBlueBar'
 
+//경매 목록 수정(단일)
 const RoundAucListEdit = ({}) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
   const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
