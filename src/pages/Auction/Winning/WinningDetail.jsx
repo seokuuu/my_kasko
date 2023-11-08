@@ -1,5 +1,16 @@
-import { useEffect, useState } from 'react'
-import { BlackBtn, BtnBound, GreyBtn, SkyBtn, TGreyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import React, { useState, useEffect } from 'react'
+import {
+  BlackBtn,
+  BtnBound,
+  GreyBtn,
+  SkyBtn,
+  TGreyBtn,
+  WhiteRedBtn,
+  TWhiteBtn,
+  WhiteBlackBtn,
+  WhiteSkyBtn,
+  BlueBtn,
+} from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
@@ -34,10 +45,13 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 import DefaultBlueBar from '../../../modal/Multi/DefaultBlueBar'
-import RoundAucProAdd from './RoundAucProAdd'
 
-//경매 목록 수정(단일)
-const RoundAucListEdit = ({}) => {
+import { ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../components/MapTable/MapTable'
+
+// 경매 낙찰 상세
+const WinningDetail = ({}) => {
+  const titleData = ['패키지 명', '수량', '시작가', '패키지 명', '수량', '시작가']
+  const contentData = ['알뜰패키지', '50', '3598', '알뜰패키지', '50', '3598', '알뜰패키지', '50', '3598']
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
   const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
   //checkSales
@@ -91,7 +105,7 @@ const RoundAucListEdit = ({}) => {
     <FilterContianer>
       <FilterHeader>
         <div style={{ display: 'flex' }}>
-          <h1>경매 목록 수정(단일)</h1>
+          <h1>경매 낙찰 상세</h1>
         </div>
         {/* 토글 쓰기 */}
         <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
@@ -102,6 +116,18 @@ const RoundAucListEdit = ({}) => {
           <p>2023041050</p>
         </FilterTCTop>
       </FilterTopContainer>
+      <ClaimTable style={{ marginBottom: '30px' }}>
+        {[0, 1].map((index) => (
+          <ClaimRow key={index}>
+            {titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
+              <React.Fragment agmentkey={title}>
+                <ClaimTitle>{title}</ClaimTitle>
+                <ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
+              </React.Fragment>
+            ))}
+          </ClaimRow>
+        ))}
+      </ClaimTable>
       {exFilterToggle && (
         <>
           <FilterSubcontianer>
@@ -206,32 +232,35 @@ const RoundAucListEdit = ({}) => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <p>시작가 일괄 변경</p>
-            <CustomInput placeholder="" width={120} height={32} />
-            <TGreyBtn height={30} style={{ width: '50px' }}>
-              적용
-            </TGreyBtn>
-            <BtnBound />
-            <SkyBtn
-              onClick={() => {
-                setAddModal(true)
-              }}
-            >
-              제품 추가
-            </SkyBtn>
+            <p>목적지</p>
+            <CustomInput placeholder="h50" width={60} height={32} />
+            <CustomInput placeholder="목적지명" width={120} height={32} />
+            <CustomInput placeholder="도착지 연락처" width={120} height={32} />
+            <TWhiteBtn style={{ width: '50px' }} height={30}>
+              찾기
+            </TWhiteBtn>
+            <TGreyBtn>적용</TGreyBtn>
+            <BtnBound style={{ margin: '0px' }} />
+            <WhiteBlackBtn>목적지 승인 요청</WhiteBlackBtn>
+            <BtnBound style={{ margin: '0px' }} />
+            <WhiteRedBtn>목적지 변경 반려</WhiteRedBtn>
+            <WhiteSkyBtn str>목적지 변경 승인</WhiteSkyBtn>
           </div>
         </TCSubContainer>
         <Test3 />
         <TCSubContainer>
-          <div style={{ display: 'flex', gap: '10px' }}></div>
-          <div>
-            <WhiteRedBtn>선택 목록 제거</WhiteRedBtn>
+          <div></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteSkyBtn>입금 요청서 발행</WhiteSkyBtn>
+            <BtnBound style={{ margin: '0px' }} />
+            <WhiteRedBtn>부분 낙찰 취소 </WhiteRedBtn>
+            <SkyBtn>부분 입금 확인</SkyBtn>
           </div>
         </TCSubContainer>
-        {addModal && <RoundAucProAdd setAddModal={setAddModal} />}
+        {addModal && <DefaultBlueBar setAddModal={setAddModal} />}
       </TableContianer>
     </FilterContianer>
   )
 }
 
-export default RoundAucListEdit
+export default WinningDetail

@@ -126,7 +126,8 @@ export const WhiteSkyBtn = styled.div`
   margin: ${(props) => props.margin}px;
   border: 1px solid ${(props) => props.theme.colors.PriNormal};
   background-color: inherit;
-  color: ${(props) => props.theme.colors.PriNormal};
+  color: ${(props) => (props.str ? props.theme.colors.PriStrong : props.theme.colors.PriNormal)};
+
   cursor: pointer;
   padding: 5px 10px 5px 10px;
   border-radius: 3px;

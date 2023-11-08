@@ -1,17 +1,8 @@
-import {
-  ModalContainer,
-  ModalSubContainer,
-  FadeOverlay,
-  BlueBarHeader,
-  BlueSubContainer,
-  WhiteCloseBtn,
-  BSCSWrap,
-} from '../Common/Common.Styled'
+import { BlueBarHeader, BlueSubContainer, FadeOverlay, ModalContainer, WhiteCloseBtn } from '../Common/Common.Styled'
 
-import { blueModalAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { GreyBtn } from '../../common/Button/Button'
 import RoundAucProAdd from '../../pages/Auction/Round/RoundAucProAdd'
+import { blueModalAtom } from '../../store/Layout/Layout'
 
 const DefaultBlueBar = ({ title, setAddModal }) => {
   const [isModal, setIsModal] = useAtom(blueModalAtom)
@@ -32,7 +23,7 @@ const DefaultBlueBar = ({ title, setAddModal }) => {
           </div>
         </BlueBarHeader>
         <BlueSubContainer style={{ padding: '0px 30px' }}>
-          <RoundAucProAdd />
+          <div>컴포넌트 여기에 넣기</div>
         </BlueSubContainer>
       </ModalContainer>
     </>

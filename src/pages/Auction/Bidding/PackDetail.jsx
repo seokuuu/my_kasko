@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { BlackBtn, BtnBound, GreyBtn, SkyBtn, TGreyBtn, WhiteRedBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
-import { storageOptions } from '../../../common/Option/SignUp'
+import React, { useEffect, useState } from 'react'
+import { BtnBound, SkyBtn, TGreyBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
@@ -9,32 +7,20 @@ import Test3 from '../../Test/Test3'
 
 import {
   CustomInput,
-  DoubleWrap,
-  ExInputsWrap,
   FilterContianer,
-  FilterFooter,
   FilterHeader,
-  FilterLeft,
-  FilterRight,
-  FilterSubcontianer,
   FilterTCTop,
   FilterTopContainer,
-  Input,
-  PartWrap,
-  PWRight,
-  ResetImg,
-  RowWrap,
   TableContianer,
   TCSubContainer,
-  Tilde,
 } from '../../../modal/External/ExternalFilter'
 
+import { useAtom } from 'jotai'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { aucProAddModalAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
 
-import { ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../components/MapTable/MapTable'
+import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 
 // 패키지 상세보기 (경매)
 const PackDetail = ({}) => {
