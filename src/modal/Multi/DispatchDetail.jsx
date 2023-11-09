@@ -1,28 +1,26 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import {
-  NonFadeOverlay,
-  ModalContainer,
-  WhiteCloseBtn,
-  BlueSubContainer,
   BlueBarHeader,
-  BlueMainDiv,
-  BlueSubDiv,
-  BlueBtnWrap,
   BlueBlackBtn,
+  BlueBtnWrap,
   BlueHalfDiv,
   BlueInput,
+  BlueMainDiv,
+  BlueSubContainer,
+  BlueSubDiv,
+  ModalContainer,
+  NonFadeOverlay,
+  WhiteCloseBtn,
 } from '../Common/Common.Styled'
 
-import { blueModalAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
+import { blueModalAtom } from '../../store/Layout/Layout'
 
-import { ExRadioWrap } from '../External/ExternalFilter'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 import { BlueRadioWrap } from '../Common/Common.Styled'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
 
-import { CheckBox } from '../../common/Check/Checkbox'
 import { GreyBtn } from '../../common/Button/Button'
+import { CheckBox } from '../../common/Check/Checkbox'
 import { TxtInput } from '../../common/Input/Input'
 
 const DispatchDetail = () => {
