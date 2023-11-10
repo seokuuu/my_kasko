@@ -29,6 +29,8 @@ import {
   StandardDestinationPost,
 } from '../../../constants/admin/Standard'
 
+import { AuctionUnitPricePost } from '../../../constants/admin/Auction'
+
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isArray } from 'lodash'
 import useMutationQuery from '../../../hooks/useMutationQuery'

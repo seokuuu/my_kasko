@@ -172,26 +172,26 @@ import RoundAucListPackEdit from './pages/Auction/Round/RoundAucListPackEdit'
 import TableGrid from './modal/Multi/TableGrid'
 import DestinationChange from './modal/Multi/DestinationChange'
 import CustomerFind from './modal/Multi/CustomerFind'
+import RoundAucProAdd from './pages/Auction/Round/RoundAucProAdd'
+import WinningProductAdd from './pages/Auction/Winning/WinningProductAdd'
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
+        Upload
         {/* 테스트 URL */}
-        <Route path="/ppap" element={<CustomerFind />} />
+        <Route path="/ppapp" element={<RoundAucProAdd />} />
+        <Route path="/ppap" element={<WinningProductAdd />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
         <Route path="/TransportModal" element={<TransportModal />} />
-
         <Route path="/test4" element={<Countdown />} />
         <Route path="/popup" element={<TestPopup />} />
-
         <Route path="/excel" element={<TestExcel />} />
-
         <Route path="/common" element={<SellOrderDetailPage />} />
-
         <Route path="/*" element={<NotFound />} />
         {/* 로그인, 회원가입, 아이디 찾기, 비밀번호 재발급, 캘린더, 메인 */}
         <Route path="/" element={<Login />} />
@@ -287,12 +287,9 @@ const Router = () => {
 
           <Route path="/operate/faq/faqpost" element={<FAQPostPage />}></Route>
         </Route>
-
         {/* 사용자 페이지 */}
         {/* 사용자 페이지는 관리자 페이지와 다르게 /userpage/* 로 단일 구성된다 */}
-
         <Route path="/userpage/main" element={<UserMainPage />}></Route>
-
         {/* 공지 & 자료실 */}
         <Route path="/userpage">
           <Route path="/userpage/notice" element={<UNotice />}></Route>

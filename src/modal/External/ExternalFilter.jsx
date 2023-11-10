@@ -115,8 +115,12 @@ export const FilterFooter = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 70px;
+  height: 55px;
   background-color: #f0f1f6;
+  font-size: 17px;
+
+  p {
+  }
 `
 
 // 검색 필터 Left

@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react'
-import { BlackBtn, BtnBound, GreyBtn, SkyBtn, TGreyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import {
+  BlackBtn,
+  BtnBound,
+  GreyBtn,
+  SkyBtn,
+  TGreyBtn,
+  WhiteBlackBtn,
+  WhiteRedBtn,
+} from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
@@ -43,7 +51,7 @@ import {
 } from '../../../modal/Common/Common.Styled'
 
 // 경매 제품 추가(단일) 메인 컴포넌트
-const RoundAucProAdd = ({}) => {
+const WinningProductAdd = ({}) => {
   const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 
@@ -104,7 +112,7 @@ const RoundAucProAdd = ({}) => {
       <ModalContainer style={{ width: '75%', height: '98vh' }}>
         <BlueBarHeader style={{ height: '60px' }}>
           {/* <div>{title}</div> */}
-          <div>경매 제품 추가(단일)</div>
+          <div>낙찰 생성 제품 추가</div>
           <div>
             <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
           </div>
@@ -227,29 +235,37 @@ const RoundAucProAdd = ({}) => {
                   선택 중량<span> 2 </span>kg / 총 중량 kg
                 </div>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <p>시작가 일괄 변경</p>
-                  <CustomInput placeholder="" width={120} height={32} />
+                  <p>낙찰가 일괄 변경</p>
+                  <CustomInput placeholder="낙찰가 입력" width={120} height={32} />
                   <TGreyBtn height={30} style={{ width: '50px' }}>
                     적용
                   </TGreyBtn>
                   <BtnBound />
-                  <SkyBtn
-                    onClick={() => {
-                      setAddModal(true)
-                    }}
-                  >
-                    제품 추가 (패키지)
-                  </SkyBtn>
+                  <p>확정전송가 일괄 변경</p>
+                  <CustomInput placeholder="확정전송가 입력" width={120} height={32} />
+                  <TGreyBtn height={30} style={{ width: '50px' }}>
+                    적용
+                  </TGreyBtn>
                 </div>
               </TCSubContainer>
               <Test3 hei2={350} hei={100} />
-              <TCSubContainer></TCSubContainer>
+              <TCSubContainer style={{ padding: '0px' }}>
+                <div></div>
+                <div>
+                  <BlackBtn style={{ position: 'relative', top: '10px', left: '45px', width: '150px', height: '35px' }}>
+                    제품 추가
+                  </BlackBtn>
+                </div>
+                <div>
+                  <WhiteBlackBtn style={{ position: 'relative', top: '10px' }}>대량 등록</WhiteBlackBtn>
+                </div>
+              </TCSubContainer>
             </TableContianer>
-          </FilterContianer>{' '}
+          </FilterContianer>
         </BlueSubContainer>
       </ModalContainer>
     </>
   )
 }
 
-export default RoundAucProAdd
+export default WinningProductAdd

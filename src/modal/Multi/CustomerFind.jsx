@@ -120,7 +120,7 @@ const CustomerFind = ({ title, setAddModal }) => {
             </BlueMainDiv>
           </div>
           <BlueBtnWrap>
-            <BlueBlackBtn>등록</BlueBlackBtn>
+            <BlueBlackBtn>적용</BlueBlackBtn>
           </BlueBtnWrap>
         </BlueSubContainer>
       </ModalContainer>

@@ -87,6 +87,8 @@ export const MainSelect = styled(Select)`
 
 export const CustomSelect = styled(Select)`
   width: ${(props) => props.width}px;
+
+  min-height: 20px;
   text-align: center;
   line-height: 26px;
   margin-right: 5px;

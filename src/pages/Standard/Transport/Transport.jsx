@@ -51,6 +51,13 @@ import {
   StandardTransportationPost,
 } from '../../../constants/admin/Standard'
 
+import {
+  AuctionUnitPricePost,
+  AuctionUnitPricePostDropOptions,
+  AuctionUnitPricePostDropOptions2,
+  AuctionUnitPricePostDropOptions3,
+} from '../../../constants/admin/Auction'
+
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isArray } from 'lodash'
 import moment from 'moment'
@@ -296,6 +303,12 @@ const Transport = ({}) => {
     적용단가: 'effectCost',
   }
 
+  const dropdownProps = [
+    { options: AuctionUnitPricePostDropOptions, defaultValue: AuctionUnitPricePostDropOptions[0] },
+    { options: AuctionUnitPricePostDropOptions2, defaultValue: AuctionUnitPricePostDropOptions2[0] },
+    { options: AuctionUnitPricePostDropOptions3, defaultValue: AuctionUnitPricePostDropOptions3[0] },
+  ]
+
   console.log('editInput', editInput)
 
   return (
@@ -487,6 +500,7 @@ const Transport = ({}) => {
           getRow={getRow}
           uidAtom={uidAtom}
           onEditHandler={onEditHandler}
+          dropdownProps={dropdownProps}
         />
       )}
     </FilterContianer>
