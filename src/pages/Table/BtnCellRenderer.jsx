@@ -5,8 +5,12 @@ import { useAtom } from 'jotai'
 
 const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
   const uid = data[uidFieldName]
+
+  console.log('data tlqkf', data)
+
   const [overallData, setOverallData] = useState(data)
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
+  console.log('uidAtom @@@', uidAtom)
   const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
   const [modalMode, setModalMode] = useAtom(surEditModalAtom) // 할증 관리 modal
   const [consoliMode, setCosoliMode] = useAtom(consolEditModalAtom) // 합짐비 관리 modal

@@ -174,6 +174,7 @@ import DestinationChange from './modal/Multi/DestinationChange'
 import CustomerFind from './modal/Multi/CustomerFind'
 import RoundAucProAdd from './pages/Auction/Round/RoundAucProAdd'
 import WinningProductAdd from './pages/Auction/Winning/WinningProductAdd'
+import Table2 from './pages/Table/Table2'
 
 const Router = () => {
   return (
@@ -181,7 +182,7 @@ const Router = () => {
       <Routes>
         Upload
         {/* 테스트 URL */}
-        <Route path="/ppapp" element={<RoundAucProAdd />} />
+        <Route path="/ppapp" element={<Table2 />} />
         <Route path="/ppap" element={<WinningProductAdd />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />

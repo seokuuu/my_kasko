@@ -20,7 +20,7 @@ const PreferPage = () => {
         return <Prefer setChoiceComponent={setChoiceComponent} />
       case '등록':
         return <PreferPost setChoiceComponent={setChoiceComponent} />
-      case '수정':
+      case 'cell':
         return <PreferEdit setChoiceComponent={setChoiceComponent} />
       default:
         return <Prefer setChoiceComponent={setChoiceComponent} />

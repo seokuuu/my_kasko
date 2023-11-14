@@ -46,6 +46,16 @@ export const clientModalAtom = atom(false)
 //사용자 관리 - 고객사 관리파트 회원제한모달
 export const AuctionRestrictionModal = atom(false)
 
+/* ==============================
+    주문 관리 - 주문 관리 (Order)
+============================== */
+
+export const OrderCellAtom = atom({})
+
+/* ==============================
+    경매 관리 - 경매 관리 (Auction)
+============================== */
+
 // 경매 관리 - 경매 회차 관리 / 경매 목록 수정 Modal
 export const aucProListEditAtom = atom('수정')
 
@@ -55,7 +65,9 @@ export const roundPostModalAtom = atom(false)
 // 경매 목록 수정 - 제품 추가 Modal
 export const aucProAddModalAtom = atom(false)
 
-// 기준 관리
+/* ==============================
+    기준 관리 - 기준 관리 (Standard)
+============================== */
 
 //목적지 관리 - 목적지 등록 Modal
 export const modalAtom = atom(false)
@@ -104,7 +116,7 @@ export const popupObject = atom({
 
 export const modalObject = atom({
   func: () => {},
-}) 
+})
 
 export const engRowTitle = atom('')
 

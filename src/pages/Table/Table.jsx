@@ -17,6 +17,8 @@ import {
 import { GreyBtn, BlackBtn } from '../../common/Button/Button'
 import { useLocation, useNavigate } from 'react-router-dom'
 
+import TableStyle from './Table.module.css'
+
 import { get } from 'lodash'
 import BtnCellRenderer from './BtnCellRenderer'
 

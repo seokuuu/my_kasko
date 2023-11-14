@@ -1,30 +1,25 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
-  OnePageContainer,
-  MainTitle,
-  OnePageSubContainer,
   HalfWrap,
   Left,
+  MainTitle,
+  OnePageContainer,
+  OnePageSubContainer,
+  Part,
   Right,
   Title,
-  Part,
-  Alert,
 } from '../../../common/OnePage/OnePage.Styled'
 
-import { TxtInput, CustomInput } from '../../../common/Input/Input'
+import { CustomInput } from '../../../common/Input/Input'
 
 import { styled } from 'styled-components'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
-
-import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
-import { Tilde } from '../../../modal/External/ExternalFilter'
+import { useAtom } from 'jotai'
+import { patchCustomerfavorite } from '../../../api/myPage'
+import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
 import { CustomSelect } from '../../../common/Option/Main'
 import useMutationQuery from '../../../hooks/useMutationQuery'
-import { patchCustomerfavorite } from '../../../api/myPage'
 import { isEmptyObj } from '../../../lib'
-import { useAtom } from 'jotai'
 import { doubleClickedRowAtom } from '../../../store/Layout/Layout'
 
 const init = {

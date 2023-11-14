@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import Excel from '../../../components/TableInner/Excel'
@@ -26,8 +26,12 @@ import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
 import Test3 from '../../Test/Test3'
 
 import Hidden from '../../../components/TableInner/Hidden'
+import Table from '../../Table/Table'
+import { UserPageUserPreferFields, UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
 
-const SellOrder = ({}) => {
+import { selectedRowsAtom } from '../../../store/Layout/Layout'
+
+const SellOrder = ({ setChoiceComponent }) => {
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -60,6 +64,11 @@ const SellOrder = ({}) => {
   const modalOpen = () => {
     setIsModal(true)
   }
+
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(UserPageUserPreferFieldsCols)
+  const getCol = tableField.current
+  const checkedArray = useAtom(selectedRowsAtom)[0]
 
   return (
     <FilterContianer>
@@ -156,7 +165,7 @@ const SellOrder = ({}) => {
             <WhiteRedBtn>주문 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getCol={getCol} getRow={getRow} setChoiceComponent={setChoiceComponent} />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>

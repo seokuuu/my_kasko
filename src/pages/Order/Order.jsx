@@ -1,52 +1,39 @@
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../common/Option/SignUp'
-import Excel from '../../components/TableInner/Excel'
+import { useEffect, useState, useRef } from 'react'
+import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn } from '../../common/Button/Button'
 import { MainSelect } from '../../common/Option/Main'
-import { BlackBtn, BtnWrap, ExcelBtn, WhiteRedBtn, WhiteSkyBtn, SkyBtn } from '../../common/Button/Button'
+import { storageOptions } from '../../common/Option/SignUp'
 import DateGrid from '../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../common/Toggle/Toggle'
-import { GreyBtn } from '../../common/Button/Button'
-import Test3 from '../Test/Test3'
+import Excel from '../../components/TableInner/Excel'
 import HeaderToggle from '../../components/Toggle/HeaderToggle'
 import { pageSort, toggleAtom } from '../../store/Layout/Layout'
-
-import { CheckBox } from '../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../common/Check/CheckImg'
+import { selectedRowsAtom } from '../../store/Layout/Layout'
+import { useQueryClient } from '@tanstack/react-query'
 
 import {
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
-  FilterRight,
-  RowWrap,
+  FilterSubcontianer,
+  GridWrap,
+  Input,
   PartWrap,
   PWRight,
-  TCSubContainer,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
   ResetImg,
+  RowWrap,
   TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-  ExCheckWrap,
-  ExCheckDiv,
+  TCSubContainer,
+  Tilde,
 } from '../../modal/External/ExternalFilter'
 
-import PageDropdown from '../../components/TableInner/PageDropdown'
-import Hidden from '../../components/TableInner/Hidden'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
-import Table from '../Table/Table'
-import { useCallback } from 'react'
-import { useRef } from 'react'
 import { useAtom } from 'jotai'
+import Hidden from '../../components/TableInner/Hidden'
+import PageDropdown from '../../components/TableInner/PageDropdown'
+import Table from '../Table/Table'
+import { OrderFields, OrderFieldsCols } from '../../constants/admin/Order'
+import useReactQuery from '../../hooks/useReactQuery'
+import { add_element_field } from '../../lib/tableHelpers'
+import { getAdminOrder } from '../../service/admin/Order'
 
 const Order = ({}) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -103,6 +90,38 @@ const Order = ({}) => {
   const handleDropdown = (e) => {
     setSortNum(e.target.value)
   }
+
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(OrderFieldsCols)
+  const getCol = tableField.current
+  const queryClient = useQueryClient()
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  const Param = {
+    pageNum: 1,
+    pageSize: 10,
+  }
+
+  // GET
+  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getAdminOrder', getAdminOrder)
+  const resData = data?.data?.data?.list
+
+  console.log('resData', resData)
+
+  // Get 목적지 코드 Dropdown
+
+  const { data: data2, isSuccess2 } = useReactQuery('', 'getAdminOrder', getAdminOrder)
+
+  console.log('data2 => ', data2)
+
+  useEffect(() => {
+    let getData = resData
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, OrderFields))
+    }
+  }, [isSuccess, resData])
 
   return (
     <FilterContianer>
@@ -194,7 +213,7 @@ const Order = ({}) => {
             <SkyBtn>확정 전송</SkyBtn>
           </div>
         </TCSubContainer>
-        <Table />
+        <Table getCol={getCol} getRow={getRow} />
         {/* <Test3 /> */}
         <TCSubContainer>
           <div></div>
