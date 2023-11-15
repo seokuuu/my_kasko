@@ -439,7 +439,7 @@ const ResultBlock = styled.div`
   margin-left: 2px;
 
   &:hover {
-    background-color: #eee;
+    background-color: #929292;
   }
 `
 

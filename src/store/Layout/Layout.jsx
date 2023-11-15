@@ -50,7 +50,12 @@ export const AuctionRestrictionModal = atom(false)
     주문 관리 - 주문 관리 (Order)
 ============================== */
 
-export const OrderCellAtom = atom({})
+export const OrderCellAtom = atom({
+  auctionNumber: '',
+  customerCode: '',
+  storage: '',
+  customerDestinationUid: '',
+})
 
 /* ==============================
     경매 관리 - 경매 관리 (Auction)

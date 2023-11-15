@@ -55,6 +55,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
   const containerStyle = useMemo(() => ({ width: '100%', height: '500px' }), [])
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
   const [rowData, setRowData] = useState()
+  const [selectedRowData, setSelectedRowData] = useState(null)
 
   var checkboxSelection = function (params) {
     // we put checkbox on the name if we are not doing grouping
@@ -292,6 +293,8 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
   }
   // new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
 
+  console.log('gridOptions', gridOptions)
+
   return (
     <div style={containerStyle}>
       <TestContainer hei={hei}>
@@ -316,6 +319,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
             // doesExternalFilterPass={doesExternalFilterPass}
             onGridReady={onGridReady}
             onSelectionChanged={onSelectionChanged}
+
             // sideBar={{ toolPanels: ['columns', 'filters'] }}
           />
         </div>

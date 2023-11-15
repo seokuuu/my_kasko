@@ -1,30 +1,25 @@
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { OrderCellAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
 var checkboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0
 }
 
 var headerCheckboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0
 }
 
 const onCellClicked = (params) => {
-  // params.data는 해당 행의 데이터를 나타냄
-
-  console.log('params', params.data['경매 번호'])
+  const finalData = params.data['경매 번호']
+  console.log('params', finalData)
 }
 
 /* ==============================
     주문 관리 - 주문 관리 (Order)
 ============================== */
-
-// auctionNumber를 클릭하면, 해당 auctionNumber, customerCode, storage, customerDestinationUid가 전부 Params로 들어가게끔 하자
 
 export const OrderFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
@@ -86,10 +81,10 @@ export const OrderFields = {
   고객사명: 'customerName',
   창고: 'storageName',
   제품군: 'spart',
-  '재고 상태': 'stockStatus', //(타사 재고 / 자사 재고)
-  '판매 구분': 'saleCategory', // (판매재 / 판매 제외재 / 판매 완료재)
-  '판매 유형': 'saleType', // (경매 대상재 / 상시 판매 대상재)
-  '판매가 유형': 'salePriceType', //  (일반 / 특가)
+  '재고 상태': 'stockStatus',
+  '판매 구분': 'saleCategory',
+  '판매 유형': 'saleType',
+  '판매가 유형': 'salePriceType',
   중량: 'weight',
   '제품대 VAT': 'orderPriceVat',
   '운송비 VAT': 'freightCostVat',
@@ -101,7 +96,7 @@ export const OrderFields = {
   '목적지 담당자 연락처': 'customerDestinationManagerPhone',
   '최종 수정자': 'updateMemberName',
   '최종 수정일': 'updateDate',
-  '주문 상태': 'status', // (확정 전송 / 확정 전송 대기)
+  '주문 상태': 'status',
   '확정 전송일': 'sendDate',
   메모: 'memo',
   '상시판매 주문번호': 'orderNumber',

@@ -1,14 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const EditCellRenderer = () => {
-  const AFunc = () => {
-    console.log('ㅋㅋㅋ')
-  }
-  return (
-    <>
-      <div>ㅋㅋㅋㅋ</div>
-    </>
-  )
+import { useAtom } from 'jotai'
+
+const EditCellRenderer = ({ data }) => {
+  console.log('data ###', data)
+
+  //추후 작업 예정
+
+  return null
 }
 
 export default EditCellRenderer
