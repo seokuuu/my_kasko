@@ -4,7 +4,7 @@ import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { BlackBtn, BtnWrap, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn } from '../../../common/Button/Button'
@@ -43,7 +43,7 @@ import { TableWrap, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../..
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 
-const Request = ({ setChoiceComponent }) => {
+const RequestRecom = ({}) => {
   const titleData = [
     '제품 중량(kg)',
     '제품 공급가액',
@@ -91,7 +91,7 @@ const Request = ({ setChoiceComponent }) => {
     }
   }
 
-  const radioDummy = ['단일 합짐', '복수 합짐']
+  const radioDummy = ['독차', '합짐']
   const radioTableDummy = ['Y', 'N']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
@@ -125,110 +125,12 @@ const Request = ({ setChoiceComponent }) => {
     <FilterContianer>
       <FilterHeader>
         <div style={{ display: 'flex' }}>
-          <h1>출고 요청</h1>
-          <Subtitle2
-            onClick={() => {
-              setChoiceComponent('requestRecom')
-            }}
-          >
-            선별 추천
-          </Subtitle2>
+          <h1>선별 추천 목록</h1>
         </div>
 
         {/* 토글 쓰기 */}
-        <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
       </FilterHeader>
 
-      {exFilterToggle && (
-        <>
-          <FilterSubcontianer>
-            <FilterLeft>
-              <RowWrap>
-                <PartWrap>
-                  <h6>창고 구분</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>고객사</h6>
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>목적지</h6>
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap>
-                <PartWrap>
-                  <h6>입고일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
-                </PartWrap>
-                <PartWrap>
-                  <h6 style={{ width: '120px' }}>출하 지시 일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap style={{ border: '0px' }}>
-                <PartWrap>
-                  <h6>구분</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
-                </PartWrap>
-              </RowWrap>
-            </FilterLeft>
-            <FilterRight>
-              <DoubleWrap>
-                <h6>제품 번호 </h6>
-                <textarea
-                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                />
-              </DoubleWrap>
-            </FilterRight>
-          </FilterSubcontianer>
-          <FilterFooter>
-            <div style={{ display: 'flex' }}>
-              <p>초기화</p>
-              <ResetImg
-                src="/img/reset.png"
-                style={{ marginLeft: '10px', marginRight: '20px' }}
-                onClick={handleImageClick}
-                className={isRotated ? 'rotate' : ''}
-              />
-            </div>
-            <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40}>
-                검색
-              </BlackBtn>
-            </div>
-          </FilterFooter>
-        </>
-      )}
-
-      <TableContianer>
-        <Test3 />
-      </TableContianer>
-      <FilterHeader style={{}}>
-        <h1>합짐</h1>
-        {/* 토글 쓰기 */}
-      </FilterHeader>
       <TableWrap style={{ marginTop: '5px' }}>
         <ClaimTable>
           <ClaimRow>
@@ -260,19 +162,31 @@ const Request = ({ setChoiceComponent }) => {
           </ClaimRow>
           <ClaimRow>
             <ClaimTitle>목적지 1</ClaimTitle>
-            <ClaimContent>부산 광역시</ClaimContent>
+            <ClaimContent>-</ClaimContent>
             <ClaimTitle>목적지 2</ClaimTitle>
-            <ClaimContent>천안시</ClaimContent>
+            <ClaimContent>-</ClaimContent>
             <ClaimTitle>목적지 3</ClaimTitle>
             <ClaimContent>-</ClaimContent>
           </ClaimRow>
           <ClaimRow>
             <ClaimTitle>매출운임비</ClaimTitle>
-            <ClaimContent>154,585,000</ClaimContent>
+            <ClaimContent>-</ClaimContent>
             <ClaimTitle>매입운임비</ClaimTitle>
-            <ClaimContent>456,485,200</ClaimContent>
+            <ClaimContent>-</ClaimContent>
             <ClaimTitle>합짐비</ClaimTitle>
-            <ClaimContent>63,000</ClaimContent>
+            <ClaimContent>-</ClaimContent>
+          </ClaimRow>
+          <ClaimRow>
+            <ClaimTitle>매출운임비</ClaimTitle>
+            <ClaimContent>-</ClaimContent>
+            <ClaimTitle>매입운임비</ClaimTitle>
+            <ClaimContent>-</ClaimContent>
+            <ClaimTitle>합짐비</ClaimTitle>
+            <ClaimContent>-</ClaimContent>
+          </ClaimRow>
+          <ClaimRow>
+            <ClaimTitle style={{ width: '50%' }}>합짐비</ClaimTitle>
+            <ClaimContent style={{ width: '50%' }}>-</ClaimContent>
           </ClaimRow>
         </ClaimTable>
       </TableWrap>
@@ -299,14 +213,7 @@ const Request = ({ setChoiceComponent }) => {
         </ExRadioWrap>
       </SpaceDiv>
 
-      <TableContianer>
-        <TCSubContainer bor>
-          <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
-            <Hidden />
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}></div>
-        </TCSubContainer>
+      <TableContianer style={{ paddingBottom: '10px' }}>
         <TCSubContainer>
           <div>
             선택 중량<span> 2 </span>kg / 총 중량 kg
@@ -317,12 +224,20 @@ const Request = ({ setChoiceComponent }) => {
           </div>
         </TCSubContainer>
         <Test3 />
+        <TCSubContainer style={{ paddingBottom: '0px' }}>
+          <div>
+            합계 금액(매입/매출 운임비):<span>123,456,789</span>(원)
+          </div>
+          <div>
+            <WhiteBlackBtn>목록 추가</WhiteBlackBtn>
+          </div>
+        </TCSubContainer>
       </TableContianer>
     </FilterContianer>
   )
 }
 
-export default Request
+export default RequestRecom
 
 const SpaceDiv = styled.div`
   position: relative;

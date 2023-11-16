@@ -47,7 +47,7 @@ export const clientModalAtom = atom(false)
 export const AuctionRestrictionModal = atom(false)
 
 /* ==============================
-    주문 관리 - 주문 관리 (Order)
+     주문 관리 (Order)
 ============================== */
 
 export const OrderCellAtom = atom({
@@ -58,7 +58,17 @@ export const OrderCellAtom = atom({
 })
 
 /* ==============================
-    경매 관리 - 경매 관리 (Auction)
+    출고 관리 (Standard)
+============================== */
+
+// 배차기사 관리 - 배차 기사 등록 modal
+export const StandardDispatchPostAtom = atom(false)
+
+// 배차기사 관리 - 배차 기사 수정 modal
+export const StandardDispatchEditAtom = atom(false)
+
+/* ==============================
+     경매 관리 (Auction)
 ============================== */
 
 // 경매 관리 - 경매 회차 관리 / 경매 목록 수정 Modal
@@ -71,7 +81,7 @@ export const roundPostModalAtom = atom(false)
 export const aucProAddModalAtom = atom(false)
 
 /* ==============================
-    기준 관리 - 기준 관리 (Standard)
+    기준 관리 (Standard)
 ============================== */
 
 //목적지 관리 - 목적지 등록 Modal

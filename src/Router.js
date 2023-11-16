@@ -176,15 +176,16 @@ import RoundAucProAdd from './pages/Auction/Round/RoundAucProAdd'
 import WinningProductAdd from './pages/Auction/Winning/WinningProductAdd'
 import Table2 from './pages/Table/Table2'
 import WeightSales from './modal/Multi/WeightSales'
-
+import RequestRecom from './pages/Shipping/Request/RequestRecom'
+import RequestAddModal from './pages/Shipping/Request/RequestAddModal'
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
         Upload
         {/* 테스트 URL */}
-        <Route path="/ppapp" element={<WeightSales />} />
-        <Route path="/ppap" element={<DestinationChange />} />
+        <Route path="/ppapp" element={<DispatchEdit />} />
+        <Route path="/ppap" element={<RequestRecom />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />
         <Route path="/test2" element={<Test2 />} />

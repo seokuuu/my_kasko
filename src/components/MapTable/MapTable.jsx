@@ -18,7 +18,7 @@ export const ClaimTitle = styled.div`
   border: 1px solid #c8c8c8;
   background-color: #dbe2f0;
   width: 16.66%;
-  justify-content: center;
+  justify-content: center; 
   align-items: center;
 `
 export const ClaimContent = styled.div`

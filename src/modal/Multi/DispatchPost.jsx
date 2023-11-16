@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
 import {
-  NonFadeOverlay,
+  FadeOverlay,
   ModalContainer,
   WhiteCloseBtn,
   BlueSubContainer,
@@ -30,11 +30,11 @@ import { CustomSelect } from '../../common/Option/Main'
 
 import { storageOptions } from '../../common/Option/SignUp'
 
-const DispatchPost = () => {
+const DispatchPost = ({ setIsModal2 }) => {
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
   const modalClose = () => {
-    setIsModal(false)
+    setIsModal2(false)
   }
 
   const radioDummy = ['경매', '상시']
@@ -46,7 +46,7 @@ const DispatchPost = () => {
   return (
     // 판매 제품 관리 - 패키지 관리
     <>
-      <NonFadeOverlay />
+      <FadeOverlay />
       <ModalContainer width={550}>
         <BlueBarHeader>
           <div>배차 기사 등록</div>

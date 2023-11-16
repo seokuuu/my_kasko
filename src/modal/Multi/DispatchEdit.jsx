@@ -30,6 +30,8 @@ import { CustomSelect } from '../../common/Option/Main'
 
 import { storageOptions } from '../../common/Option/SignUp'
 
+
+
 const DispatchEdit = () => {
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
@@ -49,7 +51,7 @@ const DispatchEdit = () => {
       <NonFadeOverlay />
       <ModalContainer width={550}>
         <BlueBarHeader>
-          <div>배차 기사 수정</div>
+          <div>배차 기사 수정 </div>
           <div>
             <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
           </div>

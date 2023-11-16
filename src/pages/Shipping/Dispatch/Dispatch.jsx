@@ -17,8 +17,13 @@ import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../co
 
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
+import { useAtom } from 'jotai'
+
+import { StandardDispatchPostAtom } from '../../../store/Layout/Layout'
+import DispatchPost from '../../../modal/Multi/DispatchPost'
 
 const Dispatch = ({}) => {
+  const [isModal2, setIsModal2] = useAtom(StandardDispatchPostAtom)
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -65,10 +70,17 @@ const Dispatch = ({}) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn>선택 삭제</WhiteRedBtn>
-            <WhiteSkyBtn>추가 등록</WhiteSkyBtn>
+            <WhiteSkyBtn
+              onClick={() => {
+                setIsModal2(true)
+              }}
+            >
+              추가 등록
+            </WhiteSkyBtn>
           </div>
         </TCSubContainer>
         <Test3 />
+        {isModal2 && <DispatchPost setIsModal2={setIsModal2} />}
       </TableContianer>
     </FilterContianer>
   )
