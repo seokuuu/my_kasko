@@ -4,7 +4,7 @@ import { useAtom } from 'jotai'
 import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import Hidden from '../../../components/TableInner/Hidden'
 import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
-import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { StandardConsoliateEdit, blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import { StandardConsolidationFields, StandardConsolidationFieldsCols } from '../../../constants/admin/Standard'
 
@@ -38,7 +38,7 @@ const Consolidation = ({}) => {
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-  const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
+  const [btnCellModal, setBtnCellModal] = useAtom(StandardConsoliateEdit)
   const [modalMode, setModalMode] = useAtom(consolEditModalAtom)
 
   console.log('uidAtom', uidAtom)

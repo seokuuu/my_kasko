@@ -1,42 +1,30 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import {
-  NonFadeOverlay,
-  ModalContainer,
-  WhiteCloseBtn,
-  BlueSubContainer,
   BlueBarHeader,
-  BlueMainDiv,
-  BlueSubDiv,
-  BlueRadioWrap,
-  BlueInput,
   BlueBlackBtn,
   BlueBtnWrap,
-  BlueOneDiv,
   BlueHalfDiv,
+  BlueInput,
+  BlueMainDiv,
+  BlueOneDiv,
+  BlueSubContainer,
+  FadeOverlay,
+  ModalContainer,
+  WhiteCloseBtn,
 } from '../Common/Common.Styled'
 
-import { BlackBtn } from '../../common/Button/Button'
-
-import { blueModalAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
+import { blueModalAtom } from '../../store/Layout/Layout'
 
-import { ExRadioWrap } from '../External/ExternalFilter'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
-
-import { CheckBox } from '../../common/Check/Checkbox'
-import { styled } from 'styled-components'
 import { CustomSelect } from '../../common/Option/Main'
 
 import { storageOptions } from '../../common/Option/SignUp'
 
-
-
-const DispatchEdit = () => {
+const DispatchEdit = ({ setIsModalEdit }) => {
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
   const modalClose = () => {
-    setIsModal(false)
+    setIsModalEdit(false)
   }
 
   const radioDummy = ['경매', '상시']
@@ -48,7 +36,7 @@ const DispatchEdit = () => {
   return (
     // 판매 제품 관리 - 패키지 관리
     <>
-      <NonFadeOverlay />
+      <FadeOverlay />
       <ModalContainer width={550}>
         <BlueBarHeader>
           <div>배차 기사 수정 </div>

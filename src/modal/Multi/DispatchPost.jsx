@@ -30,11 +30,11 @@ import { CustomSelect } from '../../common/Option/Main'
 
 import { storageOptions } from '../../common/Option/SignUp'
 
-const DispatchPost = ({ setIsModal2 }) => {
+const DispatchPost = ({ setIsModalPost }) => {
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
   const modalClose = () => {
-    setIsModal2(false)
+    setIsModalPost(false)
   }
 
   const radioDummy = ['경매', '상시']

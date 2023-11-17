@@ -139,7 +139,6 @@ const WeightSales = ({}) => {
             <img src="/img/circle_add.png" alt="add row" />
           </PowerMiddle>
           <TableContainer>
-            {' '}
             <Table>
               <thead>
                 <TableRow>

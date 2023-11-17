@@ -89,8 +89,10 @@ export const modalAtom = atom(false)
 
 export const popupAtom = atom(false)
 
-//모든 수정 버튼의 Modal
+//수정 버튼의 Modal (test)
 export const btnCellRenderAtom = atom(false)
+
+export const StandardConsoliateEdit = atom(false)
 
 //목적지 관리 - 목적지 수정버튼 Uid
 export const btnCellUidAtom = atom('')
@@ -115,6 +117,12 @@ export const surTypeAtom = atom('')
 
 //합짐비 관리 - 합짐비 수정 버튼 Modal
 export const consolEditModalAtom = atom('')
+
+//출고 관리 - 배차기사 관리 등록 / 수정 Modal
+export const dispatchPostEditAtom = atom(false)
+
+//출고 관리 - 배차기사 관리 등록 / 수정  타입 지정
+export const dispatchTypeAtom = atom('등록')
 
 export const popupTypeAtom = atom('')
 

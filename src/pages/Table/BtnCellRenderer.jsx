@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { SkyBtn } from '../../common/Button/Button'
-import { btnCellRenderAtom, btnCellUidAtom, surEditModalAtom, consolEditModalAtom } from '../../store/Layout/Layout'
+import {
+  btnCellRenderAtom,
+  btnCellUidAtom,
+  surEditModalAtom,
+  consolEditModalAtom,
+  StandardDispatchEditAtom,
+} from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
 const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
@@ -13,7 +19,10 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
   console.log('uidAtom @@@', uidAtom)
   const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
   const [modalMode, setModalMode] = useAtom(surEditModalAtom) // 할증 관리 modal
+  const [dispatchModalMode, setDispatchModalMode] = useAtom(StandardDispatchEditAtom)
   const [consoliMode, setCosoliMode] = useAtom(consolEditModalAtom) // 합짐비 관리 modal
+
+  console.log('!!!')
 
   const btnClickedHandler = () => {
     switch (editType) {
@@ -31,8 +40,10 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
         setUidAtom(uid)
         setCosoliMode('수정')
         break
-      case 'd':
-        // 추가적인 작업이 필요한 경우
+      case 'dispatch':
+        setBtnCellModal(true)
+        setUidAtom(uid)
+        setDispatchModalMode(true)
         break
       default:
         break
