@@ -1,28 +1,36 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useState } from 'react'
 import {
-  BlueBarHeader,
-  BlueBlackBtn,
-  BlueBtnWrap,
-  BlueHalfDiv,
-  BlueInput,
-  BlueMainDiv,
-  BlueOneDiv,
-  BlueSubContainer,
   FadeOverlay,
   ModalContainer,
   WhiteCloseBtn,
+  BlueSubContainer,
+  BlueBarHeader,
+  BlueMainDiv,
+  BlueSubDiv,
+  BlueRadioWrap,
+  BlueInput,
+  BlueBlackBtn,
+  BlueBtnWrap,
+  BlueOneDiv,
+  BlueHalfDiv,
 } from '../Common/Common.Styled'
 
 import { BlackBtn } from '../../common/Button/Button'
 
-import { useAtom } from 'jotai'
 import { blueModalAtom } from '../../store/Layout/Layout'
+import { useAtom } from 'jotai'
 
+import { ExRadioWrap } from '../External/ExternalFilter'
+import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
+
+import { CheckBox } from '../../common/Check/Checkbox'
+import { styled } from 'styled-components'
 import { CustomSelect } from '../../common/Option/Main'
 
 import { storageOptions } from '../../common/Option/SignUp'
 
-const DispatchPost = ({ setIsModalPost }) => {
+const DispatchRelease = ({ setIsModalPost }) => {
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
   const modalClose = () => {
@@ -94,4 +102,4 @@ const DispatchPost = ({ setIsModalPost }) => {
   )
 }
 
-export default DispatchPost
+export default DispatchRelease

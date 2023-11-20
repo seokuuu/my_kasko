@@ -1,49 +1,40 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 
+import { BlackBtn, GreyBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
-
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
+import Test3 from '../../Test/Test3'
 
 import {
+  DoubleWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
   FilterRight,
-  RowWrap,
+  FilterSubcontianer,
+  GridWrap,
+  Input,
   PartWrap,
   PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
   ResetImg,
+  RowWrap,
   TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
   TCSubContainer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import { ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../Claim/ClaimRegister'
-
 import Hidden from '../../../components/TableInner/Hidden'
-
+import { StandardDispatchDetailAtom } from '../../../store/Layout/Layout'
+import { useAtom } from 'jotai'
+import DispatchDetail from '../../../modal/Multi/DispatchDetail'
 const DisRegister = ({}) => {
+  const [isPostModal, setIsPostModal] = useAtom(StandardDispatchDetailAtom)
+
   const titleData = ['제품 중량(kg)', '제품 공급가액', '운반비 공급가액']
   const contentData = ['986,742', '986,742', '986,742']
   const handleSelectChange = (selectedOption, name) => {
@@ -166,7 +157,13 @@ const DisRegister = ({}) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn>배차 취소</WhiteRedBtn>
-            <WhiteSkyBtn>배차 등록</WhiteSkyBtn>
+            <WhiteSkyBtn
+              onClick={() => {
+                setIsPostModal(true)
+              }}
+            >
+              배차 등록
+            </WhiteSkyBtn>
           </div>
         </TCSubContainer>
         <Test3 />
@@ -177,6 +174,7 @@ const DisRegister = ({}) => {
           </div>
         </TCSubContainer>
       </TableContianer>
+      {isPostModal && <DispatchDetail setIsPostModal={setIsPostModal} />}
     </FilterContianer>
   )
 }

@@ -1,43 +1,45 @@
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
+import { useEffect, useState } from 'react'
 import { storageOptions } from '../../../common/Option/SignUp'
 
+import { BlackBtn, GreyBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteRedBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
+import Test3 from '../../Test/Test3'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
+import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 
+import { Link } from 'react-router-dom'
+import Hidden from '../../../components/TableInner/Hidden'
 import {
+  DoubleWrap,
+  ExCheckDiv,
+  ExCheckWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
   FilterRight,
-  RowWrap,
+  FilterSubcontianer,
+  GridWrap,
+  Input,
   PartWrap,
   PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
   ResetImg,
+  RowWrap,
   TableContianer,
-  ExCheckWrap,
-  ExCheckDiv,
-  ExInputsWrap,
   TCSubContainer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
-import Hidden from '../../../components/TableInner/Hidden'
+
+import AchievementModal from '../../../modal/Multi/Achievement'
+import { achievementAddedAtom } from '../../../store/Layout/Layout'
+import { useAtom } from 'jotai'
 const Achievement = ({}) => {
   const checkSales = ['전체', '판매재', '판매제외제', '카스코 추천 제품']
+  const [addedModal, setAddedModal] = useAtom(achievementAddedAtom)
 
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
@@ -203,18 +205,27 @@ const Achievement = ({}) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn>추가비 및 공차비 삭제</WhiteRedBtn>
-            <WhiteSkyBtn>추가비 및 공차비 추가</WhiteSkyBtn>
+            <WhiteSkyBtn
+              onClick={() => {
+                setAddedModal(true)
+              }}
+            >
+              추가비 및 공차비 추가
+            </WhiteSkyBtn>
           </div>
         </TCSubContainer>
         <Test3 />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteBlackBtn>클레임 등록</WhiteBlackBtn>
+            <Link to={`/shipping/claim/register`}>
+              <WhiteBlackBtn>클레임 등록</WhiteBlackBtn>
+            </Link>
             <WhiteSkyBtn>거래 명세서 출력</WhiteSkyBtn>
           </div>
         </TCSubContainer>
       </TableContianer>
+      {addedModal && <AchievementModal />}
     </FilterContianer>
   )
 }

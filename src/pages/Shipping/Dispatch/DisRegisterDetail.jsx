@@ -47,6 +47,8 @@ import Hidden from '../../../components/TableInner/Hidden'
 import { ArrowDropDown } from '@mui/icons-material'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
+import { useAtom } from 'jotai'
+
 const DisRegisterDetail = ({}) => {
   const radioTableDummy = ['Y', 'N']
 

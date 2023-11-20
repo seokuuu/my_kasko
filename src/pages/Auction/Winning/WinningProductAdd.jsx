@@ -50,7 +50,7 @@ import {
   WhiteCloseBtn,
 } from '../../../modal/Common/Common.Styled'
 
-// 경매 제품 추가(단일) 메인 컴포넌트
+// 낙찰 생성 제품 추가(단일) 메인 컴포넌트
 const WinningProductAdd = ({}) => {
   const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']

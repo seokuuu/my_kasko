@@ -143,7 +143,7 @@ import SalesPackage from './modal/Multi/SalesPackage'
 import DispatchPost from './modal/Multi/DispatchPost'
 import DispatchEdit from './modal/Multi/DispatchEdit'
 import Hyundai from './modal/Multi/Hyundai'
-import Achievement from './modal/Multi/Achievement'
+import AchievementModal from './modal/Multi/Achievement'
 import DispatchDetail from './modal/Multi/DispatchDetail'
 import Transport from './modal/Multi/Transport'
 import Consolidation from './modal/Multi/Consolidation'
@@ -178,13 +178,14 @@ import Table2 from './pages/Table/Table2'
 import WeightSales from './modal/Multi/WeightSales'
 import RequestRecom from './pages/Shipping/Request/RequestRecom'
 import RequestAddModal from './pages/Shipping/Request/RequestAddModal'
+import TransportationCost from './modal/Multi/TransportationCost'
+
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        Upload
         {/* 테스트 URL */}
-        <Route path="/ppapp" element={<DispatchEdit />} />
+        <Route path="/ppapp" element={<TransportationCost />} />
         <Route path="/ppap" element={<RequestRecom />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />

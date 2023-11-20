@@ -20,8 +20,8 @@ const WinningPage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            {/* <Winning /> */}
-            <WinningDetail />
+            <Winning />
+            {/* <WinningDetail /> */}
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>

@@ -22,8 +22,10 @@ import { TxtInput } from '../../common/Input/Input'
 import { getCustomerFind } from '../../service/admin/Auction'
 import useReactQuery from '../../hooks/useReactQuery'
 import styled from 'styled-components'
+import { Radio, Checkbox } from '@mui/material'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 
-const CustomerFind = ({ title, setAddModal }) => {
+const CustomerFind = ({ title, setSwitch }) => {
   const matchData = { name: '고객명', code: '고객사 코드', businessNumber: '사업자번호' }
 
   const { isLoading, isError, data, isSuccess } = useReactQuery('', 'getCustomerFind', getCustomerFind)
@@ -36,6 +38,8 @@ const CustomerFind = ({ title, setAddModal }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [result, setResult] = useState([])
   const [clickedResult, setClickedResult] = useState()
+  const [selectedUid, setSelectedUid] = useState(null)
+  const [selectedUids, setSelectedUids] = useState([])
 
   console.log('clickedResult', clickedResult)
 
@@ -43,7 +47,7 @@ const CustomerFind = ({ title, setAddModal }) => {
   console.log('result !!!', result)
 
   const modalClose = () => {
-    setAddModal(false)
+    setSwitch(false)
   }
 
   const handleSearch = () => {
@@ -66,10 +70,9 @@ const CustomerFind = ({ title, setAddModal }) => {
   }
 
   const handleCellClick = (uid, name, code, businessNumber) => {
-    // 셀 클릭 이벤트를 처리하고 데이터를 원하는 상태에 저장하세요.
-    // 여기서는 단순히 데이터를 로그로 출력하겠습니다.
     console.log('클릭한 셀 데이터:', { uid, name, code, businessNumber })
     setClickedResult({ uid, name, code, businessNumber })
+    setSelectedUid(uid) // 클릭한 셀의 uid를 저장
   }
 
   return (
@@ -101,19 +104,33 @@ const CustomerFind = ({ title, setAddModal }) => {
             <BlueMainDiv style={{ padding: '0px' }}>
               <ResultContainer>
                 <ResultHead>
+                  <ResultCell wid={50}>선택</ResultCell>
                   <ResultCell>{matchData.name}</ResultCell>
                   <ResultCell>{matchData.code}</ResultCell>
-                  <ResultCell>{matchData.businessNumber}</ResultCell>
+                  <ResultCell wid={130}>{matchData.businessNumber}</ResultCell>
                 </ResultHead>
                 {result &&
-                  result.map((item) => (
+                  result.map((item, index) => (
                     <ResultRow
                       key={item.uid}
                       onClick={() => handleCellClick(item.uid, item.name, item.code, item.businessNumber)}
                     >
+                      <ResultCell wid={50}>
+                        <RadioMainDiv key={index}>
+                          <RadioCircleDiv
+                            isChecked={item.uid === selectedUid}
+                            onClick={(event) => {
+                              event.stopPropagation() // 상위 요소의 onClick 이벤트 막기
+                              handleCellClick(item.uid, item.name, item.code, item.businessNumber) // 셀 클릭 이벤트 처리
+                            }}
+                          >
+                            <RadioInnerCircleDiv />
+                          </RadioCircleDiv>
+                        </RadioMainDiv>
+                      </ResultCell>
                       <ResultCell>{item.name}</ResultCell>
                       <ResultCell>{item.code}</ResultCell>
-                      <ResultCell>{item.businessNumber}</ResultCell>
+                      <ResultCell wid={130}>{item.businessNumber}</ResultCell>
                     </ResultRow>
                   ))}
               </ResultContainer>
@@ -130,7 +147,7 @@ const CustomerFind = ({ title, setAddModal }) => {
 
 export default CustomerFind
 
-const BMDTitle = styled.div`
+export const BMDTitle = styled.div`
   display: flex;
   justify-content: center;
 `

@@ -44,7 +44,7 @@ import {
   WhiteCloseBtn,
 } from '../../../modal/Common/Common.Styled'
 
-// 경매 제품 추가(단일) 메인 컴포넌트
+// 합짐 추가 등록 메인 컴포넌트
 const RequestAddModal = ({}) => {
   const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']

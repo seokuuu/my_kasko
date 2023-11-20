@@ -188,10 +188,12 @@ export const ResultContainer = styled.div`
 export const ResultHead = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
-  background-color: #f1f1f1;
+  cursor: pointer;
   height: 50px;
-  gap: 25px;
+  justify-content: space-evenly;
+  border-bottom: 1px solid #ddd;
+  gap: 30px;
+  background-color: #f1f1f1;
 `
 
 export const ResultRow = styled.div`
@@ -208,7 +210,12 @@ export const ResultRow = styled.div`
   }
 `
 
-export const ResultCell = styled.div``
+export const ResultCell = styled.div`
+  display: flex;
+  width: ${({ wid }) => (wid ? `${wid}px` : '100px')};
+  align-items: center;
+  justify-content: center;
+`
 
 // 모달 한 줄
 export const BlueSubDiv = styled.div`

@@ -35,9 +35,13 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { InputContainer, NoOutInput, Unit } from '../../../common/Input/Input'
 
+import { WinningCreateFindAtom } from '../../../store/Layout/Layout'
+import { useAtom } from 'jotai'
+import CustomerFind from '../../../modal/Multi/CustomerFind'
+
 const WinningCreate = ({}) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
-
+  const [isModal, setIsModal] = useAtom(WinningCreateFindAtom)
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
 
@@ -107,7 +111,15 @@ const WinningCreate = ({}) => {
                 <div>
                   <h6>고객사</h6>
                   <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                  <GreyBtn
+                    style={{ width: '70px' }}
+                    height={35}
+                    margin={10}
+                    fontSize={17}
+                    onClick={() => {
+                      setIsModal(true)
+                    }}
+                  >
                     찾기
                   </GreyBtn>
                 </div>
@@ -261,6 +273,7 @@ const WinningCreate = ({}) => {
           </div>
         </TCSubContainer>
       </TableContianer>
+      {isModal && <CustomerFind setSwitch={setIsModal} />}
     </FilterContianer>
   )
 }

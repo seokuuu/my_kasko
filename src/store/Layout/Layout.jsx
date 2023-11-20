@@ -67,6 +67,9 @@ export const StandardDispatchPostAtom = atom(false)
 // 배차기사 관리 - 배차 기사 수정 modal
 export const StandardDispatchEditAtom = atom(false)
 
+// 배차/출고등록  -
+export const StandardDispatchDetailAtom = atom(false)
+
 /* ==============================
      경매 관리 (Auction)
 ============================== */
@@ -79,6 +82,9 @@ export const roundPostModalAtom = atom(false)
 
 // 경매 목록 수정 - 제품 추가 Modal
 export const aucProAddModalAtom = atom(false)
+
+// 경매 낙찰관리 - 낙찰 생성 - 고객사 찾기 버튼 Modal
+export const WinningCreateFindAtom = atom(false)
 
 /* ==============================
     기준 관리 (Standard)
@@ -118,11 +124,18 @@ export const surTypeAtom = atom('')
 //합짐비 관리 - 합짐비 수정 버튼 Modal
 export const consolEditModalAtom = atom('')
 
+/* ==============================
+    출고 관리 (shipping)
+============================== */
+
 //출고 관리 - 배차기사 관리 등록 / 수정 Modal
 export const dispatchPostEditAtom = atom(false)
 
 //출고 관리 - 배차기사 관리 등록 / 수정  타입 지정
 export const dispatchTypeAtom = atom('등록')
+
+//출고 관리 - 출고 실적 - 추가비 및 공차비 추가 Momal
+export const achievementAddedAtom = atom(false)
 
 export const popupTypeAtom = atom('')
 

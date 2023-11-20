@@ -16,7 +16,8 @@ import { aucProAddModalAtom } from '../../store/Layout/Layout'
 
 import styled from 'styled-components'
 import { BlueBarHeader, BlueSubContainer, FadeOverlay, ModalContainer, WhiteCloseBtn } from '../Common/Common.Styled'
-
+// 중량 판매 등록
+// !!! 보류 !!!
 const WeightSales = ({}) => {
   // const [isModal, setIsModal] = useAtom()
 
