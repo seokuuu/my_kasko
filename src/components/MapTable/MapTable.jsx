@@ -18,7 +18,7 @@ export const ClaimTitle = styled.div`
   border: 1px solid #c8c8c8;
   background-color: #dbe2f0;
   width: 16.66%;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
 `
 export const ClaimContent = styled.div`
@@ -28,6 +28,8 @@ export const ClaimContent = styled.div`
   width: 16.66%;
   justify-content: center;
   align-items: center;
+  color: ${({ bold }) => (bold ? '#17479e' : 'none')};
+  font-weight: ${({ bold }) => (bold ? '700' : 'none')};
 `
 
 export const DateTitle = styled.div`

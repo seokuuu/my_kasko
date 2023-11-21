@@ -24,7 +24,7 @@ import { CustomSelect } from '../../common/Option/Main'
 
 // 운반비 단가
 // get : 기준관리 - 운반비 관리 - 운반비 목록 (getCustomerFind)
-// !! 목적지 "찾기" 버튼은 목적지 관리 get을 예시로 작성했습니다. 참고해서 수정하시면 됩니다
+// !! 목적지 "찾기" 버튼은 목적지 관리 get을 예시로 작성했습니다. 참고해서 수정하시면 됩니다.
 const TransportationCost = ({ title, setSwitch }) => {
   const matchData = { name: '고객명', code: '고객사 코드', businessNumber: '사업자번호' } // 수정 필요
 

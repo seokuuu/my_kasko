@@ -179,14 +179,19 @@ import WeightSales from './modal/Multi/WeightSales'
 import RequestRecom from './pages/Shipping/Request/RequestRecom'
 import RequestAddModal from './pages/Shipping/Request/RequestAddModal'
 import TransportationCost from './modal/Multi/TransportationCost'
+import PackDetail from './pages/Auction/Bidding/PackDetail'
+import SalesPackDetail from './pages/Sales/Package/PackDetail'
+import WinningDetail from './pages/Auction/Winning/WinningDetail'
+import WinDepositForm from './pages/Auction/Winning/WinDepositForm'
+import FormTest from './pages/Auction/Winning/FormTest'
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
-        <Route path="/ppapp" element={<TransportationCost />} />
-        <Route path="/ppap" element={<RequestRecom />} />
+        <Route path="/ppapp" element={<FormTest />} />
+        <Route path="/ppap" element={<WinDepositForm />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />
         <Route path="/test2" element={<Test2 />} />

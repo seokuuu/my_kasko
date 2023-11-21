@@ -25,6 +25,7 @@ import styled from 'styled-components'
 import { Radio, Checkbox } from '@mui/material'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 
+// 고객사 찾기
 const CustomerFind = ({ title, setSwitch }) => {
   const matchData = { name: '고객명', code: '고객사 코드', businessNumber: '사업자번호' }
 

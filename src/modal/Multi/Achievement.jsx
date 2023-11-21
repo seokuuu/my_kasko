@@ -16,9 +16,6 @@ import {
   WhiteCloseBtn,
 } from '../Common/Common.Styled'
 
-import { useAtom } from 'jotai'
-import { blueModalAtom } from '../../store/Layout/Layout'
-
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 
 import { CheckBox } from '../../common/Check/Checkbox'
@@ -27,12 +24,9 @@ import { styled } from 'styled-components'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
 import { ExCheckDiv } from '../External/ExternalFilter'
 
-const Achievement = () => {
-
-  const [isModal, setIsModal] = useAtom(blueModalAtom)
-
+const Achievement = ({ setAddedModal }) => {
   const modalClose = () => {
-    setIsModal(false)
+    setAddedModal(false)
   }
 
   const radioDummy = ['해당없음', '추가', '차감']

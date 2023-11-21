@@ -225,7 +225,7 @@ const Achievement = ({}) => {
           </div>
         </TCSubContainer>
       </TableContianer>
-      {addedModal && <AchievementModal />}
+      {addedModal && <AchievementModal setAddedModal={setAddedModal} />}
     </FilterContianer>
   )
 }

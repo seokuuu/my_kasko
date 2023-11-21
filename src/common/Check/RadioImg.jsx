@@ -17,6 +17,7 @@ export const RadioCircleDiv = styled.div`
   justify-content: center;
   align-items: center;
   border: 1px solid #afc9f0;
+  cursor: pointer;
 `
 
 export const RadioInnerCircleDiv = styled.div`

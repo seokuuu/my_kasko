@@ -93,7 +93,7 @@ const PackDetail = ({}) => {
       <ModalContainer style={{ width: '75%', height: '98vh' }}>
         <BlueBarHeader style={{ height: '60px' }}>
           {/* <div>{title}</div> */}
-          <div>패키지 상세 보기(경매)</div>
+          <div>패키지 상세 보기</div>
           <div>
             <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
           </div>
@@ -138,17 +138,7 @@ const PackDetail = ({}) => {
                 <div>
                   선택 중량<span> 2 </span>kg / 총 중량 kg
                 </div>
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <p>일괄 경매 응찰</p>
-                  <CustomInput placeholder="응찰가 입력" width={120} height={32} />
-                  <TGreyBtn height={30} style={{ width: '50px' }}>
-                    적용
-                  </TGreyBtn>
-                  <BtnBound />
-                  <SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50}>
-                    응찰
-                  </SkyBtn>
-                </div>
+                <div style={{ padding: '15px' }}></div>
               </TCSubContainer>
               <Test3 hei2={350} hei={100} />
               <TCSubContainer></TCSubContainer>

@@ -1,45 +1,33 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
+import React, { Fragment, useState } from 'react'
 import { storageOptions } from '../../../common/Option/SignUp'
 
+import { BlackBtn, GreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, ExcelBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
-
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
+import Test3 from '../../Test/Test3'
 
 import {
+  DoubleWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
   FilterRight,
-  RowWrap,
+  FilterSubcontianer,
+  GridWrap,
+  Input,
   PartWrap,
   PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
   ResetImg,
+  RowWrap,
   TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
   TCSubContainer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import { TableWrap, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../components/MapTable/MapTable'
+import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
 
 import Hidden from '../../../components/TableInner/Hidden'
 
@@ -166,10 +154,10 @@ const Register = ({}) => {
           {[0].map((index) => (
             <ClaimRow key={index}>
               {titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
-                <React.Fragment agmentkey={title}>
+                <Fragment agmentkey={title}>
                   <ClaimTitle>{title}</ClaimTitle>
                   <ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
-                </React.Fragment>
+                </Fragment>
               ))}
             </ClaimRow>
           ))}

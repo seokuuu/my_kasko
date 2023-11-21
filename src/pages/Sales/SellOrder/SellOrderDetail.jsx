@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import React, { useState } from 'react'
+import React, { useState, Fragment } from 'react'
 import { styled } from 'styled-components'
 import { BtnBound, SkyBtn, TGreyBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
@@ -72,10 +72,10 @@ const SellOrderDetail = ({}) => {
             {[0, 1].map((index) => (
               <ClaimRow key={index}>
                 {titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
-                  <React.Fragment agmentkey={title}>
+                  <Fragment agmentkey={title}>
                     <ClaimTitle>{title}</ClaimTitle>
                     <ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
-                  </React.Fragment>
+                  </Fragment>
                 ))}
               </ClaimRow>
             ))}

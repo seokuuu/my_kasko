@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 
-import TextEditor from '../../../components/Editor/TextEditor'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { claimOngoingStatus, ClaimSelect } from '../../../common/Option/ClaimPost'
 import { BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 import { CenterRectangleWrap } from '../../../common/OnePage/OnePage.Styled'
+import { claimOngoingStatus, ClaimSelect } from '../../../common/Option/ClaimPost'
+import DateGrid from '../../../components/DateGrid/DateGrid'
+import TextEditor from '../../../components/Editor/TextEditor'
 
 import { StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 
@@ -13,11 +13,11 @@ import { CheckBox } from '../../../common/Check/Checkbox'
 
 import { CheckImg2 } from '../../../common/Check/CheckImg'
 
-import { DateTitle, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../components/MapTable/MapTable'
+import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, DateTitle } from '../../../components/MapTable/MapTable'
 
 // 클레임 등록
 const ClaimRegister = () => {
-const titleData = [
+  const titleData = [
     '제품 번호',
     '클레임 등록 일자',
     '클레임 수정 일자',
@@ -58,10 +58,10 @@ const titleData = [
             {[0, 1, 2].map((index) => (
               <ClaimRow key={index}>
                 {titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
-                  <React.Fragment agmentkey={title}>
+                  <Fragment agmentkey={title}>
                     <ClaimTitle>{title}</ClaimTitle>
                     <ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
-                  </React.Fragment>
+                  </Fragment>
                 ))}
               </ClaimRow>
             ))}
