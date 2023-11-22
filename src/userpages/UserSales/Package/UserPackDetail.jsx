@@ -1,12 +1,11 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { BtnBound, SkyBtn, TGreyBtn } from '../../../common/Button/Button'
+import { GreenBtn, SkyBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import Test3 from '../../../pages/Test/Test3'
 import { toggleAtom } from '../../../store/Layout/Layout'
-import Test3 from '../../Test/Test3'
 
 import {
-  CustomInput,
   FilterContianer,
   FilterHeader,
   FilterTCTop,
@@ -22,6 +21,7 @@ import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 
+import styled from 'styled-components'
 import {
   BlueBarHeader,
   BlueSubContainer,
@@ -31,7 +31,7 @@ import {
 } from '../../../modal/Common/Common.Styled'
 
 // 패키지 상세보기 (경매)
-const PackDetail = ({}) => {
+const UserPackDetail = ({}) => {
   const modalClose = () => {
     setAddModal(false)
   }
@@ -138,20 +138,18 @@ const PackDetail = ({}) => {
                 <div>
                   선택 중량<span> 2 </span>kg / 총 중량 kg
                 </div>
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <p>일괄 경매 응찰</p>
-                  <CustomInput placeholder="응찰가 입력" width={120} height={32} />
-                  <TGreyBtn height={30} style={{ width: '50px' }}>
-                    적용
-                  </TGreyBtn>
-                  <BtnBound />
-                  <SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50}>
-                    응찰
-                  </SkyBtn>
-                </div>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}></div>
               </TCSubContainer>
               <Test3 hei2={350} hei={100} />
-              <TCSubContainer></TCSubContainer>
+
+              <Bottom style={{ display: 'flex' }}>
+                <GreenBtn width={14} height={38} fontSize={18}>
+                  장바구니
+                </GreenBtn>
+                <SkyBtn style={{ borderRadius: '0px' }} width={14} height={38} fontSize={18}>
+                  제품구매
+                </SkyBtn>
+              </Bottom>
             </TableContianer>
           </FilterContianer>
         </BlueSubContainer>
@@ -160,4 +158,11 @@ const PackDetail = ({}) => {
   )
 }
 
-export default PackDetail
+export default UserPackDetail
+
+const Bottom = styled.div`
+  padding-top: 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+`

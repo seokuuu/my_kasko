@@ -339,7 +339,7 @@ const Test3 = ({ hei, hei2 }) => {
       {isModal && (
         <>
           <NonFadeOverlay />
-          <ModalContainer width={600} style={{ borderRadius: '4px' }}>
+          <ModalContainer width={600} style={{ borderRadius: '4px', boxShadow: '0px 4px 20px 0px rgba(0,0,0,0.10)' }}>
             <BlueBarHeader style={{ borderTopLeftRadius: '4px', borderTopRightRadius: '10px' }}>
               <div>규격 약호 찾기</div>
               <div>
@@ -349,9 +349,9 @@ const Test3 = ({ hei, hei2 }) => {
             <BlueSubContainer style={{ padding: '30px' }}>
               <FindSpec>
                 <FSTitle>
-                  <div>검색</div>
+                  <div style={{ fontSize: '16px', justifyContent: 'space-evenly' }}>검색</div>
                   <RBInput placeholder="회사 명" value={filterText} onChange={(e) => setFilterText(e.target.value)} />
-                  <GreyBtn width={15} height={30} fontSize={16} onClick={onFindButtonClick}>
+                  <GreyBtn width={13} height={30} fontSize={16} onClick={onFindButtonClick}>
                     찾기
                   </GreyBtn>
                 </FSTitle>
@@ -408,6 +408,9 @@ const FSTitle = styled.div`
   align-items: center;
   justify-content: space-around;
 
+  & > * {
+  }
+
   input {
     border: 1px solid #c8c8c8;
     height: 30px;
@@ -439,7 +442,7 @@ const ResultBlock = styled.div`
   margin-left: 2px;
 
   &:hover {
-    background-color: #929292;
+    background-color: #f2fce8;
   }
 `
 

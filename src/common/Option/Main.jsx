@@ -94,3 +94,12 @@ export const CustomSelect = styled(Select)`
   margin-right: 5px;
   font-size: 16px;
 `
+
+export const CustomSelect2 = styled(Select)`
+  width: ${(props) => (props.width ? `${props.width}px` : '160px')};
+  min-height: 1;
+  text-align: center;
+  line-height: 1;
+  margin-right: 5px;
+  font-size: 16px;
+`

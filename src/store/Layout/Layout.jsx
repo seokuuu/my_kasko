@@ -11,6 +11,7 @@ export const calendarAtom = atom(false)
 export const alertAtom = atom(false)
 export const alertAtom2 = atom(false)
 
+// 규격 약호 찾기 Global Modal
 export const blueModalAtom = atom(false)
 
 export const packageCEAtom = atom('')

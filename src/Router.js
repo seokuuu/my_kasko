@@ -184,13 +184,14 @@ import SalesPackDetail from './pages/Sales/Package/PackDetail'
 import WinningDetail from './pages/Auction/Winning/WinningDetail'
 import WinDepositForm from './pages/Auction/Winning/WinDepositForm'
 import FormTest from './pages/Auction/Winning/FormTest'
+import UserPackDetail from './userpages/UserSales/Package/UserPackDetail'
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
-        <Route path="/ppapp" element={<FormTest />} />
+        <Route path="/ppapp" element={<UserPackDetail />} />
         <Route path="/ppap" element={<WinDepositForm />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />

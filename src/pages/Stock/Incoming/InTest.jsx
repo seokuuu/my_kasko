@@ -43,7 +43,7 @@ import Test3 from '../../Test/Test3'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { storageOptions } from '../../../common/Option/Main'
-const Incoming = ({}) => {
+const InTest = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -110,7 +110,7 @@ const Incoming = ({}) => {
                       </GreyBtn>
                     </PartWrap>
                   </RowWrap>
-                  {/* <RowWrap>
+                  <RowWrap>
                     <PartWrap>
                       <h6>입고일자</h6>
                       <GridWrap>
@@ -119,13 +119,14 @@ const Incoming = ({}) => {
                         <DateGrid bgColor={'white'} fontSize={17} />
                       </GridWrap>
                     </PartWrap>
+
                     <PartWrap>
                       <h6>구분</h6>
                       <MainSelect />
                       <MainSelect />
                       <MainSelect />
                     </PartWrap>
-                  </RowWrap> */}
+                  </RowWrap>
                   <RowWrap>
                     <PartWrap>
                       <h6>구분2</h6>
@@ -301,4 +302,4 @@ const Incoming = ({}) => {
   )
 }
 
-export default Incoming
+export default InTest

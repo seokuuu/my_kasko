@@ -1,62 +1,16 @@
-import { useState, useEffect } from 'react';
-import { styled } from 'styled-components';
-import { storageOptions } from '../../../common/Option/SignUp';
+import { useState } from 'react'
 
-import { MainSelect } from '../../../common/Option/Main';
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button';
-import DateGrid from '../../../components/DateGrid/DateGrid';
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle';
-import {
-  GreyBtn,
-  ExcelBtn,
-  WhiteGrnBtn,
-  IndigoBtn,
-  BlueBtn,
-  SkyBtn,
-  SwitchBtn,
-  TGreyBtn,
-  TWhiteBtn,
-} from '../../../common/Button/Button';
-import Test3 from '../../../pages/Test/Test3';
-import HeaderToggle from '../../../components/Toggle/HeaderToggle';
-import { toggleAtom } from '../../../store/Layout/Layout';
-
-import { CheckBox } from '../../../common/Check/Checkbox';
-import {
-  StyledCheckMainDiv,
-  StyledCheckSubSquDiv,
-  CheckImg2,
-} from '../../../common/Check/CheckImg';
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import Test3 from '../../../pages/Test/Test3'
+import { toggleAtom } from '../../../store/Layout/Layout'
 
 import {
   FilterContianer,
   FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  TCSubContainer,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  ExRadioWrap,
   SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-} from '../../../modal/External/ExternalFilter';
-
-import {
-  RadioMainDiv,
-  RadioCircleDiv,
-  RadioInnerCircleDiv,
-} from '../../../common/Check/RadioImg';
+  TableContianer,
+  TCSubContainer,
+} from '../../../modal/External/ExternalFilter'
 
 const FAQ = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -64,25 +18,25 @@ const FAQ = ({}) => {
     //   ...prevState,
     //   [name]: selectedOption.label,
     // }));
-  };
-  const [isRotated, setIsRotated] = useState(false);
+  }
+  const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
-    setIsRotated(prevIsRotated => !prevIsRotated);
-  };
+    setIsRotated((prevIsRotated) => !prevIsRotated)
+  }
 
   // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom);
-  const [toggleMsg, setToggleMsg] = useState('On');
+  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+  const [toggleMsg, setToggleMsg] = useState('On')
   const toggleBtnClick = () => {
-    setExfilterToggle(prev => !prev);
+    setExfilterToggle((prev) => !prev)
     if (exFilterToggle === true) {
-      setToggleMsg('Off');
+      setToggleMsg('Off')
     } else {
-      setToggleMsg('On');
+      setToggleMsg('On')
     }
-  };
+  }
 
   return (
     <FilterContianer>
@@ -99,11 +53,7 @@ const FAQ = ({}) => {
           </SubTitle>
         </div>
         {/* 토글 쓰기 */}
-        <HeaderToggle
-          exFilterToggle={exFilterToggle}
-          toggleBtnClick={toggleBtnClick}
-          toggleMsg={toggleMsg}
-        />
+        <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
       </FilterHeader>
 
       <TableContianer>
@@ -115,7 +65,7 @@ const FAQ = ({}) => {
         <Test3 />
       </TableContianer>
     </FilterContianer>
-  );
-};
+  )
+}
 
-export default FAQ;
+export default FAQ

@@ -22,6 +22,17 @@ export const BlackBtn = styled.button`
   border: 1px solid #e1e1e1;
 `
 
+export const GreenBtn = styled.button`
+  font-size: ${(props) => props.fontSize}px;
+  width: ${(props) => props.width}%;
+  height: ${(props) => props.height}px;
+  margin: ${(props) => props.margin}px;
+  background-color: ${(props) => props.theme.colors.StatPosub};
+  color: white;
+  cursor: pointer;
+  padding: 5px 10px 5px 10px;
+`
+
 export const RedBtn = styled.button`
   font-size: ${(props) => props.fontSize}px;
   width: ${(props) => props.width}%;

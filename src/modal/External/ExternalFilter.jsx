@@ -21,6 +21,8 @@ export const FilterHeader = styled.div`
   h1 {
     font-weight: bold;
     font-size: 24px;
+    letter-spacing: -0.48px;
+    font-style: normal;
   }
 `
 
@@ -128,7 +130,10 @@ export const FilterLeft = styled.div``
 
 // 검색 필터 Right
 export const FilterRight = styled.div`
-  width: 300px;
+  /* display: flex; */
+  gap: 8px;
+  flex: 1 0 0;
+  align-self: stretch;
 `
 
 //검색 필터 내 한 '줄' 영역 div
@@ -178,11 +183,10 @@ export const DoubleWrap = styled.div`
   }
 
   > textarea {
-    margin-right: 5px;
-    height: 95%;
     width: 100%;
+    height: 100%;
     font-size: 16px;
-    padding: 8px;
+    padding: 4px 8px;
 
     ::placeholder {
       color: #acacac;
@@ -221,7 +225,7 @@ export const CustomInput = styled.input`
 
 // 물결표
 export const Tilde = styled.div`
-  margin: 10px;
+  margin: 5px;
 
   @media (max-width: 1500px) {
     margin-right: 5px;
@@ -447,4 +451,81 @@ export const StyledSubHeading = styled.p`
   &:hover {
     font-weight: bold;
   }
+`
+
+// new
+
+export const NewFilterWrap = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 20px 15px 24px 40px;
+  gap: 40px;
+  border: 1px solid #c8c8c8;
+  background-color: #dbe2f0;
+`
+
+export const NewFilterLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`
+
+export const NewFilterRight = styled.div`
+  display: flex;
+  gap: 8px;
+  flex: 1 0 0;
+  align-self: stretch;
+`
+
+export const NewRow = styled.div`
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  padding-top: ${(props) => (props.bor ? '10px' : '0')};
+`
+
+// 제일 앞에 오는 Title은 width값을 지정해준다
+export const NewTitle = styled.div`
+  width: ${(props) => (props.first ? `90px` : '')};
+  padding: 8px;
+  gap: 8px;
+  font-size: 17px;
+  color: #424242;
+  font-weight: 500;
+  line-height: 19px;
+  letter-spacing: -0.2px;
+`
+
+export const RightTitle = styled.div`
+  min-width: 80px;
+  color: #424242;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 30px;
+  letter-spacing: -0.2px;
+`
+export const RowInWrap = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+`
+
+export const Bar = styled.div`
+  width: 100%;
+  border-bottom: 1px solid #c8c8c8;
+  height: 1px;
+`
+
+export const MiniInput = styled.input`
+  width: 64px;
+  height: 37px;
+  border: 1px solid #c8c8c8;
+  font-size: 18px;
+`
+export const RightTextarea = styled.textarea`
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  padding: 4px 8px;
 `
