@@ -86,97 +86,96 @@ const Incoming = ({}) => {
         {exFilterToggle && (
           <>
             {/* 구버젼 시작 */}
-            <FilterWrap>
-              <FilterSubcontianer>
-                <FilterLeft>
-                  <RowWrap>
-                    <PartWrap>
-                      <h6>창고 구분</h6>
-                      <PWRight>
-                        <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                      </PWRight>
-                    </PartWrap>
-                    <PartWrap>
-                      <h6 style={{ width: '60px' }}>매입처</h6>
-                      <PWRight>
-                        <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                      </PWRight>
-                    </PartWrap>
-                    <PartWrap>
-                      <h6>규격 약호</h6>
-                      <Input />
-                      <GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen}>
-                        찾기
-                      </GreyBtn>
-                    </PartWrap>
-                  </RowWrap>
-                  {/* <RowWrap>
-                    <PartWrap>
-                      <h6>입고일자</h6>
-                      <GridWrap>
-                        <DateGrid bgColor={'white'} fontSize={17} />
-                        <Tilde>~</Tilde>
-                        <DateGrid bgColor={'white'} fontSize={17} />
-                      </GridWrap>
-                    </PartWrap>
-                    <PartWrap>
-                      <h6>구분</h6>
-                      <MainSelect />
-                      <MainSelect />
-                      <MainSelect />
-                    </PartWrap>
-                  </RowWrap> */}
-                  <RowWrap>
-                    <PartWrap>
-                      <h6>구분2</h6>
-                      <MainSelect />
-                      <MainSelect />
-                    </PartWrap>
-                    <PartWrap>
-                      <h6>두께(MM)</h6>
-                      <Input /> <Tilde>~</Tilde>
-                      <Input />
-                    </PartWrap>
-                  </RowWrap>
-                  <RowWrap>
-                    <PartWrap>
-                      <h6>길이(MM)</h6>
-                      <MainSelect />
-                      <MainSelect />
-                    </PartWrap>
-                    <PartWrap>
-                      <h6>폭(MM)</h6>
-                      <Input /> <Tilde>~</Tilde>
-                      <Input />
-                    </PartWrap>
-                  </RowWrap>
-                </FilterLeft>
-                <FilterRight>
-                  <DoubleWrap>
-                    <h6>제품 번호 </h6>
-                    <textarea
-                      placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                    />
-                  </DoubleWrap>
-                </FilterRight>
-              </FilterSubcontianer>
-              <FilterFooter>
-                <div style={{ display: 'flex' }}>
-                  <p>초기화</p>
-                  <ResetImg
-                    src="/img/reset.png"
-                    style={{ marginLeft: '10px', marginRight: '20px' }}
-                    onClick={handleImageClick}
-                    className={isRotated ? 'rotate' : ''}
+
+            <FilterSubcontianer>
+              <FilterLeft>
+                <RowWrap>
+                  <PartWrap first>
+                    <h6>창고 구분</h6>
+                    <PWRight>
+                      <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
+                    </PWRight>
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>매입처</h6>
+
+                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>규격 약호</h6>
+                    <Input />
+                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17} onClick={modalOpen}>
+                      찾기
+                    </GreyBtn>
+                  </PartWrap>
+                </RowWrap>
+                <RowWrap>
+                  <PartWrap first>
+                    <h6>입고일자</h6>
+                    <GridWrap>
+                      <DateGrid width={140} bgColor={'white'} fontSize={17} />
+                      <Tilde>~</Tilde>
+                      <DateGrid width={140} bgColor={'white'} fontSize={17} />
+                    </GridWrap>
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>구분</h6>
+                    <MainSelect />
+                    <MainSelect />
+                    <MainSelect />
+                  </PartWrap>
+                </RowWrap>
+                <RowWrap none>
+                  <PartWrap first>
+                    <h6>구분2</h6>
+                    <MainSelect />
+                    <MainSelect />
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>두께(MM)</h6>
+                    <Input /> <Tilde>~</Tilde>
+                    <Input />
+                  </PartWrap>
+                </RowWrap>
+                <RowWrap none>
+                  <PartWrap>
+                    <h6 first>길이(MM)</h6>
+                    <MainSelect />
+                    <MainSelect />
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>폭(MM)</h6>
+                    <Input /> <Tilde>~</Tilde>
+                    <Input />
+                  </PartWrap>
+                </RowWrap>
+              </FilterLeft>
+              <FilterRight>
+                <DoubleWrap>
+                  <h6>제품 번호 </h6>
+                  <textarea
+                    placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
                   />
-                </div>
-                <div style={{ width: '180px' }}>
-                  <BlackBtn width={100} height={40}>
-                    검색
-                  </BlackBtn>
-                </div>
-              </FilterFooter>
-            </FilterWrap>
+                </DoubleWrap>
+              </FilterRight>
+            </FilterSubcontianer>
+            <FilterFooter>
+              <div style={{ display: 'flex' }}>
+                <p>초기화</p>
+                <ResetImg
+                  src="/img/reset.png"
+                  style={{ marginLeft: '10px', marginRight: '20px' }}
+                  onClick={handleImageClick}
+                  className={isRotated ? 'rotate' : ''}
+                />
+              </div>
+              <div style={{ width: '180px' }}>
+                <BlackBtn width={100} height={40}>
+                  검색
+                </BlackBtn>
+              </div>
+            </FilterFooter>
+
             {/* 구버젼 끝 */}
             {/* 신버젼 시작 */}
             <NewFilterWrap>
@@ -207,7 +206,7 @@ const Incoming = ({}) => {
                     <DateGrid width={140} bgColor={'white'} fontSize={17} />
                   </RowInWrap>
                   <RowInWrap>
-                    <NewTitle first>구분</NewTitle>
+                    <NewTitle>구분</NewTitle>
                     <CustomSelect2 />
                     <CustomSelect2 />
                     <CustomSelect2 />

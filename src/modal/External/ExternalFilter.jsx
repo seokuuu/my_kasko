@@ -28,7 +28,7 @@ export const FilterHeader = styled.div`
 
 // 외부 필터 메인
 export const FilterSubcontianer = styled.div`
-  width: 100%;
+  /* width: 100%;
   border: 1px solid #c8c8c8;
   display: flex;
   padding: 10px;
@@ -36,8 +36,14 @@ export const FilterSubcontianer = styled.div`
   background-color: #dbe2f0;
   justify-content: space-between;
   flex-wrap: wrap;
-  color: ${(props) => props.theme.colors.TxtAlter};
+  color: ${(props) => props.theme.colors.TxtAlter}; */
   /* overflow-x: hidden; */
+  display: flex;
+  width: 100%;
+  padding: 20px 15px 24px 40px;
+  gap: 40px;
+  border: 1px solid #c8c8c8;
+  background-color: #dbe2f0;
 `
 
 // 패키지 생성 / 수정에 쓰이는 Fitler 최상단 div
@@ -126,11 +132,15 @@ export const FilterFooter = styled.div`
 `
 
 // 검색 필터 Left
-export const FilterLeft = styled.div``
+export const FilterLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`
 
 // 검색 필터 Right
 export const FilterRight = styled.div`
-  /* display: flex; */
+  display: flex;
   gap: 8px;
   flex: 1 0 0;
   align-self: stretch;
@@ -139,42 +149,40 @@ export const FilterRight = styled.div`
 //검색 필터 내 한 '줄' 영역 div
 export const RowWrap = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  text-align: center;
+  gap: 40px;
   align-items: center;
-  margin: 10px 0px 10px 0px;
+  padding-bottom: ${({ none }) => (none ? '5px' : '15px')};
   border-bottom: ${({ none }) => (none ? 'none' : '1px solid #c8c8c8')};
-  padding-bottom: 10px;
 `
 
 // 말 그대로 파트 랩 (제목 + 내용 한 '칸'짜리 div)
+// 프롭스로 'first'를 받음 (제일 앞에 오는 제목 width 고정)
 export const PartWrap = styled.div`
-  min-width: 150px;
-  margin-right: 30px;
   display: flex;
   align-items: center;
-  line-height: 14.5px;
-  height: 50px;
-  justify-content: space-around;
+  gap: 8px;
+  height: 30px;
   h6 {
-    width: 90px;
-    max-width: 150px;
-    display: flex;
-    text-align: left;
-    color: #454545;
+    display: block;
+    width: ${(props) => (props.first ? `90px` : '')};
+    padding: 8px;
+    gap: 8px;
+    font-size: 18px;
+    color: #424242;
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: -0.2px;
   }
 `
 
 // PartWrap의 오른쪽 부분 (제목 말고 내용)
-export const PWRight = styled.div`
-  width: 200px;
-`
+export const PWRight = styled.div``
 
 export const DoubleWrap = styled.div`
   display: flex;
-  position: relative;
-  height: 100%;
-  padding-top: 10px;
+  gap: 8px;
+  flex: 1 0 0;
+  align-self: stretch;
 
   > h6 {
     padding: 5px;
@@ -196,9 +204,9 @@ export const DoubleWrap = styled.div`
 
 // dataGrid 범위 div
 export const GridWrap = styled.div`
-  width: 400px;
   display: flex;
-  padding: 15px;
+  align-items: center;
+  gap: 8px;
 `
 
 // externalFitler 공용 input
