@@ -27,6 +27,7 @@ import {
   TCSubContainer,
   Tilde,
   CustomInput,
+  MiniInput,
 } from '../../../modal/External/ExternalFilter'
 
 import Hidden from '../../../components/TableInner/Hidden'
@@ -107,7 +108,7 @@ const RoundAucListEdit = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>창고 구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
@@ -130,32 +131,41 @@ const RoundAucListEdit = ({}) => {
                 </PartWrap>
               </RowWrap>
               <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
+                <PartWrap first>
                   <h6>구분</h6>
                   <MainSelect />
-                  <span style={{ margin: '0px -10px 0px 5px' }}>~</span>
                   <MainSelect />
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>두께(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <MainSelect />
+                  <MainSelect />
+                  <MainSelect />
                 </PartWrap>
               </RowWrap>
               <RowWrap style={{ borderBottom: '0px' }}>
+                <PartWrap first>
+                  <h6>두께(MM)</h6>
+                  <ExInputsWrap>
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
+                  </ExInputsWrap>
+                </PartWrap>
                 <PartWrap>
                   <h6>폭(MM)</h6>
                   <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
                   </ExInputsWrap>
                 </PartWrap>
-
                 <PartWrap>
                   <h6>길이(MM)</h6>
+                  <ExInputsWrap>
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
+                  </ExInputsWrap>
+                </PartWrap>
+              </RowWrap>
+              <RowWrap>
+                <PartWrap first>
+                  <h6>유찰 횟수</h6>
                   <ExInputsWrap>
                     <Input /> <Tilde>~</Tilde>
                     <Input />

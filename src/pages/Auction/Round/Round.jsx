@@ -53,7 +53,9 @@ import AuctionRound from '../../../modal/Multi/AuctionRound'
 
 const Round = ({}) => {
   const [roundModal, setRoundModal] = useAtom(roundPostModalAtom)
-  const [types, setTypes] = useState('단일')
+  const [types, setTypes] = useState('normal')
+
+  console.log('types', types)
   const radioDummy = ['전체', '미진행', '진행중', '종료']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
@@ -161,10 +163,10 @@ const Round = ({}) => {
         <div style={{ display: 'flex' }}>
           <h1>경매 회차 관리</h1>
           <SubTitle>
-            <StyledHeading isActive={types === '단일'} onClick={() => setTypes('normal')}>
+            <StyledHeading isActive={types === 'normal'} onClick={() => setTypes('normal')}>
               단일
             </StyledHeading>
-            <StyledSubHeading isActive={types === '패키지'} onClick={() => setTypes('package')}>
+            <StyledSubHeading isActive={types === 'package'} onClick={() => setTypes('package')}>
               패키지
             </StyledSubHeading>
           </SubTitle>
@@ -177,8 +179,8 @@ const Round = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
-                <PartWrap>
-                  <h6>입고일자</h6>
+                <PartWrap first>
+                  <h6>경매 일자</h6>
                   <GridWrap>
                     <DateGrid bgColor={'white'} fontSize={17} />
                     <Tilde>~</Tilde>
@@ -186,14 +188,14 @@ const Round = ({}) => {
                   </GridWrap>
                 </PartWrap>
                 <PartWrap>
-                  <h6 style={{ width: '150px' }}>경매 회차 번호</h6>
+                  <h6>경매 회차 번호</h6>
                   <Input />
                 </PartWrap>
                 <PartWrap />
               </RowWrap>
 
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>진행 상태</h6>
                   <ExRadioWrap>
                     {radioDummy.map((text, index) => (

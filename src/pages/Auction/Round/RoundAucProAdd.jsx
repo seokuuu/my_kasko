@@ -27,6 +27,7 @@ import {
   TableContianer,
   TCSubContainer,
   Tilde,
+  MiniInput,
 } from '../../../modal/External/ExternalFilter'
 
 import Hidden from '../../../components/TableInner/Hidden'
@@ -124,16 +125,15 @@ const RoundAucProAdd = ({}) => {
             </FilterTopContainer>
             {exFilterToggle && (
               <>
-                <FilterSubcontianer style={{ height: '200px' }}>
+                <FilterSubcontianer style={{ height: '280px' }}>
                   <FilterLeft>
-                    <RowWrap style={{ height: '23%', flexWrap: 'nowrap' }}>
-                      <PartWrap>
+                    <RowWrap>
+                      <PartWrap first>
                         <h6>창고 구분</h6>
                         <PWRight>
                           <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                         </PWRight>
                       </PartWrap>
-
                       <PartWrap>
                         <h6>매입처 </h6>
                         <PWRight>
@@ -149,33 +149,42 @@ const RoundAucProAdd = ({}) => {
                         </GreyBtn>
                       </PartWrap>
                     </RowWrap>
-                    <RowWrap style={{ height: '23%', flexWrap: 'nowrap' }}>
-                      <PartWrap>
+                    <RowWrap>
+                      <PartWrap first>
                         <h6>구분</h6>
                         <MainSelect />
-                        <span style={{ margin: '0px -10px 0px 5px' }}>~</span>
+                        <MainSelect />
+                        <MainSelect />
+                        <MainSelect />
                         <MainSelect />
                       </PartWrap>
-
-                      <PartWrap>
+                    </RowWrap>
+                    <RowWrap style={{ borderBottom: '0px' }}>
+                      <PartWrap first>
                         <h6>두께(MM)</h6>
                         <ExInputsWrap>
-                          <Input /> <Tilde>~</Tilde>
-                          <Input />
+                          <MiniInput /> <Tilde>~</Tilde>
+                          <MiniInput />
                         </ExInputsWrap>
                       </PartWrap>
-                    </RowWrap>
-                    <RowWrap style={{ height: '23%', flexWrap: 'nowrap', border: 'none' }}>
                       <PartWrap>
                         <h6>폭(MM)</h6>
                         <ExInputsWrap>
-                          <Input /> <Tilde>~</Tilde>
-                          <Input />
+                          <MiniInput /> <Tilde>~</Tilde>
+                          <MiniInput />
                         </ExInputsWrap>
                       </PartWrap>
-
                       <PartWrap>
                         <h6>길이(MM)</h6>
+                        <ExInputsWrap>
+                          <MiniInput /> <Tilde>~</Tilde>
+                          <MiniInput />
+                        </ExInputsWrap>
+                      </PartWrap>
+                    </RowWrap>
+                    <RowWrap none>
+                      <PartWrap first>
+                        <h6>유찰 횟수</h6>
                         <ExInputsWrap>
                           <Input /> <Tilde>~</Tilde>
                           <Input />
@@ -187,7 +196,6 @@ const RoundAucProAdd = ({}) => {
                     <DoubleWrap>
                       <h6>제품 번호 </h6>
                       <textarea
-                        style={{ height: '80%' }}
                         placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
                       />
                     </DoubleWrap>
@@ -232,14 +240,6 @@ const RoundAucProAdd = ({}) => {
                   <TGreyBtn height={30} style={{ width: '50px' }}>
                     적용
                   </TGreyBtn>
-                  <BtnBound />
-                  <SkyBtn
-                    onClick={() => {
-                      setAddModal(true)
-                    }}
-                  >
-                    제품 추가 (패키지)
-                  </SkyBtn>
                 </div>
               </TCSubContainer>
               <Test3 hei2={350} hei={100} />
