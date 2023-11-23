@@ -255,7 +255,7 @@ const Client = ({ setChoiceComponent, setModal }) => {
                                 setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                               }}
                             >
-                              <RadioInnerCircleDiv />
+                              <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                             </RadioCircleDiv>
                             <div style={{ display: 'flex', marginLeft: '5px' }}>
                               <p>{text}</p>

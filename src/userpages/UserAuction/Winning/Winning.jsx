@@ -1,47 +1,35 @@
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
+import { useEffect, useState } from 'react'
+import { BlackBtn, GreyBtn, SkyBtn } from '../../../common/Button/Button'
+import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, ExcelBtn, SkyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../../pages/Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import Test3 from '../../../pages/Test/Test3'
 import { toggleAtom } from '../../../store/Layout/Layout'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 
 import {
+  DoubleWrap,
+  ExRadioWrap,
+  FilterAlterTxt,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
+  FilterHeaderAlert,
   FilterLeft,
   FilterRight,
-  RowWrap,
+  FilterSubcontianer,
+  Input,
   PartWrap,
   PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
   ResetImg,
+  RowWrap,
   TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-  ExCheckWrap,
-  ExCheckDiv,
   TCSubContainer,
-  FilterAlterTxt,
 } from '../../../modal/External/ExternalFilter'
 
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
@@ -163,7 +151,7 @@ const Winning = ({}) => {
                             setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                           }}
                         >
-                          <RadioInnerCircleDiv />
+                          <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                         </RadioCircleDiv>
                         <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
                       </RadioMainDiv>

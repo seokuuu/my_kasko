@@ -36,10 +36,10 @@ const data = [
     //Product
     depth1: '판매 제품 관리',
     depth2: [
-      { title: '단일 제품 관리', link: 'product/single' },
+      { title: '단일 관리', link: 'product/single' },
       { title: '패키지 관리', link: 'product/package' },
       { title: '추천 제품 관리', link: 'product/recommend' },
-      { title: 'Pro.no 관리', link: 'product/prono' },
+      // { title: 'Pro.no 관리', link: 'product/prono' },
     ],
   },
   {

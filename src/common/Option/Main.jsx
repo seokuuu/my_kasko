@@ -1,5 +1,21 @@
 import { styled } from 'styled-components'
-import Select from 'react-select'
+import Select, { components } from 'react-select'
+
+const CustomDropdownIndicator = (props) => {
+  return (
+    components.DropdownIndicator && (
+      <components.DropdownIndicator {...props}>
+        <DropImg src="/svg/arrow_drop_fill.svg" />
+      </components.DropdownIndicator>
+    )
+  )
+}
+
+const DropImg = styled.img`
+  position: absolute;
+  right: 6px;
+  top: 6px;
+`
 
 ////Options
 
@@ -74,34 +90,90 @@ export const usermanageClientStatusOptions = [
 //----------------------------------------------
 //Selects
 
-export const MainSelect = styled(Select)`
-  width: ${(props) => (props.width ? `${props.width}px` : '160px')};
-  min-height: 1;
-  text-align: center;
+// export const MainSelect = styled(Select)`
+//   width: ${(props) => (props.width ? `${props.width}px` : '160px')};
+//   min-height: 1;
+//   text-align: center;
+//   line-height: 1;
+//   margin-right: 5px;
+//   font-size: 16px;
+
+//   input {
+//     color: black;
+//   }
+// `
+
+export const CustomStyledSelect = styled(Select)`
+  min-width: ${(props) => (props.width ? `${props.width}px` : '160px')};
+  min-height: 1px;
+  text-align: start;
   line-height: 1;
+  margin-right: 5px;
+  font-size: 16px;
+  display: inline-block;
+  justify-content: center;
+
+  input {
+    color: black;
+  }
+
+  & .react-select__dropdown-indicator {
+    display: none;
+  }
+
+  & .css-1u9des2-indicatorSeparator {
+    display: none; /* 바(선) 감추기 */
+  }
+
+  & .css-qbdosj-Input {
+    text-align: center;
+  }
+`
+
+export const CustomStyledSelect2 = styled(Select)`
+  width: ${(props) => props.width}px;
+  min-height: 20px;
+  text-align: center;
+  line-height: 26px;
   margin-right: 5px;
   font-size: 16px;
 
   input {
     color: black;
   }
+
+  & .css-1u9des2-indicatorSeparator {
+    display: none; /* 바(선) 감추기 */
+  }
+
+  /* & .react-select__dropdown-indicator {
+    display: none; 
+  } */
 `
 
-export const CustomSelect = styled(Select)`
-  width: ${(props) => props.width}px;
+export const MainSelect = (props) => {
+  return <CustomStyledSelect {...props} components={{ DropdownIndicator: CustomDropdownIndicator }} />
+}
 
-  min-height: 20px;
-  text-align: center;
-  line-height: 26px;
-  margin-right: 5px;
-  font-size: 16px;
-`
+export const CustomSelect = (props) => {
+  return <CustomStyledSelect2 {...props} components={{ DropdownIndicator: CustomDropdownIndicator }} />
+}
 
-export const CustomSelect2 = styled(Select)`
-  width: ${(props) => (props.width ? `${props.width}px` : '160px')};
-  min-height: 1;
-  text-align: center;
-  line-height: 1;
-  margin-right: 5px;
-  font-size: 16px;
-`
+// export const CustomSelect = styled(Select)`
+//   width: ${(props) => props.width}px;
+
+//   min-height: 20px;
+//   text-align: center;
+//   line-height: 26px;
+//   margin-right: 5px;
+//   font-size: 16px;
+// `
+
+// export const CustomSelect2 = styled(Select)`
+//   width: ${(props) => (props.width ? `${props.width}px` : '160px')};
+//   min-height: 1;
+//   text-align: center;
+//   line-height: 1;
+//   margin-right: 5px;
+//   font-size: 16px;
+// `

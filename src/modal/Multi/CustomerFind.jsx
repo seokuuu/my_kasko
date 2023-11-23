@@ -125,7 +125,7 @@ const CustomerFind = ({ title, setSwitch }) => {
                               handleCellClick(item.uid, item.name, item.code, item.businessNumber) // 셀 클릭 이벤트 처리
                             }}
                           >
-                            <RadioInnerCircleDiv />
+                            <RadioInnerCircleDiv isChecked={item.uid === selectedUid} />
                           </RadioCircleDiv>
                         </RadioMainDiv>
                       </ResultCell>

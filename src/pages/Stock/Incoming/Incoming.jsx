@@ -86,7 +86,6 @@ const Incoming = ({}) => {
         {exFilterToggle && (
           <>
             {/* 구버젼 시작 */}
-
             <FilterSubcontianer>
               <FilterLeft>
                 <RowWrap>
@@ -113,9 +112,9 @@ const Incoming = ({}) => {
                   <PartWrap first>
                     <h6>입고일자</h6>
                     <GridWrap>
-                      <DateGrid width={140} bgColor={'white'} fontSize={17} />
+                      <DateGrid width={130} bgColor={'white'} fontSize={17} />
                       <Tilde>~</Tilde>
-                      <DateGrid width={140} bgColor={'white'} fontSize={17} />
+                      <DateGrid width={130} bgColor={'white'} fontSize={17} />
                     </GridWrap>
                   </PartWrap>
                   <PartWrap>
@@ -125,28 +124,31 @@ const Incoming = ({}) => {
                     <MainSelect />
                   </PartWrap>
                 </RowWrap>
+
+                {/* RowWrap none : border-bottom이 없음
+PartWrap first : Row의 제일 앞에 오는 Part (제목 width 고정용) */}
+                <RowWrap none>
+                  <PartWrap first>
+                    <h6>두께(MM)</h6>
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>폭(MM)</h6>
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>길이(MM)</h6>
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
+                  </PartWrap>
+                </RowWrap>
                 <RowWrap none>
                   <PartWrap first>
                     <h6>구분2</h6>
                     <MainSelect />
                     <MainSelect />
-                  </PartWrap>
-                  <PartWrap>
-                    <h6>두께(MM)</h6>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </PartWrap>
-                </RowWrap>
-                <RowWrap none>
-                  <PartWrap>
-                    <h6 first>길이(MM)</h6>
-                    <MainSelect />
-                    <MainSelect />
-                  </PartWrap>
-                  <PartWrap>
-                    <h6>폭(MM)</h6>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
                   </PartWrap>
                 </RowWrap>
               </FilterLeft>
@@ -178,7 +180,7 @@ const Incoming = ({}) => {
 
             {/* 구버젼 끝 */}
             {/* 신버젼 시작 */}
-            <NewFilterWrap>
+            {/* <NewFilterWrap>
               <NewFilterLeft>
                 <NewRow bor>
                   <RowInWrap>
@@ -244,24 +246,8 @@ const Incoming = ({}) => {
                   placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
                 ></RightTextarea>
               </NewFilterRight>
-            </NewFilterWrap>
+            </NewFilterWrap> */}
             {/* 신버젼 끝 */}
-            <FilterFooter>
-              <div style={{ display: 'flex' }}>
-                <p>초기화</p>
-                <ResetImg
-                  src="/img/reset.png"
-                  style={{ marginLeft: '10px', marginRight: '20px' }}
-                  onClick={handleImageClick}
-                  className={isRotated ? 'rotate' : ''}
-                />
-              </div>
-              <div style={{ width: '180px' }}>
-                <BlackBtn width={100} height={40}>
-                  검색
-                </BlackBtn>
-              </div>
-            </FilterFooter>
           </>
         )}
       </div>

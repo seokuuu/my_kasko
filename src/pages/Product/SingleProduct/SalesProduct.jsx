@@ -44,9 +44,13 @@ import {
   SubTitle,
   TCSubContainer,
   TableBottomWrap,
+  MiniInput,
+  ExRadioWrap,
 } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
+
+import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 import Excel from '../../../components/TableInner/Excel'
 
 const SalesProduct = ({}) => {
@@ -55,6 +59,10 @@ const SalesProduct = ({}) => {
   const checkShips = ['전체', '경매대상재', '상시판매 대상재']
 
   const checkTypes = ['전체', '특가', '일반']
+
+  const radioDummy = ['전체', '낙찰', '낙찰 취소', '낙찰 확정']
+
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
@@ -146,7 +154,7 @@ const SalesProduct = ({}) => {
     <FilterContianer>
       <FilterHeader>
         <div style={{ display: 'flex' }}>
-          <h1>단일 제품 관리</h1>
+          <h1>단일 관리</h1>
           <SubTitle>
             <Link to={`/product/single`}>
               <h6>전체</h6>
@@ -164,9 +172,16 @@ const SalesProduct = ({}) => {
         <>
           <FilterSubcontianer>
             <FilterLeft>
-              <RowWrap>
+              <RowWrap none>
+                <PartWrap first>
+                  <h6>ProNo.</h6>
+                  <Input />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                    찾기
+                  </GreyBtn>
+                </PartWrap>
                 <PartWrap>
-                  <h6>창고 구분</h6>
+                  <h6>창고구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
@@ -177,7 +192,9 @@ const SalesProduct = ({}) => {
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
                 </PartWrap>
-                <PartWrap>
+              </RowWrap>
+              <RowWrap>
+                <PartWrap first>
                   <h6>규격 약호</h6>
                   <Input />
                   <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
@@ -186,31 +203,35 @@ const SalesProduct = ({}) => {
                 </PartWrap>
               </RowWrap>
               <RowWrap>
-                <PartWrap>
-                  <h6>구분</h6>
-                  <MainSelect />
-                  <MainSelect />
-                  <MainSelect />
-                  <MainSelect />
-                  <MainSelect />
+                <PartWrap first>
+                  <h6>창고구분</h6>
+                  <PWRight>
+                    <MainSelect />
+                    <MainSelect />
+                    <MainSelect />
+                    <MainSelect />
+                    <MainSelect />
+                  </PWRight>
                 </PartWrap>
               </RowWrap>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>판매 구분</h6>
-                  <ExCheckWrap>
-                    {checkSales.map((x, index) => (
-                      <ExCheckDiv style={{ marginRight: '5px', gap: '0px' }}>
-                        <StyledCheckSubSquDiv
-                          onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
-                          isChecked={check1[index]}
+                  <ExRadioWrap>
+                    {radioDummy.map((text, index) => (
+                      <RadioMainDiv key={index}>
+                        <RadioCircleDiv
+                          isChecked={checkRadio[index]}
+                          onClick={() => {
+                            setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
+                          }}
                         >
-                          <CheckImg2 src="/svg/check.svg" />
-                        </StyledCheckSubSquDiv>
-                        <p>{x}</p>
-                      </ExCheckDiv>
+                          <RadioInnerCircleDiv isChecked={checkRadio[index]} />
+                        </RadioCircleDiv>
+                        <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
+                      </RadioMainDiv>
                     ))}
-                  </ExCheckWrap>
+                  </ExRadioWrap>
                 </PartWrap>
                 <PartWrap>
                   <h6>판매 유형</h6>
@@ -231,8 +252,8 @@ const SalesProduct = ({}) => {
               </RowWrap>
 
               <RowWrap>
-                <PartWrap>
-                  <h6 style={{ width: '100px' }}>판매가 유형</h6>
+                <PartWrap first>
+                  <h6>판매가 유형</h6>
                   <ExCheckWrap>
                     {checkTypes.map((x, index) => (
                       <ExCheckDiv>
@@ -250,30 +271,30 @@ const SalesProduct = ({}) => {
               </RowWrap>
 
               <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
+                <PartWrap first>
                   <h6>두께(MM)</h6>
                   <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
                   </ExInputsWrap>
                 </PartWrap>
                 <PartWrap>
                   <h6>폭(MM)</h6>
                   <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
+                  </ExInputsWrap>
+                </PartWrap>
+                <PartWrap>
+                  <h6>길이(MM)</h6>
+                  <ExInputsWrap>
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
                   </ExInputsWrap>
                 </PartWrap>
               </RowWrap>
               <RowWrap>
-                <PartWrap>
-                  <h6>길이(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>유찰 횟수</h6>
                   <ExInputsWrap>
                     <Input /> <Tilde>~</Tilde>

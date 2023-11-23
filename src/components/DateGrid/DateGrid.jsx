@@ -5,7 +5,6 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { styled } from 'styled-components'
 
 const DateGrid = ({ left, bgColor, fontSize, width, height, startDate, setStartDate }) => {
-
   return (
     <>
       <label>
@@ -52,8 +51,7 @@ const SDatePicker = styled(DatePicker)`
 
 const PickerImg = styled.img`
   position: relative;
+  width: 28px;
   right: 5px;
-  width: 20px;
-
   cursor: pointer;
 `

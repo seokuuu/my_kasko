@@ -247,7 +247,7 @@ const Request = ({ setChoiceComponent }) => {
                         setCheckRadio2(CheckBox(checkRadio2, checkRadio2.length, index))
                       }}
                     >
-                      <RadioInnerCircleDiv />
+                      <RadioInnerCircleDiv isChecked={checkRadio2[index]} />
                     </RadioCircleDiv>
 
                     <div style={{ display: 'flex', marginLeft: '5px' }}>
@@ -288,7 +288,7 @@ const Request = ({ setChoiceComponent }) => {
                   setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                 }}
               >
-                <RadioInnerCircleDiv />
+                <RadioInnerCircleDiv isChecked={checkRadio[index]} />
               </RadioCircleDiv>
 
               <div style={{ display: 'flex', marginLeft: '5px' }}>

@@ -191,7 +191,7 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
-        <Route path="/ppapp" element={<UserPackDetail />} />
+        <Route path="/ppapp" element={<WinningProductAdd />} />
         <Route path="/ppap" element={<WinDepositForm />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />

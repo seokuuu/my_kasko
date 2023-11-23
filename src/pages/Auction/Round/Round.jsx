@@ -204,7 +204,7 @@ const Round = ({}) => {
                             setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                           }}
                         >
-                          <RadioInnerCircleDiv />
+                          <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                         </RadioCircleDiv>
                         <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
                       </RadioMainDiv>

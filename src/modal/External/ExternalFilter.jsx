@@ -76,11 +76,11 @@ export const FilterTCBottom = styled.div`
 
 export const FilterTCBSub = styled.div`
   display: flex;
-  background-color: white;
-  height: 64px;
-
-  justify-content: space-around;
+  padding: 16px 40px;
   align-items: center;
+  gap: 150px;
+  background-color: white;
+  flex: 1 0 0;
   h6 {
     padding: 0px 20px;
   }
@@ -151,7 +151,7 @@ export const RowWrap = styled.div`
   display: flex;
   gap: 40px;
   align-items: center;
-  padding-bottom: ${({ none }) => (none ? '5px' : '15px')};
+  padding-bottom: ${({ none }) => (none ? '8px' : '18px')};
   border-bottom: ${({ none }) => (none ? 'none' : '1px solid #c8c8c8')};
 `
 
@@ -161,10 +161,10 @@ export const PartWrap = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  height: 30px;
+  height: 32px;
   h6 {
     display: block;
-    width: ${(props) => (props.first ? `90px` : '')};
+    width: ${(props) => (props.first ? `100px` : '')};
     padding: 8px;
     gap: 8px;
     font-size: 18px;
@@ -176,7 +176,9 @@ export const PartWrap = styled.div`
 `
 
 // PartWrap의 오른쪽 부분 (제목 말고 내용)
-export const PWRight = styled.div``
+export const PWRight = styled.div`
+  display: flex;
+`
 
 export const DoubleWrap = styled.div`
   display: flex;
@@ -206,7 +208,7 @@ export const DoubleWrap = styled.div`
 export const GridWrap = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 2px;
 `
 
 // externalFitler 공용 input
@@ -255,14 +257,12 @@ export const ExRadioWrap = styled.div`
   display: flex;
   justify-content: center;
   gap: 20px;
-  padding-left: 15px;
 `
 
 // 체크박스 전체 div
 export const ExCheckWrap = styled.div`
   display: flex;
   gap: 5px;
-  margin-left: 13px;
   justify-content: center;
   align-items: center;
 
@@ -275,21 +275,21 @@ export const ExCheckWrap = styled.div`
 // 체크박스 각각 div
 export const ExCheckDiv = styled.div`
   display: flex;
-  gap: 5px;
-  margin-right: 20px;
+  margin-right: 10px;
   padding-left: 5px;
   justify-content: center;
   align-items: center;
 
   p {
+    margin-left: 6px;
     color: black;
+    font-size: 16px;
   }
 `
 
 // input들 div
 export const ExInputsWrap = styled.div`
   display: flex;
-  padding-left: 15px;
   @media (max-width: 1500px) {
     padding-left: 0px;
   }
@@ -366,6 +366,13 @@ export const TCSubContainer = styled.div`
   > div {
     display: flex;
   }
+`
+
+export const MiniInput = styled.input`
+  width: 64px;
+  height: 37px;
+  border: 1px solid #c8c8c8;
+  font-size: 18px;
 `
 
 export const HiddenBtn = styled.div`
@@ -525,12 +532,6 @@ export const Bar = styled.div`
   height: 1px;
 `
 
-export const MiniInput = styled.input`
-  width: 64px;
-  height: 37px;
-  border: 1px solid #c8c8c8;
-  font-size: 18px;
-`
 export const RightTextarea = styled.textarea`
   width: 100%;
   height: 100%;

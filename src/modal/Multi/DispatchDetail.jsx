@@ -107,7 +107,7 @@ const DispatchDetail = ({ setIsPostModal }) => {
                           setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                         }}
                       >
-                        <RadioInnerCircleDiv />
+                        <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                       </RadioCircleDiv>
                       <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
                     </RadioMainDiv>
@@ -188,7 +188,7 @@ const DispatchDetail = ({ setIsPostModal }) => {
                                   handleCellClick(item.uid, item.name, item.code, item.businessNumber) // 셀 클릭 이벤트 처리
                                 }}
                               >
-                                <RadioInnerCircleDiv />
+                                <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                               </RadioCircleDiv>
                             </RadioMainDiv>
                           </ResultCell>

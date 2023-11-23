@@ -132,10 +132,10 @@ const WinningProductAdd = ({}) => {
             </FilterTopContainer>
             {exFilterToggle && (
               <>
-                <FilterSubcontianer style={{ height: '200px' }}>
+                <FilterSubcontianer>
                   <FilterLeft>
-                    <RowWrap style={{ height: '23%', flexWrap: 'nowrap' }}>
-                      <PartWrap>
+                    <RowWrap>
+                      <PartWrap first>
                         <h6>창고 구분</h6>
                         <PWRight>
                           <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
@@ -157,11 +157,11 @@ const WinningProductAdd = ({}) => {
                         </GreyBtn>
                       </PartWrap>
                     </RowWrap>
-                    <RowWrap style={{ height: '23%', flexWrap: 'nowrap' }}>
-                      <PartWrap>
+                    <RowWrap>
+                      <PartWrap first>
                         <h6>구분</h6>
                         <MainSelect />
-                        <span style={{ margin: '0px -10px 0px 5px' }}>~</span>
+                        ~
                         <MainSelect />
                       </PartWrap>
 
@@ -173,8 +173,25 @@ const WinningProductAdd = ({}) => {
                         </ExInputsWrap>
                       </PartWrap>
                     </RowWrap>
-                    <RowWrap style={{ height: '23%', flexWrap: 'nowrap', border: 'none' }}>
+                    <RowWrap none>
+                      <PartWrap first>
+                        <h6>폭(MM)</h6>
+                        <ExInputsWrap>
+                          <Input /> <Tilde>~</Tilde>
+                          <Input />
+                        </ExInputsWrap>
+                      </PartWrap>
+
                       <PartWrap>
+                        <h6>길이(MM)</h6>
+                        <ExInputsWrap>
+                          <Input /> <Tilde>~</Tilde>
+                          <Input />
+                        </ExInputsWrap>
+                      </PartWrap>
+                    </RowWrap>
+                    <RowWrap none>
+                      <PartWrap first>
                         <h6>폭(MM)</h6>
                         <ExInputsWrap>
                           <Input /> <Tilde>~</Tilde>

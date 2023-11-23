@@ -1,14 +1,5 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="3" y="5" width="18" height="16" rx="1" stroke="black" stroke-width="1.5"/>
-<path d="M8 3V5" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
-<path d="M16 3V5" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
-<path d="M3 9H21" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
-<rect x="5" y="12" width="2" height="2" fill="black"/>
-<rect x="5" y="16" width="2" height="2" fill="black"/>
-<rect x="9" y="12" width="2" height="2" fill="black"/>
-<rect x="9" y="16" width="2" height="2" fill="black"/>
-<rect x="13" y="12" width="2" height="2" fill="black"/>
-<rect x="13" y="16" width="2" height="2" fill="black"/>
-<rect x="17" y="12" width="2" height="2" fill="black"/>
-<rect x="17" y="16" width="2" height="2" fill="black"/>
+<g id="Calendar">
+<path id="Vector 21" d="M19 10V8.33333C19 7.78105 18.5523 7.33333 18 7.33333H6C5.44772 7.33333 5 7.78105 5 8.33333V10M19 10V17C19 17.5523 18.5523 18 18 18H6C5.44772 18 5 17.5523 5 17V10M19 10H5M16.375 6V7.77778M7.625 6V7.77778" stroke="#545454" stroke-linecap="round"/>
+</g>
 </svg>
