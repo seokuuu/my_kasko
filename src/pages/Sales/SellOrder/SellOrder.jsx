@@ -1,37 +1,42 @@
 import { useAtom } from 'jotai'
-import { useState, useRef, useEffect } from 'react'
-import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { useRef, useState } from 'react'
+import { GreyBtn, SkyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import Excel from '../../../components/TableInner/Excel'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
   DoubleWrap,
+  ExCheckWrap,
   FilterContianer,
-  FilterFooter,
   FilterHeader,
   FilterHeaderAlert,
   FilterLeft,
   FilterRight,
   FilterSubcontianer,
-  FilterWrap,
+  GridWrap,
   Input,
+  PWRight,
   PartWrap,
-  ResetImg,
   RowWrap,
   TCSubContainer,
   TableContianer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
 import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
-import Test3 from '../../Test/Test3'
 
 import Hidden from '../../../components/TableInner/Hidden'
+import { UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
 import Table from '../../Table/Table'
-import { UserPageUserPreferFields, UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
 
+import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+import { CheckBox } from '../../../common/Check/Checkbox'
+import DateGrid from '../../../components/DateGrid/DateGrid'
 import { selectedRowsAtom } from '../../../store/Layout/Layout'
 
 const SellOrder = ({ setChoiceComponent }) => {
+  const checkSales = ['전체', '확정 전송', '확정전송 대기']
+  const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -88,61 +93,79 @@ const SellOrder = ({ setChoiceComponent }) => {
               <div style={{ marginTop: '6px' }}>· 주의사항 영역</div>
             </div>
           </div>
-
           <div>
             수정
             <img style={{ marginLeft: '10px' }} src="/img/setting.png" />
           </div>
         </FilterHeaderAlert>
         {exFilterToggle && (
-          <FilterWrap>
-            <FilterSubcontianer>
-              <FilterLeft>
-                <RowWrap>
-                  <PartWrap>
-                    <h6>창고구분</h6>
+          <FilterSubcontianer>
+            <FilterLeft>
+              <RowWrap none>
+                <PartWrap first>
+                  <h6>창고 구분</h6>
+                  <PWRight>
                     <MainSelect />
-                  </PartWrap>
-                  <PartWrap>
-                    <h6>고객사</h6>
-                    <Input />
-                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen}>
-                      찾기
-                    </GreyBtn>
-                  </PartWrap>
-                  <PartWrap>
-                    <h6>구분</h6>
-                    <MainSelect />
-                  </PartWrap>
-                </RowWrap>
-              </FilterLeft>
-              <FilterRight>
-                <DoubleWrap>
-                  <h6>제품 번호 </h6>
-                  <textarea
-                    placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                    style={{ height: '100px' }}
-                  />
-                </DoubleWrap>
-              </FilterRight>
-            </FilterSubcontianer>
-            <FilterFooter>
-              <div style={{ display: 'flex' }}>
-                <p>초기화</p>
-                <ResetImg
-                  src="/img/reset.png"
-                  style={{ marginLeft: '10px', marginRight: '20px' }}
-                  onClick={handleImageClick}
-                  className={isRotated ? 'rotate' : ''}
+                  </PWRight>
+                </PartWrap>
+
+                <PartWrap>
+                  <h6>구분</h6>
+                  <MainSelect />
+                </PartWrap>
+              </RowWrap>
+              <RowWrap>
+                <PartWrap>
+                  <h6>고객사 명/고객사코드</h6>
+                  <Input />
+                  <Input />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                    찾기
+                  </GreyBtn>
+                </PartWrap>
+              </RowWrap>
+              <RowWrap>
+                <PartWrap>
+                  <h6 style={{ width: '165px' }}>상시판매 주문일자</h6>
+                  <GridWrap>
+                    <DateGrid width={130} bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid width={130} bgColor={'white'} fontSize={17} />
+                  </GridWrap>
+                </PartWrap>
+                <PartWrap>
+                  <h6>상시 판매 번호</h6>
+                  <Input />
+                </PartWrap>
+              </RowWrap>
+              <RowWrap none>
+                <PartWrap first>
+                  <h6>주문 상태</h6>
+                  <ExCheckWrap>
+                    {checkSales.map((x, index) => (
+                      <ExCheckWrap style={{ marginRight: '15px' }}>
+                        <StyledCheckSubSquDiv
+                          onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
+                          isChecked={check1[index]}
+                        >
+                          <CheckImg2 src="/svg/check.svg" />
+                        </StyledCheckSubSquDiv>
+                        <p>{x}</p>
+                      </ExCheckWrap>
+                    ))}
+                  </ExCheckWrap>
+                </PartWrap>
+              </RowWrap>
+            </FilterLeft>
+            <FilterRight>
+              <DoubleWrap>
+                <h6>제품 번호 </h6>
+                <textarea
+                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
                 />
-              </div>
-              <div style={{ width: '180px' }}>
-                <BlackBtn width={100} height={40}>
-                  검색
-                </BlackBtn>
-              </div>
-            </FilterFooter>
-          </FilterWrap>
+              </DoubleWrap>
+            </FilterRight>
+          </FilterSubcontianer>
         )}
       </div>
 

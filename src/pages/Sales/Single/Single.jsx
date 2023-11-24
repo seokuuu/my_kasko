@@ -8,6 +8,7 @@ import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
   DoubleWrap,
   EditGear,
+  ExInputsWrap,
   FilterContianer,
   FilterFooter,
   FilterHeader,
@@ -18,6 +19,7 @@ import {
   FilterWrap,
   Input,
   InputStartWrap,
+  MiniInput,
   PWRight,
   PartWrap,
   ResetImg,
@@ -120,7 +122,7 @@ const Single = ({}) => {
             <FilterSubcontianer>
               <FilterLeft>
                 <RowWrap>
-                  <PartWrap>
+                  <PartWrap first>
                     <h6>창고 구분</h6>
                     <PWRight>
                       <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
@@ -141,7 +143,7 @@ const Single = ({}) => {
                   </PartWrap>
                 </RowWrap>
                 <RowWrap>
-                  <PartWrap>
+                  <PartWrap first>
                     <h6>구분</h6>
                     <MainSelect />
                     <MainSelect />
@@ -150,32 +152,36 @@ const Single = ({}) => {
                     <MainSelect />
                   </PartWrap>
                 </RowWrap>
-                <RowWrap>
-                  <PartWrap>
-                    <h6>구분2</h6>
-                    <InputStartWrap>
-                      <Input /> <Tilde>~</Tilde>
-                      <Input />
-                    </InputStartWrap>
-                  </PartWrap>
-                  <PartWrap>
+                <RowWrap style={{ borderBottom: '0px' }}>
+                  <PartWrap first>
                     <h6>두께(MM)</h6>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </PartWrap>
-                </RowWrap>
-                <RowWrap>
-                  <PartWrap>
-                    <h6>길이(MM)</h6>
-                    <InputStartWrap>
-                      <Input /> <Tilde>~</Tilde>
-                      <Input />
-                    </InputStartWrap>
+                    <ExInputsWrap>
+                      <MiniInput /> <Tilde>~</Tilde>
+                      <MiniInput />
+                    </ExInputsWrap>
                   </PartWrap>
                   <PartWrap>
                     <h6>폭(MM)</h6>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
+                    <ExInputsWrap>
+                      <MiniInput /> <Tilde>~</Tilde>
+                      <MiniInput />
+                    </ExInputsWrap>
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>길이(MM)</h6>
+                    <ExInputsWrap>
+                      <MiniInput /> <Tilde>~</Tilde>
+                      <MiniInput />
+                    </ExInputsWrap>
+                  </PartWrap>
+                </RowWrap>
+                <RowWrap none>
+                  <PartWrap first>
+                    <h6>유찰 횟수</h6>
+                    <ExInputsWrap>
+                      <Input /> <Tilde>~</Tilde>
+                      <Input />
+                    </ExInputsWrap>
                   </PartWrap>
                 </RowWrap>
               </FilterLeft>
@@ -230,7 +236,7 @@ const Single = ({}) => {
         </TCSubContainer>
         <Test3 title={'규격 약호 찾기'} />
         <TableBottomWrap>
-          <BlackBtn width={15} height={40}>
+          <BlackBtn width={13} height={40} fontSize={17}>
             저장
           </BlackBtn>
         </TableBottomWrap>

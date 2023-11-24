@@ -1,26 +1,48 @@
-import React, { useState, useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { styled } from 'styled-components'
 
-import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import { btnCellUidAtom, selectedRowsAtom, StandardDispatchEditAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { BlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { StandardDispatchEditAtom, btnCellUidAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import { useAtom } from 'jotai'
 import Hidden from '../../../components/TableInner/Hidden'
-import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
+import {
+  DoubleWrap,
+  ExInputsWrap,
+  FilterContianer,
+  FilterFooter,
+  FilterHeader,
+  FilterLeft,
+  FilterRight,
+  FilterSubcontianer,
+  GridWrap,
+  Input,
+  PWRight,
+  PartWrap,
+  ResetImg,
+  RowWrap,
+  TCSubContainer,
+  TableContianer,
+  Tilde,
+} from '../../../modal/External/ExternalFilter'
 
-import DispatchPost from '../../../modal/Multi/DispatchPost'
+import { MainSelect } from '../../../common/Option/Main'
+
+import { ShippingDispatchFields, ShippingDispatchFieldsCols } from '../../../constants/admin/Shipping'
 import DispatchEdit from '../../../modal/Multi/DispatchEdit'
+import DispatchPost from '../../../modal/Multi/DispatchPost'
 import { StandardDispatchPostAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
-import { ShippingDispatchFields, ShippingDispatchFieldsCols } from '../../../constants/admin/Shipping'
 
-import useReactQuery from '../../../hooks/useReactQuery'
-import { useQueryClient } from '@tanstack/react-query'
-import { deleteAdminShipping, getAdminShipping } from '../../../service/admin/Shipping'
-import { add_element_field } from '../../../lib/tableHelpers'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
+import Excel from '../../../components/TableInner/Excel'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { deleteAdminShipping, getAdminShipping } from '../../../service/admin/Shipping'
 import { dispatchPostEditAtom, dispatchTypeAtom } from '../../../store/Layout/Layout'
-import { useMutation } from '@tanstack/react-query'
+import DateGrid from '../../../components/DateGrid/DateGrid'
 
 // dispatchPostEditAtom : 모달 스위치
 // dispatchTypeAtom : 모달의 등록 / 수정 상태값 ('등록'이 default, Consolidation 컴포넌트 체크)
@@ -100,40 +122,101 @@ const Dispatch = ({}) => {
   console.log('btnCellModal', btnCellModal)
 
   return (
-    <FilterContianer>
-      <FilterHeader>
-        <h1>배차기사 관리</h1>
-        {/* 토글 쓰기 */}
-      </FilterHeader>
+    <>
+      <FilterContianer>
+        <FilterHeader>
+          <h1>배차기사 관리</h1>
+          {/* 토글 쓰기 */}
+        </FilterHeader>
+        {exFilterToggle && (
+          <>
+            <FilterSubcontianer>
+              <FilterLeft>
+                <RowWrap>
+                  <PartWrap>
+                    <h6>기사명</h6>
+                    <PWRight style={{ width: '160px' }}>
+                      <Input />
+                    </PWRight>
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>차량번호</h6>
+                    <PWRight style={{ width: '160px' }}>
+                      <Input />
+                    </PWRight>
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>창고구분</h6>
+                    <PWRight style={{ width: '160px' }}>
+                      <MainSelect />
+                    </PWRight>
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>차량종류</h6>
+                    <PWRight style={{ width: '160px' }}>
+                      <MainSelect />
+                    </PWRight>
+                  </PartWrap>
+                  <PartWrap>
+                    <PWRight style={{ width: '160px' }}></PWRight>
+                  </PartWrap>
+                </RowWrap>
+              </FilterLeft>
+              <FilterRight>
+                <DoubleWrap></DoubleWrap>
+              </FilterRight>
+            </FilterSubcontianer>
+            <FilterFooter>
+              <div style={{ display: 'flex' }}>
+                <p>초기화</p>
+                <ResetImg
+                  src="/img/reset.png"
+                  style={{ marginLeft: '10px', marginRight: '20px' }}
+                  onClick={handleImageClick}
+                  className={isRotated ? 'rotate' : ''}
+                />
+              </div>
+              <div style={{ width: '180px' }}>
+                <BlackBtn width={100} height={40}>
+                  검색
+                </BlackBtn>
+              </div>
+            </FilterFooter>
+          </>
+        )}
 
-      <TableContianer>
-        <TCSubContainer bor>
-          <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
-            <Hidden />
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}></div>
-        </TCSubContainer>
-        <TCSubContainer>
-          <div>
-            선택 중량<span> 2 </span>kg / 총 중량 kg
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>선택 삭제</WhiteRedBtn>
-            <WhiteSkyBtn
-              onClick={() => {
-                setIsModalPost(true)
-              }}
-            >
-              추가 등록
-            </WhiteSkyBtn>
-          </div>
-        </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
-      </TableContianer>
-      {isModalPost && <DispatchPost setIsModalPost={setIsModalPost} />}
-      {isModalEdit && <DispatchEdit setIsModalEdit={setIsModalEdit} />}
-    </FilterContianer>
+        <TableContianer>
+          <TCSubContainer bor>
+            <div>
+              조회 목록 (선택 <span>2</span> / 50개 )
+              <Hidden />
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <PageDropdown />
+              <Excel />
+            </div>
+          </TCSubContainer>
+          <TCSubContainer>
+            <div>
+              선택 중량<span> 2 </span>kg / 총 중량 kg
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <WhiteRedBtn>선택 삭제</WhiteRedBtn>
+              <WhiteSkyBtn
+                onClick={() => {
+                  setIsModalPost(true)
+                }}
+              >
+                추가 등록
+              </WhiteSkyBtn>
+            </div>
+          </TCSubContainer>
+          <Table getCol={getCol} getRow={getRow} />
+        </TableContianer>
+        {isModalPost && <DispatchPost setIsModalPost={setIsModalPost} />}
+        {isModalEdit && <DispatchEdit setIsModalEdit={setIsModalEdit} />}
+      </FilterContianer>
+    </>
   )
 }
 

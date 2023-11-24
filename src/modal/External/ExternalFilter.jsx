@@ -40,7 +40,7 @@ export const FilterSubcontianer = styled.div`
   /* overflow-x: hidden; */
   display: flex;
   width: 100%;
-  padding: 20px 15px 24px 40px;
+  padding: ${(props) => (props.modal ? '15px 30px ' : '20px 15px 24px 40px')};
   gap: 40px;
   border: 1px solid #c8c8c8;
   background-color: #dbe2f0;
@@ -151,7 +151,8 @@ export const RowWrap = styled.div`
   display: flex;
   gap: 40px;
   align-items: center;
-  padding-bottom: ${({ none }) => (none ? '8px' : '18px')};
+  padding-bottom: ${({ none, modal }) => (none ? '8px' : modal ? '10px' : '18px')};
+
   border-bottom: ${({ none }) => (none ? 'none' : '1px solid #c8c8c8')};
 `
 

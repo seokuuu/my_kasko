@@ -1,54 +1,40 @@
 import { useState } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
 
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteRedBtn, SkyBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-import BlueBar from '../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { FilterWrap } from '../../../modal/External/ExternalFilter'
+import { useCallback, useEffect, useRef } from 'react'
+import { delete_userManage, get_userManage } from '../../../api/userManage'
+import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { MainSelect } from '../../../common/Option/Main'
+import Hidden from '../../../components/TableInner/Hidden'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { UserManageFields, UserManageFieldsCols } from '../../../constants/admin/UserManage'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
 import {
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
+  FilterSubcontianer,
+  FilterWrap,
   Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
+  PartWrap,
   ResetImg,
-  TableContianer,
-  InputStartWrap,
-  FilterHeaderAlert,
+  RowWrap,
+  StyledHeading,
+  StyledSubHeading,
+  SubTitle,
   TCSubContainer,
+  TableContianer,
 } from '../../../modal/External/ExternalFilter'
-import Hidden from '../../../components/TableInner/Hidden'
+import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
-import { delete_userManage, get_userManage } from '../../../api/userManage'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { useEffect } from 'react'
-import { useRef } from 'react'
-import { UserManageFields, UserManageFieldsCols } from '../../../constants/admin/UserManage'
-import { add_element_field } from '../../../lib/tableHelpers'
-import { useQueryClient } from '@tanstack/react-query'
-import useMutationQuery from '../../../hooks/useMutationQuery'
-import { useCallback } from 'react'
 // import { isArray } from 'lodash'
-import { error, isArray, isArrayAnd, isEmptyArray, log, pipe } from '../../../lib'
+import { isArray } from '../../../lib'
 
 const UserManage = ({ setChoiceComponent }) => {
+  const [types, setTypes] = useState('kasko') //kasko, hyundai, carrier, storage
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -124,7 +110,23 @@ const UserManage = ({ setChoiceComponent }) => {
     <FilterContianer>
       <div>
         <FilterHeader>
-          <h1>사용자 관리</h1>
+          <div style={{ display: 'flex' }}>
+            <h1>사용자 관리</h1>
+            <SubTitle>
+              <StyledHeading isActive={types === 'kasko'} onClick={() => setTypes('kasko')}>
+                카스코철강
+              </StyledHeading>
+              <StyledHeading isActive={types === 'hyundai'} onClick={() => setTypes('hyundai')}>
+                현대제철
+              </StyledHeading>
+              <StyledHeading isActive={types === 'carrier'} onClick={() => setTypes('carrier')}>
+                운송사
+              </StyledHeading>
+              <StyledSubHeading isActive={types === 'storage'} onClick={() => setTypes('storage')}>
+                창고사
+              </StyledSubHeading>
+            </SubTitle>
+          </div>
           {/* 토글 쓰기 */}
           <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
         </FilterHeader>

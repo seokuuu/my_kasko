@@ -78,7 +78,7 @@ export const StandardDispatchDetailAtom = atom(false)
 // 경매 관리 - 경매 회차 관리 / 경매 목록 수정 Modal
 // 기본 : 경매 회차 관리
 // 수정 : 경매 목록 수정(단일)
-export const aucProListEditAtom = atom('수정')
+export const aucProListEditAtom = atom('기본')
 
 // 경매 관리 - 경매 회차 관리 / 경매 회차 등록 Modal
 export const roundPostModalAtom = atom(false)

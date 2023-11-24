@@ -14,9 +14,11 @@ import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import { Link } from 'react-router-dom'
 import Hidden from '../../../components/TableInner/Hidden'
 import {
+  CustomInput,
   DoubleWrap,
   ExCheckDiv,
   ExCheckWrap,
+  ExInputsWrap,
   FilterContianer,
   FilterFooter,
   FilterHeader,
@@ -25,6 +27,7 @@ import {
   FilterSubcontianer,
   GridWrap,
   Input,
+  MiniInput,
   PartWrap,
   PWRight,
   ResetImg,
@@ -100,22 +103,15 @@ const Achievement = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>창고 구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
                 </PartWrap>
                 <PartWrap>
-                  <h6>목적지</h6>
+                  <h6>고객사 명/고객사코드</h6>
                   <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>고객사</h6>
                   <Input />
                   <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
@@ -123,26 +119,54 @@ const Achievement = ({}) => {
                 </PartWrap>
               </RowWrap>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
+                  <h6>목적지</h6>
+                  <CustomInput width={160} height={36} />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                    찾기
+                  </GreyBtn>
+                </PartWrap>
+              </RowWrap>
+              <RowWrap>
+                <PartWrap first>
                   <h6>주문 일자</h6>
                   <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <DateGrid bgColor={'white'} fontSize={17} width={130} />
                     <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <DateGrid bgColor={'white'} fontSize={17} width={130} />
                   </GridWrap>
                 </PartWrap>
 
                 <PartWrap>
                   <h6>출고 일자</h6>
                   <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <DateGrid bgColor={'white'} fontSize={17} width={130} />
                     <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <DateGrid bgColor={'white'} fontSize={17} width={130} />
                   </GridWrap>
                 </PartWrap>
               </RowWrap>
               <RowWrap>
+                <PartWrap first>
+                  <h6>경매 일자</h6>
+                  <GridWrap>
+                    <DateGrid bgColor={'white'} fontSize={17} width={130} />
+                    <Tilde>~</Tilde>
+                    <DateGrid bgColor={'white'} fontSize={17} width={130} />
+                  </GridWrap>
+                </PartWrap>
+
                 <PartWrap>
+                  <h6>상시 판매 일자</h6>
+                  <GridWrap>
+                    <DateGrid bgColor={'white'} fontSize={17} width={130} />
+                    <Tilde>~</Tilde>
+                    <DateGrid bgColor={'white'} fontSize={17} width={130} />
+                  </GridWrap>
+                </PartWrap>
+              </RowWrap>
+              <RowWrap>
+                <PartWrap first>
                   <h6>판매 구분</h6>
                   <ExCheckWrap>
                     {checkSales.map((x, index) => (
@@ -159,8 +183,10 @@ const Achievement = ({}) => {
                   </ExCheckWrap>
                 </PartWrap>
                 <PartWrap>
-                  <h6 style={{ width: '50px' }}>구분</h6>
-                  <MainSelect />
+                  <h6>구분</h6>
+                  <PWRight>
+                    <MainSelect />
+                  </PWRight>
                 </PartWrap>
               </RowWrap>
             </FilterLeft>

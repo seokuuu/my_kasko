@@ -10,6 +10,7 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import { CheckBox } from '../../../common/Check/Checkbox'
 
 import {
+  CustomInput,
   DoubleWrap,
   ExRadioWrap,
   FilterAlterTxt,
@@ -20,6 +21,7 @@ import {
   FilterLeft,
   FilterRight,
   FilterSubcontianer,
+  GridWrap,
   Input,
   PartWrap,
   PWRight,
@@ -27,11 +29,13 @@ import {
   RowWrap,
   TableContianer,
   TCSubContainer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
 
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
+import DateGrid from '../../../components/DateGrid/DateGrid'
 
 const Winning = ({}) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -125,21 +129,28 @@ const Winning = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
-                <PartWrap>
-                  <h6>창고 구분</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
+                <PartWrap first>
+                  <h6 style={{ width: '130px' }}>경매 일자</h6>
+                  <GridWrap>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                  </GridWrap>
                 </PartWrap>
                 <PartWrap>
-                  <h6>고객사</h6>
+                  <h6 style={{ width: '100px' }}>창고 구분</h6>
+                  <MainSelect />
+                </PartWrap>
+              </RowWrap>
+              <RowWrap none>
+                <PartWrap>
+                  <h6 style={{ width: '180px' }}>고객사 명/고객사코드</h6>
+                  <Input />
                   <Input />
                   <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
                   </GreyBtn>
                 </PartWrap>
-              </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
                 <PartWrap>
                   <h6>진행 상태</h6>
                   <ExRadioWrap>

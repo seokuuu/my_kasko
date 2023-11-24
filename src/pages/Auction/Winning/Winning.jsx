@@ -140,7 +140,7 @@ const Winning = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>창고 구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
@@ -148,7 +148,8 @@ const Winning = ({}) => {
                 </PartWrap>
 
                 <PartWrap>
-                  <h6>고객사</h6>
+                  <h6>고객사 명/고객사코드</h6>
+                  <Input />
                   <Input />
                   <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
@@ -156,7 +157,7 @@ const Winning = ({}) => {
                 </PartWrap>
               </RowWrap>
               <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
+                <PartWrap first>
                   <h6>구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
@@ -192,7 +193,7 @@ const Winning = ({}) => {
                 </PartWrap>
 
                 <PartWrap>
-                  <h6 style={{ marginLeft: '20px' }}>주문 일자</h6>
+                  <h6 style={{ marginLeft: '0px' }}>경매일시</h6>
                   <ExInputsWrap>
                     <GridWrap>
                       <DateGrid bgColor={'white'} fontSize={17} />

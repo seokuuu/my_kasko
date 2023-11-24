@@ -37,11 +37,14 @@ import {
   FilterHeaderAlert,
   FHALeft,
   ExInputsWrap,
+  CustomInput,
 } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
 import { TableWrap, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../components/MapTable/MapTable'
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import Excel from '../../../components/TableInner/Excel'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 const Request = ({ setChoiceComponent }) => {
   const titleData = [
@@ -107,8 +110,9 @@ const Request = ({ setChoiceComponent }) => {
     // }
   }, [checkRadio])
 
-  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioTableDummy.length }, () => false))
-
+  const [checkRadio2, setCheckRadio2] = useState(
+    Array.from({ length: radioTableDummy.length }, (_, index) => index === 0),
+  )
   const [savedRadioValue2, setSavedRadioValue2] = useState('')
   useEffect(() => {
     const checkedIndex = checkRadio2.findIndex((isChecked, index) => isChecked && index < radioTableDummy.length)
@@ -143,8 +147,8 @@ const Request = ({ setChoiceComponent }) => {
         <>
           <FilterSubcontianer>
             <FilterLeft>
-              <RowWrap>
-                <PartWrap>
+              <RowWrap none>
+                <PartWrap first>
                   <h6>창고 구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
@@ -152,15 +156,8 @@ const Request = ({ setChoiceComponent }) => {
                 </PartWrap>
 
                 <PartWrap>
-                  <h6>고객사</h6>
+                  <h6>고객사 명/고객사코드</h6>
                   <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>목적지</h6>
                   <Input />
                   <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
@@ -168,16 +165,26 @@ const Request = ({ setChoiceComponent }) => {
                 </PartWrap>
               </RowWrap>
               <RowWrap>
-                <PartWrap>
-                  <h6>입고일자</h6>
+                <PartWrap first>
+                  <h6>목적지</h6>
+                  <CustomInput width={160} height={36} />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                    찾기
+                  </GreyBtn>
+                </PartWrap>
+              </RowWrap>
+              <RowWrap>
+                <PartWrap first>
+                  <h6>경매 일자</h6>
                   <GridWrap>
                     <DateGrid bgColor={'white'} fontSize={17} />
                     <Tilde>~</Tilde>
                     <DateGrid bgColor={'white'} fontSize={17} />
                   </GridWrap>
                 </PartWrap>
+
                 <PartWrap>
-                  <h6 style={{ width: '120px' }}>출하 지시 일자</h6>
+                  <h6>출하 지시 일자</h6>
                   <GridWrap>
                     <DateGrid bgColor={'white'} fontSize={17} />
                     <Tilde>~</Tilde>
@@ -185,12 +192,10 @@ const Request = ({ setChoiceComponent }) => {
                   </GridWrap>
                 </PartWrap>
               </RowWrap>
-              <RowWrap style={{ border: '0px' }}>
-                <PartWrap>
+              <RowWrap none>
+                <PartWrap first>
                   <h6>구분</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
+                  <MainSelect />
                 </PartWrap>
               </RowWrap>
             </FilterLeft>
@@ -223,6 +228,25 @@ const Request = ({ setChoiceComponent }) => {
       )}
 
       <TableContianer>
+        <TCSubContainer bor>
+          <div>
+            조회 목록 (선택 <span>2</span> / 50개 )
+            <Hidden />
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <PageDropdown />
+            <Excel />
+          </div>
+        </TCSubContainer>
+        <TCSubContainer>
+          <div>
+            선택 중량<span> 2 </span>kg / 총 중량 kg
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteRedBtn>출하 취소</WhiteRedBtn>
+            <WhiteSkyBtn>선별 목록 추가</WhiteSkyBtn>
+          </div>
+        </TCSubContainer>
         <Test3 />
       </TableContianer>
       <FilterHeader style={{}}>
@@ -242,6 +266,7 @@ const Request = ({ setChoiceComponent }) => {
                 {radioTableDummy.map((text, index) => (
                   <RadioMainDiv key={index}>
                     <RadioCircleDiv
+                      isWhite
                       isChecked={checkRadio2[index]}
                       onClick={() => {
                         setCheckRadio2(CheckBox(checkRadio2, checkRadio2.length, index))

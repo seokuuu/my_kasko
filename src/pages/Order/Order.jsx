@@ -10,10 +10,13 @@ import { selectedRowsAtom } from '../../store/Layout/Layout'
 import { useQueryClient } from '@tanstack/react-query'
 
 import {
+  DoubleWrap,
+  ExCheckWrap,
   FilterContianer,
   FilterFooter,
   FilterHeader,
   FilterLeft,
+  FilterRight,
   FilterSubcontianer,
   GridWrap,
   Input,
@@ -34,6 +37,8 @@ import { OrderFields, OrderFieldsCols } from '../../constants/admin/Order'
 import useReactQuery from '../../hooks/useReactQuery'
 import { add_element_field } from '../../lib/tableHelpers'
 import { getAdminOrder } from '../../service/admin/Order'
+import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
+import { CheckBox } from '../../common/Check/Checkbox'
 
 const Order = ({}) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -138,43 +143,84 @@ const Order = ({}) => {
         <>
           <FilterSubcontianer>
             <FilterLeft>
-              <RowWrap>
-                <PartWrap>
+              <RowWrap none>
+                <PartWrap first>
                   <h6>창고 구분</h6>
                   <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
+                    <MainSelect />
                   </PWRight>
                 </PartWrap>
 
                 <PartWrap>
-                  <h6>고객사</h6>
+                  <h6>고객사 명/고객사코드</h6>
+                  <Input />
                   <Input />
                   <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
                   </GreyBtn>
                 </PartWrap>
               </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
-                  <h6 style={{ width: '130px' }}>확정 전송 일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6 style={{ marginLeft: '20px' }}>구분</h6>
+              <RowWrap>
+                <PartWrap first>
+                  <h6>구분</h6>
                   <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
+                    <MainSelect />
                   </PWRight>
                 </PartWrap>
-                <PartWrap />
-                <PartWrap />
-                <PartWrap />
+              </RowWrap>
+              <RowWrap>
+                <PartWrap first>
+                  <h6>경매 일자</h6>
+                  <GridWrap>
+                    <DateGrid width={130} bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid width={130} bgColor={'white'} fontSize={17} />
+                  </GridWrap>
+                </PartWrap>
+                <PartWrap>
+                  <h6>확정 전송 일자</h6>
+                  <GridWrap>
+                    <DateGrid width={130} bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid width={130} bgColor={'white'} fontSize={17} />
+                  </GridWrap>
+                </PartWrap>
+              </RowWrap>
+              <RowWrap none>
+                <PartWrap>
+                  <h6>상시 판매 주문 일자</h6>
+                  <GridWrap>
+                    <DateGrid width={130} bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid width={130} bgColor={'white'} fontSize={17} />
+                  </GridWrap>
+                </PartWrap>
+                <PartWrap>
+                  <h6>주문 상태</h6>
+                  <ExCheckWrap>
+                    {checkSales.map((x, index) => (
+                      <ExCheckWrap style={{ marginRight: '15px' }}>
+                        <StyledCheckSubSquDiv
+                          onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
+                          isChecked={check1[index]}
+                        >
+                          <CheckImg2 src="/svg/check.svg" />
+                        </StyledCheckSubSquDiv>
+                        <p>{x}</p>
+                      </ExCheckWrap>
+                    ))}
+                  </ExCheckWrap>
+                </PartWrap>
               </RowWrap>
             </FilterLeft>
+            <FilterRight>
+              <DoubleWrap>
+                <h6>제품 번호 </h6>
+                <textarea
+                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
+                />
+              </DoubleWrap>
+            </FilterRight>
           </FilterSubcontianer>
           <FilterFooter>
             <div style={{ display: 'flex' }}>

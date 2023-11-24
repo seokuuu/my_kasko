@@ -7,8 +7,8 @@ import Round from './Round'
 import RoundAucListEdit from './RoundAucListEdit'
 import { aucProListEditAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-
 import { useState } from 'react'
+import RoundAucListPackEdit from './RoundAucListPackEdit'
 
 const RoundPage = () => {
   const [expanded, setExpanded] = useState('경매 관리')
@@ -24,6 +24,7 @@ const RoundPage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>{type === '기본' ? <Round /> : type === '수정' ? <RoundAucListEdit /> : null}</OverAllTable>
+          {/* 경매 목록 수정(패키지) 여기에다가 해야함 */}
         </OverAllSub>
       </OverAllMain>
     </>

@@ -102,7 +102,7 @@ const RoundAucProAdd = ({}) => {
   return (
     <>
       <FadeOverlay />
-      <ModalContainer style={{ width: '75%', height: '98vh' }}>
+      <ModalContainer style={{ width: '75%', height: '100%' }}>
         <BlueBarHeader style={{ height: '60px' }}>
           {/* <div>{title}</div> */}
           <div>경매 제품 추가(단일)</div>
@@ -110,7 +110,7 @@ const RoundAucProAdd = ({}) => {
             <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
           </div>
         </BlueBarHeader>
-        <BlueSubContainer style={{ padding: '0px 30px' }}>
+        <BlueSubContainer style={{ padding: '0px 0px' }}>
           <FilterContianer>
             <FilterHeader>
               <div style={{ display: 'flex' }}></div>
@@ -125,9 +125,9 @@ const RoundAucProAdd = ({}) => {
             </FilterTopContainer>
             {exFilterToggle && (
               <>
-                <FilterSubcontianer style={{ height: '280px' }}>
+                <FilterSubcontianer modal style={{ height: '100%' }}>
                   <FilterLeft>
-                    <RowWrap>
+                    <RowWrap modal>
                       <PartWrap first>
                         <h6>창고 구분</h6>
                         <PWRight>
@@ -141,7 +141,7 @@ const RoundAucProAdd = ({}) => {
                         </PWRight>
                       </PartWrap>
 
-                      <PartWrap>
+                      <PartWrap modal>
                         <h6>규격 약호</h6>
                         <Input />
                         <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
@@ -149,7 +149,7 @@ const RoundAucProAdd = ({}) => {
                         </GreyBtn>
                       </PartWrap>
                     </RowWrap>
-                    <RowWrap>
+                    <RowWrap modal>
                       <PartWrap first>
                         <h6>구분</h6>
                         <MainSelect />
@@ -159,7 +159,7 @@ const RoundAucProAdd = ({}) => {
                         <MainSelect />
                       </PartWrap>
                     </RowWrap>
-                    <RowWrap style={{ borderBottom: '0px' }}>
+                    <RowWrap modal none>
                       <PartWrap first>
                         <h6>두께(MM)</h6>
                         <ExInputsWrap>
@@ -182,7 +182,7 @@ const RoundAucProAdd = ({}) => {
                         </ExInputsWrap>
                       </PartWrap>
                     </RowWrap>
-                    <RowWrap none>
+                    <RowWrap modal none>
                       <PartWrap first>
                         <h6>유찰 횟수</h6>
                         <ExInputsWrap>
@@ -243,9 +243,15 @@ const RoundAucProAdd = ({}) => {
                 </div>
               </TCSubContainer>
               <Test3 hei2={350} hei={100} />
-              <TCSubContainer></TCSubContainer>
+              <TCSubContainer>
+                <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                  <BlackBtn width={13} height={40}>
+                    제품 추가
+                  </BlackBtn>
+                </div>
+              </TCSubContainer>
             </TableContianer>
-          </FilterContianer>{' '}
+          </FilterContianer>
         </BlueSubContainer>
       </ModalContainer>
     </>

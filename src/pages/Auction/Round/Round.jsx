@@ -1,55 +1,45 @@
-import { useState, useEffect, useCallback } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
-import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { useCallback, useEffect, useState } from 'react'
+import { BlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn, ExcelBtn, YellBtn, TGreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
+import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { toggleAtom } from '../../../store/Layout/Layout'
+import Test3 from '../../Test/Test3'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import {
+  DoubleWrap,
+  ExRadioWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
   FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
+  FilterSubcontianer,
   GridWrap,
-  Tilde,
-  TableBottomWrap,
-  DoubleWrap,
+  Input,
+  PartWrap,
   ResetImg,
-  TableContianer,
-  ExCheckWrap,
-  ExCheckDiv,
-  ExInputsWrap,
-  ExRadioWrap,
-  SubTitle,
-  TCSubContainer,
+  RowWrap,
   StyledHeading,
   StyledSubHeading,
+  SubTitle,
+  TCSubContainer,
+  TableBottomWrap,
+  TableContianer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
-import { deleteAuction, getAuction } from '../../../api/auction/round'
-import useReactQuery from '../../../hooks/useReactQuery'
-import useMutationQuery from '../../../hooks/useMutationQuery'
-import { roundPostModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
+import { deleteAuction, getAuction } from '../../../api/auction/round'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import useReactQuery from '../../../hooks/useReactQuery'
 import AuctionRound from '../../../modal/Multi/AuctionRound'
+import { roundPostModalAtom } from '../../../store/Layout/Layout'
 
 const Round = ({}) => {
   const [roundModal, setRoundModal] = useAtom(roundPostModalAtom)
@@ -57,7 +47,9 @@ const Round = ({}) => {
 
   console.log('types', types)
   const radioDummy = ['전체', '미진행', '진행중', '종료']
+  const radioDummy2 = ['불량', '제외 요청', '기타 사유']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, (_, index) => index === 0))
 
   const [savedRadioValue, setSavedRadioValue] = useState('')
   useEffect(() => {

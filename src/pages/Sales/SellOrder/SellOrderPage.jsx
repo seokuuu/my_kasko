@@ -10,7 +10,7 @@ import { useState } from 'react'
 
 const SellOrderPage = () => {
   const [expanded, setExpanded] = useState('상시 판매 관리')
-  const [depth2Color, setDepth2Color] = useState('상시 판매 주문 확인')
+  const [depth2Color, setDepth2Color] = useState('주문 확인')
   const [choiceComponent, setChoiceComponent] = useState('리스트')
 
   const renderChoiceComponent = () => {

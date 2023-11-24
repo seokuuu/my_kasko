@@ -1,5 +1,15 @@
 import { useEffect, useState } from 'react'
-import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import {
+  BlackBtn,
+  BtnBound,
+  BtnWrap,
+  GreyBtn,
+  NewBottomBtnWrap,
+  SkyBtn,
+  TGreyBtn,
+  WhiteBtn,
+  WhiteRedBtn,
+} from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
@@ -8,6 +18,7 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import Test3 from '../../Test/Test3'
 
 import {
+  CustomInput,
   DoubleWrap,
   ExInputsWrap,
   FilterContianer,
@@ -104,71 +115,30 @@ const RoundAucListPackEdit = ({}) => {
         <>
           <FilterSubcontianer>
             <FilterLeft>
-              <RowWrap>
+              <RowWrap modal none>
                 <PartWrap>
                   <h6>창고 구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
                 </PartWrap>
-
                 <PartWrap>
-                  <h6>매입처 </h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
+                  <h6>유찰 횟수</h6>
+                  <ExInputsWrap>
+                    <Input /> <Tilde>~</Tilde>
+                    <Input />
+                  </ExInputsWrap>
                 </PartWrap>
-
-                <PartWrap>
-                  <h6>규격 약호</h6>
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
                 <PartWrap>
                   <h6>구분</h6>
-                  <MainSelect />
-                  <span style={{ margin: '0px -10px 0px 5px' }}>~</span>
-                  <MainSelect />
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>두께(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
-                  <h6>폭(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>길이(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <PWRight>
+                    <MainSelect />
+                    <MainSelect />
+                    <MainSelect />
+                  </PWRight>
                 </PartWrap>
               </RowWrap>
             </FilterLeft>
-            <FilterRight>
-              <DoubleWrap>
-                <h6>제품 번호 </h6>
-                <textarea
-                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                />
-              </DoubleWrap>
-            </FilterRight>
           </FilterSubcontianer>
           <FilterFooter>
             <div style={{ display: 'flex' }}>
@@ -203,7 +173,13 @@ const RoundAucListPackEdit = ({}) => {
           <div>
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <p>시작가 경매 응찰</p>
+            <CustomInput placeholder="아울렛 입력" width={120} height={32} />
+            <TGreyBtn height={30} style={{ width: '50px' }}>
+              적용
+            </TGreyBtn>
+            <BtnBound style={{ margin: '0px' }} />
             <SkyBtn
               onClick={() => {
                 setAddModal(true)
@@ -220,6 +196,14 @@ const RoundAucListPackEdit = ({}) => {
             <WhiteRedBtn>선택 목록 제거</WhiteRedBtn>
           </div>
         </TCSubContainer>
+        <NewBottomBtnWrap bottom={0}>
+          <WhiteBtn width={13} height={40}>
+            돌아가기
+          </WhiteBtn>
+          <BlackBtn width={13} height={40}>
+            등록
+          </BlackBtn>
+        </NewBottomBtnWrap>
         {addModal && <DefaultBlueBar setAddModal={setAddModal} />}
       </TableContianer>
     </FilterContianer>

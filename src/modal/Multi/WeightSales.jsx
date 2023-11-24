@@ -188,7 +188,7 @@ const WeightSales = ({}) => {
         </BlueSubContainer>
 
         <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
-          <BlackBtn width={13} height={40}>
+          <BlackBtn width={13} height={40} fontSize={17}>
             저장
           </BlackBtn>
         </div>

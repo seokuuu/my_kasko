@@ -1,71 +1,43 @@
-import { useState, useEffect, useRef } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
-import Excel from '../../../components/TableInner/Excel'
+import { useEffect, useRef, useState } from 'react'
+import { BlackBtn, BtnBound, GreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { MainSelect, usermanageClientStatusOptions } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, ExcelBtn, WhiteRedBtn, WhiteSkyBtn, BtnBound } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
+import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import {
-  alertAtom,
-  alertAtom2,
-  AuctionRestrictionModal,
-  selectedRowsAtom,
-  toggleAtom,
-} from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
-import { CheckBox, CheckBox2 } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 
 import {
-  TCSubContainer,
-  FilterContianer,
-  FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-  ExCheckWrap,
   ExCheckDiv,
+  ExCheckWrap,
+  FilterContianer,
+  FilterFooter,
+  FilterHeader,
+  FilterLeft,
+  FilterSubcontianer,
+  Input,
+  PartWrap,
+  ResetImg,
+  RowWrap,
+  TableContianer,
+  TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
-
-import PageDropdown from '../../../components/TableInner/PageDropdown'
-import Hidden from '../../../components/TableInner/Hidden'
-import Table from '../../Table/Table'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { deleteCustomer, getCustomer, postChangeAuction } from '../../../api/userManage'
-import { useAtom } from 'jotai'
-import { useCallback } from 'react'
-import { isArray } from 'lodash'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { add_element_field } from '../../../lib/tableHelpers'
+import { useAtom } from 'jotai'
+import { isArray } from 'lodash'
+import { useCallback } from 'react'
+import { deleteCustomer, getCustomer, postChangeAuction } from '../../../api/userManage'
+import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { UserManageCustomerManageFields, UserManageCustomerManageFieldsCols } from '../../../constants/admin/UserManage'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
 // import { log } from '../../../lib'
-import TableTest from '../../Table/TableTest'
-import ClientAuctionRestrictionModal from './ClientAuctionRestrictionModal'
 import { isString } from 'lodash'
-import AlertModal from '../../../modal/Alert/AlertModal'
-import RemoveCheckModal from './RemoveCheckModal'
-import { log } from '../../../lib'
+import TableTest from '../../Table/TableTest'
+import { Bar } from '../../../modal/Common/Common.Styled'
 
 const Client = ({ setChoiceComponent, setModal }) => {
   const [selectedValue, setSelectedValue] = useState('')
@@ -87,7 +59,7 @@ const Client = ({ setChoiceComponent, setModal }) => {
   }, [checkRadio])
   const checkSales = ['일반', '장기 미접속', '장기 미낙찰', '폐업', '정지']
 
-  const checkShips = ['전체', '승인', '미승인']
+  const checkShips = ['전체', '승인', '미승인', '대기']
 
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
@@ -238,101 +210,82 @@ const Client = ({ setChoiceComponent, setModal }) => {
           {/* 토글 쓰기 */}
           <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
         </FilterHeader>
-        {/* 
-          {exFilterToggle && (
-            <>
-              <FilterSubcontianer>
-                <FilterLeft>
-                  <RowWrap>
-                    <PartWrap>
-                      <h6>고객 구분</h6>
-                      <ExRadioWrap>
-                        {radioDummy.map((text, index) => (
-                          <RadioMainDiv key={index}>
-                            <RadioCircleDiv
-                              isChecked={checkRadio[index]}
-                              onClick={() => {
-                                setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-                              }}
-                            >
-                              <RadioInnerCircleDiv isChecked={checkRadio[index]} />
-                            </RadioCircleDiv>
-                            <div style={{ display: 'flex', marginLeft: '5px' }}>
-                              <p>{text}</p>
-                            </div>
-                          </RadioMainDiv>
-                        ))}
-                      </ExRadioWrap>
-                    </PartWrap>
-                  </RowWrap>
-                  <RowWrap>
-                    <PartWrap>
-                      <h6>회원 상태</h6>
-                      <ExCheckWrap>
-                        {checkSales.map((x, index) => (
-                          <ExCheckDiv>
-                            <StyledCheckSubSquDiv
-                              // CheckBox 수정
-                              onClick={() => setCheck1(CheckBox(check1, check1.length, index, false))}
-                              isChecked={check1[index]}
-                            >
-                              <CheckImg2 src="/svg/check.svg" />
-                            </StyledCheckSubSquDiv>
-                            <p>{x}</p>
-                          </ExCheckDiv>
-                        ))}
-                      </ExCheckWrap>
-                    </PartWrap>
-                    <PartWrap />
-                  </RowWrap>
-                  <RowWrap style={{ borderBottom: '0px' }}>
-                    <PartWrap>
-                      <h6>승인 상태</h6>
-                      <ExCheckWrap>
-                        {checkShips.map((x, index) => (
-                          <ExCheckDiv>
-                            <StyledCheckSubSquDiv
-                              onClick={() => setCheck2(CheckBox(check2, check2.length, index, false))}
-                              isChecked={check2[index]}
-                            >
-                              <CheckImg2 src="/svg/check.svg" />
-                            </StyledCheckSubSquDiv>
-                            <p>{x}</p>
-                          </ExCheckDiv>
-                        ))}
-                      </ExCheckWrap>
-                    </PartWrap>
-                    <PartWrap>
-                      <h6>회원 상태</h6>
-                      <MainSelect options={usermanageClientStatusOptions} name="category" />
-                      <Input style={{ marginLeft: '5px' }} />
-                      <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                        찾기
-                      </GreyBtn>
-                    </PartWrap>
-                    <PartWrap />
-                    <PartWrap />
-                  </RowWrap>
-                </FilterLeft>
-              </FilterSubcontianer>
-              <FilterFooter>
-                <div style={{ display: 'flex' }}>
-                  <p>초기화</p>
-                  <ResetImg
-                    src="/img/reset.png"
-                    style={{ marginLeft: '10px', marginRight: '20px' }}
-                    onClick={handleImageClick}
-                    className={isRotated ? 'rotate' : ''}
-                  />
-                </div>
-                <div style={{ width: '180px' }}>
-                  <BlackBtn width={100} height={40}>
-                    검색
-                  </BlackBtn>
-                </div>
-              </FilterFooter>
-            </>
-          )} */}
+
+        {exFilterToggle && (
+          <>
+            <FilterSubcontianer>
+              <FilterLeft>
+                <RowWrap>
+                  <PartWrap>
+                    <h6>회원 상태</h6>
+                    <ExCheckWrap>
+                      {checkSales.map((x, index) => (
+                        <ExCheckDiv>
+                          <StyledCheckSubSquDiv
+                            // CheckBox 수정
+                            onClick={() => setCheck1(CheckBox(check1, check1.length, index, false))}
+                            isChecked={check1[index]}
+                          >
+                            <CheckImg2 src="/svg/check.svg" />
+                          </StyledCheckSubSquDiv>
+                          <p>{x}</p>
+                        </ExCheckDiv>
+                      ))}
+                    </ExCheckWrap>
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>고객사 유형</h6>
+                    <MainSelect />
+                  </PartWrap>
+                  <PartWrap style={{ width: '500px' }} />
+                </RowWrap>
+                <RowWrap style={{ borderBottom: '0px' }}>
+                  <PartWrap>
+                    <h6>승인 상태</h6>
+                    <ExCheckWrap>
+                      {checkShips.map((x, index) => (
+                        <ExCheckDiv>
+                          <StyledCheckSubSquDiv
+                            onClick={() => setCheck2(CheckBox(check2, check2.length, index, false))}
+                            isChecked={check2[index]}
+                          >
+                            <CheckImg2 src="/svg/check.svg" />
+                          </StyledCheckSubSquDiv>
+                          <p>{x}</p>
+                        </ExCheckDiv>
+                      ))}
+                    </ExCheckWrap>
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>회원 상태</h6>
+                    <MainSelect options={usermanageClientStatusOptions} name="category" />
+                    <Input style={{ marginLeft: '5px' }} />
+                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                      찾기
+                    </GreyBtn>
+                  </PartWrap>
+                  <PartWrap />
+                </RowWrap>
+              </FilterLeft>
+            </FilterSubcontianer>
+            <FilterFooter>
+              <div style={{ display: 'flex' }}>
+                <p>초기화</p>
+                <ResetImg
+                  src="/img/reset.png"
+                  style={{ marginLeft: '10px', marginRight: '20px' }}
+                  onClick={handleImageClick}
+                  className={isRotated ? 'rotate' : ''}
+                />
+              </div>
+              <div style={{ width: '180px' }}>
+                <BlackBtn width={100} height={40}>
+                  검색
+                </BlackBtn>
+              </div>
+            </FilterFooter>
+          </>
+        )}
         <TableContianer>
           <TCSubContainer bor>
             <div>
