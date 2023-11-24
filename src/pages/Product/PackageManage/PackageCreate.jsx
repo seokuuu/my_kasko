@@ -48,7 +48,7 @@ import { ExRadioWrap } from '../../../modal/External/ExternalFilter'
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 
 const PackageCreate = ({}) => {
-  const checkSales = ['전체', '판매재', '판매제외제', '카스코 추천 제품']
+  const checkSales = ['전체', '판매재', '판매제외제', '판매완료재']
 
   const checkShips = ['전체', '경매대상재', '상시판매 대상재']
 
@@ -166,18 +166,19 @@ const PackageCreate = ({}) => {
             <FilterTCBottom>
               <FilterTCBSub>
                 <div>
-                  <h6>판매 구분</h6>
+                  <h6>판매 유형</h6>
                   <div style={{ marginTop: '2px' }}>
                     <ExRadioWrap>
                       {radioDummy.map((text, index) => (
                         <RadioMainDiv key={index}>
                           <RadioCircleDiv
+                            isWhite
                             isChecked={checkRadio[index]}
                             onClick={() => {
                               setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                             }}
                           >
-                            <RadioInnerCircleDiv />
+                            <RadioInnerCircleDiv isWhite isChecked={checkRadio[index]} />
                           </RadioCircleDiv>
                           <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
                         </RadioMainDiv>
@@ -203,7 +204,7 @@ const PackageCreate = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>창고 구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
@@ -224,7 +225,7 @@ const PackageCreate = ({}) => {
                 </PartWrap>
               </RowWrap>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>구분</h6>
                   <MainSelect />
                   <MainSelect />
@@ -234,7 +235,7 @@ const PackageCreate = ({}) => {
                 </PartWrap>
               </RowWrap>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>판매 구분</h6>
                   <ExCheckWrap>
                     {checkSales.map((x, index) => (
@@ -269,7 +270,7 @@ const PackageCreate = ({}) => {
               </RowWrap>
 
               <RowWrap style={{ border: '0px' }}>
-                <PartWrap>
+                <PartWrap first>
                   <h6 style={{ width: '100px' }}>판매가 유형</h6>
                   <ExCheckWrap style={{ marginLeft: '4px' }}>
                     {checkTypes.map((x, index) => (
@@ -329,13 +330,7 @@ const PackageCreate = ({}) => {
           <div>
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            시작가 일괄 변경
-            <Input style={{ height: '30px' }} />
-            <GreyBtn style={{ padding: '5px 10px 5px 10px', borderRadius: '3px' }}>적용</GreyBtn>
-            <BtnBound />
-            <SkyBtn>제품 추가</SkyBtn>
-          </div>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}></div>
         </TCSubContainer>
         <Test3 />
         <TCSubContainer bor>

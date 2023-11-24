@@ -1,44 +1,42 @@
-import { useState } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
-import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn, ExcelBtn, WhiteBlackBtn, WhiteRedBtn, SkyBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
-import BlueBar from '../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { FilterWrap } from '../../../modal/External/ExternalFilter'
+import { useRef, useState } from 'react'
+import { GreyBtn, SkyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { MainSelect } from '../../../common/Option/Main'
+import Excel from '../../../components/TableInner/Excel'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
-  TCSubContainer,
+  DoubleWrap,
+  ExCheckWrap,
   FilterContianer,
   FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
+  FilterHeaderAlert,
   FilterLeft,
   FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
+  FilterSubcontianer,
   GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
+  Input,
+  PWRight,
+  PartWrap,
+  RowWrap,
+  TCSubContainer,
   TableContianer,
-  InputStartWrap,
-  FilterHeaderAlert,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
+import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import Hidden from '../../../components/TableInner/Hidden'
+import { UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
+import Table from '../../Table/Table'
 
-const SellOrder = ({}) => {
+import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+import { CheckBox } from '../../../common/Check/Checkbox'
+import DateGrid from '../../../components/DateGrid/DateGrid'
+import { selectedRowsAtom } from '../../../store/Layout/Layout'
+
+const SellOrder = ({ setChoiceComponent }) => {
+  const checkSales = ['전체', '확정 전송', '확정전송 대기']
+  const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -72,6 +70,11 @@ const SellOrder = ({}) => {
     setIsModal(true)
   }
 
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(UserPageUserPreferFieldsCols)
+  const getCol = tableField.current
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
   return (
     <FilterContianer>
       <div>
@@ -90,61 +93,79 @@ const SellOrder = ({}) => {
               <div style={{ marginTop: '6px' }}>· 주의사항 영역</div>
             </div>
           </div>
-
           <div>
             수정
             <img style={{ marginLeft: '10px' }} src="/img/setting.png" />
           </div>
         </FilterHeaderAlert>
         {exFilterToggle && (
-          <FilterWrap>
-            <FilterSubcontianer>
-              <FilterLeft>
-                <RowWrap>
-                  <PartWrap>
-                    <h6>창고구분</h6>
+          <FilterSubcontianer>
+            <FilterLeft>
+              <RowWrap none>
+                <PartWrap first>
+                  <h6>창고 구분</h6>
+                  <PWRight>
                     <MainSelect />
-                  </PartWrap>
-                  <PartWrap>
-                    <h6>고객사</h6>
-                    <Input />
-                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen}>
-                      찾기
-                    </GreyBtn>
-                  </PartWrap>
-                  <PartWrap>
-                    <h6>구분</h6>
-                    <MainSelect />
-                  </PartWrap>
-                </RowWrap>
-              </FilterLeft>
-              <FilterRight>
-                <DoubleWrap>
-                  <h6>제품 번호 </h6>
-                  <textarea
-                    placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                    style={{ height: '100px' }}
-                  />
-                </DoubleWrap>
-              </FilterRight>
-            </FilterSubcontianer>
-            <FilterFooter>
-              <div style={{ display: 'flex' }}>
-                <p>초기화</p>
-                <ResetImg
-                  src="/img/reset.png"
-                  style={{ marginLeft: '10px', marginRight: '20px' }}
-                  onClick={handleImageClick}
-                  className={isRotated ? 'rotate' : ''}
+                  </PWRight>
+                </PartWrap>
+
+                <PartWrap>
+                  <h6>구분</h6>
+                  <MainSelect />
+                </PartWrap>
+              </RowWrap>
+              <RowWrap>
+                <PartWrap>
+                  <h6>고객사 명/고객사코드</h6>
+                  <Input />
+                  <Input />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                    찾기
+                  </GreyBtn>
+                </PartWrap>
+              </RowWrap>
+              <RowWrap>
+                <PartWrap>
+                  <h6 style={{ width: '165px' }}>상시판매 주문일자</h6>
+                  <GridWrap>
+                    <DateGrid width={130} bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid width={130} bgColor={'white'} fontSize={17} />
+                  </GridWrap>
+                </PartWrap>
+                <PartWrap>
+                  <h6>상시 판매 번호</h6>
+                  <Input />
+                </PartWrap>
+              </RowWrap>
+              <RowWrap none>
+                <PartWrap first>
+                  <h6>주문 상태</h6>
+                  <ExCheckWrap>
+                    {checkSales.map((x, index) => (
+                      <ExCheckWrap style={{ marginRight: '15px' }}>
+                        <StyledCheckSubSquDiv
+                          onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
+                          isChecked={check1[index]}
+                        >
+                          <CheckImg2 src="/svg/check.svg" />
+                        </StyledCheckSubSquDiv>
+                        <p>{x}</p>
+                      </ExCheckWrap>
+                    ))}
+                  </ExCheckWrap>
+                </PartWrap>
+              </RowWrap>
+            </FilterLeft>
+            <FilterRight>
+              <DoubleWrap>
+                <h6>제품 번호 </h6>
+                <textarea
+                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
                 />
-              </div>
-              <div style={{ width: '180px' }}>
-                <BlackBtn width={100} height={40}>
-                  검색
-                </BlackBtn>
-              </div>
-            </FilterFooter>
-          </FilterWrap>
+              </DoubleWrap>
+            </FilterRight>
+          </FilterSubcontianer>
         )}
       </div>
 
@@ -167,7 +188,7 @@ const SellOrder = ({}) => {
             <WhiteRedBtn>주문 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getCol={getCol} getRow={getRow} setChoiceComponent={setChoiceComponent} />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>

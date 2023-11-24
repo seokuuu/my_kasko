@@ -13,7 +13,7 @@ import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import BlueBar from '../../../modal/BlueBar/BlueBar'
 import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { FilterWrap } from '../../../modal/External/ExternalFilter'
+import { EditGear, FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
   TCSubContainer,
   FilterContianer,
@@ -51,7 +51,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isArray } from 'lodash'
 import TableTest from '../../Table/TableTest'
 
-
 const ClientDestination = ({ setChoiceComponent }) => {
   // const handleSelectChange = (selectedOption, name) => {
   //   // setInput(prevState => ({
@@ -77,6 +76,12 @@ const ClientDestination = ({ setChoiceComponent }) => {
   const [isModal, setIsModal] = useAtom(blueModalAtom)
   const modalOpen = () => {
     setIsModal(true)
+  }
+
+  const [noticeEdit, setnoticeEdit] = useState(false)
+
+  const noticeEditOnClickHandler = () => {
+    setnoticeEdit((prev) => !prev)
   }
   // ---------------------------------------------------------------------------------------------
   const [getRow, setGetRow] = useState('')
@@ -142,16 +147,49 @@ const ClientDestination = ({ setChoiceComponent }) => {
           {/* 토글 쓰기 */}
           <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
         </FilterHeader>
+        <FilterHeaderAlert>
+          <div style={{ display: 'flex' }}>
+            <div style={{ marginRight: '20px' }}>
+              <img src="/img/notice.png" />
+            </div>
+            {noticeEdit ? (
+              <div style={{ marginTop: '6px' }}>
+                <div>
+                  <input style={{ border: '1px solid' }} />
+                </div>
+                <div>
+                  <input style={{ marginTop: '6px', border: '1px solid' }} />
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div>· 하차지 연락처에 핸드폰번호 미입력시 토요일 하차 불가합니다.</div>
+              </div>
+            )}
+          </div>
+
+          {noticeEdit ? (
+            <EditGear onClick={noticeEditOnClickHandler}>
+              완료
+              <img style={{ marginLeft: '10px' }} src="/img/setting.png" />
+            </EditGear>
+          ) : (
+            <EditGear onClick={noticeEditOnClickHandler}>
+              수정
+              <img style={{ marginLeft: '10px' }} src="/img/setting.png" />
+            </EditGear>
+          )}
+        </FilterHeaderAlert>
         {exFilterToggle && (
           <FilterWrap>
             <FilterSubcontianer>
               <FilterLeft>
                 <RowWrap>
                   <PartWrap>
-                    <h6>고객사</h6>
+                    <h6>고객사 명/고객사코드</h6>
                     <MainSelect />
                     <Input />
-                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen}>
+                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen} fontSize={17}>
                       찾기
                     </GreyBtn>
                   </PartWrap>

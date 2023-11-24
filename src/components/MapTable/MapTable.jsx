@@ -28,6 +28,8 @@ export const ClaimContent = styled.div`
   width: 16.66%;
   justify-content: center;
   align-items: center;
+  color: ${({ bold }) => (bold ? '#17479e' : 'none')};
+  font-weight: ${({ bold }) => (bold ? '700' : 'none')};
 `
 
 export const DateTitle = styled.div`

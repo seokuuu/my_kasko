@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { storageOptions } from '../../../common/Option/SignUp'
 
-import { BlackBtn, GreyBtn, SkyBtn, TGreyBtn, TWhiteBtn, WhiteGrnBtn } from '../../../common/Button/Button'
+import { BlackBtn, BtnBound, GreyBtn, SkyBtn, TGreyBtn, TWhiteBtn, WhiteGrnBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
@@ -11,6 +11,7 @@ import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import {
+  CustomInput,
   DoubleWrap,
   ExInputsWrap,
   FilterContianer,
@@ -21,6 +22,7 @@ import {
   FilterRight,
   FilterSubcontianer,
   Input,
+  MiniInput,
   PWRight,
   PartWrap,
   ResetImg,
@@ -34,6 +36,7 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import Excel from '../../../components/TableInner/Excel'
+import { P } from '../../Sales/SellOrder/SellOrderDetail'
 
 const Bidding = ({}) => {
   const [types, setTypes] = useState('normal') //판매 구분 (단일 - normal / 패키지 - package)
@@ -121,7 +124,7 @@ const Bidding = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>창고 구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
@@ -143,38 +146,28 @@ const Bidding = ({}) => {
                   </GreyBtn>
                 </PartWrap>
               </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
-                  <h6>구분2</h6>
+              <RowWrap none>
+                <PartWrap first>
+                  <h6>구분</h6>
                   <MainSelect />
-                  <span style={{ margin: '0px -10px 0px 5px' }}>~</span>
                   <MainSelect />
                 </PartWrap>
-
-                <PartWrap>
-                  <h6>두께(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
-                <PartWrap />
               </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
+              <RowWrap none>
+                <PartWrap first>
+                  <h6>두께(MM)</h6>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
+                </PartWrap>
                 <PartWrap>
                   <h6>폭(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
                 </PartWrap>
-
                 <PartWrap>
                   <h6>길이(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
                 </PartWrap>
               </RowWrap>
             </FilterLeft>
@@ -231,14 +224,24 @@ const Bidding = ({}) => {
               display: 'flex',
               gap: '10px',
               alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            <TWhiteBtn height={30} width={25}>
+            <p>목적지</p>
+            <CustomInput placeholder="h50" width={60} height={32} />
+            <CustomInput placeholder="목적지명" width={120} height={32} />
+            <CustomInput placeholder="도착지 연락처" width={120} height={32} />
+            <TWhiteBtn style={{ width: '50px' }} height={30}>
               찾기
             </TWhiteBtn>
-            <TGreyBtn height={30} width={25}>
+            <TGreyBtn>적용</TGreyBtn>
+            <BtnBound style={{ margin: '0px' }} />
+            <p>일괄 경매 응찰</p>
+            <CustomInput placeholder="응찰가 입력" width={120} height={32} />
+            <TGreyBtn height={30} style={{ width: '50px' }}>
               적용
             </TGreyBtn>
+            <BtnBound style={{ margin: '0px' }} />
             <SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50}>
               응찰
             </SkyBtn>

@@ -46,6 +46,7 @@ import {
   FilterHeaderAlert,
   FHALeft,
   ExInputsWrap,
+  MiniInput,
 } from '../../../modal/External/ExternalFilter'
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
@@ -126,17 +127,16 @@ const Single = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>창고 구분</h6>
                   <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
+                    <MainSelect />
                   </PWRight>
                 </PartWrap>
-
                 <PartWrap>
                   <h6>매입처</h6>
                   <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
+                    <MainSelect />
                   </PWRight>
                 </PartWrap>
 
@@ -148,48 +148,30 @@ const Single = ({}) => {
                   </GreyBtn>
                 </PartWrap>
               </RowWrap>
+
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>구분</h6>
                   <MainSelect />
                   <MainSelect />
                   <MainSelect />
-                  <MainSelect />
-                  <MainSelect />
                 </PartWrap>
               </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
-                  <h6>유찰 횟수</h6>
-                  <MainSelect />
-                  <span style={{ margin: '0px -10px 0px 5px' }}>~</span>
-                  <MainSelect />
-                </PartWrap>
-
-                <PartWrap>
+              <RowWrap none>
+                <PartWrap first>
                   <h6>두께(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
                 </PartWrap>
-                <PartWrap />
-              </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
                 <PartWrap>
                   <h6>폭(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
                 </PartWrap>
-
                 <PartWrap>
                   <h6>길이(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
                 </PartWrap>
               </RowWrap>
             </FilterLeft>

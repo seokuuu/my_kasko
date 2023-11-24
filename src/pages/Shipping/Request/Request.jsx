@@ -37,13 +37,16 @@ import {
   FilterHeaderAlert,
   FHALeft,
   ExInputsWrap,
+  CustomInput,
 } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
 import { TableWrap, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../components/MapTable/MapTable'
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import Excel from '../../../components/TableInner/Excel'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
-const Request = ({}) => {
+const Request = ({ setChoiceComponent }) => {
   const titleData = [
     '제품 중량(kg)',
     '제품 공급가액',
@@ -107,8 +110,9 @@ const Request = ({}) => {
     // }
   }, [checkRadio])
 
-  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioTableDummy.length }, () => false))
-
+  const [checkRadio2, setCheckRadio2] = useState(
+    Array.from({ length: radioTableDummy.length }, (_, index) => index === 0),
+  )
   const [savedRadioValue2, setSavedRadioValue2] = useState('')
   useEffect(() => {
     const checkedIndex = checkRadio2.findIndex((isChecked, index) => isChecked && index < radioTableDummy.length)
@@ -124,7 +128,17 @@ const Request = ({}) => {
   return (
     <FilterContianer>
       <FilterHeader>
-        <h1>출고 요청</h1>
+        <div style={{ display: 'flex' }}>
+          <h1>출고 요청</h1>
+          <Subtitle2
+            onClick={() => {
+              setChoiceComponent('requestRecom')
+            }}
+          >
+            선별 추천
+          </Subtitle2>
+        </div>
+
         {/* 토글 쓰기 */}
         <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
       </FilterHeader>
@@ -133,8 +147,8 @@ const Request = ({}) => {
         <>
           <FilterSubcontianer>
             <FilterLeft>
-              <RowWrap>
-                <PartWrap>
+              <RowWrap none>
+                <PartWrap first>
                   <h6>창고 구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
@@ -142,15 +156,8 @@ const Request = ({}) => {
                 </PartWrap>
 
                 <PartWrap>
-                  <h6>고객사</h6>
+                  <h6>고객사 명/고객사코드</h6>
                   <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>목적지</h6>
                   <Input />
                   <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
@@ -158,16 +165,26 @@ const Request = ({}) => {
                 </PartWrap>
               </RowWrap>
               <RowWrap>
-                <PartWrap>
-                  <h6>입고일자</h6>
+                <PartWrap first>
+                  <h6>목적지</h6>
+                  <CustomInput width={160} height={36} />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                    찾기
+                  </GreyBtn>
+                </PartWrap>
+              </RowWrap>
+              <RowWrap>
+                <PartWrap first>
+                  <h6>경매 일자</h6>
                   <GridWrap>
                     <DateGrid bgColor={'white'} fontSize={17} />
                     <Tilde>~</Tilde>
                     <DateGrid bgColor={'white'} fontSize={17} />
                   </GridWrap>
                 </PartWrap>
+
                 <PartWrap>
-                  <h6 style={{ width: '120px' }}>출하 지시 일자</h6>
+                  <h6>출하 지시 일자</h6>
                   <GridWrap>
                     <DateGrid bgColor={'white'} fontSize={17} />
                     <Tilde>~</Tilde>
@@ -175,12 +192,10 @@ const Request = ({}) => {
                   </GridWrap>
                 </PartWrap>
               </RowWrap>
-              <RowWrap style={{ border: '0px' }}>
-                <PartWrap>
+              <RowWrap none>
+                <PartWrap first>
                   <h6>구분</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
+                  <MainSelect />
                 </PartWrap>
               </RowWrap>
             </FilterLeft>
@@ -213,6 +228,25 @@ const Request = ({}) => {
       )}
 
       <TableContianer>
+        <TCSubContainer bor>
+          <div>
+            조회 목록 (선택 <span>2</span> / 50개 )
+            <Hidden />
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <PageDropdown />
+            <Excel />
+          </div>
+        </TCSubContainer>
+        <TCSubContainer>
+          <div>
+            선택 중량<span> 2 </span>kg / 총 중량 kg
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteRedBtn>출하 취소</WhiteRedBtn>
+            <WhiteSkyBtn>선별 목록 추가</WhiteSkyBtn>
+          </div>
+        </TCSubContainer>
         <Test3 />
       </TableContianer>
       <FilterHeader style={{}}>
@@ -232,12 +266,13 @@ const Request = ({}) => {
                 {radioTableDummy.map((text, index) => (
                   <RadioMainDiv key={index}>
                     <RadioCircleDiv
+                      isWhite
                       isChecked={checkRadio2[index]}
                       onClick={() => {
                         setCheckRadio2(CheckBox(checkRadio2, checkRadio2.length, index))
                       }}
                     >
-                      <RadioInnerCircleDiv />
+                      <RadioInnerCircleDiv isChecked={checkRadio2[index]} />
                     </RadioCircleDiv>
 
                     <div style={{ display: 'flex', marginLeft: '5px' }}>
@@ -278,7 +313,7 @@ const Request = ({}) => {
                   setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                 }}
               >
-                <RadioInnerCircleDiv />
+                <RadioInnerCircleDiv isChecked={checkRadio[index]} />
               </RadioCircleDiv>
 
               <div style={{ display: 'flex', marginLeft: '5px' }}>
@@ -324,5 +359,21 @@ const SpaceDiv = styled.div`
     font-size: 16px;
     color: #6b6b6b;
     width: 100px;
+  }
+`
+
+const Subtitle2 = styled.h5`
+  margin-left: 20px;
+  display: flex;
+  justify-content: ce;
+  align-items: center;
+  gap: 20px;
+  font-size: 18px;
+  height: min-content;
+  margin-top: 3px;
+  color: #4c83d6;
+  cursor: pointer;
+  &:hover {
+    font-weight: 700;
   }
 `

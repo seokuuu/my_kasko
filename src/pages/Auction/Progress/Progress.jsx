@@ -37,6 +37,7 @@ import {
   FHALeft,
   ExInputsWrap,
   TCSubContainer,
+  MiniInput,
 } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
 
@@ -95,20 +96,12 @@ const Progress = ({}) => {
         <>
           <FilterSubcontianer>
             <FilterLeft>
-              <RowWrap>
-                <PartWrap>
+              <RowWrap none>
+                <PartWrap first>
                   <h6>창고 구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>고객사 명</h6>
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
                 </PartWrap>
 
                 <PartWrap>
@@ -119,38 +112,38 @@ const Progress = ({}) => {
                   </GreyBtn>
                 </PartWrap>
               </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
+              <RowWrap>
                 <PartWrap>
-                  <h6>구분2</h6>
-                  <MainSelect />
-                  <span style={{ margin: '0px -10px 0px 5px' }}>~</span>
-                  <MainSelect />
+                  <h6>고객사 명/고객사코드</h6>
+                  <Input />
+                  <Input />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                    찾기
+                  </GreyBtn>
                 </PartWrap>
-
-                <PartWrap>
-                  <h6>두께(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
-                <PartWrap />
               </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
+              <RowWrap none>
+                <PartWrap first>
+                  <h6>구분</h6>
+                  <MainSelect />
+                  <MainSelect />
+                </PartWrap>
+              </RowWrap>
+              <RowWrap none>
+                <PartWrap first>
+                  <h6>두께(MM)</h6>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
+                </PartWrap>
                 <PartWrap>
                   <h6>폭(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
                 </PartWrap>
-
                 <PartWrap>
                   <h6>길이(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
                 </PartWrap>
               </RowWrap>
             </FilterLeft>

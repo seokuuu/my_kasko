@@ -11,6 +11,7 @@ import {
 import { blueModalAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 import { GreyBtn } from '../../common/Button/Button'
+import RoundAucListEdit from '../../pages/Auction/Round/RoundAucListEdit'
 
 const BlueBar = ({ title }) => {
   const [isModal, setIsModal] = useAtom(blueModalAtom)
@@ -22,15 +23,16 @@ const BlueBar = ({ title }) => {
   return (
     <>
       <NonFadeOverlay />
-      <ModalContainer width={550}>
+      <ModalContainer width={1500}>
         <BlueBarHeader>
-          <div>{title}</div>
+          {/* <div>{title}</div> */}
+          <div>경매 제품 추가(단일)</div>
           <div>
             <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
           </div>
         </BlueBarHeader>
         <BlueSubContainer>
-          {title === '규격 약호 찾기' && (
+          {/* {title === '규격 약호 찾기' && (
             <BSCSWrap>
               <div>검색</div>
               <input placeholder="회사 명" />
@@ -38,7 +40,8 @@ const BlueBar = ({ title }) => {
                 찾기
               </GreyBtn>
             </BSCSWrap>
-          )}
+          )} */}
+          <RoundAucListEdit />
         </BlueSubContainer>
       </ModalContainer>
     </>

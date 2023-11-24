@@ -435,7 +435,7 @@ const ClientModal = ({ setModal }) => {
                               setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                             }}
                           >
-                            <RadioInnerCircleDiv />
+                            <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                           </RadioCircleDiv>
                           <div style={{ display: 'flex', marginLeft: '0px' }}>{text}</div>
                         </RadioMainDiv>
@@ -464,7 +464,7 @@ const ClientModal = ({ setModal }) => {
                               setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                             }}
                           >
-                            <RadioInnerCircleDiv />
+                            <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                           </RadioCircleDiv>
                           <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
                         </RadioMainDiv>
@@ -488,7 +488,12 @@ const ClientModal = ({ setModal }) => {
                       defaultValue={depositOptions[0]}
                       onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
                     />
-                    <CustomInput name="depositManagerName" placeholder="담당자 성함 입력" width={190} onChange={handleSubmitForm}/>
+                    <CustomInput
+                      name="depositManagerName"
+                      placeholder="담당자 성함 입력"
+                      width={190}
+                      onChange={handleSubmitForm}
+                    />
                   </FlexContent>
                 </FlexPart>
 
@@ -497,7 +502,11 @@ const ClientModal = ({ setModal }) => {
                     휴대폰 번호<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="depositManagerPhone" placeholder="연락처 입력 ('-' 제외)" onChange={handleSubmitForm}/>
+                    <FlexInput
+                      name="depositManagerPhone"
+                      placeholder="연락처 입력 ('-' 제외)"
+                      onChange={handleSubmitForm}
+                    />
                   </FlexContent>
                 </FlexPart>
                 <EqualCheckWrap>
@@ -515,7 +524,12 @@ const ClientModal = ({ setModal }) => {
                       defaultValue={depositOptions[0]}
                       onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
                     />
-                    <CustomInput name="releaseManagerName" placeholder=" 담당자 성함 입력" width={190} onChange={handleSubmitForm}/>
+                    <CustomInput
+                      name="releaseManagerName"
+                      placeholder=" 담당자 성함 입력"
+                      width={190}
+                      onChange={handleSubmitForm}
+                    />
                   </FlexContent>
                 </FlexPart>
 
@@ -524,7 +538,11 @@ const ClientModal = ({ setModal }) => {
                     휴대폰 번호<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="releaseManagerPhone" placeholder="연락처 입력 ('-' 제외)" onChange={handleSubmitForm}/>
+                    <FlexInput
+                      name="releaseManagerPhone"
+                      placeholder="연락처 입력 ('-' 제외)"
+                      onChange={handleSubmitForm}
+                    />
                   </FlexContent>
                 </FlexPart>
 
@@ -565,7 +583,7 @@ const ClientModal = ({ setModal }) => {
                               setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                             }}
                           >
-                            <RadioInnerCircleDiv />
+                            <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                           </RadioCircleDiv>
                           <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
                         </RadioMainDiv>

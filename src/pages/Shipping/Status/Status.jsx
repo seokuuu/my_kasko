@@ -37,10 +37,12 @@ import {
   FilterHeaderAlert,
   FHALeft,
   ExInputsWrap,
+  CustomInput,
 } from '../../../modal/External/ExternalFilter'
 
 import { ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../Claim/ClaimRegister'
 import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 const Status = ({}) => {
   const titleData = ['제품 중량(kg)', '제품 공급가액', '운반비 공급가액']
@@ -83,8 +85,32 @@ const Status = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
+                <PartWrap first>
+                  <h6>창고 구분</h6>
+                  <PWRight>
+                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
+                  </PWRight>
+                </PartWrap>
                 <PartWrap>
-                  <h6 style={{ width: '120px' }}>출하 지시 일자</h6>
+                  <h6>목적지</h6>
+                  <CustomInput width={160} height={36} />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                    찾기
+                  </GreyBtn>
+                </PartWrap>
+                <PartWrap>
+                  <h6>고객사 명/고객사코드</h6>
+                  <Input />
+                  <Input />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                    찾기
+                  </GreyBtn>
+                </PartWrap>
+              </RowWrap>
+
+              <RowWrap none>
+                <PartWrap>
+                  <h6 style={{ width: '130px' }}>출하 지시 일자</h6>
                   <GridWrap>
                     <DateGrid bgColor={'white'} fontSize={17} />
                     <Tilde>~</Tilde>
@@ -93,31 +119,23 @@ const Status = ({}) => {
                 </PartWrap>
 
                 <PartWrap>
-                  <h6 style={{ width: '70px' }}>고객사</h6>
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
+                  <h6>출고 요청 일자</h6>
+                  <GridWrap>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                  </GridWrap>
                 </PartWrap>
-                <PartWrap />
-                <PartWrap />
-                <PartWrap />
               </RowWrap>
-              <RowWrap>
+              <RowWrap none>
                 <PartWrap>
-                  <h6 style={{ width: '50px' }}>구분</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
+                  <h6 style={{ width: '130px' }}>출고 일자</h6>
+                  <GridWrap>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                  </GridWrap>
                 </PartWrap>
-                <PartWrap>
-                  <h6 style={{ width: '70px' }}>고객사</h6>
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-                <PartWrap />
               </RowWrap>
             </FilterLeft>
           </FilterSubcontianer>
@@ -146,7 +164,9 @@ const Status = ({}) => {
             조회 목록 (선택 <span>2</span> / 50개 )
             <Hidden />
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <PageDropdown />
+          </div>
         </TCSubContainer>
         <TCSubContainer>
           <div></div>

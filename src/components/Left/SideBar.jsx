@@ -36,10 +36,10 @@ const data = [
     //Product
     depth1: '판매 제품 관리',
     depth2: [
-      { title: '단일 제품 관리', link: 'product/single' },
+      { title: '단일 관리', link: 'product/single' },
       { title: '패키지 관리', link: 'product/package' },
       { title: '추천 제품 관리', link: 'product/recommend' },
-      { title: 'Pro.no 관리', link: 'product/prono' },
+      // { title: 'Pro.no 관리', link: 'product/prono' },
     ],
   },
   {
@@ -60,7 +60,7 @@ const data = [
     depth2: [
       { title: '단일', link: 'sales/single' },
       { title: '패키지', link: 'sales/package' },
-      { title: '상시 판매 주문 확인', link: 'sales/order' },
+      { title: '주문 확인', link: 'sales/order' },
     ],
   },
   {
@@ -96,7 +96,6 @@ const data = [
       { title: '고객사 관리', link: 'usermanage/client' },
       { title: '고객사 목적지 관리', link: 'usermanage/clientdestination' },
       { title: '사용자 관리', link: 'usermanage/usermanage' },
-      { title: '운송사 관리', link: 'usermanage/carriermanage' },
       { title: '개인정보 수정', link: 'usermanage/profileedit' },
     ],
   },

@@ -47,10 +47,14 @@ import Hidden from '../../../components/TableInner/Hidden'
 import { ArrowDropDown } from '@mui/icons-material'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
+import { useAtom } from 'jotai'
+
 const DisRegisterDetail = ({}) => {
   const radioTableDummy = ['Y', 'N']
 
-  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioTableDummy.length }, () => false))
+  const [checkRadio2, setCheckRadio2] = useState(
+    Array.from({ length: radioTableDummy.length }, (_, index) => index === 0),
+  )
 
   const [savedRadioValue2, setSavedRadioValue2] = useState('')
   useEffect(() => {
@@ -108,7 +112,7 @@ const DisRegisterDetail = ({}) => {
                         setCheckRadio2(CheckBox(checkRadio2, checkRadio2.length, index))
                       }}
                     >
-                      <RadioInnerCircleDiv />
+                      <RadioInnerCircleDiv isChecked={checkRadio2[index]} />
                     </RadioCircleDiv>
 
                     <div style={{ display: 'flex', marginLeft: '5px' }}>

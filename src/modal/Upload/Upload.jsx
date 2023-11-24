@@ -30,11 +30,22 @@ import styled from 'styled-components'
 import { KrFiledtoEng } from '../../lib/tableHelpers'
 import { readExcelFile } from '../../utils/ReadExcelFile'
 
+import { CustomSelect } from '../../common/Option/Main'
 import { Input, Table, Td, Th } from '../Table/TableModal'
 
 // 1. Upload를 사용하는 컴포넌트에서 originEngRowField props를 받는다
 // ex) Destination.jsx에서 StandardDestinaionFields를 받음.
 // 2. excelToJson, setExcelToJson을 Props로 내려받아, handleFileExcel에 처리된 mappedData를 set으로 받는다
+
+// 예시 )
+// export const StandardTransportationPost = {
+//   출발지: 'auto',
+//   '목적지 코드': 'auto',
+//   '목적지 명': 'input',
+//   '제품 구분': 'auto',
+//   '단가 적용 일자': 'auto',
+//   '적용 단가': 'input',
+// }
 
 // 목적지 등록 기획 오류로 인한 보류 !!!
 const Upload = ({
@@ -49,6 +60,8 @@ const Upload = ({
   getRow,
   uidAtom,
   onEditHandler,
+  dropdownProps,
+  width,
 }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
@@ -124,11 +137,18 @@ const Upload = ({
 
   console.log('모멘트', moment().format('YYYY-MM-DD'))
 
+  const propsWidth = () => {
+    if (width) {
+      return width
+    } else {
+      return 850
+    }
+  }
   return (
     // 재고 관리 - 판매 구분 변경
     <>
       <FadeOverlay />
-      <ModalContainer width={850}>
+      <ModalContainer width={propsWidth}>
         <BlueBarHeader>
           <div>{title}</div>
           <div>
@@ -148,7 +168,7 @@ const Upload = ({
                           setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                         }}
                       >
-                        <RadioInnerCircleDiv />
+                        <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                       </RadioCircleDiv>
                       <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
                     </RadioMainDiv>
@@ -219,7 +239,20 @@ const Upload = ({
                               <Input type="text" />
                             )
                           ) : value === 'dropdown' ? (
-                            <Dropdown />
+                            <CustomSelect
+                              options={dropdownProps[0].options}
+                              defaultValue={dropdownProps[0].defaultValue}
+                            />
+                          ) : value === 'dropdown2' ? (
+                            <CustomSelect
+                              options={dropdownProps[1].options}
+                              defaultValue={dropdownProps[1].defaultValue}
+                            />
+                          ) : value === 'dropdown3' ? (
+                            <CustomSelect
+                              options={dropdownProps[2].options}
+                              defaultValue={dropdownProps[2].defaultValue}
+                            />
                           ) : (
                             ''
                           )}

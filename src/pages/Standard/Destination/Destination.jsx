@@ -29,6 +29,8 @@ import {
   StandardDestinationPost,
 } from '../../../constants/admin/Standard'
 
+import { AuctionUnitPricePost } from '../../../constants/admin/Auction'
+
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isArray } from 'lodash'
 import useMutationQuery from '../../../hooks/useMutationQuery'
@@ -54,6 +56,7 @@ import {
   popupTypeAtom,
   selectedRowsAtom,
 } from '../../../store/Layout/Layout'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 const Destination = ({}) => {
   const [modalSwitch, setModalSwitch] = useAtom(modalAtom)
@@ -238,7 +241,7 @@ const Destination = ({}) => {
                   <PartWrap>
                     <h6>목적지</h6>
                     <Input />
-                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen}>
+                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                       찾기
                     </GreyBtn>
                   </PartWrap>
@@ -277,7 +280,9 @@ const Destination = ({}) => {
             조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / 50개 )
             <Hidden />
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <PageDropdown />
+          </div>
         </TCSubContainer>
         <TCSubContainer>
           <div>

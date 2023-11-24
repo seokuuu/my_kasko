@@ -44,11 +44,12 @@ const asDate = (dateAsString) => {
   return new Date(Number.parseInt(splitFields[2]), Number.parseInt(splitFields[1]) - 1, Number.parseInt(splitFields[0]))
 }
 
-const Test3 = ({ hei }) => {
+const Test3 = ({ hei, hei2 }) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
   const gridRef = useRef()
-  const containerStyle = useMemo(() => ({ width: '100%', height: '500px' }), [])
+  const containerStyle = useMemo(() => ({ width: '100%', height: hei2 || '500px' }), [hei2])
+
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
   const [rowData, setRowData] = useState()
 
@@ -338,19 +339,19 @@ const Test3 = ({ hei }) => {
       {isModal && (
         <>
           <NonFadeOverlay />
-          <ModalContainer width={550}>
-            <BlueBarHeader>
+          <ModalContainer width={600} style={{ borderRadius: '4px', boxShadow: '0px 4px 20px 0px rgba(0,0,0,0.10)' }}>
+            <BlueBarHeader style={{ borderTopLeftRadius: '4px', borderTopRightRadius: '10px' }}>
               <div>규격 약호 찾기</div>
               <div>
                 <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
               </div>
             </BlueBarHeader>
-            <BlueSubContainer>
+            <BlueSubContainer style={{ padding: '30px' }}>
               <FindSpec>
                 <FSTitle>
-                  <div>검색</div>
+                  <div style={{ fontSize: '16px', justifyContent: 'space-evenly' }}>검색</div>
                   <RBInput placeholder="회사 명" value={filterText} onChange={(e) => setFilterText(e.target.value)} />
-                  <GreyBtn width={15} height={30} fontSize={16} onClick={onFindButtonClick}>
+                  <GreyBtn width={13} height={30} fontSize={16} onClick={onFindButtonClick}>
                     찾기
                   </GreyBtn>
                 </FSTitle>
@@ -396,7 +397,7 @@ const TestHeader = styled.div`
 
 const FindSpec = styled.div`
   width: 100%;
-  height: 300px;
+  height: 250px;
 `
 
 const FSTitle = styled.div`
@@ -407,6 +408,9 @@ const FSTitle = styled.div`
   align-items: center;
   justify-content: space-around;
 
+  & > * {
+  }
+
   input {
     border: 1px solid #c8c8c8;
     height: 30px;
@@ -416,28 +420,29 @@ const FSTitle = styled.div`
 
 const FSResult = styled.div`
   width: 100%;
-  height: 295px;
+  height: 230px;
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
-  padding: 5px;
-  overflow: scroll;
+  gap: 10px;
+  padding: 10px;
+  overflow-y: scroll;
   border: 1px solid #c8c8c8;
 `
 
 const ResultBlock = styled.div`
-  width: 24%;
-  height: 50px;
-  border: 1px solid black;
+  width: 23%;
+  height: 45px;
+  background-color: #f1f1f1;
   cursor: pointer;
   font-size: 16px;
   justify-content: center;
   align-items: center;
   text-align: center;
   display: flex;
+  margin-left: 2px;
 
   &:hover {
-    background-color: #eee;
+    background-color: #f2fce8;
   }
 `
 

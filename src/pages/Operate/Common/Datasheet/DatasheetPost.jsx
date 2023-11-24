@@ -1,22 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { styled } from 'styled-components'
 
-import TextEditor from '../../../../components/Editor/TextEditor'
-import DateGrid from '../../../../components/DateGrid/DateGrid'
-import { claimOngoingStatus, ClaimSelect } from '../../../../common/Option/ClaimPost'
 import { BlackBtn, WhiteBtn } from '../../../../common/Button/Button'
 import { CenterRectangleWrap } from '../../../../common/OnePage/OnePage.Styled'
-
-import { StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../../common/Check/CheckImg'
+import TextEditor from '../../../../components/Editor/TextEditor'
 
 import { CheckBox } from '../../../../common/Check/Checkbox'
 
-import { CheckImg2 } from '../../../../common/Check/CheckImg'
-
-import { DateTitle, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../../components/MapTable/MapTable'
-import { CustomInput, InputA, PropsInput } from '../../../../common/Input/Input'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../../common/Check/RadioImg'
+import { PropsInput } from '../../../../common/Input/Input'
 import { ExRadioWrap } from '../../../../modal/External/ExternalFilter'
-import { RadioMainDiv, RadioInnerCircleDiv, RadioCircleDiv } from '../../../../common/Check/RadioImg'
 
 import { TxtDiv } from '../../../User/SignUp/SignUp.Styled'
 // 클레임 등록
@@ -47,7 +40,7 @@ const DatasheetPost = () => {
                           setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                         }}
                       >
-                        <RadioInnerCircleDiv />
+                        <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                       </RadioCircleDiv>
                       <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
                     </RadioMainDiv>

@@ -14,7 +14,7 @@ var headerCheckboxSelection = function (params) {
     기준 관리 - 목적지 관리 (Destination)
 ============================== */
 
-// 기준관리 - 목적지관리 fields
+// 기준관리 - 목적지관리 Modal fields
 export const StandardDestinaionFields = {
   '목적지 고유 번호': 'uid',
   '목적지 코드': 'code',
@@ -25,7 +25,7 @@ export const StandardDestinaionFields = {
   수정일: 'updateDate',
 }
 
-// 기준관리 - 목적지관리 post
+// 기준관리 - 목적지관리 Modal post
 export const StandardDestinationPost = {
   '목적지 코드': 'dropdown',
   '목적지 명': 'input',
@@ -33,7 +33,7 @@ export const StandardDestinationPost = {
   작성일: 'auto',
 }
 
-// 기준관리 - 목적지관리 Edit
+// 기준관리 - 목적지관리 Modal Edit
 export const StandardDestinationEdit = {
   '목적지 코드': 'auto',
   '목적지 명': 'input',

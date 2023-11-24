@@ -83,7 +83,7 @@ const TableModal = ({
   console.log('matchingRow ###', matchingRow)
 
   const filteredRow = Object?.keys(modalInTable)?.reduce((acc, key) => {
-    if (matchingRow[key]) {
+    if (matchingRow && matchingRow[key]) {
       acc[key] = matchingRow[key]
     }
     return acc

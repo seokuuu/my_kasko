@@ -46,6 +46,7 @@ import {
   FilterHeaderAlert,
   FHALeft,
   ExInputsWrap,
+  MiniInput,
 } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
 
@@ -107,21 +108,29 @@ const UserPerformance = ({}) => {
         <>
           <FilterSubcontianer>
             <FilterLeft>
+              <RowWrap none>
+                <PartWrap>
+                  <h6>경매일자</h6>
+                  <GridWrap>
+                    <DateGrid width={130} bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid width={130} bgColor={'white'} fontSize={17} />
+                  </GridWrap>
+                </PartWrap>
+                <PartWrap>
+                  <h6>출고 일자</h6>
+                  <GridWrap>
+                    <DateGrid width={130} bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid width={130} bgColor={'white'} fontSize={17} />
+                  </GridWrap>
+                </PartWrap>
+              </RowWrap>
               <RowWrap>
-                <PartWrap>
-                  <h6>창고 구분</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
+                <PartWrap first>
+                  <h6>창고구분</h6>
+                  <MainSelect />
                 </PartWrap>
-
-                <PartWrap>
-                  <h6>매입처</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
-                </PartWrap>
-
                 <PartWrap>
                   <h6>규격 약호</h6>
                   <Input />
@@ -130,38 +139,39 @@ const UserPerformance = ({}) => {
                   </GreyBtn>
                 </PartWrap>
               </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
-                  <h6>구분2</h6>
+              <RowWrap>
+                <PartWrap first>
+                  <h6>구분</h6>
                   <MainSelect />
-                  <span style={{ margin: '0px -10px 0px 5px' }}>~</span>
                   <MainSelect />
                 </PartWrap>
-
                 <PartWrap>
-                  <h6>두께(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <h6>고객사 명/고객사코드</h6>
+                  <Input />
+                  <Input />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                    찾기
+                  </GreyBtn>
                 </PartWrap>
-                <PartWrap />
               </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
+
+              {/* RowWrap none : border-bottom이 없음
+PartWrap first : Row의 제일 앞에 오는 Part (제목 width 고정용) */}
+              <RowWrap none>
+                <PartWrap first>
+                  <h6>두께(MM)</h6>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
+                </PartWrap>
                 <PartWrap>
                   <h6>폭(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
                 </PartWrap>
-
                 <PartWrap>
                   <h6>길이(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
                 </PartWrap>
               </RowWrap>
             </FilterLeft>

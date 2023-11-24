@@ -4,7 +4,7 @@ import SideBar from '../../../components/Left/SideBar'
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
 import StatusDetail from './StatusDetail'
-
+import Status from './Status'
 import { useState } from 'react'
 
 const StatusDetailPage = () => {
@@ -18,7 +18,7 @@ const StatusDetailPage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <StatusDetail />
+            <Status />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>

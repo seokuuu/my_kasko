@@ -11,6 +11,7 @@ export const calendarAtom = atom(false)
 export const alertAtom = atom(false)
 export const alertAtom2 = atom(false)
 
+// 규격 약호 찾기 Global Modal
 export const blueModalAtom = atom(false)
 
 export const packageCEAtom = atom('')
@@ -46,15 +47,61 @@ export const clientModalAtom = atom(false)
 //사용자 관리 - 고객사 관리파트 회원제한모달
 export const AuctionRestrictionModal = atom(false)
 
-// 기준 관리
+/* ==============================
+     주문 관리 (Order)
+============================== */
+
+export const OrderCellAtom = atom({
+  auctionNumber: '',
+  customerCode: '',
+  storage: '',
+  customerDestinationUid: '',
+})
+
+/* ==============================
+    출고 관리 (Standard)
+============================== */
+
+// 배차기사 관리 - 배차 기사 등록 modal
+export const StandardDispatchPostAtom = atom(false)
+
+// 배차기사 관리 - 배차 기사 수정 modal
+export const StandardDispatchEditAtom = atom(false)
+
+// 배차/출고등록  -
+export const StandardDispatchDetailAtom = atom(false)
+
+/* ==============================
+     경매 관리 (Auction)
+============================== */
+
+// 경매 관리 - 경매 회차 관리 / 경매 목록 수정 Modal
+// 기본 : 경매 회차 관리
+// 수정 : 경매 목록 수정(단일)
+export const aucProListEditAtom = atom('기본')
+
+// 경매 관리 - 경매 회차 관리 / 경매 회차 등록 Modal
+export const roundPostModalAtom = atom(false)
+
+// 경매 목록 수정 - 제품 추가 Modal
+export const aucProAddModalAtom = atom(false)
+
+// 경매 낙찰관리 - 낙찰 생성 - 고객사 찾기 버튼 Modal
+export const WinningCreateFindAtom = atom(false)
+
+/* ==============================
+    기준 관리 (Standard)
+============================== */
 
 //목적지 관리 - 목적지 등록 Modal
 export const modalAtom = atom(false)
 
 export const popupAtom = atom(false)
 
-//모든 수정 버튼의 Modal
+//수정 버튼의 Modal (test)
 export const btnCellRenderAtom = atom(false)
+
+export const StandardConsoliateEdit = atom(false)
 
 //목적지 관리 - 목적지 수정버튼 Uid
 export const btnCellUidAtom = atom('')
@@ -80,6 +127,19 @@ export const surTypeAtom = atom('')
 //합짐비 관리 - 합짐비 수정 버튼 Modal
 export const consolEditModalAtom = atom('')
 
+/* ==============================
+    출고 관리 (shipping)
+============================== */
+
+//출고 관리 - 배차기사 관리 등록 / 수정 Modal
+export const dispatchPostEditAtom = atom(false)
+
+//출고 관리 - 배차기사 관리 등록 / 수정  타입 지정
+export const dispatchTypeAtom = atom('등록')
+
+//출고 관리 - 출고 실적 - 추가비 및 공차비 추가 Momal
+export const achievementAddedAtom = atom(false)
+
 export const popupTypeAtom = atom('')
 
 export const popupObject = atom({
@@ -102,3 +162,13 @@ export const engRowTitle = atom('')
 export const excelToJsonAtom = atom('')
 
 export const onClickCheckAtom = atom(false)
+
+// 테이블 모달에 대한 atom
+// 해당 모달을
+// 한 컴포넌트에서 모달 갯수가 많으면 ..? 어떻게 관리?
+// bluebar에서 관리를 하는게 좋나?
+
+//패키지 상세 보기
+export const packDetailAuctView = atom(false)
+
+export const modal1 = atom(false)

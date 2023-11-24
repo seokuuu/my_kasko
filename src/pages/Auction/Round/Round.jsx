@@ -1,54 +1,55 @@
-import { useState, useEffect, useCallback } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
-import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { useCallback, useEffect, useState } from 'react'
+import { BlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn, ExcelBtn, YellBtn, TGreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
+import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { toggleAtom } from '../../../store/Layout/Layout'
+import Test3 from '../../Test/Test3'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import {
+  DoubleWrap,
+  ExRadioWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
   FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
+  FilterSubcontianer,
   GridWrap,
-  Tilde,
-  TableBottomWrap,
-  DoubleWrap,
+  Input,
+  PartWrap,
   ResetImg,
-  TableContianer,
-  ExCheckWrap,
-  ExCheckDiv,
-  ExInputsWrap,
-  ExRadioWrap,
+  RowWrap,
+  StyledHeading,
+  StyledSubHeading,
   SubTitle,
   TCSubContainer,
+  TableBottomWrap,
+  TableContianer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import { useAtom } from 'jotai'
 import { deleteAuction, getAuction } from '../../../api/auction/round'
-import useReactQuery from '../../../hooks/useReactQuery'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import useMutationQuery from '../../../hooks/useMutationQuery'
+import useReactQuery from '../../../hooks/useReactQuery'
+import AuctionRound from '../../../modal/Multi/AuctionRound'
+import { roundPostModalAtom } from '../../../store/Layout/Layout'
 
 const Round = ({}) => {
+  const [roundModal, setRoundModal] = useAtom(roundPostModalAtom)
+  const [types, setTypes] = useState('normal')
+
+  console.log('types', types)
   const radioDummy = ['전체', '미진행', '진행중', '종료']
+  const radioDummy2 = ['불량', '제외 요청', '기타 사유']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, (_, index) => index === 0))
 
   const [savedRadioValue, setSavedRadioValue] = useState('')
   useEffect(() => {
@@ -154,8 +155,12 @@ const Round = ({}) => {
         <div style={{ display: 'flex' }}>
           <h1>경매 회차 관리</h1>
           <SubTitle>
-            <h5>단일</h5>
-            <h6>패키지</h6>
+            <StyledHeading isActive={types === 'normal'} onClick={() => setTypes('normal')}>
+              단일
+            </StyledHeading>
+            <StyledSubHeading isActive={types === 'package'} onClick={() => setTypes('package')}>
+              패키지
+            </StyledSubHeading>
           </SubTitle>
         </div>
         {/* 토글 쓰기 */}
@@ -166,8 +171,8 @@ const Round = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
-                <PartWrap>
-                  <h6>입고일자</h6>
+                <PartWrap first>
+                  <h6>경매 일자</h6>
                   <GridWrap>
                     <DateGrid bgColor={'white'} fontSize={17} />
                     <Tilde>~</Tilde>
@@ -175,14 +180,14 @@ const Round = ({}) => {
                   </GridWrap>
                 </PartWrap>
                 <PartWrap>
-                  <h6 style={{ width: '150px' }}>경매 회차 번호</h6>
+                  <h6>경매 회차 번호</h6>
                   <Input />
                 </PartWrap>
                 <PartWrap />
               </RowWrap>
 
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>진행 상태</h6>
                   <ExRadioWrap>
                     {radioDummy.map((text, index) => (
@@ -193,7 +198,7 @@ const Round = ({}) => {
                             setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                           }}
                         >
-                          <RadioInnerCircleDiv />
+                          <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                         </RadioCircleDiv>
                         <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
                       </RadioMainDiv>
@@ -244,7 +249,13 @@ const Round = ({}) => {
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn onClick={handleRemoveBtn}>회차 삭제</WhiteRedBtn>
-            <WhiteSkyBtn>경매 회차 등록</WhiteSkyBtn>
+            <WhiteSkyBtn
+              onClick={() => {
+                setRoundModal(true)
+              }}
+            >
+              경매 회차 등록
+            </WhiteSkyBtn>
           </div>
         </TCSubContainer>
         <Test3 getRow={row} getCol={getCol} />
@@ -253,6 +264,7 @@ const Round = ({}) => {
             제품 추가
           </BlackBtn>
         </TableBottomWrap>
+        {roundModal && <AuctionRound setRoundModal={setRoundModal} />}
       </TableContianer>
     </FilterContianer>
   )

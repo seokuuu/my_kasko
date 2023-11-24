@@ -1,40 +1,32 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import {
-  NonFadeOverlay,
-  ModalContainer,
-  WhiteCloseBtn,
-  BlueSubContainer,
   BlueBarHeader,
-  BlueMainDiv,
-  BlueSubDiv,
-  BlueRadioWrap,
-  BlueInput,
   BlueBlackBtn,
   BlueBtnWrap,
-  BlueOneDiv,
   BlueHalfDiv,
+  BlueInput,
+  BlueMainDiv,
+  BlueOneDiv,
+  BlueSubContainer,
+  FadeOverlay,
+  ModalContainer,
+  WhiteCloseBtn,
 } from '../Common/Common.Styled'
 
 import { BlackBtn } from '../../common/Button/Button'
 
-import { blueModalAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
+import { blueModalAtom } from '../../store/Layout/Layout'
 
-import { ExRadioWrap } from '../External/ExternalFilter'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
-
-import { CheckBox } from '../../common/Check/Checkbox'
-import { styled } from 'styled-components'
 import { CustomSelect } from '../../common/Option/Main'
 
 import { storageOptions } from '../../common/Option/SignUp'
 
-const DispatchPost = () => {
+const DispatchPost = ({ setIsModalPost }) => {
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
   const modalClose = () => {
-    setIsModal(false)
+    setIsModalPost(false)
   }
 
   const radioDummy = ['경매', '상시']
@@ -46,7 +38,7 @@ const DispatchPost = () => {
   return (
     // 판매 제품 관리 - 패키지 관리
     <>
-      <NonFadeOverlay />
+      <FadeOverlay />
       <ModalContainer width={550}>
         <BlueBarHeader>
           <div>배차 기사 등록</div>
@@ -76,7 +68,7 @@ const DispatchPost = () => {
                   <h6>차량 번호</h6>
                   <div style={{ display: 'block', height: '100px' }}>
                     <BlueInput placeholder="예) 123가5678" />
-                    <BlackBtn style={{ marginTop: '5px' }} fontSize={17} width={90} height={40}>
+                    <BlackBtn style={{ marginTop: '5px' }} fontSize={17} width={100} height={40}>
                       중복 확인{' '}
                     </BlackBtn>
                   </div>

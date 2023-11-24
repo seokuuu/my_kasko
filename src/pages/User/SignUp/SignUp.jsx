@@ -1,70 +1,46 @@
-import React, { useCallback, useState, useEffect, useContext } from 'react'
-import { HeadFootLeftSwitch } from '../../../Router'
-import styled, { createGlobalStyle } from 'styled-components'
-import {
-  Container,
-  SignupContainer,
-  PartBlock,
-  Part,
-  Top,
-  Main,
-  Left,
-  Right,
-  Bottom,
-  BottomItem,
-  TxtDiv,
-  SDropDown,
-  BottomP,
-  CheckBtn,
-  Init,
-  SubmitBtn,
-  DropWrap,
-  Title,
-} from './SignUp.Styled'
-import { TxtInput, TxtCheckInput, TxtDropInput, SInput } from '../../../common/Input/Input'
-import { idRegex, pwRegex, busIdRegex, phoneRegex } from '../../../common/Regex/Regex'
-import DaumPostcode from 'react-daum-postcode'
-import Select from 'react-select'
-import {
-  StyledCheckMainDiv,
-  StyledCheckSubSquDiv,
-  StyledCheckSubDiv,
-  CheckImg,
-  CheckImg2,
-} from '../../../common/Check/CheckImg'
+import React, { useCallback, useEffect, useState } from 'react'
+import styled from 'styled-components'
+import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import { SInput, TxtCheckInput, TxtDropInput, TxtInput } from '../../../common/Input/Input'
+import { busIdRegex, idRegex, phoneRegex, pwRegex } from '../../../common/Regex/Regex'
 import {
-  FadeOverlay,
-  ModalSubContainer,
-  ModalRadioWrap,
-  ModalCloseBtn,
-  ModalContainer,
-} from '../../../modal/Common/Common.Styled'
+  Bottom,
+  BottomItem,
+  BottomP,
+  CheckBtn,
+  Container,
+  DropWrap,
+  Left,
+  Main,
+  Part,
+  PartBlock,
+  Right,
+  SignupContainer,
+  Title,
+  Top,
+  TxtDiv,
+} from './SignUp.Styled'
 
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
 
 import {
-  depositOptions,
-  auctionOptions,
-  emailOptions,
-  releaseOptions,
-  accountOptions,
+  AccountSelect,
   DepositSelect,
   EmailSelect,
-  AccountSelect,
+  accountOptions,
+  auctionOptions,
+  depositOptions,
+  emailOptions,
+  releaseOptions,
 } from '../../../common/Option/SignUp'
-
-import LoginModal from '../../../modal/Login/LoginModal'
 
 import { useAtom } from 'jotai'
 
-import { headerAtom, accordionAtom, subHeaderAtom } from '../../../store/Layout/Layout'
-import { Height } from '@mui/icons-material'
-import { useValidation } from '../../../hooks/useValidation'
 import { signup } from '../../../api/auth'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import { useValidation } from '../../../hooks/useValidation'
+import { accordionAtom, headerAtom, subHeaderAtom } from '../../../store/Layout/Layout'
 
 const SignUp = () => {
   const [showHeader, setShowHeader] = useAtom(headerAtom)
@@ -168,7 +144,7 @@ const SignUp = () => {
   }
 
   const daumPostHandleComplete = (data) => {
-    console.log("data =>" , data)
+    console.log('data =>', data)
     const { address } = data
     setAddress(address)
     setIsDaumPostOpen(false)
@@ -648,7 +624,7 @@ const SignUp = () => {
                             setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                           }}
                         >
-                          <RadioInnerCircleDiv />
+                          <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                         </RadioCircleDiv>
                         <div style={{ display: 'flex', marginLeft: '3px' }}>
                           <p>{text}</p>

@@ -1,45 +1,37 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
+import React, { Fragment, useState } from 'react'
 import { storageOptions } from '../../../common/Option/SignUp'
 
+import { BlackBtn, GreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, ExcelBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
-
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
+import Test3 from '../../Test/Test3'
 
 import {
+  DoubleWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
   FilterRight,
-  RowWrap,
+  FilterSubcontianer,
+  GridWrap,
+  Input,
   PartWrap,
   PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
   ResetImg,
+  RowWrap,
   TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
   TCSubContainer,
+  Tilde,
+  ExCheckWrap,
+  ExCheckDiv,
+  ExInputsWrap,
+  CustomInput,
 } from '../../../modal/External/ExternalFilter'
 
-import { TableWrap, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../components/MapTable/MapTable'
+import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
 
 import Hidden from '../../../components/TableInner/Hidden'
 
@@ -83,8 +75,8 @@ const Register = ({}) => {
         <>
           <FilterSubcontianer>
             <FilterLeft>
-              <RowWrap>
-                <PartWrap>
+              <RowWrap none>
+                <PartWrap first>
                   <h6>창고 구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
@@ -92,15 +84,8 @@ const Register = ({}) => {
                 </PartWrap>
 
                 <PartWrap>
-                  <h6>고객사</h6>
+                  <h6>고객사 명/고객사코드</h6>
                   <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>목적지</h6>
                   <Input />
                   <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
@@ -108,28 +93,28 @@ const Register = ({}) => {
                 </PartWrap>
               </RowWrap>
               <RowWrap>
-                <PartWrap>
-                  <h6>입고일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
-                </PartWrap>
-                <PartWrap>
-                  <h6 style={{ width: '120px' }}>출하 지시 일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
+                <PartWrap first>
+                  <h6>목적지</h6>
+                  <CustomInput width={160} height={36} />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                    찾기
+                  </GreyBtn>
                 </PartWrap>
               </RowWrap>
-              <RowWrap style={{ border: '0px' }}>
-                <PartWrap>
+              <RowWrap style={{ borderBottom: '0px' }}>
+                <PartWrap first>
+                  <h6>주문 일자</h6>
+                  <GridWrap>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                  </GridWrap>
+                </PartWrap>
+
+                <PartWrap first>
                   <h6>구분</h6>
                   <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
+                    <MainSelect />
                   </PWRight>
                 </PartWrap>
               </RowWrap>
@@ -166,10 +151,10 @@ const Register = ({}) => {
           {[0].map((index) => (
             <ClaimRow key={index}>
               {titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
-                <React.Fragment agmentkey={title}>
+                <Fragment agmentkey={title}>
                   <ClaimTitle>{title}</ClaimTitle>
                   <ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
-                </React.Fragment>
+                </Fragment>
               ))}
             </ClaimRow>
           ))}

@@ -1,52 +1,35 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../common/Option/SignUp'
-import Excel from '../../components/TableInner/Excel'
-import { MainSelect } from '../../common/Option/Main'
-import { BlackBtn, BtnWrap, ExcelBtn, WhiteRedBtn, WhiteSkyBtn, SkyBtn } from '../../common/Button/Button'
+import React, { Fragment, useEffect, useState } from 'react'
+import { BlackBtn, SkyBtn, WhiteRedBtn } from '../../common/Button/Button'
 import DateGrid from '../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../common/Toggle/Toggle'
-import { GreyBtn } from '../../common/Button/Button'
-import Test3 from '../Test/Test3'
-import HeaderToggle from '../../components/Toggle/HeaderToggle'
+import Excel from '../../components/TableInner/Excel'
 import { toggleAtom } from '../../store/Layout/Layout'
+import Test3 from '../Test/Test3'
 
 import { CheckBox } from '../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../common/Check/CheckImg'
+import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
 
 import {
-  FilterContianer,
-  FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  TCSubContainer,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-  ExCheckWrap,
   ExCheckDiv,
+  ExCheckWrap,
+  FilterContianer,
+  FilterFooter,
+  FilterHeader,
+  FilterLeft,
+  FilterSubcontianer,
   FilterTCTop,
+  GridWrap,
+  PartWrap,
+  ResetImg,
+  RowWrap,
+  TableContianer,
+  TCSubContainer,
+  Tilde
 } from '../../modal/External/ExternalFilter'
 
-import PageDropdown from '../../components/TableInner/PageDropdown'
 import Hidden from '../../components/TableInner/Hidden'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
+import PageDropdown from '../../components/TableInner/PageDropdown'
 
-import { TableWrap, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../components/MapTable/MapTable'
+import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../components/MapTable/MapTable'
 
 const OrderDetail = ({}) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -127,10 +110,10 @@ const OrderDetail = ({}) => {
           {[0, 1, 2].map((index) => (
             <ClaimRow key={index}>
               {titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
-                <React.Fragment agmentkey={title}>
+                <Fragment agmentkey={title}>
                   <ClaimTitle>{title}</ClaimTitle>
                   <ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
-                </React.Fragment>
+                </Fragment>
               ))}
             </ClaimRow>
           ))}

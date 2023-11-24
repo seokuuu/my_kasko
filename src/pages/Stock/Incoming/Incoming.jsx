@@ -1,19 +1,10 @@
-import { useState } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
-import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, ExcelBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn, SwitchBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
-import BlueBar from '../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { FilterRightSub, FilterWrap } from '../../../modal/External/ExternalFilter'
+import { useState } from 'react'
+import { BlackBtn, GreyBtn, SwitchBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { CustomSelect2, MainSelect } from '../../../common/Option/Main'
+import DateGrid from '../../../components/DateGrid/DateGrid'
+import Excel from '../../../components/TableInner/Excel'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
   FilterContianer,
   FilterHeader,
@@ -30,11 +21,28 @@ import {
   DoubleWrap,
   ResetImg,
   TableContianer,
+  ExCheckWrap,
+  ExCheckDiv,
+  ExInputsWrap,
   TCSubContainer,
+  NewTitle,
+  RightTitle,
+  RowInWrap,
+  Bar,
+  MiniInput,
+  NewFilterWrap,
+  NewFilterLeft,
+  NewFilterRight,
+  NewRow,
+  RightTextarea,
+  FilterWrap,
 } from '../../../modal/External/ExternalFilter'
+import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
+import Test3 from '../../Test/Test3'
 
-import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import { storageOptions } from '../../../common/Option/Main'
 const Incoming = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
@@ -76,40 +84,39 @@ const Incoming = ({}) => {
           <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
         </FilterHeader>
         {exFilterToggle && (
-          <FilterWrap>
+          <>
+            {/* 구버젼 시작 */}
             <FilterSubcontianer>
               <FilterLeft>
                 <RowWrap>
-                  <PartWrap>
+                  <PartWrap first>
                     <h6>창고 구분</h6>
                     <PWRight>
                       <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                     </PWRight>
                   </PartWrap>
                   <PartWrap>
-                    <h6 style={{ width: '60px' }}>매입처</h6>
-                    <PWRight>
-                      <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                    </PWRight>
+                    <h6>매입처</h6>
+
+                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PartWrap>
                   <PartWrap>
                     <h6>규격 약호</h6>
                     <Input />
-                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen}>
+                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17} onClick={modalOpen}>
                       찾기
                     </GreyBtn>
                   </PartWrap>
                 </RowWrap>
                 <RowWrap>
-                  <PartWrap>
+                  <PartWrap first>
                     <h6>입고일자</h6>
                     <GridWrap>
-                      <DateGrid bgColor={'white'} fontSize={17} />
+                      <DateGrid width={130} bgColor={'white'} fontSize={17} />
                       <Tilde>~</Tilde>
-                      <DateGrid bgColor={'white'} fontSize={17} />
+                      <DateGrid width={130} bgColor={'white'} fontSize={17} />
                     </GridWrap>
                   </PartWrap>
-
                   <PartWrap>
                     <h6>구분</h6>
                     <MainSelect />
@@ -117,28 +124,31 @@ const Incoming = ({}) => {
                     <MainSelect />
                   </PartWrap>
                 </RowWrap>
-                <RowWrap>
-                  <PartWrap>
-                    <h6>구분2</h6>
-                    <MainSelect />
-                    <MainSelect />
-                  </PartWrap>
-                  <PartWrap>
+
+                {/* RowWrap none : border-bottom이 없음
+PartWrap first : Row의 제일 앞에 오는 Part (제목 width 고정용) */}
+                <RowWrap none>
+                  <PartWrap first>
                     <h6>두께(MM)</h6>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </PartWrap>
-                </RowWrap>
-                <RowWrap>
-                  <PartWrap>
-                    <h6>길이(MM)</h6>
-                    <MainSelect />
-                    <MainSelect />
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
                   </PartWrap>
                   <PartWrap>
                     <h6>폭(MM)</h6>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>길이(MM)</h6>
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
+                  </PartWrap>
+                </RowWrap>
+                <RowWrap none>
+                  <PartWrap first>
+                    <h6>구분2</h6>
+                    <MainSelect />
+                    <MainSelect />
                   </PartWrap>
                 </RowWrap>
               </FilterLeft>
@@ -167,7 +177,78 @@ const Incoming = ({}) => {
                 </BlackBtn>
               </div>
             </FilterFooter>
-          </FilterWrap>
+
+            {/* 구버젼 끝 */}
+            {/* 신버젼 시작 */}
+            {/* <NewFilterWrap>
+              <NewFilterLeft>
+                <NewRow bor>
+                  <RowInWrap>
+                    <NewTitle first>창고구분</NewTitle>
+                    <CustomSelect2 />
+                  </RowInWrap>
+                  <RowInWrap>
+                    <NewTitle>매입처</NewTitle>
+                    <CustomSelect2 />
+                  </RowInWrap>
+                  <RowInWrap>
+                    <NewTitle>규격 약호</NewTitle>
+                    <Input />
+                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17} onClick={modalOpen}>
+                      찾기
+                    </GreyBtn>
+                  </RowInWrap>
+                </NewRow>
+                <Bar />
+                <NewRow>
+                  <RowInWrap>
+                    <NewTitle first>입고일자</NewTitle>
+                    <DateGrid width={140} bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid width={140} bgColor={'white'} fontSize={17} />
+                  </RowInWrap>
+                  <RowInWrap>
+                    <NewTitle>구분</NewTitle>
+                    <CustomSelect2 />
+                    <CustomSelect2 />
+                    <CustomSelect2 />
+                  </RowInWrap>
+                </NewRow>
+                <Bar />
+                <NewRow>
+                  <RowInWrap>
+                    <NewTitle>두께(MM)</NewTitle>
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
+                  </RowInWrap>
+                  <RowInWrap>
+                    <NewTitle>폭(MM)</NewTitle>
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
+                  </RowInWrap>
+                  <RowInWrap>
+                    <NewTitle>길이(MM)</NewTitle>
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
+                  </RowInWrap>
+                </NewRow>
+                <NewRow bor>
+                  <RowInWrap>
+                    <NewTitle first>구분2</NewTitle>
+                    <CustomSelect2 />
+                    <CustomSelect2 />
+                  </RowInWrap>
+                </NewRow>
+              </NewFilterLeft>
+              <NewFilterRight>
+                <RightTitle>제품번호</RightTitle>
+                <RightTextarea
+                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
+                ></RightTextarea>
+              </NewFilterRight>
+            </NewFilterWrap> */}
+            {/* 신버젼 끝 */}
+          </>
         )}
       </div>
 

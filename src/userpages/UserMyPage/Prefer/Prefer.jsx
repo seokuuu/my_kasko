@@ -1,63 +1,19 @@
-import { useState, useEffect, useRef } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { useEffect, useRef, useState } from 'react'
 
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteRedBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import {
-  GreyBtn,
-  ExcelBtn,
-  WhiteGrnBtn,
-  IndigoBtn,
-  BlueBtn,
-  SkyBtn,
-  SwitchBtn,
-  TGreyBtn,
-  TWhiteBtn,
-} from '../../../common/Button/Button'
-import Test3 from '../../../pages/Test/Test3'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 
-import {
-  FilterContianer,
-  FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  TCSubContainer,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-} from '../../../modal/External/ExternalFilter'
-
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
-import Table from '../../../pages/Table/Table'
-import { UserPageUserPreferFields, UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
 import { useAtom } from 'jotai'
+import { isArray } from 'lodash'
+import { useCallback } from 'react'
 import { deleteCustomerfavorite, getCustomerfavorite } from '../../../api/myPage'
+import { UserPageUserPreferFields, UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
-import useMutationQuery from '../../../hooks/useMutationQuery'
-import { useCallback } from 'react'
-import { isArray } from 'lodash'
+import Table from '../../../pages/Table/Table'
 
 const Prefer = ({ setChoiceComponent }) => {
   const radioDummy = ['전체', '미진행', '진행중', '종료']
@@ -106,11 +62,12 @@ const Prefer = ({ setChoiceComponent }) => {
   const getCol = tableField.current
   const checkedArray = useAtom(selectedRowsAtom)[0]
 
-  const 임의데이터 = {
+  const dummy = {
     pageNum: 1,
     pageSize: 50,
   }
-  const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터, 'getCustomerfavorite', getCustomerfavorite)
+
+  const { isLoading, isError, data, isSuccess } = useReactQuery(dummy, 'getCustomerfavorite', getCustomerfavorite)
   const resData = data?.data?.data?.list
 
   if (isError) console.log('데이터 request ERROR')

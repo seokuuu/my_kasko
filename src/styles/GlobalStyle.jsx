@@ -12,6 +12,7 @@ const GlobalStyle = createGlobalStyle`
         url('https://cdn.jsdelivr.net/gh/webfontworld/sunn/SUIT-Medium.ttf') format("truetype");
     font-weight: normal;
     font-style: normal;
+
   }
   /* 리셋 css */
   * {
@@ -24,6 +25,7 @@ const GlobalStyle = createGlobalStyle`
     font-size: calc( 12px + 0.4vw ); 
     font-family: 'SUIT';
     font-weight: 100;
+        letter-spacing: -0.2px; 
     
   }
   html, 

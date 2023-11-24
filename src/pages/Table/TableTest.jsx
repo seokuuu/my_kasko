@@ -17,7 +17,6 @@ import {
 import { GreyBtn, BlackBtn } from '../../common/Button/Button'
 import { parsePath, useLocation, useNavigate } from 'react-router-dom'
 import Pagination from '../../components/pagination/Pagination'
-import './tableStyles.css'
 
 var dateFilterParams = {
   comparator: (filterLocalDateAtMidnight, cellValue) => {

@@ -143,7 +143,7 @@ import SalesPackage from './modal/Multi/SalesPackage'
 import DispatchPost from './modal/Multi/DispatchPost'
 import DispatchEdit from './modal/Multi/DispatchEdit'
 import Hyundai from './modal/Multi/Hyundai'
-import Achievement from './modal/Multi/Achievement'
+import AchievementModal from './modal/Multi/Achievement'
 import DispatchDetail from './modal/Multi/DispatchDetail'
 import Transport from './modal/Multi/Transport'
 import Consolidation from './modal/Multi/Consolidation'
@@ -161,25 +161,47 @@ import TestExcel from './pages/Test/TestExcel'
 import TableModal from './modal/Table/TableModal'
 import TableTest from './modal/Table/TableTest'
 import TestPost from './pages/Test/TestPost'
+import SellOrderDetail from './pages/Sales/SellOrder/SellOrderDetail'
+import NoticePopup from './modal/Multi/NoticePopup'
+import WinningCreate from './pages/Auction/Winning/WinningCreate'
+import RoundAucListEdit from './pages/Auction/Round/RoundAucListEdit'
+import BlueBar from './modal/BlueBar/BlueBar'
+import DefaultBlueBar from './modal/Multi/DefaultBlueBar'
 
+import RoundAucListPackEdit from './pages/Auction/Round/RoundAucListPackEdit'
+import TableGrid from './modal/Multi/TableGrid'
+import DestinationChange from './modal/Multi/DestinationChange'
+import CustomerFind from './modal/Multi/CustomerFind'
+import RoundAucProAdd from './pages/Auction/Round/RoundAucProAdd'
+import WinningProductAdd from './pages/Auction/Winning/WinningProductAdd'
+import Table2 from './pages/Table/Table2'
+import WeightSales from './modal/Multi/WeightSales'
+import RequestRecom from './pages/Shipping/Request/RequestRecom'
+import RequestAddModal from './pages/Shipping/Request/RequestAddModal'
+import TransportationCost from './modal/Multi/TransportationCost'
+import PackDetail from './pages/Auction/Bidding/PackDetail'
+import SalesPackDetail from './pages/Sales/Package/PackDetail'
+import WinningDetail from './pages/Auction/Winning/WinningDetail'
+import WinDepositForm from './pages/Auction/Winning/WinDepositForm'
+import FormTest from './pages/Auction/Winning/FormTest'
+import UserPackDetail from './userpages/UserSales/Package/UserPackDetail'
+// RoundAucProAdd
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
+        <Route path="/ppapp" element={<RoundAucProAdd />} />
+        <Route path="/ppap" element={<RoundAucListEdit />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />
         <Route path="/test2" element={<Test2 />} />
         <Route path="/test3" element={<Test3 />} />
         <Route path="/TransportModal" element={<TransportModal />} />
-
         <Route path="/test4" element={<Countdown />} />
         <Route path="/popup" element={<TestPopup />} />
-        <Route path="/ppap" element={<Upload />} />
         <Route path="/excel" element={<TestExcel />} />
-
         <Route path="/common" element={<SellOrderDetailPage />} />
-
         <Route path="/*" element={<NotFound />} />
         {/* 로그인, 회원가입, 아이디 찾기, 비밀번호 재발급, 캘린더, 메인 */}
         <Route path="/" element={<Login />} />
@@ -275,12 +297,9 @@ const Router = () => {
 
           <Route path="/operate/faq/faqpost" element={<FAQPostPage />}></Route>
         </Route>
-
         {/* 사용자 페이지 */}
         {/* 사용자 페이지는 관리자 페이지와 다르게 /userpage/* 로 단일 구성된다 */}
-
         <Route path="/userpage/main" element={<UserMainPage />}></Route>
-
         {/* 공지 & 자료실 */}
         <Route path="/userpage">
           <Route path="/userpage/notice" element={<UNotice />}></Route>

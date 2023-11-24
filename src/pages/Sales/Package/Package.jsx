@@ -13,7 +13,7 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import BlueBar from '../../../modal/BlueBar/BlueBar'
 import { blueModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { FilterWrap } from '../../../modal/External/ExternalFilter'
+import { ExInputsWrap, FilterWrap, MiniInput } from '../../../modal/External/ExternalFilter'
 import {
   FilterContianer,
   FilterHeader,
@@ -102,7 +102,7 @@ const Package = ({}) => {
             <FilterSubcontianer>
               <FilterLeft>
                 <RowWrap>
-                  <PartWrap>
+                  <PartWrap first>
                     <h6>규격 약호</h6>
                     <Input />
                     <GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen}>
@@ -116,24 +116,27 @@ const Package = ({}) => {
                   </PartWrap>
                   <PartWrap />
                 </RowWrap>
-
-                <RowWrap style={{ border: '0px' }}>
-                  <PartWrap>
+                <RowWrap style={{ borderBottom: '0px' }}>
+                  <PartWrap first>
                     <h6>두께(MM)</h6>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </PartWrap>
-                </RowWrap>
-                <RowWrap>
-                  <PartWrap>
-                    <h6>길이(MM)</h6>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
+                    <ExInputsWrap>
+                      <MiniInput /> <Tilde>~</Tilde>
+                      <MiniInput />
+                    </ExInputsWrap>
                   </PartWrap>
                   <PartWrap>
                     <h6>폭(MM)</h6>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
+                    <ExInputsWrap>
+                      <MiniInput /> <Tilde>~</Tilde>
+                      <MiniInput />
+                    </ExInputsWrap>
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>길이(MM)</h6>
+                    <ExInputsWrap>
+                      <MiniInput /> <Tilde>~</Tilde>
+                      <MiniInput />
+                    </ExInputsWrap>
                   </PartWrap>
                 </RowWrap>
               </FilterLeft>

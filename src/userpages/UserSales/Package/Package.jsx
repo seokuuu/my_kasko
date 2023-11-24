@@ -46,6 +46,7 @@ import {
   FilterHeaderAlert,
   FHALeft,
   ExInputsWrap,
+  MiniInput,
 } from '../../../modal/External/ExternalFilter'
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -126,17 +127,16 @@ const Package = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>창고 구분</h6>
                   <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
+                    <MainSelect />
                   </PWRight>
                 </PartWrap>
-
                 <PartWrap>
                   <h6>매입처</h6>
                   <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
+                    <MainSelect />
                   </PWRight>
                 </PartWrap>
 
@@ -148,48 +148,47 @@ const Package = ({}) => {
                   </GreyBtn>
                 </PartWrap>
               </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
-                  <h6>두께(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+
+              <RowWrap>
+                <PartWrap first>
+                  <h6>구분</h6>
+                  <MainSelect />
+                  <MainSelect />
+                  <MainSelect />
                 </PartWrap>
-                <PartWrap />
               </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
+              <RowWrap none>
+                <PartWrap first>
+                  <h6>두께(MM)</h6>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
+                </PartWrap>
                 <PartWrap>
                   <h6>폭(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
                 </PartWrap>
-
                 <PartWrap>
                   <h6>길이(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
                 </PartWrap>
               </RowWrap>
             </FilterLeft>
-            <FilterRight style={{ height: '240px' }}>
-              <DoubleWrap style={{ height: '50%' }}>
+            <DoubleWrapContainer>
+              <DoubleWrap2>
                 <h6>제품 번호 </h6>
                 <textarea
                   placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
                 />
-              </DoubleWrap>
-              <DoubleWrap style={{ height: '50%' }}>
-                <h6 style={{ width: '130px', position: 'relative', right: '10px' }}>패키지번호 </h6>
+              </DoubleWrap2>
+              <DoubleWrap2>
+                <h6>패키지 번호 </h6>
                 <textarea
                   placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
                 />
-              </DoubleWrap>
-            </FilterRight>
+              </DoubleWrap2>
+            </DoubleWrapContainer>
           </FilterSubcontianer>
           <FilterFooter>
             <div style={{ display: 'flex' }}>
@@ -246,3 +245,34 @@ const Package = ({}) => {
 }
 
 export default Package
+
+const DoubleWrapContainer = styled.div`
+  display: flex;
+  flex: 1 0 0;
+  align-self: stretch;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+`
+
+const DoubleWrap2 = styled.div`
+  display: flex;
+
+  > h6 {
+    padding: 5px;
+    width: 120px;
+    font-size: 18px;
+  }
+
+  > textarea {
+    width: 100%;
+    height: 100px;
+    font-size: 16px;
+    padding: 4px 8px;
+
+    ::placeholder {
+      color: #acacac;
+    }
+  }
+`

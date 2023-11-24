@@ -3,7 +3,15 @@ import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, ExcelBtn, TGreyBtn } from '../../../common/Button/Button'
+import {
+  BlackBtn,
+  BtnBound,
+  BtnWrap,
+  ExcelBtn,
+  NewBottomBtnWrap,
+  TGreyBtn,
+  WhiteBlackBtn,
+} from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn } from '../../../common/Button/Button'
@@ -40,6 +48,7 @@ import {
   ExCheckWrap,
   ExCheckDiv,
   TCSubContainer,
+  CustomInput,
 } from '../../../modal/External/ExternalFilter'
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
@@ -110,7 +119,7 @@ const StartPrice = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>구분</h6>
                   <PWRight style={{ width: '160px' }}>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
@@ -125,7 +134,7 @@ const StartPrice = ({}) => {
               </RowWrap>
 
               <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
+                <PartWrap first>
                   <h6>적용 일자</h6>
                   <GridWrap>
                     <DateGrid bgColor={'white'} fontSize={17} />
@@ -177,18 +186,38 @@ const StartPrice = ({}) => {
             <Excel />
           </div>
         </TCSubContainer>
-        <TCSubContainer>
-          <div></div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <TGreyBtn>적용</TGreyBtn>
+        <TCSubContainer bor>
+          <div>
+            선택 중량<span> 2 </span>kg / 총 중량 kg
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              gap: '10px',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <p>일괄 단가 적용</p>
+            <CustomInput placeholder="응찰가 입력" width={120} height={32} />
+            <DateGrid placeholder="적용일자" bgColor={'white'} fontSize={14} height={32} width={130} />
+            <TGreyBtn height={30} style={{ width: '50px' }}>
+              적용
+            </TGreyBtn>
           </div>
         </TCSubContainer>
         <Test3 />
-        <TableBottomWrap>
-          <BlackBtn width={15} height={40}>
+        <TCSubContainer>
+          <div></div>
+          <div>
+            <WhiteBlackBtn>단가 등록</WhiteBlackBtn>
+          </div>
+        </TCSubContainer>
+        <NewBottomBtnWrap bottom={0}>
+          <BlackBtn width={12} height={40}>
             저장
           </BlackBtn>
-        </TableBottomWrap>
+        </NewBottomBtnWrap>
       </TableContianer>
     </FilterContianer>
   )

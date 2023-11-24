@@ -1,39 +1,32 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import { GreyBtn } from '../../common/Button/Button'
+import { TxtInput } from '../../common/Input/Input'
 import {
-  NonFadeOverlay,
-  ModalContainer,
-  WhiteCloseBtn,
-  BlueSubContainer,
+  Bar,
   BlueBarHeader,
-  BlueMainDiv,
-  BlueSubDiv,
-  BlueRadioWrap,
-  BlueInput,
   BlueBlackBtn,
   BlueBtnWrap,
-  Bar,
+  BlueInput,
+  BlueMainDiv,
+  BlueRadioWrap,
+  BlueSubContainer,
+  BlueSubDiv,
+  FadeOverlay,
+  ModalContainer,
+  WhiteCloseBtn,
 } from '../Common/Common.Styled'
-import { TxtInput } from '../../common/Input/Input'
-import { BlackBtn, GreyBtn } from '../../common/Button/Button'
-import { FadeOverlay } from '../Common/Common.Styled'
 
-import { blueModalAtom } from '../../store/Layout/Layout'
-import { useAtom } from 'jotai'
-
-import { ExRadioWrap } from '../External/ExternalFilter'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 
 import { CheckBox } from '../../common/Check/Checkbox'
 
-import { ExCheckWrap, ExCheckDiv } from '../External/ExternalFilter'
-import { StyledCheckSubSquDiv, CheckImg2 } from '../../common/Check/CheckImg'
 import { styled } from 'styled-components'
-const Achievement = () => {
-  const [isModal, setIsModal] = useAtom(blueModalAtom)
+import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
+import { ExCheckDiv } from '../External/ExternalFilter'
 
+const Achievement = ({ setAddedModal }) => {
   const modalClose = () => {
-    setIsModal(false)
+    setAddedModal(false)
   }
 
   const radioDummy = ['해당없음', '추가', '차감']
@@ -84,7 +77,7 @@ const Achievement = () => {
                           setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                         }}
                       >
-                        <RadioInnerCircleDiv />
+                        <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                       </RadioCircleDiv>
                       <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
                     </RadioMainDiv>

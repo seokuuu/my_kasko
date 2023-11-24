@@ -4,3 +4,9 @@
 .ag-paging-row-summary-panel {
   display: none;
 }
+
+.ag-theme-alpine {
+  /* 원하는 스타일 적용 */
+  background-color: magenta;
+  color: #333;
+}

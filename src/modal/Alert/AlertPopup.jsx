@@ -1,24 +1,19 @@
-import { useState, useEffect } from 'react'
-import { ModalContainer, FadeOverlay, ModalSubContainer, ModalTitle, ModalText } from '../Common/Common.Styled'
-import { ModalPart, Title } from '../../pages/User/SignUp/SignUp.Styled'
-import { BlackBtn, RedBtn, WhiteBtn } from '../../common/Button/Button'
-import { popupDummy } from './PopupDummy'
 import { useAtom } from 'jotai'
-import { alertAtom, modalObject } from '../../store/Layout/Layout'
-import {
-  popupObject,
-  popupTypeAtom,
-  popupAtom,
-  modalAtom,
-  onClickCheckAtom,
-  btnCellRenderAtom,
-} from '../../store/Layout/Layout'
+import { useEffect, useState } from 'react'
+import { BlackBtn, RedBtn, WhiteBtn } from '../../common/Button/Button'
+import { ModalPart } from '../../pages/User/SignUp/SignUp.Styled'
+import { btnCellRenderAtom, modalAtom, modalObject, popupObject, popupTypeAtom } from '../../store/Layout/Layout'
+import { FadeOverlay, ModalContainer, ModalSubContainer, ModalText, ModalTitle } from '../Common/Common.Styled'
+import { popupDummy } from './PopupDummy'
+import { selectedRowsAtom } from '../../store/Layout/Layout'
 const AlertPopup = ({ propsRemove, setPopupSwitch }) => {
   const [modalSwitch, setModalSwitch] = useAtom(modalAtom) // 모달 스위치
   // const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowModal, setNowModal] = useAtom(modalObject) // 모달 객체
   const [onlyClose, setOnlyClose] = useAtom(btnCellRenderAtom)
+
+  const [rowChecked, setRowChecked] = useAtom(selectedRowsAtom)
 
   console.log('nowPopup !!!', nowPopup)
 
@@ -48,6 +43,7 @@ const AlertPopup = ({ propsRemove, setPopupSwitch }) => {
       firstPopupClick(nowPopup?.next)
       setNowPopupType(nextType)
       setCheckNext(true)
+      setRowChecked([]) // 체크된 Atom 초기화
     } else if (nowPopup && !nowPopup?.next) {
       closePopup()
       setOnlyClose(false) // 취소 버튼엔 Modal이 꺼지면 안되므로 단독으로 처리

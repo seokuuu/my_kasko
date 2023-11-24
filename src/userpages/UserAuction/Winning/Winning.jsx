@@ -1,49 +1,41 @@
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
+import { useEffect, useState } from 'react'
+import { BlackBtn, GreyBtn, SkyBtn } from '../../../common/Button/Button'
+import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, ExcelBtn, SkyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../../pages/Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import Test3 from '../../../pages/Test/Test3'
 import { toggleAtom } from '../../../store/Layout/Layout'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 
 import {
+  CustomInput,
+  DoubleWrap,
+  ExRadioWrap,
+  FilterAlterTxt,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
+  FilterHeaderAlert,
   FilterLeft,
   FilterRight,
-  RowWrap,
+  FilterSubcontianer,
+  GridWrap,
+  Input,
   PartWrap,
   PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
   ResetImg,
+  RowWrap,
   TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-  ExCheckWrap,
-  ExCheckDiv,
   TCSubContainer,
-  FilterAlterTxt,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
+import DateGrid from '../../../components/DateGrid/DateGrid'
 
 const Winning = ({}) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -137,21 +129,28 @@ const Winning = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
-                <PartWrap>
-                  <h6>창고 구분</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
+                <PartWrap first>
+                  <h6 style={{ width: '130px' }}>경매 일자</h6>
+                  <GridWrap>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                  </GridWrap>
                 </PartWrap>
                 <PartWrap>
-                  <h6>고객사</h6>
+                  <h6 style={{ width: '100px' }}>창고 구분</h6>
+                  <MainSelect />
+                </PartWrap>
+              </RowWrap>
+              <RowWrap none>
+                <PartWrap>
+                  <h6 style={{ width: '180px' }}>고객사 명/고객사코드</h6>
+                  <Input />
                   <Input />
                   <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
                   </GreyBtn>
                 </PartWrap>
-              </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
                 <PartWrap>
                   <h6>진행 상태</h6>
                   <ExRadioWrap>
@@ -163,7 +162,7 @@ const Winning = ({}) => {
                             setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                           }}
                         >
-                          <RadioInnerCircleDiv />
+                          <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                         </RadioCircleDiv>
                         <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
                       </RadioMainDiv>

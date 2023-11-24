@@ -1,43 +1,39 @@
+import { useAtom } from 'jotai'
 import { useState } from 'react'
-import { styled } from 'styled-components'
+import { BlackBtn, GreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
+import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, ExcelBtn, WhiteBlackBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
-import BlueBar from '../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
-import { EditGear, FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
+  DoubleWrap,
+  EditGear,
+  ExInputsWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
+  FilterHeaderAlert,
   FilterLeft,
   FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  TableBottomWrap,
+  FilterSubcontianer,
+  FilterWrap,
   Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
   InputStartWrap,
+  MiniInput,
+  PWRight,
+  PartWrap,
+  ResetImg,
+  RowWrap,
   TCSubContainer,
-  FilterHeaderAlert,
+  TableBottomWrap,
+  TableContianer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
+import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
+import Test3 from '../../Test/Test3'
 
-import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 const Single = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -126,7 +122,7 @@ const Single = ({}) => {
             <FilterSubcontianer>
               <FilterLeft>
                 <RowWrap>
-                  <PartWrap>
+                  <PartWrap first>
                     <h6>창고 구분</h6>
                     <PWRight>
                       <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
@@ -147,7 +143,7 @@ const Single = ({}) => {
                   </PartWrap>
                 </RowWrap>
                 <RowWrap>
-                  <PartWrap>
+                  <PartWrap first>
                     <h6>구분</h6>
                     <MainSelect />
                     <MainSelect />
@@ -156,32 +152,36 @@ const Single = ({}) => {
                     <MainSelect />
                   </PartWrap>
                 </RowWrap>
-                <RowWrap>
-                  <PartWrap>
-                    <h6>구분2</h6>
-                    <InputStartWrap>
-                      <Input /> <Tilde>~</Tilde>
-                      <Input />
-                    </InputStartWrap>
-                  </PartWrap>
-                  <PartWrap>
+                <RowWrap style={{ borderBottom: '0px' }}>
+                  <PartWrap first>
                     <h6>두께(MM)</h6>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </PartWrap>
-                </RowWrap>
-                <RowWrap>
-                  <PartWrap>
-                    <h6>길이(MM)</h6>
-                    <InputStartWrap>
-                      <Input /> <Tilde>~</Tilde>
-                      <Input />
-                    </InputStartWrap>
+                    <ExInputsWrap>
+                      <MiniInput /> <Tilde>~</Tilde>
+                      <MiniInput />
+                    </ExInputsWrap>
                   </PartWrap>
                   <PartWrap>
                     <h6>폭(MM)</h6>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
+                    <ExInputsWrap>
+                      <MiniInput /> <Tilde>~</Tilde>
+                      <MiniInput />
+                    </ExInputsWrap>
+                  </PartWrap>
+                  <PartWrap>
+                    <h6>길이(MM)</h6>
+                    <ExInputsWrap>
+                      <MiniInput /> <Tilde>~</Tilde>
+                      <MiniInput />
+                    </ExInputsWrap>
+                  </PartWrap>
+                </RowWrap>
+                <RowWrap none>
+                  <PartWrap first>
+                    <h6>유찰 횟수</h6>
+                    <ExInputsWrap>
+                      <Input /> <Tilde>~</Tilde>
+                      <Input />
+                    </ExInputsWrap>
                   </PartWrap>
                 </RowWrap>
               </FilterLeft>
@@ -189,8 +189,8 @@ const Single = ({}) => {
                 <DoubleWrap>
                   <h6>제품 번호 </h6>
                   <textarea
+                    style={{ height: '90%' }}
                     placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                    style={{ height: '100px' }}
                   />
                 </DoubleWrap>
               </FilterRight>
@@ -236,7 +236,7 @@ const Single = ({}) => {
         </TCSubContainer>
         <Test3 title={'규격 약호 찾기'} />
         <TableBottomWrap>
-          <BlackBtn width={15} height={40}>
+          <BlackBtn width={13} height={40} fontSize={17}>
             저장
           </BlackBtn>
         </TableBottomWrap>

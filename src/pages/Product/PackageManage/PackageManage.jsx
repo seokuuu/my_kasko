@@ -49,7 +49,7 @@ const PackageManage = ({}) => {
     setPackBtn('post')
   }
 
-  const checkSales = ['전체', '판매재', '판매제외제', '카스코 추천 제품']
+  const checkSales = ['전체', '판매재', '판매제외제', '판매완료재']
 
   const checkShips = ['전체', '경매대상재', '상시판매 대상재']
 
@@ -153,7 +153,7 @@ const PackageManage = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>창고 구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
@@ -174,7 +174,7 @@ const PackageManage = ({}) => {
                 </PartWrap>
               </RowWrap>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>구분</h6>
                   <MainSelect />
                   <MainSelect />
@@ -184,7 +184,7 @@ const PackageManage = ({}) => {
                 </PartWrap>
               </RowWrap>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>판매 구분</h6>
                   <ExCheckWrap>
                     {checkSales.map((x, index) => (
@@ -219,9 +219,9 @@ const PackageManage = ({}) => {
               </RowWrap>
 
               <RowWrap style={{ border: '0px' }}>
-                <PartWrap>
-                  <h6 style={{ width: '100px' }}>판매가 유형</h6>
-                  <ExCheckWrap style={{ marginLeft: '4px' }}>
+                <PartWrap first>
+                  <h6>판매가 유형</h6>
+                  <ExCheckWrap>
                     {checkTypes.map((x, index) => (
                       <ExCheckDiv>
                         <StyledCheckSubSquDiv

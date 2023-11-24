@@ -21,12 +21,14 @@ export const FilterHeader = styled.div`
   h1 {
     font-weight: bold;
     font-size: 24px;
+    letter-spacing: -0.48px;
+    font-style: normal;
   }
 `
 
 // 외부 필터 메인
 export const FilterSubcontianer = styled.div`
-  width: 100%;
+  /* width: 100%;
   border: 1px solid #c8c8c8;
   display: flex;
   padding: 10px;
@@ -34,8 +36,14 @@ export const FilterSubcontianer = styled.div`
   background-color: #dbe2f0;
   justify-content: space-between;
   flex-wrap: wrap;
-  color: ${(props) => props.theme.colors.TxtAlter};
-  overflow-x: hidden;
+  color: ${(props) => props.theme.colors.TxtAlter}; */
+  /* overflow-x: hidden; */
+  display: flex;
+  width: 100%;
+  padding: ${(props) => (props.modal ? '15px 30px ' : '20px 15px 24px 40px')};
+  gap: 40px;
+  border: 1px solid #c8c8c8;
+  background-color: #dbe2f0;
 `
 
 // 패키지 생성 / 수정에 쓰이는 Fitler 최상단 div
@@ -68,11 +76,11 @@ export const FilterTCBottom = styled.div`
 
 export const FilterTCBSub = styled.div`
   display: flex;
-  background-color: white;
-  height: 64px;
-
-  justify-content: space-around;
+  padding: 16px 40px;
   align-items: center;
+  gap: 150px;
+  background-color: white;
+  flex: 1 0 0;
   h6 {
     padding: 0px 20px;
   }
@@ -115,57 +123,69 @@ export const FilterFooter = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 70px;
+  height: 55px;
   background-color: #f0f1f6;
+  font-size: 17px;
+
+  p {
+  }
 `
 
 // 검색 필터 Left
-export const FilterLeft = styled.div``
+export const FilterLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`
 
 // 검색 필터 Right
 export const FilterRight = styled.div`
-  width: 300px;
+  display: flex;
+  gap: 8px;
+  flex: 1 0 0;
+  align-self: stretch;
 `
 
 //검색 필터 내 한 '줄' 영역 div
 export const RowWrap = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  text-align: center;
+  gap: 40px;
   align-items: center;
-  margin: 10px 0px 10px 0px;
+  padding-bottom: ${({ none, modal }) => (none ? '8px' : modal ? '10px' : '18px')};
+
   border-bottom: ${({ none }) => (none ? 'none' : '1px solid #c8c8c8')};
-  padding-bottom: 10px;
 `
 
 // 말 그대로 파트 랩 (제목 + 내용 한 '칸'짜리 div)
+// 프롭스로 'first'를 받음 (제일 앞에 오는 제목 width 고정)
 export const PartWrap = styled.div`
-  min-width: 150px;
-  margin-right: 30px;
   display: flex;
   align-items: center;
-  line-height: 14.5px;
-  height: 50px;
-  justify-content: space-around;
+  gap: 8px;
+  height: 32px;
   h6 {
-    width: 90px;
-    max-width: 150px;
-    display: flex;
-    text-align: left;
-    color: #454545;
+    display: block;
+    width: ${(props) => (props.first ? `100px` : '')};
+    padding: 8px;
+    gap: 8px;
+    font-size: 18px;
+    color: #424242;
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: -0.2px;
   }
 `
 
 // PartWrap의 오른쪽 부분 (제목 말고 내용)
 export const PWRight = styled.div`
-  width: 200px;
+  display: flex;
 `
 
 export const DoubleWrap = styled.div`
   display: flex;
-  position: relative;
-  height: 100%;
-  padding-top: 10px;
+  gap: 8px;
+  flex: 1 0 0;
+  align-self: stretch;
 
   > h6 {
     padding: 5px;
@@ -174,11 +194,10 @@ export const DoubleWrap = styled.div`
   }
 
   > textarea {
-    margin-right: 5px;
-    height: 95%;
     width: 100%;
+    height: 100%;
     font-size: 16px;
-    padding: 8px;
+    padding: 4px 8px;
 
     ::placeholder {
       color: #acacac;
@@ -188,9 +207,9 @@ export const DoubleWrap = styled.div`
 
 // dataGrid 범위 div
 export const GridWrap = styled.div`
-  width: 400px;
   display: flex;
-  padding: 15px;
+  align-items: center;
+  gap: 2px;
 `
 
 // externalFitler 공용 input
@@ -217,7 +236,7 @@ export const CustomInput = styled.input`
 
 // 물결표
 export const Tilde = styled.div`
-  margin: 10px;
+  margin: 5px;
 
   @media (max-width: 1500px) {
     margin-right: 5px;
@@ -239,14 +258,12 @@ export const ExRadioWrap = styled.div`
   display: flex;
   justify-content: center;
   gap: 20px;
-  padding-left: 15px;
 `
 
 // 체크박스 전체 div
 export const ExCheckWrap = styled.div`
   display: flex;
   gap: 5px;
-  margin-left: 13px;
   justify-content: center;
   align-items: center;
 
@@ -259,21 +276,21 @@ export const ExCheckWrap = styled.div`
 // 체크박스 각각 div
 export const ExCheckDiv = styled.div`
   display: flex;
-  gap: 5px;
-  margin-right: 20px;
+  margin-right: 10px;
   padding-left: 5px;
   justify-content: center;
   align-items: center;
 
   p {
+    margin-left: 6px;
     color: black;
+    font-size: 16px;
   }
 `
 
 // input들 div
 export const ExInputsWrap = styled.div`
   display: flex;
-  padding-left: 15px;
   @media (max-width: 1500px) {
     padding-left: 0px;
   }
@@ -350,6 +367,13 @@ export const TCSubContainer = styled.div`
   > div {
     display: flex;
   }
+`
+
+export const MiniInput = styled.input`
+  width: 64px;
+  height: 37px;
+  border: 1px solid #c8c8c8;
+  font-size: 18px;
 `
 
 export const HiddenBtn = styled.div`
@@ -443,4 +467,75 @@ export const StyledSubHeading = styled.p`
   &:hover {
     font-weight: bold;
   }
+`
+
+// new
+
+export const NewFilterWrap = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 20px 15px 24px 40px;
+  gap: 40px;
+  border: 1px solid #c8c8c8;
+  background-color: #dbe2f0;
+`
+
+export const NewFilterLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`
+
+export const NewFilterRight = styled.div`
+  display: flex;
+  gap: 8px;
+  flex: 1 0 0;
+  align-self: stretch;
+`
+
+export const NewRow = styled.div`
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  padding-top: ${(props) => (props.bor ? '10px' : '0')};
+`
+
+// 제일 앞에 오는 Title은 width값을 지정해준다
+export const NewTitle = styled.div`
+  width: ${(props) => (props.first ? `90px` : '')};
+  padding: 8px;
+  gap: 8px;
+  font-size: 17px;
+  color: #424242;
+  font-weight: 500;
+  line-height: 19px;
+  letter-spacing: -0.2px;
+`
+
+export const RightTitle = styled.div`
+  min-width: 80px;
+  color: #424242;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 30px;
+  letter-spacing: -0.2px;
+`
+export const RowInWrap = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+`
+
+export const Bar = styled.div`
+  width: 100%;
+  border-bottom: 1px solid #c8c8c8;
+  height: 1px;
+`
+
+export const RightTextarea = styled.textarea`
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  padding: 4px 8px;
 `

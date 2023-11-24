@@ -87,7 +87,7 @@ const Multi = ({ modalSwitch, setModalSwitch }) => {
                           setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                         }}
                       >
-                        <RadioInnerCircleDiv />
+                        <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                       </RadioCircleDiv>
                       <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
                     </RadioMainDiv>
@@ -106,7 +106,7 @@ const Multi = ({ modalSwitch, setModalSwitch }) => {
                             setCheckRadio2(CheckBox(checkRadio2, checkRadio2.length, index))
                           }}
                         >
-                          <RadioInnerCircleDiv />
+                          <RadioInnerCircleDiv isChecked={checkRadio2[index]} />
                         </RadioCircleDiv>
                         <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
                       </RadioMainDiv>

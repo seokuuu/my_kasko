@@ -48,6 +48,8 @@ import {
   ExInputsWrap,
   AlertImg,
   FilterAlterTxt,
+  FilterSubcontianer,
+  MiniInput,
 } from '../../../modal/External/ExternalFilter'
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
@@ -56,7 +58,7 @@ import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 const Order = ({}) => {
-  const radioDummy = ['전체', '미진행', '진행중', '종료']
+  const radioDummy = ['전체', '주문요청', '주문취소', '주문확정']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   const [savedRadioValue, setSavedRadioValue] = useState('')
@@ -128,27 +130,76 @@ const Order = ({}) => {
       </FilterHeaderAlert>
       {exFilterToggle && (
         <>
-          <FilterSubOneContainer>
+          <FilterSubcontianer>
             <FilterLeft>
-              <RowWrap>
-                <PartWrap>
-                  <h6>주문 일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
+              <RowWrap none>
+                <PartWrap first>
+                  <h6>창고 구분</h6>
+                  <PWRight>
+                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
+                  </PWRight>
                 </PartWrap>
                 <PartWrap>
-                  <h6>고객사</h6>
+                  <h6>매입처</h6>
+
+                  <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
+                </PartWrap>
+                <PartWrap>
+                  <h6>규격 약호</h6>
                   <Input />
                   <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
                   </GreyBtn>
                 </PartWrap>
               </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
+              <RowWrap>
                 <PartWrap>
+                  <h6>고객사 명/고객사코드</h6>
+                  <Input />
+                  <Input />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                    찾기
+                  </GreyBtn>
+                </PartWrap>
+              </RowWrap>
+              <RowWrap>
+                <PartWrap first>
+                  <h6>구분</h6>
+                  <MainSelect />
+                  <MainSelect />
+                  <MainSelect />
+                </PartWrap>
+                <PartWrap>
+                  <h6>주문일자</h6>
+                  <GridWrap>
+                    <DateGrid width={130} bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid width={130} bgColor={'white'} fontSize={17} />
+                  </GridWrap>
+                </PartWrap>
+              </RowWrap>
+
+              {/* RowWrap none : border-bottom이 없음
+PartWrap first : Row의 제일 앞에 오는 Part (제목 width 고정용) */}
+              <RowWrap none>
+                <PartWrap first>
+                  <h6>두께(MM)</h6>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
+                </PartWrap>
+                <PartWrap>
+                  <h6>폭(MM)</h6>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
+                </PartWrap>
+                <PartWrap>
+                  <h6>길이(MM)</h6>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
+                </PartWrap>
+              </RowWrap>
+              <RowWrap none>
+                <PartWrap first>
                   <h6>진행 상태</h6>
                   <ExRadioWrap>
                     {radioDummy.map((text, index) => (
@@ -159,7 +210,7 @@ const Order = ({}) => {
                             setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                           }}
                         >
-                          <RadioInnerCircleDiv />
+                          <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                         </RadioCircleDiv>
                         <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
                       </RadioMainDiv>
@@ -168,7 +219,15 @@ const Order = ({}) => {
                 </PartWrap>
               </RowWrap>
             </FilterLeft>
-          </FilterSubOneContainer>
+            <FilterRight>
+              <DoubleWrap>
+                <h6>제품 번호 </h6>
+                <textarea
+                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
+                />
+              </DoubleWrap>
+            </FilterRight>
+          </FilterSubcontianer>
           <FilterFooter>
             <div style={{ display: 'flex' }}>
               <p>초기화</p>

@@ -22,6 +22,17 @@ export const BlackBtn = styled.button`
   border: 1px solid #e1e1e1;
 `
 
+export const GreenBtn = styled.button`
+  font-size: ${(props) => props.fontSize}px;
+  width: ${(props) => props.width}%;
+  height: ${(props) => props.height}px;
+  margin: ${(props) => props.margin}px;
+  background-color: ${(props) => props.theme.colors.StatPosub};
+  color: white;
+  cursor: pointer;
+  padding: 5px 10px 5px 10px;
+`
+
 export const RedBtn = styled.button`
   font-size: ${(props) => props.fontSize}px;
   width: ${(props) => props.width}%;
@@ -126,7 +137,8 @@ export const WhiteSkyBtn = styled.div`
   margin: ${(props) => props.margin}px;
   border: 1px solid ${(props) => props.theme.colors.PriNormal};
   background-color: inherit;
-  color: ${(props) => props.theme.colors.PriNormal};
+  color: ${(props) => (props.str ? props.theme.colors.PriStrong : props.theme.colors.PriNormal)};
+
   cursor: pointer;
   padding: 5px 10px 5px 10px;
   border-radius: 3px;
@@ -223,6 +235,18 @@ export const BtnWrap = styled.div`
   margin-right: auto;
   position: relative;
   bottom: ${(props) => props.bottom}px;
+`
+
+export const NewBottomBtnWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  border-top: 1px solid #c8c8c8;
+  padding-top: 10px;
+  gap: 10px;
+  position: relative;
+  bottom: ${(props) => props.bottom}px;
+  font-size: 17px;
 `
 
 export const TBtnWrap = styled.div`

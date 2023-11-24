@@ -1,48 +1,46 @@
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
-import Excel from '../../../components/TableInner/Excel'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { BlackBtn, GreyBtn, YellBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
+import { storageOptions } from '../../../common/Option/SignUp'
 import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn, ExcelBtn, YellBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
+import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
+import Test3 from '../../Test/Test3'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
+import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import {
+  DoubleWrap,
+  ExCheckDiv,
+  ExCheckWrap,
+  ExInputsWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
   FilterRight,
-  RowWrap,
+  FilterSubcontianer,
+  GridWrap,
+  Input,
+  MiniInput,
   PartWrap,
   PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
   ResetImg,
-  TableContianer,
-  ExCheckWrap,
-  ExCheckDiv,
-  ExInputsWrap,
+  RowWrap,
   SubTitle,
+  TableContianer,
   TCSubContainer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
 
 import Hidden from '../../../components/TableInner/Hidden'
 
 const SingleProduct = ({}) => {
-  const checkSales = ['전체', '판매재', '판매제외제', '카스코 추천 제품']
+  const checkSales = ['전체', '판매재', '판매제외제', '판매 완료제']
 
   const checkShips = ['전체', '경매대상재', '상시판매 대상재']
 
@@ -138,7 +136,7 @@ const SingleProduct = ({}) => {
     <FilterContianer>
       <FilterHeader>
         <div style={{ display: 'flex' }}>
-          <h1>단일 제품 관리</h1>
+          <h1>단일 관리</h1>
           <SubTitle>
             <h5>전체</h5>
             <Link to={`/product/hyundai`}>
@@ -155,9 +153,16 @@ const SingleProduct = ({}) => {
         <>
           <FilterSubcontianer>
             <FilterLeft>
-              <RowWrap>
+              <RowWrap none>
+                <PartWrap first>
+                  <h6>ProNo.</h6>
+                  <Input />
+                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                    찾기
+                  </GreyBtn>
+                </PartWrap>
                 <PartWrap>
-                  <h6>창고 구분</h6>
+                  <h6>창고구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
@@ -168,7 +173,9 @@ const SingleProduct = ({}) => {
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                   </PWRight>
                 </PartWrap>
-                <PartWrap>
+              </RowWrap>
+              <RowWrap>
+                <PartWrap first>
                   <h6>규격 약호</h6>
                   <Input />
                   <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
@@ -177,30 +184,23 @@ const SingleProduct = ({}) => {
                 </PartWrap>
               </RowWrap>
               <RowWrap>
-                <PartWrap>
-                  <h6>입고일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>출고일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
+                <PartWrap first>
+                  <h6>창고구분</h6>
+                  <PWRight>
+                    <MainSelect />
+                    <MainSelect />
+                    <MainSelect />
+                    <MainSelect />
+                    <MainSelect />
+                  </PWRight>
                 </PartWrap>
               </RowWrap>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>판매 구분</h6>
                   <ExCheckWrap>
                     {checkSales.map((x, index) => (
-                      <ExCheckDiv style={{ marginRight: '5px', gap: '0px' }}>
+                      <ExCheckDiv>
                         <StyledCheckSubSquDiv
                           onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
                           isChecked={check1[index]}
@@ -231,8 +231,8 @@ const SingleProduct = ({}) => {
               </RowWrap>
 
               <RowWrap>
-                <PartWrap>
-                  <h6 style={{ width: '100px' }}>판매가 유형</h6>
+                <PartWrap first>
+                  <h6>판매가 유형</h6>
                   <ExCheckWrap>
                     {checkTypes.map((x, index) => (
                       <ExCheckDiv>
@@ -250,30 +250,30 @@ const SingleProduct = ({}) => {
               </RowWrap>
 
               <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
+                <PartWrap first>
                   <h6>두께(MM)</h6>
                   <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
                   </ExInputsWrap>
                 </PartWrap>
                 <PartWrap>
                   <h6>폭(MM)</h6>
                   <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
+                  </ExInputsWrap>
+                </PartWrap>
+                <PartWrap>
+                  <h6>길이(MM)</h6>
+                  <ExInputsWrap>
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
                   </ExInputsWrap>
                 </PartWrap>
               </RowWrap>
               <RowWrap>
-                <PartWrap>
-                  <h6>길이(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>유찰 횟수</h6>
                   <ExInputsWrap>
                     <Input /> <Tilde>~</Tilde>

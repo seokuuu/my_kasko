@@ -71,8 +71,6 @@ const ConsolidationModal = ({
     }))
   }
 
-  console.log('inputValues', inputValues)
-
   return (
     // 기준 관리 -
     <>

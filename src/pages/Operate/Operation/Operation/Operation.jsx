@@ -13,7 +13,7 @@ import { toggleAtom } from '../../../../store/Layout/Layout'
 import BlueBar from '../../../../modal/BlueBar/BlueBar'
 import { blueModalAtom } from '../../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { FilterWrap } from '../../../../modal/External/ExternalFilter'
+import { FilterWrap, StyledHeading } from '../../../../modal/External/ExternalFilter'
 import {
   FilterContianer,
   FilterHeader,
@@ -39,6 +39,7 @@ import {
 import Hidden from '../../../../components/TableInner/Hidden'
 
 const Operation = ({}) => {
+  const [types, setTypes] = useState('product') //product, policy, storage
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -77,14 +78,21 @@ const Operation = ({}) => {
       <div>
         <FilterHeader>
           <div style={{ display: 'flex' }}>
-            <h1>운영 관리</h1>
+            <h1>사용자 관리</h1>
             <SubTitle>
-              <h5>운영 관리</h5>
-              <Link to={`/operate/inventory`}>
-                <h6>재고 수불 관리</h6>
-              </Link>
+              <StyledHeading isActive={types === 'product'} onClick={() => setTypes('product')}>
+                제품군 관리
+              </StyledHeading>
+              <StyledHeading isActive={types === 'policy'} onClick={() => setTypes('policy')}>
+                정책 관리
+              </StyledHeading>
+              <StyledHeading isActive={types === 'storage'} onClick={() => setTypes('storage')}>
+                창고 관리
+              </StyledHeading>
             </SubTitle>
           </div>
+          {/* 토글 쓰기 */}
+          <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
         </FilterHeader>
       </div>
       <TableContianer>
@@ -100,8 +108,8 @@ const Operation = ({}) => {
             선택 <span> 2 </span>개
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>클레임 삭제</WhiteRedBtn>
-            <SkyBtn>클레임 등록</SkyBtn>
+            <WhiteRedBtn>삭제</WhiteRedBtn>
+            <SkyBtn>등록</SkyBtn>
           </div>
         </TCSubContainer>
 

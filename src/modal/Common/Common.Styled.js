@@ -18,6 +18,7 @@ export const NonFadeOverlay = styled.div`
   width: 100%;
   height: 100%;
   z-index: 9998;
+
 `
 
 // 찐 모달
@@ -178,6 +179,44 @@ export const BlueMainDiv = styled.div`
   border: 1px solid #c8c8c8;
   align-items: center;
 `
+export const ResultContainer = styled.div`
+  width: 100%;
+  max-height: 350px;
+  overflow-y: auto;
+  font-size: 17px;
+`
+
+export const ResultHead = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  height: 50px;
+  justify-content: space-evenly;
+  border-bottom: 1px solid #ddd;
+  gap: 30px;
+  background-color: #f1f1f1;
+`
+
+export const ResultRow = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  height: 50px;
+  justify-content: space-evenly;
+  border-bottom: 1px solid #ddd;
+  gap: 30px;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`
+
+export const ResultCell = styled.div`
+  display: flex;
+  width: ${({ wid }) => (wid ? `${wid}px` : '100px')};
+  align-items: center;
+  justify-content: center;
+`
 
 // 모달 한 줄
 export const BlueSubDiv = styled.div`
@@ -242,11 +281,11 @@ export const BlueOneDiv = styled.div`
 
 export const BlueHalfDiv = styled.div`
   display: flex;
-
   padding: 10px;
+  gap: 15px;
 
   input {
-    width: 90%;
+    width: 100%;
   }
 
   > div {

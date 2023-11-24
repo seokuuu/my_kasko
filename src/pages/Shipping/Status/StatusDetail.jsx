@@ -21,7 +21,9 @@ import Excel from '../../../components/TableInner/Excel'
 const StatusDetail = ({}) => {
   const radioTableDummy = ['Y', 'N']
 
-  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioTableDummy.length }, () => false))
+  const [checkRadio2, setCheckRadio2] = useState(
+    Array.from({ length: radioTableDummy.length }, (_, index) => index === 0),
+  )
 
   const [savedRadioValue2, setSavedRadioValue2] = useState('')
   useEffect(() => {

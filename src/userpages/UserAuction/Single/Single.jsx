@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 import { Link } from 'react-router-dom'
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
+import { BlackBtn, BtnBound, BtnWrap } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import Excel from '../../../components/TableInner/Excel'
@@ -47,6 +47,8 @@ import {
   FilterHeaderAlert,
   FHALeft,
   ExInputsWrap,
+  MiniInput,
+  CustomInput,
 } from '../../../modal/External/ExternalFilter'
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
@@ -55,7 +57,7 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
 
 const Single = ({}) => {
-  const radioDummy = ['전체', '미진행', '진행중', '종료']
+  const radioDummy = ['전체', '미응찰', '관심제품', '응찰']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   const [savedRadioValue, setSavedRadioValue] = useState('')
@@ -137,7 +139,7 @@ const Single = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>창고 구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
@@ -159,38 +161,49 @@ const Single = ({}) => {
                   </GreyBtn>
                 </PartWrap>
               </RowWrap>
+              <RowWrap>
+                <PartWrap first>
+                  <h6>조회 구분</h6>
+                  <ExRadioWrap>
+                    {radioDummy.map((text, index) => (
+                      <RadioMainDiv key={index}>
+                        <RadioCircleDiv
+                          isChecked={checkRadio[index]}
+                          onClick={() => {
+                            setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
+                          }}
+                        >
+                          <RadioInnerCircleDiv isChecked={checkRadio[index]} />
+                        </RadioCircleDiv>
+                        <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
+                      </RadioMainDiv>
+                    ))}
+                  </ExRadioWrap>
+                </PartWrap>
+              </RowWrap>
               <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
-                  <h6>구분2</h6>
+                <PartWrap first>
+                  <h6>구분</h6>
                   <MainSelect />
                   <span style={{ margin: '0px -10px 0px 5px' }}>~</span>
                   <MainSelect />
                 </PartWrap>
-
-                <PartWrap>
-                  <h6>두께(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
-                <PartWrap />
               </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
+              <RowWrap none>
+                <PartWrap first>
+                  <h6>두께(MM)</h6>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
+                </PartWrap>
                 <PartWrap>
                   <h6>폭(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
                 </PartWrap>
-
                 <PartWrap>
                   <h6>길이(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
                 </PartWrap>
               </RowWrap>
             </FilterLeft>
@@ -247,11 +260,24 @@ const Single = ({}) => {
               display: 'flex',
               gap: '10px',
               alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            <TGreyBtn height={30} width={25}>
+            <p>목적지</p>
+            <CustomInput placeholder="h50" width={60} height={32} />
+            <CustomInput placeholder="목적지명" width={120} height={32} />
+            <CustomInput placeholder="도착지 연락처" width={120} height={32} />
+            <TWhiteBtn style={{ width: '50px' }} height={30}>
+              찾기
+            </TWhiteBtn>
+            <TGreyBtn>적용</TGreyBtn>
+            <BtnBound style={{ margin: '0px' }} />
+            <p>일괄 경매 응찰</p>
+            <CustomInput placeholder="응찰가 + 최고가 입력" width={140} height={32} />
+            <TGreyBtn height={30} style={{ width: '50px' }}>
               적용
             </TGreyBtn>
+            <BtnBound style={{ margin: '0px' }} />
             <SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50}>
               응찰
             </SkyBtn>

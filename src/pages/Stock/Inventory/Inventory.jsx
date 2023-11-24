@@ -1,49 +1,44 @@
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
-import Excel from '../../../components/TableInner/Excel'
+import { useEffect, useState } from 'react'
+import { BlackBtn, GreyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, ExcelBtn, GreyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { storageOptions } from '../../../common/Option/SignUp'
 import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
+import Excel from '../../../components/TableInner/Excel'
 
-import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
+import Test3 from '../../Test/Test3'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
+import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 
+import { useAtom } from 'jotai'
+import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import Multi from '../../../modal/Common/Multi'
 import {
+  DoubleWrap,
+  ExCheckDiv,
+  ExCheckWrap,
+  ExInputsWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
   FilterRight,
-  RowWrap,
+  FilterSubcontianer,
+  GridWrap,
+  Input,
+  MiniInput,
   PartWrap,
   PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
   ResetImg,
+  RowWrap,
   TableContianer,
-  ExCheckWrap,
-  ExCheckDiv,
-  ExInputsWrap,
   TCSubContainer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
-import Hidden from '../../../components/TableInner/Hidden'
-import Multi from '../../../modal/Common/Multi'
-import { blueModalAtom } from '../../../store/Layout/Layout'
-import CommonTest from '../../../modal/Alert/PopupMessages'
-import { popupMessages } from '../../../modal/Alert/PopupMessages'
-import AlertPopup from '../../../modal/Alert/AlertPopup'
 import { modalAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
 
 const Inventory = ({}) => {
   const checkSales = ['전체', '판매재', '판매제외제']
@@ -134,7 +129,7 @@ const Inventory = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>창고 구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
@@ -155,26 +150,26 @@ const Inventory = ({}) => {
                 </PartWrap>
               </RowWrap>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>입고일자</h6>
                   <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <DateGrid bgColor={'white'} fontSize={17} width={130} />
                     <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <DateGrid bgColor={'white'} fontSize={17} width={130} />
                   </GridWrap>
                 </PartWrap>
 
                 <PartWrap>
                   <h6>출고일자</h6>
                   <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <DateGrid bgColor={'white'} fontSize={17} width={130} />
                     <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <DateGrid bgColor={'white'} fontSize={17} width={130} />
                   </GridWrap>
                 </PartWrap>
               </RowWrap>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>판매 구분</h6>
                   <ExCheckWrap>
                     {checkSales.map((x, index) => (
@@ -209,36 +204,36 @@ const Inventory = ({}) => {
               </RowWrap>
 
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>구분</h6>
+                  <MainSelect />
+                  <MainSelect />
                   <MainSelect />
                   <MainSelect />
                   <MainSelect />
                 </PartWrap>
               </RowWrap>
 
-              <RowWrap>
-                <PartWrap>
+              <RowWrap none>
+                <PartWrap first>
                   <h6>두께(MM)</h6>
                   <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
                   </ExInputsWrap>
                 </PartWrap>
                 <PartWrap>
                   <h6>폭(MM)</h6>
                   <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
                   </ExInputsWrap>
                 </PartWrap>
-              </RowWrap>
-              <RowWrap>
                 <PartWrap>
                   <h6>길이(MM)</h6>
                   <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
+                    <MiniInput /> <Tilde>~</Tilde>
+                    <MiniInput />
                   </ExInputsWrap>
                 </PartWrap>
               </RowWrap>
