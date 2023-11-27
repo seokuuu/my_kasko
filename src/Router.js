@@ -185,14 +185,15 @@ import WinningDetail from './pages/Auction/Winning/WinningDetail'
 import WinDepositForm from './pages/Auction/Winning/WinDepositForm'
 import FormTest from './pages/Auction/Winning/FormTest'
 import UserPackDetail from './userpages/UserSales/Package/UserPackDetail'
+
 // RoundAucProAdd
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
-        <Route path="/ppapp" element={<RoundAucProAdd />} />
-        <Route path="/ppap" element={<RoundAucListEdit />} />
+        <Route path="/ppapp" element={<RequestAddModal />} />
+        <Route path="/ppap" element={<DefaultBlueBar />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />
         <Route path="/test2" element={<Test2 />} />

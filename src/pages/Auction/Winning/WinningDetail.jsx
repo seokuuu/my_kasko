@@ -38,7 +38,14 @@ import {
   TCSubContainer,
   Tilde,
   CustomInput,
+  GridWrap,
+  ExCheckWrap,
+  ExCheckDiv,
 } from '../../../modal/External/ExternalFilter'
+
+import { StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { CheckImg2 } from '../../../common/Check/CheckImg'
 
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -47,6 +54,7 @@ import { useAtom } from 'jotai'
 import DefaultBlueBar from '../../../modal/Multi/DefaultBlueBar'
 
 import { ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../components/MapTable/MapTable'
+import DateGrid from '../../../components/DateGrid/DateGrid'
 
 // 경매 낙찰 상세
 const WinningDetail = ({}) => {
@@ -134,69 +142,34 @@ const WinningDetail = ({}) => {
             <FilterLeft>
               <RowWrap>
                 <PartWrap>
-                  <h6>창고 구분</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>매입처 </h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>규격 약호</h6>
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
+                  <h6 style={{ width: '130px' }}>확정 전송 일자</h6>
+                  <GridWrap>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                  </GridWrap>
                 </PartWrap>
               </RowWrap>
               <RowWrap style={{ borderBottom: '0px' }}>
+                {' '}
                 <PartWrap>
-                  <h6>구분</h6>
-                  <MainSelect />
-                  <span style={{ margin: '0px -10px 0px 5px' }}>~</span>
-                  <MainSelect />
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>두께(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
-                  <h6>폭(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>길이(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <h6>주문 상태</h6>
+                  <ExCheckWrap>
+                    {checkSales.map((x, index) => (
+                      <ExCheckDiv>
+                        <StyledCheckSubSquDiv
+                          onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
+                          isChecked={check1[index]}
+                        >
+                          <CheckImg2 src="/svg/check.svg" />
+                        </StyledCheckSubSquDiv>
+                        <p>{x}</p>
+                      </ExCheckDiv>
+                    ))}
+                  </ExCheckWrap>
                 </PartWrap>
               </RowWrap>
             </FilterLeft>
-            <FilterRight>
-              <DoubleWrap>
-                <h6>제품 번호 </h6>
-                <textarea
-                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                />
-              </DoubleWrap>
-            </FilterRight>
           </FilterSubcontianer>
           <FilterFooter>
             <div style={{ display: 'flex' }}>

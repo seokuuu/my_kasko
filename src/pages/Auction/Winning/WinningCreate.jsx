@@ -21,6 +21,7 @@ import {
   FilterTCTop,
   FilterTopContainer,
   Input,
+  MiniInput,
   PartWrap,
   PWRight,
   ResetImg,
@@ -109,7 +110,7 @@ const WinningCreate = ({}) => {
             <FilterTCBottom>
               <FilterTCBSubdiv>
                 <div>
-                  <h6>고객사</h6>
+                  <h6 style={{ fontSize: '18px' }}>고객사</h6>
                   <Input />
                   <GreyBtn
                     style={{ width: '70px' }}
@@ -125,12 +126,15 @@ const WinningCreate = ({}) => {
                 </div>
 
                 <div>
-                  <h6>목적지</h6>
-                  <Input placeholder="코드" style={{ width: '60px', marginRight: '10px' }} />
-                  <Input placeholder="목적지명" style={{ width: '120px', marginRight: '10px' }} />
-                  <Input placeholder="하차지명" style={{ width: '130px', marginRight: '10px' }} />
-                  <Input placeholder="하차지 연락처" style={{ width: '130px', marginRight: '10px' }} />
-                  <Input placeholder="주소" style={{ width: '130px', marginRight: '10px' }} />
+                  <h6 style={{ fontSize: '18px' }}>목적지</h6>
+                  <Input placeholder="코드" style={{ width: '60px', marginRight: '10px', fontSize: '16px' }} />
+                  <Input placeholder="목적지명" style={{ width: '120px', marginRight: '10px', fontSize: '16px' }} />
+                  <Input placeholder="하차지명" style={{ width: '130px', marginRight: '10px', fontSize: '16px' }} />
+                  <Input
+                    placeholder="하차지 연락처"
+                    style={{ width: '130px', marginRight: '10px', fontSize: '16px' }}
+                  />
+                  <Input placeholder="주소" style={{ width: '130px', marginRight: '10px', fontSize: '16px' }} />
 
                   <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                     찾기
@@ -139,19 +143,19 @@ const WinningCreate = ({}) => {
               </FilterTCBSubdiv>
               <FilterTCBSubdiv>
                 <div style={{ marginRight: '10px' }}>
-                  <h6>낙찰가 총액</h6>
+                  <h6 style={{ fontSize: '18px' }}>낙찰가 총액</h6>
                   <InputContainer>
                     <NoOutInput type="text" />
                     <Unit>원</Unit>
                   </InputContainer>
                 </div>
                 <div style={{ marginRight: '10px' }}>
-                  <h6>총 중량</h6>
+                  <h6 style={{ fontSize: '17px' }}>총 중량</h6>
                   <Input />
                 </div>
 
                 <div style={{ marginRight: '10px' }}>
-                  <h6>확정전송 총액</h6>
+                  <h6 style={{ fontSize: '17px' }}> 확정전송 총액</h6>
                   <InputContainer>
                     <NoOutInput type="text" />
                     <Unit>원</Unit>
@@ -163,7 +167,7 @@ const WinningCreate = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap>
-                <PartWrap>
+                <PartWrap first>
                   <h6>창고 구분</h6>
                   <PWRight>
                     <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
@@ -185,37 +189,28 @@ const WinningCreate = ({}) => {
                   </GreyBtn>
                 </PartWrap>
               </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
+              <RowWrap none>
+                <PartWrap first>
                   <h6>구분</h6>
                   <MainSelect />
-                  <span style={{ margin: '0px -10px 0px 5px' }}>~</span>
                   <MainSelect />
                 </PartWrap>
-
-                <PartWrap>
-                  <h6>두께(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
               </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
+              <RowWrap none>
+                <PartWrap first>
+                  <h6>두께(MM)</h6>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
+                </PartWrap>
                 <PartWrap>
                   <h6>폭(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
                 </PartWrap>
-
                 <PartWrap>
                   <h6>길이(MM)</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
+                  <MiniInput /> <Tilde>~</Tilde>
+                  <MiniInput />
                 </PartWrap>
               </RowWrap>
             </FilterLeft>

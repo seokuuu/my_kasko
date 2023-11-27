@@ -19,6 +19,7 @@ import {
   FilterSubcontianer,
   FilterTCTop,
   FilterTopContainer,
+  GridWrap,
   Input,
   PartWrap,
   PWRight,
@@ -43,6 +44,7 @@ import {
   ModalContainer,
   WhiteCloseBtn,
 } from '../../../modal/Common/Common.Styled'
+import DateGrid from '../../../components/DateGrid/DateGrid'
 
 // 합짐 추가 등록 메인 컴포넌트
 const RequestAddModal = ({}) => {
@@ -119,45 +121,39 @@ const RequestAddModal = ({}) => {
 
             {exFilterToggle && (
               <>
-                <FilterSubcontianer style={{ paddingBottom: '0px' }}>
+                <FilterSubcontianer style={{ paddingBottom: '10px' }}>
                   <FilterLeft>
-                    <RowWrap>
-                      <PartWrap>
-                        <h6>창고 구분</h6>
-                        <PWRight>
-                          <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                        </PWRight>
+                    <RowWrap modal>
+                      <PartWrap first>
+                        <h6 style={{ width: '120px' }}>출하지시 일자</h6>
+                        <GridWrap>
+                          <DateGrid bgColor={'white'} fontSize={17} />
+                          <Tilde>~</Tilde>
+                          <DateGrid bgColor={'white'} fontSize={17} />
+                        </GridWrap>
                       </PartWrap>
 
                       <PartWrap>
-                        <h6>매입처 </h6>
-                        <PWRight>
-                          <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                        </PWRight>
-                      </PartWrap>
-
-                      <PartWrap>
-                        <h6>규격 약호</h6>
+                        <h6>목적지</h6>
                         <Input />
                         <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
                           찾기
                         </GreyBtn>
                       </PartWrap>
                     </RowWrap>
-                    <RowWrap none>
+                    <RowWrap modal none>
                       <PartWrap>
-                        <h6>구분</h6>
-                        <MainSelect />
-                        <span style={{ margin: '0px -10px 0px 5px' }}>~</span>
+                        <h6 style={{ width: '120px' }}>창고구분</h6>
                         <MainSelect />
                       </PartWrap>
 
                       <PartWrap>
-                        <h6>두께(MM)</h6>
-                        <ExInputsWrap>
-                          <Input /> <Tilde>~</Tilde>
-                          <Input />
-                        </ExInputsWrap>
+                        <h6>고객사 명/고객사코드</h6>
+                        <Input />
+                        <Input />
+                        <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                          찾기
+                        </GreyBtn>
                       </PartWrap>
                     </RowWrap>
                   </FilterLeft>

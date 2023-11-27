@@ -28,6 +28,7 @@ import {
   FilterTCTop,
   FilterTopContainer,
   Input,
+  MiniInput,
   PartWrap,
   PWRight,
   ResetImg,
@@ -161,50 +162,36 @@ const WinningProductAdd = ({}) => {
                       <PartWrap first>
                         <h6>구분</h6>
                         <MainSelect />
-                        ~
+                        <MainSelect />
+                        <MainSelect />
+                        <MainSelect />
                         <MainSelect />
                       </PartWrap>
-
-                      <PartWrap>
+                    </RowWrap>
+                    <RowWrap none>
+                      <PartWrap first>
+                        <h6>유찰 횟수</h6>
+                        <ExInputsWrap>
+                          <Input /> <Tilde>~</Tilde>
+                          <Input />
+                        </ExInputsWrap>
+                      </PartWrap>
+                    </RowWrap>
+                    <RowWrap none>
+                      <PartWrap first>
                         <h6>두께(MM)</h6>
-                        <ExInputsWrap>
-                          <Input /> <Tilde>~</Tilde>
-                          <Input />
-                        </ExInputsWrap>
+                        <MiniInput /> <Tilde>~</Tilde>
+                        <MiniInput />
                       </PartWrap>
-                    </RowWrap>
-                    <RowWrap none>
-                      <PartWrap first>
+                      <PartWrap>
                         <h6>폭(MM)</h6>
-                        <ExInputsWrap>
-                          <Input /> <Tilde>~</Tilde>
-                          <Input />
-                        </ExInputsWrap>
+                        <MiniInput /> <Tilde>~</Tilde>
+                        <MiniInput />
                       </PartWrap>
-
                       <PartWrap>
                         <h6>길이(MM)</h6>
-                        <ExInputsWrap>
-                          <Input /> <Tilde>~</Tilde>
-                          <Input />
-                        </ExInputsWrap>
-                      </PartWrap>
-                    </RowWrap>
-                    <RowWrap none>
-                      <PartWrap first>
-                        <h6>폭(MM)</h6>
-                        <ExInputsWrap>
-                          <Input /> <Tilde>~</Tilde>
-                          <Input />
-                        </ExInputsWrap>
-                      </PartWrap>
-
-                      <PartWrap>
-                        <h6>길이(MM)</h6>
-                        <ExInputsWrap>
-                          <Input /> <Tilde>~</Tilde>
-                          <Input />
-                        </ExInputsWrap>
+                        <MiniInput /> <Tilde>~</Tilde>
+                        <MiniInput />
                       </PartWrap>
                     </RowWrap>
                   </FilterLeft>

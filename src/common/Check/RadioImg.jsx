@@ -18,8 +18,8 @@ export const RadioCircleDiv = styled.div`
   justify-content: center;
   align-items: center;
   border: ${({ isChecked }) => (isChecked ? '2px solid #4c83d6' : '1px solid #b9b9b9')};
-
   cursor: pointer;
+  background-color: inherit;
 `
 
 // Filter 전용 라디오
