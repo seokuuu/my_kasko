@@ -14,6 +14,7 @@ import { CheckBox } from '../../../common/Check/Checkbox'
 import { CheckImg2 } from '../../../common/Check/CheckImg'
 
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, DateTitle } from '../../../components/MapTable/MapTable'
+import { MainSelect } from '../../../common/Option/Main'
 
 // 클레임 등록
 const ClaimRegister = () => {
@@ -54,6 +55,10 @@ const ClaimRegister = () => {
       <CenterRectangleWrap>
         <CRWMain>
           <h5>클레임 등록</h5>
+          <ClaimRow>
+            <ClaimTitle style={{ width: '50%' }}>업체명</ClaimTitle>
+            <ClaimContent style={{ width: '50%' }}>A</ClaimContent                             >
+          </ClaimRow>
           <ClaimTable>
             {[0, 1, 2].map((index) => (
               <ClaimRow key={index}>
@@ -72,24 +77,24 @@ const ClaimRegister = () => {
             <CMBLeft>
               <div>
                 <DateTitle>클레임 요청 일자</DateTitle>
-                <DateGrid left={-30} fontSize={17} />
+                <DateGrid width={130} left={-30} fontSize={17} />
               </div>
               <div>
                 <DateTitle>현대 재철 클레임 등록 일자</DateTitle>
-                <DateGrid left={-30} fontSize={17} />
+                <DateGrid width={130} left={-30} fontSize={17} />
               </div>
               <div>
                 <DateTitle>클레임 완료 일자</DateTitle>
-                <DateGrid left={-30} fontSize={17} />
+                <DateGrid width={130} left={-30} fontSize={17} />
               </div>
             </CMBLeft>
             <CMBLeft>
               <SelectWrap>
-                <DateTitle>클레임 진행 상태</DateTitle>
-                <ClaimSelect options={claimOngoingStatus} defaultValue={claimOngoingStatus[0]} />
+                <DateTitle style={{ width: '150px' }}>클레임 진행 상태</DateTitle>
+                <MainSelect options={claimOngoingStatus} defaultValue={claimOngoingStatus[0]} />
               </SelectWrap>
               <div>
-                <DateTitle>반품 진행</DateTitle>
+                <DateTitle small>반품 진행</DateTitle>
                 <CheckWrap>
                   {checkDummy.map((x, index) => (
                     <StyledCheckMainDiv>
@@ -105,21 +110,21 @@ const ClaimRegister = () => {
                 </CheckWrap>
               </div>
               <div>
-                <DateTitle>카스코 반품일자</DateTitle>
-                <DateGrid left={-30} fontSize={17} />
+                <DateTitle small>카스코 반품일자</DateTitle>
+                <DateGrid width={130} left={-45} fontSize={17} />
               </div>
               <div>
-                <DateTitle>현대제철 반품일자</DateTitle>
-                <DateGrid left={-30} fontSize={17} />
+                <DateTitle small>현대제철 반품일자</DateTitle>
+                <DateGrid width={130} left={-45} fontSize={17} />
               </div>
             </CMBLeft>
           </CRWMainBottom>
           <CRWSub>
             <BtnWrap>
-              <WhiteBtn width={90} height={50} style={{ marginRight: '10px' }}>
+              <WhiteBtn width={40} height={40} style={{ marginRight: '10px' }}>
                 돌아가기
               </WhiteBtn>
-              <BlackBtn width={90} height={50}>
+              <BlackBtn width={40} height={40}>
                 저장
               </BlackBtn>
             </BtnWrap>
@@ -168,7 +173,6 @@ export const CMBLeft = styled.div`
     width: 400px;
     display: flex;
     margin: 10px auto;
-    justify-content: space-between;
   }
   height: fit-content;
 `
@@ -189,8 +193,8 @@ export const CRWSub = styled.div`
 `
 
 const SelectWrap = styled.div`
-  font-size: 16px;
-  width: 300px;
+  display: flex;
+  gap: 25px;
 `
 
 const BtnWrap = styled.div`
@@ -204,10 +208,10 @@ const BtnWrap = styled.div`
 
 const CheckWrap = styled.div`
   display: flex;
-  position: relative;
-  left: -25px;
-  font-size: 17px;
+  font-size: 16px;
   align-items: center;
   min-width: 250px;
-  gap: 10px;
+  gap: 15px;
+  position: relative;
+  left: 25px;
 `

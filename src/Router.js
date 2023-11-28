@@ -185,6 +185,10 @@ import WinningDetail from './pages/Auction/Winning/WinningDetail'
 import WinDepositForm from './pages/Auction/Winning/WinDepositForm'
 import FormTest from './pages/Auction/Winning/FormTest'
 import UserPackDetail from './userpages/UserSales/Package/UserPackDetail'
+import NoticeDetail from './userpages/UserNotiDocs/Notice/NoticeDetail'
+import Agreement from './modal/Common/Agreement'
+import InvoiceEdit from './pages/Shipping/Achievement/InvoiceEdit'
+import Invoice from './userpages/UserPerformance/UserPerformance/Invoice'
 
 // RoundAucProAdd
 const Router = () => {
@@ -192,7 +196,7 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
-        <Route path="/ppapp" element={<RequestAddModal />} />
+        <Route path="/ppapp" element={<Invoice />} />
         <Route path="/ppap" element={<DefaultBlueBar />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />

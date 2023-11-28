@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
 import React, { useState, Fragment } from 'react'
 import { styled } from 'styled-components'
-import { BtnBound, TGreyBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { BtnBound, SkyBtn, TGreyBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -13,33 +13,16 @@ import {
   TCSubContainer,
   TableContianer,
 } from '../../../modal/External/ExternalFilter'
-import Test3 from '../../../pages/Test/Test3'
 import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
+import Test3 from '../../../pages/Test/Test3'
 
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 
 import { TableWrap } from '../../../components/MapTable/MapTable'
 
-const WinningDetail = ({}) => {
-  const NewDummy = {
-    '고객사 명': '(주) 아이덴잇',
-    '고객 코드': 'K00-0012',
-    '': '',
-    '총 수량': '30',
-    '총 중량(KG)': '4,612,157',
-    '입금 요청 금액 (원)': '45,237,876',
-    '제품금액(VAT 포함)': '000',
-    '운임비(VAT 포함)': '000',
-    ㅤ: 'ㅤ',
-  }
-
-  const entries = Object.entries(NewDummy)
-  const chunkedEntries = []
-
-  for (let i = 0; i < entries.length; i += 3) {
-    chunkedEntries.push(entries.slice(i, i + 3))
-  }
-
+const OrderDetail = ({}) => {
+  const titleData = ['주문 번호', '고객사', '고객코드', '총 수량', '총 중량(KG)', '입금 요청 금액(원)']
+  const contentData = ['2023040558', '4,685,798', 'K00000', '30', '4,685,798', '54,685,798']
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -77,21 +60,21 @@ const WinningDetail = ({}) => {
     <FilterContianer>
       <div>
         <FilterHeader>
-          <h1>낙찰 확인 상세</h1>
+          <h1>주문 확인 상세</h1>
         </FilterHeader>
         <FilterTCTop>
           <h6>경매 번호</h6>
           <p>2023041050</p>
         </FilterTCTop>
 
-        <TableWrap style={{ marginTop: '5px' }}>
+        <TableWrap>
           <ClaimTable>
-            {chunkedEntries.map((chunk, i) => (
-              <ClaimRow key={i}>
-                {chunk.map(([title, content], j) => (
-                  <Fragment key={j}>
+            {[0, 1].map((index) => (
+              <ClaimRow key={index}>
+                {titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
+                  <Fragment agmentkey={title}>
                     <ClaimTitle>{title}</ClaimTitle>
-                    <ClaimContent>{content}</ClaimContent>
+                    <ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
                   </Fragment>
                 ))}
               </ClaimRow>
@@ -138,9 +121,9 @@ const WinningDetail = ({}) => {
   )
 }
 
-export default WinningDetail
+export default OrderDetail
 
-const P = styled.p`
+export const P = styled.p`
   position: relative;
   top: 5px;
 `

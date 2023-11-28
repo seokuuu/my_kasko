@@ -33,8 +33,17 @@ export const ClaimContent = styled.div`
 `
 
 export const DateTitle = styled.div`
-  min-width: 200px;
-  max-width: 230px;
+  width: ${({ small }) => (small ? '220px' : '260px')};
   padding: 10px;
   font-size: 16px;
+`
+
+export const ClaimContent2 = styled.div`
+  width: 85%;
+  display: flex;
+  padding: 0px 20px;
+  flex-direction: row-reverse;
+  border: 1px solid #c8c8c8;
+  background-color: white;
+  align-items: center;
 `

@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
-import DatePicker from 'react-datepicker'
+import DatePicker, { registerLocale } from 'react-datepicker'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import { styled } from 'styled-components'
+import ko from 'date-fns/locale/ko' // 수정: ko로 변경합니다.
+
+registerLocale('ko', ko)
 
 const DateGrid = ({ left, bgColor, fontSize, width, height, startDate, setStartDate, placeholder }) => {
   return (
@@ -11,11 +14,12 @@ const DateGrid = ({ left, bgColor, fontSize, width, height, startDate, setStartD
         <PickerWrap height={height} width={width} left={left} bgColor={bgColor}>
           <SDatePicker
             fontSize={fontSize}
-            dateFormat="yyyy년 MM월 dd일"
             selected={startDate}
             width={width}
             onChange={(date) => setStartDate(date)}
             placeholderText={placeholder}
+            locale="ko" // 설정한 로케일을 사용합니다.
+            dateFormat="yyyy년 MM월 dd일"
           />
           <PickerImg onChange={(date) => setStartDate(date)} src="/svg/Calender.svg" />
         </PickerWrap>

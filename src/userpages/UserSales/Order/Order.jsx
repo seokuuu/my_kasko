@@ -1,58 +1,40 @@
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
-import Excel from '../../../components/TableInner/Excel'
+import { useEffect, useState } from 'react'
+import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
+import { storageOptions } from '../../../common/Option/SignUp'
 import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import {
-  GreyBtn,
-  ExcelBtn,
-  WhiteGrnBtn,
-  IndigoBtn,
-  BlueBtn,
-  SkyBtn,
-  SwitchBtn,
-  TGreyBtn,
-  TWhiteBtn,
-} from '../../../common/Button/Button'
-import Test3 from '../../../pages/Test/Test3'
+import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import Test3 from '../../../pages/Test/Test3'
 import { toggleAtom } from '../../../store/Layout/Layout'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 
 import {
+  AlertImg,
+  DoubleWrap,
+  ExRadioWrap,
+  FilterAlterTxt,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubOneContainer,
+  FilterHeader,
+  FilterHeaderAlert,
   FilterLeft,
   FilterRight,
-  RowWrap,
+  FilterSubcontianer,
+  GridWrap,
+  Input,
+  MiniInput,
   PartWrap,
   PWRight,
-  Input,
-  TCSubContainer,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
   ResetImg,
+  RowWrap,
   TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-  AlertImg,
-  FilterAlterTxt,
-  FilterSubcontianer,
-  MiniInput,
+  TCSubContainer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -261,7 +243,9 @@ PartWrap first : Row의 제일 앞에 오는 Part (제목 width 고정용) */}
           <div>
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteRedBtn>주문 취소</WhiteRedBtn>
+          </div>
         </TCSubContainer>
         <Test3 />
         <TCSubContainer>

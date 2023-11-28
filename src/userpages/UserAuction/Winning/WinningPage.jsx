@@ -4,6 +4,7 @@ import UserSideBar from '../../../components/Left/UserSideBar'
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
 import Winning from './Winning'
+import WinningDetail from './WinningDetail'
 
 import { useState } from 'react'
 
@@ -18,7 +19,7 @@ const SinglePage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <Winning />
+            <WinningDetail />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>

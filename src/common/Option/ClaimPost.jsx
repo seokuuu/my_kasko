@@ -1,5 +1,5 @@
-import { styled } from 'styled-components';
-import Select from 'react-select';
+import { styled } from 'styled-components'
+import Select from 'react-select'
 
 ////Options
 
@@ -11,13 +11,13 @@ export const claimOngoingStatus = [
   { value: 'ask3', label: '교정' },
   { value: 'ask4', label: '현금 보전' },
   { value: 'ask4', label: '보상' },
-];
+]
 
 export const ClaimSelect = styled(Select)`
   display: block;
   position: relative;
   left: -25px;
-  width: 230px;
+  min-width: 200px;
   line-height: 20px;
   text-align: center;
-`;
+`

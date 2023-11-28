@@ -246,7 +246,7 @@ const Client = ({ setChoiceComponent, setModal }) => {
                       {checkShips.map((x, index) => (
                         <ExCheckDiv>
                           <StyledCheckSubSquDiv
-                            onClick={() => setCheck2(CheckBox(check2, check2.length, index, false))}
+                            onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
                             isChecked={check2[index]}
                           >
                             <CheckImg2 src="/svg/check.svg" />
