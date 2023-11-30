@@ -78,7 +78,7 @@ const Operation = ({}) => {
       <div>
         <FilterHeader>
           <div style={{ display: 'flex' }}>
-            <h1>사용자 관리</h1>
+            <h1>운영 관리</h1>
             <SubTitle>
               <StyledHeading isActive={types === 'product'} onClick={() => setTypes('product')}>
                 제품군 관리

@@ -110,6 +110,11 @@ const data = [
       { title: '푸터 관리', link: 'operate/footer' },
     ],
   },
+  {
+    //Operate
+    depth1: '재고수불 관리',
+    depth2: [{ title: '재고수불 관리', link: 'operate/inventory' }],
+  },
 ]
 
 const SideBar = ({ expanded, setExpanded, depth2Color }) => {

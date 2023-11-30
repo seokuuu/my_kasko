@@ -17,6 +17,7 @@ import CarrierEditPage from './pages/UserManage/CarrierManage/CarrierEditPage'
 import IncomingPage from './pages/Stock/Incoming/IncomingPage'
 import InventoryPage from './pages/Stock/Inventory/InventoryPage'
 import TransportModal from './modal/Multi/Transport'
+import InventoryPayPage from './pages/Operate/Operation/Inventory/InventoryPage'
 
 import { headerAtom, accordionAtom, subHeaderAtom } from './store/Layout/Layout'
 import NotFound from './pages/NotFound'
@@ -98,6 +99,7 @@ import DataSheetPage from './pages/Operate/Common/Datasheet/DatasheetPage'
 // 이용약관, 푸터
 import TermsPage from './pages/Operate/Terms/TermsPage'
 import FooterManagePage from './pages/Operate/FooterManage/FooterManagePage'
+
 
 /// 사용자 페이지
 // 공지  & 자료실
