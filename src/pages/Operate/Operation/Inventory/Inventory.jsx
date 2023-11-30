@@ -1,39 +1,32 @@
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
+import { useEffect, useState } from 'react'
 import { storageOptions } from '../../../../common/Option/SignUp'
 
-import { MainSelect } from '../../../../common/Option/Main'
-import { BlackBtn, BtnWrap } from '../../../../common/Button/Button'
-import DateGrid from '../../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../../common/Button/Button'
-import Test3 from '../../../Test/Test3'
-import HeaderToggle from '../../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../../store/Layout/Layout'
-import { Link } from 'react-router-dom'
+import { BlackBtn, GreyBtn } from '../../../../common/Button/Button'
+import { CheckImg2, StyledCheckSubSquDiv } from '../../../../common/Check/CheckImg'
 import { CheckBox } from '../../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../../common/Check/CheckImg'
+import { MainSelect } from '../../../../common/Option/Main'
+import DateGrid from '../../../../components/DateGrid/DateGrid'
+import { toggleAtom } from '../../../../store/Layout/Layout'
+import Test3 from '../../../Test/Test3'
 
 import {
+  DoubleWrap,
+  ExCheckDiv,
+  ExCheckWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
   FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
+  FilterSubcontianer,
   GridWrap,
-  Tilde,
-  DoubleWrap,
+  Input,
+  PWRight,
+  PartWrap,
   ResetImg,
+  RowWrap,
   TableContianer,
-  ExCheckWrap,
-  ExCheckDiv,
-  ExInputsWrap,
-  SubTitle,
+  Tilde
 } from '../../../../modal/External/ExternalFilter'
 
 const Inventory = ({}) => {

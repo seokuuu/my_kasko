@@ -1,26 +1,25 @@
-import { useState } from 'react'
 import { Typography } from '@mui/material'
 
-import { styled, css } from 'styled-components'
-import { Link } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { calendarAtom } from '../../store/Layout/Layout'
+import { Link } from 'react-router-dom'
+import { styled } from 'styled-components'
 import CalendarModal from '../../modal/Calender/Calendar'
+import { calendarAtom } from '../../store/Layout/Layout'
 
 import {
-  SideBarWrap,
-  AccordionWrap,
-  StyledAccordion,
-  StyledAccordionSummary,
-  StyledTypography,
-  AccSwitch,
-  StyledAccordionDetails,
-  TypoContent,
-  Depth2,
+  ACTopRight,
   AcTop,
   AcTopCal,
   AcTopLeft,
-  ACTopRight,
+  AccSwitch,
+  AccordionWrap,
+  Depth2,
+  SideBarWrap,
+  StyledAccordion,
+  StyledAccordionDetails,
+  StyledAccordionSummary,
+  StyledTypography,
+  TypoContent,
 } from './SideBar.Style'
 
 const data = [
