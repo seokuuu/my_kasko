@@ -1,53 +1,25 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
+import React, { useEffect, useState, Fragment } from 'react'
 
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { toggleAtom } from '../../../store/Layout/Layout'
+import Test3 from '../../Test/Test3'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 import { TableWrap } from '../../../components/MapTable/MapTable'
 import {
+  ExRadioWrap,
   FilterContianer,
   FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
   TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
   TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 
-import { ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../components/MapTable/MapTable'
+import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
 import Hidden from '../../../components/TableInner/Hidden'
-import { ArrowDropDown } from '@mui/icons-material'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-
-import { useAtom } from 'jotai'
 
 const DisRegisterDetail = ({}) => {
   const radioTableDummy = ['Y', 'N']
@@ -87,6 +59,34 @@ const DisRegisterDetail = ({}) => {
     }
   }
 
+  const NewDummy = {
+    '고객사 명': '삼우',
+    '고객사 코드': '123123',
+    '목적지 1': '부산 광역시',
+    '고객사 명2': '삼우',
+    '고객사 코드2': '123123',
+    '목적지 2': '부산 광역시',
+    '고객사 명3': '삼우',
+    '고객사 코드3': '123123',
+    '목적지 3': '부산 광역시',
+    '출하 요청 일자': '2023.04.05',
+    '출고 일자': '2023.04.05',
+    '상차도 여부': 'Radio',
+    매출운임비: '154,585,000',
+    매입운임비: '456,485,200',
+    합짐비: '63,000',
+    '운전사 명': '홍길동',
+    차량번호: '12가 3456',
+    '기사 연락처': '01012341234',
+  }
+
+  const entries = Object.entries(NewDummy)
+  const chunkedEntries = []
+
+  for (let i = 0; i < entries.length; i += 3) {
+    chunkedEntries.push(entries.slice(i, i + 3))
+  }
+
   return (
     <FilterContianer>
       <FilterHeader>
@@ -94,8 +94,32 @@ const DisRegisterDetail = ({}) => {
         {/* 토글 쓰기 */}
       </FilterHeader>
 
-      <TableWrap style={{ marginTop: '5px' }}>
+      {/* <TableWrap style={{ marginTop: '5px' }}>
         <ClaimTable>
+          <ClaimRow>
+            <ClaimTitle>목적지 1</ClaimTitle>
+            <ClaimContent>부산 광역시</ClaimContent>
+            <ClaimTitle>목적지 2</ClaimTitle>
+            <ClaimContent>천안시</ClaimContent>
+            <ClaimTitle>목적지 3</ClaimTitle>
+            <ClaimContent>-</ClaimContent>
+          </ClaimRow>
+          <ClaimRow>
+            <ClaimTitle>목적지 1</ClaimTitle>
+            <ClaimContent>부산 광역시</ClaimContent>
+            <ClaimTitle>목적지 2</ClaimTitle>
+            <ClaimContent>천안시</ClaimContent>
+            <ClaimTitle>목적지 3</ClaimTitle>
+            <ClaimContent>-</ClaimContent>
+          </ClaimRow>
+          <ClaimRow>
+            <ClaimTitle>목적지 1</ClaimTitle>
+            <ClaimContent>부산 광역시</ClaimContent>
+            <ClaimTitle>목적지 2</ClaimTitle>
+            <ClaimContent>천안시</ClaimContent>
+            <ClaimTitle>목적지 3</ClaimTitle>
+            <ClaimContent>-</ClaimContent>
+          </ClaimRow>
           <ClaimRow>
             <ClaimTitle>출하 요청 일자</ClaimTitle>
             <ClaimContent>2023.04.05</ClaimContent>
@@ -123,14 +147,7 @@ const DisRegisterDetail = ({}) => {
               </ExRadioWrap>
             </ClaimContent>
           </ClaimRow>
-          <ClaimRow>
-            <ClaimTitle>목적지 1</ClaimTitle>
-            <ClaimContent>부산 광역시</ClaimContent>
-            <ClaimTitle>목적지 2</ClaimTitle>
-            <ClaimContent>천안시</ClaimContent>
-            <ClaimTitle>목적지 3</ClaimTitle>
-            <ClaimContent>-</ClaimContent>
-          </ClaimRow>
+
           <ClaimRow>
             <ClaimTitle>매출운임비</ClaimTitle>
             <ClaimContent>154,585,000</ClaimContent>
@@ -148,6 +165,44 @@ const DisRegisterDetail = ({}) => {
             <ClaimContent>01012341234</ClaimContent>
           </ClaimRow>
         </ClaimTable>
+      </TableWrap> */}
+
+      <TableWrap style={{ marginTop: '5px' }}>
+        <ClaimTable>
+          {chunkedEntries.map((chunk, i) => (
+            <ClaimRow key={i}>
+              {chunk.map(([title, content], j) => (
+                <Fragment key={j}>
+                  <ClaimTitle>{title}</ClaimTitle>
+                  <ClaimContent>
+                    {content === 'Radio' ? (
+                      <ExRadioWrap>
+                        {radioTableDummy.map((text, index) => (
+                          <RadioMainDiv key={index}>
+                            <RadioCircleDiv
+                              isChecked={checkRadio2[index]}
+                              onClick={() => {
+                                setCheckRadio2(CheckBox(checkRadio2, checkRadio2.length, index))
+                              }}
+                            >
+                              <RadioInnerCircleDiv isChecked={checkRadio2[index]} />
+                            </RadioCircleDiv>
+
+                            <div style={{ display: 'flex', marginLeft: '5px' }}>
+                              <p>{text}</p>
+                            </div>
+                          </RadioMainDiv>
+                        ))}
+                      </ExRadioWrap>
+                    ) : (
+                      content
+                    )}
+                  </ClaimContent>
+                </Fragment>
+              ))}
+            </ClaimRow>
+          ))}
+        </ClaimTable>
       </TableWrap>
 
       <TableContianer>
@@ -161,20 +216,22 @@ const DisRegisterDetail = ({}) => {
           </div>
         </TCSubContainer>
         <TCSubContainer>
-          <div>
-            선택 중량<span> 2 </span>kg / 총 중량 kg
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteRedBtn>선별 변경 요청 승인 반려</WhiteRedBtn>
+            <WhiteSkyBtn>선별 변경 요청 승인</WhiteSkyBtn>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn>목록 제거</WhiteRedBtn>
             <WhiteSkyBtn>추가 등록</WhiteSkyBtn>
+            <WhiteRedBtn>배차 취소</WhiteRedBtn>
+            <WhiteSkyBtn>배차 등록</WhiteSkyBtn>
           </div>
         </TCSubContainer>
         <Test3 />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>합짐 변경 요청 승인 반려</WhiteRedBtn>
-            <WhiteSkyBtn>합짐 변경 요청 승인</WhiteSkyBtn>
+            <WhiteRedBtn>선별 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
       </TableContianer>

@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { BtnBound, SkyBtn, TGreyBtn } from '../../../common/Button/Button'
+import { BlackBtn, BtnBound, NewBottomBtnWrap, SkyBtn, TGreyBtn, WhiteBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
@@ -152,6 +152,14 @@ const PackDetail = ({}) => {
               </TCSubContainer>
               <Test3 hei2={350} hei={100} />
               <TCSubContainer></TCSubContainer>
+              <NewBottomBtnWrap bottom={-5}>
+                <WhiteBtn width={13} height={40}>
+                  돌아가기
+                </WhiteBtn>
+                <BlackBtn width={13} height={40}>
+                  등록
+                </BlackBtn>
+              </NewBottomBtnWrap>
             </TableContianer>
           </FilterContianer>
         </BlueSubContainer>

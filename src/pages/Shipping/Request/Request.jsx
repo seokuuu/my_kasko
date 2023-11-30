@@ -94,7 +94,7 @@ const Request = ({ setChoiceComponent }) => {
     }
   }
 
-  const radioDummy = ['단일 합짐', '복수 합짐']
+  const radioDummy = ['독차', '합짐']
   const radioTableDummy = ['Y', 'N']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
@@ -250,7 +250,7 @@ const Request = ({ setChoiceComponent }) => {
         <Test3 />
       </TableContianer>
       <FilterHeader style={{}}>
-        <h1>합짐</h1>
+        <h1>선별 등록</h1>
         {/* 토글 쓰기 */}
       </FilterHeader>
       <TableWrap style={{ marginTop: '5px' }}>
@@ -338,7 +338,7 @@ const Request = ({ setChoiceComponent }) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn>목록 제거</WhiteRedBtn>
-            <WhiteSkyBtn>합짐 등록</WhiteSkyBtn>
+            <WhiteSkyBtn>선별 등록</WhiteSkyBtn>
           </div>
         </TCSubContainer>
         <Test3 />

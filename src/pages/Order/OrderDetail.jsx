@@ -9,12 +9,14 @@ import { CheckBox } from '../../common/Check/Checkbox'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
 
 import {
+  DoubleWrap,
   ExCheckDiv,
   ExCheckWrap,
   FilterContianer,
   FilterFooter,
   FilterHeader,
   FilterLeft,
+  FilterRight,
   FilterSubcontianer,
   FilterTCTop,
   GridWrap,
@@ -23,7 +25,7 @@ import {
   RowWrap,
   TableContianer,
   TCSubContainer,
-  Tilde
+  Tilde,
 } from '../../modal/External/ExternalFilter'
 
 import Hidden from '../../components/TableInner/Hidden'
@@ -126,6 +128,14 @@ const OrderDetail = ({}) => {
             <FilterLeft>
               <RowWrap>
                 <PartWrap>
+                  <h6>주문 일자</h6>
+                  <GridWrap>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <Tilde>~</Tilde>
+                    <DateGrid bgColor={'white'} fontSize={17} />
+                  </GridWrap>
+                </PartWrap>
+                <PartWrap>
                   <h6>주문 상태</h6>
                   <ExCheckWrap>
                     {checkSales.map((x, index) => (
@@ -143,19 +153,18 @@ const OrderDetail = ({}) => {
                 </PartWrap>
               </RowWrap>
               <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap>
-                  <h6 style={{ width: '130px' }}>확정 전송 일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
-                </PartWrap>
-
                 <PartWrap />
                 <PartWrap />
               </RowWrap>
             </FilterLeft>
+            <FilterRight>
+              <DoubleWrap>
+                <h6>제품 번호 </h6>
+                <textarea
+                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
+                />
+              </DoubleWrap>
+            </FilterRight>
           </FilterSubcontianer>
           <FilterFooter>
             <div style={{ display: 'flex' }}>

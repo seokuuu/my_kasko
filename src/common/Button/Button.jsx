@@ -240,6 +240,7 @@ export const BtnWrap = styled.div`
 export const NewBottomBtnWrap = styled.div`
   display: flex;
   justify-content: center;
+
   width: 100%;
   border-top: 1px solid #c8c8c8;
   padding-top: 10px;

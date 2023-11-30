@@ -18,14 +18,12 @@ const TableGrid = ({ title, setAddModal }) => {
       <ModalContainer style={{ width: '75%', height: '98vh' }}>
         <BlueBarHeader style={{ height: '60px' }}>
           {/* <div>{title}</div> */}
-          <div>패키지 상세 보기(경매)</div>
+          <div>모달 제목</div>
           <div>
             <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
           </div>
         </BlueBarHeader>
-        <BlueSubContainer style={{ padding: '0px 30px' }}>
-        
-        </BlueSubContainer>
+        <BlueSubContainer style={{ padding: '0px 30px' }}></BlueSubContainer>
       </ModalContainer>
     </>
   )

@@ -17,7 +17,7 @@ const DefaultBlueBar = ({ title, setAddModal }) => {
       <ModalContainer style={{ width: '75%', height: '98vh' }}>
         <BlueBarHeader style={{ height: '60px' }}>
           {/* <div>{title}</div> */}
-          <div>경매 제품 추가(단일)</div>
+          <div>제목</div>
           <div>
             <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
           </div>

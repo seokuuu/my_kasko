@@ -1,56 +1,31 @@
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
-import Excel from '../../../components/TableInner/Excel'
+import { useEffect, useState } from 'react'
+import { BlackBtn, GreyBtn, SkyBtn, TGreyBtn, TWhiteBtn, WhiteGrnBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import {
-  GreyBtn,
-  ExcelBtn,
-  WhiteGrnBtn,
-  IndigoBtn,
-  BlueBtn,
-  SkyBtn,
-  SwitchBtn,
-  TGreyBtn,
-  TWhiteBtn,
-} from '../../../common/Button/Button'
-import Test3 from '../../../pages/Test/Test3'
+import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import Test3 from '../../../pages/Test/Test3'
 import { toggleAtom } from '../../../store/Layout/Layout'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-
+import Hidden from '../../../components/TableInner/Hidden'
 import {
+  DoubleWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
   FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  TCSubContainer,
+  FilterSubcontianer,
   GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
+  Input,
   MiniInput,
+  PartWrap,
+  ResetImg,
+  RowWrap,
+  TableContianer,
+  TCSubContainer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
-import Hidden from '../../../components/TableInner/Hidden'
-
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
@@ -109,7 +84,7 @@ const UserPerformance = ({}) => {
           <FilterSubcontianer>
             <FilterLeft>
               <RowWrap none>
-                <PartWrap>
+                <PartWrap first>
                   <h6>경매일자</h6>
                   <GridWrap>
                     <DateGrid width={130} bgColor={'white'} fontSize={17} />

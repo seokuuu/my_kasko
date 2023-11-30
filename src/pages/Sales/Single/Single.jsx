@@ -137,7 +137,7 @@ const Single = ({}) => {
                   <PartWrap>
                     <h6>규격 약호</h6>
                     <Input />
-                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen}>
+                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17} onClick={modalOpen}>
                       찾기
                     </GreyBtn>
                   </PartWrap>
