@@ -1,48 +1,32 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect, useState } from 'react'
+import { CustomInput, FlexInput } from '../../../common/Input/Input'
 import {
-  OnePageContainer,
-  OnePageSubContainer,
-  MainTitle,
-  HalfWrap,
-  Left,
-  Right,
-  Title,
-  Part,
-  At,
-  FlexPart,
-  FlexTitle,
-  OnePageFlexContainer,
-  OnePageFlexSubContainer,
-  FlexContent,
+  AddBtn,
   Bar,
   EqualCheckWrap,
-  AddBtn,
+  FlexContent,
+  FlexPart,
+  FlexTitle,
+  Left,
+  OnePageFlexSubContainer,
+  Right,
 } from '../../../common/OnePage/OnePage.Styled'
-import { CustomInput, FlexInput } from '../../../common/Input/Input'
-import { CustomSelect } from '../../../common/Option/Main'
-import { emailOptions, accountOptions } from '../../../common/Option/SignUp'
-import { AccountSelect } from '../../../common/Option/SignUp'
-import { EditSelect, depositOptions } from '../../../common/Option/SignUp'
+import { AccountSelect, EditSelect, accountOptions, depositOptions } from '../../../common/Option/SignUp'
 
-import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
-import { BottomP, TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
+import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
+import { TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
 
-import { RadioContainer } from '../../../pages/User/SignUp/SignUp'
-
-import { TxtDiv } from '../../../pages/User/SignUp/SignUp.Styled'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { CheckBtn } from '../../../pages/User/SignUp/SignUp.Styled'
 
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-import SignUpPost from '../../../modal/SignUp/SignUpPost'
-import { checkBusinessNumber, getCustomerPrivacy, updateCustomer } from '../../../api/myPage'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { ModalContainer, ModalOverlay, ModalSubContainer } from '../../../modal/Common/Common.Styled'
 import { styled } from 'styled-components'
-import { log } from '../../../lib'
+import { checkBusinessNumber, getCustomerPrivacy, updateCustomer } from '../../../api/myPage'
 import { resetCustomer } from '../../../api/userManage'
+import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+import useReactQuery from '../../../hooks/useReactQuery'
+import SignUpPost from '../../../modal/SignUp/SignUpPost'
 
 const init = {
   id: '아이디',
@@ -272,6 +256,8 @@ const ClientModal = ({ setModal }) => {
   const radioDummy2 = ['승인', '대기', '미승인']
   const radioDummy3 = ['경매 시작가 제한', '경매 제한']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+    const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy.length }, () => false))
+      const [checkRadio3, setCheckRadio3] = useState(Array.from({ length: radioDummy.length }, () => false))
   const [savedRadioValue, setSavedRadioValue] = useState('')
 
   useEffect(() => {
@@ -338,18 +324,18 @@ const ClientModal = ({ setModal }) => {
   return (
     <div>
       <ModalOverlayC />
-      <ModalContainerC width={1250}>
+      <ModalContainerC width={1350}>
         {/* <ModalSubContainer> */}
         {/* <OnePageFlexContainerC> */}
-        <MainTitleC>
+        <MainTitleC style={{ fontSize: '18px' }}>
           <div>대표 상세 정보</div>
           <TransparentButton onClick={modalOFF}>x</TransparentButton>
         </MainTitleC>
         <form onSubmit={handleSubmit}>
-          <ModalContainerSubC width={1250}>
+          <ModalContainerSubC width={1200}>
             {' '}
             <OnePageFlexSubContainer>
-              <Left>
+              <Left style={{ width: '47%' }}>
                 <h1>회원정보</h1>
                 <Bar />
                 <FlexPart>
@@ -422,8 +408,7 @@ const ClientModal = ({ setModal }) => {
                     <div
                       style={{
                         display: 'flex',
-                        gap: '80px',
-                        width: '100%',
+                        gap: '60px',
                       }}
                     >
                       {radioDummy2.map((text, index) => (
@@ -437,7 +422,7 @@ const ClientModal = ({ setModal }) => {
                           >
                             <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                           </RadioCircleDiv>
-                          <div style={{ display: 'flex', marginLeft: '0px' }}>{text}</div>
+                          <div style={{ display: 'flex', paddingLeft: '5px' }}>{text}</div>
                         </RadioMainDiv>
                       ))}
                     </div>
@@ -559,7 +544,7 @@ const ClientModal = ({ setModal }) => {
                 </FlexPart>
               </Left>
               {/* -------------------------------------------------------------- */}
-              <Right>
+              <Right style={{ width: '47%' }}>
                 <h1>비즈니스 정보</h1>
                 <Bar />
                 <FlexPart>
@@ -807,7 +792,7 @@ const ClientModal = ({ setModal }) => {
               </Right>
             </OnePageFlexSubContainer>
           </ModalContainerSubC>
-          <BtnWrap style={{ height: '120px' }}>
+          <BtnWrap style={{ height: '60px' }}>
             {/* <WhiteBtn width={40} height={40}>
             돌아가기
           </WhiteBtn> */}
@@ -843,9 +828,10 @@ export const ModalContainerC = styled.div`
 export const ModalContainerSubC = styled.div`
   // margin: 50px 0 0 0;
   width: ${(props) => props.width}px;
-  height: 900px;
+  height: 850px;
+
   overflow-y: auto;
-  border-bottom: 2px solid #000;
+  border-bottom: 1px solid #c8c8c8;
   padding: 56px 24px;
 `
 export const OnePageFlexContainerC = styled.div`

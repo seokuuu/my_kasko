@@ -43,9 +43,10 @@ export const OnePageFlexSubContainer = styled.div`
   margin-right: auto;
   display: flex;
   justify-content: space-between;
+  font-size: 18px;
 
   h1 {
-    font-size: 20px;
+    font-size: 22px;
   }
 `
 

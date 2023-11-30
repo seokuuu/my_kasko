@@ -24,6 +24,10 @@ import {
   TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 
+import { alertAtom, alertAtom2, AuctionRestrictionModal } from '../../../store/Layout/Layout'
+
+import ClientAuctionRestrictionModal from './ClientAuctionRestrictionModal'
+
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isArray } from 'lodash'
@@ -37,9 +41,9 @@ import { add_element_field } from '../../../lib/tableHelpers'
 // import { log } from '../../../lib'
 import { isString } from 'lodash'
 import TableTest from '../../Table/TableTest'
-import { Bar } from '../../../modal/Common/Common.Styled'
 
 const Client = ({ setChoiceComponent, setModal }) => {
+  const [restrict, setRestrict] = useState()
   const [selectedValue, setSelectedValue] = useState('')
   const radioDummy = ['전체', '대표']
   // const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
@@ -141,13 +145,6 @@ const Client = ({ setChoiceComponent, setModal }) => {
       queryClient.invalidateQueries('getClient')
     },
   })
-  const mutationAuction = useMutation(postChangeAuction, {
-    onSuccess: () => {
-      console.log('SUCCESS MUTATION')
-      queryClient.invalidateQueries('getClient')
-      queryClient.refetchQueries('getClient')
-    },
-  })
 
   const handleRemoveBtn = useCallback(() => {
     if (!isArray(checkedArray) || !checkedArray.length > 0) return alert('선택해주세요!')
@@ -159,21 +156,49 @@ const Client = ({ setChoiceComponent, setModal }) => {
   }
   const openAuctionModal = () => {
     if (!checkedArray) return alert('고객을 선택해주세요')
-    // setAuctionModal(true)
+    setAuctionModal(true)
   }
 
-  const clientRestrict = () => {
-    if (!selectedValue) return alert('선택해주세요 ')
+  const mutationDestrict = useMutation(postChangeAuction, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('transportation')
+    },
+  })
+
+  // 선택한 것 삭제 요청 (해당 함수 func 인자로 전달)
+  const propsRemove = () => {
+    checkedArray.forEach((item) => {
+      mutation.mutate(item['운반비 고유 번호']) //mutation.mutate로 api 인자 전해줌
+    })
+  }
+
+  // 경매 제한 상태 변경
+  const mutationAuction = useMutation(postChangeAuction, {
+    onSuccess: () => {
+      console.log('SUCCESS MUTATION')
+      queryClient.invalidateQueries('getClient')
+      queryClient.refetchQueries('getClient')
+    },
+  })
+  const clientRestrict = async () => {
+    if (selectedValue === undefined) return alert('선택해주세요 ')
     if (isString(selectedValue)) {
+      console.log('selectedValue', selectedValue)
       let req = { uids: [], auctionStatus: '' }
-      checkedArray.forEach((item) => {
+      checkedArray?.forEach((item) => {
         req.uids.push(item['순번'])
         req.auctionStatus = selectedValue
-        mutationAuction.mutate(req)
-        // setAuctionModal(false)
       })
+
+      // mutationAuction.mutate의 비동기 작업이 완료된 후에 실행될 코드
+      await mutationAuction.mutate(req)
+
+      // mutationAuction.mutate 완료 후에 값을 확인
+      setRestrict(req)
+      console.log('restrict', restrict) // req 값을 사용
     }
   }
+
   const confirm = (value) => {
     // if (value === true) return setCheckRemoveModal(false)
   }
@@ -197,9 +222,9 @@ const Client = ({ setChoiceComponent, setModal }) => {
   }
 
   // //Modal
-  // const [auctionModal, setAuctionModal] = useAtom(AuctionRestrictionModal)
-  // const [removeModal, setRemoveModal] = useAtom(alertAtom)
-  // const [checkRemoveModal, setCheckRemoveModal] = useAtom(alertAtom2)
+  const [auctionModal, setAuctionModal] = useAtom(AuctionRestrictionModal)
+  const [removeModal, setRemoveModal] = useAtom(alertAtom)
+  const [checkRemoveModal, setCheckRemoveModal] = useAtom(alertAtom2)
   return (
     <>
       <FilterContianer>
@@ -303,7 +328,9 @@ const Client = ({ setChoiceComponent, setModal }) => {
               <span></span>
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <WhiteRedBtn onClick={openAuctionModal}>회원 제한</WhiteRedBtn>
+              <WhiteRedBtn onClick={openAuctionModal} clientRestrict={clientRestrict}>
+                회원 제한
+              </WhiteRedBtn>
               <BtnBound />
               <WhiteRedBtn onClick={handleRemoveBtn}>회원 삭제</WhiteRedBtn>
               <WhiteSkyBtn onClick={setPostPage}>회원 생성</WhiteSkyBtn>
@@ -313,14 +340,14 @@ const Client = ({ setChoiceComponent, setModal }) => {
           {/* <Test3 /> */}
         </TableContianer>
       </FilterContianer>
-      {/* {auctionModal && (
-          <ClientAuctionRestrictionModal
-            selectedValue={selectedValue}
-            setSelectedValue={setSelectedValue}
-            setAuctionModal={setAuctionModal}
-            onClick={clientRestrict}
-          />
-        )} */}
+      {auctionModal && (
+        <ClientAuctionRestrictionModal
+          selectedValue={selectedValue}
+          setSelectedValue={setSelectedValue}
+          setAuctionModal={setAuctionModal}
+          clientRestrict={clientRestrict}
+        />
+      )}
       {/* {checkRemoveModal && <AlertModal type={1} title={'삭제가 완료되었습니다'} onClick={confirm} />}
 
         {removeModal && (
