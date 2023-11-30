@@ -171,13 +171,7 @@ const Inventory = ({}) => {
     <FilterContianer>
       <FilterHeader>
         <div style={{ display: 'flex' }}>
-          <h1>운영 관리</h1>
-          <SubTitle>
-            <Link to={`/operate/operation`}>
-              <h6>운영 관리</h6>
-            </Link>
-            <h5>재고 수불 관리</h5>
-          </SubTitle>
+          <h1>재고 수불 관리</h1>
         </div>
       </FilterHeader>
       {exFilterToggle && (
