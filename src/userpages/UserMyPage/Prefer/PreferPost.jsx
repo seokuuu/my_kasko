@@ -25,23 +25,25 @@ import { isEmptyObj } from '../../../lib'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { postCustomerfavorite } from '../../../api/myPage'
 
+import PreferEdit from './PreferEdit'
+
 const init = {
   name: '',
-  specUid: null, //DB 필요
-  thicknessMin: '',
-  thicknessMax: '',
-  widthMin: '',
-  widthMax: '',
-  lengthMin: '',
-  lengthMax: '',
-  tsMin: '',
-  tsMax: '',
-  ypMin: '',
-  ypMax: '',
-  cMin: '',
-  cMax: '',
-  elMin: '',
-  elMax: '',
+  specUid: 1, //DB 필요
+  thicknessMin: null,
+  thicknessMax: null,
+  widthMin: null,
+  widthMax: null,
+  lengthMin: null,
+  lengthMax: null,
+  tsMin: null,
+  tsMax: null,
+  ypMin: null,
+  ypMax: null,
+  cMin: null,
+  cMax: null,
+  elMin: null,
+  elMax: null,
 }
 
 // TODO : 규격약호 DB 셋팅 안되있음
@@ -49,9 +51,13 @@ const PreferPost = ({ setChoiceComponent }) => {
   const [submitData, setSubmitData] = useState(init)
   const mutation = useMutationQuery('', postCustomerfavorite)
 
+
+
   const eventHandle = (e) => {
     const { name, value } = e.target
-    setSubmitData({ ...submitData, [name]: value })
+    const fieldValue = name === 'name' ? value : parseInt(value, 10)
+
+    setSubmitData({ ...submitData, [name]: fieldValue || null })
     console.log(submitData)
   }
 
@@ -69,7 +75,7 @@ const PreferPost = ({ setChoiceComponent }) => {
   }
   return (
     <OnePageContainer>
-      <MainTitle>선호제품 등록</MainTitle>
+      <MainTitle></MainTitle>
       <OnePageSubContainer>
         <HalfWrap>
           <Left>

@@ -35,6 +35,8 @@ export const PartBlock = styled.div`
 
 export const Part = styled.div`
   margin-bottom: 20px;
+
+  width: fit-content;
 `
 
 export const ModalPart = styled.div`

@@ -1,3 +1,5 @@
+import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
+
 var checkboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0
@@ -114,6 +116,15 @@ export const UserPageUserPreferFields = {
 }
 export const UserPageUserPreferFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  {
+    field: '수정',
+    maxWidth: 90,
+    cellRenderer: BtnCellRenderer,
+    cellRendererParams: {
+      uidFieldName: 'uid',
+      editType: 'userprefer',
+    },
+  },
   {
     field: '선호제품 명',
   },

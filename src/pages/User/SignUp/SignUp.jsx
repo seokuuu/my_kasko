@@ -690,7 +690,7 @@ const SignUp = () => {
                     <h4>주소</h4>
                     <p style={{ color: 'red' }}>{addressValidate || ''}</p>
                   </Title>
-                  <div>
+                  <div style={{ width: '320px' }}>
                     <TxtCheckInput type="text" value={address} placeholder="찾기 버튼 클릭" readOnly />
                     <CheckBtn style={{ backgroundColor: 'black', color: 'white' }} onClick={openModal} type="button">
                       찾기

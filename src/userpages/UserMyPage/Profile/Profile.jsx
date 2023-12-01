@@ -88,6 +88,8 @@ const ProfileEdit = () => {
   const [user, setUser] = useState('')
   const resData = data?.data?.data
 
+  console.log('resData =>', resData)
+
   const checkBusiness = () => {
     try {
       checkBusinessNumber(businessNumber)
@@ -327,7 +329,7 @@ const ProfileEdit = () => {
                   이메일<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="email" />
+                  <FlexInput name="email" defaultValue={user && user.member.email} />
                 </FlexContent>
               </FlexPart>
 
@@ -336,7 +338,7 @@ const ProfileEdit = () => {
                   휴대폰 번호<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="customerPhone" />
+                  <FlexInput name="customerPhone" defaultValue={user && user.member.phone} />
                 </FlexContent>
               </FlexPart>
               <Bar />
@@ -355,7 +357,12 @@ const ProfileEdit = () => {
                     defaultValue={depositOptions[0]}
                     onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
                   />
-                  <CustomInput name="depositManagerName" placeholder="담당자 성함 입력" width={190} />
+                  <CustomInput
+                    name="depositManagerName"
+                    placeholder="담당자 성함 입력"
+                    width={190}
+                    defaultValue={user && user.customer.depositManagerName}
+                  />
                 </FlexContent>
               </FlexPart>
 
@@ -364,7 +371,11 @@ const ProfileEdit = () => {
                   휴대폰 번호<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="depositManagerPhone" placeholder="연락처 입력 ('-' 제외)" />
+                  <FlexInput
+                    name="depositManagerPhone"
+                    placeholder="연락처 입력 ('-' 제외)"
+                    defaultValue={user && user.customer.depositManagerPhone}
+                  />
                 </FlexContent>
               </FlexPart>
               <EqualCheckWrap>
@@ -382,7 +393,12 @@ const ProfileEdit = () => {
                     defaultValue={depositOptions[0]}
                     onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
                   />
-                  <CustomInput name="releaseManagerName" placeholder=" 담당자 성함 입력" width={190} />
+                  <CustomInput
+                    name="releaseManagerName"
+                    placeholder=" 담당자 성함 입력"
+                    width={190}
+                    defaultValue={user && user.customer.releaseManagerName}
+                  />
                 </FlexContent>
               </FlexPart>
 
@@ -391,7 +407,11 @@ const ProfileEdit = () => {
                   휴대폰 번호<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="releaseManagerPhone" placeholder="연락처 입력 ('-' 제외)" />
+                  <FlexInput
+                    name="releaseManagerPhone"
+                    placeholder="연락처 입력 ('-' 제외)"
+                    defaultValue={user && user.customer.releaseManagerPhone}
+                  />
                 </FlexContent>
               </FlexPart>
 
@@ -446,7 +466,7 @@ const ProfileEdit = () => {
                   회사 명<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="customerName" />
+                  <FlexInput name="customerName" defaultValue={user && user.customer.name} />
                 </FlexContent>
               </FlexPart>
 
@@ -455,7 +475,7 @@ const ProfileEdit = () => {
                   대표자 성명<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="ceoName" />
+                  <FlexInput name="ceoName" defaultValue={user && user.customer.ceoName} />
                 </FlexContent>
               </FlexPart>
 
@@ -464,7 +484,7 @@ const ProfileEdit = () => {
                   대표 연락처<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="phone" />
+                  <FlexInput name="phone" defaultValue={user && user.customer.phone} />
                 </FlexContent>
               </FlexPart>
 
@@ -473,7 +493,7 @@ const ProfileEdit = () => {
                   팩스번호<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="fax" />
+                  <FlexInput name="fax" defaultValue={user && user.customer.fax} />
                 </FlexContent>
               </FlexPart>
 
@@ -482,7 +502,12 @@ const ProfileEdit = () => {
                   주소<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <CustomInput name="address" width={223} value={address} />
+                  <CustomInput
+                    name="address"
+                    width={223}
+                    value={address}
+                    defaultValue={user && user.customer.address}
+                  />
                   <CheckBtn
                     type="button"
                     style={{
@@ -499,7 +524,11 @@ const ProfileEdit = () => {
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  <FlexInput name="addressDetail" value={detailAddress} />
+                  <FlexInput
+                    name="addressDetail"
+                    value={detailAddress}
+                    defaultValue={user && user.customer.addressDetail}
+                  />
                 </FlexContent>
               </FlexPart>
 
@@ -555,7 +584,12 @@ const ProfileEdit = () => {
                 </FlexTitle>
                 <FlexContent>
                   {/* input데이터 넣기 value={resData && resData.customer.businessNumber} */}
-                  <CustomInput name="businessNumber" width={223} onChange={handleCheck} />
+                  <CustomInput
+                    name="businessNumber"
+                    width={223}
+                    onChange={handleCheck}
+                    defaultValue={user && user.customer.businessNumber}
+                  />
                   <CheckBtn style={{ fontSize: '16px' }} type="button" onClick={checkBusiness}>
                     중복확인
                   </CheckBtn>
@@ -630,7 +664,11 @@ const ProfileEdit = () => {
                 <FlexTitle></FlexTitle>
                 <FlexContent>
                   {/* <FlexInput></FlexInput> */}
-                  {checkFileName.deleteBankbookFile ? checkFileName.deleteBankbookFile : <FlexInput></FlexInput>}
+                  {checkFileName.deleteBankbookFile ? (
+                    checkFileName.deleteBankbookFile
+                  ) : (
+                    <FlexInput style={{ width: '322px' }}></FlexInput>
+                  )}
                 </FlexContent>
               </FlexPart>
 
@@ -650,7 +688,11 @@ const ProfileEdit = () => {
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  <FlexInput name="accountNumber" style={{ width: '99%' }} />
+                  <FlexInput
+                    name="accountNumber"
+                    style={{ width: '320px' }}
+                    defaultValue={user && user.customer.accountNumber}
+                  />
                 </FlexContent>
               </FlexPart>
             </Right>
