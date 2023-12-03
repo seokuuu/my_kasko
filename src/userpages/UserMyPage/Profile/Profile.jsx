@@ -329,7 +329,7 @@ const ProfileEdit = () => {
                   이메일<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="email" defaultValue={user && user.member.email} />
+                  <FlexInput name="email" defaultValue={(user && user.member.email) || ''} />
                 </FlexContent>
               </FlexPart>
 

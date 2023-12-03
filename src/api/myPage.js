@@ -14,9 +14,7 @@ export function postDestination(data) {
 }
 
 export function getDestination(data) {
-  return client.get(
-    `${urls.Destination}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&category=${data.category}&keyword=${data.keyword}`,
-  )
+  return client.get(`${urls.Destination}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
 }
 
 export function patchDestination(data) {

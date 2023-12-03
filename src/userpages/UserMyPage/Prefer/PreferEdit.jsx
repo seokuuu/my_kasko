@@ -42,6 +42,8 @@ const init = {
   elMax: '',
 }
 
+
+
 const PreferEdit = ({ setChoiceComponent, detailData }) => {
   const radioDummy = ['지정', '미지정'] // 더미 데이터
 

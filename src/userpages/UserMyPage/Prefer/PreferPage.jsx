@@ -10,6 +10,7 @@ import { useState } from 'react'
 import { btnCellUidAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
+
 const PreferPage = () => {
   const [expanded, setExpanded] = useState('마이페이지')
   const [depth2Color, setDepth2Color] = useState('선호 제품 관리')
@@ -25,6 +26,8 @@ const PreferPage = () => {
         return <Prefer setChoiceComponent={setChoiceComponent} />
     }
   }
+
+
   return (
     <>
       <Header />

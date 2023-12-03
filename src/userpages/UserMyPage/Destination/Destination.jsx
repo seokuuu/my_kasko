@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import Excel from '../../../components/TableInner/Excel'
 
@@ -23,7 +23,14 @@ import useMutationQuery from '../../../hooks/useMutationQuery'
 import { deleteDestination } from '../../../api/myPage/userDestination'
 import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useGetUserDestinationQuery } from '../../../hooks/queries/user/Mypage'
+
 import { getDestination } from '../../../api/myPage'
+import Table from '../../../pages/Table/Table'
+import {
+  UserManageCustomerDestinationManageFields,
+  UserManageCustomerDestinationManageFieldsCols,
+} from '../../../constants/admin/UserManage'
+import { add_element_field } from '../../../lib/tableHelpers'
 
 const Destination = ({ setChoiceComponent }) => {
   const radioDummy = ['전체', '미진행', '진행중', '종료']
@@ -66,42 +73,32 @@ const Destination = ({ setChoiceComponent }) => {
     }
   }
 
-  const { userUid, setUserUid } = useState('')
-  const [destination, setDestination] = useState('')
-  const 임의데이터 = {
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(UserManageCustomerDestinationManageFieldsCols)
+  const getCol = tableField.current
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  const dummy = {
     pageNum: 1,
-    pageSize: 20,
-    // category: '목적지명',
-    // keyword: '인천',
+    pageSize: 5,
   }
 
-  const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터, 'destination', getDestination)
+  const { isLoading, isError, data, isSuccess } = useReactQuery(dummy, 'getDestination', getDestination)
+  const resData = data?.data?.data?.list
+
+  if (isError) console.log('데이터 request ERROR')
 
   useEffect(() => {
-    if (isSuccess && data?.data?.data?.list) {
-      let getData = data?.data?.data?.list
-
-      if (Array.isArray(getData)) {
-        const newArray = getData.map((item) => ({
-          '고객 코드': item.uid,
-          대표: item.represent,
-          '목적지 코드': item.destinationCode,
-          '목적지 명': item.destinationName,
-          '담당자 연락처': item.managerPhone,
-          '하차지 명': item.name,
-          '도착지 연락처': item.phone,
-          '상세 주소': item.address,
-          비고란: item.memo,
-        }))
-        setDestination(newArray)
-      }
+    let getData = resData
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, UserManageCustomerDestinationManageFields))
     }
-  }, [isSuccess, data])
+  }, [isSuccess, resData])
 
-  // 컴포넌트 이동
-  // const openPost = () => {
-  //   setChoiceComponent('등록')
-  // }
+  const openPost = () => {
+    setChoiceComponent('등록')
+  }
 
   // const openEdit = async () => {
   //   setChoiceComponent('수정')
@@ -113,8 +110,6 @@ const Destination = ({ setChoiceComponent }) => {
       queryClient.invalidateQueries('destination')
     },
   })
-
-  const checkedArray = useAtom(selectedRowsAtom)[0]
 
   const handleRemoveBtn = useCallback(() => {
     if (isArray(checkedArray) && checkedArray.length > 0) {
@@ -155,12 +150,11 @@ const Destination = ({ setChoiceComponent }) => {
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn onClick={handleRemoveBtn}>목적지 삭제</WhiteRedBtn>
             {/* <SkyBtn onClick={openEdit}>목적지 수정</SkyBtn> */}
-            {/* <SkyBtn onClick={openPost}>목적지 등록</SkyBtn> */}
-            <SkyBtn>목적지 등록</SkyBtn>
+            <SkyBtn onClick={openPost}>목적지 등록</SkyBtn>
           </div>
         </TCSubContainer>
 
-        <Test3 title={'규격 약호 찾기'} getRow={destination} />
+        <Table getCol={getCol} getRow={getRow} />
       </TableContianer>
     </FilterContianer>
   )

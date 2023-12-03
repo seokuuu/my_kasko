@@ -21,6 +21,7 @@ import { userpageUserPreferEdit } from '../../../store/Layout/Layout'
 
 const Prefer = ({ setChoiceComponent, uidAtom }) => {
   const [switchEdit, setSwtichEdit] = useAtom(userpageUserPreferEdit)
+
   console.log('switchEdit', switchEdit)
   const [filterData, setFilterData] = useAtom(userpageUserPreferEditObject)
   const radioDummy = ['전체', '미진행', '진행중', '종료']
@@ -109,6 +110,14 @@ const Prefer = ({ setChoiceComponent, uidAtom }) => {
   const goPostPage = () => {
     setChoiceComponent('등록')
   }
+
+  useEffect(() => {
+    // 컴포넌트가 언마운트될 때 switchEdit을 재설정하는 정리 함수
+    return () => {
+      setSwtichEdit(false)
+    }
+  }, [])
+
   return (
     <>
       {' '}
