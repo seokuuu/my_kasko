@@ -39,7 +39,7 @@ export function updateCustomer(input, fileForms) {
   if (fileForms.deleteBankbookFile instanceof File) {
     form.append('deleteBankbookFile', fileForms.deleteBankbookFile)
   }
-  return client.patch(urls.updateCustomer, form, {
+  return client.patch(urls.privacy, form, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -52,7 +52,7 @@ export function getCustomerPrivacy() {
 }
 // 중복확인
 export function checkBusinessNumber(data) {
-  return client.post(`${urls.privacy}/business-number?businessNumber=${data}`)
+  return client.post(`${urls.privacy}/${data}`)
 }
 
 /* ==============================

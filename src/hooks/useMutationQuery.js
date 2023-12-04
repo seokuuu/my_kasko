@@ -6,7 +6,7 @@ function useMutationQuery(queryKeys, api, options = {}) {
   const queryClient = useQueryClient()
 
   return useMutation(api, {
-    onSuccess: () => {
+    1: () => {
       console.log('Success')
       queryClient.invalidateQueries(queryKeys)
       options.onSuccess && options.onSuccess()

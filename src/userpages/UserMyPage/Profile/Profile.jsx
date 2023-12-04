@@ -1,44 +1,34 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect, useState } from 'react'
+import { CustomInput, FlexInput } from '../../../common/Input/Input'
 import {
-  OnePageContainer,
-  OnePageSubContainer,
-  MainTitle,
-  HalfWrap,
-  Left,
-  Right,
-  Title,
-  Part,
-  At,
-  FlexPart,
-  FlexTitle,
-  OnePageFlexContainer,
-  OnePageFlexSubContainer,
-  FlexContent,
+  AddBtn,
   Bar,
   EqualCheckWrap,
-  AddBtn,
+  FlexContent,
+  FlexPart,
+  FlexTitle,
+  Left,
+  MainTitle,
+  OnePageFlexContainer,
+  OnePageFlexSubContainer,
+  Right,
 } from '../../../common/OnePage/OnePage.Styled'
-import { CustomInput, FlexInput } from '../../../common/Input/Input'
-import { CustomSelect } from '../../../common/Option/Main'
-import { emailOptions, accountOptions } from '../../../common/Option/SignUp'
-import { AccountSelect } from '../../../common/Option/SignUp'
-import { EditSelect, depositOptions } from '../../../common/Option/SignUp'
+import { AccountSelect, EditSelect, accountOptions, depositOptions } from '../../../common/Option/SignUp'
 
-import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
-import { BottomP, TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
+import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
+import { TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
 
-import { RadioContainer } from '../../../pages/User/SignUp/SignUp'
-
-import { TxtDiv } from '../../../pages/User/SignUp/SignUp.Styled'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { CheckBtn } from '../../../pages/User/SignUp/SignUp.Styled'
 
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-import SignUpPost from '../../../modal/SignUp/SignUpPost'
+import styled from 'styled-components'
 import { checkBusinessNumber, getCustomerPrivacy, updateCustomer } from '../../../api/myPage'
+import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import useReactQuery from '../../../hooks/useReactQuery'
+import SignUpPost from '../../../modal/SignUp/SignUpPost'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
 const init = {
   password: '',
@@ -46,7 +36,6 @@ const init = {
   name: '',
   email: '',
   phone: '',
-  customerUid: '',
   type: '',
   customerName: '',
   ceoName: '',
@@ -69,42 +58,49 @@ const init = {
 }
 
 const ProfileEdit = () => {
+  const [selectSwitch, setSelectSwitch] = useState({
+    A: false,
+    deposit: false,
+    release: false,
+  })
+
   const [input, setInput] = useState(init)
+  console.log('input', input)
   const [isUser, setIsUser] = useState(false)
   const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
   const [checkFileName, setCheckFileName] = useState({ deleteBusinessNumberFile: '', deleteBankbookFile: '' })
   const [fileForms, setFileForms] = useState({ registration: '', bankbook: '' })
   const [businessNumber, setBusinessNumber] = useState('')
 
+  console.log('businessNumber', businessNumber)
+
   // TODO : 중복체크 response 없음
   const { isError, isSuccess, data } = useReactQuery('getCustomerPrivacy', {}, getCustomerPrivacy)
-  // const {
-  //   isError: isBusinessNumberError,
-  //   isSuccess: isBusinessNumberSuccess,
-  //   data: businessNumberData,
-  // } = useReactQuery('checkBusinessNumber', businessNumber, checkBusinessNumber, {
-  //   enabled: false,
-  // })
+  const {
+    isError: isBusinessNumberError,
+    isSuccess: isBusinessNumberSuccess,
+    data: businessNumberData,
+  } = useReactQuery('checkBusinessNumber', businessNumber, checkBusinessNumber, {
+    enabled: false,
+  })
   const [user, setUser] = useState('')
   const resData = data?.data?.data
 
-  console.log('resData =>', resData)
+  console.log('resData', resData)
 
-  const checkBusiness = () => {
+  const postMutation = useMutationQuery('', checkBusinessNumber)
+  const checkBusiness = async () => {
     try {
-      checkBusinessNumber(businessNumber)
-      console.log('done')
-    } catch (err) {
-      console.log(err)
+      const result = await postMutation.mutateAsync(businessNumber)
+      const responseData = result.data
+      if (responseData.status !== 409) {
+        alert('사용 가능한 사업자 번호입니다.')
+      }
+    } catch (error) {
+      alert(error.data.message)
     }
-
-    // if (isBusinessNumberSuccess) {
-    //   alert('확인되셨습니다.')
-    // }
-    // if (isBusinessNumberError) {
-    //   alert('중복되었습니다.')
-    // }
   }
+
   const handleCheck = (e) => {
     setBusinessNumber(e.target.value)
     console.log(businessNumber)
@@ -115,9 +111,10 @@ const ProfileEdit = () => {
   useEffect(() => {
     if (isSuccess) {
       setUser(resData)
-      // setBusinessNumber(resData.customer.businessNumber)
+      setAddress(resData?.customer?.address)
+      setDetailAddress(resData?.customer?.addressDetail)
     }
-  }, [resData])
+  }, [isSuccess])
 
   const handleFiles = (e) => {
     const name = e.target.name
@@ -161,6 +158,8 @@ const ProfileEdit = () => {
     const formData = new FormData(e.target)
     const updatedInput = { ...input }
 
+    console.log('updatedInput', updatedInput)
+
     formData.forEach((value, key) => {
       if (input.hasOwnProperty(key) && value && !checkboxType.includes(key) && !fileType.includes(key)) {
         updatedInput[key] = value
@@ -184,8 +183,8 @@ const ProfileEdit = () => {
       if (shouldUpdateCustomer) {
         try {
           const response = await updateCustomer(input, fileForms)
-          console.log(response.data)
-          alert('회원가입이 수정되셨습니다.')
+          console.log('response !!! ', response)
+          alert(' 수정되었습니다.')
         } catch (err) {
           console.log(err)
           alert('ERROR:', err.data)
@@ -195,7 +194,9 @@ const ProfileEdit = () => {
     }
     updateCustomerData()
   }, [shouldUpdateCustomer])
-  // -------------------------------------------------------------------------------
+
+  console.log('shouldUpdateCustomer', shouldUpdateCustomer)
+
   const [postFind, setPostFind] = useState(false)
   const [modalSwitch, setModalSwitch] = useState(false)
   const [address, setAddress] = useState('')
@@ -292,7 +293,7 @@ const ProfileEdit = () => {
                   아이디<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput disabled name={init.id} value={user && user.member.id} />
+                  <FlexInput style={{ background: '#c8c8c8' }} disabled name={init.id} value={user && user.member.id} />
                 </FlexContent>
               </FlexPart>
 
@@ -319,8 +320,19 @@ const ProfileEdit = () => {
                   경매 담당자 정보<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <CustomInput name="title" placeholder="직함 입력" width={130} />
-                  <CustomInput name="name" placeholder=" 성함 입력" width={188} style={{ marginLeft: '5px' }} />
+                  <CustomInput
+                    name="title"
+                    placeholder="직함 입력"
+                    width={130}
+                    defaultValue={user && user.member.title}
+                  />
+                  <CustomInput
+                    name="name"
+                    placeholder=" 성함 입력"
+                    width={188}
+                    style={{ marginLeft: '5px' }}
+                    defaultValue={user && user.member.name}
+                  />
                 </FlexContent>
               </FlexPart>
 
@@ -342,21 +354,32 @@ const ProfileEdit = () => {
                 </FlexContent>
               </FlexPart>
               <Bar />
-              <EqualCheckWrap>
-                <input type="checkbox" style={{ marginRight: '5px' }} />
-                가입 정보와 동일
-              </EqualCheckWrap>
+
               <FlexPart>
                 <FlexTitle>
                   입금 담당자 정보<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <EditSelect
-                    name="depositManagerTitle"
-                    options={depositOptions}
-                    defaultValue={depositOptions[0]}
-                    onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
-                  />
+                  {selectSwitch.deposit ? (
+                    <EditSelect
+                      name="depositManagerTitle"
+                      options={depositOptions}
+                      defaultValue={depositOptions[0]}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
+                    />
+                  ) : (
+                    <GreyDiv
+                      onClick={() => {
+                        setSelectSwitch((prev) => ({
+                          ...prev,
+                          deposit: !prev.deposit,
+                        }))
+                      }}
+                    >
+                      {user && user.customer.depositManagerTitle}
+                    </GreyDiv>
+                  )}
+
                   <CustomInput
                     name="depositManagerName"
                     placeholder="담당자 성함 입력"
@@ -378,21 +401,32 @@ const ProfileEdit = () => {
                   />
                 </FlexContent>
               </FlexPart>
-              <EqualCheckWrap>
-                <input type="checkbox" style={{ marginRight: '5px' }} />
-                가입 정보와 동일
-              </EqualCheckWrap>
+
               <FlexPart>
                 <FlexTitle>
                   출고 담당자 정보<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <EditSelect
-                    name="releaseManagerTitle"
-                    options={depositOptions}
-                    defaultValue={depositOptions[0]}
-                    onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
-                  />
+                  {selectSwitch.release ? (
+                    <EditSelect
+                      name="releaseManagerTitle"
+                      options={depositOptions}
+                      defaultValue={depositOptions[0]}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
+                    />
+                  ) : (
+                    <GreyDiv
+                      onClick={() => {
+                        setSelectSwitch((prev) => ({
+                          ...prev,
+                          release: !prev.release,
+                        }))
+                      }}
+                    >
+                      {user && user.customer.releaseManagerTitle}
+                    </GreyDiv>
+                  )}
+
                   <CustomInput
                     name="releaseManagerName"
                     placeholder=" 담당자 성함 입력"
@@ -712,3 +746,34 @@ const ProfileEdit = () => {
 }
 
 export default ProfileEdit
+
+const GreyDiv = styled.div`
+  font-size: 16px;
+  width: 130px;
+  height: 40px;
+  border: 1px solid #c1c1c1c5;
+  background-color: #c8c8c8;
+  margin-right: 5px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  cursor: pointer;
+  position: relative;
+
+  &:hover {
+    background-color: gray;
+
+    &::after {
+      content: '클릭 시 수정';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+  }
+`
