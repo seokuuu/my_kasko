@@ -82,7 +82,7 @@ const ClientModal = ({ setModal }) => {
   const [isUser, setIsUser] = useState(false)
   const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
   const [checkFileName, setCheckFileName] = useState({ deleteBusinessNumberFile: '', deleteBankbookFile: '' })
-  const [fileForms, setFileForms] = useState({ registration: '', bankbook: '' })
+  const [fileForms, setFileForms] = useState({ registration: '', bankBook: '' })
   const [businessNumber, setBusinessNumber] = useState('')
 
   // TODO : 중복체크 response 없음
@@ -144,7 +144,7 @@ const ClientModal = ({ setModal }) => {
       if (name === 'deleteBankbookFile') {
         setFileForms((prev) => ({
           ...prev,
-          bankbook: file,
+          bankBook: file,
         }))
       }
     }
@@ -256,8 +256,8 @@ const ClientModal = ({ setModal }) => {
   const radioDummy2 = ['승인', '대기', '미승인']
   const radioDummy3 = ['경매 시작가 제한', '경매 제한']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
-    const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy.length }, () => false))
-      const [checkRadio3, setCheckRadio3] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio3, setCheckRadio3] = useState(Array.from({ length: radioDummy.length }, () => false))
   const [savedRadioValue, setSavedRadioValue] = useState('')
 
   useEffect(() => {

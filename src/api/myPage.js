@@ -26,6 +26,7 @@ export function patchDestination(data) {
 ============================== */
 export function updateCustomer(input, fileForms) {
   const form = new FormData()
+
   form.append(
     'request',
     new Blob([JSON.stringify(input)], {
@@ -33,12 +34,15 @@ export function updateCustomer(input, fileForms) {
     }),
   )
   // fileForms에 있는 파일 정보 추가
-  if (fileForms.deleteBusinessNumberFile instanceof File) {
-    form.append('deleteBusinessNumberFile', fileForms.deleteBusinessNumberFile)
+
+  if (fileForms.bankBook instanceof File) {
+    form.append('bankBook', fileForms.bankBook)
   }
-  if (fileForms.deleteBankbookFile instanceof File) {
-    form.append('deleteBankbookFile', fileForms.deleteBankbookFile)
+
+  if (fileForms.registration instanceof File) {
+    form.append('registration', fileForms.registration)
   }
+
   return client.patch(urls.privacy, form, {
     headers: {
       'Content-Type': 'multipart/form-data',

@@ -492,7 +492,7 @@ const SignUp = () => {
     setInput({ ...input, [name]: value })
     // businessfile, businessBankAddress는 file Object 일단 주석처리 하였음
 
-    //registration:businessfile, bankbook:businessBankAddress는
+    //registration:businessfile, bankBook:businessBankAddress는
   }
 
   const customerNameValidate = useValidation(inputObj)

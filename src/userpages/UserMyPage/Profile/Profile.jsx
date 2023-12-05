@@ -65,12 +65,19 @@ const ProfileEdit = () => {
   })
 
   const [input, setInput] = useState(init)
-  console.log('input', input)
+
   const [isUser, setIsUser] = useState(false)
   const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
   const [checkFileName, setCheckFileName] = useState({ deleteBusinessNumberFile: '', deleteBankbookFile: '' })
-  const [fileForms, setFileForms] = useState({ registration: '', bankbook: '' })
+  const [fileForms, setFileForms] = useState({ registration: '', bankBook: '' })
+
+  console.log('checkFileName <<<', checkFileName)
+
   const [businessNumber, setBusinessNumber] = useState('')
+
+  const checkDummy = ['유통', '제조']
+  const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
+  const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
 
   console.log('businessNumber', businessNumber)
 
@@ -113,12 +120,36 @@ const ProfileEdit = () => {
       setUser(resData)
       setAddress(resData?.customer?.address)
       setDetailAddress(resData?.customer?.addressDetail)
+      setInput({
+        ...input,
+        bank: resData?.customer?.bank,
+        depositManagerTitle: resData?.customer?.depositManagerTitle,
+        releaseManagerTitle: resData?.customer?.releaseManagerTitle,
+        deleteBusinessNumberFile: resData?.customer?.deleteBusinessNumberFile,
+        deleteBankbookFile: resData?.customer?.deleteBankbookFile,
+      })
+      setCheckFileName({
+        ...checkFileName,
+        deleteBusinessNumberFile: resData?.customer?.businessNumberOriginalName,
+        deleteBankbookFile: resData?.customer?.bankbookOriginalName,
+      })
+      const userCustomerTypeIndex = radioDummy.indexOf(resData?.customer?.type)
+
+      const newCheck = check.map((_, index) => resData?.customer?.businessType?.includes(checkDummy[index]))
+      setCheck(newCheck)
+
+      if (userCustomerTypeIndex !== -1) {
+        // 일치하는 값이 있다면 해당 인덱스의 checkRadio를 true로 설정
+        const newCheckRadio = Array.from({ length: radioDummy.length }, (_, index) => index === userCustomerTypeIndex)
+        setCheckRadio(newCheckRadio)
+      }
     }
   }, [isSuccess])
 
   const handleFiles = (e) => {
     const name = e.target.name
     const file = e.target.files[0]
+    console.log('')
     const fileName = e.target.files[0].name
     if (checkFileName.hasOwnProperty(name)) {
       setCheckFileName((prev) => ({
@@ -134,7 +165,7 @@ const ProfileEdit = () => {
       if (name === 'deleteBankbookFile') {
         setFileForms((prev) => ({
           ...prev,
-          bankbook: file,
+          bankBook: file,
         }))
       }
     }
@@ -173,7 +204,7 @@ const ProfileEdit = () => {
       }
     }
     setInput({ ...input, ...updatedInput, ...checkFileName })
-    console.log('input', input)
+
     setShouldUpdateCustomer(true)
   }
 
@@ -187,7 +218,7 @@ const ProfileEdit = () => {
           alert(' 수정되었습니다.')
         } catch (err) {
           console.log(err)
-          alert('ERROR:', err.data)
+          alert('ERROR:', err)
         }
         setShouldUpdateCustomer(false)
       }
@@ -247,21 +278,21 @@ const ProfileEdit = () => {
     setDetailAddress(value)
   }
   const radioDummy = ['법인사업자', '개인사업자']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+  // const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+
   const [savedRadioValue, setSavedRadioValue] = useState('')
 
+  console.log(' >< input.type !!!', input.type)
+  console.log(' >< savedRadioValue !!!', savedRadioValue)
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
     if (checkedIndex !== -1) {
       const selectedValue = radioDummy[checkedIndex]
       setSavedRadioValue(selectedValue)
-      setInput({ ...input, type: selectedValue })
+      setInput({ ...input, type: savedRadioValue })
     }
-  }, [checkRadio])
-
-  const checkDummy = ['유통', '제조']
-  const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
-  const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
+  }, [checkRadio, savedRadioValue])
 
   useEffect(() => {
     const updatedCheck = checkDummy.map((value, index) => {
@@ -277,6 +308,9 @@ const ProfileEdit = () => {
       businessType: updatedCheck.filter((item) => item !== ''),
     })
   }, [check])
+
+  console.log('checkData !!!!', input.businessType)
+  console.log('input', input)
 
   return (
     <form onSubmit={handleSubmit}>
@@ -657,11 +691,23 @@ const ProfileEdit = () => {
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  {/* <FlexInput></FlexInput> */}
                   {checkFileName.deleteBusinessNumberFile ? (
-                    checkFileName.deleteBusinessNumberFile
+                    <IncomeImgDiv>
+                      <div>{checkFileName.deleteBusinessNumberFile}</div>
+                      <div>
+                        <IIDImg
+                          onClick={() => {
+                            setCheckFileName({
+                              ...checkFileName,
+                              deleteBusinessNumberFile: '',
+                            })
+                          }}
+                          src="/svg/btn_close.svg"
+                        />
+                      </div>
+                    </IncomeImgDiv>
                   ) : (
-                    <FlexInput></FlexInput>
+                    <FlexInput style={{ width: '322px' }} disabled />
                   )}
                 </FlexContent>
               </FlexPart>
@@ -688,20 +734,28 @@ const ProfileEdit = () => {
                       name="deleteBankbookFile"
                     ></input>
                   </TxtDivNoborder>
-                  {/* <TxtDiv style={{ width: '100%' }}>
-                    <img src="/svg/Upload.svg" />
-                    <p>파일 첨부</p>
-                  </TxtDiv> */}
                 </FlexContent>
               </FlexPart>
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  {/* <FlexInput></FlexInput> */}
                   {checkFileName.deleteBankbookFile ? (
-                    checkFileName.deleteBankbookFile
+                    <IncomeImgDiv>
+                      <div>{checkFileName.deleteBankbookFile}</div>
+                      <div>
+                        <IIDImg
+                          src="/svg/btn_close.svg"
+                          onClick={() => {
+                            setCheckFileName({
+                              ...checkFileName,
+                              deleteBankbookFile: '',
+                            })
+                          }}
+                        />
+                      </div>
+                    </IncomeImgDiv>
                   ) : (
-                    <FlexInput style={{ width: '322px' }}></FlexInput>
+                    <FlexInput style={{ width: '322px' }} disabled />
                   )}
                 </FlexContent>
               </FlexPart>
@@ -733,7 +787,7 @@ const ProfileEdit = () => {
           </OnePageFlexSubContainer>
         </div>
         <BtnWrap style={{ height: '120px' }}>
-          <WhiteBtn width={40} height={40}>
+          <WhiteBtn width={40} height={40} type="button">
             돌아가기
           </WhiteBtn>
           <BlackBtn width={40} height={40} type="submit">
@@ -776,4 +830,21 @@ const GreyDiv = styled.div`
       color: white;
     }
   }
+`
+
+const IncomeImgDiv = styled.div`
+  display: flex;
+  font-size: 14px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  width: 99%;
+  height: 40px;
+  background-color: #f1f1f1;
+  color: #6b6b6b;
+`
+
+const IIDImg = styled.img`
+  width: 13px;
+  cursor: pointer;
 `
