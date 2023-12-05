@@ -69,9 +69,11 @@ const ProfileEdit = () => {
   const [isUser, setIsUser] = useState(false)
   const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
   const [checkFileName, setCheckFileName] = useState({ deleteBusinessNumberFile: '', deleteBankbookFile: '' })
+  const [renderFileName, setRenderFileName] = useState({ businessNumberFile: '', bankbookFile: ' ' })
   const [fileForms, setFileForms] = useState({ registration: '', bankBook: '' })
 
-  console.log('checkFileName <<<', checkFileName)
+  console.log('checkFileName 삭제 <<<', checkFileName)
+  console.log('renderFileName 렌더 <<<', renderFileName)
 
   const [businessNumber, setBusinessNumber] = useState('')
 
@@ -125,14 +127,18 @@ const ProfileEdit = () => {
         bank: resData?.customer?.bank,
         depositManagerTitle: resData?.customer?.depositManagerTitle,
         releaseManagerTitle: resData?.customer?.releaseManagerTitle,
-        deleteBusinessNumberFile: resData?.customer?.deleteBusinessNumberFile,
-        deleteBankbookFile: resData?.customer?.deleteBankbookFile,
       })
-      setCheckFileName({
-        ...checkFileName,
-        deleteBusinessNumberFile: resData?.customer?.businessNumberOriginalName,
-        deleteBankbookFile: resData?.customer?.bankbookOriginalName,
+      setRenderFileName({
+        ...renderFileName,
+        businessNumberFile: resData?.customer?.businessNumberOriginalName,
+        bankbookFile: resData?.customer?.bankbookOriginalName,
       })
+
+      // setCheckFileName({
+      //   ...checkFileName,
+      //   deleteBusinessNumberFile: resData?.customer?.businessNumberSavedName,
+      //   deleteBankbookFile: resData?.customer?.bankbookSavedName가 ,
+      // })
       const userCustomerTypeIndex = radioDummy.indexOf(resData?.customer?.type)
 
       const newCheck = check.map((_, index) => resData?.customer?.businessType?.includes(checkDummy[index]))
@@ -151,18 +157,18 @@ const ProfileEdit = () => {
     const file = e.target.files[0]
     console.log('')
     const fileName = e.target.files[0].name
-    if (checkFileName.hasOwnProperty(name)) {
-      setCheckFileName((prev) => ({
+    if (renderFileName.hasOwnProperty(name)) {
+      setRenderFileName((prev) => ({
         ...prev,
         [name]: fileName,
       }))
-      if (name === 'deleteBusinessNumberFile') {
+      if (name === 'businessNumberFile') {
         setFileForms((prev) => ({
           ...prev,
           registration: file,
         }))
       }
-      if (name === 'deleteBankbookFile') {
+      if (name === 'bankbookFile') {
         setFileForms((prev) => ({
           ...prev,
           bankBook: file,
@@ -682,7 +688,7 @@ const ProfileEdit = () => {
                     accept="image/jpg, image/png, image/jpeg"
                     style={{ display: 'none' }}
                     onChange={handleFiles}
-                    name="deleteBusinessNumberFile"
+                    name="businessNumberFile"
                     // onChange={commonChange}
                     // name="businessfile"
                   ></input>
@@ -691,15 +697,19 @@ const ProfileEdit = () => {
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  {checkFileName.deleteBusinessNumberFile ? (
+                  {renderFileName.businessNumberFile ? (
                     <IncomeImgDiv>
-                      <div>{checkFileName.deleteBusinessNumberFile}</div>
+                      <div>{renderFileName.businessNumberFile}</div>
                       <div>
                         <IIDImg
                           onClick={() => {
+                            setRenderFileName({
+                              ...renderFileName,
+                              businessNumberFile: '',
+                            })
                             setCheckFileName({
                               ...checkFileName,
-                              deleteBusinessNumberFile: '',
+                              deleteBusinessNumberFile: resData?.customer?.businessNumberSavedName,
                             })
                           }}
                           src="/svg/btn_close.svg"
@@ -731,7 +741,7 @@ const ProfileEdit = () => {
                       accept="image/jpg, image/png, image/jpeg"
                       style={{ display: 'none' }}
                       onChange={handleFiles}
-                      name="deleteBankbookFile"
+                      name="bankbookFile"
                     ></input>
                   </TxtDivNoborder>
                 </FlexContent>
@@ -739,16 +749,20 @@ const ProfileEdit = () => {
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  {checkFileName.deleteBankbookFile ? (
+                  {renderFileName.bankbookFile ? (
                     <IncomeImgDiv>
-                      <div>{checkFileName.deleteBankbookFile}</div>
+                      <div>{renderFileName.bankbookFile}</div>
                       <div>
                         <IIDImg
                           src="/svg/btn_close.svg"
                           onClick={() => {
+                            setRenderFileName({
+                              ...renderFileName,
+                              bankbookFile: '',
+                            })
                             setCheckFileName({
                               ...checkFileName,
-                              deleteBankbookFile: '',
+                              deleteBankbookFile: resData?.customer?.bankbookSavedName,
                             })
                           }}
                         />
