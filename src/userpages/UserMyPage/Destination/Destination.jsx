@@ -31,8 +31,13 @@ import {
   UserManageCustomerDestinationManageFieldsCols,
 } from '../../../constants/admin/UserManage'
 import { add_element_field } from '../../../lib/tableHelpers'
+import { userpageDestinationEdit } from '../../../store/Layout/Layout'
+import DestinationEdit from './DestinationEdit'
+import { btnCellUidAtom } from '../../../store/Layout/Layout'
 
 const Destination = ({ setChoiceComponent }) => {
+  const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
+  const [switchDestiEdit, setSwtichDestiEdit] = useAtom(userpageDestinationEdit)
   const radioDummy = ['전체', '미진행', '진행중', '종료']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
@@ -61,6 +66,13 @@ const Destination = ({ setChoiceComponent }) => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
   }
 
+  useEffect(() => {
+    // 컴포넌트가 언마운트될 때 switchEdit을 재설정하는 정리 함수
+    return () => {
+      setSwtichDestiEdit(false)
+    }
+  }, [])
+
   // 토글 쓰기
   const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
   const [toggleMsg, setToggleMsg] = useState('On')
@@ -77,6 +89,8 @@ const Destination = ({ setChoiceComponent }) => {
   const tableField = useRef(UserManageCustomerDestinationManageFieldsCols)
   const getCol = tableField.current
   const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  console.log('checkedArray', checkedArray)
 
   const dummy = {
     pageNum: 1,
@@ -115,7 +129,7 @@ const Destination = ({ setChoiceComponent }) => {
     if (isArray(checkedArray) && checkedArray.length > 0) {
       if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
         checkedArray.forEach((item) => {
-          mutation.mutate(item['고객 코드'])
+          mutation.mutate(item['uid'])
         })
       }
     } else {
@@ -124,39 +138,45 @@ const Destination = ({ setChoiceComponent }) => {
   }, [checkedArray])
 
   return (
-    <FilterContianer>
-      <div>
-        <FilterHeader>
-          <div style={{ display: 'flex' }}>
-            <h1>목적지 관리</h1>
-          </div>
-        </FilterHeader>
-      </div>
-      <TableContianer>
-        <TCSubContainer bor>
+    <>
+      {switchDestiEdit ? (
+        <DestinationEdit setSwtichDestiEdit={setSwtichDestiEdit} uidAtom={uidAtom} />
+      ) : (
+        <FilterContianer>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
-            <Hidden />
+            <FilterHeader>
+              <div style={{ display: 'flex' }}>
+                <h1>목적지 관리</h1>
+              </div>
+            </FilterHeader>
           </div>
-          <div>
-            <PageDropdown />
-            <Excel />
-          </div>
-        </TCSubContainer>
-        <TCSubContainer>
-          <div>
-            선택 <span> 2 </span>개
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn onClick={handleRemoveBtn}>목적지 삭제</WhiteRedBtn>
-            {/* <SkyBtn onClick={openEdit}>목적지 수정</SkyBtn> */}
-            <SkyBtn onClick={openPost}>목적지 등록</SkyBtn>
-          </div>
-        </TCSubContainer>
+          <TableContianer>
+            <TCSubContainer bor>
+              <div>
+                조회 목록 (선택 <span>2</span> / 50개 )
+                <Hidden />
+              </div>
+              <div>
+                <PageDropdown />
+                <Excel />
+              </div>
+            </TCSubContainer>
+            <TCSubContainer>
+              <div>
+                선택 <span> 2 </span>개
+              </div>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <WhiteRedBtn onClick={handleRemoveBtn}>목적지 삭제</WhiteRedBtn>
+                {/* <SkyBtn onClick={openEdit}>목적지 수정</SkyBtn> */}
+                <SkyBtn onClick={openPost}>목적지 등록</SkyBtn>
+              </div>
+            </TCSubContainer>
 
-        <Table getCol={getCol} getRow={getRow} />
-      </TableContianer>
-    </FilterContianer>
+            <Table getCol={getCol} getRow={getRow} />
+          </TableContianer>
+        </FilterContianer>
+      )}
+    </>
   )
 }
 

@@ -30,6 +30,10 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 
+//비밀번호 / 비밀번호 확인 제한
+// 담당자 추가 정책 X
+// 사진 용량 제한
+
 const init = {
   password: '',
   title: '',
@@ -71,6 +75,13 @@ const ProfileEdit = () => {
   const [checkFileName, setCheckFileName] = useState({ deleteBusinessNumberFile: '', deleteBankbookFile: '' })
   const [renderFileName, setRenderFileName] = useState({ businessNumberFile: '', bankbookFile: ' ' })
   const [fileForms, setFileForms] = useState({ registration: '', bankBook: '' })
+  const [dropdownNames, setDropdownNames] = useState({
+    depositManagerTitle: '',
+    releaseManagerTitle: '',
+    bank: '',
+  })
+
+  console.log('dropdownNames', dropdownNames)
 
   console.log('checkFileName 삭제 <<<', checkFileName)
   console.log('renderFileName 렌더 <<<', renderFileName)
@@ -122,8 +133,8 @@ const ProfileEdit = () => {
       setUser(resData)
       setAddress(resData?.customer?.address)
       setDetailAddress(resData?.customer?.addressDetail)
-      setInput({
-        ...input,
+      setDropdownNames({
+        ...dropdownNames,
         bank: resData?.customer?.bank,
         depositManagerTitle: resData?.customer?.depositManagerTitle,
         releaseManagerTitle: resData?.customer?.releaseManagerTitle,
@@ -134,11 +145,6 @@ const ProfileEdit = () => {
         bankbookFile: resData?.customer?.bankbookOriginalName,
       })
 
-      // setCheckFileName({
-      //   ...checkFileName,
-      //   deleteBusinessNumberFile: resData?.customer?.businessNumberSavedName,
-      //   deleteBankbookFile: resData?.customer?.bankbookSavedName가 ,
-      // })
       const userCustomerTypeIndex = radioDummy.indexOf(resData?.customer?.type)
 
       const newCheck = check.map((_, index) => resData?.customer?.businessType?.includes(checkDummy[index]))
@@ -150,7 +156,7 @@ const ProfileEdit = () => {
         setCheckRadio(newCheckRadio)
       }
     }
-  }, [isSuccess])
+  }, [isSuccess, resData])
 
   const handleFiles = (e) => {
     const name = e.target.name
@@ -209,7 +215,7 @@ const ProfileEdit = () => {
         // return
       }
     }
-    setInput({ ...input, ...updatedInput, ...checkFileName })
+    setInput({ ...input, ...updatedInput, ...checkFileName, ...dropdownNames })
 
     setShouldUpdateCustomer(true)
   }
@@ -221,7 +227,7 @@ const ProfileEdit = () => {
         try {
           const response = await updateCustomer(input, fileForms)
           console.log('response !!! ', response)
-          alert(' 수정되었습니다.')
+          alert('수정되었습니다.')
         } catch (err) {
           console.log(err)
           alert('ERROR:', err)
@@ -291,6 +297,7 @@ const ProfileEdit = () => {
 
   console.log(' >< input.type !!!', input.type)
   console.log(' >< savedRadioValue !!!', savedRadioValue)
+
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
     if (checkedIndex !== -1) {

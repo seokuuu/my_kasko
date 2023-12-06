@@ -10,7 +10,6 @@ var headerCheckboxSelection = function (params) {
   return params.columnApi.getRowGroupColumns().length === 0
 }
 
-
 // 사용자 관리
 export const UserManageCustomerManageFields = {
   순번: 'uid',
@@ -30,6 +29,7 @@ export const UserManageCustomerManageFieldsCols = [
     checkboxSelection: checkboxSelection,
     headerCheckboxSelection: headerCheckboxSelection,
   },
+
   { field: '순번', minWidth: 100 }, //숫자
   { field: '고객 구분', minWidth: 100 }, //숫자
   { field: '회원 상태', minWidth: 100 },
@@ -46,7 +46,6 @@ export const UserManageCustomerManageFieldsCols = [
   { field: '승인 여부', minWidth: 100 },
   { field: '회원 제한 상태', minWidth: 100 },
 ]
-
 
 // 사용자 목적지 관리 fields
 export const UserManageCustomerDestinationManageFields = {
@@ -65,6 +64,15 @@ export const UserManageCustomerDestinationManageFields = {
 // 사용자 목적지 관리 Cols
 export const UserManageCustomerDestinationManageFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  {
+    field: '수정',
+    maxWidth: 90,
+    cellRenderer: BtnCellRenderer,
+    cellRendererParams: {
+      uidFieldName: 'uid',
+      editType: 'userdestination',
+    },
+  },
   {
     field: '고객 코드',
   },

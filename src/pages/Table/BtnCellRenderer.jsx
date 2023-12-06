@@ -7,6 +7,7 @@ import {
   consolEditModalAtom,
   StandardDispatchEditAtom,
   userpageUserPreferEdit,
+  userpageDestinationEdit,
 } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
@@ -22,6 +23,8 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
   const [consoliMode, setCosoliMode] = useAtom(consolEditModalAtom) // 합짐비 관리 modal
 
   const [userpageEditModal, setUserPageEditModal] = useAtom(userpageUserPreferEdit) // 마이페이지 수정 모달
+
+  const [userDestiEdit, setUserDestiEdit] = useAtom(userpageDestinationEdit)
 
   console.log('버튼 셀 @@@', userpageEditModal)
 
@@ -51,6 +54,9 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
       case 'userprefer':
         setUidAtom(uid)
         setUserPageEditModal(true)
+      case 'userdestination':
+        setUidAtom(uid)
+        setUserDestiEdit(true)
       default:
         break
     }

@@ -17,6 +17,10 @@ export function getDestination(data) {
   return client.get(`${urls.Destination}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
 }
 
+export function getDetailDestination(data) {
+  return client.get(`${urls.Destination}/${data}`)
+}
+
 export function patchDestination(data) {
   return client.patch(urls.Destination, data)
 }
@@ -72,6 +76,7 @@ export function postCustomerfavorite(data) {
 export function getDetailCustomerfavorite(data) {
   return client.get(`${urls.favorite}/${data}`)
 }
+
 export function patchCustomerfavorite(data) {
   return client.patch(urls.favorite, data)
 }

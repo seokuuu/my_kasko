@@ -21,6 +21,8 @@ import { CustomSelect } from '../../../common/Option/Main'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { isEmptyObj } from '../../../lib'
 import { doubleClickedRowAtom } from '../../../store/Layout/Layout'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getDetailCustomerfavorite } from '../../../api/myPage'
 
 const init = {
   uid: '',
@@ -42,31 +44,41 @@ const init = {
   elMax: '',
 }
 
-
-
-const PreferEdit = ({ setChoiceComponent, detailData }) => {
+const PreferEdit = ({ setChoiceComponent, setSwtichEdit, uidAtom }) => {
   const radioDummy = ['지정', '미지정'] // 더미 데이터
-
-  console.log('detailData !!!', detailData)
 
   const [submitData, setSubmitData] = useState(init)
   const [selectedData, setSelectedData] = useAtom(doubleClickedRowAtom)
   const mutation = useMutationQuery('', patchCustomerfavorite)
 
+  const { isLoading, isError, data, isSuccess } = useReactQuery(
+    uidAtom,
+    'getDetailCustomerfavorite',
+    getDetailCustomerfavorite,
+  )
+
+  const detailData = data?.data?.data
+
   useEffect(() => {
     const uid = selectedData?.uid
     setSubmitData((prevState) => ({ ...prevState, uid: uid }))
-  }, [selectedData])
+
+    // detailData가 정상적으로 가져와진 후에 submitData를 초기화합니다.
+    if (detailData) {
+      setSubmitData(detailData)
+    }
+  }, [selectedData, isSuccess, detailData])
+
+  console.log('submitData', submitData)
 
   const eventHandle = (e) => {
     const { name, value } = e.target
-    setSubmitData({ ...submitData, [name]: value })
+    setSubmitData({ ...submitData, detailData, [name]: value })
     console.log(submitData)
   }
 
   const submitHandle = (e) => {
     if (isEmptyObj(submitData)) {
-      setChoiceComponent('리스트')
       mutation.mutate(submitData)
     } else {
       alert('내용을 모두 기입해주세요.')
@@ -74,7 +86,7 @@ const PreferEdit = ({ setChoiceComponent, detailData }) => {
   }
 
   const goBack = () => {
-    setChoiceComponent('리스트')
+    setSwtichEdit(false)
   }
   return (
     <OnePageContainer>

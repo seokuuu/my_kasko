@@ -19,8 +19,9 @@ import { userpageUserPreferEditObject } from '../../../store/Layout/Layout'
 import PreferEdit from './PreferEdit'
 import { userpageUserPreferEdit } from '../../../store/Layout/Layout'
 
-const Prefer = ({ setChoiceComponent, uidAtom }) => {
+const Prefer = ({ setChoiceComponent }) => {
   const [switchEdit, setSwtichEdit] = useAtom(userpageUserPreferEdit)
+  const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
 
   console.log('switchEdit', switchEdit)
   const [filterData, setFilterData] = useAtom(userpageUserPreferEditObject)
@@ -79,12 +80,7 @@ const Prefer = ({ setChoiceComponent, uidAtom }) => {
   const { isLoading, isError, data, isSuccess } = useReactQuery(dummy, 'getCustomerfavorite', getCustomerfavorite)
   const resData = data?.data?.data?.list
 
-  const { isLoading2, isError2, data2, isSuccess2 } = useReactQuery(
-    uidAtom,
-    'getCustomerfavorite',
-    getDetailCustomerfavorite,
-  )
-  const detailData = data?.data?.data?.list[0]
+  const detailData = data?.data?.data?.list
 
   if (isError) console.log('데이터 request ERROR')
 
@@ -122,7 +118,7 @@ const Prefer = ({ setChoiceComponent, uidAtom }) => {
     <>
       {' '}
       {switchEdit ? (
-        <PreferEdit detailData={detailData} />
+        <PreferEdit detailData={detailData} setSwtichEdit={setSwtichEdit} uidAtom={uidAtom} />
       ) : (
         <FilterContianer>
           <FilterHeader>

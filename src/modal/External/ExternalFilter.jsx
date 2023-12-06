@@ -165,6 +165,7 @@ export const PartWrap = styled.div`
   height: 32px;
   h6 {
     display: block;
+    min-width: max-content;
     width: ${(props) => (props.first ? `100px` : '')};
     padding: 8px;
     gap: 8px;
@@ -266,6 +267,7 @@ export const ExCheckWrap = styled.div`
   gap: 5px;
   justify-content: center;
   align-items: center;
+  min-width: max-content;
 
   p {
     font-size: 17px;

@@ -1,57 +1,46 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
-  OnePageContainer,
-  MainTitle,
-  OnePageSubContainer,
+  Alert,
   HalfWrap,
   Left,
+  MainTitle,
+  OnePageContainer,
+  OnePageSubContainer,
+  Part,
   Right,
   Title,
-  Part,
-  Alert,
 } from '../../../common/OnePage/OnePage.Styled'
 
-import { TxtInput, CustomInput } from '../../../common/Input/Input'
+import { CustomInput } from '../../../common/Input/Input'
 
 import { styled } from 'styled-components'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 
-import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
-import { useNavigate } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { doubleClickedRowAtom } from '../../../store/Layout/Layout'
-import { isEmptyObj } from '../../../lib'
-import { patchDestination } from '../../../api/myPage'
+import { useNavigate } from 'react-router-dom'
+import { getDetailDestination, patchDestination } from '../../../api/myPage'
+import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
 import useMutationQuery from '../../../hooks/useMutationQuery'
+import { isEmptyObj } from '../../../lib'
+import { doubleClickedRowAtom } from '../../../store/Layout/Layout'
+import useReactQuery from '../../../hooks/useReactQuery'
 
-const DestinationEdit = ({ setChoiceComponent }) => {
+const DestinationEdit = ({ setChoiceComponent, setSwtichDestiEdit, uidAtom }) => {
   const navigate = useNavigate()
   const radioDummy = ['지정', '미지정'] // 더미 데이터
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
 
   const [savedRadioValue, setSavedRadioValue] = useState('')
   const mutation = useMutationQuery('', patchDestination)
-  useEffect(() => {
-    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
-
-    if (checkedIndex !== -1) {
-      const selectedValue = radioDummy[checkedIndex]
-      setSavedRadioValue(selectedValue)
-      if (selectedValue === '지정') setInput({ ...input, represent: 1 })
-      if (selectedValue === '미지정') setInput({ ...input, represent: 0 })
-    }
-  }, [checkRadio])
 
   const backComponent = () => {
-    navigate('/userpage/userdestination')
-    // setChoiceComponent('리스트')
+    setSwtichDestiEdit(false)
   }
-  const uid = useAtom(doubleClickedRowAtom)[0]['고객 코드']
 
   const init = {
-    uid: uid,
+    uid: '',
     represent: '',
     destinationUid: '',
     address: '',
@@ -63,12 +52,40 @@ const DestinationEdit = ({ setChoiceComponent }) => {
     memo: '',
   }
 
+  const { isLoading, isError, data, isSuccess } = useReactQuery(uidAtom, 'getDetailDestination', getDetailDestination)
+
+  const detailData = data?.data?.data
+  console.log('detailData', detailData)
+
   const [input, setInput] = useState(init)
+
+  // 라디오 useEffect
+  useEffect(() => {
+    const checkedIndex = detailData?.represent === 0 ? 1 : 0
+    const newCheckRadio = Array.from({ length: radioDummy.length }, (_, index) => index === checkedIndex)
+
+    setCheckRadio(newCheckRadio)
+    setInput({
+      ...input,
+      ...detailData,
+      represent: checkedIndex,
+    })
+  }, [detailData])
+
+  useEffect(() => {
+    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
+
+    if (checkedIndex !== -1) {
+      const selectedValue = radioDummy[checkedIndex]
+      setSavedRadioValue(selectedValue)
+      if (selectedValue === '지정') setInput({ ...input, represent: 1 })
+      if (selectedValue === '미지정') setInput({ ...input, represent: 0 })
+    }
+  }, [checkRadio])
 
   const handleChange = (e) => {
     const { name, value } = e.target
     setInput({ ...input, [name]: value })
-    console.log(input)
   }
   const submit = async () => {
     if (!isEmptyObj(input)) return alert('빈값을 채워주세요!')
@@ -119,7 +136,13 @@ const DestinationEdit = ({ setChoiceComponent }) => {
                 <h4>전체 주소</h4>
                 <p></p>
               </Title>
-              <CustomInput placeholder="전체 주소 입력" width={340} name="address" onChange={handleChange} />
+              <CustomInput
+                placeholder="전체 주소 입력"
+                width={340}
+                name="address"
+                onChange={handleChange}
+                defaultValue={detailData?.address}
+              />
             </Part>
           </Left>
           <Right>
@@ -128,15 +151,22 @@ const DestinationEdit = ({ setChoiceComponent }) => {
                 <h4>하차지 명</h4>
                 <p></p>
               </Title>
-              <CustomInput placeholder="전체 주소 입력" width={340} name="name" onChange={handleChange} />
+              <CustomInput defaultValue={detailData?.name} width={340} name="name" onChange={handleChange} />
             </Part>
             <Part>
               <Title>
                 <h4>하차지 담당자 정보</h4>
                 <p></p>
               </Title>
-              <CustomInput placeholder="직함 입력" width={135} name="managerTitle" onChange={handleChange} />
               <CustomInput
+                placeholder="직함 입력"
+                width={135}
+                name="managerTitle"
+                defaultValue={detailData?.managerTitle}
+                onChange={handleChange}
+              />
+              <CustomInput
+                defaultValue={detailData?.managerName}
                 placeholder="담당자 성함 입력"
                 width={200}
                 style={{ marginLeft: '5px' }}
@@ -149,6 +179,7 @@ const DestinationEdit = ({ setChoiceComponent }) => {
                 style={{ marginTop: '5px' }}
                 name="managerPhone"
                 onChange={handleChange}
+                defaultValue={detailData?.managerPhone}
               />
 
               <Alert style={{ margin: '5px auto' }}>*하차지 연락처 미입력 시 토요일 하차 불가</Alert>
@@ -157,6 +188,7 @@ const DestinationEdit = ({ setChoiceComponent }) => {
                 width={340}
                 name="phone"
                 onChange={handleChange}
+                defaultValue={detailData?.phone}
               />
             </Part>
 
@@ -165,7 +197,13 @@ const DestinationEdit = ({ setChoiceComponent }) => {
                 <h4>비고</h4>
                 <p></p>
               </Title>
-              <CustomInput placeholder="비고 작성" width={340} name="memo" onChange={handleChange} />
+              <CustomInput
+                placeholder="비고 작성"
+                width={340}
+                name="memo"
+                onChange={handleChange}
+                defaultValue={detailData?.memo}
+              />
             </Part>
           </Right>
         </HalfWrap>

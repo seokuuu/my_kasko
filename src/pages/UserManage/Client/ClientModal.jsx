@@ -328,7 +328,7 @@ const ClientModal = ({ setModal }) => {
         {/* <ModalSubContainer> */}
         {/* <OnePageFlexContainerC> */}
         <MainTitleC style={{ fontSize: '18px' }}>
-          <div>대표 상세 정보</div>
+          <div>고객사 상세 정보</div>
           <TransparentButton onClick={modalOFF}>x</TransparentButton>
         </MainTitleC>
         <form onSubmit={handleSubmit}>
@@ -545,7 +545,7 @@ const ClientModal = ({ setModal }) => {
               </Left>
               {/* -------------------------------------------------------------- */}
               <Right style={{ width: '47%' }}>
-                <h1>비즈니스 정보</h1>
+                <h1>비즈니스 정보 ㅋㅋ</h1>
                 <Bar />
                 <FlexPart>
                   <FlexTitle>

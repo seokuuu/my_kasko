@@ -182,8 +182,11 @@ export const modal1 = atom(false)
     마이페이지 (userpage)
 ============================== */
 
-// 마이페이지 - 선호제품 관리 수정버튼 모달 switch
+// 선호제품 관리 수정버튼 모달 switch
 export const userpageUserPreferEdit = atom(false)
 
-// 마이페이지 - 선호제품 관리 수정 Object
+//  선호제품 관리 수정 Object
 export const userpageUserPreferEditObject = atom('')
+
+// 목적지 관리 수정버튼 모달 switch
+export const userpageDestinationEdit = atom(false)

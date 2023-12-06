@@ -1,32 +1,27 @@
 import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
 
-import UserSideBar from '../../../components/Left/UserSideBar'
+import { useState } from 'react'
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
-import PreferPost from './PreferPost'
-import PreferEdit from './PreferEdit'
+import UserSideBar from '../../../components/Left/UserSideBar'
 import Prefer from './Prefer'
-import { useState } from 'react'
-import { btnCellUidAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
-
+import PreferPost from './PreferPost'
 
 const PreferPage = () => {
   const [expanded, setExpanded] = useState('마이페이지')
   const [depth2Color, setDepth2Color] = useState('선호 제품 관리')
   const [choiceComponent, setChoiceComponent] = useState('리스트')
-  const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
+
   const renderChoiceComponent = () => {
     switch (choiceComponent) {
       case '리스트':
-        return <Prefer uidAtom={uidAtom} setChoiceComponent={setChoiceComponent} />
+        return <Prefer setChoiceComponent={setChoiceComponent} />
       case '등록':
         return <PreferPost setChoiceComponent={setChoiceComponent} />
       default:
         return <Prefer setChoiceComponent={setChoiceComponent} />
     }
   }
-
 
   return (
     <>
