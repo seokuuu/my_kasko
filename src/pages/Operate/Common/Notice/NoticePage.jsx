@@ -4,6 +4,7 @@ import SideBar from '../../../../components/Left/SideBar'
 import Header from '../../../../components/Header/Header'
 import SubHeader from '../../../../components/Header/SubHeader'
 import NoticePost from './NoticePost'
+import Notice from './Notice'
 
 import { useState } from 'react'
 
@@ -18,7 +19,7 @@ const NoticePage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <NoticePost />
+            <Notice />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>

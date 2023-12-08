@@ -14,9 +14,11 @@ export function postDestination(data) {
 }
 
 export function getDestination(data) {
-  return client.get(
-    `${urls.Destination}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&category=${data.category}&keyword=${data.keyword}`,
-  )
+  return client.get(`${urls.Destination}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
+}
+
+export function getDetailDestination(data) {
+  return client.get(`${urls.Destination}/${data}`)
 }
 
 export function patchDestination(data) {
@@ -28,6 +30,7 @@ export function patchDestination(data) {
 ============================== */
 export function updateCustomer(input, fileForms) {
   const form = new FormData()
+
   form.append(
     'request',
     new Blob([JSON.stringify(input)], {
@@ -35,13 +38,16 @@ export function updateCustomer(input, fileForms) {
     }),
   )
   // fileForms에 있는 파일 정보 추가
-  if (fileForms.deleteBusinessNumberFile instanceof File) {
-    form.append('deleteBusinessNumberFile', fileForms.deleteBusinessNumberFile)
+
+  if (fileForms.bankBook instanceof File) {
+    form.append('bankBook', fileForms.bankBook)
   }
-  if (fileForms.deleteBankbookFile instanceof File) {
-    form.append('deleteBankbookFile', fileForms.deleteBankbookFile)
+
+  if (fileForms.registration instanceof File) {
+    form.append('registration', fileForms.registration)
   }
-  return client.patch(urls.updateCustomer, form, {
+
+  return client.patch(urls.privacy, form, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -54,7 +60,7 @@ export function getCustomerPrivacy() {
 }
 // 중복확인
 export function checkBusinessNumber(data) {
-  return client.post(`${urls.privacy}/business-number?businessNumber=${data}`)
+  return client.post(`${urls.privacy}/${data}`)
 }
 
 /* ==============================
@@ -64,11 +70,13 @@ export function getCustomerfavorite(data) {
   return client.get(`${urls.favorite}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
 }
 export function postCustomerfavorite(data) {
+  console.log('data !!!', data)
   return client.post(urls.favorite, data)
 }
 export function getDetailCustomerfavorite(data) {
   return client.get(`${urls.favorite}/${data}`)
 }
+
 export function patchCustomerfavorite(data) {
   return client.patch(urls.favorite, data)
 }

@@ -55,13 +55,12 @@ export const AccSwitch = styled(ExpandMoreIcon)`
 //depth2 전체 영역
 export const StyledAccordionDetails = styled(AccordionDetails)`
   background-color: #35425c;
-  
 `
 
 export const TypoContent = styled.div`
   margin: 15px 6px;
   a {
-    color: ${(props) => (props.isIncoming ? '#64b5ff' : '#acacac')};
+    color: ${(props) => (props?.isIncoming ? '#64b5ff' : '#acacac')};
     font-size: 18px;
     justify-content: flex-start;
 
@@ -77,7 +76,6 @@ export const TypoContent = styled.div`
 
 export const Depth2 = styled.a`
   font-size: 20px;
-  
 `
 
 export const AcTop = styled.div`

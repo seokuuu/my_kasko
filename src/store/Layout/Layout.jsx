@@ -1,4 +1,5 @@
 import { atom, useAtom } from 'jotai'
+import { at } from 'lodash'
 
 export const headerAtom = atom(true)
 export const accordionAtom = atom(true)
@@ -103,7 +104,7 @@ export const btnCellRenderAtom = atom(false)
 
 export const StandardConsoliateEdit = atom(false)
 
-//목적지 관리 - 목적지 수정버튼 Uid
+// 전체 Uid
 export const btnCellUidAtom = atom('')
 
 //운반비 관리 - 운반비 등록 Modal
@@ -172,3 +173,20 @@ export const onClickCheckAtom = atom(false)
 export const packDetailAuctView = atom(false)
 
 export const modal1 = atom(false)
+
+/* ==============================
+  ***** 사용자 페이지 *****
+============================== */
+
+/* ==============================
+    마이페이지 (userpage)
+============================== */
+
+// 선호제품 관리 수정버튼 모달 switch
+export const userpageUserPreferEdit = atom(false)
+
+//  선호제품 관리 수정 Object
+export const userpageUserPreferEditObject = atom('')
+
+// 목적지 관리 수정버튼 모달 switch
+export const userpageDestinationEdit = atom(false)

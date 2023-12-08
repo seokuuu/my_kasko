@@ -1,44 +1,38 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect, useState } from 'react'
+import { CustomInput, FlexInput } from '../../../common/Input/Input'
 import {
-  OnePageContainer,
-  OnePageSubContainer,
-  MainTitle,
-  HalfWrap,
-  Left,
-  Right,
-  Title,
-  Part,
-  At,
-  FlexPart,
-  FlexTitle,
-  OnePageFlexContainer,
-  OnePageFlexSubContainer,
-  FlexContent,
+  AddBtn,
   Bar,
   EqualCheckWrap,
-  AddBtn,
+  FlexContent,
+  FlexPart,
+  FlexTitle,
+  Left,
+  MainTitle,
+  OnePageFlexContainer,
+  OnePageFlexSubContainer,
+  Right,
 } from '../../../common/OnePage/OnePage.Styled'
-import { CustomInput, FlexInput } from '../../../common/Input/Input'
-import { CustomSelect } from '../../../common/Option/Main'
-import { emailOptions, accountOptions } from '../../../common/Option/SignUp'
-import { AccountSelect } from '../../../common/Option/SignUp'
-import { EditSelect, depositOptions } from '../../../common/Option/SignUp'
+import { AccountSelect, EditSelect, accountOptions, depositOptions } from '../../../common/Option/SignUp'
 
-import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
-import { BottomP, TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
+import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
+import { TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
 
-import { RadioContainer } from '../../../pages/User/SignUp/SignUp'
-
-import { TxtDiv } from '../../../pages/User/SignUp/SignUp.Styled'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { CheckBtn } from '../../../pages/User/SignUp/SignUp.Styled'
 
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-import SignUpPost from '../../../modal/SignUp/SignUpPost'
+import styled from 'styled-components'
 import { checkBusinessNumber, getCustomerPrivacy, updateCustomer } from '../../../api/myPage'
+import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import useReactQuery from '../../../hooks/useReactQuery'
+import SignUpPost from '../../../modal/SignUp/SignUpPost'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+
+//비밀번호 / 비밀번호 확인 제한
+// 담당자 추가 정책 X
+// 사진 용량 제한
 
 const init = {
   password: '',
@@ -46,7 +40,6 @@ const init = {
   name: '',
   email: '',
   phone: '',
-  customerUid: '',
   type: '',
   customerName: '',
   ceoName: '',
@@ -69,33 +62,65 @@ const init = {
 }
 
 const ProfileEdit = () => {
+  const [selectSwitch, setSelectSwitch] = useState({
+    A: false,
+    deposit: false,
+    release: false,
+  })
+
   const [input, setInput] = useState(init)
+
   const [isUser, setIsUser] = useState(false)
   const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
   const [checkFileName, setCheckFileName] = useState({ deleteBusinessNumberFile: '', deleteBankbookFile: '' })
-  const [fileForms, setFileForms] = useState({ registration: '', bankbook: '' })
+  const [renderFileName, setRenderFileName] = useState({ businessNumberFile: '', bankbookFile: ' ' })
+  const [fileForms, setFileForms] = useState({ registration: '', bankBook: '' })
+  const [dropdownNames, setDropdownNames] = useState({
+    depositManagerTitle: '',
+    releaseManagerTitle: '',
+    bank: '',
+  })
+
+  console.log('dropdownNames', dropdownNames)
+
+  console.log('checkFileName 삭제 <<<', checkFileName)
+  console.log('renderFileName 렌더 <<<', renderFileName)
+
   const [businessNumber, setBusinessNumber] = useState('')
+
+  const checkDummy = ['유통', '제조']
+  const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
+  const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
+
+  console.log('businessNumber', businessNumber)
 
   // TODO : 중복체크 response 없음
   const { isError, isSuccess, data } = useReactQuery('getCustomerPrivacy', {}, getCustomerPrivacy)
-  // const {
-  //   isError: isBusinessNumberError,
-  //   isSuccess: isBusinessNumberSuccess,
-  //   data: businessNumberData,
-  // } = useReactQuery('checkBusinessNumber', businessNumber, checkBusinessNumber, {
-  //   enabled: false,
-  // })
+  const {
+    isError: isBusinessNumberError,
+    isSuccess: isBusinessNumberSuccess,
+    data: businessNumberData,
+  } = useReactQuery('checkBusinessNumber', businessNumber, checkBusinessNumber, {
+    enabled: false,
+  })
   const [user, setUser] = useState('')
   const resData = data?.data?.data
 
-  const checkBusiness = () => {
+  console.log('resData', resData)
+
+  const postMutation = useMutationQuery('', checkBusinessNumber)
+  const checkBusiness = async () => {
     try {
-      checkBusinessNumber(businessNumber)
-      console.log('done')
-    } catch (err) {
-      console.log(err)
+      const result = await postMutation.mutateAsync(businessNumber)
+      const responseData = result.data
+      if (responseData.status !== 409) {
+        alert('사용 가능한 사업자 번호입니다.')
+      }
+    } catch (error) {
+      alert(error.data.message)
     }
   }
+
   const handleCheck = (e) => {
     setBusinessNumber(e.target.value)
     console.log(businessNumber)
@@ -106,29 +131,53 @@ const ProfileEdit = () => {
   useEffect(() => {
     if (isSuccess) {
       setUser(resData)
-      // setBusinessNumber(resData.customer.businessNumber)
+      setAddress(resData?.customer?.address)
+      setDetailAddress(resData?.customer?.addressDetail)
+      setDropdownNames({
+        ...dropdownNames,
+        bank: resData?.customer?.bank,
+        depositManagerTitle: resData?.customer?.depositManagerTitle,
+        releaseManagerTitle: resData?.customer?.releaseManagerTitle,
+      })
+      setRenderFileName({
+        ...renderFileName,
+        businessNumberFile: resData?.customer?.businessNumberOriginalName,
+        bankbookFile: resData?.customer?.bankbookOriginalName,
+      })
+
+      const userCustomerTypeIndex = radioDummy.indexOf(resData?.customer?.type)
+
+      const newCheck = check.map((_, index) => resData?.customer?.businessType?.includes(checkDummy[index]))
+      setCheck(newCheck)
+
+      if (userCustomerTypeIndex !== -1) {
+        // 일치하는 값이 있다면 해당 인덱스의 checkRadio를 true로 설정
+        const newCheckRadio = Array.from({ length: radioDummy.length }, (_, index) => index === userCustomerTypeIndex)
+        setCheckRadio(newCheckRadio)
+      }
     }
-  }, [resData])
+  }, [isSuccess, resData])
 
   const handleFiles = (e) => {
     const name = e.target.name
     const file = e.target.files[0]
+    console.log('')
     const fileName = e.target.files[0].name
-    if (checkFileName.hasOwnProperty(name)) {
-      setCheckFileName((prev) => ({
+    if (renderFileName.hasOwnProperty(name)) {
+      setRenderFileName((prev) => ({
         ...prev,
         [name]: fileName,
       }))
-      if (name === 'deleteBusinessNumberFile') {
+      if (name === 'businessNumberFile') {
         setFileForms((prev) => ({
           ...prev,
           registration: file,
         }))
       }
-      if (name === 'deleteBankbookFile') {
+      if (name === 'bankbookFile') {
         setFileForms((prev) => ({
           ...prev,
-          bankbook: file,
+          bankBook: file,
         }))
       }
     }
@@ -152,6 +201,8 @@ const ProfileEdit = () => {
     const formData = new FormData(e.target)
     const updatedInput = { ...input }
 
+    console.log('updatedInput', updatedInput)
+
     formData.forEach((value, key) => {
       if (input.hasOwnProperty(key) && value && !checkboxType.includes(key) && !fileType.includes(key)) {
         updatedInput[key] = value
@@ -164,8 +215,8 @@ const ProfileEdit = () => {
         // return
       }
     }
-    setInput({ ...input, ...updatedInput, ...checkFileName })
-    console.log('input', input)
+    setInput({ ...input, ...updatedInput, ...checkFileName, ...dropdownNames })
+
     setShouldUpdateCustomer(true)
   }
 
@@ -175,18 +226,20 @@ const ProfileEdit = () => {
       if (shouldUpdateCustomer) {
         try {
           const response = await updateCustomer(input, fileForms)
-          console.log(response.data)
-          alert('회원가입이 수정되셨습니다.')
+          console.log('response !!! ', response)
+          alert('수정되었습니다.')
         } catch (err) {
           console.log(err)
-          alert('ERROR:', err.data)
+          alert('ERROR:', err)
         }
         setShouldUpdateCustomer(false)
       }
     }
     updateCustomerData()
   }, [shouldUpdateCustomer])
-  // -------------------------------------------------------------------------------
+
+  console.log('shouldUpdateCustomer', shouldUpdateCustomer)
+
   const [postFind, setPostFind] = useState(false)
   const [modalSwitch, setModalSwitch] = useState(false)
   const [address, setAddress] = useState('')
@@ -237,21 +290,22 @@ const ProfileEdit = () => {
     setDetailAddress(value)
   }
   const radioDummy = ['법인사업자', '개인사업자']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+  // const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+
   const [savedRadioValue, setSavedRadioValue] = useState('')
+
+  console.log(' >< input.type !!!', input.type)
+  console.log(' >< savedRadioValue !!!', savedRadioValue)
 
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
     if (checkedIndex !== -1) {
       const selectedValue = radioDummy[checkedIndex]
       setSavedRadioValue(selectedValue)
-      setInput({ ...input, type: selectedValue })
+      setInput({ ...input, type: savedRadioValue })
     }
-  }, [checkRadio])
-
-  const checkDummy = ['유통', '제조']
-  const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
-  const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
+  }, [checkRadio, savedRadioValue])
 
   useEffect(() => {
     const updatedCheck = checkDummy.map((value, index) => {
@@ -268,6 +322,9 @@ const ProfileEdit = () => {
     })
   }, [check])
 
+  console.log('checkData !!!!', input.businessType)
+  console.log('input', input)
+
   return (
     <form onSubmit={handleSubmit}>
       <OnePageFlexContainer>
@@ -283,7 +340,7 @@ const ProfileEdit = () => {
                   아이디<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput disabled name={init.id} value={user && user.member.id} />
+                  <FlexInput style={{ background: '#c8c8c8' }} disabled name={init.id} value={user && user.member.id} />
                 </FlexContent>
               </FlexPart>
 
@@ -310,8 +367,19 @@ const ProfileEdit = () => {
                   경매 담당자 정보<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <CustomInput name="title" placeholder="직함 입력" width={130} />
-                  <CustomInput name="name" placeholder=" 성함 입력" width={188} style={{ marginLeft: '5px' }} />
+                  <CustomInput
+                    name="title"
+                    placeholder="직함 입력"
+                    width={130}
+                    defaultValue={user && user.member.title}
+                  />
+                  <CustomInput
+                    name="name"
+                    placeholder=" 성함 입력"
+                    width={188}
+                    style={{ marginLeft: '5px' }}
+                    defaultValue={user && user.member.name}
+                  />
                 </FlexContent>
               </FlexPart>
 
@@ -320,7 +388,7 @@ const ProfileEdit = () => {
                   이메일<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="email" />
+                  <FlexInput name="email" defaultValue={(user && user.member.email) || ''} />
                 </FlexContent>
               </FlexPart>
 
@@ -329,26 +397,42 @@ const ProfileEdit = () => {
                   휴대폰 번호<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="customerPhone" />
+                  <FlexInput name="customerPhone" defaultValue={user && user.member.phone} />
                 </FlexContent>
               </FlexPart>
               <Bar />
-              <EqualCheckWrap>
-                <input type="checkbox" style={{ marginRight: '5px' }} />
-                가입 정보와 동일
-              </EqualCheckWrap>
+
               <FlexPart>
                 <FlexTitle>
                   입금 담당자 정보<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <EditSelect
-                    name="depositManagerTitle"
-                    options={depositOptions}
-                    defaultValue={depositOptions[0]}
-                    onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
+                  {selectSwitch.deposit ? (
+                    <EditSelect
+                      name="depositManagerTitle"
+                      options={depositOptions}
+                      defaultValue={depositOptions[0]}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
+                    />
+                  ) : (
+                    <GreyDiv
+                      onClick={() => {
+                        setSelectSwitch((prev) => ({
+                          ...prev,
+                          deposit: !prev.deposit,
+                        }))
+                      }}
+                    >
+                      {user && user.customer.depositManagerTitle}
+                    </GreyDiv>
+                  )}
+
+                  <CustomInput
+                    name="depositManagerName"
+                    placeholder="담당자 성함 입력"
+                    width={190}
+                    defaultValue={user && user.customer.depositManagerName}
                   />
-                  <CustomInput name="depositManagerName" placeholder="담당자 성함 입력" width={190} />
                 </FlexContent>
               </FlexPart>
 
@@ -357,25 +441,45 @@ const ProfileEdit = () => {
                   휴대폰 번호<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="depositManagerPhone" placeholder="연락처 입력 ('-' 제외)" />
+                  <FlexInput
+                    name="depositManagerPhone"
+                    placeholder="연락처 입력 ('-' 제외)"
+                    defaultValue={user && user.customer.depositManagerPhone}
+                  />
                 </FlexContent>
               </FlexPart>
-              <EqualCheckWrap>
-                <input type="checkbox" style={{ marginRight: '5px' }} />
-                가입 정보와 동일
-              </EqualCheckWrap>
+
               <FlexPart>
                 <FlexTitle>
                   출고 담당자 정보<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <EditSelect
-                    name="releaseManagerTitle"
-                    options={depositOptions}
-                    defaultValue={depositOptions[0]}
-                    onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
+                  {selectSwitch.release ? (
+                    <EditSelect
+                      name="releaseManagerTitle"
+                      options={depositOptions}
+                      defaultValue={depositOptions[0]}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
+                    />
+                  ) : (
+                    <GreyDiv
+                      onClick={() => {
+                        setSelectSwitch((prev) => ({
+                          ...prev,
+                          release: !prev.release,
+                        }))
+                      }}
+                    >
+                      {user && user.customer.releaseManagerTitle}
+                    </GreyDiv>
+                  )}
+
+                  <CustomInput
+                    name="releaseManagerName"
+                    placeholder=" 담당자 성함 입력"
+                    width={190}
+                    defaultValue={user && user.customer.releaseManagerName}
                   />
-                  <CustomInput name="releaseManagerName" placeholder=" 담당자 성함 입력" width={190} />
                 </FlexContent>
               </FlexPart>
 
@@ -384,7 +488,11 @@ const ProfileEdit = () => {
                   휴대폰 번호<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="releaseManagerPhone" placeholder="연락처 입력 ('-' 제외)" />
+                  <FlexInput
+                    name="releaseManagerPhone"
+                    placeholder="연락처 입력 ('-' 제외)"
+                    defaultValue={user && user.customer.releaseManagerPhone}
+                  />
                 </FlexContent>
               </FlexPart>
 
@@ -439,7 +547,7 @@ const ProfileEdit = () => {
                   회사 명<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="customerName" />
+                  <FlexInput name="customerName" defaultValue={user && user.customer.name} />
                 </FlexContent>
               </FlexPart>
 
@@ -448,7 +556,7 @@ const ProfileEdit = () => {
                   대표자 성명<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="ceoName" />
+                  <FlexInput name="ceoName" defaultValue={user && user.customer.ceoName} />
                 </FlexContent>
               </FlexPart>
 
@@ -457,7 +565,7 @@ const ProfileEdit = () => {
                   대표 연락처<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="phone" />
+                  <FlexInput name="phone" defaultValue={user && user.customer.phone} />
                 </FlexContent>
               </FlexPart>
 
@@ -466,7 +574,7 @@ const ProfileEdit = () => {
                   팩스번호<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <FlexInput name="fax" />
+                  <FlexInput name="fax" defaultValue={user && user.customer.fax} />
                 </FlexContent>
               </FlexPart>
 
@@ -475,7 +583,12 @@ const ProfileEdit = () => {
                   주소<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <CustomInput name="address" width={223} value={address} />
+                  <CustomInput
+                    name="address"
+                    width={223}
+                    value={address}
+                    defaultValue={user && user.customer.address}
+                  />
                   <CheckBtn
                     type="button"
                     style={{
@@ -492,7 +605,11 @@ const ProfileEdit = () => {
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  <FlexInput name="addressDetail" value={detailAddress} />
+                  <FlexInput
+                    name="addressDetail"
+                    value={detailAddress}
+                    defaultValue={user && user.customer.addressDetail}
+                  />
                 </FlexContent>
               </FlexPart>
 
@@ -548,7 +665,12 @@ const ProfileEdit = () => {
                 </FlexTitle>
                 <FlexContent>
                   {/* input데이터 넣기 value={resData && resData.customer.businessNumber} */}
-                  <CustomInput name="businessNumber" width={223} onChange={handleCheck} />
+                  <CustomInput
+                    name="businessNumber"
+                    width={223}
+                    onChange={handleCheck}
+                    defaultValue={user && user.customer.businessNumber}
+                  />
                   <CheckBtn style={{ fontSize: '16px' }} type="button" onClick={checkBusiness}>
                     중복확인
                   </CheckBtn>
@@ -573,7 +695,7 @@ const ProfileEdit = () => {
                     accept="image/jpg, image/png, image/jpeg"
                     style={{ display: 'none' }}
                     onChange={handleFiles}
-                    name="deleteBusinessNumberFile"
+                    name="businessNumberFile"
                     // onChange={commonChange}
                     // name="businessfile"
                   ></input>
@@ -582,11 +704,27 @@ const ProfileEdit = () => {
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  {/* <FlexInput></FlexInput> */}
-                  {checkFileName.deleteBusinessNumberFile ? (
-                    checkFileName.deleteBusinessNumberFile
+                  {renderFileName.businessNumberFile ? (
+                    <IncomeImgDiv>
+                      <div>{renderFileName.businessNumberFile}</div>
+                      <div>
+                        <IIDImg
+                          onClick={() => {
+                            setRenderFileName({
+                              ...renderFileName,
+                              businessNumberFile: '',
+                            })
+                            setCheckFileName({
+                              ...checkFileName,
+                              deleteBusinessNumberFile: resData?.customer?.businessNumberSavedName,
+                            })
+                          }}
+                          src="/svg/btn_close.svg"
+                        />
+                      </div>
+                    </IncomeImgDiv>
                   ) : (
-                    <FlexInput></FlexInput>
+                    <FlexInput style={{ width: '322px' }} disabled />
                   )}
                 </FlexContent>
               </FlexPart>
@@ -610,20 +748,36 @@ const ProfileEdit = () => {
                       accept="image/jpg, image/png, image/jpeg"
                       style={{ display: 'none' }}
                       onChange={handleFiles}
-                      name="deleteBankbookFile"
+                      name="bankbookFile"
                     ></input>
                   </TxtDivNoborder>
-                  {/* <TxtDiv style={{ width: '100%' }}>
-                    <img src="/svg/Upload.svg" />
-                    <p>파일 첨부</p>
-                  </TxtDiv> */}
                 </FlexContent>
               </FlexPart>
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  {/* <FlexInput></FlexInput> */}
-                  {checkFileName.deleteBankbookFile ? checkFileName.deleteBankbookFile : <FlexInput></FlexInput>}
+                  {renderFileName.bankbookFile ? (
+                    <IncomeImgDiv>
+                      <div>{renderFileName.bankbookFile}</div>
+                      <div>
+                        <IIDImg
+                          src="/svg/btn_close.svg"
+                          onClick={() => {
+                            setRenderFileName({
+                              ...renderFileName,
+                              bankbookFile: '',
+                            })
+                            setCheckFileName({
+                              ...checkFileName,
+                              deleteBankbookFile: resData?.customer?.bankbookSavedName,
+                            })
+                          }}
+                        />
+                      </div>
+                    </IncomeImgDiv>
+                  ) : (
+                    <FlexInput style={{ width: '322px' }} disabled />
+                  )}
                 </FlexContent>
               </FlexPart>
 
@@ -643,14 +797,18 @@ const ProfileEdit = () => {
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  <FlexInput name="accountNumber" style={{ width: '99%' }} />
+                  <FlexInput
+                    name="accountNumber"
+                    style={{ width: '320px' }}
+                    defaultValue={user && user.customer.accountNumber}
+                  />
                 </FlexContent>
               </FlexPart>
             </Right>
           </OnePageFlexSubContainer>
         </div>
         <BtnWrap style={{ height: '120px' }}>
-          <WhiteBtn width={40} height={40}>
+          <WhiteBtn width={40} height={40} type="button">
             돌아가기
           </WhiteBtn>
           <BlackBtn width={40} height={40} type="submit">
@@ -663,3 +821,51 @@ const ProfileEdit = () => {
 }
 
 export default ProfileEdit
+
+const GreyDiv = styled.div`
+  font-size: 16px;
+  width: 130px;
+  height: 40px;
+  border: 1px solid #c1c1c1c5;
+  background-color: #c8c8c8;
+  margin-right: 5px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  cursor: pointer;
+  position: relative;
+
+  &:hover {
+    background-color: gray;
+
+    &::after {
+      content: '클릭 시 수정';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+  }
+`
+
+const IncomeImgDiv = styled.div`
+  display: flex;
+  font-size: 14px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  width: 99%;
+  height: 40px;
+  background-color: #f1f1f1;
+  color: #6b6b6b;
+`
+
+const IIDImg = styled.img`
+  width: 13px;
+  cursor: pointer;
+`

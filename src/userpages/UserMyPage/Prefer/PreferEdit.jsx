@@ -21,6 +21,8 @@ import { CustomSelect } from '../../../common/Option/Main'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { isEmptyObj } from '../../../lib'
 import { doubleClickedRowAtom } from '../../../store/Layout/Layout'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getDetailCustomerfavorite } from '../../../api/myPage'
 
 const init = {
   uid: '',
@@ -42,27 +44,41 @@ const init = {
   elMax: '',
 }
 
-const PreferEdit = ({ setChoiceComponent }) => {
+const PreferEdit = ({ setChoiceComponent, setSwtichEdit, uidAtom }) => {
   const radioDummy = ['지정', '미지정'] // 더미 데이터
 
   const [submitData, setSubmitData] = useState(init)
   const [selectedData, setSelectedData] = useAtom(doubleClickedRowAtom)
   const mutation = useMutationQuery('', patchCustomerfavorite)
 
+  const { isLoading, isError, data, isSuccess } = useReactQuery(
+    uidAtom,
+    'getDetailCustomerfavorite',
+    getDetailCustomerfavorite,
+  )
+
+  const detailData = data?.data?.data
+
   useEffect(() => {
-    const uid = selectedData.uid
+    const uid = selectedData?.uid
     setSubmitData((prevState) => ({ ...prevState, uid: uid }))
-  }, [selectedData])
+
+    // detailData가 정상적으로 가져와진 후에 submitData를 초기화합니다.
+    if (detailData) {
+      setSubmitData(detailData)
+    }
+  }, [selectedData, isSuccess, detailData])
+
+  console.log('submitData', submitData)
 
   const eventHandle = (e) => {
     const { name, value } = e.target
-    setSubmitData({ ...submitData, [name]: value })
+    setSubmitData({ ...submitData, detailData, [name]: value })
     console.log(submitData)
   }
 
   const submitHandle = (e) => {
     if (isEmptyObj(submitData)) {
-      setChoiceComponent('리스트')
       mutation.mutate(submitData)
     } else {
       alert('내용을 모두 기입해주세요.')
@@ -70,7 +86,7 @@ const PreferEdit = ({ setChoiceComponent }) => {
   }
 
   const goBack = () => {
-    setChoiceComponent('리스트')
+    setSwtichEdit(false)
   }
   return (
     <OnePageContainer>
@@ -83,7 +99,13 @@ const PreferEdit = ({ setChoiceComponent }) => {
                 <h4>선호제품 명</h4>
                 <p></p>
               </Title>
-              <CustomInput placeholder="선호제품 명 입력" width={340} name="name" onChange={eventHandle} />
+              <CustomInput
+                placeholder="선호제품 명 입력"
+                width={340}
+                name="name"
+                onChange={eventHandle}
+                defaultValue={detailData?.name}
+              />
             </Part>
 
             <Part style={{ marginTop: '35px' }}>
@@ -99,9 +121,19 @@ const PreferEdit = ({ setChoiceComponent }) => {
                 <h4>두께</h4>
                 <p></p>
               </Title>
-              <CustomInput width={160} name="thicknessMin" onChange={eventHandle} />
+              <CustomInput
+                width={160}
+                name="thicknessMin"
+                onChange={eventHandle}
+                defaultValue={detailData?.thicknessMin}
+              />
               <span style={{ padding: '0px 5px' }}>~</span>
-              <CustomInput width={160} name="thicknessMax" onChange={eventHandle} />
+              <CustomInput
+                width={160}
+                name="thicknessMax"
+                onChange={eventHandle}
+                defaultValue={detailData?.thicknessMax}
+              />
             </Part>
 
             <Part style={{ marginTop: '35px' }}>
@@ -109,9 +141,9 @@ const PreferEdit = ({ setChoiceComponent }) => {
                 <h4>폭</h4>
                 <p></p>
               </Title>
-              <CustomInput width={160} name="widthMin" onChange={eventHandle} />
+              <CustomInput width={160} name="widthMin" onChange={eventHandle} defaultValue={detailData?.widthMin} />
               <span style={{ padding: '0px 5px' }}>~</span>
-              <CustomInput width={160} name="widthMax" onChange={eventHandle} />
+              <CustomInput width={160} name="widthMax" onChange={eventHandle} defaultValue={detailData?.widthMax} />
             </Part>
 
             <Part style={{ marginTop: '35px' }}>
@@ -119,9 +151,9 @@ const PreferEdit = ({ setChoiceComponent }) => {
                 <h4>길이</h4>
                 <p></p>
               </Title>
-              <CustomInput width={160} name="lengthMin" onChange={eventHandle} />
+              <CustomInput width={160} name="lengthMin" onChange={eventHandle} defaultValue={detailData?.lengthMin} />
               <span style={{ padding: '0px 5px' }}>~</span>
-              <CustomInput width={160} name="lengthMax" onChange={eventHandle} />
+              <CustomInput width={160} name="lengthMax" onChange={eventHandle} defaultValue={detailData?.lengthMax} />
             </Part>
           </Left>
           <Right>
@@ -130,9 +162,9 @@ const PreferEdit = ({ setChoiceComponent }) => {
                 <h4>TS</h4>
                 <p></p>
               </Title>
-              <CustomInput width={160} name="tsMin" onChange={eventHandle} />
+              <CustomInput width={160} name="tsMin" onChange={eventHandle} defaultValue={detailData?.lengthMax} />
               <span style={{ padding: '0px 5px' }}>~</span>
-              <CustomInput width={160} name="tsMax" onChange={eventHandle} />
+              <CustomInput width={160} name="tsMax" onChange={eventHandle} defaultValue={detailData?.lengthMax} />
             </Part>
 
             <Part style={{ marginTop: '35px' }}>
@@ -140,18 +172,18 @@ const PreferEdit = ({ setChoiceComponent }) => {
                 <h4>YP</h4>
                 <p></p>
               </Title>
-              <CustomInput width={160} name="ypMin" onChange={eventHandle} />
+              <CustomInput width={160} name="ypMin" onChange={eventHandle} defaultValue={detailData?.ypMin} />
               <span style={{ padding: '0px 5px' }}>~</span>
-              <CustomInput width={160} name="ypMax" onChange={eventHandle} />
+              <CustomInput width={160} name="ypMax" onChange={eventHandle} defaultValue={detailData?.ypMax} />
             </Part>
             <Part style={{ marginTop: '35px' }}>
               <Title>
                 <h4>C%</h4>
                 <p></p>
               </Title>
-              <CustomInput width={160} name="cMin" onChange={eventHandle} />
+              <CustomInput width={160} name="cMin" onChange={eventHandle} defaultValue={detailData?.cmin} />
               <span style={{ padding: '0px 5px' }}>~</span>
-              <CustomInput width={160} name="cMax" onChange={eventHandle} />
+              <CustomInput width={160} name="cMax" onChange={eventHandle} defaultValue={detailData?.cmax} />
             </Part>
 
             <Part style={{ marginTop: '35px' }}>
@@ -159,9 +191,9 @@ const PreferEdit = ({ setChoiceComponent }) => {
                 <h4>EL</h4>
                 <p></p>
               </Title>
-              <CustomInput width={160} name="elMin" onChange={eventHandle} />
+              <CustomInput width={160} name="elMin" onChange={eventHandle} defaultValue={detailData?.elMin} />
               <span style={{ padding: '0px 5px' }}>~</span>
-              <CustomInput width={160} name="elMax" onChange={eventHandle} />
+              <CustomInput width={160} name="elMax" onChange={eventHandle} defaultValue={detailData?.elMax} />
             </Part>
           </Right>
         </HalfWrap>

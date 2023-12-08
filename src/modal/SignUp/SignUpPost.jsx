@@ -21,15 +21,13 @@ const SignUpPost = ({
   detailAddressHandler,
   daumPostHandleComplete,
 }) => {
-
-
-
   return (
     <>
       <FadeOverlay />
       <ModalContainer width={400} height={280}>
-        <ModalSubContainer style={{ padding: '10%' }}>
+        <ModalSubContainer style={{ padding: '30px 10%' }}>
           <Part>
+            <ModalCloseBtn onClick={closeModal} src="/svg/btn_close.svg" />
             <Title>
               <h4>주소</h4>
               <ModalRadioWrap>
@@ -72,7 +70,6 @@ const SignUpPost = ({
           </Part>
 
           <SubmitBtn onClick={comfirmPost}>확인</SubmitBtn>
-          <ModalCloseBtn onClick={closeModal} src="/svg/btn_close.svg" />
         </ModalSubContainer>
         {isDaumPostOpen && (
           <div>

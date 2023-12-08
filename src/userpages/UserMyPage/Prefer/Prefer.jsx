@@ -1,22 +1,32 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { btnCellUidAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 
 import { useAtom } from 'jotai'
 import { isArray } from 'lodash'
 import { useCallback } from 'react'
-import { deleteCustomerfavorite, getCustomerfavorite } from '../../../api/myPage'
+import { deleteCustomerfavorite, getCustomerfavorite, getDetailCustomerfavorite } from '../../../api/myPage'
 import { UserPageUserPreferFields, UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../../pages/Table/Table'
 
+import { userpageUserPreferEditObject } from '../../../store/Layout/Layout'
+import PreferEdit from './PreferEdit'
+import { userpageUserPreferEdit } from '../../../store/Layout/Layout'
+
 const Prefer = ({ setChoiceComponent }) => {
+  const [switchEdit, setSwtichEdit] = useAtom(userpageUserPreferEdit)
+  const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
+
+  console.log('switchEdit', switchEdit)
+  const [filterData, setFilterData] = useAtom(userpageUserPreferEditObject)
   const radioDummy = ['전체', '미진행', '진행중', '종료']
+
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
 
   const [savedRadioValue, setSavedRadioValue] = useState('')
@@ -70,6 +80,8 @@ const Prefer = ({ setChoiceComponent }) => {
   const { isLoading, isError, data, isSuccess } = useReactQuery(dummy, 'getCustomerfavorite', getCustomerfavorite)
   const resData = data?.data?.data?.list
 
+  const detailData = data?.data?.data?.list
+
   if (isError) console.log('데이터 request ERROR')
 
   useEffect(() => {
@@ -94,32 +106,47 @@ const Prefer = ({ setChoiceComponent }) => {
   const goPostPage = () => {
     setChoiceComponent('등록')
   }
-  return (
-    <FilterContianer>
-      <FilterHeader>
-        <div style={{ display: 'flex' }}>
-          <h1>선호제품 관리</h1>
-        </div>
-        {/* 토글 쓰기 */}
-      </FilterHeader>
 
-      <TableContianer>
-        <TCSubContainer bor>
-          <div></div>
-          <div
-            style={{
-              display: 'flex',
-              gap: '10px',
-              alignItems: 'center',
-            }}
-          >
-            <WhiteRedBtn onClick={handleRemoveBtn}>선택 삭제</WhiteRedBtn>
-            <SkyBtn onClick={goPostPage}>등록</SkyBtn>
-          </div>
-        </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} setChoiceComponent={setChoiceComponent} />
-      </TableContianer>
-    </FilterContianer>
+  useEffect(() => {
+    // 컴포넌트가 언마운트될 때 switchEdit을 재설정하는 정리 함수
+    return () => {
+      setSwtichEdit(false)
+    }
+  }, [])
+
+  return (
+    <>
+      {' '}
+      {switchEdit ? (
+        <PreferEdit detailData={detailData} setSwtichEdit={setSwtichEdit} uidAtom={uidAtom} />
+      ) : (
+        <FilterContianer>
+          <FilterHeader>
+            <div style={{ display: 'flex' }}>
+              <h1>선호제품 관리</h1>
+            </div>
+            {/* 토글 쓰기 */}
+          </FilterHeader>
+
+          <TableContianer>
+            <TCSubContainer bor>
+              <div></div>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '10px',
+                  alignItems: 'center',
+                }}
+              >
+                <WhiteRedBtn onClick={handleRemoveBtn}>선택 삭제</WhiteRedBtn>
+                <SkyBtn onClick={goPostPage}>등록</SkyBtn>
+              </div>
+            </TCSubContainer>
+            <Table getCol={getCol} getRow={getRow} setChoiceComponent={setChoiceComponent} />
+          </TableContianer>
+        </FilterContianer>
+      )}
+    </>
   )
 }
 

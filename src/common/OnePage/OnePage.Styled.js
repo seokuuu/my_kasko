@@ -13,8 +13,19 @@ export const CenterRectangleWrap = styled.div`
   padding: 20px;
 `
 
+// export const OnePageContainer = styled.div`
+//   width: 70%;
+//   font-size: 18px;
+//   background-color: white;
+//   margin-left: auto;
+//   margin-right: auto;
+//   border: 1px solid black;
+//   min-height: 88vh;
+//   max-height: 100vh;
+// `
+
 export const OnePageContainer = styled.div`
-  width: 65%;
+  width: fit-content;
   font-size: 18px;
   background-color: white;
   margin-left: auto;
@@ -50,12 +61,17 @@ export const OnePageFlexSubContainer = styled.div`
   }
 `
 
+// export const OnePageSubContainer = styled.div`
+//   padding-left: 10%;
+//   padding-right: 10%;
+//   width: 100%;
+//   margin-left: auto;
+//   margin-right: auto;
+// `
+
 export const OnePageSubContainer = styled.div`
-  padding-left: 10%;
-  padding-right: 10%;
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 0px 50px;
 `
 
 export const MainTitle = styled.div`
@@ -118,17 +134,14 @@ export const FWTitle = styled.div`
 `
 
 export const HalfWrap = styled.div`
-  justify-content: space-evenly;
   display: flex;
+  justify-content: center;
+  gap: 100px;
 `
 
-export const Left = styled.div`
-  width: 45%;
-`
+export const Left = styled.div``
 
-export const Right = styled.div`
-  width: 45%;
-`
+export const Right = styled.div``
 
 export const Contour = styled.div`
   width: 95%;
