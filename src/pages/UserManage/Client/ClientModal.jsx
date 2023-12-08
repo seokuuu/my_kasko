@@ -53,6 +53,8 @@ const init = {
   releaseManagerPhone: '출고담당자 연락처',
 }
 
+
+
 // id: 아이디
 // password: 비밀번호
 // memberTitle: 직함

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   OnePageContainer,
   OnePageSubContainer,
@@ -9,13 +9,13 @@ import {
   Title,
   Part,
   At,
-} from '../../../common/OnePage/OnePage.Styled';
+} from '../../../common/OnePage/OnePage.Styled'
 
-import { CustomInput } from '../../../common/Input/Input';
-import { CustomSelect } from '../../../common/Option/Main';
-import { emailOptions } from '../../../common/Option/SignUp';
+import { CustomInput } from '../../../common/Input/Input'
+import { CustomSelect } from '../../../common/Option/Main'
+import { emailOptions } from '../../../common/Option/SignUp'
 
-import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button';
+import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 
 const FooterManage = () => {
   return (
@@ -45,11 +45,7 @@ const FooterManage = () => {
               </Title>
               <div style={{ display: 'flex' }}>
                 <CustomInput placeholder="아이디 입력" width={120} /> <At>@</At>
-                <CustomSelect
-                  width={200}
-                  options={emailOptions}
-                  defaultValue={emailOptions[0]}
-                />
+                <CustomSelect width={200} options={emailOptions} defaultValue={emailOptions[0]} />
               </div>
             </Part>
           </Left>
@@ -86,7 +82,7 @@ const FooterManage = () => {
           </Right>
         </HalfWrap>
       </OnePageSubContainer>
-      <BtnWrap bottom={-200}>
+      <BtnWrap bottom={-300}>
         <WhiteBtn width={40} height={40}>
           돌아가기
         </WhiteBtn>
@@ -95,7 +91,7 @@ const FooterManage = () => {
         </BlackBtn>
       </BtnWrap>
     </OnePageContainer>
-  );
-};
+  )
+}
 
-export default FooterManage;
+export default FooterManage

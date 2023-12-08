@@ -128,9 +128,9 @@ const UserEdit = ({ setChoiceComponent }) => {
     setChoiceComponent('리스트')
   }
   return (
-    <OnePageContainer>
+    <OnePageContainer style={{ width: '65%' }}>
       <MainTitle>사용자 수정</MainTitle>
-      <OnePageSubContainer>
+      <OnePageSubContainer style={{ padding: '0px 10%' }}>
         <HalfWrap>
           <Left>
             <Part>
@@ -164,11 +164,11 @@ const UserEdit = ({ setChoiceComponent }) => {
                 <h4>이메일</h4>
                 <p></p>
               </Title>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Inputa name="email" onChange={eventHandle} /> <span style={{ margin: '5px' }}>@</span>
+              <div style={{ display: 'flex' }}>
+                <Inputa name="email" onChange={eventHandle} /> <span style={{ padding: '3px' }}>@</span>
                 <div>
                   <CustomSelect
-                    width={180}
+                    width={175}
                     options={emailOptions}
                     defaultValue={emailOptions[0]}
                     onChange={handleDomainChange}
@@ -220,22 +220,24 @@ const UserEdit = ({ setChoiceComponent }) => {
             </Part>
           </Right>
         </HalfWrap>
-        <CheckContainer>
-          <h4 style={{ marginBottom: '10px' }}>권한 설정</h4>
-          <CheckWrap>
-            {checkDummy.map((x, index) => (
-              <UserCheckDiv>
-                <StyledCheckSubSquDiv
-                  onClick={() => setCheck(CheckBox(check, check.length, index, true))}
-                  isChecked={check[index]}
-                >
-                  <CheckImg2 src="/svg/check.svg" />
-                </StyledCheckSubSquDiv>
-                <CheckTxt style={{ marginLeft: '5px' }}>{x}</CheckTxt>
-              </UserCheckDiv>
-            ))}
-          </CheckWrap>
-        </CheckContainer>
+        <HalfWrap>
+          <CheckContainer style={{ width: '96%' }}>
+            <h4 style={{ marginBottom: '10px' }}>권한 설정</h4>
+            <CheckWrap>
+              {checkDummy.map((x, index) => (
+                <UserCheckDiv>
+                  <StyledCheckSubSquDiv
+                    onClick={() => setCheck(CheckBox(check, check.length, index, true))}
+                    isChecked={check[index]}
+                  >
+                    <CheckImg2 src="/svg/check.svg" />
+                  </StyledCheckSubSquDiv>
+                  <CheckTxt style={{ marginLeft: '5px' }}>{x}</CheckTxt>
+                </UserCheckDiv>
+              ))}
+            </CheckWrap>
+          </CheckContainer>
+        </HalfWrap>
       </OnePageSubContainer>
       <BtnWrap bottom={-200}>
         <WhiteBtn width={40} height={40} onClick={goBack}>
