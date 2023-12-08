@@ -18,7 +18,6 @@ export const NonFadeOverlay = styled.div`
   width: 100%;
   height: 100%;
   z-index: 9998;
-
 `
 
 // 찐 모달
@@ -49,9 +48,9 @@ export const ModalRadioWrap = styled.div`
 
 export const ModalCloseBtn = styled.img`
   width: 5%;
-  position: absolute;
-  left: 365px;
-  bottom: 210px;
+  position: relative;
+  left: 330px;
+  top: -15px;
   cursor: pointer;
 `
 

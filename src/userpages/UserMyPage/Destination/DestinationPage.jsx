@@ -23,8 +23,7 @@ const DestinationPage = () => {
         return <Destination setChoiceComponent={setChoiceComponent} />
       case '등록':
         return <DestinationPost setChoiceComponent={setChoiceComponent} />
-      // case '수정':
-      //   return <DestinationEdit setChoiceComponent={setChoiceComponent} />
+
       default:
         return <Destination setChoiceComponent={setChoiceComponent} />
     }

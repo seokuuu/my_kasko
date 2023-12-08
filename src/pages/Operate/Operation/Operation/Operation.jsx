@@ -1,42 +1,15 @@
-import { useState } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../../common/Option/SignUp'
-import { Link } from 'react-router-dom'
-import { MainSelect } from '../../../../common/Option/Main'
-import { BlackBtn, BlueBtn, BtnWrap, WhiteRedBtn, SkyBtn } from '../../../../common/Button/Button'
-import DateGrid from '../../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../../common/Button/Button'
-import Test3 from '../../../Test/Test3'
-import HeaderToggle from '../../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../../store/Layout/Layout'
-import BlueBar from '../../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { FilterWrap, StyledHeading } from '../../../../modal/External/ExternalFilter'
+import { useState } from 'react'
+import { SkyBtn, WhiteRedBtn } from '../../../../common/Button/Button'
+import Hidden from '../../../../components/TableInner/Hidden'
+import HeaderToggle from '../../../../components/Toggle/HeaderToggle'
 import {
   FilterContianer,
-  FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  InputStartWrap,
-  FilterHeaderAlert,
-  TableTitle,
-  SubTitle,
-  TCSubContainer,
+  FilterHeader, StyledHeading, SubTitle,
+  TCSubContainer, TableContianer
 } from '../../../../modal/External/ExternalFilter'
-import Hidden from '../../../../components/TableInner/Hidden'
+import { blueModalAtom, toggleAtom } from '../../../../store/Layout/Layout'
+import Test3 from '../../../Test/Test3'
 
 const Operation = ({}) => {
   const [types, setTypes] = useState('product') //product, policy, storage
@@ -78,7 +51,7 @@ const Operation = ({}) => {
       <div>
         <FilterHeader>
           <div style={{ display: 'flex' }}>
-            <h1>사용자 관리</h1>
+            <h1>운영 관리</h1>
             <SubTitle>
               <StyledHeading isActive={types === 'product'} onClick={() => setTypes('product')}>
                 제품군 관리

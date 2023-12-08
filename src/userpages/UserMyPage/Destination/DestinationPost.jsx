@@ -1,26 +1,25 @@
-import { useState, useEffect } from 'react'
+import { useAtom } from 'jotai'
+import { useEffect, useState } from 'react'
+import styled from 'styled-components'
+import { postDestination } from '../../../api/myPage'
+import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import { CustomInput } from '../../../common/Input/Input'
 import {
-  OnePageContainer,
-  MainTitle,
-  OnePageSubContainer,
+  Alert,
   HalfWrap,
   Left,
+  MainTitle,
+  OnePageContainer,
+  OnePageSubContainer,
+  Part,
   Right,
   Title,
-  Part,
-  Alert,
 } from '../../../common/OnePage/OnePage.Styled'
-import { TxtInput, CustomInput } from '../../../common/Input/Input'
-import { styled } from 'styled-components'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
-import { postDestination } from '../../../api/myPage'
-import { isEmptyObj } from '../../../lib'
-import { async } from 'q'
 import { usePostUserDestinationQuery } from '../../../hooks/queries/user/Mypage'
+import { isEmptyObj } from '../../../lib'
 import AlertModal from '../../../modal/Alert/AlertModal'
-import { useAtom } from 'jotai'
 import { alertAtom, alertAtom2 } from '../../../store/Layout/Layout'
 
 const init = {
@@ -102,9 +101,9 @@ const DestinationPost = ({ setChoiceComponent }) => {
 
   // ✅destinationUid : 2로 일단 설정해줘야 등록됩니다.
   return (
-    <OnePageContainer>
+    <OnePageContainer2>
       <MainTitle>목적지 등록</MainTitle>
-      <OnePageSubContainer>
+      <OnePageSubContainer2>
         <HalfWrap>
           <Left>
             <Part>
@@ -197,15 +196,15 @@ const DestinationPost = ({ setChoiceComponent }) => {
             </Part>
           </Right>
         </HalfWrap>
-      </OnePageSubContainer>
-      <BtnWrap bottom={-200}>
-        <WhiteBtn width={40} height={40} onClick={backComponent}>
-          돌아가기
-        </WhiteBtn>
-        <BlackBtn width={40} height={40} onClick={submit}>
-          저장
-        </BlackBtn>
-      </BtnWrap>
+        <BtnWrap bottom={-270}>
+          <WhiteBtn width={40} height={40} onClick={backComponent}>
+            돌아가기
+          </WhiteBtn>
+          <BlackBtn width={40} height={40} onClick={submit}>
+            저장
+          </BlackBtn>
+        </BtnWrap>
+      </OnePageSubContainer2>
 
       {modalAtom2 && <AlertModal type={1} title={'저장 되었습니다'} onClick={submit} />}
       {modalAtom && (
@@ -215,7 +214,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
           onClick={backComponent}
         />
       )}
-    </OnePageContainer>
+    </OnePageContainer2>
   )
 }
 
@@ -225,4 +224,19 @@ const RadioContainer = styled.div`
   display: flex;
   width: 250px;
   justify-content: space-between;
+`
+const OnePageContainer2 = styled.div`
+  width: fit-content;
+  font-size: 18px;
+  background-color: white;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid black;
+  min-height: 88vh;
+  max-height: 100vh;
+`
+
+const OnePageSubContainer2 = styled.div`
+  width: 100%;
+  padding: 0px 50px;
 `

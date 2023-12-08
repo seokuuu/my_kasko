@@ -492,7 +492,7 @@ const SignUp = () => {
     setInput({ ...input, [name]: value })
     // businessfile, businessBankAddress는 file Object 일단 주석처리 하였음
 
-    //registration:businessfile, bankbook:businessBankAddress는
+    //registration:businessfile, bankBook:businessBankAddress는
   }
 
   const customerNameValidate = useValidation(inputObj)
@@ -690,7 +690,7 @@ const SignUp = () => {
                     <h4>주소</h4>
                     <p style={{ color: 'red' }}>{addressValidate || ''}</p>
                   </Title>
-                  <div>
+                  <div style={{ width: '320px' }}>
                     <TxtCheckInput type="text" value={address} placeholder="찾기 버튼 클릭" readOnly />
                     <CheckBtn style={{ backgroundColor: 'black', color: 'white' }} onClick={openModal} type="button">
                       찾기
