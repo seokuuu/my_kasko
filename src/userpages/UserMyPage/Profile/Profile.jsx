@@ -95,13 +95,6 @@ const ProfileEdit = () => {
     } catch (err) {
       console.log(err)
     }
-
-    // if (isBusinessNumberSuccess) {
-    //   alert('확인되셨습니다.')
-    // }
-    // if (isBusinessNumberError) {
-    //   alert('중복되었습니다.')
-    // }
   }
   const handleCheck = (e) => {
     setBusinessNumber(e.target.value)
