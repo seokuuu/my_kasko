@@ -214,7 +214,7 @@ const SignUp = () => {
     setEmailFirst(value)
   })
 
-  // ID 관련
+  /**  ID 관련 */
   // ID Focus & Blur 스위치
   const handleIdFocus = useCallback(() => {
     setIsFocused(true)
