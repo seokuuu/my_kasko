@@ -58,8 +58,8 @@ const Terms = () => {
   }
 
   return (
-    <OnePageContainer>
-      <Titles>
+    <OnePageContainer style={{ width: '55%' }}>
+      <Titles style={{ width: '90%' }}>
         <TitleChild active={type === '이용 약관'} onClick={() => setType('이용 약관')}>
           이용 약관
         </TitleChild>
