@@ -69,7 +69,7 @@ const FooterManage = () => {
    * @param {string} email
    * @returns {Email}
    * 이메일 도메인 분리함수
-   * email에서 @ 기준으로 prefix와 domain을 구분하여 반환해준다
+   * email에서 @ 기준으로 prefix와 domain을 구분하여 반환해줍니다.
    *
    */
   function separateDomain(email) {
