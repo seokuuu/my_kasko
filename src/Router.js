@@ -190,6 +190,7 @@ import NoticeDetail from './userpages/UserNotiDocs/Notice/NoticeDetail'
 import Agreement from './modal/Common/Agreement'
 import InvoiceEdit from './pages/Shipping/Achievement/InvoiceEdit'
 import Invoice from './userpages/UserPerformance/UserPerformance/Invoice'
+import UserEdit from './pages/UserManage/UserManage/UserEdit'
 
 // RoundAucProAdd
 const Router = () => {
@@ -197,7 +198,7 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
-        <Route path="/ppapp" element={<Invoice />} />
+        <Route path="/ppapp" element={<UserEditPage />} />
         <Route path="/ppap" element={<DefaultBlueBar />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />

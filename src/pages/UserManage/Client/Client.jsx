@@ -44,7 +44,7 @@ import TableTest from '../../Table/TableTest'
 
 const Client = ({ setChoiceComponent, setModal }) => {
   const [restrict, setRestrict] = useState()
-  const [selectedValue, setSelectedValue] = useState('')
+  const [selectedValue, setSelectedValue] = useState('') // 경매 제한 상태
   const radioDummy = ['전체', '대표']
   // const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
 
@@ -126,6 +126,8 @@ const Client = ({ setChoiceComponent, setModal }) => {
   const { isLoading, isError, data, isSuccess } = useReactQuery(query, 'getClient', getCustomer)
   const responseData = data?.data?.list
 
+  console.log('responseData', responseData)
+
   if (isError) {
     console.log('데이터 request ERROR')
   }
@@ -180,10 +182,14 @@ const Client = ({ setChoiceComponent, setModal }) => {
       queryClient.refetchQueries('getClient')
     },
   })
+  console.log('selectedValue', selectedValue, checkedArray)
+
   const clientRestrict = async () => {
+    console.log('!!! 제한 함수 실행 !!!')
     if (selectedValue === undefined) return alert('선택해주세요 ')
-    if (isString(selectedValue)) {
-      console.log('selectedValue', selectedValue)
+    else if (selectedValue) {
+      console.log('!!! 제한 함수 실행2 !!!')
+
       let req = { uids: [], auctionStatus: '' }
       checkedArray?.forEach((item) => {
         req.uids.push(item['순번'])
@@ -248,7 +254,7 @@ const Client = ({ setChoiceComponent, setModal }) => {
                         <ExCheckDiv>
                           <StyledCheckSubSquDiv
                             // CheckBox 수정
-                            onClick={() => setCheck1(CheckBox(check1, check1.length, index, false))}
+                            onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
                             isChecked={check1[index]}
                           >
                             <CheckImg2 src="/svg/check.svg" />
@@ -328,9 +334,7 @@ const Client = ({ setChoiceComponent, setModal }) => {
               <span></span>
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <WhiteRedBtn onClick={openAuctionModal} clientRestrict={clientRestrict}>
-                회원 제한
-              </WhiteRedBtn>
+              <WhiteRedBtn onClick={openAuctionModal}>회원 제한</WhiteRedBtn>
               <BtnBound />
               <WhiteRedBtn onClick={handleRemoveBtn}>회원 삭제</WhiteRedBtn>
               <WhiteSkyBtn onClick={setPostPage}>회원 생성</WhiteSkyBtn>
@@ -343,7 +347,7 @@ const Client = ({ setChoiceComponent, setModal }) => {
       {auctionModal && (
         <ClientAuctionRestrictionModal
           selectedValue={selectedValue}
-          setSelectedValue={setSelectedValue}
+          setSelectedValue={setSelectedValue} //경매 제한 상태
           setAuctionModal={setAuctionModal}
           clientRestrict={clientRestrict}
         />
