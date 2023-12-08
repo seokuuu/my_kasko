@@ -11,6 +11,8 @@ const urls = {
 /* ==============================
     사용자관리 - 고객사 관리
 ============================== */
+
+//목록
 export async function getCustomer(data) {
   const filteredData = removeEmptyFields(data)
   const params = createQueryParams(filteredData)
@@ -23,21 +25,33 @@ export async function getCustomer(data) {
   }
 }
 
+//상세 목록
+export function getCustomerDetail(data) {
+  return client.get(`${urls.customer}/${data}`)
+}
+
+//삭제
 export function deleteCustomer(id) {
   return client.delete(`${urls.customer}/${id}`)
 }
 
+//등록
 export function postChangeAuction(data) {
+  console.log('data', data)
   return client.post(`${urls.customer}/status`, data)
 }
 
+//비밀번호 초기화
 export function resetCustomer(data) {
   return client.post(`${urls.customer}/reset`, data)
 }
 
+// 사업자 번호 중복 체크
 export function checkBusinessNumber(data) {
   return client.post(`${urls.customer}/business-number?businessNumber=${data}`)
 }
+
+//상세 get
 
 /* ==============================
     사용자관리 - 고객사 목적지 관리

@@ -64,7 +64,7 @@ const ProfileEdit = () => {
   }
   return (
     <OnePageContainer>
-      <MainTitle>개인정보 수정</MainTitle>
+      <MainTitle>개인정보 수정 </MainTitle>
       <OnePageSubContainer>
         <HalfWrap>
           <Left>

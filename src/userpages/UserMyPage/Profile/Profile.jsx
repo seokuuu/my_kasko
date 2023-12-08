@@ -822,7 +822,7 @@ const ProfileEdit = () => {
 
 export default ProfileEdit
 
-const GreyDiv = styled.div`
+export const GreyDiv = styled.div`
   font-size: 16px;
   width: 130px;
   height: 40px;
@@ -853,7 +853,7 @@ const GreyDiv = styled.div`
   }
 `
 
-const IncomeImgDiv = styled.div`
+export const IncomeImgDiv = styled.div`
   display: flex;
   font-size: 14px;
   align-items: center;
@@ -865,7 +865,7 @@ const IncomeImgDiv = styled.div`
   color: #6b6b6b;
 `
 
-const IIDImg = styled.img`
+export const IIDImg = styled.img`
   width: 13px;
   cursor: pointer;
 `
