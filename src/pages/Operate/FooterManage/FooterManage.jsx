@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react'
 
 import {
@@ -16,7 +15,6 @@ import {
 import { CustomInput } from '../../../common/Input/Input'
 import { CustomSelect } from '../../../common/Option/Main'
 import { emailOptions } from '../../../common/Option/SignUp'
-
 
 import { useFooterMutation, useFooterQuery } from '../../../api/operate'
 import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
@@ -42,10 +40,6 @@ const FooterManage = () => {
 
   // 이메일 도메인(셀렉트 옵션)
   const [emailDomain, setEmailDomain] = useState(emailOptions[0])
-
-  const [emailText, setEmailText] = useState('')
-
-  console.log('이메일 도메인 :', emailDomain)
 
   /**
    * @description
@@ -117,7 +111,6 @@ const FooterManage = () => {
     }
   }, [data])
 
-  console.log('emailText :', emailText)
   return (
     <OnePageContainer>
       <MainTitle>푸터 관리</MainTitle>
@@ -156,7 +149,6 @@ const FooterManage = () => {
                 <p></p>
               </Title>
               <div style={{ display: 'flex' }}>
-
                 <CustomInput
                   placeholder="아이디 입력"
                   width={120}
@@ -166,15 +158,13 @@ const FooterManage = () => {
                 />
                 <At>@</At>
                 <CustomSelect
+                  isCreatable
                   width={200}
                   options={emailOptions}
                   defaultValue={emailDomain[0]}
                   value={emailDomain}
                   onChange={setEmailDomain}
-                  inputValue={emailText}
-                  onInputChange={setEmailText}
                 />
-
               </div>
             </Part>
           </Left>

@@ -25,7 +25,20 @@ export function getPolicy(data) {
 export function postPolicy(data) {
   return client.post(urls.policy, data)
 }
-
+export function usePolicyMutation() {
+  return useMutation({
+    mutationKey: 'getPolicy',
+    mutationFn: async function (params) {
+      postPolicy(params)
+    },
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: 'getPolicy' })
+    },
+    onError() {
+      alert('저장에 실패하였습니다.')
+    },
+  })
+}
 /* ==============================
     운영 관리 - 푸터 관리
 ============================== */

@@ -1,36 +1,40 @@
 import React, { useEffect, useState } from 'react'
 import {
+  FWTitle,
+  FullWrap,
   OnePageContainer,
   OnePageSubContainer,
-  Titles,
   TitleChild,
-  FullWrap,
-  FWTitle,
+  Titles,
 } from '../../../common/OnePage/OnePage.Styled'
 
-import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
-import useReactQuery from './../../../hooks/useReactQuery'
-import { getPolicy, postPolicy } from '../../../api/operate'
-import { isObject } from 'lodash'
-import useMutationQuery from './../../../hooks/useMutationQuery'
-import AlertPopup from '../../../modal/Alert/AlertPopup'
 import { useAtom } from 'jotai'
-import { modalAtom, popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Layout'
-import { t } from '../../../lib/ramda'
+import { isObject } from 'lodash'
+import { getPolicy, usePolicyMutation } from '../../../api/operate'
+import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
+import AlertPopup from '../../../modal/Alert/AlertPopup'
+import { popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Layout'
+import useReactQuery from './../../../hooks/useReactQuery'
 
 const Terms = () => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
 
+  // 약관 데이터
   const [resData, setResData] = useState('')
+  // 약관 타입
   const [type, setType] = useState('이용 약관') // (이용약관 / 개인정보 처리방침 / 개인정보 수집 동의)
   // ⚠️TODO : 개인정보 수집 동의 post에러
+
+  // 약관 조회 API
   const { isError, isSuccess, data } = useReactQuery(type, 'getPolicy', getPolicy)
-  const mutation = useMutationQuery('getPolicy', postPolicy, '')
+  // 약관 등록 API
+  const { mutate } = usePolicyMutation()
 
   if (isError) console.error('ERROR : 데이터패치 에러')
 
+  // data  바인딩
   useEffect(() => {
     const resData = data?.data?.data
     if (isSuccess && isObject(resData)) return setResData(resData)
@@ -43,22 +47,24 @@ const Terms = () => {
       num: '2-1',
       title: '저장하시겠습니까?',
       next: '1-12',
+      func() {},
     })
   }, [])
 
   useEffect(() => {
     if (nowPopup.num === '1-12') {
-      mutation.mutate(resData)
+      mutate(resData)
     }
   }, [nowPopup])
 
   const handleSubmit = () => {
-    setResData((prev) => ({ ...prev, uid: prev.uid + 1 }))
+    setResData((prev) => ({ ...prev, uid: prev.uid }))
     setPopupSwitch(true)
   }
 
   return (
     <OnePageContainer style={{ width: '55%' }}>
+      {/* 약관 타입 탭 */}
       <Titles style={{ width: '90%' }}>
         <TitleChild active={type === '이용 약관'} onClick={() => setType('이용 약관')}>
           이용 약관
@@ -89,7 +95,7 @@ const Terms = () => {
         </BlackBtn>
       </BtnWrap>
 
-      {popupSwitch && <AlertPopup />}
+      {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
     </OnePageContainer>
   )
 }
