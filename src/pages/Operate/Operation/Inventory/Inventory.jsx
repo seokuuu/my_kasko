@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react'
+/* eslint-disable no-unused-vars */
+import { useEffect, useRef, useState } from 'react'
 import { storageOptions } from '../../../../common/Option/SignUp'
 
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { BlackBtn, GreyBtn } from '../../../../common/Button/Button'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../../../common/Check/CheckImg'
 import { CheckBox } from '../../../../common/Check/Checkbox'
 import { MainSelect } from '../../../../common/Option/Main'
 import DateGrid from '../../../../components/DateGrid/DateGrid'
-import { toggleAtom } from '../../../../store/Layout/Layout'
-import Test3 from '../../../Test/Test3'
+import { selectedRowsAtom, toggleAtom } from '../../../../store/Layout/Layout'
+// import Test3 from '../../../Test/Test3'
+import { useAtom } from 'jotai'
 
 import {
   DoubleWrap,
@@ -26,8 +29,13 @@ import {
   ResetImg,
   RowWrap,
   TableContianer,
-  Tilde
+  Tilde,
 } from '../../../../modal/External/ExternalFilter'
+import useReactQuery from '../../../../hooks/useReactQuery'
+import { getInventoryLedger } from '../../../../api/operate/inventory'
+import Table from '../../../Table/Table'
+import { add_element_field } from '../../../../lib/tableHelpers'
+import { InventoryFieldsCols, InvertoryFields } from '../../../../constants/admin/Inventroy'
 
 const Inventory = ({}) => {
   const checkStores = ['전체', '미입고', '입고 대기', '입고 확정', '입고 확정 취소']
@@ -54,6 +62,34 @@ const Inventory = ({}) => {
 
   const [checkData4, setCheckData4] = useState(Array.from({ length: checkTransits.length }, () => ''))
   const [checkData5, setCheckData5] = useState(Array.from({ length: checkShipments.length }, () => ''))
+  // 테이블 데이터
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(InventoryFieldsCols)
+  const getCol = tableField.current
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  // 페이지 네이션 변수 및 선언
+
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const Param = {
+    pageNum: 1,
+    pageSize: 20,
+  }
+
+  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getInventoryLedge', getInventoryLedger)
+  const resData = data?.data?.data?.list
+  const pagination = data?.data?.data?.pagination
+
+  console.log('pagination', pagination)
+  useEffect(() => {
+    let getData = resData
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, InvertoryFields))
+    }
+  }, [isSuccess, resData])
 
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
@@ -362,7 +398,7 @@ const Inventory = ({}) => {
         </>
       )}
       <TableContianer>
-        <Test3 />
+        <Table getCol={getCol} getRow={getRow} />
       </TableContianer>
     </FilterContianer>
   )

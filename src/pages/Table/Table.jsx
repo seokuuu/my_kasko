@@ -361,6 +361,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
               </BlackBtn>
             </BlueBarBtnWrap>
           </ModalContainer>
+          <Pagination></Pagination>
         </>
       )}
     </div>
@@ -438,3 +439,5 @@ const ResultBlock = styled.div`
 const RBInput = styled.input`
   font-size: 16px;
 `
+
+const Pagination = styled.ul``
