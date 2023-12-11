@@ -257,18 +257,18 @@ export const RadioContainer = styled.div`
   margin-top: 10px;
 `
 
-const CheckWrap = styled.div`
+export const CheckWrap = styled.div`
   display: flex;
   flex-flow: row wrap;
   gap: 10px;
 `
 
-const CheckTxt = styled.div`
+export const CheckTxt = styled.div`
   min-width: 100px;
   height: 200px;
 `
 
-const UserCheckDiv = styled.div`
+export const UserCheckDiv = styled.div`
   display: flex;
   width: 150px;
   height: 30px;
