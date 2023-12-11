@@ -1,106 +1,99 @@
-import { useState } from 'react';
-import { styled } from 'styled-components';
-import { storageOptions } from '../../../../common/Option/SignUp';
-import { Link } from 'react-router-dom';
-import { MainSelect } from '../../../../common/Option/Main';
-import {
-  BlackBtn,
-  BlueBtn,
-  BtnWrap,
-  WhiteRedBtn,
-  SkyBtn,
-} from '../../../../common/Button/Button';
-import DateGrid from '../../../../components/DateGrid/DateGrid';
-import { ToggleBtn, Circle, Wrapper } from '../../../../common/Toggle/Toggle';
-import { GreyBtn } from '../../../../common/Button/Button';
-import Test3 from '../../../Test/Test3';
-import HeaderToggle from '../../../../components/Toggle/HeaderToggle';
-import { toggleAtom } from '../../../../store/Layout/Layout';
-import BlueBar from '../../../../modal/BlueBar/BlueBar';
-import { blueModalAtom } from '../../../../store/Layout/Layout';
-import { useAtom } from 'jotai';
-import { FilterWrap } from '../../../../modal/External/ExternalFilter';
+import { useAtom } from 'jotai'
+import moment from 'moment'
+import { useEffect, useMemo, useState } from 'react'
+import { useFaqListQuery } from '../../../../api/operate/faq'
+import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn } from '../../../../common/Button/Button'
+import { MainSelect } from '../../../../common/Option/Main'
+import HeaderToggle from '../../../../components/Toggle/HeaderToggle'
+import { FaqListFieldCols, FaqListFields } from '../../../../constants/admin/Faq'
+import { add_element_field } from '../../../../lib/tableHelpers'
 import {
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
+  FilterSubcontianer,
+  FilterWrap,
   Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
+  PartWrap,
   ResetImg,
-  TableContianer,
-  InputStartWrap,
-  FilterHeaderAlert,
-  TableTitle,
-  SubTitle,
+  RowWrap,
   TCSubContainer,
-} from '../../../../modal/External/ExternalFilter';
+  TableContianer,
+} from '../../../../modal/External/ExternalFilter'
+import { blueModalAtom, toggleAtom } from '../../../../store/Layout/Layout'
+import Table from '../../../Table/Table'
+import CategoryTab from '../../UI/CategoryTab'
+import { normalTabOptions } from '../../constants'
 
 const FAQ = ({}) => {
+  // 서버 옵션(요청 변수)
+  const [search, setSearch] = useState({
+    pageNum: 1,
+    pageSize: 5,
+  })
+
+  // 목록 API
+  const { data } = useFaqListQuery(search)
+
+  const mappingData = useMemo(
+    () =>
+      data
+        ? data.list.map((d) => ({ ...d, createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-' }))
+        : [],
+    [data],
+  )
+
+  // 목록 리스트
+  const [rows, setRows] = useState([])
+
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
     //   [name]: selectedOption.label,
     // }));
-  };
-  const [isRotated, setIsRotated] = useState(false);
+  }
+  const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
-    setIsRotated(prevIsRotated => !prevIsRotated);
-  };
+    setIsRotated((prevIsRotated) => !prevIsRotated)
+  }
 
   // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom);
-  const [toggleMsg, setToggleMsg] = useState('On');
+  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+  const [toggleMsg, setToggleMsg] = useState('On')
   const toggleBtnClick = () => {
-    setExfilterToggle(prev => !prev);
+    setExfilterToggle((prev) => !prev)
     if (exFilterToggle === true) {
-      setToggleMsg('Off');
+      setToggleMsg('Off')
     } else {
-      setToggleMsg('On');
+      setToggleMsg('On')
     }
-  };
+  }
 
-  const [isModal, setIsModal] = useAtom(blueModalAtom);
-
-  console.log('isModal =>', isModal);
+  const [isModal, setIsModal] = useAtom(blueModalAtom)
 
   const modalOpen = () => {
-    setIsModal(true);
-  };
+    setIsModal(true)
+  }
 
+  console.log('목록 데이터 :', data)
+
+  useEffect(() => {
+    if (mappingData) {
+      setRows(add_element_field(mappingData, FaqListFields))
+    }
+  }, [mappingData])
   return (
     <FilterContianer>
       <div>
         <FilterHeader>
           <div style={{ display: 'flex' }}>
             <h1>일반 관리</h1>
-            <SubTitle>
-              <Link to={`/operate/common`}>
-                <h6>클레임 관리</h6>
-              </Link>
-              <h5>FAQ 관리</h5>
-              <Link to={`/operate/notice`}>
-                <h6>공지사항</h6>
-              </Link>
-              <Link to={`/operate/datasheet`}>
-                <h6>자료실</h6>
-              </Link>
-            </SubTitle>
+            <CategoryTab options={normalTabOptions} highLightValue="faq" />
           </div>
-          <HeaderToggle
-            exFilterToggle={exFilterToggle}
-            toggleBtnClick={toggleBtnClick}
-            toggleMsg={toggleMsg}
-          />
+          <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
         </FilterHeader>
         {exFilterToggle && (
           <FilterWrap>
@@ -111,12 +104,7 @@ const FAQ = ({}) => {
                     <h6>검색</h6>
                     <MainSelect />
                     <Input />
-                    <GreyBtn
-                      style={{ width: '70px' }}
-                      height={35}
-                      margin={10}
-                      onClick={modalOpen}
-                    >
+                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen}>
                       찾기
                     </GreyBtn>
                   </PartWrap>
@@ -164,10 +152,10 @@ const FAQ = ({}) => {
           </div>
         </TCSubContainer>
 
-        <Test3 title={'규격 약호 찾기'} />
+        <Table getCol={FaqListFieldCols} getRow={rows} />
       </TableContianer>
     </FilterContianer>
-  );
-};
+  )
+}
 
-export default FAQ;
+export default FAQ
