@@ -27,8 +27,8 @@ export const StyledCheckSubSquDiv = styled.div`
   justify-content: center;
   width: 1rem;
   height: 1rem;
-  background-color: ${({ isChecked }) => (isChecked ? '#4c83d6' : '#abbfde')};
-
+  background-color: ${({ isChecked }) => (isChecked ? '#4c83d6' : 'inherit')};
+  border: ${({ isChecked }) => (isChecked ? 'none' : ' 1px solid #c8c8c8')};
   cursor: pointer;
 `
 
@@ -44,6 +44,7 @@ export const CheckImg2 = styled.img`
   width: 0.7rem;
   height: 0.7rem;
   margin-top: 3px;
+  display: ${({ isChecked }) => (isChecked ? 'block' : 'none')};
 `
 
 const LoginCheckImg = () => {

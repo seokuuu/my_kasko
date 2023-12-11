@@ -257,7 +257,7 @@ const Client = ({ setChoiceComponent, setModal }) => {
                             onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
                             isChecked={check1[index]}
                           >
-                            <CheckImg2 src="/svg/check.svg" />
+                            <CheckImg2 src="/svg/check.svg" isChecked={check1[index]} />
                           </StyledCheckSubSquDiv>
                           <p>{x}</p>
                         </ExCheckDiv>
@@ -280,7 +280,7 @@ const Client = ({ setChoiceComponent, setModal }) => {
                             onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
                             isChecked={check2[index]}
                           >
-                            <CheckImg2 src="/svg/check.svg" />
+                            <CheckImg2 src="/svg/check.svg" isChecked={check2[index]} />
                           </StyledCheckSubSquDiv>
                           <p>{x}</p>
                         </ExCheckDiv>

@@ -256,9 +256,11 @@ const ClientModal = ({ setModal }) => {
   const radioDummy = ['법인사업자', '개인사업자']
   const radioDummy2 = ['승인', '대기', '미승인']
   const radioDummy3 = ['경매 시작가 제한', '경매 제한']
+  const radioDummy4 = ['창고', '운송사', '현대제철', '카스코철강', '고객사']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
   const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy.length }, () => false))
   const [checkRadio3, setCheckRadio3] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio4, setCheckRadio4] = useState(Array.from({ length: radioDummy.length }, () => false))
   const [savedRadioValue, setSavedRadioValue] = useState('')
 
   useEffect(() => {
@@ -271,16 +273,7 @@ const ClientModal = ({ setModal }) => {
   }, [checkRadio])
 
   const checkDummy = ['유통', '제조']
-  const checkDummy2 = [
-    '재고관리',
-    '경매관리',
-    '상시판매',
-    '주문관리',
-    '판매제품 관리',
-    '출고관리',
-    '출고관리',
-    '운영관리',
-  ]
+  const checkDummy2 = ['재고관리', '경매관리', '상시판매', '주문관리', '판매제품 관리', '출고관리', '운영관리']
   const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
   const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
 
@@ -426,12 +419,12 @@ const ClientModal = ({ setModal }) => {
                         <RadioMainDiv key={index}>
                           <RadioCircleDiv
                             name="type"
-                            isChecked={checkRadio[index]}
+                            isChecked={checkRadio2[index]}
                             onClick={() => {
-                              setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
+                              setCheckRadio2(CheckBox(checkRadio2, checkRadio2.length, index))
                             }}
                           >
-                            <RadioInnerCircleDiv isChecked={checkRadio[index]} />
+                            <RadioInnerCircleDiv isChecked={checkRadio2[index]} />
                           </RadioCircleDiv>
                           <div style={{ display: 'flex', paddingLeft: '5px' }}>{text}</div>
                         </RadioMainDiv>
@@ -476,11 +469,11 @@ const ClientModal = ({ setModal }) => {
                     <div
                       style={{
                         display: 'flex',
-                        gap: '80px',
-                        width: '100%',
+                        gap: '20px',
+                        minWidth: '450px',
                       }}
                     >
-                      {radioDummy3.map((text, index) => (
+                      {radioDummy4.map((text, index) => (
                         <RadioMainDiv key={index}>
                           <RadioCircleDiv
                             name="type"
@@ -511,20 +504,20 @@ const ClientModal = ({ setModal }) => {
                   </FlexContent>
                 </FlexPart>
                 <FlexPart>
-                  <FlexTitle>권한 설정</FlexTitle>
-                  <FlexContent style={{ width: '30%', border: '1px solid' }}>
+                  <FlexTitle style={{ minWidth: '170px' }}>권한 설정</FlexTitle>
+                  <FlexContent2>
                     {checkDummy2.map((x, index) => (
-                      <UserCheckDiv style={{ width: '100%' }}>
+                      <UserCheckDiv style={{ width: '130px' }}>
                         <StyledCheckSubSquDiv
                           onClick={() => setCheck(CheckBox(check, check.length, index, true))}
                           isChecked={check[index]}
                         >
-                          <CheckImg2 src="/svg/check.svg" />
+                          <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
                         </StyledCheckSubSquDiv>
-                        <CheckTxt style={{ marginLeft: '5px' }}>{x}</CheckTxt>
+                        <CheckTxt2 style={{ marginLeft: '5px' }}>{x}</CheckTxt2>
                       </UserCheckDiv>
                     ))}
-                  </FlexContent>
+                  </FlexContent2>
                 </FlexPart>
 
                 <Bar />
@@ -737,6 +730,7 @@ const ClientModal = ({ setModal }) => {
                         display: 'flex',
                         gap: '120px',
                         width: '100%',
+                        fontSize: '16px',
                       }}
                     >
                       {checkDummy.map((x, index) => (
@@ -746,7 +740,7 @@ const ClientModal = ({ setModal }) => {
                             onClick={() => setCheck(CheckBox(check, check.length, index, true))}
                             isChecked={check[index]}
                           >
-                            <CheckImg2 src="/svg/check.svg" />
+                            <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
                           </StyledCheckSubSquDiv>
                           <p>{x}</p>
                         </StyledCheckMainDiv>
@@ -967,4 +961,15 @@ const EqualCheckWrap2 = styled.div`
   margin-bottom: 5px;
   position: relative;
   right: 120px;
+`
+
+const CheckTxt2 = styled.p`
+  min-width: 100px;
+  font-size: 16px;
+`
+
+const FlexContent2 = styled.div`
+  display: flex;
+  min-width: 600px;
+  flex-wrap: wrap;
 `

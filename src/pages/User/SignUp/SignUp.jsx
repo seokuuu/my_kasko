@@ -649,7 +649,7 @@ const SignUp = () => {
                           isChecked={check[index]}
                           name="businessChoice"
                         >
-                          <CheckImg2 src="/svg/check.svg" />
+                          <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
                         </StyledCheckSubSquDiv>
                         <p>{x}</p>
                       </StyledCheckMainDiv>

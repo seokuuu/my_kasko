@@ -650,7 +650,7 @@ const ProfileEdit = () => {
                           onClick={() => setCheck(CheckBox(check, check.length, index, true))}
                           isChecked={check[index]}
                         >
-                          <CheckImg2 src="/svg/check.svg" />
+                          <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
                         </StyledCheckSubSquDiv>
                         <p>{x}</p>
                       </StyledCheckMainDiv>
