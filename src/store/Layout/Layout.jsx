@@ -190,3 +190,24 @@ export const userpageUserPreferEditObject = atom('')
 
 // 목적지 관리 수정버튼 모달 switch
 export const userpageDestinationEdit = atom(false)
+
+// ========= 재고 수불 관리 ===============
+// 목적지
+export const invenDestination = atom(false)
+// 고객사
+export const invenCustomer = atom(false)
+// 고객사 데이터
+export const invenCustomerData = atom({
+  businessNumber: '',
+  code: '',
+  name: '',
+  uid: 0,
+})
+
+export const invenDestinationData = atom({
+  code: '',
+  name: '',
+  uid: 0,
+})
+
+// =======================================

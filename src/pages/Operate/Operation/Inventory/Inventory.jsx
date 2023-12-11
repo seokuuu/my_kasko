@@ -1,14 +1,23 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useRef, useState } from 'react'
 import { storageOptions } from '../../../../common/Option/SignUp'
-
+import InventoryFind from '../../../../modal/Multi/InventoryFind'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { BlackBtn, GreyBtn } from '../../../../common/Button/Button'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../../../common/Check/CheckImg'
 import { CheckBox } from '../../../../common/Check/Checkbox'
 import { MainSelect } from '../../../../common/Option/Main'
 import DateGrid from '../../../../components/DateGrid/DateGrid'
-import { selectedRowsAtom, toggleAtom } from '../../../../store/Layout/Layout'
+import {
+  popupObject,
+  selectedRowsAtom,
+  toggleAtom,
+  popupTypeAtom,
+  invenDestination,
+  invenCustomer,
+  invenCustomerData,
+  invenDestinationData,
+} from '../../../../store/Layout/Layout'
 // import Test3 from '../../../Test/Test3'
 import { useAtom } from 'jotai'
 
@@ -36,16 +45,15 @@ import { getInventoryLedger } from '../../../../api/operate/inventory'
 import Table from '../../../Table/Table'
 import { add_element_field } from '../../../../lib/tableHelpers'
 import { InventoryFieldsCols, InvertoryFields } from '../../../../constants/admin/Inventroy'
+import { getSPartList, getStorageList, getDestinationFind } from '../../../../api/search'
+import { getCustomerFind } from '../../../../service/admin/Auction'
 
 const Inventory = ({}) => {
   const checkStores = ['전체', '미입고', '입고 대기', '입고 확정', '입고 확정 취소']
   const checkSales = ['전체', '판매재', '판매제외제']
-
-  const checkShips = ['전체', '출고완료', '미출고']
-
+  const checkShips = ['전체', '확정 전송', '확정 전송 대기']
   const checkTransits = ['전체', '출고 완료', '미출고']
-
-  const checkShipments = ['전체', '출하 대기', '출하 완료', '출고 지시', '출고 완료']
+  const checkShipments = ['전체', '출하 대기', '출하 완료', '출고 지시', '출고 완료', '운송 완료']
 
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
@@ -54,6 +62,30 @@ const Inventory = ({}) => {
   const [check4, setCheck4] = useState(Array.from({ length: checkTransits.length }, () => false))
   const [check5, setCheck5] = useState(Array.from({ length: checkShipments.length }, () => false))
 
+  // Date
+  const [checkSalesStart, setCheckSalesStart] = useState('') // 경매일자 시작
+  const [checkSalesEnd, setCheckSalesEnd] = useState('') // 경매일자 끝
+
+  const [Start2, setStart2] = useState('') // 주문일자 시작
+  const [End2, setEnd2] = useState('') // 주문일자 끝
+
+  const [Start3, setStart3] = useState('') // 주문일자 시작
+  const [End3, setEnd3] = useState('') // 주문일자 끝
+
+  const [Start4, setStart4] = useState('') // 주문일자 시작
+  const [End4, setEnd4] = useState('') // 주문일자 끝
+
+  const [Start5, setStart5] = useState('') // 주문일자 시작
+  const [End5, setEnd5] = useState('') // 주문일자 끝
+
+  // 목적지 팝업 상태,객체
+  const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
+  const [destinationData, setDestinationData] = useAtom(invenDestinationData)
+  // 고객사 팝업 상태,객체
+  const [customerPopUp, setCustomerPopUp] = useAtom(invenCustomer)
+  const [customerData, setCustomerData] = useAtom(invenCustomerData)
+
+  const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
   //checkShips
   const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
 
@@ -62,6 +94,10 @@ const Inventory = ({}) => {
 
   const [checkData4, setCheckData4] = useState(Array.from({ length: checkTransits.length }, () => ''))
   const [checkData5, setCheckData5] = useState(Array.from({ length: checkShipments.length }, () => ''))
+
+  // SELECT 데이터
+  const [selected, setSelected] = useState({ storage: '', sPart: '' })
+
   // 테이블 데이터
   const [getRow, setGetRow] = useState('')
   const tableField = useRef(InventoryFieldsCols)
@@ -69,19 +105,25 @@ const Inventory = ({}) => {
   const checkedArray = useAtom(selectedRowsAtom)[0]
 
   // 페이지 네이션 변수 및 선언
-
   const [currentPage, setCurrentPage] = useState(1)
 
   const Param = {
-    pageNum: 1,
-    pageSize: 20,
+    pageNum: 10,
+    pageSize: 50,
   }
-
+  // 인벤토리 테이블 리스트 데이터 불러오기
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getInventoryLedge', getInventoryLedger)
+  // 창고
+  const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
+  // 제품군
+  const { data: spartList } = useReactQuery('', 'getSPartList', getSPartList)
+  const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
+  const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
+
   const resData = data?.data?.data?.list
   const pagination = data?.data?.data?.pagination
+  const storage = storageList
 
-  console.log('pagination', pagination)
   useEffect(() => {
     let getData = resData
     //타입, 리액트쿼리, 데이터 확인 후 실행
@@ -171,6 +213,15 @@ const Inventory = ({}) => {
     // });
   }, [check5])
 
+  // useEffect(() => {
+  //   setNowPopupType(2)
+  //   setDestinationPopUp({
+  //     num: '2-1',
+  //     title: '저장하시겠습니까?',
+  //     next: '1-12',
+  //   })
+  // }, [])
+
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -196,6 +247,10 @@ const Inventory = ({}) => {
     }
   }
 
+  // console.log('선택값', selected.sPart, selected.storage)
+  // console.log('선택값', selected.sPart)
+  // console.log('커스터머데이터', customerData)
+  // console.log('데스티네이션', destinationData)
   return (
     <FilterContianer>
       <FilterHeader>
@@ -211,20 +266,40 @@ const Inventory = ({}) => {
                 <PartWrap>
                   <h6>창고 구분</h6>
                   <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
+                    <MainSelect
+                      options={storageList}
+                      defaultValue={''}
+                      name="storage"
+                      onChange={(e) => {
+                        setSelected((p) => ({ ...p, storage: e.label }))
+                      }}
+                    />
                   </PWRight>
                 </PartWrap>
                 <PartWrap>
                   <h6>고객사 명</h6>
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                  <Input value={customerData.name} readOnly name="customerName" />
+                  <Input value={customerData.code} readOnly name="customerCode" />
+                  <GreyBtn
+                    style={{ width: '70px' }}
+                    height={35}
+                    margin={10}
+                    fontSize={17}
+                    onClick={() => setCustomerPopUp(true)}
+                  >
                     찾기
                   </GreyBtn>
                 </PartWrap>
                 <PartWrap>
                   <h6>목적지</h6>
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                  <Input value={`${destinationData.name}/${destinationData.code}`} />
+                  <GreyBtn
+                    style={{ width: '70px' }}
+                    height={35}
+                    margin={10}
+                    fontSize={17}
+                    onClick={() => setDestinationPopUp(true)}
+                  >
                     찾기
                   </GreyBtn>
                 </PartWrap>
@@ -233,13 +308,23 @@ const Inventory = ({}) => {
                 <PartWrap>
                   <h6>구분</h6>
                   <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
+                    <MainSelect
+                      options={spartList}
+                      defaultValue={''}
+                      name="sPart"
+                      onChange={(e) =>
+                        setSelected((p) => ({
+                          ...p,
+                          sPart: e.label,
+                        }))
+                      }
+                    />
                   </PWRight>
                 </PartWrap>
                 <PartWrap>
                   <h6>입고 상태</h6>
                   <ExCheckWrap>
-                    {checkShips.map((x, index) => (
+                    {checkStores.map((x, index) => (
                       <ExCheckDiv>
                         <StyledCheckSubSquDiv
                           onClick={() => setCheck3(CheckBox(check3, check3.length, index, true))}
@@ -290,22 +375,6 @@ const Inventory = ({}) => {
 
               <RowWrap>
                 <PartWrap>
-                  <h6>운송 진행 </h6>
-                  <ExCheckWrap>
-                    {checkTransits.map((x, index) => (
-                      <ExCheckDiv style={{ marginRight: '5px' }}>
-                        <StyledCheckSubSquDiv
-                          onClick={() => setCheck4(CheckBox(check4, check4.length, index, true))}
-                          isChecked={check4[index]}
-                        >
-                          <CheckImg2 src="/svg/check.svg" />
-                        </StyledCheckSubSquDiv>
-                        <p>{x}</p>
-                      </ExCheckDiv>
-                    ))}
-                  </ExCheckWrap>
-                </PartWrap>
-                <PartWrap>
                   <h6>출하 상태</h6>
                   <ExCheckWrap>
                     {checkShipments.map((x, index) => (
@@ -325,47 +394,58 @@ const Inventory = ({}) => {
 
               <RowWrap>
                 <PartWrap>
-                  <h6 style={{ width: '120px' }}>출고 일자</h6>
+                  <h6 style={{ width: '120px' }}>경매 일자</h6>
                   <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <DateGrid
+                      bgColor={'white'}
+                      fontSize={17}
+                      startDate={checkSalesStart}
+                      setStartDate={setCheckSalesStart}
+                    />
                     <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
-                </PartWrap>
-                <PartWrap>
-                  <h6 style={{ width: '120px' }}>확정 전송 일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <DateGrid
+                      bgColor={'white'}
+                      fontSize={17}
+                      startDate={checkSalesEnd}
+                      setStartDate={setCheckSalesEnd}
+                    />
                   </GridWrap>
                 </PartWrap>
               </RowWrap>
               <RowWrap>
                 <PartWrap>
-                  <h6 style={{ width: '120px' }}>출하 지시 일자</h6>
+                  <h6 style={{ width: '120px' }}>주문 일자</h6>
                   <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <DateGrid bgColor={'white'} fontSize={17} setStartDate={setStart2} startDate={Start2} />
                     <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <DateGrid bgColor={'white'} fontSize={17} setStartDate={setEnd2} startDate={End2} />
                   </GridWrap>
                 </PartWrap>
                 <PartWrap>
                   <h6 style={{ width: '120px' }}>출고 요청 일자</h6>
                   <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <DateGrid bgColor={'white'} fontSize={17} setStartDate={setStart3} startDate={Start3} />
                     <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <DateGrid bgColor={'white'} fontSize={17} setStartDate={setEnd3} startDate={End3} />
                   </GridWrap>
                 </PartWrap>
               </RowWrap>
               <RowWrap>
                 <PartWrap>
-                  <h6 style={{ width: '120px' }}>출하 상태</h6>
+                  <h6 style={{ width: '120px' }}>출고 지시 일자</h6>
                   <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <DateGrid bgColor={'white'} fontSize={17} setStartDate={setStart4} startDate={Start4} />
                     <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
+                    <DateGrid bgColor={'white'} fontSize={17} setStartDate={setEnd4} startDate={End4} />
+                  </GridWrap>
+                </PartWrap>
+                <PartWrap>
+                  <h6 style={{ width: '120px' }}>출고 일자</h6>
+                  <GridWrap>
+                    {' '}
+                    <DateGrid bgColor={'white'} fontSize={17} setStartDate={setStart5} startDate={Start5} />
+                    <Tilde>~</Tilde>
+                    <DateGrid bgColor={'white'} fontSize={17} setStartDate={setEnd5} startDate={End5} />
                   </GridWrap>
                 </PartWrap>
               </RowWrap>
@@ -400,6 +480,11 @@ const Inventory = ({}) => {
       <TableContianer>
         <Table getCol={getCol} getRow={getRow} />
       </TableContianer>
+
+      {customerPopUp && <InventoryFind title={'고객사 찾기'} setSwitch={setCustomerPopUp} data={inventoryCustomer} />}
+      {destinationPopUp && (
+        <InventoryFind title={'목적지 찾기'} setSwitch={setDestinationPopUp} data={inventoryDestination} />
+      )}
     </FilterContianer>
   )
 }

@@ -114,6 +114,7 @@ const Destination = ({}) => {
 
   // GET
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getAdminDestination', getAdminDestination)
+
   const resData = data?.data?.data?.list
 
   // Get 목적지 코드 Dropdown
