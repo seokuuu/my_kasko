@@ -33,3 +33,7 @@ export const RadioContainer = styled.div`
   margin-left: 5px;
   margin-top: 10px;
 `
+export const ErrorMsg = styled.p`
+  font-size: 13px;
+  color: #b02525;
+`
