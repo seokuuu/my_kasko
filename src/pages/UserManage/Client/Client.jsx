@@ -41,8 +41,13 @@ import { add_element_field } from '../../../lib/tableHelpers'
 // import { log } from '../../../lib'
 import { isString } from 'lodash'
 import TableTest from '../../Table/TableTest'
+import { UsermanageEditModal } from '../../../store/Layout/Layout'
+import ClientModal from './ClientModal'
+import { btnCellUidAtom } from '../../../store/Layout/Layout'
 
 const Client = ({ setChoiceComponent, setModal }) => {
+  const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
+  const [editModal, setEditModal] = useAtom(UsermanageEditModal)
   const [restrict, setRestrict] = useState()
   const [selectedValue, setSelectedValue] = useState('') // 경매 제한 상태
   const radioDummy = ['전체', '대표']
@@ -361,6 +366,7 @@ const Client = ({ setChoiceComponent, setModal }) => {
             title={'사용자를 삭제하면 해당 사용자의 \n 데이터가 삭제 됩니다. 삭제 하시겠습니까?'}
           />
         )} */}
+      {editModal && <ClientModal setEditModal={setEditModal} uidAtom={uidAtom} />}
     </>
   )
 }

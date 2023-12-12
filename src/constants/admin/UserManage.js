@@ -29,6 +29,15 @@ export const UserManageCustomerManageFieldsCols = [
     checkboxSelection: checkboxSelection,
     headerCheckboxSelection: headerCheckboxSelection,
   },
+  {
+    field: '수정',
+    maxWidth: 90,
+    cellRenderer: BtnCellRenderer,
+    cellRendererParams: {
+      uidFieldName: 'uid',
+      editType: 'usermanage',
+    },
+  },
 
   { field: '순번', minWidth: 100 }, //숫자
   { field: '고객 구분', minWidth: 100 }, //숫자

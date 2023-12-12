@@ -48,6 +48,8 @@ export const clientModalAtom = atom(false)
 //사용자 관리 - 고객사 관리파트 회원제한모달
 export const AuctionRestrictionModal = atom(false)
 
+export const UsermanageEditModal = atom(false)
+
 /* ==============================
      주문 관리 (Order)
 ============================== */
