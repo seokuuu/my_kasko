@@ -93,7 +93,6 @@ const InventoryFind = ({ title, setSwitch, data }) => {
     setSelectedUid(uid) // 클릭한 셀의 uid를 저장
   }
 
-  console.log(invenCustomerData)
   // console.log('목적지',sele)
   return (
     <>

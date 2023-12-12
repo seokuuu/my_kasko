@@ -8,6 +8,8 @@ import { CheckImg2, StyledCheckSubSquDiv } from '../../../../common/Check/CheckI
 import { CheckBox } from '../../../../common/Check/Checkbox'
 import { MainSelect } from '../../../../common/Option/Main'
 import DateGrid from '../../../../components/DateGrid/DateGrid'
+import { QueryClient } from '@tanstack/react-query'
+import moment from 'moment'
 import {
   popupObject,
   selectedRowsAtom,
@@ -20,7 +22,8 @@ import {
 } from '../../../../store/Layout/Layout'
 // import Test3 from '../../../Test/Test3'
 import { useAtom } from 'jotai'
-
+import PageDropdown from '../../../../components/TableInner/PageDropdown'
+import Excel from '../../../../components/TableInner/Excel'
 import {
   DoubleWrap,
   ExCheckDiv,
@@ -38,6 +41,7 @@ import {
   ResetImg,
   RowWrap,
   TableContianer,
+  TCSubContainer,
   Tilde,
 } from '../../../../modal/External/ExternalFilter'
 import useReactQuery from '../../../../hooks/useReactQuery'
@@ -47,9 +51,10 @@ import { add_element_field } from '../../../../lib/tableHelpers'
 import { InventoryFieldsCols, InvertoryFields } from '../../../../constants/admin/Inventroy'
 import { getSPartList, getStorageList, getDestinationFind } from '../../../../api/search'
 import { getCustomerFind } from '../../../../service/admin/Auction'
-
+import { SwitchBtn } from '../../../../common/Button/Button'
+import Hidden from '../../../../components/TableInner/Hidden'
 const Inventory = ({}) => {
-  const checkStores = ['전체', '미입고', '입고 대기', '입고 확정', '입고 확정 취소']
+  const checkStores = ['전체', '미 입고', '입고 대기', '입고 확정', '입고 확정 취소']
   const checkSales = ['전체', '판매재', '판매제외제']
   const checkShips = ['전체', '확정 전송', '확정 전송 대기']
   const checkTransits = ['전체', '출고 완료', '미출고']
@@ -88,12 +93,12 @@ const Inventory = ({}) => {
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
   //checkShips
   const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
-
   const [checkData2, setCheckData2] = useState(Array.from({ length: checkShips.length }, () => ''))
   const [checkData3, setCheckData3] = useState(Array.from({ length: checkStores.length }, () => ''))
-
   const [checkData4, setCheckData4] = useState(Array.from({ length: checkTransits.length }, () => ''))
   const [checkData5, setCheckData5] = useState(Array.from({ length: checkShipments.length }, () => ''))
+
+  const queryClient = new QueryClient()
 
   // SELECT 데이터
   const [selected, setSelected] = useState({ storage: '', sPart: '' })
@@ -108,8 +113,28 @@ const Inventory = ({}) => {
   const [currentPage, setCurrentPage] = useState(1)
 
   const Param = {
-    pageNum: 10,
-    pageSize: 50,
+    pageNum: 1,
+    pageSize: 200,
+    spart: '',
+    storage: '',
+    destinationCode: '',
+    destinationName: '',
+    customerCode: '',
+    customerName: '',
+    saleCategoryList: [], //판매구분
+    orderStatusList: [], //주문상태구분
+    shipmentStatusList: [], //출하상태구분
+    // auctionStartDate: '',
+    // auctionEndDate: '',
+    // orderStartDate: '',
+    // orderEndDate: '',
+    // shippingStartDate: '',
+    // shippingEndDate: '',
+    // shipmentRequestStartDate: '',
+    // shipmentRequestEndDate: '',
+    // shipmentStartDate: '',
+    // shipmentEndDate: '',
+    //판매구분
   }
   // 인벤토리 테이블 리스트 데이터 불러오기
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getInventoryLedge', getInventoryLedger)
@@ -119,19 +144,30 @@ const Inventory = ({}) => {
   const { data: spartList } = useReactQuery('', 'getSPartList', getSPartList)
   const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
   const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
-
+  const [filteredList, setFilteredList] = useState([])
   const resData = data?.data?.data?.list
   const pagination = data?.data?.data?.pagination
-  const storage = storageList
 
   useEffect(() => {
-    let getData = resData
-    //타입, 리액트쿼리, 데이터 확인 후 실행
-    if (!isSuccess && !resData) return
-    if (Array.isArray(getData)) {
-      setGetRow(add_element_field(getData, InvertoryFields))
+    if (isSuccess) return setFilteredList(resData)
+  }, [isSuccess])
+  // console.log(resData)
+
+  useEffect(() => {
+    if (filteredList === undefined) {
+      resData && setFilteredList(resData)
     }
-  }, [isSuccess, resData])
+    console.log('여기에 데이터', filteredList)
+  }, [filteredList])
+
+  useEffect(() => {
+    console.log('들어와 데이터:', filteredList)
+    if (!isSuccess && !filteredList) return null
+    if (Array.isArray(filteredList)) {
+      setGetRow(add_element_field(filteredList, InvertoryFields))
+    }
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+  }, [isSuccess, filteredList])
 
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
@@ -251,6 +287,41 @@ const Inventory = ({}) => {
   // console.log('선택값', selected.sPart)
   // console.log('커스터머데이터', customerData)
   // console.log('데스티네이션', destinationData)
+  // 필터링 함수
+  const handleFilter = () => {
+    const Param = {
+      pageNum: 1,
+      pageSize: 200,
+      spart: selected.sPart,
+      storage: selected.storage,
+      destinationCode: destinationData.code,
+      destinationName: destinationData.name,
+      customerCode: customerData.code,
+      customerName: customerData.name,
+      saleCategoryList: checkData1, //판매구분
+      receiptStatusList: checkData3, //입고상태목록
+      orderStatusList: checkData2, //주문상태구분
+      shipmentStatusList: checkData5, //출하상태구분
+      auctionStartDate: checkSalesStart ? moment(checkSalesStart).format('YYYY-MM-DD HH:mm:ss') : '',
+      auctionEndDate: checkSalesEnd && moment(checkSalesEnd).format('YYYY-MM-DD HH:mm:ss'),
+      orderStartDate: Start2 && moment(Start2).format('YYYY-MM-DD HH:mm:ss'),
+      orderEndDate: End2 && moment(End2).format('YYYY-MM-DD HH:mm:ss'),
+      shippingStartDate: Start3 ? moment(Start3).format('YYYY-MM-DD HH:mm:ss') : '',
+      shippingEndDate: End3 ? moment(End3).format('YYYY-MM-DD HH:mm:ss') : '',
+      shipmentRequestStartDate: Start4 ? moment(Start4).format('YYYY-MM-DD HH:mm:ss') : '',
+      shipmentRequestEndDate: End5 ? moment(End4).format('YYYY-MM-DD HH:mm:ss') : '',
+      shipmentStartDate: Start5 ? moment(Start5).format('YYYY-MM-DD HH:mm:ss') : '',
+      shipmentEndDate: End5 ? moment(End5).format('YYYY-MM-DD HH:mm:ss') : '',
+    }
+
+    let data = Object.fromEntries(Object.entries(Param).filter(([_, v]) => v !== ''))
+
+    queryClient.prefetchQuery(['getInventory', data], async () => {
+      const res = await getInventoryLedger(data)
+      setFilteredList(res.data?.data.list)
+      return res.data?.data.list
+    })
+  }
   return (
     <FilterContianer>
       <FilterHeader>
@@ -470,7 +541,7 @@ const Inventory = ({}) => {
               />
             </div>
             <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40}>
+              <BlackBtn width={100} height={40} onClick={handleFilter}>
                 검색
               </BlackBtn>
             </div>
@@ -478,6 +549,24 @@ const Inventory = ({}) => {
         </>
       )}
       <TableContianer>
+        <TCSubContainer bor>
+          <div>
+            조회 목록 (선택 <span>2</span> / 50개 )
+            <Hidden />
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <PageDropdown />
+            <Excel />
+          </div>
+        </TCSubContainer>
+        <TCSubContainer>
+          <div>
+            선택 중량<span> 2 </span>kg / 총 중량 kg
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <SwitchBtn>입고 확정</SwitchBtn>
+          </div>
+        </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} />
       </TableContianer>
 
