@@ -3,6 +3,7 @@
 ============================== */
 
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 import { client } from '..'
 import { queryClient } from '../query'
 
@@ -10,7 +11,7 @@ import { queryClient } from '../query'
 const urls = 'faq'
 
 // 쿼리 키
-const FAQ_KEYS = {
+export const FAQ_KEYS = {
   getList: ['operate', 'faq', 'list'],
   getDetails: ['operate', 'faq', 'details'],
   update: ['operdate', 'faq', 'update'],
@@ -37,25 +38,35 @@ export function useFaqDetailsQuery(id) {
       const response = await client.get(`${urls}/${id}`)
       return response.data.data
     },
+    enabled: !!id,
   })
 }
 
 // 등록
 export function useFaqRegisterMutation() {
+  const navigate = useNavigate()
   return useMutation({
     mutationKey: FAQ_KEYS.create,
     mutationFn: async function (params) {
       return client.post(urls, params)
+    },
+    onSuccess() {
+      navigate('/operate/faq')
     },
   })
 }
 
 // 수정
 export function useFaqUpdateMutation() {
+  const navigate = useNavigate()
+
   return useMutation({
     mutationKey: FAQ_KEYS.update,
     mutationFn: async function (params) {
       return client.patch(urls, params)
+    },
+    onSuccess() {
+      navigate('/operate/faq')
     },
   })
 }
@@ -71,6 +82,9 @@ export function useFaqRemoveMutation() {
       queryClient.invalidateQueries({
         queryKey: FAQ_KEYS.getList,
       })
+      // queryClient.invalidateQueries({
+      //   queryKey: FAQ_KEYS.getList,
+      // })
     },
     onError() {
       alert('삭제에 실패하였습니다.')

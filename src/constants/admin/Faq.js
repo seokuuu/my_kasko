@@ -18,4 +18,6 @@ export const FaqListFields = {
   카테고리: 'category',
   제목: 'title',
   작성일자: 'createDate',
+  순번: 'id',
+  고유값: 'uid',
 }

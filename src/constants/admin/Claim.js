@@ -23,9 +23,6 @@ export const ClaimListFieldCols = [
     field: '입고일자',
   },
   {
-    field: '매입구분',
-  },
-  {
     field: '매입처',
   },
   {
@@ -82,7 +79,6 @@ export const ClaimListFieldCols = [
 export const ClaimListFields = {
   경매일자: 'auctionStartDate',
   입고일자: 'receiptDate',
-  매입구분: '', // 매입구분에 대한 키가 주어진 obj에서 누락되어 빈 문자열로 대체
   매입처: 'supplier',
   제조사: 'maker',
   창고: 'storageName',

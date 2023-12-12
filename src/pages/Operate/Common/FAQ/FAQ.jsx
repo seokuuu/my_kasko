@@ -1,158 +1,84 @@
 import { useAtom } from 'jotai'
 import moment from 'moment'
 import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useFaqListQuery } from '../../../../api/operate/faq'
-import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn } from '../../../../common/Button/Button'
-import { MainSelect } from '../../../../common/Option/Main'
-import HeaderToggle from '../../../../components/Toggle/HeaderToggle'
 import { FaqListFieldCols, FaqListFields } from '../../../../constants/admin/Faq'
 import { add_element_field } from '../../../../lib/tableHelpers'
-import {
-  FilterContianer,
-  FilterFooter,
-  FilterHeader,
-  FilterLeft,
-  FilterSubcontianer,
-  FilterWrap,
-  Input,
-  PartWrap,
-  ResetImg,
-  RowWrap,
-  TCSubContainer,
-  TableContianer,
-} from '../../../../modal/External/ExternalFilter'
-import { blueModalAtom, toggleAtom } from '../../../../store/Layout/Layout'
+import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
+import { doubleClickedRowAtom, selectedRowsAtom } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
-import CategoryTab from '../../UI/CategoryTab'
-import { normalTabOptions } from '../../constants'
+import { searchCategoryOptions } from '../../constants'
+import Header from './components/faq/Header'
+import TableHeader from './components/faq/TableHeader'
 
+/**
+ * @description
+ * FAQ 목록 컴포넌트
+ */
 const FAQ = ({}) => {
+  const navigate = useNavigate()
+
   // 서버 옵션(요청 변수)
   const [search, setSearch] = useState({
     pageNum: 1,
-    pageSize: 5,
+    pageSize: 10,
+    category: searchCategoryOptions[0],
+    keyword: '',
   })
-
+  // 셀 클릭시 테이블 상세 데이터 조회
+  const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
+  // 테이블에서 선택된 값
+  const [selected] = useAtom(selectedRowsAtom)
+  // 목록 리스트
+  const [rows, setRows] = useState([])
   // 목록 API
-  const { data } = useFaqListQuery(search)
+  const { data, refetch } = useFaqListQuery({ ...search, category: search.category.label })
 
+  /**
+   * @constant
+   * @description
+   * 테이블 목록 데이터입니다.
+   * 날짜 포멧과 순번 데이터 생성을 위해 기존 데이터를 원하는 방식으로 맵핑합니다.
+   */
   const mappingData = useMemo(
     () =>
       data
-        ? data.list.map((d) => ({ ...d, createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-' }))
+        ? data.list.map((d, index) => ({
+            ...d,
+            createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
+            id: data.list.length - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
+            uid: d.uid,
+          }))
         : [],
     [data],
   )
 
-  // 목록 리스트
-  const [rows, setRows] = useState([])
-
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
-  const [isRotated, setIsRotated] = useState(false)
-
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated((prevIsRotated) => !prevIsRotated)
-  }
-
-  // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-  const [toggleMsg, setToggleMsg] = useState('On')
-  const toggleBtnClick = () => {
-    setExfilterToggle((prev) => !prev)
-    if (exFilterToggle === true) {
-      setToggleMsg('Off')
-    } else {
-      setToggleMsg('On')
-    }
-  }
-
-  const [isModal, setIsModal] = useAtom(blueModalAtom)
-
-  const modalOpen = () => {
-    setIsModal(true)
-  }
-
-  console.log('목록 데이터 :', data)
-
+  // 테이블 데이터 리스트 값 설정
   useEffect(() => {
     if (mappingData) {
       setRows(add_element_field(mappingData, FaqListFields))
     }
   }, [mappingData])
+
+  // 상세 페이지 이동
+  useEffect(() => {
+    // 상세 페이지 이동시 상세 데이터 값 초기화
+    if (detailRow && detailRow['고유값']) {
+      navigate(`/operate/faq/${detailRow['고유값']}`)
+      setDetailsRow([])
+    }
+  }, [detailRow])
   return (
     <FilterContianer>
-      <div>
-        <FilterHeader>
-          <div style={{ display: 'flex' }}>
-            <h1>일반 관리</h1>
-            <CategoryTab options={normalTabOptions} highLightValue="faq" />
-          </div>
-          <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
-        </FilterHeader>
-        {exFilterToggle && (
-          <FilterWrap>
-            <FilterSubcontianer>
-              <FilterLeft>
-                <RowWrap>
-                  <PartWrap>
-                    <h6>검색</h6>
-                    <MainSelect />
-                    <Input />
-                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen}>
-                      찾기
-                    </GreyBtn>
-                  </PartWrap>
-                  <PartWrap />
-                  <PartWrap />
-                  <PartWrap />
-                  <PartWrap />
-                  <PartWrap />
-                </RowWrap>
-              </FilterLeft>
-            </FilterSubcontianer>
-            <FilterFooter>
-              <div style={{ display: 'flex' }}>
-                <p>초기화</p>
-                <ResetImg
-                  src="/img/reset.png"
-                  style={{ marginLeft: '10px', marginRight: '20px' }}
-                  onClick={handleImageClick}
-                  className={isRotated ? 'rotate' : ''}
-                />
-              </div>
-              <div style={{ width: '180px' }}>
-                <BlackBtn width={100} height={40}>
-                  검색
-                </BlackBtn>
-              </div>
-            </FilterFooter>
-          </FilterWrap>
-        )}
-      </div>
+      {/* 헤더(카테고리탭 & 검색) */}
+      <Header search={search} setSearch={setSearch} refetch={refetch} />
+      {/* 테이블 */}
       <TableContianer>
-        <TCSubContainer bor>
-          <div>
-            FAQ 목록 (선택 <span>2</span> / 50개 )
-          </div>
-          <div></div>
-        </TCSubContainer>
-        <TCSubContainer>
-          <div>
-            선택 <span> 2 </span>(개)
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>FAQ 삭제</WhiteRedBtn>
-            <SkyBtn>FAQ 등록</SkyBtn>
-          </div>
-        </TCSubContainer>
-
-        <Table getCol={FaqListFieldCols} getRow={rows} />
+        {/* 테이블 헤더 (목록 갯수 & 선택 갯수 * 삭제,등록 버튼) */}
+        <TableHeader totalLength={data ? data.list.length : 0} selected={selected} refetch={refetch} />
+        {/* 테이블 목록 */}
+        <Table getCol={FaqListFieldCols} getRow={rows} setChoiceComponent={() => {}} />
       </TableContianer>
     </FilterContianer>
   )
