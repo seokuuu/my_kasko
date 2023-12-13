@@ -21,7 +21,7 @@ import {
   invenDestinationData,
 } from '../../../../store/Layout/Layout'
 // import Test3 from '../../../Test/Test3'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import PageDropdown from '../../../../components/TableInner/PageDropdown'
 import Excel from '../../../../components/TableInner/Excel'
 import {
@@ -53,6 +53,9 @@ import { getSPartList, getStorageList, getDestinationFind } from '../../../../ap
 import { getCustomerFind } from '../../../../service/admin/Auction'
 import { SwitchBtn } from '../../../../common/Button/Button'
 import Hidden from '../../../../components/TableInner/Hidden'
+import { Filtering } from '../../../../utils/filtering'
+import { KilogramSum } from '../../../../utils/KilogramSum'
+
 const Inventory = ({}) => {
   const checkStores = ['전체', '미 입고', '입고 대기', '입고 확정', '입고 확정 취소']
   const checkSales = ['전체', '판매재', '판매제외제']
@@ -83,6 +86,9 @@ const Inventory = ({}) => {
   const [Start5, setStart5] = useState('') // 주문일자 시작
   const [End5, setEnd5] = useState('') // 주문일자 끝
 
+  // 제품 번호
+  const [productNumber, setProductNumber] = useState('')
+
   // 목적지 팝업 상태,객체
   const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
   const [destinationData, setDestinationData] = useAtom(invenDestinationData)
@@ -102,7 +108,10 @@ const Inventory = ({}) => {
 
   // SELECT 데이터
   const [selected, setSelected] = useState({ storage: '', sPart: '' })
-
+  const [size, setSize] = useState('')
+  // checkSelect
+  const checkBoxSelect = useAtomValue(selectedRowsAtom)
+  console.log(checkBoxSelect)
   // 테이블 데이터
   const [getRow, setGetRow] = useState('')
   const tableField = useRef(InventoryFieldsCols)
@@ -113,8 +122,8 @@ const Inventory = ({}) => {
   const [currentPage, setCurrentPage] = useState(1)
 
   const Param = {
-    pageNum: 1,
-    pageSize: 200,
+    pageNum: 1, // 현재페이지
+    pageSize: 200000, // 총 데이터 갯수
     spart: '',
     storage: '',
     destinationCode: '',
@@ -124,17 +133,6 @@ const Inventory = ({}) => {
     saleCategoryList: [], //판매구분
     orderStatusList: [], //주문상태구분
     shipmentStatusList: [], //출하상태구분
-    // auctionStartDate: '',
-    // auctionEndDate: '',
-    // orderStartDate: '',
-    // orderEndDate: '',
-    // shippingStartDate: '',
-    // shippingEndDate: '',
-    // shipmentRequestStartDate: '',
-    // shipmentRequestEndDate: '',
-    // shipmentStartDate: '',
-    // shipmentEndDate: '',
-    //판매구분
   }
   // 인벤토리 테이블 리스트 데이터 불러오기
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getInventoryLedge', getInventoryLedger)
@@ -148,6 +146,7 @@ const Inventory = ({}) => {
   const resData = data?.data?.data?.list
   const pagination = data?.data?.data?.pagination
 
+  console.log(pagination)
   useEffect(() => {
     if (isSuccess) return setFilteredList(resData)
   }, [isSuccess])
@@ -269,6 +268,25 @@ const Inventory = ({}) => {
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
+    // window.location.reload()
+    setCheck1([])
+    setCheck2([])
+    setCheck3([])
+    setCheck4([])
+    setCheck5([])
+    setCheckSalesStart('')
+    setCheckSalesEnd('')
+    setStart2('')
+    setStart3('')
+    setStart4('')
+    setStart5('')
+    setEnd2('')
+    setEnd3('')
+    setEnd4('')
+    setEnd5('')
+    setSelected((p) => ({ storage: null, sPart: null }))
+    setDestinationData({ name: '', code: '' })
+    setCustomerData({ name: '', code: '' })
   }
 
   // 토글 쓰기
@@ -283,6 +301,11 @@ const Inventory = ({}) => {
     }
   }
 
+  const handleChangeProductNumber = (e) => {
+    console.log('값 :', e.target.value)
+    e.preventDefault()
+    setProductNumber(e.target.value)
+  }
   // console.log('선택값', selected.sPart, selected.storage)
   // console.log('선택값', selected.sPart)
   // console.log('커스터머데이터', customerData)
@@ -291,7 +314,7 @@ const Inventory = ({}) => {
   const handleFilter = () => {
     const Param = {
       pageNum: 1,
-      pageSize: 200,
+      pageSize: 1000,
       spart: selected.sPart,
       storage: selected.storage,
       destinationCode: destinationData.code,
@@ -312,16 +335,16 @@ const Inventory = ({}) => {
       shipmentRequestEndDate: End5 ? moment(End4).format('YYYY-MM-DD HH:mm:ss') : '',
       shipmentStartDate: Start5 ? moment(Start5).format('YYYY-MM-DD HH:mm:ss') : '',
       shipmentEndDate: End5 ? moment(End5).format('YYYY-MM-DD HH:mm:ss') : '',
+      productNumberList: productNumber,
     }
-
-    let data = Object.fromEntries(Object.entries(Param).filter(([_, v]) => v !== ''))
-
+    let data = Filtering(Param)
     queryClient.prefetchQuery(['getInventory', data], async () => {
       const res = await getInventoryLedger(data)
       setFilteredList(res.data?.data.list)
       return res.data?.data.list
     })
   }
+  console.log(size)
   return (
     <FilterContianer>
       <FilterHeader>
@@ -363,7 +386,7 @@ const Inventory = ({}) => {
                 </PartWrap>
                 <PartWrap>
                   <h6>목적지</h6>
-                  <Input value={`${destinationData.name}/${destinationData.code}`} />
+                  <Input value={destinationData.name ? `${destinationData.name}/${destinationData.code}` : ''} />
                   <GreyBtn
                     style={{ width: '70px' }}
                     height={35}
@@ -525,6 +548,8 @@ const Inventory = ({}) => {
               <DoubleWrap>
                 <h6>제품 번호 </h6>
                 <textarea
+                  value={productNumber}
+                  onChange={handleChangeProductNumber}
                   placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
                 />
               </DoubleWrap>
@@ -551,23 +576,29 @@ const Inventory = ({}) => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
+            조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
+            {pagination?.listCount}개 )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
-            <Excel />
+            <PageDropdown
+              handleDropdown={(e) => {
+                setSize(e.target.value)
+                // console.log(size)
+              }}
+            />
+            <Excel getRow={getRow} />
           </div>
         </TCSubContainer>
         <TCSubContainer>
           <div>
-            선택 중량<span> 2 </span>kg / 총 중량 kg
+            선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총 중량 {pagination?.totalWeight}kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <SwitchBtn>입고 확정</SwitchBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
+        <Table getCol={getCol} getRow={getRow} setChoiceComponent={() => {}} size={Number(size)} />
       </TableContianer>
 
       {customerPopUp && <InventoryFind title={'고객사 찾기'} setSwitch={setCustomerPopUp} data={inventoryCustomer} />}

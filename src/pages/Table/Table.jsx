@@ -48,7 +48,7 @@ const asDate = (dateAsString) => {
   return new Date(Number.parseInt(splitFields[2]), Number.parseInt(splitFields[1]) - 1, Number.parseInt(splitFields[0]))
 }
 
-const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
+const Table = ({ hei, getRow, getCol, setChoiceComponent, size }) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
   const gridRef = useRef()
@@ -276,7 +276,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
     // other grid options
     // rowModelType: 'serverSide',
     rowModelType: 'clientSide',
-    paginationPageSize: 10, // 요청할 페이지 사이즈
+    // paginationPageSize: size, // 요청할 페이지 사이즈
     cacheBlockSize: 100, // 캐시에 보관할 블록 사이즈
     maxBlocksInCache: 10, // 캐시에 최대로 보관할 블록 수
 
@@ -284,8 +284,9 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
     serverSideDatasource: {
       getRows: async function (params) {
         // 백엔드로부터 데이터 가져오기
-        // const response = await fetch(`your/backend/endpoint?startRow=${params.startRow}&endRow=${params.endRow}`);
-        // const rowData = await response.json();
+        // const response = await fetch('/inventory-ledger?pageNum=1&pageSize=1')
+        // const rowData = await response.json()
+        // console.log(rowData)
         // ag-Grid에 데이터 설정
         // params.successCallback(getRow)
       },
@@ -315,6 +316,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
             rowGroupPanelShow={'always'}
             pivotPanelShow={'always'}
             pagination={true}
+            paginationPageSize={size}
             isExternalFilterPresent={isExternalFilterPresent}
             // doesExternalFilterPass={doesExternalFilterPass}
             onGridReady={onGridReady}

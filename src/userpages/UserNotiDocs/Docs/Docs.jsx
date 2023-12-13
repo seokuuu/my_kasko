@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
-
+import Table from '../../../pages/Table/Table'
 import { MainSelect } from '../../../common/Option/Main'
 import { BlackBtn, BtnWrap, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
@@ -127,7 +127,7 @@ const Docs = ({}) => {
           </div>
         </TCSubContainer>
 
-        <Test3 />
+        <Table />
       </TableContianer>
     </FilterContianer>
   )
