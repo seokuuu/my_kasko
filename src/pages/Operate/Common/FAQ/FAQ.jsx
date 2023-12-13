@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import moment from 'moment'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -29,7 +29,7 @@ const FAQ = ({}) => {
   // 셀 클릭시 테이블 상세 데이터 조회
   const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
   // 테이블에서 선택된 값
-  const [selected] = useAtom(selectedRowsAtom)
+  const selected = useAtomValue(selectedRowsAtom)
   // 목록 리스트
   const [rows, setRows] = useState([])
   // 목록 API
