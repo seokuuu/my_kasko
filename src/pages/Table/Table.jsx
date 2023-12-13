@@ -1,26 +1,26 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AgGridReact } from 'ag-grid-react'
-import 'ag-grid-enterprise'
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
-import { styled } from 'styled-components'
+import 'ag-grid-enterprise'
+import { AgGridReact } from 'ag-grid-react'
 import { useAtom } from 'jotai'
-import { blueModalAtom, doubleClickedRowAtom, pageSort, selectedRowsAtom } from '../../store/Layout/Layout'
-import {
-  NonFadeOverlay,
-  ModalContainer,
-  BlueBarHeader,
-  WhiteCloseBtn,
-  BlueSubContainer,
-  BlueBarBtnWrap,
-} from '../../modal/Common/Common.Styled'
-import { GreyBtn, BlackBtn } from '../../common/Button/Button'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { styled } from 'styled-components'
+import { BlackBtn, GreyBtn } from '../../common/Button/Button'
+import {
+  BlueBarBtnWrap,
+  BlueBarHeader,
+  BlueSubContainer,
+  ModalContainer,
+  NonFadeOverlay,
+  WhiteCloseBtn,
+} from '../../modal/Common/Common.Styled'
+import { blueModalAtom, doubleClickedRowAtom, pageSort, selectedRowsAtom } from '../../store/Layout/Layout'
 
-import TableStyle from './Table.module.css'
+// import TableStyle from './Table.module.css'
 
-import { get } from 'lodash'
-import BtnCellRenderer from './BtnCellRenderer'
+// import { get } from 'lodash'
+// import BtnCellRenderer from './BtnCellRenderer'
 
 var dateFilterParams = {
   comparator: (filterLocalDateAtMidnight, cellValue) => {
@@ -294,7 +294,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size }) => {
   }
   // new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
 
-  console.log('gridOptions', gridOptions)
+  // console.log('gridOptions', gridOptions)
 
   return (
     <div style={containerStyle}>

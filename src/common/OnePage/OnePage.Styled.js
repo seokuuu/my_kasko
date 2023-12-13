@@ -25,13 +25,13 @@ export const CenterRectangleWrap = styled.div`
 // `
 
 export const OnePageContainer = styled.div`
+  min-width: 55%;
   width: fit-content;
   font-size: 18px;
   background-color: white;
   margin-left: auto;
   margin-right: auto;
-  border: 1px solid black;
-  min-height: 88vh;
+  min-height: 100vh;
   max-height: 100vh;
 `
 
@@ -78,7 +78,8 @@ export const MainTitle = styled.div`
   display: flex;
   justify-content: center;
   font-size: 24px;
-  margin: 40px auto;
+  height: 110px;
+  align-items: center;
 `
 
 export const Titles = styled.div`
@@ -88,7 +89,8 @@ export const Titles = styled.div`
   justify-content: space-between;
   gap: 10px;
   font-size: 24px;
-  margin: 40px auto;
+  margin: 0px auto;
+  height: 120px;
 `
 
 export const TitleChild = styled.div`
@@ -136,12 +138,16 @@ export const FWTitle = styled.div`
 export const HalfWrap = styled.div`
   display: flex;
   justify-content: center;
-  gap: 100px;
+  gap: 50px;
 `
 
-export const Left = styled.div``
+export const Left = styled.div`
+  width: 45%;
+`
 
-export const Right = styled.div``
+export const Right = styled.div`
+  width: 45%;
+`
 
 export const Contour = styled.div`
   width: 95%;

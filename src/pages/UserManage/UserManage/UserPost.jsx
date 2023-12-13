@@ -126,9 +126,9 @@ const UserPost = ({ setChoiceComponent }) => {
   }
 
   return (
-    <OnePageContainer>
+    <OnePageContainer style={{ width: '70%' }}>
       <MainTitle>사용자 등록</MainTitle>
-      <OnePageSubContainer style={{ padding: '0px 5%' }}>
+      <OnePageSubContainer style={{ padding: '0px 10%' }}>
         <HalfWrap>
           <Left>
             <Part>
@@ -216,22 +216,24 @@ const UserPost = ({ setChoiceComponent }) => {
             </Part>
           </Right>
         </HalfWrap>
-        <CheckContainer>
-          <h4 style={{ marginBottom: '10px' }}>권한 설정</h4>
-          <CheckWrap>
-            {checkDummy.map((x, index) => (
-              <UserCheckDiv>
-                <StyledCheckSubSquDiv
-                  onClick={() => setCheck(CheckBox(check, check.length, index, true))}
-                  isChecked={check[index]}
-                >
-                  <CheckImg2 src="/svg/check.svg" />
-                </StyledCheckSubSquDiv>
-                <CheckTxt style={{ marginLeft: '5px' }}>{x}</CheckTxt>
-              </UserCheckDiv>
-            ))}
-          </CheckWrap>
-        </CheckContainer>
+        <HalfWrap>
+          <CheckContainer style={{ width: '96%' }}>
+            <h4 style={{ marginBottom: '10px' }}>권한 설정</h4>
+            <CheckWrap>
+              {checkDummy.map((x, index) => (
+                <UserCheckDiv>
+                  <StyledCheckSubSquDiv
+                    onClick={() => setCheck(CheckBox(check, check.length, index, true))}
+                    isChecked={check[index]}
+                  >
+                    <CheckImg2 src="/svg/check.svg" />
+                  </StyledCheckSubSquDiv>
+                  <CheckTxt style={{ marginLeft: '5px' }}>{x}</CheckTxt>
+                </UserCheckDiv>
+              ))}
+            </CheckWrap>
+          </CheckContainer>
+        </HalfWrap>
       </OnePageSubContainer>
       <BtnWrap bottom={-200}>
         <WhiteBtn width={40} height={40} onClick={goBack}>
@@ -255,18 +257,18 @@ export const RadioContainer = styled.div`
   margin-top: 10px;
 `
 
-const CheckWrap = styled.div`
+export const CheckWrap = styled.div`
   display: flex;
   flex-flow: row wrap;
   gap: 10px;
 `
 
-const CheckTxt = styled.div`
+export const CheckTxt = styled.div`
   min-width: 100px;
   height: 200px;
 `
 
-const UserCheckDiv = styled.div`
+export const UserCheckDiv = styled.div`
   display: flex;
   width: 150px;
   height: 30px;
