@@ -3,7 +3,6 @@ import { CustomInput, FlexInput } from '../../../common/Input/Input'
 import {
   AddBtn,
   Bar,
-  EqualCheckWrap,
   FlexContent,
   FlexPart,
   FlexTitle,
@@ -14,7 +13,6 @@ import {
 import { AccountSelect, EditSelect, accountOptions, depositOptions } from '../../../common/Option/SignUp'
 
 import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
-import { TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
 
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
@@ -22,15 +20,15 @@ import { CheckBox } from '../../../common/Check/Checkbox'
 import { CheckBtn } from '../../../pages/User/SignUp/SignUp.Styled'
 
 import { styled } from 'styled-components'
-import { checkBusinessNumber, getCustomerPrivacy, updateCustomer } from '../../../api/myPage'
+import { checkBusinessNumber, updateCustomer } from '../../../api/myPage'
 import { getCustomerDetail, resetCustomer } from '../../../api/userManage'
 import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import useReactQuery from '../../../hooks/useReactQuery'
-import SignUpPost from '../../../modal/SignUp/SignUpPost'
-import { CheckTxt, CheckWrap, UserCheckDiv } from '../UserManage/UserPost'
-import { GreyDiv } from '../../../userpages/UserMyPage/Profile/Profile'
-import { IncomeImgDiv, IIDImg } from '../../../userpages/UserMyPage/Profile/Profile'
 import { WhiteCloseBtn } from '../../../modal/Common/Common.Styled'
+import SignUpPost from '../../../modal/SignUp/SignUpPost'
+import { GreyDiv, IncomeImgDiv } from '../../../userpages/UserMyPage/Profile/Profile'
+import DownloadButton from '../../../utils/DownloadButton'
+import { UserCheckDiv } from '../UserManage/UserPost'
 
 const init = {
   id: '',
@@ -45,7 +43,7 @@ const init = {
   phone: '',
   fax: '',
   addressDetail: '',
-  businessType: '', // (유통 / 제조)
+  businessType: [], // (유통 / 제조)
   businessNumber: '',
   bank: '',
   accountNumber: '',
@@ -89,6 +87,7 @@ const ClientModal = ({ setEditModal }) => {
   })
   const [modalSwitch, setModalSwitch] = useState(false)
   const [input, setInput] = useState(init)
+  console.log('input', input)
   const [isUser, setIsUser] = useState(false)
   const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
   const [renderFileName, setRenderFileName] = useState({ businessNumberFile: '', bankbookFile: ' ' })
@@ -157,40 +156,40 @@ const ClientModal = ({ setEditModal }) => {
 
       const userCustomerTypeIndex = radioDummy.indexOf(resData?.type)
 
-      const newCheck = check.map((_, index) => resData?.businessType?.includes(checkDummy[index]))
-      setCheck(newCheck)
-
       if (userCustomerTypeIndex !== -1) {
         // 일치하는 값이 있다면 해당 인덱스의 checkRadio를 true로 설정
         const newCheckRadio = Array.from({ length: radioDummy.length }, (_, index) => index === userCustomerTypeIndex)
         setCheckRadio(newCheckRadio)
       }
+
+      const newCheck = check.map((_, index) => resData?.businessType?.includes(checkDummy[index]))
+      setCheck(newCheck)
     }
   }, [isSuccess, resData])
 
-  const handleFiles = (e) => {
-    const name = e.target.name
-    const file = e.target.files[0]
-    const fileName = e.target.files[0].name
-    if (checkFileName.hasOwnProperty(name)) {
-      setCheckFileName((prev) => ({
-        ...prev,
-        [name]: fileName,
-      }))
-      if (name === 'businessNumberFile') {
-        setFileForms((prev) => ({
-          ...prev,
-          registration: file,
-        }))
-      }
-      if (name === 'bankbookFile') {
-        setFileForms((prev) => ({
-          ...prev,
-          bankBook: file,
-        }))
-      }
-    }
-  }
+  // const handleFiles = (e) => {
+  //   const name = e.target.name
+  //   const file = e.target.files[0]
+  //   const fileName = e.target.files[0].name
+  //   if (checkFileName.hasOwnProperty(name)) {
+  //     setCheckFileName((prev) => ({
+  //       ...prev,
+  //       [name]: fileName,
+  //     }))
+  //     if (name === 'businessNumberFile') {
+  //       setFileForms((prev) => ({
+  //         ...prev,
+  //         registration: file,
+  //       }))
+  //     }
+  //     if (name === 'bankbookFile') {
+  //       setFileForms((prev) => ({
+  //         ...prev,
+  //         bankBook: file,
+  //       }))
+  //     }
+  //   }
+  // }
 
   const handleSelectChange = (selectedOption, name) => {
     // const isCheck = selectedOption.label
@@ -222,8 +221,11 @@ const ClientModal = ({ setEditModal }) => {
         // return
       }
     }
+
     setInput({ ...input, ...updatedInput, ...checkFileName })
-    console.log('input', input)
+    console.log('input <3', input)
+    console.log('updatedInput <3', updatedInput)
+    console.log('checkFileName <3', checkFileName)
     setShouldUpdateCustomer(true)
   }
 
@@ -234,7 +236,7 @@ const ClientModal = ({ setEditModal }) => {
         try {
           const response = await updateCustomer(input, fileForms)
           console.log(response.data)
-          alert('회원가입이 수정되셨습니다.')
+          alert('고객사 상세 정보가 수정되었습니다.')
         } catch (err) {
           console.log(err)
           alert('ERROR:', err.data)
@@ -320,6 +322,7 @@ const ClientModal = ({ setEditModal }) => {
   const checkDummy = ['유통', '제조']
 
   const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
+  const [check2, setCheck2] = useState(Array.from({ length: checkDummy2.length }, () => false))
   const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
 
   useEffect(() => {
@@ -413,13 +416,18 @@ const ClientModal = ({ setEditModal }) => {
                     경매 담당자 정보<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <CustomInput name="title" placeholder="직함 입력" width={130} defaultValue={user && user.title} />
                     <CustomInput
-                      name="name"
+                      name="memberTitle"
+                      placeholder="직함 입력"
+                      width={130}
+                      defaultValue={user && user.memberTitle}
+                    />
+                    <CustomInput
+                      name="memberName"
                       placeholder=" 성함 입력"
                       width={188}
                       style={{ marginLeft: '5px' }}
-                      defaultValue={user && user.name}
+                      defaultValue={user && user.memberName}
                     />
                   </FlexContent>
                 </FlexPart>
@@ -429,7 +437,7 @@ const ClientModal = ({ setEditModal }) => {
                     이메일<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="email" defaultValue={(user && user.email) || ''} />
+                    <FlexInput name="memberEmail" defaultValue={(user && user.memberEmail) || ''} />
                   </FlexContent>
                 </FlexPart>
 
@@ -438,7 +446,7 @@ const ClientModal = ({ setEditModal }) => {
                     휴대폰 번호<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="customerPhone" defaultValue={user && user.phone} />
+                    <FlexInput name="memberPhone" defaultValue={user && user.memberPhone} />
                   </FlexContent>
                 </FlexPart>
                 <FlexPart>
@@ -533,10 +541,10 @@ const ClientModal = ({ setEditModal }) => {
                   </FlexTitle>
                   <FlexContent>
                     <EditSelect
-                      name="depositManagerTitle"
+                      name="storage"
                       options={depositOptions}
                       defaultValue={depositOptions[0]}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'storage')}
                     />
                   </FlexContent>
                 </FlexPart>
@@ -703,7 +711,7 @@ const ClientModal = ({ setEditModal }) => {
                     회사 명<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="customerName" defaultValue={user && user.name} />
+                    <FlexInput name="name" defaultValue={user && user.name} />
                   </FlexContent>
                 </FlexPart>
 
@@ -756,11 +764,11 @@ const ClientModal = ({ setEditModal }) => {
                 <FlexPart>
                   <FlexTitle></FlexTitle>
                   <FlexContent>
-                    <FlexInput name="addressDetail" value={detailAddress} defaultValue={user && user.addressDetail} />
+                    <FlexInput name="addressDetail" defaultValue={user && user.addressDetail} />
                   </FlexContent>
                 </FlexPart>
 
-                {modalSwitch && (
+                {modalIsOpen && (
                   <SignUpPost
                     postCheck={postCheck}
                     directCheck={directCheck}
@@ -828,25 +836,11 @@ const ClientModal = ({ setEditModal }) => {
                   <FlexTitle>
                     사업자등록증<span>*</span>
                   </FlexTitle>
-                  <TxtDivNoborder className="no-border" style={{ border: '1px solid #000000' }}>
-                    <label htmlFor="ex_file">
-                      <div className="btnStart">
-                        <img src="/svg/Upload.svg" alt="btnStart" />
-                        <p htmlFor="ex_file">파일 첨부</p>
-                      </div>
-                    </label>
-                    {/* <img src="/svg/Upload.svg" alt="Upload" /> */}
-                    <input
-                      id="ex_file"
-                      type="file"
-                      accept="image/jpg, image/png, image/jpeg"
-                      style={{ display: 'none' }}
-                      onChange={handleFiles}
-                      name="businessNumberFile"
-                      // onChange={commonChange}
-                      // name="businessfile"
-                    ></input>
-                  </TxtDivNoborder>
+
+                  <DownloadButton
+                    fileUrl={resData?.businessNumberFileUrl}
+                    fileName={resData?.businessNumberOriginalName}
+                  />
                 </FlexPart>
                 <FlexPart>
                   <FlexTitle></FlexTitle>
@@ -854,21 +848,6 @@ const ClientModal = ({ setEditModal }) => {
                     {renderFileName.businessNumberFile ? (
                       <IncomeImgDiv>
                         <div>{renderFileName.businessNumberFile}</div>
-                        <div>
-                          <IIDImg
-                            onClick={() => {
-                              setRenderFileName({
-                                ...renderFileName,
-                                businessNumberFile: '',
-                              })
-                              setCheckFileName({
-                                ...checkFileName,
-                                deleteBusinessNumberFile: resData?.businessNumberSavedName,
-                              })
-                            }}
-                            src="/svg/btn_close.svg"
-                          />
-                        </div>
                       </IncomeImgDiv>
                     ) : (
                       <FlexInput style={{ width: '322px' }} disabled />
@@ -881,23 +860,7 @@ const ClientModal = ({ setEditModal }) => {
                     통장사본<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <TxtDivNoborder className="no-border" style={{ border: '1px solid #000000' }}>
-                      <label htmlFor="ex_file2">
-                        <div className="btnStart">
-                          <img src="/svg/Upload.svg" alt="btnStart" />
-                          <p htmlFor="ex_file">파일 첨부</p>
-                        </div>
-                      </label>
-                      {/* <img src="/svg/Upload.svg" alt="Upload" /> */}
-                      <input
-                        id="ex_file2"
-                        type="file"
-                        accept="image/jpg, image/png, image/jpeg"
-                        style={{ display: 'none' }}
-                        onChange={handleFiles}
-                        name="bankbookFile"
-                      ></input>
-                    </TxtDivNoborder>
+                    <DownloadButton fileUrl={resData?.bankbookFileUrl} fileName={resData?.bankbookOriginalName} />
                   </FlexContent>
                 </FlexPart>
                 <FlexPart>
@@ -906,21 +869,6 @@ const ClientModal = ({ setEditModal }) => {
                     {renderFileName.bankbookFile ? (
                       <IncomeImgDiv>
                         <div>{renderFileName.bankbookFile}</div>
-                        <div>
-                          <IIDImg
-                            src="/svg/btn_close.svg"
-                            onClick={() => {
-                              setRenderFileName({
-                                ...renderFileName,
-                                bankbookFile: '',
-                              })
-                              setCheckFileName({
-                                ...checkFileName,
-                                deleteBankbookFile: resData?.bankbookSavedName,
-                              })
-                            }}
-                          />
-                        </div>
                       </IncomeImgDiv>
                     ) : (
                       <FlexInput style={{ width: '322px' }} disabled />

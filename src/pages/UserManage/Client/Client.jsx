@@ -41,13 +41,14 @@ import { add_element_field } from '../../../lib/tableHelpers'
 // import { log } from '../../../lib'
 import { isString } from 'lodash'
 import TableTest from '../../Table/TableTest'
-import { UsermanageEditModal } from '../../../store/Layout/Layout'
+import { userpageDestinationEdit } from '../../../store/Layout/Layout'
 import ClientModal from './ClientModal'
 import { btnCellUidAtom } from '../../../store/Layout/Layout'
 
 const Client = ({ setChoiceComponent, setModal }) => {
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-  const [editModal, setEditModal] = useAtom(UsermanageEditModal)
+  const [editModal, setEditModal] = useAtom(userpageDestinationEdit)
+  console.log('editModal', editModal)
   const [restrict, setRestrict] = useState()
   const [selectedValue, setSelectedValue] = useState('') // 경매 제한 상태
   const radioDummy = ['전체', '대표']

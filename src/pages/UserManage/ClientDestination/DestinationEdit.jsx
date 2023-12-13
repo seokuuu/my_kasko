@@ -91,7 +91,7 @@ const DestinationEdit = ({ setChoiceComponent }) => {
       <MainTitle>고객사 목적지 수정</MainTitle>
       <OnePageSubContainer>
         <HalfWrap>
-          <Left>
+          <Left style={{ width: '50%' }}>
             <Part>
               <Title>
                 <h4>대표 주소 지정</h4>
@@ -145,7 +145,7 @@ const DestinationEdit = ({ setChoiceComponent }) => {
               <CustomInput placeholder="상세 주소 입력" width={340} name="address" onChange={eventHandle} />
             </Part>
           </Left>
-          <Right>
+          <Right style={{ width: '50%' }}>
             <Part>
               <Title>
                 <h4>하차지 명</h4>

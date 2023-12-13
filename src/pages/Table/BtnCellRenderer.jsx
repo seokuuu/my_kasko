@@ -25,9 +25,9 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
 
   const [userpageEditModal, setUserPageEditModal] = useAtom(userpageUserPreferEdit) // 마이페이지 수정 모달
 
-  const [userDestiEdit, setUserDestiEdit] = useAtom(userpageDestinationEdit)
+  const [userManageEdit, setUserManageEdit] = useAtom(userpageDestinationEdit) // 고객사 관리 수정 모달
 
-  const [userManageEdit, setUserManageEdit] = useAtom(UsermanageEditModal)
+  const [userDestiEdit, setUserDestiEdit] = useAtom(UsermanageEditModal) // 고객사 목적지 관리 수정 모달
 
   console.log('버튼 셀 @@@', userpageEditModal)
 

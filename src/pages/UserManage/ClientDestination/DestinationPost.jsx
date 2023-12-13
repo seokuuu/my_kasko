@@ -19,7 +19,7 @@ import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../comm
 import { CheckBox } from '../../../common/Check/Checkbox'
 
 import { post_clientDestination } from '../../../api/userManage'
-import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
+import { BlackBtn, BtnWrap, WhiteBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { isEmptyObj } from '../../../lib'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { useQueryClient } from '@tanstack/react-query'
@@ -80,7 +80,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
       <MainTitle>고객사 목적지 등록</MainTitle>
       <OnePageSubContainer>
         <HalfWrap>
-          <Left>
+          <Left style={{ width: '50%' }}>
             <Part>
               <Title>
                 <h4>대표 주소 지정</h4>
@@ -125,16 +125,42 @@ const DestinationPost = ({ setChoiceComponent }) => {
               <BlackBtn width={20} height={40} style={{ marginLeft: '10px' }}>
                 조회
               </BlackBtn>
+              <CustomInput
+                placeholder="상세 주소 입력"
+                width={340}
+                name="address"
+                onChange={eventHandle}
+                style={{ marginTop: '5px' }}
+              />
             </Part>
-            <Part style={{ marginTop: '35px' }}>
+            <Part>
               <Title>
-                <h4>상세 주소</h4>
+                <h4>목적지 코드</h4>
                 <p></p>
               </Title>
-              <CustomInput placeholder="상세 주소 입력" width={340} name="address" onChange={eventHandle} />
+              <div
+                style={{
+                  display: 'flex',
+                  width: '345px',
+                }}
+              >
+                <WhiteSkyBtn
+                  width={20}
+                  height={40}
+                  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginRight: '10px' }}
+                >
+                  조회
+                </WhiteSkyBtn>
+
+                <div>
+                  <CustomInput width={120} name="customerUid" onChange={eventHandle} />
+                  <span style={{ margin: 'auto 5px' }}>-</span>
+                  <CustomInput width={120} />
+                </div>
+              </div>
             </Part>
           </Left>
-          <Right>
+          <Right style={{ width: '50%' }}>
             <Part>
               <Title>
                 <h4>하차지 명</h4>

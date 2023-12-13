@@ -48,6 +48,10 @@ export const clientModalAtom = atom(false)
 //사용자 관리 - 고객사 관리파트 회원제한모달
 export const AuctionRestrictionModal = atom(false)
 
+// 고객사 관리 수정버튼 모달 switch
+export const userpageDestinationEdit = atom(false)
+
+// 고객사 목적지 관리 수정버튼
 export const UsermanageEditModal = atom(false)
 
 /* ==============================
@@ -189,6 +193,3 @@ export const userpageUserPreferEdit = atom(false)
 
 //  선호제품 관리 수정 Object
 export const userpageUserPreferEditObject = atom('')
-
-// 목적지 관리 수정버튼 모달 switch
-export const userpageDestinationEdit = atom(false)

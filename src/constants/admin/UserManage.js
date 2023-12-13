@@ -10,7 +10,7 @@ var headerCheckboxSelection = function (params) {
   return params.columnApi.getRowGroupColumns().length === 0
 }
 
-// 사용자 관리
+// 사용자 관리 (고객사 관리)
 export const UserManageCustomerManageFields = {
   순번: 'uid',
   '고객 구분': 'memberUid',
@@ -22,6 +22,7 @@ export const UserManageCustomerManageFields = {
   '승인 여부': 'approvalStatus',
   '회원 제한 상태': 'auctionStatus',
 }
+//고객사 관리 cols
 export const UserManageCustomerManageFieldsCols = [
   {
     field: '',
