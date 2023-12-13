@@ -204,7 +204,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size }) => {
     // const path = event.data['고객 코드']
     // console.log(event.data)
     setDetailRow(event.data)
-    setChoiceComponent('수정')
+    setChoiceComponent(event.data)
     // navigate(`/userpage/userdestination/${path}`)
     // console.log('Double clicked row UID: ', event.data)
   }

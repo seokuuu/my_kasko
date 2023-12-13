@@ -15,59 +15,73 @@ import { RadioMainDiv, RadioInnerCircleDiv, RadioCircleDiv } from '../../../comm
 import { BtnBound } from '../../../common/Button/Button'
 import { TxtDiv } from '../../../pages/User/SignUp/SignUp.Styled'
 import { FileUpload } from '@mui/icons-material'
+import Header from '../../../components/Header/Header'
+import UserSideBar from '../../../components/Left/UserSideBar'
+import { OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
+import SubHeader from '../../../components/Header/SubHeader'
 // 클레임 등록
 const DocsDetail = () => {
+  const [expanded, setExpanded] = useState('공지 & 자료실')
+  const [depth2Color, setDepth2Color] = useState('자료실')
+  const [choiceComponent, setChoiceComponent] = useState('리스트')
   const radioDummy = ['노출', '미노출']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   return (
     <>
-      <CenterRectangleWrap style={{ height: '88vh', padding: '10px 50px' }}>
-        <CRWMain>
-          <h5>자료실 상세</h5>
-          <div style={{ marginBottom: '10px' }}>
-            <div style={{ display: 'flex', gap: '5px', fontSize: '16px', color: '#c8c8c8', marginBottom: '5px' }}>
-              <div>공지사항</div>
-              <BtnBound style={{ height: '15px' }} />
-              <div>관리자</div>
-              <BtnBound style={{ height: '15px' }} />
-              <div>2023.06.12</div>
-            </div>
-            <div style={{ fontSize: '24px' }}>제목 노출 영역입니다.</div>
-          </div>
-          <Bar />
-          <BottomWrap style={{ height: '50%' }}>
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.""Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-            esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa
-            qui officia deserunt mollit anim id est laborum." <br />
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum."
-          </BottomWrap>
-          <div style={{ height: '50px' }}>
-            <Bar />
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div style={{ width: '100px' }}>첨부 파일</div>
-              <FileUploadWrap>
-                <div>파일명.pdf</div>
-                <img src="/svg/Upload.svg" />
-              </FileUploadWrap>
-            </div>
-          </div>
-          <FileUploadSub>
-            <WhiteBtn width={40} height={50} style={{ marginRight: '10px' }}>
-              목록
-            </WhiteBtn>
-          </FileUploadSub>
-        </CRWMain>
+      <Header />
+      <CenterRectangleWrap style={{ width: '100%', padding: '0', backgroundColor: 'white' }}>
+        <UserSideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
+        <OverAllSub>
+          <SubHeader />
+          <OverAllTable>
+            <CRWMain>
+              <h5>자료실 상세</h5>
+              <div style={{ marginBottom: '10px' }}>
+                <div style={{ display: 'flex', gap: '5px', fontSize: '16px', color: '#c8c8c8', marginBottom: '5px' }}>
+                  <div>공지사항</div>
+                  <BtnBound style={{ height: '15px' }} />
+                  <div>관리자</div>
+                  <BtnBound style={{ height: '15px' }} />
+                  <div>2023.06.12</div>
+                </div>
+                <div style={{ fontSize: '24px' }}>제목 노출 영역입니다.</div>
+              </div>
+              <Bar />
+              <BottomWrap style={{ height: '50%' }}>
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+                fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                deserunt mollit anim id est laborum.""Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+                reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+                cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." <br />
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+                fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                deserunt mollit anim id est laborum."
+              </BottomWrap>
+              <div style={{ height: '50px' }}>
+                <Bar />
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <div style={{ width: '100px' }}>첨부 파일</div>
+                  <FileUploadWrap>
+                    <div>파일명.pdf</div>
+                    <img src="/svg/Upload.svg" />
+                  </FileUploadWrap>
+                </div>
+              </div>
+              <FileUploadSub>
+                <WhiteBtn width={40} height={50} style={{ marginRight: '10px' }}>
+                  목록
+                </WhiteBtn>
+              </FileUploadSub>
+            </CRWMain>
+          </OverAllTable>
+        </OverAllSub>
       </CenterRectangleWrap>
     </>
   )
@@ -77,7 +91,9 @@ export default DocsDetail
 
 export const CRWMain = styled.div`
   width: 100%;
-
+  height: 88vh;
+  background-color: #fff;
+  padding: 12px 24px;
   h4 {
     margin-top: 20px;
   }

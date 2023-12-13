@@ -97,7 +97,7 @@ import TermsPage from './pages/Operate/Terms/TermsPage'
 // 공지  & 자료실
 import UDocs from './userpages/UserNotiDocs/Docs/DocsPage'
 import UNotice from './userpages/UserNotiDocs/Notice/NoticePage'
-
+import UDocsDetail from './userpages/UserNotiDocs/Docs/DocsDetail'
 // 경매
 import UAuctionPackage from './userpages/UserAuction/Package/PackagePage'
 import UAuctionSingle from './userpages/UserAuction/Single/SinglePage'
@@ -260,6 +260,7 @@ const Router = () => {
         <Route path="/userpage">
           <Route path="/userpage/notice" element={<UNotice />}></Route>
           <Route path="/userpage/docs" element={<UDocs />}></Route>
+          <Route path="/userpage/docs/:id" element={<UDocsDetail />}></Route>
 
           {/* 경매 */}
           <Route path="/userpage/actionsingle" element={<UAuctionSingle />}></Route>

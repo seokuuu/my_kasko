@@ -111,7 +111,7 @@ const Inventory = ({}) => {
   const [size, setSize] = useState('')
   // checkSelect
   const checkBoxSelect = useAtomValue(selectedRowsAtom)
-  console.log(checkBoxSelect)
+
   // 테이블 데이터
   const [getRow, setGetRow] = useState('')
   const tableField = useRef(InventoryFieldsCols)
@@ -146,7 +146,6 @@ const Inventory = ({}) => {
   const resData = data?.data?.data?.list
   const pagination = data?.data?.data?.pagination
 
-  console.log(pagination)
   useEffect(() => {
     if (isSuccess) return setFilteredList(resData)
   }, [isSuccess])
@@ -591,12 +590,10 @@ const Inventory = ({}) => {
           </div>
         </TCSubContainer>
         <TCSubContainer>
-          <div>
+          <div style={{ padding: '8px 0' }}>
             선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총 중량 {pagination?.totalWeight}kg
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <SwitchBtn>입고 확정</SwitchBtn>
-          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>{/* <SwitchBtn>입고 확정</SwitchBtn> */}</div>
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} setChoiceComponent={() => {}} size={Number(size)} />
       </TableContianer>
