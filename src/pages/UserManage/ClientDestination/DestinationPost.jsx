@@ -23,12 +23,16 @@ import { BlackBtn, BtnWrap, WhiteBtn, WhiteSkyBtn } from '../../../common/Button
 import { isEmptyObj } from '../../../lib'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { useQueryClient } from '@tanstack/react-query'
+import { UsermanageFindModal } from '../../../store/Layout/Layout'
+import { useAtom } from 'jotai'
+import { find } from 'lodash'
+import ClientDestiCustomerFind from './ClientDestiCustomerFind'
 
 const init = {
   represent: '', // (0: 미지정 / 1: 지정)
-  customerUid: '', //고객 고유번호
+  customerUid: 965, //고객 고유번호 (고객사 조회 API 필요, 고객사 찾기 모달)
   destinationUid: '', //목적지 고유번호
-  address: '', //상세주서
+  address: '', //상세주소
   name: '', //하차지명
   managerTitle: '', //담당자 직함
   managerName: '', //담당자 이름
@@ -37,12 +41,16 @@ const init = {
   memo: '', //메모
 }
 const DestinationPost = ({ setChoiceComponent }) => {
+  const [findModal, setFindModal] = useAtom(UsermanageFindModal)
   const queryClient = useQueryClient()
   const radioDummy = ['지정', '미지정']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
   const [savedRadioValue, setSavedRadioValue] = useState('')
   const [submitData, setSubmitData] = useState(init)
   const mutation = useMutationQuery('', post_clientDestination)
+  const [customerFindResult, setCustomerFindResult] = useState()
+
+  console.log('customerFindResult', customerFindResult)
 
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
@@ -60,7 +68,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 
   const eventHandle = (e) => {
     const { name, value } = e.target
-    setSubmitData({ ...submitData, [name]: value })
+    setSubmitData({ ...submitData, [name]: value, customerUid: customerFindResult?.uid })
   }
 
   const submitHandle = (e) => {
@@ -76,7 +84,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
     setChoiceComponent('리스트')
   }
   return (
-    <OnePageContainer>
+    <OnePageContainer style={{ minHeight: '88vh' }}>
       <MainTitle>고객사 목적지 등록</MainTitle>
       <OnePageSubContainer>
         <HalfWrap>
@@ -107,10 +115,17 @@ const DestinationPost = ({ setChoiceComponent }) => {
                 <h4>고객사 명</h4>
                 <p></p>
               </Title>
-              <CustomInput width={120} name="customerUid" onChange={eventHandle} />
+              <CustomInput width={120} defaultValue={customerFindResult?.name} />
               <span style={{ margin: 'auto 5px' }}>-</span>
-              <CustomInput width={120} />
-              <BlackBtn width={20} height={40} style={{ marginLeft: '10px' }}>
+              <CustomInput width={120} defaultValue={customerFindResult?.ceoName} />
+              <BlackBtn
+                width={20}
+                height={40}
+                style={{ marginLeft: '10px' }}
+                onClick={() => {
+                  setFindModal(true)
+                }}
+              >
                 조회
               </BlackBtn>
             </Part>
@@ -153,7 +168,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
                 </WhiteSkyBtn>
 
                 <div>
-                  <CustomInput width={120} name="customerUid" onChange={eventHandle} />
+                  <CustomInput width={120} />
                   <span style={{ margin: 'auto 5px' }}>-</span>
                   <CustomInput width={120} />
                 </div>
@@ -208,7 +223,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
           </Right>
         </HalfWrap>
       </OnePageSubContainer>
-      <BtnWrap bottom={-200}>
+      <BtnWrap bottom={-250}>
         <WhiteBtn width={40} height={40} onClick={goBack}>
           돌아가기
         </WhiteBtn>
@@ -216,6 +231,9 @@ const DestinationPost = ({ setChoiceComponent }) => {
           저장
         </BlackBtn>
       </BtnWrap>
+      {findModal && (
+        <ClientDestiCustomerFind setFindModal={setFindModal} setCustomerFindResult={setCustomerFindResult} />
+      )}
     </OnePageContainer>
   )
 }

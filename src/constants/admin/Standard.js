@@ -222,7 +222,7 @@ export const StandardConsolidationFieldsCols = [
     cellRenderer: BtnCellRenderer,
     cellRendererParams: {
       uidFieldName: '합짐비 고유 번호',
-      editType: 'input',
+      editType: 'consoli',
     },
   },
   {

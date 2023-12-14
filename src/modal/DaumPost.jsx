@@ -1,23 +1,24 @@
-import React, { useState } from 'react';
-import DaumPostcode from 'react-daum-postcode';
+import React, { useState } from 'react'
+import DaumPostcode from 'react-daum-postcode'
 
 const DaumPost = () => {
-  const [postIsOpen, setIsOpen] = useState(false);
-  const [address, setAddress] = useState('');
+  const [postIsOpen, setIsOpen] = useState(false)
+  const [address, setAddress] = useState('')
 
   const postHandleButtonClick = () => {
-    setIsOpen(true);
-  };
+    setIsOpen(true)
+  }
 
-  const postHandleComplete = data => {
-    const { address } = data;
-    setAddress(address);
-    setIsOpen(false);
-  };
+  const postHandleComplete = (data) => {
+    console.log('data <3', data)
+    const { address } = data
+    setAddress(address)
+    setIsOpen(false)
+  }
 
   const postHandleClose = () => {
-    setIsOpen(false);
-  };
+    setIsOpen(false)
+  }
 
   return (
     <div>
@@ -31,7 +32,7 @@ const DaumPost = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default DaumPost;
+export default DaumPost
