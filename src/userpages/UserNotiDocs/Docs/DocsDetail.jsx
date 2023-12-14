@@ -5,7 +5,7 @@ import TextEditor from '../../../components/Editor/TextEditor'
 
 import { BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 import { Bar, CenterRectangleWrap } from '../../../common/OnePage/OnePage.Styled'
-
+import { useLocation } from 'react-router-dom'
 import { CheckBox } from '../../../common/Check/Checkbox'
 
 import { CustomInput, InputA, PropsInput } from '../../../common/Input/Input'
@@ -26,7 +26,8 @@ const DocsDetail = () => {
   const [choiceComponent, setChoiceComponent] = useState('리스트')
   const radioDummy = ['노출', '미노출']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-
+  const prevData = useLocation().state
+  console.log(prevData)
   return (
     <>
       <Header />

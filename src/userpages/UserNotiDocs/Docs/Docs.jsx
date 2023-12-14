@@ -71,19 +71,42 @@ const Docs = () => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
   }
 
+  const [topData, setTopData] = useState([])
+
+  // 상단고정 데이터
+  function createData(data) {
+    var result = []
+    for (var i = 0; i < data.length; i++) {
+      result.push({
+        작성일자: data[i].createDate ? moment(i.createDate).format('YYYY-MM-DD') : '-',
+        작성자: data[i].name,
+        순번: data[i].status && '고정',
+        고유값: data[i].uid,
+        제목: data[i].getFile ? `${data[i].title} 📎` : `${data[i].title} `,
+      })
+    }
+    return result
+  }
+
   const mappingData = useMemo(
     () =>
       Docs
-        ? Docs.list.map((d, index) => ({
-            ...d,
-            createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
-            id: Docs.list.length - (index + (Params.pageNum - 1) * Params.pageSize), // 순번 내림차순
-            uid: d.uid,
-            title: d.status ? `${d.title} 📎` : `${d.title} `,
-          }))
+        ? Docs.list.map((d, index) => {
+            if (d.status) {
+              setTopData([d]) // 고정값 추출
+            }
+            return {
+              ...d,
+              createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
+              id: d.status ? '고정' : Docs.list.length - (index + (Params.pageNum - 1) * Params.pageSize), // 순번 내림차순
+              uid: d.uid,
+              title: d.getFile ? `${d.title} 📎` : `${d.title} `,
+            }
+          })
         : [],
     [Docs],
   )
+  // console.log(topData)
   // 테이블 row값 가져오기
   const gettingRow = () => {
     const getData = mappingData
@@ -163,7 +186,7 @@ const Docs = () => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
+            게시글 목록 (50개 )
             <Hidden />
           </div>
           <div style={{ gap: '10px' }}>
@@ -176,8 +199,9 @@ const Docs = () => {
           getCol={getCol}
           setChoiceComponent={(e) => {
             const uid = e.고유값
-            navigate(`/userpage/docs/${uid}`)
+            navigate(`/userpage/docs/${uid}`, { state: { data: e } })
           }}
+          topData={createData(topData)}
         />
       </TableContianer>
     </FilterContianer>
