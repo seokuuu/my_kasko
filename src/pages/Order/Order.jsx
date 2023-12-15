@@ -204,7 +204,7 @@ const Order = ({}) => {
                           onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
                           isChecked={check1[index]}
                         >
-                          <CheckImg2 src="/svg/check.svg" />
+                          <CheckImg2 src="/svg/check.svg" isChecked={check1[index]} />
                         </StyledCheckSubSquDiv>
                         <p>{x}</p>
                       </ExCheckWrap>

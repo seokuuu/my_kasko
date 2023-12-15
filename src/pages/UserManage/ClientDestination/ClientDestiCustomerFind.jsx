@@ -1,6 +1,5 @@
 import { useAtom } from 'jotai'
 import { useState } from 'react'
-import { blueModalAtom } from '../../store/Layout/Layout'
 import {
   BlueBarHeader,
   BlueBlackBtn,
@@ -9,25 +8,25 @@ import {
   BlueSubContainer,
   FadeOverlay,
   ModalContainer,
-  WhiteCloseBtn,
-  ResultContainer,
-  ResultRow,
   ResultCell,
+  ResultContainer,
   ResultHead,
-} from '../Common/Common.Styled'
+  ResultRow,
+  WhiteCloseBtn,
+} from '../../../modal/Common/Common.Styled'
+import { blueModalAtom } from '../../../store/Layout/Layout'
 
-import { GreyBtn } from '../../common/Button/Button'
-import { TxtInput } from '../../common/Input/Input'
+import { GreyBtn } from '../../../common/Button/Button'
+import { TxtInput } from '../../../common/Input/Input'
 
-import { getCustomerFind } from '../../service/admin/Auction'
-import useReactQuery from '../../hooks/useReactQuery'
 import styled from 'styled-components'
-import { Radio, Checkbox } from '@mui/material'
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getCustomerFind } from '../../../service/admin/Auction'
 
 // 고객사 찾기
-const CustomerFind = ({ title, setSwitch }) => {
-  const matchData = { name: '고객명', code: '고객사 코드', businessNumber: '사업자번호' }
+const ClientDestiCustomerFind = ({ title, setFindModal, setCustomerFindResult }) => {
+  const matchData = { name: '고객명', code: '고객사 코드', businessNumber: '사업자번호', ceoName: '대표자' }
 
   const { isLoading, isError, data, isSuccess } = useReactQuery('', 'getCustomerFind', getCustomerFind)
 
@@ -50,7 +49,7 @@ const CustomerFind = ({ title, setSwitch }) => {
   console.log('result !!!', result)
 
   const modalClose = () => {
-    setSwitch(false)
+    setFindModal(false)
   }
 
   const handleSearch = () => {
@@ -59,7 +58,8 @@ const CustomerFind = ({ title, setSwitch }) => {
       return (
         item.code.toLowerCase().includes(searchTermsLowerCase) ||
         item.name.toLowerCase().includes(searchTermsLowerCase) ||
-        item.businessNumber.toLowerCase().includes(searchTermsLowerCase)
+        item.businessNumber.toLowerCase().includes(searchTermsLowerCase) ||
+        item.ceoName.toLowerCase().includes(searchTermsLowerCase)
       )
     })
 
@@ -72,10 +72,15 @@ const CustomerFind = ({ title, setSwitch }) => {
     }
   }
 
-  const handleCellClick = (uid, name, code, businessNumber) => {
+  const handleCellClick = (uid, name, code, businessNumber, ceoName) => {
     console.log('클릭한 셀 데이터:', { uid, name, code, businessNumber })
     setClickedResult({ uid, name, code, businessNumber })
     setSelectedUid(uid) // 클릭한 셀의 uid를 저장
+    setCustomerFindResult({
+      uid,
+      name,
+      ceoName,
+    })
   }
 
   return (
@@ -98,6 +103,11 @@ const CustomerFind = ({ title, setSwitch }) => {
                   textarea="회사명"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSearch()
+                    }
+                  }}
                 />
                 <GreyBtn height={40} width={15} margin={5} onClick={handleSearch}>
                   찾기
@@ -111,12 +121,13 @@ const CustomerFind = ({ title, setSwitch }) => {
                   <ResultCell>{matchData.name}</ResultCell>
                   <ResultCell>{matchData.code}</ResultCell>
                   <ResultCell wid={130}>{matchData.businessNumber}</ResultCell>
+                  <ResultCell>{matchData.ceoName}</ResultCell>
                 </ResultHead>
                 {result &&
                   result.map((item, index) => (
                     <ResultRow
                       key={item.uid}
-                      onClick={() => handleCellClick(item.uid, item.name, item.code, item.businessNumber)}
+                      onClick={() => handleCellClick(item.uid, item.name, item.code, item.businessNumber, item.ceoName)}
                     >
                       <ResultCell wid={50}>
                         <RadioMainDiv key={index}>
@@ -133,14 +144,21 @@ const CustomerFind = ({ title, setSwitch }) => {
                       </ResultCell>
                       <ResultCell>{item.name}</ResultCell>
                       <ResultCell>{item.code}</ResultCell>
-                      <ResultCell wid={130}>{item.businessNumber}</ResultCell>
+                      <ResultCell wid={150}>{item.businessNumber}</ResultCell>
+                      <ResultCell>{item.ceoName}</ResultCell>
                     </ResultRow>
                   ))}
               </ResultContainer>
             </BlueMainDiv>
           </div>
           <BlueBtnWrap>
-            <BlueBlackBtn>적용</BlueBlackBtn>
+            <BlueBlackBtn
+              onClick={() => {
+                setFindModal(false)
+              }}
+            >
+              적용
+            </BlueBlackBtn>
           </BlueBtnWrap>
         </BlueSubContainer>
       </ModalContainer>
@@ -148,7 +166,7 @@ const CustomerFind = ({ title, setSwitch }) => {
   )
 }
 
-export default CustomerFind
+export default ClientDestiCustomerFind
 
 export const BMDTitle = styled.div`
   display: flex;

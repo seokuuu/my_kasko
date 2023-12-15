@@ -18,17 +18,22 @@ import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../comm
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 
-import { post_clientDestination } from '../../../api/userManage'
-import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
+import { get_addressFind, post_clientDestination } from '../../../api/userManage'
+import { BlackBtn, BtnWrap, WhiteBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { isEmptyObj } from '../../../lib'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { useQueryClient } from '@tanstack/react-query'
+import { UsermanageFindModal } from '../../../store/Layout/Layout'
+import { useAtom } from 'jotai'
+import { find } from 'lodash'
+import ClientDestiCustomerFind from './ClientDestiCustomerFind'
+import SignUpPost from '../../../modal/SignUp/SignUpPost'
+import useReactQuery from '../../../hooks/useReactQuery'
 
 const init = {
   represent: '', // (0: 미지정 / 1: 지정)
-  customerUid: '', //고객 고유번호
-  destinationUid: '', //목적지 고유번호
-  address: '', //상세주서
+  customerUid: '', //고객 고유번호 (고객사 조회 API 필요, 고객사 찾기 모달)
+  address: '', //상세주소
   name: '', //하차지명
   managerTitle: '', //담당자 직함
   managerName: '', //담당자 이름
@@ -36,13 +41,122 @@ const init = {
   phone: '', //하차지담당자번호
   memo: '', //메모
 }
+
+const sidoMapping = {
+  서울: '서울특별시',
+  부산: '부산광역시',
+  대구: '대구광역시',
+  인천: '인천광역시',
+  광주: '광주광역시',
+  대전: '대전광역시',
+  울산: '울산광역시',
+  경기: '경기도',
+  충북: '충청북도',
+  충남: '충청남도',
+  전북: '전라북도',
+  전남: '전라남도',
+  경북: '경상북도',
+  경남: '경상남도',
+}
 const DestinationPost = ({ setChoiceComponent }) => {
+  const [postcodeModal, setPostcodeModal] = useState(false)
+  const [postFind, setPostFind] = useState(false)
+  const [address, setAddress] = useState('')
+  const [postAddress, setPostAdress] = useState('')
+  const [detailAddress, setDetailAddress] = useState('')
+  const [isDaumPostOpen, setIsDaumPostOpen] = useState(false)
+  const [submitData, setSubmitData] = useState(init)
+
+  console.log('submitData', submitData)
+
+  const postCheck = () => {
+    setPostFind(false)
+  }
+
+  const directCheck = () => {
+    setPostFind(true)
+    setAddress('')
+    setDetailAddress('')
+    setSubmitData({ ...submitData, address: '', addressDetail: '' })
+  }
+
+  const daumPostHandleBtn = () => {
+    setIsDaumPostOpen(true)
+  }
+
+  const detailAddressHandler = (e) => {
+    const value = e.target.value
+    setDetailAddress(value)
+  }
+
+  const comfirmPost = () => {
+    setPostcodeModal(false)
+    setSubmitData({ ...submitData, address: address, addressDetail: detailAddress })
+  }
+
+  const closeModal = () => {
+    setPostcodeModal(false)
+    setAddress('')
+    setDetailAddress('')
+    setSubmitData({ ...submitData, address: '', addressDetail: '' })
+  }
+
+  const daumPosthandleClose = () => {
+    setIsDaumPostOpen(false)
+  }
+
+  const daumPostHandleComplete = (data) => {
+    console.log('daum post data', data)
+    const { address } = data
+
+    // 지번 주소 전달
+    const mappedSido = sidoMapping[data?.sido] || data?.sido
+    const mergedAddress = [mappedSido, data?.sigungu, data?.bname1, data?.bname2]
+      .filter((value) => value !== '')
+      .join(' ')
+    setAddress(mergedAddress)
+    setDetailAddress(data?.jibunAddressEnglish?.split(' ')[0])
+    setPostAdress(mergedAddress)
+    console.log('mergedAddress =>', mergedAddress)
+    setIsDaumPostOpen(false)
+  }
+
+  console.log('찐 =>', address, detailAddress)
+
+  const [destiCode, setDestiCode] = useState()
+
+  console.log('postAddress', postAddress)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (postAddress) {
+          const response = await get_addressFind(postAddress)
+          const resData = response?.data?.data
+          if (resData) {
+            setDestiCode(resData)
+          } else {
+            setDestiCode('미등록 또는 대기 중인 코드입니다.')
+          }
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    fetchData()
+  }, [postAddress, get_addressFind])
+
+  const [findModal, setFindModal] = useAtom(UsermanageFindModal)
   const queryClient = useQueryClient()
   const radioDummy = ['지정', '미지정']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
   const [savedRadioValue, setSavedRadioValue] = useState('')
-  const [submitData, setSubmitData] = useState(init)
+
   const mutation = useMutationQuery('', post_clientDestination)
+  const [customerFindResult, setCustomerFindResult] = useState()
+
+  console.log('customerFindResult', customerFindResult)
 
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
@@ -60,7 +174,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 
   const eventHandle = (e) => {
     const { name, value } = e.target
-    setSubmitData({ ...submitData, [name]: value })
+    setSubmitData({ ...submitData, [name]: value, customerUid: customerFindResult?.uid })
   }
 
   const submitHandle = (e) => {
@@ -76,11 +190,11 @@ const DestinationPost = ({ setChoiceComponent }) => {
     setChoiceComponent('리스트')
   }
   return (
-    <OnePageContainer>
+    <OnePageContainer style={{ minHeight: '88vh' }}>
       <MainTitle>고객사 목적지 등록</MainTitle>
       <OnePageSubContainer>
         <HalfWrap>
-          <Left>
+          <Left style={{ width: '50%' }}>
             <Part>
               <Title>
                 <h4>대표 주소 지정</h4>
@@ -107,10 +221,17 @@ const DestinationPost = ({ setChoiceComponent }) => {
                 <h4>고객사 명</h4>
                 <p></p>
               </Title>
-              <CustomInput width={120} name="customerUid" onChange={eventHandle} />
+              <CustomInput width={120} defaultValue={customerFindResult?.name} />
               <span style={{ margin: 'auto 5px' }}>-</span>
-              <CustomInput width={120} />
-              <BlackBtn width={20} height={40} style={{ marginLeft: '10px' }}>
+              <CustomInput width={120} defaultValue={customerFindResult?.ceoName} />
+              <BlackBtn
+                width={20}
+                height={40}
+                style={{ marginLeft: '10px' }}
+                onClick={() => {
+                  setFindModal(true)
+                }}
+              >
                 조회
               </BlackBtn>
             </Part>
@@ -119,22 +240,44 @@ const DestinationPost = ({ setChoiceComponent }) => {
                 <h4>목적지</h4>
                 <p></p>
               </Title>
-              <CustomInput width={120} name="destinationUid" onChange={eventHandle} />
-              <span style={{ margin: 'auto 5px' }}>-</span>
-              <CustomInput width={120} />
-              <BlackBtn width={20} height={40} style={{ marginLeft: '10px' }}>
+              <CustomInput width={260} onChange={eventHandle} name="address" value={address} />
+              <BlackBtn
+                width={20}
+                height={40}
+                style={{ marginLeft: '10px' }}
+                onClick={() => {
+                  setPostcodeModal(true)
+                }}
+              >
                 조회
               </BlackBtn>
+              <CustomInput
+                placeholder="상세 주소 입력"
+                width={340}
+                name="detailAddress"
+                value={detailAddress}
+                onChange={eventHandle}
+                style={{ marginTop: '5px' }}
+              />
             </Part>
-            <Part style={{ marginTop: '35px' }}>
+            <Part>
               <Title>
-                <h4>상세 주소</h4>
+                <h4>목적지 코드</h4>
                 <p></p>
               </Title>
-              <CustomInput placeholder="상세 주소 입력" width={340} name="address" onChange={eventHandle} />
+              <div
+                style={{
+                  display: 'flex',
+                  width: '345px',
+                }}
+              >
+                <div>
+                  <CustomInput width={340} disabled value={destiCode} />
+                </div>
+              </div>
             </Part>
           </Left>
-          <Right>
+          <Right style={{ width: '50%' }}>
             <Part>
               <Title>
                 <h4>하차지 명</h4>
@@ -182,7 +325,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
           </Right>
         </HalfWrap>
       </OnePageSubContainer>
-      <BtnWrap bottom={-200}>
+      <BtnWrap bottom={-250}>
         <WhiteBtn width={40} height={40} onClick={goBack}>
           돌아가기
         </WhiteBtn>
@@ -190,6 +333,27 @@ const DestinationPost = ({ setChoiceComponent }) => {
           저장
         </BlackBtn>
       </BtnWrap>
+      {findModal && (
+        <ClientDestiCustomerFind setFindModal={setFindModal} setCustomerFindResult={setCustomerFindResult} />
+      )}
+
+      {postcodeModal && (
+        <SignUpPost
+          postCheck={postCheck}
+          directCheck={directCheck}
+          postFind={postFind}
+          address={address}
+          daumPostHandleBtn={daumPostHandleBtn}
+          detailAddress={detailAddress}
+          setDetailAddress={setDetailAddress}
+          detailAddressHandler={detailAddressHandler}
+          comfirmPost={comfirmPost}
+          closeModal={closeModal}
+          isDaumPostOpen={isDaumPostOpen}
+          daumPosthandleClose={daumPosthandleClose}
+          daumPostHandleComplete={daumPostHandleComplete}
+        />
+      )}
     </OnePageContainer>
   )
 }

@@ -189,7 +189,7 @@ const PopupPost = ({ isRegister }) => {
                         }}
                         isChecked={check[index]}
                       >
-                        <CheckImg2 src="/svg/check.svg" />
+                        <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
                       </StyledCheckSubSquDiv>
                       <p style={{ fontSize: '16px' }}>{x}</p>
                     </StyledCheckMainDiv>

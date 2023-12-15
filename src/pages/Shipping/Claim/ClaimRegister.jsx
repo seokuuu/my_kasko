@@ -57,7 +57,7 @@ const ClaimRegister = () => {
           <h5>클레임 등록</h5>
           <ClaimRow>
             <ClaimTitle style={{ width: '50%' }}>업체명</ClaimTitle>
-            <ClaimContent style={{ width: '50%' }}>A</ClaimContent                             >
+            <ClaimContent style={{ width: '50%' }}>A</ClaimContent>
           </ClaimRow>
           <ClaimTable>
             {[0, 1, 2].map((index) => (
@@ -102,7 +102,7 @@ const ClaimRegister = () => {
                         onClick={() => setCheck(CheckBox(check, check.length, index, true))}
                         isChecked={check[index]}
                       >
-                        <CheckImg2 src="/svg/check.svg" />
+                        <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
                       </StyledCheckSubSquDiv>
                       <p>{x}</p>
                     </StyledCheckMainDiv>
