@@ -17,7 +17,7 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
   const navigate = useNavigate()
   const [overallData, setOverallData] = useState(data)
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-  console.log('uidAtom @@@', uidAtom)
+  // console.log('uidAtom @@@', uidAtom)
   const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
   const [modalMode, setModalMode] = useAtom(surEditModalAtom) // 할증 관리 modal
   const [dispatchModalMode, setDispatchModalMode] = useAtom(StandardDispatchEditAtom)
@@ -27,9 +27,9 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
 
   const [userDestiEdit, setUserDestiEdit] = useAtom(userpageDestinationEdit)
 
-  console.log('버튼 셀 @@@', userpageEditModal)
+  // console.log('버튼 셀 @@@', userpageEditModal)
 
-  console.log('!!!')
+  // console.log('!!!')
 
   const btnClickedHandler = () => {
     switch (editType) {
@@ -60,7 +60,9 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
         setUserDestiEdit(true)
       // 클레임 관리 목록 수정 버튼 => 클레임 수정 페이지로 이동
       case 'claimUpdate':
-        navigate('/')
+        setBtnCellModal(true)
+        setUidAtom(uid)
+        setModalMode('수정')
 
       default:
         break

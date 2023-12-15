@@ -1,82 +1,178 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 
-import TextEditor from '../../../../components/Editor/TextEditor'
-import DateGrid from '../../../../components/DateGrid/DateGrid'
-import { claimOngoingStatus, ClaimSelect } from '../../../../common/Option/ClaimPost'
 import { BlackBtn, WhiteBtn } from '../../../../common/Button/Button'
 import { CenterRectangleWrap } from '../../../../common/OnePage/OnePage.Styled'
+import TextEditor from '../../../../components/Editor/TextEditor'
 
-import { StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../../common/Check/CheckImg'
+import { PropsInput } from '../../../../common/Input/Input'
 
-import { CheckBox } from '../../../../common/Check/Checkbox'
+import { useNavigate, useParams } from 'react-router-dom'
+import {
+  useNoticeDetailsQuery,
+  useNoticeRegisterMutation,
+  useNoticeUpdateMutation,
+} from '../../../../api/operate/notice'
+import AlertPopup from '../../../../modal/Alert/AlertPopup'
+import useConfirmMoal from '../../hook/useConfirmMoal'
+import AttachedFile from './components/AttachedFile'
+import IsExposure from './components/IsExposure'
+/**
+ * @description
+ * 공지사항/자료실 등록&수정 페이지
+ * @param  {string} title 페이지 카테고리(공지 or 자료실)
+ * @param {boolean} isRegister 등록 or 수정 페이지
+ */
+const NoticePost = ({ title, isRegister }) => {
+  const navigate = useNavigate()
+  const { id } = useParams()
 
-import { CheckImg2 } from '../../../../common/Check/CheckImg'
+  // 확인 모달 관련 값들
+  const { popupSwitch, setPopupSwitch, setNowPopupType, nowPopup, setNowPopup, initConfirmModal } = useConfirmMoal()
 
-import { DateTitle, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../../components/MapTable/MapTable'
-import { CustomInput, InputA, PropsInput } from '../../../../common/Input/Input'
-import { ExRadioWrap } from '../../../../modal/External/ExternalFilter'
-import { RadioMainDiv, RadioInnerCircleDiv, RadioCircleDiv } from '../../../../common/Check/RadioImg'
+  // 등록 폼
+  const [form, setForm] = useState({
+    type: '공지사항',
+    status: true,
+    title: '',
+    content: '',
+    file: {},
+    deleteFileList: [],
+  })
 
-import { TxtDiv } from '../../../User/SignUp/SignUp.Styled'
-// 클레임 등록
-const NoticePost = () => {
+  // 상단 노출 여부 라디오 UI 관련 state
   const radioDummy = ['노출', '미노출']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+
+  // 공지사항& 자료실 상세 조회 API
+  const { data } = useNoticeDetailsQuery(id)
+
+  // 공지사항& 자료실 등록 API
+  const { mutate: register } = useNoticeRegisterMutation(title === '공지' ? 'notice' : 'datasheet')
+
+  // 등록 API REQUEST PARAMETER
+  const registerParams = {
+    title: form.title,
+    content: form.content,
+    status: form.status,
+    fileList: form.file,
+    type: form.type,
+  }
+
+  // 공지사항& 자료실 수정 API
+  const { mutate: update } = useNoticeUpdateMutation(title === '공지' ? 'notice' : 'datasheet')
+
+  // 제목 인풋 이벤트 핸들러
+  function commonChangeHandler(e) {
+    const { name, value } = e.target
+
+    setForm((p) => ({ ...p, [name]: value }))
+  }
+
+  /**
+   *@description
+   등록 핸들러
+   등록 폼 유효성 검사 및 모달 띄우기
+   */
+  function submitHandler() {
+    if (!form.title) {
+      return alert('제목을 입력해주세요.')
+    }
+
+    if (!form.content) {
+      return alert('내용을 입력해주세요.')
+    }
+
+    setPopupSwitch(true)
+    setNowPopupType(2)
+    setNowPopup({
+      num: '2-1',
+      title: '저장하시겠습니까?',
+      next: '1-12',
+      func() {},
+    })
+  }
+
+  /**
+   * @description
+   * 등록 or 수정 API 요청
+   * detailsId와 data가 있다면 수정 API 없다면 등록 API
+   */
+  useEffect(() => {
+    if (nowPopup.num === '1-12') {
+      if (id && data) {
+        console.log('수정 API')
+        update({})
+      } else {
+        register(registerParams)
+      }
+      initConfirmModal()
+    }
+  }, [nowPopup])
+  /**
+   * 상세 데이터값이 있다면 form 데이터 바인딩
+   */
+  useEffect(() => {
+    if (id && data) {
+      setCheckRadio(Boolean(data.status) ? [true, false] : [false, true])
+
+      setForm({
+        title: data.title,
+        content: data.content,
+        status: Number(data.status),
+        file: data.fileList.length !== 0 ? data.fileList[0] : {},
+      })
+    }
+  }, [data])
 
   return (
     <>
       <CenterRectangleWrap>
         <CRWMain>
-          <h5>공지 등록</h5>
+          <h5>
+            {title} {isRegister ? '등록' : '수정'}
+          </h5>
           <div style={{ marginBottom: '10px' }}>
-            <PropsInput placeholder="제목을 입력해 주세요." />
+            <PropsInput
+              placeholder="제목을 입력해 주세요."
+              name="title"
+              value={form.title}
+              onChange={commonChangeHandler}
+            />
           </div>
 
-          <TextEditor />
+          <TextEditor name="content" setState={setForm} value={form.content} />
           <BottomWrap>
             <BottomOne style={{ margin: '20px 0px' }}>
-              <div style={{ width: '50%' }}>
-                <p style={{ marginBottom: '5px' }}>상단 노출 여부</p>
-                <ExRadioWrap style={{ padding: '0', marginTop: '10px', gap: '150px', marginLeft: '-150px' }}>
-                  {radioDummy.map((text, index) => (
-                    <RadioMainDiv key={index}>
-                      <RadioCircleDiv
-                        isChecked={checkRadio[index]}
-                        onClick={() => {
-                          setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-                        }}
-                      >
-                        <RadioInnerCircleDiv isChecked={checkRadio[index]} />
-                      </RadioCircleDiv>
-                      <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
-                    </RadioMainDiv>
-                  ))}
-                </ExRadioWrap>
-              </div>
-              <div style={{ width: '48%' }}>
-                <p style={{ marginBottom: '5px' }}>첨부 파일</p>
-                <div style={{ width: '48%' }}>
-                  <TxtDiv style={{ width: '200%' }}>
-                    <img src="/svg/Upload.svg" />
-                    <p>파일 첨부</p>
-                  </TxtDiv>
-                </div>
-              </div>
+              {/* 상단 노출 여부 */}
+              <IsExposure
+                setState={setForm}
+                setCheckRadio={setCheckRadio}
+                checkRadio={checkRadio}
+                radioDummy={radioDummy}
+              />
+              {/* 첨부 파일 */}
+              <AttachedFile name="file" setState={setForm} fileName={form.file?.originalName ?? ''} />
             </BottomOne>
           </BottomWrap>
 
           <CRWSub>
             <BtnWrap>
-              <WhiteBtn width={90} height={50} style={{ marginRight: '10px' }}>
+              <WhiteBtn
+                width={90}
+                height={50}
+                style={{ marginRight: '10px' }}
+                onClick={() => (title === '공지' ? navigate('/operate/notice') : navigate('/operate/datasheet'))}
+              >
                 돌아가기
               </WhiteBtn>
-              <BlackBtn width={90} height={50}>
+              <BlackBtn width={90} height={50} onClick={submitHandler}>
                 저장
               </BlackBtn>
             </BtnWrap>
           </CRWSub>
         </CRWMain>
+        {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
       </CenterRectangleWrap>
     </>
   )

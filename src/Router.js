@@ -135,6 +135,7 @@ import TestPopup from './modal/Common/TestPopup'
 import DefaultBlueBar from './modal/Multi/DefaultBlueBar'
 import TableTest from './modal/Table/TableTest'
 import NoticePost from './pages/Operate/Common/Notice/NoticePost'
+import NoticeBoardPost from './pages/Operate/Exposure/NoticeBoard/NoticeBoardPost'
 import TestExcel from './pages/Test/TestExcel'
 
 // RoundAucProAdd
@@ -239,14 +240,22 @@ const Router = () => {
           <Route path="/operate/inventory" element={<InventoryOperPage />}></Route>
           <Route path="/operate/common" element={<ClaimPage />}></Route>
           <Route path="/operate/exposure" element={<PopupPage />}></Route>
+          <Route path="/operate/exposure/register" element={<PopupPostPage isRegister={true} />}></Route>
+          <Route path="/operate/exposure/:id" element={<PopupPostPage isRegister={false} />}></Route>
+
           <Route path="/operate/popuppost" element={<PopupPostPage />}></Route>
           <Route path="/operate/faq" element={<FAQPage />}></Route>
           <Route path="/operate/noticeboard" element={<NoticeBoardPage />}></Route>
+          <Route path="/operate/noticeboard/register" element={<NoticeBoardPost />}></Route>
+          <Route path="/operate/noticeboard/:id" element={<NoticeBoardPost />}></Route>
+
           <Route path="/operate/notice" element={<NoticePage />}></Route>
-          <Route path="/operate/notice/register" element={<NoticePost />}></Route>
-          <Route path="/operate/notice/:id" element={<NoticePost />}></Route>
+          <Route path="/operate/notice/register" element={<NoticePost title={'공지'} isRegister={true} />}></Route>
+          <Route path="/operate/notice/:id" element={<NoticePost title={'공지'} isRegister={false} />}></Route>
 
           <Route path="/operate/datasheet" element={<DataSheetPage />}></Route>
+          <Route path="/operate/datasheet/register" element={<NoticePost title={'자료실'} isRegister={true} />}></Route>
+          <Route path="/operate/datasheet/:id" element={<NoticePost title={'자료실'} isRegister={false} />}></Route>
           <Route path="/operate/terms" element={<TermsPage />}></Route>
           <Route path="/operate/footer" element={<FooterManagePage />}></Route>
 
