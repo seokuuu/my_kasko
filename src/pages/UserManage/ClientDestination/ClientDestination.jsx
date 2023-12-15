@@ -25,7 +25,7 @@ import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layo
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isArray } from 'lodash'
 import { useEffect, useRef } from 'react'
-import { delete_clientDestination, get_clientDestination, get_detailClientDestination } from '../../../api/userManage'
+import { delete_clientDestination, get_clientDestination } from '../../../api/userManage'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import {
@@ -87,21 +87,10 @@ const ClientDestination = ({ setChoiceComponent }) => {
   })
 
   const { isLoading, isError, data, isSuccess } = useReactQuery(query, 'clientDestination', get_clientDestination)
-
-  const {
-    isLoading: isLoading2,
-    isError: isError2,
-    data: data2,
-    isSuccess: isSuccess2,
-  } = useReactQuery(uidAtom, 'detailclientDestination', get_detailClientDestination)
-
   const resData = data?.data?.data?.list
-  const resData2 = data2?.data?.data
-
-  console.log('resData2', resData2)
   const pagination = data?.data?.data?.pagination
 
-  const matchingData = resData2
+  const matchingData = resData?.find((data) => data.uid === uidAtom)
 
   console.log('matchingData', matchingData)
 
@@ -153,7 +142,7 @@ const ClientDestination = ({ setChoiceComponent }) => {
           uidAtom={uidAtom}
           matchingData={matchingData}
           findModal={findModal}
-        />
+         />
       ) : (
         <FilterContianer>
           <div>

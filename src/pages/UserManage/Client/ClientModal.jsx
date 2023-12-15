@@ -340,6 +340,8 @@ const ClientModal = ({ setEditModal }) => {
     })
   }, [check])
 
+  console.log('ㅋㅋㅋ')
+
   // 비밀번호 초기화 버튼
   const resetPw = async () => {
     const userConfirmed = window.confirm('비밀번호를 초기화하시겠습니까?')
