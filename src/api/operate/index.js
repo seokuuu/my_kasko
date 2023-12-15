@@ -11,7 +11,10 @@ const urls = {
  * @constant
  * - 운영 관리 쿼리키값
  */
-const OPERATE_KEYS = { getFooter: ['operate', 'footer', 'get'], updateFooter: ['operate', 'footer', 'update'] }
+const OPERATE_KEYS = {
+  getFooter: ['operate', 'footer', 'get'],
+  updateFooter: ['operate', 'footer', 'update'],
+}
 
 // {{dev}}/api/policy?type=개인정보 수집 동의
 
@@ -26,6 +29,21 @@ export function postPolicy(data) {
   return client.post(urls.policy, data)
 }
 
+// 약관 수정
+export function usePolicyMutation() {
+  return useMutation({
+    mutationKey: 'getPolicy',
+    mutationFn: async function (params) {
+      postPolicy(params)
+    },
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: 'getPolicy' })
+    },
+    onError() {
+      alert('저장에 실패하였습니다.')
+    },
+  })
+}
 /* ==============================
     운영 관리 - 푸터 관리
 ============================== */

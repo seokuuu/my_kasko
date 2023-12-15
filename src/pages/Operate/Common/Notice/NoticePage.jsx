@@ -1,9 +1,8 @@
 import { OverAllMain, OverAllSub, OverAllTable } from '../../../../common/Overall/Overall.styled'
 
-import SideBar from '../../../../components/Left/SideBar'
 import Header from '../../../../components/Header/Header'
 import SubHeader from '../../../../components/Header/SubHeader'
-import NoticePost from './NoticePost'
+import SideBar from '../../../../components/Left/SideBar'
 import Notice from './Notice'
 
 import { useState } from 'react'
@@ -19,7 +18,7 @@ const NoticePage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <Notice />
+            <Notice title={'공지사항'} detailsUrl={'notice'} />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>

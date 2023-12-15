@@ -130,6 +130,14 @@ export const BottomItem = styled.div`
     color: white;
   }
 `
+export const SignUpBtn = styled.button`
+  margin-top: 20px;
+  margin-left: 20px;
+  width: 200px;
+  height: 50px;
+  background-color: ${(props) => (props.isNext ? '#061737' : '#D7D7D7')};
+  color: white;
+`
 
 export const TxtDiv = styled.div`
   .btnStart {

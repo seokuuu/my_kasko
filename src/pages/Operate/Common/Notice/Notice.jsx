@@ -1,173 +1,144 @@
-import { useState } from 'react';
-import { styled } from 'styled-components';
-import { storageOptions } from '../../../../common/Option/SignUp';
-import { Link } from 'react-router-dom';
-import { MainSelect } from '../../../../common/Option/Main';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import moment from 'moment'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useNoticeListQuery, useNoticeRemoveMutation } from '../../../../api/operate/notice'
+import { NoticeListFieldCols, NoticeListFields } from '../../../../constants/admin/Notice'
+import { add_element_field } from '../../../../lib/tableHelpers'
+import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
 import {
-  BlackBtn,
-  BlueBtn,
-  BtnWrap,
-  WhiteRedBtn,
-  SkyBtn,
-} from '../../../../common/Button/Button';
-import DateGrid from '../../../../components/DateGrid/DateGrid';
-import { ToggleBtn, Circle, Wrapper } from '../../../../common/Toggle/Toggle';
-import { GreyBtn } from '../../../../common/Button/Button';
-import Test3 from '../../../Test/Test3';
-import HeaderToggle from '../../../../components/Toggle/HeaderToggle';
-import { toggleAtom } from '../../../../store/Layout/Layout';
-import BlueBar from '../../../../modal/BlueBar/BlueBar';
-import { blueModalAtom } from '../../../../store/Layout/Layout';
-import { useAtom } from 'jotai';
-import { FilterWrap } from '../../../../modal/External/ExternalFilter';
-import {
-  FilterContianer,
-  FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  InputStartWrap,
-  FilterHeaderAlert,
-  TableTitle,
-  SubTitle,
-  TCSubContainer,
-} from '../../../../modal/External/ExternalFilter';
+  doubleClickedRowAtom,
+  popupAtom,
+  popupObject,
+  popupTypeAtom,
+  selectedRowsAtom,
+} from '../../../../store/Layout/Layout'
+import Table from '../../../Table/Table'
+import CommonHeader from '../../UI/CommonHeader'
+import CommonTableHeader from '../../UI/CommonTableHeader'
+import { normalTabOptions, noticeListSearchInitValue, noticeSearchCategoryOptions } from '../../constants'
 
-const Notice = ({}) => {
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  };
-  const [isRotated, setIsRotated] = useState(false);
+/**
+ * @description
+ * 운영관리-공지사항 & 자료실 컴포넌트
+ * @param {string} title 페이지 카테고리 (공지사항 or 자료실)
+ * @param {string} detailsUrl 상세 페이지 경로
+ */
+const Notice = ({ title, detailsUrl }) => {
+  const navigate = useNavigate()
 
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated(prevIsRotated => !prevIsRotated);
-  };
+  // 서버 옵션(요청 변수)
+  const [search, setSearch] = useState(noticeListSearchInitValue(title))
+  // 셀 클릭시 테이블 상세 데이터 조회
+  const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
+  // 테이블에서 선택된 값
+  const selected = useAtomValue(selectedRowsAtom)
+  // 목록 리스트
+  const [rows, setRows] = useState([])
+  // 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
+  const [popupSwitch, setPopupSwitch] = useAtom(popupAtom)
+  const setNowPopupType = useSetAtom(popupTypeAtom) // 팝업 타입
+  const setNowPopup = useSetAtom(popupObject) // 팝업 객체
 
-  // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom);
-  const [toggleMsg, setToggleMsg] = useState('On');
-  const toggleBtnClick = () => {
-    setExfilterToggle(prev => !prev);
-    if (exFilterToggle === true) {
-      setToggleMsg('Off');
-    } else {
-      setToggleMsg('On');
+  // 공지사항 목록 API
+  const { data, refetch } = useNoticeListQuery({
+    ...search,
+    category: search.category.label,
+  })
+
+  // 공지사항 삭제 API
+  const { mutate } = useNoticeRemoveMutation()
+
+  // 선택된 데이터 갯수
+  const selectedLength = useMemo(() => (selected ? selected.length : 0), [selected])
+
+  /**
+   * @constant
+   * @description
+   * 테이블 목록 데이터입니다.
+   * 날짜 포멧과 순번 데이터 생성을 위해 기존 데이터를 원하는 방식으로 맵핑합니다.
+   */
+  const mappingData = useMemo(
+    () =>
+      data
+        ? data.list.map((d, index) => ({
+            ...d,
+            createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
+            id: data.list.length - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
+            uid: d.uid,
+            status: d.status ? 'Y' : 'N',
+          }))
+        : [],
+    [data],
+  )
+
+  // 등록 핸들러
+  function toRegister() {
+    navigate(`/operate/${detailsUrl}/register`)
+  }
+
+  // 삭제 핸들러
+  function removeEventHandler() {
+    if (!selectedLength && selectedLength === 0) return alert('삭제할 목록을 선택해주세요.')
+    setPopupSwitch(true)
+    setNowPopupType(2)
+    setNowPopup({
+      num: '2-1',
+      title: '삭제하시겠습니까?',
+      next: '1-14',
+      func() {
+        if (selected && selected.length !== 0) {
+          mutate(selected.map((s) => s['고유값']))
+          refetch()
+        }
+      },
+    })
+  }
+  // 테이블 데이터 리스트 값 설정
+  useEffect(() => {
+    if (mappingData) {
+      setRows(add_element_field(mappingData, NoticeListFields))
     }
-  };
+  }, [mappingData])
+  console.log('공지사항 데이터 목록 :', data)
 
-  const [isModal, setIsModal] = useAtom(blueModalAtom);
+  // 상세 페이지 이동
+  useEffect(() => {
+    // 상세 페이지 이동시 상세 데이터 값 초기화
+    if (detailRow && detailRow['고유값']) {
+      navigate(`/operate/${detailsUrl}/${detailRow['고유값']}`)
 
-  console.log('isModal =>', isModal);
-
-  const modalOpen = () => {
-    setIsModal(true);
-  };
-
+      setDetailsRow([])
+    }
+  }, [detailRow])
   return (
     <FilterContianer>
-      <div>
-        <FilterHeader>
-          <div style={{ display: 'flex' }}>
-            <h1>일반 관리</h1>
-            <SubTitle>
-              <Link to={`/operate/common`}>
-                <h6>클레임 관리</h6>
-              </Link>
-              <Link to={`/operate/faq`}>
-                <h6>FAQ 관리</h6>
-              </Link>
-              <h5>공지사항</h5>
-              <Link to={`/operate/datasheet`}>
-                <h6>자료실</h6>
-              </Link>
-            </SubTitle>
-          </div>
-          <HeaderToggle
-            exFilterToggle={exFilterToggle}
-            toggleBtnClick={toggleBtnClick}
-            toggleMsg={toggleMsg}
-          />
-        </FilterHeader>
-        {exFilterToggle && (
-          <FilterWrap>
-            <FilterSubcontianer>
-              <FilterLeft>
-                <RowWrap>
-                  <PartWrap>
-                    <h6>검색</h6>
-                    <MainSelect />
-                    <Input />
-                    <GreyBtn
-                      style={{ width: '70px' }}
-                      height={35}
-                      margin={10}
-                      onClick={modalOpen}
-                    >
-                      찾기
-                    </GreyBtn>
-                  </PartWrap>
-                  <PartWrap />
-                  <PartWrap />
-                  <PartWrap />
-                  <PartWrap />
-                  <PartWrap />
-                </RowWrap>
-              </FilterLeft>
-            </FilterSubcontianer>
-            <FilterFooter>
-              <div style={{ display: 'flex' }}>
-                <p>초기화</p>
-                <ResetImg
-                  src="/img/reset.png"
-                  style={{ marginLeft: '10px', marginRight: '20px' }}
-                  onClick={handleImageClick}
-                  className={isRotated ? 'rotate' : ''}
-                />
-              </div>
-              <div style={{ width: '180px' }}>
-                <BlackBtn width={100} height={40}>
-                  검색
-                </BlackBtn>
-              </div>
-            </FilterFooter>
-          </FilterWrap>
-        )}
-      </div>
-      <TableContianer>
-        <TCSubContainer bor>
-          <div>
-            공지 목록 (선택 <span>2</span> / 50개 )
-          </div>
-          <div></div>
-        </TCSubContainer>
-        <TCSubContainer>
-          <div>
-            선택 <span> 2 </span>(명)
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>공지 삭제</WhiteRedBtn>
-            <SkyBtn>공지 등록</SkyBtn>
-          </div>
-        </TCSubContainer>
+      {/* 헤더(카테고리탭 & 검색) */}
+      <CommonHeader
+        search={search}
+        setSearch={setSearch}
+        refetch={refetch}
+        searchInitValue={noticeListSearchInitValue(title)}
+        tabHighlightValue={title === '공지사항' ? 'notice' : 'datasheet'}
+        searchCategoryOptions={noticeSearchCategoryOptions}
+        categoryTabOptions={normalTabOptions}
+      />
 
-        <Test3 title={'규격 약호 찾기'} />
+      <TableContianer>
+        {/* 테이블 헤더 */}
+        <CommonTableHeader
+          totalLength={data ? data.list.length : 0}
+          selected={selected}
+          removeEventHandler={removeEventHandler}
+          toRegister={toRegister}
+          title={title === '공지사항' ? '공지사항' : '게시글'}
+          selectedLength={selectedLength}
+        />
+
+        <Table getCol={NoticeListFieldCols} getRow={rows} setChoiceComponent={() => {}} />
       </TableContianer>
     </FilterContianer>
-  );
-};
+  )
+}
 
-export default Notice;
+export default Notice

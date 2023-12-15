@@ -21,3 +21,5 @@ yarn-error.log*
 package.json
 yarn.lock
 build.zip
+
+.env

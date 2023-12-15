@@ -1,118 +1,143 @@
-import { useState } from 'react';
-import { styled } from 'styled-components';
-import { storageOptions } from '../../../../common/Option/SignUp';
-import { Link } from 'react-router-dom';
-import { MainSelect } from '../../../../common/Option/Main';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import moment from 'moment'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { usePopupListQuery, usePopupRemoveMutation } from '../../../../api/operate/popup'
+import { PopupListFieldCols, PopupListFields } from '../../../../constants/admin/popup'
+import { add_element_field } from '../../../../lib/tableHelpers'
+import { FilterContianer, FilterHeader, TableContianer } from '../../../../modal/External/ExternalFilter'
 import {
-  BlackBtn,
-  BlueBtn,
-  BtnWrap,
-  WhiteRedBtn,
-  SkyBtn,
-} from '../../../../common/Button/Button';
-import DateGrid from '../../../../components/DateGrid/DateGrid';
-import { ToggleBtn, Circle, Wrapper } from '../../../../common/Toggle/Toggle';
-import { GreyBtn } from '../../../../common/Button/Button';
-import Test3 from '../../../Test/Test3';
-import HeaderToggle from '../../../../components/Toggle/HeaderToggle';
-import { toggleAtom } from '../../../../store/Layout/Layout';
-import BlueBar from '../../../../modal/BlueBar/BlueBar';
-import { blueModalAtom } from '../../../../store/Layout/Layout';
-import { useAtom } from 'jotai';
-import { FilterWrap } from '../../../../modal/External/ExternalFilter';
-import {
-  FilterContianer,
-  FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  InputStartWrap,
-  FilterHeaderAlert,
-  TableTitle,
-  SubTitle,
-  TCSubContainer,
-} from '../../../../modal/External/ExternalFilter';
+  doubleClickedRowAtom,
+  popupAtom,
+  popupObject,
+  popupTypeAtom,
+  selectedRowsAtom,
+  toggleAtom,
+} from '../../../../store/Layout/Layout'
+import Table from '../../../Table/Table'
+import CommonTableHeader from '../../UI/CommonTableHeader'
+import { commonListSearchInitValue, exposureTabOptions } from '../../constants'
+import CommonHeader from '../../UI/CommonHeader'
+import CategoryTab from '../../UI/CategoryTab'
+import HeaderToggle from '../../../../components/Toggle/HeaderToggle'
 
+/**
+ * @description
+ * 팝업 관리
+ * @param {*} param0
+ * @returns
+ */
 const Popup = ({}) => {
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  };
-  const [isRotated, setIsRotated] = useState(false);
+  const navigate = useNavigate()
+  // 서버 옵션(요청 변수)
+  const [search, setSearch] = useState(commonListSearchInitValue)
+  // 셀 클릭시 테이블 상세 데이터 조회
+  const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
+  // 테이블에서 선택된 값
+  const selected = useAtomValue(selectedRowsAtom)
+  // 목록 리스트
+  const [rows, setRows] = useState([])
+  // 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
+  const [popupSwitch, setPopupSwitch] = useAtom(popupAtom)
+  const setNowPopupType = useSetAtom(popupTypeAtom) // 팝업 타입
+  const setNowPopup = useSetAtom(popupObject) // 팝업 객체
 
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated(prevIsRotated => !prevIsRotated);
-  };
+  // 팝업 목록 API
+  const { data, refetch } = usePopupListQuery(search)
 
-  // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom);
-  const [toggleMsg, setToggleMsg] = useState('On');
-  const toggleBtnClick = () => {
-    setExfilterToggle(prev => !prev);
-    if (exFilterToggle === true) {
-      setToggleMsg('Off');
-    } else {
-      setToggleMsg('On');
+  console.log('팝업 목록 데이터 :', data)
+  // 팝업 삭제 API
+  const { mutate } = usePopupRemoveMutation()
+  // 선택된 데이터 갯수
+  const selectedLength = useMemo(() => (selected ? selected.length : 0), [selected])
+
+  /**
+   * @constant
+   * @description
+   * 테이블 목록 데이터입니다.
+   * 날짜 포멧과 순번 데이터 생성을 위해 기존 데이터를 원하는 방식으로 맵핑합니다.
+   */
+  const mappingData = useMemo(
+    () =>
+      data
+        ? data.list.map((d, index) => ({
+            ...d,
+            date:
+              d.startDate && d.endDate
+                ? `${moment(d.startDate).format('YYYY-MM-DD')} ~ ${moment(d.endDate).format('YYYY-MM-DD')}`
+                : '-',
+            id: data.list.length - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
+            uid: d.uid,
+            status: d.status ? '노출' : '미노출',
+          }))
+        : [],
+    [data],
+  )
+
+  // 등록 핸들러
+  function toRegister() {
+    navigate(`/operate/exposure/register`)
+  }
+
+  // 삭제 핸들러
+  function removeEventHandler() {
+    if (!selectedLength && selectedLength === 0) return alert('삭제할 목록을 선택해주세요.')
+    setPopupSwitch(true)
+    setNowPopupType(2)
+    setNowPopup({
+      num: '2-1',
+      title: '삭제하시겠습니까?',
+      next: '1-14',
+      func() {
+        if (selected && selected.length !== 0) {
+          mutate(selected.map((s) => s['고유값']))
+          refetch()
+        }
+      },
+    })
+  }
+  // 테이블 데이터 리스트 값 설정
+  useEffect(() => {
+    if (mappingData) {
+      setRows(add_element_field(mappingData, PopupListFields))
     }
-  };
+  }, [mappingData])
 
-  const [isModal, setIsModal] = useAtom(blueModalAtom);
+  // 상세 페이지 이동
+  useEffect(() => {
+    // 상세 페이지 이동시 상세 데이터 값 초기화
+    if (detailRow && detailRow['고유값']) {
+      navigate(`/operate/exposure/${detailRow['고유값']}`)
 
-  console.log('isModal =>', isModal);
-
-  const modalOpen = () => {
-    setIsModal(true);
-  };
+      setDetailsRow([])
+    }
+  }, [detailRow])
 
   return (
     <FilterContianer>
-      <div>
-        <FilterHeader>
-          <div style={{ display: 'flex' }}>
-            <h1>노출 관리</h1>
-            <SubTitle>
-              <h5>팝업 관리</h5>
-              <Link to={`/operate/noticeboard`}>
-                <h6>전광판 관리</h6>
-              </Link>
-            </SubTitle>
-          </div>
-        </FilterHeader>
-      </div>
-      <TableContianer>
-        <TCSubContainer bor>
-          <div>
-            팝업 목록 (선택 <span>2</span> / 50개 )
-          </div>
-          <div></div>
-        </TCSubContainer>
-        <TCSubContainer>
-          <div>
-            선택 <span> 2 </span>개
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>팝업 삭제</WhiteRedBtn>
-            <SkyBtn>팝업 등록</SkyBtn>
-          </div>
-        </TCSubContainer>
+      {/* 헤더(카테고리탭 & 검색) */}
+      <FilterHeader>
+        <div style={{ display: 'flex' }}>
+          <h1>일반 관리</h1>
+          <CategoryTab options={exposureTabOptions} highLightValue={'exposure'} />
+        </div>
+      </FilterHeader>
 
-        <Test3 title={'규격 약호 찾기'} />
+      <TableContianer>
+        {/* 테이블 헤더 */}
+        <CommonTableHeader
+          totalLength={data ? data.list.length : 0}
+          selected={selected}
+          removeEventHandler={removeEventHandler}
+          toRegister={toRegister}
+          title={'팝업'}
+          selectedLength={selectedLength}
+        />
+        {/* 테이블 */}
+        <Table getCol={PopupListFieldCols} getRow={rows} setChoiceComponent={() => {}} />
       </TableContianer>
     </FilterContianer>
-  );
-};
+  )
+}
 
-export default Popup;
+export default Popup
