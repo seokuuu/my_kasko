@@ -11,6 +11,7 @@ import Table from '../../../Table/Table'
 import CommonHeader from '../../UI/CommonHeader'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { noticeListSearchInitValue, noticeSearchCategoryOptions } from '../../constants'
+import NoticeTable from './\bNoticeTable'
 
 const Notice = ({}) => {
   const navigate = useNavigate()
@@ -79,10 +80,9 @@ const Notice = ({}) => {
           selected={selected}
           removeEventHandler={() => {}}
           toRegister={toRegister}
-          title={'공지사항'}
+          title={'조회'}
         />
-        {/* 테이블 */}
-        <Table getCol={NoticeListFieldCols} getRow={rows} setChoiceComponent={() => {}} />
+        <NoticeTable />
       </TableContianer>
     </FilterContianer>
   )

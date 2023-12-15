@@ -136,6 +136,7 @@ import DefaultBlueBar from './modal/Multi/DefaultBlueBar'
 import TableTest from './modal/Table/TableTest'
 import NoticePost from './pages/Operate/Common/Notice/NoticePost'
 import TestExcel from './pages/Test/TestExcel'
+import NoticeDetail from './userpages/UserNotiDocs/Notice/NoticeDetail'
 
 // RoundAucProAdd
 const Router = () => {
@@ -243,6 +244,7 @@ const Router = () => {
           <Route path="/operate/faq" element={<FAQPage />}></Route>
           <Route path="/operate/noticeboard" element={<NoticeBoardPage />}></Route>
           <Route path="/operate/notice" element={<NoticePage />}></Route>
+          <Route path="/operate/notice/view/:id" element={<NoticeDetail />}></Route>
           <Route path="/operate/notice/register" element={<NoticePost />}></Route>
           <Route path="/operate/notice/:id" element={<NoticePost />}></Route>
 
