@@ -53,6 +53,8 @@ const init = {
   releaseManagerPhone: '출고담당자 연락처',
 }
 
+
+
 // id: 아이디
 // password: 비밀번호
 // memberTitle: 직함
@@ -332,10 +334,10 @@ const ClientModal = ({ setModal }) => {
           <TransparentButton onClick={modalOFF}>x</TransparentButton>
         </MainTitleC>
         <form onSubmit={handleSubmit}>
-          <ModalContainerSubC width={1200}>
+          <ModalContainerSubC width={1400}>
             {' '}
             <OnePageFlexSubContainer>
-              <Left style={{ width: '47%' }}>
+              <Left style={{ width: '50%' }}>
                 <h1>회원정보</h1>
                 <Bar />
                 <FlexPart>
@@ -457,11 +459,54 @@ const ClientModal = ({ setModal }) => {
                     </div>
                   </FlexContent>
                 </FlexPart>
+                <FlexPart>
+                  <FlexTitle>
+                    사용자 구분<span>*</span>
+                  </FlexTitle>
+                  <FlexContent>
+                    <div
+                      style={{
+                        display: 'flex',
+                        gap: '80px',
+                        width: '100%',
+                      }}
+                    >
+                      {radioDummy3.map((text, index) => (
+                        <RadioMainDiv key={index}>
+                          <RadioCircleDiv
+                            name="type"
+                            isChecked={checkRadio[index]}
+                            onClick={() => {
+                              setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
+                            }}
+                          >
+                            <RadioInnerCircleDiv isChecked={checkRadio[index]} />
+                          </RadioCircleDiv>
+                          <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
+                        </RadioMainDiv>
+                      ))}
+                    </div>
+                  </FlexContent>
+                </FlexPart>
+                <FlexPart>
+                  <FlexTitle>
+                    창고 구분<span>*</span>
+                  </FlexTitle>
+                  <FlexContent>
+                    <EditSelect
+                      name="depositManagerTitle"
+                      options={depositOptions}
+                      defaultValue={depositOptions[0]}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
+                    />
+                  </FlexContent>
+                </FlexPart>
+
                 <Bar />
-                <EqualCheckWrap>
+                <EqualCheckWrap2>
                   <input type="checkbox" style={{ marginRight: '5px' }} />
                   가입 정보와 동일
-                </EqualCheckWrap>
+                </EqualCheckWrap2>
                 <FlexPart>
                   <FlexTitle>
                     입금 담당자 정보<span>*</span>
@@ -494,10 +539,10 @@ const ClientModal = ({ setModal }) => {
                     />
                   </FlexContent>
                 </FlexPart>
-                <EqualCheckWrap>
+                <EqualCheckWrap2>
                   <input type="checkbox" style={{ marginRight: '5px' }} />
                   가입 정보와 동일
-                </EqualCheckWrap>
+                </EqualCheckWrap2>
                 <FlexPart>
                   <FlexTitle>
                     출고 담당자 정보<span>*</span>
@@ -544,7 +589,7 @@ const ClientModal = ({ setModal }) => {
                 </FlexPart>
               </Left>
               {/* -------------------------------------------------------------- */}
-              <Right style={{ width: '47%' }}>
+              <Right style={{ width: '40%' }}>
                 <h1>비즈니스 정보 ㅋㅋ</h1>
                 <Bar />
                 <FlexPart>
@@ -887,4 +932,14 @@ export const FlexInputBtn = styled.div`
     background-color: #b02525;
     color: white;
   }
+`
+
+const EqualCheckWrap2 = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 99%;
+  font-size: 16px;
+  margin-bottom: 5px;
+  position: relative;
+  right: 120px;
 `

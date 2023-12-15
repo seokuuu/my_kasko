@@ -1,4 +1,6 @@
+
 import React, { useEffect, useState } from 'react'
+
 import {
   At,
   HalfWrap,
@@ -14,6 +16,7 @@ import {
 import { CustomInput } from '../../../common/Input/Input'
 import { CustomSelect } from '../../../common/Option/Main'
 import { emailOptions } from '../../../common/Option/SignUp'
+
 
 import { useFooterMutation, useFooterQuery } from '../../../api/operate'
 import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
@@ -69,7 +72,7 @@ const FooterManage = () => {
    * @param {string} email
    * @returns {Email}
    * 이메일 도메인 분리함수
-   * email에서 @ 기준으로 prefix와 domain을 구분하여 반환해준다
+   * email에서 @ 기준으로 prefix와 domain을 구분하여 반환해줍니다.
    *
    */
   function separateDomain(email) {
@@ -153,6 +156,7 @@ const FooterManage = () => {
                 <p></p>
               </Title>
               <div style={{ display: 'flex' }}>
+
                 <CustomInput
                   placeholder="아이디 입력"
                   width={120}
@@ -170,6 +174,7 @@ const FooterManage = () => {
                   inputValue={emailText}
                   onInputChange={setEmailText}
                 />
+
               </div>
             </Part>
           </Left>
@@ -230,7 +235,7 @@ const FooterManage = () => {
           </Right>
         </HalfWrap>
       </OnePageSubContainer>
-      <BtnWrap bottom={-200}>
+      <BtnWrap bottom={-300}>
         <WhiteBtn width={40} height={40}>
           돌아가기
         </WhiteBtn>

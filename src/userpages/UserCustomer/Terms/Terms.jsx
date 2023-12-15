@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   OnePageContainer,
   OnePageSubContainer,
@@ -13,18 +13,18 @@ import {
   TitleChild,
   FullWrap,
   FWTitle,
-} from '../../../common/OnePage/OnePage.Styled';
+} from '../../../common/OnePage/OnePage.Styled'
 
-import { CustomInput } from '../../../common/Input/Input';
-import { CustomSelect } from '../../../common/Option/Main';
-import { emailOptions } from '../../../common/Option/SignUp';
+import { CustomInput } from '../../../common/Input/Input'
+import { CustomSelect } from '../../../common/Option/Main'
+import { emailOptions } from '../../../common/Option/SignUp'
 
-import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button';
+import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 
 const Terms = () => {
   return (
-    <OnePageContainer>
-      <Titles>
+    <OnePageContainer style={{ width: '55%' }}>
+      <Titles style={{ width: '90%' }}>
         <TitleChild bor>이용 약관</TitleChild>
         <TitleChild>개인정보 처리 방침</TitleChild>
         <TitleChild>개인정보 수집 동의</TitleChild>
@@ -44,7 +44,7 @@ const Terms = () => {
         </BlackBtn>
       </BtnWrap>
     </OnePageContainer>
-  );
-};
+  )
+}
 
-export default Terms;
+export default Terms

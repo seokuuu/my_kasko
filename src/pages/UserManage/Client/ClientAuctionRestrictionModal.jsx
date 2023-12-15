@@ -73,7 +73,14 @@ const ClientAuctionRestrictionModal = ({ clientRestrict, selectedValue, setSelec
                 </div>
               </FlexContent>
             </FlexPart>
-            <BlackBtn style={{ fontSize: '17px' }} width={80} height={50} onClick={clientRestrict}>
+            <BlackBtn
+              style={{ fontSize: '17px' }}
+              width={80}
+              height={50}
+              onClick={() => {
+                clientRestrict()
+              }}
+            >
               적용
             </BlackBtn>
           </div>
