@@ -16,12 +16,7 @@ import {
 import Table from '../../../Table/Table'
 import CommonHeader from '../../UI/CommonHeader'
 import CommonTableHeader from '../../UI/CommonTableHeader'
-<<<<<<< HEAD
 import { normalTabOptions, noticeListSearchInitValue, noticeSearchCategoryOptions } from '../../constants'
-=======
-import { noticeListSearchInitValue, noticeSearchCategoryOptions } from '../../constants'
-import NoticeTable from './\bNoticeTable'
->>>>>>> master
 
 /**
  * @description
@@ -128,6 +123,7 @@ const Notice = ({ title, detailsUrl }) => {
         searchCategoryOptions={noticeSearchCategoryOptions}
         categoryTabOptions={normalTabOptions}
       />
+
       <TableContianer>
         {/* 테이블 헤더 */}
         <CommonTableHeader
@@ -135,14 +131,11 @@ const Notice = ({ title, detailsUrl }) => {
           selected={selected}
           removeEventHandler={removeEventHandler}
           toRegister={toRegister}
-<<<<<<< HEAD
           title={title === '공지사항' ? '공지사항' : '게시글'}
           selectedLength={selectedLength}
-=======
-          title={'조회'}
->>>>>>> master
         />
-        <NoticeTable />
+
+        <Table getCol={NoticeListFieldCols} getRow={rows} setChoiceComponent={() => {}} />
       </TableContianer>
     </FilterContianer>
   )

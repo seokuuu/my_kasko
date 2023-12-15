@@ -6,7 +6,7 @@ import {
   useStorageRegisterMutation,
   useStorageRemoveMutation,
   useStorageUpdateMutation,
-} from '../../../../../api/operate/inventory'
+} from '../../../../../api/operate/storage'
 import { StorageFieldCols, StorageFields } from '../../../../../constants/admin/Storage'
 import { add_element_field } from '../../../../../lib/tableHelpers'
 import { TableContianer } from '../../../../../modal/External/ExternalFilter'

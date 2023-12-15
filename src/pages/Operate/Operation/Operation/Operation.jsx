@@ -7,7 +7,6 @@ import Storage from './components/Storage'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 const Operation = () => {
-  const navigate = useNavigate()
   // 쿼리 스트링 조회
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -32,7 +31,7 @@ const Operation = () => {
 
   // 처음 렌더링될 때, 제품군 관리 탭으로 이동할 수 있도록 쿼리스트링을 변경해줍니다.
   useEffect(() => {
-    searchParams.set('category', 'policy')
+    searchParams.set('category', 'product')
     setSearchParams(searchParams)
   }, [])
 
