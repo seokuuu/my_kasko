@@ -27,6 +27,7 @@ import { resetCustomer } from '../../../api/userManage'
 import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import useReactQuery from '../../../hooks/useReactQuery'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
+import { CheckTxt, CheckWrap, UserCheckDiv } from '../UserManage/UserPost'
 
 const init = {
   id: '아이디',
@@ -52,8 +53,6 @@ const init = {
   releaseManagerName: '출고담당자 이름',
   releaseManagerPhone: '출고담당자 연락처',
 }
-
-
 
 // id: 아이디
 // password: 비밀번호
@@ -272,6 +271,16 @@ const ClientModal = ({ setModal }) => {
   }, [checkRadio])
 
   const checkDummy = ['유통', '제조']
+  const checkDummy2 = [
+    '재고관리',
+    '경매관리',
+    '상시판매',
+    '주문관리',
+    '판매제품 관리',
+    '출고관리',
+    '출고관리',
+    '운영관리',
+  ]
   const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
   const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
 
@@ -499,6 +508,22 @@ const ClientModal = ({ setModal }) => {
                       defaultValue={depositOptions[0]}
                       onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
                     />
+                  </FlexContent>
+                </FlexPart>
+                <FlexPart>
+                  <FlexTitle>권한 설정</FlexTitle>
+                  <FlexContent style={{ width: '30%', border: '1px solid' }}>
+                    {checkDummy2.map((x, index) => (
+                      <UserCheckDiv style={{ width: '100%' }}>
+                        <StyledCheckSubSquDiv
+                          onClick={() => setCheck(CheckBox(check, check.length, index, true))}
+                          isChecked={check[index]}
+                        >
+                          <CheckImg2 src="/svg/check.svg" />
+                        </StyledCheckSubSquDiv>
+                        <CheckTxt style={{ marginLeft: '5px' }}>{x}</CheckTxt>
+                      </UserCheckDiv>
+                    ))}
                   </FlexContent>
                 </FlexPart>
 

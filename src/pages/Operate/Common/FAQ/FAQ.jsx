@@ -1,173 +1,87 @@
-import { useState } from 'react';
-import { styled } from 'styled-components';
-import { storageOptions } from '../../../../common/Option/SignUp';
-import { Link } from 'react-router-dom';
-import { MainSelect } from '../../../../common/Option/Main';
-import {
-  BlackBtn,
-  BlueBtn,
-  BtnWrap,
-  WhiteRedBtn,
-  SkyBtn,
-} from '../../../../common/Button/Button';
-import DateGrid from '../../../../components/DateGrid/DateGrid';
-import { ToggleBtn, Circle, Wrapper } from '../../../../common/Toggle/Toggle';
-import { GreyBtn } from '../../../../common/Button/Button';
-import Test3 from '../../../Test/Test3';
-import HeaderToggle from '../../../../components/Toggle/HeaderToggle';
-import { toggleAtom } from '../../../../store/Layout/Layout';
-import BlueBar from '../../../../modal/BlueBar/BlueBar';
-import { blueModalAtom } from '../../../../store/Layout/Layout';
-import { useAtom } from 'jotai';
-import { FilterWrap } from '../../../../modal/External/ExternalFilter';
-import {
-  FilterContianer,
-  FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  InputStartWrap,
-  FilterHeaderAlert,
-  TableTitle,
-  SubTitle,
-  TCSubContainer,
-} from '../../../../modal/External/ExternalFilter';
+import { useAtom, useAtomValue } from 'jotai'
+import moment from 'moment'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useFaqListQuery } from '../../../../api/operate/faq'
+import { FaqListFieldCols, FaqListFields } from '../../../../constants/admin/Faq'
+import { add_element_field } from '../../../../lib/tableHelpers'
+import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
+import { doubleClickedRowAtom, selectedRowsAtom } from '../../../../store/Layout/Layout'
+import Table from '../../../Table/Table'
+import { searchCategoryOptions } from '../../constants'
+import Header from './components/faq/Header'
+import TableHeader from './components/faq/TableHeader'
 
+/**
+ * @description
+ * FAQ 목록 컴포넌트
+ */
 const FAQ = ({}) => {
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  };
-  const [isRotated, setIsRotated] = useState(false);
+  const navigate = useNavigate()
 
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated(prevIsRotated => !prevIsRotated);
-  };
+  // 서버 옵션(요청 변수)
+  const [search, setSearch] = useState({
+    pageNum: 1,
+    pageSize: 10,
+    category: searchCategoryOptions[0],
+    keyword: '',
+  })
+  // 셀 클릭시 테이블 상세 데이터 조회
+  const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
+  // 테이블에서 선택된 값
+  const selected = useAtomValue(selectedRowsAtom)
+  // 목록 리스트
+  const [rows, setRows] = useState([])
+  // 목록 API
+  const { data, refetch } = useFaqListQuery({ ...search, category: search.category.label })
 
-  // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom);
-  const [toggleMsg, setToggleMsg] = useState('On');
-  const toggleBtnClick = () => {
-    setExfilterToggle(prev => !prev);
-    if (exFilterToggle === true) {
-      setToggleMsg('Off');
-    } else {
-      setToggleMsg('On');
+  /**
+   * @constant
+   * @description
+   * 테이블 목록 데이터입니다.
+   * 날짜 포멧과 순번 데이터 생성을 위해 기존 데이터를 원하는 방식으로 맵핑합니다.
+   */
+  const mappingData = useMemo(
+    () =>
+      data
+        ? data.list.map((d, index) => ({
+            ...d,
+            createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
+            id: data.list.length - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
+            uid: d.uid,
+          }))
+        : [],
+    [data],
+  )
+
+  // 테이블 데이터 리스트 값 설정
+  useEffect(() => {
+    if (mappingData) {
+      setRows(add_element_field(mappingData, FaqListFields))
     }
-  };
+  }, [mappingData])
 
-  const [isModal, setIsModal] = useAtom(blueModalAtom);
-
-  console.log('isModal =>', isModal);
-
-  const modalOpen = () => {
-    setIsModal(true);
-  };
-
+  // 상세 페이지 이동
+  useEffect(() => {
+    // 상세 페이지 이동시 상세 데이터 값 초기화
+    if (detailRow && detailRow['고유값']) {
+      navigate(`/operate/faq/${detailRow['고유값']}`)
+      setDetailsRow([])
+    }
+  }, [detailRow])
   return (
     <FilterContianer>
-      <div>
-        <FilterHeader>
-          <div style={{ display: 'flex' }}>
-            <h1>일반 관리</h1>
-            <SubTitle>
-              <Link to={`/operate/common`}>
-                <h6>클레임 관리</h6>
-              </Link>
-              <h5>FAQ 관리</h5>
-              <Link to={`/operate/notice`}>
-                <h6>공지사항</h6>
-              </Link>
-              <Link to={`/operate/datasheet`}>
-                <h6>자료실</h6>
-              </Link>
-            </SubTitle>
-          </div>
-          <HeaderToggle
-            exFilterToggle={exFilterToggle}
-            toggleBtnClick={toggleBtnClick}
-            toggleMsg={toggleMsg}
-          />
-        </FilterHeader>
-        {exFilterToggle && (
-          <FilterWrap>
-            <FilterSubcontianer>
-              <FilterLeft>
-                <RowWrap>
-                  <PartWrap>
-                    <h6>검색</h6>
-                    <MainSelect />
-                    <Input />
-                    <GreyBtn
-                      style={{ width: '70px' }}
-                      height={35}
-                      margin={10}
-                      onClick={modalOpen}
-                    >
-                      찾기
-                    </GreyBtn>
-                  </PartWrap>
-                  <PartWrap />
-                  <PartWrap />
-                  <PartWrap />
-                  <PartWrap />
-                  <PartWrap />
-                </RowWrap>
-              </FilterLeft>
-            </FilterSubcontianer>
-            <FilterFooter>
-              <div style={{ display: 'flex' }}>
-                <p>초기화</p>
-                <ResetImg
-                  src="/img/reset.png"
-                  style={{ marginLeft: '10px', marginRight: '20px' }}
-                  onClick={handleImageClick}
-                  className={isRotated ? 'rotate' : ''}
-                />
-              </div>
-              <div style={{ width: '180px' }}>
-                <BlackBtn width={100} height={40}>
-                  검색
-                </BlackBtn>
-              </div>
-            </FilterFooter>
-          </FilterWrap>
-        )}
-      </div>
+      {/* 헤더(카테고리탭 & 검색) */}
+      <Header search={search} setSearch={setSearch} refetch={refetch} />
+      {/* 테이블 */}
       <TableContianer>
-        <TCSubContainer bor>
-          <div>
-            FAQ 목록 (선택 <span>2</span> / 50개 )
-          </div>
-          <div></div>
-        </TCSubContainer>
-        <TCSubContainer>
-          <div>
-            선택 <span> 2 </span>(개)
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>FAQ 삭제</WhiteRedBtn>
-            <SkyBtn>FAQ 등록</SkyBtn>
-          </div>
-        </TCSubContainer>
-
-        <Test3 title={'규격 약호 찾기'} />
+        {/* 테이블 헤더 (목록 갯수 & 선택 갯수 * 삭제,등록 버튼) */}
+        <TableHeader totalLength={data ? data.list.length : 0} selected={selected} refetch={refetch} />
+        {/* 테이블 목록 */}
+        <Table getCol={FaqListFieldCols} getRow={rows} setChoiceComponent={() => {}} />
       </TableContianer>
     </FilterContianer>
-  );
-};
+  )
+}
 
-export default FAQ;
+export default FAQ
