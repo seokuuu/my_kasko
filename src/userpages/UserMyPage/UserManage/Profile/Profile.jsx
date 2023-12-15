@@ -70,6 +70,8 @@ const ProfileEdit = () => {
 
   const [input, setInput] = useState(init)
 
+  console.log('input', input)
+
   const [isUser, setIsUser] = useState(false)
   const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
   const [checkFileName, setCheckFileName] = useState({ deleteBusinessNumberFile: '', deleteBankbookFile: '' })
@@ -147,14 +149,14 @@ const ProfileEdit = () => {
 
       const userCustomerTypeIndex = radioDummy.indexOf(resData?.customer?.type)
 
-      const newCheck = check.map((_, index) => resData?.customer?.businessType?.includes(checkDummy[index]))
-      setCheck(newCheck)
-
       if (userCustomerTypeIndex !== -1) {
         // 일치하는 값이 있다면 해당 인덱스의 checkRadio를 true로 설정
         const newCheckRadio = Array.from({ length: radioDummy.length }, (_, index) => index === userCustomerTypeIndex)
         setCheckRadio(newCheckRadio)
       }
+
+      const newCheck = check.map((_, index) => resData?.customer?.businessType?.includes(checkDummy[index]))
+      setCheck(newCheck)
     }
   }, [isSuccess, resData])
 
@@ -243,7 +245,6 @@ const ProfileEdit = () => {
   const [postFind, setPostFind] = useState(false)
   const [modalSwitch, setModalSwitch] = useState(false)
   const [address, setAddress] = useState('')
-  const [postAddress, setPostAdress] = useState('')
   const [detailAddress, setDetailAddress] = useState('')
   const [isDaumPostOpen, setIsDaumPostOpen] = useState(false)
   const postCheck = () => {
@@ -276,37 +277,9 @@ const ProfileEdit = () => {
     setIsDaumPostOpen(true)
   }
 
-  const sidoMapping = {
-    서울: '서울특별시',
-    부산: '부산광역시',
-    대구: '대구광역시',
-    인천: '인천광역시',
-    광주: '광주광역시',
-    대전: '대전광역시',
-    울산: '울산광역시',
-    경기: '경기도',
-    충북: '충청북도',
-    충남: '충청남도',
-    전북: '전라북도',
-    전남: '전라남도',
-    경북: '경상북도',
-    경남: '경상남도',
-  }
-
   const daumPostHandleComplete = (data) => {
-    console.log('daum post data', data)
     const { address } = data
     setAddress(address)
-
-    // 지번 주소 전달
-    const mappedSido = sidoMapping[data?.sido] || data?.sido
-    const mergedAddress = [mappedSido, data?.sigungu, data?.bname1, data?.bname2]
-      .filter((value) => value !== '')
-      .join(' ')
-
-    setPostAdress(mergedAddress)
-    console.log('mergedAddress =>', mergedAddress)
-
     setIsDaumPostOpen(false)
   }
 

@@ -23,8 +23,6 @@ const ClientPage = () => {
           <SubHeader />
           <OverAllTable>
             <Client setModal={setModal} />
-            {modal && <ClientModal setModal={setModal} />}
-            {/* content, onClick, title */}
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>

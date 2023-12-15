@@ -31,13 +31,13 @@ import {
   UserManageCustomerDestinationManageFieldsCols,
 } from '../../../constants/admin/UserManage'
 import { add_element_field } from '../../../lib/tableHelpers'
-import { userpageDestinationEdit } from '../../../store/Layout/Layout'
+import { userpageDestiEdit } from '../../../store/Layout/Layout'
 import DestinationEdit from './DestinationEdit'
 import { btnCellUidAtom } from '../../../store/Layout/Layout'
 
 const Destination = ({ setChoiceComponent }) => {
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-  const [switchDestiEdit, setSwtichDestiEdit] = useAtom(userpageDestinationEdit)
+  const [switchDestiEdit, setSwtichDestiEdit] = useAtom(userpageDestiEdit)
   const radioDummy = ['전체', '미진행', '진행중', '종료']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 

@@ -10,11 +10,18 @@ import {
   surEditModalAtom,
   userpageDestinationEdit,
   userpageUserPreferEdit,
+  StandardDispatchEditAtom,
+  usermanageClientEdit,
+  UsermanageDestiEditModal,
+  StandardConsoliateEdit,
+
 } from '../../store/Layout/Layout'
 
 const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
   const uid = data[uidFieldName]
+
   const navigate = useNavigate()
+
   const [overallData, setOverallData] = useState(data)
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
   // console.log('uidAtom @@@', uidAtom)
@@ -25,7 +32,11 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
 
   const [userpageEditModal, setUserPageEditModal] = useAtom(userpageUserPreferEdit) // 마이페이지 수정 모달
 
-  const [userDestiEdit, setUserDestiEdit] = useAtom(userpageDestinationEdit)
+  const [userManageEdit, setUserManageEdit] = useAtom(usermanageClientEdit) // 고객사 관리 수정 모달
+
+  const [userDestiEdit, setUserDestiEdit] = useAtom(UsermanageDestiEditModal) // 고객사 목적지 관리 수정 모달
+
+  const [consoliEdit, setConsoliEdit] = useAtom(StandardConsoliateEdit)
 
   // console.log('버튼 셀 @@@', userpageEditModal)
 
@@ -42,8 +53,8 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
         setUidAtom(uid)
         setModalMode('수정')
         break
-      case 'input':
-        setBtnCellModal(true)
+      case 'consoli':
+        setConsoliEdit(true)
         setUidAtom(uid)
         setCosoliMode('수정')
         break
@@ -55,7 +66,10 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
       case 'userprefer':
         setUidAtom(uid)
         setUserPageEditModal(true)
-      case 'userdestination':
+      case 'usermanage': // 고객사 관리
+        setUidAtom(uid)
+        setUserManageEdit(true)
+      case 'userdestination': // 고객사 목적지 관리
         setUidAtom(uid)
         setUserDestiEdit(true)
       // 클레임 관리 목록 수정 버튼 => 클레임 수정 페이지로 이동
@@ -75,7 +89,9 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
 
   return (
     <>
-      <SkyBtn onClick={btnClickedHandler}>수정</SkyBtn>
+      <SkyBtn style={{ marginLeft: 'auto', marginRight: 'auto' }} onClick={btnClickedHandler}>
+        수정
+      </SkyBtn>
     </>
   )
 }

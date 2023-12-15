@@ -7,6 +7,7 @@ const urls = {
   clientDestination: 'admin/customer-destination',
   userManage: 'admin/member',
   profileEdit: 'admin/privacy',
+  addressFind: 'search/code',
 }
 /* ==============================
     사용자관리 - 고객사 관리
@@ -60,6 +61,11 @@ export function get_clientDestination(data) {
   return client.get(`${urls.clientDestination}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
 }
 
+export function get_detailClientDestination(data) {
+  console.log('detail data =>', data)
+  return client.get(`${urls.clientDestination}/${data}`)
+}
+
 export function delete_clientDestination(id) {
   return client.delete(`${urls.clientDestination}/${id}`)
 }
@@ -70,6 +76,10 @@ export function post_clientDestination(data) {
 
 export function patch_clientDestination(data) {
   return client.patch(urls.clientDestination, data)
+}
+
+export function get_addressFind(data) {
+  return client.get(`${urls.addressFind}?name=${data}`)
 }
 
 /* ==============================
