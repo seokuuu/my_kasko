@@ -30,6 +30,7 @@ const init = {
   uid: '',
   represent: '', // (0: 미지정 / 1: 지정)
   customerUid: '', //고객 고유번호
+  destinationUid: '', //목적지 고유번호
   address: '', //상세주서
   name: '', //하차지명
   managerTitle: '', //담당자 직함
@@ -160,7 +161,7 @@ const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
                 <h4>목적지</h4>
                 <p></p>
               </Title>
-              <CustomInput width={120} onChange={eventHandle} />
+              <CustomInput width={120} name="destinationUid" onChange={eventHandle} />
               <span style={{ margin: 'auto 5px' }}>-</span>
               <CustomInput width={120} />
               <BlackBtn width={20} height={40} style={{ marginLeft: '10px' }}>
