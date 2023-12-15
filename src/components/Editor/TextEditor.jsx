@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
-import { Editor } from 'react-draft-wysiwyg'
 import { EditorState, convertToRaw } from 'draft-js'
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import draftjsToHtml from 'draftjs-to-html'
+import React, { useEffect, useState } from 'react'
+import { Editor } from 'react-draft-wysiwyg'
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+import styled from 'styled-components'
 
 const Container = styled.div`
   width: 100%;
@@ -43,7 +43,7 @@ function uploadImageCallBack(file) {
   })
 }
 
-const TextEditor = () => {
+const TextEditor = ({ setState = () => {}, name = 'content', value }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty())
   const [htmlString, setHtmlString] = useState('')
 
@@ -57,12 +57,22 @@ const TextEditor = () => {
     console.log('이미지 업로드')
   }
 
+  useEffect(() => {
+    if (value) {
+      setHtmlString(value)
+    }
+  }, [value])
+
+  useEffect(() => {
+    if (setState) setState((p) => ({ ...p, [name]: htmlString }))
+  }, [htmlString])
   return (
     <>
       <Container>
         <Editor
           placeholder="게시글을 작성해주세요."
-          editorState={editorState}
+          htmlString={editorState}
+          // editorState={editorState}
           onEditorStateChange={updateTextDescription}
           toolbar={{
             image: { uploadCallback: uploadImageCallBack },

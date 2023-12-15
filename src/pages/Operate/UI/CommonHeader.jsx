@@ -14,7 +14,6 @@ import {
   RowWrap,
 } from '../../../modal/External/ExternalFilter'
 import { toggleAtom } from '../../../store/Layout/Layout'
-import { normalTabOptions } from '../constants'
 import CategoryTab from './CategoryTab'
 
 /**
@@ -27,8 +26,17 @@ import CategoryTab from './CategoryTab'
  * @param searchInitValue 검색 상태 초깃값
  * @param tabHighlightValue 선택된 카테고리 탭 값
  * @param searchCategoryOptions 검색 셀렉트 박스 옵션
+ * @param categoryTabOptions 카테고리 탭 옵션
  **/
-const CommonHeader = ({ search, setSearch, refetch, searchInitValue, tabHighlightValue, searchCategoryOptions }) => {
+const CommonHeader = ({
+  search,
+  setSearch,
+  refetch,
+  searchInitValue,
+  tabHighlightValue,
+  searchCategoryOptions,
+  categoryTabOptions,
+}) => {
   const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
   const [toggleMsg, setToggleMsg] = useState('On')
 
@@ -60,7 +68,7 @@ const CommonHeader = ({ search, setSearch, refetch, searchInitValue, tabHighligh
       <FilterHeader>
         <div style={{ display: 'flex' }}>
           <h1>일반 관리</h1>
-          <CategoryTab options={normalTabOptions} highLightValue={tabHighlightValue} />
+          <CategoryTab options={categoryTabOptions} highLightValue={tabHighlightValue} />
         </div>
         <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
       </FilterHeader>
