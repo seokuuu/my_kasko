@@ -42,7 +42,7 @@ const SignUpPost = ({
             {!postFind ? (
               <>
                 <div style={{ width: '320px', marginBottom: '5px' }}>
-                  <TxtCheckInput type="text" value={address} readOnly />
+                  <TxtCheckInput type="text" value={address} readOnly onClick={daumPostHandleBtn} />
                   <CheckBtn
                     type="button"
                     style={{
