@@ -29,19 +29,25 @@ export function businessNumberDuplication(data) {
 /* ==============================
     회원가입
 ============================== */
-export async function signup(data) {
+export async function signup(data, bankBookFile, registrationFile) {
   // const jsonData = { request: data }
   // console.log(jsonData)
   console.log(data)
   const form = new FormData()
   form.append(
-    // request라는 키에 value를 두번째인자로
     'request',
-    //이미지가 포함된 파일에서 바이너리로 서버로 보낼때 사용
     new Blob([JSON.stringify(data)], {
       type: 'application/json',
     }),
-  ) //request: 바이너리형태
+  )
+
+  registrationFile.forEach((file) => {
+    form.append('registrationFile', file)
+  })
+  bankBookFile.forEach((file) => {
+    form.append('bankBookFile', file)
+  })
+
   return await client.post(urls.signup, form, { headers }) //파싱형태 백엔드랑 상의필요
 }
 

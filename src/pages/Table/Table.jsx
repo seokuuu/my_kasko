@@ -48,7 +48,7 @@ const asDate = (dateAsString) => {
   return new Date(Number.parseInt(splitFields[2]), Number.parseInt(splitFields[1]) - 1, Number.parseInt(splitFields[0]))
 }
 
-const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
+const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData }) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
   const gridRef = useRef()
@@ -56,7 +56,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
   const [rowData, setRowData] = useState()
   const [selectedRowData, setSelectedRowData] = useState(null)
-
+  console.log('TOPDATA', topData)
   var checkboxSelection = function (params) {
     // we put checkbox on the name if we are not doing grouping
     return params.columnApi.getRowGroupColumns().length === 0
@@ -204,7 +204,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
     // const path = event.data['고객 코드']
     // console.log(event.data)
     setDetailRow(event.data)
-    setChoiceComponent('수정')
+    setChoiceComponent(event.data)
     // navigate(`/userpage/userdestination/${path}`)
     // console.log('Double clicked row UID: ', event.data)
   }
@@ -257,6 +257,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
   }, [])
 
   const [sortNum] = useAtom(pageSort)
+
   const onPageSizeChanged = useCallback(
     (sortNum) => {
       console.log(sortNum)
@@ -276,16 +277,16 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
     // other grid options
     // rowModelType: 'serverSide',
     rowModelType: 'clientSide',
-    paginationPageSize: 10, // 요청할 페이지 사이즈
+    // paginationPageSize: size, // 요청할 페이지 사이즈
     cacheBlockSize: 100, // 캐시에 보관할 블록 사이즈
     maxBlocksInCache: 10, // 캐시에 최대로 보관할 블록 수
-
     // 서버 측 데이터 요청을 처리하는 함수
     serverSideDatasource: {
       getRows: async function (params) {
         // 백엔드로부터 데이터 가져오기
-        // const response = await fetch(`your/backend/endpoint?startRow=${params.startRow}&endRow=${params.endRow}`);
-        // const rowData = await response.json();
+        // const response = await fetch('/inventory-ledger?pageNum=1&pageSize=1')
+        // const rowData = await response.json()
+        // console.log(rowData)
         // ag-Grid에 데이터 설정
         // params.successCallback(getRow)
       },
@@ -294,6 +295,9 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
   // new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
 
   // console.log('gridOptions', gridOptions)
+  const pinnedTopRowData = useMemo(() => {
+    return topData
+  }, [topData])
 
   return (
     <div style={containerStyle}>
@@ -315,11 +319,12 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
             rowGroupPanelShow={'always'}
             pivotPanelShow={'always'}
             pagination={true}
+            paginationPageSize={size}
             isExternalFilterPresent={isExternalFilterPresent}
             // doesExternalFilterPass={doesExternalFilterPass}
             onGridReady={onGridReady}
             onSelectionChanged={onSelectionChanged}
-
+            pinnedTopRowData={pinnedTopRowData}
             // sideBar={{ toolPanels: ['columns', 'filters'] }}
           />
         </div>
@@ -361,6 +366,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent }) => {
               </BlackBtn>
             </BlueBarBtnWrap>
           </ModalContainer>
+          <Pagination></Pagination>
         </>
       )}
     </div>
@@ -438,3 +444,5 @@ const ResultBlock = styled.div`
 const RBInput = styled.input`
   font-size: 16px;
 `
+
+const Pagination = styled.ul``

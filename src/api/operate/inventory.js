@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* ==============================
     운영 관리 - 창고 관리
 ============================== */
@@ -95,3 +96,19 @@ export function useStorageRemoveMutation() {
     },
   })
 }
+=======
+import {client} from '../index'
+import qs from "qs";
+
+const urls ={ 
+  inventory:'/inventory-ledger'
+}
+
+export async function getInventoryLedger(data) {
+   const response = await client.get(`${urls.inventory}`,{ params:data ,paramsSerializer:(param) =>{
+    return qs.stringify(param)
+  }})
+
+  return response
+}
+>>>>>>> master
