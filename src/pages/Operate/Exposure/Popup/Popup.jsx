@@ -5,17 +5,21 @@ import { useNavigate } from 'react-router-dom'
 import { usePopupListQuery, usePopupRemoveMutation } from '../../../../api/operate/popup'
 import { PopupListFieldCols, PopupListFields } from '../../../../constants/admin/popup'
 import { add_element_field } from '../../../../lib/tableHelpers'
-import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
+import { FilterContianer, FilterHeader, TableContianer } from '../../../../modal/External/ExternalFilter'
 import {
   doubleClickedRowAtom,
   popupAtom,
   popupObject,
   popupTypeAtom,
   selectedRowsAtom,
+  toggleAtom,
 } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
 import CommonTableHeader from '../../UI/CommonTableHeader'
-import { commonListSearchInitValue } from '../../constants'
+import { commonListSearchInitValue, exposureTabOptions } from '../../constants'
+import CommonHeader from '../../UI/CommonHeader'
+import CategoryTab from '../../UI/CategoryTab'
+import HeaderToggle from '../../../../components/Toggle/HeaderToggle'
 
 /**
  * @description
@@ -112,6 +116,12 @@ const Popup = ({}) => {
   return (
     <FilterContianer>
       {/* 헤더(카테고리탭 & 검색) */}
+      <FilterHeader>
+        <div style={{ display: 'flex' }}>
+          <h1>일반 관리</h1>
+          <CategoryTab options={exposureTabOptions} highLightValue={'exposure'} />
+        </div>
+      </FilterHeader>
 
       <TableContianer>
         {/* 테이블 헤더 */}

@@ -1,20 +1,24 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FilterContianer } from '../../../../modal/External/ExternalFilter'
 import AutionPolicy from './components/AutionPolicy'
 import CategoryTab from './components/CategoryTab'
 import ProductRange from './components/ProductRange'
 import Storage from './components/Storage'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 const Operation = () => {
-  // 카테고리
-  const [types, setTypes] = useState('product')
+  const navigate = useNavigate()
+  // 쿼리 스트링 조회
+  const [searchParams, setSearchParams] = useSearchParams()
 
+  const category = searchParams.get('category')
+  console.log('searchParams :', searchParams.get('category'))
   /**
    * @description
    * 카테고리에 따른 컴포넌트 맵핑
    */
   function mappingComponent() {
-    switch (types) {
+    switch (category) {
       case 'product':
         return <ProductRange />
       case 'policy':
@@ -26,10 +30,16 @@ const Operation = () => {
     }
   }
 
+  // 처음 렌더링될 때, 제품군 관리 탭으로 이동할 수 있도록 쿼리스트링을 변경해줍니다.
+  useEffect(() => {
+    searchParams.set('category', 'policy')
+    setSearchParams(searchParams)
+  }, [])
+
   return (
     <FilterContianer>
       {/* 카테고리 탭 */}
-      <CategoryTab types={types} setTypes={setTypes} />
+      <CategoryTab />
 
       {mappingComponent()}
     </FilterContianer>
