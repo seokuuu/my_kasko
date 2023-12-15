@@ -1,31 +1,74 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 
-import TextEditor from '../../../../components/Editor/TextEditor'
-import DateGrid from '../../../../components/DateGrid/DateGrid'
-import { claimOngoingStatus, ClaimSelect } from '../../../../common/Option/ClaimPost'
 import { BlackBtn, WhiteBtn } from '../../../../common/Button/Button'
 import { CenterRectangleWrap } from '../../../../common/OnePage/OnePage.Styled'
 
-import { StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../../common/Check/CheckImg'
+import { useNavigate, useParams } from 'react-router-dom'
+import {
+  useNoticeBoardDetailsQuery,
+  useNoticeBoardRegisterMutation,
+  useNoticeBoardUpdateMutation,
+} from '../../../../api/operate/noticeBoard'
+import { PropsTextArea } from '../../../../common/Input/Input'
+import AlertPopup from '../../../../modal/Alert/AlertPopup'
+import useConfirmMoal from '../../hook/useConfirmMoal'
+import IsExposure from './components/IsExposure'
+/**
+ * @description
+ * 전광판 등록
 
-import { CheckBox } from '../../../../common/Check/Checkbox'
-
-import { CheckImg2 } from '../../../../common/Check/CheckImg'
-
-import { DateTitle, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../../components/MapTable/MapTable'
-import { CustomInput, InputA, PropsInput, PropsTextArea } from '../../../../common/Input/Input'
-import { ExCheckWrap } from '../../../../modal/External/ExternalFilter'
-import { Input } from '../../../User/Login/Login.Styled'
-import { CustomSelect } from '../../../../common/Option/Main'
-import { ExRadioWrap } from '../../../../modal/External/ExternalFilter'
-import { RadioMainDiv, RadioInnerCircleDiv, RadioCircleDiv } from '../../../../common/Check/RadioImg'
-// 클레임 등록
+ */
 const NoticeBoardPost = () => {
+  const { id } = useParams()
+  const navigate = useNavigate()
+
+  // 등록 폼
+  const [form, setForm] = useState({ title: '', status: true })
+
+  // 확인 모달 관련 값들
+  const { popupSwitch, setPopupSwitch, setNowPopupType, nowPopup, setNowPopup, initConfirmModal } = useConfirmMoal()
+
+  //  전광판 상세 API
+  const { data } = useNoticeBoardDetailsQuery(id)
+
+  console.log('상세 데이터 :', data)
+
+  // 전광판 등록 API
+  const { mutate: register } = useNoticeBoardRegisterMutation()
+
+  // 전광판 등록 API
+  const { mutate: update } = useNoticeBoardUpdateMutation()
+
+  // 내용 인풋 이벤트 핸들러
+  function commonChangeHandler(e) {
+    const { name, value } = e.target
+
+    setForm((p) => ({ ...p, [name]: value }))
+  }
+
+  // 등록 핸들러
+  function submitHandler() {
+    if (!form.title) {
+      return alert('내용을 입력해주세요.')
+    }
+
+    setPopupSwitch(true)
+    setNowPopupType(2)
+    setNowPopup({
+      num: '2-1',
+      title: '저장하시겠습니까?',
+      next: '1-12',
+      func() {},
+    })
+  }
+
   const checkDummy = ['노출 안함']
+  const radioDummy = ['노출', '미노출']
 
   const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
   const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
   useEffect(() => {
     const updatedCheck = checkDummy.map((value, index) => {
@@ -42,16 +85,42 @@ const NoticeBoardPost = () => {
     // });
   }, [check])
 
-  const radioDummy = ['노출', '미노출']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+  /**
+   * @description
+   * 등록 or 수정 API 요청
+   * detailsId와 data가 있다면 수정 API 없다면 등록 API
+   */
+  useEffect(() => {
+    if (nowPopup.num === '1-12') {
+      if (id && data) {
+        update({ ...form, status: Number(form.status), uid: data.uid })
+      } else {
+        register({ ...form, status: Number(form.status) })
+      }
+      initConfirmModal()
+    }
+  }, [nowPopup])
+
+  useEffect(() => {
+    if (id && data) {
+      setCheckRadio(Boolean(data.status) ? [true, false] : [false, true])
+      setForm({
+        title: data.title,
+        status: Number(data.status),
+      })
+    }
+  }, [data])
 
   return (
     <>
       <CenterRectangleWrap>
         <CRWMain>
-          <h5>전광판 등록</h5>
+          <h5>전광판 {id ? '저장' : '등록'}</h5>
           <div style={{ marginBottom: '10px', display: 'flex' }}>
             <PropsTextArea
+              name="title"
+              value={form.title}
+              onChange={commonChangeHandler}
               style={{ marginLeft: 'auto', marginRight: 'auto' }}
               per={90}
               height={260}
@@ -59,51 +128,31 @@ const NoticeBoardPost = () => {
               maxLength={80}
             />
           </div>
-
-          <BottomWrap style={{ width: '100%', display: 'flex', height: '450px' }}>
-            <BottomOne
-              style={{
-                width: '90%',
-
-                marginLeft: 'auto',
-                marginRight: 'auto',
-                alignItems: 'normal',
-                paddingTop: '50px',
-                display: 'block',
-              }}
-            >
-              <div style={{ fontSize: '18px' }}>전광판 노출 여부</div>
-              <div style={{ display: 'flex' }}>
-                <ExRadioWrap style={{ padding: '0', marginTop: '10px', gap: '300px' }}>
-                  {radioDummy.map((text, index) => (
-                    <RadioMainDiv key={index}>
-                      <RadioCircleDiv
-                        isChecked={checkRadio[index]}
-                        onClick={() => {
-                          setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-                        }}
-                      >
-                        <RadioInnerCircleDiv isChecked={checkRadio[index]} />
-                      </RadioCircleDiv>
-                      <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
-                    </RadioMainDiv>
-                  ))}
-                </ExRadioWrap>
-              </div>
-            </BottomOne>
-          </BottomWrap>
+          {/* 전광판 노출 여부 */}
+          <IsExposure
+            setState={setForm}
+            setCheckRadio={setCheckRadio}
+            checkRadio={checkRadio}
+            radioDummy={radioDummy}
+          />
 
           <CRWSub>
             <BtnWrap>
-              <WhiteBtn width={90} height={50} style={{ marginRight: '10px' }}>
+              <WhiteBtn
+                width={90}
+                height={50}
+                style={{ marginRight: '10px' }}
+                onClick={() => navigate('/operate/noticeBoard')}
+              >
                 돌아가기
               </WhiteBtn>
-              <BlackBtn width={90} height={50}>
-                저장
+              <BlackBtn width={90} height={50} onClick={submitHandler}>
+                {id ? '저장' : '등록'}
               </BlackBtn>
             </BtnWrap>
           </CRWSub>
         </CRWMain>
+        {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
       </CenterRectangleWrap>
     </>
   )
@@ -166,13 +215,6 @@ export const CRWSub = styled.div`
   display: flex;
 `
 
-const BottomWrap = styled.div`
-  display: block;
-  justify-content: left;
-  font-size: 16px;
-  height: 200px;
-`
-
 const BtnWrap = styled.div`
   display: flex;
   width: 500px;
@@ -180,11 +222,4 @@ const BtnWrap = styled.div`
   align-items: center;
   margin-left: auto;
   margin-right: auto;
-`
-
-const BottomOne = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin: 10px 0px;
-  align-items: center;
 `

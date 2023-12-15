@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import DatePicker, { registerLocale } from 'react-datepicker'
 
+import ko from 'date-fns/locale/ko' // 수정: ko로 변경합니다.
 import 'react-datepicker/dist/react-datepicker.css'
 import { styled } from 'styled-components'
-import ko from 'date-fns/locale/ko' // 수정: ko로 변경합니다.
 
 registerLocale('ko', ko)
 

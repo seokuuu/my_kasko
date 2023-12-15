@@ -228,6 +228,7 @@ const Single = ({}) => {
         </TCSubContainer>
         <TCSubContainer>
           <div>
+            {/* 체크 박스의 값을 더한 값을 노출시켜줘야함 */}
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>

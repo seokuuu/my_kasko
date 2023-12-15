@@ -38,3 +38,16 @@ export function addPropertyToObject(obj, key, value) {
 
   return newObj
 }
+
+// 날짜 포멧(YYYY.MM.DD)
+
+export function dotDateFormat(date) {
+  const transformDate = new Date(date)
+  const year = transformDate.getFullYear()
+  const month = (transformDate.getMonth() + 1).toString().padStart(2, '0')
+  const day = transformDate.getDate().toString().padStart(2, '0')
+
+  const dateString = year + '.' + month + '.' + day
+
+  return dateString
+}

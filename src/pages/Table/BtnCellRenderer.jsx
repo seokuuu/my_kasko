@@ -1,24 +1,30 @@
-import React, { useEffect, useState } from 'react'
+import { useAtom } from 'jotai'
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { SkyBtn } from '../../common/Button/Button'
 import {
+  StandardDispatchEditAtom,
   btnCellRenderAtom,
   btnCellUidAtom,
-  surEditModalAtom,
   consolEditModalAtom,
-  StandardDispatchEditAtom,
+  surEditModalAtom,
+  userpageDestinationEdit,
   userpageUserPreferEdit,
+  StandardDispatchEditAtom,
   usermanageClientEdit,
   UsermanageDestiEditModal,
   StandardConsoliateEdit,
+
 } from '../../store/Layout/Layout'
-import { useAtom } from 'jotai'
 
 const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
   const uid = data[uidFieldName]
-  console.log('editType', editType)
+
+  const navigate = useNavigate()
+
   const [overallData, setOverallData] = useState(data)
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-  console.log('uidAtom @@@', uidAtom)
+  // console.log('uidAtom @@@', uidAtom)
   const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
   const [modalMode, setModalMode] = useAtom(surEditModalAtom) // 할증 관리 modal
   const [dispatchModalMode, setDispatchModalMode] = useAtom(StandardDispatchEditAtom)
@@ -32,9 +38,9 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
 
   const [consoliEdit, setConsoliEdit] = useAtom(StandardConsoliateEdit)
 
-  console.log('버튼 셀 @@@', userpageEditModal)
+  // console.log('버튼 셀 @@@', userpageEditModal)
 
-  console.log('!!!')
+  // console.log('!!!')
 
   const btnClickedHandler = () => {
     switch (editType) {
@@ -66,6 +72,12 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
       case 'userdestination': // 고객사 목적지 관리
         setUidAtom(uid)
         setUserDestiEdit(true)
+      // 클레임 관리 목록 수정 버튼 => 클레임 수정 페이지로 이동
+      case 'claimUpdate':
+        setBtnCellModal(true)
+        setUidAtom(uid)
+        setModalMode('수정')
+
       default:
         break
     }

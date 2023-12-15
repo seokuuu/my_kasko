@@ -27,8 +27,10 @@ export const StyledCheckSubSquDiv = styled.div`
   justify-content: center;
   width: 1rem;
   height: 1rem;
+
   background-color: ${({ isChecked }) => (isChecked ? '#4c83d6' : 'inherit')};
   border: ${({ isChecked }) => (isChecked ? 'none' : ' 1px solid #c8c8c8')};
+
   cursor: pointer;
 `
 

@@ -1,5 +1,4 @@
 import { atom, useAtom } from 'jotai'
-import { at } from 'lodash'
 
 export const headerAtom = atom(true)
 export const accordionAtom = atom(true)
@@ -176,6 +175,13 @@ export const excelToJsonAtom = atom('')
 
 export const onClickCheckAtom = atom(false)
 
+/* ==============================
+    운영 관리
+============================== */
+
+// 운영 관리 > 제품군 수정,창고 추가
+export const operateAddAtom = atom(false)
+
 // 테이블 모달에 대한 atom
 // 해당 모달을
 // 한 컴포넌트에서 모달 갯수가 많으면 ..? 어떻게 관리?
@@ -200,5 +206,31 @@ export const userpageUserPreferEdit = atom(false)
 //  선호제품 관리 수정 Object
 export const userpageUserPreferEditObject = atom('')
 
+
+// 목적지 관리 수정버튼 모달 switch
+export const userpageDestinationEdit = atom(false)
+
+// ========= 재고 수불 관리 ===============
+// 목적지
+export const invenDestination = atom(false)
+// 고객사
+export const invenCustomer = atom(false)
+// 고객사 데이터
+export const invenCustomerData = atom({
+  businessNumber: '',
+  code: '',
+  name: '',
+  uid: 0,
+})
+
+export const invenDestinationData = atom({
+  code: '',
+  name: '',
+  uid: 0,
+})
+
+// =======================================
+
 // 목적지 관리 수정 switch
 export const userpageDestiEdit = atom(false)
+

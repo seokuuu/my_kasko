@@ -1,43 +1,47 @@
-import { useState } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../../common/Option/SignUp'
-import { Link } from 'react-router-dom'
-import { MainSelect } from '../../../../common/Option/Main'
-import { BlackBtn, BlueBtn, BtnWrap, WhiteRedBtn, SkyBtn } from '../../../../common/Button/Button'
-import DateGrid from '../../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../../common/Button/Button'
-import Test3 from '../../../Test/Test3'
-import HeaderToggle from '../../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../../store/Layout/Layout'
-import BlueBar from '../../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { FilterWrap } from '../../../../modal/External/ExternalFilter'
+import { useEffect, useState } from 'react'
+import { useClaimListQuery } from '../../../../api/operate/claim'
+import { BlackBtn, SkyBtn, WhiteRedBtn } from '../../../../common/Button/Button'
+import { MainSelect } from '../../../../common/Option/Main'
+import DateGrid from '../../../../components/DateGrid/DateGrid'
+import HeaderToggle from '../../../../components/Toggle/HeaderToggle'
+import { ClaimListFieldCols, ClaimListFields } from '../../../../constants/admin/Claim'
+import { add_element_field } from '../../../../lib/tableHelpers'
 import {
+  DoubleWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
   FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
+  FilterSubcontianer,
+  FilterWrap,
   GridWrap,
-  Tilde,
-  DoubleWrap,
+  PartWrap,
   ResetImg,
-  TableContianer,
-  InputStartWrap,
-  FilterHeaderAlert,
-  TableTitle,
-  SubTitle,
+  RowWrap,
   TCSubContainer,
+  TableContianer,
+  Tilde,
 } from '../../../../modal/External/ExternalFilter'
+import { blueModalAtom, toggleAtom } from '../../../../store/Layout/Layout'
+import Table from '../../../Table/Table'
+import CategoryTab from '../../UI/CategoryTab'
+import { normalTabOptions } from '../../constants'
 
 const Claim = ({}) => {
+  // 목록 API(REQUEST PARAMETER)
+  const [search, setSearch] = useState({
+    pageNum: 1,
+    pageSize: 5,
+  })
+
+  // 목록 리스트
+  const [row, setRow] = useState([])
+
+  // 목록 API
+  const { data } = useClaimListQuery(search)
+
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -71,25 +75,19 @@ const Claim = ({}) => {
     setIsModal(true)
   }
 
+  useEffect(() => {
+    if (data) {
+      setRow(add_element_field(data.list, ClaimListFields))
+    }
+  }, [data])
+
   return (
     <FilterContianer>
       <div>
         <FilterHeader>
           <div style={{ display: 'flex' }}>
             <h1>일반 관리</h1>
-            <SubTitle>
-              <h5>클레임 관리</h5>
-
-              <Link to={`/operate/faq`}>
-                <h6>FAQ 관리</h6>
-              </Link>
-              <Link to={`/operate/notice`}>
-                <h6>공지사항</h6>
-              </Link>
-              <Link to={`/operate/datasheet`}>
-                <h6>자료실</h6>
-              </Link>
-            </SubTitle>
+            <CategoryTab options={normalTabOptions} highLightValue="claim" />
           </div>
           <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
         </FilterHeader>
@@ -159,8 +157,8 @@ const Claim = ({}) => {
             <SkyBtn>클레임 등록</SkyBtn>
           </div>
         </TCSubContainer>
-
-        <Test3 title={'규격 약호 찾기'} />
+        <Table getCol={ClaimListFieldCols} getRow={row} />
+        {/* <Test3 title={'규격 약호 찾기'} /> */}
       </TableContianer>
     </FilterContianer>
   )

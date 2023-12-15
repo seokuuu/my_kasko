@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 
-import TextEditor from '../../../../components/Editor/TextEditor'
-import DateGrid from '../../../../components/DateGrid/DateGrid'
-import { claimOngoingStatus, ClaimSelect } from '../../../../common/Option/ClaimPost'
 import { BlackBtn, WhiteBtn } from '../../../../common/Button/Button'
 import { CenterRectangleWrap } from '../../../../common/OnePage/OnePage.Styled'
+import DateGrid from '../../../../components/DateGrid/DateGrid'
+import TextEditor from '../../../../components/Editor/TextEditor'
 
 import { StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../../common/Check/CheckImg'
 
@@ -13,13 +12,14 @@ import { CheckBox } from '../../../../common/Check/Checkbox'
 
 import { CheckImg2 } from '../../../../common/Check/CheckImg'
 
-import { DateTitle, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../../components/MapTable/MapTable'
-import { CustomInput, InputA, PropsInput } from '../../../../common/Input/Input'
-import { ExCheckWrap } from '../../../../modal/External/ExternalFilter'
-import { Input } from '../../../User/Login/Login.Styled'
+import { useNavigate } from 'react-router-dom'
+import { InputA, PropsInput } from '../../../../common/Input/Input'
 import { CustomSelect } from '../../../../common/Option/Main'
+import { ExCheckWrap } from '../../../../modal/External/ExternalFilter'
 // 클레임 등록
 const PopupPost = () => {
+  const navigate = useNavigate()
+
   const checkDummy = ['노출 안함']
 
   const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
@@ -95,7 +95,12 @@ const PopupPost = () => {
 
           <CRWSub>
             <BtnWrap>
-              <WhiteBtn width={90} height={50} style={{ marginRight: '10px' }}>
+              <WhiteBtn
+                width={90}
+                height={50}
+                style={{ marginRight: '10px' }}
+                onClick={() => navigate('/operate/exposure')}
+              >
                 돌아가기
               </WhiteBtn>
               <BlackBtn width={90} height={50}>
