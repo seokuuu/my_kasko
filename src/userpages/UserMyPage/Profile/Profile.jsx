@@ -300,7 +300,6 @@ const ProfileEdit = () => {
 
     // 지번 주소 전달
     const mappedSido = sidoMapping[data?.sido] || data?.sido
-    console.log('mappedSido', mappedSido)
     const mergedAddress = [mappedSido, data?.sigungu, data?.bname1, data?.bname2]
       .filter((value) => value !== '')
       .join(' ')
