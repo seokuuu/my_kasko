@@ -138,12 +138,15 @@ import TableTest from './modal/Table/TableTest'
 import NoticePost from './pages/Operate/Common/Notice/NoticePost'
 import NoticeBoardPost from './pages/Operate/Exposure/NoticeBoard/NoticeBoardPost'
 import TestExcel from './pages/Test/TestExcel'
+import TestParents from './components/TableUiComponent/TestParents'
 
 // RoundAucProAdd
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* 컴포넌트 작업 Router */}
+        <Route path="/tableUi" element={<TestParents />} />
         {/* 테스트 URL */}
         <Route path="/ppapp" element={<UserEditPage />} />
         <Route path="/ppap" element={<DefaultBlueBar />} />

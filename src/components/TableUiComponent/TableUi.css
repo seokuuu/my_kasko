@@ -1,0 +1,15 @@
+/* Ag-Grid 커스텀 */
+.custom-header-style {
+  background-color: #dbe2f0;
+  text-align: center;
+  border-right: 1px solid #c8c8c8;
+  box-sizing: border-box;
+  justify-content: center;
+}
+.custom-header-style:last-child {
+  border-right: none;
+  box-sizing: border-box;
+}
+.ag-header-cell-label {
+  justify-content: center;
+}
