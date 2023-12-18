@@ -18,19 +18,23 @@ import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../comm
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 
-import { patch_clientDestination, post_clientDestination } from '../../../api/userManage'
+import { get_addressFind, patch_clientDestination, post_clientDestination } from '../../../api/userManage'
 import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
 import { isEmptyObj } from '../../../lib'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { useQueryClient } from '@tanstack/react-query'
-import { doubleClickedRowAtom, selectedRowsAtom } from '../../../store/Layout/Layout'
+import { UsermanageFindModal, doubleClickedRowAtom, selectedRowsAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
+import ClientDestiCustomerFind from './ClientDestiCustomerFind'
+import SignUpPost from '../../../modal/SignUp/SignUpPost'
 
 const init = {
   uid: '',
   represent: '', // (0: 미지정 / 1: 지정)
   customerUid: '', //고객 고유번호
-  address: '', //상세주서
+  destinationUid: '', //목적지 고유번호
+  address: '', //주소,
+  addressDetail: '',
   name: '', //하차지명
   managerTitle: '', //담당자 직함
   managerName: '', //담당자 이름
@@ -38,7 +42,108 @@ const init = {
   phone: '', //하차지담당자번호
   memo: '', //메모
 }
+
+const sidoMapping = {
+  서울: '서울특별시',
+  부산: '부산광역시',
+  대구: '대구광역시',
+  인천: '인천광역시',
+  광주: '광주광역시',
+  대전: '대전광역시',
+  울산: '울산광역시',
+  경기: '경기도',
+  충북: '충청북도',
+  충남: '충청남도',
+  전북: '전라북도',
+  전남: '전라남도',
+  경북: '경상북도',
+  경남: '경상남도',
+}
 const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
+  const [postcodeModal, setPostcodeModal] = useState(false)
+  console.log('postcodeModal', postcodeModal)
+  const [postFind, setPostFind] = useState(false)
+  const [address, setAddress] = useState(matchingData?.address)
+  const [postAddress, setPostAdress] = useState('')
+  const [detailAddress, setDetailAddress] = useState(matchingData?.addressDetail)
+  const [isDaumPostOpen, setIsDaumPostOpen] = useState(false)
+  const [findModal, setFindModal] = useAtom(UsermanageFindModal)
+  const [customerFindResult, setCustomerFindResult] = useState()
+
+  const postCheck = () => {
+    setPostFind(false)
+  }
+
+  const [destiCode, setDestiCode] = useState()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (postAddress) {
+          const response = await get_addressFind(postAddress)
+          const resData = response?.data?.data
+          if (resData) {
+            setDestiCode(resData)
+          } else {
+            setDestiCode('미등록 또는 대기 중인 코드입니다.')
+          }
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    fetchData()
+  }, [postAddress, get_addressFind])
+
+  const directCheck = () => {
+    setPostFind(true)
+    setAddress('')
+    setDetailAddress('')
+    setSubmitData({ ...submitData, address: '', addressDetail: '' })
+  }
+
+  const daumPostHandleBtn = () => {
+    setIsDaumPostOpen(true)
+  }
+
+  const detailAddressHandler = (e) => {
+    const value = e.target.value
+    setDetailAddress(value)
+  }
+
+  const comfirmPost = () => {
+    setPostcodeModal(false)
+    setSubmitData({ ...submitData, address: address, addressDetail: detailAddress })
+  }
+
+  const closeModal = () => {
+    setPostcodeModal(false)
+    setAddress('')
+    setDetailAddress('')
+    setSubmitData({ ...submitData, address: '', addressDetail: '' })
+  }
+
+  const daumPosthandleClose = () => {
+    setIsDaumPostOpen(false)
+  }
+
+  const daumPostHandleComplete = (data) => {
+    console.log('daum post data', data)
+    const { address } = data
+
+    // 지번 주소 전달
+    const mappedSido = sidoMapping[data?.sido] || data?.sido
+    const mergedAddress = [mappedSido, data?.sigungu, data?.bname1, data?.bname2]
+      .filter((value) => value !== '')
+      .join(' ')
+    setAddress(mergedAddress)
+    setDetailAddress(data?.jibunAddressEnglish?.split(' ')[0])
+    setPostAdress(mergedAddress)
+    console.log('mergedAddress =>', mergedAddress)
+    setIsDaumPostOpen(false)
+  }
+
   const radioDummy = ['지정', '미지정']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false)) // 더미 데이터에 맞는 check 생성 (해당 false / true값 반환)
 
@@ -98,7 +203,7 @@ const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
 
   const eventHandle = (e) => {
     const { name, value } = e.target
-    setSubmitData({ ...submitData, [name]: value })
+    setSubmitData({ ...submitData, [name]: value, address: address, addressDetail: detailAddress })
   }
 
   const submitHandle = (e) => {
@@ -148,10 +253,17 @@ const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
                 <h4>고객사 명</h4>
                 <p></p>
               </Title>
-              <CustomInput width={120} name="customerUid" onChange={eventHandle} />
+              <CustomInput width={120} defaultValue={customerFindResult?.name} />
               <span style={{ margin: 'auto 5px' }}>-</span>
-              <CustomInput width={120} />
-              <BlackBtn width={20} height={40} style={{ marginLeft: '10px' }}>
+              <CustomInput width={120} defaultValue={customerFindResult?.ceoName} />
+              <BlackBtn
+                width={20}
+                height={40}
+                style={{ marginLeft: '10px' }}
+                onClick={() => {
+                  setFindModal(true)
+                }}
+              >
                 조회
               </BlackBtn>
             </Part>
@@ -160,25 +272,48 @@ const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
                 <h4>목적지</h4>
                 <p></p>
               </Title>
-              <CustomInput width={120} onChange={eventHandle} />
-              <span style={{ margin: 'auto 5px' }}>-</span>
-              <CustomInput width={120} />
-              <BlackBtn width={20} height={40} style={{ marginLeft: '10px' }}>
+              <CustomInput width={260} onChange={eventHandle} name="address" value={address} />
+              <BlackBtn
+                width={20}
+                height={40}
+                style={{ marginLeft: '10px' }}
+                onClick={() => {
+                  setPostcodeModal(true)
+                }}
+              >
                 조회
               </BlackBtn>
-            </Part>
-            <Part style={{ marginTop: '35px' }}>
-              <Title>
-                <h4>상세 주소</h4>
-                <p></p>
-              </Title>
               <CustomInput
                 placeholder="상세 주소 입력"
                 width={340}
-                name="address"
-                defaultValue={matchingData?.address}
+                name="addressDetail"
+                value={detailAddress}
                 onChange={eventHandle}
+                style={{ marginTop: '5px' }}
               />
+            </Part>
+
+            <Part>
+              <Title>
+                <h4>목적지 코드</h4>
+                <p></p>
+              </Title>
+              <div
+                style={{
+                  display: 'flex',
+                  width: '345px',
+                }}
+              >
+                <div>
+                  <CustomInput
+                    width={340}
+                    disabled
+                    value={destiCode}
+                    defaultValue={matchingData?.destinationCode}
+                    onChange={eventHandle}
+                  />
+                </div>
+              </div>
             </Part>
           </Left>
           <Right style={{ width: '50%' }}>
@@ -258,6 +393,26 @@ const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
           저장
         </BlackBtn>
       </BtnWrap>
+      {findModal && (
+        <ClientDestiCustomerFind setFindModal={setFindModal} setCustomerFindResult={setCustomerFindResult} />
+      )}
+      {postcodeModal && (
+        <SignUpPost
+          postCheck={postCheck}
+          directCheck={directCheck}
+          postFind={postFind}
+          address={address}
+          daumPostHandleBtn={daumPostHandleBtn}
+          detailAddress={detailAddress}
+          setDetailAddress={setDetailAddress}
+          detailAddressHandler={detailAddressHandler}
+          comfirmPost={comfirmPost}
+          closeModal={closeModal}
+          isDaumPostOpen={isDaumPostOpen}
+          daumPosthandleClose={daumPosthandleClose}
+          daumPostHandleComplete={daumPostHandleComplete}
+        />
+      )}
     </OnePageContainer>
   )
 }

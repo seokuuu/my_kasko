@@ -41,8 +41,11 @@ export const doubleClickedRowAtom = atom([])
 // 테이블 page 50/100/500 정렬
 export const pageSort = atom(50)
 
-// 대표 상세 정보 모달
-export const clientModalAtom = atom(false)
+// 대표 상세 정보 모달 (수정)
+export const clientEditModalAtom = atom(false)
+
+// 대표 상세 정보 모달 (회원 생성)
+export const clientPostModalAtom = atom(false)
 
 //사용자 관리 - 고객사 관리파트 회원제한모달
 export const AuctionRestrictionModal = atom(false)
