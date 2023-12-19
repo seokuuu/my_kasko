@@ -1,60 +1,42 @@
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import Excel from '../../../components/TableInner/Excel'
+import { BlackBtn, BtnBound, GreyBtn, SkyBtn, TGreyBtn, TWhiteBtn, WhiteGrnBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnBound, BtnWrap } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import {
-  GreyBtn,
-  ExcelBtn,
-  WhiteGrnBtn,
-  IndigoBtn,
-  BlueBtn,
-  SkyBtn,
-  SwitchBtn,
-  TGreyBtn,
-  TWhiteBtn,
-} from '../../../common/Button/Button'
-import Test3 from '../../../pages/Test/Test3'
+import { storageOptions } from '../../../common/Option/SignUp'
+import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import Test3 from '../../../pages/Test/Test3'
 import { toggleAtom } from '../../../store/Layout/Layout'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 
 import {
+  CustomInput,
+  DoubleWrap,
+  ExRadioWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
+  FilterHeaderAlert,
   FilterLeft,
   FilterRight,
-  RowWrap,
+  FilterSubcontianer,
+  Input,
+  MiniInput,
   PartWrap,
   PWRight,
-  Input,
-  TCSubContainer,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
   ResetImg,
-  TableContianer,
-  ExRadioWrap,
+  RowWrap,
   SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-  MiniInput,
-  CustomInput,
+  TableContianer,
+  TCSubContainer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
-import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 const Package = ({}) => {
   const radioDummy = ['전체', '미응찰', '관심제품', '응찰']
@@ -211,7 +193,7 @@ const Package = ({}) => {
               <DoubleWrap>
                 <h6>제품 번호 </h6>
                 <textarea
-                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
+                  placeholder='복수 조회 진행 &#13;&#10;   "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
                 />
               </DoubleWrap>
             </FilterRight>

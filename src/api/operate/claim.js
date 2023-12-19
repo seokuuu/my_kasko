@@ -3,7 +3,9 @@
 ============================== */
 
 import { useMutation, useQuery } from '@tanstack/react-query'
+import qs from 'qs'
 import { client } from '..'
+import { Filtering } from '../../utils/filtering'
 import { queryClient } from '../query'
 
 // API URL
@@ -29,10 +31,14 @@ export function useClaimListQuery(params) {
     queryKey: CLAIM_KEYS.getClaimList,
     queryFn: async function () {
       const response = await client.get(urls.claim, {
-        params,
+        params: Filtering(params),
+        paramsSerializer: (param) => {
+          return qs.stringify(param)
+        },
       })
       return response.data.data
     },
+    // enabled: !!params.startDate || !!params.endDate,
   })
 }
 

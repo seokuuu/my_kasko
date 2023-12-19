@@ -240,6 +240,7 @@ const Router = () => {
           <Route path="/operate/operation" element={<OperationPage />}></Route>
           <Route path="/operate/inventory" element={<InventoryOperPage />}></Route>
           <Route path="/operate/common" element={<ClaimPage />}></Route>
+          <Route path="/operate/common/product" element={<>등록할 제품 찾기</>}></Route>
           <Route path="/operate/exposure" element={<PopupPage />}></Route>
           <Route path="/operate/exposure/register" element={<PopupPostPage isRegister={true} />}></Route>
           <Route path="/operate/exposure/:id" element={<PopupPostPage isRegister={false} />}></Route>

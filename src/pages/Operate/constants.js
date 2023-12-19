@@ -132,3 +132,45 @@ export const mainPopupSelectOptions = [
     label: '3번',
   },
 ]
+
+/* ==============================
+    운영 관리 - 클레임 관리
+============================== */
+// 클레임 관리 검색 필터 셀렉트 박스 옵션
+export const claimSearchCategoryOptions = [
+  {
+    value: '',
+    label: '전체',
+  },
+
+  {
+    value: '진행중',
+    label: '진행중',
+  },
+  {
+    value: '종료',
+    label: '종료',
+  },
+  {
+    value: '반품',
+    label: '반품',
+  },
+  {
+    value: '교정',
+    label: '교정',
+  },
+  {
+    value: '보상',
+    label: '보상',
+  },
+]
+
+// 클레임 목록 검색 옵션 초기값
+export const claimInitState = {
+  pageNum: 1,
+  pageSize: 5,
+  claimStatus: claimSearchCategoryOptions[0],
+  startDate: '',
+  endDate: '',
+  productNumberList: [],//제품 번호
+}
