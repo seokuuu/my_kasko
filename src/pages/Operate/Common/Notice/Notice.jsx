@@ -61,7 +61,7 @@ const Notice = ({}) => {
       setRows(add_element_field(mappingData, NoticeListFields))
     }
   }, [mappingData])
-  console.log('공지사항 데이터 목록 :', data)
+
   return (
     <FilterContianer>
       {/* 헤더(카테고리탭 & 검색) */}

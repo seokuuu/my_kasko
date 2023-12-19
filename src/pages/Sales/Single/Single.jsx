@@ -69,8 +69,6 @@ const Single = ({}) => {
     setnoticeEdit((prev) => !prev)
   }
 
-  console.log('isModal =>', isModal)
-
   const modalOpen = () => {
     setIsModal(true)
   }

@@ -17,7 +17,7 @@ import {
 import { GreyBtn, BlackBtn } from '../../common/Button/Button'
 import { parsePath, useLocation, useNavigate } from 'react-router-dom'
 import Pagination from '../../components/pagination/Pagination'
-
+import moment from 'moment'
 var dateFilterParams = {
   comparator: (filterLocalDateAtMidnight, cellValue) => {
     var cellDate = asDate(cellValue)
@@ -44,7 +44,18 @@ const asDate = (dateAsString) => {
   return new Date(Number.parseInt(splitFields[2]), Number.parseInt(splitFields[1]) - 1, Number.parseInt(splitFields[0]))
 }
 
-const TableTest = ({ hei, getRow, getCol, setChoiceComponent, pagination, setQuery, pageSizeGrid }) => {
+const TableTest = ({
+  hei,
+  topData,
+  topData2,
+  type,
+  getRow,
+  getCol,
+  setChoiceComponent,
+  pagination,
+  setQuery,
+  pageSizeGrid,
+}) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
   const gridRef = useRef()
@@ -179,6 +190,7 @@ const TableTest = ({ hei, getRow, getCol, setChoiceComponent, pagination, setQue
   const [gridApi, setGridApi] = useState(null)
   const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
   const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
+  const [result, setResult] = useState([])
   const navigate = useNavigate()
 
   // 일단 router 이동 등록
@@ -280,6 +292,23 @@ const TableTest = ({ hei, getRow, getCol, setChoiceComponent, pagination, setQue
     setGridApi(params.api) // api 설정
   }
 
+  useEffect(() => {
+    topData.map((item, index) =>
+      setResult((p) => [
+        ...p,
+        {
+          작성일자: item.createDate ? moment(item.createDate).format('YYYY-MM-DD') : '-',
+          작성자: item.name,
+          순번: item.status ? '고정' : index,
+          고유값: item.uid,
+          제목: item.getFile ? `${item.title} 📎` : `${item.title} `,
+          조회수: item.count,
+          타입: '공지사항',
+        },
+      ]),
+    )
+  }, [topData])
+
   return (
     <div style={containerStyle}>
       <TestContainer hei={hei}>
@@ -304,6 +333,7 @@ const TableTest = ({ hei, getRow, getCol, setChoiceComponent, pagination, setQue
             // doesExternalFilterPass={doesExternalFilterPass}
             onGridReady={onGridReady}
             onSelectionChanged={onSelectionChanged}
+            pinnedTopRowData={topData}
             // suppressPaginationPanel={true} //커스터마이징하려고 페이지네이션 지움
             // sideBar={{ toolPanels: ['columns', 'filters'] }}
           />

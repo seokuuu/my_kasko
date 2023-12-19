@@ -211,3 +211,5 @@ export const invenDestinationData = atom({
 })
 
 // =======================================
+
+export const tableCellType = atom('') //셀타입

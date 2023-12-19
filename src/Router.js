@@ -103,7 +103,9 @@ import FooterManagePage from './pages/Operate/FooterManage/FooterManagePage'
 /// 사용자 페이지
 // 공지  & 자료실
 import UNotice from './userpages/UserNotiDocs/Notice/NoticePage'
+import UNoticeDetail from './userpages/UserNotiDocs/Notice/NoticeDetail'
 import UDocs from './userpages/UserNotiDocs/Docs/DocsPage'
+import UDocsDetail from './userpages/UserNotiDocs/Docs/DocsDetail'
 
 // 경매
 import UAuctionSingle from './userpages/UserAuction/Single/SinglePage'
@@ -167,7 +169,6 @@ import WinningCreate from './pages/Auction/Winning/WinningCreate'
 import RoundAucListEdit from './pages/Auction/Round/RoundAucListEdit'
 import BlueBar from './modal/BlueBar/BlueBar'
 import DefaultBlueBar from './modal/Multi/DefaultBlueBar'
-
 import RoundAucListPackEdit from './pages/Auction/Round/RoundAucListPackEdit'
 import TableGrid from './modal/Multi/TableGrid'
 import DestinationChange from './modal/Multi/DestinationChange'
@@ -310,6 +311,8 @@ const Router = () => {
         <Route path="/userpage">
           <Route path="/userpage/notice" element={<UNotice />}></Route>
           <Route path="/userpage/docs" element={<UDocs />}></Route>
+          <Route path="/userpage/docs/:id" element={<UDocsDetail />}></Route>
+          <Route path="/userpage/notice/:id" element={<UNoticeDetail />}></Route>
 
           {/* 경매 */}
           <Route path="/userpage/actionsingle" element={<UAuctionSingle />}></Route>

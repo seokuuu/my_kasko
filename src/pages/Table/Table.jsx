@@ -295,10 +295,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData }) => {
   // new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
 
   // console.log('gridOptions', gridOptions)
-  const pinnedTopRowData = useMemo(() => {
-    return topData
-  }, [topData])
-
+  console.log('TOP', topData)
   return (
     <div style={containerStyle}>
       <TestContainer hei={hei}>
@@ -324,7 +321,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData }) => {
             // doesExternalFilterPass={doesExternalFilterPass}
             onGridReady={onGridReady}
             onSelectionChanged={onSelectionChanged}
-            pinnedTopRowData={pinnedTopRowData}
+            pinnedTopRowData={topData}
             // sideBar={{ toolPanels: ['columns', 'filters'] }}
           />
         </div>
