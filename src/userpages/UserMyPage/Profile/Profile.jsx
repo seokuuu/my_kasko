@@ -73,8 +73,8 @@ const ProfileEdit = () => {
   const [isUser, setIsUser] = useState(false)
   const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
   const [checkFileName, setCheckFileName] = useState({ deleteBusinessNumberFile: '', deleteBankbookFile: '' })
-  const [renderFileName, setRenderFileName] = useState({ businessNumberFile: '', bankbookFile: ' ' })
-  const [fileForms, setFileForms] = useState({ registration: '', bankBook: '' })
+  const [renderFileName, setRenderFileName] = useState({ businessNumberFile: '', bankbookFile: '' })
+  const [fileForms, setFileForms] = useState({ registration: null, bankBook: null })
   const [dropdownNames, setDropdownNames] = useState({
     depositManagerTitle: '',
     releaseManagerTitle: '',
@@ -327,6 +327,7 @@ const ProfileEdit = () => {
   console.log(' >< input.type !!!', input.type)
   console.log(' >< savedRadioValue !!!', savedRadioValue)
 
+  // 라디오 useEffect
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
     if (checkedIndex !== -1) {
@@ -336,6 +337,8 @@ const ProfileEdit = () => {
     }
   }, [checkRadio, savedRadioValue])
 
+
+  // 체크박스 useEffect
   useEffect(() => {
     const updatedCheck = checkDummy.map((value, index) => {
       return check[index] ? value : ''
@@ -733,7 +736,7 @@ const ProfileEdit = () => {
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  {renderFileName.businessNumberFile ? (
+                  {renderFileName && renderFileName?.businessNumberFile ? (
                     <IncomeImgDiv>
                       <div>{renderFileName.businessNumberFile}</div>
                       <div>
@@ -785,7 +788,8 @@ const ProfileEdit = () => {
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  {renderFileName.bankbookFile ? (
+                  {console.log('renderFileName', renderFileName)}
+                  {renderFileName && renderFileName.bankbookFile ? (
                     <IncomeImgDiv>
                       <div>{renderFileName.bankbookFile}</div>
                       <div>

@@ -17,16 +17,16 @@ import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { CheckBtn } from '../../../pages/User/SignUp/SignUp.Styled'
+import { CheckBtn, TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
 
 import { styled } from 'styled-components'
 import { checkBusinessNumber, updateCustomer } from '../../../api/myPage'
-import { getCustomerDetail, resetCustomer } from '../../../api/userManage'
+import { getCustomerDetail, postClient, resetCustomer } from '../../../api/userManage'
 import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { WhiteCloseBtn } from '../../../modal/Common/Common.Styled'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
-import { GreyDiv, IncomeImgDiv } from '../../../userpages/UserMyPage/Profile/Profile'
+import { GreyDiv, IIDImg, IncomeImgDiv } from '../../../userpages/UserMyPage/Profile/Profile'
 import DownloadButton from '../../../utils/DownloadButton'
 import { UserCheckDiv } from '../UserManage/UserPost'
 
@@ -90,7 +90,7 @@ const ClientPostModal = ({ setEditModal }) => {
   console.log('input', input)
   const [isUser, setIsUser] = useState(false)
   const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
-  const [renderFileName, setRenderFileName] = useState({ businessNumberFile: '', bankbookFile: ' ' })
+  const [renderFileName, setRenderFileName] = useState({ businessNumberFile: '', bankbookFile: '' })
   const [checkFileName, setCheckFileName] = useState({ deleteBusinessNumberFile: '', deleteBankbookFile: '' })
   const [fileForms, setFileForms] = useState({ registration: '', bankBook: '' })
   const [businessNumber, setBusinessNumber] = useState('')
@@ -107,12 +107,14 @@ const ClientPostModal = ({ setEditModal }) => {
 
   // console.log('resData2', resData2)
 
-  const checkBusiness = () => {
+  const checkBusiness = async () => {
     try {
-      checkBusinessNumber(businessNumber)
-      console.log('done')
+      const data = await checkBusinessNumber(businessNumber)
+      if (data?.data?.status === 200) {
+        alert('사용 가능한 사업자 번호입니다.')
+      }
     } catch (err) {
-      console.log(err)
+      alert('중복된 사업자 번호입니다.')
     }
 
     // if (isBusinessNumberSuccess) {
@@ -126,30 +128,6 @@ const ClientPostModal = ({ setEditModal }) => {
     setBusinessNumber(e.target.value)
     console.log(businessNumber)
   }
-
-  // const handleFiles = (e) => {
-  //   const name = e.target.name
-  //   const file = e.target.files[0]
-  //   const fileName = e.target.files[0].name
-  //   if (checkFileName.hasOwnProperty(name)) {
-  //     setCheckFileName((prev) => ({
-  //       ...prev,
-  //       [name]: fileName,
-  //     }))
-  //     if (name === 'businessNumberFile') {
-  //       setFileForms((prev) => ({
-  //         ...prev,
-  //         registration: file,
-  //       }))
-  //     }
-  //     if (name === 'bankbookFile') {
-  //       setFileForms((prev) => ({
-  //         ...prev,
-  //         bankBook: file,
-  //       }))
-  //     }
-  //   }
-  // }
 
   const handleSelectChange = (selectedOption, name) => {
     // const isCheck = selectedOption.label
@@ -194,9 +172,9 @@ const ClientPostModal = ({ setEditModal }) => {
     const updateCustomerData = async () => {
       if (shouldUpdateCustomer) {
         try {
-          const response = await updateCustomer(input, fileForms)
+          const response = await postClient(input, fileForms)
           console.log(response.data)
-          alert('고객사 상세 정보가 수정되었습니다.')
+          alert('회원 생성이 완료되었습니다.')
         } catch (err) {
           console.log(err)
           alert('ERROR:', err.data)
@@ -256,49 +234,90 @@ const ClientPostModal = ({ setEditModal }) => {
     const value = e.target.value
     setDetailAddress(value)
   }
-  const radioDummy = ['법인사업자', '개인사업자']
-  const radioDummy2 = ['승인', '대기', '미승인']
-  const radioDummy3 = ['경매 시작가 제한', '경매 제한']
-  const radioDummy4 = ['창고', '운송사', '현대제철', '카스코철강', '고객사']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
-  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, () => false))
-  const [checkRadio3, setCheckRadio3] = useState(Array.from({ length: radioDummy3.length }, () => false))
-  const [checkRadio4, setCheckRadio4] = useState(Array.from({ length: radioDummy4.length }, () => false))
 
-  const [savedRadioValue, setSavedRadioValue] = useState('')
+  // 라디오 데이터
+  const radioData = [
+    { name: 'type', options: ['법인사업자', '개인사업자'] },
+    { name: 'approvalStatus', options: ['승인', '대기', '미승인'] },
+    { name: 'auctionStatus', options: ['경매 시작가 제한', '경매 제한'] },
+    { name: 'memberType', options: ['창고', '운송사', '현대제철', '카스코철강', '고객사'] },
+  ]
 
-  console.log('checkRadio2', checkRadio2)
-  useEffect(() => {
-    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
-    if (checkedIndex !== -1) {
-      const selectedValue = radioDummy[checkedIndex]
-      setSavedRadioValue(selectedValue)
-      setInput({ ...input, type: selectedValue })
-    }
-  }, [checkRadio])
+  const initialRadioState = radioData.reduce(
+    (acc, curr) => ({
+      ...acc,
+      [curr.name]: {
+        checkRadio: Array.from({ length: curr.options.length }, () => false),
+        savedRadioValue: '',
+      },
+    }),
+    {},
+  )
 
-  const checkDummy2 = ['재고관리', '경매관리', '상시판매', '주문관리', '판매제품 관리', '출고관리', '운영관리']
-
-  const checkDummy = ['유통', '제조']
-
-  const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
-  const [check2, setCheck2] = useState(Array.from({ length: checkDummy2.length }, () => false))
-  const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
+  const [radioState, setRadioState] = useState(initialRadioState)
 
   useEffect(() => {
-    const updatedCheck = checkDummy.map((value, index) => {
-      return check[index] ? value : ''
-    })
-    // 그냥 배열에 담을 때
-    const filteredCheck = updatedCheck.filter((item) => item !== '')
-    setCheckData(filteredCheck)
+    radioData.forEach(({ name, options }) => {
+      const checkedIndex = radioState[name].checkRadio.findIndex(
+        (isChecked, index) => isChecked && index < options.length,
+      )
 
-    // 전송용 input에 담을 때
-    setInput({
-      ...input,
-      businessType: updatedCheck.filter((item) => item !== ''),
+      if (checkedIndex !== -1) {
+        const selectedValue = options[checkedIndex]
+        setRadioState((prev) => ({
+          ...prev,
+          [name]: {
+            ...prev[name],
+            savedRadioValue: selectedValue,
+          },
+        }))
+        setInput((prev) => ({ ...prev, [name]: selectedValue }))
+      }
     })
-  }, [check])
+  }, [radioState])
+
+  console.log('radioState', radioState)
+
+  const checkboxData = {
+    businessType: ['유통', '제조'],
+    managerRoleList: ['재고관리', '경매관리', '상시판매', '주문관리', '판매제품 관리', '출고관리', '운영관리'],
+  }
+
+  const initialCheckboxState = Object.keys(checkboxData).reduce(
+    (acc, key) => ({
+      ...acc,
+      [key]: {
+        checked: Array.from({ length: checkboxData[key].length }, () => false),
+        values: Array.from({ length: checkboxData[key].length }, () => ''),
+      },
+    }),
+    {},
+  )
+
+  const [checkboxState, setCheckboxState] = useState(initialCheckboxState)
+
+  useEffect(() => {
+    Object.keys(checkboxData).forEach((key) => {
+      const updatedCheck = checkboxData[key].map((value, index) => {
+        return checkboxState[key].checked[index] ? value : ''
+      })
+
+      const filteredCheck = updatedCheck.filter((item) => item !== '')
+
+      setCheckboxState((prev) => ({
+        ...prev,
+        [key]: {
+          ...prev[key],
+          values: filteredCheck,
+        },
+      }))
+
+      setInput((prev) => ({
+        ...prev,
+        [key]: filteredCheck,
+      }))
+    })
+  }, [checkboxState])
 
   console.log('ㅋㅋㅋ')
 
@@ -335,6 +354,31 @@ const ClientPostModal = ({ setEditModal }) => {
     setEditModal(false)
   }
 
+  const handleFiles = (e) => {
+    const name = e.target.name
+    const file = e.target.files[0]
+    console.log('')
+    const fileName = e.target.files[0].name
+    if (renderFileName.hasOwnProperty(name)) {
+      setRenderFileName((prev) => ({
+        ...prev,
+        [name]: fileName,
+      }))
+      if (name === 'businessNumberFile') {
+        setFileForms((prev) => ({
+          ...prev,
+          registration: file,
+        }))
+      }
+      if (name === 'bankbookFile') {
+        setFileForms((prev) => ({
+          ...prev,
+          bankBook: file,
+        }))
+      }
+    }
+  }
+
   return (
     <div>
       <ModalOverlayC />
@@ -353,24 +397,30 @@ const ClientPostModal = ({ setEditModal }) => {
               <Left>
                 <h1>회원정보</h1>
                 <Bar />
-
                 <FlexPart>
                   <FlexTitle>
                     아이디<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name={init.id} value={init.id} />
+                    <FlexInput name="id" />
                   </FlexContent>
                 </FlexPart>
 
                 <FlexPart>
                   <FlexTitle>
-                    비밀번호 초기화<span>*</span>
+                    비밀번호<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInputBtn type="password" onClick={resetPw}>
-                      비밀번호 초기화
-                    </FlexInputBtn>
+                    <FlexInput type="password" />
+                  </FlexContent>
+                </FlexPart>
+
+                <FlexPart>
+                  <FlexTitle name="">
+                    비밀번호 확인<span>*</span>
+                  </FlexTitle>
+                  <FlexContent>
+                    <FlexInput name="password" type="password" />
                   </FlexContent>
                 </FlexPart>
                 <FlexPart>
@@ -411,16 +461,26 @@ const ClientPostModal = ({ setEditModal }) => {
                         gap: '60px',
                       }}
                     >
-                      {radioDummy2.map((text, index) => (
+                      {radioData[1].options.map((text, index) => (
                         <RadioMainDiv key={index}>
                           <RadioCircleDiv
                             name="type"
-                            isChecked={checkRadio2[index]}
+                            isChecked={radioState.approvalStatus.checkRadio[index]}
                             onClick={() => {
-                              setCheckRadio2(CheckBox(checkRadio2, checkRadio2.length, index))
+                              setRadioState((prev) => ({
+                                ...prev,
+                                approvalStatus: {
+                                  ...prev.approvalStatus,
+                                  checkRadio: CheckBox(
+                                    prev.approvalStatus.checkRadio,
+                                    radioData[1].options.length,
+                                    index,
+                                  ),
+                                },
+                              }))
                             }}
                           >
-                            <RadioInnerCircleDiv isChecked={checkRadio2[index]} />
+                            <RadioInnerCircleDiv isChecked={radioState.approvalStatus.checkRadio[index]} />
                           </RadioCircleDiv>
                           <div style={{ display: 'flex', paddingLeft: '5px' }}>{text}</div>
                         </RadioMainDiv>
@@ -440,18 +500,28 @@ const ClientPostModal = ({ setEditModal }) => {
                         width: '100%',
                       }}
                     >
-                      {radioDummy3.map((text, index) => (
+                      {radioData[2].options.map((text, index) => (
                         <RadioMainDiv key={index}>
                           <RadioCircleDiv
-                            name="type"
-                            isChecked={checkRadio3[index]}
+                            name="auctionStatus"
+                            isChecked={radioState.auctionStatus.checkRadio[index]}
                             onClick={() => {
-                              setCheckRadio3(CheckBox(checkRadio3, checkRadio3.length, index))
+                              setRadioState((prev) => ({
+                                ...prev,
+                                auctionStatus: {
+                                  ...prev.auctionStatus,
+                                  checkRadio: CheckBox(
+                                    prev.auctionStatus.checkRadio,
+                                    radioData[2].options.length,
+                                    index,
+                                  ),
+                                },
+                              }))
                             }}
                           >
-                            <RadioInnerCircleDiv isChecked={checkRadio3[index]} />
+                            <RadioInnerCircleDiv isChecked={radioState.auctionStatus.checkRadio[index]} />
                           </RadioCircleDiv>
-                          <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
+                          <div style={{ display: 'flex', paddingLeft: '5px' }}>{text}</div>
                         </RadioMainDiv>
                       ))}
                     </div>
@@ -469,18 +539,24 @@ const ClientPostModal = ({ setEditModal }) => {
                         minWidth: '450px',
                       }}
                     >
-                      {radioDummy4.map((text, index) => (
+                      {radioData[3].options.map((text, index) => (
                         <RadioMainDiv key={index}>
                           <RadioCircleDiv
-                            name="type"
-                            isChecked={checkRadio4[index]}
+                            name="memberType"
+                            isChecked={radioState.memberType.checkRadio[index]}
                             onClick={() => {
-                              setCheckRadio4(CheckBox(checkRadio4, checkRadio4.length, index))
+                              setRadioState((prev) => ({
+                                ...prev,
+                                memberType: {
+                                  ...prev.memberType,
+                                  checkRadio: CheckBox(prev.memberType.checkRadio, radioData[3].options.length, index),
+                                },
+                              }))
                             }}
                           >
-                            <RadioInnerCircleDiv isChecked={checkRadio4[index]} />
+                            <RadioInnerCircleDiv isChecked={radioState.memberType.checkRadio[index]} />
                           </RadioCircleDiv>
-                          <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
+                          <div style={{ display: 'flex', paddingLeft: '5px' }}>{text}</div>
                         </RadioMainDiv>
                       ))}
                     </div>
@@ -502,13 +578,26 @@ const ClientPostModal = ({ setEditModal }) => {
                 <FlexPart>
                   <FlexTitle style={{ minWidth: '170px' }}>권한 설정</FlexTitle>
                   <FlexContent2>
-                    {checkDummy2.map((x, index) => (
+                    {checkboxData.managerRoleList.map((x, index) => (
                       <UserCheckDiv style={{ width: '130px' }}>
                         <StyledCheckSubSquDiv
-                          onClick={() => setCheck(CheckBox(check, check.length, index, true))}
-                          isChecked={check[index]}
+                          onClick={() =>
+                            setCheckboxState((prev) => ({
+                              ...prev,
+                              managerRoleList: {
+                                ...prev.managerRoleList,
+                                checked: CheckBox(
+                                  prev.managerRoleList.checked,
+                                  checkboxData.managerRoleList.length,
+                                  index,
+                                  true,
+                                ),
+                              },
+                            }))
+                          }
+                          isChecked={checkboxState.managerRoleList.checked[index]}
                         >
-                          <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
+                          <CheckImg2 src="/svg/check.svg" isChecked={checkboxState.managerRoleList.checked[index]} />
                         </StyledCheckSubSquDiv>
                         <CheckTxt2 style={{ marginLeft: '5px' }}>{x}</CheckTxt2>
                       </UserCheckDiv>
@@ -522,26 +611,12 @@ const ClientPostModal = ({ setEditModal }) => {
                     입금 담당자 정보<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    {selectSwitch.deposit ? (
-                      <EditSelect
-                        name="depositManagerTitle"
-                        options={depositOptions}
-                        defaultValue={depositOptions[0]}
-                        onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
-                      />
-                    ) : (
-                      <GreyDiv
-                        onClick={() => {
-                          setSelectSwitch((prev) => ({
-                            ...prev,
-                            deposit: !prev.deposit,
-                          }))
-                        }}
-                      >
-                        {init && init.depositManagerTitle}
-                      </GreyDiv>
-                    )}
-
+                    <EditSelect
+                      name="depositManagerTitle"
+                      options={depositOptions}
+                      defaultValue={depositOptions[0]}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
+                    />
                     <CustomInput name="depositManagerName" placeholder="담당자 성함 입력" width={190} />
                   </FlexContent>
                 </FlexPart>
@@ -560,25 +635,12 @@ const ClientPostModal = ({ setEditModal }) => {
                     출고 담당자 정보<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    {selectSwitch.release ? (
-                      <EditSelect
-                        name="releaseManagerTitle"
-                        options={depositOptions}
-                        defaultValue={depositOptions[0]}
-                        onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
-                      />
-                    ) : (
-                      <GreyDiv
-                        onClick={() => {
-                          setSelectSwitch((prev) => ({
-                            ...prev,
-                            release: !prev.release,
-                          }))
-                        }}
-                      >
-                        {init && init.releaseManagerTitle}
-                      </GreyDiv>
-                    )}
+                    <EditSelect
+                      name="releaseManagerTitle"
+                      options={depositOptions}
+                      defaultValue={depositOptions[0]}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
+                    />
 
                     <CustomInput name="releaseManagerName" placeholder=" 담당자 성함 입력" width={190} />
                   </FlexContent>
@@ -621,18 +683,24 @@ const ClientPostModal = ({ setEditModal }) => {
                         width: '100%',
                       }}
                     >
-                      {radioDummy.map((text, index) => (
+                      {radioData[0].options.map((text, index) => (
                         <RadioMainDiv key={index}>
                           <RadioCircleDiv
                             name="type"
-                            isChecked={checkRadio[index]}
+                            isChecked={radioState.type.checkRadio[index]}
                             onClick={() => {
-                              setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
+                              setRadioState((prev) => ({
+                                ...prev,
+                                type: {
+                                  ...prev.type,
+                                  checkRadio: CheckBox(prev.type.checkRadio, radioData[0].options.length, index),
+                                },
+                              }))
                             }}
                           >
-                            <RadioInnerCircleDiv isChecked={checkRadio[index]} />
+                            <RadioInnerCircleDiv isChecked={radioState.type.checkRadio[index]} />
                           </RadioCircleDiv>
-                          <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
+                          <div style={{ display: 'flex', paddingLeft: '5px' }}>{text}</div>
                         </RadioMainDiv>
                       ))}
                     </div>
@@ -697,7 +765,7 @@ const ClientPostModal = ({ setEditModal }) => {
                 <FlexPart>
                   <FlexTitle></FlexTitle>
                   <FlexContent>
-                    <FlexInput name="addressDetail" />
+                    <FlexInput name="addressDetail" value={detailAddress} />
                   </FlexContent>
                 </FlexPart>
 
@@ -731,17 +799,29 @@ const ClientPostModal = ({ setEditModal }) => {
                         width: '100%',
                       }}
                     >
-                      {checkDummy.map((x, index) => (
-                        <StyledCheckMainDiv>
+                      {checkboxData.businessType.map((x, index) => (
+                        <UserCheckDiv style={{ width: '130px' }}>
                           <StyledCheckSubSquDiv
-                            name="businessType"
-                            onClick={() => setCheck(CheckBox(check, check.length, index, true))}
-                            isChecked={check[index]}
+                            onClick={() =>
+                              setCheckboxState((prev) => ({
+                                ...prev,
+                                businessType: {
+                                  ...prev.businessType,
+                                  checked: CheckBox(
+                                    prev.businessType.checked,
+                                    checkboxData.businessType.length,
+                                    index,
+                                    true,
+                                  ),
+                                },
+                              }))
+                            }
+                            isChecked={checkboxState.businessType.checked[index]}
                           >
-                            <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
+                            <CheckImg2 src="/svg/check.svg" isChecked={checkboxState.businessType.checked[index]} />
                           </StyledCheckSubSquDiv>
-                          <p>{x}</p>
-                        </StyledCheckMainDiv>
+                          <CheckTxt2 style={{ marginLeft: '5px' }}>{x}</CheckTxt2>
+                        </UserCheckDiv>
                       ))}
                     </div>
                   </FlexContent>
@@ -765,7 +845,25 @@ const ClientPostModal = ({ setEditModal }) => {
                     사업자등록증<span>*</span>
                   </FlexTitle>
 
-                  <DownloadButton fileUrl={init?.businessNumberFileUrl} fileName={init?.businessNumberOriginalName} />
+                  <TxtDivNoborder className="no-border" style={{ border: '1px solid #000000' }}>
+                    <label htmlFor="ex_file">
+                      <div className="btnStart">
+                        <img src="/svg/Upload.svg" alt="btnStart" />
+                        <p htmlFor="ex_file">파일 첨부</p>
+                      </div>
+                    </label>
+                    {/* <img src="/svg/Upload.svg" alt="Upload" /> */}
+                    <input
+                      id="ex_file"
+                      type="file"
+                      accept="image/jpg, image/png, image/jpeg"
+                      style={{ display: 'none' }}
+                      onChange={handleFiles}
+                      name="businessNumberFile"
+                      // onChange={commonChange}
+                      // name="businessfile"
+                    ></input>
+                  </TxtDivNoborder>
                 </FlexPart>
                 <FlexPart>
                   <FlexTitle></FlexTitle>
@@ -773,6 +871,17 @@ const ClientPostModal = ({ setEditModal }) => {
                     {renderFileName.businessNumberFile ? (
                       <IncomeImgDiv>
                         <div>{renderFileName.businessNumberFile}</div>
+                        <div>
+                          <IIDImg
+                            onClick={() => {
+                              setRenderFileName({
+                                ...renderFileName,
+                                businessNumberFile: '',
+                              })
+                            }}
+                            src="/svg/btn_close.svg"
+                          />
+                        </div>
                       </IncomeImgDiv>
                     ) : (
                       <FlexInput style={{ width: '322px' }} disabled />
@@ -785,17 +894,43 @@ const ClientPostModal = ({ setEditModal }) => {
                     통장사본<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <DownloadButton
-                    //  fileUrl={bankbookFileUrl} fileName={bankbookOriginalName}
-                    />
+                    <TxtDivNoborder className="no-border" style={{ border: '1px solid #000000' }}>
+                      <label htmlFor="ex_file2">
+                        <div className="btnStart">
+                          <img src="/svg/Upload.svg" alt="btnStart" />
+                          <p htmlFor="ex_file">파일 첨부</p>
+                        </div>
+                      </label>
+                      {/* <img src="/svg/Upload.svg" alt="Upload" /> */}
+                      <input
+                        id="ex_file2"
+                        type="file"
+                        accept="image/jpg, image/png, image/jpeg"
+                        style={{ display: 'none' }}
+                        onChange={handleFiles}
+                        name="bankbookFile"
+                      ></input>
+                    </TxtDivNoborder>
                   </FlexContent>
                 </FlexPart>
                 <FlexPart>
                   <FlexTitle></FlexTitle>
+
                   <FlexContent>
                     {renderFileName.bankbookFile ? (
                       <IncomeImgDiv>
                         <div>{renderFileName.bankbookFile}</div>
+                        <div>
+                          <IIDImg
+                            onClick={() => {
+                              setRenderFileName({
+                                ...renderFileName,
+                                bankbookFile: '',
+                              })
+                            }}
+                            src="/svg/btn_close.svg"
+                          />
+                        </div>
                       </IncomeImgDiv>
                     ) : (
                       <FlexInput style={{ width: '322px' }} disabled />
