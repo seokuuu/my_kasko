@@ -13,3 +13,6 @@
 .ag-header-cell-label {
   justify-content: center;
 }
+.ag-paging-panel {
+  display: none;
+}

@@ -1,38 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import TableUi from './TableUi'
 import { columnDefs } from './etcVariable'
+import PagingComp from '../paging/PagingComp'
 
-/** 페이지네이션 컴포넌트 */
-const CustomPagination = ({ currentPage, totalPage, onPageChange }) => {
-  const pageNumbers = []
-  const pagesPerGroup = 5
-  const currentGroup = Math.ceil(currentPage / pagesPerGroup)
-  const startPage = (currentGroup - 1) * pagesPerGroup + 1
-  const endPage = Math.min(startPage + pagesPerGroup - 1, totalPage)
-
-  for (let i = startPage; i <= endPage; i++) {
-    pageNumbers.push(i)
-  }
-
-  return (
-    <div style={{ gap: '8px', display: 'flex' }}>
-      {pageNumbers.map((number) => (
-        <button
-          key={number}
-          onClick={() => onPageChange(number)}
-          disabled={currentPage === number}
-          style={{
-            fontSize: '15px',
-            color: currentPage === number ? '#202020' : '#ACACAC',
-            backgroundColor: 'transparent',
-          }}
-        >
-          {number}
-        </button>
-      ))}
-    </div>
-  )
-}
 const TestParents = () => {
   const [rowData, setRowData] = useState([])
   const [gridApi, setGridApi] = useState(null)
@@ -65,18 +35,25 @@ const TestParents = () => {
     setGridColumnApi(params.columnApi)
     params.api.sizeColumnsToFit()
   }
-
+  const onCellClicked = async (params) => {
+    if (params.colDef.field === 'title') {
+      window.location.href = `/operate/notice/view/${params.data.no}`
+    }
+  }
   const gridOptions = {
     getRowStyle: (params) => {
-      if (params.node.rowPinned) {
-        return { 'font-weight': 'bold' }
-      }
+      if (params.node.rowPinned) return { 'font-weight': 'bold' }
     },
-    pagination: true,
-    paginationPageSize: 1,
     headerHeight: 30,
     rowHeight: 30,
+    /** 페이징 처리위해 필요 */
+    pagination: true,
+    paginationPageSize: 1,
   }
+
+  /**
+   * @Name :페이징 처리 useState
+   */
   const [currentPage, setCurrentPage] = useState(1)
   const totalPage = Math.ceil(rowData.length / gridOptions.paginationPageSize)
 
@@ -85,13 +62,9 @@ const TestParents = () => {
     setCurrentPage(pageNumber)
   }
 
-  const onCellClicked = async (params) => {
-    if (params.colDef.field === 'title') {
-      window.location.href = `/operate/notice/view/${params.data.no}`
-    }
-  }
-
-  /** 페이지네이션 이동버튼 */
+  /**
+   * @Func :페이징 이동버튼
+   */
   const goToNextPage = () => {
     const nextPage = Math.min(currentPage + 1, totalPage)
     onPageChange(nextPage)
@@ -103,12 +76,24 @@ const TestParents = () => {
     }
   }
   const goToLastPage = () => {
-    const lastPageInGroup = Math.ceil(currentPage / 5) * 5
-    const adjustedLastPage = Math.min(lastPageInGroup, totalPage)
-    onPageChange(adjustedLastPage)
+    let currentGroupLastPage = Math.ceil(currentPage / 5) * 5
+    currentGroupLastPage = Math.min(currentGroupLastPage, totalPage)
+
+    // 현재 페이지가 그룹의 마지막 페이지인 경우, 다음 그룹의 마지막 페이지로 이동
+    let targetPage
+    // 다음 페이지 그룹의 1번째 페이지로 이동
+    if (currentPage === currentGroupLastPage) targetPage = Math.min(currentGroupLastPage + 1, totalPage)
+    // 현재 그룹의 마지막 페이지로 이동
+    else targetPage = currentGroupLastPage
+
+    onPageChange(targetPage)
   }
   const goToStartOfRange = () => {
-    const startPageInGroup = Math.floor((currentPage - 1) / 5) * 5 + 1
+    let startPageInGroup = Math.floor((currentPage - 1) / 5) * 5 + 1
+
+    // 현재 페이지가 그룹의 시작 페이지일 경우, 이전 그룹의 마지막 페이지로 이동
+    if (currentPage === startPageInGroup && currentPage !== 1) startPageInGroup = Math.max(startPageInGroup - 1, 1)
+
     onPageChange(startPageInGroup)
   }
 
@@ -121,30 +106,17 @@ const TestParents = () => {
         onCellClicked={onCellClicked}
         gridOptions={gridOptions}
       />
+
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <button style={{ backgroundColor: 'transparent' }} onClick={goToStartOfRange}>
-          <svg width="15" height="15" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-            <path fill="currentColor" d="M14 3h-2L7 8l5 5h2L9 8z" />
-            <path fill="currentColor" d="M9 3H7L2 8l5 5h2L4 8z" />
-          </svg>
-        </button>
-        <button style={{ backgroundColor: 'transparent' }} onClick={goToPreviousPage}>
-          <svg width="15" height="15" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-            <path fill="currentColor" d="M12 13h-2L5 8l5-5h2L7 8z" />
-          </svg>
-        </button>
-        <CustomPagination currentPage={currentPage} totalPage={totalPage} onPageChange={onPageChange} />
-        <button style={{ backgroundColor: 'transparent' }} onClick={goToNextPage}>
-          <svg width="15" height="15" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-            <path fill="#000000" d="M4 13h2l5-5l-5-5H4l5 5z" />
-          </svg>
-        </button>
-        <button style={{ backgroundColor: 'transparent' }} onClick={goToLastPage}>
-          <svg width="15" height="15" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-            <path fill="#000000" d="M2 13h2l5-5l-5-5H2l5 5z" />
-            <path fill="#000000" d="M7 13h2l5-5l-5-5H7l5 5z" />
-          </svg>
-        </button>
+        <PagingComp
+          currentPage={currentPage}
+          totalPage={totalPage}
+          onPageChange={onPageChange}
+          goToNextPage={goToNextPage}
+          goToPreviousPage={goToPreviousPage}
+          goToLastPage={goToLastPage}
+          goToStartOfRange={goToStartOfRange}
+        />
       </div>
     </>
   )
