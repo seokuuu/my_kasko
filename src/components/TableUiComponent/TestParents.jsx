@@ -2,12 +2,19 @@ import React, { useEffect, useState } from 'react'
 import TableUi from './TableUi'
 import { columnDefs } from './etcVariable'
 import PagingComp from '../paging/PagingComp'
-
+/**
+ * @see
+ * :TableUi.jsx-테이블 컴포넌트
+ * :PagingComp.jsx-페이징 컴포넌트
+ */
 const TestParents = () => {
   const [rowData, setRowData] = useState([])
   const [gridApi, setGridApi] = useState(null)
   const [gridColumnApi, setGridColumnApi] = useState(null)
 
+  /**
+   * @description :데이터 가져오는 부분
+   */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -29,7 +36,9 @@ const TestParents = () => {
     fetchData()
   }, [])
 
-  // 여기서 TableUi 컴포넌트에 필요한 props 정의
+  /**
+   * @description :TableUi 컴포넌트에 필요한 props 정의
+   */
   const onGridReady = (params) => {
     setGridApi(params.api)
     setGridColumnApi(params.columnApi)
@@ -52,7 +61,7 @@ const TestParents = () => {
   }
 
   /**
-   * @Name :페이징 처리 useState
+   * @description :페이징 처리 useState
    */
   const [currentPage, setCurrentPage] = useState(1)
   const totalPage = Math.ceil(rowData.length / gridOptions.paginationPageSize)
