@@ -238,7 +238,7 @@ const ClientPostModal = ({ setEditModal }) => {
   // 라디오 데이터
   const radioDummy = ['법인사업자', '개인사업자'] // 사업자 구분 (type)
   const radioDummy2 = ['승인', '대기', '미승인'] // 승인 여부
-  const radioDummy3 = ['경매 시작가 제한', '경매 제한'] // 회원 제한
+  const radioDummy3 = ['제한 없음', '경매 시작가 제한', '경매 제한'] // 회원 제한
   const radioDummy4 = ['창고', '운송사', '현대제철', '카스코철강', '고객사'] // 사용자 구분 (memberType)
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
   const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, () => false))
@@ -485,8 +485,8 @@ const ClientPostModal = ({ setEditModal }) => {
                     <div
                       style={{
                         display: 'flex',
-                        gap: '80px',
-                        width: '100%',
+                        gap: '20px',
+                        minWidth: '450px',
                       }}
                     >
                       {radioDummy3.map((text, index) => (
