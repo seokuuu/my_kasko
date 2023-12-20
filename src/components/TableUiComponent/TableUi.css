@@ -2,7 +2,6 @@
 .custom-header-style {
   background-color: #dbe2f0;
   text-align: center;
-  /* padding-left: 35px; */
   border-right: 1px solid #c8c8c8;
   box-sizing: border-box;
   justify-content: center;
@@ -16,4 +15,23 @@
 }
 .ag-paging-panel {
   display: none;
+}
+/* 스크롤바 전체 스타일 */
+.ag-theme-alpine ::-webkit-scrollbar {
+  width: 8px; /* 스크롤바의 너비 */
+}
+
+/* 스크롤바 트랙 스타일 */
+.ag-theme-alpine ::-webkit-scrollbar-track {
+  background: #f1f1f1; /* 트랙의 배경색 */
+}
+
+/* 스크롤바 썸(손잡이) 스타일 */
+.ag-theme-alpine ::-webkit-scrollbar-thumb {
+  background: #c8c8c8;
+}
+
+/* 스크롤바 썸(손잡이) 호버 시 스타일 */
+.ag-theme-alpine ::-webkit-scrollbar-thumb:hover {
+  background: #c8c8c8;
 }
