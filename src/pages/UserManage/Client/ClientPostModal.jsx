@@ -236,90 +236,89 @@ const ClientPostModal = ({ setEditModal }) => {
   }
 
   // 라디오 데이터
-  const radioData = [
-    { name: 'type', options: ['법인사업자', '개인사업자'] },
-    { name: 'approvalStatus', options: ['승인', '대기', '미승인'] },
-    { name: 'auctionStatus', options: ['경매 시작가 제한', '경매 제한'] },
-    { name: 'memberType', options: ['창고', '운송사', '현대제철', '카스코철강', '고객사'] },
-  ]
+  const radioDummy = ['법인사업자', '개인사업자'] // 사업자 구분 (type)
+  const radioDummy2 = ['승인', '대기', '미승인'] // 승인 여부
+  const radioDummy3 = ['경매 시작가 제한', '경매 제한'] // 회원 제한
+  const radioDummy4 = ['창고', '운송사', '현대제철', '카스코철강', '고객사'] // 사용자 구분 (memberType)
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, () => false))
+  const [checkRadio3, setCheckRadio3] = useState(Array.from({ length: radioDummy3.length }, () => false))
+  const [checkRadio4, setCheckRadio4] = useState(Array.from({ length: radioDummy4.length }, () => false))
 
-  const initialRadioState = radioData.reduce(
-    (acc, curr) => ({
-      ...acc,
-      [curr.name]: {
-        checkRadio: Array.from({ length: curr.options.length }, () => false),
-        savedRadioValue: '',
-      },
-    }),
-    {},
-  )
-
-  const [radioState, setRadioState] = useState(initialRadioState)
+  const [savedRadioValue, setSavedRadioValue] = useState('')
+  const [savedRadioValue2, setSavedRadioValue2] = useState('')
+  const [savedRadioValue3, setSavedRadioValue3] = useState('')
+  const [savedRadioValue4, setSavedRadioValue4] = useState('')
 
   useEffect(() => {
-    radioData.forEach(({ name, options }) => {
-      const checkedIndex = radioState[name].checkRadio.findIndex(
-        (isChecked, index) => isChecked && index < options.length,
-      )
+    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
+    if (checkedIndex !== -1) {
+      const selectedValue1 = radioDummy[checkedIndex]
+      setSavedRadioValue(selectedValue1)
+      setInput({ ...input, type: selectedValue1 }) // 사업자 구분, type
+    }
 
-      if (checkedIndex !== -1) {
-        const selectedValue = options[checkedIndex]
-        setRadioState((prev) => ({
-          ...prev,
-          [name]: {
-            ...prev[name],
-            savedRadioValue: selectedValue,
-          },
-        }))
-        setInput((prev) => ({ ...prev, [name]: selectedValue }))
-      }
-    })
-  }, [radioState])
+    const checkedIndex2 = checkRadio2.findIndex((isChecked, index) => isChecked && index < radioDummy2.length)
+    if (checkedIndex2 !== -1) {
+      const selectedValue2 = radioDummy2[checkedIndex2]
+      setSavedRadioValue2(selectedValue2)
+      setInput({ ...input, approvalStatus: selectedValue2 }) // 승인 여부, approvalStatus
+    }
 
-  console.log('radioState', radioState)
+    const checkedIndex3 = checkRadio3.findIndex((isChecked, index) => isChecked && index < radioDummy3.length)
+    if (checkedIndex3 !== -1) {
+      const selectedValue3 = radioDummy3[checkedIndex3]
+      setSavedRadioValue3(selectedValue3)
+      setInput({ ...input, auctionStatus: selectedValue3 }) // 회원 제한, auctionStatus
+    }
 
-  const checkboxData = {
-    businessType: ['유통', '제조'],
-    managerRoleList: ['재고관리', '경매관리', '상시판매', '주문관리', '판매제품 관리', '출고관리', '운영관리'],
-  }
+    const checkedIndex4 = checkRadio4.findIndex((isChecked, index) => isChecked && index < radioDummy4.length)
+    if (checkedIndex4 !== -1) {
+      const selectedValue4 = radioDummy4[checkedIndex4]
+      setSavedRadioValue4(selectedValue4)
+      setInput({ ...input, memberType: selectedValue4 }) // 사용자 구분, memberType
+    }
+  }, [checkRadio, checkRadio2, checkRadio3, checkRadio4])
 
-  const initialCheckboxState = Object.keys(checkboxData).reduce(
-    (acc, key) => ({
-      ...acc,
-      [key]: {
-        checked: Array.from({ length: checkboxData[key].length }, () => false),
-        values: Array.from({ length: checkboxData[key].length }, () => ''),
-      },
-    }),
-    {},
-  )
+  console.log('input =>', input)
 
-  const [checkboxState, setCheckboxState] = useState(initialCheckboxState)
+  const checkDummy = ['유통', '제조'] // businessType
+  const checkDummy2 = ['재고관리', '경매관리', '상시판매', '주문관리', '판매제품 관리', '출고관리', '운영관리'] //managerRoleList
+
+  const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
+  const [check2, setCheck2] = useState(Array.from({ length: checkDummy2.length }, () => false))
+  const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
+  const [checkData2, setCheckData2] = useState(Array.from({ length: checkDummy2.length }, () => ''))
+
+  console.log('check data =>', checkData, checkData2)
 
   useEffect(() => {
-    Object.keys(checkboxData).forEach((key) => {
-      const updatedCheck = checkboxData[key].map((value, index) => {
-        return checkboxState[key].checked[index] ? value : ''
-      })
-
-      const filteredCheck = updatedCheck.filter((item) => item !== '')
-
-      setCheckboxState((prev) => ({
-        ...prev,
-        [key]: {
-          ...prev[key],
-          values: filteredCheck,
-        },
-      }))
-
-      setInput((prev) => ({
-        ...prev,
-        [key]: filteredCheck,
-      }))
+    const updatedCheck = checkDummy.map((value, index) => {
+      return check[index] ? value : ''
     })
-  }, [checkboxState])
+    // 그냥 배열에 담을 때
+    const filteredCheck = updatedCheck.filter((item) => item !== '')
+    setCheckData(filteredCheck)
 
-  console.log('ㅋㅋㅋ')
+    // 전송용 input에 담을 때
+    setInput({
+      ...input,
+      businessType: updatedCheck.filter((item) => item !== ''),
+    })
+
+    const updatedCheck2 = checkDummy2.map((value, index) => {
+      return check2[index] ? value : ''
+    })
+    // 그냥 배열에 담을 때
+    const filteredCheck2 = updatedCheck2.filter((item) => item !== '')
+    setCheckData2(filteredCheck2)
+
+    // 전송용 input에 담을 때
+    setInput({
+      ...input,
+      managerRoleList: updatedCheck2.filter((item) => item !== ''),
+    })
+  }, [check, check2])
 
   // 비밀번호 초기화 버튼
   const resetPw = async () => {
@@ -461,26 +460,16 @@ const ClientPostModal = ({ setEditModal }) => {
                         gap: '60px',
                       }}
                     >
-                      {radioData[1].options.map((text, index) => (
+                      {radioDummy2.map((text, index) => (
                         <RadioMainDiv key={index}>
                           <RadioCircleDiv
                             name="type"
-                            isChecked={radioState.approvalStatus.checkRadio[index]}
+                            isChecked={checkRadio2[index]}
                             onClick={() => {
-                              setRadioState((prev) => ({
-                                ...prev,
-                                approvalStatus: {
-                                  ...prev.approvalStatus,
-                                  checkRadio: CheckBox(
-                                    prev.approvalStatus.checkRadio,
-                                    radioData[1].options.length,
-                                    index,
-                                  ),
-                                },
-                              }))
+                              setCheckRadio2(CheckBox(checkRadio2, checkRadio2.length, index))
                             }}
                           >
-                            <RadioInnerCircleDiv isChecked={radioState.approvalStatus.checkRadio[index]} />
+                            <RadioInnerCircleDiv isChecked={checkRadio2[index]} />
                           </RadioCircleDiv>
                           <div style={{ display: 'flex', paddingLeft: '5px' }}>{text}</div>
                         </RadioMainDiv>
@@ -500,28 +489,18 @@ const ClientPostModal = ({ setEditModal }) => {
                         width: '100%',
                       }}
                     >
-                      {radioData[2].options.map((text, index) => (
+                      {radioDummy3.map((text, index) => (
                         <RadioMainDiv key={index}>
                           <RadioCircleDiv
-                            name="auctionStatus"
-                            isChecked={radioState.auctionStatus.checkRadio[index]}
+                            name="type"
+                            isChecked={checkRadio3[index]}
                             onClick={() => {
-                              setRadioState((prev) => ({
-                                ...prev,
-                                auctionStatus: {
-                                  ...prev.auctionStatus,
-                                  checkRadio: CheckBox(
-                                    prev.auctionStatus.checkRadio,
-                                    radioData[2].options.length,
-                                    index,
-                                  ),
-                                },
-                              }))
+                              setCheckRadio3(CheckBox(checkRadio3, checkRadio3.length, index))
                             }}
                           >
-                            <RadioInnerCircleDiv isChecked={radioState.auctionStatus.checkRadio[index]} />
+                            <RadioInnerCircleDiv isChecked={checkRadio3[index]} />
                           </RadioCircleDiv>
-                          <div style={{ display: 'flex', paddingLeft: '5px' }}>{text}</div>
+                          <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
                         </RadioMainDiv>
                       ))}
                     </div>
@@ -539,24 +518,18 @@ const ClientPostModal = ({ setEditModal }) => {
                         minWidth: '450px',
                       }}
                     >
-                      {radioData[3].options.map((text, index) => (
+                      {radioDummy4.map((text, index) => (
                         <RadioMainDiv key={index}>
                           <RadioCircleDiv
-                            name="memberType"
-                            isChecked={radioState.memberType.checkRadio[index]}
+                            name="type"
+                            isChecked={checkRadio4[index]}
                             onClick={() => {
-                              setRadioState((prev) => ({
-                                ...prev,
-                                memberType: {
-                                  ...prev.memberType,
-                                  checkRadio: CheckBox(prev.memberType.checkRadio, radioData[3].options.length, index),
-                                },
-                              }))
+                              setCheckRadio4(CheckBox(checkRadio4, checkRadio4.length, index))
                             }}
                           >
-                            <RadioInnerCircleDiv isChecked={radioState.memberType.checkRadio[index]} />
+                            <RadioInnerCircleDiv isChecked={checkRadio4[index]} />
                           </RadioCircleDiv>
-                          <div style={{ display: 'flex', paddingLeft: '5px' }}>{text}</div>
+                          <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
                         </RadioMainDiv>
                       ))}
                     </div>
@@ -578,26 +551,14 @@ const ClientPostModal = ({ setEditModal }) => {
                 <FlexPart>
                   <FlexTitle style={{ minWidth: '170px' }}>권한 설정</FlexTitle>
                   <FlexContent2>
-                    {checkboxData.managerRoleList.map((x, index) => (
+                    {checkDummy2.map((x, index) => (
                       <UserCheckDiv style={{ width: '130px' }}>
                         <StyledCheckSubSquDiv
-                          onClick={() =>
-                            setCheckboxState((prev) => ({
-                              ...prev,
-                              managerRoleList: {
-                                ...prev.managerRoleList,
-                                checked: CheckBox(
-                                  prev.managerRoleList.checked,
-                                  checkboxData.managerRoleList.length,
-                                  index,
-                                  true,
-                                ),
-                              },
-                            }))
-                          }
-                          isChecked={checkboxState.managerRoleList.checked[index]}
+                          name="managerRoleList"
+                          onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
+                          isChecked={check2[index]}
                         >
-                          <CheckImg2 src="/svg/check.svg" isChecked={checkboxState.managerRoleList.checked[index]} />
+                          <CheckImg2 src="/svg/check.svg" isChecked={check2[index]} />
                         </StyledCheckSubSquDiv>
                         <CheckTxt2 style={{ marginLeft: '5px' }}>{x}</CheckTxt2>
                       </UserCheckDiv>
@@ -683,24 +644,18 @@ const ClientPostModal = ({ setEditModal }) => {
                         width: '100%',
                       }}
                     >
-                      {radioData[0].options.map((text, index) => (
+                      {radioDummy.map((text, index) => (
                         <RadioMainDiv key={index}>
                           <RadioCircleDiv
                             name="type"
-                            isChecked={radioState.type.checkRadio[index]}
+                            isChecked={checkRadio[index]}
                             onClick={() => {
-                              setRadioState((prev) => ({
-                                ...prev,
-                                type: {
-                                  ...prev.type,
-                                  checkRadio: CheckBox(prev.type.checkRadio, radioData[0].options.length, index),
-                                },
-                              }))
+                              setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
                             }}
                           >
-                            <RadioInnerCircleDiv isChecked={radioState.type.checkRadio[index]} />
+                            <RadioInnerCircleDiv isChecked={checkRadio[index]} />
                           </RadioCircleDiv>
-                          <div style={{ display: 'flex', paddingLeft: '5px' }}>{text}</div>
+                          <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
                         </RadioMainDiv>
                       ))}
                     </div>
@@ -799,29 +754,17 @@ const ClientPostModal = ({ setEditModal }) => {
                         width: '100%',
                       }}
                     >
-                      {checkboxData.businessType.map((x, index) => (
-                        <UserCheckDiv style={{ width: '130px' }}>
+                      {checkDummy.map((x, index) => (
+                        <StyledCheckMainDiv>
                           <StyledCheckSubSquDiv
-                            onClick={() =>
-                              setCheckboxState((prev) => ({
-                                ...prev,
-                                businessType: {
-                                  ...prev.businessType,
-                                  checked: CheckBox(
-                                    prev.businessType.checked,
-                                    checkboxData.businessType.length,
-                                    index,
-                                    true,
-                                  ),
-                                },
-                              }))
-                            }
-                            isChecked={checkboxState.businessType.checked[index]}
+                            name="businessType"
+                            onClick={() => setCheck(CheckBox(check, check.length, index, true))}
+                            isChecked={check[index]}
                           >
-                            <CheckImg2 src="/svg/check.svg" isChecked={checkboxState.businessType.checked[index]} />
+                            <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
                           </StyledCheckSubSquDiv>
-                          <CheckTxt2 style={{ marginLeft: '5px' }}>{x}</CheckTxt2>
-                        </UserCheckDiv>
+                          <p>{x}</p>
+                        </StyledCheckMainDiv>
                       ))}
                     </div>
                   </FlexContent>
