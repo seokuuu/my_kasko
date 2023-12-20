@@ -26,10 +26,9 @@ import SignUpPost from '../../../modal/SignUp/SignUpPost'
 import { CheckBtn, TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
 import { GreyDiv, IIDImg, IncomeImgDiv } from '../../../userpages/UserMyPage/Profile/Profile'
 import DownloadButton from '../../../utils/DownloadButton'
-import { UserCheckDiv } from '../UserManage/UserPost'
+
 import { getStorageList } from '../../../api/search'
 import { MainSelect } from '../../../common/Option/Main'
-
 
 const init = {
   id: '',
