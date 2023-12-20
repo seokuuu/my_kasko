@@ -33,7 +33,8 @@ import useReactQuery from '../../../hooks/useReactQuery'
 const init = {
   represent: '', // (0: 미지정 / 1: 지정)
   customerUid: '', //고객 고유번호 (고객사 조회 API 필요, 고객사 찾기 모달)
-  address: '', //상세주소
+  address: '', //주소,
+  addressDetail: '',
   name: '', //하차지명
   managerTitle: '', //담당자 직함
   managerName: '', //담당자 이름
