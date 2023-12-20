@@ -1,4 +1,12 @@
 import { useEffect, useState } from 'react'
+import { styled } from 'styled-components'
+import { UserCheckDiv } from '../UserManage/UserPost'
+import { checkBusinessNumber, updateCustomer } from '../../../api/myPage'
+import { getCustomerDetail, postClient, resetCustomer } from '../../../api/userManage'
+import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import { CustomInput, FlexInput } from '../../../common/Input/Input'
 import {
   AddBtn,
@@ -11,24 +19,13 @@ import {
   Right,
 } from '../../../common/OnePage/OnePage.Styled'
 import { AccountSelect, EditSelect, accountOptions, depositOptions } from '../../../common/Option/SignUp'
-
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
-
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
-
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { CheckBtn, TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
-
-import { styled } from 'styled-components'
-import { checkBusinessNumber, updateCustomer } from '../../../api/myPage'
-import { getCustomerDetail, postClient, resetCustomer } from '../../../api/userManage'
-import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+import RadioButton from '../../../components/RadioButton/RadioButton'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { WhiteCloseBtn } from '../../../modal/Common/Common.Styled'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
+import { CheckBtn, TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
 import { GreyDiv, IIDImg, IncomeImgDiv } from '../../../userpages/UserMyPage/Profile/Profile'
 import DownloadButton from '../../../utils/DownloadButton'
-import { UserCheckDiv } from '../UserManage/UserPost'
 
 const init = {
   id: '',
@@ -285,6 +282,8 @@ const ClientPostModal = ({ setEditModal }) => {
   const checkDummy = ['유통', '제조'] // businessType
   const checkDummy2 = ['재고관리', '경매관리', '상시판매', '주문관리', '판매제품 관리', '출고관리', '운영관리'] //managerRoleList
 
+  const [approvalStatus, setApprovalStatus] = useState(Array.from({ length: checkDummy2.length }, () => ''))
+
   const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
   const [check2, setCheck2] = useState(Array.from({ length: checkDummy2.length }, () => false))
   const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
@@ -300,12 +299,6 @@ const ClientPostModal = ({ setEditModal }) => {
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData(filteredCheck)
 
-    // 전송용 input에 담을 때
-    setInput({
-      ...input,
-      businessType: updatedCheck.filter((item) => item !== ''),
-    })
-
     const updatedCheck2 = checkDummy2.map((value, index) => {
       return check2[index] ? value : ''
     })
@@ -316,6 +309,7 @@ const ClientPostModal = ({ setEditModal }) => {
     // 전송용 input에 담을 때
     setInput({
       ...input,
+      businessType: updatedCheck.filter((item) => item !== ''),
       managerRoleList: updatedCheck2.filter((item) => item !== ''),
     })
   }, [check, check2])
@@ -376,6 +370,10 @@ const ClientPostModal = ({ setEditModal }) => {
         }))
       }
     }
+  }
+
+  const checkRadioButtonSelection = (selection) => {
+    setApprovalStatus(selection)
   }
 
   return (
@@ -460,7 +458,12 @@ const ClientPostModal = ({ setEditModal }) => {
                         gap: '60px',
                       }}
                     >
-                      {radioDummy2.map((text, index) => (
+                      <RadioButton
+                        selection={checkRadioButtonSelection}
+                        radioButtonLabels={radioDummy2}
+                        style={{ display: 'flex', paddingLeft: '5px' }}
+                      />
+                      {/* {radioDummy2.map((text, index) => (
                         <RadioMainDiv key={index}>
                           <RadioCircleDiv
                             name="type"
@@ -473,7 +476,7 @@ const ClientPostModal = ({ setEditModal }) => {
                           </RadioCircleDiv>
                           <div style={{ display: 'flex', paddingLeft: '5px' }}>{text}</div>
                         </RadioMainDiv>
-                      ))}
+                      ))} */}
                     </div>
                   </FlexContent>
                 </FlexPart>
