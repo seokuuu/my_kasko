@@ -22,7 +22,7 @@ const ClientPage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <Client setModal={setModal} setPostModal={setPostModal} postModal={postModal} setPostModal={setPostModal} />
+            <Client setModal={setModal} setPostModal={setPostModal} postModal={postModal} />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>

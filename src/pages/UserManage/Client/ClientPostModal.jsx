@@ -29,6 +29,8 @@ import SignUpPost from '../../../modal/SignUp/SignUpPost'
 import { GreyDiv, IIDImg, IncomeImgDiv } from '../../../userpages/UserMyPage/Profile/Profile'
 import DownloadButton from '../../../utils/DownloadButton'
 import { UserCheckDiv } from '../UserManage/UserPost'
+import { getStorageList } from '../../../api/search'
+import { MainSelect } from '../../../common/Option/Main'
 
 const init = {
   id: '',
@@ -53,6 +55,8 @@ const init = {
   releaseManagerTitle: '',
   releaseManagerName: '',
   releaseManagerPhone: '',
+  storageUid: '',
+  transportName: '',
 }
 
 // id: 아이디
@@ -80,6 +84,9 @@ const init = {
 // releaseManagerPhone: 출고담당자 연락처
 
 const ClientPostModal = ({ setEditModal }) => {
+  const [selected, setSelected] = useState({ storage: '', storageUid: '' })
+
+  console.log('selected', selected)
   const [selectSwitch, setSelectSwitch] = useState({
     A: false,
     deposit: false,
@@ -110,6 +117,9 @@ const ClientPostModal = ({ setEditModal }) => {
   const checkBusiness = async () => {
     try {
       const data = await checkBusinessNumber(businessNumber)
+      if (!businessNumber) {
+        alert('값을 채워주세요.')
+      }
       if (data?.data?.status === 200) {
         alert('사용 가능한 사업자 번호입니다.')
       }
@@ -139,16 +149,21 @@ const ClientPostModal = ({ setEditModal }) => {
     }))
   }
 
+  const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
+
+  console.log('storageList', storageList)
+
   // checked,file 빼고 submit하기 (checkbox는 따로 useState로 하였음)
   const handleSubmit = async (e) => {
     e.preventDefault()
     const checkboxType = ['bank', 'depositManagerTitle', 'releaseManagerTitle']
-    const fileType = ['deleteBusinessNumberFile', 'deleteBankbookFile']
     const formData = new FormData(e.target)
     const updatedInput = { ...input }
 
+    console.log('updatedInput', updatedInput)
+
     formData.forEach((value, key) => {
-      if (input.hasOwnProperty(key) && value && !checkboxType.includes(key) && !fileType.includes(key)) {
+      if (input.hasOwnProperty(key) && value && !checkboxType.includes(key)) {
         updatedInput[key] = value
       }
     })
@@ -160,10 +175,10 @@ const ClientPostModal = ({ setEditModal }) => {
       }
     }
 
-    setInput({ ...input, ...updatedInput, ...checkFileName })
+    setInput({ ...input, ...updatedInput, ...selected, type: savedRadioValue })
     console.log('input <3', input)
     console.log('updatedInput <3', updatedInput)
-    console.log('checkFileName <3', checkFileName)
+
     setShouldUpdateCustomer(true)
   }
 
@@ -236,6 +251,7 @@ const ClientPostModal = ({ setEditModal }) => {
   }
 
   // 라디오 데이터
+
   const radioDummy = ['법인사업자', '개인사업자'] // 사업자 구분 (type)
   const radioDummy2 = ['승인', '대기', '미승인'] // 승인 여부
   const radioDummy3 = ['제한 없음', '경매 시작가 제한', '경매 제한'] // 회원 제한
@@ -278,9 +294,16 @@ const ClientPostModal = ({ setEditModal }) => {
       setSavedRadioValue4(selectedValue4)
       setInput({ ...input, memberType: selectedValue4 }) // 사용자 구분, memberType
     }
-  }, [checkRadio, checkRadio2, checkRadio3, checkRadio4])
-
-  console.log('input =>', input)
+  }, [
+    checkRadio,
+    checkRadio2,
+    checkRadio3,
+    checkRadio4,
+    savedRadioValue,
+    savedRadioValue2,
+    savedRadioValue3,
+    savedRadioValue4,
+  ])
 
   const checkDummy = ['유통', '제조'] // businessType
   const checkDummy2 = ['재고관리', '경매관리', '상시판매', '주문관리', '판매제품 관리', '출고관리', '운영관리'] //managerRoleList
@@ -300,12 +323,6 @@ const ClientPostModal = ({ setEditModal }) => {
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData(filteredCheck)
 
-    // 전송용 input에 담을 때
-    setInput({
-      ...input,
-      businessType: updatedCheck.filter((item) => item !== ''),
-    })
-
     const updatedCheck2 = checkDummy2.map((value, index) => {
       return check2[index] ? value : ''
     })
@@ -316,6 +333,7 @@ const ClientPostModal = ({ setEditModal }) => {
     // 전송용 input에 담을 때
     setInput({
       ...input,
+      businessType: updatedCheck.filter((item) => item !== ''),
       managerRoleList: updatedCheck2.filter((item) => item !== ''),
     })
   }, [check, check2])
@@ -535,16 +553,29 @@ const ClientPostModal = ({ setEditModal }) => {
                     </div>
                   </FlexContent>
                 </FlexPart>
+                {console.log('checkRadio4[1]', checkRadio4)}
+                {checkRadio4[1] && (
+                  <FlexPart>
+                    <FlexTitle>
+                      운송사 이름<span>*</span>
+                    </FlexTitle>
+                    <FlexContent>
+                      <FlexInput name="transportName" />
+                    </FlexContent>
+                  </FlexPart>
+                )}
                 <FlexPart>
                   <FlexTitle>
                     창고 구분<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <EditSelect
+                    <MainSelect
+                      options={storageList}
+                      defaultValue={''}
                       name="storage"
-                      options={depositOptions}
-                      defaultValue={depositOptions[0]}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'storage')}
+                      onChange={(e) => {
+                        setSelected((p) => ({ ...p, storage: e.label, storageUid: e.value }))
+                      }}
                     />
                   </FlexContent>
                 </FlexPart>
@@ -616,12 +647,12 @@ const ClientPostModal = ({ setEditModal }) => {
                   </FlexContent>
                 </FlexPart>
 
-                <FlexPart>
+                {/* <FlexPart>
                   <FlexTitle>담당자 추가</FlexTitle>
                   <FlexContent>
                     <AddBtn>추가하기</AddBtn>
                   </FlexContent>
-                </FlexPart>
+                </FlexPart> */}
                 <FlexPart>
                   {/* <FlexContent>
                   <FlexInput name="releaseManagerPhone" placeholder="연락처 입력 ('-' 제외)" />

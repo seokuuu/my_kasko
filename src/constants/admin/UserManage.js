@@ -111,6 +111,15 @@ export const UserManageFields = {
 export const UserManageFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   {
+    field: '수정',
+    maxWidth: 90,
+    cellRenderer: BtnCellRenderer,
+    cellRendererParams: {
+      uidFieldName: 'uid',
+      editType: 'usermanage',
+    },
+  },
+  {
     field: '순번',
   },
   { field: '이름', minWidth: 100 }, //숫자
