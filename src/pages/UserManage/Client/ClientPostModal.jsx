@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import { UserCheckDiv } from '../UserManage/UserPost'
 import { checkBusinessNumber, updateCustomer } from '../../../api/myPage'
 import { getCustomerDetail, postClient, resetCustomer } from '../../../api/userManage'
 import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
@@ -29,7 +28,6 @@ import DownloadButton from '../../../utils/DownloadButton'
 import { UserCheckDiv } from '../UserManage/UserPost'
 import { getStorageList } from '../../../api/search'
 import { MainSelect } from '../../../common/Option/Main'
-
 
 const init = {
   id: '',
@@ -174,7 +172,6 @@ const ClientPostModal = ({ setEditModal }) => {
       }
     }
 
-    setInput({ ...input, ...updatedInput, ...selected, type: savedRadioValue })
     console.log('input <3', input)
     console.log('updatedInput <3', updatedInput)
 
@@ -259,50 +256,56 @@ const ClientPostModal = ({ setEditModal }) => {
   const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, () => false))
   const [checkRadio3, setCheckRadio3] = useState(Array.from({ length: radioDummy3.length }, () => false))
   const [checkRadio4, setCheckRadio4] = useState(Array.from({ length: radioDummy4.length }, () => false))
+  const [radioSelections, setRadioSelections] = useState({
+    승인여부: null,
+    회원제환: null,
+    사용자구분: null,
+    사업자구분: null,
+  })
 
-  const [savedRadioValue, setSavedRadioValue] = useState('')
-  const [savedRadioValue2, setSavedRadioValue2] = useState('')
-  const [savedRadioValue3, setSavedRadioValue3] = useState('')
-  const [savedRadioValue4, setSavedRadioValue4] = useState('')
+  // const [savedRadioValue, setSavedRadioValue] = useState('')
+  // const [savedRadioValue2, setSavedRadioValue2] = useState('')
+  // const [savedRadioValue3, setSavedRadioValue3] = useState('')
+  // const [savedRadioValue4, setSavedRadioValue4] = useState('')
 
-  useEffect(() => {
-    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
-    if (checkedIndex !== -1) {
-      const selectedValue1 = radioDummy[checkedIndex]
-      setSavedRadioValue(selectedValue1)
-      setInput({ ...input, type: selectedValue1 }) // 사업자 구분, type
-    }
+  // useEffect(() => {
+  //   const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
+  //   if (checkedIndex !== -1) {
+  //     const selectedValue1 = radioDummy[checkedIndex]
+  //     setSavedRadioValue(selectedValue1)
+  //     setInput({ ...input, type: selectedValue1 }) // 사업자 구분, type
+  //   }
 
-    const checkedIndex2 = checkRadio2.findIndex((isChecked, index) => isChecked && index < radioDummy2.length)
-    if (checkedIndex2 !== -1) {
-      const selectedValue2 = radioDummy2[checkedIndex2]
-      setSavedRadioValue2(selectedValue2)
-      setInput({ ...input, approvalStatus: selectedValue2 }) // 승인 여부, approvalStatus
-    }
+  //   const checkedIndex2 = checkRadio2.findIndex((isChecked, index) => isChecked && index < radioDummy2.length)
+  //   if (checkedIndex2 !== -1) {
+  //     const selectedValue2 = radioDummy2[checkedIndex2]
+  //     setSavedRadioValue2(selectedValue2)
+  //     setInput({ ...input, approvalStatus: selectedValue2 }) // 승인 여부, approvalStatus
+  //   }
 
-    const checkedIndex3 = checkRadio3.findIndex((isChecked, index) => isChecked && index < radioDummy3.length)
-    if (checkedIndex3 !== -1) {
-      const selectedValue3 = radioDummy3[checkedIndex3]
-      setSavedRadioValue3(selectedValue3)
-      setInput({ ...input, auctionStatus: selectedValue3 }) // 회원 제한, auctionStatus
-    }
+  //   const checkedIndex3 = checkRadio3.findIndex((isChecked, index) => isChecked && index < radioDummy3.length)
+  //   if (checkedIndex3 !== -1) {
+  //     const selectedValue3 = radioDummy3[checkedIndex3]
+  //     setSavedRadioValue3(selectedValue3)
+  //     setInput({ ...input, auctionStatus: selectedValue3 }) // 회원 제한, auctionStatus
+  //   }
 
-    const checkedIndex4 = checkRadio4.findIndex((isChecked, index) => isChecked && index < radioDummy4.length)
-    if (checkedIndex4 !== -1) {
-      const selectedValue4 = radioDummy4[checkedIndex4]
-      setSavedRadioValue4(selectedValue4)
-      setInput({ ...input, memberType: selectedValue4 }) // 사용자 구분, memberType
-    }
-  }, [
-    checkRadio,
-    checkRadio2,
-    checkRadio3,
-    checkRadio4,
-    savedRadioValue,
-    savedRadioValue2,
-    savedRadioValue3,
-    savedRadioValue4,
-  ])
+  //   const checkedIndex4 = checkRadio4.findIndex((isChecked, index) => isChecked && index < radioDummy4.length)
+  //   if (checkedIndex4 !== -1) {
+  //     const selectedValue4 = radioDummy4[checkedIndex4]
+  //     setSavedRadioValue4(selectedValue4)
+  //     setInput({ ...input, memberType: selectedValue4 }) // 사용자 구분, memberType
+  //   }
+  // }, [
+  //   checkRadio,
+  //   checkRadio2,
+  //   checkRadio3,
+  //   checkRadio4,
+  //   savedRadioValue,
+  //   savedRadioValue2,
+  //   savedRadioValue3,
+  //   savedRadioValue4,
+  // ])
 
   const checkDummy = ['유통', '제조'] // businessType
   const checkDummy2 = ['재고관리', '경매관리', '상시판매', '주문관리', '판매제품 관리', '출고관리', '운영관리'] //managerRoleList
@@ -397,8 +400,20 @@ const ClientPostModal = ({ setEditModal }) => {
     }
   }
 
-  const checkRadioButtonSelection = (selection) => {
-    setApprovalStatus(selection)
+  const checkRadioButtonSelection = (selection, group) => {
+    setRadioSelections({
+      ...radioSelections,
+      [group]: selection,
+    })
+
+    updateFormData(group, selection)
+  }
+
+  const updateFormData = (field, value) => {
+    setInput((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }))
   }
 
   return (
@@ -484,24 +499,10 @@ const ClientPostModal = ({ setEditModal }) => {
                       }}
                     >
                       <RadioButton
-                        selection={checkRadioButtonSelection}
+                        selection={(value) => checkRadioButtonSelection(value, '승인여부')}
                         radioButtonLabels={radioDummy2}
                         style={{ display: 'flex', paddingLeft: '5px' }}
                       />
-                      {/* {radioDummy2.map((text, index) => (
-                        <RadioMainDiv key={index}>
-                          <RadioCircleDiv
-                            name="type"
-                            isChecked={checkRadio2[index]}
-                            onClick={() => {
-                              setCheckRadio2(CheckBox(checkRadio2, checkRadio2.length, index))
-                            }}
-                          >
-                            <RadioInnerCircleDiv isChecked={checkRadio2[index]} />
-                          </RadioCircleDiv>
-                          <div style={{ display: 'flex', paddingLeft: '5px' }}>{text}</div>
-                        </RadioMainDiv>
-                      ))} */}
                     </div>
                   </FlexContent>
                 </FlexPart>
@@ -517,20 +518,11 @@ const ClientPostModal = ({ setEditModal }) => {
                         minWidth: '450px',
                       }}
                     >
-                      {radioDummy3.map((text, index) => (
-                        <RadioMainDiv key={index}>
-                          <RadioCircleDiv
-                            name="type"
-                            isChecked={checkRadio3[index]}
-                            onClick={() => {
-                              setCheckRadio3(CheckBox(checkRadio3, checkRadio3.length, index))
-                            }}
-                          >
-                            <RadioInnerCircleDiv isChecked={checkRadio3[index]} />
-                          </RadioCircleDiv>
-                          <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
-                        </RadioMainDiv>
-                      ))}
+                      <RadioButton
+                        selection={(value) => checkRadioButtonSelection(value, '회원제한')}
+                        radioButtonLabels={radioDummy3}
+                        style={{ display: 'flex', paddingLeft: '5px' }}
+                      />
                     </div>
                   </FlexContent>
                 </FlexPart>
@@ -546,20 +538,11 @@ const ClientPostModal = ({ setEditModal }) => {
                         minWidth: '450px',
                       }}
                     >
-                      {radioDummy4.map((text, index) => (
-                        <RadioMainDiv key={index}>
-                          <RadioCircleDiv
-                            name="type"
-                            isChecked={checkRadio4[index]}
-                            onClick={() => {
-                              setCheckRadio4(CheckBox(checkRadio4, checkRadio4.length, index))
-                            }}
-                          >
-                            <RadioInnerCircleDiv isChecked={checkRadio4[index]} />
-                          </RadioCircleDiv>
-                          <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
-                        </RadioMainDiv>
-                      ))}
+                      <RadioButton
+                        selection={(value) => checkRadioButtonSelection(value, '사용자구분')}
+                        radioButtonLabels={radioDummy4}
+                        style={{ display: 'flex', paddingLeft: '5px' }}
+                      />
                     </div>
                   </FlexContent>
                 </FlexPart>
@@ -685,20 +668,11 @@ const ClientPostModal = ({ setEditModal }) => {
                         width: '100%',
                       }}
                     >
-                      {radioDummy.map((text, index) => (
-                        <RadioMainDiv key={index}>
-                          <RadioCircleDiv
-                            name="type"
-                            isChecked={checkRadio[index]}
-                            onClick={() => {
-                              setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-                            }}
-                          >
-                            <RadioInnerCircleDiv isChecked={checkRadio[index]} />
-                          </RadioCircleDiv>
-                          <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
-                        </RadioMainDiv>
-                      ))}
+                      <RadioButton
+                        selection={(value) => checkRadioButtonSelection(value, '사업자구분')}
+                        radioButtonLabels={radioDummy}
+                        style={{ display: 'flex', paddingLeft: '5px' }}
+                      />
                     </div>
                   </FlexContent>
                 </FlexPart>
