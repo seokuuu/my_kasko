@@ -79,7 +79,7 @@ const init = {
 // releaseManagerName: 출고담당자 이름
 // releaseManagerPhone: 출고담당자 연락처
 
-const ClientEditModal = ({ setEditModal }) => {
+const ClientEditModal = ({ setEditModal, uidAtom }) => {
   const [selectSwitch, setSelectSwitch] = useState({
     A: false,
     deposit: false,
@@ -104,7 +104,9 @@ const ClientEditModal = ({ setEditModal }) => {
   // const { isError, isSuccess, data } = useReactQuery('getCustomerPrivacy', {}, getCustomerPrivacy)
 
   // get 상세
-  const { isError, isSuccess, data } = useReactQuery(2500, 'getCustomerDetail', getCustomerDetail)
+
+  console.log('uidAtom', uidAtom)
+  const { isError, isSuccess, data } = useReactQuery(uidAtom, 'getCustomerDetail', getCustomerDetail)
 
   const [user, setUser] = useState('')
   const resData = data?.data?.data
@@ -676,7 +678,7 @@ const ClientEditModal = ({ setEditModal }) => {
               </Left>
               {/* -------------------------------------------------------------- */}
               <Right>
-                <h1>비즈니스 정보 ㅋㅋ</h1>
+                <h1>비즈니스 정보</h1>
                 <Bar />
                 <FlexPart>
                   <FlexTitle>

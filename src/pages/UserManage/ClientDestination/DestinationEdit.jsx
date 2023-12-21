@@ -70,6 +70,13 @@ const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
   const [findModal, setFindModal] = useAtom(UsermanageFindModal)
   const [customerFindResult, setCustomerFindResult] = useState()
 
+  const [customerNameInput, setCustomerNameInput] = useState({
+    customerName: matchingData ? matchingData.customerName : '', // matchingData가 존재하면 해당 값을, 없으면 빈 문자열로 초기화
+    customerCode: matchingData ? matchingData.customerCode : '',
+  })
+
+  console.log('customerNameInput', customerNameInput)
+
   const postCheck = () => {
     setPostFind(false)
   }
@@ -157,11 +164,14 @@ const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
 
   useEffect(() => {
     const uid = matchingData?.uid
-    setSubmitData({ ...submitData, ...matchingData })
-  }, [matchingData])
+    setSubmitData({ ...submitData, ...matchingData, ...customerNameInput })
+  }, [matchingData, customerNameInput])
 
   console.log('submitData', submitData)
 
+  console.log('submitData', submitData)
+  console.log('submitData?.customername', submitData?.customerName)
+  console.log('customerNameInput', customerNameInput)
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
     if (checkedIndex === 0) {
@@ -223,7 +233,7 @@ const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
 
   return (
     <OnePageContainer style={{ minHeight: '88vh' }}>
-      <MainTitle>고객사 목적지 수정</MainTitle>
+      <MainTitle>고객사 목적지 수정 </MainTitle>
       <OnePageSubContainer>
         <HalfWrap>
           <Left style={{ width: '50%' }}>
@@ -253,9 +263,9 @@ const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
                 <h4>고객사 명</h4>
                 <p></p>
               </Title>
-              <CustomInput width={120} defaultValue={customerFindResult?.name} />
+              <CustomInput width={120} value={customerNameInput?.customerName} />
               <span style={{ margin: 'auto 5px' }}>-</span>
-              <CustomInput width={120} defaultValue={customerFindResult?.ceoName} />
+              <CustomInput width={120} value={customerNameInput?.customerCode} />
               <BlackBtn
                 width={20}
                 height={40}
@@ -394,7 +404,12 @@ const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
         </BlackBtn>
       </BtnWrap>
       {findModal && (
-        <ClientDestiCustomerFind setFindModal={setFindModal} setCustomerFindResult={setCustomerFindResult} />
+        <ClientDestiCustomerFind
+          setFindModal={setFindModal}
+          setCustomerFindResult={setCustomerFindResult}
+          customerNameInput={customerNameInput}
+          setCustomerNameInput={setCustomerNameInput}
+        />
       )}
       {postcodeModal && (
         <SignUpPost

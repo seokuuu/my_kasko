@@ -35,7 +35,7 @@ export const UserManageCustomerManageFieldsCols = [
     maxWidth: 90,
     cellRenderer: BtnCellRenderer,
     cellRendererParams: {
-      uidFieldName: 'uid',
+      uidFieldName: '고객 구분',
       editType: 'usermanage',
     },
   },
