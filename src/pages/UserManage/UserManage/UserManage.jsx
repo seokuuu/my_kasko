@@ -39,6 +39,7 @@ import Table from '../../Table/Table'
 // import { isArray } from 'lodash'
 import { isArray } from '../../../lib'
 import ClientPostModal from '../Client/ClientPostModal'
+import UserPost from './UserPost'
 
 const UserManage = ({ setChoiceComponent }) => {
   const [uidAtom, setUidAtom] = useAtom(btnCellRenderAtom)
@@ -204,7 +205,7 @@ const UserManage = ({ setChoiceComponent }) => {
             </SkyBtn>
           </div>
         </TCSubContainer>
-        {postModal && <ClientPostModal setEditModal={setPostModal} />}
+        {postModal && <UserPost setEditModal={setPostModal} />}
         <Table setChoiceComponent={setChoiceComponent} getCol={getCol} getRow={getRow} />
       </TableContianer>
     </FilterContianer>

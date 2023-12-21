@@ -25,7 +25,7 @@ import SignUpPost from '../../../modal/SignUp/SignUpPost'
 import { CheckBtn, TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
 import { GreyDiv, IIDImg, IncomeImgDiv } from '../../../userpages/UserMyPage/Profile/Profile'
 import DownloadButton from '../../../utils/DownloadButton'
-import { UserCheckDiv } from '../UserManage/UserPost'
+
 import { getStorageList } from '../../../api/search'
 import { MainSelect } from '../../../common/Option/Main'
 
@@ -654,7 +654,7 @@ const ClientPostModal = ({ setEditModal }) => {
               </Left>
               {/* -------------------------------------------------------------- */}
               <Right>
-                <h1>비즈니스 정보 ㅋㅋ</h1>
+                <h1>비즈니스 정보</h1>
                 <Bar />
                 <FlexPart>
                   <FlexTitle>
@@ -1025,12 +1025,12 @@ const EqualCheckWrap2 = styled.div`
   right: 120px;
 `
 
-const CheckTxt2 = styled.p`
+export const CheckTxt2 = styled.p`
   min-width: 100px;
   font-size: 16px;
 `
 
-const FlexContent2 = styled.div`
+export const FlexContent2 = styled.div`
   display: flex;
   min-width: 600px;
   flex-wrap: wrap;
