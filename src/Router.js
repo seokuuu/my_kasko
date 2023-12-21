@@ -140,6 +140,8 @@ import NoticeBoardPost from './pages/Operate/Exposure/NoticeBoard/NoticeBoardPos
 import TestExcel from './pages/Test/TestExcel'
 import TestParents from './components/TableUiComponent/TestParents'
 import TestTable from './components/testTable/TestTable'
+import ManyTable from './components/manyTable/ManyTable'
+import TestManyTable from './components/manyTable/TestManyTable'
 
 // RoundAucProAdd
 const Router = () => {
@@ -149,6 +151,7 @@ const Router = () => {
         {/* 컴포넌트 작업 Router */}
         <Route path="/tableUi" element={<TestParents />} />
         <Route path="/tableTest" element={<TestTable />} />
+        <Route path="/manyTable" element={<TestManyTable />} />
         {/* 테스트 URL */}
         <Route path="/ppapp" element={<UserEditPage />} />
         <Route path="/ppap" element={<DefaultBlueBar />} />
