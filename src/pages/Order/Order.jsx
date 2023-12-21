@@ -32,13 +32,14 @@ import {
 import { useAtom } from 'jotai'
 import Hidden from '../../components/TableInner/Hidden'
 import PageDropdown from '../../components/TableInner/PageDropdown'
-import Table from '../Table/Table'
 import { OrderFields, OrderFieldsCols } from '../../constants/admin/Order'
 import useReactQuery from '../../hooks/useReactQuery'
 import { add_element_field } from '../../lib/tableHelpers'
 import { getAdminOrder } from '../../service/admin/Order'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
 import { CheckBox } from '../../common/Check/Checkbox'
+import TableUi from '../../components/TableUiComponent/TableUi'
+import { columnDefs } from './etcVariable'
 
 const Order = ({}) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -129,6 +130,27 @@ const Order = ({}) => {
     }
   }, [isSuccess, resData])
 
+  /** 테이블컴포넌트 */
+  const [rowData, setRowData] = useState([{}])
+  const [gridApi, setGridApi] = useState(null)
+  const [gridColumnApi, setGridColumnApi] = useState(null)
+  const onGridReady = (params) => {
+    setGridApi(params.api)
+    setGridColumnApi(params.columnApi)
+    params.api.sizeColumnsToFit()
+  }
+  const onCellClicked = async (params) => {
+    if (params.colDef.field === 'title') {
+      window.location.href = `/operate/notice/view/${params.data.no}`
+    }
+  }
+  const gridOptions = {
+    getRowStyle: (params) => {
+      if (params.node.rowPinned) return { 'font-weight': 'bold' }
+    },
+    headerHeight: 30,
+    rowHeight: 30,
+  }
   return (
     <FilterContianer>
       <FilterHeader>
@@ -260,8 +282,15 @@ const Order = ({}) => {
             <SkyBtn>확정 전송</SkyBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
-        {/* <Test3 /> */}
+        {/* 테이블 들어와야 하는 곳 */}
+        <TableUi
+          columnDefs={columnDefs}
+          rowData={rowData}
+          onGridReady={onGridReady}
+          onCellClicked={onCellClicked}
+          gridOptions={gridOptions}
+          height={330}
+        />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>

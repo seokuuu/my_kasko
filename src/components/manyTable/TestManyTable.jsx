@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import ManyTable from './ManyTable'
-import { getColumnDefs } from './etcVariable'
+import { columnDefs } from './etcVariable'
 import { CheckBoxDefault } from '../storeCheckbox'
 
 const TestManyTable = () => {
   const [rowData, setRowData] = useState([{}])
   const [gridApi, setGridApi] = useState(null)
   const [gridColumnApi, setGridColumnApi] = useState(null)
-  const AGREE = [{ label: '흠', value: 'time', checked: false, disabled: false }]
-  const [data, setData] = useState({ time: AGREE })
-  const columnDefs = getColumnDefs(data, setData)
+
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {

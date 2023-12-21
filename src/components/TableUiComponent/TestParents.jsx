@@ -115,7 +115,7 @@ const TestParents = () => {
         onCellClicked={onCellClicked}
         gridOptions={gridOptions}
       />
-
+      {/* 가운데 정렬을 위한 div태그 */}
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <PagingComp
           currentPage={currentPage}

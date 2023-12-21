@@ -5,7 +5,6 @@
   font-size: 13px;
   border-right: 1px solid #c8c8c8;
   box-sizing: border-box;
-  justify-content: center;
 }
 .custom-header-style:last-child {
   border-right: none;
@@ -13,6 +12,9 @@
 }
 .ag-header-cell-label {
   justify-content: center;
+}
+.ag-header-cell-menu-button {
+  display: none !important;
 }
 .ag-paging-panel {
   display: none;
