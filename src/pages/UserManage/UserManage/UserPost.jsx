@@ -86,7 +86,7 @@ const init = {
 // releaseManagerName: 출고담당자 이름
 // releaseManagerPhone: 출고담당자 연락처
 
-const UserPost = ({ setEditModal }) => {
+const UserPost = ({ setPostModal }) => {
   const [selected, setSelected] = useState({ storage: '', storageUid: '' })
 
   console.log('selected', selected)
@@ -205,7 +205,7 @@ const UserPost = ({ setEditModal }) => {
 
   useEffect(() => {
     return () => {
-      setEditModal(false)
+      setPostModal(false)
     }
   }, [])
   // -------------------------------------------------------------------------------
@@ -379,7 +379,7 @@ const UserPost = ({ setEditModal }) => {
   }
 
   const modalOFF = () => {
-    setEditModal(false)
+    setPostModal(false)
   }
 
   const handleFiles = (e) => {
