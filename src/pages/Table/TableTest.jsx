@@ -293,7 +293,7 @@ const TableTest = ({
   }
 
   useEffect(() => {
-    topData.map((item, index) =>
+    topData?.map((item, index) =>
       setResult((p) => [
         ...p,
         {
