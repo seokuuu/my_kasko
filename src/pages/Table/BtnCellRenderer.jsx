@@ -14,6 +14,7 @@ import {
   StandardConsoliateEdit,
 } from '../../store/Layout/Layout'
 
+import { UsermanageUserManageEditModal } from '../../store/Layout/Layout'
 const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
   const uid = data[uidFieldName]
 
@@ -34,6 +35,8 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
   const [userDestiEdit, setUserDestiEdit] = useAtom(UsermanageDestiEditModal) // 고객사 목적지 관리 수정 모달
 
   const [consoliEdit, setConsoliEdit] = useAtom(StandardConsoliateEdit)
+
+  const [userManageEditModal, setUserManageEditModal] = useAtom(UsermanageUserManageEditModal)
 
   // console.log('버튼 셀 @@@', userpageEditModal)
 
@@ -56,14 +59,13 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
         setCosoliMode('수정')
         break
       case 'dispatch':
-        setBtnCellModal(true)
         setUidAtom(uid)
         setDispatchModalMode(true)
         break
       case 'userprefer':
         setUidAtom(uid)
         setUserPageEditModal(true)
-      case 'usermanage': // 고객사 관리
+      case 'client': // 고객사 관리
         setUidAtom(uid)
         setUserManageEdit(true)
       case 'userdestination': // 고객사 목적지 관리
@@ -72,10 +74,11 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
         break
       // 클레임 관리 목록 수정 버튼 => 클레임 수정 페이지로 이동
       case 'claimUpdate':
-        setBtnCellModal(true)
         setUidAtom(uid)
         setModalMode('수정')
-
+      case 'usermanagemanage':
+        setUidAtom(uid)
+        setUserManageEditModal(true)
       default:
         break
     }

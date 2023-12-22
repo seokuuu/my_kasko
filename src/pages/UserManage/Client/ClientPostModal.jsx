@@ -258,11 +258,13 @@ const ClientPostModal = ({ setEditModal }) => {
   const [checkRadio3, setCheckRadio3] = useState(Array.from({ length: radioDummy3.length }, () => false))
   const [checkRadio4, setCheckRadio4] = useState(Array.from({ length: radioDummy4.length }, () => false))
   const [radioSelections, setRadioSelections] = useState({
-    승인여부: null,
-    회원제환: null,
-    사용자구분: null,
-    사업자구분: null,
+    approvalStatus: null,
+    auctionStatus: null,
+    memberType: null,
+    type: null,
   })
+
+  console.log('radioSelections', radioSelections)
 
   // const [savedRadioValue, setSavedRadioValue] = useState('')
   // const [savedRadioValue2, setSavedRadioValue2] = useState('')

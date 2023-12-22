@@ -68,6 +68,7 @@ export const UsermanageFindModal = atom(false)
 
 export const UsermanageUserPostModal = atom(false)
 
+export const UsermanageUserManageEditModal = atom(false)
 /* ==============================
      주문 관리 (Order)
 ============================== */
