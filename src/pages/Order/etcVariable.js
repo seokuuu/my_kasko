@@ -1,7 +1,7 @@
 /** 셀의 내용을 지정할 수 있는 columnDefs */
 export const columnDefs = [
   {
-    headerName: 'A',
+    headerName: '',
     field: 'check',
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8' },
