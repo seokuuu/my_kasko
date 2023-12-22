@@ -28,7 +28,7 @@ const FileName = styled.div`
   padding: 12px;
 `
 
-const AttachedFile = ({ setState = () => {}, name = 'file', fileList }) => {
+const AttachedFile = ({ setState = () => {}, name = 'file', fileList, isExistTitle }) => {
   // 파일 정보
   const [file, setFile] = useState([])
 
@@ -60,9 +60,11 @@ const AttachedFile = ({ setState = () => {}, name = 'file', fileList }) => {
     }
   }, [])
 
+  console.log('existFileList :', existFileList)
+
   return (
-    <div style={{ width: '48%' }}>
-      <p style={{ marginBottom: '5px' }}>첨부 파일</p>
+    <div style={{ width: '40%' }}>
+      {isExistTitle && <p style={{ marginBottom: '5px' }}>첨부 파일</p>}
       <div style={{ width: '48%' }}>
         <WhiteBtn style={{ width: '200%', marginBottom: '12px' }}>
           <label

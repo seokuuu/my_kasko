@@ -93,7 +93,7 @@ const ClaimHeader = ({ search, setSearch, refetch }) => {
             </FilterLeft>
             <FilterRight>
               {/* 제품 번호 */}
-              <ProductNumber setState={setSearch} valueName={'productNumberList'} />≈
+              <ProductNumber setState={setSearch} valueName={'productNumberList'} />
             </FilterRight>
           </FilterSubcontianer>
           <FilterFooter>

@@ -162,7 +162,7 @@ const NoticePost = ({ title, isRegister }) => {
                 radioDummy={radioDummy}
               />
               {/* 첨부 파일 */}
-              <AttachedFile name="file" setState={setForm} fileList={form.existFile} />
+              <AttachedFile name="file" setState={setForm} fileList={form.existFile} isExistTitle={true} />
             </BottomOne>
           </BottomWrap>
 

@@ -8,7 +8,7 @@ import { DoubleWrap } from '../../modal/External/ExternalFilter'
  * @param setState 상태값의 setState
  * @param valueName 상태값의 제품 번호 필터링한 배열 관련 키값
  */
-const ProductNumber = ({ setState, valueName }) => {
+const ProductNumber = ({ setState, valueName, height = '100px' }) => {
   const [value, setValue] = useState('')
 
   function onChange(e) {
@@ -29,7 +29,7 @@ const ProductNumber = ({ setState, valueName }) => {
         value={value}
         onChange={onChange}
         placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-        style={{ height: '100px' }}
+        style={{ height }}
       />
     </DoubleWrap>
   )

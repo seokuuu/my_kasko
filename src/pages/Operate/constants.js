@@ -168,9 +168,47 @@ export const claimSearchCategoryOptions = [
 // 클레임 목록 검색 옵션 초기값
 export const claimInitState = {
   pageNum: 1,
-  pageSize: 5,
+  pageSize: 1000,
   claimStatus: claimSearchCategoryOptions[0],
   startDate: '',
   endDate: '',
-  productNumberList: [],//제품 번호
+  productNumberList: [], //제품 번호
+}
+
+// 클레임 상품 목록 검색 옵션 초깃값
+export const claimProductInitState = {
+  pageNum: 1,
+  pageSize: 10,
+  storage: { label: '전체', value: '', address: null }, // 창고 구분
+  supplier: { label: '전체', value: '' }, // 매입처
+  spec: '', // 규격 약호
+  spart: { label: '제품군', value: '' }, // 제품군
+  maker: {
+    label: '제조사',
+    value: '',
+  }, // 제조사
+  stockStatus: {
+    label: '재고 상태',
+    value: '',
+  }, // 재고 상태
+  grade: {
+    label: '등급 목록',
+    value: '',
+  }, // 등급
+  preferThickness: {
+    label: '정척여부',
+    value: '',
+  }, // 정척 여부
+  saleCategoryList: [], // 판매 구분
+  saleType: [], // 판매 유형
+  salePriceType: [], // 판매가 유형
+  minThickness: 0, // 최소 두깨,
+  maxThickness: 0, // 최대 두깨
+  minWidth: 0, // 최소 폭
+  maxWidth: 0, // 최대 폭
+  minLength: 0, // 최소 길이
+  maxLength: 0, // 최대 길이
+  minFailCount: 0, // 유찰 횟수 범위 시작
+  maxFailCount: 0, // 유찰 횟수 범위 종료
+  productNumberList: [],
 }

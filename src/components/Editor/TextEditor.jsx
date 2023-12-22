@@ -72,13 +72,15 @@ const TextEditor = ({ setState = () => {}, name = 'content', value }) => {
       }
     }
   }, [value])
-
+  // 컴포넌트 사라지면 초기화
+  // useEffect(() => {}, [])
   //
   useEffect(() => {
     const html = draftjsToHtml(convertToRaw(editorState.getCurrentContent()))
 
     if (setState) setState((p) => ({ ...p, [name]: html }))
   }, [editorState])
+
   return (
     <>
       <Container>
