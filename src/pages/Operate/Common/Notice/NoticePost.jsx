@@ -32,13 +32,15 @@ const NoticePost = ({ title, isRegister }) => {
 
   // 등록 폼
   const [form, setForm] = useState({
-    type: '공지사항',
-    status: true,
-    title: '',
-    content: '',
-    file: {},
-    deleteFileList: [],
+    status: true, // 상단 노출 여부
+    title: '', // 제목
+    content: '', // 내용
+    file: [], // 새로 담을 파일 뎅터
+    existFile: [], // 기존 파일 데이터
+    deleteFileList: [], // 삭제할 파일 인덱스(uid)
   })
+
+  console.log('form :', form)
 
   // 상단 노출 여부 라디오 UI 관련 state
   const radioDummy = ['노출', '미노출']
@@ -46,21 +48,28 @@ const NoticePost = ({ title, isRegister }) => {
 
   // 공지사항& 자료실 상세 조회 API
   const { data } = useNoticeDetailsQuery(id)
-
   // 공지사항& 자료실 등록 API
-  const { mutate: register } = useNoticeRegisterMutation(title === '공지' ? 'notice' : 'datasheet')
+  const { mutate: register } = useNoticeRegisterMutation(title === '공지' ? '공지사항' : '자료실')
+  // 공지사항& 자료실 수정 API
+  const { mutate: update } = useNoticeUpdateMutation(title === '공지' ? '공지사항' : '자료실')
 
   // 등록 API REQUEST PARAMETER
   const registerParams = {
     title: form.title,
     content: form.content,
-    status: form.status,
+    status: Number(form.status),
     fileList: form.file,
-    type: form.type,
   }
 
-  // 공지사항& 자료실 수정 API
-  const { mutate: update } = useNoticeUpdateMutation(title === '공지' ? 'notice' : 'datasheet')
+  // 수정 API REQUEST PARAMETER
+  const updateParams = {
+    title: form.title,
+    content: form.content,
+    status: Number(form.status),
+    fileList: form.file,
+    deleteFileList: form.deleteFileList,
+    uid: id,
+  }
 
   // 제목 인풋 이벤트 핸들러
   function commonChangeHandler(e) {
@@ -102,7 +111,7 @@ const NoticePost = ({ title, isRegister }) => {
     if (nowPopup.num === '1-12') {
       if (id && data) {
         console.log('수정 API')
-        update({})
+        update(updateParams)
       } else {
         register(registerParams)
       }
@@ -110,6 +119,7 @@ const NoticePost = ({ title, isRegister }) => {
     }
   }, [nowPopup])
   /**
+   @description
    * 상세 데이터값이 있다면 form 데이터 바인딩
    */
   useEffect(() => {
@@ -120,7 +130,7 @@ const NoticePost = ({ title, isRegister }) => {
         title: data.title,
         content: data.content,
         status: Number(data.status),
-        file: data.fileList.length !== 0 ? data.fileList[0] : {},
+        existFile: data.fileList.length !== 0 ? data.fileList.map((f) => ({ ...f, name: f.originalName })) : [],
       })
     }
   }, [data])
@@ -140,8 +150,8 @@ const NoticePost = ({ title, isRegister }) => {
               onChange={commonChangeHandler}
             />
           </div>
-
-          <TextEditor name="content" setState={setForm} value={form.content} />
+          {/* 내용 */}
+          <TextEditor name="content" setState={setForm} value={data && data.content} />
           <BottomWrap>
             <BottomOne style={{ margin: '20px 0px' }}>
               {/* 상단 노출 여부 */}
@@ -152,7 +162,7 @@ const NoticePost = ({ title, isRegister }) => {
                 radioDummy={radioDummy}
               />
               {/* 첨부 파일 */}
-              <AttachedFile name="file" setState={setForm} fileName={form.file?.originalName ?? ''} />
+              <AttachedFile name="file" setState={setForm} fileList={form.existFile} isExistTitle={true} />
             </BottomOne>
           </BottomWrap>
 

@@ -16,7 +16,6 @@ import { useNavigate } from 'react-router-dom'
 import { InputA, PropsInput } from '../../../../common/Input/Input'
 import { CustomSelect } from '../../../../common/Option/Main'
 import { ExCheckWrap } from '../../../../modal/External/ExternalFilter'
-// 클레임 등록
 const PopupPost = () => {
   const navigate = useNavigate()
 

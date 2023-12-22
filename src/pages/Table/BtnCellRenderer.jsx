@@ -27,7 +27,7 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
   const [modalMode, setModalMode] = useAtom(surEditModalAtom) // 할증 관리 modal
   const [dispatchModalMode, setDispatchModalMode] = useAtom(StandardDispatchEditAtom)
   const [consoliMode, setCosoliMode] = useAtom(consolEditModalAtom) // 합짐비 관리 modal
-
+  const [recommend, setRecommend] = useState(false)
   const [userpageEditModal, setUserPageEditModal] = useAtom(userpageUserPreferEdit) // 마이페이지 수정 모달
 
   const [userManageEdit, setUserManageEdit] = useAtom(usermanageClientEdit) // 고객사 관리 수정 모달
@@ -71,6 +71,7 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
       case 'userdestination': // 고객사 목적지 관리
         setUidAtom(uid)
         setUserDestiEdit(true)
+        break
       // 클레임 관리 목록 수정 버튼 => 클레임 수정 페이지로 이동
       case 'claimUpdate':
         setUidAtom(uid)
