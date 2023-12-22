@@ -22,7 +22,7 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
   const [modalMode, setModalMode] = useAtom(surEditModalAtom) // 할증 관리 modal
   const [dispatchModalMode, setDispatchModalMode] = useAtom(StandardDispatchEditAtom)
   const [consoliMode, setCosoliMode] = useAtom(consolEditModalAtom) // 합짐비 관리 modal
-
+  const [recommend, setRecommend] = useState(false)
   const [userpageEditModal, setUserPageEditModal] = useAtom(userpageUserPreferEdit) // 마이페이지 수정 모달
 
   const [userDestiEdit, setUserDestiEdit] = useAtom(userpageDestinationEdit)
@@ -55,13 +55,18 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
       case 'userprefer':
         setUidAtom(uid)
         setUserPageEditModal(true)
+        break
       case 'userdestination':
         setUidAtom(uid)
         setUserDestiEdit(true)
+        break
       // 클레임 관리 목록 수정 버튼 => 클레임 수정 페이지로 이동
       case 'claimUpdate':
         navigate('/')
-
+        break
+      case 'recommend':
+        setRecommend(true)
+        break
       default:
         break
     }
@@ -71,11 +76,7 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
     setBtnCellModal(false)
   }
 
-  return (
-    <>
-      <SkyBtn onClick={btnClickedHandler}>수정</SkyBtn>
-    </>
-  )
+  return <>{recommend ? <div>추천 {data['제품명']}</div> : <SkyBtn onClick={btnClickedHandler}>수정</SkyBtn>}</>
 }
 
 export default BtnCellRenderer

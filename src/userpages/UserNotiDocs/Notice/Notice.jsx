@@ -239,7 +239,7 @@ const Notice = () => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 ({notices.pagination.listCount}개 )
+            조회 목록 ({notices?.pagination?.listCount}개 )
             <Hidden />
           </div>
           <div style={{ gap: '10px' }}>

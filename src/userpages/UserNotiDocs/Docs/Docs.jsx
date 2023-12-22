@@ -219,7 +219,7 @@ const Docs = () => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            게시글 목록 (50개 )
+            게시글 목록 ({Docs?.pagination?.listCount}개)
             <Hidden />
           </div>
           <div style={{ gap: '10px' }}>

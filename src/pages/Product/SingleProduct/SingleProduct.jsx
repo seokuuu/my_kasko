@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { BlackBtn, GreyBtn, YellBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
@@ -36,10 +36,14 @@ import {
   TCSubContainer,
   Tilde,
 } from '../../../modal/External/ExternalFilter'
-
+import useReactQuery from '../../../hooks/useReactQuery'
 import Hidden from '../../../components/TableInner/Hidden'
+import { getSingleProducts } from '../../../api/SellProduct'
+import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constants/admin/Single'
+import { add_element_field } from '../../../lib/tableHelpers'
+import Table from '../../Table/Table'
 
-const SingleProduct = ({}) => {
+const SingleProduct = () => {
   const checkSales = ['전체', '판매재', '판매제외제', '판매 완료제']
 
   const checkShips = ['전체', '경매대상재', '상시판매 대상재']
@@ -59,6 +63,18 @@ const SingleProduct = ({}) => {
 
   const [checkData3, setCheckData3] = useState(Array.from({ length: checkTypes.length }, () => ''))
 
+  const requestParameter = {
+    pageNum: 1,
+    pageSize: 1000,
+    type: '일반',
+    category: '전체',
+  }
+
+  const [getRow, setGetRow] = useState('')
+  const { data: SingleProductList, isSuccess } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
+  const singleList = SingleProductList?.data.list
+  const tableField = useRef(SingleDispatchFieldsCols)
+  const getCol = tableField.current
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
     const updatedCheck = checkSales.map((value, index) => {
@@ -119,9 +135,18 @@ const SingleProduct = ({}) => {
   const handleImageClick = () => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
   }
+  // 테이블 연결하기
+  useEffect(() => {
+    // if (!isSuccess && !SingleProductList) return null
+    if (Array.isArray(singleList)) {
+      setGetRow(add_element_field(singleList, singleDispatchFields))
+    }
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+  }, [isSuccess, singleList])
 
   // 토글 쓰기
   const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+
   const [toggleMsg, setToggleMsg] = useState('On')
   const toggleBtnClick = () => {
     setExfilterToggle((prev) => !prev)
@@ -328,7 +353,7 @@ const SingleProduct = ({}) => {
             <YellBtn>추천제품지정 ( 0 / 10)</YellBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getRow={getRow} getCol={getCol} />
       </TableContianer>
     </FilterContianer>
   )

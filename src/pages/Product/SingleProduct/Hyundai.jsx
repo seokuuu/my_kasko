@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 import { Link } from 'react-router-dom'
@@ -40,26 +40,33 @@ import {
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Excel from '../../../components/TableInner/Excel'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getSingleProducts } from '../../../api/SellProduct'
+import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constants/admin/Single'
+import Table from '../../Table/Table'
+import { add_element_field } from '../../../lib/tableHelpers'
 
 const Hyundai = ({}) => {
   const checkSales = ['전체', '판매재', '판매제외제', '판매 완료제']
-
   const checkShips = ['전체', '경매대상재', '상시판매 대상재']
-
   const checkTypes = ['전체', '특가', '일반']
 
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
   const [check2, setCheck2] = useState(Array.from({ length: checkShips.length }, () => false))
-
   const [check3, setCheck3] = useState(Array.from({ length: checkTypes.length }, () => false))
 
   //checkShips
   const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
-
   const [checkData2, setCheckData2] = useState(Array.from({ length: checkShips.length }, () => ''))
-
   const [checkData3, setCheckData3] = useState(Array.from({ length: checkTypes.length }, () => ''))
+
+  const requestParameter = {
+    pageNum: 1,
+    pageSize: 1000,
+    type: '일반',
+    category: '현대제철',
+  }
 
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
@@ -123,6 +130,13 @@ const Hyundai = ({}) => {
   }
 
   // 토글 쓰기
+  const [getRow, setGetRow] = useState('')
+  const { data, isSuccess } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
+  const hyunDaiList = data?.data?.list
+
+  const tableField = useRef(SingleDispatchFieldsCols)
+  const getCol = tableField.current
+
   const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
   const [toggleMsg, setToggleMsg] = useState('On')
   const toggleBtnClick = () => {
@@ -133,7 +147,13 @@ const Hyundai = ({}) => {
       setToggleMsg('On')
     }
   }
-
+  useEffect(() => {
+    if (!isSuccess && !hyunDaiList) return null
+    if (Array.isArray(hyunDaiList)) {
+      setGetRow(add_element_field(hyunDaiList, singleDispatchFields))
+    }
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+  }, [isSuccess, hyunDaiList])
   return (
     <FilterContianer>
       <FilterHeader>
@@ -332,7 +352,7 @@ const Hyundai = ({}) => {
             <WhiteBlackBtn>판매 구분 변경</WhiteBlackBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getRow={getRow} getCol={getCol} />
         <TCSubContainer bor>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
