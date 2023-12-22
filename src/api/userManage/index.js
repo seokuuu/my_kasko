@@ -36,7 +36,7 @@ export function deleteCustomer(id) {
   return client.delete(`${urls.customer}/${id}`)
 }
 
-//등록
+//경매 상태 제한
 export function postChangeAuction(data) {
   console.log('data', data)
   return client.post(`${urls.customer}/status`, data)
@@ -53,6 +53,36 @@ export function checkBusinessNumber(data) {
 }
 
 //상세 get
+
+// 회원 생성(formData)
+export function postClient(input, fileForms) {
+  const form = new FormData()
+
+  form.append(
+    'request',
+    new Blob([JSON.stringify(input)], {
+      type: 'application/json',
+    }),
+  )
+  // fileForms에 있는 파일 정보 추가
+
+  if (fileForms.bankBook instanceof File) {
+    form.append('bankBook', fileForms.bankBook)
+  }
+
+  if (fileForms.registration instanceof File) {
+    form.append('registration', fileForms.registration)
+  }
+  for (const pair of form.entries()) {
+    console.log('폼 데이터 =>', pair[0], pair[1])
+  }
+
+  return client.post(urls.customer, form, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+}
 
 /* ==============================
     사용자관리 - 고객사 목적지 관리
@@ -100,6 +130,36 @@ export function post_userManage(data) {
 
 export function patch_userManage(data) {
   return client.patch(urls.userManage, data)
+}
+
+// 사용자 등록 (formData)
+export function postUserManage(input, fileForms) {
+  const form = new FormData()
+
+  form.append(
+    'request',
+    new Blob([JSON.stringify(input)], {
+      type: 'application/json',
+    }),
+  )
+  // fileForms에 있는 파일 정보 추가
+
+  if (fileForms.bankBook instanceof File) {
+    form.append('bankBook', fileForms.bankBook)
+  }
+
+  if (fileForms.registration instanceof File) {
+    form.append('registration', fileForms.registration)
+  }
+  for (const pair of form.entries()) {
+    console.log('폼 데이터 =>', pair[0], pair[1])
+  }
+
+  return client.post(urls.userManage, form, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
 }
 
 /* ==============================

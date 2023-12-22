@@ -140,6 +140,8 @@ import OperateClaimRegisterPage from './pages/Operate/Common/Claim/OperateClaimR
 import NoticePost from './pages/Operate/Common/Notice/NoticePost'
 import NoticeBoardPost from './pages/Operate/Exposure/NoticeBoard/NoticeBoardPost'
 import TestExcel from './pages/Test/TestExcel'
+import ProfileEdit from './userpages/UserMyPage/Profile/Profile'
+
 
 // RoundAucProAdd
 const Router = () => {
@@ -147,7 +149,7 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
-        <Route path="/ppapp" element={<UserEditPage />} />
+        <Route path="/ppapp" element={<ProfileEdit />} />
         <Route path="/ppap" element={<DefaultBlueBar />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />

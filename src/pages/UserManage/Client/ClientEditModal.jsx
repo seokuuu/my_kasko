@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react'
-import { styled } from 'styled-components'
-import { checkBusinessNumber } from '../../../api/myPage'
-import { postClient, postUserManage, resetCustomer } from '../../../api/userManage'
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
-import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import { CustomInput, FlexInput } from '../../../common/Input/Input'
 import {
+  AddBtn,
   Bar,
   FlexContent,
   FlexPart,
@@ -17,23 +11,24 @@ import {
   Right,
 } from '../../../common/OnePage/OnePage.Styled'
 import { AccountSelect, EditSelect, accountOptions, depositOptions } from '../../../common/Option/SignUp'
-import RadioButton from '../../../components/RadioButton/RadioButton'
+
+import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
+
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { CheckBtn } from '../../User/SignUp/SignUp.Styled'
+
+import { styled } from 'styled-components'
+import { checkBusinessNumber, updateCustomer } from '../../../api/myPage'
+import { getCustomerDetail, resetCustomer } from '../../../api/userManage'
+import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { WhiteCloseBtn } from '../../../modal/Common/Common.Styled'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
-import { CheckBtn, TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
-import { IIDImg, IncomeImgDiv } from '../../../userpages/UserMyPage/Profile/Profile'
-
-import { getStorageList } from '../../../api/search'
-import { MainSelect } from '../../../common/Option/Main'
-import {
-  FlexContent2,
-  MainTitleC,
-  ModalContainerC,
-  ModalContainerSubC,
-  ModalOverlayC,
-  CheckTxt2,
-} from '../Client/ClientPostModal'
+import { GreyDiv, IncomeImgDiv } from '../../../userpages/UserMyPage/Profile/Profile'
+import DownloadButton from '../../../utils/DownloadButton'
+import { UserCheckDiv } from '../UserManage/UserPost'
 
 const init = {
   id: '',
@@ -58,8 +53,6 @@ const init = {
   releaseManagerTitle: '',
   releaseManagerName: '',
   releaseManagerPhone: '',
-  storageUid: '',
-  transportName: '',
 }
 
 // id: 아이디
@@ -86,10 +79,7 @@ const init = {
 // releaseManagerName: 출고담당자 이름
 // releaseManagerPhone: 출고담당자 연락처
 
-const UserPost = ({ setEditModal }) => {
-  const [selected, setSelected] = useState({ storage: '', storageUid: '' })
-
-  console.log('selected', selected)
+const ClientEditModal = ({ setEditModal, uidAtom }) => {
   const [selectSwitch, setSelectSwitch] = useState({
     A: false,
     deposit: false,
@@ -100,7 +90,7 @@ const UserPost = ({ setEditModal }) => {
   console.log('input', input)
   const [isUser, setIsUser] = useState(false)
   const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
-  const [renderFileName, setRenderFileName] = useState({ businessNumberFile: '', bankbookFile: '' })
+  const [renderFileName, setRenderFileName] = useState({ businessNumberFile: '', bankbookFile: ' ' })
   const [checkFileName, setCheckFileName] = useState({ deleteBusinessNumberFile: '', deleteBankbookFile: '' })
   const [fileForms, setFileForms] = useState({ registration: '', bankBook: '' })
   const [businessNumber, setBusinessNumber] = useState('')
@@ -113,21 +103,26 @@ const UserPost = ({ setEditModal }) => {
   // TODO : 중복체크 response 없음
   // const { isError, isSuccess, data } = useReactQuery('getCustomerPrivacy', {}, getCustomerPrivacy)
 
+  // get 상세
+
+  console.log('uidAtom', uidAtom)
+  const { isError, isSuccess, data } = useReactQuery(uidAtom, 'getCustomerDetail', getCustomerDetail)
+
+  const [user, setUser] = useState('')
+  const resData = data?.data?.data
+
+  console.log('resData', resData)
+
   // const resData2 = data2?.data?.data
 
   // console.log('resData2', resData2)
 
-  const checkBusiness = async () => {
+  const checkBusiness = () => {
     try {
-      const data = await checkBusinessNumber(businessNumber)
-      if (!businessNumber) {
-        alert('값을 채워주세요.')
-      }
-      if (data?.data?.status === 200) {
-        alert('사용 가능한 사업자 번호입니다.')
-      }
+      checkBusinessNumber(businessNumber)
+      console.log('done')
     } catch (err) {
-      alert('중복된 사업자 번호입니다.')
+      console.log(err)
     }
 
     // if (isBusinessNumberSuccess) {
@@ -142,6 +137,62 @@ const UserPost = ({ setEditModal }) => {
     console.log(businessNumber)
   }
 
+  if (isError) console.log('ERROR')
+
+  useEffect(() => {
+    if (isSuccess) {
+      setUser(resData)
+      setAddress(resData?.address)
+      setDetailAddress(resData?.addressDetail)
+      setDropdownNames({
+        ...dropdownNames,
+        bank: resData?.bank,
+        depositManagerTitle: resData?.depositManagerTitle,
+        releaseManagerTitle: resData?.releaseManagerTitle,
+      })
+      setRenderFileName({
+        ...renderFileName,
+        businessNumberFile: resData?.businessNumberOriginalName,
+        bankbookFile: resData?.bankbookOriginalName,
+      })
+
+      const userCustomerTypeIndex = radioDummy.indexOf(resData?.type)
+
+      if (userCustomerTypeIndex !== -1) {
+        // 일치하는 값이 있다면 해당 인덱스의 checkRadio를 true로 설정
+        const newCheckRadio = Array.from({ length: radioDummy.length }, (_, index) => index === userCustomerTypeIndex)
+        setCheckRadio(newCheckRadio)
+      }
+
+      const newCheck = check.map((_, index) => resData?.businessType?.includes(checkDummy[index]))
+      setCheck(newCheck)
+    }
+  }, [isSuccess, resData])
+
+  // const handleFiles = (e) => {
+  //   const name = e.target.name
+  //   const file = e.target.files[0]
+  //   const fileName = e.target.files[0].name
+  //   if (checkFileName.hasOwnProperty(name)) {
+  //     setCheckFileName((prev) => ({
+  //       ...prev,
+  //       [name]: fileName,
+  //     }))
+  //     if (name === 'businessNumberFile') {
+  //       setFileForms((prev) => ({
+  //         ...prev,
+  //         registration: file,
+  //       }))
+  //     }
+  //     if (name === 'bankbookFile') {
+  //       setFileForms((prev) => ({
+  //         ...prev,
+  //         bankBook: file,
+  //       }))
+  //     }
+  //   }
+  // }
+
   const handleSelectChange = (selectedOption, name) => {
     // const isCheck = selectedOption.label
     // if (isCheck === '직함 선택') return
@@ -152,21 +203,16 @@ const UserPost = ({ setEditModal }) => {
     }))
   }
 
-  const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
-
-  console.log('storageList', storageList)
-
   // checked,file 빼고 submit하기 (checkbox는 따로 useState로 하였음)
   const handleSubmit = async (e) => {
     e.preventDefault()
     const checkboxType = ['bank', 'depositManagerTitle', 'releaseManagerTitle']
+    const fileType = ['deleteBusinessNumberFile', 'deleteBankbookFile']
     const formData = new FormData(e.target)
     const updatedInput = { ...input }
 
-    console.log('updatedInput', updatedInput)
-
     formData.forEach((value, key) => {
-      if (input.hasOwnProperty(key) && value && !checkboxType.includes(key)) {
+      if (input.hasOwnProperty(key) && value && !checkboxType.includes(key) && !fileType.includes(key)) {
         updatedInput[key] = value
       }
     })
@@ -178,10 +224,10 @@ const UserPost = ({ setEditModal }) => {
       }
     }
 
-    setInput({ ...input, ...updatedInput, ...selected, type: savedRadioValue })
+    setInput({ ...input, ...updatedInput, ...checkFileName })
     console.log('input <3', input)
     console.log('updatedInput <3', updatedInput)
-
+    console.log('checkFileName <3', checkFileName)
     setShouldUpdateCustomer(true)
   }
 
@@ -190,9 +236,9 @@ const UserPost = ({ setEditModal }) => {
     const updateCustomerData = async () => {
       if (shouldUpdateCustomer) {
         try {
-          const response = await postUserManage(input, fileForms)
+          const response = await updateCustomer(input, fileForms)
           console.log(response.data)
-          alert('회원 생성이 완료되었습니다.')
+          alert('고객사 상세 정보가 수정되었습니다.')
         } catch (err) {
           console.log(err)
           alert('ERROR:', err.data)
@@ -202,12 +248,6 @@ const UserPost = ({ setEditModal }) => {
     }
     updateCustomerData()
   }, [shouldUpdateCustomer])
-
-  useEffect(() => {
-    return () => {
-      setEditModal(false)
-    }
-  }, [])
   // -------------------------------------------------------------------------------
   const [postFind, setPostFind] = useState(false)
   const [modalIsOpen, setModalIsOpen] = useState(false)
@@ -258,73 +298,34 @@ const UserPost = ({ setEditModal }) => {
     const value = e.target.value
     setDetailAddress(value)
   }
-
-  // 라디오 데이터
-
-  const radioDummy = ['법인사업자', '개인사업자'] // 사업자 구분 (type)
-  const radioDummy2 = ['승인', '대기', '미승인'] // 승인 여부
-  const radioDummy3 = ['제한 없음', '경매 시작가 제한', '경매 제한'] // 회원 제한
-  const radioDummy4 = ['창고', '운송사', '현대제철', '카스코철강', '고객사'] // 사용자 구분 (memberType)
+  const radioDummy = ['법인사업자', '개인사업자']
+  const radioDummy2 = ['승인', '대기', '미승인']
+  const radioDummy3 = ['경매 시작가 제한', '경매 제한']
+  const radioDummy4 = ['창고', '운송사', '현대제철', '카스코철강', '고객사']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
   const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, () => false))
   const [checkRadio3, setCheckRadio3] = useState(Array.from({ length: radioDummy3.length }, () => false))
   const [checkRadio4, setCheckRadio4] = useState(Array.from({ length: radioDummy4.length }, () => false))
 
   const [savedRadioValue, setSavedRadioValue] = useState('')
-  const [savedRadioValue2, setSavedRadioValue2] = useState('')
-  const [savedRadioValue3, setSavedRadioValue3] = useState('')
-  const [savedRadioValue4, setSavedRadioValue4] = useState('')
 
+  console.log('checkRadio2', checkRadio2)
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
     if (checkedIndex !== -1) {
-      const selectedValue1 = radioDummy[checkedIndex]
-      setSavedRadioValue(selectedValue1)
-      setInput({ ...input, type: selectedValue1 }) // 사업자 구분, type
+      const selectedValue = radioDummy[checkedIndex]
+      setSavedRadioValue(selectedValue)
+      setInput({ ...input, type: selectedValue })
     }
+  }, [checkRadio])
 
-    const checkedIndex2 = checkRadio2.findIndex((isChecked, index) => isChecked && index < radioDummy2.length)
-    if (checkedIndex2 !== -1) {
-      const selectedValue2 = radioDummy2[checkedIndex2]
-      setSavedRadioValue2(selectedValue2)
-      setInput({ ...input, approvalStatus: selectedValue2 }) // 승인 여부, approvalStatus
-    }
+  const checkDummy2 = ['재고관리', '경매관리', '상시판매', '주문관리', '판매제품 관리', '출고관리', '운영관리']
 
-    const checkedIndex3 = checkRadio3.findIndex((isChecked, index) => isChecked && index < radioDummy3.length)
-    if (checkedIndex3 !== -1) {
-      const selectedValue3 = radioDummy3[checkedIndex3]
-      setSavedRadioValue3(selectedValue3)
-      setInput({ ...input, auctionStatus: selectedValue3 }) // 회원 제한, auctionStatus
-    }
-
-    const checkedIndex4 = checkRadio4.findIndex((isChecked, index) => isChecked && index < radioDummy4.length)
-    if (checkedIndex4 !== -1) {
-      const selectedValue4 = radioDummy4[checkedIndex4]
-      setSavedRadioValue4(selectedValue4)
-      setInput({ ...input, memberType: selectedValue4 }) // 사용자 구분, memberType
-    }
-  }, [
-    checkRadio,
-    checkRadio2,
-    checkRadio3,
-    checkRadio4,
-    savedRadioValue,
-    savedRadioValue2,
-    savedRadioValue3,
-    savedRadioValue4,
-  ])
-
-  const checkDummy = ['유통', '제조'] // businessType
-  const checkDummy2 = ['재고관리', '경매관리', '상시판매', '주문관리', '판매제품 관리', '출고관리', '운영관리'] //managerRoleList
-
-  const [approvalStatus, setApprovalStatus] = useState(Array.from({ length: checkDummy2.length }, () => ''))
+  const checkDummy = ['유통', '제조']
 
   const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
   const [check2, setCheck2] = useState(Array.from({ length: checkDummy2.length }, () => false))
   const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
-  const [checkData2, setCheckData2] = useState(Array.from({ length: checkDummy2.length }, () => ''))
-
-  console.log('check data =>', checkData, checkData2)
 
   useEffect(() => {
     const updatedCheck = checkDummy.map((value, index) => {
@@ -334,20 +335,14 @@ const UserPost = ({ setEditModal }) => {
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData(filteredCheck)
 
-    const updatedCheck2 = checkDummy2.map((value, index) => {
-      return check2[index] ? value : ''
-    })
-    // 그냥 배열에 담을 때
-    const filteredCheck2 = updatedCheck2.filter((item) => item !== '')
-    setCheckData2(filteredCheck2)
-
     // 전송용 input에 담을 때
     setInput({
       ...input,
       businessType: updatedCheck.filter((item) => item !== ''),
-      managerRoleList: updatedCheck2.filter((item) => item !== ''),
     })
-  }, [check, check2])
+  }, [check])
+
+  console.log('ㅋㅋㅋ')
 
   // 비밀번호 초기화 버튼
   const resetPw = async () => {
@@ -382,35 +377,6 @@ const UserPost = ({ setEditModal }) => {
     setEditModal(false)
   }
 
-  const handleFiles = (e) => {
-    const name = e.target.name
-    const file = e.target.files[0]
-    console.log('')
-    const fileName = e.target.files[0].name
-    if (renderFileName.hasOwnProperty(name)) {
-      setRenderFileName((prev) => ({
-        ...prev,
-        [name]: fileName,
-      }))
-      if (name === 'businessNumberFile') {
-        setFileForms((prev) => ({
-          ...prev,
-          registration: file,
-        }))
-      }
-      if (name === 'bankbookFile') {
-        setFileForms((prev) => ({
-          ...prev,
-          bankBook: file,
-        }))
-      }
-    }
-  }
-
-  const checkRadioButtonSelection = (selection) => {
-    setApprovalStatus(selection)
-  }
-
   return (
     <div>
       <ModalOverlayC />
@@ -418,7 +384,7 @@ const UserPost = ({ setEditModal }) => {
         {/* <ModalSubContainer> */}
         {/* <OnePageFlexContainerC> */}
         <MainTitleC style={{ fontSize: '18px' }}>
-          <div>사용자 등록</div>
+          <div>고객사 상세 정보</div>
 
           <WhiteCloseBtn onClick={modalOFF} src="/svg/white_btn_close.svg" />
         </MainTitleC>
@@ -429,30 +395,24 @@ const UserPost = ({ setEditModal }) => {
               <Left>
                 <h1>회원정보</h1>
                 <Bar />
+
                 <FlexPart>
                   <FlexTitle>
                     아이디<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="id" />
+                    <FlexInput name={init.id} value={user && user.id} />
                   </FlexContent>
                 </FlexPart>
 
                 <FlexPart>
                   <FlexTitle>
-                    비밀번호<span>*</span>
+                    비밀번호 초기화<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput type="password" />
-                  </FlexContent>
-                </FlexPart>
-
-                <FlexPart>
-                  <FlexTitle name="">
-                    비밀번호 확인<span>*</span>
-                  </FlexTitle>
-                  <FlexContent>
-                    <FlexInput name="password" type="password" />
+                    <FlexInputBtn type="password" onClick={resetPw}>
+                      비밀번호 초기화
+                    </FlexInputBtn>
                   </FlexContent>
                 </FlexPart>
                 <FlexPart>
@@ -460,8 +420,19 @@ const UserPost = ({ setEditModal }) => {
                     경매 담당자 정보<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <CustomInput name="memberTitle" placeholder="직함 입력" width={130} />
-                    <CustomInput name="memberName" placeholder=" 성함 입력" width={188} style={{ marginLeft: '5px' }} />
+                    <CustomInput
+                      name="memberTitle"
+                      placeholder="직함 입력"
+                      width={130}
+                      defaultValue={user && user.memberTitle}
+                    />
+                    <CustomInput
+                      name="memberName"
+                      placeholder=" 성함 입력"
+                      width={188}
+                      style={{ marginLeft: '5px' }}
+                      defaultValue={user && user.memberName}
+                    />
                   </FlexContent>
                 </FlexPart>
 
@@ -470,7 +441,7 @@ const UserPost = ({ setEditModal }) => {
                     이메일<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="memberEmail" />
+                    <FlexInput name="memberEmail" defaultValue={(user && user.memberEmail) || ''} />
                   </FlexContent>
                 </FlexPart>
 
@@ -479,7 +450,7 @@ const UserPost = ({ setEditModal }) => {
                     휴대폰 번호<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="memberPhone" />
+                    <FlexInput name="memberPhone" defaultValue={user && user.memberPhone} />
                   </FlexContent>
                 </FlexPart>
                 <FlexPart>
@@ -493,12 +464,7 @@ const UserPost = ({ setEditModal }) => {
                         gap: '60px',
                       }}
                     >
-                      <RadioButton
-                        selection={checkRadioButtonSelection}
-                        radioButtonLabels={radioDummy2}
-                        style={{ display: 'flex', paddingLeft: '5px' }}
-                      />
-                      {/* {radioDummy2.map((text, index) => (
+                      {radioDummy2.map((text, index) => (
                         <RadioMainDiv key={index}>
                           <RadioCircleDiv
                             name="type"
@@ -511,7 +477,7 @@ const UserPost = ({ setEditModal }) => {
                           </RadioCircleDiv>
                           <div style={{ display: 'flex', paddingLeft: '5px' }}>{text}</div>
                         </RadioMainDiv>
-                      ))} */}
+                      ))}
                     </div>
                   </FlexContent>
                 </FlexPart>
@@ -523,8 +489,8 @@ const UserPost = ({ setEditModal }) => {
                     <div
                       style={{
                         display: 'flex',
-                        gap: '20px',
-                        minWidth: '450px',
+                        gap: '80px',
+                        width: '100%',
                       }}
                     >
                       {radioDummy3.map((text, index) => (
@@ -573,29 +539,16 @@ const UserPost = ({ setEditModal }) => {
                     </div>
                   </FlexContent>
                 </FlexPart>
-                {console.log('checkRadio4[1]', checkRadio4)}
-                {checkRadio4[1] && (
-                  <FlexPart>
-                    <FlexTitle>
-                      운송사 이름<span>*</span>
-                    </FlexTitle>
-                    <FlexContent>
-                      <FlexInput name="transportName" />
-                    </FlexContent>
-                  </FlexPart>
-                )}
                 <FlexPart>
                   <FlexTitle>
                     창고 구분<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <MainSelect
-                      options={storageList}
-                      defaultValue={''}
+                    <EditSelect
                       name="storage"
-                      onChange={(e) => {
-                        setSelected((p) => ({ ...p, storage: e.label, storageUid: e.value }))
-                      }}
+                      options={depositOptions}
+                      defaultValue={depositOptions[0]}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'storage')}
                     />
                   </FlexContent>
                 </FlexPart>
@@ -605,11 +558,10 @@ const UserPost = ({ setEditModal }) => {
                     {checkDummy2.map((x, index) => (
                       <UserCheckDiv style={{ width: '130px' }}>
                         <StyledCheckSubSquDiv
-                          name="managerRoleList"
-                          onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
-                          isChecked={check2[index]}
+                          onClick={() => setCheck(CheckBox(check, check.length, index, true))}
+                          isChecked={check[index]}
                         >
-                          <CheckImg2 src="/svg/check.svg" isChecked={check2[index]} />
+                          <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
                         </StyledCheckSubSquDiv>
                         <CheckTxt2 style={{ marginLeft: '5px' }}>{x}</CheckTxt2>
                       </UserCheckDiv>
@@ -623,13 +575,32 @@ const UserPost = ({ setEditModal }) => {
                     입금 담당자 정보<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <EditSelect
-                      name="depositManagerTitle"
-                      options={depositOptions}
-                      defaultValue={depositOptions[0]}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
+                    {selectSwitch.deposit ? (
+                      <EditSelect
+                        name="depositManagerTitle"
+                        options={depositOptions}
+                        defaultValue={depositOptions[0]}
+                        onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
+                      />
+                    ) : (
+                      <GreyDiv
+                        onClick={() => {
+                          setSelectSwitch((prev) => ({
+                            ...prev,
+                            deposit: !prev.deposit,
+                          }))
+                        }}
+                      >
+                        {user && user.depositManagerTitle}
+                      </GreyDiv>
+                    )}
+
+                    <CustomInput
+                      name="depositManagerName"
+                      placeholder="담당자 성함 입력"
+                      width={190}
+                      defaultValue={user && user.depositManagerName}
                     />
-                    <CustomInput name="depositManagerName" placeholder="담당자 성함 입력" width={190} />
                   </FlexContent>
                 </FlexPart>
 
@@ -638,7 +609,11 @@ const UserPost = ({ setEditModal }) => {
                     휴대폰 번호<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="depositManagerPhone" placeholder="연락처 입력 ('-' 제외)" />
+                    <FlexInput
+                      name="depositManagerPhone"
+                      placeholder="연락처 입력 ('-' 제외)"
+                      defaultValue={user && user.depositManagerPhone}
+                    />
                   </FlexContent>
                 </FlexPart>
 
@@ -647,14 +622,32 @@ const UserPost = ({ setEditModal }) => {
                     출고 담당자 정보<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <EditSelect
-                      name="releaseManagerTitle"
-                      options={depositOptions}
-                      defaultValue={depositOptions[0]}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
-                    />
+                    {selectSwitch.release ? (
+                      <EditSelect
+                        name="releaseManagerTitle"
+                        options={depositOptions}
+                        defaultValue={depositOptions[0]}
+                        onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
+                      />
+                    ) : (
+                      <GreyDiv
+                        onClick={() => {
+                          setSelectSwitch((prev) => ({
+                            ...prev,
+                            release: !prev.release,
+                          }))
+                        }}
+                      >
+                        {user && user.releaseManagerTitle}
+                      </GreyDiv>
+                    )}
 
-                    <CustomInput name="releaseManagerName" placeholder=" 담당자 성함 입력" width={190} />
+                    <CustomInput
+                      name="releaseManagerName"
+                      placeholder=" 담당자 성함 입력"
+                      width={190}
+                      defaultValue={user && user.releaseManagerName}
+                    />
                   </FlexContent>
                 </FlexPart>
 
@@ -663,7 +656,11 @@ const UserPost = ({ setEditModal }) => {
                     휴대폰 번호<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="releaseManagerPhone" placeholder="연락처 입력 ('-' 제외)" />
+                    <FlexInput
+                      name="releaseManagerPhone"
+                      placeholder="연락처 입력 ('-' 제외)"
+                      defaultValue={user && user.releaseManagerPhone}
+                    />
                   </FlexContent>
                 </FlexPart>
 
@@ -718,7 +715,7 @@ const UserPost = ({ setEditModal }) => {
                     회사 명<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="name" />
+                    <FlexInput name="name" defaultValue={user && user.name} />
                   </FlexContent>
                 </FlexPart>
 
@@ -727,7 +724,7 @@ const UserPost = ({ setEditModal }) => {
                     대표자 성명<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="ceoName" />
+                    <FlexInput name="ceoName" defaultValue={user && user.ceoName} />
                   </FlexContent>
                 </FlexPart>
 
@@ -736,7 +733,7 @@ const UserPost = ({ setEditModal }) => {
                     대표 연락처<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="phone" />
+                    <FlexInput name="phone" defaultValue={user && user.phone} />
                   </FlexContent>
                 </FlexPart>
 
@@ -745,7 +742,7 @@ const UserPost = ({ setEditModal }) => {
                     팩스번호<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="fax" />
+                    <FlexInput name="fax" defaultValue={user && user.fax} />
                   </FlexContent>
                 </FlexPart>
 
@@ -754,7 +751,7 @@ const UserPost = ({ setEditModal }) => {
                     주소<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <CustomInput name="address" width={223} value={address} />
+                    <CustomInput name="address" width={223} value={address} defaultValue={user && user.address} />
                     <CheckBtn
                       type="button"
                       style={{
@@ -771,7 +768,7 @@ const UserPost = ({ setEditModal }) => {
                 <FlexPart>
                   <FlexTitle></FlexTitle>
                   <FlexContent>
-                    <FlexInput name="addressDetail" value={detailAddress} />
+                    <FlexInput name="addressDetail" defaultValue={user && user.addressDetail} />
                   </FlexContent>
                 </FlexPart>
 
@@ -827,7 +824,12 @@ const UserPost = ({ setEditModal }) => {
                   </FlexTitle>
                   <FlexContent>
                     {/* input데이터 넣기 value={resData && resData.customer.businessNumber} */}
-                    <CustomInput name="businessNumber" width={223} onChange={handleCheck} />
+                    <CustomInput
+                      name="businessNumber"
+                      width={223}
+                      onChange={handleCheck}
+                      defaultValue={user && user.businessNumber}
+                    />
                     <CheckBtn style={{ fontSize: '16px' }} type="button" onClick={checkBusiness}>
                       중복확인
                     </CheckBtn>
@@ -839,25 +841,10 @@ const UserPost = ({ setEditModal }) => {
                     사업자등록증<span>*</span>
                   </FlexTitle>
 
-                  <TxtDivNoborder className="no-border" style={{ border: '1px solid #000000' }}>
-                    <label htmlFor="ex_file">
-                      <div className="btnStart">
-                        <img src="/svg/Upload.svg" alt="btnStart" />
-                        <p htmlFor="ex_file">파일 첨부</p>
-                      </div>
-                    </label>
-                    {/* <img src="/svg/Upload.svg" alt="Upload" /> */}
-                    <input
-                      id="ex_file"
-                      type="file"
-                      accept="image/jpg, image/png, image/jpeg"
-                      style={{ display: 'none' }}
-                      onChange={handleFiles}
-                      name="businessNumberFile"
-                      // onChange={commonChange}
-                      // name="businessfile"
-                    ></input>
-                  </TxtDivNoborder>
+                  <DownloadButton
+                    fileUrl={resData?.businessNumberFileUrl}
+                    fileName={resData?.businessNumberOriginalName}
+                  />
                 </FlexPart>
                 <FlexPart>
                   <FlexTitle></FlexTitle>
@@ -865,17 +852,6 @@ const UserPost = ({ setEditModal }) => {
                     {renderFileName.businessNumberFile ? (
                       <IncomeImgDiv>
                         <div>{renderFileName.businessNumberFile}</div>
-                        <div>
-                          <IIDImg
-                            onClick={() => {
-                              setRenderFileName({
-                                ...renderFileName,
-                                businessNumberFile: '',
-                              })
-                            }}
-                            src="/svg/btn_close.svg"
-                          />
-                        </div>
                       </IncomeImgDiv>
                     ) : (
                       <FlexInput style={{ width: '322px' }} disabled />
@@ -888,43 +864,15 @@ const UserPost = ({ setEditModal }) => {
                     통장사본<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <TxtDivNoborder className="no-border" style={{ border: '1px solid #000000' }}>
-                      <label htmlFor="ex_file2">
-                        <div className="btnStart">
-                          <img src="/svg/Upload.svg" alt="btnStart" />
-                          <p htmlFor="ex_file">파일 첨부</p>
-                        </div>
-                      </label>
-                      {/* <img src="/svg/Upload.svg" alt="Upload" /> */}
-                      <input
-                        id="ex_file2"
-                        type="file"
-                        accept="image/jpg, image/png, image/jpeg"
-                        style={{ display: 'none' }}
-                        onChange={handleFiles}
-                        name="bankbookFile"
-                      ></input>
-                    </TxtDivNoborder>
+                    <DownloadButton fileUrl={resData?.bankbookFileUrl} fileName={resData?.bankbookOriginalName} />
                   </FlexContent>
                 </FlexPart>
                 <FlexPart>
                   <FlexTitle></FlexTitle>
-
                   <FlexContent>
                     {renderFileName.bankbookFile ? (
                       <IncomeImgDiv>
                         <div>{renderFileName.bankbookFile}</div>
-                        <div>
-                          <IIDImg
-                            onClick={() => {
-                              setRenderFileName({
-                                ...renderFileName,
-                                bankbookFile: '',
-                              })
-                            }}
-                            src="/svg/btn_close.svg"
-                          />
-                        </div>
                       </IncomeImgDiv>
                     ) : (
                       <FlexInput style={{ width: '322px' }} disabled />
@@ -948,7 +896,11 @@ const UserPost = ({ setEditModal }) => {
                 <FlexPart>
                   <FlexTitle></FlexTitle>
                   <FlexContent>
-                    <FlexInput name="accountNumber" style={{ width: '320px' }} />
+                    <FlexInput
+                      name="accountNumber"
+                      style={{ width: '320px' }}
+                      defaultValue={user && user.accountNumber}
+                    />
                   </FlexContent>
                 </FlexPart>
               </Right>
@@ -970,35 +922,104 @@ const UserPost = ({ setEditModal }) => {
   )
 }
 
-export default UserPost
+export default ClientEditModal
 
-export const RadioContainer = styled.div`
-  width: max-content;
-  display: flex;
-  gap: 20px;
-  margin-left: 5px;
-  margin-top: 10px;
+export const ModalContainerC = styled.div`
+  border-radius: 10px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  // width: ${(props) => props.width}px;
+  // height: 1000px;
+  /* height: ${(props) => props.height}px; */
+  // height: max-content;
+  z-index: 9999;
+  border: 1px solid black;
+  // overflow-y: auto;
 `
+export const ModalContainerSubC = styled.div`
+  // margin: 50px 0 0 0;
+  width: ${(props) => props.width}px;
+  height: 850px;
 
-export const CheckWrap = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  gap: 10px;
+  overflow-y: auto;
+  border-bottom: 1px solid #c8c8c8;
+  padding: 56px 24px;
 `
-
-export const CheckTxt = styled.div`
-  min-width: 100px;
-  height: 200px;
-`
-
-export const UserCheckDiv = styled.div`
-  display: flex;
-  width: 150px;
-  height: 30px;
-`
-
-const CheckContainer = styled.div`
-  width: 93%;
+export const OnePageFlexContainerC = styled.div`
+  width: 1200px;
+  font-size: 18px;
+  background-color: white;
   margin-left: auto;
   margin-right: auto;
+  // border: 1px solid black;
+  min-height: 88vh;
+  height: fit-content;
+`
+export const ModalOverlayC = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+`
+export const MainTitleC = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 24px;
+  // margin: 40px auto;
+  padding: 20px 24px;
+  background: var(--primary-heavy, #061737);
+  color: white;
+`
+const TransparentButton = styled.button`
+  background: transparent;
+  border: none;
+  color: white;
+  /* 다른 스타일 */
+`
+export const FlexInputBtn = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 40px;
+  border: 1px solid #b02525;
+  color: var(--status-alert, #b02525);
+  font-family: SUIT;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 133.333% */
+  cursor: pointer;
+
+  &:active {
+    background-color: #b02525;
+    color: white;
+  }
+`
+
+const EqualCheckWrap2 = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 99%;
+  font-size: 16px;
+  margin-bottom: 5px;
+  position: relative;
+  right: 120px;
+`
+
+const CheckTxt2 = styled.p`
+  min-width: 100px;
+  font-size: 16px;
+`
+
+const FlexContent2 = styled.div`
+  display: flex;
+  min-width: 600px;
+  flex-wrap: wrap;
 `
