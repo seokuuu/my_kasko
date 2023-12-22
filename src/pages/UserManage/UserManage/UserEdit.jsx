@@ -230,7 +230,7 @@ const UserEdit = ({ setChoiceComponent }) => {
                     onClick={() => setCheck(CheckBox(check, check.length, index, true))}
                     isChecked={check[index]}
                   >
-                    <CheckImg2 src="/svg/check.svg" />
+                    <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
                   </StyledCheckSubSquDiv>
                   <CheckTxt style={{ marginLeft: '5px' }}>{x}</CheckTxt>
                 </UserCheckDiv>

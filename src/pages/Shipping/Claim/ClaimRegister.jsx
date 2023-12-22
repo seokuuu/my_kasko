@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 
 import { BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 import { CenterRectangleWrap } from '../../../common/OnePage/OnePage.Styled'
-import { claimOngoingStatus, ClaimSelect } from '../../../common/Option/ClaimPost'
+import { claimOngoingStatus } from '../../../common/Option/ClaimPost'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import TextEditor from '../../../components/Editor/TextEditor'
 
@@ -13,10 +13,14 @@ import { CheckBox } from '../../../common/Check/Checkbox'
 
 import { CheckImg2 } from '../../../common/Check/CheckImg'
 
-import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, DateTitle } from '../../../components/MapTable/MapTable'
 import { MainSelect } from '../../../common/Option/Main'
+import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, DateTitle } from '../../../components/MapTable/MapTable'
 
-// 클레임 등록
+/**
+ * @description
+ * 사용처 : 출고 관리> 출고 실적, 운영 관리 > 클레임 등록
+ * @returns
+ */
 const ClaimRegister = () => {
   const titleData = [
     '제품 번호',
@@ -57,7 +61,7 @@ const ClaimRegister = () => {
           <h5>클레임 등록</h5>
           <ClaimRow>
             <ClaimTitle style={{ width: '50%' }}>업체명</ClaimTitle>
-            <ClaimContent style={{ width: '50%' }}>A</ClaimContent                             >
+            <ClaimContent style={{ width: '50%' }}>A</ClaimContent>
           </ClaimRow>
           <ClaimTable>
             {[0, 1, 2].map((index) => (
@@ -102,7 +106,7 @@ const ClaimRegister = () => {
                         onClick={() => setCheck(CheckBox(check, check.length, index, true))}
                         isChecked={check[index]}
                       >
-                        <CheckImg2 src="/svg/check.svg" />
+                        <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
                       </StyledCheckSubSquDiv>
                       <p>{x}</p>
                     </StyledCheckMainDiv>

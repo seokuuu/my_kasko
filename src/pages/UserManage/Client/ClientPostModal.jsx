@@ -1,9 +1,15 @@
 import { useEffect, useState } from 'react'
+import { styled } from 'styled-components'
+import { checkBusinessNumber, updateCustomer } from '../../../api/myPage'
+import { getCustomerDetail, postClient, resetCustomer } from '../../../api/userManage'
+import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import { CustomInput, FlexInput } from '../../../common/Input/Input'
 import {
   AddBtn,
   Bar,
-  EqualCheckWrap,
   FlexContent,
   FlexPart,
   FlexTitle,
@@ -12,46 +18,43 @@ import {
   Right,
 } from '../../../common/OnePage/OnePage.Styled'
 import { AccountSelect, EditSelect, accountOptions, depositOptions } from '../../../common/Option/SignUp'
-
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
-import { TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
-
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
-
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { CheckBtn } from '../../../pages/User/SignUp/SignUp.Styled'
-
-import { styled } from 'styled-components'
-import { checkBusinessNumber, getCustomerPrivacy, updateCustomer } from '../../../api/myPage'
-import { resetCustomer } from '../../../api/userManage'
-import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+import RadioButton from '../../../components/RadioButton/RadioButton'
 import useReactQuery from '../../../hooks/useReactQuery'
+import { WhiteCloseBtn } from '../../../modal/Common/Common.Styled'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
-import { CheckTxt, CheckWrap, UserCheckDiv } from '../UserManage/UserPost'
+import { CheckBtn, TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
+import { GreyDiv, IIDImg, IncomeImgDiv } from '../../../userpages/UserMyPage/Profile/Profile'
+import DownloadButton from '../../../utils/DownloadButton'
+
+import { getStorageList } from '../../../api/search'
+import { MainSelect } from '../../../common/Option/Main'
+import { UserCheckDiv } from '../UserManage/UserPost'
 
 const init = {
-  id: '아이디',
-  password: '비밀번호',
-  memberTitle: '직함',
-  memberName: '이름',
-  memberEmail: '이메일',
-  memberPhone: '연락처',
-  type: '사업자 구분', //(법인사업자 / 개인사업자)
-  name: '회사명',
-  ceoName: '대표자명',
-  phone: '대표연락처',
-  fax: '팩스번호',
-  addressDetail: '상세주소2',
-  businessType: '업태 목록', // (유통 / 제조)
-  businessNumber: '사업자번호',
-  bank: '은행',
-  accountNumber: '계좌번호',
-  depositManagerTitle: '입금담당자 직함',
-  depositManagerName: '입금담당자 이름',
-  depositManagerPhone: '입금담당자 연락처',
-  releaseManagerTitle: '출고담당자 직함',
-  releaseManagerName: '출고담당자 이름',
-  releaseManagerPhone: '출고담당자 연락처',
+  id: '',
+  password: '',
+  memberTitle: '',
+  memberName: '',
+  memberEmail: '',
+  memberPhone: '',
+  type: '', //(법인사업자 / 개인사업자)
+  name: '',
+  ceoName: '',
+  phone: '',
+  fax: '',
+  addressDetail: '',
+  businessType: [], // (유통 / 제조)
+  businessNumber: '',
+  bank: '',
+  accountNumber: '',
+  depositManagerTitle: '',
+  depositManagerName: '',
+  depositManagerPhone: '',
+  releaseManagerTitle: '',
+  releaseManagerName: '',
+  releaseManagerPhone: '',
+  storageUid: '',
+  transportName: '',
 }
 
 // id: 아이디
@@ -78,32 +81,48 @@ const init = {
 // releaseManagerName: 출고담당자 이름
 // releaseManagerPhone: 출고담당자 연락처
 
-const ClientModal = ({ setModal }) => {
+const ClientPostModal = ({ setEditModal }) => {
+  const [selected, setSelected] = useState({ storage: '', storageUid: '' })
+
+  console.log('selected', selected)
+  const [selectSwitch, setSelectSwitch] = useState({
+    A: false,
+    deposit: false,
+    release: false,
+  })
+  const [modalSwitch, setModalSwitch] = useState(false)
   const [input, setInput] = useState(init)
+  console.log('input', input)
   const [isUser, setIsUser] = useState(false)
   const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
+  const [renderFileName, setRenderFileName] = useState({ businessNumberFile: '', bankbookFile: '' })
   const [checkFileName, setCheckFileName] = useState({ deleteBusinessNumberFile: '', deleteBankbookFile: '' })
   const [fileForms, setFileForms] = useState({ registration: '', bankBook: '' })
   const [businessNumber, setBusinessNumber] = useState('')
+  const [dropdownNames, setDropdownNames] = useState({
+    depositManagerTitle: '',
+    releaseManagerTitle: '',
+    bank: '',
+  })
 
   // TODO : 중복체크 response 없음
-  const { isError, isSuccess, data } = useReactQuery('getCustomerPrivacy', {}, getCustomerPrivacy)
-  // const {
-  //   isError: isBusinessNumberError,
-  //   isSuccess: isBusinessNumberSuccess,
-  //   data: businessNumberData,
-  // } = useReactQuery('checkBusinessNumber', businessNumber, checkBusinessNumber, {
-  //   enabled: false,
-  // })
-  const [user, setUser] = useState('')
-  const resData = data?.data?.data
+  // const { isError, isSuccess, data } = useReactQuery('getCustomerPrivacy', {}, getCustomerPrivacy)
 
-  const checkBusiness = () => {
+  // const resData2 = data2?.data?.data
+
+  // console.log('resData2', resData2)
+
+  const checkBusiness = async () => {
     try {
-      checkBusinessNumber(businessNumber)
-      console.log('done')
+      const data = await checkBusinessNumber(businessNumber)
+      if (!businessNumber) {
+        alert('값을 채워주세요.')
+      }
+      if (data?.data?.status === 200) {
+        alert('사용 가능한 사업자 번호입니다.')
+      }
     } catch (err) {
-      console.log(err)
+      alert('중복된 사업자 번호입니다.')
     }
 
     // if (isBusinessNumberSuccess) {
@@ -118,39 +137,6 @@ const ClientModal = ({ setModal }) => {
     console.log(businessNumber)
   }
 
-  if (isError) console.log('ERROR')
-
-  useEffect(() => {
-    if (isSuccess) {
-      setUser(resData)
-      // setBusinessNumber(resData.customer.businessNumber)
-    }
-  }, [resData])
-
-  const handleFiles = (e) => {
-    const name = e.target.name
-    const file = e.target.files[0]
-    const fileName = e.target.files[0].name
-    if (checkFileName.hasOwnProperty(name)) {
-      setCheckFileName((prev) => ({
-        ...prev,
-        [name]: fileName,
-      }))
-      if (name === 'deleteBusinessNumberFile') {
-        setFileForms((prev) => ({
-          ...prev,
-          registration: file,
-        }))
-      }
-      if (name === 'deleteBankbookFile') {
-        setFileForms((prev) => ({
-          ...prev,
-          bankBook: file,
-        }))
-      }
-    }
-  }
-
   const handleSelectChange = (selectedOption, name) => {
     // const isCheck = selectedOption.label
     // if (isCheck === '직함 선택') return
@@ -161,16 +147,21 @@ const ClientModal = ({ setModal }) => {
     }))
   }
 
+  const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
+
+  console.log('storageList', storageList)
+
   // checked,file 빼고 submit하기 (checkbox는 따로 useState로 하였음)
   const handleSubmit = async (e) => {
     e.preventDefault()
     const checkboxType = ['bank', 'depositManagerTitle', 'releaseManagerTitle']
-    const fileType = ['deleteBusinessNumberFile', 'deleteBankbookFile']
     const formData = new FormData(e.target)
     const updatedInput = { ...input }
 
+    console.log('updatedInput', updatedInput)
+
     formData.forEach((value, key) => {
-      if (input.hasOwnProperty(key) && value && !checkboxType.includes(key) && !fileType.includes(key)) {
+      if (input.hasOwnProperty(key) && value && !checkboxType.includes(key)) {
         updatedInput[key] = value
       }
     })
@@ -181,8 +172,10 @@ const ClientModal = ({ setModal }) => {
         // return
       }
     }
-    setInput({ ...input, ...updatedInput, ...checkFileName })
-    console.log('input', input)
+
+    console.log('input <3', input)
+    console.log('updatedInput <3', updatedInput)
+
     setShouldUpdateCustomer(true)
   }
 
@@ -191,9 +184,9 @@ const ClientModal = ({ setModal }) => {
     const updateCustomerData = async () => {
       if (shouldUpdateCustomer) {
         try {
-          const response = await updateCustomer(input, fileForms)
+          const response = await postClient(input, fileForms)
           console.log(response.data)
-          alert('회원가입이 수정되셨습니다.')
+          alert('회원 생성이 완료되었습니다.')
         } catch (err) {
           console.log(err)
           alert('ERROR:', err.data)
@@ -253,36 +246,79 @@ const ClientModal = ({ setModal }) => {
     const value = e.target.value
     setDetailAddress(value)
   }
-  const radioDummy = ['법인사업자', '개인사업자']
-  const radioDummy2 = ['승인', '대기', '미승인']
-  const radioDummy3 = ['경매 시작가 제한', '경매 제한']
+
+  // 라디오 데이터
+
+  const radioDummy = ['법인사업자', '개인사업자'] // 사업자 구분 (type)
+  const radioDummy2 = ['승인', '대기', '미승인'] // 승인 여부
+  const radioDummy3 = ['제한 없음', '경매 시작가 제한', '경매 제한'] // 회원 제한
+  const radioDummy4 = ['창고', '운송사', '현대제철', '카스코철강', '고객사'] // 사용자 구분 (memberType)
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
-  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy.length }, () => false))
-  const [checkRadio3, setCheckRadio3] = useState(Array.from({ length: radioDummy.length }, () => false))
-  const [savedRadioValue, setSavedRadioValue] = useState('')
+  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, () => false))
+  const [checkRadio3, setCheckRadio3] = useState(Array.from({ length: radioDummy3.length }, () => false))
+  const [checkRadio4, setCheckRadio4] = useState(Array.from({ length: radioDummy4.length }, () => false))
+  const [radioSelections, setRadioSelections] = useState({
+    승인여부: null,
+    회원제환: null,
+    사용자구분: null,
+    사업자구분: null,
+  })
 
-  useEffect(() => {
-    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
-    if (checkedIndex !== -1) {
-      const selectedValue = radioDummy[checkedIndex]
-      setSavedRadioValue(selectedValue)
-      setInput({ ...input, type: selectedValue })
-    }
-  }, [checkRadio])
+  // const [savedRadioValue, setSavedRadioValue] = useState('')
+  // const [savedRadioValue2, setSavedRadioValue2] = useState('')
+  // const [savedRadioValue3, setSavedRadioValue3] = useState('')
+  // const [savedRadioValue4, setSavedRadioValue4] = useState('')
 
-  const checkDummy = ['유통', '제조']
-  const checkDummy2 = [
-    '재고관리',
-    '경매관리',
-    '상시판매',
-    '주문관리',
-    '판매제품 관리',
-    '출고관리',
-    '출고관리',
-    '운영관리',
-  ]
+  // useEffect(() => {
+  //   const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
+  //   if (checkedIndex !== -1) {
+  //     const selectedValue1 = radioDummy[checkedIndex]
+  //     setSavedRadioValue(selectedValue1)
+  //     setInput({ ...input, type: selectedValue1 }) // 사업자 구분, type
+  //   }
+
+  //   const checkedIndex2 = checkRadio2.findIndex((isChecked, index) => isChecked && index < radioDummy2.length)
+  //   if (checkedIndex2 !== -1) {
+  //     const selectedValue2 = radioDummy2[checkedIndex2]
+  //     setSavedRadioValue2(selectedValue2)
+  //     setInput({ ...input, approvalStatus: selectedValue2 }) // 승인 여부, approvalStatus
+  //   }
+
+  //   const checkedIndex3 = checkRadio3.findIndex((isChecked, index) => isChecked && index < radioDummy3.length)
+  //   if (checkedIndex3 !== -1) {
+  //     const selectedValue3 = radioDummy3[checkedIndex3]
+  //     setSavedRadioValue3(selectedValue3)
+  //     setInput({ ...input, auctionStatus: selectedValue3 }) // 회원 제한, auctionStatus
+  //   }
+
+  //   const checkedIndex4 = checkRadio4.findIndex((isChecked, index) => isChecked && index < radioDummy4.length)
+  //   if (checkedIndex4 !== -1) {
+  //     const selectedValue4 = radioDummy4[checkedIndex4]
+  //     setSavedRadioValue4(selectedValue4)
+  //     setInput({ ...input, memberType: selectedValue4 }) // 사용자 구분, memberType
+  //   }
+  // }, [
+  //   checkRadio,
+  //   checkRadio2,
+  //   checkRadio3,
+  //   checkRadio4,
+  //   savedRadioValue,
+  //   savedRadioValue2,
+  //   savedRadioValue3,
+  //   savedRadioValue4,
+  // ])
+
+  const checkDummy = ['유통', '제조'] // businessType
+  const checkDummy2 = ['재고관리', '경매관리', '상시판매', '주문관리', '판매제품 관리', '출고관리', '운영관리'] //managerRoleList
+
+  const [approvalStatus, setApprovalStatus] = useState(Array.from({ length: checkDummy2.length }, () => ''))
+
   const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
+  const [check2, setCheck2] = useState(Array.from({ length: checkDummy2.length }, () => false))
   const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
+  const [checkData2, setCheckData2] = useState(Array.from({ length: checkDummy2.length }, () => ''))
+
+  console.log('check data =>', checkData, checkData2)
 
   useEffect(() => {
     const updatedCheck = checkDummy.map((value, index) => {
@@ -292,12 +328,20 @@ const ClientModal = ({ setModal }) => {
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData(filteredCheck)
 
+    const updatedCheck2 = checkDummy2.map((value, index) => {
+      return check2[index] ? value : ''
+    })
+    // 그냥 배열에 담을 때
+    const filteredCheck2 = updatedCheck2.filter((item) => item !== '')
+    setCheckData2(filteredCheck2)
+
     // 전송용 input에 담을 때
     setInput({
       ...input,
       businessType: updatedCheck.filter((item) => item !== ''),
+      managerRoleList: updatedCheck2.filter((item) => item !== ''),
     })
-  }, [check])
+  }, [check, check2])
 
   // 비밀번호 초기화 버튼
   const resetPw = async () => {
@@ -329,7 +373,48 @@ const ClientModal = ({ setModal }) => {
   }
 
   const modalOFF = () => {
-    setModal(false)
+    setEditModal(false)
+  }
+
+  const handleFiles = (e) => {
+    const name = e.target.name
+    const file = e.target.files[0]
+    console.log('')
+    const fileName = e.target.files[0].name
+    if (renderFileName.hasOwnProperty(name)) {
+      setRenderFileName((prev) => ({
+        ...prev,
+        [name]: fileName,
+      }))
+      if (name === 'businessNumberFile') {
+        setFileForms((prev) => ({
+          ...prev,
+          registration: file,
+        }))
+      }
+      if (name === 'bankbookFile') {
+        setFileForms((prev) => ({
+          ...prev,
+          bankBook: file,
+        }))
+      }
+    }
+  }
+
+  const checkRadioButtonSelection = (selection, group) => {
+    setRadioSelections({
+      ...radioSelections,
+      [group]: selection,
+    })
+
+    updateFormData(group, selection)
+  }
+
+  const updateFormData = (field, value) => {
+    setInput((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }))
   }
 
   return (
@@ -340,13 +425,14 @@ const ClientModal = ({ setModal }) => {
         {/* <OnePageFlexContainerC> */}
         <MainTitleC style={{ fontSize: '18px' }}>
           <div>고객사 상세 정보</div>
-          <TransparentButton onClick={modalOFF}>x</TransparentButton>
+
+          <WhiteCloseBtn onClick={modalOFF} src="/svg/white_btn_close.svg" />
         </MainTitleC>
         <form onSubmit={handleSubmit}>
           <ModalContainerSubC width={1400}>
             {' '}
             <OnePageFlexSubContainer>
-              <Left style={{ width: '50%' }}>
+              <Left>
                 <h1>회원정보</h1>
                 <Bar />
                 <FlexPart>
@@ -354,43 +440,34 @@ const ClientModal = ({ setModal }) => {
                     아이디<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="id" onChange={handleSubmitForm} />
+                    <FlexInput name="id" />
                   </FlexContent>
                 </FlexPart>
 
                 <FlexPart>
                   <FlexTitle>
-                    비밀번호 초기화<span>*</span>
+                    비밀번호<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInputBtn type="password" onClick={resetPw}>
-                      비밀번호 초기화
-                    </FlexInputBtn>
+                    <FlexInput type="password" />
                   </FlexContent>
                 </FlexPart>
 
-                {/* <FlexPart>
+                <FlexPart>
                   <FlexTitle name="">
-                    새 비밀번호 확인<span>*</span>
+                    비밀번호 확인<span>*</span>
                   </FlexTitle>
                   <FlexContent>
                     <FlexInput name="password" type="password" />
                   </FlexContent>
-                </FlexPart> */}
-
+                </FlexPart>
                 <FlexPart>
                   <FlexTitle>
                     경매 담당자 정보<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <CustomInput name="memberTitle" placeholder="직함 입력" width={130} onChange={handleSubmitForm} />
-                    <CustomInput
-                      name="nmemberName"
-                      placeholder=" 성함 입력"
-                      width={188}
-                      style={{ marginLeft: '5px' }}
-                      onChange={handleSubmitForm}
-                    />
+                    <CustomInput name="memberTitle" placeholder="직함 입력" width={130} />
+                    <CustomInput name="memberName" placeholder=" 성함 입력" width={188} style={{ marginLeft: '5px' }} />
                   </FlexContent>
                 </FlexPart>
 
@@ -399,7 +476,7 @@ const ClientModal = ({ setModal }) => {
                     이메일<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="memberEmail" onChange={handleSubmitForm} />
+                    <FlexInput name="memberEmail" />
                   </FlexContent>
                 </FlexPart>
 
@@ -408,7 +485,7 @@ const ClientModal = ({ setModal }) => {
                     휴대폰 번호<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="memberPhone" onChange={handleSubmitForm} />
+                    <FlexInput name="memberPhone" />
                   </FlexContent>
                 </FlexPart>
                 <FlexPart>
@@ -422,20 +499,11 @@ const ClientModal = ({ setModal }) => {
                         gap: '60px',
                       }}
                     >
-                      {radioDummy2.map((text, index) => (
-                        <RadioMainDiv key={index}>
-                          <RadioCircleDiv
-                            name="type"
-                            isChecked={checkRadio[index]}
-                            onClick={() => {
-                              setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-                            }}
-                          >
-                            <RadioInnerCircleDiv isChecked={checkRadio[index]} />
-                          </RadioCircleDiv>
-                          <div style={{ display: 'flex', paddingLeft: '5px' }}>{text}</div>
-                        </RadioMainDiv>
-                      ))}
+                      <RadioButton
+                        selection={(value) => checkRadioButtonSelection(value, '승인여부')}
+                        radioButtonLabels={radioDummy2}
+                        style={{ display: 'flex', paddingLeft: '5px' }}
+                      />
                     </div>
                   </FlexContent>
                 </FlexPart>
@@ -447,24 +515,15 @@ const ClientModal = ({ setModal }) => {
                     <div
                       style={{
                         display: 'flex',
-                        gap: '80px',
-                        width: '100%',
+                        gap: '20px',
+                        minWidth: '450px',
                       }}
                     >
-                      {radioDummy3.map((text, index) => (
-                        <RadioMainDiv key={index}>
-                          <RadioCircleDiv
-                            name="type"
-                            isChecked={checkRadio[index]}
-                            onClick={() => {
-                              setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-                            }}
-                          >
-                            <RadioInnerCircleDiv isChecked={checkRadio[index]} />
-                          </RadioCircleDiv>
-                          <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
-                        </RadioMainDiv>
-                      ))}
+                      <RadioButton
+                        selection={(value) => checkRadioButtonSelection(value, '회원제한')}
+                        radioButtonLabels={radioDummy3}
+                        style={{ display: 'flex', paddingLeft: '5px' }}
+                      />
                     </div>
                   </FlexContent>
                 </FlexPart>
@@ -476,62 +535,63 @@ const ClientModal = ({ setModal }) => {
                     <div
                       style={{
                         display: 'flex',
-                        gap: '80px',
-                        width: '100%',
+                        gap: '20px',
+                        minWidth: '450px',
                       }}
                     >
-                      {radioDummy3.map((text, index) => (
-                        <RadioMainDiv key={index}>
-                          <RadioCircleDiv
-                            name="type"
-                            isChecked={checkRadio[index]}
-                            onClick={() => {
-                              setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-                            }}
-                          >
-                            <RadioInnerCircleDiv isChecked={checkRadio[index]} />
-                          </RadioCircleDiv>
-                          <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
-                        </RadioMainDiv>
-                      ))}
+                      <RadioButton
+                        selection={(value) => checkRadioButtonSelection(value, '사용자구분')}
+                        radioButtonLabels={radioDummy4}
+                        style={{ display: 'flex', paddingLeft: '5px' }}
+                      />
                     </div>
                   </FlexContent>
                 </FlexPart>
+                {console.log('checkRadio4[1]', checkRadio4)}
+                {checkRadio4[1] && (
+                  <FlexPart>
+                    <FlexTitle>
+                      운송사 이름<span>*</span>
+                    </FlexTitle>
+                    <FlexContent>
+                      <FlexInput name="transportName" />
+                    </FlexContent>
+                  </FlexPart>
+                )}
                 <FlexPart>
                   <FlexTitle>
                     창고 구분<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <EditSelect
-                      name="depositManagerTitle"
-                      options={depositOptions}
-                      defaultValue={depositOptions[0]}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
+                    <MainSelect
+                      options={storageList}
+                      defaultValue={''}
+                      name="storage"
+                      onChange={(e) => {
+                        setSelected((p) => ({ ...p, storage: e.label, storageUid: e.value }))
+                      }}
                     />
                   </FlexContent>
                 </FlexPart>
                 <FlexPart>
-                  <FlexTitle>권한 설정</FlexTitle>
-                  <FlexContent style={{ width: '30%', border: '1px solid' }}>
+                  <FlexTitle style={{ minWidth: '170px' }}>권한 설정</FlexTitle>
+                  <FlexContent2>
                     {checkDummy2.map((x, index) => (
-                      <UserCheckDiv style={{ width: '100%' }}>
+                      <UserCheckDiv style={{ width: '130px' }}>
                         <StyledCheckSubSquDiv
-                          onClick={() => setCheck(CheckBox(check, check.length, index, true))}
-                          isChecked={check[index]}
+                          name="managerRoleList"
+                          onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
+                          isChecked={check2[index]}
                         >
-                          <CheckImg2 src="/svg/check.svg" />
+                          <CheckImg2 src="/svg/check.svg" isChecked={check2[index]} />
                         </StyledCheckSubSquDiv>
-                        <CheckTxt style={{ marginLeft: '5px' }}>{x}</CheckTxt>
+                        <CheckTxt2 style={{ marginLeft: '5px' }}>{x}</CheckTxt2>
                       </UserCheckDiv>
                     ))}
-                  </FlexContent>
+                  </FlexContent2>
                 </FlexPart>
-
                 <Bar />
-                <EqualCheckWrap2>
-                  <input type="checkbox" style={{ marginRight: '5px' }} />
-                  가입 정보와 동일
-                </EqualCheckWrap2>
+
                 <FlexPart>
                   <FlexTitle>
                     입금 담당자 정보<span>*</span>
@@ -543,12 +603,7 @@ const ClientModal = ({ setModal }) => {
                       defaultValue={depositOptions[0]}
                       onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
                     />
-                    <CustomInput
-                      name="depositManagerName"
-                      placeholder="담당자 성함 입력"
-                      width={190}
-                      onChange={handleSubmitForm}
-                    />
+                    <CustomInput name="depositManagerName" placeholder="담당자 성함 입력" width={190} />
                   </FlexContent>
                 </FlexPart>
 
@@ -557,17 +612,10 @@ const ClientModal = ({ setModal }) => {
                     휴대폰 번호<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput
-                      name="depositManagerPhone"
-                      placeholder="연락처 입력 ('-' 제외)"
-                      onChange={handleSubmitForm}
-                    />
+                    <FlexInput name="depositManagerPhone" placeholder="연락처 입력 ('-' 제외)" />
                   </FlexContent>
                 </FlexPart>
-                <EqualCheckWrap2>
-                  <input type="checkbox" style={{ marginRight: '5px' }} />
-                  가입 정보와 동일
-                </EqualCheckWrap2>
+
                 <FlexPart>
                   <FlexTitle>
                     출고 담당자 정보<span>*</span>
@@ -579,12 +627,8 @@ const ClientModal = ({ setModal }) => {
                       defaultValue={depositOptions[0]}
                       onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
                     />
-                    <CustomInput
-                      name="releaseManagerName"
-                      placeholder=" 담당자 성함 입력"
-                      width={190}
-                      onChange={handleSubmitForm}
-                    />
+
+                    <CustomInput name="releaseManagerName" placeholder=" 담당자 성함 입력" width={190} />
                   </FlexContent>
                 </FlexPart>
 
@@ -593,20 +637,16 @@ const ClientModal = ({ setModal }) => {
                     휴대폰 번호<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput
-                      name="releaseManagerPhone"
-                      placeholder="연락처 입력 ('-' 제외)"
-                      onChange={handleSubmitForm}
-                    />
+                    <FlexInput name="releaseManagerPhone" placeholder="연락처 입력 ('-' 제외)" />
                   </FlexContent>
                 </FlexPart>
 
-                <FlexPart>
+                {/* <FlexPart>
                   <FlexTitle>담당자 추가</FlexTitle>
                   <FlexContent>
                     <AddBtn>추가하기</AddBtn>
                   </FlexContent>
-                </FlexPart>
+                </FlexPart> */}
                 <FlexPart>
                   {/* <FlexContent>
                   <FlexInput name="releaseManagerPhone" placeholder="연락처 입력 ('-' 제외)" />
@@ -614,8 +654,8 @@ const ClientModal = ({ setModal }) => {
                 </FlexPart>
               </Left>
               {/* -------------------------------------------------------------- */}
-              <Right style={{ width: '40%' }}>
-                <h1>비즈니스 정보 ㅋㅋ</h1>
+              <Right>
+                <h1>비즈니스 정보</h1>
                 <Bar />
                 <FlexPart>
                   <FlexTitle>
@@ -629,20 +669,11 @@ const ClientModal = ({ setModal }) => {
                         width: '100%',
                       }}
                     >
-                      {radioDummy.map((text, index) => (
-                        <RadioMainDiv key={index}>
-                          <RadioCircleDiv
-                            name="type"
-                            isChecked={checkRadio[index]}
-                            onClick={() => {
-                              setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-                            }}
-                          >
-                            <RadioInnerCircleDiv isChecked={checkRadio[index]} />
-                          </RadioCircleDiv>
-                          <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
-                        </RadioMainDiv>
-                      ))}
+                      <RadioButton
+                        selection={(value) => checkRadioButtonSelection(value, '사업자구분')}
+                        radioButtonLabels={radioDummy}
+                        style={{ display: 'flex', paddingLeft: '5px' }}
+                      />
                     </div>
                   </FlexContent>
                 </FlexPart>
@@ -652,7 +683,7 @@ const ClientModal = ({ setModal }) => {
                     회사 명<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name="customerName" />
+                    <FlexInput name="name" />
                   </FlexContent>
                 </FlexPart>
 
@@ -746,7 +777,7 @@ const ClientModal = ({ setModal }) => {
                             onClick={() => setCheck(CheckBox(check, check.length, index, true))}
                             isChecked={check[index]}
                           >
-                            <CheckImg2 src="/svg/check.svg" />
+                            <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
                           </StyledCheckSubSquDiv>
                           <p>{x}</p>
                         </StyledCheckMainDiv>
@@ -772,6 +803,7 @@ const ClientModal = ({ setModal }) => {
                   <FlexTitle>
                     사업자등록증<span>*</span>
                   </FlexTitle>
+
                   <TxtDivNoborder className="no-border" style={{ border: '1px solid #000000' }}>
                     <label htmlFor="ex_file">
                       <div className="btnStart">
@@ -786,7 +818,7 @@ const ClientModal = ({ setModal }) => {
                       accept="image/jpg, image/png, image/jpeg"
                       style={{ display: 'none' }}
                       onChange={handleFiles}
-                      name="deleteBusinessNumberFile"
+                      name="businessNumberFile"
                       // onChange={commonChange}
                       // name="businessfile"
                     ></input>
@@ -795,11 +827,23 @@ const ClientModal = ({ setModal }) => {
                 <FlexPart>
                   <FlexTitle></FlexTitle>
                   <FlexContent>
-                    {/* <FlexInput></FlexInput> */}
-                    {checkFileName.deleteBusinessNumberFile ? (
-                      checkFileName.deleteBusinessNumberFile
+                    {renderFileName.businessNumberFile ? (
+                      <IncomeImgDiv>
+                        <div>{renderFileName.businessNumberFile}</div>
+                        <div>
+                          <IIDImg
+                            onClick={() => {
+                              setRenderFileName({
+                                ...renderFileName,
+                                businessNumberFile: '',
+                              })
+                            }}
+                            src="/svg/btn_close.svg"
+                          />
+                        </div>
+                      </IncomeImgDiv>
                     ) : (
-                      <FlexInput></FlexInput>
+                      <FlexInput style={{ width: '322px' }} disabled />
                     )}
                   </FlexContent>
                 </FlexPart>
@@ -823,20 +867,33 @@ const ClientModal = ({ setModal }) => {
                         accept="image/jpg, image/png, image/jpeg"
                         style={{ display: 'none' }}
                         onChange={handleFiles}
-                        name="deleteBankbookFile"
+                        name="bankbookFile"
                       ></input>
                     </TxtDivNoborder>
-                    {/* <TxtDiv style={{ width: '100%' }}>
-                    <img src="/svg/Upload.svg" />
-                    <p>파일 첨부</p>
-                  </TxtDiv> */}
                   </FlexContent>
                 </FlexPart>
                 <FlexPart>
                   <FlexTitle></FlexTitle>
+
                   <FlexContent>
-                    {/* <FlexInput></FlexInput> */}
-                    {checkFileName.deleteBankbookFile ? checkFileName.deleteBankbookFile : <FlexInput></FlexInput>}
+                    {renderFileName.bankbookFile ? (
+                      <IncomeImgDiv>
+                        <div>{renderFileName.bankbookFile}</div>
+                        <div>
+                          <IIDImg
+                            onClick={() => {
+                              setRenderFileName({
+                                ...renderFileName,
+                                bankbookFile: '',
+                              })
+                            }}
+                            src="/svg/btn_close.svg"
+                          />
+                        </div>
+                      </IncomeImgDiv>
+                    ) : (
+                      <FlexInput style={{ width: '322px' }} disabled />
+                    )}
                   </FlexContent>
                 </FlexPart>
 
@@ -856,7 +913,7 @@ const ClientModal = ({ setModal }) => {
                 <FlexPart>
                   <FlexTitle></FlexTitle>
                   <FlexContent>
-                    <FlexInput name="accountNumber" style={{ width: '99%' }} />
+                    <FlexInput name="accountNumber" style={{ width: '320px' }} />
                   </FlexContent>
                 </FlexPart>
               </Right>
@@ -878,7 +935,7 @@ const ClientModal = ({ setModal }) => {
   )
 }
 
-export default ClientModal
+export default ClientPostModal
 
 export const ModalContainerC = styled.div`
   border-radius: 10px;
@@ -967,4 +1024,15 @@ const EqualCheckWrap2 = styled.div`
   margin-bottom: 5px;
   position: relative;
   right: 120px;
+`
+
+export const CheckTxt2 = styled.p`
+  min-width: 100px;
+  font-size: 16px;
+`
+
+export const FlexContent2 = styled.div`
+  display: flex;
+  min-width: 600px;
+  flex-wrap: wrap;
 `

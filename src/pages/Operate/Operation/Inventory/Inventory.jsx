@@ -1,29 +1,32 @@
 /* eslint-disable no-unused-vars */
+import { QueryClient } from '@tanstack/react-query'
+import moment from 'moment'
 import { useEffect, useRef, useState } from 'react'
-import { storageOptions } from '../../../../common/Option/SignUp'
-import InventoryFind from '../../../../modal/Multi/InventoryFind'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { BlackBtn, GreyBtn } from '../../../../common/Button/Button'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../../../common/Check/CheckImg'
 import { CheckBox } from '../../../../common/Check/Checkbox'
 import { MainSelect } from '../../../../common/Option/Main'
 import DateGrid from '../../../../components/DateGrid/DateGrid'
-import { QueryClient } from '@tanstack/react-query'
-import moment from 'moment'
+import InventoryFind from '../../../../modal/Multi/InventoryFind'
 import {
-  popupObject,
-  selectedRowsAtom,
-  toggleAtom,
-  popupTypeAtom,
-  invenDestination,
   invenCustomer,
   invenCustomerData,
+  invenDestination,
   invenDestinationData,
+  popupTypeAtom,
+  selectedRowsAtom,
+  toggleAtom,
 } from '../../../../store/Layout/Layout'
 // import Test3 from '../../../Test/Test3'
 import { useAtom, useAtomValue } from 'jotai'
-import PageDropdown from '../../../../components/TableInner/PageDropdown'
+import { getInventoryLedger } from '../../../../api/operate/inventory'
+import { getDestinationFind, getSPartList, getStorageList } from '../../../../api/search'
 import Excel from '../../../../components/TableInner/Excel'
+import Hidden from '../../../../components/TableInner/Hidden'
+import PageDropdown from '../../../../components/TableInner/PageDropdown'
+import { InventoryFieldsCols, InvertoryFields } from '../../../../constants/admin/Inventroy'
+import useReactQuery from '../../../../hooks/useReactQuery'
+import { add_element_field } from '../../../../lib/tableHelpers'
 import {
   DoubleWrap,
   ExCheckDiv,
@@ -40,21 +43,14 @@ import {
   PartWrap,
   ResetImg,
   RowWrap,
-  TableContianer,
   TCSubContainer,
+  TableContianer,
   Tilde,
 } from '../../../../modal/External/ExternalFilter'
-import useReactQuery from '../../../../hooks/useReactQuery'
-import { getInventoryLedger } from '../../../../api/operate/inventory'
-import Table from '../../../Table/Table'
-import { add_element_field } from '../../../../lib/tableHelpers'
-import { InventoryFieldsCols, InvertoryFields } from '../../../../constants/admin/Inventroy'
-import { getSPartList, getStorageList, getDestinationFind } from '../../../../api/search'
 import { getCustomerFind } from '../../../../service/admin/Auction'
-import { SwitchBtn } from '../../../../common/Button/Button'
-import Hidden from '../../../../components/TableInner/Hidden'
-import { Filtering } from '../../../../utils/filtering'
 import { KilogramSum } from '../../../../utils/KilogramSum'
+import { Filtering } from '../../../../utils/filtering'
+import Table from '../../../Table/Table'
 
 const Inventory = ({}) => {
   const checkStores = ['전체', '미 입고', '입고 대기', '입고 확정', '입고 확정 취소']
@@ -104,6 +100,7 @@ const Inventory = ({}) => {
   const [checkData4, setCheckData4] = useState(Array.from({ length: checkTransits.length }, () => ''))
   const [checkData5, setCheckData5] = useState(Array.from({ length: checkShipments.length }, () => ''))
 
+  console.log('checkData1 :', checkData1)
   const queryClient = new QueryClient()
 
   // SELECT 데이터
@@ -422,7 +419,7 @@ const Inventory = ({}) => {
                           onClick={() => setCheck3(CheckBox(check3, check3.length, index, true))}
                           isChecked={check3[index]}
                         >
-                          <CheckImg2 src="/svg/check.svg" />
+                          <CheckImg2 src="/svg/check.svg" isChecked={check3[index]} />
                         </StyledCheckSubSquDiv>
                         <p>{x}</p>
                       </ExCheckDiv>
@@ -440,7 +437,7 @@ const Inventory = ({}) => {
                           onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
                           isChecked={check1[index]}
                         >
-                          <CheckImg2 src="/svg/check.svg" />
+                          <CheckImg2 src="/svg/check.svg" isChecked={check1[index]} />
                         </StyledCheckSubSquDiv>
                         <p>{x}</p>
                       </ExCheckDiv>
@@ -456,7 +453,7 @@ const Inventory = ({}) => {
                           onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
                           isChecked={check2[index]}
                         >
-                          <CheckImg2 src="/svg/check.svg" />
+                          <CheckImg2 src="/svg/check.svg" isChecked={check2[index]} />
                         </StyledCheckSubSquDiv>
                         <p>{x}</p>
                       </ExCheckDiv>
@@ -475,7 +472,7 @@ const Inventory = ({}) => {
                           onClick={() => setCheck5(CheckBox(check5, check5.length, index, true))}
                           isChecked={check5[index]}
                         >
-                          <CheckImg2 src="/svg/check.svg" />
+                          <CheckImg2 src="/svg/check.svg" isChecked={check5[index]} />
                         </StyledCheckSubSquDiv>
                         <p>{x}</p>
                       </ExCheckDiv>

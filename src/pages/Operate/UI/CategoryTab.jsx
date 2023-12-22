@@ -13,8 +13,8 @@ import { SubTitle } from '../../../modal/External/ExternalFilter'
 function CategoryTab({ options = [], highLightValue = '' }) {
   return (
     <SubTitle>
-      {options.map((o) => (
-        <Link key={crypto.randomUUID()} to={o.link}>
+      {options.map((o, i) => (
+        <Link key={i} to={o.link}>
           {o.value === highLightValue ? <h5>{o.text}</h5> : <h6>{o.text}</h6>}
         </Link>
       ))}

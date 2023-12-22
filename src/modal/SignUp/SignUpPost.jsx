@@ -32,17 +32,17 @@ const SignUpPost = ({
               <h4>주소</h4>
               <ModalRadioWrap>
                 <input type="radio" name="post" onChange={postCheck} defaultChecked />
-                <p>찾기</p>
+                <p style={{ fontSize: '15px' }}>찾기</p>
               </ModalRadioWrap>
               <ModalRadioWrap>
                 <input type="radio" name="post" onChange={directCheck} />
-                <p>직접 입력</p>
+                <p style={{ fontSize: '15px' }}>직접 입력</p>
               </ModalRadioWrap>
             </Title>
             {!postFind ? (
               <>
                 <div style={{ width: '320px', marginBottom: '5px' }}>
-                  <TxtCheckInput type="text" value={address} readOnly />
+                  <TxtCheckInput type="text" value={address} readOnly onClick={daumPostHandleBtn} />
                   <CheckBtn
                     type="button"
                     style={{

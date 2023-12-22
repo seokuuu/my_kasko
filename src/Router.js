@@ -1,104 +1,97 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import Login from './pages/User/Login/Login'
-import SignUp from './pages/User/SignUp/SignUp'
-import FindId from './pages/User/FindId/FindId'
+import CalendarModal from './modal/Calender/Calendar'
 import Test from './pages/Test/Test'
 import Test2 from './pages/Test/Test2'
-import ReissuePw from './pages/User/ReissuePw/ReissuePw'
-import CalendarModal from './modal/Calender/Calendar'
 import Test3 from './pages/Test/Test3'
-import Test4 from './pages/Test/Test4'
+import FindId from './pages/User/FindId/FindId'
+import Login from './pages/User/Login/Login'
+import ReissuePw from './pages/User/ReissuePw/ReissuePw'
+import SignUp from './pages/User/SignUp/SignUp'
 
 import ClaimRegisterPage from './pages/Shipping/Claim/ClaimRegisterPage'
-import CarrierPostPage from './pages/UserManage/CarrierManage/CarrierPostPage'
 import CarrierEditPage from './pages/UserManage/CarrierManage/CarrierEditPage'
+import CarrierPostPage from './pages/UserManage/CarrierManage/CarrierPostPage'
 
+import TransportModal from './modal/Multi/Transport'
 import IncomingPage from './pages/Stock/Incoming/IncomingPage'
 import InventoryPage from './pages/Stock/Inventory/InventoryPage'
-import TransportModal from './modal/Multi/Transport'
-import InventoryPayPage from './pages/Operate/Operation/Inventory/InventoryPage'
 
-import { headerAtom, accordionAtom, subHeaderAtom } from './store/Layout/Layout'
 import NotFound from './pages/NotFound'
 
-import { styled } from 'styled-components'
 import MainPage from './pages/Main/MainPage'
 
-import RoundPage from './pages/Auction/Round/RoundPage'
 import BiddingPage from './pages/Auction/Bidding/BiddingPage'
 import DetailProgressPage from './pages/Auction/DetailProgress/DetailProgressPage'
 import ProgressPage from './pages/Auction/Progress/ProgressPage'
+import RoundPage from './pages/Auction/Round/RoundPage'
 import StartPricePage from './pages/Auction/StartPrice/StartPricePage'
-import WinningPage from './pages/Auction/Winning/WinningPage'
 import WinningCreatePage from './pages/Auction/Winning/WinningCreatePage'
+import WinningPage from './pages/Auction/Winning/WinningPage'
 
 import OrderPage from './pages/Order/OrderPage'
-import OrderDetailPage from './pages/Order/OrderDetailPage'
 
 // 출고 관리
+import AchievementPage from './pages/Shipping/Achievement/AchievementPage'
+import DisRegisterPage from './pages/Shipping/Dispatch/DisRegisterPage'
+import DispatchPage from './pages/Shipping/Dispatch/DispatchPage'
 import RegisterPage from './pages/Shipping/Register/RegisterPage'
 import RequestPage from './pages/Shipping/Request/RequestPage'
-import DispatchPage from './pages/Shipping/Dispatch/DispatchPage'
-import DisRegisterPage from './pages/Shipping/Dispatch/DisRegisterPage'
-import DisRegisterDetailPage from './pages/Shipping/Dispatch/DisRegisterDetailPage'
-import StatusPage from './pages/Shipping/Status/StatusPage'
 import StatusDetailPage from './pages/Shipping/Status/StatusDetailPage'
-import AchievementPage from './pages/Shipping/Achievement/AchievementPage'
 
 // 판매 제품 관리
-import SingleProductPage from './pages/Product/SingleProduct/SingleProductPage'
+import PackageCreatePage from './pages/Product/PackageManage/PackageCreatePage'
 import PackageManagePage from './pages/Product/PackageManage/PackageManagePage'
-import RecommendPage from './pages/Product/Recommend/RecommendPage'
-import RecommendPackPage from './pages/Product/Recommend/RecommendPackPage'
 import PronoPage from './pages/Product/Prono/PronoPage'
+import RecommendPackPage from './pages/Product/Recommend/RecommendPackPage'
+import RecommendPage from './pages/Product/Recommend/RecommendPage'
 import HyundaiPage from './pages/Product/SingleProduct/HyundaiPage'
 import SalesProductPage from './pages/Product/SingleProduct/SalesProductPage'
-import PackageCreatePage from './pages/Product/PackageManage/PackageCreatePage'
+import SingleProductPage from './pages/Product/SingleProduct/SingleProductPage'
 
 // 상시 판매 관리
-import SinglePage from './pages/Sales/Single/SinglePage'
 import PackagePage from './pages/Sales/Package/PackagePage'
-import SellOrderPage from './pages/Sales/SellOrder/SellOrderPage'
 import SellOrderDetailPage from './pages/Sales/SellOrder/SellOrderDetailPage'
+import SellOrderPage from './pages/Sales/SellOrder/SellOrderPage'
+import SinglePage from './pages/Sales/Single/SinglePage'
 
 // 기준 관리
-import DestinationPage from './pages/Standard/Destination/DestinationPage'
-import TransportPage from './pages/Standard/Transport/TransportPage'
-import SurchargePage from './pages/Standard/Surcharge/SurchargePage'
 import ConsolidationPage from './pages/Standard/Consolidation/ConsolidationPage'
+import DestinationPage from './pages/Standard/Destination/DestinationPage'
+import SurchargePage from './pages/Standard/Surcharge/SurchargePage'
+import TransportPage from './pages/Standard/Transport/TransportPage'
 
 // 사용자 관리
+import CarrierManagePage from './pages/UserManage/CarrierManage/CarrierManagePage'
 import ClientPage from './pages/UserManage/Client/ClientPage'
 import ClientDestiantionPage from './pages/UserManage/ClientDestination/ClientDestinationPage'
 import UserManagePage from './pages/UserManage/UserManage/UserManagePage'
-import CarrierManagePage from './pages/UserManage/CarrierManage/CarrierManagePage'
 
 import ProfileEditPage from './pages/UserManage/ProfileEdit/ProfileEditPage'
 
 import DestinationPostPage from './pages/UserManage/ClientDestination/DestinationPostPage'
-import UserPostPage from './pages/UserManage/UserManage/UserPostPage'
 import UserEditPage from './pages/UserManage/UserManage/UserEditPage'
+import UserPostPage from './pages/UserManage/UserManage/UserPostPage'
 
 // 운영 관리
-import OperationPage from './pages/Operate/Operation/Operation/OperationPage'
 import InventoryOperPage from './pages/Operate/Operation/Inventory/InventoryPage'
+import OperationPage from './pages/Operate/Operation/Operation/OperationPage'
 
 //운영 관리 - 노출 관리
-import PopupPage from './pages/Operate/Exposure/Popup/PopupPage'
 import NoticeBoardPage from './pages/Operate/Exposure/NoticeBoard/NoticeBoardPage'
+import PopupPage from './pages/Operate/Exposure/Popup/PopupPage'
 import PopupPostPage from './pages/Operate/Exposure/Popup/PopupPostPage'
 
 //운영 관리 - 일반 관리
 import ClaimPage from './pages/Operate/Common/Claim/ClaimPage'
+import DataSheetPage from './pages/Operate/Common/Datasheet/DatasheetPage'
 import FAQPage from './pages/Operate/Common/FAQ/FAQPage'
 import FAQPostPage from './pages/Operate/Common/FAQ/FAQPostPage'
 import NoticePage from './pages/Operate/Common/Notice/NoticePage'
-import DataSheetPage from './pages/Operate/Common/Datasheet/DatasheetPage'
 
 // 이용약관, 푸터
-import TermsPage from './pages/Operate/Terms/TermsPage'
 import FooterManagePage from './pages/Operate/FooterManage/FooterManagePage'
+import TermsPage from './pages/Operate/Terms/TermsPage'
 
 /// 사용자 페이지
 // 공지  & 자료실
@@ -108,25 +101,25 @@ import UDocs from './userpages/UserNotiDocs/Docs/DocsPage'
 import UDocsDetail from './userpages/UserNotiDocs/Docs/DocsDetail'
 
 // 경매
-import UAuctionSingle from './userpages/UserAuction/Single/SinglePage'
 import UAuctionPackage from './userpages/UserAuction/Package/PackagePage'
+import UAuctionSingle from './userpages/UserAuction/Single/SinglePage'
 import UAuctionStatus from './userpages/UserAuction/Status/StatusPage'
 import UAuctionWinning from './userpages/UserAuction/Winning/WinningPage'
 
 // 상시 판매
-import USalesSingle from './userpages/UserSales/Single/SinglePage'
-import USalesPackage from './userpages/UserSales/Package/PackagePage'
 import USalesCart from './userpages/UserSales/Cart/CartPage'
 import USalesOrder from './userpages/UserSales/Order/OrderPage'
+import USalesPackage from './userpages/UserSales/Package/PackagePage'
+import USalesSingle from './userpages/UserSales/Single/SinglePage'
 
 // 출고 실적 조회
 import UPerformance from './userpages/UserPerformance/UserPerformance/UserPerformancePage'
 
 // 마이페이지
 // import UUserManage from './userpages/UserMyPage/UserManage/UserManagePage'
-import UProfile from './userpages/UserMyPage/Profile/ProfilePage'
 import UDestination from './userpages/UserMyPage/Destination/DestinationPage'
 import UPrefer from './userpages/UserMyPage/Prefer/PreferPage'
+import UProfile from './userpages/UserMyPage/Profile/ProfilePage'
 
 // 고객센터
 import UFAQ from './userpages/UserCustomer/FAQ/FAQPage'
@@ -134,40 +127,13 @@ import UTerms from './userpages/UserCustomer/Terms/TermsPage'
 
 //사용자 메인페이지
 import UserMainPage from './userpages/MainPage'
-import ClaimRegister from './pages/Shipping/Claim/ClaimRegister'
 
 // test
-import Inventory from './modal/Multi/SalesCategoryChange'
-import SalesProduct from './modal/Multi/SalesProduct'
-import SalesCategoryChange from './modal/Multi/SalesCategoryChange'
-import PackageManage from './modal/Multi/PackageManage'
-import AuctionRound from './modal/Multi/AuctionRound'
-import SalesPackage from './modal/Multi/SalesPackage'
-import DispatchPost from './modal/Multi/DispatchPost'
-import DispatchEdit from './modal/Multi/DispatchEdit'
-import Hyundai from './modal/Multi/Hyundai'
-import AchievementModal from './modal/Multi/Achievement'
-import DispatchDetail from './modal/Multi/DispatchDetail'
-import Transport from './modal/Multi/Transport'
-import Consolidation from './modal/Multi/Consolidation'
-import Client from './modal/Multi/Client'
 import Countdown from './components/Countdown/Countdown'
-import DestinationPost from './userpages/UserMyPage/Destination/DestinationPost'
-import DestinationEdit from './userpages/UserMyPage/Destination/DestinationEdit'
 import DestinationEditPage from './userpages/UserMyPage/Destination/DestinationEditPage'
 
 import TestPopup from './modal/Common/TestPopup'
-import PopupTest from './modal/Alert/PopupTest'
 
-import Upload from './modal/Upload/Upload'
-import TestExcel from './pages/Test/TestExcel'
-import TableModal from './modal/Table/TableModal'
-import TableTest from './modal/Table/TableTest'
-import SellOrderDetail from './pages/Sales/SellOrder/SellOrderDetail'
-import NoticePopup from './modal/Multi/NoticePopup'
-import WinningCreate from './pages/Auction/Winning/WinningCreate'
-import RoundAucListEdit from './pages/Auction/Round/RoundAucListEdit'
-import BlueBar from './modal/BlueBar/BlueBar'
 import DefaultBlueBar from './modal/Multi/DefaultBlueBar'
 import RoundAucListPackEdit from './pages/Auction/Round/RoundAucListPackEdit'
 import TableGrid from './modal/Multi/TableGrid'
@@ -192,13 +158,22 @@ import InvoiceEdit from './pages/Shipping/Achievement/InvoiceEdit'
 import Invoice from './userpages/UserPerformance/UserPerformance/Invoice'
 import UserEdit from './pages/UserManage/UserManage/UserEdit'
 
+import TableTest from './modal/Table/TableTest'
+import ClaimProductPage from './pages/Operate/Common/Claim/ClaimProductPage'
+import OperateClaimRegisterPage from './pages/Operate/Common/Claim/OperateClaimRegisterPage'
+import NoticePost from './pages/Operate/Common/Notice/NoticePost'
+import NoticeBoardPost from './pages/Operate/Exposure/NoticeBoard/NoticeBoardPost'
+import TestExcel from './pages/Test/TestExcel'
+import ProfileEdit from './userpages/UserMyPage/Profile/Profile'
+
+
 // RoundAucProAdd
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
-        <Route path="/ppapp" element={<UserEditPage />} />
+        <Route path="/ppapp" element={<ProfileEdit />} />
         <Route path="/ppap" element={<DefaultBlueBar />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />
@@ -293,16 +268,35 @@ const Router = () => {
           <Route path="/operate/operation" element={<OperationPage />}></Route>
           <Route path="/operate/inventory" element={<InventoryOperPage />}></Route>
           <Route path="/operate/common" element={<ClaimPage />}></Route>
+          <Route path="/operate/common/product" element={<ClaimProductPage />}></Route>
+          <Route
+            path="/operate/common/product/register"
+            element={<OperateClaimRegisterPage pageType="register" />}
+          ></Route>
+          <Route path="/operate/common/product/:id" element={<OperateClaimRegisterPage pageType="detail" />}></Route>
+
           <Route path="/operate/exposure" element={<PopupPage />}></Route>
+          <Route path="/operate/exposure/register" element={<PopupPostPage isRegister={true} />}></Route>
+          <Route path="/operate/exposure/:id" element={<PopupPostPage isRegister={false} />}></Route>
+
           <Route path="/operate/popuppost" element={<PopupPostPage />}></Route>
           <Route path="/operate/faq" element={<FAQPage />}></Route>
           <Route path="/operate/noticeboard" element={<NoticeBoardPage />}></Route>
+          <Route path="/operate/noticeboard/register" element={<NoticeBoardPost />}></Route>
+          <Route path="/operate/noticeboard/:id" element={<NoticeBoardPost />}></Route>
+
           <Route path="/operate/notice" element={<NoticePage />}></Route>
+          <Route path="/operate/notice/register" element={<NoticePost title={'공지'} isRegister={true} />}></Route>
+          <Route path="/operate/notice/:id" element={<NoticePost title={'공지'} isRegister={false} />}></Route>
+
           <Route path="/operate/datasheet" element={<DataSheetPage />}></Route>
+          <Route path="/operate/datasheet/register" element={<NoticePost title={'자료실'} isRegister={true} />}></Route>
+          <Route path="/operate/datasheet/:id" element={<NoticePost title={'자료실'} isRegister={false} />}></Route>
           <Route path="/operate/terms" element={<TermsPage />}></Route>
           <Route path="/operate/footer" element={<FooterManagePage />}></Route>
 
           <Route path="/operate/faq/faqpost" element={<FAQPostPage />}></Route>
+          <Route path="/operate/faq/:id" element={<FAQPostPage />}></Route>
         </Route>
         {/* 사용자 페이지 */}
         {/* 사용자 페이지는 관리자 페이지와 다르게 /userpage/* 로 단일 구성된다 */}

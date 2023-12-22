@@ -215,6 +215,8 @@ export const ResultCell = styled.div`
   width: ${({ wid }) => (wid ? `${wid}px` : '100px')};
   align-items: center;
   justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
 `
 
 // 모달 한 줄

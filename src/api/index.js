@@ -2,6 +2,9 @@ import axios from 'axios'
 
 const API_PATH = process.env.REACT_APP_API_URL
 
+// 폼 데이터 헤더
+export const formHeaders = { 'Content-Type': 'multipart/form-data' }
+
 export const client = axios.create({
   baseURL: API_PATH,
   timeout: 15000,

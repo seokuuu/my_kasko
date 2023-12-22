@@ -73,8 +73,8 @@ const ProfileEdit = () => {
   const [isUser, setIsUser] = useState(false)
   const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
   const [checkFileName, setCheckFileName] = useState({ deleteBusinessNumberFile: '', deleteBankbookFile: '' })
-  const [renderFileName, setRenderFileName] = useState({ businessNumberFile: '', bankbookFile: ' ' })
-  const [fileForms, setFileForms] = useState({ registration: '', bankBook: '' })
+  const [renderFileName, setRenderFileName] = useState({ businessNumberFile: '', bankbookFile: '' })
+  const [fileForms, setFileForms] = useState({ registration: null, bankBook: null })
   const [dropdownNames, setDropdownNames] = useState({
     depositManagerTitle: '',
     releaseManagerTitle: '',
@@ -243,6 +243,7 @@ const ProfileEdit = () => {
   const [postFind, setPostFind] = useState(false)
   const [modalSwitch, setModalSwitch] = useState(false)
   const [address, setAddress] = useState('')
+  const [postAddress, setPostAdress] = useState('')
   const [detailAddress, setDetailAddress] = useState('')
   const [isDaumPostOpen, setIsDaumPostOpen] = useState(false)
   const postCheck = () => {
@@ -275,9 +276,37 @@ const ProfileEdit = () => {
     setIsDaumPostOpen(true)
   }
 
+  const sidoMapping = {
+    서울: '서울특별시',
+    부산: '부산광역시',
+    대구: '대구광역시',
+    인천: '인천광역시',
+    광주: '광주광역시',
+    대전: '대전광역시',
+    울산: '울산광역시',
+    경기: '경기도',
+    충북: '충청북도',
+    충남: '충청남도',
+    전북: '전라북도',
+    전남: '전라남도',
+    경북: '경상북도',
+    경남: '경상남도',
+  }
+
   const daumPostHandleComplete = (data) => {
+    console.log('daum post data', data)
     const { address } = data
     setAddress(address)
+
+    // 지번 주소 전달
+    const mappedSido = sidoMapping[data?.sido] || data?.sido
+    const mergedAddress = [mappedSido, data?.sigungu, data?.bname1, data?.bname2]
+      .filter((value) => value !== '')
+      .join(' ')
+
+    setPostAdress(mergedAddress)
+    console.log('mergedAddress =>', mergedAddress)
+
     setIsDaumPostOpen(false)
   }
 
@@ -298,6 +327,7 @@ const ProfileEdit = () => {
   console.log(' >< input.type !!!', input.type)
   console.log(' >< savedRadioValue !!!', savedRadioValue)
 
+  // 라디오 useEffect
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
     if (checkedIndex !== -1) {
@@ -307,6 +337,7 @@ const ProfileEdit = () => {
     }
   }, [checkRadio, savedRadioValue])
 
+  // 체크박스 useEffect
   useEffect(() => {
     const updatedCheck = checkDummy.map((value, index) => {
       return check[index] ? value : ''
@@ -496,12 +527,12 @@ const ProfileEdit = () => {
                 </FlexContent>
               </FlexPart>
 
-              <FlexPart>
+              {/* <FlexPart>
                 <FlexTitle>담당자 추가</FlexTitle>
                 <FlexContent>
                   <AddBtn>추가하기</AddBtn>
                 </FlexContent>
-              </FlexPart>
+              </FlexPart> */}
               <FlexPart>
                 {/* <FlexContent>
                   <FlexInput name="releaseManagerPhone" placeholder="연락처 입력 ('-' 제외)" />
@@ -650,7 +681,7 @@ const ProfileEdit = () => {
                           onClick={() => setCheck(CheckBox(check, check.length, index, true))}
                           isChecked={check[index]}
                         >
-                          <CheckImg2 src="/svg/check.svg" />
+                          <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
                         </StyledCheckSubSquDiv>
                         <p>{x}</p>
                       </StyledCheckMainDiv>
@@ -704,7 +735,7 @@ const ProfileEdit = () => {
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  {renderFileName.businessNumberFile ? (
+                  {renderFileName && renderFileName?.businessNumberFile ? (
                     <IncomeImgDiv>
                       <div>{renderFileName.businessNumberFile}</div>
                       <div>
@@ -756,7 +787,8 @@ const ProfileEdit = () => {
               <FlexPart>
                 <FlexTitle></FlexTitle>
                 <FlexContent>
-                  {renderFileName.bankbookFile ? (
+                  {console.log('renderFileName', renderFileName)}
+                  {renderFileName && renderFileName.bankbookFile ? (
                     <IncomeImgDiv>
                       <div>{renderFileName.bankbookFile}</div>
                       <div>

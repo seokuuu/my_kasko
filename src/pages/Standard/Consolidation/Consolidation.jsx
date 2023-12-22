@@ -42,6 +42,7 @@ const Consolidation = ({}) => {
   const [modalMode, setModalMode] = useAtom(consolEditModalAtom)
 
   console.log('uidAtom', uidAtom)
+  console.log('btnCellModal', btnCellModal)
 
   const [inputValues, setInputValues] = useState({
     dropValue: '2착',
@@ -146,6 +147,7 @@ const Consolidation = ({}) => {
   console.log('resData => ', resData)
 
   const matchingData = resData?.find((data) => data.uid === uidAtom)
+  console.log('matchingData', matchingData)
   const landValue = matchingData ? matchingData.land : null
 
   console.log('landValue', landValue)

@@ -40,9 +40,16 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 // import { log } from '../../../lib'
 import { isString } from 'lodash'
-import TableTest from '../../Table/TableTest'
+import Table from '../../Table/Table'
+import { usermanageClientEdit } from '../../../store/Layout/Layout'
+import ClientEditModal from './ClientEditModal'
+import { btnCellUidAtom } from '../../../store/Layout/Layout'
+import ClientPostModal from './ClientPostModal'
 
-const Client = ({ setChoiceComponent, setModal }) => {
+const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
+  const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
+  const [editModal, setEditModal] = useAtom(usermanageClientEdit)
+  console.log('editModal', editModal)
   const [restrict, setRestrict] = useState()
   const [selectedValue, setSelectedValue] = useState('') // 경매 제한 상태
   const radioDummy = ['전체', '대표']
@@ -257,7 +264,7 @@ const Client = ({ setChoiceComponent, setModal }) => {
                             onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
                             isChecked={check1[index]}
                           >
-                            <CheckImg2 src="/svg/check.svg" />
+                            <CheckImg2 src="/svg/check.svg" isChecked={check1[index]} />
                           </StyledCheckSubSquDiv>
                           <p>{x}</p>
                         </ExCheckDiv>
@@ -280,7 +287,7 @@ const Client = ({ setChoiceComponent, setModal }) => {
                             onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
                             isChecked={check2[index]}
                           >
-                            <CheckImg2 src="/svg/check.svg" />
+                            <CheckImg2 src="/svg/check.svg" isChecked={check2[index]} />
                           </StyledCheckSubSquDiv>
                           <p>{x}</p>
                         </ExCheckDiv>
@@ -337,10 +344,16 @@ const Client = ({ setChoiceComponent, setModal }) => {
               <WhiteRedBtn onClick={openAuctionModal}>회원 제한</WhiteRedBtn>
               <BtnBound />
               <WhiteRedBtn onClick={handleRemoveBtn}>회원 삭제</WhiteRedBtn>
-              <WhiteSkyBtn onClick={setPostPage}>회원 생성</WhiteSkyBtn>
+              <WhiteSkyBtn
+                onClick={() => {
+                  setPostModal(true)
+                }}
+              >
+                회원 생성
+              </WhiteSkyBtn>
             </div>
           </TCSubContainer>
-          <TableTest getCol={getCol} getRow={getRow} />
+          <Table getCol={getCol} getRow={getRow} />
           {/* <Test3 /> */}
         </TableContianer>
       </FilterContianer>
@@ -361,6 +374,8 @@ const Client = ({ setChoiceComponent, setModal }) => {
             title={'사용자를 삭제하면 해당 사용자의 \n 데이터가 삭제 됩니다. 삭제 하시겠습니까?'}
           />
         )} */}
+      {editModal && <ClientEditModal setEditModal={setEditModal} uidAtom={uidAtom} />}
+      {postModal && <ClientPostModal setEditModal={setPostModal} />}
     </>
   )
 }

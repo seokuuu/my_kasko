@@ -267,7 +267,7 @@ const SalesProduct = () => {
                           onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
                           isChecked={check2[index]}
                         >
-                          <CheckImg2 src="/svg/check.svg" />
+                          <CheckImg2 src="/svg/check.svg" isChecked={check2[index]} />
                         </StyledCheckSubSquDiv>
                         <p>{x}</p>
                       </ExCheckDiv>
@@ -286,7 +286,7 @@ const SalesProduct = () => {
                           onClick={() => setCheck3(CheckBox(check3, check3.length, index, true))}
                           isChecked={check3[index]}
                         >
-                          <CheckImg2 src="/svg/check.svg" />
+                          <CheckImg2 src="/svg/check.svg" isChecked={check3[index]} />
                         </StyledCheckSubSquDiv>
                         <p>{x}</p>
                       </ExCheckDiv>

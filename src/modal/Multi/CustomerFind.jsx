@@ -33,6 +33,8 @@ const CustomerFind = ({ title, setSwitch }) => {
 
   const customerGetData = data?.data?.data
 
+  console.log('customerGetData', customerGetData)
+
   console.log('data', customerGetData)
 
   const [isModal, setIsModal] = useAtom(blueModalAtom)

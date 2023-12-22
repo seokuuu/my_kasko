@@ -32,13 +32,15 @@ import {
 import { useAtom } from 'jotai'
 import Hidden from '../../components/TableInner/Hidden'
 import PageDropdown from '../../components/TableInner/PageDropdown'
-import Table from '../Table/Table'
 import { OrderFields, OrderFieldsCols } from '../../constants/admin/Order'
 import useReactQuery from '../../hooks/useReactQuery'
 import { add_element_field } from '../../lib/tableHelpers'
 import { getAdminOrder } from '../../service/admin/Order'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
 import { CheckBox } from '../../common/Check/Checkbox'
+import TableUi from '../../components/TableUiComponent/TableUi'
+import { columnDefs } from './etcVariable'
+import PagingComp from '../../components/paging/PagingComp'
 
 const Order = ({}) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -129,6 +131,77 @@ const Order = ({}) => {
     }
   }, [isSuccess, resData])
 
+  /** 테이블컴포넌트 */
+  const [rowData, setRowData] = useState([
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+  ])
+  const [gridApi, setGridApi] = useState(null)
+  const [gridColumnApi, setGridColumnApi] = useState(null)
+  const onGridReady = (params) => {
+    setGridApi(params.api)
+    setGridColumnApi(params.columnApi)
+    params.api.sizeColumnsToFit()
+  }
+  const onCellClicked = async (params) => {
+    if (params.colDef.field === 'title') {
+      window.location.href = `/operate/notice/view/${params.data.no}`
+    }
+  }
+  const gridOptions = {
+    getRowStyle: (params) => {
+      if (params.node.rowPinned) return { 'font-weight': 'bold' }
+    },
+    headerHeight: 30,
+    rowHeight: 30,
+    pagination: true,
+    paginationPageSize: 3,
+  }
+  /**
+   * @description :페이징 처리 useState
+   */
+  const [currentPage, setCurrentPage] = useState(1)
+  const totalPage = Math.ceil(rowData.length / gridOptions.paginationPageSize)
+
+  const onPageChange = (pageNumber) => {
+    gridApi.paginationGoToPage(pageNumber - 1)
+    setCurrentPage(pageNumber)
+  }
+
+  /**
+   * @Func :페이징 이동버튼
+   */
+  const goToNextPage = () => {
+    const nextPage = Math.min(currentPage + 1, totalPage)
+    onPageChange(nextPage)
+  }
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      const prevPage = Math.min(currentPage - 1, totalPage)
+      onPageChange(prevPage)
+    }
+  }
+  const goToLastPage = () => {
+    let currentGroupLastPage = Math.ceil(currentPage / 5) * 5
+    currentGroupLastPage = Math.min(currentGroupLastPage, totalPage)
+
+    // 현재 페이지가 그룹의 마지막 페이지인 경우, 다음 그룹의 마지막 페이지로 이동
+    let targetPage
+    // 다음 페이지 그룹의 1번째 페이지로 이동
+    if (currentPage === currentGroupLastPage) targetPage = Math.min(currentGroupLastPage + 1, totalPage)
+    // 현재 그룹의 마지막 페이지로 이동
+    else targetPage = currentGroupLastPage
+
+    onPageChange(targetPage)
+  }
+  const goToStartOfRange = () => {
+    let startPageInGroup = Math.floor((currentPage - 1) / 5) * 5 + 1
+
+    // 현재 페이지가 그룹의 시작 페이지일 경우, 이전 그룹의 마지막 페이지로 이동
+    if (currentPage === startPageInGroup && currentPage !== 1) startPageInGroup = Math.max(startPageInGroup - 1, 1)
+
+    onPageChange(startPageInGroup)
+  }
+
   return (
     <FilterContianer>
       <FilterHeader>
@@ -204,7 +277,7 @@ const Order = ({}) => {
                           onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
                           isChecked={check1[index]}
                         >
-                          <CheckImg2 src="/svg/check.svg" />
+                          <CheckImg2 src="/svg/check.svg" isChecked={check1[index]} />
                         </StyledCheckSubSquDiv>
                         <p>{x}</p>
                       </ExCheckWrap>
@@ -260,10 +333,27 @@ const Order = ({}) => {
             <SkyBtn>확정 전송</SkyBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
-        {/* <Test3 /> */}
+        {/* 테이블 들어와야 하는 곳 */}
+        <TableUi
+          columnDefs={columnDefs}
+          rowData={rowData}
+          onGridReady={onGridReady}
+          onCellClicked={onCellClicked}
+          gridOptions={gridOptions}
+          height={330}
+        />
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
+          <PagingComp
+            currentPage={currentPage}
+            totalPage={totalPage}
+            onPageChange={onPageChange}
+            goToNextPage={goToNextPage}
+            goToPreviousPage={goToPreviousPage}
+            goToLastPage={goToLastPage}
+            goToStartOfRange={goToStartOfRange}
+          />
+        </div>
         <TCSubContainer>
-          <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn>입금 취소</WhiteRedBtn>
           </div>

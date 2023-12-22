@@ -1,5 +1,4 @@
 import { atom, useAtom } from 'jotai'
-import { at } from 'lodash'
 
 export const headerAtom = atom(true)
 export const accordionAtom = atom(true)
@@ -42,11 +41,32 @@ export const doubleClickedRowAtom = atom([])
 // 테이블 page 50/100/500 정렬
 export const pageSort = atom(50)
 
-// 대표 상세 정보 모달
-export const clientModalAtom = atom(false)
+// 대표 상세 정보 모달 (수정)
+export const clientEditModalAtom = atom(false)
+
+// 대표 상세 정보 모달 (회원 생성)
+export const clientPostModalAtom = atom(false)
+
+/* ==============================
+     사용자 관리 (usermanage)
+============================== */
 
 //사용자 관리 - 고객사 관리파트 회원제한모달
 export const AuctionRestrictionModal = atom(false)
+
+// 고객사 관리 수정버튼 모달 switch
+export const userpageDestinationEdit = atom(false)
+
+// + 고객사 관리 수정버튼 Test
+export const usermanageClientEdit = atom(false)
+
+// 고객사 목적지 관리 수정버튼
+export const UsermanageDestiEditModal = atom(false)
+
+// 고객사 목적지 등록 /수정 - 조회
+export const UsermanageFindModal = atom(false)
+
+export const UsermanageUserPostModal = atom(false)
 
 /* ==============================
      주문 관리 (Order)
@@ -164,6 +184,13 @@ export const excelToJsonAtom = atom('')
 
 export const onClickCheckAtom = atom(false)
 
+/* ==============================
+    운영 관리
+============================== */
+
+// 운영 관리 > 제품군 수정,창고 추가
+export const operateAddAtom = atom(false)
+
 // 테이블 모달에 대한 atom
 // 해당 모달을
 // 한 컴포넌트에서 모달 갯수가 많으면 ..? 어떻게 관리?
@@ -188,9 +215,6 @@ export const userpageUserPreferEdit = atom(false)
 //  선호제품 관리 수정 Object
 export const userpageUserPreferEditObject = atom('')
 
-// 목적지 관리 수정버튼 모달 switch
-export const userpageDestinationEdit = atom(false)
-
 // ========= 재고 수불 관리 ===============
 // 목적지
 export const invenDestination = atom(false)
@@ -213,3 +237,5 @@ export const invenDestinationData = atom({
 // =======================================
 
 export const tableCellType = atom('') //셀타입
+// 목적지 관리 수정 switch
+export const userpageDestiEdit = atom(false)

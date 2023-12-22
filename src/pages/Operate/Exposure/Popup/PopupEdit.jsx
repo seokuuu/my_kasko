@@ -16,7 +16,6 @@ import { useNavigate } from 'react-router-dom'
 import { InputA, PropsInput } from '../../../../common/Input/Input'
 import { CustomSelect } from '../../../../common/Option/Main'
 import { ExCheckWrap } from '../../../../modal/External/ExternalFilter'
-// 클레임 등록
 const PopupPost = () => {
   const navigate = useNavigate()
 
@@ -61,7 +60,7 @@ const PopupPost = () => {
                         onClick={() => setCheck(CheckBox(check, check.length, index, true))}
                         isChecked={check[index]}
                       >
-                        <CheckImg2 src="/svg/check.svg" />
+                        <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
                       </StyledCheckSubSquDiv>
                       <p style={{ fontSize: '16px' }}>{x}</p>
                     </StyledCheckMainDiv>
