@@ -25,7 +25,13 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { getCustomerFind } from '../../../service/admin/Auction'
 
 // 고객사 찾기
-const ClientDestiCustomerFind = ({ title, setFindModal, setCustomerFindResult }) => {
+const ClientDestiCustomerFind = ({
+  title,
+  setFindModal,
+  setCustomerFindResult,
+  customerNameInput,
+  setCustomerNameInput,
+}) => {
   const matchData = { name: '고객명', code: '고객사 코드', businessNumber: '사업자번호', ceoName: '대표자' }
 
   const { isLoading, isError, data, isSuccess } = useReactQuery('', 'getCustomerFind', getCustomerFind)
@@ -80,6 +86,12 @@ const ClientDestiCustomerFind = ({ title, setFindModal, setCustomerFindResult })
       uid,
       name,
       ceoName,
+      code,
+    })
+    setCustomerNameInput({
+      ...customerNameInput,
+      customerName: name,
+      customerCode: code,
     })
   }
 

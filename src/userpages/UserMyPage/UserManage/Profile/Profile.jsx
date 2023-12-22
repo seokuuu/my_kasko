@@ -498,12 +498,12 @@ const ProfileEdit = () => {
                 </FlexContent>
               </FlexPart>
 
-              <FlexPart>
+              {/* <FlexPart>
                 <FlexTitle>담당자 추가</FlexTitle>
                 <FlexContent>
                   <AddBtn>추가하기</AddBtn>
                 </FlexContent>
-              </FlexPart>
+              </FlexPart> */}
               <FlexPart>
                 {/* <FlexContent>
                   <FlexInput name="releaseManagerPhone" placeholder="연락처 입력 ('-' 제외)" />

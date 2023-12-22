@@ -40,12 +40,13 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 // import { log } from '../../../lib'
 import { isString } from 'lodash'
-import TableTest from '../../Table/TableTest'
+import Table from '../../Table/Table'
 import { usermanageClientEdit } from '../../../store/Layout/Layout'
-import ClientModal from './ClientModal'
+import ClientEditModal from './ClientEditModal'
 import { btnCellUidAtom } from '../../../store/Layout/Layout'
+import ClientPostModal from './ClientPostModal'
 
-const Client = ({ setChoiceComponent, setModal }) => {
+const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
   const [editModal, setEditModal] = useAtom(usermanageClientEdit)
   console.log('editModal', editModal)
@@ -343,10 +344,16 @@ const Client = ({ setChoiceComponent, setModal }) => {
               <WhiteRedBtn onClick={openAuctionModal}>회원 제한</WhiteRedBtn>
               <BtnBound />
               <WhiteRedBtn onClick={handleRemoveBtn}>회원 삭제</WhiteRedBtn>
-              <WhiteSkyBtn onClick={setPostPage}>회원 생성</WhiteSkyBtn>
+              <WhiteSkyBtn
+                onClick={() => {
+                  setPostModal(true)
+                }}
+              >
+                회원 생성
+              </WhiteSkyBtn>
             </div>
           </TCSubContainer>
-          <TableTest getCol={getCol} getRow={getRow} />
+          <Table getCol={getCol} getRow={getRow} />
           {/* <Test3 /> */}
         </TableContianer>
       </FilterContianer>
@@ -367,7 +374,8 @@ const Client = ({ setChoiceComponent, setModal }) => {
             title={'사용자를 삭제하면 해당 사용자의 \n 데이터가 삭제 됩니다. 삭제 하시겠습니까?'}
           />
         )} */}
-      {editModal && <ClientModal setEditModal={setEditModal} uidAtom={uidAtom} />}
+      {editModal && <ClientEditModal setEditModal={setEditModal} uidAtom={uidAtom} />}
+      {postModal && <ClientPostModal setEditModal={setPostModal} />}
     </>
   )
 }

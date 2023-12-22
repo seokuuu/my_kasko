@@ -138,22 +138,16 @@ import TableTest from './modal/Table/TableTest'
 import NoticePost from './pages/Operate/Common/Notice/NoticePost'
 import NoticeBoardPost from './pages/Operate/Exposure/NoticeBoard/NoticeBoardPost'
 import TestExcel from './pages/Test/TestExcel'
-import TestParents from './components/TableUiComponent/TestParents'
-import TestTable from './components/testTable/TestTable'
-import ManyTable from './components/manyTable/ManyTable'
-import TestManyTable from './components/manyTable/TestManyTable'
+import ProfileEdit from './userpages/UserMyPage/Profile/Profile'
+
 
 // RoundAucProAdd
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 컴포넌트 작업 Router */}
-        <Route path="/tableUi" element={<TestParents />} />
-        <Route path="/tableTest" element={<TestTable />} />
-        <Route path="/manyTable" element={<TestManyTable />} />
         {/* 테스트 URL */}
-        <Route path="/ppapp" element={<UserEditPage />} />
+        <Route path="/ppapp" element={<ProfileEdit />} />
         <Route path="/ppap" element={<DefaultBlueBar />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />

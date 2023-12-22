@@ -17,7 +17,7 @@ import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { CheckBtn } from '../../../pages/User/SignUp/SignUp.Styled'
+import { CheckBtn } from '../../User/SignUp/SignUp.Styled'
 
 import { styled } from 'styled-components'
 import { checkBusinessNumber, updateCustomer } from '../../../api/myPage'
@@ -79,7 +79,7 @@ const init = {
 // releaseManagerName: 출고담당자 이름
 // releaseManagerPhone: 출고담당자 연락처
 
-const ClientModal = ({ setEditModal }) => {
+const ClientEditModal = ({ setEditModal, uidAtom }) => {
   const [selectSwitch, setSelectSwitch] = useState({
     A: false,
     deposit: false,
@@ -104,7 +104,9 @@ const ClientModal = ({ setEditModal }) => {
   // const { isError, isSuccess, data } = useReactQuery('getCustomerPrivacy', {}, getCustomerPrivacy)
 
   // get 상세
-  const { isError, isSuccess, data } = useReactQuery(2500, 'getCustomerDetail', getCustomerDetail)
+
+  console.log('uidAtom', uidAtom)
+  const { isError, isSuccess, data } = useReactQuery(uidAtom, 'getCustomerDetail', getCustomerDetail)
 
   const [user, setUser] = useState('')
   const resData = data?.data?.data
@@ -662,12 +664,12 @@ const ClientModal = ({ setEditModal }) => {
                   </FlexContent>
                 </FlexPart>
 
-                <FlexPart>
+                {/* <FlexPart>
                   <FlexTitle>담당자 추가</FlexTitle>
                   <FlexContent>
                     <AddBtn>추가하기</AddBtn>
                   </FlexContent>
-                </FlexPart>
+                </FlexPart> */}
                 <FlexPart>
                   {/* <FlexContent>
                   <FlexInput name="releaseManagerPhone" placeholder="연락처 입력 ('-' 제외)" />
@@ -920,7 +922,7 @@ const ClientModal = ({ setEditModal }) => {
   )
 }
 
-export default ClientModal
+export default ClientEditModal
 
 export const ModalContainerC = styled.div`
   border-radius: 10px;

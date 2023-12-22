@@ -28,12 +28,23 @@ import {
   TCSubContainer,
   TableContianer,
 } from '../../../modal/External/ExternalFilter'
-import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import {
+  blueModalAtom,
+  btnCellRenderAtom,
+  selectedRowsAtom,
+  toggleAtom,
+  UsermanageUserPostModal,
+} from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 // import { isArray } from 'lodash'
 import { isArray } from '../../../lib'
+import ClientPostModal from '../Client/ClientPostModal'
+import UserPost from './UserPost'
 
 const UserManage = ({ setChoiceComponent }) => {
+  const [uidAtom, setUidAtom] = useAtom(btnCellRenderAtom)
+  console.log('uidAtom', uidAtom)
+  const [postModal, setPostModal] = useAtom(UsermanageUserPostModal)
   const [types, setTypes] = useState('kasko') //kasko, hyundai, carrier, storage
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
@@ -185,9 +196,16 @@ const UserManage = ({ setChoiceComponent }) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn onClick={handleRemoveBtn}>사용자 삭제</WhiteRedBtn>
-            <SkyBtn onClick={goPostPage}>사용자 등록</SkyBtn>
+            <SkyBtn
+              onClick={() => {
+                setPostModal(true)
+              }}
+            >
+              사용자 등록
+            </SkyBtn>
           </div>
         </TCSubContainer>
+        {postModal && <UserPost setEditModal={setPostModal} />}
         <Table setChoiceComponent={setChoiceComponent} getCol={getCol} getRow={getRow} />
       </TableContianer>
     </FilterContianer>
