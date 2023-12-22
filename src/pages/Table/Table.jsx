@@ -17,6 +17,8 @@ import {
 } from '../../modal/Common/Common.Styled'
 import { blueModalAtom, doubleClickedRowAtom, pageSort, selectedRowsAtom } from '../../store/Layout/Layout'
 
+import CustomCellRenderer from './CustomCellRenderer'
+
 // import TableStyle from './Table.module.css'
 
 // import { get } from 'lodash'
