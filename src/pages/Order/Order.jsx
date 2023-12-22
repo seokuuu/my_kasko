@@ -342,7 +342,7 @@ const Order = ({}) => {
           gridOptions={gridOptions}
           height={330}
         />
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
           <PagingComp
             currentPage={currentPage}
             totalPage={totalPage}
@@ -354,7 +354,6 @@ const Order = ({}) => {
           />
         </div>
         <TCSubContainer>
-          <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn>입금 취소</WhiteRedBtn>
           </div>
