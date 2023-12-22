@@ -3,3 +3,7 @@
 export function Filtering(params) {
   return Object.fromEntries(Object.entries(params).filter(([_, v]) => v !== ''))
 }
+
+export function FilteringV2(params) {
+  return Object.fromEntries(Object.entries(params).filter(([_, v]) => Boolean(v)))
+}

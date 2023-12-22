@@ -135,6 +135,8 @@ import TestPopup from './modal/Common/TestPopup'
 import DefaultBlueBar from './modal/Multi/DefaultBlueBar'
 
 import TableTest from './modal/Table/TableTest'
+import ClaimProductPage from './pages/Operate/Common/Claim/ClaimProductPage'
+import OperateClaimRegisterPage from './pages/Operate/Common/Claim/OperateClaimRegisterPage'
 import NoticePost from './pages/Operate/Common/Notice/NoticePost'
 import NoticeBoardPost from './pages/Operate/Exposure/NoticeBoard/NoticeBoardPost'
 import TestExcel from './pages/Test/TestExcel'
@@ -242,6 +244,13 @@ const Router = () => {
           <Route path="/operate/operation" element={<OperationPage />}></Route>
           <Route path="/operate/inventory" element={<InventoryOperPage />}></Route>
           <Route path="/operate/common" element={<ClaimPage />}></Route>
+          <Route path="/operate/common/product" element={<ClaimProductPage />}></Route>
+          <Route
+            path="/operate/common/product/register"
+            element={<OperateClaimRegisterPage pageType="register" />}
+          ></Route>
+          <Route path="/operate/common/product/:id" element={<OperateClaimRegisterPage pageType="detail" />}></Route>
+
           <Route path="/operate/exposure" element={<PopupPage />}></Route>
           <Route path="/operate/exposure/register" element={<PopupPostPage isRegister={true} />}></Route>
           <Route path="/operate/exposure/:id" element={<PopupPostPage isRegister={false} />}></Route>

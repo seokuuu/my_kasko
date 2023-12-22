@@ -1,78 +1,79 @@
-import { useAtom } from 'jotai'
-import { useEffect, useState } from 'react'
-import { useClaimListQuery } from '../../../../api/operate/claim'
-import { BlackBtn, SkyBtn, WhiteRedBtn } from '../../../../common/Button/Button'
-import { MainSelect } from '../../../../common/Option/Main'
-import DateGrid from '../../../../components/DateGrid/DateGrid'
-import HeaderToggle from '../../../../components/Toggle/HeaderToggle'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useClaimDeleteMutation, useClaimListQuery } from '../../../../api/operate/claim'
 import { ClaimListFieldCols, ClaimListFields } from '../../../../constants/admin/Claim'
 import { add_element_field } from '../../../../lib/tableHelpers'
+import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
 import {
-  DoubleWrap,
-  FilterContianer,
-  FilterFooter,
-  FilterHeader,
-  FilterLeft,
-  FilterRight,
-  FilterSubcontianer,
-  FilterWrap,
-  GridWrap,
-  PartWrap,
-  ResetImg,
-  RowWrap,
-  TCSubContainer,
-  TableContianer,
-  Tilde,
-} from '../../../../modal/External/ExternalFilter'
-import { blueModalAtom, toggleAtom } from '../../../../store/Layout/Layout'
+  doubleClickedRowAtom,
+  popupAtom,
+  popupObject,
+  popupTypeAtom,
+  selectedRowsAtom,
+} from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
-import CategoryTab from '../../UI/CategoryTab'
-import { normalTabOptions } from '../../constants'
+import CommonTableHeader from '../../UI/CommonTableHeader'
+import { claimInitState } from '../../constants'
+import ClaimHeader from './components/ClaimHeader'
 
-const Claim = ({}) => {
+/**
+ * @description
+ * 클레임 관리 페이지 컴포넌트
+ * @param {*} param0
+ * @returns
+ */
+const Claim = () => {
+  const navigate = useNavigate()
+
+  // 테이블에서 선택된 값
+  const selected = useAtomValue(selectedRowsAtom)
+  // 선택된 데이터 갯수
+  const selectedLength = useMemo(() => (selected ? selected.length : 0), [selected])
+
   // 목록 API(REQUEST PARAMETER)
-  const [search, setSearch] = useState({
-    pageNum: 1,
-    pageSize: 5,
-  })
+  const [search, setSearch] = useState(claimInitState)
+
+  // 셀 클릭시 테이블 상세 데이터 조회
+  const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
+
+  // 삭제 API
+  const { mutate: remove } = useClaimDeleteMutation()
 
   // 목록 리스트
   const [row, setRow] = useState([])
 
+  // 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
+  const [popupSwitch, setPopupSwitch] = useAtom(popupAtom)
+  const setNowPopupType = useSetAtom(popupTypeAtom) // 팝업 타입
+  const setNowPopup = useSetAtom(popupObject) // 팝업 객체
+
   // 목록 API
-  const { data } = useClaimListQuery(search)
+  const { data, refetch } = useClaimListQuery({ ...search, claimStatus: search.claimStatus.value })
 
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
-  const [isRotated, setIsRotated] = useState(false)
+  console.log('data :', data)
 
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated((prevIsRotated) => !prevIsRotated)
+  // 등록 핸들러
+  function toRegister() {
+    navigate(`/operate/common/product`)
   }
 
-  // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-  const [toggleMsg, setToggleMsg] = useState('On')
-  const toggleBtnClick = () => {
-    setExfilterToggle((prev) => !prev)
-    if (exFilterToggle === true) {
-      setToggleMsg('Off')
-    } else {
-      setToggleMsg('On')
-    }
-  }
-
-  const [isModal, setIsModal] = useAtom(blueModalAtom)
-
-  console.log('isModal =>', isModal)
-
-  const modalOpen = () => {
-    setIsModal(true)
+  // 삭제 핸들러
+  function removeEventHandler() {
+    if (!selectedLength && selectedLength === 0) return alert('삭제할 목록을 선택해주세요.')
+    setPopupSwitch(true)
+    setNowPopupType(2)
+    setNowPopup({
+      num: '2-1',
+      title: '삭제하시겠습니까?',
+      next: '1-14',
+      func() {
+        if (selected && selected.length !== 0) {
+          remove(selected.map((s) => s['고유값']))
+          refetch()
+        }
+      },
+    })
   }
 
   useEffect(() => {
@@ -80,84 +81,28 @@ const Claim = ({}) => {
       setRow(add_element_field(data.list, ClaimListFields))
     }
   }, [data])
+  // 상세 페이지 이동
+  useEffect(() => {
+    // 상세 페이지 이동시 상세 데이터 값 초기화
+    if (detailRow && detailRow['고유값']) {
+      navigate(`/operate/common/product/${detailRow['고유값']}`)
+
+      setDetailsRow([])
+    }
+  }, [detailRow])
 
   return (
     <FilterContianer>
-      <div>
-        <FilterHeader>
-          <div style={{ display: 'flex' }}>
-            <h1>일반 관리</h1>
-            <CategoryTab options={normalTabOptions} highLightValue="claim" />
-          </div>
-          <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
-        </FilterHeader>
-        {exFilterToggle && (
-          <FilterWrap>
-            <FilterSubcontianer>
-              <FilterLeft>
-                <RowWrap>
-                  <PartWrap>
-                    <h6>작성 일자</h6>
-                    <GridWrap>
-                      <DateGrid bgColor={'white'} fontSize={17} />
-                      <Tilde>~</Tilde>
-                      <DateGrid bgColor={'white'} fontSize={17} />
-                    </GridWrap>
-                  </PartWrap>
-
-                  <PartWrap style={{ marginLeft: '20px' }}>
-                    <h6>제품 상태</h6>
-                    <MainSelect />
-                  </PartWrap>
-                  <PartWrap />
-                </RowWrap>
-              </FilterLeft>
-              <FilterRight>
-                <DoubleWrap>
-                  <h6>제품 번호 </h6>
-                  <textarea
-                    placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                    style={{ height: '100px' }}
-                  />
-                </DoubleWrap>
-              </FilterRight>
-            </FilterSubcontianer>
-            <FilterFooter>
-              <div style={{ display: 'flex' }}>
-                <p>초기화</p>
-                <ResetImg
-                  src="/img/reset.png"
-                  style={{ marginLeft: '10px', marginRight: '20px' }}
-                  onClick={handleImageClick}
-                  className={isRotated ? 'rotate' : ''}
-                />
-              </div>
-              <div style={{ width: '180px' }}>
-                <BlackBtn width={100} height={40}>
-                  검색
-                </BlackBtn>
-              </div>
-            </FilterFooter>
-          </FilterWrap>
-        )}
-      </div>
+      {/* 카테고리탭 & 검색필터 on & 검색 */}
+      <ClaimHeader search={search} setSearch={setSearch} refetch={refetch} />
       <TableContianer>
-        <TCSubContainer bor>
-          <div>
-            클레임 목록(선택 <span>2</span> / 50개 )
-          </div>
-          <div></div>
-        </TCSubContainer>
-        <TCSubContainer>
-          <div>
-            선택 <span> 2 </span> (명)
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>클레임 삭제</WhiteRedBtn>
-            <SkyBtn>클레임 등록</SkyBtn>
-          </div>
-        </TCSubContainer>
-        <Table getCol={ClaimListFieldCols} getRow={row} />
+        <CommonTableHeader
+          totalLength={data && data.list.length}
+          selectedLength={selectedLength}
+          toRegister={toRegister}
+          removeEventHandler={removeEventHandler}
+        />
+        <Table getCol={ClaimListFieldCols} getRow={row} setChoiceComponent={() => {}} />
         {/* <Test3 title={'규격 약호 찾기'} /> */}
       </TableContianer>
     </FilterContianer>
