@@ -13,6 +13,13 @@
 .ag-header-cell-label {
   justify-content: center;
 }
+.ag-header-cell:hover {
+  background-color: #dbe2f0 !important; /* 기본 배경색으로 설정 */
+  cursor: default !important; /* 커서 스타일 변경을 방지 */
+}
+.ag-header-cell-label:hover {
+  background-color: #dbe2f0 !important; /* 기본 배경색으로 설정 */
+}
 .ag-header-cell-menu-button {
   display: none !important;
 }
