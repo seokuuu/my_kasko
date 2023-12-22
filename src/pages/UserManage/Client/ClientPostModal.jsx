@@ -28,6 +28,7 @@ import DownloadButton from '../../../utils/DownloadButton'
 
 import { getStorageList } from '../../../api/search'
 import { MainSelect } from '../../../common/Option/Main'
+import { UserCheckDiv } from '../UserManage/UserPost'
 
 const init = {
   id: '',
