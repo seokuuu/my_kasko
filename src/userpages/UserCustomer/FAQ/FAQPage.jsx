@@ -10,7 +10,6 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { client } from '../../../api'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { getFaqList } from '../../../service/user/customerService'
-import { ColsLabel } from './FAQTableData'
 
 const FAQPage = () => {
   const param = {
