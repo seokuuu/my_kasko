@@ -95,8 +95,10 @@ import TermsPage from './pages/Operate/Terms/TermsPage'
 
 /// 사용자 페이지
 // 공지  & 자료실
-import UDocs from './userpages/UserNotiDocs/Docs/DocsPage'
 import UNotice from './userpages/UserNotiDocs/Notice/NoticePage'
+import UNoticeDetail from './userpages/UserNotiDocs/Notice/NoticeDetail'
+import UDocs from './userpages/UserNotiDocs/Docs/DocsPage'
+import UDocsDetail from './userpages/UserNotiDocs/Docs/DocsDetail'
 
 // 경매
 import UAuctionPackage from './userpages/UserAuction/Package/PackagePage'
@@ -133,6 +135,28 @@ import DestinationEditPage from './userpages/UserMyPage/Destination/DestinationE
 import TestPopup from './modal/Common/TestPopup'
 
 import DefaultBlueBar from './modal/Multi/DefaultBlueBar'
+import RoundAucListPackEdit from './pages/Auction/Round/RoundAucListPackEdit'
+import TableGrid from './modal/Multi/TableGrid'
+import DestinationChange from './modal/Multi/DestinationChange'
+import CustomerFind from './modal/Multi/CustomerFind'
+import RoundAucProAdd from './pages/Auction/Round/RoundAucProAdd'
+import WinningProductAdd from './pages/Auction/Winning/WinningProductAdd'
+import Table2 from './pages/Table/Table2'
+import WeightSales from './modal/Multi/WeightSales'
+import RequestRecom from './pages/Shipping/Request/RequestRecom'
+import RequestAddModal from './pages/Shipping/Request/RequestAddModal'
+import TransportationCost from './modal/Multi/TransportationCost'
+import PackDetail from './pages/Auction/Bidding/PackDetail'
+import SalesPackDetail from './pages/Sales/Package/PackDetail'
+import WinningDetail from './pages/Auction/Winning/WinningDetail'
+import WinDepositForm from './pages/Auction/Winning/WinDepositForm'
+import FormTest from './pages/Auction/Winning/FormTest'
+import UserPackDetail from './userpages/UserSales/Package/UserPackDetail'
+import NoticeDetail from './userpages/UserNotiDocs/Notice/NoticeDetail'
+import Agreement from './modal/Common/Agreement'
+import InvoiceEdit from './pages/Shipping/Achievement/InvoiceEdit'
+import Invoice from './userpages/UserPerformance/UserPerformance/Invoice'
+import UserEdit from './pages/UserManage/UserManage/UserEdit'
 
 import TableTest from './modal/Table/TableTest'
 import ClaimProductPage from './pages/Operate/Common/Claim/ClaimProductPage'
@@ -281,6 +305,8 @@ const Router = () => {
         <Route path="/userpage">
           <Route path="/userpage/notice" element={<UNotice />}></Route>
           <Route path="/userpage/docs" element={<UDocs />}></Route>
+          <Route path="/userpage/docs/:id" element={<UDocsDetail />}></Route>
+          <Route path="/userpage/notice/:id" element={<UNoticeDetail />}></Route>
 
           {/* 경매 */}
           <Route path="/userpage/actionsingle" element={<UAuctionSingle />}></Route>

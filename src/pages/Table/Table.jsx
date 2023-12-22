@@ -56,7 +56,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData }) => {
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
   const [rowData, setRowData] = useState()
   const [selectedRowData, setSelectedRowData] = useState(null)
-  console.log('TOPDATA', topData)
+
   var checkboxSelection = function (params) {
     // we put checkbox on the name if we are not doing grouping
     return params.columnApi.getRowGroupColumns().length === 0
@@ -294,11 +294,6 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData }) => {
   }
   // new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
 
-  // console.log('gridOptions', gridOptions)
-  const pinnedTopRowData = useMemo(() => {
-    return topData
-  }, [topData])
-
   return (
     <div style={containerStyle}>
       <TestContainer hei={hei}>
@@ -324,7 +319,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData }) => {
             // doesExternalFilterPass={doesExternalFilterPass}
             onGridReady={onGridReady}
             onSelectionChanged={onSelectionChanged}
-            pinnedTopRowData={pinnedTopRowData}
+            pinnedTopRowData={topData}
             // sideBar={{ toolPanels: ['columns', 'filters'] }}
           />
         </div>

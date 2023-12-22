@@ -340,7 +340,6 @@ const Inventory = ({}) => {
       return res.data?.data.list
     })
   }
-  console.log(size)
   return (
     <FilterContianer>
       <FilterHeader>
