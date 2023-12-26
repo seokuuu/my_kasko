@@ -65,9 +65,11 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
       case 'userprefer':
         setUidAtom(uid)
         setUserPageEditModal(true)
+        break
       case 'client': // 고객사 관리
         setUidAtom(uid)
         setUserManageEdit(true)
+        break
       case 'userdestination': // 고객사 목적지 관리
         setUidAtom(uid)
         setUserDestiEdit(true)
@@ -76,9 +78,11 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
       case 'claimUpdate':
         setUidAtom(uid)
         setModalMode('수정')
+        break
       case 'usermanagemanage':
         setUidAtom(uid)
         setUserManageEditModal(true)
+        break
       default:
         break
     }

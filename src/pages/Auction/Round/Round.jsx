@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { BlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
-import Test3 from '../../Test/Test3'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+
+import Table from '../../Table/Table'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 import Hidden from '../../../components/TableInner/Hidden'
@@ -34,16 +35,19 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import { useAtom } from 'jotai'
-import { deleteAuction, getAuction } from '../../../api/auction/round'
+import { deleteAuction, getAuction, useGetAuctionList } from '../../../api/auction/round'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import AuctionRound from '../../../modal/Multi/AuctionRound'
 import { roundPostModalAtom } from '../../../store/Layout/Layout'
+import { useQueryClient } from '@tanstack/react-query'
+import { AuctionRoundFields, AuctionRoundFieldsCols } from '../../../constants/admin/Auction'
+import { add_element_field } from '../../../lib/tableHelpers'
 
 const Round = ({}) => {
   const [roundModal, setRoundModal] = useAtom(roundPostModalAtom)
-  const [types, setTypes] = useState('normal')
+  const [types, setTypes] = useState('단일')
 
   console.log('types', types)
   const radioDummy = ['전체', '미진행', '진행중', '종료']
@@ -52,25 +56,6 @@ const Round = ({}) => {
   const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, (_, index) => index === 0))
 
   const [savedRadioValue, setSavedRadioValue] = useState('')
-  useEffect(() => {
-    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
-
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    if (checkedIndex !== -1) {
-      const selectedValue = radioDummy[checkedIndex]
-      setSavedRadioValue(selectedValue) //내 state에 반환
-
-      if (Array.isArray(originalRow) && originalRow.length) {
-        if (selectedValue === '전체') {
-          setRow(originalRow) // 전체를 선택하면 원본 배열을 복원
-        } else {
-          setRow(
-            (prevRow) => originalRow.filter((item) => item.status === selectedValue), // 특정 상태를 선택하면 그 상태만 필터링
-          )
-        }
-      }
-    }
-  }, [checkRadio])
 
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
@@ -98,42 +83,43 @@ const Round = ({}) => {
   }
 
   // api호출, 리액트쿼리 / filter
-  const [row, setRow] = useState('')
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(AuctionRoundFieldsCols)
+  const getCol = tableField.current
+  const queryClient = useQueryClient()
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
   const [originalRow, setOriginalRow] = useState([]) //원본 row를 저장해서 radio check에러 막기
   const [inputParams, setInputParams] = useState({
     pageNum: 1,
     pageSize: 50,
-    type: '단일',
+    type: types,
   })
 
-  const { isLoading, isError, data, isSuccess } = useReactQuery(inputParams, 'auction', getAuction)
+  useEffect(() => {
+    setInputParams((prevParams) => ({
+      ...prevParams,
+      type: types,
+    }))
+  }, [types])
+
+  const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(inputParams, 'auction', getAuction)
+
+  useEffect(() => {
+    refetch()
+  }, [inputParams])
 
   //  ✅ Props로 test3컴포넌트(테이블) row랑 col 데이터를 넘기는 방식
+
+  const resData = data?.data?.data?.list
   useEffect(() => {
-    if (isSuccess) {
-      const responseData = data?.data?.data?.list
-      setRow(responseData)
-      setOriginalRow(responseData)
+    let getData = resData
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, AuctionRoundFields))
     }
-  }, [isSuccess, data])
-  const getCol = [
-    {
-      field: 'uid',
-      minWidth: 180,
-    },
-    { field: 'number', maxWidth: 80 }, //숫자
-    { field: 'startDate' },
-    { field: 'status', maxWidth: 90 },
-    {
-      field: 'productCount',
-    },
-    {
-      field: 'successfulBidCount',
-    },
-    {
-      field: 'failBidCount',
-    },
-  ]
+  }, [isSuccess, resData])
 
   const handleDropdown = (e) => {
     const page = e.target.value
@@ -155,10 +141,10 @@ const Round = ({}) => {
         <div style={{ display: 'flex' }}>
           <h1>경매 회차 관리</h1>
           <SubTitle>
-            <StyledHeading isActive={types === 'normal'} onClick={() => setTypes('normal')}>
+            <StyledHeading isActive={types === '단일'} onClick={() => setTypes('단일')}>
               단일
             </StyledHeading>
-            <StyledSubHeading isActive={types === 'package'} onClick={() => setTypes('package')}>
+            <StyledSubHeading isActive={types === '패키지'} onClick={() => setTypes('패키지')}>
               패키지
             </StyledSubHeading>
           </SubTitle>
@@ -258,7 +244,7 @@ const Round = ({}) => {
             </WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Test3 getRow={row} getCol={getCol} />
+        <Table getCol={getCol} getRow={getRow} />
         <TableBottomWrap>
           <BlackBtn width={15} height={40}>
             제품 추가

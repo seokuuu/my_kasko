@@ -54,7 +54,7 @@ const AuctionRound = ({ setRoundModal }) => {
     //   ...input,
     //   businessType: updatedCheck.filter(item => item !== ''),
     // });
-  }, [check1])
+  }, [])
 
   console.log('checkRadio =>', checkRadio)
 
