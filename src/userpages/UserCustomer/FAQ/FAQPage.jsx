@@ -1,31 +1,28 @@
-import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
-
-import UserSideBar from '../../../components/Left/UserSideBar'
-import Header from '../../../components/Header/Header'
-import SubHeader from '../../../components/Header/SubHeader'
-import FAQ from './FAQ'
-import { useState, useEffect } from 'react'
-
+import { useEffect, useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { client } from '../../../api'
-import useReactQuery from '../../../hooks/useReactQuery'
 import { getFaqList } from '../../../service/user/customerService'
+import FAQ from './FAQ'
+import Header from '../../../components/Header/Header'
+import SubHeader from '../../../components/Header/SubHeader'
+import UserSideBar from '../../../components/Left/UserSideBar'
+import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
+import useReactQuery from '../../../hooks/useReactQuery'
 
 const FAQPage = () => {
+  const depth2Color = 'FAQ'
   const param = {
     pageNum: 1,
     pageSize: 10,
   }
   const [expanded, setExpanded] = useState('고객센터')
-  const [depth2Color, setDepth2Color] = useState('FAQ')
   const [faqList, setFaqList] = useState(null)
   const { isLoading, isError, data: getFaqListRes, isSuccess } = useReactQuery(param, 'getFaqList', getFaqList)
 
   useEffect(() => {
-    if (getFaqListRes && getFaqListRes.data && getFaqListRes.data.data) {
+    if (getFaqListRes && getFaqListRes.data && getFaqListRes.data.data)
       setFaqList(getFaqListRes.data.data.list)
-    }
-  }, [getFaqListRes])
+  }, [isSuccess, getFaqListRes])
 
   return (
     <>

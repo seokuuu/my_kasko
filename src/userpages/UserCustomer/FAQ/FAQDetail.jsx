@@ -1,62 +1,89 @@
 import React, { useState, useEffect } from 'react'
 import { styled } from 'styled-components'
-
 import { BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 import { Bar, CenterRectangleWrap } from '../../../common/OnePage/OnePage.Styled'
-
 import { BtnBound } from '../../../common/Button/Button'
+import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
+import UserSideBar from '../../../components/Left/UserSideBar'
+import Header from '../../../components/Header/Header'
+import SubHeader from '../../../components/Header/SubHeader'
+import { useNavigate, useParams } from 'react-router-dom'
+import { getFaqDetail } from '../../../service/user/customerService'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { formatDateString } from '../../../utils/utils'
 
 // 클레임 등록
 const FAQDetail = () => {
+  const depth2Color = 'FAQ'
+  const { faqUid } = useParams()
+  const navigate = useNavigate()
+  const [expanded, setExpanded] = useState('고객센터')
+  const [faqDetail, setFaqDetail] = useState(null)
+  const { isLoading, isError, data: getFaqDetailRes, isSuccess } = useReactQuery(faqUid, 'getFaqDetail', getFaqDetail)
+
+  useEffect(() => {
+    if (getFaqDetailRes && getFaqDetailRes.data && getFaqDetailRes.data.data) {
+      setFaqDetail(getFaqDetailRes.data.data)
+    }
+  }, [isSuccess, getFaqDetailRes])
+
+  const backButtonOnClick = () => {
+    navigate(-1)
+  }
+
   return (
     <>
-      <CenterRectangleWrap style={{ height: '88vh', padding: '10px 50px' }}>
-        <CRWMain>
-          <h5>자료실 상세</h5>
-          <div style={{ marginBottom: '10px' }}>
-            <div style={{ display: 'flex', gap: '5px', fontSize: '16px', color: '#c8c8c8', marginBottom: '5px' }}>
-              <div>공지사항</div>
-              <BtnBound style={{ height: '15px' }} />
-              <div>관리자</div>
-              <BtnBound style={{ height: '15px' }} />
-              <div>2023.06.12</div>
-            </div>
-            <div style={{ fontSize: '24px' }}>제목 노출 영역입니다.</div>
-          </div>
-          <Bar />
-          <BottomWrap style={{ height: '50%' }}>
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.""Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-            esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa
-            qui officia deserunt mollit anim id est laborum." <br />
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum."
-          </BottomWrap>
-          <div style={{ height: '50px' }}>
-            <Bar />
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div style={{ width: '100px' }}>첨부 파일</div>
-              <FileUploadWrap>
-                <div>파일명.pdf</div>
-                <img src="/svg/Upload.svg" />
-              </FileUploadWrap>
-            </div>
-          </div>
-          <FileUploadSub>
-            <WhiteBtn width={40} height={50} style={{ marginRight: '10px' }}>
-              목록
-            </WhiteBtn>
-          </FileUploadSub>
-        </CRWMain>
-      </CenterRectangleWrap>
+      <Header />
+      <OverAllMain>
+        <UserSideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
+        <OverAllSub>
+          <SubHeader />
+          <OverAllTable>
+            <CenterRectangleWrap style={{ height: '88vh', padding: '10px 50px' }}>
+              <CRWMain>
+                <h5>FAQ 상세</h5>
+                <div style={{ marginBottom: '10px' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: '5px',
+                      fontSize: '13px',
+                      color: '#c8c8c8',
+                      marginBottom: '5px',
+                      lineHeight: '16px',
+                      letterSpacing: '-0.13px',
+                    }}
+                  >
+                    <div>FAQ</div>
+                    <BtnBound style={{ height: '15px' }} />
+                    <div>{faqDetail && faqDetail.category}</div>
+                    <BtnBound style={{ height: '15px' }} />
+                    <div>{faqDetail && formatDateString(faqDetail.createDate)}</div>
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '20px',
+                      fontWeight: 500,
+                      fontStyle: 'normal',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.4px',
+                    }}
+                  >
+                    {faqDetail && faqDetail.title}
+                  </div>
+                </div>
+                <Bar />
+                <BottomWrap style={{ height: '50%' }}>{faqDetail && faqDetail.content}</BottomWrap>
+                <FileUploadSub>
+                  <WhiteBtn width={40} height={50} style={{ marginRight: '10px' }} onClick={backButtonOnClick}>
+                    목록
+                  </WhiteBtn>
+                </FileUploadSub>
+              </CRWMain>
+            </CenterRectangleWrap>
+          </OverAllTable>
+        </OverAllSub>
+      </OverAllMain>
     </>
   )
 }

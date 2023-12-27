@@ -121,6 +121,7 @@ import UProfile from './userpages/UserMyPage/Profile/ProfilePage'
 
 // 고객센터
 import UFAQ from './userpages/UserCustomer/FAQ/FAQPage'
+import UFAQDetail from './userpages/UserCustomer/FAQ/FAQDetail'
 import UTerms from './userpages/UserCustomer/Terms/TermsPage'
 
 //사용자 메인페이지
@@ -296,6 +297,7 @@ const Router = () => {
 
           {/* 고객 센터 */}
           <Route path="/userpage/userfaq" element={<UFAQ />}></Route>
+          <Route path="/userpage/userfaq/:faqUid" element={<UFAQDetail />}></Route>
           <Route path="/userpage/userterms" element={<UTerms />}></Route>
         </Route>
       </Routes>
