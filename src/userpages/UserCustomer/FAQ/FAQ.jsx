@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { add_element_field } from '../../../lib/tableHelpers'
 import {
   FilterContianer,
@@ -12,7 +11,6 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
 import { categories, corLabels, responseToTableRowMap } from './faqTableSetup'
-import { toggleAtom } from '../../../store/Layout/Layout'
 import { formatDateString } from '../../../utils/utils'
 
 const FAQ = ({ faqList }) => {
