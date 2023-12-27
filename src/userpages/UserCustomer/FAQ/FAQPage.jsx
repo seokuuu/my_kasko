@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { client } from '../../../api'
 import { getFaqList } from '../../../service/user/customerService'
 import FAQ from './FAQ'
 import Header from '../../../components/Header/Header'
