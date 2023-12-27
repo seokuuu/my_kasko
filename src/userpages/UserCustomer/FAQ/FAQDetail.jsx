@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { styled } from 'styled-components'
 import { BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 import { Bar, CenterRectangleWrap } from '../../../common/OnePage/OnePage.Styled'
