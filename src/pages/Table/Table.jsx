@@ -293,8 +293,8 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData }) => {
         // params.successCallback(getRow)
       },
     },
-    overlayNoRowsTemplate:
-      '<div style="padding: 20px; border: 2px solid #666; background: #EEF3FB; fontsize: 20px; ">항목이 존재하지 않습니다.</div>',
+    // overlayNoRowsTemplate:
+    //   '<div style="padding: 20px; border: 2px solid #666; background: #EEF3FB; fontsize: 20px; ">항목이 존재하지 않습니다.</div>',
   }
   // new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
 

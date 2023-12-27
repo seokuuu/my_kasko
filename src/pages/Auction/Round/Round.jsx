@@ -41,9 +41,10 @@ import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import AuctionRound from '../../../modal/Multi/AuctionRound'
 import { roundPostModalAtom } from '../../../store/Layout/Layout'
-import { useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { AuctionRoundFields, AuctionRoundFieldsCols } from '../../../constants/admin/Auction'
 import { add_element_field } from '../../../lib/tableHelpers'
+import { isArray } from 'lodash'
 
 const Round = ({}) => {
   const [roundModal, setRoundModal] = useAtom(roundPostModalAtom)
@@ -128,12 +129,31 @@ const Round = ({}) => {
       pageSize: page,
     })
   }
-  const 임의의UID = 22 //임의의 uid값 * 현재 에러나옴
-  const mutation = useMutationQuery('auction', () => deleteAuction(임의의UID))
+  // const 임의의UID = 22 //임의의 uid값 * 현재 에러나옴
+  // const mutation = useMutationQuery('auction', () => deleteAuction(임의의UID))
+
+  // const handleRemoveBtn = useCallback(() => {
+  //   mutation.mutate()
+  // }, [mutation])
+
+  // 삭제
+  const mutation = useMutation(deleteAuction, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('auction')
+    },
+  })
 
   const handleRemoveBtn = useCallback(() => {
-    mutation.mutate()
-  }, [mutation])
+    if (isArray(checkedArray) && checkedArray.length > 0) {
+      if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
+        checkedArray.forEach((item) => {
+          mutation.mutate(item['고유 번호']) //mutation.mutate로 api 인자 전해줌
+        })
+      }
+    } else {
+      alert('선택해주세요!')
+    }
+  }, [checkedArray])
 
   return (
     <FilterContianer>
@@ -250,7 +270,7 @@ const Round = ({}) => {
             제품 추가
           </BlackBtn>
         </TableBottomWrap>
-        {roundModal && <AuctionRound setRoundModal={setRoundModal} />}
+        {roundModal && <AuctionRound setRoundModal={setRoundModal} types={types} />}
       </TableContianer>
     </FilterContianer>
   )
