@@ -81,7 +81,7 @@ export const AuctionRoundFieldsCols = [
     cellRenderer: BtnCellRenderer,
     cellRendererParams: {
       uidFieldName: '고유 번호',
-      editType: 'roundacuction',
+      editType: 'auctionroundedit',
     },
   },
   { field: '판매 구분', minWidth: 100 },

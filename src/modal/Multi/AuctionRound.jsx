@@ -9,6 +9,8 @@ import {
   BlueMainDiv,
   BlueSubDiv,
   BlueDateDiv,
+  BlueBtnWrap,
+  BlueBlackBtn,
 } from '../Common/Common.Styled'
 
 import { styled } from 'styled-components'
@@ -26,6 +28,8 @@ import DateGrid from '../../components/DateGrid/DateGrid'
 import { ExCheckWrap, ExCheckDiv } from '../External/ExternalFilter'
 import { StyledCheckSubSquDiv, CheckImg2 } from '../../common/Check/CheckImg'
 import moment from 'moment'
+import useMutationQuery from '../../hooks/useMutationQuery'
+import { postAuction } from '../../api/auction/round'
 
 const AuctionRound = ({ setRoundModal, types }) => {
   const [isModal, setIsModal] = useAtom(blueModalAtom)
@@ -42,13 +46,34 @@ const AuctionRound = ({ setRoundModal, types }) => {
     timeList: [],
   }
 
+  const initB = {
+    saleType: types,
+    auctionType: '',
+    insertStartDate: '',
+    insertEndDate: '',
+    insertStartTime: '',
+    insertEndTime: '',
+  }
+
   const [input, setInput] = useState(init)
+  const [inputB, setInputB] = useState(initB)
+
+  console.log('inputB', inputB)
 
   const [dates, setDates] = useState({
     insertStartDate: '',
     insertEndDate: '',
     addedDate: '',
   })
+
+  const [times, setTimes] = useState({
+    startHour: '',
+    startMinute: '',
+    endHour: '',
+    endMinute: '',
+  })
+
+  console.log('times', times)
 
   const dateHandler = (date, name) => {
     setDates((p) => ({ ...p, [name]: date }))
@@ -84,15 +109,58 @@ const AuctionRound = ({ setRoundModal, types }) => {
       timeList: selectedTimeList,
       auctionType: formattedAuctionType,
     })
+    setInputB({
+      ...inputB,
+      auctionType: formattedAuctionType,
+    })
   }, [check1, checkRadio])
 
+  // 날짜 YYYY-MM-DD 형식으로 변환
   useEffect(() => {
     setInput((p) => ({
       ...p,
       insertStartDate: dates.insertStartDate && moment(dates.insertStartDate).format('YYYY-MM-DD'),
       insertEndDate: dates.insertStartDate && moment(dates.insertEndDate).format('YYYY-MM-DD'),
     }))
+    setInputB((p) => ({
+      ...p,
+      insertStartDate: dates.addedDate && moment(dates.addedDate).format('YYYY-MM-DD'),
+      insertEndDate: dates.addedDate && moment(dates.addedDate).format('YYYY-MM-DD'),
+    }))
   }, [dates])
+
+  const timesHandler = (e) => {
+    const { name, value } = e.target
+    if (
+      (name.includes('Hour') && (value < 0 || value > 23)) ||
+      (name.includes('Minute') && (value < 0 || value > 59))
+    ) {
+      alert('올바른 시간을 입력해주세요. (0 ~ 23시, 0 ~ 59분)')
+      return // 잘못된 값이면 함수 종료
+    }
+    setTimes((p) => ({ ...p, [name]: value }))
+  }
+
+  // times "hh:mm" 식 변환
+  useEffect(() => {
+    const insertStartTime = `${times.startHour}:${times.startMinute}`
+    const insertEndTime = `${times.endHour}:${times.endMinute}`
+    setInputB((p) => ({
+      ...p,
+      insertStartTime: insertStartTime,
+      insertEndTime: insertEndTime,
+    }))
+  }, [times])
+
+  const mutation = useMutationQuery('', postAuction)
+
+  const submitHandle = (e) => {
+    if (checkRadio[0]) {
+      mutation.mutate(input)
+    } else {
+      mutation.mutate(inputB)
+    }
+  }
 
   return (
     // 재고 관리 - 판매 구분 변경
@@ -135,9 +203,15 @@ const AuctionRound = ({ setRoundModal, types }) => {
                       fontSize={16}
                     />
                     <div style={{ marginLeft: '10px' }}>
-                      {' '}
-                      <TimeInput placeholder="0시" /> <TimeInput placeholder="0분" /> ~ <TimeInput placeholder="0시" />{' '}
-                      <TimeInput placeholder="0분" />
+                      <TimeInput placeholder="0시" name="startHour" value={times.startHour} onChange={timesHandler} />
+                      <TimeInput
+                        placeholder="0분"
+                        name="startMinute"
+                        value={times.startMinute}
+                        onChange={timesHandler}
+                      />
+                      ~ <TimeInput placeholder="0시" name="endHour" value={times.endHour} onChange={timesHandler} />
+                      <TimeInput placeholder="0분" name="endMinute" value={times.endMinute} onChange={timesHandler} />
                     </div>
                   </BlueDateDiv>
                 </BlueSubDiv>
@@ -190,6 +264,9 @@ const AuctionRound = ({ setRoundModal, types }) => {
                 </div>
               </BlueSubDiv>
             </BlueMainDiv>
+            <BlueBtnWrap>
+              <BlueBlackBtn onClick={submitHandle}>등록</BlueBlackBtn>
+            </BlueBtnWrap>
           </div>
         </BlueSubContainer>
       </ModalContainer>

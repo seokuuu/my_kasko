@@ -38,7 +38,7 @@ import DefaultBlueBar from '../../../modal/Multi/DefaultBlueBar'
 import RoundAucProAdd from './RoundAucProAdd'
 
 //경매 목록 수정(단일)
-const RoundAucListEdit = ({}) => {
+const RoundAucListEdit = ({ setEditPage, types, uidAtom }) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
   const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
   //checkSales
@@ -92,7 +92,7 @@ const RoundAucListEdit = ({}) => {
     <FilterContianer>
       <FilterHeader>
         <div style={{ display: 'flex' }}>
-          <h1>경매 목록 수정(단일)</h1>
+          <h1>경매 목록 수정 ({types})</h1>
         </div>
         {/* 토글 쓰기 */}
         <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
@@ -100,7 +100,7 @@ const RoundAucListEdit = ({}) => {
       <FilterTopContainer>
         <FilterTCTop>
           <h6>경매 번호</h6>
-          <p>2023041050</p>
+          <p>{uidAtom}</p>
         </FilterTCTop>
       </FilterTopContainer>
       {exFilterToggle && (

@@ -29,25 +29,26 @@ import {
   StyledSubHeading,
   SubTitle,
   TCSubContainer,
-  TableBottomWrap,
   TableContianer,
   Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import { useAtom } from 'jotai'
-import { deleteAuction, getAuction, useGetAuctionList } from '../../../api/auction/round'
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
-import useMutationQuery from '../../../hooks/useMutationQuery'
-import useReactQuery from '../../../hooks/useReactQuery'
-import AuctionRound from '../../../modal/Multi/AuctionRound'
-import { roundPostModalAtom } from '../../../store/Layout/Layout'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { AuctionRoundFields, AuctionRoundFieldsCols } from '../../../constants/admin/Auction'
-import { add_element_field } from '../../../lib/tableHelpers'
+import { useAtom } from 'jotai'
 import { isArray } from 'lodash'
+import { deleteAuction, getAuction } from '../../../api/auction/round'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import { AuctionRoundFields, AuctionRoundFieldsCols } from '../../../constants/admin/Auction'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
+import AuctionRound from '../../../modal/Multi/AuctionRound'
+import { auctionRoundEditPageAtom, roundPostModalAtom, btnCellUidAtom } from '../../../store/Layout/Layout'
+import RoundAucListEdit from './RoundAucListEdit'
 
 const Round = ({}) => {
+  const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
   const [roundModal, setRoundModal] = useAtom(roundPostModalAtom)
+  const [editPage, setEditPage] = useAtom(auctionRoundEditPageAtom)
   const [types, setTypes] = useState('단일')
 
   console.log('types', types)
@@ -155,124 +156,133 @@ const Round = ({}) => {
     }
   }, [checkedArray])
 
-  return (
-    <FilterContianer>
-      <FilterHeader>
-        <div style={{ display: 'flex' }}>
-          <h1>경매 회차 관리</h1>
-          <SubTitle>
-            <StyledHeading isActive={types === '단일'} onClick={() => setTypes('단일')}>
-              단일
-            </StyledHeading>
-            <StyledSubHeading isActive={types === '패키지'} onClick={() => setTypes('패키지')}>
-              패키지
-            </StyledSubHeading>
-          </SubTitle>
-        </div>
-        {/* 토글 쓰기 */}
-        <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
-      </FilterHeader>
-      {exFilterToggle && (
-        <>
-          <FilterSubcontianer>
-            <FilterLeft>
-              <RowWrap>
-                <PartWrap first>
-                  <h6>경매 일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
-                </PartWrap>
-                <PartWrap>
-                  <h6>경매 회차 번호</h6>
-                  <Input />
-                </PartWrap>
-                <PartWrap />
-              </RowWrap>
+  useEffect(() => {
+    // 컴포넌트가 언마운트될 때 switchEdit을 재설정하는 정리 함수
+    return () => {
+      setEditPage(false)
+    }
+  }, [])
 
-              <RowWrap>
-                <PartWrap first>
-                  <h6>진행 상태</h6>
-                  <ExRadioWrap>
-                    {radioDummy.map((text, index) => (
-                      <RadioMainDiv key={index}>
-                        <RadioCircleDiv
-                          isChecked={checkRadio[index]}
-                          onClick={() => {
-                            setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-                          }}
-                        >
-                          <RadioInnerCircleDiv isChecked={checkRadio[index]} />
-                        </RadioCircleDiv>
-                        <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
-                      </RadioMainDiv>
-                    ))}
-                  </ExRadioWrap>
-                </PartWrap>
-              </RowWrap>
-            </FilterLeft>
-            <FilterRight>
-              <DoubleWrap>
-                <h6>제품 번호 </h6>
-                <textarea
-                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                />
-              </DoubleWrap>
-            </FilterRight>
-          </FilterSubcontianer>
-          <FilterFooter>
+  console.log('types', types)
+  return (
+    <>
+      {editPage ? (
+        <RoundAucListEdit setEditPage={setEditPage} types={types} uidAtom={uidAtom} />
+      ) : (
+        <FilterContianer>
+          <FilterHeader>
             <div style={{ display: 'flex' }}>
-              <p>초기화</p>
-              <ResetImg
-                src="/img/reset.png"
-                style={{ marginLeft: '10px', marginRight: '20px' }}
-                onClick={handleImageClick}
-                className={isRotated ? 'rotate' : ''}
-              />
+              <h1>경매 회차 관리</h1>
+              <SubTitle>
+                <StyledHeading isActive={types === '단일'} onClick={() => setTypes('단일')}>
+                  단일
+                </StyledHeading>
+                <StyledSubHeading isActive={types === '패키지'} onClick={() => setTypes('패키지')}>
+                  패키지
+                </StyledSubHeading>
+              </SubTitle>
             </div>
-            <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40}>
-                검색
-              </BlackBtn>
-            </div>
-          </FilterFooter>
-        </>
+            {/* 토글 쓰기 */}
+            <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
+          </FilterHeader>
+          {exFilterToggle && (
+            <>
+              <FilterSubcontianer>
+                <FilterLeft>
+                  <RowWrap>
+                    <PartWrap first>
+                      <h6>경매 일자</h6>
+                      <GridWrap>
+                        <DateGrid bgColor={'white'} fontSize={17} />
+                        <Tilde>~</Tilde>
+                        <DateGrid bgColor={'white'} fontSize={17} />
+                      </GridWrap>
+                    </PartWrap>
+                    <PartWrap>
+                      <h6>경매 회차 번호</h6>
+                      <Input />
+                    </PartWrap>
+                    <PartWrap />
+                  </RowWrap>
+
+                  <RowWrap>
+                    <PartWrap first>
+                      <h6>진행 상태</h6>
+                      <ExRadioWrap>
+                        {radioDummy.map((text, index) => (
+                          <RadioMainDiv key={index}>
+                            <RadioCircleDiv
+                              isChecked={checkRadio[index]}
+                              onClick={() => {
+                                setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
+                              }}
+                            >
+                              <RadioInnerCircleDiv isChecked={checkRadio[index]} />
+                            </RadioCircleDiv>
+                            <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
+                          </RadioMainDiv>
+                        ))}
+                      </ExRadioWrap>
+                    </PartWrap>
+                  </RowWrap>
+                </FilterLeft>
+                <FilterRight>
+                  <DoubleWrap>
+                    <h6>제품 번호 </h6>
+                    <textarea
+                      placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
+                    />
+                  </DoubleWrap>
+                </FilterRight>
+              </FilterSubcontianer>
+              <FilterFooter>
+                <div style={{ display: 'flex' }}>
+                  <p>초기화</p>
+                  <ResetImg
+                    src="/img/reset.png"
+                    style={{ marginLeft: '10px', marginRight: '20px' }}
+                    onClick={handleImageClick}
+                    className={isRotated ? 'rotate' : ''}
+                  />
+                </div>
+                <div style={{ width: '180px' }}>
+                  <BlackBtn width={100} height={40}>
+                    검색
+                  </BlackBtn>
+                </div>
+              </FilterFooter>
+            </>
+          )}
+          <TableContianer>
+            <TCSubContainer bor>
+              <div>
+                조회 목록 (선택 <span>2</span> / 50개 )
+                <Hidden />
+              </div>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <PageDropdown handleDropdown={handleDropdown} />
+                <Excel />
+              </div>
+            </TCSubContainer>
+            <TCSubContainer>
+              <div></div>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <WhiteRedBtn onClick={handleRemoveBtn}>회차 삭제</WhiteRedBtn>
+                <WhiteSkyBtn
+                  onClick={() => {
+                    setRoundModal(true)
+                  }}
+                >
+                  경매 회차 등록
+                </WhiteSkyBtn>
+              </div>
+            </TCSubContainer>
+            <Table getCol={getCol} getRow={getRow} />
+            {roundModal && <AuctionRound setRoundModal={setRoundModal} types={types} />}
+          </TableContianer>
+        </FilterContianer>
       )}
-      <TableContianer>
-        <TCSubContainer bor>
-          <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
-            <Hidden />
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown handleDropdown={handleDropdown} />
-            <Excel />
-          </div>
-        </TCSubContainer>
-        <TCSubContainer>
-          <div></div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn onClick={handleRemoveBtn}>회차 삭제</WhiteRedBtn>
-            <WhiteSkyBtn
-              onClick={() => {
-                setRoundModal(true)
-              }}
-            >
-              경매 회차 등록
-            </WhiteSkyBtn>
-          </div>
-        </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
-        <TableBottomWrap>
-          <BlackBtn width={15} height={40}>
-            제품 추가
-          </BlackBtn>
-        </TableBottomWrap>
-        {roundModal && <AuctionRound setRoundModal={setRoundModal} types={types} />}
-      </TableContianer>
-    </FilterContianer>
+    </>
   )
 }
 

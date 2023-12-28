@@ -12,6 +12,7 @@ import {
   usermanageClientEdit,
   UsermanageDestiEditModal,
   StandardConsoliateEdit,
+  auctionRoundEditPageAtom,
 } from '../../store/Layout/Layout'
 
 import { UsermanageUserManageEditModal } from '../../store/Layout/Layout'
@@ -38,9 +39,7 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
 
   const [userManageEditModal, setUserManageEditModal] = useAtom(UsermanageUserManageEditModal)
 
-  // console.log('버튼 셀 @@@', userpageEditModal)
-
-  // console.log('!!!')
+  const [auctionRoundEditModal, setAuctionRoundEditModal] = useAtom(auctionRoundEditPageAtom)
 
   const btnClickedHandler = () => {
     switch (editType) {
@@ -82,6 +81,10 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
       case 'usermanagemanage':
         setUidAtom(uid)
         setUserManageEditModal(true)
+        break
+      case 'auctionroundedit':
+        setUidAtom(uid)
+        setAuctionRoundEditModal(true)
         break
       default:
         break

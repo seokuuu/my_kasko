@@ -105,6 +105,9 @@ export const aucProListEditAtom = atom('기본')
 // 경매 관리 - 경매 회차 관리 / 경매 회차 등록 Modal
 export const roundPostModalAtom = atom(false)
 
+// 경매 관리 - 경매 회차 관리 / 경매 목록 수정 Modal
+export const auctionRoundEditPageAtom = atom(false)
+
 // 경매 목록 수정 - 제품 추가 Modal
 export const aucProAddModalAtom = atom(false)
 
