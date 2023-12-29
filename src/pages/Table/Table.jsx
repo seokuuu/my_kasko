@@ -50,7 +50,7 @@ const asDate = (dateAsString) => {
   return new Date(Number.parseInt(splitFields[2]), Number.parseInt(splitFields[1]) - 1, Number.parseInt(splitFields[0]))
 }
 
-const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData }) => {
+const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData, isRowClickable, handleOnRowClicked }) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
   const gridRef = useRef()
@@ -298,6 +298,25 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData }) => {
   }
   // new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
 
+
+  // console.log('gridOptions', gridOptions)
+  const pinnedTopRowData = useMemo(() => {
+    return topData
+  }, [topData])
+
+  const onRowClicked = (row) => {
+    // Assuming each row has a unique ID or some identifier
+    handleOnRowClicked(row)
+  }
+
+  const getRowStyle = () => {
+    if (isRowClickable) {
+      return { cursor: 'pointer' }
+    }
+    return {} // Default style for non-clickable rows
+  }
+
+
   return (
     <div style={containerStyle}>
       <TestContainer hei={hei}>
@@ -323,7 +342,10 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData }) => {
             // doesExternalFilterPass={doesExternalFilterPass}
             onGridReady={onGridReady}
             onSelectionChanged={onSelectionChanged}
-            pinnedTopRowData={topData}
+            pinnedTopRowData={pinnedTopRowData}
+            onRowClicked={onRowClicked}
+            getRowStyle={getRowStyle}
+
             // sideBar={{ toolPanels: ['columns', 'filters'] }}
           />
         </div>

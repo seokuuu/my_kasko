@@ -1,4 +1,5 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import {
   OnePageContainer,
   OnePageSubContainer,
@@ -14,37 +15,54 @@ import {
   FullWrap,
   FWTitle,
 } from '../../../common/OnePage/OnePage.Styled'
+import { formatDateString } from '../../../utils/utils'
+import { titles } from './termsConstants'
 
-import { CustomInput } from '../../../common/Input/Input'
-import { CustomSelect } from '../../../common/Option/Main'
-import { emailOptions } from '../../../common/Option/SignUp'
+const Terms = ({ onPolicySelect, policy }) => {
+  const [policyDetails, setPolicyDetails] = useState(null)
+  const [selectedPolicy, setSelectedPolicy] = useState(null)
 
-import { BtnWrap, BlackBtn, WhiteBtn } from '../../../common/Button/Button'
+  useEffect(() => {
+    if (!!policy) {
+      setPolicyDetails(policy)
+      setSelectedPolicy(policy.type)
+    }
+  }, [policy])
 
-const Terms = () => {
+  const handleTitleClick = (title) => {
+    onPolicySelect(title)
+    setSelectedPolicy(title)
+  }
+
   return (
     <OnePageContainer style={{ width: '55%' }}>
       <Titles style={{ width: '90%' }}>
-        <TitleChild bor>이용 약관</TitleChild>
-        <TitleChild>개인정보 처리 방침</TitleChild>
-        <TitleChild>개인정보 수집 동의</TitleChild>
+        {titles.map((title, index) => (
+          <TitleChild key={index} active={title === selectedPolicy} onClick={() => handleTitleClick(title)}>
+            {title}
+          </TitleChild>
+        ))}
       </Titles>
       <OnePageSubContainer>
         <FWTitle>
           <h5>서비스 이용약관</h5>
-          <h6>최근 수정일 : 2023.06.12</h6>
+          <h6>최근 수정일 : {policyDetails && formatDateString(policyDetails.updateDate)}</h6>
         </FWTitle>
         <FullWrap style={{ marginTop: '30px', height: '30vw' }}>
-          <textarea></textarea>
+          <textarea readOnly value={policyDetails?.content} />
         </FullWrap>
       </OnePageSubContainer>
-      <BtnWrap bottom={-30}>
-        <BlackBtn width={40} height={40}>
-          저장
-        </BlackBtn>
-      </BtnWrap>
     </OnePageContainer>
   )
+}
+
+Terms.propTypes = {
+  policy: PropTypes.shape({
+    content: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    uid: PropTypes.number,
+    updateDate: PropTypes.string.isRequired,
+  }),
 }
 
 export default Terms
