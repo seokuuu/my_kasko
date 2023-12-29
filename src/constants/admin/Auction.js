@@ -55,9 +55,9 @@ export const AuctionUnitPricePostDropOptions3 = [
 
 // !! 영역이 좁으므로 Upload props에 width값 1000 주고 쓰기 !!!
 
-/* ==============================
-    경매 관리 - 경매 회차 관리 (round)
-============================== */
+/* ============================================
+    경매 관리 - 경매 회차 관리 "전체 TABLE" (round)
+============================================ */
 export const AuctionRoundFields = {
   '고유 번호': 'uid',
   '판매 구분': 'saleType',
@@ -97,9 +97,103 @@ export const AuctionRoundFieldsCols = [
   { field: '수정자', minWidth: 100 },
 ]
 
+/* ============================================
+    경매 관리 - 경매 회차 관리 "상세 TABLE" (round)
+=============================================== */
+
+export const AuctionRoundDetailFields = {
+  '경매 제품 고유 번호': 'auctionProductUid',
+  '제품 고유 번호': 'productUid',
+  창고: 'storageName',
+  제품군: 'spart',
+  '재고 상태': 'stockStatus',
+  매입처: 'supplier',
+  제조사: 'maker',
+  '판매 구분': 'saleCategory',
+  '판매 유형': 'saleType',
+  '판매가 유형': 'salePriceType',
+  '경매 번호': 'auctionNumber',
+  '제품 번호': 'productNumber',
+  등급: 'grade',
+  '정척 여부': 'preferThickness',
+  '유찰 횟수': 'faliCount',
+  '경매 시작가': 'auctionStartPrice',
+  두께: 'thickness',
+  폭: 'width',
+  길이: 'length',
+  중량: 'weight',
+  '규격 약호': 'spec',
+  yp: 'yp',
+  ts: 'ts',
+  c: 'c',
+  p: 'p',
+  s: 's',
+  si: 'si',
+  el: 'el',
+  mn: 'mn',
+  '여재 원인 코드': 'causeCode',
+  '여재 원인명': 'causeCodeName',
+  '용도 코드': 'usageCode',
+  용도명: 'usageCodeName',
+  '경매 등록 상태': 'registrationStatus',
+  '판매 제외 사유': 'excludeSaleReason',
+  등록일: 'createDate',
+  매입가: 'price',
+}
+
+export const AuctionRoundDetailFieldsCols = [
+  { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  // {
+  //   field: '수정',
+  //   maxWidth: 90,
+  //   cellRenderer: BtnCellRenderer,
+  //   cellRendererParams: {
+  //     uidFieldName: '경매 제품 고유 번호',
+  //     editType: 'auctionroundedit',
+  //   },
+  // },
+  { field: '경매 제품 고유 번호', minWidth: 100 },
+  { field: '제품 고유 번호', minWidth: 100 },
+  { field: '창고', minWidth: 100 },
+  { field: '제품군', minWidth: 100 },
+  { field: '재고 상태', minWidth: 100 },
+  { field: '매입처', minWidth: 100 },
+  { field: '제조사', minWidth: 100 },
+  { field: '판매 구분', minWidth: 100 },
+  { field: '판매 유형', minWidth: 100 },
+  { field: '판매가 유형', minWidth: 100 },
+  { field: '경매 번호', minWidth: 100 },
+  { field: '제품 번호', minWidth: 100 },
+  { field: '등급', minWidth: 100 },
+  { field: '정척 여부', minWidth: 100 },
+  { field: '유찰 횟수', minWidth: 100 },
+  { field: '경매 시작가', minWidth: 100 },
+  { field: '두께', minWidth: 100 },
+  { field: '폭', minWidth: 100 },
+  { field: '길이', minWidth: 100 },
+  { field: '중량', minWidth: 100 },
+  { field: '규격 약호', minWidth: 100 },
+  { field: 'yp', minWidth: 100 },
+  { field: 'ts', minWidth: 100 },
+  { field: 'c', minWidth: 100 },
+  { field: 'p', minWidth: 100 },
+  { field: 's', minWidth: 100 },
+  { field: 'si', minWidth: 100 },
+  { field: 'el', minWidth: 100 },
+  { field: 'mn', minWidth: 100 },
+  { field: '여재 원인 코드', minWidth: 100 },
+  { field: '여재 원인명', minWidth: 100 },
+  { field: '용도 코드', minWidth: 100 },
+  { field: '용도명', minWidth: 100 },
+  { field: '경매 등록 상태', minWidth: 100 },
+  { field: '판매 제외 사유', minWidth: 100 },
+  { field: '등록일', minWidth: 100 },
+  { field: '매입가', minWidth: 100 },
+]
+
 /* ==============================
     경매 관리 - 경매 응찰 (bidding)
-============================== */
+================================= */
 
 export const AuctionBiddingFields = {
   '경매 제품 고유 번호': 'uid',

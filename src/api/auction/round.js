@@ -18,6 +18,10 @@ export function getAuction(data) {
   return client.get(`${urls.getAuction}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&type=${data.type}`)
 }
 
+export function getDetailAuction(data) {
+  return client.get(`${urls.getAuction}/${data.auctionNumber}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
+}
+
 export function postAuction(data) {
   return client.post(urls.getAuction, data)
 }

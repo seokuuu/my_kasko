@@ -111,8 +111,6 @@ const Round = ({}) => {
     refetch()
   }, [inputParams])
 
-  //  ✅ Props로 test3컴포넌트(테이블) row랑 col 데이터를 넘기는 방식
-
   const resData = data?.data?.data?.list
   useEffect(() => {
     let getData = resData
@@ -122,6 +120,10 @@ const Round = ({}) => {
       setGetRow(add_element_field(getData, AuctionRoundFields))
     }
   }, [isSuccess, resData])
+
+  const matchingData = resData?.find((data) => data.uid === uidAtom)
+  const auctionNum = matchingData?.number
+  console.log('matchingData', matchingData?.number)
 
   const handleDropdown = (e) => {
     const page = e.target.value
@@ -167,7 +169,7 @@ const Round = ({}) => {
   return (
     <>
       {editPage ? (
-        <RoundAucListEdit setEditPage={setEditPage} types={types} uidAtom={uidAtom} />
+        <RoundAucListEdit setEditPage={setEditPage} types={types} uidAtom={uidAtom} auctionNum={auctionNum} />
       ) : (
         <FilterContianer>
           <FilterHeader>

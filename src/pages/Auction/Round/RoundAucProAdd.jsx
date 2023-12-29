@@ -45,7 +45,7 @@ import {
 
 // 경매 제품 추가(단일) 메인 컴포넌트
 // 경매 제품 추가 (패키지), 경매 목록 상세(종료된 경매)와 호환 가능
-const RoundAucProAdd = ({}) => {
+const RoundAucProAdd = ({ newResData, setNewResData }) => {
   const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 
@@ -111,7 +111,7 @@ const RoundAucProAdd = ({}) => {
             <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
           </div>
         </BlueBarHeader>
-        <BlueSubContainer style={{ padding: '0px 0px' }}>
+        <BlueSubContainer style={{ padding: '0px 25px' }}>
           <FilterContianer>
             <FilterHeader>
               <div style={{ display: 'flex' }}></div>
