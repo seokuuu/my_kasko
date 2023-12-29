@@ -137,7 +137,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
   }, [inputParams])
 
   const resData = data?.data?.data?.list
-  const NeoResData = [...resData, newResData]
+
   useEffect(() => {
     let getData = resData
     //타입, 리액트쿼리, 데이터 확인 후 실행
@@ -146,8 +146,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
       setGetRow(add_element_field(getData, AuctionRoundDetailFields))
     }
   }, [isSuccess, resData])
-
-  console.log('resData', resData)
 
   return (
     <FilterContianer>
