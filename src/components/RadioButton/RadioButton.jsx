@@ -18,6 +18,7 @@ const RadioButton = ({ radioButtonLabels, style, selection }) => {
         name="type"
         checkSelection={isRadioChecked[index]}
         onClick={() => radioButtonOnClickHandler(index)}
+        isChecked={isRadioChecked[index]}
       >
         <RadioInnerCircleDiv isChecked={isRadioChecked[index]} />
       </RadioCircleDiv>

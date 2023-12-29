@@ -25,9 +25,10 @@ import SignUpPost from '../../../modal/SignUp/SignUpPost'
 import { CheckBtn, TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
 import { GreyDiv, IIDImg, IncomeImgDiv } from '../../../userpages/UserMyPage/Profile/Profile'
 import DownloadButton from '../../../utils/DownloadButton'
-import { UserCheckDiv } from '../UserManage/UserPost'
+
 import { getStorageList } from '../../../api/search'
 import { MainSelect } from '../../../common/Option/Main'
+import { UserCheckDiv } from '../UserManage/UserPost'
 
 const init = {
   id: '',
@@ -257,11 +258,13 @@ const ClientPostModal = ({ setEditModal }) => {
   const [checkRadio3, setCheckRadio3] = useState(Array.from({ length: radioDummy3.length }, () => false))
   const [checkRadio4, setCheckRadio4] = useState(Array.from({ length: radioDummy4.length }, () => false))
   const [radioSelections, setRadioSelections] = useState({
-    승인여부: null,
-    회원제환: null,
-    사용자구분: null,
-    사업자구분: null,
+    approvalStatus: null,
+    auctionStatus: null,
+    memberType: null,
+    type: null,
   })
+
+  console.log('radioSelections', radioSelections)
 
   // const [savedRadioValue, setSavedRadioValue] = useState('')
   // const [savedRadioValue2, setSavedRadioValue2] = useState('')
@@ -654,7 +657,7 @@ const ClientPostModal = ({ setEditModal }) => {
               </Left>
               {/* -------------------------------------------------------------- */}
               <Right>
-                <h1>비즈니스 정보 ㅋㅋ</h1>
+                <h1>비즈니스 정보</h1>
                 <Bar />
                 <FlexPart>
                   <FlexTitle>
@@ -1025,12 +1028,12 @@ const EqualCheckWrap2 = styled.div`
   right: 120px;
 `
 
-const CheckTxt2 = styled.p`
+export const CheckTxt2 = styled.p`
   min-width: 100px;
   font-size: 16px;
 `
 
-const FlexContent2 = styled.div`
+export const FlexContent2 = styled.div`
   display: flex;
   min-width: 600px;
   flex-wrap: wrap;

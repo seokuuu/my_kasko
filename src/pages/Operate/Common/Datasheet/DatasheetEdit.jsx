@@ -8,12 +8,11 @@ import { CenterRectangleWrap } from '../../../../common/OnePage/OnePage.Styled'
 
 import { CheckBox } from '../../../../common/Check/Checkbox'
 
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../../common/Check/RadioImg'
 import { PropsInput } from '../../../../common/Input/Input'
 import { ExRadioWrap } from '../../../../modal/External/ExternalFilter'
-import { RadioMainDiv, RadioInnerCircleDiv, RadioCircleDiv } from '../../../../common/Check/RadioImg'
 
 import { TxtDiv } from '../../../User/SignUp/SignUp.Styled'
-// 클레임 등록
 const DatasheetEdit = () => {
   const radioDummy = ['노출', '미노출']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))

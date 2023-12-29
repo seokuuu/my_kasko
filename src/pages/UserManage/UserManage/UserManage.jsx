@@ -30,7 +30,7 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import {
   blueModalAtom,
-  btnCellRenderAtom,
+  btnCellUidAtom,
   selectedRowsAtom,
   toggleAtom,
   UsermanageUserPostModal,
@@ -39,12 +39,16 @@ import Table from '../../Table/Table'
 // import { isArray } from 'lodash'
 import { isArray } from '../../../lib'
 import ClientPostModal from '../Client/ClientPostModal'
-
+import UserPost from './UserPost'
+import { UsermanageUserManageEditModal } from '../../../store/Layout/Layout'
+import UserEdit from './UserEdit'
 const UserManage = ({ setChoiceComponent }) => {
-  const [uidAtom, setUidAtom] = useAtom(btnCellRenderAtom)
+  const [editModal, setEditModal] = useAtom(UsermanageUserManageEditModal)
+  const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
   console.log('uidAtom', uidAtom)
   const [postModal, setPostModal] = useAtom(UsermanageUserPostModal)
-  const [types, setTypes] = useState('kasko') //kasko, hyundai, carrier, storage
+  const [types, setTypes] = useState(null) //카스코철강, 현대제철 , 운송, 창고
+  console.log('types', types)
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -85,9 +89,11 @@ const UserManage = ({ setChoiceComponent }) => {
   const 임의데이터 = {
     pageNum: 1,
     pageSize: 50,
+    type: types,
   }
   const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터, 'userManage', get_userManage)
   const resData = data?.data?.data?.list
+  console.log('getRow', getRow)
 
   if (isError) console.log('데이터 request ERROR')
 
@@ -123,16 +129,16 @@ const UserManage = ({ setChoiceComponent }) => {
           <div style={{ display: 'flex' }}>
             <h1>사용자 관리</h1>
             <SubTitle>
-              <StyledHeading isActive={types === 'kasko'} onClick={() => setTypes('kasko')}>
+              <StyledHeading isActive={types === '카스코철강'} onClick={() => setTypes('카스코철강')}>
                 카스코철강
               </StyledHeading>
-              <StyledHeading isActive={types === 'hyundai'} onClick={() => setTypes('hyundai')}>
+              <StyledHeading isActive={types === '현대제철'} onClick={() => setTypes('현대제철')}>
                 현대제철
               </StyledHeading>
-              <StyledHeading isActive={types === 'carrier'} onClick={() => setTypes('carrier')}>
+              <StyledHeading isActive={types === '운송'} onClick={() => setTypes('운송')}>
                 운송사
               </StyledHeading>
-              <StyledSubHeading isActive={types === 'storage'} onClick={() => setTypes('storage')}>
+              <StyledSubHeading isActive={types === '창고'} onClick={() => setTypes('창고')}>
                 창고사
               </StyledSubHeading>
             </SubTitle>
@@ -204,7 +210,8 @@ const UserManage = ({ setChoiceComponent }) => {
             </SkyBtn>
           </div>
         </TCSubContainer>
-        {postModal && <ClientPostModal setEditModal={setPostModal} />}
+        {postModal && <UserPost setPostModal={setPostModal} />}
+        {editModal && <UserEdit setEditModal={setEditModal} uidAtom={uidAtom} />}
         <Table setChoiceComponent={setChoiceComponent} getCol={getCol} getRow={getRow} />
       </TableContianer>
     </FilterContianer>

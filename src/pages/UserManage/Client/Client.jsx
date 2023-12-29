@@ -40,7 +40,7 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 // import { log } from '../../../lib'
 import { isString } from 'lodash'
-import TableTest from '../../Table/TableTest'
+import Table from '../../Table/Table'
 import { usermanageClientEdit } from '../../../store/Layout/Layout'
 import ClientEditModal from './ClientEditModal'
 import { btnCellUidAtom } from '../../../store/Layout/Layout'
@@ -353,7 +353,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
               </WhiteSkyBtn>
             </div>
           </TCSubContainer>
-          <TableTest getCol={getCol} getRow={getRow} />
+          <Table getCol={getCol} getRow={getRow} />
           {/* <Test3 /> */}
         </TableContianer>
       </FilterContianer>

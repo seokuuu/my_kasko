@@ -1,0 +1,60 @@
+/** 셀의 내용을 지정할 수 있는 columnDefs */
+export const columnDefs = [
+  {
+    headerName: '순번',
+    field: 'no',
+    headerClass: 'custom-header-style',
+    cellStyle: { borderRight: '1px solid #c8c8c8' },
+    width: 100,
+    sort: 'desc',
+  },
+  {
+    headerName: '제목',
+    field: 'title',
+    headerClass: 'custom-header-style',
+    cellStyle: { borderRight: '1px solid #c8c8c8' },
+    width: 350,
+  },
+  {
+    headerName: '작성일자',
+    field: 'date',
+    headerClass: 'custom-header-style',
+    cellStyle: { borderRight: '1px solid #c8c8c8' },
+    width: 350,
+  },
+  {
+    headerName: '작성자',
+    field: 'writer',
+    headerClass: 'custom-header-style',
+    cellStyle: { borderRight: '1px solid #c8c8c8' },
+    width: 350,
+  },
+  {
+    headerName: '조회수',
+    field: 'views',
+    headerClass: 'custom-header-style',
+    cellStyle: { borderRight: '1px solid #c8c8c8' },
+    width: 350,
+  },
+  {
+    headerName: '테이블',
+    field: 'title',
+    headerClass: 'custom-header-style',
+    cellStyle: { borderRight: '1px solid #c8c8c8' },
+    width: 350,
+  },
+  {
+    headerName: '테이블2',
+    field: 'title',
+    headerClass: 'custom-header-style',
+    cellStyle: { borderRight: '1px solid #c8c8c8' },
+    width: 350,
+  },
+  {
+    headerName: '테이블4',
+    field: 'title',
+    headerClass: 'custom-header-style',
+    cellStyle: { borderRight: '1px solid #c8c8c8' },
+    width: 350,
+  },
+]

@@ -224,7 +224,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
               </Title>
               <CustomInput width={120} defaultValue={customerFindResult?.name} />
               <span style={{ margin: 'auto 5px' }}>-</span>
-              <CustomInput width={120} defaultValue={customerFindResult?.ceoName} />
+              <CustomInput width={120} defaultValue={customerFindResult?.code} />
               <BlackBtn
                 width={20}
                 height={40}

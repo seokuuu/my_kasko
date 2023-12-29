@@ -102,7 +102,7 @@ const data = [
     //Operate
     depth1: '운영 관리',
     depth2: [
-      { title: '운영 관리', link: 'operate/operation' },
+      { title: '운영 관리', link: 'operate/operation?category=product' },
       { title: '노출 관리', link: 'operate/exposure' },
       { title: '일반 관리', link: 'operate/common' },
       { title: '이용 약관', link: 'operate/terms' },

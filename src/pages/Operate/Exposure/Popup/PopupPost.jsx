@@ -174,7 +174,7 @@ const PopupPost = ({ isRegister }) => {
             />
           </div>
 
-          <TextEditor name="content" setState={setForm} value={form.content} />
+          <TextEditor name="content" setState={setForm} value={data && data.content} />
           <BottomWrap>
             <BottomOne style={{ marginTop: '20px' }}>
               <div>노출 기간</div>

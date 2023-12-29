@@ -12,7 +12,6 @@ import { PropsInput } from '../../../../common/Input/Input'
 import { ExRadioWrap } from '../../../../modal/External/ExternalFilter'
 
 import { TxtDiv } from '../../../User/SignUp/SignUp.Styled'
-// 클레임 등록
 const DatasheetPost = () => {
   const radioDummy = ['노출', '미노출']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))

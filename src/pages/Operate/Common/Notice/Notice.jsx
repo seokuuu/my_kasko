@@ -100,6 +100,7 @@ const Notice = ({ title, detailsUrl }) => {
       setRows(add_element_field(mappingData, NoticeListFields))
     }
   }, [mappingData])
+
   console.log('공지사항 데이터 목록 :', data)
 
   // 상세 페이지 이동

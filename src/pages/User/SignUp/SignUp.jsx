@@ -39,16 +39,12 @@ import DropField from '../../../components/DropField/DropField'
 import axios from 'axios'
 import { getBankNames } from '../../../constants/banks'
 import AddressFinder from '../../../components/DaumPost/Address'
-import { error } from '../../../lib'
-import { getValue } from '@testing-library/user-event/dist/utils'
-import Test2 from '../../Test/Test2'
 
 const SignUp = () => {
   /** React-Hook-Form 추가하기 */
   const {
     register,
     handleSubmit,
-    getValues,
     setError,
     clearErrors,
     watch,
