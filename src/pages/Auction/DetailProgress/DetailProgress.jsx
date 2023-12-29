@@ -1,48 +1,40 @@
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
+import { useEffect, useRef, useState } from 'react'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 
+import { BlackBtn, GreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn, ExcelBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import {
+  DoubleWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
   FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
+  FilterSubcontianer,
   Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-  TCSubContainer,
   MiniInput,
+  PWRight,
+  PartWrap,
+  ResetImg,
+  RowWrap,
+  TCSubContainer,
+  TableContianer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
-
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+import Table from '../../Table/Table'
+import { useQueryClient } from '@tanstack/react-query'
+import { useAtom } from 'jotai'
+import { AuctionDetailProgressFields, AuctionDetailProgressFieldsCols } from '../../../constants/admin/Auction'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getDetailProgress } from '../../../api/auction/detailprogress'
+import { add_element_field } from '../../../lib/tableHelpers'
 
 const DetailProgress = ({}) => {
   const radioDummy = ['전체', '미진행', '진행중', '종료']
@@ -84,6 +76,33 @@ const DetailProgress = ({}) => {
       setToggleMsg('On')
     }
   }
+
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(AuctionDetailProgressFieldsCols)
+  const getCol = tableField.current
+  const queryClient = useQueryClient()
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  const [Param, setParam] = useState({
+    pageNum: 1,
+    pageSize: 10,
+    customerCode: 'K00000',
+  })
+
+  // GET
+  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getDetailProgress', getDetailProgress)
+  const resData = data?.data?.data?.list
+
+  console.log('resData', resData)
+
+  useEffect(() => {
+    let getData = resData
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, AuctionDetailProgressFields))
+    }
+  }, [isSuccess, resData])
 
   return (
     <FilterContianer>
@@ -186,7 +205,7 @@ const DetailProgress = ({}) => {
             <Excel />
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getCol={getCol} getRow={getRow} />
       </TableContianer>
     </FilterContianer>
   )

@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { storageOptions } from '../../../common/Option/SignUp'
 
 import { BlackBtn, BtnBound, GreyBtn, SkyBtn, TGreyBtn, TWhiteBtn, WhiteGrnBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import Test3 from '../../Test/Test3'
 
 import Hidden from '../../../components/TableInner/Hidden'
@@ -37,9 +37,17 @@ import {
 
 import Excel from '../../../components/TableInner/Excel'
 import { P } from '../../Sales/SellOrder/SellOrderDetail'
+import Table from '../../Table/Table'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { AuctionBiddingFields, AuctionRoundFieldsCols } from '../../../constants/admin/Auction'
+import { useQueryClient } from '@tanstack/react-query'
+import { useAtom } from 'jotai'
+import { getAdminConsolidation } from '../../../service/admin/Standard'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { getBidding } from '../../../api/auction/bidding'
 
 const Bidding = ({}) => {
-  const [types, setTypes] = useState('normal') //판매 구분 (단일 - normal / 패키지 - package)
+  const [types, setTypes] = useState('단일')
   const radioDummy = ['전체', '미진행', '진행중', '종료']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
@@ -80,16 +88,50 @@ const Bidding = ({}) => {
     }
   }
 
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(AuctionRoundFieldsCols)
+  const getCol = tableField.current
+  const queryClient = useQueryClient()
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  const [Param, setParam] = useState({
+    pageNum: 1,
+    pageSize: 50,
+    type: types,
+  })
+
+  useEffect(() => {
+    setParam((prevParams) => ({
+      ...prevParams,
+      type: types,
+    }))
+  }, [types])
+
+  // GET
+  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getBidding', getBidding)
+  const resData = data?.data?.data?.list
+
+  useEffect(() => {
+    let getData = resData
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, AuctionBiddingFields))
+    }
+  }, [isSuccess, resData])
+
+  console.log('getRow =>', getRow)
+
   return (
     <FilterContianer>
       <FilterHeader>
         <div style={{ display: 'flex' }}>
           <h1>경매 응찰</h1>
           <SubTitle>
-            <StyledHeading isActive={types === 'normal'} onClick={() => setTypes('normal')}>
+            <StyledHeading isActive={types === '단일'} onClick={() => setTypes('단일')}>
               단일
             </StyledHeading>
-            <StyledSubHeading isActive={types === 'package'} onClick={() => setTypes('package')}>
+            <StyledSubHeading isActive={types === '패키지'} onClick={() => setTypes('패키지')}>
               패키지
             </StyledSubHeading>
           </SubTitle>
@@ -247,7 +289,7 @@ const Bidding = ({}) => {
             </SkyBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getCol={getCol} getRow={getRow} />
       </TableContianer>
     </FilterContianer>
   )

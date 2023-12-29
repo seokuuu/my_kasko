@@ -100,19 +100,19 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData, isRowCl
   //   }
   // }, [])
 
-  const dummyD = {
-    '고객 코드': 'nope',
-    대표: 'nope',
-    '목적지 코드': 'nope',
-    '목적지 명': 'nope',
-    '담당자 연락처': 'nope',
-    '하차지 명': 'nope',
-    '도착지 연락처': 'nope',
-    '상세 주소': 'nope',
-    비고란: 'nope',
-  }
+  // const dummyD = {
+  //   '고객 코드': 'nope',
+  //   대표: 'nope',
+  //   '목적지 코드': 'nope',
+  //   '목적지 명': 'nope',
+  //   '담당자 연락처': 'nope',
+  //   '하차지 명': 'nope',
+  //   '도착지 연락처': 'nope',
+  //   '상세 주소': 'nope',
+  //   비고란: 'nope',
+  // }
 
-  const dummyData = Array(300).fill(dummyD)
+  // const dummyData = Array(300).fill(dummyD)
 
   // console.log(getCol)
   useEffect(() => {
@@ -122,7 +122,7 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData, isRowCl
     if (getRow && getRow.length > 0) {
       setRowData(getRow)
     } else {
-      setRowData(dummyData)
+      setRowData(null)
     }
   }, [getRow, getCol])
 
@@ -293,6 +293,8 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData, isRowCl
         // params.successCallback(getRow)
       },
     },
+    // overlayNoRowsTemplate:
+    //   '<div style="padding: 20px; border: 2px solid #666; background: #EEF3FB; fontsize: 20px; ">항목이 존재하지 않습니다.</div>',
   }
   // new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
 
