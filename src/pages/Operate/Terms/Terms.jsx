@@ -14,7 +14,7 @@ import { getPolicy, usePolicyMutation } from '../../../api/operate'
 import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
 import { popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Layout'
-import { dotDateFormat } from '../../../utils/utils'
+import { formatDateString } from '../../../utils/utils'
 import useReactQuery from './../../../hooks/useReactQuery'
 
 const Terms = () => {
@@ -41,7 +41,6 @@ const Terms = () => {
     if (isSuccess && isObject(resData)) return setResData(resData)
   }, [data, type, isSuccess])
 
-  console.log('data:', resData)
 
   // 팝업 초기 설정
   useEffect(() => {
@@ -87,7 +86,7 @@ const Terms = () => {
         <FWTitle>
           <h5>서비스 이용약관</h5>
           {/* ⚠️TODO : Date객체 필요 */}
-          <h6>최근 수정일 : {resData ? dotDateFormat(resData.updateDate) : ''}</h6>
+          <h6>최근 수정일 : {resData ? formatDateString(resData.updateDate) : ''}</h6>
         </FWTitle>
         <FullWrap style={{ marginTop: '30px', height: '30vw' }}>
           <textarea
