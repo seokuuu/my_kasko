@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import Test3 from '../../../pages/Test/Test3'
+import Table from '../../../pages/Table/Table'
 import { toggleAtom } from '../../../store/Layout/Layout'
 
 import {
@@ -12,7 +12,13 @@ import {
   TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 
-const FAQ = ({}) => {
+const FAQ = ({ faqList }) => {
+  const [faqListData, setFaqListData] = useState(null)
+
+  useEffect(() => {
+    setFaqListData(faqList)
+  }, [faqList])
+
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -38,6 +44,13 @@ const FAQ = ({}) => {
     }
   }
 
+  const colLabels = [
+    { field: '순번', minWidth: 100 },
+    { field: '카테고리', minWidth: 100 },
+    { field: '제목', minWidth: 100 },
+    { field: '작성일자', minWidth: 100 },
+  ]
+
   return (
     <FilterContianer>
       <FilterHeader>
@@ -61,8 +74,7 @@ const FAQ = ({}) => {
           <div>게시글 목록 (123개 )</div>
           <div style={{ display: 'flex', gap: '10px' }}></div>
         </TCSubContainer>
-
-        <Test3 />
+        <Table getCol={colLabels} getRow={faqList} />
       </TableContianer>
     </FilterContianer>
   )

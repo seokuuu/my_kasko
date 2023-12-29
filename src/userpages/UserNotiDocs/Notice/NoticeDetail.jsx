@@ -6,6 +6,7 @@ import TextEditor from '../../../components/Editor/TextEditor'
 import { BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 import { Bar, CenterRectangleWrap } from '../../../common/OnePage/OnePage.Styled'
 
+import UserSideBar from '../../../components/Left/UserSideBar'
 import { CheckBox } from '../../../common/Check/Checkbox'
 
 import { CustomInput, InputA, PropsInput } from '../../../common/Input/Input'
@@ -15,44 +16,80 @@ import { RadioMainDiv, RadioInnerCircleDiv, RadioCircleDiv } from '../../../comm
 import { BtnBound } from '../../../common/Button/Button'
 import { TxtDiv } from '../../../pages/User/SignUp/SignUp.Styled'
 import { FileUpload } from '@mui/icons-material'
+import Header from '../../../components/Header/Header'
+import { OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
+import SubHeader from '../../../components/Header/SubHeader'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useNoticeDetailsQuery } from '../../../api/operate/notice'
 // 클레임 등록
 const NoticeDetail = () => {
   const radioDummy = ['노출', '미노출']
+  const [expanded, setExpanded] = useState('공지 & 자료실')
+  const [depth2Color, setDepth2Color] = useState('공지사항')
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+  const prevData = useLocation().state
+  const prevUid = prevData.data.고유값
 
+  const { data: noticeDetails } = useNoticeDetailsQuery(prevUid)
+  const navigate = useNavigate()
+
+  function createMarkup(content) {
+    return { __html: content }
+  }
   return (
     <>
-      <CenterRectangleWrap style={{ height: '88vh', padding: '10px 50px' }}>
-        <CRWMain>
-          <h5>공지사항 상세</h5>
-          <div style={{ marginBottom: '10px' }}>
-            <div style={{ display: 'flex', gap: '5px', fontSize: '16px', color: '#c8c8c8', marginBottom: '5px' }}>
-              <div>공지사항</div>
-              <BtnBound style={{ height: '15px' }} />
-              <div>관리자</div>
-              <BtnBound style={{ height: '15px' }} />
-              <div>2023.06.12</div>
-            </div>
-            <div style={{ fontSize: '24px' }}>::API_TITLE::</div>
-          </div>
-          <Bar />
-          <BottomWrap style={{ height: '50%' }}>::API_CONTENT::</BottomWrap>
-          <div style={{ height: '50px' }}>
-            <Bar />
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div style={{ width: '100px' }}>첨부 파일</div>
-              <FileUploadWrap>
-                <div>파일명.pdf</div>
-                <img src="/svg/Upload.svg" />
-              </FileUploadWrap>
-            </div>
-          </div>
-          <FileUploadSub>
-            <WhiteBtn width={40} height={50} style={{ marginRight: '10px' }}>
-              목록
-            </WhiteBtn>
-          </FileUploadSub>
-        </CRWMain>
+      <Header />
+      <CenterRectangleWrap style={{ width: '100%', padding: '0' }}>
+        <UserSideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
+        <OverAllSub>
+          <SubHeader />
+          <OverAllTable>
+            <CRWMain>
+              <h5>공지사항 상세</h5>
+              <div style={{ marginBottom: '10px' }}>
+                <div style={{ display: 'flex', gap: '5px', fontSize: '16px', color: '#c8c8c8', marginBottom: '5px' }}>
+                  <div>공지사항</div>
+                  <BtnBound style={{ height: '15px' }} />
+                  <div>관리자</div>
+                  <BtnBound style={{ height: '15px' }} />
+                  <div>2023.06.12</div>
+                </div>
+                <div style={{ fontSize: '24px' }}>{noticeDetails?.title}</div>
+              </div>
+              <Bar />
+              <BottomWrap
+                style={{ height: '50%' }}
+                dangerouslySetInnerHTML={createMarkup(noticeDetails?.content)}
+              ></BottomWrap>{' '}
+              {noticeDetails?.fileList.length ? (
+                <div style={{ height: '50px' }}>
+                  <Bar />
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ width: '100px' }}>첨부 파일</div>
+                    <FileUploadWrap>
+                      <div>파일명.pdf</div>
+                      <img src="/svg/Upload.svg" alt="파일" />
+                    </FileUploadWrap>
+                  </div>
+                </div>
+              ) : (
+                <div></div>
+              )}
+              <FileUploadSub>
+                <WhiteBtn
+                  width={40}
+                  height={50}
+                  style={{ marginRight: '10px' }}
+                  onClick={() => {
+                    navigate(-1)
+                  }}
+                >
+                  목록
+                </WhiteBtn>
+              </FileUploadSub>
+            </CRWMain>
+          </OverAllTable>
+        </OverAllSub>
       </CenterRectangleWrap>
     </>
   )
@@ -62,7 +99,9 @@ export default NoticeDetail
 
 export const CRWMain = styled.div`
   width: 100%;
-
+  height: 88vh;
+  background-color: #fff;
+  padding: 12px 24px;
   h4 {
     margin-top: 20px;
   }

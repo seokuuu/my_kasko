@@ -1,5 +1,5 @@
-import { styled } from 'styled-components'
 import Select from 'react-select'
+import { styled } from 'styled-components'
 
 ////Options
 
@@ -9,7 +9,7 @@ export const claimOngoingStatus = [
   { value: 'ask1', label: '종료' },
   { value: 'ask2', label: '반품' },
   { value: 'ask3', label: '교정' },
-  { value: 'ask4', label: '현금 보전' },
+  // { value: 'ask4', label: '현금 보전' },
   { value: 'ask4', label: '보상' },
 ]
 

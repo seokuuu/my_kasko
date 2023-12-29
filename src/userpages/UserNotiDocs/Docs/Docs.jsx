@@ -44,6 +44,7 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { useNoticeListQuery } from '../../../api/operate/notice'
 import moment from 'moment'
 import { useNavigate } from 'react-router-dom'
+import TableTest from '../../../pages/Table/TableTest'
 const Docs = () => {
   // const handleSelectChange = (selectedOption, name) => {
   //   // setInput(prevState => ({
@@ -51,18 +52,21 @@ const Docs = () => {
   //   //   [name]: selectedOption.label,
   //   // }));
   // }
+  const [title, setTitle] = useState('')
+
   const Params = {
     type: '자료실',
     pageNum: 1,
     pageSize: 100,
+    title: title,
   }
-  const { isSuccess, data: Docs } = useNoticeListQuery(Params)
+  const { isSuccess, data: Docs, refetch } = useNoticeListQuery(Params)
   const [isRotated, setIsRotated] = useState(false)
   const [getRow, setGetRow] = useState('')
   const navigate = useNavigate()
   const tableField = useRef(UserNoticeListFieldCols)
   const getCol = tableField.current
-  const resData = Docs?.list
+  // const resData = Docs?.list
   // console.log(resData)
   // Function to handle image click and toggle rotation
 
@@ -72,44 +76,75 @@ const Docs = () => {
   }
 
   const [topData, setTopData] = useState([])
-
+  const [result, setResult] = useState([])
   // 상단고정 데이터
-  function createData(data) {
-    var result = []
-    for (var i = 0; i < data.length; i++) {
-      result.push({
-        작성일자: data[i].createDate ? moment(i.createDate).format('YYYY-MM-DD') : '-',
-        작성자: data[i].name,
-        순번: data[i].status && '고정',
-        고유값: data[i].uid,
-        제목: data[i].getFile ? `${data[i].title} 📎` : `${data[i].title} `,
-      })
-    }
-    return result
-  }
 
-  const mappingData = useMemo(
+  console.log(topData)
+  const mappingData2 = useMemo(
     () =>
       Docs
-        ? Docs.list.map((d, index) => {
-            if (d.status) {
-              setTopData([d]) // 고정값 추출
-            }
-            return {
-              ...d,
-              createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
-              id: d.status ? '고정' : Docs.list.length - (index + (Params.pageNum - 1) * Params.pageSize), // 순번 내림차순
-              uid: d.uid,
-              title: d.getFile ? `${d.title} 📎` : `${d.title} `,
+        ? Docs.list.filter((d, index) => {
+            // console.log('DD', moment(d.createDate).format('YYYY-MM-DD'))
+            if (!d.status) {
+              return {
+                ...d,
+                createDate: moment(d.createDate).format('YYYY-MM-DD'),
+                // id: Docs.length, // 순번 내림차순
+                uid: d.uid,
+                title: d.title,
+                count: d.count,
+                name: d.name,
+              }
             }
           })
         : [],
     [Docs],
   )
-  // console.log(topData)
+  console.log(Docs)
+
+  useEffect(() => {
+    if (Docs) {
+      const newTopData = Docs.list.filter((d, index) => {
+        if (d.status) {
+          return {
+            ...d,
+            createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
+            작성자: d.name,
+            순번: '고정',
+            고유값: d.uid,
+            제목: d.getFile ? `${d.title} 📎` : `${d.title} `,
+            조회수: d.count,
+            타입: '자료실',
+          }
+        } else {
+          return null
+        }
+      })
+      setTopData(newTopData)
+      console.log('NEW TOP DATA :', newTopData)
+    }
+  }, [Docs])
+
+  function createData(data) {
+    var result = []
+    for (var i = 0; i < data.length; i++) {
+      result.push({
+        createDate: data[i].createDate ? moment(data[i].createDate).format('YYYY-MM-DD') : '-',
+        작성자: data[i].name,
+        순번: '고정',
+        고유값: data[i].uid,
+        제목: data[i].getFile ? `${data[i].title} 📎` : `${data[i].title} `,
+        조회수: data[i].count,
+        타입: '자료실',
+      })
+    }
+    return result
+  }
+  // console.log(Docs)
   // 테이블 row값 가져오기
   const gettingRow = () => {
-    const getData = mappingData
+    const getData = mappingData2
+
     if (!isSuccess && !getData) return null
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, UserNoticeListFields))
@@ -118,7 +153,7 @@ const Docs = () => {
   useEffect(() => {
     gettingRow()
     //타입, 리액트쿼리, 데이터 확인 후 실행
-  }, [isSuccess, mappingData])
+  }, [isSuccess, mappingData2])
 
   // 토글 쓰기
   const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -132,14 +167,9 @@ const Docs = () => {
     }
   }
 
-  const [isModal, setIsModal] = useAtom(blueModalAtom)
-
-  console.log('isModal =>', isModal)
-
-  const modalOpen = () => {
-    setIsModal(true)
+  const handleSearch = () => {
+    refetch()
   }
-
   return (
     <FilterContianer>
       <div>
@@ -155,10 +185,13 @@ const Docs = () => {
                 <PartWrap>
                   <h6 style={{ width: '100px' }}> 검색</h6>
                   <MainSelect />
-                  <Input style={{ marginLeft: '10px' }} />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen}>
-                    찾기
-                  </GreyBtn>
+                  <Input
+                    style={{ marginLeft: '10px' }}
+                    value={title}
+                    onChange={(e) => {
+                      setTitle(e.target.value)
+                    }}
+                  />
                 </PartWrap>
               </RowWrap>
               <FilterRight></FilterRight>
@@ -174,7 +207,7 @@ const Docs = () => {
                 />
               </div>
               <div style={{ width: '180px' }}>
-                <BlackBtn width={100} height={40}>
+                <BlackBtn width={100} height={40} onClick={handleSearch}>
                   검색
                 </BlackBtn>
               </div>
@@ -186,7 +219,7 @@ const Docs = () => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            게시글 목록 (50개 )
+            게시글 목록 ({Docs?.pagination?.listCount}개)
             <Hidden />
           </div>
           <div style={{ gap: '10px' }}>
@@ -202,6 +235,7 @@ const Docs = () => {
             navigate(`/userpage/docs/${uid}`, { state: { data: e } })
           }}
           topData={createData(topData)}
+          // type={'자료실'}
         />
       </TableContianer>
     </FilterContianer>

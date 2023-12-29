@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 import { Link } from 'react-router-dom'
@@ -52,8 +52,13 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 import Excel from '../../../components/TableInner/Excel'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getSingleProducts } from '../../../api/SellProduct'
+import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constants/admin/Single'
+import Table from '../../Table/Table'
+import { add_element_field } from '../../../lib/tableHelpers'
 
-const SalesProduct = ({}) => {
+const SalesProduct = () => {
   const checkSales = ['전체', '판매재', '판매제외제', '카스코 추천 제품']
 
   const checkShips = ['전체', '경매대상재', '상시판매 대상재']
@@ -138,6 +143,19 @@ const SalesProduct = ({}) => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
   }
 
+  const requestParameter = {
+    pageNum: 1,
+    pageSize: 1000,
+    type: '일반',
+    category: '판매제품',
+  }
+
+  const [getRow, setGetRow] = useState('')
+  const { data, isSuccess } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
+  const SaleProductList = data?.data.list
+  const tableField = useRef(SingleDispatchFieldsCols)
+  const getCol = tableField.current
+
   // 토글 쓰기
   const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
   const [toggleMsg, setToggleMsg] = useState('On')
@@ -150,6 +168,13 @@ const SalesProduct = ({}) => {
     }
   }
 
+  useEffect(() => {
+    // if (!isSuccess && !SingleProductList) return null
+    if (Array.isArray(SaleProductList)) {
+      setGetRow(add_element_field(SaleProductList, singleDispatchFields))
+    }
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+  }, [isSuccess, SaleProductList])
   return (
     <FilterContianer>
       <FilterHeader>
@@ -355,7 +380,7 @@ const SalesProduct = ({}) => {
             <WhiteBlackBtn>판매 유형 변경</WhiteBlackBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getRow={getRow} getCol={getCol} />
         <TCSubContainer bor>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>

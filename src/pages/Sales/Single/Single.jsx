@@ -18,7 +18,6 @@ import {
   FilterSubcontianer,
   FilterWrap,
   Input,
-  InputStartWrap,
   MiniInput,
   PWRight,
   PartWrap,
@@ -34,6 +33,8 @@ import Test3 from '../../Test/Test3'
 
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getSingleProducts } from '../../../api/SellProduct'
 
 const Single = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -43,6 +44,7 @@ const Single = ({}) => {
     // }));
   }
   const [isRotated, setIsRotated] = useState(false)
+  const [getRow, setGetRow] = useState('')
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
@@ -68,8 +70,6 @@ const Single = ({}) => {
   const noticeEditOnClickHandler = () => {
     setnoticeEdit((prev) => !prev)
   }
-
-  console.log('isModal =>', isModal)
 
   const modalOpen = () => {
     setIsModal(true)
@@ -235,7 +235,7 @@ const Single = ({}) => {
             <WhiteBlackBtn>노출 상태 변경</WhiteBlackBtn>
           </div>
         </TCSubContainer>
-        <Test3 title={'규격 약호 찾기'} />
+        {/* <Test3 title={'규격 약호 찾기'} /> */}
         <TableBottomWrap>
           <BlackBtn width={13} height={40} fontSize={17}>
             저장

@@ -28,25 +28,43 @@ const FileName = styled.div`
   padding: 12px;
 `
 
-const AttachedFile = ({ setState = () => {}, name = 'file', fileName }) => {
+const AttachedFile = ({ setState = () => {}, name = 'file', fileList, isExistTitle }) => {
+  // 파일 정보
   const [file, setFile] = useState([])
 
-  useEffect(() => {
-    if (fileName) {
-      setFile({ name: fileName })
-    }
-  }, [fileName])
+  // 삭제할 파일 인덱스
+  const [deleteFileList, setDeleteFileList] = useState([])
+
+  // 기존 파일
+  const [existFileList, setExistFileList] = useState([])
+
   useEffect(() => {
     if (setState) {
-      setState((p) => ({ ...p, [name]: file }))
+      setState((p) => ({ ...p, [name]: file, deleteFileList }))
     }
-  }, [file])
+  }, [file, deleteFileList])
 
-  console.log('file :', file)
+  // 기존 파일이 있을 경우, 해당 파일 할당
+  useEffect(() => {
+    if (fileList.length > 0) {
+      setExistFileList(fileList)
+    }
+  }, [fileList])
+
+  // 컴포넌트가 사라지면 데이터 초기화
+  useEffect(() => {
+    return () => {
+      setFile([])
+      setDeleteFileList([])
+      setExistFileList([])
+    }
+  }, [])
+
+  console.log('existFileList :', existFileList)
 
   return (
-    <div style={{ width: '48%' }}>
-      <p style={{ marginBottom: '5px' }}>첨부 파일</p>
+    <div style={{ width: '40%' }}>
+      {isExistTitle && <p style={{ marginBottom: '5px' }}>첨부 파일</p>}
       <div style={{ width: '48%' }}>
         <WhiteBtn style={{ width: '200%', marginBottom: '12px' }}>
           <label
@@ -77,13 +95,37 @@ const AttachedFile = ({ setState = () => {}, name = 'file', fileName }) => {
           />
         </WhiteBtn>
 
+        {/* 새로운 파일 */}
         {file.length > 0 ? (
           <FileList>
-            {file.map((f, i) => (
-              <FileName key={i}>
+            {file.map((f, index) => (
+              <FileName key={index}>
                 <span>{f.name ?? ''}</span>
 
-                <CloseBtn onClick={() => setFile([])} />
+                <CloseBtn
+                  onClick={() => {
+                    setFile((p) => p.filter((file, newIndex) => newIndex !== index))
+                  }}
+                />
+              </FileName>
+            ))}
+          </FileList>
+        ) : null}
+        {/* 기존 파일 */}
+        {existFileList.length > 0 ? (
+          <FileList>
+            {existFileList.map((f, index) => (
+              <FileName key={index}>
+                <span>{f.name ?? ''}</span>
+
+                <CloseBtn
+                  onClick={() => {
+                    if (fileList.length > 0) {
+                      setExistFileList((p) => p.filter((file, newIndex) => newIndex !== index))
+                      setDeleteFileList((p) => [...p, f.uid])
+                    }
+                  }}
+                />
               </FileName>
             ))}
           </FileList>

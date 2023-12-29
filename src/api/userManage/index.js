@@ -117,7 +117,8 @@ export function get_addressFind(data) {
 ============================== */
 // {{dev}}/api/admin/member?pageNum=1&pageSize=50
 export function get_userManage(data) {
-  return client.get(`${urls.userManage}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
+  console.log('data', data)
+  return client.get(`${urls.userManage}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&type=${data.type}`)
 }
 
 export function delete_userManage(id) {
@@ -130,6 +131,10 @@ export function post_userManage(data) {
 
 export function patch_userManage(data) {
   return client.patch(urls.userManage, data)
+}
+
+export function get_userDetail(data) {
+  return client.get(`${urls.userManage}/${data}`)
 }
 
 // 사용자 등록 (formData)

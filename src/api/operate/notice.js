@@ -51,45 +51,62 @@ export function useNoticeDetailsQuery(id) {
 }
 
 // 공지 & 자료실 등록(type 값에 따라 성공시 리다이렉트되는 url이 다릅니다.)
+function createFormData(params, type, isRegister) {
+  const form = new FormData()
+
+  // 파일이 아닌 데이터(등록)
+  const registerNoneFileData = {
+    title: params.title,
+    content: params.content,
+    status: params.status,
+    type,
+  }
+
+  // 파일이 아닌 데이터(수정)
+  const updateNoneFileData = {
+    uid: params.uid,
+    title: params.title,
+    content: params.content,
+    status: params.status,
+    deleteFileList: params.deleteFileList,
+    type,
+  }
+
+  // 파일 데이터
+  const fileData = params.fileList
+
+  // 폼 데이터에 파일이 아닌 데이터 추가
+  form.append(
+    'request',
+    // JSON.stringify(noneFileData),
+    new Blob([JSON.stringify(isRegister ? registerNoneFileData : updateNoneFileData)], {
+      type: 'application/json',
+    }),
+  )
+
+  // 폼 데이터에 파일 데이터 추가
+  if (fileData) {
+    fileData.forEach((f) => {
+      console.log('post file :', f)
+      form.append(`fileList`, f)
+    })
+  }
+
+  return form
+}
+
+// 공지&자료실 등록
 export function useNoticeRegisterMutation(type) {
   const navigate = useNavigate()
   return useMutation({
     mutationKey: NOTICE_KEYS.registerNotice,
     mutationFn: async function (params) {
-      console.log('등록 API  동작')
+      const form = createFormData(params, type, true)
 
-      const noneFileData = {
-        title: params.title,
-        content: params.content,
-        status: params.status,
-        type: params.type,
-      }
-
-      const fileData = params.fileList
-
-      const form = new FormData()
-      form.append(
-        'request',
-        // JSON.stringify(noneFileData),
-        new Blob([JSON.stringify(noneFileData)], {
-          type: 'application/json',
-        }),
-      )
-
-      if (fileData) {
-        fileData.forEach((f, i) => {
-          console.log('post file :', f)
-          form.append(`fileList[${i}]`, f)
-        })
-      }
-
-      for (let key of form.keys()) {
-        console.log(key, ':', form.get(key))
-      }
       return client.post(urls, form, { headers })
     },
     onSuccess() {
-      if (type === 'notice') {
+      if (type === '공지사항') {
         navigate('/operate/notice')
       } else {
         navigate('/operate/datasheet')
@@ -110,12 +127,11 @@ export function useNoticeUpdateMutation(type) {
   return useMutation({
     mutationKey: NOTICE_KEYS.updateNotice,
     mutationFn: async function (params) {
-      return client.patch(urls, {
-        request: params,
-      })
+      const form = createFormData(params, type, false)
+      return client.patch(urls, form, { headers })
     },
     onSuccess() {
-      if (type === 'notice') {
+      if (type === '공지사항') {
         navigate('/operate/notice')
       } else {
         navigate('/operate/datasheet')
