@@ -168,7 +168,7 @@ export const WhiteGrnBtn = styled.div`
   }
 `
 
-export const WhiteRedBtn = styled.div`
+export const WhiteRedBtn = styled.button`
   font-size: ${(props) => props.fontSize}px;
   width: ${(props) => props.width}%;
   height: ${(props) => props.height}px;
