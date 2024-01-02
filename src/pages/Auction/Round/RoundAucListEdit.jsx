@@ -14,9 +14,9 @@ import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-import Test3 from '../../Test/Test3'
 
 import {
+  CustomInput,
   DoubleWrap,
   ExInputsWrap,
   FilterContianer,
@@ -28,29 +28,27 @@ import {
   FilterTCTop,
   FilterTopContainer,
   Input,
-  PartWrap,
+  MiniInput,
   PWRight,
+  PartWrap,
   ResetImg,
   RowWrap,
-  TableContianer,
   TCSubContainer,
+  TableContianer,
   Tilde,
-  CustomInput,
-  MiniInput,
 } from '../../../modal/External/ExternalFilter'
 
+import { useQueryClient } from '@tanstack/react-query'
+import { useAtom } from 'jotai'
+import { getDetailAuction } from '../../../api/auction/round'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { aucProAddModalAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
-import DefaultBlueBar from '../../../modal/Multi/DefaultBlueBar'
-import RoundAucProAdd from './RoundAucProAdd'
-import { add_element_field } from '../../../lib/tableHelpers'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { useQueryClient } from '@tanstack/react-query'
-import { getDetailAuction } from '../../../api/auction/round'
 import { AuctionRoundDetailFields, AuctionRoundDetailFieldsCols } from '../../../constants/admin/Auction'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
+import RoundAucProAdd from './RoundAucProAdd'
 
 //경매 목록 수정(단일)
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
@@ -297,7 +295,14 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
             <WhiteRedBtn>선택 목록 제거</WhiteRedBtn>
           </div>
         </TCSubContainer>
-        {addModal && <RoundAucProAdd setAddModal={setAddModal} newResData={newResData} setNewResData={setNewResData} />}
+        {addModal && (
+          <RoundAucProAdd
+            setAddModal={setAddModal}
+            newResData={newResData}
+            setNewResData={setNewResData}
+            types={types}
+          />
+        )}
         <NewBottomBtnWrap bottom={-5}>
           <WhiteBtn width={13} height={40}>
             돌아가기

@@ -50,11 +50,28 @@ const asDate = (dateAsString) => {
   return new Date(Number.parseInt(splitFields[2]), Number.parseInt(splitFields[1]) - 1, Number.parseInt(splitFields[0]))
 }
 
-const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData, isRowClickable, handleOnRowClicked }) => {
+const Table = ({
+  hei,
+  hei2,
+  getRow,
+  getCol,
+  setChoiceComponent,
+  size,
+  topData,
+  isRowClickable,
+  handleOnRowClicked,
+}) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
   const gridRef = useRef()
-  const containerStyle = useMemo(() => ({ width: '100%', height: '500px' }), [])
+  const containerStyle = useMemo(() => {
+    if (hei2) {
+      return { width: '100%', height: `${hei2}px` }
+    } else {
+      return { width: '100%', height: '500px' }
+    }
+  }, [hei2])
+
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
   const [rowData, setRowData] = useState()
   const [selectedRowData, setSelectedRowData] = useState(null)
@@ -298,7 +315,6 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData, isRowCl
   }
   // new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
 
-
   // console.log('gridOptions', gridOptions)
   const pinnedTopRowData = useMemo(() => {
     return topData
@@ -315,7 +331,6 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData, isRowCl
     }
     return {} // Default style for non-clickable rows
   }
-
 
   return (
     <div style={containerStyle}>

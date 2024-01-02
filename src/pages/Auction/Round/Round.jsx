@@ -42,7 +42,7 @@ import { AuctionRoundFields, AuctionRoundFieldsCols } from '../../../constants/a
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import AuctionRound from '../../../modal/Multi/AuctionRound'
-import { auctionRoundEditPageAtom, roundPostModalAtom, btnCellUidAtom } from '../../../store/Layout/Layout'
+import { auctionRoundEditPageAtom, btnCellUidAtom, roundPostModalAtom } from '../../../store/Layout/Layout'
 import RoundAucListEdit from './RoundAucListEdit'
 
 const Round = ({}) => {
