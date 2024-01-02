@@ -1,10 +1,19 @@
-import { useEffect, useState } from 'react'
-import { BlackBtn, BtnBound, GreyBtn, SkyBtn, TGreyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { useEffect, useRef, useState } from 'react'
+import {
+  BlackBtn,
+  BtnBound,
+  GreyBtn,
+  NewBottomBtnWrap,
+  SkyBtn,
+  TGreyBtn,
+  WhiteBtn,
+  WhiteRedBtn,
+} from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import Test3 from '../../Test/Test3'
 
 import {
@@ -36,9 +45,18 @@ import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 import DefaultBlueBar from '../../../modal/Multi/DefaultBlueBar'
 import RoundAucProAdd from './RoundAucProAdd'
+import { add_element_field } from '../../../lib/tableHelpers'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { useQueryClient } from '@tanstack/react-query'
+import { getDetailAuction } from '../../../api/auction/round'
+import { AuctionRoundDetailFields, AuctionRoundDetailFieldsCols } from '../../../constants/admin/Auction'
+import Table from '../../Table/Table'
 
 //경매 목록 수정(단일)
-const RoundAucListEdit = ({}) => {
+const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
+  const [newResData, setNewResData] = useState([])
+  const [addList, setAddList] = useState([])
+  const [deleteList, setDeleteList] = useState([])
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
   const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
   //checkSales
@@ -88,11 +106,52 @@ const RoundAucListEdit = ({}) => {
     }
   }
 
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(AuctionRoundDetailFieldsCols)
+  const getCol = tableField.current
+  const queryClient = useQueryClient()
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  const [originalRow, setOriginalRow] = useState([]) //원본 row를 저장해서 radio check에러 막기
+  const [inputParams, setInputParams] = useState({
+    pageNum: 1,
+    pageSize: 50,
+    auctionNumber: auctionNum,
+  })
+
+  useEffect(() => {
+    setInputParams((prevParams) => ({
+      ...prevParams,
+      type: types,
+    }))
+  }, [types])
+
+  const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(
+    inputParams,
+    'getdetailauction',
+    getDetailAuction,
+  )
+
+  useEffect(() => {
+    refetch()
+  }, [inputParams])
+
+  const resData = data?.data?.data?.list
+
+  useEffect(() => {
+    let getData = resData
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, AuctionRoundDetailFields))
+    }
+  }, [isSuccess, resData])
+
   return (
     <FilterContianer>
       <FilterHeader>
         <div style={{ display: 'flex' }}>
-          <h1>경매 목록 수정(단일)</h1>
+          <h1>경매 목록 수정 ({types})</h1>
         </div>
         {/* 토글 쓰기 */}
         <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
@@ -100,7 +159,7 @@ const RoundAucListEdit = ({}) => {
       <FilterTopContainer>
         <FilterTCTop>
           <h6>경매 번호</h6>
-          <p>2023041050</p>
+          <p>{auctionNum}</p>
         </FilterTCTop>
       </FilterTopContainer>
       {exFilterToggle && (
@@ -231,14 +290,22 @@ const RoundAucListEdit = ({}) => {
             </SkyBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getCol={getCol} getRow={getRow} />
         <TCSubContainer>
           <div style={{ display: 'flex', gap: '10px' }}></div>
           <div>
             <WhiteRedBtn>선택 목록 제거</WhiteRedBtn>
           </div>
         </TCSubContainer>
-        {addModal && <RoundAucProAdd setAddModal={setAddModal} />}
+        {addModal && <RoundAucProAdd setAddModal={setAddModal} newResData={newResData} setNewResData={setNewResData} />}
+        <NewBottomBtnWrap bottom={-5}>
+          <WhiteBtn width={13} height={40}>
+            돌아가기
+          </WhiteBtn>
+          <BlackBtn width={13} height={40}>
+            등록
+          </BlackBtn>
+        </NewBottomBtnWrap>
       </TableContianer>
     </FilterContianer>
   )

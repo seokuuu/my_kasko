@@ -9,6 +9,8 @@ import {
   BlueMainDiv,
   BlueSubDiv,
   BlueDateDiv,
+  BlueBtnWrap,
+  BlueBlackBtn,
 } from '../Common/Common.Styled'
 
 import { styled } from 'styled-components'
@@ -25,38 +27,140 @@ import DateGrid from '../../components/DateGrid/DateGrid'
 
 import { ExCheckWrap, ExCheckDiv } from '../External/ExternalFilter'
 import { StyledCheckSubSquDiv, CheckImg2 } from '../../common/Check/CheckImg'
+import moment from 'moment'
+import useMutationQuery from '../../hooks/useMutationQuery'
+import { postAuction } from '../../api/auction/round'
 
-const AuctionRound = ({ setRoundModal }) => {
+const AuctionRound = ({ setRoundModal, types }) => {
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
   const modalClose = () => {
     setRoundModal(false)
   }
 
-  const radioDummy = ['정기 경매', '추가 경매']
+  const init = {
+    saleType: types,
+    auctionType: '',
+    insertStartDate: '',
+    insertEndDate: '',
+    timeList: [],
+  }
 
+  const initB = {
+    saleType: types,
+    auctionType: '',
+    insertStartDate: '',
+    insertEndDate: '',
+    insertStartTime: '',
+    insertEndTime: '',
+  }
+
+  const [input, setInput] = useState(init)
+  const [inputB, setInputB] = useState(initB)
+
+  console.log('inputB', inputB)
+
+  const [dates, setDates] = useState({
+    insertStartDate: '',
+    insertEndDate: '',
+    addedDate: '',
+  })
+
+  const [times, setTimes] = useState({
+    startHour: '',
+    startMinute: '',
+    endHour: '',
+    endMinute: '',
+  })
+
+  console.log('times', times)
+
+  const dateHandler = (date, name) => {
+    setDates((p) => ({ ...p, [name]: date }))
+  }
+
+  //라디오
+  const radioDummy = ['정기 경매', '추가 경매']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
-  const checkDummy = ['오전 경매 (9:00AM - 10:00AM)', '오후 경매 (13:30PM - 14:00PM)']
+  console.log('checkRadio', checkRadio)
+
+  //체크
+  const checkDummy = ['오전 경매', '오후 경매']
   const [check1, setCheck1] = useState(Array.from({ length: checkDummy.length }, () => false))
 
+  //체크 useEffect
   useEffect(() => {
-    // true에 해당되면, value를, false면 빈값을 반환
-    const updatedCheck = checkDummy.map((value, index) => {
-      return check1[index] ? value : ''
+    const selectedTimeList = []
+
+    if (check1[0]) {
+      selectedTimeList.push('오전')
+    }
+
+    if (check1[1]) {
+      selectedTimeList.push('오후')
+    }
+
+    const selectedAuctionType = radioDummy.find((_, index) => checkRadio[index])
+    const formattedAuctionType = selectedAuctionType.replace(/\s/g, '')
+
+    setInput({
+      ...input,
+      timeList: selectedTimeList,
+      auctionType: formattedAuctionType,
     })
-    // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-    const filteredCheck = updatedCheck.filter((item) => item !== '')
-    setCheck1(filteredCheck)
+    setInputB({
+      ...inputB,
+      auctionType: formattedAuctionType,
+    })
+  }, [check1, checkRadio])
 
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
-  }, [check1])
+  // 날짜 YYYY-MM-DD 형식으로 변환
+  useEffect(() => {
+    setInput((p) => ({
+      ...p,
+      insertStartDate: dates.insertStartDate && moment(dates.insertStartDate).format('YYYY-MM-DD'),
+      insertEndDate: dates.insertStartDate && moment(dates.insertEndDate).format('YYYY-MM-DD'),
+    }))
+    setInputB((p) => ({
+      ...p,
+      insertStartDate: dates.addedDate && moment(dates.addedDate).format('YYYY-MM-DD'),
+      insertEndDate: dates.addedDate && moment(dates.addedDate).format('YYYY-MM-DD'),
+    }))
+  }, [dates])
 
-  console.log('checkRadio =>', checkRadio)
+  const timesHandler = (e) => {
+    const { name, value } = e.target
+    if (
+      (name.includes('Hour') && (value < 0 || value > 23)) ||
+      (name.includes('Minute') && (value < 0 || value > 59))
+    ) {
+      alert('올바른 시간을 입력해주세요. (0 ~ 23시, 0 ~ 59분)')
+      return // 잘못된 값이면 함수 종료
+    }
+    setTimes((p) => ({ ...p, [name]: value }))
+  }
+
+  // times "hh:mm" 식 변환
+  useEffect(() => {
+    const insertStartTime = `${times.startHour}:${times.startMinute}`
+    const insertEndTime = `${times.endHour}:${times.endMinute}`
+    setInputB((p) => ({
+      ...p,
+      insertStartTime: insertStartTime,
+      insertEndTime: insertEndTime,
+    }))
+  }, [times])
+
+  const mutation = useMutationQuery('', postAuction)
+
+  const submitHandle = (e) => {
+    if (checkRadio[0]) {
+      mutation.mutate(input)
+    } else {
+      mutation.mutate(inputB)
+    }
+  }
 
   return (
     // 재고 관리 - 판매 구분 변경
@@ -93,11 +197,21 @@ const AuctionRound = ({ setRoundModal }) => {
                 <BlueSubDiv style={{ height: '80px' }} bor>
                   <h6>경매 일정</h6>
                   <BlueDateDiv>
-                    <DateGrid fontSize={16} />
+                    <DateGrid
+                      startDate={dates.addedDate}
+                      setStartDate={(date) => dateHandler(date, 'addedDate')}
+                      fontSize={16}
+                    />
                     <div style={{ marginLeft: '10px' }}>
-                      {' '}
-                      <TimeInput placeholder="0시" /> <TimeInput placeholder="0분" /> ~ <TimeInput placeholder="0시" />{' '}
-                      <TimeInput placeholder="0분" />
+                      <TimeInput placeholder="0시" name="startHour" value={times.startHour} onChange={timesHandler} />
+                      <TimeInput
+                        placeholder="0분"
+                        name="startMinute"
+                        value={times.startMinute}
+                        onChange={timesHandler}
+                      />
+                      ~ <TimeInput placeholder="0시" name="endHour" value={times.endHour} onChange={timesHandler} />
+                      <TimeInput placeholder="0분" name="endMinute" value={times.endMinute} onChange={timesHandler} />
                     </div>
                   </BlueDateDiv>
                 </BlueSubDiv>
@@ -106,7 +220,17 @@ const AuctionRound = ({ setRoundModal }) => {
                   <BlueSubDiv style={{ height: '80px' }} bor>
                     <h6>반복 기간 설정</h6>
                     <BlueDateDiv>
-                      <DateGrid fontSize={16} /> <p>~</p> <DateGrid fontSize={16} />
+                      <DateGrid
+                        startDate={dates.insertStartDate}
+                        setStartDate={(date) => dateHandler(date, 'insertStartDate')}
+                        fontSize={16}
+                      />
+                      <p>~</p>{' '}
+                      <DateGrid
+                        startDate={dates.insertEndDate}
+                        setStartDate={(date) => dateHandler(date, 'insertEndDate')}
+                        fontSize={16}
+                      />
                     </BlueDateDiv>
                   </BlueSubDiv>
                   <BlueSubDiv style={{ height: '80px' }} bor>
@@ -140,6 +264,9 @@ const AuctionRound = ({ setRoundModal }) => {
                 </div>
               </BlueSubDiv>
             </BlueMainDiv>
+            <BlueBtnWrap>
+              <BlueBlackBtn onClick={submitHandle}>등록</BlueBlackBtn>
+            </BlueBtnWrap>
           </div>
         </BlueSubContainer>
       </ModalContainer>

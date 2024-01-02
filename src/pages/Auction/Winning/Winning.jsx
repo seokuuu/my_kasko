@@ -1,51 +1,51 @@
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
-import Excel from '../../../components/TableInner/Excel'
+import { useEffect, useRef, useState } from 'react'
+import { BlackBtn, GreyBtn, SkyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, ExcelBtn, SkyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { storageOptions } from '../../../common/Option/SignUp'
 import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
+import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+
+import Table from '../../Table/Table'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
+import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 
 import {
+  DoubleWrap,
+  ExCheckDiv,
+  ExCheckWrap,
+  ExInputsWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
+  FilterHeaderAlert,
   FilterLeft,
   FilterRight,
-  RowWrap,
+  FilterSubcontianer,
+  GridWrap,
+  Input,
   PartWrap,
   PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
   ResetImg,
+  RowWrap,
   TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-  ExCheckWrap,
-  ExCheckDiv,
   TCSubContainer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import { winningAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 import { Link } from 'react-router-dom'
+import { winningAtom } from '../../../store/Layout/Layout'
 
-import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import { AuctionWinningFields, AuctionWinningFieldsCols } from '../../../constants/admin/Auction'
+import { useQueryClient } from '@tanstack/react-query'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getWinning } from '../../../api/auction/winning'
+import { add_element_field } from '../../../lib/tableHelpers'
 
 const Winning = ({}) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -98,6 +98,33 @@ const Winning = ({}) => {
       setToggleMsg('On')
     }
   }
+
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(AuctionWinningFieldsCols)
+  const getCol = tableField.current
+  const queryClient = useQueryClient()
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  const [Param, setParam] = useState({
+    pageNum: 1,
+    pageSize: 10,
+    orderType: '경매',
+  })
+
+  // GET
+  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getDetailProgress', getWinning)
+  const resData = data?.data?.data?.list
+
+  console.log('resData', resData)
+
+  useEffect(() => {
+    let getData = resData
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, AuctionWinningFields))
+    }
+  }, [isSuccess, resData])
 
   return (
     <FilterContianer>
@@ -253,7 +280,7 @@ const Winning = ({}) => {
             <WhiteRedBtn>낙찰 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getCol={getCol} getRow={getRow} />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>

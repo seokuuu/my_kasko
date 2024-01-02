@@ -3,8 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 // import { getDestination } from '../api/myPage'
 
 export default function useReactQuery(obj, key, api) {
-  const { isLoading, isError, data, isSuccess } = useQuery([key, obj], () => api(obj))
-  return { isLoading, isError, data, isSuccess }
+  const { isLoading, isError, data, isSuccess, refetch } = useQuery([key, obj], () => api(obj))
+  return { isLoading, isError, data, isSuccess, refetch }
 }
 
 // staleTime: 1000 * 60 * 5, // 데이터가 5분 동안 신선하다고 간주

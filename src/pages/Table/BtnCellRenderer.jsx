@@ -12,6 +12,7 @@ import {
   usermanageClientEdit,
   UsermanageDestiEditModal,
   StandardConsoliateEdit,
+  auctionRoundEditPageAtom,
 } from '../../store/Layout/Layout'
 
 import { UsermanageUserManageEditModal } from '../../store/Layout/Layout'
@@ -38,9 +39,7 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
 
   const [userManageEditModal, setUserManageEditModal] = useAtom(UsermanageUserManageEditModal)
 
-  // console.log('버튼 셀 @@@', userpageEditModal)
-
-  // console.log('!!!')
+  const [auctionRoundEditModal, setAuctionRoundEditModal] = useAtom(auctionRoundEditPageAtom)
 
   const btnClickedHandler = () => {
     switch (editType) {
@@ -65,9 +64,11 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
       case 'userprefer':
         setUidAtom(uid)
         setUserPageEditModal(true)
+        break
       case 'client': // 고객사 관리
         setUidAtom(uid)
         setUserManageEdit(true)
+        break
       case 'userdestination': // 고객사 목적지 관리
         setUidAtom(uid)
         setUserDestiEdit(true)
@@ -76,9 +77,15 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
       case 'claimUpdate':
         setUidAtom(uid)
         setModalMode('수정')
+        break
       case 'usermanagemanage':
         setUidAtom(uid)
         setUserManageEditModal(true)
+        break
+      case 'auctionroundedit':
+        setUidAtom(uid)
+        setAuctionRoundEditModal(true)
+        break
       default:
         break
     }

@@ -1,58 +1,44 @@
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
-import Excel from '../../../components/TableInner/Excel'
+import { useEffect, useRef, useState } from 'react'
+import { BlackBtn, NewBottomBtnWrap, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
-import {
-  BlackBtn,
-  BtnBound,
-  BtnWrap,
-  ExcelBtn,
-  NewBottomBtnWrap,
-  TGreyBtn,
-  WhiteBlackBtn,
-} from '../../../common/Button/Button'
+import { storageOptions } from '../../../common/Option/SignUp'
 import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
+import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import Test3 from '../../Test/Test3'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import {
+  CustomInput,
+  DoubleWrap,
+  ExInputsWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
-  TableBottomWrap,
+  FilterHeader,
   FilterLeft,
   FilterRight,
-  RowWrap,
+  FilterSubcontianer,
+  GridWrap,
+  Input,
   PartWrap,
   PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
   ResetImg,
+  RowWrap,
   TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-  ExCheckWrap,
-  ExCheckDiv,
   TCSubContainer,
-  CustomInput,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 import Hidden from '../../../components/TableInner/Hidden'
+import { AuctionStartPriceFields, AuctionStartPriceFieldsCols } from '../../../constants/admin/Auction'
+import { useQueryClient } from '@tanstack/react-query'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getStartPrice } from '../../../api/auction/startprice'
+import { add_element_field } from '../../../lib/tableHelpers'
+import Table from '../../Table/Table'
+import { useAtom } from 'jotai'
 
 const StartPrice = ({}) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -103,6 +89,32 @@ const StartPrice = ({}) => {
       setToggleMsg('On')
     }
   }
+
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(AuctionStartPriceFieldsCols)
+  const getCol = tableField.current
+  const queryClient = useQueryClient()
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  const [Param, setParam] = useState({
+    pageNum: 1,
+    pageSize: 10,
+  })
+
+  // GET
+  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getStartPrice', getStartPrice)
+  const resData = data?.data?.data?.list
+
+  console.log('resData', resData)
+
+  useEffect(() => {
+    let getData = resData
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, AuctionStartPriceFields))
+    }
+  }, [isSuccess, resData])
 
   return (
     <FilterContianer>
@@ -206,7 +218,7 @@ const StartPrice = ({}) => {
             </TGreyBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getCol={getCol} getRow={getRow} />
         <TCSubContainer>
           <div></div>
           <div>
