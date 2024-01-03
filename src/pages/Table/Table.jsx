@@ -306,7 +306,9 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData, isRowCl
 
   const onRowClicked = (row) => {
     // Assuming each row has a unique ID or some identifier
-    handleOnRowClicked(row)
+    if (handleOnRowClicked) {
+      handleOnRowClicked(row)
+    }
   }
 
   const getRowStyle = () => {

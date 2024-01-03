@@ -396,7 +396,7 @@ const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
         </HalfWrap>
       </OnePageSubContainer>
       <BtnWrap bottom={-250}>
-        <WhiteBtn width={40} height={40}>
+        <WhiteBtn width={40} height={40} onClick={() => setEditModal(false)}>
           돌아가기
         </WhiteBtn>
         <BlackBtn width={40} height={40} onClick={submitHandle}>
