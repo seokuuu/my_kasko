@@ -125,7 +125,7 @@ const Transport = ({}) => {
 
   const propsRemove = () => {
     checkedArray.forEach((item) => {
-      mutation.mutate(item['합짐 고유 번호']) //mutation.mutate로 api 인자 전해줌
+      mutation.mutate(item['할증 고유 번호']) //mutation.mutate로 api 인자 전해줌
     })
   }
 
