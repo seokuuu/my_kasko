@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { BlackBtn, GreyBtn, TGreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
@@ -46,10 +46,11 @@ import {
   WhiteCloseBtn,
 } from '../../../modal/Common/Common.Styled'
 import Table from '../../Table/Table'
+import { isArray } from 'lodash'
 
 // 경매 제품 추가(단일) 메인 컴포넌트
 // 경매 제품 추가 (패키지), 경매 목록 상세(종료된 경매)와 호환 가능
-const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, types }) => {
+const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, types, newResData }) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 
   //checkSales
@@ -133,6 +134,19 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
       setGetRow(add_element_field(getData, AuctionRoundExtraProductFields))
     }
   }, [isSuccess, resData])
+
+  const handleAddBtn = useCallback(() => {
+    if (isArray(checkedArray) && checkedArray.length > 0) {
+      if (window.confirm('선택한 항목을 추가하시겠습니까?')) {
+        checkedArray.forEach((item) => {
+          console.log('item =>', item)
+          setNewResData((prevData) => [...prevData, item])
+        })
+      }
+    } else {
+      alert('선택해주세요!')
+    }
+  }, [checkedArray])
 
   return (
     <>
@@ -280,7 +294,7 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
               <Table getCol={getCol} getRow={getRow} hei2={330} />
               <TCSubContainer>
                 <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                  <BlackBtn width={13} height={40}>
+                  <BlackBtn width={13} height={40} onClick={handleAddBtn}>
                     제품 추가
                   </BlackBtn>
                 </div>

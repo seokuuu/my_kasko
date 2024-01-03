@@ -53,6 +53,7 @@ import RoundAucProAdd from './RoundAucProAdd'
 //경매 목록 수정(단일)
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
   const [newResData, setNewResData] = useState([])
+  console.log('newResData', newResData)
   const [addList, setAddList] = useState([])
   const [deleteList, setDeleteList] = useState([])
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -136,12 +137,20 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 
   const resData = data?.data?.data?.list
 
+  // Todo
   useEffect(() => {
+    // let getData = resData
+    // //타입, 리액트쿼리, 데이터 확인 후 실행
+    // if (!isSuccess && !resData) return
+    // if (Array.isArray(getData)) {
+    //   setGetRow(add_element_field(getData, AuctionRoundDetailFields))
+    // }
     let getData = resData
     //타입, 리액트쿼리, 데이터 확인 후 실행
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
-      setGetRow(add_element_field(getData, AuctionRoundDetailFields))
+      const updatedData = add_element_field([newResData, ...getData], AuctionRoundDetailFields)
+      setGetRow(updatedData)
     }
   }, [isSuccess, resData])
 

@@ -321,8 +321,7 @@ const Table = ({
   }, [topData])
 
   const onRowClicked = (row) => {
-    // Assuming each row has a unique ID or some identifier
-    handleOnRowClicked(row)
+    if (handleOnRowClicked) handleOnRowClicked(row)
   }
 
   const getRowStyle = () => {
