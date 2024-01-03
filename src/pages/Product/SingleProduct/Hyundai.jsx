@@ -148,7 +148,7 @@ const Hyundai = ({}) => {
     }
   }
   useEffect(() => {
-    if (!isSuccess && !hyunDaiList) return null
+    // if (!isSuccess && !hyunDaiList) return null
     if (Array.isArray(hyunDaiList)) {
       setGetRow(add_element_field(hyunDaiList, singleDispatchFields))
     }

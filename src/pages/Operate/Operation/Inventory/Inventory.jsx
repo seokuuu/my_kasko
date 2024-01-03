@@ -51,6 +51,8 @@ import { getCustomerFind } from '../../../../service/admin/Auction'
 import { KilogramSum } from '../../../../utils/KilogramSum'
 import { Filtering } from '../../../../utils/filtering'
 import Table from '../../../Table/Table'
+import PagingComp from '../../../../components/paging/PagingComp'
+import TableTest from '../../../Table/TableTest'
 
 const Inventory = ({}) => {
   const checkStores = ['전체', '미 입고', '입고 대기', '입고 확정', '입고 확정 취소']
@@ -340,6 +342,7 @@ const Inventory = ({}) => {
       return res.data?.data.list
     })
   }
+
   return (
     <FilterContianer>
       <FilterHeader>
@@ -591,9 +594,16 @@ const Inventory = ({}) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>{/* <SwitchBtn>입고 확정</SwitchBtn> */}</div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} setChoiceComponent={() => {}} size={Number(size)} />
+        <div>
+          <TableTest
+            getCol={getCol}
+            getRow={getRow}
+            pagination={pagination}
+            setChoiceComponent={() => {}}
+            size={Number(size)}
+          />
+        </div>
       </TableContianer>
-
       {customerPopUp && <InventoryFind title={'고객사 찾기'} setSwitch={setCustomerPopUp} data={inventoryCustomer} />}
       {destinationPopUp && (
         <InventoryFind title={'목적지 찾기'} setSwitch={setDestinationPopUp} data={inventoryDestination} />
