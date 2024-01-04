@@ -110,7 +110,7 @@ const ConsolidationModal = ({
                     value={inputValues.input1}
                     style={{ fontSize: '16px' }}
                     placeholder="0"
-                    type="text"
+                    type="number"
                   />
                   <Unit>원</Unit>
                 </InputContainer>
@@ -124,7 +124,7 @@ const ConsolidationModal = ({
                     value={inputValues.input2}
                     style={{ fontSize: '16px' }}
                     placeholder="0"
-                    type="text"
+                    type="number"
                   />
                   <Unit>원</Unit>
                 </InputContainer>

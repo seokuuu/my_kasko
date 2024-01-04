@@ -95,6 +95,18 @@ export const NoOutInput = styled.input`
   outline: none;
   width: 100%; /* flex 아이템의 너비를 100%로 설정 */
   height: 25px;
+
+  /* Chrome, Safari, Edge, Opera */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  &[type='number'] {
+    -moz-appearance: textfield;
+  }
 `
 
 export const Unit = styled.span`
