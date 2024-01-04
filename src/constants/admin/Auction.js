@@ -139,6 +139,7 @@ export const AuctionRoundDetailFields = {
   '판매 제외 사유': 'excludeSaleReason',
   등록일: 'createDate',
   매입가: 'price',
+  '고유 번호': '고유 번호',
 }
 
 /* ===================================================================
@@ -242,6 +243,7 @@ export const AuctionRoundDetailFieldsCols = [
   //     editType: 'auctionroundedit',
   //   },
   // },
+  { field: '고유 번호', minWidth: 100 },
   { field: '경매 제품 고유 번호', minWidth: 100 },
   { field: '제품 고유 번호', minWidth: 100 },
   { field: '창고', minWidth: 100 },

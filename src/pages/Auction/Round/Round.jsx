@@ -3,7 +3,7 @@ import { BlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Butto
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom2, toggleAtom } from '../../../store/Layout/Layout'
 
 import Table from '../../Table/Table'
 
@@ -89,7 +89,7 @@ const Round = ({}) => {
   const tableField = useRef(AuctionRoundFieldsCols)
   const getCol = tableField.current
   const queryClient = useQueryClient()
-  const checkedArray = useAtom(selectedRowsAtom)[0]
+  const checkedArray = useAtom(selectedRowsAtom2)[0]
 
   const [originalRow, setOriginalRow] = useState([]) //원본 row를 저장해서 radio check에러 막기
   const [inputParams, setInputParams] = useState({

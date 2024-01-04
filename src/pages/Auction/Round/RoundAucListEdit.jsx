@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   BlackBtn,
   BtnBound,
@@ -49,11 +49,18 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import RoundAucProAdd from './RoundAucProAdd'
+import { isArray } from 'lodash'
 
 //경매 목록 수정(단일)
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
   const [newResData, setNewResData] = useState([])
-  console.log('newResData', newResData)
+  const [editData, setEditData] = useState({
+    type: types,
+    auctionNumber: auctionNum,
+    addProductUids: [],
+    deleteAuctionProductList: [],
+  })
+
   const [addList, setAddList] = useState([])
   const [deleteList, setDeleteList] = useState([])
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -110,6 +117,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
+  console.log('checkedArray', checkedArray)
 
   const [originalRow, setOriginalRow] = useState([]) //원본 row를 저장해서 radio check에러 막기
   const [inputParams, setInputParams] = useState({
@@ -146,13 +154,46 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
     //   setGetRow(add_element_field(getData, AuctionRoundDetailFields))
     // }
     let getData = resData
+
     //타입, 리액트쿼리, 데이터 확인 후 실행
     if (!isSuccess && !resData) return
-    if (Array.isArray(getData)) {
-      const updatedData = add_element_field([newResData, ...getData], AuctionRoundDetailFields)
+    if (Array.isArray(getData, newResData)) {
+      const combinedData = [...newResData, ...resData]
+      const updatedData = add_element_field(combinedData, AuctionRoundDetailFields)
       setGetRow(updatedData)
     }
-  }, [isSuccess, resData])
+  }, [isSuccess, resData, newResData])
+
+  // input의 addProductUids 값 채우기
+  useEffect(() => {
+    const uniqueNumbers = newResData?.map((item) => item['고유 번호'])
+    setEditData({ ...editData, addProductUids: uniqueNumbers })
+  }, [newResData])
+
+  // TODO : 경매 회차 관리 resData 쪽 object 눈속임으로 없애기 ..
+  // input의 deleteAuctionProductList 값 채우기
+  const handleRemoveBtn = useCallback(() => {
+    if (isArray(checkedArray) && checkedArray.length > 0) {
+      if (window.confirm('선택한 항목을 삭제 목록에 추가하시겠습니까?')) {
+        const resultRemove = checkedArray
+          .filter((item) => item && item['경매 제품 고유 번호'] !== undefined && item['경매 제품 고유 번호'] !== null)
+          .map((item) => item['경매 제품 고유 번호'])
+
+        setEditData({ ...editData, deleteAuctionProductList: resultRemove })
+
+        // '제품 추가' 관련 object array 삭제
+        const filteredArray = newResData.filter(
+          (item) => !checkedArray.some((checkedItem) => checkedItem['고유 번호'] === item['고유 번호']),
+        )
+        setNewResData(filteredArray)
+      }
+    } else {
+      alert('선택해주세요!')
+    }
+  }, [checkedArray, editData, setEditData, newResData, setNewResData])
+
+  console.log('nesRES', newResData)
+  console.log('editData @@@ ', editData)
 
   return (
     <FilterContianer>
@@ -301,7 +342,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
         <TCSubContainer>
           <div style={{ display: 'flex', gap: '10px' }}></div>
           <div>
-            <WhiteRedBtn>선택 목록 제거</WhiteRedBtn>
+            <WhiteRedBtn onClick={handleRemoveBtn}>선택 목록 제거</WhiteRedBtn>
           </div>
         </TCSubContainer>
         {addModal && (
@@ -310,6 +351,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
             newResData={newResData}
             setNewResData={setNewResData}
             types={types}
+            propsResData={resData}
           />
         )}
         <NewBottomBtnWrap bottom={-5}>
@@ -317,7 +359,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
             돌아가기
           </WhiteBtn>
           <BlackBtn width={13} height={40}>
-            등록
+            완료
           </BlackBtn>
         </NewBottomBtnWrap>
       </TableContianer>
