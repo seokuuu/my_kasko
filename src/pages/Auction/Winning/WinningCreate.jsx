@@ -145,7 +145,7 @@ const WinningCreate = ({}) => {
                 <div style={{ marginRight: '10px' }}>
                   <h6 style={{ fontSize: '18px' }}>낙찰가 총액</h6>
                   <InputContainer>
-                    <NoOutInput type="text" />
+                    <NoOutInput type="number" />
                     <Unit>원</Unit>
                   </InputContainer>
                 </div>
@@ -157,7 +157,7 @@ const WinningCreate = ({}) => {
                 <div style={{ marginRight: '10px' }}>
                   <h6 style={{ fontSize: '17px' }}> 확정전송 총액</h6>
                   <InputContainer>
-                    <NoOutInput type="text" />
+                    <NoOutInput type="number" />
                     <Unit>원</Unit>
                   </InputContainer>
                 </div>

@@ -1,8 +1,7 @@
-import { useAtom } from 'jotai'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useAtom, useAtomValue } from 'jotai'
 import { BlackBtn, GreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { MainSelect, storageOptions } from '../../../common/Option/Main'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
@@ -28,23 +27,43 @@ import {
   TableContianer,
   Tilde,
 } from '../../../modal/External/ExternalFilter'
-import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
-import Test3 from '../../Test/Test3'
-
+import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { getSingleProducts } from '../../../api/SellProduct'
+import Table from '../../../pages/Table/Table'
+import { singleDispatchFields, SingleDispatchFieldsCols } from '../../../constants/admin/Single'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { KilogramSum } from '../../../utils/KilogramSum'
+import { formatWeight } from '../../../utils/utils'
 
 const Single = ({}) => {
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
+  const checkBoxSelect = useAtomValue(selectedRowsAtom)
   const [isRotated, setIsRotated] = useState(false)
-  const [getRow, setGetRow] = useState('')
+  const [singleProductListData, setSingleProductListData] = useState(null)
+  const [singleProductPagination, setSingleProductPagination] = useState([])
+  const [param, setParam] = useState({
+    pageNum: 1,
+    pageSize: 10,
+  })
+  const {
+    isLoading,
+    isError,
+    data: getSingleProductsRes,
+    isSuccess,
+  } = useReactQuery(param, 'getSingleProducts', getSingleProducts)
+
+  useEffect(() => {
+    if (getSingleProductsRes && getSingleProductsRes.data && getSingleProductsRes.data.list) {
+      setSingleProductListData(formatTableRowData(getSingleProductsRes.data.list))
+      setSingleProductPagination(getSingleProductsRes.data.pagination)
+    }
+  }, [isSuccess, getSingleProductsRes])
+
+  const formatTableRowData = (singleProductListData) => {
+    return add_element_field(singleProductListData, singleDispatchFields)
+  }
 
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
@@ -73,6 +92,13 @@ const Single = ({}) => {
 
   const modalOpen = () => {
     setIsModal(true)
+  }
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+    }))
   }
 
   return (
@@ -222,20 +248,22 @@ const Single = ({}) => {
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown handleDropdown={handleTablePageSize} />
             <Excel />
           </div>
         </TCSubContainer>
         <TCSubContainer>
           <div>
             {/* 체크 박스의 값을 더한 값을 노출시켜줘야함 */}
-            선택 중량<span> 2 </span>kg / 총 중량 kg
+            선택 중량
+            <span> {formatWeight(KilogramSum(checkBoxSelect))} </span>
+            kg / 총 중량 {formatWeight(singleProductPagination.totalWeight)} kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteBlackBtn>노출 상태 변경</WhiteBlackBtn>
           </div>
         </TCSubContainer>
-        {/* <Test3 title={'규격 약호 찾기'} /> */}
+        <Table getCol={SingleDispatchFieldsCols} getRow={singleProductListData} />
         <TableBottomWrap>
           <BlackBtn width={13} height={40} fontSize={17}>
             저장
