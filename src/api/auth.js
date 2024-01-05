@@ -29,10 +29,8 @@ export function businessNumberDuplication(data) {
 /* ==============================
     회원가입
 ============================== */
-export async function signup(data, bankBookFile, registrationFile) {
-  // const jsonData = { request: data }
-  // console.log(jsonData)
-  console.log(data)
+export async function signup(data, bankBook, registration) {
+  console.log('회원가입 정보', data)
   const form = new FormData()
   form.append(
     'request',
@@ -41,14 +39,14 @@ export async function signup(data, bankBookFile, registrationFile) {
     }),
   )
 
-  registrationFile.forEach((file) => {
-    form.append('registrationFile', file)
+  registration.forEach((file) => {
+    form.append('registration', file)
   })
-  bankBookFile.forEach((file) => {
-    form.append('bankBookFile', file)
+  bankBook.forEach((file) => {
+    form.append('bankBook', file)
   })
 
-  return await client.post(urls.signup, form, { headers }) //파싱형태 백엔드랑 상의필요
+  return await client.post(urls.signup, form, { headers })
 }
 
 /* ==============================
