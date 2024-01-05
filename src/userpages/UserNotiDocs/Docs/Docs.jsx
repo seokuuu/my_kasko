@@ -58,7 +58,8 @@ const Docs = () => {
     type: '자료실',
     pageNum: 1,
     pageSize: 100,
-    title: title,
+    category: '제목',
+    keyword: title,
   }
   const { isSuccess, data: Docs, refetch } = useNoticeListQuery(Params)
   const [isRotated, setIsRotated] = useState(false)
@@ -66,10 +67,16 @@ const Docs = () => {
   const navigate = useNavigate()
   const tableField = useRef(UserNoticeListFieldCols)
   const getCol = tableField.current
+  const [fixed, setFixed] = useState([])
+  const fixedItem = Docs && Docs?.list.filter((i) => i.status !== 0)
   // const resData = Docs?.list
   // console.log(resData)
   // Function to handle image click and toggle rotation
-
+  useEffect(() => {
+    if (!title && fixedItem) {
+      setFixed(fixedItem)
+    }
+  }, [Docs])
   // useEffect 관련 에러가 나와서 따로 빼서 처리
   const handleImageClick = () => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
@@ -234,7 +241,7 @@ const Docs = () => {
             const uid = e.고유값
             navigate(`/userpage/docs/${uid}`, { state: { data: e } })
           }}
-          topData={createData(topData)}
+          topData={createData(fixed)}
           // type={'자료실'}
         />
       </TableContianer>

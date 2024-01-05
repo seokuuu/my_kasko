@@ -16,7 +16,7 @@ import {
 } from '../../modal/Common/Common.Styled'
 import { GreyBtn, BlackBtn } from '../../common/Button/Button'
 import { parsePath, useLocation, useNavigate } from 'react-router-dom'
-import Pagination from '../../components/pagination/Pagination'
+import PagingComp from '../../components/paging/PagingComp'
 import moment from 'moment'
 var dateFilterParams = {
   comparator: (filterLocalDateAtMidnight, cellValue) => {
@@ -55,6 +55,8 @@ const TableTest = ({
   pagination,
   setQuery,
   pageSizeGrid,
+  // currentPage,
+  // setCurrentPage,
 }) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
@@ -62,6 +64,7 @@ const TableTest = ({
   const containerStyle = useMemo(() => ({ width: '100%', height: '500px' }), [])
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
   const [rowData, setRowData] = useState()
+  const [currentPage, setCurrentPage] = useState(1)
 
   var checkboxSelection = function (params) {
     return params.columnApi.getRowGroupColumns().length === 0
@@ -263,6 +266,11 @@ const TableTest = ({
   const gridOptions = {
     rowModelType: 'clientSide',
     paginationPageSize: pageSizeGrid, // 요청할 페이지 사이즈
+    headerHeight: 30,
+    rowHeight: 40,
+    /** 페이징 처리위해 필요 */
+    pagination: true,
+    paginationPageSize: 10,
   }
 
   let isUpdatedPage = true
@@ -288,10 +296,6 @@ const TableTest = ({
     return () => gridApi?.removeEventListener('paginationChanged', onPaginationChanged)
   }, [lastPageNum])
 
-  const onGridReady = (params) => {
-    setGridApi(params.api) // api 설정
-  }
-
   useEffect(() => {
     topData?.map((item, index) =>
       setResult((p) => [
@@ -309,6 +313,54 @@ const TableTest = ({
     )
   }, [topData])
 
+  // 페이지네이션
+
+  const totalPage = Math.ceil(pagination?.listCount / gridOptions.paginationPageSize)
+
+  console.log('TOTALPAGE', totalPage)
+  // const [gridApi, setGridApi] = useState(null)
+  const [gridColumnApi, setGridColumnApi] = useState(null)
+
+  const onPageChange = (pageNumber) => {
+    gridApi.paginationGoToPage(pageNumber - 1)
+    setCurrentPage(pageNumber)
+  }
+  const onGridReady = (params) => {
+    setGridApi(params.api)
+    setGridColumnApi(params.columnApi)
+    params.api.sizeColumnsToFit()
+  }
+  const goToNextPage = () => {
+    const nextPage = Math.min(currentPage + 1, totalPage)
+    onPageChange(nextPage)
+  }
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      const prevPage = Math.min(currentPage - 1, totalPage)
+      onPageChange(prevPage)
+    }
+  }
+  const goToLastPage = () => {
+    let currentGroupLastPage = Math.ceil(currentPage / 5) * 5
+    currentGroupLastPage = Math.min(currentGroupLastPage, totalPage)
+
+    // 현재 페이지가 그룹의 마지막 페이지인 경우, 다음 그룹의 마지막 페이지로 이동
+    let targetPage
+    // 다음 페이지 그룹의 1번째 페이지로 이동
+    if (currentPage === currentGroupLastPage) targetPage = Math.min(currentGroupLastPage + 1, totalPage)
+    // 현재 그룹의 마지막 페이지로 이동
+    else targetPage = currentGroupLastPage
+
+    onPageChange(targetPage)
+  }
+  const goToStartOfRange = () => {
+    let startPageInGroup = Math.floor((currentPage - 1) / 5) * 5 + 1
+
+    // 현재 페이지가 그룹의 시작 페이지일 경우, 이전 그룹의 마지막 페이지로 이동
+    if (currentPage === startPageInGroup && currentPage !== 1) startPageInGroup = Math.max(startPageInGroup - 1, 1)
+
+    onPageChange(startPageInGroup)
+  }
   return (
     <div style={containerStyle}>
       <TestContainer hei={hei}>
@@ -338,6 +390,15 @@ const TableTest = ({
             // sideBar={{ toolPanels: ['columns', 'filters'] }}
           />
           {/* <Pagination getRow={getRow} /> */}
+          <PagingComp
+            currentPage={currentPage}
+            totalPage={totalPage}
+            onPageChange={onPageChange}
+            goToNextPage={goToNextPage}
+            goToPreviousPage={goToPreviousPage}
+            goToLastPage={goToLastPage}
+            goToStartOfRange={goToStartOfRange}
+          />
         </div>
       </TestContainer>
 
