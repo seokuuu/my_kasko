@@ -35,6 +35,11 @@ export const TxtDropInput = styled.input`
   height: 40px;
   border: 1px solid #c1c1c1c5;
 `
+export const ManagerInput = styled.input`
+  width: 120px;
+  height: 40px;
+  border: 1px solid #c1c1c1c5;
+`
 
 export const SInput = styled.input`
   width: 100px;

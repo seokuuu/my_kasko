@@ -5,6 +5,7 @@ import { queryClient } from '../query'
 
 const urls = {
   getAuction: 'admin/auction',
+  getExtraProduct: 'admin/auction/product',
 }
 
 const keys = {
@@ -20,6 +21,12 @@ export function getAuction(data) {
 
 export function getDetailAuction(data) {
   return client.get(`${urls.getAuction}/${data.auctionNumber}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
+}
+
+export function getExtraProductList(data) {
+  return client.get(
+    `${urls.getExtraProduct}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&saleType=${data.saleType}&registrationStatus=${data.registrationStatus}&type=${data.pageSize}`,
+  )
 }
 
 export function postAuction(data) {

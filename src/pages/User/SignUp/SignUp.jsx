@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
-import { SInput, TxtCheckInput, TxtDropInput, TxtInput } from '../../../common/Input/Input'
+import { ManagerInput, SInput, TxtCheckInput, TxtDropInput, TxtInput } from '../../../common/Input/Input'
 import { busIdRegex, idRegex, phoneRegex } from '../../../common/Regex/Regex'
 import {
   Bottom,
@@ -22,15 +22,7 @@ import {
   Top,
 } from './SignUp.Styled'
 
-import {
-  AccountSelect,
-  DepositSelect,
-  EmailSelect,
-  auctionOptions,
-  depositOptions,
-  emailOptions,
-  releaseOptions,
-} from '../../../common/Option/SignUp'
+import { AccountSelect, EmailSelect, emailOptions } from '../../../common/Option/SignUp'
 
 import { signup } from '../../../api/auth'
 import { Controller, useForm } from 'react-hook-form'
@@ -39,24 +31,62 @@ import DropField from '../../../components/DropField/DropField'
 import axios from 'axios'
 import { getBankNames } from '../../../constants/banks'
 import AddressFinder from '../../../components/DaumPost/Address'
+import AlertPopup from '../../../modal/Alert/AlertPopup'
+import { useAtom } from 'jotai'
+import { popupAtom, popupObject } from '../../../store/Layout/Layout'
+import { popupDummy } from '../../../modal/Alert/PopupDummy'
 
-const SignUp = () => {
+const SignUp = ({ propsHandler }) => {
   /** React-Hook-Form 추가하기 */
   const {
     register,
     handleSubmit,
     setError,
+    setValue,
     clearErrors,
     watch,
     control,
     formState: { errors, isValid },
   } = useForm({ mode: 'onBlur' })
 
-  /** radioBox -- 어떤 API 사용해서 가져와야 하는지 */
+  const auctionInfoSameForDeposit = watch('auctionInfoSameForDeposit')
+  const auctionInfoSameForRelease = watch('auctionInfoSameForRelease')
+
+  useEffect(() => {
+    if (auctionInfoSameForDeposit) {
+      const memberName = watch('memberName')
+      const memberTitle = watch('memberTitle') // 경매 담당자의 직함
+      const memberPhone = watch('memberPhone')
+
+      setValue('depositManagerName', memberName)
+      setValue('depositManagerTitle', memberTitle)
+      setValue('depositManagerPhone', memberPhone)
+    } else {
+      setValue('depositManagerName', '')
+      setValue('depositManagerTitle', '')
+      setValue('depositManagerPhone', '')
+    }
+
+    // 출고 담당자 정보 체크박스 로직
+    if (auctionInfoSameForRelease) {
+      const memberName = watch('memberName')
+      const memberTitle = watch('memberTitle')
+      const memberPhone = watch('memberPhone')
+
+      setValue('releaseManagerName', memberName)
+      setValue('releaseManagerTitle', memberTitle)
+      setValue('releaseManagerPhone', memberPhone)
+    } else {
+      setValue('releaseManagerName', '')
+      setValue('releaseManagerTitle', '')
+      setValue('releaseManagerPhone', '')
+    }
+  }, [auctionInfoSameForDeposit, auctionInfoSameForRelease, setValue, watch])
+  /** radioBox -- 그대로 진행? */
   const radioDummy = ['개인', '법인(주)', '법인(유)']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
-  /** checkBox -- 어떤 API 사용해서 가져와야 하는지*/
+  /** checkBox -- 그대로 진행? */
   const checkDummy = ['유통', '제조']
   const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
   const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
@@ -72,18 +102,8 @@ const SignUp = () => {
     console.log()
   }, [check])
 
-  //modal
-  const [modalSwitch, setModalSwitch] = useState(false)
-
   /**가입하기 grey 버튼 react-hook-form의 isValid로 처리하기 */
   const watchAllFields = watch()
-  const [greyBtn, setGreyBtn] = useState(false)
-
-  const [isNext, setIsNext] = useState(false)
-  useEffect(() => {
-    if (isValid) setIsNext(true)
-    else setIsNext(false)
-  }, [isValid, watchAllFields])
 
   //total msg
   const [msg, setMsg] = useState({})
@@ -91,19 +111,11 @@ const SignUp = () => {
   //total color
   const [txtColor, setTxtColor] = useState('')
 
-  // ID
-  const [id, setId] = useState('')
-  const [idMsg, setIdMsg] = useState('')
-  const [idMsgColor, setIdMsgColor] = useState('')
-  const [buttonDisabled, setButtonDisabled] = useState(false)
-
   const [isFocused, setIsFocused] = useState(false)
   const [idDupleCheck, setIdDupleCheck] = useState(false)
 
   //Business Number
-  const [busId, setBusId] = useState('')
-  const [busIdMsg, setBusIdMsg] = useState('')
-  const [busIdMsgColor, setBusIdMsgColor] = useState('')
+  const [busId, setBusId] = useState(0)
 
   const [statusColor, setStatusColor] = useState('')
 
@@ -123,21 +135,15 @@ const SignUp = () => {
   }, [check])
 
   // 사업자 번호 handler
-  const handleBusIdChange = useCallback((e) => {
+  const handleBusIdChange = (e) => {
     const value = e.target.value
     setBusId(value)
     // console.log(value)
     const isValid = busIdRegex.test(value)
-    if (!isValid) {
-      setBusIdMsgColor('red')
-      setBusIdMsg('10자리의 숫자를 입력해주세요.')
-    } else if (isValid && !idDupleCheck) {
-      setBusIdMsgColor('red')
-      setBusIdMsg('중복 확인이 필요해요.')
-    } else if (isValid && idDupleCheck) {
-      setIdMsg('')
-    }
-  }, [])
+    if (!isValid) console.log('10자리의 숫자를 입력해주세요.')
+    else if (isValid && !idDupleCheck) console.log('중복 확인이 필요해요.')
+    else if (isValid && idDupleCheck) console.log('임시')
+  }
 
   /**  ID 관련 */
   // ID Focus & Blur 스위치
@@ -152,51 +158,60 @@ const SignUp = () => {
   const checkDuplicateId = async (id) => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/main/id/${id}`)
-      const data = await response.json()
+      const data = await response.data
       return data
     } catch (error) {
       console.error('ID 중복체크 중 에러 발생:', error)
     }
   }
   const [isDuplicateCheckSuccessful, setIsDuplicateCheckSuccessful] = useState(false)
+  const [firstIdModal, setFirstIdModal] = useState(false)
+
+  const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
+  const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
+  const [idCheckResult, setIdCheckResult] = useState(null)
   const handleDuplicateCheck = async () => {
-    const userId = watch('userId')
-    const isDuplicate = await checkDuplicateId(userId)
-    if (userId.length < 4) {
+    const userId = watch('id')
+    const idFormatRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,12}$/
+    if (userId.length < 4 || !idFormatRegex.test(userId)) {
       setError('userId', {
-        type: 'length',
-        message: '아이디는 최소 4자 이상이어야 합니다.',
+        type: 'format',
+        message: '아이디는 영문, 숫자 조합 4-12자리를 사용해 주세요.',
       })
-      setTimeout(() => {
-        clearErrors('userId')
-      }, 2000)
-      return
+      setFirstIdModal(true)
+      setIdCheckResult('1-17')
+      return '1-17'
     }
-    if (isDuplicate) {
-      setError('userId', {
-        type: 'duplicate',
-        message: '이미 사용 중인 아이디입니다.',
-      })
-      setIdDupleCheck(false)
-      setIdMsgColor('red')
-    } else {
-      setIdDupleCheck(true)
-      setIdMsgColor('blue')
-      clearErrors('userId')
-      setIsDuplicateCheckSuccessful(true)
-      const timer = setTimeout(() => {
-        setIsDuplicateCheckSuccessful(false)
-      }, 2000)
-      return () => clearTimeout(timer)
+    try {
+      const isDuplicate = await checkDuplicateId(userId)
+
+      if (isDuplicate) {
+        setIdDupleCheck(true)
+        setIdCheckResult('1-18')
+        return '1-18' // 사용가능
+      } else {
+        setIdDupleCheck(false)
+        setIdCheckResult('1-5')
+        return '1-5'
+      }
+    } catch (error) {
+      alert('ID 중복체크 중 에러 발생:', error)
     }
   }
-  useEffect(() => {
-    return () => {
-      if (isDuplicateCheckSuccessful) {
-        setIsDuplicateCheckSuccessful(false)
-      }
-    }
-  }, [])
+  const firstPopupClick = (num) => {
+    setPopupSwitch(true)
+    const firstPopup = popupDummy.find((popup) => popup.num === num)
+    setNowPopup((prevNowPopup) => ({
+      ...prevNowPopup,
+      ...firstPopup,
+      func: propsHandler,
+    }))
+  }
+  const onDuplicateCheckClick = async () => {
+    const checkResult = await handleDuplicateCheck() // 아이디 중복체크 처리
+    firstPopupClick(checkResult) // handleDuplicateCheck의 결과를 firstPopupClick에 전달
+  }
+
   /**  사업자 번호 중복 체크 */
   const checkBusinessId = async (busId) => {
     try {
@@ -208,19 +223,12 @@ const SignUp = () => {
     }
   }
   const handleBusIdDupleCheck = async () => {
-    const isDuplicate = await checkBusinessId(busId)
-
+    const currentBusId = watch('businessNumber')
+    console.log('이 시점 비즈니스번호 : ', busId)
+    const isDuplicate = await checkBusinessId(currentBusId)
     console.log('isDuplicate', isDuplicate)
-    if (busId && isDuplicate) {
-      setBusIdMsgColor('red')
-      setBusIdMsg('이미 등록된 사업자 번호입니다.')
-    } else if (busId && !isDuplicate) {
-      setBusIdMsgColor('blue')
-      setBusIdMsg('사용 가능한 사업자 번호입니다.')
-      setTimeout(() => {
-        setBusIdMsg('')
-      }, 3000)
-    }
+    if (busId && isDuplicate) console.log('이미 등록된 사업자 번호입니다.')
+    else if (busId && !isDuplicate) console.log('사용 가능한 사업자 번호입니다.')
   }
 
   /**  휴대폰 번호 (경매 / 입금 / 출고) */
@@ -260,37 +268,41 @@ const SignUp = () => {
     checkedStateSetter(e.target.checked)
   }
   /**  폼 제출 로직 (form태그를 추가해서 진행 및 체크박스,email는 기존  STATE를 활용) */
-  const onSignUpSubmit = async (e) => {
+  const onSignUpSubmit = async (data) => {
+    const selectedRadioIndex = checkRadio.findIndex((value) => value === true)
+    const selectedRadioValue = radioDummy[selectedRadioIndex]
+    const selectedBusinessTypes = checkDummy.filter((_, index) => check[index])
+
     const request = {
-      id: 'test3235',
-      password: '1234',
-      memberTitle: '직함2',
-      memberName: '이름2',
-      memberEmail: '이메일2',
-      memberPhone: '연락처2',
-      type: '법인사업자',
-      name: '회사명3',
-      ceoName: '대표자명2',
-      phone: '대표연락처2',
-      fax: '팩스번호2',
-      address: '주소2',
-      addressDetail: '상세주소2',
-      businessType: ['유통', '제조'],
-      businessNumber: '사업자번호3522',
-      bank: '은행2',
-      accountNumber: '계좌번호2',
-      depositManagerTitle: '입금담당자 직함2',
-      depositManagerName: '입금담당자 이름2',
-      depositManagerPhone: '입금담당자 연락처2',
-      releaseManagerTitle: '출고담당자 직함2',
-      releaseManagerName: '출고담당자 이름2',
-      releaseManagerPhone: '출고담당자 연락처2',
+      id: data.id,
+      name: data.name,
+      ceoName: data.ceoName,
+      phone: data.phone,
+      fax: data.fax,
+      depositManagerName: data.depositManagerName,
+      depositManagerTitle: data.depositManagerTitle,
+      depositManagerPhone: data.depositManagerPhone,
+      memberName: data.memberName,
+      memberEmail: `${data.emailDomain.value}@${data.emailDomain.label}`,
+      memberTitle: data.memberTitle,
+      memberPhone: data.memberPhone,
+      businessNumber: data.businessNumber,
+      accountNumber: data.accountNumber,
+      releaseManagerName: data.releaseManagerName,
+      releaseManagerTitle: data.releaseManagerTitle,
+      releaseManagerPhone: data.releaseManagerPhone,
+      password: data.password,
+      address: data.address.address,
+      addressDetail: data.address.addressDetail,
+      bank: data.bank.label,
+      businessType: selectedBusinessTypes,
+      type: selectedRadioValue,
     }
     const registration = filesData
     const bankBook = secondFilesData
+
     try {
       const response = await signup(request, registration, bankBook)
-      console.log(response)
       alert('회원가입되었습니다!')
     } catch (err) {
       console.log(err)
@@ -316,6 +328,22 @@ const SignUp = () => {
 
   const bankList = getBankNames()
 
+  const [isPassValid, setIsPassValid] = useState(false)
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      if (name === 'password') {
+        const isValid = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,12}$/.test(value.password)
+        setIsPassValid(isValid)
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [watch])
+
+  const [isNext, setIsNext] = useState(false)
+  useEffect(() => {
+    if (isValid && idCheckResult === '1-18' && privacyChecked && termsChecked) setIsNext(true)
+    else setIsNext(false)
+  }, [isValid, watchAllFields, privacyChecked, termsChecked])
   return (
     <Container>
       <SignupContainer>
@@ -327,28 +355,23 @@ const SignUp = () => {
                 <Part>
                   <Title>
                     <h4>아이디</h4>
-                    {errors.userId && <ErrorMsg>{errors.userId.message}</ErrorMsg>}
-                    {isDuplicateCheckSuccessful && <p style={{ color: '#4CA9FF' }}>사용가능한 아이디입니다.</p>}
+                    {errors.id && <ErrorMsg>{errors.id.message}</ErrorMsg>}
                   </Title>
 
                   <div>
                     <TxtCheckInput
                       type="text"
-                      {...register('userId', {
+                      {...register('id', {
                         required: '아이디를 입력해주세요.',
-                        minLength: {
-                          value: 4,
-                          message: '아이디는 최소 4자 이상이어야 합니다.',
-                        },
                       })}
                       onFocus={handleIdFocus}
                       onBlur={handleIdBlur}
-                      borderColor={idMsgColor}
                     />
 
-                    <CheckBtn onClick={handleDuplicateCheck} type="button">
+                    <CheckBtn onClick={onDuplicateCheckClick} type="button">
                       중복 확인
                     </CheckBtn>
+                    {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
                   </div>
                 </Part>
                 <Part>
@@ -356,7 +379,7 @@ const SignUp = () => {
                     <h4>비밀번호</h4>
                     {errors.password && <ErrorMsg>{errors.password.message}</ErrorMsg>}
                   </Title>
-                  <div>
+                  <div style={{ position: 'relative' }}>
                     <Controller
                       name="password"
                       control={control}
@@ -376,12 +399,28 @@ const SignUp = () => {
                         },
                       }}
                       render={({ field }) => (
-                        <TxtInput
-                          {...field}
-                          placeholder="영문, 숫자 조합 8~12자리"
-                          type="password"
-                          borderColor={statusColor}
-                        />
+                        <>
+                          <TxtInput
+                            {...field}
+                            placeholder="영문, 숫자 조합 8~12자리"
+                            type="password"
+                            borderColor={statusColor}
+                          />
+                          {isPassValid && (
+                            <span
+                              style={{
+                                position: 'absolute',
+                                right: '10px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                color: '#64B5FF',
+                                fontSize: '18px',
+                              }}
+                            >
+                              ✓
+                            </span>
+                          )}
+                        </>
                       )}
                     />
                   </div>
@@ -489,20 +528,20 @@ const SignUp = () => {
                 <Part>
                   <Title>
                     <h4>주소</h4>
-                    {errors.addressInfo && <ErrorMsg>{errors.addressInfo.message}</ErrorMsg>}
+                    {errors.address && <ErrorMsg>{errors.address.message}</ErrorMsg>}
                   </Title>
                   <Controller
-                    name="addressInfo"
+                    name="address"
                     control={control}
                     rules={{ required: '주소를 정확히 입력해주세요.' }}
                     render={({ field }) => (
                       <AddressFinder
                         {...field}
-                        borderColor={errors.addressInfo ? 'red' : 'dodgerblue'}
-                        onAddressChange={(address, detailAddress, sido, sigungu) => {
+                        borderColor={errors.address ? 'red' : 'dodgerblue'}
+                        onAddressChange={(address, addressDetail, sido, sigungu) => {
                           const newAddressInfo = {
                             address,
-                            detailAddress,
+                            addressDetail,
                             siDoCode: sido,
                             siGunGuCode: sigungu,
                           }
@@ -521,12 +560,17 @@ const SignUp = () => {
                     {errors.depositManagerName && <ErrorMsg>{errors.depositManagerName.message}</ErrorMsg>}
                   </Title>
                   <DropWrap>
-                    <DepositSelect options={depositOptions} defaultValue={depositOptions[0]} onChange={() => {}} />
                     <TxtDropInput
                       name="depositManagerName"
                       onChange={() => {}}
                       placeholder="담당자 성함 입력"
                       {...register('depositManagerName', { required: '내용을 확인해 주세요.' })}
+                    />
+                    <ManagerInput
+                      name="depositManagerTitle"
+                      onChange={() => {}}
+                      placeholder="직함 입력"
+                      {...register('depositManagerTitle', { required: '내용을 확인해 주세요.' })}
                     />
                   </DropWrap>
                 </Part>
@@ -543,7 +587,7 @@ const SignUp = () => {
                     {...register('depositManagerPhone', { required: '올바른 번호가 아닙니다.' })}
                   />
                   <BottomP>
-                    <input type="checkbox" style={{ marginRight: '5px' }} />
+                    <input type="checkbox" {...register('auctionInfoSameForDeposit')} style={{ marginRight: '5px' }} />
                     경매 담당자 정보와 동일
                   </BottomP>
                 </Part>
@@ -557,13 +601,19 @@ const SignUp = () => {
                     {errors.memberName && <ErrorMsg>{errors.memberName.message}</ErrorMsg>}
                   </Title>
                   <DropWrap>
-                    <DepositSelect options={auctionOptions} defaultValue={auctionOptions[0]} onChange={() => {}} />
                     <TxtDropInput
                       type="text"
                       name="memberName"
                       onChange={() => {}}
                       placeholder="담당자 성함 입력"
                       {...register('memberName', { required: '내용을 확인해 주세요.' })}
+                    />
+                    <ManagerInput
+                      type="text"
+                      name="memberTitle"
+                      onChange={() => {}}
+                      placeholder="직함 입력"
+                      {...register('memberTitle', { required: '내용을 확인해 주세요.' })}
                     />
                   </DropWrap>
                 </Part>
@@ -641,7 +691,6 @@ const SignUp = () => {
                     <TxtCheckInput
                       onChange={(e) => {
                         handleBusIdChange(e)
-                        // commonChange(e)
                       }}
                       placeholder="사업자 번호 입력('-' 제외)"
                       name="businessNumber"
@@ -737,7 +786,12 @@ const SignUp = () => {
                     <h4>계좌번호</h4>
                     {errors.accountNumber && <ErrorMsg>{errors.accountNumber.message}</ErrorMsg>}
                   </Title>
-                  <AccountSelect options={bankList} defaultValue={bankList[0]} />
+                  <Controller
+                    control={control}
+                    name="bank"
+                    render={({ field }) => <AccountSelect {...field} options={bankList} defaultValue={bankList[0]} />}
+                  />
+
                   <TxtInput
                     style={{ marginTop: '5px' }}
                     placeholder="계좌번호 입력('-' 제외)"
@@ -753,11 +807,16 @@ const SignUp = () => {
                     {errors.releaseManagerName && <ErrorMsg>{errors.releaseManagerName.message}</ErrorMsg>}
                   </Title>
                   <DropWrap>
-                    <DepositSelect options={releaseOptions} defaultValue={releaseOptions[0]} onChange={() => {}} />
                     <TxtDropInput
                       name="releaseManagerName"
                       placeholder="담당자 성함 입력"
                       {...register('releaseManagerName', { required: '내용을 확인해 주세요.' })}
+                    />
+                    <ManagerInput
+                      name="releaseManagerTitle"
+                      onChange={() => {}}
+                      placeholder="직함 입력"
+                      {...register('releaseManagerTitle', { required: '내용을 확인해 주세요.' })}
                     />
                   </DropWrap>
                 </Part>
@@ -774,7 +833,7 @@ const SignUp = () => {
                     {...register('releaseManagerPhone', { required: '올바른 번호가 아닙니다.' })}
                   />
                   <BottomP>
-                    <input type="checkbox" style={{ marginRight: '5px' }} />
+                    <input type="checkbox" {...register('auctionInfoSameForRelease')} style={{ marginRight: '5px' }} />
                     경매 담당자 정보와 동일
                   </BottomP>
                 </Part>
@@ -795,14 +854,18 @@ const SignUp = () => {
                 <p>
                   개인정보 활용에 동의 <span>(필수)</span>
                 </p>
-                <a>약관 보기</a>
+                <a type="button" onClick={() => {}}>
+                  약관 보기
+                </a>
               </div>
               <div>
                 <input type="checkbox" checked={termsChecked} onChange={handleSingleCheck(setTermsChecked)} />
                 <p>
                   이용약관 동의 <span>(필수)</span>
                 </p>
-                <a style={{ marginLeft: '55px' }}>약관 보기</a>
+                <a type="button" onClick={() => {}}>
+                  약관 보기
+                </a>
               </div>
             </BottomItem>
             {isNext ? <SignUpBtn isNext={true}>가입하기</SignUpBtn> : <SignUpBtn isNext={false}>가입하기</SignUpBtn>}
