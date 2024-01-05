@@ -1,5 +1,6 @@
 import { styled } from 'styled-components'
 import Select, { components } from 'react-select'
+import { useRef } from 'react'
 
 const CustomDropdownIndicator = (props) => {
   return (
@@ -152,7 +153,7 @@ export const CustomStyledSelect2 = styled(Select)`
 `
 
 export const MainSelect = (props) => {
-  return <CustomStyledSelect {...props} components={{ DropdownIndicator: CustomDropdownIndicator }} />
+  return <CustomStyledSelect ref={props.ref} {...props} components={{ DropdownIndicator: CustomDropdownIndicator }} />
 }
 
 export const CustomSelect = (props) => {
