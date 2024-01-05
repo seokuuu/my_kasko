@@ -162,6 +162,7 @@ const Round = ({}) => {
     // 컴포넌트가 언마운트될 때 switchEdit을 재설정하는 정리 함수
     return () => {
       setEditPage(false)
+      setRoundModal(false)
     }
   }, [])
 

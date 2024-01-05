@@ -288,13 +288,7 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
                 <div>
                   선택 중량<span> 2 </span>kg / 총 중량 kg
                 </div>
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <p>시작가 일괄 변경</p>
-                  <CustomInput placeholder="" width={120} height={32} />
-                  <TGreyBtn height={30} style={{ width: '50px' }}>
-                    적용
-                  </TGreyBtn>
-                </div>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}></div>
               </TCSubContainer>
               <Table getCol={getCol} getRow={getRow} hei2={330} />
               <TCSubContainer>

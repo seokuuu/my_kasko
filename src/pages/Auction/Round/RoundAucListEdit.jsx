@@ -141,9 +141,19 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 
   useEffect(() => {
     refetch()
-  }, [inputParams])
+  }, [inputParams, refetch])
 
   const resData = data?.data?.data?.list
+
+  const [resData2, setResData2] = useState(null)
+
+  useEffect(() => {
+    if (isSuccess) {
+      setResData2(resData)
+    }
+  }, [isSuccess, data]) // `data`를 의존성 배열에 추가했습니다.
+
+  console.log('resData2', resData2)
 
   // Todo
   useEffect(() => {
@@ -153,16 +163,16 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
     // if (Array.isArray(getData)) {
     //   setGetRow(add_element_field(getData, AuctionRoundDetailFields))
     // }
-    let getData = resData
+    // let getData = resData
 
     //타입, 리액트쿼리, 데이터 확인 후 실행
-    if (!isSuccess && !resData) return
-    if (Array.isArray(getData, newResData)) {
-      const combinedData = [...newResData, ...resData]
+    if (!isSuccess && !resData2) return
+    if (Array.isArray(resData2, newResData)) {
+      const combinedData = [...newResData, ...resData2]
       const updatedData = add_element_field(combinedData, AuctionRoundDetailFields)
       setGetRow(updatedData)
     }
-  }, [isSuccess, resData, newResData])
+  }, [isSuccess, resData2, newResData])
 
   // input의 addProductUids 값 채우기
   useEffect(() => {
@@ -170,7 +180,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
     setEditData({ ...editData, addProductUids: uniqueNumbers })
   }, [newResData])
 
-  // TODO : 경매 회차 관리 resData 쪽 object 눈속임으로 없애기 ..
+  // TODO : 경매 회차 관리 resData 쪽 object 눈속임으로 없애기 ..`
   // input의 deleteAuctionProductList 값 채우기
   const handleRemoveBtn = useCallback(() => {
     if (isArray(checkedArray) && checkedArray.length > 0) {
@@ -180,6 +190,13 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
           .map((item) => item['경매 제품 고유 번호'])
 
         setEditData({ ...editData, deleteAuctionProductList: resultRemove })
+
+        // 'resData2' 관련 object array 삭제
+        const filteredArray2 = resData2.filter(
+          (item) =>
+            !checkedArray.some((checkedItem) => checkedItem['경매 제품 고유 번호'] === item['경매 제품 고유 번호']),
+        )
+        setResData2(filteredArray2)
 
         // '제품 추가' 관련 object array 삭제
         const filteredArray = newResData.filter(

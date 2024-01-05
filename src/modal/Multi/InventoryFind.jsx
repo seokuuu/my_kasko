@@ -165,7 +165,11 @@ const InventoryFind = ({ title, setSwitch, data }) => {
                       </ResultCell>
                       <ResultCell>{item.name}</ResultCell>
                       <ResultCell>{item.code}</ResultCell>
-                      <ResultCell wid={130}>{item.businessNumber}</ResultCell>
+                      {title == '고객사 찾기' && (
+                        <>
+                          <ResultCell wid={130}>{item.businessNumber}</ResultCell>
+                        </>
+                      )}
                     </ResultRow>
                   ))}
               </ResultContainer>
