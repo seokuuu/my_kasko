@@ -298,7 +298,6 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData, isRowCl
   }
   // new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
 
-
   // console.log('gridOptions', gridOptions)
   const pinnedTopRowData = useMemo(() => {
     return topData
@@ -317,7 +316,6 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData, isRowCl
     }
     return {} // Default style for non-clickable rows
   }
-
 
   return (
     <div style={containerStyle}>
