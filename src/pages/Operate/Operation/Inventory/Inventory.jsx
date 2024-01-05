@@ -154,11 +154,9 @@ const Inventory = ({}) => {
     if (filteredList === undefined) {
       resData && setFilteredList(resData)
     }
-    console.log('여기에 데이터', filteredList)
   }, [filteredList])
 
   useEffect(() => {
-    console.log('들어와 데이터:', filteredList)
     if (!isSuccess && !filteredList) return null
     if (Array.isArray(filteredList)) {
       setGetRow(add_element_field(filteredList, InvertoryFields))
@@ -174,12 +172,6 @@ const Inventory = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData1(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check1])
 
   useEffect(() => {
@@ -190,12 +182,6 @@ const Inventory = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData2(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check2])
 
   useEffect(() => {
@@ -206,12 +192,6 @@ const Inventory = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData3(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check3])
 
   useEffect(() => {
@@ -222,12 +202,6 @@ const Inventory = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData4(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check4])
 
   useEffect(() => {
@@ -238,29 +212,8 @@ const Inventory = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData5(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check5])
 
-  // useEffect(() => {
-  //   setNowPopupType(2)
-  //   setDestinationPopUp({
-  //     num: '2-1',
-  //     title: '저장하시겠습니까?',
-  //     next: '1-12',
-  //   })
-  // }, [])
-
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
   const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
@@ -319,10 +272,10 @@ const Inventory = ({}) => {
       destinationName: destinationData.name,
       customerCode: customerData.code,
       customerName: customerData.name,
-      saleCategoryList: checkData1, //판매구분
-      receiptStatusList: checkData3, //입고상태목록
-      orderStatusList: checkData2, //주문상태구분
-      shipmentStatusList: checkData5, //출하상태구분
+      saleCategoryList: checkData1.join(','), //판매구분
+      receiptStatusList: checkData3.join(','), //입고상태목록
+      orderStatusList: checkData2.join(','), //주문상태구분
+      shipmentStatusList: checkData5.join(','), //출하상태구분
       auctionStartDate: checkSalesStart ? moment(checkSalesStart).format('YYYY-MM-DD HH:mm:ss') : '',
       auctionEndDate: checkSalesEnd && moment(checkSalesEnd).format('YYYY-MM-DD HH:mm:ss'),
       orderStartDate: Start2 && moment(Start2).format('YYYY-MM-DD HH:mm:ss'),

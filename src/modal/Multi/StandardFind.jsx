@@ -10,34 +10,31 @@ import {
 } from '../../modal/Common/Common.Styled'
 import { GreyBtn, BlackBtn } from '../../common/Button/Button'
 import { useAtom } from 'jotai'
-import { blueModalAtom } from '../../store/Layout/Layout'
+import { blueModalAtom, specAtom } from '../../store/Layout/Layout'
 import { getSpecList } from '../../api/search'
 import useReactQuery from '../../hooks/useReactQuery'
 
 export default function StandardFind({ closeFn }) {
   const array = []
-  const [isModal, setIsModal] = useAtom(blueModalAtom)
+  // const [isModal, setIsModal] = useAtom(blueModalAtom)
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
   const [selectedCountry, setSelectedCountry] = useState('')
-
+  
   const { data: list } = useReactQuery({}, 'getSpecList', getSpecList)
   const [filter, setFilter] = useState([])
 
   useEffect(() => {
-    if (list) setFilter(list)
+    const res = list && list.filter((li) => li.spec.includes(filterText))
+    if (filterText && list) {
+      setFilter(res)
+    } else {
+      setFilter(list)
+    }
   }, [filterText, list])
-
-  const modalOpen = () => {
-    setIsModal(true)
-  }
-
-  const modalClose = () => {
-    setIsModal(false)
-  }
   const gridRef = useRef()
 
   const onFindButtonClick = () => {
-    const res = list && list.filter((li) => li.spec === filterText)
+    const res = list && list.filter((li) => li.spec.includes(filterText))
     if (filterText) {
       setFilter(res)
     } else {
@@ -77,7 +74,12 @@ export default function StandardFind({ closeFn }) {
               <FSResult>
                 {filter?.map((x, index) => {
                   return (
-                    <ResultBlock key={index} onClick={() => handleResultBlockClick(x.spec)}>
+                    <ResultBlock
+                      key={index}
+                      onClick={() => {
+                        handleResultBlockClick(x.spec)
+                      }}
+                    >
                       {x.spec}
                     </ResultBlock>
                   )
@@ -86,7 +88,7 @@ export default function StandardFind({ closeFn }) {
             </FindSpec>
           </BlueSubContainer>
           <BlueBarBtnWrap>
-            <BlackBtn onClick={modalClose} width={30} height={40}>
+            <BlackBtn onClick={(e) => closeFn(e, filterText)} width={30} height={40}>
               확인
             </BlackBtn>
           </BlueBarBtnWrap>
@@ -141,10 +143,6 @@ const ResultBlock = styled.div`
   text-align: center;
   display: flex;
   margin-left: 2px;
-
-  &:hover {
-    background-color: #f2fce8;
-  }
 `
 
 const RBInput = styled.input`
