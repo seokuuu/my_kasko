@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
+import { useAtom, useAtomValue } from 'jotai'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 import { MainSelect } from '../../../common/Option/Main'
@@ -12,7 +13,6 @@ import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom, selectedRowsAtom } from '../../../store/Layout/Layout'
 import BlueBar from '../../../modal/BlueBar/BlueBar'
 import { blueModalAtom } from '../../../store/Layout/Layout'
-import { useAtom, useAtomValue } from 'jotai'
 import { ExInputsWrap, FilterWrap, MiniInput } from '../../../modal/External/ExternalFilter'
 import {
   FilterContianer,
@@ -36,7 +36,6 @@ import {
   FilterHeaderAlert,
 } from '../../../modal/External/ExternalFilter'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-
 import Hidden from '../../../components/TableInner/Hidden'
 import Table from '../../../pages/Table/Table'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -47,12 +46,13 @@ import { KilogramSum } from '../../../utils/KilogramSum'
 import { formatWeight } from '../../../utils/utils'
 
 const Package = ({}) => {
-  const checkBoxSelect = useAtomValue(selectedRowsAtom)
-  const [packageProductPagination, setPackageProductPagination] = useState([])
   const [param, setParam] = useState({
     pageNum: 1,
     pageSize: 10,
   })
+  const [packageProductListData, setPackageProductListData] = useState(null)
+  const [packageProductPagination, setPackageProductPagination] = useState([])
+  const checkBoxSelect = useAtomValue(selectedRowsAtom)
   const {
     isLoading,
     isError,
@@ -60,22 +60,10 @@ const Package = ({}) => {
     isSuccess,
   } = useReactQuery(param, 'getPackageProductList', getPackageProductList)
 
-  const [packageProductListData, setPackageProductListData] = useState(null)
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
-
   useEffect(() => {
-    console.log('getPackageProductListRes', getPackageProductListRes)
     if (getPackageProductListRes && getPackageProductListRes.data && getPackageProductListRes.data.data) {
       setPackageProductListData(formatTableRowData(getPackageProductListRes.data.data.list))
       setPackageProductPagination(getPackageProductListRes.data.data.pagination)
-
-      console.log('getPackageProductListRes.data.data.list', getPackageProductListRes.data.data.list)
-      console.log('formatTableRowData---Package.jsx---', formatTableRowData(getPackageProductListRes.data.data.list))
     }
   }, [isSuccess, getPackageProductListRes])
 
@@ -103,15 +91,11 @@ const Package = ({}) => {
   }
 
   const [isModal, setIsModal] = useAtom(blueModalAtom)
-
-  console.log('isModal =>', isModal)
-
   const modalOpen = () => {
     setIsModal(true)
   }
 
   const handleTablePageSize = (event) => {
-    console.log('event in package---', event)
     setParam((prevParam) => ({
       ...prevParam,
       pageSize: Number(event.target.value),
