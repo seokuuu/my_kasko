@@ -37,7 +37,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { getBidding } from '../../../api/auction/bidding'
 import Excel from '../../../components/TableInner/Excel'
-import { AuctionBiddingFields, AuctionRoundFieldsCols } from '../../../constants/admin/Auction'
+import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
@@ -91,10 +91,11 @@ const Bidding = ({}) => {
   }
 
   const [getRow, setGetRow] = useState('')
-  const tableField = useRef(AuctionRoundFieldsCols)
+  const tableField = useRef(AuctionBiddingFieldsCols)
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
+  // const productNumbers = checkedArray?.map((item) => item['제품 고유 번호'])
 
   const [Param, setParam] = useState({
     pageNum: 1,
@@ -116,21 +117,42 @@ const Bidding = ({}) => {
 
   const [input, setInput] = useState(init)
 
-  console.log('destinationData <3', destinationData)
-  console.log('input <3', input)
+  // TODO : productNumbers 제거시 null값으로 처리되고, map 함수를 써서 productNumbers의 index의 값을 활용해서 customerDestinationUid : productNumbers를 넣어보자. 단, null값이 존재하는 경우 해당 customerDestinationUid를 가지고 있는 ㅇbiddingList의 object가 없어진다고 생각
+  const productNumbers = checkedArray?.map((item) => item['제품 고유 번호'])
 
   const onClickDestination = () => {
-    setInput((p) => ({
-      ...p,
-      biddingList: [
-        ...p.biddingList,
-        {
+    const newBiddingList = checkedArray.map((item) => {
+      const productNumber = item['제품 고유 번호']
+      const index = productNumbers.indexOf(productNumber)
+      if (index !== -1) {
+        return {
+          productUid: productNumber,
           customerDestinationUid: destinationData?.code || null,
-          ...p.biddingList[0],
-        },
-      ],
-    }))
+          biddingPrice: null,
+        }
+      }
+      return null // productNumbers에 해당하는 값이 없을 때는 null 반환
+    })
+
+    setInput((prevInput) => {
+      // 기존에 있던 productNumbers에 해당하는 값을 제거하고 null인 값을 제외
+      const filteredBiddingList = prevInput.biddingList
+        .filter((item) => !productNumbers.includes(item.productUid))
+        .filter(Boolean)
+
+      // 새로운 값을 추가하거나 전체를 교체
+      return {
+        ...prevInput,
+        biddingList: [...filteredBiddingList, ...newBiddingList],
+      }
+    })
   }
+
+  console.log('productNumbers <3<3<3', productNumbers)
+
+  console.log('destinationData <3<3<3', destinationData)
+
+  console.log('input <3<3<3', input)
 
   useEffect(() => {
     setParam((prevParams) => ({
