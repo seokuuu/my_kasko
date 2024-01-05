@@ -9,10 +9,10 @@ import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn } from '../../../common/Button/Button'
 import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { toggleAtom, selectedRowsAtom } from '../../../store/Layout/Layout'
 import BlueBar from '../../../modal/BlueBar/BlueBar'
 import { blueModalAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { ExInputsWrap, FilterWrap, MiniInput } from '../../../modal/External/ExternalFilter'
 import {
   FilterContianer,
@@ -43,8 +43,12 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { getPackageProductList } from '../../../api/packageProduct'
 import { packageFields, packageFieldsCols } from '../../../constants/admin/PackageProduct'
+import { KilogramSum } from '../../../utils/KilogramSum'
+import { formatWeight } from '../../../utils/utils'
 
 const Package = ({}) => {
+  const checkBoxSelect = useAtomValue(selectedRowsAtom)
+  const [packageProductPagination, setPackageProductPagination] = useState([])
   const [param, setParam] = useState({
     pageNum: 1,
     pageSize: 10,
@@ -68,6 +72,8 @@ const Package = ({}) => {
     console.log('getPackageProductListRes', getPackageProductListRes)
     if (getPackageProductListRes && getPackageProductListRes.data && getPackageProductListRes.data.data) {
       setPackageProductListData(formatTableRowData(getPackageProductListRes.data.data.list))
+      setPackageProductPagination(getPackageProductListRes.data.data.pagination)
+
       console.log('getPackageProductListRes.data.data.list', getPackageProductListRes.data.data.list)
       console.log('formatTableRowData---Package.jsx---', formatTableRowData(getPackageProductListRes.data.data.list))
     }
@@ -210,17 +216,20 @@ const Package = ({}) => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
+            조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
+            {packageProductPagination?.listCount}개 )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown handleDropdown={handleTablePageSize} />
-            <Excel />
+            <Excel getRow={packageProductListData} />
           </div>
         </TCSubContainer>
         <TCSubContainer>
           <div>
-            선택 중량<span> 2 </span>kg / 총 중량 kg
+            선택 중량
+            <span> {formatWeight(KilogramSum(checkBoxSelect))} </span>
+            kg / 총 중량 {formatWeight(packageProductPagination.totalWeight)} kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteBlackBtn>노출 상태 변경</WhiteBlackBtn>
