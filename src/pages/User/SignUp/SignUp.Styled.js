@@ -200,5 +200,6 @@ export const SubmitBtn = styled.button`
 
 export const DropWrap = styled.div`
   display: flex;
+  justify-content: space-between;
   width: 320px;
 `

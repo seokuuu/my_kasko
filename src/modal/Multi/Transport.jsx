@@ -85,7 +85,7 @@ const TransportModal = ({
                     onChange={onChangeHandler}
                     style={{ fontSize: '16px' }}
                     placeholder="최소 길이"
-                    type="text"
+                    type="number"
                   />
                   <Unit>M</Unit>
                 </InputContainer>
@@ -97,7 +97,7 @@ const TransportModal = ({
                     value={inputValues.input2}
                     style={{ fontSize: '16px' }}
                     placeholder="최대 길이"
-                    type="text"
+                    type="number"
                   />
                   <Unit>M</Unit>
                 </InputContainer>
@@ -111,7 +111,7 @@ const TransportModal = ({
                     value={inputValues.input3}
                     style={{ fontSize: '16px' }}
                     placeholder="최소 폭"
-                    type="text"
+                    type="number"
                   />
                   <Unit>M</Unit>
                 </InputContainer>
@@ -123,7 +123,7 @@ const TransportModal = ({
                     value={inputValues.input4}
                     style={{ fontSize: '16px' }}
                     placeholder="최대 폭"
-                    type="text"
+                    type="number"
                   />
                   <Unit>M</Unit>
                 </InputContainer>
@@ -137,7 +137,7 @@ const TransportModal = ({
                     value={inputValues.input5}
                     style={{ fontSize: '16px' }}
                     placeholder="퍼센트 값"
-                    type="text"
+                    type="number"
                   />
                   <Unit>%</Unit>
                 </InputContainer>

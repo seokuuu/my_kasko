@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   BlackBtn,
   BtnBound,
@@ -14,9 +14,9 @@ import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-import Test3 from '../../Test/Test3'
 
 import {
+  CustomInput,
   DoubleWrap,
   ExInputsWrap,
   FilterContianer,
@@ -28,33 +28,39 @@ import {
   FilterTCTop,
   FilterTopContainer,
   Input,
-  PartWrap,
+  MiniInput,
   PWRight,
+  PartWrap,
   ResetImg,
   RowWrap,
-  TableContianer,
   TCSubContainer,
+  TableContianer,
   Tilde,
-  CustomInput,
-  MiniInput,
 } from '../../../modal/External/ExternalFilter'
 
+import { useQueryClient } from '@tanstack/react-query'
+import { useAtom } from 'jotai'
+import { getDetailAuction } from '../../../api/auction/round'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { aucProAddModalAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
-import DefaultBlueBar from '../../../modal/Multi/DefaultBlueBar'
-import RoundAucProAdd from './RoundAucProAdd'
-import { add_element_field } from '../../../lib/tableHelpers'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { useQueryClient } from '@tanstack/react-query'
-import { getDetailAuction } from '../../../api/auction/round'
 import { AuctionRoundDetailFields, AuctionRoundDetailFieldsCols } from '../../../constants/admin/Auction'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
+import RoundAucProAdd from './RoundAucProAdd'
+import { isArray } from 'lodash'
 
 //경매 목록 수정(단일)
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
   const [newResData, setNewResData] = useState([])
+  const [editData, setEditData] = useState({
+    type: types,
+    auctionNumber: auctionNum,
+    addProductUids: [],
+    deleteAuctionProductList: [],
+  })
+
   const [addList, setAddList] = useState([])
   const [deleteList, setDeleteList] = useState([])
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -111,6 +117,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
+  console.log('checkedArray', checkedArray)
 
   const [originalRow, setOriginalRow] = useState([]) //원본 row를 저장해서 radio check에러 막기
   const [inputParams, setInputParams] = useState({
@@ -134,18 +141,76 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 
   useEffect(() => {
     refetch()
-  }, [inputParams])
+  }, [inputParams, refetch])
 
   const resData = data?.data?.data?.list
 
+  const [resData2, setResData2] = useState(null)
+
   useEffect(() => {
-    let getData = resData
-    //타입, 리액트쿼리, 데이터 확인 후 실행
-    if (!isSuccess && !resData) return
-    if (Array.isArray(getData)) {
-      setGetRow(add_element_field(getData, AuctionRoundDetailFields))
+    if (isSuccess) {
+      setResData2(resData)
     }
-  }, [isSuccess, resData])
+  }, [isSuccess, data]) // `data`를 의존성 배열에 추가했습니다.
+
+  console.log('resData2', resData2)
+
+  // Todo
+  useEffect(() => {
+    // let getData = resData
+    // //타입, 리액트쿼리, 데이터 확인 후 실행
+    // if (!isSuccess && !resData) return
+    // if (Array.isArray(getData)) {
+    //   setGetRow(add_element_field(getData, AuctionRoundDetailFields))
+    // }
+    // let getData = resData
+
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !resData2) return
+    if (Array.isArray(resData2, newResData)) {
+      const combinedData = [...newResData, ...resData2]
+      const updatedData = add_element_field(combinedData, AuctionRoundDetailFields)
+      setGetRow(updatedData)
+    }
+  }, [isSuccess, resData2, newResData])
+
+  // input의 addProductUids 값 채우기
+  useEffect(() => {
+    const uniqueNumbers = newResData?.map((item) => item['고유 번호'])
+    setEditData({ ...editData, addProductUids: uniqueNumbers })
+  }, [newResData])
+
+  // TODO : 경매 회차 관리 resData 쪽 object 눈속임으로 없애기 ..`
+  // input의 deleteAuctionProductList 값 채우기
+  const handleRemoveBtn = useCallback(() => {
+    if (isArray(checkedArray) && checkedArray.length > 0) {
+      if (window.confirm('선택한 항목을 삭제 목록에 추가하시겠습니까?')) {
+        const resultRemove = checkedArray
+          .filter((item) => item && item['경매 제품 고유 번호'] !== undefined && item['경매 제품 고유 번호'] !== null)
+          .map((item) => item['경매 제품 고유 번호'])
+
+        setEditData({ ...editData, deleteAuctionProductList: resultRemove })
+
+        // 'resData2' 관련 object array 삭제
+        const filteredArray2 = resData2.filter(
+          (item) =>
+            !checkedArray.some((checkedItem) => checkedItem['경매 제품 고유 번호'] === item['경매 제품 고유 번호']),
+        )
+        setResData2(filteredArray2)
+
+        // '제품 추가' 관련 object array 삭제
+        const filteredArray = newResData.filter(
+          (item) => !checkedArray.some((checkedItem) => checkedItem['고유 번호'] === item['고유 번호']),
+        )
+        setNewResData(filteredArray)
+      }
+    } else {
+      alert('선택해주세요!')
+    }
+  }, [checkedArray, editData, setEditData, newResData, setNewResData])
+
+  console.log('nesRES', newResData)
+  console.log('editData @@@ ', editData)
 
   return (
     <FilterContianer>
@@ -294,16 +359,24 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
         <TCSubContainer>
           <div style={{ display: 'flex', gap: '10px' }}></div>
           <div>
-            <WhiteRedBtn>선택 목록 제거</WhiteRedBtn>
+            <WhiteRedBtn onClick={handleRemoveBtn}>선택 목록 제거</WhiteRedBtn>
           </div>
         </TCSubContainer>
-        {addModal && <RoundAucProAdd setAddModal={setAddModal} newResData={newResData} setNewResData={setNewResData} />}
+        {addModal && (
+          <RoundAucProAdd
+            setAddModal={setAddModal}
+            newResData={newResData}
+            setNewResData={setNewResData}
+            types={types}
+            propsResData={resData}
+          />
+        )}
         <NewBottomBtnWrap bottom={-5}>
           <WhiteBtn width={13} height={40}>
             돌아가기
           </WhiteBtn>
           <BlackBtn width={13} height={40}>
-            등록
+            완료
           </BlackBtn>
         </NewBottomBtnWrap>
       </TableContianer>

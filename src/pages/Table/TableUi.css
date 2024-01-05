@@ -1,0 +1,47 @@
+/* Ag-Grid 커스텀 */
+.custom-header-style {
+  background-color: #dbe2f0;
+  text-align: center;
+  font-size: 13px;
+  border-right: 1px solid #c8c8c8 !important;
+  box-sizing: border-box;
+}
+.custom-header-style:last-child {
+  border-right: none;
+  box-sizing: border-box;
+}
+.ag-header-cell-label {
+  justify-content: center;
+}
+.ag-header-cell:hover {
+  background-color: #dbe2f0 !important; /* 기본 배경색으로 설정 */
+  cursor: default !important; /* 커서 스타일 변경을 방지 */
+}
+.ag-header-cell-label:hover {
+  background-color: #dbe2f0 !important; /* 기본 배경색으로 설정 */
+}
+.ag-header-cell-menu-button {
+  display: none !important;
+}
+.ag-paging-panel {
+  display: none;
+}
+/* 스크롤바 전체 스타일 */
+.ag-theme-alpine ::-webkit-scrollbar {
+  width: 8px; /* 스크롤바의 너비 */
+}
+
+/* 스크롤바 트랙 스타일 */
+.ag-theme-alpine ::-webkit-scrollbar-track {
+  background: #f1f1f1; /* 트랙의 배경색 */
+}
+
+/* 스크롤바 썸(손잡이) 스타일 */
+.ag-theme-alpine ::-webkit-scrollbar-thumb {
+  background: #c8c8c8;
+}
+
+/* 스크롤바 썸(손잡이) 호버 시 스타일 */
+.ag-theme-alpine ::-webkit-scrollbar-thumb:hover {
+  background: #c8c8c8;
+}

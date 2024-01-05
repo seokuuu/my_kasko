@@ -139,7 +139,98 @@ export const AuctionRoundDetailFields = {
   '판매 제외 사유': 'excludeSaleReason',
   등록일: 'createDate',
   매입가: 'price',
+  '고유 번호': '고유 번호',
 }
+
+/* ===================================================================
+    경매 관리 - 경매 회차 관리 - 경매 목록 수정 (단일) - 제품 추가 Table (round)
+====================================================================== */
+
+export const AuctionRoundExtraProductFields = {
+  '고유 번호': 'uid',
+  '제품 번호': 'number',
+  '규격 약호': 'spec',
+  창고: 'storageName',
+  두께: 'thickness',
+  폭: 'width',
+  길이: 'length',
+  중량: 'weight',
+  등급: 'grade',
+  '용도 코드': 'usageCode',
+  용도명: 'usageCodeName',
+  c: 'c',
+  si: 'si',
+  mn: 'mn',
+  p: 'p',
+  s: 's',
+  ts: 'ts',
+  yp: 'yp',
+  el: 'el',
+  제품군: 'spart',
+  품명명: 'name',
+  '정척 여부': 'preferThickness', // (Y / N)
+  '여재 원인 코드': 'causeCode',
+  '여재 원인명': 'causeCodeName',
+  '유찰 횟수': 'failCount',
+  '경매 등록 상태': 'registrationStatus', // (경매 등록 / 경매 등록 대기)
+  매입처: 'supplier', // (현대제철 / 카스코 철강)
+  제조사: 'maker', // (현대제철 / 동은스틸)
+  '판매 구분': 'saleCategory', // (판매재 / 판매 제외재 / 판매 완료재)
+  '판매 제외 사유': 'excludeSaleReason',
+  '재고 상태': 'stockStatus', // (타사 재고 / 자사 재고)
+  '판매 유형': 'saleType', // (경매 대상재 / 상시 판매 대상재)
+  '판매가 유형': 'salePriceType', // (특가 / 일반)
+  생성일: 'createDate',
+  시작가: 'auctionStartPrice',
+  패키지명: 'packageName',
+  '패키지 번호': 'packageNumber',
+  'Pro.No 번호': 'productNoNumber',
+  매입가: 'price',
+}
+
+export const AuctionRoundExtraProductFieldsCols = [
+  { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+
+  { field: '고유 번호', minWidth: 150 },
+  { field: '제품 번호', minWidth: 150 },
+  { field: '규격 약호', minWidth: 150 },
+  { field: '창고', minWidth: 100 },
+  { field: '두께', minWidth: 100 },
+  { field: '폭', minWidth: 100 },
+  { field: '길이', minWidth: 100 },
+  { field: '중량', minWidth: 100 },
+  { field: '등급', minWidth: 100 },
+  { field: '용도 코드', minWidth: 100 },
+  { field: '용도명', minWidth: 100 },
+  { field: 'c', minWidth: 100 },
+  { field: 'si', minWidth: 100 },
+  { field: 'mn', minWidth: 100 },
+  { field: 'p', minWidth: 100 },
+  { field: 's', minWidth: 100 },
+  { field: 'ts', minWidth: 100 },
+  { field: 'yp', minWidth: 100 },
+  { field: 'el', minWidth: 100 },
+  { field: '제품군', minWidth: 100 },
+  { field: '품명명', minWidth: 100 },
+  { field: '정척 여부', minWidth: 150 },
+  { field: '여재 원인 코드', minWidth: 150 },
+  { field: '여재 원인명', minWidth: 150 },
+  { field: '유찰 횟수', minWidth: 100 },
+  { field: '경매 등록 상태', minWidth: 250 },
+  { field: '매입처', minWidth: 200 },
+  { field: '제조사', minWidth: 200 },
+  { field: '판매 구분', minWidth: 250 },
+  { field: '판매 제외 사유', minWidth: 200 },
+  { field: '재고 상태', minWidth: 200 },
+  { field: '판매 유형', minWidth: 200 },
+  { field: '판매가 유형', minWidth: 150 },
+  { field: '생성일', minWidth: 150 },
+  { field: '시작가', minWidth: 100 },
+  { field: '패키지명', minWidth: 100 },
+  { field: '패키지 번호', minWidth: 100 },
+  { field: 'Pro.No 번호', minWidth: 150 },
+  { field: '매입가', minWidth: 100 },
+]
 
 export const AuctionRoundDetailFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
@@ -152,6 +243,7 @@ export const AuctionRoundDetailFieldsCols = [
   //     editType: 'auctionroundedit',
   //   },
   // },
+  { field: '고유 번호', minWidth: 100 },
   { field: '경매 제품 고유 번호', minWidth: 100 },
   { field: '제품 고유 번호', minWidth: 100 },
   { field: '창고', minWidth: 100 },
@@ -623,3 +715,17 @@ export const AuctionStartPriceFieldsCols = [
   { field: '적용전 단가', minWidth: 150 },
   { field: '적용 단가', minWidth: 150 },
 ]
+
+const uniqueKeys = new Set([...Object.keys(AuctionRoundExtraProductFields), ...Object.keys(AuctionRoundDetailFields)])
+
+const uniqueObject = {}
+
+uniqueKeys.forEach((key) => {
+  if (AuctionRoundExtraProductFields.hasOwnProperty(key) && !AuctionRoundDetailFields.hasOwnProperty(key)) {
+    uniqueObject[key] = AuctionRoundExtraProductFields[key]
+  } else if (!AuctionRoundExtraProductFields.hasOwnProperty(key) && AuctionRoundDetailFields.hasOwnProperty(key)) {
+    uniqueObject[key] = AuctionRoundDetailFields[key]
+  }
+})
+
+console.log('uniqueObject', uniqueObject)

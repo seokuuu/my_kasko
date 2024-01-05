@@ -41,11 +41,16 @@ export function addPropertyToObject(obj, key, value) {
 
 // 날짜 포멧(YYYY.MM.DD) or use separator
 export function formatDateString(date, separator = '.') {
-  const transformDate = new Date(date);
-  const year = transformDate.getFullYear();
-  const month = (transformDate.getMonth() + 1).toString().padStart(2, '0');
-  const day = transformDate.getDate().toString().padStart(2, '0');
+  const transformDate = new Date(date)
+  const year = transformDate.getFullYear()
+  const month = (transformDate.getMonth() + 1).toString().padStart(2, '0')
+  const day = transformDate.getDate().toString().padStart(2, '0')
 
-  const dateString = [year, month, day].join(separator);
-  return dateString;
+  const dateString = [year, month, day].join(separator)
+  return dateString
+}
+
+// 'weight'가 null이나 undefined가 아니면, 숫자를 콤마가 있는 형식으로 포맷합니다.
+export const formatWeight = (weight) => {
+  return weight ? weight.toLocaleString() : 0
 }

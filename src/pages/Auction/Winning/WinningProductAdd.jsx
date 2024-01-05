@@ -50,6 +50,7 @@ import {
   ModalContainer,
   WhiteCloseBtn,
 } from '../../../modal/Common/Common.Styled'
+import Table from '../../Table/Table'
 
 // 낙찰 생성 제품 추가(단일) 메인 컴포넌트
 const WinningProductAdd = ({}) => {
@@ -133,7 +134,7 @@ const WinningProductAdd = ({}) => {
             </FilterTopContainer>
             {exFilterToggle && (
               <>
-                <FilterSubcontianer>
+                <FilterSubcontianer modal>
                   <FilterLeft>
                     <RowWrap>
                       <PartWrap first>
@@ -252,17 +253,15 @@ const WinningProductAdd = ({}) => {
                   </TGreyBtn>
                 </div>
               </TCSubContainer>
-              <Test3 hei2={350} hei={100} />
+              <Table hei2={280} />
               <TCSubContainer style={{ padding: '0px' }}>
                 <div></div>
                 <div>
-                  <BlackBtn style={{ position: 'relative', top: '10px', left: '45px', width: '150px', height: '35px' }}>
+                  <BlackBtn style={{ position: 'relative', top: '10px', width: '150px', height: '35px' }}>
                     제품 추가
                   </BlackBtn>
                 </div>
-                <div>
-                  <WhiteBlackBtn style={{ position: 'relative', top: '10px' }}>대량 등록</WhiteBlackBtn>
-                </div>
+                <div></div>
               </TCSubContainer>
             </TableContianer>
           </FilterContianer>
