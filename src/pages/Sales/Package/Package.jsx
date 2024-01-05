@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
@@ -38,14 +38,45 @@ import {
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import Hidden from '../../../components/TableInner/Hidden'
+import Table from '../../../pages/Table/Table'
+import { add_element_field } from '../../../lib/tableHelpers'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getPackageProductList } from '../../../api/packageProduct'
+import { packageFields, packageFieldsCols } from '../../../constants/admin/PackageProduct'
 
 const Package = ({}) => {
+  const [param, setParam] = useState({
+    pageNum: 1,
+    pageSize: 10,
+  })
+  const {
+    isLoading,
+    isError,
+    data: getPackageProductListRes,
+    isSuccess,
+  } = useReactQuery(param, 'getPackageProductList', getPackageProductList)
+
+  const [packageProductListData, setPackageProductListData] = useState(null)
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
     //   [name]: selectedOption.label,
     // }));
   }
+
+  useEffect(() => {
+    console.log('getPackageProductListRes', getPackageProductListRes)
+    if (getPackageProductListRes && getPackageProductListRes.data && getPackageProductListRes.data.data) {
+      setPackageProductListData(formatTableRowData(getPackageProductListRes.data.data.list))
+      console.log('getPackageProductListRes.data.data.list', getPackageProductListRes.data.data.list)
+      console.log('formatTableRowData---Package.jsx---', formatTableRowData(getPackageProductListRes.data.data.list))
+    }
+  }, [isSuccess, getPackageProductListRes])
+
+  const formatTableRowData = (packageProductListData) => {
+    return add_element_field(packageProductListData, packageFields)
+  }
+
   const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
@@ -73,6 +104,14 @@ const Package = ({}) => {
     setIsModal(true)
   }
 
+  const handleTablePageSize = (event) => {
+    console.log('event in package---', event)
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+    }))
+  }
+
   return (
     <FilterContianer>
       <div>
@@ -91,7 +130,6 @@ const Package = ({}) => {
               <div style={{ marginTop: '6px' }}>· 주의사항 영역</div>
             </div>
           </div>
-
           <div>
             수정
             <img style={{ marginLeft: '10px' }} src="/img/setting.png" />
@@ -169,7 +207,6 @@ const Package = ({}) => {
           </FilterWrap>
         )}
       </div>
-
       <TableContianer>
         <TCSubContainer bor>
           <div>
@@ -177,7 +214,7 @@ const Package = ({}) => {
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown handleDropdown={handleTablePageSize} />
             <Excel />
           </div>
         </TCSubContainer>
@@ -189,7 +226,7 @@ const Package = ({}) => {
             <WhiteBlackBtn>노출 상태 변경</WhiteBlackBtn>
           </div>
         </TCSubContainer>
-        <Test3 title={'규격 약호 찾기'} />
+        <Table getCol={packageFieldsCols} getRow={packageProductListData} />
         <TableBottomWrap>
           <BlackBtn width={15} height={40}>
             등록
