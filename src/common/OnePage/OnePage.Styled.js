@@ -165,6 +165,7 @@ export const Title = styled.div`
   margin-bottom: 10px;
   p {
     position: relative;
+    top: 1px;
     margin-left: 4px;
   }
 `
