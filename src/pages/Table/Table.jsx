@@ -16,8 +16,7 @@ import {
   WhiteCloseBtn,
 } from '../../modal/Common/Common.Styled'
 import { blueModalAtom, doubleClickedRowAtom, pageSort, selectedRowsAtom } from '../../store/Layout/Layout'
-
-import CustomCellRenderer from './CustomCellRenderer'
+import './TableUi.css'
 
 // import TableStyle from './Table.module.css'
 
@@ -298,7 +297,6 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData, isRowCl
   }
   // new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
 
-
   // console.log('gridOptions', gridOptions)
   const pinnedTopRowData = useMemo(() => {
     return topData
@@ -316,20 +314,20 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData, isRowCl
     return {} // Default style for non-clickable rows
   }
 
-
   return (
     <div style={containerStyle}>
       <TestContainer hei={hei}>
         <div style={gridStyle} className="ag-theme-alpine">
           <AgGridReact
             // {...gridOptions}
+            onGridReady={onGridReady}
+            columnDefs={columnDefs}
+            rowData={rowData}
+            defaultColDef={defaultColDef}
             gridOptions={gridOptions}
             ref={gridRef}
-            rowData={rowData}
-            columnDefs={columnDefs}
             onRowDoubleClicked={onRowDoubleClicked}
             autoGroupColumnDef={autoGroupColumnDef}
-            defaultColDef={defaultColDef}
             animateRows={true}
             suppressRowClickSelection={true}
             groupSelectsChildren={true}
@@ -340,7 +338,6 @@ const Table = ({ hei, getRow, getCol, setChoiceComponent, size, topData, isRowCl
             paginationPageSize={size}
             isExternalFilterPresent={isExternalFilterPresent}
             // doesExternalFilterPass={doesExternalFilterPass}
-            onGridReady={onGridReady}
             onSelectionChanged={onSelectionChanged}
             pinnedTopRowData={pinnedTopRowData}
             onRowClicked={onRowClicked}
@@ -405,7 +402,7 @@ const TestContainer = styled.div`
   }
 `
 
-const TestHeader = styled.div`
+export const TestHeader = styled.div`
   font-size: 13px;
   margin-bottom: 10px;
   display: flex;
@@ -415,12 +412,12 @@ const TestHeader = styled.div`
   border-radius: 5px;
 `
 
-const FindSpec = styled.div`
+export const FindSpec = styled.div`
   width: 100%;
   height: 300px;
 `
 
-const FSTitle = styled.div`
+export const FSTitle = styled.div`
   width: 100%;
   height: 50px;
   border: 1px solid #c8c8c8;
@@ -435,7 +432,7 @@ const FSTitle = styled.div`
   }
 `
 
-const FSResult = styled.div`
+export const FSResult = styled.div`
   width: 100%;
   height: 295px;
   display: flex;
@@ -446,7 +443,7 @@ const FSResult = styled.div`
   border: 1px solid #c8c8c8;
 `
 
-const ResultBlock = styled.div`
+export const ResultBlock = styled.div`
   width: 24%;
   height: 50px;
   border: 1px solid black;
@@ -462,8 +459,8 @@ const ResultBlock = styled.div`
   }
 `
 
-const RBInput = styled.input`
+export const RBInput = styled.input`
   font-size: 16px;
 `
 
-const Pagination = styled.ul``
+export const Pagination = styled.ul``
