@@ -3,7 +3,7 @@ import { BlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Butto
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom2, toggleAtom } from '../../../store/Layout/Layout'
 
 import Table from '../../Table/Table'
 
@@ -42,7 +42,7 @@ import { AuctionRoundFields, AuctionRoundFieldsCols } from '../../../constants/a
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import AuctionRound from '../../../modal/Multi/AuctionRound'
-import { auctionRoundEditPageAtom, roundPostModalAtom, btnCellUidAtom } from '../../../store/Layout/Layout'
+import { auctionRoundEditPageAtom, btnCellUidAtom, roundPostModalAtom } from '../../../store/Layout/Layout'
 import RoundAucListEdit from './RoundAucListEdit'
 
 const Round = ({}) => {
@@ -89,7 +89,7 @@ const Round = ({}) => {
   const tableField = useRef(AuctionRoundFieldsCols)
   const getCol = tableField.current
   const queryClient = useQueryClient()
-  const checkedArray = useAtom(selectedRowsAtom)[0]
+  const checkedArray = useAtom(selectedRowsAtom2)[0]
 
   const [originalRow, setOriginalRow] = useState([]) //원본 row를 저장해서 radio check에러 막기
   const [inputParams, setInputParams] = useState({
@@ -162,6 +162,7 @@ const Round = ({}) => {
     // 컴포넌트가 언마운트될 때 switchEdit을 재설정하는 정리 함수
     return () => {
       setEditPage(false)
+      setRoundModal(false)
     }
   }, [])
 

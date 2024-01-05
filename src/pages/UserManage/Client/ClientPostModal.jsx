@@ -465,11 +465,11 @@ const ClientPostModal = ({ setEditModal }) => {
                 </FlexPart>
                 <FlexPart>
                   <FlexTitle>
-                    경매 담당자 정보<span>*</span>
+                    경매 담당자 정보 (완)<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <CustomInput name="memberTitle" placeholder="직함 입력" width={130} />
-                    <CustomInput name="memberName" placeholder=" 성함 입력" width={188} style={{ marginLeft: '5px' }} />
+                    <CustomInput name="memberName" placeholder=" 성함 입력" width={188} />
+                    <CustomInput name="memberTitle" placeholder="직함 입력" width={130} style={{ marginLeft: '5px' }} />
                   </FlexContent>
                 </FlexPart>
 
@@ -598,14 +598,15 @@ const ClientPostModal = ({ setEditModal }) => {
                   <FlexTitle>
                     입금 담당자 정보<span>*</span>
                   </FlexTitle>
+
                   <FlexContent>
-                    <EditSelect
+                    <CustomInput name="depositManagerName" placeholder=" 성함 입력" width={188} />
+                    <CustomInput
                       name="depositManagerTitle"
-                      options={depositOptions}
-                      defaultValue={depositOptions[0]}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
+                      placeholder="직함 입력"
+                      width={130}
+                      style={{ marginLeft: '5px' }}
                     />
-                    <CustomInput name="depositManagerName" placeholder="담당자 성함 입력" width={190} />
                   </FlexContent>
                 </FlexPart>
 
@@ -622,15 +623,15 @@ const ClientPostModal = ({ setEditModal }) => {
                   <FlexTitle>
                     출고 담당자 정보<span>*</span>
                   </FlexTitle>
-                  <FlexContent>
-                    <EditSelect
-                      name="releaseManagerTitle"
-                      options={depositOptions}
-                      defaultValue={depositOptions[0]}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
-                    />
 
-                    <CustomInput name="releaseManagerName" placeholder=" 담당자 성함 입력" width={190} />
+                  <FlexContent>
+                    <CustomInput name="releaseManagerName" placeholder=" 성함 입력" width={188} />
+                    <CustomInput
+                      name="releaseManagerTitle"
+                      placeholder="직함 입력"
+                      width={130}
+                      style={{ marginLeft: '5px' }}
+                    />
                   </FlexContent>
                 </FlexPart>
 

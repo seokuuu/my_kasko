@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react'
-import { BlackBtn, BtnBound, GreyBtn, SkyBtn, TGreyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { BlackBtn, GreyBtn, TGreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
-import Test3 from '../../Test/Test3'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import {
   CustomInput,
@@ -20,21 +19,25 @@ import {
   FilterTCTop,
   FilterTopContainer,
   Input,
-  PartWrap,
+  MiniInput,
   PWRight,
+  PartWrap,
   ResetImg,
   RowWrap,
-  TableContianer,
   TCSubContainer,
+  TableContianer,
   Tilde,
-  MiniInput,
 } from '../../../modal/External/ExternalFilter'
 
+import { useAtom } from 'jotai'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { aucProAddModalAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
 
+import { useQueryClient } from '@tanstack/react-query'
+import { getExtraProductList } from '../../../api/auction/round'
+import { AuctionRoundExtraProductFields, AuctionRoundExtraProductFieldsCols } from '../../../constants/admin/Auction'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
 import {
   BlueBarHeader,
   BlueSubContainer,
@@ -42,11 +45,12 @@ import {
   ModalContainer,
   WhiteCloseBtn,
 } from '../../../modal/Common/Common.Styled'
+import Table from '../../Table/Table'
+import { isArray } from 'lodash'
 
 // 경매 제품 추가(단일) 메인 컴포넌트
 // 경매 제품 추가 (패키지), 경매 목록 상세(종료된 경매)와 호환 가능
-const RoundAucProAdd = ({ newResData, setNewResData }) => {
-  const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
+const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, types, newResData, propsResData }) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 
   //checkSales
@@ -98,6 +102,55 @@ const RoundAucProAdd = ({ newResData, setNewResData }) => {
 
   const modalClose = () => {
     setAddModal(false)
+  }
+
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(AuctionRoundExtraProductFieldsCols)
+  const getCol = tableField.current
+  const queryClient = useQueryClient()
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  const [originalRow, setOriginalRow] = useState([]) //원본 row를 저장해서 radio check에러 막기
+
+  const [inputParams, setInputParams] = useState({
+    pageNum: 1,
+    pageSize: 50,
+    saleType: '경매 대상재',
+    registrationStatus: '경매 등록 대기',
+    type: types,
+  })
+
+  const { isLoading, isError, data, isSuccess } = useReactQuery(inputParams, 'getExtraProductList', getExtraProductList)
+
+  const resData = data?.data?.data?.list
+
+  console.log('resData', resData)
+
+  useEffect(() => {
+    let getData = resData
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, AuctionRoundExtraProductFields))
+    }
+  }, [isSuccess, resData])
+
+  const resetNewResData = () => {
+    setNewResData([])
+  }
+
+  const handleAddBtn = () => {
+    if (isArray(checkedArray) && checkedArray.length > 0) {
+      if (window.confirm('선택한 항목을 추가하시겠습니까?')) {
+        checkedArray.forEach((item) => {
+          console.log('item =>', item)
+          setNewResData((prevData) => [...prevData, item])
+        })
+        setAddModal(false)
+      }
+    } else {
+      alert('선택해주세요!')
+    }
   }
 
   return (
@@ -235,18 +288,12 @@ const RoundAucProAdd = ({ newResData, setNewResData }) => {
                 <div>
                   선택 중량<span> 2 </span>kg / 총 중량 kg
                 </div>
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <p>시작가 일괄 변경</p>
-                  <CustomInput placeholder="" width={120} height={32} />
-                  <TGreyBtn height={30} style={{ width: '50px' }}>
-                    적용
-                  </TGreyBtn>
-                </div>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}></div>
               </TCSubContainer>
-              <Test3 hei2={350} hei={100} />
+              <Table getCol={getCol} getRow={getRow} hei2={330} />
               <TCSubContainer>
                 <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                  <BlackBtn width={13} height={40}>
+                  <BlackBtn width={13} height={40} onClick={handleAddBtn}>
                     제품 추가
                   </BlackBtn>
                 </div>

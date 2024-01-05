@@ -4,8 +4,7 @@ import { storageOptions } from '../../../common/Option/SignUp'
 import { BlackBtn, BtnBound, GreyBtn, SkyBtn, TGreyBtn, TWhiteBtn, WhiteGrnBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-import Test3 from '../../Test/Test3'
+import { invenDestination, selectedRowsAtom, toggleAtom, invenDestinationData } from '../../../store/Layout/Layout'
 
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -13,7 +12,6 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import {
   CustomInput,
   DoubleWrap,
-  ExInputsWrap,
   FilterContianer,
   FilterFooter,
   FilterHeader,
@@ -35,18 +33,22 @@ import {
   Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import Excel from '../../../components/TableInner/Excel'
-import { P } from '../../Sales/SellOrder/SellOrderDetail'
-import Table from '../../Table/Table'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { AuctionBiddingFields, AuctionRoundFieldsCols } from '../../../constants/admin/Auction'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
-import { getAdminConsolidation } from '../../../service/admin/Standard'
-import { add_element_field } from '../../../lib/tableHelpers'
 import { getBidding } from '../../../api/auction/bidding'
+import Excel from '../../../components/TableInner/Excel'
+import { AuctionBiddingFields, AuctionRoundFieldsCols } from '../../../constants/admin/Auction'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
+import InventoryFind from '../../../modal/Multi/InventoryFind'
+import Table from '../../Table/Table'
+import { getDestinationFind } from '../../../api/search'
 
 const Bidding = ({}) => {
+  const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
+  const [destinationData, setDestinationData] = useAtom(invenDestinationData)
+  // 고객사 팝업 상태,객체
+
   const [types, setTypes] = useState('단일')
   const radioDummy = ['전체', '미진행', '진행중', '종료']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
@@ -100,12 +102,45 @@ const Bidding = ({}) => {
     type: types,
   })
 
+  const init = {
+    auctionNumber: null,
+    type: types,
+    biddingList: [
+      {
+        productUid: null,
+        customerDestinationUid: null,
+        biddingPrice: null,
+      },
+    ],
+  }
+
+  const [input, setInput] = useState(init)
+
+  console.log('destinationData <3', destinationData)
+  console.log('input <3', input)
+
+  const onClickDestination = () => {
+    setInput((p) => ({
+      ...p,
+      biddingList: [
+        ...p.biddingList,
+        {
+          customerDestinationUid: destinationData?.code || null,
+          ...p.biddingList[0],
+        },
+      ],
+    }))
+  }
+
   useEffect(() => {
     setParam((prevParams) => ({
       ...prevParams,
       type: types,
     }))
   }, [types])
+
+  // 목적지 찾기 GET
+  const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
 
   // GET
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getBidding', getBidding)
@@ -270,13 +305,19 @@ const Bidding = ({}) => {
             }}
           >
             <p>목적지</p>
-            <CustomInput placeholder="h50" width={60} height={32} />
-            <CustomInput placeholder="목적지명" width={120} height={32} />
-            <CustomInput placeholder="도착지 연락처" width={120} height={32} />
-            <TWhiteBtn style={{ width: '50px' }} height={30}>
+            <CustomInput placeholder="h50" width={60} height={32} defaultValue={destinationData?.code} />
+            <CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destinationData?.name} />
+            {/* <CustomInput placeholder="도착지 연락처" width={120} height={32} /> */}
+            <TWhiteBtn
+              style={{ width: '50px' }}
+              height={30}
+              onClick={() => {
+                setDestinationPopUp(true)
+              }}
+            >
               찾기
             </TWhiteBtn>
-            <TGreyBtn>적용</TGreyBtn>
+            <TGreyBtn onClick={onClickDestination}>적용</TGreyBtn>
             <BtnBound style={{ margin: '0px' }} />
             <p>일괄 경매 응찰</p>
             <CustomInput placeholder="응찰가 입력" width={120} height={32} />
@@ -291,6 +332,9 @@ const Bidding = ({}) => {
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} />
       </TableContianer>
+      {destinationPopUp && (
+        <InventoryFind title={'목적지 찾기'} setSwitch={setDestinationPopUp} data={inventoryDestination} />
+      )}
     </FilterContianer>
   )
 }

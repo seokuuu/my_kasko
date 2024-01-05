@@ -395,21 +395,21 @@ const ProfileEdit = () => {
 
               <FlexPart>
                 <FlexTitle>
-                  경매 담당자 정보<span>*</span>
+                  경매 담당자 정보 (완)<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  <CustomInput
-                    name="title"
-                    placeholder="직함 입력"
-                    width={130}
-                    defaultValue={user && user.member.title}
-                  />
                   <CustomInput
                     name="name"
                     placeholder=" 성함 입력"
                     width={188}
-                    style={{ marginLeft: '5px' }}
                     defaultValue={user && user.member.name}
+                  />
+                  <CustomInput
+                    name="title"
+                    placeholder="직함 입력"
+                    width={130}
+                    style={{ marginLeft: '5px' }}
+                    defaultValue={user && user.member.title}
                   />
                 </FlexContent>
               </FlexPart>
@@ -438,31 +438,19 @@ const ProfileEdit = () => {
                   입금 담당자 정보<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  {selectSwitch.deposit ? (
-                    <EditSelect
-                      name="depositManagerTitle"
-                      options={depositOptions}
-                      defaultValue={depositOptions[0]}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'depositManagerTitle')}
-                    />
-                  ) : (
-                    <GreyDiv
-                      onClick={() => {
-                        setSelectSwitch((prev) => ({
-                          ...prev,
-                          deposit: !prev.deposit,
-                        }))
-                      }}
-                    >
-                      {user && user.customer.depositManagerTitle}
-                    </GreyDiv>
-                  )}
-
                   <CustomInput
                     name="depositManagerName"
                     placeholder="담당자 성함 입력"
                     width={190}
                     defaultValue={user && user.customer.depositManagerName}
+                  />
+
+                  <CustomInput
+                    name="depositManagerTitle"
+                    placeholder="직함 입력"
+                    width={130}
+                    style={{ marginLeft: '5px' }}
+                    defaultValue={user && user.customer.depositManagerTitle}
                   />
                 </FlexContent>
               </FlexPart>
@@ -485,31 +473,19 @@ const ProfileEdit = () => {
                   출고 담당자 정보<span>*</span>
                 </FlexTitle>
                 <FlexContent>
-                  {selectSwitch.release ? (
-                    <EditSelect
-                      name="releaseManagerTitle"
-                      options={depositOptions}
-                      defaultValue={depositOptions[0]}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'releaseManagerTitle')}
-                    />
-                  ) : (
-                    <GreyDiv
-                      onClick={() => {
-                        setSelectSwitch((prev) => ({
-                          ...prev,
-                          release: !prev.release,
-                        }))
-                      }}
-                    >
-                      {user && user.customer.releaseManagerTitle}
-                    </GreyDiv>
-                  )}
-
                   <CustomInput
                     name="releaseManagerName"
-                    placeholder=" 담당자 성함 입력"
+                    placeholder="담당자 성함 입력"
                     width={190}
                     defaultValue={user && user.customer.releaseManagerName}
+                  />
+
+                  <CustomInput
+                    name="depositManagerTitle"
+                    placeholder="직함 입력"
+                    width={130}
+                    style={{ marginLeft: '5px' }}
+                    defaultValue={user && user.customer.releaseManagerTitle}
                   />
                 </FlexContent>
               </FlexPart>

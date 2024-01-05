@@ -35,6 +35,8 @@ export const useAccordionOpenAtom = () => useAtom(accordionOpenAtom)
 // test3 테이블 체크했을시 데이터
 export const selectedRowsAtom = atom([])
 
+export const selectedRowsAtom2 = atom([])
+
 // test3 테이블 체크했을시 데이터
 export const doubleClickedRowAtom = atom([])
 
