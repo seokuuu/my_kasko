@@ -12,8 +12,8 @@ export const ProductOptions = {
   ],
   stocks: [
     { value: '', label: '전체' },
-    { value: '타사재고', label: '타사재고' },
-    { value: '자사재고', label: '자사재고' },
+    { value: '타사 재고', label: '타사 재고' },
+    { value: '자사 재고', label: '자사 재고' },
   ],
   grade: [
     { value: '', label: '전체' },

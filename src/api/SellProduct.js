@@ -2,9 +2,8 @@ import { client } from ".";
 import qs from "qs";
 
 const urls = {
-  single:'/single-product'
+  single: '/single-product',
 }
-
 
 export async function getSingleProducts(data) {
   const response =  await client.get(`${urls.single}`,

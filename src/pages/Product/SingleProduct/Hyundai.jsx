@@ -9,7 +9,7 @@ import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn, ExcelBtn, YellBtn } from '../../../common/Button/Button'
 import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { blueModalAtom, hyundaiModalAtom, hyundaiSpecAtom, specAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom, hyundaiModalAtom, hyundaiSpecAtom, specAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
@@ -45,20 +45,16 @@ import { getSingleProducts } from '../../../api/SellProduct'
 import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constants/admin/Single'
 import Table from '../../Table/Table'
 import { add_element_field } from '../../../lib/tableHelpers'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { QueryClient } from '@tanstack/react-query'
 import { Filtering } from '../../../utils/filtering'
 import { getStorageList, getSPartList } from '../../../api/search'
-import {
-  supplierOptions,
-  makerOptions,
-  stocksStateOptions,
-  gradeOptions,
-  preferThickOptions,
-  ProductOptions,
-} from '../../../common/Option/storage'
+import { supplierOptions, ProductOptions } from '../../../common/Option/storage'
 import { requestDataAtom } from '../../../store/Table/SalesRequst'
 import ProductNumber from '../../../components/ProductNumber/ProductNumber'
+import { KilogramSum } from '../../../utils/KilogramSum'
+
+const DEFAULT_OBJ = { value: '', label: '전체' }
 
 const Hyundai = ({}) => {
   const checkSales = ['전체', '판매재', '판매제외제', '판매 완료제']
@@ -77,11 +73,12 @@ const Hyundai = ({}) => {
 
   const requestParameter = {
     pageNum: 1,
-    pageSize: 1000,
+    pageSize: 10,
     type: '일반',
     category: '현대제철',
   }
 
+  const checkBoxSelect = useAtomValue(selectedRowsAtom)
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
     const updatedCheck = checkSales.map((value, index) => {
@@ -112,40 +109,27 @@ const Hyundai = ({}) => {
     setCheckData3(filteredCheck)
   }, [check3])
 
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
+  const handleSelectChange = (name, value) => {
+    setSelect((prevState) => ({
+      ...prevState,
+      [name]: value.value,
+    }))
   }
   const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setProductNoNumber('')
-    setProductNumber('')
-    setSelect({})
-    setQuantity({})
-    setCheck1([])
-    setCheck2([])
-    setCheck3([])
-    setCheckData1([])
-    setCheckData1([])
-    setCheckData1([])
-    setIsRotated((prevIsRotated) => !prevIsRotated)
-  }
 
-  // 토글 쓰기
   const [getRow, setGetRow] = useState('')
-  const { data, isSuccess } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
+  const { data, isSuccess, refetch } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
   const hyunDaiList = data?.data?.list
+  const hyunDaiPage = data?.data?.pagination
   const tableField = useRef(SingleDispatchFieldsCols)
   const getCol = tableField.current
   const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
   const { data: spartList } = useReactQuery('', 'getSPartList', getSPartList)
   const [spec, setSpec] = useAtom(hyundaiSpecAtom)
   const [isModal, setIsModal] = useAtom(hyundaiModalAtom)
-  const [requestData, setRequestData] = useAtom(requestDataAtom)
+  // const [requestData, setRequestData] = useAtom(requestDataAtom)
   const [select, setSelect] = useState({
     storage: '',
     sPart: '',
@@ -170,9 +154,60 @@ const Hyundai = ({}) => {
   const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
   const [toggleMsg, setToggleMsg] = useState('On')
   const [productNumber, setProductNumber] = useState('')
+  const [pagiNation, setPagination] = useState({})
   const [search, serSearch] = useState({
     productNumber: [],
   })
+  const [storages, setStorages] = useState([])
+  const [sparts, setSparts] = useState([])
+  const selectedRef = useRef(null)
+  const handleImageClick = () => {
+    setProductNoNumber('')
+    setProductNumber('')
+    setSpec('')
+    setSelect({
+      storage: null,
+      sPart: null,
+      maker: null,
+      stocks: null,
+      supply: null,
+      grade: null,
+      preferThick: null,
+    })
+    setQuantity({})
+    setCheck1([])
+    setCheck2([])
+    setCheck3([])
+    setCheckData1([])
+    setCheckData1([])
+    setCheckData1([])
+    setIsRotated((prevIsRotated) => !prevIsRotated)
+
+    console.log(selectedRef)
+
+    if (
+      !spec ||
+      !productNoNumber ||
+      !productNumber ||
+      !select ||
+      !Quantity ||
+      !checkData1 ||
+      !checkData2 ||
+      !checkData3
+    ) {
+      setFilteredData(hyunDaiList)
+      setPagination(hyunDaiPage)
+    }
+  }
+
+  useEffect(() => {
+    if (storageList) return setStorages(storageList)
+  }, [storageList])
+
+  useEffect(() => {
+    if (spartList) return setSparts(spartList)
+  }, [spartList])
+
   const toggleBtnClick = () => {
     setExfilterToggle((prev) => !prev)
     if (exFilterToggle === true) {
@@ -181,9 +216,14 @@ const Hyundai = ({}) => {
       setToggleMsg('On')
     }
   }
+
   useEffect(() => {
-    if (isSuccess) return setFilteredData(hyunDaiList)
+    if (isSuccess) {
+      setFilteredData(hyunDaiList)
+      setPagination(hyunDaiPage)
+    }
   }, [isSuccess])
+
   useEffect(() => {
     if (filterData === undefined) {
       hyunDaiList && setFilteredData(hyunDaiList)
@@ -203,14 +243,12 @@ const Hyundai = ({}) => {
 
   const queryClient = new QueryClient()
 
-  const handleChangeProductNumber = (e) => {
-    console.log('값 :', e.target.value)
-    e.preventDefault()
-    setProductNumber(e.target.value)
-  }
-
-  useEffect(() => {
-    setRequestData({
+  const handleSearch = () => {
+    const request = {
+      pageNum: 1,
+      pageSize: 10,
+      type: '일반',
+      category: '현대제철',
       proNo: productNoNumber, //프로넘
       storage: select.storage, // 창고
       spart: select.sPart, // 제품군
@@ -230,31 +268,22 @@ const Hyundai = ({}) => {
       minFailCount: Quantity.startSpecification, // 최소 유찰 횟수
       maxFailCount: Quantity.endSpecification, // 최대 유찰 횟수
 
-      saleCategoryList: checkData1.join(','), // 판매 구분
+      saleCategoryList: checkData1, // 판매 구분
       saleType: checkData2, // 판매 유형
-      salePriceType: checkData3.join(','), //판매가 유형
+      salePriceType: checkData3, //판매가 유형
 
-      productNumberList: search.productNumber.join(','),
-    })
-  }, [productNoNumber, select, Quantity, checkData1, checkData2, checkData3, search.productNumber])
-  console.log('CHECK', checkData2)
-  const handleSearch = () => {
-    const request = {
-      pageNum: 1,
-      pageSize: 1000,
-      type: '일반',
-      category: '현대제철',
+      productNumberList: search.productNumber,
     }
 
-    const data = Object.assign(request, requestData)
-    const filterData = Filtering(data)
-
-    queryClient.prefetchQuery(['product', filterData], async () => {
-      const res = await getSingleProducts(filterData)
+    queryClient.prefetchQuery(['product', Filtering(request)], async () => {
+      const res = await getSingleProducts(Filtering(request))
+      // console.log('RES :', res.data)
       setFilteredData(res.data?.list)
+      setPagination(res.data?.pagination)
       return res.data?.list
     })
   }
+
   return (
     <>
       <FilterContianer>
@@ -291,9 +320,11 @@ const Hyundai = ({}) => {
                     <h6>창고구분</h6>
                     <PWRight>
                       <MainSelect
-                        options={storageList}
-                        defaultValue={{ value: '', label: '전체' }}
+                        ref={selectedRef}
+                        options={[DEFAULT_OBJ, ...storages]}
+                        defaultValue={[DEFAULT_OBJ, ...storages][0]}
                         name="storage"
+                        // value={select.storage}
                         onChange={(e) => {
                           setSelect((p) => ({
                             ...p,
@@ -313,7 +344,7 @@ const Hyundai = ({}) => {
                         onChange={(e) => {
                           setSelect((p) => ({
                             ...p,
-                            supply: e.label,
+                            supply: e.value,
                           }))
                         }}
                       />
@@ -330,6 +361,7 @@ const Hyundai = ({}) => {
                       margin={10}
                       fontSize={17}
                       onClick={() => {
+                        console.log(spec)
                         setIsModal(true)
                       }}
                     >
@@ -342,13 +374,13 @@ const Hyundai = ({}) => {
                     <h6>창고구분</h6>
                     <PWRight>
                       <MainSelect
-                        options={spartList}
+                        options={[DEFAULT_OBJ, ...sparts]}
                         defaultValue={{ value: '', label: '전체' }}
                         name="sPart"
                         onChange={(e) => {
                           setSelect((p) => ({
                             ...p,
-                            sPart: e.label,
+                            sPart: e.value,
                           }))
                         }}
                       />
@@ -476,15 +508,7 @@ const Hyundai = ({}) => {
                 </RowWrap>
               </FilterLeft>
               <FilterRight>
-                {/* <DoubleWrap>
-                  <h6>제품 번호 </h6>
-                  <textarea
-                    value={productNumber}
-                    onChange={handleChangeProductNumber}
-                    placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                  />
-                </DoubleWrap> */}
-                <ProductNumber setState={serSearch} valueName={'productNumber'} />
+                <ProductNumber setState={serSearch} valueName={'productNumber'} height="100%" />
               </FilterRight>
             </FilterSubcontianer>
             <FilterFooter>
@@ -493,7 +517,7 @@ const Hyundai = ({}) => {
                 <ResetImg
                   src="/img/reset.png"
                   style={{ marginLeft: '10px', marginRight: '20px' }}
-                  onClick={handleImageClick}
+                  onClick={() => handleImageClick()}
                   className={isRotated ? 'rotate' : ''}
                 />
               </div>
@@ -508,7 +532,8 @@ const Hyundai = ({}) => {
         <TableContianer>
           <TCSubContainer bor>
             <div>
-              조회 목록 (선택 <span>2</span> / 50개 )
+              조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
+              {pagiNation ? pagiNation?.listCount : hyunDaiPage?.listCount}개 )
               <Hidden />
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
@@ -518,7 +543,8 @@ const Hyundai = ({}) => {
           </TCSubContainer>
           <TCSubContainer bor>
             <div>
-              선택 중량<span> 2 </span>kg / 총 중량 kg
+              선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총{' '}
+              {pagiNation ? pagiNation?.totalWeight : hyunDaiPage?.totalWeight} 중량 kg
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <TGreyBtn>적용</TGreyBtn>
@@ -526,7 +552,7 @@ const Hyundai = ({}) => {
               <WhiteBlackBtn>판매 구분 변경</WhiteBlackBtn>
             </div>
           </TCSubContainer>
-          <Table getRow={getRow} getCol={getCol} />
+          <Table getRow={getRow} getCol={getCol} setChoiceComponent={() => {}} handleOnRowClicked={() => {}} />
           <TCSubContainer bor>
             <div></div>
             <div style={{ display: 'flex', gap: '10px' }}>
