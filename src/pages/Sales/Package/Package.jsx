@@ -41,11 +41,11 @@ import Table from '../../../pages/Table/Table'
 import { add_element_field } from '../../../lib/tableHelpers'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { getPackageProductList } from '../../../api/packageProduct'
-import { packageFields, packageFieldsCols } from '../../../constants/admin/PackageProduct'
+import { packageFieldsCols, packageResponseToTableRowMap } from '../../../constants/admin/packageProduct'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { formatWeight } from '../../../utils/utils'
 
-const Package = ({}) => {
+const Package = () => {
   const [param, setParam] = useState({
     pageNum: 1,
     pageSize: 10,
@@ -68,7 +68,7 @@ const Package = ({}) => {
   }, [isSuccess, getPackageProductListRes])
 
   const formatTableRowData = (packageProductListData) => {
-    return add_element_field(packageProductListData, packageFields)
+    return add_element_field(packageProductListData, packageResponseToTableRowMap)
   }
 
   const [isRotated, setIsRotated] = useState(false)
