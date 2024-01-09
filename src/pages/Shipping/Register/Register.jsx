@@ -28,6 +28,7 @@ import {
 } from '../../../components/Search'
 import { GlobalFilterHeader, GlobalFilterFooter } from '../../../components/Filter'
 import { useAtomValue } from 'jotai'
+import GlobalFilterContainer from '../../../components/Filter/GlobalFilterContainer'
 
 const initData = {
   pageNum: 1,
@@ -45,13 +46,8 @@ const initData = {
 }
 
 const Register = ({}) => {
-  // 검색필터
-  const exFilterToggle = useAtomValue(toggleAtom)
   const [param, setParam] = useState(initData)
   const { data, refetch } = useShipmentListQuery(param)
-
-  const titleData = ['제품 중량(kg)', '제품 공급가액', '운반비 공급가액']
-  const contentData = ['986,742', '986,742', '986,742']
 
   // search change
   const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value }))
@@ -62,57 +58,58 @@ const Register = ({}) => {
     await refetch()
   }
 
+  const titleData = ['제품 중량(kg)', '제품 공급가액', '운반비 공급가액']
+  const contentData = ['986,742', '986,742', '986,742']
+
   console.log(param)
 
   return (
     <FilterContianer>
       {/* header */}
       <GlobalFilterHeader title={'출하지시 등록'} />
-
-      {exFilterToggle && (
-        <>
-          <FilterSubcontianer>
-            <FilterLeft>
-              <RowWrap none>
-                <StorageSelect value={param.storage} onChange={(e) => onChange('storage', e.label)} />
-                <CustomerSearch
-                  name={param.customerName}
-                  code={param.customerCode}
-                  setName={(value) => onChange('customerName', value)}
-                  setCode={(value) => onChange('customerCode', value)}
-                />
-              </RowWrap>
-              <RowWrap>
-                <DestinationSearch
-                  name={param.destinationName}
-                  code={param.destinationCode}
-                  setName={(value) => onChange('destinationName', value)}
-                  setCode={(value) => onChange('destinationCode', value)}
-                />
-              </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
-                <DateSearchSelect
-                  title={'주문 일자'}
-                  startInitDate={param.orderStartDate}
-                  endInitDate={param.orderEndDate}
-                  startDateChange={(value) => onChange('startDate', value)}
-                  endDateChange={(value) => onChange('endDate', value)}
-                />
-                <SpartSelect value={param.spart} onChange={(e) => onChange('spart', e.label)} />
-              </RowWrap>
-            </FilterLeft>
-            <FilterRight>
-              <ProductNumberListSearch
-                value={param.productNumberList}
-                onChange={(e) => onChange('productNumberList', e.target.value)}
+      {/* container */}
+      <GlobalFilterContainer>
+        <FilterSubcontianer>
+          <FilterLeft>
+            <RowWrap none>
+              <StorageSelect value={param.storage} onChange={(e) => onChange('storage', e.label)} />
+              <CustomerSearch
+                name={param.customerName}
+                code={param.customerCode}
+                setName={(value) => onChange('customerName', value)}
+                setCode={(value) => onChange('customerCode', value)}
               />
-            </FilterRight>
-          </FilterSubcontianer>
+            </RowWrap>
+            <RowWrap>
+              <DestinationSearch
+                name={param.destinationName}
+                code={param.destinationCode}
+                setName={(value) => onChange('destinationName', value)}
+                setCode={(value) => onChange('destinationCode', value)}
+              />
+            </RowWrap>
+            <RowWrap style={{ borderBottom: '0px' }}>
+              <DateSearchSelect
+                title={'주문 일자'}
+                startInitDate={param.orderStartDate}
+                endInitDate={param.orderEndDate}
+                startDateChange={(value) => onChange('startDate', value)}
+                endDateChange={(value) => onChange('endDate', value)}
+              />
+              <SpartSelect value={param.spart} onChange={(e) => onChange('spart', e.label)} />
+            </RowWrap>
+          </FilterLeft>
+          <FilterRight>
+            <ProductNumberListSearch
+              value={param.productNumberList}
+              onChange={(e) => onChange('productNumberList', e.target.value)}
+            />
+          </FilterRight>
+        </FilterSubcontianer>
+      </GlobalFilterContainer>
+      {/* footer */}
+      <GlobalFilterFooter reset={onReset} onSearch={refetch} />
 
-          {/* footer */}
-          <GlobalFilterFooter reset={onReset} onSearchSubmit={refetch} />
-        </>
-      )}
       <TableWrap>
         <ClaimTable>
           {[0].map((index) => (

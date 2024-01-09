@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
 import { FilterFooter, ResetImg } from '../../modal/External/ExternalFilter'
 import { BlackBtn } from '../../common/Button/Button'
+import { useAtomValue } from 'jotai'
+import { toggleAtom } from '../../store/Layout/Layout'
 
 /**
  * TODO 공통 Filter Footer components
  * @param reset 초기화 이벤트
- * @param onSearchSubmit 검색 이벤트
+ * @param onSearch 검색 이벤트
  */
-const GlobalFilterFooter = ({ reset, onSearchSubmit }) => {
+const GlobalFilterFooter = ({ reset, onSearch }) => {
   const [isRotated, setIsRotated] = useState(false)
 
   const handleImageClick = async () => {
@@ -27,7 +29,7 @@ const GlobalFilterFooter = ({ reset, onSearchSubmit }) => {
         />
       </div>
       <div style={{ width: '180px' }}>
-        <BlackBtn width={100} height={40} onClick={onSearchSubmit}>
+        <BlackBtn width={100} height={40} onClick={onSearch}>
           검색
         </BlackBtn>
       </div>

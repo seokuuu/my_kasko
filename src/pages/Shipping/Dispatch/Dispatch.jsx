@@ -19,12 +19,21 @@ import Excel from '../../../components/TableInner/Excel'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { useDriverListQuery, useDriverRemoveMutation } from '../../../api/driver'
-import { GlobalFilterHeader, GlobalFilterFooter } from '../../../components/Filter'
+import { GlobalFilterHeader, GlobalFilterFooter, GlobalFilterContainer } from '../../../components/Filter'
 import { InputSearch, StorageSelect } from '../../../components/Search'
+import CustomPagination from '../../../components/pagination/CustomPagination'
+
+const initData = {
+  pageNum: 1,
+  pageSize: 3,
+  driverName: '',
+  carNumber: '',
+  carType: '',
+  storage: '',
+}
 
 const Dispatch = ({}) => {
   const uidAtom = useAtomValue(btnCellUidAtom)
-  const exFilterToggle = useAtomValue(toggleAtom)
   const [isModalPost, setIsModalPost] = useAtom(StandardDispatchPostAtom)
   const [isModalEdit, setIsModalEdit] = useAtom(StandardDispatchEditAtom)
   const [getRow, setGetRow] = useState('')
@@ -32,14 +41,7 @@ const Dispatch = ({}) => {
   const getCol = tableField.current
   const checkedArray = useAtom(selectedRowsAtom)[0]
 
-  const [param, setParam] = useState({
-    pageNum: 1,
-    pageSize: 50,
-    driverName: '',
-    carNumber: '',
-    carType: '',
-    storage: '',
-  })
+  const [param, setParam] = useState(initData)
 
   const { refetch, data, isSuccess } = useDriverListQuery(param)
   const { mutate: onDelete } = useDriverRemoveMutation()
@@ -53,7 +55,7 @@ const Dispatch = ({}) => {
    * 초기화 이벤트
    */
   const onReset = async () => {
-    await setParam((prev) => ({ ...prev, driverName: '', carNumber: '', carType: '', storage: null }))
+    await setParam(initData)
     await refetch()
   }
 
@@ -77,39 +79,44 @@ const Dispatch = ({}) => {
     }
   }, [isSuccess, data])
 
+  useEffect(() => {
+    refetch()
+  }, [param.pageNum, param.pageSize])
+
   return (
     <FilterContianer>
+      {/* header */}
       <GlobalFilterHeader title={'배차기사 관리'} />
-      {exFilterToggle && (
-        <>
-          <FilterSubcontianer>
-            <FilterLeft>
-              <RowWrap>
-                <InputSearch
-                  title={'기사명'}
-                  value={param.driverName}
-                  onChange={(value) => onParamHandle('driverName', value)}
-                />
-                <InputSearch
-                  title={'차량번호'}
-                  value={param.carNumber}
-                  onChange={(value) => onParamHandle('carNumber', value)}
-                />
-                <InputSearch
-                  title={'차량종류'}
-                  value={param.carType}
-                  onChange={(value) => onParamHandle('carType', value)}
-                />
-                <StorageSelect
-                  value={param.storage}
-                  onChange={(e) => setParam((prev) => ({ ...prev, storage: e.label }))}
-                />
-              </RowWrap>
-            </FilterLeft>
-          </FilterSubcontianer>
-          <GlobalFilterFooter reset={onReset} onSearchSubmit={refetch} />
-        </>
-      )}
+      {/* container */}
+      <GlobalFilterContainer>
+        <FilterSubcontianer>
+          <FilterLeft>
+            <RowWrap>
+              <InputSearch
+                title={'기사명'}
+                value={param.driverName}
+                onChange={(value) => onParamHandle('driverName', value)}
+              />
+              <InputSearch
+                title={'차량번호'}
+                value={param.carNumber}
+                onChange={(value) => onParamHandle('carNumber', value)}
+              />
+              <InputSearch
+                title={'차량종류'}
+                value={param.carType}
+                onChange={(value) => onParamHandle('carType', value)}
+              />
+              <StorageSelect
+                value={param.storage}
+                onChange={(e) => setParam((prev) => ({ ...prev, storage: e.label }))}
+              />
+            </RowWrap>
+          </FilterLeft>
+        </FilterSubcontianer>
+      </GlobalFilterContainer>
+      {/* footer */}
+      <GlobalFilterFooter reset={onReset} onSearch={refetch} />
 
       <TableContianer>
         <TCSubContainer bor>
@@ -132,6 +139,12 @@ const Dispatch = ({}) => {
           </div>
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} />
+        {data?.pagination && (
+          <CustomPagination
+            pagination={data.pagination}
+            onPageChange={(value) => setParam((prev) => ({ ...prev, pageNum: parseInt(value) }))}
+          />
+        )}
       </TableContianer>
       {isModalPost && <DispatchPost setIsModalPost={setIsModalPost} id={null} />}
       {isModalEdit && <DispatchPost setIsModalPost={setIsModalEdit} id={uidAtom} />}
