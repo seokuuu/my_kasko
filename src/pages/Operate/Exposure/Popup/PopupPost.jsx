@@ -33,8 +33,8 @@ const PopupPost = ({ isRegister }) => {
     content: '',
     link: '',
     status: 1,
-    startDate: '',
-    endDate: '',
+    startDate: moment().toDate(),
+    endDate: moment().toDate(),
     position: mainPopupSelectOptions[0],
   })
 
