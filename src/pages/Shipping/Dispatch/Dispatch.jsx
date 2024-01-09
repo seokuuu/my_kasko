@@ -28,6 +28,7 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import { useDriverListQuery, useDriverRemoveMutation } from '../../../api/driver'
 import { getStorageList } from '../../../api/search'
 import useReactQuery from '../../../hooks/useReactQuery'
+import StorageSelect from '../StorageSelect'
 
 const Dispatch = ({}) => {
   const [uidAtom, _] = useAtom(btnCellUidAtom)
@@ -42,15 +43,14 @@ const Dispatch = ({}) => {
 
   const [param, setParam] = useState({
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 50,
     driverName: '',
     carNumber: '',
     carType: '',
     storage: '',
-    limit: 50,
   })
-  // GET
 
+  // GET
   const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
   const { refetch, data, isSuccess } = useDriverListQuery(param)
   const { mutate: onDelete } = useDriverRemoveMutation()
@@ -121,10 +121,8 @@ const Dispatch = ({}) => {
             <PartWrap>
               <h6>창고구분</h6>
               <PWRight style={{ width: '160px' }}>
-                <MainSelect
-                  name="storage"
-                  value={storageList?.filter(({ label }) => label === param.storage)}
-                  options={storageList ? [{ label: '전체' }, ...storageList] : []}
+                <StorageSelect
+                  value={param.storage}
                   onChange={(e) => setParam((prev) => ({ ...prev, storage: e.label }))}
                 />
               </PWRight>
@@ -152,11 +150,13 @@ const Dispatch = ({}) => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>{data?.pagination?.listCount ?? 0}</span> / {param?.limit}개 )
+            조회 목록 (선택 <span>{data?.pagination?.listCount ?? 0}</span> / {param?.pageSize}개 )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown handleDropdown={(e) => setParam((prev) => ({ ...prev, limit: parseInt(e.target.value) }))} />
+            <PageDropdown
+              handleDropdown={(e) => setParam((prev) => ({ ...prev, pageSize: parseInt(e.target.value) }))}
+            />
             <Excel />
           </div>
         </TCSubContainer>

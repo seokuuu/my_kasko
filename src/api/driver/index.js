@@ -4,7 +4,6 @@
 
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { client } from '../index'
-import { useNavigate } from 'react-router-dom'
 import { QueryClient } from '@tanstack/react-query'
 
 const DRIVER_URL = '/driver'
