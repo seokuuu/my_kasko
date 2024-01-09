@@ -9,7 +9,7 @@ import TextCellRenderer from '../pages/Table/TextCellRenderer'
 
 // 공지사항 관리 목록 헤더
 export const UserNoticeListFieldCols = [
-  { field: '순번', 
+  { headerClass:'custom-header-style',field: '순번', 
     maxWidth: 100 , 
     cellRenderer: FixCellRenderer,
   //   cellRendererParams: {
@@ -17,10 +17,10 @@ export const UserNoticeListFieldCols = [
   //   editType: 'dispatch', // modal의 띄울 종류 (선택)
   // },
 },
-  { field: '제목' ,cellRenderer:TextCellRenderer},
-  { field: '작성일자', maxWidth: 150 },
-  { field: '작성자', maxWidth: 150 },
-  { field: '조회수', maxWidth: 150 },
+  { headerClass:'custom-header-style',field: '제목', cellRenderer:TextCellRenderer},
+  { headerClass:'custom-header-style',field: '작성일자', maxWidth: 150 },
+  { headerClass:'custom-header-style',field: '작성자', maxWidth: 150 },
+  { headerClass:'custom-header-style',field: '조회수', maxWidth: 150 },
 ]
 
 // 공지사항 관리 목록 키값 맵핑

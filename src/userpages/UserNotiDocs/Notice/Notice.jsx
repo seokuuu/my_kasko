@@ -52,8 +52,9 @@ const Notice = () => {
   const Params = {
     type: '공지사항',
     pageNum: 1,
-    pageSize: 100,
-    title: title,
+    pageSize: 10,
+    category: '제목',
+    keyword: title,
   }
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
@@ -64,6 +65,7 @@ const Notice = () => {
   const [isRotated, setIsRotated] = useState(false)
 
   const { isSuccess, data: notices, refetch } = useNoticeListQuery(Params)
+  const pagination = notices?.pagination
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
@@ -89,14 +91,20 @@ const Notice = () => {
   const getCol = tableField.current
   const [topData2, setTopData2] = useState([])
   const [result, setResult] = useState([])
-  // console.log('isModal =>', isModal)
-
-  // const modalOpen = () => {
-  //   setIsModal(true)
-  // }
+  const [fixed, setFixed] = useState([])
+  const fixedItem = notices && notices?.list.filter((i) => i.status !== 0)
+  const notFixedItem = notices && topData2?.filter((i) => i.status !== 0)
+  console.log(fixedItem)
 
   // 상단고정 데이터
 
+  useEffect(() => {
+    if (!title && fixedItem) {
+      setFixed(fixedItem)
+    }
+  }, [notices])
+
+  console.log('FIXED', fixed)
   useEffect(() => {
     topData2.map((item, index) =>
       setResult((p) => [
@@ -122,7 +130,7 @@ const Notice = () => {
             if (!d.status) {
               return {
                 ...d,
-                createDate: moment(d.createDate).format('YYYY-MM-DD'),
+                작성일자: moment(d.createDate).format('YYYY-MM-DD'),
                 // id: Notice.length, // 순번 내림차순
                 uid: d.uid,
                 title: d.title,
@@ -135,33 +143,34 @@ const Notice = () => {
     [notices],
   )
 
-  useEffect(() => {
-    if (notices) {
-      const newTopData = notices.list.filter((d, index) => {
-        if (d.status) {
-          return {
-            ...d,
-            createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
-            작성자: d.name,
-            순번: '고정',
-            고유값: d.uid,
-            제목: d.getFile ? `${d.title} 📎` : `${d.title} `,
-            조회수: d.count,
-            타입: '자료실',
-          }
-        } else {
-          return null
-        }
-      })
-      setTopData2(newTopData)
-      // console.log('NEW TOP DATA :', newTopData)
-    }
-  }, [notices])
+  // useEffect(() => {
+  //   if (notices) {
+  //     const newTopData = fixedItem.filter((d, index) => {
+  //       if (d.status) {
+  //         return {
+  //           ...d,
+  //           createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
+  //           작성자: d.name,
+  //           순번: '고정',
+  //           고유값: d.uid,
+  //           제목: d.getFile ? `${d.title} 📎` : `${d.title} `,
+  //           조회수: d.count,
+  //           타입: '자료실',
+  //         }
+  //       } else {
+  //         return null
+  //       }
+  //     })
+  //     setTopData2(newTopData)
+  //     // console.log('NEW TOP DATA :', newTopData)
+  //   }
+  // }, [notices])
   function createData(data) {
     var result = []
-    for (var i = 0; i < data.length; i++) {
+    console.log(data)
+    for (var i = 0; i < data?.length; i++) {
       result.push({
-        createDate: data[i].createDate ? moment(data[i].createDate).format('YYYY-MM-DD') : '-',
+        작성일자: data[i].createDate ? moment(data[i].createDate).format('YYYY-MM-DD') : '-',
         작성자: data[i].name,
         순번: '고정',
         고유값: data[i].uid,
@@ -246,16 +255,19 @@ const Notice = () => {
             <PageDropdown />
           </div>
         </TCSubContainer>
-        <TableTest
-          getRow={getRow}
-          getCol={getCol}
-          setChoiceComponent={(e) => {
-            const uid = e.고유값
-            navigate(`/userpage/notice/${uid}`, { state: { data: e } })
-          }}
-          topData={createData(topData2)}
-          type={'공지사항'}
-        />
+        <div>
+          <TableTest
+            getRow={getRow}
+            getCol={getCol}
+            pagination={pagination}
+            setChoiceComponent={(e) => {
+              const uid = e.고유값
+              navigate(`/userpage/notice/${uid}`, { state: { data: e } })
+            }}
+            topData={createData(fixed)}
+            type={'공지사항'}
+          />
+        </div>
       </TableContianer>
     </FilterContianer>
   )

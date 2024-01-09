@@ -5,9 +5,9 @@ export default function TextCellRenderer({ data, value }) {
   const [fixed, setFixed] = useState(false)
 
   useEffect(() => {
-    data.순번 === '고정' ? setFixed(true) : setFixed(false)
-  }, [data.순번])
-  return <FixTitle cellValue={fixed}>{data.제목}</FixTitle>
+    data?.순번 === '고정' ? setFixed(true) : setFixed(false)
+  }, [data?.순번])
+  return <FixTitle cellValue={fixed}>{data?.제목}</FixTitle>
 }
 
 const FixTitle = styled.div`
