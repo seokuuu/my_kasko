@@ -37,14 +37,12 @@ import { add_element_field } from '../../lib/tableHelpers'
 import { getAdminOrder } from '../../service/admin/Order'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
 import { CheckBox } from '../../common/Check/Checkbox'
-import TableUi from '../../components/TableUiComponent/TableUi'
 import { columnDefs } from './etcVariable'
-import PagingComp from '../../components/paging/PagingComp'
 import axios from 'axios'
 import InventoryFind from '../../modal/Multi/InventoryFind'
 import { getCustomerFind } from '../../service/admin/Auction'
 import { getSPartList } from '../../api/search'
-import { KilogramSum } from '../../utils/KilogramSum'
+import Table from '../Table/Table'
 
 const Order = ({}) => {
   const [checkSalesStart, setCheckSalesStart] = useState('') // 경매일자 시작
@@ -113,36 +111,7 @@ const Order = ({}) => {
 
   const [getRow, setGetRow] = useState('')
   const tableField = useRef(OrderFieldsCols)
-
   const getCol = tableField.current
-  const queryClient = useQueryClient()
-  const checkedArray = useAtom(selectedRowsAtom)[0]
-
-  const Param = {
-    pageNum: 1,
-    pageSize: 10,
-  }
-
-  // GET
-  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getAdminOrder', getAdminOrder)
-  const resData = data?.data?.data?.list
-
-  console.log('resData', resData)
-
-  // Get 목적지 코드 Dropdown
-
-  const { data: data2, isSuccess2 } = useReactQuery('', 'getAdminOrder', getAdminOrder)
-
-  console.log('data2 => ', data2)
-
-  useEffect(() => {
-    let getData = resData
-    //타입, 리액트쿼리, 데이터 확인 후 실행
-    if (!isSuccess && !resData) return
-    if (Array.isArray(getData)) {
-      setGetRow(add_element_field(getData, OrderFields))
-    }
-  }, [isSuccess, resData])
 
   /** 테이블컴포넌트 */
   const [rowData, setRowData] = useState([])
@@ -300,8 +269,6 @@ const Order = ({}) => {
   const formatNumber = (number) => {
     return new Intl.NumberFormat().format(number)
   }
-  const totalWeightFormatted = formatNumber(data?.data?.data?.pagination?.totalWeight)
-  const totalListFormatted = formatNumber(data?.data?.data?.pagination?.listCount)
 
   const [selected, setSelected] = useState({ sPart: '' })
 
@@ -310,16 +277,7 @@ const Order = ({}) => {
   const [customerData, setCustomerData] = useAtom(invenCustomerData)
 
   const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
-  // const [checkboxSelect, setCheckboxSelect] = useState(new Array(rowData.length).fill(false))
 
-  // const checkBoxHandler = (e, index) => {
-  //   const newCheckBox = [...checkboxSelect]
-  //   newCheckBox[index] = !newCheckBox[index]
-  //   setCheckboxSelect(newCheckBox)
-  // }
-  // console.log('주문 체크박스', checkboxSelect)
-
-  const checkBoxSelect = useAtomValue(selectedRowsAtom)
   return (
     <FilterContianer>
       <FilterHeader>
@@ -486,7 +444,7 @@ const Order = ({}) => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>선택 수량</span> / {totalListFormatted}개 )
+            {/* 조회 목록 (선택 <span>선택 수량</span> / {totalListFormatted}개 ) */}
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -495,9 +453,7 @@ const Order = ({}) => {
           </div>
         </TCSubContainer>
         <TCSubContainer>
-          <div>
-            선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 중량{totalWeightFormatted} kg
-          </div>
+          <div>{/* 선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 중량{totalWeightFormatted} kg */}</div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn type="button" onClick={handleOrderCancel}>
               주문 취소
@@ -505,16 +461,15 @@ const Order = ({}) => {
             <SkyBtn>확정 전송</SkyBtn>
           </div>
         </TCSubContainer>
-        {/* 테이블 들어와야 하는 곳 + 페이지네이션 */}
-        <TableUi
+        <Table
           columnDefs={newColumnDefs}
           rowData={rowData}
           onGridReady={onGridReady}
           onCellClicked={onCellClicked}
           gridOptions={gridOptions}
-          height={330}
+          size={3}
         />
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
+        {/* <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
           <PagingComp
             currentPage={currentPage}
             totalPage={totalPage}
@@ -524,7 +479,7 @@ const Order = ({}) => {
             goToLastPage={goToLastPage}
             goToStartOfRange={goToStartOfRange}
           />
-        </div>
+        </div> */}
         <TCSubContainer>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn>입금 취소</WhiteRedBtn>
