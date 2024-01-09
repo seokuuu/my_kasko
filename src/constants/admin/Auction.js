@@ -658,6 +658,7 @@ export const AuctionWinningFields = {
 }
 
 export const AuctionWinningFieldsCols = [
+  { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   { field: 'Pro.No 번호', minWidth: 150 },
   { field: '경매 번호', minWidth: 120 },
   { field: '고객 코드', minWidth: 100 },

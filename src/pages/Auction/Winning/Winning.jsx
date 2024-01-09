@@ -36,7 +36,7 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import { useAtom } from 'jotai'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { winningAtom } from '../../../store/Layout/Layout'
 
 import Hidden from '../../../components/TableInner/Hidden'
@@ -46,8 +46,9 @@ import { useQueryClient } from '@tanstack/react-query'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { getWinning } from '../../../api/auction/winning'
 import { add_element_field } from '../../../lib/tableHelpers'
+import { doubleClickedRowAtom } from '../../../store/Layout/Layout'
 
-const Winning = ({}) => {
+const Winning = ({ detailRow }) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 
   const [winningCreate, setWinningCreate] = useAtom(winningAtom)
@@ -280,7 +281,7 @@ const Winning = ({}) => {
             <WhiteRedBtn>낙찰 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
+        <Table getCol={getCol} getRow={getRow} setChoiceComponent={() => {}} />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>

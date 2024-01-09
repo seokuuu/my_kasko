@@ -8,6 +8,6 @@ const urls = {
 }
 
 export function getWinning(data) {
-  console.log('data', data)
+  console.log('data !@#', data)
   return client.get(`${urls.winning}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&orderType=${data.orderType}`)
 }

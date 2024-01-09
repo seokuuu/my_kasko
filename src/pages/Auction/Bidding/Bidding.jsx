@@ -35,7 +35,7 @@ import {
 
 import { useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
-import { getBidding } from '../../../api/auction/bidding'
+import { getBidding, postBidding } from '../../../api/auction/bidding'
 import Excel from '../../../components/TableInner/Excel'
 import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
@@ -43,6 +43,7 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import Table from '../../Table/Table'
 import { getDestinationFind } from '../../../api/search'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
 const Bidding = ({}) => {
   const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
@@ -51,19 +52,6 @@ const Bidding = ({}) => {
 
   const [types, setTypes] = useState('단일')
   const radioDummy = ['전체', '미진행', '진행중', '종료']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-
-  const [savedRadioValue, setSavedRadioValue] = useState('')
-  useEffect(() => {
-    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
-
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
-  }, [checkRadio])
 
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
@@ -73,7 +61,6 @@ const Bidding = ({}) => {
   }
   const [isRotated, setIsRotated] = useState(false)
 
-  // Function to handle image click and toggle rotation
   const handleImageClick = () => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
   }
@@ -97,8 +84,6 @@ const Bidding = ({}) => {
   const checkedArray = useAtom(selectedRowsAtom)[0]
   // const productNumbers = checkedArray?.map((item) => item['제품 고유 번호'])
 
-  console.log('checkedArray', checkedArray)
-
   const [Param, setParam] = useState({
     pageNum: 1,
     pageSize: 50,
@@ -112,20 +97,18 @@ const Bidding = ({}) => {
   }
 
   const [input, setInput] = useState(init)
-  console.log('input', input)
+
   const [innerObject, setInnerObject] = useState({})
   const [biddingInput, setBiddingInput] = useState(null)
   const [biddingList, setBiddingList] = useState([])
+
+  console.log('biddingList @@', biddingList)
 
   const biddingHandler = (e) => {
     const value = e.target.value
     const intValue = parseInt(value)
     setBiddingInput(intValue)
   }
-
-  console.log('biddingInput', biddingInput)
-
-  console.log('innerObject', innerObject)
 
   useEffect(() => {
     const productNumbers = checkedArray?.map((item) => item['제품 고유 번호'])
@@ -139,69 +122,60 @@ const Bidding = ({}) => {
 
     const updatedBiddingList = productNumbers?.map((productUid) => ({
       productUid,
-      customerDestinationUid: null,
-      biddingPrice: null,
     }))
 
-    setBiddingList(updatedBiddingList)
+    setInput((prevInput) => ({
+      ...prevInput,
+      biddingList: updatedBiddingList?.map((item) => ({
+        ...item,
+        productUid: item.productUid, // 유지하고 싶은 다른 속성은 그대로 두고
+      })),
+    }))
+
+    // setBiddingList(updatedBiddingList)
   }, [checkedArray])
 
   // 목적지 적용 버튼
   const handleSetCustomerDestinationUid = () => {
-    const updatedBiddingList = biddingList.map((item) => ({
+    const updatedBiddingList = input.biddingList.map((item) => ({
       ...item,
       customerDestinationUid: destinationData.uid,
     }))
 
-    setBiddingList(updatedBiddingList)
+    // setBiddingList(updatedBiddingList)
+    setInput((prevInput) => ({
+      ...prevInput,
+      biddingList: [...updatedBiddingList],
+    }))
   }
 
   // 응찰가 적용 버튼
   const handleSetBiddingPrice = () => {
-    const updatedBiddingList2 = biddingList.map((item) => ({
+    const updatedBiddingList2 = input.biddingList.map((item) => ({
       ...item,
       biddingPrice: biddingInput,
     }))
 
-    setBiddingList(updatedBiddingList2)
-  }
-
-  // 응찰 버튼
-  const confirmOnClickHandler = () => {
+    // setBiddingList(updatedBiddingList2)
     setInput((prevInput) => ({
       ...prevInput,
-      type: types,
-      biddingList: biddingList,
+      biddingList: [...updatedBiddingList2],
     }))
   }
 
-  console.log('biddingList', biddingList)
+  console.log('input ==>', input)
 
-  // useEffect(() => {
-  //   const productNumbers = checkedArray?.map((item) => item['제품 고유 번호'])
+  const postMutation = useMutationQuery('', postBidding)
 
-  //   if (productNumbers) {
-  //     setInnerObject((prevInnerObject) => {
-  //       const existingObjects = prevInnerObject.objects || []
-  //       const newObjects = productNumbers
-  //         .filter((number) => !existingObjects.some((obj) => obj.productUid === number))
-  //         .map((number) => ({
-  //           productUid: number,
-  //         }))
-
-  //       const updatedObjects = existingObjects.filter((obj) => productNumbers.includes(obj.productUid))
-
-  //       return {
-  //         objects: [...updatedObjects, ...newObjects],
-  //       }
-  //     })
-  //   }
-  // }, [checkedArray])
+  // 응찰 버튼 POST
+  const confirmOnClickHandler = () => {
+    postMutation.mutate(input)
+  }
 
   // 목적지 찾기 GET
   const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
 
-  // GET
+  // 전체 GET
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getBidding', getBidding)
   const resData = data?.data?.data?.list
 
@@ -213,8 +187,6 @@ const Bidding = ({}) => {
       setGetRow(add_element_field(getData, AuctionBiddingFields))
     }
   }, [isSuccess, resData])
-
-  console.log('getRow =>', getRow)
 
   return (
     <FilterContianer>

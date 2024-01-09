@@ -240,13 +240,13 @@ const Upload = ({
                             )
                           ) : value === 'dropdown' ? (
                             <CustomSelect
-                              options={dropdownProps[0].options}
-                              defaultValue={dropdownProps[0].defaultValue}
+                              options={dropdownProps[0]?.options}
+                              defaultValue={dropdownProps[0]?.defaultValue}
                             />
                           ) : value === 'dropdown2' ? (
                             <CustomSelect
-                              options={dropdownProps[1].options}
-                              defaultValue={dropdownProps[1].defaultValue}
+                              options={dropdownProps[1]?.options}
+                              defaultValue={dropdownProps[1]?.defaultValue}
                             />
                           ) : value === 'dropdown3' ? (
                             <CustomSelect
