@@ -6,7 +6,7 @@ import { btnCellRenderAtom, modalAtom, modalObject, popupObject, popupTypeAtom }
 import { FadeOverlay, ModalContainer, ModalSubContainer, ModalText, ModalTitle } from '../Common/Common.Styled'
 import { popupDummy } from './PopupDummy'
 import { selectedRowsAtom } from '../../store/Layout/Layout'
-const AlertPopup = ({ propsRemove, setPopupSwitch }) => {
+const AlertPopup = ({ propsRemove, setPopupSwitch, saveFn, err }) => {
   const [modalSwitch, setModalSwitch] = useAtom(modalAtom) // 모달 스위치
   // const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
@@ -36,6 +36,26 @@ const AlertPopup = ({ propsRemove, setPopupSwitch }) => {
   // 팝업 확인 버튼 onClickHandler
   // popupDummy에 next가 있으면, firstPopupClick이 실행되고
   // next가 없으면, 팝업과 해당 모달이 종료된다
+  useEffect(() => {
+    setNowPopup({
+      num: '2-3',
+      title: '',
+      content: '저장하시겠습니까?',
+      type: '1',
+      next: '1-12',
+      onClick: () => {},
+      func: () => {
+        if (err) {
+          saveFn()
+        } else {
+          return alert('error')
+        }
+        console.log('hi2')
+      },
+      func2: () => {},
+    })
+  }, [])
+
   const showNextPopup = () => {
     const nextType = nowPopup.next?.split('-')[0]
     if (nowPopup && nowPopup?.next) {

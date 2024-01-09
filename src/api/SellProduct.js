@@ -3,6 +3,7 @@ import qs from "qs";
 
 const urls = {
   single: '/single-product',
+  saleCategory :'/single-product/sale-category'
 }
 
 export async function getSingleProducts(data) {
@@ -14,4 +15,10 @@ export async function getSingleProducts(data) {
     ) 
   // console.log(response)
   return response.data
+}
+
+
+
+export async function patchSaleCategory(data) {
+  return client.patch(`${urls.saleCategory}`,data)
 }

@@ -15,10 +15,12 @@ export const alertAtom2 = atom(false)
 export const blueModalAtom = atom(false)
 export const hyundaiModalAtom = atom(false)
 export const standardModalAtom = atom(false)
-
+export const SingleProductModalAtom = atom(false)
+// 규격약호 선택 값
 export const specAtom = atom('')
 export const hyundaiSpecAtom = atom('')
 export const standardSpecAtom = atom('')
+export const SingleProductSpecAtom = atom('')
 
 export const packageCEAtom = atom('')
 
@@ -251,3 +253,7 @@ export const invenDestinationData = atom({
 export const tableCellType = atom('') //셀타입
 // 목적지 관리 수정 switch
 export const userpageDestiEdit = atom(false)
+
+// 판매 구분 변경 -> (판매 제품 관리)
+
+export const hyunDaiMultiModal = atom(false)

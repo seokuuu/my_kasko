@@ -9,7 +9,13 @@ import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn, ExcelBtn, YellBtn } from '../../../common/Button/Button'
 import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, hyundaiModalAtom, hyundaiSpecAtom, specAtom, toggleAtom } from '../../../store/Layout/Layout'
+import {
+  selectedRowsAtom,
+  hyundaiModalAtom,
+  hyundaiSpecAtom,
+  hyunDaiMultiModal,
+  toggleAtom,
+} from '../../../store/Layout/Layout'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
@@ -36,12 +42,14 @@ import {
   SubTitle,
   TCSubContainer,
   MiniInput,
+  ExRadioWrap,
 } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Excel from '../../../components/TableInner/Excel'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { getSingleProducts } from '../../../api/SellProduct'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import { getSingleProducts, patchSaleCategory } from '../../../api/SellProduct'
 import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constants/admin/Single'
 import Table from '../../Table/Table'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -50,9 +58,13 @@ import { QueryClient } from '@tanstack/react-query'
 import { Filtering } from '../../../utils/filtering'
 import { getStorageList, getSPartList } from '../../../api/search'
 import { supplierOptions, ProductOptions } from '../../../common/Option/storage'
-import { requestDataAtom } from '../../../store/Table/SalesRequst'
+// import { requestDataAtom } from '../../../store/Table/SalesRequst'
+
 import ProductNumber from '../../../components/ProductNumber/ProductNumber'
 import { KilogramSum } from '../../../utils/KilogramSum'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import Multi2 from '../../../modal/Common/Multi2'
+import { changeCategoryAtom } from '../../../store/Layout/Popup'
 
 const DEFAULT_OBJ = { value: '', label: '전체' }
 
@@ -63,7 +75,7 @@ const Hyundai = ({}) => {
 
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
-  const [check2, setCheck2] = useState(Array.from({ length: checkShips.length }, () => false))
+  const [check2, setCheck2] = useState(Array.from({ length: checkShips.length }, (_, index) => index === 0))
   const [check3, setCheck3] = useState(Array.from({ length: checkTypes.length }, () => false))
 
   //checkShips
@@ -128,7 +140,9 @@ const Hyundai = ({}) => {
   const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
   const { data: spartList } = useReactQuery('', 'getSPartList', getSPartList)
   const [spec, setSpec] = useAtom(hyundaiSpecAtom)
+  // modal
   const [isModal, setIsModal] = useAtom(hyundaiModalAtom)
+  const [isMultiModal, setIsMultiModal] = useAtom(hyunDaiMultiModal)
   // const [requestData, setRequestData] = useAtom(requestDataAtom)
   const [select, setSelect] = useState({
     storage: '',
@@ -161,29 +175,29 @@ const Hyundai = ({}) => {
   const [storages, setStorages] = useState([])
   const [sparts, setSparts] = useState([])
   const selectedRef = useRef(null)
+  // const [popupObj, setPopupObj] = useAtom()
+  // 초기화
   const handleImageClick = () => {
     setProductNoNumber('')
     setProductNumber('')
     setSpec('')
-    setSelect({
-      storage: null,
-      sPart: null,
-      maker: null,
-      stocks: null,
-      supply: null,
-      grade: null,
-      preferThick: null,
-    })
+    setSelect(() => ({
+      storage: '',
+      sPart: '',
+      maker: '',
+      stocks: '',
+      supply: '',
+      grade: '',
+      preferThick: '',
+    }))
     setQuantity({})
     setCheck1([])
     setCheck2([])
     setCheck3([])
     setCheckData1([])
-    setCheckData1([])
-    setCheckData1([])
+    setCheckData2([])
+    setCheckData3([])
     setIsRotated((prevIsRotated) => !prevIsRotated)
-
-    console.log(selectedRef)
 
     if (
       !spec ||
@@ -198,6 +212,7 @@ const Hyundai = ({}) => {
       setFilteredData(hyunDaiList)
       setPagination(hyunDaiPage)
     }
+    console.log('SELECT', select)
   }
 
   useEffect(() => {
@@ -269,8 +284,8 @@ const Hyundai = ({}) => {
       maxFailCount: Quantity.endSpecification, // 최대 유찰 횟수
 
       saleCategoryList: checkData1, // 판매 구분
-      saleType: checkData2, // 판매 유형
-      salePriceType: checkData3, //판매가 유형
+      saleType: checkData2.join(''), // 판매 유형
+      salePriceType: checkData3.join(''), //판매가 유형
 
       productNumberList: search.productNumber,
     }
@@ -282,6 +297,29 @@ const Hyundai = ({}) => {
       setPagination(res.data?.pagination)
       return res.data?.list
     })
+  }
+  const [selectProductNumber, setSelectProductNumber] = useState([])
+  const [parameter, setParameter] = useAtom(changeCategoryAtom)
+  const [errorMsg, setErrorMsg] = useState('')
+
+  // 판매 구분 변경
+  useEffect(() => {
+    if (checkBoxSelect?.length === 0) return
+    setSelectProductNumber(() => checkBoxSelect?.map((i) => i['제품 번호']))
+  }, [checkBoxSelect])
+
+  const option = {}
+  const { mutate, isError } = useMutationQuery('change-category', patchSaleCategory)
+  const changeSaleCategory = () => {
+    const res = mutate(parameter, {
+      onError: (e) => {
+        setErrorMsg(e.data.message)
+
+        alert(e.data.message)
+      },
+    })
+
+    return res
   }
 
   return (
@@ -344,7 +382,7 @@ const Hyundai = ({}) => {
                         onChange={(e) => {
                           setSelect((p) => ({
                             ...p,
-                            supply: e.value,
+                            supply: e.label,
                           }))
                         }}
                       />
@@ -391,7 +429,6 @@ const Hyundai = ({}) => {
                             defaultValue={v[0]}
                             name={k}
                             onChange={(e) => {
-                              console.log(e)
                               handleSelectChange(k, e, idx)
                             }}
                           />
@@ -419,38 +456,38 @@ const Hyundai = ({}) => {
                   </PartWrap>
                   <PartWrap>
                     <h6>판매 유형</h6>
-                    <ExCheckWrap>
+                    <ExRadioWrap>
                       {checkShips.map((x, index) => (
-                        <ExCheckDiv>
-                          <StyledCheckSubSquDiv
-                            onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
+                        <ExCheckDiv key={index}>
+                          <RadioCircleDiv
                             isChecked={check2[index]}
+                            onClick={() => setCheck2(CheckBox(check2, check2.length, index))}
                           >
-                            <CheckImg2 src="/svg/check.svg" isChecked={check2[index]} />
-                          </StyledCheckSubSquDiv>
+                            <RadioInnerCircleDiv isChecked={check2[index]} />
+                          </RadioCircleDiv>
                           <p>{x}</p>
                         </ExCheckDiv>
                       ))}
-                    </ExCheckWrap>
+                    </ExRadioWrap>
                   </PartWrap>
                 </RowWrap>
 
                 <RowWrap>
                   <PartWrap first>
                     <h6>판매가 유형</h6>
-                    <ExCheckWrap>
+                    <ExRadioWrap>
                       {checkTypes.map((x, index) => (
-                        <ExCheckDiv>
-                          <StyledCheckSubSquDiv
-                            onClick={() => setCheck3(CheckBox(check3, check3.length, index, true))}
+                        <RadioMainDiv key={index}>
+                          <RadioCircleDiv
+                            onClick={() => setCheck3(CheckBox(check3, check3.length, index))}
                             isChecked={check3[index]}
                           >
-                            <CheckImg2 src="/svg/check.svg" isChecked={check3[index]} />
-                          </StyledCheckSubSquDiv>
-                          <p>{x}</p>
-                        </ExCheckDiv>
+                            <RadioInnerCircleDiv src="/svg/check.svg" isChecked={check3[index]} />
+                          </RadioCircleDiv>
+                          <p style={{ display: 'flex', marginLeft: '5px' }}>{x}</p>
+                        </RadioMainDiv>
                       ))}
-                    </ExCheckWrap>
+                    </ExRadioWrap>
                   </PartWrap>
                 </RowWrap>
 
@@ -549,7 +586,16 @@ const Hyundai = ({}) => {
             <div style={{ display: 'flex', gap: '10px' }}>
               <TGreyBtn>적용</TGreyBtn>
               <BtnBound />
-              <WhiteBlackBtn>판매 구분 변경</WhiteBlackBtn>
+              <WhiteBlackBtn
+                onClick={() => {
+                  if (checkBoxSelect == null) alert('제품을 선택해 주세요.')
+                  else {
+                    setIsMultiModal(true)
+                  }
+                }}
+              >
+                판매 구분 변경
+              </WhiteBlackBtn>
             </div>
           </TCSubContainer>
           <Table getRow={getRow} getCol={getCol} setChoiceComponent={() => {}} handleOnRowClicked={() => {}} />
@@ -575,6 +621,20 @@ const Hyundai = ({}) => {
             }
             setIsModal(false)
           }}
+        />
+      )}
+      {isMultiModal === true && (
+        <Multi2
+          closeFn={(e, text) => {
+            const { tagName } = e.target
+            // console.log('TARGET :', e.target.tagName)
+            if (tagName === 'IMG') {
+              setIsMultiModal(false)
+            }
+          }}
+          errMsg={errorMsg}
+          saveFn={changeSaleCategory}
+          productNumbers={selectProductNumber}
         />
       )}
     </>
