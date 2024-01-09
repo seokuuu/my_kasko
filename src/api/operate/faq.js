@@ -82,9 +82,6 @@ export function useFaqRemoveMutation() {
       queryClient.invalidateQueries({
         queryKey: FAQ_KEYS.getList,
       })
-      // queryClient.invalidateQueries({
-      //   queryKey: FAQ_KEYS.getList,
-      // })
     },
     onError() {
       alert('삭제에 실패하였습니다.')
