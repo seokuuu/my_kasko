@@ -28,7 +28,7 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import { useDriverListQuery, useDriverRemoveMutation } from '../../../api/driver'
 import { getStorageList } from '../../../api/search'
 import useReactQuery from '../../../hooks/useReactQuery'
-import StorageSelect from '../StorageSelect'
+import StorageSelect from '../../../components/Search/StorageSelect'
 
 const Dispatch = ({}) => {
   const [uidAtom, _] = useAtom(btnCellUidAtom)
