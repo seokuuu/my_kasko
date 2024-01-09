@@ -1,21 +1,14 @@
-import React, { useRef, useState } from 'react'
-import { styled } from 'styled-components'
-
+import React, { useEffect, useRef, useState } from 'react'
 import { BlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import { StandardDispatchEditAtom, btnCellUidAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-
+import { btnCellUidAtom, selectedRowsAtom, StandardDispatchEditAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 import Hidden from '../../../components/TableInner/Hidden'
 import {
-  DoubleWrap,
-  ExInputsWrap,
   FilterContianer,
   FilterFooter,
   FilterHeader,
   FilterLeft,
-  FilterRight,
   FilterSubcontianer,
-  GridWrap,
   Input,
   PWRight,
   PartWrap,
@@ -23,205 +16,163 @@ import {
   RowWrap,
   TCSubContainer,
   TableContianer,
-  Tilde,
 } from '../../../modal/External/ExternalFilter'
-
 import { MainSelect } from '../../../common/Option/Main'
-
 import { ShippingDispatchFields, ShippingDispatchFieldsCols } from '../../../constants/admin/Shipping'
-import DispatchEdit from '../../../modal/Multi/DispatchEdit'
 import DispatchPost from '../../../modal/Multi/DispatchPost'
 import { StandardDispatchPostAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
-
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useEffect } from 'react'
 import Excel from '../../../components/TableInner/Excel'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
-import { deleteAdminShipping, getAdminShipping } from '../../../service/admin/Shipping'
-import { dispatchPostEditAtom, dispatchTypeAtom } from '../../../store/Layout/Layout'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-
-// dispatchPostEditAtom : 모달 스위치
-// dispatchTypeAtom : 모달의 등록 / 수정 상태값 ('등록'이 default, Consolidation 컴포넌트 체크)
+import { useDriverListQuery, useDriverRemoveMutation } from '../../../api/driver'
+import { getStorageList } from '../../../api/search'
+import useReactQuery from '../../../hooks/useReactQuery'
 
 const Dispatch = ({}) => {
-  const [btnCellModal, setBtnCellModal] = useAtom(dispatchPostEditAtom)
-  const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-  const [modalType, setModalType] = useAtom(dispatchTypeAtom)
+  const [uidAtom, _] = useAtom(btnCellUidAtom)
   const [isModalPost, setIsModalPost] = useAtom(StandardDispatchPostAtom)
   const [isModalEdit, setIsModalEdit] = useAtom(StandardDispatchEditAtom)
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
-
-  console.log('uidAtom', uidAtom)
-  const [isRotated, setIsRotated] = useState(false)
-
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated((prevIsRotated) => !prevIsRotated)
-  }
-
-  // GET
   const [getRow, setGetRow] = useState('')
   const tableField = useRef(ShippingDispatchFieldsCols)
   const getCol = tableField.current
-  const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
 
-  const Param = {
+  const [isRotated, setIsRotated] = useState(false)
+
+  const [param, setParam] = useState({
     pageNum: 1,
     pageSize: 10,
+    driverName: '',
+    carNumber: '',
+    carType: '',
+    storage: '',
+    limit: 50,
+  })
+  // GET
+
+  const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
+  const { refetch, data, isSuccess } = useDriverListQuery(param)
+  const { mutate: onDelete } = useDriverRemoveMutation()
+
+  /**
+   * param set 이벤트
+   */
+  const onParamHandle = (e) => {
+    const { name, value } = e.target
+    setParam((prev) => ({ ...prev, [name]: value }))
   }
 
-  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getAdminShipping', getAdminShipping)
-  const resData = data?.data?.data?.list
-  console.log('resData => ', resData)
+  /**
+   * 초기화 이벤트
+   */
+  const handleImageClick = async () => {
+    setIsRotated((prevIsRotated) => !prevIsRotated)
+    await setParam((prev) => ({ ...prev, driverName: '', carNumber: '', carType: '', storage: null }))
+    await refetch()
+  }
+
+  const handleDeleteEvent = async () => {
+    if (window.confirm('삭제하시겠습니까?')) {
+      const deleteUIds = checkedArray.map((item) => item['고유 번호'])
+      await onDelete(deleteUIds)
+      await refetch()
+    }
+  }
 
   useEffect(() => {
-    let getData = resData
-    //타입, 리액트쿼리, 데이터 확인 후 실행
-    if (!isSuccess && !resData) return
+    const getData = data?.list
+
+    if (!isSuccess && !getData) {
+      return
+    }
+
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, ShippingDispatchFields))
     }
-  }, [isSuccess, resData])
-
-  // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-  const [toggleMsg, setToggleMsg] = useState('On')
-  const toggleBtnClick = () => {
-    setExfilterToggle((prev) => !prev)
-    if (exFilterToggle === true) {
-      setToggleMsg('Off')
-    } else {
-      setToggleMsg('On')
-    }
-  }
-
-  // DELETE
-  const mutation = useMutation(deleteAdminShipping, {
-    onSuccess: () => {
-      queryClient.invalidateQueries('shipping')
-    },
-  })
-
-  const propsRemove = () => {
-    checkedArray.forEach((item) => {
-      mutation.mutate(item['고유 번호']) //mutation.mutate로 api 인자 전해줌
-    })
-  }
-
-  // console.log('modalTyp 되나', modalType)
-  console.log('btnCellModal', btnCellModal)
+  }, [isSuccess, data])
 
   return (
-    <>
-      <FilterContianer>
-        <FilterHeader>
-          <h1>배차기사 관리</h1>
-          {/* 토글 쓰기 */}
-        </FilterHeader>
-        {exFilterToggle && (
-          <>
-            <FilterSubcontianer>
-              <FilterLeft>
-                <RowWrap>
-                  <PartWrap>
-                    <h6>기사명</h6>
-                    <PWRight style={{ width: '160px' }}>
-                      <Input />
-                    </PWRight>
-                  </PartWrap>
-                  <PartWrap>
-                    <h6>차량번호</h6>
-                    <PWRight style={{ width: '160px' }}>
-                      <Input />
-                    </PWRight>
-                  </PartWrap>
-                  <PartWrap>
-                    <h6>창고구분</h6>
-                    <PWRight style={{ width: '160px' }}>
-                      <MainSelect />
-                    </PWRight>
-                  </PartWrap>
-                  <PartWrap>
-                    <h6>차량종류</h6>
-                    <PWRight style={{ width: '160px' }}>
-                      <MainSelect />
-                    </PWRight>
-                  </PartWrap>
-                  <PartWrap>
-                    <PWRight style={{ width: '160px' }}></PWRight>
-                  </PartWrap>
-                </RowWrap>
-              </FilterLeft>
-              <FilterRight>
-                <DoubleWrap></DoubleWrap>
-              </FilterRight>
-            </FilterSubcontianer>
-            <FilterFooter>
-              <div style={{ display: 'flex' }}>
-                <p>초기화</p>
-                <ResetImg
-                  src="/img/reset.png"
-                  style={{ marginLeft: '10px', marginRight: '20px' }}
-                  onClick={handleImageClick}
-                  className={isRotated ? 'rotate' : ''}
+    <FilterContianer>
+      <FilterHeader>
+        <h1>배차기사 관리</h1>
+      </FilterHeader>
+      <FilterSubcontianer>
+        <FilterLeft>
+          <RowWrap>
+            <PartWrap>
+              <h6>기사명</h6>
+              <PWRight style={{ width: '160px' }}>
+                <Input name="driverName" value={param.driverName} onChange={onParamHandle} />
+              </PWRight>
+            </PartWrap>
+            <PartWrap>
+              <h6>차량번호</h6>
+              <PWRight style={{ width: '160px' }}>
+                <Input name="carNumber" value={param.carNumber} onChange={onParamHandle} />
+              </PWRight>
+            </PartWrap>
+            <PartWrap>
+              <h6>차량종류</h6>
+              <PWRight style={{ width: '160px' }}>
+                <Input name="carType" value={param.carType} onChange={onParamHandle} />
+              </PWRight>
+            </PartWrap>
+            <PartWrap>
+              <h6>창고구분</h6>
+              <PWRight style={{ width: '160px' }}>
+                <MainSelect
+                  name="storage"
+                  value={storageList?.filter(({ label }) => label === param.storage)}
+                  options={storageList ? [{ label: '전체' }, ...storageList] : []}
+                  onChange={(e) => setParam((prev) => ({ ...prev, storage: e.label }))}
                 />
-              </div>
-              <div style={{ width: '180px' }}>
-                <BlackBtn width={100} height={40}>
-                  검색
-                </BlackBtn>
-              </div>
-            </FilterFooter>
-          </>
-        )}
+              </PWRight>
+            </PartWrap>
+          </RowWrap>
+        </FilterLeft>
+      </FilterSubcontianer>
+      <FilterFooter>
+        <div style={{ display: 'flex' }}>
+          <p>초기화</p>
+          <ResetImg
+            src="/img/reset.png"
+            style={{ marginLeft: '10px', marginRight: '20px' }}
+            onClick={handleImageClick}
+            className={isRotated ? 'rotate' : ''}
+          />
+        </div>
+        <div style={{ width: '180px' }}>
+          <BlackBtn width={100} height={40} onClick={refetch}>
+            검색
+          </BlackBtn>
+        </div>
+      </FilterFooter>
 
-        <TableContianer>
-          <TCSubContainer bor>
-            <div>
-              조회 목록 (선택 <span>2</span> / 50개 )
-              <Hidden />
-            </div>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <PageDropdown />
-              <Excel />
-            </div>
-          </TCSubContainer>
-          <TCSubContainer>
-            <div>
-              선택 중량<span> 2 </span>kg / 총 중량 kg
-            </div>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <WhiteRedBtn>선택 삭제</WhiteRedBtn>
-              <WhiteSkyBtn
-                onClick={() => {
-                  setIsModalPost(true)
-                }}
-              >
-                추가 등록
-              </WhiteSkyBtn>
-            </div>
-          </TCSubContainer>
-          <Table getCol={getCol} getRow={getRow} />
-        </TableContianer>
-        {isModalPost && <DispatchPost setIsModalPost={setIsModalPost} />}
-        {isModalEdit && <DispatchEdit setIsModalEdit={setIsModalEdit} />}
-      </FilterContianer>
-    </>
+      <TableContianer>
+        <TCSubContainer bor>
+          <div>
+            조회 목록 (선택 <span>{data?.pagination?.listCount ?? 0}</span> / {param?.limit}개 )
+            <Hidden />
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <PageDropdown handleDropdown={(e) => setParam((prev) => ({ ...prev, limit: parseInt(e.target.value) }))} />
+            <Excel />
+          </div>
+        </TCSubContainer>
+        <TCSubContainer>
+          <div>{/*선택 중량<span> 2 </span>kg / 총 중량 kg*/}</div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <WhiteRedBtn onClick={handleDeleteEvent}>선택 삭제</WhiteRedBtn>
+            <WhiteSkyBtn onClick={() => setIsModalPost(true)}>추가 등록</WhiteSkyBtn>
+          </div>
+        </TCSubContainer>
+        <Table getCol={getCol} getRow={getRow} />
+      </TableContianer>
+      {isModalPost && <DispatchPost setIsModalPost={setIsModalPost} id={null} />}
+      {isModalEdit && <DispatchPost setIsModalPost={setIsModalEdit} id={uidAtom} />}
+    </FilterContianer>
   )
 }
 
 export default Dispatch
-
-const TableWrap = styled.div`
-  margin: 30px auto;
-`
