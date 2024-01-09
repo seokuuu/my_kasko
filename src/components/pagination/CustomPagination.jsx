@@ -16,14 +16,12 @@ const PageNum = styled.div`
   font-weight: ${(props) => (props.isPage ? 'bold' : 'normal')};
   cursor: pointer;
 `
-
 /**
  * TODO pagination components
  * @param onPageChange 페이지 체인지 이벤트
  * @param pagination 서버에서 전달받은 페이지 데이터
  */
 const CustomPagination = ({ pagination, onPageChange }) => {
-  const pageNumbers = []
   /**
    * 페이지 정보
    * @param pageNum 현재 페이지
@@ -33,6 +31,7 @@ const CustomPagination = ({ pagination, onPageChange }) => {
    * @param listCount 총 개수
    */
   const { pageNum: currentPage, startPage, endPage, maxPage, listCount } = pagination
+  const pageNumbers = []
 
   for (let i = startPage; i <= endPage; i++) {
     pageNumbers.push(i)
@@ -56,8 +55,8 @@ const CustomPagination = ({ pagination, onPageChange }) => {
             </svg>
           </button>
         )}
-        {pageNumbers.map((page) => (
-          <PageNum isPage={page === currentPage} onClick={() => onPageChange(page)}>
+        {pageNumbers.map((page, index) => (
+          <PageNum key={index} isPage={page === currentPage} onClick={() => onPageChange(page)}>
             {page}
           </PageNum>
         ))}

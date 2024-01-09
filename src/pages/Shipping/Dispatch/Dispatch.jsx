@@ -25,7 +25,7 @@ import CustomPagination from '../../../components/pagination/CustomPagination'
 
 const initData = {
   pageNum: 1,
-  pageSize: 3,
+  pageSize: 50,
   driverName: '',
   carNumber: '',
   carType: '',
@@ -126,7 +126,7 @@ const Dispatch = ({}) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown
-              handleDropdown={(e) => setParam((prev) => ({ ...prev, pageSize: parseInt(e.target.value) }))}
+              handleDropdown={(e) => setParam((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))}
             />
             <Excel />
           </div>
