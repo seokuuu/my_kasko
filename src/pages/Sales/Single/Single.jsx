@@ -240,21 +240,20 @@ const Single = ({}) => {
           </FilterWrap>
         )}
       </div>
-
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
+            조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
+            {singleProductPagination?.listCount}개 )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown handleDropdown={handleTablePageSize} />
-            <Excel />
+            <Excel getRow={singleProductListData} />
           </div>
         </TCSubContainer>
         <TCSubContainer>
           <div>
-            {/* 체크 박스의 값을 더한 값을 노출시켜줘야함 */}
             선택 중량
             <span> {formatWeight(KilogramSum(checkBoxSelect))} </span>
             kg / 총 중량 {formatWeight(singleProductPagination.totalWeight)} kg
