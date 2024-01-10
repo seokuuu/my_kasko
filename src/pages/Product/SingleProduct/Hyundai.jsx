@@ -618,7 +618,7 @@ const Hyundai = ({}) => {
         </TableContianer>
       </FilterContianer>
 
-      {isTableModal && <HyunDaiOriginal />}
+      {isTableModal && <HyunDaiOriginal title={'원본보기'} />}
       {isModal === true && (
         <StandardFind
           closeFn={(e, text) => {

@@ -24,8 +24,8 @@ export async function patchSaleCategory(data) {
   return client.patch(`${urls.saleCategory}`,data)
 }
 
-export async function gethyunDaiOriginal(){
- const response = await client.get(`${urls.original}`) 
+export async function gethyunDaiOriginal(data){
+ const response = await client.get(`${urls.original}`,{params:data}) 
  
  return response.data
 }
