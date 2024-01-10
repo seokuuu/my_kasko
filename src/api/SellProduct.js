@@ -3,7 +3,8 @@ import qs from "qs";
 
 const urls = {
   single: '/single-product',
-  saleCategory :'/single-product/sale-category'
+  saleCategory :'/single-product/sale-category',
+  original:'/single-product/original'
 }
 
 export async function getSingleProducts(data) {
@@ -21,4 +22,10 @@ export async function getSingleProducts(data) {
 
 export async function patchSaleCategory(data) {
   return client.patch(`${urls.saleCategory}`,data)
+}
+
+export async function gethyunDaiOriginal(){
+ const response = await client.get(`${urls.original}`) 
+ 
+ return response.data
 }

@@ -15,6 +15,7 @@ import {
   hyundaiSpecAtom,
   hyunDaiMultiModal,
   toggleAtom,
+  onClickCheckAtom,
 } from '../../../store/Layout/Layout'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
@@ -49,7 +50,7 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Excel from '../../../components/TableInner/Excel'
 import useReactQuery from '../../../hooks/useReactQuery'
 import useMutationQuery from '../../../hooks/useMutationQuery'
-import { getSingleProducts, patchSaleCategory } from '../../../api/SellProduct'
+import { getSingleProducts, gethyunDaiOriginal, patchSaleCategory } from '../../../api/SellProduct'
 import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constants/admin/Single'
 import Table from '../../Table/Table'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -65,6 +66,8 @@ import { KilogramSum } from '../../../utils/KilogramSum'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import Multi2 from '../../../modal/Common/Multi2'
 import { changeCategoryAtom } from '../../../store/Layout/Popup'
+import TableModal from '../../../modal/Table/TableModal'
+import HyunDaiOriginal from './HyunDaiOriginal'
 
 const DEFAULT_OBJ = { value: '', label: '전체' }
 
@@ -130,7 +133,7 @@ const Hyundai = ({}) => {
   const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
-
+  const [isTableModal, setIsTableModal] = useAtom(onClickCheckAtom)
   const [getRow, setGetRow] = useState('')
   const { data, isSuccess, refetch } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
   const hyunDaiList = data?.data?.list
@@ -603,12 +606,19 @@ const Hyundai = ({}) => {
             <div></div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <WhiteBlackBtn>장기재 등록</WhiteBlackBtn>
-              <WhiteBlackBtn>원본 보기</WhiteBlackBtn>
+              <WhiteBlackBtn
+                onClick={() => {
+                  setIsTableModal(true)
+                }}
+              >
+                원본 보기
+              </WhiteBlackBtn>
             </div>
           </TCSubContainer>
         </TableContianer>
       </FilterContianer>
 
+      {isTableModal && <HyunDaiOriginal />}
       {isModal === true && (
         <StandardFind
           closeFn={(e, text) => {
