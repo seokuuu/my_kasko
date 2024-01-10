@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { QueryClient } from '@tanstack/react-query'
+import { QueryClient, useQueryClient } from '@tanstack/react-query'
 import moment from 'moment'
 import { useEffect, useRef, useState } from 'react'
 import { BlackBtn, GreyBtn } from '../../../../common/Button/Button'
@@ -103,7 +103,7 @@ const Inventory = ({}) => {
   const [checkData5, setCheckData5] = useState(Array.from({ length: checkShipments.length }, () => ''))
 
   console.log('checkData1 :', checkData1)
-  const queryClient = new QueryClient()
+  const queryClient = useQueryClient()
 
   // SELECT 데이터
   const [selected, setSelected] = useState({ storage: '', sPart: '' })

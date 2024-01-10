@@ -23,6 +23,7 @@ import { popupDummy } from '../Alert/PopupDummy'
 
 import styled from 'styled-components'
 import DateGrid from '../../components/DateGrid/DateGrid'
+import moment from "moment";
 
 //  ****** 수정용 table을 가져오는 단일 컴포넌트 *******
 // ex) Destination으로 예를 듦
@@ -105,27 +106,6 @@ const TableModal = ({
         </BlueBarHeader>
         <BlueSubContainer>
           <div>
-            <BlueMainDiv style={{ margin: '0px auto' }}>
-              <BlueSubDiv></BlueSubDiv>
-            </BlueMainDiv>
-            {/* <BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px', padding: '0px' }}>
-              <Table>
-                <thead>
-                  <tr>
-                    {Object.keys(filteredRow)?.map((key) => (
-                      <Th key={key}>{key}</Th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    {Object.values(filteredRow)?.map((value, index) => (
-                      <Td key={index}>{value === 'auto' ? '' : <Input type="text" />}</Td>
-                    ))}
-                  </tr>
-                </tbody>
-              </Table>
-            </BlueMainDiv> */}
             <BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px', padding: '0px' }}>
               <Table>
                 <thead>
@@ -143,8 +123,10 @@ const TableModal = ({
                           <Input type="text" name={convertKey[key]} onChange={onEditHandler} />
                         ) : modalInTable[key] === 'date' ? (
                           <DateGrid width={145} startDate={startDate} setStartDate={setStartDate} />
+                        ) : modalInTable[key] === 'formatDate' ? (
+                            moment(matchingRow[key]).format('YYYY.MM.DD')
                         ) : (
-                          matchingRow[key]
+                            matchingRow[key]
                         )}
                       </Td>
                     ))}

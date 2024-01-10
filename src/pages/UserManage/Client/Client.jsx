@@ -253,6 +253,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
           <>
             <FilterSubcontianer>
               <FilterLeft>
+
                 <RowWrap>
                   <PartWrap>
                     <h6>회원 상태</h6>

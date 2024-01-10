@@ -20,7 +20,7 @@ import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layo
 import ProductNumber from '../../../components/ProductNumber/ProductNumber'
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-import { QueryClient } from '@tanstack/react-query'
+import { QueryClient, useQueryClient } from '@tanstack/react-query'
 import {
   FilterContianer,
   FilterHeader,
@@ -211,7 +211,7 @@ const SalesProduct = () => {
       [name]: value.label,
     }))
   }
-  const queryClient = new QueryClient()
+  const queryClient = useQueryClient()
   const handleNumberChange = (e) => {
     const { name, value } = e.currentTarget
     setQuantity((p) => ({ ...p, [name]: value }))

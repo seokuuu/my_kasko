@@ -1,7 +1,6 @@
 import axios from 'axios'
 
 const API_PATH = process.env.REACT_APP_API_URL
-// const API_PATH = 'http://localhost:8080/api'
 
 // 폼 데이터 헤더
 export const formHeaders = { 'Content-Type': 'multipart/form-data' }

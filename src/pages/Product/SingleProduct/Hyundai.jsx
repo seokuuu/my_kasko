@@ -55,7 +55,7 @@ import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constan
 import Table from '../../Table/Table'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { useAtom, useAtomValue } from 'jotai'
-import { QueryClient } from '@tanstack/react-query'
+import { QueryClient, useQueryClient } from '@tanstack/react-query'
 import { Filtering } from '../../../utils/filtering'
 import { getStorageList, getSPartList } from '../../../api/search'
 import { supplierOptions, ProductOptions } from '../../../common/Option/storage'
@@ -259,7 +259,7 @@ const Hyundai = ({}) => {
     setQuantity((p) => ({ ...p, [name]: value }))
   }
 
-  const queryClient = new QueryClient()
+  const queryClient = useQueryClient()
 
   const handleSearch = () => {
     const request = {
