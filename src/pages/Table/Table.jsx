@@ -17,7 +17,7 @@ import {
 } from '../../modal/Common/Common.Styled'
 import { blueModalAtom, doubleClickedRowAtom, pageSort, selectedRowsAtom } from '../../store/Layout/Layout'
 import './TableUi.css'
-
+import CustomPagination from '../../components/pagination/CustomPagination'
 // import TableStyle from './Table.module.css'
 
 // import { get } from 'lodash'
@@ -59,6 +59,8 @@ const Table = ({
   topData,
   isRowClickable,
   handleOnRowClicked,
+  tablePagination,
+  onPageChange,
 }) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
@@ -320,12 +322,10 @@ const Table = ({
   }, [topData])
 
   const onRowClicked = (row) => {
-
     // Assuming each row has a unique ID or some identifier
     if (handleOnRowClicked) {
       handleOnRowClicked(row)
     }
-
   }
 
   const getRowStyle = () => {
@@ -405,9 +405,14 @@ const Table = ({
               </BlackBtn>
             </BlueBarBtnWrap>
           </ModalContainer>
-          <Pagination></Pagination>
         </>
       )}
+      
+      {tablePagination &&
+         <CustomPagination
+          pagination={tablePagination}
+          onPageChange={onPageChange}
+        />}
     </div>
   )
 }
