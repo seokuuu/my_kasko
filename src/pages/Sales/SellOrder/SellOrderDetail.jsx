@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import React, { useState, Fragment } from 'react'
+import React, { useState, Fragment, useEffect } from 'react'
 import { styled } from 'styled-components'
 import { BtnBound, SkyBtn, TGreyBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
@@ -47,6 +47,7 @@ const SellOrderDetail = ({}) => {
       setToggleMsg('On')
     }
   }
+
 
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
