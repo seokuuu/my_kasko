@@ -27,10 +27,6 @@ const FAQPage = () => {
     }
   }, [isSuccess, getFaqListRes])
 
-  useEffect(() => {
-    console.log('faqPagination---', faqPagination)
-  }, [faqPagination])
-
   const onPageChange = (value) => {
     setParam((prevParam) => ({
       ...prevParam,
