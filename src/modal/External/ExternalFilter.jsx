@@ -424,7 +424,7 @@ export const TableBottomWrap = styled.div`
   display: flex;
   width: 100%;
   justify-content: center;
-  margin-top: 15px;
+  margin-top: 50px;
   button {
     margin-left: auto;
     margin-right: auto;
