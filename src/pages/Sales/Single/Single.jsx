@@ -43,10 +43,11 @@ const Single = ({}) => {
   const [isRotated, setIsRotated] = useState(false)
   const [singleProductListData, setSingleProductListData] = useState(null)
   const [singleProductPagination, setSingleProductPagination] = useState([])
-  const [param, setParam] = useState({
+  const paramData = {
     pageNum: 1,
-    pageSize: 10,
-  })
+    pageSize: 50,
+  }
+  const [param, setParam] = useState(paramData)
   const {
     isLoading,
     isError,
@@ -98,6 +99,14 @@ const Single = ({}) => {
     setParam((prevParam) => ({
       ...prevParam,
       pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
     }))
   }
 
@@ -262,7 +271,12 @@ const Single = ({}) => {
             <WhiteBlackBtn>노출 상태 변경</WhiteBlackBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={SingleDispatchFieldsCols} getRow={singleProductListData} />
+        <Table
+          getCol={SingleDispatchFieldsCols}
+          getRow={singleProductListData}
+          tablePagination={singleProductPagination}
+          onPageChange={onPageChange}
+        />
         <TableBottomWrap>
           <BlackBtn width={13} height={40} fontSize={17}>
             저장
