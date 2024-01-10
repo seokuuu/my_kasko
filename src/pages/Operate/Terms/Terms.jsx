@@ -41,7 +41,6 @@ const Terms = () => {
     if (isSuccess && isObject(resData)) return setResData(resData)
   }, [data, type, isSuccess])
 
-
   // 팝업 초기 설정
   useEffect(() => {
     setNowPopupType(2)
@@ -53,6 +52,7 @@ const Terms = () => {
     })
   }, [])
 
+  // 그 다음 팝업 설정
   useEffect(() => {
     if (nowPopup.num === '1-12') {
       mutate({

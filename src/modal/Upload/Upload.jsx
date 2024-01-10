@@ -65,7 +65,7 @@ const Upload = ({
 }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
-  const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
+  const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입 (1,2,3)
 
   const fileInputRef = useRef(null)
   const [selectedFile, setSelectedFile] = useState(null)
@@ -85,6 +85,7 @@ const Upload = ({
   // 팝업 타입 최신화
   useEffect(() => {
     const firstType = nowPopup.num.split('-')[0]
+    console.log('firstType', firstType)
     setNowPopupType(firstType)
   }, [nowPopup, nowPopupType])
 

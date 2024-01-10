@@ -88,7 +88,7 @@ const WinningDetail = ({ detailRow }) => {
 
   console.log('detailParams', detailParams)
 
-  // Todo : 경매 낙찰 관리 상세 get 작업 예정
+  // Todo : 경매 낙찰 관리 상세 get 작업 예정 !
   // const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getDetailProgress', getWinning)
   // const resData = data?.data?.data?.list
 
