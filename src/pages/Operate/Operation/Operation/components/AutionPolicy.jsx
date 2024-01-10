@@ -46,7 +46,7 @@ const AutionPolicy = () => {
             num: '2-1',
             title: '저장하시겠습니까?',
             next: '1-12',
-            func: () => save()
+            func: save
         })
     }
 

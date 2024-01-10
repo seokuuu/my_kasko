@@ -1,6 +1,6 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { client } from '../index'
-import { queryClient } from '../query'
+import {useMutation, useQuery} from '@tanstack/react-query'
+import {client} from '../index'
+import {queryClient} from '../query'
 
 const urls = {
   policy: 'policy',
@@ -21,23 +21,31 @@ const OPERATE_KEYS = {
 /* ==============================
     운영 관리 - 이용 약관
 ============================== */
-export function getPolicy(data) {
-  return client.get(`${urls.policy}?type=${data}`)
+const POLICY_KEYS = {
+  getPolicy: ['policy', 'list'],
+  postPolicy: ['policy', 'update']
 }
 
-export function postPolicy(data) {
-  return client.post(urls.policy, data)
+export function usePolicyQuery(data) {
+  return useQuery({
+    queryKey: [...POLICY_KEYS.getPolicy, data],
+    queryFn: async () => {
+      return await client.get(`${urls.policy}?type=${data}`);
+    }
+  })
 }
 
 // 약관 수정
-export function usePolicyMutation() {
+export function usePolicyMutation(type) {
   return useMutation({
-    mutationKey: 'getPolicy',
+    mutationKey: POLICY_KEYS.postPolicy,
     mutationFn: async function (params) {
-      postPolicy(params)
+      return client.post(urls.policy, params)
     },
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: 'getPolicy' })
+      queryClient.invalidateQueries({
+        queryKey: [...POLICY_KEYS.getPolicy, type]
+      })
     },
     onError() {
       alert('저장에 실패하였습니다.')
