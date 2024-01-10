@@ -43,6 +43,7 @@ import InventoryFind from '../../modal/Multi/InventoryFind'
 import { getCustomerFind } from '../../service/admin/Auction'
 import { getSPartList } from '../../api/search'
 import Table from '../Table/Table'
+import PagingComp from '../../components/paging/PagingComp'
 
 const Order = ({}) => {
   const [checkSalesStart, setCheckSalesStart] = useState('') // 경매일자 시작
@@ -190,7 +191,7 @@ const Order = ({}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/order?pageNum=1&pageSize=30`)
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/order?pageNum=1&pageSize=10`)
         const data = await response.json()
         const transformedData = data.data.list.map((item) => ({
           auctionNumber: item.auctionNumber,
@@ -469,7 +470,7 @@ const Order = ({}) => {
           gridOptions={gridOptions}
           size={3}
         />
-        {/* <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
           <PagingComp
             currentPage={currentPage}
             totalPage={totalPage}
@@ -479,7 +480,7 @@ const Order = ({}) => {
             goToLastPage={goToLastPage}
             goToStartOfRange={goToStartOfRange}
           />
-        </div> */}
+        </div>
         <TCSubContainer>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn>입금 취소</WhiteRedBtn>
