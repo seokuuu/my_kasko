@@ -59,7 +59,7 @@ export const UserManageCustomerManageFieldsCols = [
 
 // 사용자 목적지 관리 fields
 export const UserManageCustomerDestinationManageFields = {
-  'uid': 'uid',
+  '목적지 고유 번호': 'uid',
   '고객 코드': 'code',
   대표: 'represent',
   '목적지 코드': 'destinationCode',
@@ -79,8 +79,8 @@ export const UserManageCustomerDestinationManageFieldsCols = [
     maxWidth: 90,
     cellRenderer: BtnCellRenderer,
     cellRendererParams: {
-      uidFieldName: 'uid',
-      editType: 'userdestination',
+      uidFieldName: '목적지 고유 번호',
+      editType: 'destination',
     },
   },
   {
