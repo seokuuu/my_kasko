@@ -5,7 +5,7 @@ import SubHeader from '../../../components/Header/SubHeader'
 import Terms from './Terms'
 import { useEffect, useState } from 'react'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { getPolicy } from '../../../service/user/customerService'
+import { getPolicy } from '../../../api/customerService'
 
 const TermsPage = () => {
   const depth2Color = '이용약관'

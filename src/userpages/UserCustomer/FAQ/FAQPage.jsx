@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getFaqList } from '../../../service/user/customerService'
+import { getFaqList } from '../../../api/customerService'
 import FAQ from './FAQ'
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
@@ -18,8 +18,7 @@ const FAQPage = () => {
   const { isLoading, isError, data: getFaqListRes, isSuccess } = useReactQuery(param, 'getFaqList', getFaqList)
 
   useEffect(() => {
-    if (getFaqListRes && getFaqListRes.data && getFaqListRes.data.data)
-      setFaqList(getFaqListRes.data.data.list)
+    if (getFaqListRes && getFaqListRes.data && getFaqListRes.data.data) setFaqList(getFaqListRes.data.data.list)
   }, [isSuccess, getFaqListRes])
 
   return (
