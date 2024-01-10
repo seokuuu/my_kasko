@@ -2,9 +2,9 @@
     배차기사 API
 ============================== */
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { client } from '../index'
-import { QueryClient } from '@tanstack/react-query'
+import { queryClient } from '../query'
 
 const DRIVER_URL = '/driver'
 
@@ -53,7 +53,6 @@ export async function driverCarNumberValidQuery(number) {
 
 // 등록
 export function useDriverCreateMutation() {
-  const queryClient = useQueryClient()
   return useMutation({
     mutationKey: QUERY_KEY.create,
     mutationFn: async function (params) {
@@ -71,7 +70,6 @@ export function useDriverCreateMutation() {
 
 // 수정
 export function useDriverUpdateMutation() {
-  const queryClient = useQueryClient()
   return useMutation({
     mutationKey: QUERY_KEY.update,
     mutationFn: async function (params) {
@@ -91,7 +89,6 @@ export function useDriverUpdateMutation() {
 
 // 삭제
 export function useDriverRemoveMutation() {
-  const queryClient = useQueryClient()
   return useMutation({
     mutationKey: QUERY_KEY.remove,
     mutationFn: async function (id) {
