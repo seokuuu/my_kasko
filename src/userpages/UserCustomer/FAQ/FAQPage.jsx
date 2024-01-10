@@ -50,7 +50,12 @@ const FAQPage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <FAQ handleTablePageSize={handleTablePageSize} faqList={faqList} faqPagination={faqPagination} onPageChange={onPageChange} />
+            <FAQ
+              handleTablePageSize={handleTablePageSize}
+              faqList={faqList}
+              faqPagination={faqPagination}
+              onPageChange={onPageChange}
+            />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>
