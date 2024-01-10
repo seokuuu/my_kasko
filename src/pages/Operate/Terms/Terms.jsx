@@ -41,31 +41,24 @@ const Terms = () => {
     if (isSuccess && isObject(resData)) return setResData(resData)
   }, [data, type, isSuccess])
 
-
-  // 팝업 초기 설정
-  useEffect(() => {
+  const handleSubmit = () => {
+    setResData((prev) => ({ ...prev, uid: prev.uid }))
+    setPopupSwitch(true)
     setNowPopupType(2)
     setNowPopup({
       num: '2-1',
       title: '저장하시겠습니까?',
       next: '1-12',
-      func() {},
+      func: () => save()
     })
-  }, [])
+  }
 
-  useEffect(() => {
-    if (nowPopup.num === '1-12') {
-      mutate({
-        uid: resData.uid,
-        type: resData.type,
-        content: resData.content,
-      })
-    }
-  }, [nowPopup])
-
-  const handleSubmit = () => {
-    setResData((prev) => ({ ...prev, uid: prev.uid }))
-    setPopupSwitch(true)
+  const save = () => {
+    mutate({
+      uid: resData.uid,
+      type: resData.type,
+      content: resData.content,
+    })
   }
 
   return (
