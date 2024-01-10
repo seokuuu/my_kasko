@@ -350,6 +350,7 @@ export const TableContianer = styled.div`
   border: 1px solid #c8c8c8;
   padding: 30px;
   padding-top: 10px;
+  padding-bottom: 50px;
   background-color: #fcfcfc;
 `
 
@@ -424,7 +425,7 @@ export const TableBottomWrap = styled.div`
   display: flex;
   width: 100%;
   justify-content: center;
-  margin-top: 15px;
+  margin-top: 50px;
   button {
     margin-left: auto;
     margin-right: auto;

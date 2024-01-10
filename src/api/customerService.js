@@ -1,4 +1,4 @@
-import { client } from '../../api'
+import { client } from '.'
 
 const faqEndpoint = '/faq'
 const policyEndpoint = '/policy'

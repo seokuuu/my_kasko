@@ -5,7 +5,8 @@ const urls = {
   storage:'/search/storage',
   spart:'/search/spart',
   destination:'/search/destination',
-  destinationDiv:'/search/destination-div'
+  destinationDiv:'/search/destination-div',
+  spec:'/search/spec'
 }
 
 // 창고 리스트
@@ -39,4 +40,12 @@ export function getDestinationFind(){
   const response = client.get(`${urls.destination}`)
 
   return response
+}
+
+// 규격 약호 리스트
+
+export async function getSpecList() {
+  const response = await client.get(`${urls.spec}`)
+  console.log('RES',response)
+  return response.data.data
 }

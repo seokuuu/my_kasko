@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { QueryClient } from '@tanstack/react-query'
+import { QueryClient, useQueryClient } from '@tanstack/react-query'
 import moment from 'moment'
 import { useEffect, useRef, useState } from 'react'
 import { BlackBtn, GreyBtn } from '../../../../common/Button/Button'
@@ -51,6 +51,8 @@ import { getCustomerFind } from '../../../../service/admin/Auction'
 import { KilogramSum } from '../../../../utils/KilogramSum'
 import { Filtering } from '../../../../utils/filtering'
 import Table from '../../../Table/Table'
+import PagingComp from '../../../../components/paging/PagingComp'
+import TableTest from '../../../Table/TableTest'
 
 const Inventory = ({}) => {
   const checkStores = ['전체', '미 입고', '입고 대기', '입고 확정', '입고 확정 취소']
@@ -101,7 +103,7 @@ const Inventory = ({}) => {
   const [checkData5, setCheckData5] = useState(Array.from({ length: checkShipments.length }, () => ''))
 
   console.log('checkData1 :', checkData1)
-  const queryClient = new QueryClient()
+  const queryClient = useQueryClient()
 
   // SELECT 데이터
   const [selected, setSelected] = useState({ storage: '', sPart: '' })
@@ -152,11 +154,9 @@ const Inventory = ({}) => {
     if (filteredList === undefined) {
       resData && setFilteredList(resData)
     }
-    console.log('여기에 데이터', filteredList)
   }, [filteredList])
 
   useEffect(() => {
-    console.log('들어와 데이터:', filteredList)
     if (!isSuccess && !filteredList) return null
     if (Array.isArray(filteredList)) {
       setGetRow(add_element_field(filteredList, InvertoryFields))
@@ -172,12 +172,6 @@ const Inventory = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData1(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check1])
 
   useEffect(() => {
@@ -188,12 +182,6 @@ const Inventory = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData2(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check2])
 
   useEffect(() => {
@@ -204,12 +192,6 @@ const Inventory = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData3(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check3])
 
   useEffect(() => {
@@ -220,12 +202,6 @@ const Inventory = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData4(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check4])
 
   useEffect(() => {
@@ -236,29 +212,8 @@ const Inventory = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData5(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check5])
 
-  // useEffect(() => {
-  //   setNowPopupType(2)
-  //   setDestinationPopUp({
-  //     num: '2-1',
-  //     title: '저장하시겠습니까?',
-  //     next: '1-12',
-  //   })
-  // }, [])
-
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
   const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
@@ -317,10 +272,10 @@ const Inventory = ({}) => {
       destinationName: destinationData.name,
       customerCode: customerData.code,
       customerName: customerData.name,
-      saleCategoryList: checkData1, //판매구분
-      receiptStatusList: checkData3, //입고상태목록
-      orderStatusList: checkData2, //주문상태구분
-      shipmentStatusList: checkData5, //출하상태구분
+      saleCategoryList: checkData1.join(','), //판매구분
+      receiptStatusList: checkData3.join(','), //입고상태목록
+      orderStatusList: checkData2.join(','), //주문상태구분
+      shipmentStatusList: checkData5.join(','), //출하상태구분
       auctionStartDate: checkSalesStart ? moment(checkSalesStart).format('YYYY-MM-DD HH:mm:ss') : '',
       auctionEndDate: checkSalesEnd && moment(checkSalesEnd).format('YYYY-MM-DD HH:mm:ss'),
       orderStartDate: Start2 && moment(Start2).format('YYYY-MM-DD HH:mm:ss'),
@@ -340,6 +295,7 @@ const Inventory = ({}) => {
       return res.data?.data.list
     })
   }
+
   return (
     <FilterContianer>
       <FilterHeader>
@@ -591,9 +547,16 @@ const Inventory = ({}) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>{/* <SwitchBtn>입고 확정</SwitchBtn> */}</div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} setChoiceComponent={() => {}} size={Number(size)} />
+        <div>
+          <TableTest
+            getCol={getCol}
+            getRow={getRow}
+            pagination={pagination}
+            setChoiceComponent={() => {}}
+            size={Number(size)}
+          />
+        </div>
       </TableContianer>
-
       {customerPopUp && <InventoryFind title={'고객사 찾기'} setSwitch={setCustomerPopUp} data={inventoryCustomer} />}
       {destinationPopUp && (
         <InventoryFind title={'목적지 찾기'} setSwitch={setDestinationPopUp} data={inventoryDestination} />

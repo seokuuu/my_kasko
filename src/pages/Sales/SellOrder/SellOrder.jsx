@@ -1,5 +1,5 @@
-import { useAtom } from 'jotai'
-import { useRef, useState } from 'react'
+import { useAtom, useAtomValue } from 'jotai'
+import { useEffect, useRef, useState } from 'react'
 import { GreyBtn, SkyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import Excel from '../../../components/TableInner/Excel'
@@ -24,17 +24,26 @@ import {
   Tilde,
 } from '../../../modal/External/ExternalFilter'
 import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
-
 import Hidden from '../../../components/TableInner/Hidden'
 import { UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
 import Table from '../../Table/Table'
-
 import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import { CheckBox } from '../../../common/Check/Checkbox'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import { selectedRowsAtom } from '../../../store/Layout/Layout'
+import { getSaleProductList } from '../../../api/saleProduct'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { saleProductListFieldsCols, saleProductListResponseToTableRowMap } from '../../../constants/admin/saleProduct'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { KilogramSum } from '../../../utils/KilogramSum'
+import { formatWeight } from '../../../utils/utils'
 
 const SellOrder = ({ setChoiceComponent }) => {
+  const [param, setParam] = useState({
+    pageNum: 1,
+    pageSize: 10,
+  })
+  const checkBoxSelect = useAtomValue(selectedRowsAtom)
   const checkSales = ['전체', '확정 전송', '확정전송 대기']
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
   const handleSelectChange = (selectedOption, name) => {
@@ -44,7 +53,27 @@ const SellOrder = ({ setChoiceComponent }) => {
     // }));
   }
   const [isRotated, setIsRotated] = useState(false)
+  const {
+    isLoading,
+    isError,
+    data: getSaleProductListRes,
+    isSuccess,
+  } = useReactQuery(param, 'getSaleProductList', getSaleProductList)
 
+  const [saleProductListData, setSaleProductListData] = useState(null)
+  const [saleProductPagination, setSaleProductPagination] = useState([])
+  useEffect(() => {
+    console.log('getSaleProductListRes---', getSaleProductListRes)
+    if (getSaleProductListRes && getSaleProductListRes.data && getSaleProductListRes.data.data) {
+      setSaleProductListData(formatTableRowData(getSaleProductListRes.data.data.list))
+      setSaleProductPagination(getSaleProductListRes.data.data.pagination)
+      console.log('getSaleProductListRes.data.data.pagination---', getSaleProductListRes.data.data.pagination)
+    }
+  }, [isSuccess, getSaleProductListRes])
+
+  const formatTableRowData = (rowData) => {
+    return add_element_field(rowData, saleProductListResponseToTableRowMap)
+  }
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
@@ -74,6 +103,13 @@ const SellOrder = ({ setChoiceComponent }) => {
   const tableField = useRef(UserPageUserPreferFieldsCols)
   const getCol = tableField.current
   const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+    }))
+  }
 
   return (
     <FilterContianer>
@@ -180,27 +216,29 @@ const SellOrder = ({ setChoiceComponent }) => {
           </FilterSubcontianer>
         )}
       </div>
-
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
+            조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
+            {saleProductPagination?.listCount}개 )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown handleDropdown={handleTablePageSize} />
             <Excel />
           </div>
         </TCSubContainer>
         <TCSubContainer>
           <div>
-            선택 중량<span> 2 </span>kg / 총 중량 kg
+            선택 중량
+            <span> {formatWeight(KilogramSum(checkBoxSelect))} </span>
+            kg / 총 중량 {formatWeight(saleProductPagination.totalWeight)} kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn>주문 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} setChoiceComponent={setChoiceComponent} />
+        <Table getCol={saleProductListFieldsCols} getRow={saleProductListData} />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
