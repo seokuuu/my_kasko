@@ -22,7 +22,6 @@ const FAQPage = () => {
   useEffect(() => {
     if (getFaqListRes && getFaqListRes.data && getFaqListRes.data.data) {
       setFaqList(getFaqListRes.data.data.list)
-      console.log('getFaqListRes---', getFaqListRes)
       setFaqPagination(getFaqListRes.data.data.pagination)
     }
   }, [isSuccess, getFaqListRes])

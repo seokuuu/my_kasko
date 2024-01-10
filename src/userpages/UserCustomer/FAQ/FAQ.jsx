@@ -54,8 +54,6 @@ const FAQ = ({ faqList, faqPagination, onPageChange, handleTablePageSize }) => {
     navigate(`/userpage/userfaq/${faqUid}`)
   }
 
-
-
   return (
     <FilterContianer>
       <FilterHeader>
