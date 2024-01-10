@@ -816,9 +816,6 @@ const ProfileEdit = () => {
           </OnePageFlexSubContainer>
         </div>
         <BtnWrap style={{ height: '120px' }}>
-          <WhiteBtn width={40} height={40} type="button">
-            돌아가기
-          </WhiteBtn>
           <BlackBtn width={40} height={40} type="submit">
             저장
           </BlackBtn>
