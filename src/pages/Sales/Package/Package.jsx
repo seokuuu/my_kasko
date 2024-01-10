@@ -41,7 +41,7 @@ import Table from '../../../pages/Table/Table'
 import { add_element_field } from '../../../lib/tableHelpers'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { getPackageProductList } from '../../../api/packageProduct.js'
-import { packageFieldsCols, packageResponseToTableRowMap } from '../../../constants/admin/packageProduct.js'
+import { packageFieldsCols, packageResponseToTableRowMap } from '../../../constants/admin/packageProducts.js'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { formatWeight } from '../../../utils/utils'
 
