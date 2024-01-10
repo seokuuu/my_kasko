@@ -1,15 +1,13 @@
-import { useEffect, useState } from 'react'
-import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { useAtomValue } from 'jotai'
+import { useMemo, useState } from 'react'
+import { BlackBtn, GreyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { CheckBox } from '../../../common/Check/Checkbox'
 import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import Test3 from '../../../pages/Test/Test3'
-import { toggleAtom } from '../../../store/Layout/Layout'
-
-import { CheckBox } from '../../../common/Check/Checkbox'
-
+import { add_element_field } from '../../../lib/tableHelpers'
 import {
   AlertImg,
   DoubleWrap,
@@ -25,51 +23,100 @@ import {
   GridWrap,
   Input,
   MiniInput,
-  PartWrap,
   PWRight,
+  PartWrap,
   ResetImg,
   RowWrap,
-  TableContianer,
   TCSubContainer,
+  TableContianer,
   Tilde,
 } from '../../../modal/External/ExternalFilter'
-
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
-
+import { useUserOrderCancelMutaion, useUserOrderListQuery } from '../../../api/user'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
+import { userOrderListField, userOrderListFieldsCols } from '../../../constants/user/order'
+import Table from '../../../pages/Table/Table'
 
+/**
+ * 상시판매 주문확인 목록
+ * @description
+ * [1] 주문 목록을 조회합니다.
+ * [2] 선택 항목을 주문취소 합니다.
+ */
 const Order = ({}) => {
+  // API 파라미터
+  const [searchParam, setSearchParam] = useState({ pageNum: 1, pageSize: 50 }); // 테이블 조회 파라미터
+  // API
+  const { data: orderData, isLoading, isError } = useUserOrderListQuery(searchParam); // 주문확인 목록 조회 쿼리
+  const { mutate: requestCancel, loading: isCancelLoading } = useUserOrderCancelMutaion(); // 주문취소 뮤테이션
+  // 테이블 데이터
+  const tableDisplayData = useMemo(() => {
+    if(!orderData || !orderData.list) {
+      return [];
+    }
+    const rowData = orderData.list;
+    const displayData = add_element_field(rowData.map((v, idx) => ({...v, index: idx + 1})), userOrderListField);
+    return displayData;
+  }, [orderData]); // 테이블 노출 데이터
+  // 선택 항목
+  const selectedData = useAtomValue(selectedRowsAtom);
+  // 갯수
+  const totalCount = useMemo(() => (orderData && orderData.pagination)? orderData.pagination.listCount || 0 : 0 , [orderData]);
+  // 중량
+  const totalWeight = useMemo(() => (orderData && orderData.pagination)? orderData.pagination.totalWeight || 0 : 0 , [orderData]); // 총 중량
+  const selectedTotalWeight = useMemo(() => {
+    if(!selectedData || selectedData.length < 1) {
+      return 0;
+    }
+    const sums = selectedData.reduce((sum, item) => item['총 중량']? sum + Number(item['총 중량']) : 0, 0);
+    return sums;
+  }, [selectedData]); // 총 선택 항목 중량
+
+  /**
+   * 필터 핸들러
+   * @param {object} param 파라미터 객체
+   */
+  function handleSearchParamChange(newParam) {
+    setSearchParam(prevParam => ({
+      ...prevParam,
+      ...newParam,
+      ...(!newParam['page']&& { page: 1 })
+    }));
+  }
+  
+  /**
+   * 조회갯수 변경 핸들러
+   * @param {number} searchSize 1페이지당 조회 갯수 
+   */
+  function handleSearchSizeChange(e) {
+    const newSize = e.target.value;
+    if(newSize !== searchParam.pageSize && !isNaN(newSize)) {
+      handleSearchParamChange({ pageSize: newSize });
+    }
+  }
+
+  /**
+   * 선택 항목 주문 취소 핸들러
+   * @todo 주문취소하기 연동
+   */
+  function handleOrderCancel(e) {
+    e.preventDefault();
+
+    if(!selectedData || selectedData.length < 1) {
+      return alert('주문할 제품을 선택해 주세요.');
+    }
+
+    // requestCancel({});
+  }
+
+  /* ============================== COMMON start ============================== */
+  // CHECKS
   const radioDummy = ['전체', '주문요청', '주문취소', '주문확정']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-
-  const [savedRadioValue, setSavedRadioValue] = useState('')
-  useEffect(() => {
-    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
-
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
-  }, [checkRadio])
-
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
-  const [isRotated, setIsRotated] = useState(false)
-
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated((prevIsRotated) => !prevIsRotated)
-  }
-
-  // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+  // FILTER ON TOGGLE
+  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom);
   const [toggleMsg, setToggleMsg] = useState('On')
   const toggleBtnClick = () => {
     setExfilterToggle((prev) => !prev)
@@ -79,16 +126,34 @@ const Order = ({}) => {
       setToggleMsg('On')
     }
   }
+  // RESET
+  const [isRotated, setIsRotated] = useState(false)
+  const handleImageClick = () => {
+    setIsRotated((prevIsRotated) => !prevIsRotated)
+  }
+  /* ============================== COMMON end ============================== */
 
+  // ERROR SECTION
+  if(isError) {
+    return <div>ERROR</div>
+  }
+
+  // LOADING SECTION
+  if(isLoading) {
+    return <div>Loading</div>
+  }
+
+  // DATA SECTION
   return (
     <FilterContianer>
       <FilterHeader>
         <div style={{ display: 'flex' }}>
           <h1>주문 확인</h1>
         </div>
-        {/* 토글 쓰기 */}
+        {/* 검색필터 ON|OFF */}
         <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
       </FilterHeader>
+      {/* 공지사항 */}
       <FilterHeaderAlert>
         <div style={{ display: 'flex' }}>
           <div style={{ marginRight: '20px' }}>
@@ -99,10 +164,6 @@ const Order = ({}) => {
               · 경매 남은 시간은 본 화면에서 발생되는 메시지 창에 따라 다소 지연될 수 있습니다. 경매 남은 시간을
               최신으로 갱신하려면 다시 조회해 주세요.
             </FilterAlterTxt>
-            <FilterAlterTxt>
-              · 처음 경매 참여하신 고객은 왼쪽 메뉴 경매 관리 {'>'} 고객 목적지 등록 화면에서 배송 목적지를 반드시
-              등록한 후 응찰에 참여해 주시길 부탁드립니다.
-            </FilterAlterTxt>
           </div>
         </div>
         <AlertImg>
@@ -110,6 +171,7 @@ const Order = ({}) => {
           <img style={{ marginLeft: '10px' }} src="/img/setting.png" />
         </AlertImg>
       </FilterHeaderAlert>
+      {/* 검색 필터 */}
       {exFilterToggle && (
         <>
           <FilterSubcontianer>
@@ -123,7 +185,6 @@ const Order = ({}) => {
                 </PartWrap>
                 <PartWrap>
                   <h6>매입처</h6>
-
                   <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
                 </PartWrap>
                 <PartWrap>
@@ -228,32 +289,29 @@ PartWrap first : Row의 제일 앞에 오는 Part (제목 width 고정용) */}
           </FilterFooter>
         </>
       )}
+      {/* 테이블 */}
       <TableContianer>
+        {/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
+            조회 목록 (선택 <span>{ selectedData? selectedData.length.toLocaleString() : 0}</span> / {totalCount.toLocaleString()}개 )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
-            <Excel />
+            <PageDropdown handleDropdown={handleSearchSizeChange} />
+            <Excel getRow={tableDisplayData} />
           </div>
         </TCSubContainer>
+        {/* 선택항목 중량 | 주문 취소 */}
         <TCSubContainer>
           <div>
-            선택 중량<span> 2 </span>kg / 총 중량 kg
+            선택중량 <span> {selectedTotalWeight.toLocaleString()} </span> (kg) / 총 중량 {totalWeight.toLocaleString()} (kg)
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>주문 취소</WhiteRedBtn>
+            <WhiteRedBtn onClick={handleOrderCancel} disabled={isCancelLoading}>주문 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
-        <TCSubContainer>
-          <div></div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <SkyBtn>입금확인</SkyBtn>
-          </div>
-        </TCSubContainer>
+        <Table getRow={tableDisplayData} getCol={userOrderListFieldsCols} />
       </TableContianer>
     </FilterContianer>
   )
