@@ -25,7 +25,7 @@ import CustomPagination from '../../../components/pagination/CustomPagination'
 
 const initData = {
   pageNum: 1,
-  pageSize: 50,
+  pageSize: 3,
   driverName: '',
   carNumber: '',
   carType: '',
