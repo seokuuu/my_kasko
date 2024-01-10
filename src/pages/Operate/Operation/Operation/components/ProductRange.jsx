@@ -42,7 +42,7 @@ const ProductRange = () => {
   const [detailsId, setDetailsId] = useState(0)
 
   // 제품군 관리 목록 API
-  const { data } = useProductRangeListQuery(search)
+  const { data, refetch } = useProductRangeListQuery(search)
 
   // 제품군 상세 API
 
@@ -85,6 +85,13 @@ const ProductRange = () => {
     [data],
   )
 
+  // 테이블 데이터 리스트 값 설정
+  useEffect(() => {
+    if (mappingData) {
+      setRows(add_element_field(mappingData, ProductRangeFields))
+    }
+  }, [mappingData])
+
   // 등록
   function productRegister() {
     register({ spart })
@@ -112,16 +119,11 @@ const ProductRange = () => {
       func() {
         if (selected && selected.length !== 0) {
           remove(selected.map((s) => s['고유값']))
+          refetch()
         }
       },
     })
   }
-  // 테이블 데이터 리스트 값 설정
-  useEffect(() => {
-    if (mappingData) {
-      setRows(add_element_field(mappingData, ProductRangeFields))
-    }
-  }, [mappingData])
 
   // 상세 데이터값 조회 및 모달 창 오픈
   useEffect(() => {
