@@ -8,7 +8,7 @@ import UserSideBar from '../../../components/Left/UserSideBar'
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getFaqDetail } from '../../../service/user/customerService'
+import { getFaqDetail } from '../../../api/customerService'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { formatDateString } from '../../../utils/utils'
 
