@@ -324,7 +324,9 @@ const OperateClaimRegister = ({ pageType }) => {
                 width={40}
                 height={40}
                 style={{ marginRight: '10px' }}
-                onClick={() => navigate('/operate/common/product')}
+                onClick={() => {
+                  pageType === 'register' ? navigate('/operate/common/product') : navigate(-1)
+                }}
               >
                 돌아가기
               </WhiteBtn>

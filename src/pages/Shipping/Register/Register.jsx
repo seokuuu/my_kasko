@@ -1,151 +1,115 @@
 import React, { Fragment, useState } from 'react'
-import { storageOptions } from '../../../common/Option/SignUp'
 
 import { BlackBtn, GreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
 import Test3 from '../../Test/Test3'
 
 import {
-  DoubleWrap,
   FilterContianer,
-  FilterFooter,
-  FilterHeader,
   FilterLeft,
   FilterRight,
   FilterSubcontianer,
-  GridWrap,
-  Input,
-  PartWrap,
-  PWRight,
-  ResetImg,
   RowWrap,
   TableContianer,
   TCSubContainer,
-  Tilde,
-  ExCheckWrap,
-  ExCheckDiv,
-  ExInputsWrap,
-  CustomInput,
 } from '../../../modal/External/ExternalFilter'
 
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
 
 import Hidden from '../../../components/TableInner/Hidden'
+import { useShipmentListQuery } from '../../../api/shipment'
+import {
+  DestinationSearch,
+  CustomerSearch,
+  DateSearchSelect,
+  SpartSelect,
+  StorageSelect,
+  ProductNumberListSearch,
+} from '../../../components/Search'
+import { GlobalFilterHeader, GlobalFilterFooter } from '../../../components/Filter'
+import { useAtomValue } from 'jotai'
+import GlobalFilterContainer from '../../../components/Filter/GlobalFilterContainer'
+
+const initData = {
+  pageNum: 1,
+  pageSize: 50,
+  shipmentStatus: '출하 대기',
+  storage: '',
+  spart: '',
+  customerCode: '',
+  customerName: '',
+  destinationCode: '',
+  destinationName: '',
+  orderStartDate: '',
+  orderEndDate: '',
+  productNumberList: '',
+}
 
 const Register = ({}) => {
+  const [param, setParam] = useState(initData)
+  const { data, refetch } = useShipmentListQuery(param)
+
+  // search change
+  const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value }))
+
+  // reset event
+  const onReset = async () => {
+    await setParam(initData)
+    await refetch()
+  }
+
   const titleData = ['제품 중량(kg)', '제품 공급가액', '운반비 공급가액']
   const contentData = ['986,742', '986,742', '986,742']
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
-  const [isRotated, setIsRotated] = useState(false)
 
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated((prevIsRotated) => !prevIsRotated)
-  }
-
-  // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-  const [toggleMsg, setToggleMsg] = useState('On')
-  const toggleBtnClick = () => {
-    setExfilterToggle((prev) => !prev)
-    if (exFilterToggle === true) {
-      setToggleMsg('Off')
-    } else {
-      setToggleMsg('On')
-    }
-  }
+  console.log(param)
 
   return (
     <FilterContianer>
-      <FilterHeader>
-        <h1>출하지시 등록</h1>
-        {/* 토글 쓰기 */}
-        <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
-      </FilterHeader>
-
-      {exFilterToggle && (
-        <>
-          <FilterSubcontianer>
-            <FilterLeft>
-              <RowWrap none>
-                <PartWrap first>
-                  <h6>창고 구분</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>고객사 명/고객사코드</h6>
-                  <Input />
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap>
-                <PartWrap first>
-                  <h6>목적지</h6>
-                  <CustomInput width={160} height={36} />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap style={{ borderBottom: '0px' }}>
-                <PartWrap first>
-                  <h6>주문 일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
-                </PartWrap>
-
-                <PartWrap first>
-                  <h6>구분</h6>
-                  <PWRight>
-                    <MainSelect />
-                  </PWRight>
-                </PartWrap>
-              </RowWrap>
-            </FilterLeft>
-            <FilterRight>
-              <DoubleWrap>
-                <h6>제품 번호 </h6>
-                <textarea
-                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                />
-              </DoubleWrap>
-            </FilterRight>
-          </FilterSubcontianer>
-          <FilterFooter>
-            <div style={{ display: 'flex' }}>
-              <p>초기화</p>
-              <ResetImg
-                src="/img/reset.png"
-                style={{ marginLeft: '10px', marginRight: '20px' }}
-                onClick={handleImageClick}
-                className={isRotated ? 'rotate' : ''}
+      {/* header */}
+      <GlobalFilterHeader title={'출하지시 등록'} />
+      {/* container */}
+      <GlobalFilterContainer>
+        <FilterSubcontianer>
+          <FilterLeft>
+            <RowWrap none>
+              <StorageSelect value={param.storage} onChange={(e) => onChange('storage', e.label)} />
+              <CustomerSearch
+                name={param.customerName}
+                code={param.customerCode}
+                setName={(value) => onChange('customerName', value)}
+                setCode={(value) => onChange('customerCode', value)}
               />
-            </div>
-            <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40}>
-                검색
-              </BlackBtn>
-            </div>
-          </FilterFooter>
-        </>
-      )}
+            </RowWrap>
+            <RowWrap>
+              <DestinationSearch
+                name={param.destinationName}
+                code={param.destinationCode}
+                setName={(value) => onChange('destinationName', value)}
+                setCode={(value) => onChange('destinationCode', value)}
+              />
+            </RowWrap>
+            <RowWrap style={{ borderBottom: '0px' }}>
+              <DateSearchSelect
+                title={'주문 일자'}
+                startInitDate={param.orderStartDate}
+                endInitDate={param.orderEndDate}
+                startDateChange={(value) => onChange('startDate', value)}
+                endDateChange={(value) => onChange('endDate', value)}
+              />
+              <SpartSelect value={param.spart} onChange={(e) => onChange('spart', e.label)} />
+            </RowWrap>
+          </FilterLeft>
+          <FilterRight>
+            <ProductNumberListSearch
+              value={param.productNumberList}
+              onChange={(e) => onChange('productNumberList', e.target.value)}
+            />
+          </FilterRight>
+        </FilterSubcontianer>
+      </GlobalFilterContainer>
+      {/* footer */}
+      <GlobalFilterFooter reset={onReset} onSearch={refetch} />
+
       <TableWrap>
         <ClaimTable>
           {[0].map((index) => (
@@ -178,7 +142,7 @@ const Register = ({}) => {
             <WhiteSkyBtn>출하 지시</WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        {/*<Test3 />*/}
       </TableContianer>
     </FilterContianer>
   )
