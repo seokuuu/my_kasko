@@ -350,6 +350,7 @@ export const TableContianer = styled.div`
   border: 1px solid #c8c8c8;
   padding: 30px;
   padding-top: 10px;
+  padding-bottom: 50px;
   background-color: #fcfcfc;
 `
 
