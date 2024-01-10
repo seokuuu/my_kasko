@@ -62,6 +62,7 @@ const Register = ({}) => {
   const contentData = ['986,742', '986,742', '986,742']
 
   console.log(param)
+  console.log(data)
 
   return (
     <FilterContianer>
@@ -128,7 +129,7 @@ const Register = ({}) => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
+            조회 목록 (선택 <span>2</span> / {2}개 )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}></div>
