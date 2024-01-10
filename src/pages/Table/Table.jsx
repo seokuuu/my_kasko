@@ -5,6 +5,7 @@ import { AgGridReact } from 'ag-grid-react'
 import { useAtom } from 'jotai'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { styled } from 'styled-components'
 import { BlackBtn, GreyBtn } from '../../common/Button/Button'
 import {
   BlueBarBtnWrap,
@@ -14,20 +15,43 @@ import {
   NonFadeOverlay,
   WhiteCloseBtn,
 } from '../../modal/Common/Common.Styled'
-import { blueModalAtom, doubleClickedRowAtom, selectedRowsAtom } from '../../store/Layout/Layout'
-import { FSResult, FSTitle, FindSpec, Pagination, RBInput, TestContainer } from './tableStyle'
-import { columnDefs } from './tableColVariable'
+import { blueModalAtom, doubleClickedRowAtom, pageSort, selectedRowsAtom } from '../../store/Layout/Layout'
 import './TableUi.css'
+
+// import TableStyle from './Table.module.css'
+
+// import { get } from 'lodash'
+// import BtnCellRenderer from './BtnCellRenderer'
+
+var dateFilterParams = {
+  comparator: (filterLocalDateAtMidnight, cellValue) => {
+    var cellDate = asDate(cellValue)
+    if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
+      return 0
+    }
+    if (cellDate < filterLocalDateAtMidnight) {
+      return -1
+    }
+    if (cellDate > filterLocalDateAtMidnight) {
+      return 1
+    }
+    return 0
+  },
+}
 
 var ageType = 'everyone'
 var minAge = null
 var maxAge = null
 var countryFilter = null
 
+const asDate = (dateAsString) => {
+  var splitFields = dateAsString.split('/')
+  return new Date(Number.parseInt(splitFields[2]), Number.parseInt(splitFields[1]) - 1, Number.parseInt(splitFields[0]))
+}
+
 const Table = ({
   hei,
   hei2,
-  rowData,
   getRow,
   getCol,
   setChoiceComponent,
@@ -36,6 +60,7 @@ const Table = ({
   isRowClickable,
   handleOnRowClicked,
 }) => {
+  const [selectedCountry, setSelectedCountry] = useState(null)
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
   const gridRef = useRef()
   const containerStyle = useMemo(() => {
@@ -47,10 +72,108 @@ const Table = ({
   }, [hei2])
 
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
+  const [rowData, setRowData] = useState()
+  const [selectedRowData, setSelectedRowData] = useState(null)
 
+  var checkboxSelection = function (params) {
+    // we put checkbox on the name if we are not doing grouping
+    return params.columnApi.getRowGroupColumns().length === 0
+  }
+
+  var headerCheckboxSelection = function (params) {
+    // we put checkbox on the name if we are not doing grouping
+    return params.columnApi.getRowGroupColumns().length === 0
+  }
+
+  // ---------------------------------------------------------------------
+  const [columnDefs, setColumnDefs] = useState([
+    {
+      field: '고객 코드',
+      minWidth: 180,
+      checkboxSelection: checkboxSelection,
+      headerCheckboxSelection: headerCheckboxSelection,
+    },
+
+    { field: '대표', maxWidth: 80 }, //숫자
+    { field: '목적지 코드' },
+    { field: '목적지 명', maxWidth: 90 },
+    {
+      field: '담당자 연락처',
+    },
+    {
+      field: '하차지 명',
+    },
+    { field: '도착지 연락처' },
+    { field: '상세 주소' },
+    { field: '비고란' },
+  ])
+
+  // const defaultColDef = useMemo(() => {
+  //   return {
+  //     flex: 1,
+  //     minWidth: 120,
+  //     filter: true,
+  //   }
+  // }, [])
+
+  // const dummyD = {
+  //   '고객 코드': 'nope',
+  //   대표: 'nope',
+  //   '목적지 코드': 'nope',
+  //   '목적지 명': 'nope',
+  //   '담당자 연락처': 'nope',
+  //   '하차지 명': 'nope',
+  //   '도착지 연락처': 'nope',
+  //   '상세 주소': 'nope',
+  //   비고란: 'nope',
+  // }
+
+  // const dummyData = Array(300).fill(dummyD)
+
+  // console.log(getCol)
+  useEffect(() => {
+    if (getCol) {
+      setColumnDefs(getCol)
+    }
+    if (getRow && getRow.length > 0) {
+      setRowData(getRow)
+    } else {
+      setRowData(null)
+    }
+  }, [getRow, getCol])
+
+  // ---------------------------------------------------------------------
+
+  const countries = rowData?.map((item) => item.country)
+  const uniqueCountriesSet = new Set(countries)
+  const uniqueCountries = Array.from(uniqueCountriesSet)
+  const sortedCountries = uniqueCountries.sort()
+  // console.log(sortedCountries)
+
+  const externalFilterChanged = useCallback((newValue) => {
+    ageType = newValue
+    gridRef.current.api.onFilterChanged()
+  }, [])
   const isExternalFilterPresent = useCallback(() => {
     // if ageType is not everyone or either minAge or maxAge is set, then we are filtering
     return ageType !== 'everyone' || minAge !== null || maxAge !== null || countryFilter !== null
+  }, [])
+
+  const onMinAgeChange = useCallback((event) => {
+    minAge = event.target.value !== '' ? parseInt(event.target.value) : null
+    gridRef.current.api.onFilterChanged()
+  }, [])
+
+  const onMaxAgeChange = useCallback((event) => {
+    maxAge = event.target.value !== '' ? parseInt(event.target.value) : null
+    gridRef.current.api.onFilterChanged()
+  }, [])
+
+  const onCountryFilterChange = useCallback((event) => {
+    const newCountryFilter = event.target.value.trim()
+    const filters = newCountryFilter.split(/,|\n/).map((filter) => filter.trim()) // 스페이스 요청시 (/,|\n|\s+/) 이걸로 바꾸자.
+    countryFilter = filters.length > 0 ? filters : null
+    gridRef.current.api.onFilterChanged()
   }, [])
 
   const onFindButtonClick = () => {
@@ -66,6 +189,11 @@ const Table = ({
     })
     gridApi.onFilterChanged()
   }
+
+  const handleResultBlockClick = useCallback((country) => {
+    setSelectedCountry(country)
+    setFilterText(country) // 클릭한 국가로 필터 텍스트를 설정합니다
+  }, [])
 
   const [isModal, setIsModal] = useAtom(blueModalAtom)
   const location = useLocation()
@@ -87,17 +215,21 @@ const Table = ({
   const [gridApi, setGridApi] = useState(null)
   const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
   const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
+  const navigate = useNavigate()
 
-  // 일단 router 이동 등록 :: 이게 어떤 기능인지
+  // 일단 router 이동 등록
   const onRowDoubleClicked = (event) => {
+    // const path = event.data['고객 코드']
+    // console.log(event.data)
     setDetailRow(event.data)
     setChoiceComponent(event.data)
+    // navigate(`/userpage/userdestination/${path}`)
+    // console.log('Double clicked row UID: ', event.data)
   }
 
-  // Grid api 설정확인: 사용하는 부모에서 선언
+  // Grid api 설정확인
   const onGridReady = (params) => {
     setGridApi(params.api)
-    params.api.sizeColumnsToFit()
   }
 
   // 체크했을때 jotai 전역상태값 설정
@@ -128,8 +260,6 @@ const Table = ({
       },
     }
   }, [])
-
-  // 분리 필요
   const defaultColDef = useMemo(() => {
     return {
       editable: true,
@@ -144,24 +274,43 @@ const Table = ({
     }
   }, [])
 
-  /* 
-    부모에서 사용할 수 있게 변경. - 여기서는 getRows을 사용해서 데이터 가져오는데, 단순히 부모 컴포넌트에서 useEffect+axios로 데이터 가져와도 상관없음. 
-  */
+  const [sortNum] = useAtom(pageSort)
+
+  const onPageSizeChanged = useCallback(
+    (sortNum) => {
+      console.log(sortNum)
+      gridRef.current.api.paginationSetPageSize(Number(sortNum))
+    },
+    [sortNum],
+  )
+
+  useEffect(() => {
+    if (gridRef?.current?.api?.paginationSetPageSize) {
+      gridRef.current.api.paginationSetPageSize(Number(sortNum))
+    }
+  }, [sortNum])
+
+  //Options
   const gridOptions = {
+    // other grid options
+    // rowModelType: 'serverSide',
+    rowModelType: 'clientSide',
+    // paginationPageSize: size, // 요청할 페이지 사이즈
     cacheBlockSize: 100, // 캐시에 보관할 블록 사이즈
     maxBlocksInCache: 10, // 캐시에 최대로 보관할 블록 수
+    // 서버 측 데이터 요청을 처리하는 함수
     serverSideDatasource: {
       getRows: async function (params) {
-        // 데이터 가져와야 하는 부분.
+        // 백엔드로부터 데이터 가져오기
+        // const response = await fetch('/inventory-ledger?pageNum=1&pageSize=1')
+        // const rowData = await response.json()
+        // console.log(rowData)
+        // ag-Grid에 데이터 설정
+        // params.successCallback(getRow)
       },
     },
-    pagination: true,
-    paginNationPageSize: size,
-    /*     
-    rowModelType: 'serverSide',
-    overlayNoRowsTemplate:
-      '<div style="padding: 20px; border: 2px solid #666; background: #EEF3FB; fontsize: 20px; ">항목이 존재하지 않습니다.</div>', 
-    */
+    // overlayNoRowsTemplate:
+    //   '<div style="padding: 20px; border: 2px solid #666; background: #EEF3FB; fontsize: 20px; ">항목이 존재하지 않습니다.</div>',
   }
   // new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
 
@@ -189,11 +338,11 @@ const Table = ({
       <TestContainer hei={hei}>
         <div style={gridStyle} className="ag-theme-alpine">
           <AgGridReact
+            // {...gridOptions}
             onGridReady={onGridReady}
             columnDefs={columnDefs}
             rowData={rowData}
-            onRowClicked={onRowClicked}
-            // defaultColDef={defaultColDef}
+            defaultColDef={defaultColDef}
             gridOptions={gridOptions}
             ref={gridRef}
             onRowDoubleClicked={onRowDoubleClicked}
@@ -207,17 +356,17 @@ const Table = ({
             pagination={true}
             paginationPageSize={size}
             isExternalFilterPresent={isExternalFilterPresent}
+            // doesExternalFilterPass={doesExternalFilterPass}
             onSelectionChanged={onSelectionChanged}
             pinnedTopRowData={pinnedTopRowData}
+            onRowClicked={onRowClicked}
             getRowStyle={getRowStyle}
-            // {...gridOptions}
-            // doesExternalFilterPass={doesExternalFilterPass}
+
             // sideBar={{ toolPanels: ['columns', 'filters'] }}
           />
         </div>
       </TestContainer>
 
-      {/* 모달 처리하는 부분 */}
       {isModal && (
         <>
           <NonFadeOverlay />
@@ -263,62 +412,74 @@ const Table = ({
 
 export default Table
 
-/**
- * @description function+variable assigned but never used
- */
-
-/*
-  
-  const [selectedCountry, setSelectedCountry] = useState(null)
-  
-  const handleResultBlockClick = useCallback((country) => {
-    setSelectedCountry(country)
-    setFilterText(country) // 클릭한 국가로 필터 텍스트를 설정합니다
-  }, []) 
-  var dateFilterParams = {
-    comparator: (filterLocalDateAtMidnight, cellValue) => {
-      var cellDate = asDate(cellValue)
-      if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
-        return 0
-      }
-      if (cellDate < filterLocalDateAtMidnight) {
-        return -1
-      }
-      if (cellDate > filterLocalDateAtMidnight) {
-        return 1
-      }
-      return 0
-    },
-  } 
-  const asDate = (dateAsString) => {
-    var splitFields = dateAsString.split('/')
-    return new Date(Number.parseInt(splitFields[2]), Number.parseInt(splitFields[1]) - 1, Number.parseInt(splitFields[0]))
+const TestContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: ${({ hei }) => (hei ? `${hei}%` : '100%')};
+  .ag-paging-panel {
+    justify-content: center !important;
   }
+`
 
-  const sortedCountries = uniqueCountries.sort()
+export const TestHeader = styled.div`
+  font-size: 13px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-around;
+  border: 1px solid grey;
+  padding: 10px;
+  border-radius: 5px;
+`
 
-  const externalFilterChanged = useCallback((newValue) => {
-    ageType = newValue
-    gridRef.current.api.onFilterChanged()
-  }, [])
+export const FindSpec = styled.div`
+  width: 100%;
+  height: 300px;
+`
 
-  const uniqueCountries = Array.from(uniqueCountriesSet)
-*/
-/* 
-  const onMinAgeChange = useCallback((event) => {
-    minAge = event.target.value !== '' ? parseInt(event.target.value) : null
-    gridRef.current.api.onFilterChanged()
-  }, [])
+export const FSTitle = styled.div`
+  width: 100%;
+  height: 50px;
+  border: 1px solid #c8c8c8;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 
-  const onMaxAgeChange = useCallback((event) => {
-    maxAge = event.target.value !== '' ? parseInt(event.target.value) : null
-    gridRef.current.api.onFilterChanged()
-  }, [])
+  input {
+    border: 1px solid #c8c8c8;
+    height: 30px;
+    width: 300px;
+  }
+`
 
-  const onCountryFilterChange = useCallback((event) => {
-    const newCountryFilter = event.target.value.trim()
-    const filters = newCountryFilter.split(/,|\n/).map((filter) => filter.trim()) // 스페이스 요청시 (/,|\n|\s+/) 이걸로 바꾸자.
-    countryFilter = filters.length > 0 ? filters : null
-    gridRef.current.api.onFilterChanged()
-  }, []) 
-*/
+export const FSResult = styled.div`
+  width: 100%;
+  height: 295px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 5px;
+  overflow: scroll;
+  border: 1px solid #c8c8c8;
+`
+
+export const ResultBlock = styled.div`
+  width: 24%;
+  height: 50px;
+  border: 1px solid black;
+  cursor: pointer;
+  font-size: 16px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  display: flex;
+
+  &:hover {
+    background-color: #eee;
+  }
+`
+
+export const RBInput = styled.input`
+  font-size: 16px;
+`
+
+export const Pagination = styled.ul``

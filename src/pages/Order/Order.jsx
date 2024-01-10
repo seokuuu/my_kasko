@@ -6,7 +6,6 @@ import Excel from '../../components/TableInner/Excel'
 import HeaderToggle from '../../components/Toggle/HeaderToggle'
 import { invenCustomer, invenCustomerData, pageSort, toggleAtom } from '../../store/Layout/Layout'
 import { selectedRowsAtom } from '../../store/Layout/Layout'
-import { useQueryClient } from '@tanstack/react-query'
 
 import {
   DoubleWrap,
@@ -44,6 +43,7 @@ import { getCustomerFind } from '../../service/admin/Auction'
 import { getSPartList } from '../../api/search'
 import Table from '../Table/Table'
 import PagingComp from '../../components/paging/PagingComp'
+import { OrderManageFieldsCols } from '../../constants/admin/OrderManage'
 
 const Order = ({}) => {
   const [checkSalesStart, setCheckSalesStart] = useState('') // 경매일자 시작
@@ -124,7 +124,6 @@ const Order = ({}) => {
     params.api.sizeColumnsToFit()
   }
   useEffect(() => {
-    console.log('그리드API', gridApi)
     if (gridApi) console.log('그리드API-함수호출', gridApi.getSelectedNodes())
   }, [gridApi])
   const onCellClicked = async (params) => {
@@ -463,24 +462,14 @@ const Order = ({}) => {
           </div>
         </TCSubContainer>
         <Table
-          columnDefs={newColumnDefs}
-          rowData={rowData}
+          getCol={OrderManageFieldsCols}
+          getRow={rowData}
           onGridReady={onGridReady}
           onCellClicked={onCellClicked}
           gridOptions={gridOptions}
           size={3}
         />
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
-          <PagingComp
-            currentPage={currentPage}
-            totalPage={totalPage}
-            onPageChange={onPageChange}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-            goToLastPage={goToLastPage}
-            goToStartOfRange={goToStartOfRange}
-          />
-        </div>
+
         <TCSubContainer>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn>입금 취소</WhiteRedBtn>
