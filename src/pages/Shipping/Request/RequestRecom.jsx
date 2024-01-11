@@ -1,263 +1,150 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { TCSubContainer, FilterContianer, TableContianer } from '../../../modal/External/ExternalFilter'
+import { useShipmentMergeListQuery, useShipmentMergeMutation } from '../../../api/shipment'
+import { GlobalFilterHeader } from '../../../components/Filter'
+import { ShippingRegisterFields, ShippingRegisterFieldsCols } from '../../../constants/admin/Shipping'
+import { aucProAddModalAtom, selectedRowsAtom } from '../../../store/Layout/Layout'
+import { useAtom } from 'jotai'
+import Table from '../../Table/Table'
+import { add_element_field } from '../../../lib/tableHelpers'
+import MergeHeader from './MergeHeader'
+import { calculateTotal, calculateTowDataTotal, getAddNewDestination } from './utils'
+import RequestAddModal from './RequestAddModal'
 
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+const RequestRecom = ({ setChoiceComponent }) => {
+  // Table
+  const tableField = useRef(ShippingRegisterFieldsCols)
+  const getCol = tableField.current
+  const [getRow, setGetRow] = useState('')
+  const [rowChecked, setRowChecked] = useAtom(selectedRowsAtom)
 
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
+  // 모달
+  const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
 
-import {
-  TCSubContainer,
-  FilterContianer,
-  FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-} from '../../../modal/External/ExternalFilter'
-import Hidden from '../../../components/TableInner/Hidden'
-import { TableWrap, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../components/MapTable/MapTable'
+  const { mutate: onCreateMerge } = useShipmentMergeMutation()
+  const { data } = useShipmentMergeListQuery()
+  const [list, setList] = useState([]) // useShipmentMergeListQuery + 직접 추가한 목록
+  const [dockStatus, setDockStatus] = useState(false) // 상차도 여부
+  const [mergeCost, setMergeCost] = useState(0) // 합짐비
+  const [destinations, setDestinations] = useState(new Array(3)) // 목적지
 
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
+  // 목적지 get
+  const getDestinations = () => {
+    const destination = data.map((item) => item?.destinationName)
+    const duplicationDestination = [...new Set(destination)]
 
-const RequestRecom = ({}) => {
-  const titleData = [
-    '제품 중량(kg)',
-    '제품 공급가액',
-    '운반비 공급가액',
-    '제품 중량(kg)',
-    '제품 공급가액',
-    '운반비 공급가액',
-    '제품 중량(kg)',
-    '제품 공급가액',
-    '운반비 공급가액',
-  ]
-  const contentData = [
-    '986,742',
-    '986,742',
-    '986,742',
-    '986,742',
-    '986,742',
-    '986,742',
-    '986,742',
-    '986,742',
-    '986,742',
-  ]
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
-  const [isRotated, setIsRotated] = useState(false)
+    while (duplicationDestination.length < 3) {
+      duplicationDestination.push('-')
+    }
 
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated((prevIsRotated) => !prevIsRotated)
+    setDestinations(duplicationDestination)
   }
 
-  // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-  const [toggleMsg, setToggleMsg] = useState('On')
-  const toggleBtnClick = () => {
-    setExfilterToggle((prev) => !prev)
-    if (exFilterToggle === true) {
-      setToggleMsg('Off')
-    } else {
-      setToggleMsg('On')
+  // 목록 제거
+  const onListRemove = () => {
+    const key = '주문 고유 번호'
+    const deleteKeys = rowChecked.map((item) => item[key])
+    const newSelectors = list.filter((item) => !deleteKeys.includes(item?.orderUid))
+    setList(newSelectors)
+    setRowChecked([]) // 테이블 체크 목록 초기화
+  }
+
+  // 목록 추가 모달 오픈
+  const addListModalOpen = () => setAddModal(true)
+  // 목록 추가 모달 오픈
+  const addListModalClose = () => setAddModal(false)
+
+  // 목록 추가
+  const onListAdd = (selectedData) => {
+    try {
+      const newDestination = getAddNewDestination(rowChecked)
+      setDestinations(newDestination) // 목적지 등록
+      setList((prev) => [...new Set([...prev, ...selectedData])]) // 선별 목록 데이터 등록
+      setRowChecked([]) // 테이블 체크 목록 초기화
+      addListModalClose()
+    } catch (error) {
+      window.alert(error.message)
     }
   }
 
-  const radioDummy = ['독차', '합짐']
-  const radioTableDummy = ['Y', 'N']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+  // 선별 등록
+  const onRegister = () => {
+    const orderUids = list?.map((item) => item?.orderUid)
 
-  const [savedRadioValue, setSavedRadioValue] = useState('')
+    if (orderUids.length === 0) {
+      return window.alert('선별 목록에 제품을 추가해주세요.')
+    }
+
+    if (window.confirm('선별 등록하시겠습니까?')) {
+      onCreateMerge({ dockStatus, orderUids })
+    }
+  }
+
   useEffect(() => {
-    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
+    if (list && Array.isArray(list)) {
+      setGetRow(add_element_field(list, ShippingRegisterFields))
+    }
+  }, [list])
 
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
-  }, [checkRadio])
-
-  const [checkRadio2, setCheckRadio2] = useState(
-    Array.from({ length: radioTableDummy.length }, (_, index) => index === 0),
-  )
-
-  const [savedRadioValue2, setSavedRadioValue2] = useState('')
   useEffect(() => {
-    const checkedIndex = checkRadio2.findIndex((isChecked, index) => isChecked && index < radioTableDummy.length)
-
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
-  }, [checkRadio2])
+    if (data && Array.isArray(data)) {
+      // setList(data)
+      setList([])
+      getDestinations()
+    }
+  }, [data])
 
   return (
     <FilterContianer>
-      <FilterHeader>
-        <div style={{ display: 'flex' }}>
-          <h1>선별 추천 목록</h1>
-        </div>
-
-        {/* 토글 쓰기 */}
-      </FilterHeader>
-
-      <TableWrap style={{ marginTop: '5px' }}>
-        <ClaimTable>
-          <ClaimRow>
-            <ClaimTitle>출하 요청 일자</ClaimTitle>
-            <ClaimContent>2023.04.05</ClaimContent>
-            <ClaimTitle>순번</ClaimTitle>
-            <ClaimContent>001</ClaimContent>
-            <ClaimTitle>상차도 여부</ClaimTitle>
-            <ClaimContent>
-              <ExRadioWrap>
-                {radioTableDummy.map((text, index) => (
-                  <RadioMainDiv key={index}>
-                    <RadioCircleDiv
-                      isChecked={checkRadio2[index]}
-                      onClick={() => {
-                        setCheckRadio2(CheckBox(checkRadio2, checkRadio2.length, index))
-                      }}
-                    >
-                      <RadioInnerCircleDiv isChecked={checkRadio2[index]} />
-                    </RadioCircleDiv>
-
-                    <div style={{ display: 'flex', marginLeft: '5px' }}>
-                      <p>{text}</p>
-                    </div>
-                  </RadioMainDiv>
-                ))}
-              </ExRadioWrap>
-            </ClaimContent>
-          </ClaimRow>
-          <ClaimRow>
-            <ClaimTitle>목적지 1</ClaimTitle>
-            <ClaimContent>-</ClaimContent>
-            <ClaimTitle>목적지 2</ClaimTitle>
-            <ClaimContent>-</ClaimContent>
-            <ClaimTitle>목적지 3</ClaimTitle>
-            <ClaimContent>-</ClaimContent>
-          </ClaimRow>
-          <ClaimRow>
-            <ClaimTitle>매출운임비</ClaimTitle>
-            <ClaimContent>-</ClaimContent>
-            <ClaimTitle>매입운임비</ClaimTitle>
-            <ClaimContent>-</ClaimContent>
-            <ClaimTitle>합짐비</ClaimTitle>
-            <ClaimContent>-</ClaimContent>
-          </ClaimRow>
-          <ClaimRow>
-            <ClaimTitle>매출운임비</ClaimTitle>
-            <ClaimContent>-</ClaimContent>
-            <ClaimTitle>매입운임비</ClaimTitle>
-            <ClaimContent>-</ClaimContent>
-            <ClaimTitle>합짐비</ClaimTitle>
-            <ClaimContent>-</ClaimContent>
-          </ClaimRow>
-          <ClaimRow>
-            <ClaimTitle style={{ width: '50%' }}>합짐비</ClaimTitle>
-            <ClaimContent style={{ width: '50%' }}>-</ClaimContent>
-          </ClaimRow>
-        </ClaimTable>
-      </TableWrap>
-
-      <SpaceDiv>
-        <h6>입찰 방식</h6>
-        <ExRadioWrap>
-          {radioDummy.map((text, index) => (
-            <RadioMainDiv key={index}>
-              <RadioCircleDiv
-                isChecked={checkRadio[index]}
-                onClick={() => {
-                  setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-                }}
-              >
-                <RadioInnerCircleDiv isChecked={checkRadio[index]} />
-              </RadioCircleDiv>
-
-              <div style={{ display: 'flex', marginLeft: '5px' }}>
-                <p style={{ fontSize: '16px' }}>{text}</p>
-              </div>
-            </RadioMainDiv>
-          ))}
-        </ExRadioWrap>
-      </SpaceDiv>
-
+      {/* header */}
+      <GlobalFilterHeader
+        title={'선별 추천 목록'}
+        enableSearchFilters={false}
+        subTitle={<Subtitle2 onClick={() => setChoiceComponent('request')}>출고 요청</Subtitle2>}
+      />
+      <MergeHeader
+        list={list}
+        destinations={destinations}
+        mergeCost={mergeCost}
+        setMergeCost={setMergeCost}
+        dockStatus={dockStatus}
+        setDockStatus={setDockStatus}
+      />
       <TableContianer style={{ paddingBottom: '10px' }}>
         <TCSubContainer>
           <div>
-            선택 중량<span> 2 </span>kg / 총 중량 kg
+            선택 중량<span> 2 </span>kg / 총 {calculateTotal(list, 'width')}중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>목록 제거</WhiteRedBtn>
-            <WhiteSkyBtn>합짐 등록</WhiteSkyBtn>
+            <WhiteRedBtn onClick={onListRemove}>목록 제거</WhiteRedBtn>
+            <WhiteSkyBtn onClick={onRegister}>선별 등록</WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getCol={getCol} getRow={getRow} />
         <TCSubContainer style={{ paddingBottom: '0px' }}>
           <div>
-            합계 금액(매입/매출 운임비):<span>123,456,789</span>(원)
+            합계 금액(매입/매출 운임비):
+            <span>{calculateTowDataTotal(list, 'outboundFreightAmount', 'inboundFreightAmount')}</span>(원)
           </div>
           <div>
-            <WhiteBlackBtn>목록 추가</WhiteBlackBtn>
+            <WhiteBlackBtn onClick={addListModalOpen}>목록 추가</WhiteBlackBtn>
           </div>
         </TCSubContainer>
       </TableContianer>
+      {addModal && <RequestAddModal list={list} onListAdd={onListAdd} />}
     </FilterContianer>
   )
 }
 
 export default RequestRecom
 
-const SpaceDiv = styled.div`
-  position: relative;
-  display: flex;
-  top: -10px;
-  align-items: center;
-
-  > h6 {
-    font-size: 16px;
-    color: #6b6b6b;
-    width: 100px;
-  }
-`
-
 const Subtitle2 = styled.h5`
   margin-left: 20px;
   display: flex;
-  justify-content: ce;
+  justify-content: center;
   align-items: center;
   gap: 20px;
   font-size: 18px;

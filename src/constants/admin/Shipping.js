@@ -20,7 +20,7 @@ export const ShippingDispatchFields = {
 }
 
 export const ShippingDispatchFieldsCols = [
-  { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  { field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
   {
     field: '수정',
     maxWidth: 90,
