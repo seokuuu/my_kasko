@@ -19,8 +19,8 @@ const DisRegisterPage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            {/* <DisRegister /> */}
-            <DisRegisterStorage />
+            <DisRegister />
+            {/*<DisRegisterStorage />*/}
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>

@@ -10,7 +10,7 @@ var headerCheckboxSelection = function (params) {
   return params.columnApi.getRowGroupColumns().length === 0
 }
 
-export const ShippingDispatchFields = {
+export const DispatchFields = {
   '고유 번호': 'uid',
   이름: 'name',
   '차량 번호': 'carNumber',
@@ -19,7 +19,7 @@ export const ShippingDispatchFields = {
   비고: 'memo',
 }
 
-export const ShippingDispatchFieldsCols = [
+export const DispatchFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
   {
     field: '수정',
@@ -129,6 +129,54 @@ export const ShippingRegisterFields = {
 export const ShippingRegisterFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
   ...Object.keys(ShippingRegisterFields).map((item) => ({
+    field: item,
+    maxWidth: 200,
+  })),
+]
+
+// 배차/출고 등록 페이지 목록 필드
+export const ShippingDispatchFields = {
+  경매번호: 'auctionNumber',
+  경매일자: 'auctionStartDate',
+  '주문 고유 번호': 'orderUid',
+  주문번호: 'orderNumber',
+  '상시판매 번호': 'orderNumber',
+  '확정전송 일자': 'sendDate',
+  출하지시일자: 'shippingDate',
+  출고요청일자: 'shipmentRequestDate',
+  '출하 상태': 'shipmentStatus',
+  '출고 고유번호': 'outUid',
+  '출고 번호': 'outNumber',
+  '출고 일자': 'outDate',
+  '제품추가 일자': 'outCreateDate',
+  '합짐 승인 상태': 'outStatus',
+  비고: 'outNote',
+  '회차 여부': 'outCancelStatus',
+  '회차 일자 (출고 취소된 일자)': 'outCancelDate',
+  '배차 여부': 'driverStatus',
+  '제품 수량': 'quantity',
+  '제품 총 중량': 'totalWeight',
+  최종수정자: 'updater',
+  최종수정일시자: 'updateDate',
+  창고: 'storageName',
+  '고객사명 1/2/3': 'customerName',
+  '고객코드 1/2/3': 'customerCode',
+  '목적지 코드': 'destinationCode',
+  '목적지 1/2/3': 'destinationName',
+  '목적지 주소 1/2/3': 'customerDestinationAddress',
+  '목적지 연락처(사무실) 1/2/3': 'customerDestinationPhone',
+  '목적지담당자 연락처 (휴대폰) 1/2/3': 'customerDestinationManagerPhone',
+  '하차지명 1/2/3': 'customerDestinationName',
+  운전기사명: 'driverName',
+  '운전기사 연락처': 'driverPhone',
+  차량번호: 'carNumber',
+  '차량 종류': 'carType',
+}
+
+// 배차/출고 등록 페이지 목록 필드
+export const ShippingDispatchFieldsCols = [
+  { field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+  ...Object.keys(ShippingDispatchFields).map((item) => ({
     field: item,
     maxWidth: 200,
   })),

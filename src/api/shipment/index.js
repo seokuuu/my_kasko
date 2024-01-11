@@ -4,8 +4,8 @@ import { queryClient } from '../query'
 
 const MERGE_CODE_URL = '/admin/mergecost'
 const SHIPMENT_URL = '/shipment'
-const SHIPMENT_OUT_URL = `${SHIPMENT_URL}/out`
 const SHIPMENT_MERGE_URL = `${SHIPMENT_URL}/merge`
+const SHIPMENT_OUT_URL = `${SHIPMENT_URL}/out`
 const SHIPMENT_DRIVER_URL = `${SHIPMENT_URL}/driver`
 const SHIPMENT_ORDER_RECEIPT_URL = `${SHIPMENT_URL}/order-receipt`
 const SHIPMENT_ORDER_STATEMENT_URL = `${SHIPMENT_URL}/order-statement`
@@ -17,6 +17,7 @@ export const QUERY_KEY = {
   statusUpdate: ['shipment', 'status-update'],
   recommendMergeList: ['shipment', 'merge-list'],
   createMerge: ['shipment', 'merge', 'create'],
+  dispatchList: ['shipment', 'dispatch', 'list'],
 }
 
 // 합짐비 목록 조회
@@ -60,7 +61,7 @@ export function useShipmentStatusUpdateMutation() {
   })
 }
 
-// 추천 합짐 목록
+// 추천 선별 목록
 export function useShipmentMergeListQuery() {
   return useQuery({
     queryKey: QUERY_KEY.recommendMergeList,
@@ -87,6 +88,17 @@ export function useShipmentMergeMutation() {
     },
     onError(error) {
       window.alert(error?.message ?? '등록 실패하였습니다.')
+    },
+  })
+}
+
+// 배차/출고 등록 페이지 목록
+export function useShipmentDispatchListQuery(params) {
+  return useQuery({
+    queryKey: QUERY_KEY.dispatchList,
+    queryFn: async function () {
+      const response = await client.get(SHIPMENT_OUT_URL, { params })
+      return response.data.data
     },
   })
 }
