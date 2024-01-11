@@ -1,5 +1,6 @@
 import {client} from "./index";
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { queryClient } from "./query";
 
 const urls = {
     get: '/user/signup',
@@ -25,11 +26,7 @@ export function getUser() {
 export const useUserCartListQuery = (param) => useQuery({
     queryKey: ["user","cart",param],
     queryFn: async() => {
-        const { data } = await client.get(`${urls.getCart}/${param.category}?pageNum=${param.pageNum || 1}&pageSize=${param.pageSize || 50}`, {
-            headers: {
-                Authorization:  'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyNTAwIiwiYXV0aCI6IuqzoOqwneyCrCzsmrTsmIHqtIDrpqwiLCJleHAiOjE3MDQ4ODEwMzN9.3UyW_QczLzinMTaNxi7ZLxw-wVPUF4Yp-go8wlvZdryqN3nCI-K2_PRcW392pVWLScmApWWpKsRxbYYpELERbw'
-            }
-        });
+        const { data } = await client.get(`${urls.getCart}/${param.category}?pageNum=${param.pageNum || 1}&pageSize=${param.pageSize || 50}`);
         return data.data; 
     }
   });
@@ -41,14 +38,10 @@ export const useUserCartListQuery = (param) => useQuery({
  */
 export const useUserOrderMutaion = () => useMutation({
     mutationFn: async(orderParam) => {
-        await client.post(urls.requestOrder, orderParam, {
-            headers: {
-                Authorization:  'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyNTAwIiwiYXV0aCI6IuqzoOqwneyCrCzsmrTsmIHqtIDrpqwiLCJleHAiOjE3MDQ4ODEwMzN9.3UyW_QczLzinMTaNxi7ZLxw-wVPUF4Yp-go8wlvZdryqN3nCI-K2_PRcW392pVWLScmApWWpKsRxbYYpELERbw'
-            }
-        })
+        await client.post(urls.requestOrder, orderParam);
     },
     onSuccess: () => {
-        // invalidateQueries
+        queryClient.invalidateQueries({ queryKey: 'cart' });
         return alert('주문을 완료하였습니다.');
     },
     onError: () => {
@@ -65,12 +58,7 @@ export const useUserOrderListQuery = (param) => useQuery({
     queryKey: ["user","order", param],
     queryFn: async() => {
         const params = new URLSearchParams(param);
-        const { data } = await client.get(`${urls.getOrder}?${params.toString()}`, {
-            headers: {
-                Authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyNTAwIiwiYXV0aCI6IuqzoOqwneyCrCzsmrTsmIHqtIDrpqwiLCJleHAiOjE3MDQ4ODEwMzN9.3UyW_QczLzinMTaNxi7ZLxw-wVPUF4Yp-go8wlvZdryqN3nCI-K2_PRcW392pVWLScmApWWpKsRxbYYpELERbw'
-            }
-        });
-        console.log(data);
+        const { data } = await client.get(`${urls.getOrder}?${params.toString()}`);
         return data.data; 
     },
   });
@@ -80,20 +68,30 @@ export const useUserOrderListQuery = (param) => useQuery({
  * @param {*} cancelParam
  * @description 주문확인 > 선택항목 주문취소하기
  */
-// 장바구니 주문하기 뮤테이션
 export const useUserOrderCancelMutaion = () => useMutation({
     mutationFn: async(cancelParam) => {
-        await client.post(urls.requestOrderCancel, cancelParam, {
-            headers: {
-                Authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyNTAwIiwiYXV0aCI6IuqzoOqwneyCrCzsmrTsmIHqtIDrpqwiLCJleHAiOjE3MDQ4ODEwMzN9.3UyW_QczLzinMTaNxi7ZLxw-wVPUF4Yp-go8wlvZdryqN3nCI-K2_PRcW392pVWLScmApWWpKsRxbYYpELERbw'
-            }
-        })
+        await client.post(urls.requestOrderCancel, cancelParam);
     },
     onSuccess: () => {
-        // invalidateQueries
+        queryClient.invalidateQueries({ queryKey: 'order' });
         return alert('주문을 취소하였습니다.');
     },
     onError: () => {
         return alert('주문 취소 중 오류가 발생했습니다.\n다시 시도해 주세요.');
     }
+  });
+
+/**
+ * 상시판매 주문확인상세 API 쿼리
+ * @param {number} param.pageNum 페이지 
+ * @param {number} param.pageSize 페이지당 조회 갯수 
+ * @param {number} param.auctionNumber 상시판매 번호 
+ */
+export const useUserOrderDetailsQuery = (param) => useQuery({
+    queryKey: ["user","order", "details", param],
+    queryFn: async() => {
+        const params = new URLSearchParams(param);
+        const { data } = await client.get(`${urls.getOrder}?${params.toString()}`);
+        return data.data; 
+    },
   });

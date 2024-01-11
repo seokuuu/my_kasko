@@ -38,6 +38,9 @@ import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { userOrderListField, userOrderListFieldsCols } from '../../../constants/user/order'
 import Table from '../../../pages/Table/Table'
+import CustomPagination from '../../../components/pagination/CustomPagination'
+import { useNavigate } from 'react-router-dom'
+import useTableSelection from '../../../hooks/useTableSelection'
 
 /**
  * 상시판매 주문확인 목록
@@ -60,19 +63,25 @@ const Order = ({}) => {
     const displayData = add_element_field(rowData.map((v, idx) => ({...v, index: idx + 1})), userOrderListField);
     return displayData;
   }, [orderData]); // 테이블 노출 데이터
+  // 페이지 데이터
+  const paginationData = useMemo(() => {
+    let initialData = { pageNum: 1, startPage: 1, endPage: 1, maxPage: 1, listCount: 0 };
+    if(orderData && orderData.pagination) {
+      initialData = orderData.pagination;
+      initialData.endPage = Math.max(orderData.pagination.endPage, 1);
+    }
+    return initialData;
+  }, [orderData]);
   // 선택 항목
-  const selectedData = useAtomValue(selectedRowsAtom);
   // 갯수
   const totalCount = useMemo(() => (orderData && orderData.pagination)? orderData.pagination.listCount || 0 : 0 , [orderData]);
   // 중량
   const totalWeight = useMemo(() => (orderData && orderData.pagination)? orderData.pagination.totalWeight || 0 : 0 , [orderData]); // 총 중량
-  const selectedTotalWeight = useMemo(() => {
-    if(!selectedData || selectedData.length < 1) {
-      return 0;
-    }
-    const sums = selectedData.reduce((sum, item) => item['총 중량']? sum + Number(item['총 중량']) : 0, 0);
-    return sums;
-  }, [selectedData]); // 총 선택 항목 중량
+  // 선택 항목
+  const { selectedData, selectedWeight, selectedWeightStr, selectedCountStr, selectedCount } = useTableSelection({ weightKey: '총 중량' });
+
+  // NAVIGATION
+  const navigate = useNavigate();
 
   /**
    * 필터 핸들러
@@ -104,11 +113,21 @@ const Order = ({}) => {
   function handleOrderCancel(e) {
     e.preventDefault();
 
-    if(!selectedData || selectedData.length < 1) {
-      return alert('주문할 제품을 선택해 주세요.');
+    if(selectedCount < 1) {
+      return alert('주문 취소할 제품을 선택해 주세요.');
     }
 
     // requestCancel({});
+  }
+
+  /**
+   * 테이블 열 클릭 핸들러
+   */
+  function handleTableRowClick(row) {
+    const uid = row?.data['상시판매 번호'];
+    if(uid) {
+      navigate(`/userpage/salesorder/${uid}`);
+    }
   }
 
   /* ============================== COMMON start ============================== */
@@ -294,7 +313,7 @@ PartWrap first : Row의 제일 앞에 오는 Part (제목 width 고정용) */}
         {/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>{ selectedData? selectedData.length.toLocaleString() : 0}</span> / {totalCount.toLocaleString()}개 )
+            조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount.toLocaleString()}개 )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -305,13 +324,16 @@ PartWrap first : Row의 제일 앞에 오는 Part (제목 width 고정용) */}
         {/* 선택항목 중량 | 주문 취소 */}
         <TCSubContainer>
           <div>
-            선택중량 <span> {selectedTotalWeight.toLocaleString()} </span> (kg) / 총 중량 {totalWeight.toLocaleString()} (kg)
+            선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeight.toLocaleString()} (kg)
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn onClick={handleOrderCancel} disabled={isCancelLoading}>주문 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
-        <Table getRow={tableDisplayData} getCol={userOrderListFieldsCols} />
+        {/* 테이블 */}
+        <Table getRow={tableDisplayData} getCol={userOrderListFieldsCols} isRowClickable handleOnRowClicked={handleTableRowClick} />
+        {/* 페이지네이션 */}
+        <CustomPagination pagination={paginationData} onPageChange={p => { handleSearchParamChange({page: p}) }} />
       </TableContianer>
     </FilterContianer>
   )

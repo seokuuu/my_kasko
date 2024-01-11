@@ -1,4 +1,4 @@
-import { useAtomValue, useAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { useMemo, useState } from 'react'
 import { useUserCartListQuery, useUserOrderMutaion } from '../../../api/user'
 import {
@@ -7,8 +7,11 @@ import {
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
+import CustomPagination from '../../../components/pagination/CustomPagination'
 import { userCartListPackageField, userCartListPackageFieldCols, userCartListSingleField, userCartListSingleFieldsCols } from '../../../constants/user/cart'
+import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
+import AlertPopup from '../../../modal/Alert/AlertPopup'
 import {
   FilterContianer,
   FilterHeader,
@@ -17,9 +20,7 @@ import {
   TableContianer
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
-import { destiDelPopupAtom, popupObject, selectedRowsAtom } from '../../../store/Layout/Layout'
-import CustomPagination from '../../../components/pagination/CustomPagination'
-import AlertPopup from '../../../modal/Alert/AlertPopup'
+import { destiDelPopupAtom, popupObject } from '../../../store/Layout/Layout'
 
 /**
  * @constant 최소 주문 중량(25톤/단위kg)
@@ -67,21 +68,12 @@ const Cart = ({}) => {
     return displayData;
   }, [cartData, isSingleCategory]); // 테이블 노출 데이터
   // 선택 항목
-  const selectedData = useAtomValue(selectedRowsAtom);
   // 갯수
   const totalCount = useMemo(() => (cartData && cartData.pagination)? cartData.pagination.listCount || 0 : 0 , [cartData]);
   // 중량
   const totalWeight = useMemo(() => (cartData && cartData.pagination)? cartData.pagination.totalWeight || 0 : 0 , [cartData]); // 총 중량
-  const selectedTotalWeight = useMemo(() => {
-    if(!selectedData || selectedData.length < 1) {
-      return 0;
-    }
-    const sums = selectedData.reduce((sum, item) =>{
-      const weight = item[isSingleCategory? '중량' : '패키지 상품 총 중량'] || 0;
-      return weight? sum + Number(weight) : sum;
-    }, 0);
-    return sums;
-  }, [selectedData]); // 총 선택 항목 중량
+  // 선택 항목
+  const { selectedData, selectedWeight, selectedWeightStr, selectedCountStr, selectedCount } = useTableSelection({ weightKey: isSingleCategory? '중량' : '패키지 상품 총 중량' });
   // POPUP
   const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom) // 팝업 스위치
   const [_, setNowPopup] = useAtom(popupObject);
@@ -116,7 +108,7 @@ const Cart = ({}) => {
   function handleSelectOrder(e) {
     e.preventDefault();
 
-    if(!selectedData || selectedData.length < 1) {
+    if(selectedCount < 1) {
       setPopupSwitch(true);
       setNowPopup({
         num: '1',
@@ -125,7 +117,8 @@ const Cart = ({}) => {
       return;
     }
     
-    if(selectedTotalWeight < MIN_ORDER_WEIGHT) {
+    // 25톤 주석
+    if(selectedWeight < MIN_ORDER_WEIGHT) {
       setPopupSwitch(true);
       setNowPopup({
         num: '1',
@@ -135,15 +128,15 @@ const Cart = ({}) => {
     }
 
     requestOrder({
-      type: searchParam.category,
+      type: searchParam.category === CATEGORY.single? 'normal' : 'package',
       orderList: selectedData.map(v => ( 
         isSingleCategory
         ?{
           productUid: v['고유 번호'] || '', 
-          salesPrice: v['상시판매가'] || 0 
+          salePrice: v['상시판매가'] || 0 
         } : {
           packageNumber: v['패키지 번호'] || 0,
-          salesPrice: v['패키지 상품 총 중량'] || 0
+          salePrice: v['패키지 상품 총 중량'] || 0
         }
       )
     )});
@@ -186,7 +179,7 @@ const Cart = ({}) => {
         {/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>{ selectedData? selectedData.length.toLocaleString() : 0}</span> / {totalCount.toLocaleString()}개 )
+            조회 목록 (선택 <span>{ selectedCountStr}</span> / {totalCount.toLocaleString()}개 )
             <Hidden />
           </div>
           <div>
@@ -196,7 +189,7 @@ const Cart = ({}) => {
         </TCSubContainer>
         {/* 선택항목 중량 */}
         <TCSubContainer style={{justifyContent: 'flex-start'}}>
-            선택중량 <span> {selectedTotalWeight.toLocaleString()} </span> (kg) / 총 중량 {totalWeight.toLocaleString()} (kg)
+            선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeight.toLocaleString()} (kg)
         </TCSubContainer>
         {/* 테이블 */}
         <Table getCol={ isSingleCategory ? userCartListSingleFieldsCols : userCartListPackageFieldCols} getRow={tableDisplayData} />

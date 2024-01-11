@@ -318,7 +318,7 @@ const Router = () => {
           <Route path="/userpage/salessingle" element={<USalesSingle />}></Route>
           <Route path="/userpage/salespackage" element={<USalesPackage />}></Route>
           <Route path="/userpage/salescart" element={<USalesCart />}></Route>
-          <Route path="/userpage/salesorder" element={<USalesOrder />}></Route>
+          <Route path="/userpage/salesorder/:salesNumber?" element={<USalesOrder />}></Route>
 
           {/* 출고 실적 조회 */}
           <Route path="/userpage/performance" element={<UPerformance />}></Route>
