@@ -184,18 +184,14 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
   // 경매 제한 상태 변경
   const mutationAuction = useMutation(postChangeAuction, {
     onSuccess: () => {
-      console.log('SUCCESS MUTATION')
       queryClient.invalidateQueries('getClient')
       queryClient.refetchQueries('getClient')
     },
   })
-  console.log('selectedValue', selectedValue, checkedArray)
 
   const clientRestrict = async () => {
-    console.log('!!! 제한 함수 실행 !!!')
     if (selectedValue === undefined) return alert('선택해주세요 ')
     else if (selectedValue) {
-      console.log('!!! 제한 함수 실행2 !!!')
 
       let req = { uids: [], auctionStatus: '' }
       checkedArray?.forEach((item) => {
@@ -205,10 +201,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
 
       // mutationAuction.mutate의 비동기 작업이 완료된 후에 실행될 코드
       await mutationAuction.mutate(req)
-
-      // mutationAuction.mutate 완료 후에 값을 확인
-      setRestrict(req)
-      console.log('restrict', restrict) // req 값을 사용
+      setAuctionModal(false)
     }
   }
 
@@ -253,6 +246,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
           <>
             <FilterSubcontianer>
               <FilterLeft>
+
                 <RowWrap>
                   <PartWrap>
                     <h6>회원 상태</h6>

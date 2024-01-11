@@ -37,6 +37,16 @@ export const emailOptions = [
   { value: 'ask3', label: 'kakao.com' },
   { value: 'ask4', label: 'nate.com' },
 ]
+export const supplierOptions = [
+  { value: '', label: '전체' },
+  { value: '현대제철', label: '현대제철' },
+  { value: '카스코 철강', label: '카스코 철강' },
+]
+export const makerOptions = [
+  { value: '', label: '전체' },
+  { value: '현대제철', label: '현대제철' },
+  { value: '동은스틸', label: '동은스틸' },
+]
 
 // 창고 구분
 export const storageOptions = [
@@ -57,7 +67,6 @@ export const faqOptions = [
   { value: 'ask4', label: '약관' },
   { value: 'ask4', label: '기타' },
 ]
-
 
 export const DefaultSelect = styled(Select)`
   width: 120px;

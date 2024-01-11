@@ -1,43 +1,33 @@
-import { useState, useEffect, useRef } from 'react'
+import {useCallback, useEffect, useRef, useState} from 'react'
 
 import Excel from '../../../components/TableInner/Excel'
 
-import { WhiteRedBtn } from '../../../common/Button/Button'
+import {SkyBtn, WhiteRedBtn} from '../../../common/Button/Button'
+import {btnCellUidAtom, selectedRowsAtom, toggleAtom, userPageDestiEditModal} from '../../../store/Layout/Layout'
 
-import { SkyBtn } from '../../../common/Button/Button'
-import Test3 from '../../../pages/Test/Test3'
-
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { dowbleClickedRowAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-
-import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
+import {FilterContianer, FilterHeader, TableContianer, TCSubContainer} from '../../../modal/External/ExternalFilter'
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
 
 import useReactQuery from '../../../hooks/useReactQuery'
-import { useCallback } from 'react'
-import { atom, useAtom } from 'jotai'
-import { isArray, isEmptyArray } from '../../../lib'
-import useMutationQuery from '../../../hooks/useMutationQuery'
-import { deleteDestination } from '../../../api/myPage/userDestination'
-import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useGetUserDestinationQuery } from '../../../hooks/queries/user/Mypage'
+import {useAtom} from 'jotai'
+import {isArray} from '../../../lib'
+import {deleteDestination} from '../../../api/myPage/userDestination'
+import {useMutation, useQueryClient} from '@tanstack/react-query'
 
-import { getDestination } from '../../../api/myPage'
+import {getDestination} from '../../../api/myPage'
 import Table from '../../../pages/Table/Table'
 import {
   UserManageCustomerDestinationManageFields,
   UserManageCustomerDestinationManageFieldsCols,
 } from '../../../constants/admin/UserManage'
-import { add_element_field } from '../../../lib/tableHelpers'
-import { userpageDestiEdit } from '../../../store/Layout/Layout'
+import {add_element_field} from '../../../lib/tableHelpers'
 import DestinationEdit from './DestinationEdit'
-import { btnCellUidAtom } from '../../../store/Layout/Layout'
 
 const Destination = ({ setChoiceComponent }) => {
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-  const [switchDestiEdit, setSwtichDestiEdit] = useAtom(userpageDestiEdit)
+  const [switchDestiEdit, setSwtichDestiEdit] = useAtom(userPageDestiEditModal)
   const radioDummy = ['전체', '미진행', '진행중', '종료']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
@@ -110,6 +100,9 @@ const Destination = ({ setChoiceComponent }) => {
     }
   }, [isSuccess, resData])
 
+  console.log('getRow =>', getRow)
+  console.log('switchDestiEdit => ', switchDestiEdit)
+
   const openPost = () => {
     setChoiceComponent('등록')
   }
@@ -167,7 +160,6 @@ const Destination = ({ setChoiceComponent }) => {
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <WhiteRedBtn onClick={handleRemoveBtn}>목적지 삭제</WhiteRedBtn>
-                {/* <SkyBtn onClick={openEdit}>목적지 수정</SkyBtn> */}
                 <SkyBtn onClick={openPost}>목적지 등록</SkyBtn>
               </div>
             </TCSubContainer>

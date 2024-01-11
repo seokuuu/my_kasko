@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
-import { CustomInput, FlexInput } from '../../../common/Input/Input'
+import {useEffect, useState} from 'react'
+import {CustomInput, FlexInput} from '../../../common/Input/Input'
 import {
-  AddBtn,
   Bar,
   FlexContent,
   FlexPart,
@@ -10,25 +9,25 @@ import {
   OnePageFlexSubContainer,
   Right,
 } from '../../../common/OnePage/OnePage.Styled'
-import { AccountSelect, EditSelect, accountOptions, depositOptions } from '../../../common/Option/SignUp'
+import {accountOptions, AccountSelect, depositOptions, EditSelect} from '../../../common/Option/SignUp'
 
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
+import {BlackBtn, BtnWrap} from '../../../common/Button/Button'
 
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import {RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv} from '../../../common/Check/RadioImg'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { CheckBtn } from '../../User/SignUp/SignUp.Styled'
+import {CheckBox} from '../../../common/Check/Checkbox'
+import {CheckBtn} from '../../User/SignUp/SignUp.Styled'
 
-import { styled } from 'styled-components'
-import { checkBusinessNumber, updateCustomer } from '../../../api/myPage'
-import { getCustomerDetail, resetCustomer } from '../../../api/userManage'
-import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+import {styled} from 'styled-components'
+import {checkBusinessNumber, updateCustomer} from '../../../api/myPage'
+import {getCustomerDetail, resetCustomer} from '../../../api/userManage'
+import {CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv} from '../../../common/Check/CheckImg'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { WhiteCloseBtn } from '../../../modal/Common/Common.Styled'
+import {WhiteCloseBtn} from '../../../modal/Common/Common.Styled'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
-import { GreyDiv, IncomeImgDiv } from '../../../userpages/UserMyPage/Profile/Profile'
+import {IncomeImgDiv} from '../../../userpages/UserMyPage/Profile/Profile'
 import DownloadButton from '../../../utils/DownloadButton'
-import { UserCheckDiv } from '../UserManage/UserPost'
+import {UserCheckDiv} from '../UserManage/UserPost'
 
 const init = {
   id: '',
@@ -87,7 +86,6 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
   })
   const [modalSwitch, setModalSwitch] = useState(false)
   const [input, setInput] = useState(init)
-  console.log('input', input)
   const [isUser, setIsUser] = useState(false)
   const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
   const [renderFileName, setRenderFileName] = useState({ businessNumberFile: '', bankbookFile: ' ' })
@@ -105,13 +103,10 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
 
   // get 상세
 
-  console.log('uidAtom', uidAtom)
   const { isError, isSuccess, data } = useReactQuery(uidAtom, 'getCustomerDetail', getCustomerDetail)
 
   const [user, setUser] = useState('')
   const resData = data?.data?.data
-
-  console.log('resData', resData)
 
   // const resData2 = data2?.data?.data
 
@@ -120,7 +115,6 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
   const checkBusiness = () => {
     try {
       checkBusinessNumber(businessNumber)
-      console.log('done')
     } catch (err) {
       console.log(err)
     }
@@ -134,7 +128,6 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
   }
   const handleCheck = (e) => {
     setBusinessNumber(e.target.value)
-    console.log(businessNumber)
   }
 
   if (isError) console.log('ERROR')
@@ -219,15 +212,11 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
 
     for (let i in updatedInput) {
       if (updatedInput.hasOwnProperty(i)) {
-        console.log(`Input 체크 안되었습니다 ***${i}***`)
         // return
       }
     }
 
     setInput({ ...input, ...updatedInput, ...checkFileName })
-    console.log('input <3', input)
-    console.log('updatedInput <3', updatedInput)
-    console.log('checkFileName <3', checkFileName)
     setShouldUpdateCustomer(true)
   }
 
@@ -237,7 +226,6 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
       if (shouldUpdateCustomer) {
         try {
           const response = await updateCustomer(input, fileForms)
-          console.log(response.data)
           alert('고객사 상세 정보가 수정되었습니다.')
         } catch (err) {
           console.log(err)
@@ -300,16 +288,20 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
   }
   const radioDummy = ['법인사업자', '개인사업자']
   const radioDummy2 = ['승인', '대기', '미승인']
-  const radioDummy3 = ['경매 시작가 제한', '경매 제한']
+  const radioDummy3 = ['제한 없음', '시작가 제한', '경매 제한']
   const radioDummy4 = ['창고', '운송사', '현대제철', '카스코철강', '고객사']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
-  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, () => false))
-  const [checkRadio3, setCheckRadio3] = useState(Array.from({ length: radioDummy3.length }, () => false))
-  const [checkRadio4, setCheckRadio4] = useState(Array.from({ length: radioDummy4.length }, () => false))
-
+  const [checkRadio2, setCheckRadio2] = useState(radioDummy2.map((text) => text === resData?.approvalStatus))
+  const [checkRadio3, setCheckRadio3] = useState(radioDummy3.map((text) => text === resData?.auctionStatus))
+  const [checkRadio4, setCheckRadio4] = useState(radioDummy4.map((text) => text === resData?.memberType))
   const [savedRadioValue, setSavedRadioValue] = useState('')
 
-  console.log('checkRadio2', checkRadio2)
+  useEffect(() => {
+    setCheckRadio2(radioDummy2.map((text) => text === resData?.approvalStatus))
+    setCheckRadio3(radioDummy3.map((text) => text === resData?.auctionStatus))
+    setCheckRadio4(radioDummy4.map((text) => text === resData?.memberType))
+  }, [resData])
+
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
     if (checkedIndex !== -1) {
@@ -342,8 +334,6 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
     })
   }, [check])
 
-  console.log('ㅋㅋㅋ')
-
   // 비밀번호 초기화 버튼
   const resetPw = async () => {
     const userConfirmed = window.confirm('비밀번호를 초기화하시겠습니까?')
@@ -370,7 +360,6 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
     const value = e.target.value
     const name = e.target.name
     setInput((prev) => ({ ...prev, [name]: value }))
-    console.log(input)
   }
 
   const modalOFF = () => {
@@ -401,7 +390,7 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
                     아이디<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name={init.id} value={user && user.id} />
+                    <FlexInput name={init.id} value={user && user.id} disabled={true}/>
                   </FlexContent>
                 </FlexPart>
 
@@ -417,7 +406,7 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
                 </FlexPart>
                 <FlexPart>
                   <FlexTitle>
-                    경매 담당자 정보 (완)<span>*</span>
+                    경매 담당자 정보<span>*</span>
                   </FlexTitle>
                   <FlexContent>
                     <CustomInput
@@ -487,11 +476,11 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
                   </FlexTitle>
                   <FlexContent>
                     <div
-                      style={{
-                        display: 'flex',
-                        gap: '80px',
-                        width: '100%',
-                      }}
+                        style={{
+                          display: 'flex',
+                          gap: '20px',
+                          minWidth: '450px',
+                        }}
                     >
                       {radioDummy3.map((text, index) => (
                         <RadioMainDiv key={index}>
@@ -528,6 +517,7 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
                             name="type"
                             isChecked={checkRadio4[index]}
                             onClick={() => {
+                              if (checkRadio4.some((isChecked, i) => isChecked && i !== index)) return
                               setCheckRadio4(CheckBox(checkRadio4, checkRadio4.length, index))
                             }}
                           >
@@ -539,35 +529,56 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
                     </div>
                   </FlexContent>
                 </FlexPart>
-                <FlexPart>
-                  <FlexTitle>
-                    창고 구분<span>*</span>
-                  </FlexTitle>
-                  <FlexContent>
-                    <EditSelect
-                      name="storage"
-                      options={depositOptions}
-                      defaultValue={depositOptions[0]}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'storage')}
-                    />
-                  </FlexContent>
-                </FlexPart>
-                <FlexPart>
-                  <FlexTitle style={{ minWidth: '170px' }}>권한 설정</FlexTitle>
-                  <FlexContent2>
-                    {checkDummy2.map((x, index) => (
-                      <UserCheckDiv style={{ width: '130px' }}>
-                        <StyledCheckSubSquDiv
-                          onClick={() => setCheck(CheckBox(check, check.length, index, true))}
-                          isChecked={check[index]}
-                        >
-                          <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
-                        </StyledCheckSubSquDiv>
-                        <CheckTxt2 style={{ marginLeft: '5px' }}>{x}</CheckTxt2>
-                      </UserCheckDiv>
-                    ))}
-                  </FlexContent2>
-                </FlexPart>
+                {
+                    checkRadio4[1] && (
+                        <FlexPart>
+                          <FlexTitle>
+                            운송사 이름<span>*</span>
+                          </FlexTitle>
+                          <FlexContent>
+                            <FlexInput name="transportName" />
+                          </FlexContent>
+                        </FlexPart>
+                    )
+                }
+                {
+                    checkRadio4[0] && (
+                        <FlexPart>
+                          <FlexTitle>
+                            창고 구분<span>*</span>
+                          </FlexTitle>
+                          <FlexContent>
+                            <EditSelect
+                                name="storage"
+                                options={depositOptions}
+                                defaultValue={resData?.storage}
+                                isDisabled={true}
+                                onChange={(selectedOption) => handleSelectChange(selectedOption, 'storage')}
+                            />
+                          </FlexContent>
+                        </FlexPart>
+                    )
+                }
+                {
+                  checkRadio4[3] && (
+                        <FlexPart>
+                          <FlexTitle style={{ minWidth: '170px' }}>권한 설정</FlexTitle>
+                          <FlexContent2>
+                            {checkDummy2.map((x, index) => (
+                                <UserCheckDiv style={{ width: '130px' }}>
+                                  <StyledCheckSubSquDiv
+                                      onClick={() => setCheck(CheckBox(check, check.length, index, true))}
+                                      isChecked={check[index]}
+                                  >
+                                    <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
+                                  </StyledCheckSubSquDiv>
+                                  <CheckTxt2 style={{ marginLeft: '5px' }}>{x}</CheckTxt2>
+                                </UserCheckDiv>
+                            ))}
+                          </FlexContent2>
+                        </FlexPart>
+                    )
+                }
                 <Bar />
 
                 <FlexPart>

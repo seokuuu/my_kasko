@@ -1,6 +1,6 @@
-import { client } from '../../api'
+import { client } from '.'
 
-const saleProductEndpoint = '/sale-product'
+const saleProductEndpoint = '/sale-product/order'
 
 export const getSaleProductList = async (data) => {
   return client.get(saleProductEndpoint, { params: data })

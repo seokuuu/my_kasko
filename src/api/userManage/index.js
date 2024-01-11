@@ -38,7 +38,6 @@ export function deleteCustomer(id) {
 
 //경매 상태 제한
 export function postChangeAuction(data) {
-  console.log('data', data)
   return client.post(`${urls.customer}/status`, data)
 }
 

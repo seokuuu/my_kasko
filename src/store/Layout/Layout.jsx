@@ -13,6 +13,12 @@ export const alertAtom2 = atom(false)
 
 // 규격 약호 찾기 Global Modal
 export const blueModalAtom = atom(false)
+export const hyundaiModalAtom = atom(false)
+export const standardModalAtom = atom(false)
+
+export const specAtom = atom('')
+export const hyundaiSpecAtom = atom('')
+export const standardSpecAtom = atom('')
 
 export const packageCEAtom = atom('')
 
@@ -244,4 +250,4 @@ export const invenDestinationData = atom({
 
 export const tableCellType = atom('') //셀타입
 // 목적지 관리 수정 switch
-export const userpageDestiEdit = atom(false)
+export const userPageDestiEditModal = atom(false)

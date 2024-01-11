@@ -43,10 +43,11 @@ const Single = ({}) => {
   const [isRotated, setIsRotated] = useState(false)
   const [singleProductListData, setSingleProductListData] = useState(null)
   const [singleProductPagination, setSingleProductPagination] = useState([])
-  const [param, setParam] = useState({
+  const paramData = {
     pageNum: 1,
-    pageSize: 10,
-  })
+    pageSize: 50,
+  }
+  const [param, setParam] = useState(paramData)
   const {
     isLoading,
     isError,
@@ -98,6 +99,14 @@ const Single = ({}) => {
     setParam((prevParam) => ({
       ...prevParam,
       pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
     }))
   }
 
@@ -240,21 +249,20 @@ const Single = ({}) => {
           </FilterWrap>
         )}
       </div>
-
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
+            조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
+            {singleProductPagination?.listCount}개 )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown handleDropdown={handleTablePageSize} />
-            <Excel />
+            <Excel getRow={singleProductListData} />
           </div>
         </TCSubContainer>
         <TCSubContainer>
           <div>
-            {/* 체크 박스의 값을 더한 값을 노출시켜줘야함 */}
             선택 중량
             <span> {formatWeight(KilogramSum(checkBoxSelect))} </span>
             kg / 총 중량 {formatWeight(singleProductPagination.totalWeight)} kg
@@ -263,7 +271,12 @@ const Single = ({}) => {
             <WhiteBlackBtn>노출 상태 변경</WhiteBlackBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={SingleDispatchFieldsCols} getRow={singleProductListData} />
+        <Table
+          getCol={SingleDispatchFieldsCols}
+          getRow={singleProductListData}
+          tablePagination={singleProductPagination}
+          onPageChange={onPageChange}
+        />
         <TableBottomWrap>
           <BlackBtn width={13} height={40} fontSize={17}>
             저장
