@@ -35,14 +35,15 @@ import {
 
 import { useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
-import { getBidding } from '../../../api/auction/bidding'
+import { getBidding, postBidding } from '../../../api/auction/bidding'
 import Excel from '../../../components/TableInner/Excel'
-import { AuctionBiddingFields, AuctionRoundFieldsCols } from '../../../constants/admin/Auction'
+import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import Table from '../../Table/Table'
 import { getDestinationFind } from '../../../api/search'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
 const Bidding = ({}) => {
   const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
@@ -51,19 +52,6 @@ const Bidding = ({}) => {
 
   const [types, setTypes] = useState('단일')
   const radioDummy = ['전체', '미진행', '진행중', '종료']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-
-  const [savedRadioValue, setSavedRadioValue] = useState('')
-  useEffect(() => {
-    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
-
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
-  }, [checkRadio])
 
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
@@ -73,7 +61,6 @@ const Bidding = ({}) => {
   }
   const [isRotated, setIsRotated] = useState(false)
 
-  // Function to handle image click and toggle rotation
   const handleImageClick = () => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
   }
@@ -91,10 +78,11 @@ const Bidding = ({}) => {
   }
 
   const [getRow, setGetRow] = useState('')
-  const tableField = useRef(AuctionRoundFieldsCols)
+  const tableField = useRef(AuctionBiddingFieldsCols)
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
+  // const productNumbers = checkedArray?.map((item) => item['제품 고유 번호'])
 
   const [Param, setParam] = useState({
     pageNum: 1,
@@ -105,44 +93,89 @@ const Bidding = ({}) => {
   const init = {
     auctionNumber: null,
     type: types,
-    biddingList: [
-      {
-        productUid: null,
-        customerDestinationUid: null,
-        biddingPrice: null,
-      },
-    ],
+    biddingList: [],
   }
 
   const [input, setInput] = useState(init)
 
-  console.log('destinationData <3', destinationData)
-  console.log('input <3', input)
+  const [innerObject, setInnerObject] = useState({})
+  const [biddingInput, setBiddingInput] = useState(null)
+  const [biddingList, setBiddingList] = useState([])
 
-  const onClickDestination = () => {
-    setInput((p) => ({
-      ...p,
-      biddingList: [
-        ...p.biddingList,
-        {
-          customerDestinationUid: destinationData?.code || null,
-          ...p.biddingList[0],
-        },
-      ],
-    }))
+  console.log('biddingList @@', biddingList)
+
+  const biddingHandler = (e) => {
+    const value = e.target.value
+    const intValue = parseInt(value)
+    setBiddingInput(intValue)
   }
 
   useEffect(() => {
-    setParam((prevParams) => ({
-      ...prevParams,
-      type: types,
+    const productNumbers = checkedArray?.map((item) => item['제품 고유 번호'])
+
+    const auctionNumber = checkedArray?.[0]?.['경매 번호']
+
+    setInput((prevInput) => ({
+      ...prevInput,
+      auctionNumber: auctionNumber,
     }))
-  }, [types])
+
+    const updatedBiddingList = productNumbers?.map((productUid) => ({
+      productUid,
+    }))
+
+    setInput((prevInput) => ({
+      ...prevInput,
+      biddingList: updatedBiddingList?.map((item) => ({
+        ...item,
+        productUid: item.productUid, // 유지하고 싶은 다른 속성은 그대로 두고
+      })),
+    }))
+
+    // setBiddingList(updatedBiddingList)
+  }, [checkedArray])
+
+  // 목적지 적용 버튼
+  const handleSetCustomerDestinationUid = () => {
+    const updatedBiddingList = input.biddingList.map((item) => ({
+      ...item,
+      customerDestinationUid: destinationData.uid,
+    }))
+
+    // setBiddingList(updatedBiddingList)
+    setInput((prevInput) => ({
+      ...prevInput,
+      biddingList: [...updatedBiddingList],
+    }))
+  }
+
+  // 응찰가 적용 버튼
+  const handleSetBiddingPrice = () => {
+    const updatedBiddingList2 = input.biddingList.map((item) => ({
+      ...item,
+      biddingPrice: biddingInput,
+    }))
+
+    // setBiddingList(updatedBiddingList2)
+    setInput((prevInput) => ({
+      ...prevInput,
+      biddingList: [...updatedBiddingList2],
+    }))
+  }
+
+  console.log('input ==>', input)
+
+  const postMutation = useMutationQuery('', postBidding)
+
+  // 응찰 버튼 POST
+  const confirmOnClickHandler = () => {
+    postMutation.mutate(input)
+  }
 
   // 목적지 찾기 GET
   const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
 
-  // GET
+  // 전체 GET
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getBidding', getBidding)
   const resData = data?.data?.data?.list
 
@@ -154,8 +187,6 @@ const Bidding = ({}) => {
       setGetRow(add_element_field(getData, AuctionBiddingFields))
     }
   }, [isSuccess, resData])
-
-  console.log('getRow =>', getRow)
 
   return (
     <FilterContianer>
@@ -317,15 +348,15 @@ const Bidding = ({}) => {
             >
               찾기
             </TWhiteBtn>
-            <TGreyBtn onClick={onClickDestination}>적용</TGreyBtn>
+            <TGreyBtn onClick={handleSetCustomerDestinationUid}>적용</TGreyBtn>
             <BtnBound style={{ margin: '0px' }} />
             <p>일괄 경매 응찰</p>
-            <CustomInput placeholder="응찰가 입력" width={120} height={32} />
-            <TGreyBtn height={30} style={{ width: '50px' }}>
+            <CustomInput placeholder="응찰가 입력" width={120} height={32} onChange={biddingHandler} />
+            <TGreyBtn height={30} style={{ width: '50px' }} onClick={handleSetBiddingPrice}>
               적용
             </TGreyBtn>
             <BtnBound style={{ margin: '0px' }} />
-            <SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50}>
+            <SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50} onClick={confirmOnClickHandler}>
               응찰
             </SkyBtn>
           </div>

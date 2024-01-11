@@ -658,6 +658,7 @@ export const AuctionWinningFields = {
 }
 
 export const AuctionWinningFieldsCols = [
+  { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   { field: 'Pro.No 번호', minWidth: 150 },
   { field: '경매 번호', minWidth: 120 },
   { field: '고객 코드', minWidth: 100 },
@@ -688,6 +689,76 @@ export const AuctionWinningFieldsCols = [
   { field: '카스코 낙찰가', minWidth: 120 },
   { field: '매입 운반비', minWidth: 120 },
   { field: '매출 운반비', minWidth: 120 },
+]
+
+/* ====================================
+    경매 관리 - 경매 낙찰 관리 상세(winningDetail)
+======================================= */
+
+export const AuctionWinningDetailFields = {
+  '주문 고유 번호': 'orderUid',
+  '고객 코드': 'code',
+  고객사명: 'customerName',
+  창고: 'storage',
+  제품군: 'spart',
+  '판매 구분 (판매재 / 판매 제외재 / 판매 완료재)': 'saleCategory',
+  '판매 유형 (경매 대상재 / 상시 판매 대상재)': 'saleType',
+  '판매가 유형 (특가 / 일반)': 'salePriceType',
+  '경매 번호': 'auctionNumber',
+  '고객사 목적지 고유 번호': 'customerDestinationUid',
+  'Pro.No 번호': 'productNoNumber',
+  '제품 번호': 'productNumber',
+  등급: 'grade',
+  낙찰가: 'biddingPrice',
+  두께: 'thickness',
+  폭: 'width',
+  길이: 'length',
+  중량: 'weight',
+  '규격 약호': 'spec',
+  yp: 'yp',
+  ys: 'ts',
+  c: 'c',
+  p: 'p',
+  s: 's',
+  si: 'si',
+  el: 'el',
+  mn: 'mn',
+  '여재 원인명': 'causeCodeName',
+  '제품 낙찰 단가': 'productBiddingPrice',
+  '매출 기본 운임단가': 'freightFee',
+  '매출 할증 운임단가': 'extraUnitPrice',
+  '매입 기본 운임단가': 'inboundFreightFee',
+  '매입 할증 운임단가': 'inboundExtraUnitPrice',
+  '낙찰 총 단가': 'totalBiddingPrice',
+  '제품 공급가': 'orderPrice',
+  '매출 운송비 공급가': 'freightCost',
+  '매입 운송비 공급가': 'inboundFreightCost',
+  '제품대 부가세': 'orderPriceVat',
+  '매출 운송비 부가세': 'freightCostVat',
+  '매입 운송비 부가세': 'inboundFreightCostVat',
+  '목적지 고유 번호': 'destinationUid',
+  목적지명: 'destinationName',
+  '목적지 주소': 'destinationAddress',
+  '목적지 연락처': 'destinationPhone',
+  '목적지 담당자 연락처': 'destinationManagerPhone',
+  '변경 요청 목적지명': 'requestDestinationName',
+  '변경 요청 목적지 주소': 'requestDestinationAddress',
+  '변경 요청 목적지 연락처처': 'requestDestinationPhone',
+  '변경 요청 목적지 담당자 연락처': 'requestDestinationManagerPhone',
+  '변경 요청 상태': 'requestStatus',
+  수정일: 'updateDate',
+  '주문 상태': 'orderStatus',
+  '입금 요청액': 'amount',
+  '낙찰 상태': 'biddingStatus',
+  '확정 전송일': 'sendDate',
+}
+
+export const AuctionWinningDetailFieldsCols = [
+  { field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+  ...Object.keys(AuctionWinningDetailFields).map((item) => ({
+    field: item,
+    maxWidth: 200,
+  })),
 ]
 
 /* ===========================================
