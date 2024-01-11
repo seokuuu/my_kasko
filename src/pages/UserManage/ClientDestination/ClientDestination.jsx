@@ -20,7 +20,7 @@ import {
   TCSubContainer,
   TableContianer,
 } from '../../../modal/External/ExternalFilter'
-import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import {adminPageDestiEditModal, blueModalAtom, selectedRowsAtom, toggleAtom} from '../../../store/Layout/Layout'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isArray } from 'lodash'
@@ -29,6 +29,7 @@ import { delete_clientDestination, get_clientDestination, get_detailClientDestin
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import {
+  adminCustomerDestinationManageFieldsCols,
   UserManageCustomerDestinationManageFields,
   UserManageCustomerDestinationManageFieldsCols,
 } from '../../../constants/admin/UserManage'
@@ -41,7 +42,7 @@ import DestinationEdit from './DestinationEdit'
 
 const ClientDestination = ({ setChoiceComponent }) => {
   const [findModal, setFindModal] = useAtom(UsermanageFindModal)
-  const [editModal, setEditModal] = useAtom(UsermanageDestiEditModal)
+  const [editModal, setEditModal] = useAtom(adminPageDestiEditModal)
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
   // const handleSelectChange = (selectedOption, name) => {
   //   // setInput(prevState => ({
@@ -76,7 +77,7 @@ const ClientDestination = ({ setChoiceComponent }) => {
   }
   // ---------------------------------------------------------------------------------------------
   const [getRow, setGetRow] = useState('')
-  const tableField = useRef(UserManageCustomerDestinationManageFieldsCols)
+  const tableField = useRef(adminCustomerDestinationManageFieldsCols)
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]

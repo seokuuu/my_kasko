@@ -13,7 +13,7 @@ import {
   UsermanageDestiEditModal,
   StandardConsoliateEdit,
   auctionRoundEditPageAtom,
-  userPageDestiEditModal
+  userPageDestiEditModal, adminPageDestiEditModal
 } from '../../store/Layout/Layout'
 
 import { UsermanageUserManageEditModal } from '../../store/Layout/Layout'
@@ -37,6 +37,7 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
   const [userDestiEdit, setUserDestiEdit] = useAtom(UsermanageDestiEditModal) // 고객사 목적지 관리 수정 모달
 
   const [userPageDestiEdit, setUserPageDestiEdit] = useAtom(userPageDestiEditModal)
+  const [adminPageDestiEdit, setAdminPageDestiEdit] = useAtom(adminPageDestiEditModal)
 
   const [consoliEdit, setConsoliEdit] = useAtom(StandardConsoliateEdit)
 
@@ -76,9 +77,13 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
         setUidAtom(uid)
         setUserDestiEdit(true)
         break
-      case 'destination':
+      case 'userPageDestination':
         setUidAtom(uid)
         setUserPageDestiEdit(true)
+        break
+      case 'adminPageDestination':
+        setUidAtom(uid)
+        setAdminPageDestiEdit(true)
         break
       // 클레임 관리 목록 수정 버튼 => 클레임 수정 페이지로 이동
       case 'claimUpdate':
