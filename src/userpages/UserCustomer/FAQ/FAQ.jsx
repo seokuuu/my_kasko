@@ -14,14 +14,16 @@ import { categories, corLabels, responseToTableRowMap } from './faqTableSetup'
 import { formatDateString } from '../../../utils/utils'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
-const FAQ = ({ faqList, faqPagination, onPageChange, handleTablePageSize }) => {
+const FAQ = ({ faqList, faqPagination, onPageChange, handleTablePageSize, onSelectedCategory }) => {
   const [faqListData, setFaqListData] = useState(null)
+  const [faqPaginationData, setFaqPaginationData] = useState(null)
   const [selectedCategory, setSelectedCategory] = useState('경매')
   const navigate = useNavigate()
 
   useEffect(() => {
     setFaqListData(formatTableRowData(faqList))
-  }, [faqList, selectedCategory])
+    setFaqPaginationData(faqPagination)
+  }, [faqList, faqPagination, selectedCategory])
 
   const formatDate = (date) => {
     return formatDateString(date, '/')
@@ -46,6 +48,7 @@ const FAQ = ({ faqList, faqPagination, onPageChange, handleTablePageSize }) => {
   })
 
   const handleCategoryClick = (category) => {
+    onSelectedCategory(category)
     setSelectedCategory(category)
   }
 
@@ -80,7 +83,7 @@ const FAQ = ({ faqList, faqPagination, onPageChange, handleTablePageSize }) => {
           getRow={faqListData}
           isRowClickable={true}
           handleOnRowClicked={handleOnRowClicked}
-          tablePagination={faqPagination}
+          tablePagination={faqPaginationData}
           onPageChange={onPageChange}
         />
       </TableContianer>
