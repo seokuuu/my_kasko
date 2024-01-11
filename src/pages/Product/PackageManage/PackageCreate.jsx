@@ -1,41 +1,24 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect, useRef } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
+// import { MainSelect } from '../../../common/Option/Main'
 import { BlackBtn, BtnWrap, YellBtn, BtnBound, WhiteRedBtn, SkyBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn, ExcelBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
+// import DateGrid from '../../../components/DateGrid/DateGrid'
+// import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
+import { WhiteBlackBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { packageModeAtom, singleAllProductModal, toggleAtom } from '../../../store/Layout/Layout'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
+// import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
 import { WhiteBtn } from '../../../common/Button/Button'
 import {
   FilterContianer,
   FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
   Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
   TableContianer,
-  ExCheckWrap,
-  ExCheckDiv,
-  ExInputsWrap,
-  SubTitle,
   TCSubContainer,
   FilterTopContainer,
   FilterTCTop,
@@ -51,12 +34,7 @@ import { getPackageProductsList } from '../../../api/SellProduct'
 import { useLocation } from 'react-router-dom'
 // import { getPackageProductsList } from '../../../api/packageProduct'
 import { add_element_field } from '../../../lib/tableHelpers'
-import {
-  packageDispatchFields,
-  packageDispatchFieldsCols,
-  packageProductsDispatchFieldsCols,
-  packageProductsDispatchFields,
-} from '../../../constants/admin/SellPackage'
+import { packageProductsDispatchFieldsCols, packageProductsDispatchFields } from '../../../constants/admin/SellPackage'
 import Table from '../../Table/Table'
 import { CRWMainBottom } from '../../Operate/Common/Datasheet/DatasheetEdit'
 import { CRWSub } from '../../Operate/Common/Datasheet/DatasheetEdit'

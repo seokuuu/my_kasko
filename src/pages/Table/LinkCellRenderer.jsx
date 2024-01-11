@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 import styled from 'styled-components'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
