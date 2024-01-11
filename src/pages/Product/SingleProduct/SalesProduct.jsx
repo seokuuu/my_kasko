@@ -145,8 +145,8 @@ const SalesProduct = () => {
   const { data, isSuccess } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
   const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
   const { data: spartList } = useReactQuery('', 'getSPartList', getSPartList)
-  const SaleProductList = data?.data.list
-  const SaleProductPages = data?.data.pagination
+  const SaleProductList = data?.r
+  const SaleProductPages = data?.pagination
 
   const [getRow, setGetRow] = useState('')
   const tableField = useRef(SingleDispatchFieldsCols)
@@ -246,7 +246,7 @@ const SalesProduct = () => {
       saleType: checkData2.join(''), // 판매 유형
       salePriceType: checkData3.join(''), //판매가 유형
 
-      productNumberList: search,
+      productNumberList: search.productNumber,
     }
     const filterData = Filtering(request)
 

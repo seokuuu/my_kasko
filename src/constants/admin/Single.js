@@ -12,6 +12,7 @@ var headerCheckboxSelection = function (params) {
 }
 
 export const singleDispatchFields= {
+    '순번':'index',
     '고유 번호': 'uid',
     '제품 번호': 'number',
     '규격 약호': 'spec',
@@ -83,6 +84,7 @@ export const singleDispatchFields= {
 
 export const SingleDispatchFieldsCols = [
   { headerClass:'custom-header-style',field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  { headerClass:'custom-header-style',field: '순번', minWidth: 60 },
   { headerClass:'custom-header-style',field: '고유 번호', minWidth: 100 },
   { headerClass:'custom-header-style',field: '제품 번호', minWidth: 100 },
   { headerClass:'custom-header-style',field: '규격 약호', minWidth: 100 },

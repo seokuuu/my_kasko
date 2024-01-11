@@ -77,8 +77,8 @@ const SingleProduct = () => {
 
   const [getRow, setGetRow] = useState('')
   const { data, isSuccess, refetch } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
-  const singleList = data?.data?.list
-  const singleProductPage = data?.data?.pagination
+  const singleList = data?.r
+  const singleProductPage = data?.pagination
   const tableField = useRef(SingleDispatchFieldsCols)
   const getCol = tableField.current
   const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)

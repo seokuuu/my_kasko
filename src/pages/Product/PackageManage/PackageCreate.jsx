@@ -49,11 +49,8 @@ import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../comm
 
 const PackageCreate = ({}) => {
   const checkSales = ['전체', '판매재', '판매제외제', '판매완료재']
-
   const checkShips = ['전체', '경매대상재', '상시판매 대상재']
-
   const checkTypes = ['전체', '특가', '일반']
-
   const radioDummy = ['경매', '상시']
 
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
@@ -66,7 +63,6 @@ const PackageCreate = ({}) => {
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
   const [check2, setCheck2] = useState(Array.from({ length: checkShips.length }, () => false))
-
   const [check3, setCheck3] = useState(Array.from({ length: checkTypes.length }, () => false))
 
   //checkShips
@@ -84,12 +80,6 @@ const PackageCreate = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData1(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check1])
 
   useEffect(() => {
@@ -100,12 +90,6 @@ const PackageCreate = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData2(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check2])
 
   useEffect(() => {
@@ -116,20 +100,9 @@ const PackageCreate = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData3(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check3])
 
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
+  const handleSelectChange = (selectedOption, name) => {}
   const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation

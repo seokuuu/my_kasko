@@ -35,6 +35,7 @@ import { CheckBox } from '../../../common/Check/Checkbox'
 import { ResetImg } from '../../../modal/External/ExternalFilter'
 import { BlackBtn } from '../../../common/Button/Button'
 import moment from 'moment'
+import { queryClient } from '../../../api/query'
 
 const parameter = {
   pageNum: 2,
@@ -60,7 +61,7 @@ function HyunDaiOriginal({ title }) {
 
   const [request, setRequest] = useState({
     pageNum: 2,
-    pageSize: 10,
+    pageSize: 50,
     startDate: '',
     endDate: '',
     timeOfDay: '',
@@ -90,21 +91,21 @@ function HyunDaiOriginal({ title }) {
   }, [radio])
 
   useEffect(() => {
-    if (d) setFilteredData(d)
-  }, [filterData])
+    if (isSuccess) setFilteredData(d)
+  }, [isSuccess])
 
   //테이블에 데이터 패치하는중
   useEffect(() => {
-    // if (original === undefined) {
-    //   original && setFilteredData(original)
-    // }
-
-    // if (!isSuccess && !filterData) return null
+    if (d === undefined) {
+      d && setFilteredData(d)
+    }
+    if (!isSuccess && !filterData) return null
     if (Array.isArray(d)) {
-      setGetRow(add_element_field(d, singleDispatchFields))
+      setGetRow(add_element_field(filterData, singleDispatchFields))
     }
     //타입, 리액트쿼리, 데이터 확인 후 실행
-  }, [isSuccess, d])
+  }, [isSuccess, filterData])
+  console.log(filterData)
   const modalClose = () => {
     if (onClickCheck) {
       setBtnCellModal(false)
@@ -141,11 +142,13 @@ function HyunDaiOriginal({ title }) {
     }))
   }, [startDate, endDate, radioData])
 
-
   const handleSubmit = () => {
-    
+    queryClient.prefetchQuery(['original', request], async () => {
+      const res = await gethyunDaiOriginal(request)
+      setFilteredData(res.data?.list)
+      return res.data?.list
+    })
   }
-  console.log(request)
   return (
     <OutSide>
       <Container>
@@ -197,7 +200,7 @@ function HyunDaiOriginal({ title }) {
               />
             </div>
             <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40} onClick={() => {}}>
+              <BlackBtn width={100} height={40} onClick={handleSubmit}>
                 검색
               </BlackBtn>
             </div>

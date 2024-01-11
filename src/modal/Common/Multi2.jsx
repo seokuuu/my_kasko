@@ -39,11 +39,18 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
 
   const [parameter, setParmeter] = useAtom(changeCategoryAtom)
-
+  console.log(errMsg)
   // 처음 팝업 띄우는 컴포넌트의 onClickHandler
-  const firstPopupClick = (num) => {
+  const firstPopupClick = (num, callBack) => {
     setPopupSwitch(true)
-    const firstPopup = popupDummy.find((popup) => popup.num === num)
+    const firstPopup = popupDummy.find((popup) => {
+      if (popup.num === num) {
+        return (popup.func = callBack)
+      }
+
+      console.log(popup)
+    })
+    // console.log(firstPopup)
     setNowPopup(firstPopup)
   }
 
@@ -64,7 +71,7 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
   const [checkData1, setCheckData1] = useState(Array.from({ length: radioDummy.length }, () => ''))
   const [checkData2, setCheckData2] = useState(Array.from({ length: radioDummy.length }, () => ''))
 
-  console.log('', (popupMessages[1].find((message) => message.num === '4') || {}).title)
+  // console.log('', (popupMessages[1].find((message) => message.num === '4') || {}).title)
 
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
@@ -153,7 +160,8 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
           <BlueBtnWrap>
             <BlueBlackBtn
               onClick={() => {
-                firstPopupClick('2-3')
+                firstPopupClick('2-3', saveFn)
+                // saveFn()
               }}
               // saveFn={saveFn}
             >

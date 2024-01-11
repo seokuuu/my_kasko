@@ -15,7 +15,7 @@ const AlertPopup = ({ propsRemove, setPopupSwitch, saveFn, err }) => {
 
   const [rowChecked, setRowChecked] = useAtom(selectedRowsAtom)
 
-  console.log('nowPopup !!!', nowPopup)
+  // console.log('nowPopup !!!', nowPopup)
 
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
   const [checkNext, setCheckNext] = useState(false) //임시 next 작동시 reload
@@ -29,6 +29,13 @@ const AlertPopup = ({ propsRemove, setPopupSwitch, saveFn, err }) => {
 
   // 기존 modalPopup이 아닌, 다수의 modal로 인해 해당 props는 propsPopup, setPopupSwitch으로 명함.
   const closePopup = () => {
+    // setNowPopup({
+    //   num: '2-4',
+    //   title: '현재 작업 중인 내용이 저장되지 않았습니다. \n페이지를 나가시겠습니까?',
+    //   content: '',
+    //   func: () => {
+    //   },
+    // })
     setPopupSwitch(false)
     setModalSwitch(false)
   }
@@ -36,27 +43,9 @@ const AlertPopup = ({ propsRemove, setPopupSwitch, saveFn, err }) => {
   // 팝업 확인 버튼 onClickHandler
   // popupDummy에 next가 있으면, firstPopupClick이 실행되고
   // next가 없으면, 팝업과 해당 모달이 종료된다
-  useEffect(() => {
-    setNowPopup({
-      num: '2-3',
-      title: '',
-      content: '저장하시겠습니까?',
-      type: '1',
-      next: '1-12',
-      onClick: () => {},
-      func: () => {
-        if (err) {
-          saveFn()
-        } else {
-          return alert('error')
-        }
-        console.log('hi2')
-      },
-      func2: () => {},
-    })
-  }, [])
 
   const showNextPopup = () => {
+    console.log('qq1', nowPopup)
     const nextType = nowPopup.next?.split('-')[0]
     if (nowPopup && nowPopup?.next) {
       nowPopup.func()

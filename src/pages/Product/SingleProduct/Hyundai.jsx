@@ -68,7 +68,7 @@ import Multi2 from '../../../modal/Common/Multi2'
 import { changeCategoryAtom } from '../../../store/Layout/Popup'
 import TableModal from '../../../modal/Table/TableModal'
 import HyunDaiOriginal from './HyunDaiOriginal'
-
+import { popupObject } from '../../../store/Layout/Layout'
 const DEFAULT_OBJ = { value: '', label: '전체' }
 
 const Hyundai = ({}) => {
@@ -136,8 +136,10 @@ const Hyundai = ({}) => {
   const [isTableModal, setIsTableModal] = useAtom(onClickCheckAtom)
   const [getRow, setGetRow] = useState('')
   const { data, isSuccess, refetch } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
-  const hyunDaiList = data?.data?.list
-  const hyunDaiPage = data?.data?.pagination
+  const hyunDaiList = data?.r
+  const hyunDaiPage = data?.pagination
+
+  console.log(hyunDaiPage)
   const tableField = useRef(SingleDispatchFieldsCols)
   const getCol = tableField.current
   const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
@@ -215,7 +217,6 @@ const Hyundai = ({}) => {
       setFilteredData(hyunDaiList)
       setPagination(hyunDaiPage)
     }
-    console.log('SELECT', select)
   }
 
   useEffect(() => {
@@ -237,16 +238,22 @@ const Hyundai = ({}) => {
 
   useEffect(() => {
     if (isSuccess) {
-      setFilteredData(hyunDaiList)
+      setFilteredData(() => hyunDaiList)
       setPagination(hyunDaiPage)
     }
   }, [isSuccess])
 
   useEffect(() => {
     if (filterData === undefined) {
-      hyunDaiList && setFilteredData(hyunDaiList)
+      hyunDaiList &&
+        setFilteredData((p) => {
+          hyunDaiList.map((i, idx) => ({
+            순번: idx,
+            ...p,
+          }))
+        })
     }
-
+    console.log(filterData)
     if (!isSuccess && !filterData) return null
     if (Array.isArray(filterData)) {
       setGetRow(add_element_field(filterData, singleDispatchFields))
@@ -304,7 +311,7 @@ const Hyundai = ({}) => {
   const [selectProductNumber, setSelectProductNumber] = useState([])
   const [parameter, setParameter] = useAtom(changeCategoryAtom)
   const [errorMsg, setErrorMsg] = useState('')
-
+  const [nowPopup, setNowPopup] = useAtom(popupObject)
   // 판매 구분 변경
   useEffect(() => {
     if (checkBoxSelect?.length === 0) return
@@ -315,10 +322,20 @@ const Hyundai = ({}) => {
   const { mutate, isError } = useMutationQuery('change-category', patchSaleCategory)
   const changeSaleCategory = () => {
     const res = mutate(parameter, {
+      onSuccess: () => {
+        setIsMultiModal(false)
+      },
       onError: (e) => {
         setErrorMsg(e.data.message)
-
-        alert(e.data.message)
+        setNowPopup({
+          num: '1-12',
+          title: '',
+          content: `${e.data.message}`,
+          func: () => {
+            console.log('hi')
+            setIsMultiModal(false)
+          },
+        })
       },
     })
 
@@ -605,7 +622,6 @@ const Hyundai = ({}) => {
           <TCSubContainer bor>
             <div></div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <WhiteBlackBtn>장기재 등록</WhiteBlackBtn>
               <WhiteBlackBtn
                 onClick={() => {
                   setIsTableModal(true)
