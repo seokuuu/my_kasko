@@ -91,6 +91,7 @@ const Claim = () => {
     }
   }, [detailRow])
 
+  const { pagination, onPageChanage } = usePaging(data, setSearch)
   return (
     <FilterContianer>
       {/* 카테고리탭 & 검색필터 on & 검색 */}
@@ -102,7 +103,13 @@ const Claim = () => {
           toRegister={toRegister}
           removeEventHandler={removeEventHandler}
         />
-        <Table getCol={ClaimListFieldCols} getRow={row} setChoiceComponent={() => {}} />
+        <Table
+          getCol={ClaimListFieldCols}
+          getRow={row}
+          setChoiceComponent={() => {}}
+          tablePagination={pagination}
+          onPageChange={onPageChanage}
+        />
         {/* <Test3 title={'규격 약호 찾기'} /> */}
       </TableContianer>
     </FilterContianer>

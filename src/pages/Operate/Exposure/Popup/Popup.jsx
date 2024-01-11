@@ -12,14 +12,12 @@ import {
   popupObject,
   popupTypeAtom,
   selectedRowsAtom,
-  toggleAtom,
 } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
+import CategoryTab from '../../UI/CategoryTab'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { commonListSearchInitValue, exposureTabOptions } from '../../constants'
-import CommonHeader from '../../UI/CommonHeader'
-import CategoryTab from '../../UI/CategoryTab'
-import HeaderToggle from '../../../../components/Toggle/HeaderToggle'
+import usePaging from '../../hook/usePaging'
 
 /**
  * @description
@@ -113,6 +111,8 @@ const Popup = ({}) => {
     }
   }, [detailRow])
 
+  const { pagination, onPageChanage } = usePaging(data, setSearch)
+
   return (
     <FilterContianer>
       {/* 헤더(카테고리탭 & 검색) */}
@@ -134,7 +134,13 @@ const Popup = ({}) => {
           selectedLength={selectedLength}
         />
         {/* 테이블 */}
-        <Table getCol={PopupListFieldCols} getRow={rows} setChoiceComponent={() => {}} />
+        <Table
+          getCol={PopupListFieldCols}
+          getRow={rows}
+          setChoiceComponent={() => {}}
+          tablePagination={pagination}
+          onPageChange={onPageChanage}
+        />
       </TableContianer>
     </FilterContianer>
   )

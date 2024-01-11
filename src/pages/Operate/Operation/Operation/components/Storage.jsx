@@ -22,6 +22,7 @@ import {
 import Table from '../../../../Table/Table'
 import CommonTableHeader from '../../../UI/CommonTableHeader'
 import { commonListSearchInitValue } from '../../../constants'
+import usePaging from '../../../hook/usePaging'
 
 /**
  * @description
@@ -126,6 +127,8 @@ const Storage = () => {
       setModal(true)
     }
   }, [detailRow])
+
+  const { pagination, onPageChanage } = usePaging(data, setSearch)
   return (
     <TableContianer>
       <CommonTableHeader
@@ -135,8 +138,13 @@ const Storage = () => {
         toRegister={() => setModal(true)}
         removeEventHandler={removeEventHandler}
       />
-
-      <Table getCol={StorageFieldCols} getRow={rows} setChoiceComponent={() => {}} />
+      <Table
+        getCol={StorageFieldCols}
+        getRow={rows}
+        setChoiceComponent={() => {}}
+        tablePagination={pagination}
+        onPageChange={onPageChanage}
+      />
       {modal && (
         <AddProduct
           initValue={detailsData ? detailsData.storage : ''}
