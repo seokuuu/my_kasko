@@ -9,7 +9,7 @@ import Table from '../../Table/Table'
 import { useShipmentMergeMutation } from '../../../api/shipment'
 import { RadioSearchButton } from '../../../components/Search'
 
-const RequestSelector = ({ getRow, removeSelector }) => {
+const RequestSelector = ({ list, removeSelector }) => {
   const { mutate: onCreateMerge } = useShipmentMergeMutation()
   const [dockStatus, setDockStatus] = useState(false) // 상차도 여부
 
@@ -17,21 +17,22 @@ const RequestSelector = ({ getRow, removeSelector }) => {
   const tableField = useRef(ShippingRegisterFieldsCols)
   const getCol = tableField.current
 
+  console.log(list)
+
+  // 독차 / 합짐 구별
+  const isMerge = list.map((item) => item)
+
   // 선별 등록
   const onRegister = () => {
-    const list = getRow
     if (!list) {
       return window.alert('선별 목록에 제품을 추가해주세요.')
     }
     const orderUids = list.map((item) => item['주문 고유 번호'])
-    const dockStatus = 0
 
     if (window.confirm('선별 등록하시겠습니까?')) {
       onCreateMerge({ dockStatus, orderUids })
     }
   }
-
-  console.log(dockStatus)
 
   return (
     <>
@@ -100,7 +101,7 @@ const RequestSelector = ({ getRow, removeSelector }) => {
             <WhiteSkyBtn onClick={onRegister}>선별 등록</WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
+        <Table getCol={getCol} getRow={list} />
       </TableContianer>
     </>
   )

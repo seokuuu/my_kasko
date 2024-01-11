@@ -8,12 +8,16 @@ import { styled } from 'styled-components'
  * @param onChange 체인지 이벤트 void | undefined
  */
 const RadioSearchButton = ({ title, options, value, onChange }) => {
+  const changeHandler = (value) => {
+    if (!onChange) return
+    onChange(value)
+  }
   return (
     <RadioContainer>
       <h6>{title}</h6>
       <RadioBox>
         {options.map((option, index) => (
-          <RadioMainDiv key={index} onClick={() => onChange(value)}>
+          <RadioMainDiv key={index} onClick={() => changeHandler(option.value)}>
             <RadioCircleDiv isChecked={option.value === value}>
               <RadioInnerCircleDiv isChecked={option.value === value} />
             </RadioCircleDiv>
