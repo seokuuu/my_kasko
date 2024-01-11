@@ -16,6 +16,7 @@ import Table from '../../../Table/Table'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { claimInitState } from '../../constants'
 import ClaimHeader from './components/ClaimHeader'
+import usePaging from '../../hook/usePaging'
 
 /**
  * @description
