@@ -89,14 +89,18 @@ const Request = ({ setChoiceComponent }) => {
   const tableField = useRef(ShippingRegisterFieldsCols)
   const getCol = tableField.current
   const [getRow, setGetRow] = useState('')
-  const selectedUids = useAtom(selectedRowsAtom)[0]
+  const [rowChecked, setRowChecked] = useAtom(selectedRowsAtom)
 
   // 선별 목록
   const [selectorList, setSelectorList] = useState([])
-  const addSelectorList = () => setSelectorList((prev) => [...prev, ...selectedUids])
+  const addSelectorList = () => {
+    setSelectorList((prev) => [...prev, ...rowChecked])
+    setRowChecked([])
+  }
+  console.log('rowChecked : ', rowChecked)
   const removeSelector = () => {
     const key = '주문 고유 번호'
-    const deleteKeys = selectedUids.map((item) => item[key])
+    const deleteKeys = rowChecked.map((item) => item[key])
     const newSelectors = selectorList.filter((item) => !deleteKeys.includes(item[key]))
     setSelectorList(newSelectors)
   }
@@ -112,10 +116,10 @@ const Request = ({ setChoiceComponent }) => {
 
   // 출하 취소
   const onRegisterCancel = () => {
-    if (!selectedUids) {
+    if (!rowChecked) {
       return window.alert('제품을 선택해주세요.')
     }
-    const uids = selectedUids.map((item) => item['주문 고유 번호'])
+    const uids = rowChecked.map((item) => item['주문 고유 번호'])
     const shipmentStatus = '출하 대기'
 
     if (window.confirm('출하 취소하시겠습니까?')) {
@@ -196,7 +200,7 @@ const Request = ({ setChoiceComponent }) => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>{selectedUids?.length ?? 0}</span> / {data?.pagination?.listCount}개 )
+            조회 목록 (선택 <span>{rowChecked?.length ?? 0}</span> / {data?.pagination?.listCount}개 )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -208,7 +212,7 @@ const Request = ({ setChoiceComponent }) => {
         </TCSubContainer>
         <TCSubContainer>
           <div>
-            선택 중량<span>{selectedUids?.length ?? 0}</span>kg / 총 중량 {data?.pagination?.totalWeight} kg
+            선택 중량<span>{rowChecked?.length ?? 0}</span>kg / 총 중량 {data?.pagination?.totalWeight} kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn onClick={onRegisterCancel}>출하 취소</WhiteRedBtn>
@@ -223,7 +227,7 @@ const Request = ({ setChoiceComponent }) => {
         />
       </TableContianer>
       {/* 선별 등록 */}
-      <RequestSelector getRow={selectorList} removeSelector={removeSelector} />
+      <RequestSelector list={selectorList} removeSelector={removeSelector} />
     </FilterContianer>
   )
 }
