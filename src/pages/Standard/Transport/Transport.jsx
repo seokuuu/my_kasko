@@ -202,14 +202,15 @@ const Transport = ({}) => {
     editCostMutation.mutate(finalResult)
   }
 
-  const Param = {
+  const paramData = {
     pageNum: 1,
     pageSize: 5,
     type: types, // (0: 매입 / 1: 매출)
   }
-
   // GET
-  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getAdminTransportation', getAdminTransportation)
+  const [param, setParam] = useState(paramData)
+  const [tablePagination, setTablePagination] = useState([])
+  const { isLoading, isError, data, isSuccess } = useReactQuery(param, 'getAdminTransportation', getAdminTransportation)
   const resData = data?.data?.data?.list
   console.log('resData => ', resData)
 
@@ -219,6 +220,7 @@ const Transport = ({}) => {
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, StandardTransportationFields))
+      setTablePagination(data.data.data.pagination)
     }
   }, [isSuccess, resData])
 
@@ -310,6 +312,21 @@ const Transport = ({}) => {
   ]
 
   console.log('editInput', editInput)
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
 
   return (
     <FilterContianer>
@@ -464,7 +481,7 @@ const Transport = ({}) => {
           <div style={{ display: 'flex', gap: '10px' }}></div>
         </TCSubContainer>
 
-        <Table getCol={getCol} getRow={getRow} />
+        <Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
         <TableBottomWrap>
           <BlackBtn width={15} height={40} onClick={() => costEdit()}>
             저장
