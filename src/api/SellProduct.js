@@ -5,7 +5,8 @@ const urls = {
   single: '/single-product',
   saleCategory :'/single-product/sale-category',
   original:'/single-product/original',
-  package:'package-product/'
+  package:'package-product',
+  packageProducts:"/package-product/products"
 }
 
 export async function getSingleProducts(data) {
@@ -49,4 +50,17 @@ export async function getPackageList(params) {
     return {index:idx+1 , ...i}
   })
   return {pagination,r}
+}
+export async function getPackageProductsList(params) {
+  const response = await client.get(`${urls.packageProducts}`,{
+    params:params,
+    paramsSerializer:(param)=>{
+      return qs.stringify(param)
+    }})
+    const pagination = response.data?.data?.pagination
+    const r =response.data?.data.list.map((i,idx)=>{
+      return {index:idx+1 , ...i}
+    })
+    console.log('RES',r)
+    return {pagination,r}
 }

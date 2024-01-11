@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import {
   NonFadeOverlay,
@@ -16,25 +16,40 @@ import {
 
 import { BlackBtn } from '../../common/Button/Button'
 
-import { blueModalAtom } from '../../store/Layout/Layout'
+import { blueModalAtom, packageCreateAtom, packageCreateObjAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
 import { ExRadioWrap } from '../External/ExternalFilter'
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
-
+import { useNavigate } from 'react-router-dom'
 import { CheckBox } from '../../common/Check/Checkbox'
+import { useLocation, Link } from 'react-router-dom'
 
-const PackageManage = () => {
-  const [isModal, setIsModal] = useAtom(blueModalAtom)
-
+const PackageManageFind = ({ isCreate, url }) => {
+  const [isModal, setIsModal] = useAtom(packageCreateAtom)
+  const { pathname } = useLocation()
   const modalClose = () => {
     setIsModal(false)
   }
+  // useEffect(() => {
 
+  // }, [pathname])
   const radioDummy = ['경매', '상시']
 
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-
+  const [packageName, setPackageName] = useState('')
+  const [packageObj, setPackageObj] = useAtom(packageCreateObjAtom)
+  const handleChange = (e) => {
+    setPackageName(e.currentTarge.value)
+  }
+  const navigate = useNavigate()
+  useEffect(() => {
+    setPackageObj({
+      packageNumber: '',
+      sellType: '경매',
+      packageName: packageName,
+    })
+  }, [packageName])
   console.log('checkRadio =>', checkRadio)
 
   return (
@@ -51,12 +66,15 @@ const PackageManage = () => {
         <BlueSubContainer>
           <div>
             <BlueMainDiv>
-              <BlueSubDiv style={{ height: '80px' }}>
-                <h6>패키지 번호</h6>
-                <BlueInput disabled />
-              </BlueSubDiv>
-              <BlueSubDiv style={{ height: '80px' }} bor>
-                <h6>판매 구분</h6>
+              {!isCreate && (
+                <BlueSubDiv style={{ height: '80px' }}>
+                  <h6>패키지 번호</h6>
+                  <BlueInput disabled />
+                </BlueSubDiv>
+              )}
+
+              <BlueSubDiv style={{ height: '80px' }} bor={!isCreate ? true : false}>
+                <h6>판매 유형</h6>
                 <BlueRadioWrap style={{ gap: '50px' }}>
                   {radioDummy.map((text, index) => (
                     <RadioMainDiv key={index}>
@@ -74,13 +92,20 @@ const PackageManage = () => {
                 </BlueRadioWrap>
               </BlueSubDiv>
               <BlueSubDiv style={{ height: '80px' }} bor>
-                <h6>판매 구분</h6>
-                <BlueInput placeholder="패키지 명을 입력하세요." />
+                <h6>패키지 명 지정</h6>
+                <BlueInput placeholder="패키지 명을 입력하세요." onChange={handleChange} />
               </BlueSubDiv>
             </BlueMainDiv>
           </div>
           <BlueBtnWrap>
-            <BlueBlackBtn>생성</BlueBlackBtn>
+            <BlueBlackBtn
+              onClick={() => {
+                navigate(url)
+                setIsModal(false)
+              }}
+            >
+              <p style={{ color: 'white' }}>생성</p>
+            </BlueBlackBtn>
           </BlueBtnWrap>
         </BlueSubContainer>
       </ModalContainer>
@@ -88,4 +113,4 @@ const PackageManage = () => {
   )
 }
 
-export default PackageManage
+export default PackageManageFind

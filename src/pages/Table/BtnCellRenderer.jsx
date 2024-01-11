@@ -13,11 +13,11 @@ import {
   UsermanageDestiEditModal,
   StandardConsoliateEdit,
   auctionRoundEditPageAtom,
-  userPageDestiEditModal
+  userPageDestiEditModal,
 } from '../../store/Layout/Layout'
 
 import { UsermanageUserManageEditModal } from '../../store/Layout/Layout'
-const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
+const BtnCellRenderer = ({ data, uidFieldName, editType, moveUrl }) => {
   const uid = data[uidFieldName]
 
   const navigate = useNavigate()
@@ -43,6 +43,8 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
   const [userManageEditModal, setUserManageEditModal] = useAtom(UsermanageUserManageEditModal)
 
   const [auctionRoundEditModal, setAuctionRoundEditModal] = useAtom(auctionRoundEditPageAtom)
+
+  console.log()
 
   const btnClickedHandler = () => {
     switch (editType) {
@@ -93,6 +95,8 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
         setUidAtom(uid)
         setAuctionRoundEditModal(true)
         break
+      case 'packageUpdate':
+        navigate('/product/packageedit/' + data[uidFieldName], { state: { data: data } })
       default:
         break
     }

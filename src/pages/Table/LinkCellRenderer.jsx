@@ -1,24 +1,41 @@
 import styled from 'styled-components'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAtom } from 'jotai'
+import { packageDetailModal, packageModeAtom } from '../../store/Layout/Layout'
 
-export default function LinkCellRenderer({ data }) {
+export default function LinkCellRenderer({ data, uidFieldName, editType, moveUrl }) {
   // const current = window.location.href
   const navigate = useNavigate()
+  const [mode, setMode] = useAtom(packageModeAtom)
+  const [isModal, setIsModal] = useAtom(packageDetailModal)
   // const handleClick = () => {}
+
+  const handleClick = () => {
+    setMode('edit')
+
+    return new Promise((resolve) =>
+      setTimeout(() => {
+        navigate(`${moveUrl}/${data[uidFieldName]}`, { state: { data: { data, mode: 'edit' } } })
+        resolve()
+      }, 100),
+    )
+  }
+  const btnClieckedHandler = () => {
+    switch (editType) {
+      case 'openDetailModal':
+        setIsModal(true)
+        break
+      case 'LinkTo':
+        handleClick()
+    }
+  }
   return (
-    <LinkCell
-      as={'button'}
-      onClick={(e) => {
-        navigate(`${data?.고유값}`, { state: { data: data } })
-      }}
-      style={{ color: 'blue' }}
-    >
-      {data?.작성일자}
+    <LinkCell as={'button'} onClick={btnClieckedHandler} style={{ color: 'blue' }}>
+      {data[uidFieldName]}
     </LinkCell>
   )
 }
-
 const LinkCell = styled.div`
   color: #4c83d6;
   outline: none;

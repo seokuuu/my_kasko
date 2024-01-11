@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
@@ -9,13 +9,13 @@ import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn, ExcelBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { packageModeAtom, singleAllProductModal, toggleAtom } from '../../../store/Layout/Layout'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
-
+import { WhiteBtn } from '../../../common/Button/Button'
 import {
   FilterContianer,
   FilterHeader,
@@ -42,65 +42,62 @@ import {
   FilterTCBottom,
   FilterTCBSub,
 } from '../../../modal/External/ExternalFilter'
-
+import { useQuery } from '@tanstack/react-query'
 import { ExRadioWrap } from '../../../modal/External/ExternalFilter'
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
-
-const PackageCreate = ({}) => {
-  const checkSales = ['전체', '판매재', '판매제외제', '판매완료재']
-  const checkShips = ['전체', '경매대상재', '상시판매 대상재']
-  const checkTypes = ['전체', '특가', '일반']
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getPackageProductsList } from '../../../api/SellProduct'
+import { useLocation } from 'react-router-dom'
+// import { getPackageProductsList } from '../../../api/packageProduct'
+import { add_element_field } from '../../../lib/tableHelpers'
+import {
+  packageDispatchFields,
+  packageDispatchFieldsCols,
+  packageProductsDispatchFieldsCols,
+  packageProductsDispatchFields,
+} from '../../../constants/admin/SellPackage'
+import Table from '../../Table/Table'
+import { CRWMainBottom } from '../../Operate/Common/Datasheet/DatasheetEdit'
+import { CRWSub } from '../../Operate/Common/Datasheet/DatasheetEdit'
+import { useAtom } from 'jotai'
+import SingleAllProduct from '../../../modal/Multi/SingleAllProduct'
+const PackageCreate = () => {
   const radioDummy = ['경매', '상시']
-
+  const prevData = useLocation().state?.data
+  const [isModal, setIsModal] = useAtom(singleAllProductModal)
+  const [mode, setMode] = useAtom(packageModeAtom)
+  console.log('MODE', mode)
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-
   const [savedRadioValue, setSavedRadioValue] = useState('')
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
   }, [checkRadio])
-
   //checkSales
-  const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
-  const [check2, setCheck2] = useState(Array.from({ length: checkShips.length }, () => false))
-  const [check3, setCheck3] = useState(Array.from({ length: checkTypes.length }, () => false))
 
-  //checkShips
-  const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
+  const tableField = useRef(packageProductsDispatchFieldsCols)
+  const getCol = tableField.current
+  const [requestParams, setRequestParams] = useState(
+    prevData && {
+      pageNum: 1,
+      pageSize: 10,
+      packageNumber: prevData['패키지 번호'],
+    },
+  )
 
-  const [checkData2, setCheckData2] = useState(Array.from({ length: checkShips.length }, () => ''))
+  const { data, isSuccess } = useQuery(
+    ['packageProducts', requestParams],
+    () => getPackageProductsList(requestParams),
+    {
+      enabled: mode !== 'post',
+    },
+  )
+  // const { data, isSuccess } = useReactQuery(requestParams, 'packageProducts', getPackageProductsList)
+  const packageData = data?.r
+  const packagePage = data?.pagination
 
-  const [checkData3, setCheckData3] = useState(Array.from({ length: checkTypes.length }, () => ''))
-
-  useEffect(() => {
-    // true에 해당되면, value를, false면 빈값을 반환
-    const updatedCheck = checkSales.map((value, index) => {
-      return check1[index] ? value : ''
-    })
-    // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-    const filteredCheck = updatedCheck.filter((item) => item !== '')
-    setCheckData1(filteredCheck)
-  }, [check1])
-
-  useEffect(() => {
-    // true에 해당되면, value를, false면 빈값을 반환
-    const updatedCheck = checkShips.map((value, index) => {
-      return check2[index] ? value : ''
-    })
-    // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-    const filteredCheck = updatedCheck.filter((item) => item !== '')
-    setCheckData2(filteredCheck)
-  }, [check2])
-
-  useEffect(() => {
-    // true에 해당되면, value를, false면 빈값을 반환
-    const updatedCheck = checkTypes.map((value, index) => {
-      return check3[index] ? value : ''
-    })
-    // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-    const filteredCheck = updatedCheck.filter((item) => item !== '')
-    setCheckData3(filteredCheck)
-  }, [check3])
+  const [getRow, setGetRow] = useState('')
+  const [filteredData, setFilteredData] = useState([])
 
   const handleSelectChange = (selectedOption, name) => {}
   const [isRotated, setIsRotated] = useState(false)
@@ -121,21 +118,43 @@ const PackageCreate = ({}) => {
       setToggleMsg('On')
     }
   }
+  useEffect(() => {
+    if (isSuccess && prevData) {
+      setFilteredData(packageData)
+    }
+  }, [isSuccess, requestParams])
 
+  useEffect(() => {
+    if (isSuccess && filteredData === undefined) {
+      packageData && setFilteredData(packageData)
+    }
+    if (!isSuccess && !filteredData) return null
+    if (Array.isArray(filteredData) && prevData) {
+      setGetRow(add_element_field(filteredData, packageProductsDispatchFields))
+    }
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+  }, [isSuccess, filteredData, prevData])
+
+  const handleAddProduct = () => {
+    setIsModal(true)
+  }
   return (
     <FilterContianer>
+      <p style={{ color: 'black' }}>{mode}</p>
       <FilterHeader>
-        <h1>패키지 생성</h1>
+        <h1>패키지 {prevData ? '수정' : '생성'}</h1>
         {/* 토글 쓰기 */}
         <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
       </FilterHeader>
       {exFilterToggle && (
         <>
           <FilterTopContainer>
-            <FilterTCTop>
-              <h6>패키지 번호</h6>
-              <p>PK00003</p>
-            </FilterTCTop>
+            {prevData && (
+              <FilterTCTop>
+                <h6>패키지 번호</h6>
+                <p>{prevData['패키지 번호']}</p>
+              </FilterTCTop>
+            )}
             <FilterTCBottom>
               <FilterTCBSub>
                 <div>
@@ -174,118 +193,6 @@ const PackageCreate = ({}) => {
               </FilterTCBSub>
             </FilterTCBottom>
           </FilterTopContainer>
-          <FilterSubcontianer>
-            <FilterLeft>
-              <RowWrap>
-                <PartWrap first>
-                  <h6>창고 구분</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
-                </PartWrap>
-                <PartWrap>
-                  <h6>매입처</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
-                </PartWrap>
-                <PartWrap>
-                  <h6>유찰 횟수</h6>
-                  <ExInputsWrap>
-                    <Input /> <Tilde>~</Tilde>
-                    <Input />
-                  </ExInputsWrap>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap>
-                <PartWrap first>
-                  <h6>구분</h6>
-                  <MainSelect />
-                  <MainSelect />
-                  <MainSelect />
-                  <MainSelect />
-                  <MainSelect />
-                </PartWrap>
-              </RowWrap>
-              <RowWrap>
-                <PartWrap first>
-                  <h6>판매 구분</h6>
-                  <ExCheckWrap>
-                    {checkSales.map((x, index) => (
-                      <ExCheckDiv style={{ marginRight: '5px', gap: '0px' }}>
-                        <StyledCheckSubSquDiv
-                          onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
-                          isChecked={check1[index]}
-                        >
-                          <CheckImg2 src="/svg/check.svg" isChecked={check1[index]} />
-                        </StyledCheckSubSquDiv>
-                        <p>{x}</p>
-                      </ExCheckDiv>
-                    ))}
-                  </ExCheckWrap>
-                </PartWrap>
-                <PartWrap>
-                  <h6>판매 유형</h6>
-                  <ExCheckWrap>
-                    {checkShips.map((x, index) => (
-                      <ExCheckDiv>
-                        <StyledCheckSubSquDiv
-                          onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
-                          isChecked={check1[index]}
-                        >
-                          <CheckImg2 src="/svg/check.svg" isChecked={check2[index]} />
-                        </StyledCheckSubSquDiv>
-                        <p>{x}</p>
-                      </ExCheckDiv>
-                    ))}
-                  </ExCheckWrap>
-                </PartWrap>
-              </RowWrap>
-
-              <RowWrap style={{ border: '0px' }}>
-                <PartWrap first>
-                  <h6 style={{ width: '100px' }}>판매가 유형</h6>
-                  <ExCheckWrap style={{ marginLeft: '4px' }}>
-                    {checkTypes.map((x, index) => (
-                      <ExCheckDiv>
-                        <StyledCheckSubSquDiv
-                          onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
-                          isChecked={check1[index]}
-                        >
-                          <CheckImg2 src="/svg/check.svg" isChecked={check2[index]} />
-                        </StyledCheckSubSquDiv>
-                        <p>{x}</p>
-                      </ExCheckDiv>
-                    ))}
-                  </ExCheckWrap>
-                </PartWrap>
-              </RowWrap>
-            </FilterLeft>
-            <FilterRight>
-              <DoubleWrap>
-                <h6>제품 번호 </h6>
-                <textarea
-                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                />
-              </DoubleWrap>
-            </FilterRight>
-          </FilterSubcontianer>
-          <FilterFooter>
-            <div style={{ display: 'flex' }}>
-              <p>초기화</p>
-              <ResetImg
-                src="/img/reset.png"
-                style={{ marginLeft: '10px', marginRight: '20px' }}
-                onClick={handleImageClick}
-                className={isRotated ? 'rotate' : ''}
-              />
-            </div>
-            <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40}>
-                검색
-              </BlackBtn>
-            </div>
-          </FilterFooter>
         </>
       )}
       <TableContianer>
@@ -303,20 +210,26 @@ const PackageCreate = ({}) => {
           <div>
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}></div>
-        </TCSubContainer>
-        <Test3 />
-        <TCSubContainer bor>
-          <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
-            <Hidden />
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
-            <Excel />
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <WhiteRedBtn>목록 제거</WhiteRedBtn>
+            <WhiteBlackBtn onClick={handleAddProduct}>제품 추가</WhiteBlackBtn>
           </div>
         </TCSubContainer>
+        <Table getCol={getCol} getRow={getRow} />
+        <CRWMainBottom>
+          <CRWSub>
+            <BtnWrap>
+              <WhiteBtn width={90} height={50} style={{ marginRight: '10px' }}>
+                돌아가기
+              </WhiteBtn>
+              <BlackBtn width={90} height={50}>
+                등록
+              </BlackBtn>
+            </BtnWrap>
+          </CRWSub>
+        </CRWMainBottom>
       </TableContianer>
+      {isModal && <SingleAllProduct />}
     </FilterContianer>
   )
 }

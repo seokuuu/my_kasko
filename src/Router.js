@@ -204,10 +204,11 @@ const Router = () => {
           <Route path="/product/salesproduct" element={<SalesProductPage />}></Route>
           <Route path="/product/package" element={<PackageManagePage />}></Route>
           <Route path="/product/packagecreate" element={<PackageCreatePage />}></Route>
-          <Route path="/product/packageedit" element={<PackageCreatePage />}></Route>
+          <Route path="/product/packageedit/:id" element={<PackageCreatePage />}></Route>
           <Route path="/product/recommend" element={<RecommendPage />}></Route>
           <Route path="/product/recommendpkg" element={<RecommendPackPage />}></Route>
           <Route path="/product/prono" element={<PronoPage />}></Route>
+          {/* <Route path="/product/packageUpdate/:id" element={<PronoPage />}></Route> */}
         </Route>
         {/* 경매 관리  */}
         <Route path="/auction">
