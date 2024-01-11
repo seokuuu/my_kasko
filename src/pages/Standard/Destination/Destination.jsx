@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {useCallback, useEffect, useRef, useState} from 'react'
 
-import { BlackBtn, GreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import {BlackBtn, GreyBtn, WhiteRedBtn, WhiteSkyBtn} from '../../../common/Button/Button'
 
-import { useAtom } from 'jotai'
+import {useAtom} from 'jotai'
 import Hidden from '../../../components/TableInner/Hidden'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
@@ -16,10 +16,22 @@ import {
   PartWrap,
   ResetImg,
   RowWrap,
-  TCSubContainer,
   TableContianer,
+  TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
-import { blueModalAtom, excelToJsonAtom, modalObject, toggleAtom } from '../../../store/Layout/Layout'
+import {
+  blueModalAtom,
+  btnCellRenderAtom,
+  btnCellUidAtom,
+  excelToJsonAtom,
+  modalAtom,
+  modalObject,
+  popupAtom,
+  popupObject,
+  popupTypeAtom,
+  selectedRowsAtom,
+  toggleAtom
+} from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 
 import {
@@ -29,33 +41,22 @@ import {
   StandardDestinationPost,
 } from '../../../constants/admin/Standard'
 
-import { AuctionUnitPricePost } from '../../../constants/admin/Auction'
-
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { isArray } from 'lodash'
+import {useMutation, useQueryClient} from '@tanstack/react-query'
+import {isArray} from 'lodash'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { add_element_field } from '../../../lib/tableHelpers'
+import {add_element_field} from '../../../lib/tableHelpers'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
-import { popupDummy } from '../../../modal/Alert/PopupDummy'
+import {popupDummy} from '../../../modal/Alert/PopupDummy'
 import TableModal from '../../../modal/Table/TableModal'
 import Upload from '../../../modal/Upload/Upload'
 import {
-  editAdminDestination,
   deleteAdminDestination,
+  editAdminDestination,
   getAdminDestination,
   getAdminDestinationSearch,
   postAdminDestination,
 } from '../../../service/admin/Standard'
-import {
-  btnCellRenderAtom,
-  btnCellUidAtom,
-  modalAtom,
-  popupAtom,
-  popupObject,
-  popupTypeAtom,
-  selectedRowsAtom,
-} from '../../../store/Layout/Layout'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 const Destination = ({}) => {
@@ -221,6 +222,10 @@ const Destination = ({}) => {
     [editInput],
   )
 
+  const convertKey = {
+    '목적지 명': 'name'
+  }
+
   console.log('editInput @@', editInput)
   console.log('uidAtom @@', uidAtom)
 
@@ -319,6 +324,7 @@ const Destination = ({}) => {
             onEditHandler={onEditHandler} // edit 버튼의 함수를 스프레드 func를 전달
             propsHandler={propsEdit} // 실질 patch 역할하는 함수
             editTitle={'목적지 고유 번호'}
+            convertKey={convertKey}
           />
         )}
       </TableContianer>

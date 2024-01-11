@@ -81,20 +81,9 @@ const DestinationPost = ({ setChoiceComponent }) => {
     }
   }
 
-  const backComponent = (check) => {
-    setModalAtom(true)
-    if (check === true) {
-      setModalAtom(false)
-      setChoiceComponent('리스트')
-    }
-    if (check === false) {
-      setModalAtom(false)
-    }
-  }
-
-  const handleModal = (value) => {
+  const backComponent = () => {
     setModalAtom(false)
-    console.log(value)
+    setChoiceComponent('리스트')
   }
 
   const { mutate: regi, status, error } = usePostUserDestinationQuery()
