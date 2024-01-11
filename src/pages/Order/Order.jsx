@@ -46,6 +46,8 @@ import PagingComp from '../../components/paging/PagingComp'
 import { OrderManageFieldsCols } from '../../constants/admin/OrderManage'
 
 const Order = ({}) => {
+  const checkBoxSelect = useAtomValue(selectedRowsAtom)
+  const [orderPagination, setOrderPagination] = useState([])
   const [checkSalesStart, setCheckSalesStart] = useState('') // 경매일자 시작
   const [checkSalesEnd, setCheckSalesEnd] = useState('') // 경매일자 끝
   const [checkConfirmStart, setCheckConfirmStart] = useState('') // 확정 전송 시작
@@ -444,8 +446,7 @@ const Order = ({}) => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            {/* 조회 목록 (선택 <span>선택 수량</span> / {totalListFormatted}개 ) */}
-            <Hidden />
+            조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> / <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown handleDropdown={handleDropdown} />
