@@ -9,17 +9,37 @@ import useReactQuery from '../../../hooks/useReactQuery'
 
 const FAQPage = () => {
   const depth2Color = 'FAQ'
-  const param = {
+  const paramData = {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 50,
   }
+  const [param, setParam] = useState(paramData)
   const [expanded, setExpanded] = useState('고객센터')
   const [faqList, setFaqList] = useState(null)
+  const [faqPagination, setFaqPagination] = useState([])
   const { isLoading, isError, data: getFaqListRes, isSuccess } = useReactQuery(param, 'getFaqList', getFaqList)
 
   useEffect(() => {
-    if (getFaqListRes && getFaqListRes.data && getFaqListRes.data.data) setFaqList(getFaqListRes.data.data.list)
+    if (getFaqListRes && getFaqListRes.data && getFaqListRes.data.data) {
+      setFaqList(getFaqListRes.data.data.list)
+      setFaqPagination(getFaqListRes.data.data.pagination)
+    }
   }, [isSuccess, getFaqListRes])
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
 
   return (
     <>
@@ -29,7 +49,12 @@ const FAQPage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <FAQ faqList={faqList} />
+            <FAQ
+              handleTablePageSize={handleTablePageSize}
+              faqList={faqList}
+              faqPagination={faqPagination}
+              onPageChange={onPageChange}
+            />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>

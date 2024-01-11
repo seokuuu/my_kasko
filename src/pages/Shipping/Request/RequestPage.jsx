@@ -11,6 +11,7 @@ import React, { useState, useCallback } from 'react'
 const RequestPage = () => {
   const [expanded, setExpanded] = useState('출고 관리')
   const [depth2Color, setDepth2Color] = useState('출고 요청')
+  // request(출고 요청) / requestRecom (선별 추천 목록)
   const [choiceComponent, setChoiceComponent] = useState('request')
 
   const renderChoiceComponent = useCallback(() => {
