@@ -6,6 +6,7 @@ import { queryClient } from '../query'
 const urls = {
   winning: 'auction/successfulBid',
   allDetlete: 'auction/successfulBid/cancel-all',
+  winningDetail: 'auction/successfulBid/detail',
 }
 
 export function getWinning(data) {
@@ -15,4 +16,11 @@ export function getWinning(data) {
 
 export function deleteBidding(data) {
   return client.post(urls.allDetlete, data)
+}
+
+export function getWinningDetail(data) {
+  console.log('data !@#', data)
+  return client.get(
+    `${urls.winning}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&auctionNumber=${data.auctionNumber}&storage=${data.storage}&customerDestinationUid=${data.customerDestinationUid}&biddingStatus=${data.biddingStatus}`,
+  )
 }

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import {
   BlackBtn,
   BtnBound,
@@ -11,7 +11,7 @@ import {
 } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { doubleClickedRowAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { doubleClickedRowAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import Test3 from '../../Test/Test3'
 
 import {
@@ -46,6 +46,11 @@ import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import useReactQuery from '../../../hooks/useReactQuery'
+import { getWinningDetail } from '../../../api/auction/winning'
+import { useQueryClient } from '@tanstack/react-query'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { AuctionWinningDetailFields, AuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
+import Table from '../../Table/Table'
 
 // 경매 낙찰 상세
 const WinningDetail = ({ detailRow }) => {
@@ -67,7 +72,15 @@ const WinningDetail = ({ detailRow }) => {
   //checkShips
   const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
 
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(AuctionWinningDetailFieldsCols)
+  const getCol = tableField.current
+  const queryClient = useQueryClient()
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
   const [detailParams, setDetailParams] = useState({
+    pageNum: 1,
+    pageSize: 10,
     auctionNumber: '',
     storage: '',
     customerDestinationUid: '',
@@ -88,20 +101,19 @@ const WinningDetail = ({ detailRow }) => {
 
   console.log('detailParams', detailParams)
 
-  // Todo : 경매 낙찰 관리 상세 get 작업 예정 !
-  // const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getDetailProgress', getWinning)
-  // const resData = data?.data?.data?.list
+  const { isLoading, isError, data, isSuccess } = useReactQuery(detailParams, 'getDetailProgress', getWinningDetail)
+  const resData = data?.data?.data?.list
 
-  // console.log('resData', resData)
+  console.log('resData', resData)
 
-  // useEffect(() => {
-  //   let getData = resData
-  //   //타입, 리액트쿼리, 데이터 확인 후 실행
-  //   if (!isSuccess && !resData) return
-  //   if (Array.isArray(getData)) {
-  //     setGetRow(add_element_field(getData, AuctionWinningFields))
-  //   }
-  // }, [isSuccess, resData])
+  useEffect(() => {
+    let getData = resData
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, AuctionWinningDetailFields))
+    }
+  }, [isSuccess, resData])
 
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
@@ -255,7 +267,7 @@ const WinningDetail = ({ detailRow }) => {
             <WhiteSkyBtn str>목적지 변경 승인</WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getCol={getCol} getRow={getRow} setChoiceComponent={() => {}} />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
