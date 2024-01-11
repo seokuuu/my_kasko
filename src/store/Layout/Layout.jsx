@@ -257,3 +257,4 @@ export const userpageDestiEdit = atom(false)
 // 판매 구분 변경 -> (판매 제품 관리)
 
 export const hyunDaiMultiModal = atom(false)
+export const userPageDestiEditModal = atom(false)
