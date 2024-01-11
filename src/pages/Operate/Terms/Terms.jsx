@@ -1,44 +1,43 @@
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import {
-  FWTitle,
   FullWrap,
+  FWTitle,
   OnePageContainer,
   OnePageSubContainer,
   TitleChild,
   Titles,
 } from '../../../common/OnePage/OnePage.Styled'
 
-import { useAtom } from 'jotai'
-import { isObject } from 'lodash'
-import { getPolicy, usePolicyMutation } from '../../../api/operate'
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
+import {useAtom} from 'jotai'
+import {isObject} from 'lodash'
+import {usePolicyMutation, usePolicyQuery} from '../../../api/operate'
+import {BlackBtn, BtnWrap} from '../../../common/Button/Button'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
-import { popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Layout'
-import { formatDateString } from '../../../utils/utils'
-import useReactQuery from './../../../hooks/useReactQuery'
+import {popupAtom, popupObject, popupTypeAtom} from '../../../store/Layout/Layout'
+import {formatDateString} from '../../../utils/utils'
+import {useSetAtom} from "jotai/index";
 
 const Terms = () => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
-  const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
-  const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
+  const setNowPopupType = useSetAtom(popupTypeAtom) // 팝업 타입
+  const setNowPopup = useSetAtom(popupObject) // 팝업 객체
 
   // 약관 데이터
   const [resData, setResData] = useState('')
   // 약관 타입
   const [type, setType] = useState('이용 약관') // (이용약관 / 개인정보 처리방침 / 개인정보 수집 동의)
-  // ⚠️TODO : 개인정보 수집 동의 post에러
-
   // 약관 조회 API
-  const { isError, isSuccess, data } = useReactQuery(type, 'getPolicy', getPolicy)
+  const { data, isSuccess, refetch } = usePolicyQuery(type)
   // 약관 등록 API
-  const { mutate } = usePolicyMutation()
+  const { mutate } = usePolicyMutation(type, refetch)
 
-  if (isError) console.error('ERROR : 데이터패치 에러')
+  const responseData = data?.data?.data
 
   // data  바인딩
   useEffect(() => {
-    const resData = data?.data?.data
-    if (isSuccess && isObject(resData)) return setResData(resData)
+    if (isSuccess && isObject(responseData)) {
+      setResData(responseData)
+    }
   }, [data, type, isSuccess])
 
   const handleSubmit = () => {
@@ -49,7 +48,7 @@ const Terms = () => {
       num: '2-1',
       title: '저장하시겠습니까?',
       next: '1-12',
-      func: () => save()
+      func: save
     })
   }
 
@@ -78,7 +77,6 @@ const Terms = () => {
       <OnePageSubContainer>
         <FWTitle>
           <h5>서비스 이용약관</h5>
-          {/* ⚠️TODO : Date객체 필요 */}
           <h6>최근 수정일 : {resData ? formatDateString(resData.updateDate) : ''}</h6>
         </FWTitle>
         <FullWrap style={{ marginTop: '30px', height: '30vw' }}>

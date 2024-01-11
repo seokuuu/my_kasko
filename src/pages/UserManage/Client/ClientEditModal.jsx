@@ -309,7 +309,6 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
 
   const [savedRadioValue, setSavedRadioValue] = useState('')
 
-  console.log('checkRadio2', checkRadio2)
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
     if (checkedIndex !== -1) {
@@ -341,8 +340,6 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
       businessType: updatedCheck.filter((item) => item !== ''),
     })
   }, [check])
-
-  console.log('ㅋㅋㅋ')
 
   // 비밀번호 초기화 버튼
   const resetPw = async () => {
