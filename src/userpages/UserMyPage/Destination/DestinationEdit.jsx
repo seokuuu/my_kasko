@@ -27,7 +27,7 @@ import { isEmptyObj } from '../../../lib'
 import { doubleClickedRowAtom } from '../../../store/Layout/Layout'
 import useReactQuery from '../../../hooks/useReactQuery'
 
-const DestinationEdit = ({ setChoiceComponent, setSwtichDestiEdit, uidAtom }) => {
+const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
   const navigate = useNavigate()
   const radioDummy = ['지정', '미지정'] // 더미 데이터
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))

@@ -21,9 +21,8 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import { useDriverListQuery, useDriverRemoveMutation } from '../../../api/driver'
 import { GlobalFilterHeader, GlobalFilterFooter, GlobalFilterContainer } from '../../../components/Filter'
 import { InputSearch, StorageSelect } from '../../../components/Search'
-import CustomPagination from '../../../components/pagination/CustomPagination'
 
-const initData = {
+const paramData = {
   pageNum: 1,
   pageSize: 50,
   driverName: '',
@@ -41,7 +40,7 @@ const Dispatch = ({}) => {
   const getCol = tableField.current
   const checkedArray = useAtom(selectedRowsAtom)[0]
 
-  const [param, setParam] = useState(initData)
+  const [param, setParam] = useState(paramData)
 
   const { refetch, data, isSuccess } = useDriverListQuery(param)
   const { mutate: onDelete } = useDriverRemoveMutation()
@@ -55,7 +54,7 @@ const Dispatch = ({}) => {
    * 초기화 이벤트
    */
   const onReset = async () => {
-    await setParam(initData)
+    await setParam(paramData)
     await refetch()
   }
 
@@ -82,6 +81,13 @@ const Dispatch = ({}) => {
   useEffect(() => {
     refetch()
   }, [param.pageNum, param.pageSize])
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
 
   return (
     <FilterContianer>
@@ -138,13 +144,12 @@ const Dispatch = ({}) => {
             <WhiteSkyBtn onClick={() => setIsModalPost(true)}>추가 등록</WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
-        {data?.pagination && (
-          <CustomPagination
-            pagination={data.pagination}
-            onPageChange={(value) => setParam((prev) => ({ ...prev, pageNum: parseInt(value) }))}
-          />
-        )}
+        <Table
+          getCol={getCol}
+          getRow={getRow}
+          tablePagination={data?.pagination}
+          onPageChange={onPageChange}
+        />
       </TableContianer>
       {isModalPost && <DispatchPost setIsModalPost={setIsModalPost} id={null} />}
       {isModalEdit && <DispatchPost setIsModalPost={setIsModalEdit} id={uidAtom} />}
