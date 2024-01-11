@@ -14,6 +14,7 @@ const WinningPage = () => {
   const [expanded, setExpanded] = useState('경매 관리')
   const [depth2Color, setDepth2Color] = useState('경매 낙찰 관리')
   const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
+  console.log('detailRow', detailRow)
   return (
     <>
       <Header />

@@ -11,8 +11,7 @@ import {
 } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { doubleClickedRowAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-import Test3 from '../../Test/Test3'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import {
   CustomInput,
@@ -43,13 +42,13 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import DefaultBlueBar from '../../../modal/Multi/DefaultBlueBar'
 import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 
+import { useQueryClient } from '@tanstack/react-query'
+import { getWinningDetail } from '../../../api/auction/winning'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { getWinningDetail } from '../../../api/auction/winning'
-import { useQueryClient } from '@tanstack/react-query'
-import { add_element_field } from '../../../lib/tableHelpers'
 import { AuctionWinningDetailFields, AuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../Table/Table'
 
 // 경매 낙찰 상세

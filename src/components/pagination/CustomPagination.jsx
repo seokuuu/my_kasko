@@ -29,18 +29,23 @@ const CustomPagination = ({ pagination, onPageChange }) => {
    * @param endPage 끝 페이지
    * @param maxPage 최대 페이지 수
    * @param listCount 총 개수
+   * @param endRow 현재 드롭다운 상태
    */
-  const { pageNum: currentPage, startPage, endPage, maxPage, listCount } = pagination
+  const { pageNum: currentPage, startPage, endPage, maxPage, listCount, endRow } = pagination
   const pageNumbers = []
 
+  //
   for (let i = startPage; i <= endPage; i++) {
     pageNumbers.push(i)
   }
 
+  console.log('pageNumbers', pageNumbers)
+  // pageNumbers
   return (
     listCount > 0 && (
       <PageContainer>
-        {startPage > pageNumbers.length && (
+        {/* << 화살표 */}
+        {startPage > pageNumbers.length && listCount > endRow && (
           <button style={{ backgroundColor: 'transparent' }} onClick={() => onPageChange(startPage - 1)}>
             <svg width="15" height="15" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
               <path fill="currentColor" d="M14 3h-2L7 8l5 5h2L9 8z" />
@@ -48,6 +53,7 @@ const CustomPagination = ({ pagination, onPageChange }) => {
             </svg>
           </button>
         )}
+        {/* < 화살표 */}
         {currentPage > 1 && (
           <button style={{ backgroundColor: 'transparent' }} onClick={() => onPageChange(currentPage - 1)}>
             <svg width="15" height="15" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
@@ -55,11 +61,16 @@ const CustomPagination = ({ pagination, onPageChange }) => {
             </svg>
           </button>
         )}
-        {pageNumbers.map((page, index) => (
-          <PageNum key={index} isPage={page === currentPage} onClick={() => onPageChange(page)}>
-            {page}
-          </PageNum>
-        ))}
+        {/* Todo : 이후 조건 수정 필요 (원본은 조건 없는 상태)  */}
+        {pageNumbers.length === 0
+          ? 1
+          : pageNumbers.map((page, index) => (
+              <PageNum key={index} isPage={page === currentPage} onClick={() => onPageChange(page)}>
+                {page}
+              </PageNum>
+            ))}
+
+        {/* > 화살표 */}
         {currentPage < maxPage && (
           <button style={{ backgroundColor: 'transparent' }} onClick={() => onPageChange(currentPage + 1)}>
             <svg width="15" height="15" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
@@ -67,6 +78,7 @@ const CustomPagination = ({ pagination, onPageChange }) => {
             </svg>
           </button>
         )}
+        {/* >> 화살표 */}
         {maxPage > endPage && (
           <button style={{ backgroundColor: 'transparent' }} onClick={() => onPageChange(endPage + 1)}>
             <svg width="15" height="15" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">

@@ -51,7 +51,7 @@ import useMutationQuery from '../../../hooks/useMutationQuery'
 
 const Winning = ({ detailRow }) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
-
+  const [tablePagination, setTablePagination] = useState([])
   const [winningCreate, setWinningCreate] = useAtom(winningAtom)
 
   //checkSales
@@ -141,7 +141,7 @@ const Winning = ({ detailRow }) => {
   // GET
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getDetailProgress', getWinning)
   const resData = data?.data?.data?.list
-
+  const resPagination = data?.data?.data?.pagination
   console.log('resData', resData)
 
   useEffect(() => {
@@ -150,8 +150,24 @@ const Winning = ({ detailRow }) => {
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, AuctionWinningFields))
+      setTablePagination(resPagination)
     }
   }, [isSuccess, resData])
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
 
   return (
     <FilterContianer>
@@ -292,7 +308,7 @@ const Winning = ({ detailRow }) => {
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown handleDropdown={handleTablePageSize} />
             <Excel />
           </div>
         </TCSubContainer>
@@ -307,7 +323,14 @@ const Winning = ({ detailRow }) => {
             <WhiteRedBtn onClick={deleteOnClickHandler}>낙찰 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} setChoiceComponent={() => {}} />
+
+        <Table
+          getCol={getCol}
+          getRow={getRow}
+          tablePagination={tablePagination}
+          onPageChange={onPageChange}
+          setChoiceComponent={() => {}}
+        />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
