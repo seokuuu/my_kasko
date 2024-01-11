@@ -1,14 +1,12 @@
-import { useEffect, useState } from 'react'
-import { styled } from 'styled-components'
-import { checkBusinessNumber, updateCustomer } from '../../../api/myPage'
-import { getCustomerDetail, postClient, resetCustomer } from '../../../api/userManage'
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
-import { CustomInput, FlexInput } from '../../../common/Input/Input'
+import {useEffect, useState} from 'react'
+import {styled} from 'styled-components'
+import {checkBusinessNumber} from '../../../api/myPage'
+import {postClient, resetCustomer} from '../../../api/userManage'
+import {BlackBtn, BtnWrap} from '../../../common/Button/Button'
+import {CheckBox} from '../../../common/Check/Checkbox'
+import {CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv} from '../../../common/Check/CheckImg'
+import {CustomInput, FlexInput} from '../../../common/Input/Input'
 import {
-  AddBtn,
   Bar,
   FlexContent,
   FlexPart,
@@ -17,18 +15,17 @@ import {
   OnePageFlexSubContainer,
   Right,
 } from '../../../common/OnePage/OnePage.Styled'
-import { AccountSelect, EditSelect, accountOptions, depositOptions } from '../../../common/Option/SignUp'
+import {accountOptions, AccountSelect} from '../../../common/Option/SignUp'
 import RadioButton from '../../../components/RadioButton/RadioButton'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { WhiteCloseBtn } from '../../../modal/Common/Common.Styled'
+import {WhiteCloseBtn} from '../../../modal/Common/Common.Styled'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
-import { CheckBtn, TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
-import { GreyDiv, IIDImg, IncomeImgDiv } from '../../../userpages/UserMyPage/Profile/Profile'
-import DownloadButton from '../../../utils/DownloadButton'
+import {CheckBtn, TxtDivNoborder} from '../../../pages/User/SignUp/SignUp.Styled'
+import {IIDImg, IncomeImgDiv} from '../../../userpages/UserMyPage/Profile/Profile'
 
-import { getStorageList } from '../../../api/search'
-import { MainSelect } from '../../../common/Option/Main'
-import { UserCheckDiv } from '../UserManage/UserPost'
+import {getStorageList} from '../../../api/search'
+import {MainSelect} from '../../../common/Option/Main'
+import {UserCheckDiv} from '../UserManage/UserPost'
 
 const init = {
   id: '',
@@ -251,7 +248,7 @@ const ClientPostModal = ({ setEditModal }) => {
 
   const radioDummy = ['법인사업자', '개인사업자'] // 사업자 구분 (type)
   const radioDummy2 = ['승인', '대기', '미승인'] // 승인 여부
-  const radioDummy3 = ['제한 없음', '경매 시작가 제한', '경매 제한'] // 회원 제한
+  const radioDummy3 = ['제한 없음', '시작가 제한', '경매 제한'] // 회원 제한
   const radioDummy4 = ['창고', '운송사', '현대제철', '카스코철강', '고객사'] // 사용자 구분 (memberType)
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
   const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, () => false))
@@ -426,7 +423,7 @@ const ClientPostModal = ({ setEditModal }) => {
         {/* <ModalSubContainer> */}
         {/* <OnePageFlexContainerC> */}
         <MainTitleC style={{ fontSize: '18px' }}>
-          <div>고객사 상세 정보</div>
+          <div>고객사 등록</div>
 
           <WhiteCloseBtn onClick={modalOFF} src="/svg/white_btn_close.svg" />
         </MainTitleC>
@@ -465,7 +462,7 @@ const ClientPostModal = ({ setEditModal }) => {
                 </FlexPart>
                 <FlexPart>
                   <FlexTitle>
-                    경매 담당자 정보 (완)<span>*</span>
+                    경매 담당자 정보<span>*</span>
                   </FlexTitle>
                   <FlexContent>
                     <CustomInput name="memberName" placeholder=" 성함 입력" width={188} />
@@ -549,8 +546,8 @@ const ClientPostModal = ({ setEditModal }) => {
                     </div>
                   </FlexContent>
                 </FlexPart>
-                {console.log('checkRadio4[1]', checkRadio4)}
-                {checkRadio4[1] && (
+                {
+                  radioSelections['사용자구분'] && radioSelections['사용자구분'][1] && (
                   <FlexPart>
                     <FlexTitle>
                       운송사 이름<span>*</span>
@@ -559,39 +556,49 @@ const ClientPostModal = ({ setEditModal }) => {
                       <FlexInput name="transportName" />
                     </FlexContent>
                   </FlexPart>
-                )}
-                <FlexPart>
-                  <FlexTitle>
-                    창고 구분<span>*</span>
-                  </FlexTitle>
-                  <FlexContent>
-                    <MainSelect
-                      options={storageList}
-                      defaultValue={''}
-                      name="storage"
-                      onChange={(e) => {
-                        setSelected((p) => ({ ...p, storage: e.label, storageUid: e.value }))
-                      }}
-                    />
-                  </FlexContent>
-                </FlexPart>
-                <FlexPart>
-                  <FlexTitle style={{ minWidth: '170px' }}>권한 설정</FlexTitle>
-                  <FlexContent2>
-                    {checkDummy2.map((x, index) => (
-                      <UserCheckDiv style={{ width: '130px' }}>
-                        <StyledCheckSubSquDiv
-                          name="managerRoleList"
-                          onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
-                          isChecked={check2[index]}
-                        >
-                          <CheckImg2 src="/svg/check.svg" isChecked={check2[index]} />
-                        </StyledCheckSubSquDiv>
-                        <CheckTxt2 style={{ marginLeft: '5px' }}>{x}</CheckTxt2>
-                      </UserCheckDiv>
-                    ))}
-                  </FlexContent2>
-                </FlexPart>
+                  )
+                }
+                {
+                  radioSelections['사용자구분'] && radioSelections['사용자구분'][0] && (
+                        <FlexPart>
+                          <FlexTitle>
+                            창고 구분<span>*</span>
+                          </FlexTitle>
+                          <FlexContent>
+                            <MainSelect
+                                options={storageList}
+                                defaultValue={''}
+                                name="storage"
+                                onChange={(e) => {
+                                  setSelected((p) => ({ ...p, storage: e.label, storageUid: e.value }))
+                                }}
+                            />
+                          </FlexContent>
+                        </FlexPart>
+                    )
+                }
+                {
+                  radioSelections['사용자구분'] && radioSelections['사용자구분'][3] && (
+                        <FlexPart>
+                          <FlexTitle style={{ minWidth: '170px' }}>권한 설정</FlexTitle>
+                          <FlexContent2>
+                            {checkDummy2.map((x, index) => (
+                                <UserCheckDiv style={{ width: '130px' }}>
+                                  <StyledCheckSubSquDiv
+                                      name="managerRoleList"
+                                      onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
+                                      isChecked={check2[index]}
+                                  >
+                                    <CheckImg2 src="/svg/check.svg" isChecked={check2[index]} />
+                                  </StyledCheckSubSquDiv>
+                                  <CheckTxt2 style={{ marginLeft: '5px' }}>{x}</CheckTxt2>
+                                </UserCheckDiv>
+                            ))}
+                          </FlexContent2>
+                        </FlexPart>
+                    )
+                }
+
                 <Bar />
 
                 <FlexPart>

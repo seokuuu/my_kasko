@@ -17,12 +17,12 @@ import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../comm
 import { CheckBox } from '../../../common/Check/Checkbox'
 
 const ClientAuctionRestrictionModal = ({ clientRestrict, selectedValue, setSelectedValue, setAuctionModal }) => {
-  const radioDummy3 = ['경매 시작가 제한', '경매 제한']
+  const radioDummy3 = ['제한 없음', '시작가 제한', '경매 제한']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy3.length }, (_, index) => index === 0))
 
   const selectedRadioIndex = checkRadio.findIndex((value) => value)
-  const outputValue = selectedRadioIndex !== -1 ? selectedRadioIndex + 1 : null
-  console.log('outputValue', outputValue)
+
+  const outputValue = selectedRadioIndex !== -1 ? radioDummy3[selectedRadioIndex] : null
   setSelectedValue(outputValue)
 
   const handleChange = (e) => {
@@ -37,7 +37,7 @@ const ClientAuctionRestrictionModal = ({ clientRestrict, selectedValue, setSelec
   return (
     <>
       <FadeOverlay />
-      <ModalContainerC width={280} height={300}>
+      <ModalContainerC width={280} height={350}>
         <ModalTitle>
           <TitleSub>
             <div>회원 제한</div>

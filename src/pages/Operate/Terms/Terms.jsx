@@ -40,9 +40,11 @@ const Terms = () => {
     }
   }, [data, type, isSuccess])
 
+
   const handleSubmit = () => {
     setResData((prev) => ({ ...prev, uid: prev.uid }))
     setPopupSwitch(true)
+
     setNowPopupType(2)
     setNowPopup({
       num: '2-1',
@@ -50,7 +52,9 @@ const Terms = () => {
       next: '1-12',
       func: save
     })
+
   }
+
 
   const save = () => {
     mutate({

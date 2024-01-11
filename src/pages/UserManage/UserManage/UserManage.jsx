@@ -47,8 +47,7 @@ const UserManage = ({ setChoiceComponent }) => {
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
   console.log('uidAtom', uidAtom)
   const [postModal, setPostModal] = useAtom(UsermanageUserPostModal)
-  const [types, setTypes] = useState(null) //카스코철강, 현대제철 , 운송, 창고
-  console.log('types', types)
+  const [types, setTypes] = useState('카스코철강') //카스코철강, 현대제철 , 운송, 창고
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,

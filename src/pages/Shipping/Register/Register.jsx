@@ -1,9 +1,7 @@
-import React, { Fragment, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
-import { BlackBtn, GreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import { toggleAtom } from '../../../store/Layout/Layout'
-import Test3 from '../../Test/Test3'
-
+import { WhiteSkyBtn } from '../../../common/Button/Button'
+import { selectedRowsAtom } from '../../../store/Layout/Layout'
 import {
   FilterContianer,
   FilterLeft,
@@ -17,7 +15,7 @@ import {
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
 
 import Hidden from '../../../components/TableInner/Hidden'
-import { useShipmentListQuery } from '../../../api/shipment'
+import { useShipmentListQuery, useShipmentStatusUpdateMutation } from '../../../api/shipment'
 import {
   DestinationSearch,
   CustomerSearch,
@@ -27,12 +25,18 @@ import {
   ProductNumberListSearch,
 } from '../../../components/Search'
 import { GlobalFilterHeader, GlobalFilterFooter } from '../../../components/Filter'
-import { useAtomValue } from 'jotai'
 import GlobalFilterContainer from '../../../components/Filter/GlobalFilterContainer'
+import Table from '../../Table/Table'
+import { ShippingRegisterFields, ShippingRegisterFieldsCols } from '../../../constants/admin/Shipping'
+import { useAtom } from 'jotai/index'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { formatWeight } from '../../../utils/utils'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import Excel from '../../../components/TableInner/Excel'
 
 const initData = {
   pageNum: 1,
-  pageSize: 50,
+  pageSize: 10,
   shipmentStatus: '출하 대기',
   storage: '',
   spart: '',
@@ -48,8 +52,15 @@ const initData = {
 const Register = ({}) => {
   const [param, setParam] = useState(initData)
   const { data, refetch } = useShipmentListQuery(param)
+  const { mutate: shipmentStatusUpdate } = useShipmentStatusUpdateMutation()
 
-  // search change
+  // Table
+  const tableField = useRef(ShippingRegisterFieldsCols)
+  const getCol = tableField.current
+  const [getRow, setGetRow] = useState('')
+  const selectedUids = useAtom(selectedRowsAtom)[0]
+
+  // param change
   const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value }))
 
   // reset event
@@ -58,11 +69,33 @@ const Register = ({}) => {
     await refetch()
   }
 
-  const titleData = ['제품 중량(kg)', '제품 공급가액', '운반비 공급가액']
-  const contentData = ['986,742', '986,742', '986,742']
+  // array total value calculate
+  const calculateTotalFormattedWeight = (key) =>
+    formatWeight(data?.list?.map((item) => item[key]).reduce((acc, cur) => acc + cur, 0))
 
-  console.log(param)
-  console.log(data)
+  // 출하 지시
+  const onRegister = () => {
+    if (!selectedUids) {
+      return window.alert('제품을 선택해주세요.')
+    }
+    const uids = selectedUids.map((item) => item['주문 고유 번호'])
+    const shipmentStatus = '출하 지시'
+
+    if (window.confirm('출하 지시 등록하시겠습니까?')) {
+      shipmentStatusUpdate({ shipmentStatus, uids })
+    }
+  }
+
+  useEffect(() => {
+    const getData = data?.list
+    if (getData && Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, ShippingRegisterFields))
+    }
+  }, [data])
+
+  useEffect(() => {
+    refetch()
+  }, [param.pageNum, param.pageSize])
 
   return (
     <FilterContianer>
@@ -94,8 +127,8 @@ const Register = ({}) => {
                 title={'주문 일자'}
                 startInitDate={param.orderStartDate}
                 endInitDate={param.orderEndDate}
-                startDateChange={(value) => onChange('startDate', value)}
-                endDateChange={(value) => onChange('endDate', value)}
+                startDateChange={(value) => onChange('orderStartDate', value)}
+                endDateChange={(value) => onChange('orderEndDate', value)}
               />
               <SpartSelect value={param.spart} onChange={(e) => onChange('spart', e.label)} />
             </RowWrap>
@@ -113,37 +146,44 @@ const Register = ({}) => {
 
       <TableWrap>
         <ClaimTable>
-          {[0].map((index) => (
-            <ClaimRow key={index}>
-              {titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
-                <Fragment agmentkey={title}>
-                  <ClaimTitle>{title}</ClaimTitle>
-                  <ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
-                </Fragment>
-              ))}
-            </ClaimRow>
-          ))}
+          <ClaimRow>
+            <ClaimTitle>제품 중량(kg)</ClaimTitle>
+            <ClaimContent>{formatWeight(data?.pagination?.totalWeight)}</ClaimContent>
+            <ClaimTitle>제품 공급가액</ClaimTitle>
+            <ClaimContent>{calculateTotalFormattedWeight('orderPrice')}</ClaimContent>
+            <ClaimTitle>운반비 공급가액</ClaimTitle>
+            <ClaimContent>{calculateTotalFormattedWeight('freightCost')}</ClaimContent>
+          </ClaimRow>
         </ClaimTable>
       </TableWrap>
 
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / {2}개 )
+            조회 목록 (선택 <span>{selectedUids?.length ?? 0}</span> / {data?.pagination?.listCount}개 )
             <Hidden />
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}></div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <PageDropdown
+              handleDropdown={(e) => setParam((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))}
+            />
+            <Excel />
+          </div>
         </TCSubContainer>
         <TCSubContainer>
           <div>
-            선택 중량<span> 2 </span>kg / 총 중량 kg
+            선택 중량<span>{selectedUids?.length ?? 0}</span>kg / 총 중량 {data?.pagination?.totalWeight} kg
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>출하 취소</WhiteRedBtn>
-            <WhiteSkyBtn>출하 지시</WhiteSkyBtn>
+          <div style={{ display: 'flex' }}>
+            <WhiteSkyBtn onClick={onRegister}>출하 지시</WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        {/*<Test3 />*/}
+        <Table
+          getCol={getCol}
+          getRow={getRow}
+          tablePagination={data?.pagination}
+          onPageChange={(value) => onChange('pageNum', value)}
+        />
       </TableContianer>
     </FilterContianer>
   )
