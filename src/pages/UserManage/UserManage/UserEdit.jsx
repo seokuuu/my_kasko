@@ -9,7 +9,7 @@ import {
   OnePageFlexSubContainer,
   Right,
 } from '../../../common/OnePage/OnePage.Styled'
-import {accountOptions, AccountSelect, depositOptions, EditSelect} from '../../../common/Option/SignUp'
+import {accountOptions, AccountSelect, EditSelect} from '../../../common/Option/SignUp'
 
 import {BlackBtn, BtnWrap} from '../../../common/Button/Button'
 
@@ -28,6 +28,7 @@ import SignUpPost from '../../../modal/SignUp/SignUpPost'
 import {IncomeImgDiv} from '../../../userpages/UserMyPage/Profile/Profile'
 import DownloadButton from '../../../utils/DownloadButton'
 import {UserCheckDiv} from '../UserManage/UserPost'
+import {getStorageList} from "../../../api/search";
 
 const init = {
   id: '',
@@ -345,8 +346,6 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
     })
   }, [check])
 
-  console.log('ㅋㅋㅋ')
-
   // 비밀번호 초기화 버튼
   const resetPw = async () => {
     const userConfirmed = window.confirm('비밀번호를 초기화하시겠습니까?')
@@ -380,6 +379,8 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
     setEditModal(false)
   }
 
+  const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
+
   return (
     <div>
       <ModalOverlayC />
@@ -387,7 +388,7 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
         {/* <ModalSubContainer> */}
         {/* <OnePageFlexContainerC> */}
         <MainTitleC style={{ fontSize: '18px' }}>
-          <div>고객사 상세 정보</div>
+          <div>고객사 수정</div>
 
           <WhiteCloseBtn onClick={modalOFF} src="/svg/white_btn_close.svg" />
         </MainTitleC>
@@ -564,8 +565,9 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
                           <FlexContent>
                             <EditSelect
                                 name="storage"
-                                options={depositOptions}
-                                defaultValue={depositOptions[0]}
+                                options={storageList}
+                                defaultValue={''}
+                                value={storageList.find(option => option.value === resData?.storageUid)}
                                 isDisabled={true}
                                 onChange={(selectedOption) => handleSelectChange(selectedOption, 'storage')}
                             />
@@ -575,16 +577,16 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
                 }
                 {
                     checkRadio4[3] && (
-                        <FlexPart>
+                        <FlexPart style={{ alignItems: 'start' }}>
                           <FlexTitle style={{ minWidth: '170px' }}>권한 설정</FlexTitle>
                           <FlexContent2>
                             {checkDummy2.map((x, index) => (
                                 <UserCheckDiv style={{ width: '130px' }}>
                                   <StyledCheckSubSquDiv
-                                      onClick={() => setCheck(CheckBox(check, check.length, index, true))}
-                                      isChecked={check[index]}
+                                      onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
+                                      isChecked={check2[index]}
                                   >
-                                    <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
+                                    <CheckImg2 src="/svg/check.svg" isChecked={check2[index]} />
                                   </StyledCheckSubSquDiv>
                                   <CheckTxt2 style={{ marginLeft: '5px' }}>{x}</CheckTxt2>
                                 </UserCheckDiv>

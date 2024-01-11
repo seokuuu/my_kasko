@@ -248,6 +248,6 @@ export const invenDestinationData = atom({
 
 // =======================================
 
-export const tableCellType = atom('') //셀타입
 // 목적지 관리 수정 switch
 export const userPageDestiEditModal = atom(false)
+export const adminPageDestiEditModal = atom(false)

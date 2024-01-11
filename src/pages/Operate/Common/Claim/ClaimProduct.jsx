@@ -10,6 +10,7 @@ import { FilterContianer, TableContianer } from '../../../../modal/External/Exte
 import { selectedRowsAtom } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
 import CommonTableHeader from '../../UI/CommonTableHeader'
+import usePaging from '../../hook/usePaging'
 import useSelectList from '../../hook/useSelectList'
 import ClaimProductHeader from './components/ClaimProductHeader'
 import { StyledBtnContainer } from './styles/StyledClaim'
@@ -32,7 +33,7 @@ const ClaimProduct = () => {
   // 검색필터 상태값
   const [search, setSearch] = useState({
     pageNum: 1,
-    pageSize: 100,
+    pageSize: 1,
     storage: { label: '전체', value: '', address: null }, // 창고 구분
     supplier: supplierList[0], // 매입처
     spec: '', // 규격 약호
@@ -117,6 +118,7 @@ const ClaimProduct = () => {
     }
   }, [selected])
 
+  const { pagination, onPageChanage } = usePaging(data, setSearch)
   return (
     <FilterContianer>
       {/* 카테고리탭 & 검색필터 on & 검색 */}
@@ -125,7 +127,13 @@ const ClaimProduct = () => {
       {/* 테이블 */}
       <TableContianer>
         <CommonTableHeader isNoneBtn={true} totalLength={data && data.list.length} selectedLength={selectedLength} />
-        <Table getCol={ClaimProductListFieldCols} getRow={row} setChoiceComponent={() => {}} />
+        <Table
+          getCol={ClaimProductListFieldCols}
+          getRow={row}
+          setChoiceComponent={() => {}}
+          tablePagination={pagination}
+          onPageChange={onPageChanage}
+        />
         {/* 버튼 */}
         <StyledBtnContainer>
           <WhiteBtn width={10} height={40} onClick={() => navigate('/operate/common')}>

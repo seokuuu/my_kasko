@@ -22,7 +22,7 @@ export const FAQ_KEYS = {
 // 목록
 export function useFaqListQuery(params) {
   return useQuery({
-    queryKey: FAQ_KEYS.getList,
+    queryKey: [...FAQ_KEYS.getList, params.pageNum],
     queryFn: async function () {
       const response = await client.get(urls, { params })
       return response.data.data
