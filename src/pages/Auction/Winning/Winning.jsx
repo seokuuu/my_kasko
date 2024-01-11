@@ -36,7 +36,7 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import { useAtom } from 'jotai'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { winningAtom } from '../../../store/Layout/Layout'
 
 import Hidden from '../../../components/TableInner/Hidden'
@@ -44,10 +44,12 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { AuctionWinningFields, AuctionWinningFieldsCols } from '../../../constants/admin/Auction'
 import { useQueryClient } from '@tanstack/react-query'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { getWinning } from '../../../api/auction/winning'
+import { getWinning, deleteBidding } from '../../../api/auction/winning'
 import { add_element_field } from '../../../lib/tableHelpers'
+import { doubleClickedRowAtom } from '../../../store/Layout/Layout'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
-const Winning = ({}) => {
+const Winning = ({ detailRow }) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 
   const [winningCreate, setWinningCreate] = useAtom(winningAtom)
@@ -104,6 +106,31 @@ const Winning = ({}) => {
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  // 낙찰 취소 관련
+  const keysToExtract = ['경매 번호', '창고', '고객사 목적지 고유 번호', '낙찰 상태']
+
+  const keyMappings = {
+    '경매 번호': 'auctionNumber',
+    창고: 'storage',
+    '고객사 목적지 고유 번호': 'customerDestinationUid',
+    '낙찰 상태': 'biddingStatus',
+  }
+
+  // 낙찰 취소에 사용될 array
+  const extractedArray = checkedArray?.map((item) =>
+    keysToExtract.reduce((obj, key) => {
+      obj[keyMappings[key]] = item[key]
+      return obj
+    }, {}),
+  )
+  // 낙찰 취소 POST
+  const deleteMutation = useMutationQuery('', deleteBidding)
+
+  // 낙찰 취소 버튼 Handler
+  const deleteOnClickHandler = () => {
+    deleteMutation.mutate(extractedArray)
+  }
 
   const [Param, setParam] = useState({
     pageNum: 1,
@@ -277,10 +304,10 @@ const Winning = ({}) => {
             <Link to={`/auction/winningcreate`}>
               <WhiteBlackBtn>낙찰 생성</WhiteBlackBtn>
             </Link>
-            <WhiteRedBtn>낙찰 취소</WhiteRedBtn>
+            <WhiteRedBtn onClick={deleteOnClickHandler}>낙찰 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
+        <Table getCol={getCol} getRow={getRow} setChoiceComponent={() => {}} />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
