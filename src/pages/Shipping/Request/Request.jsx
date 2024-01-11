@@ -61,6 +61,7 @@ import {
 } from '../../../components/Search'
 import Table from '../../Table/Table'
 import RequestSelector from './RequestSelector'
+import { getAddNewDestination } from './utils'
 
 const initData = {
   pageNum: 1,
@@ -91,18 +92,32 @@ const Request = ({ setChoiceComponent }) => {
   const [getRow, setGetRow] = useState('')
   const [rowChecked, setRowChecked] = useAtom(selectedRowsAtom)
 
-  // 선별 목록
-  const [selectorList, setSelectorList] = useState([])
+  const [selectorList, setSelectorList] = useState([]) // 선별 목록
+  const [destinations, setDestinations] = useState(new Array(3)) // 목적지
+
+  // 선별 목록 추가
   const addSelectorList = () => {
-    setSelectorList((prev) => [...prev, ...rowChecked])
-    setRowChecked([])
+    try {
+      const newDestination = getAddNewDestination(rowChecked)
+      setDestinations(newDestination) // 목적지 등록
+      setSelectorList((prev) => [...new Set([...prev, ...rowChecked])]) // 선별 목록 데이터 등록
+      setRowChecked([]) // 테이블 체크 목록 초기화
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth',
+      })
+    } catch (error) {
+      window.alert(error.message)
+    }
   }
-  console.log('rowChecked : ', rowChecked)
+
+  // 선별 목록 제거
   const removeSelector = () => {
     const key = '주문 고유 번호'
     const deleteKeys = rowChecked.map((item) => item[key])
     const newSelectors = selectorList.filter((item) => !deleteKeys.includes(item[key]))
     setSelectorList(newSelectors)
+    setRowChecked([]) // 테이블 체크 목록 초기화
   }
 
   // param change
@@ -227,7 +242,7 @@ const Request = ({ setChoiceComponent }) => {
         />
       </TableContianer>
       {/* 선별 등록 */}
-      <RequestSelector list={selectorList} removeSelector={removeSelector} />
+      <RequestSelector list={selectorList} destinations={destinations} removeSelector={removeSelector} />
     </FilterContianer>
   )
 }

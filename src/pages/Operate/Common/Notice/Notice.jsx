@@ -112,6 +112,7 @@ const Notice = ({ title, detailsUrl }) => {
       setDetailsRow([])
     }
   }, [detailRow])
+  const { pagination, onPageChanage } = usePaging(data, setSearch)
   return (
     <FilterContianer>
       {/* 헤더(카테고리탭 & 검색) */}
@@ -136,7 +137,13 @@ const Notice = ({ title, detailsUrl }) => {
           selectedLength={selectedLength}
         />
 
-        <Table getCol={NoticeListFieldCols} getRow={rows} setChoiceComponent={() => {}} />
+        <Table
+          getCol={NoticeListFieldCols}
+          getRow={rows}
+          setChoiceComponent={() => {}}
+          tablePagination={pagination}
+          onPageChange={onPageChanage}
+        />
       </TableContianer>
     </FilterContianer>
   )

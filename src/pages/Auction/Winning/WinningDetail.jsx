@@ -1,65 +1,69 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import {
   BlackBtn,
   BtnBound,
-  GreyBtn,
   SkyBtn,
   TGreyBtn,
-  WhiteRedBtn,
   TWhiteBtn,
   WhiteBlackBtn,
+  WhiteRedBtn,
   WhiteSkyBtn,
-  BlueBtn,
 } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
-import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { doubleClickedRowAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import Test3 from '../../Test/Test3'
 
 import {
-  DoubleWrap,
-  ExInputsWrap,
+  CustomInput,
+  ExCheckDiv,
+  ExCheckWrap,
   FilterContianer,
   FilterFooter,
   FilterHeader,
   FilterLeft,
-  FilterRight,
   FilterSubcontianer,
   FilterTCTop,
   FilterTopContainer,
-  Input,
+  GridWrap,
   PartWrap,
-  PWRight,
   ResetImg,
   RowWrap,
-  TableContianer,
   TCSubContainer,
+  TableContianer,
   Tilde,
-  CustomInput,
-  GridWrap,
-  ExCheckWrap,
-  ExCheckDiv,
 } from '../../../modal/External/ExternalFilter'
 
-import { StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { CheckImg2 } from '../../../common/Check/CheckImg'
 
+import { useAtom } from 'jotai'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { aucProAddModalAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
 import DefaultBlueBar from '../../../modal/Multi/DefaultBlueBar'
+import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 
-import { ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../../../components/MapTable/MapTable'
 import DateGrid from '../../../components/DateGrid/DateGrid'
+import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getWinningDetail } from '../../../api/auction/winning'
+import { useQueryClient } from '@tanstack/react-query'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { AuctionWinningDetailFields, AuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
+import Table from '../../Table/Table'
 
 // 경매 낙찰 상세
-const WinningDetail = ({}) => {
-  const titleData = ['패키지 명', '수량', '시작가', '패키지 명', '수량', '시작가']
-  const contentData = ['알뜰패키지', '50', '3598', '알뜰패키지', '50', '3598', '알뜰패키지', '50', '3598']
+const WinningDetail = ({ detailRow }) => {
+  console.log('winning detailRow', detailRow)
+  const titleData = ['고객사 명', '고객 코드', '창고', '총 수량', '총 중량', '입금 요청 금액']
+  const contentData = [
+    detailRow?.['고객사명'],
+    detailRow?.['고객 코드'],
+    detailRow?.['창고'],
+    detailRow?.['수량'],
+    detailRow?.['중량'],
+    new Intl.NumberFormat('en-US').format(detailRow?.['입금 요청액']) + '원',
+  ]
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
   const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
   //checkSales
@@ -67,6 +71,49 @@ const WinningDetail = ({}) => {
 
   //checkShips
   const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
+
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(AuctionWinningDetailFieldsCols)
+  const getCol = tableField.current
+  const queryClient = useQueryClient()
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  const [detailParams, setDetailParams] = useState({
+    pageNum: 1,
+    pageSize: 10,
+    auctionNumber: '',
+    storage: '',
+    customerDestinationUid: '',
+    biddingStatus: '',
+  })
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+
+    setDetailParams((p) => ({
+      ...p,
+      auctionNumber: detailRow?.['경매 번호'],
+      storage: detailRow?.['고객사명'],
+      customerDestinationUid: detailRow?.['고객사 목적지 고유 번호'],
+      biddingStatus: detailRow?.['낙찰 상태'],
+    }))
+  }, [])
+
+  console.log('detailParams', detailParams)
+
+  const { isLoading, isError, data, isSuccess } = useReactQuery(detailParams, 'getDetailProgress', getWinningDetail)
+  const resData = data?.data?.data?.list
+
+  console.log('resData', resData)
+
+  useEffect(() => {
+    let getData = resData
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, AuctionWinningDetailFields))
+    }
+  }, [isSuccess, resData])
 
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
@@ -86,7 +133,7 @@ const WinningDetail = ({}) => {
 
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
-    //   ...prevState,
+    //   ...prevState,F
     //   [name]: selectedOption.label,
     // }));
   }
@@ -121,7 +168,7 @@ const WinningDetail = ({}) => {
       <FilterTopContainer>
         <FilterTCTop>
           <h6>경매 번호</h6>
-          <p>2023041050</p>
+          <p>{detailRow && detailRow['경매 번호']}</p>
         </FilterTCTop>
       </FilterTopContainer>
       <ClaimTable style={{ marginBottom: '30px' }}>
@@ -220,7 +267,7 @@ const WinningDetail = ({}) => {
             <WhiteSkyBtn str>목적지 변경 승인</WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getCol={getCol} getRow={getRow} setChoiceComponent={() => {}} />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>

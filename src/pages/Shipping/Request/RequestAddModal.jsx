@@ -1,106 +1,109 @@
-import { useEffect, useState } from 'react'
-import { BlackBtn, BtnBound, GreyBtn, SkyBtn, TGreyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import React, { useEffect, useRef, useState } from 'react'
+import { BlackBtn, GreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
-import { storageOptions } from '../../../common/Option/SignUp'
-import Excel from '../../../components/TableInner/Excel'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import Test3 from '../../Test/Test3'
-
 import {
-  CustomInput,
   DoubleWrap,
-  ExInputsWrap,
   FilterContianer,
   FilterFooter,
   FilterHeader,
   FilterLeft,
   FilterRight,
   FilterSubcontianer,
-  FilterTCTop,
-  FilterTopContainer,
   GridWrap,
   Input,
   PartWrap,
-  PWRight,
   ResetImg,
   RowWrap,
   TableContianer,
   TCSubContainer,
   Tilde,
 } from '../../../modal/External/ExternalFilter'
-
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-
 import {
   BlueBarBtnWrap,
   BlueBarHeader,
-  BlueBlackBtn,
   BlueSubContainer,
   FadeOverlay,
   ModalContainer,
   WhiteCloseBtn,
 } from '../../../modal/Common/Common.Styled'
 import DateGrid from '../../../components/DateGrid/DateGrid'
+import { useShipmentListQuery } from '../../../api/shipment'
+import { ShippingRegisterFields, ShippingRegisterFieldsCols } from '../../../constants/admin/Shipping'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { GlobalFilterContainer, GlobalFilterFooter } from '../../../components/Filter'
+import {
+  CustomerSearch,
+  DateSearchSelect,
+  DestinationSearch,
+  ProductNumberListSearch,
+  StorageSelect,
+} from '../../../components/Search'
+import Table from '../../Table/Table'
+
+const initData = {
+  pageNum: 1,
+  pageSize: 10,
+  shipmentStatus: '출하 지시',
+  storage: '',
+  customerCode: '',
+  customerName: '',
+  destinationCode: '',
+  destinationName: '',
+  shippingStartDate: '',
+  shippingEndDate: '',
+  productNumberList: '',
+}
 
 // 합짐 추가 등록 메인 컴포넌트
-const RequestAddModal = ({}) => {
+const RequestAddModal = ({ list, onListAdd }) => {
   const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
-  const checkSales = ['전체', '확정 전송', '확정 전송 대기']
+  // Table
+  const tableField = useRef(ShippingRegisterFieldsCols)
+  const getCol = tableField.current
+  const [getRow, setGetRow] = useState('')
+  const [rowChecked, setRowChecked] = useAtom(selectedRowsAtom)
 
-  //checkSales
-  const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
+  // data fetch
+  const [param, setParam] = useState(initData)
+  const { data, refetch } = useShipmentListQuery(param)
 
-  //checkShips
-  const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
+  // param change
+  const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value }))
+
+  // reset event
+  const onReset = async () => {
+    await setParam(initData)
+    await refetch()
+  }
+
+  // 제품 추가
+  const onAdd = () => {
+    const key = '주문 고유 번호'
+    const findKey = rowChecked.map((item) => item[key])
+    const addData = data?.list?.filter((item) => findKey.includes(item.orderUid))
+
+    onListAdd(addData)
+  }
+
+  const modalClose = () => setAddModal(false)
 
   useEffect(() => {
-    // true에 해당되면, value를, false면 빈값을 반환
-    const updatedCheck = checkSales.map((value, index) => {
-      return check1[index] ? value : ''
-    })
-    // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-    const filteredCheck = updatedCheck.filter((item) => item !== '')
-    setCheckData1(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
-  }, [check1])
-
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
-  const [isRotated, setIsRotated] = useState(false)
-
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated((prevIsRotated) => !prevIsRotated)
-  }
-
-  // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-  const [toggleMsg, setToggleMsg] = useState('On')
-  const toggleBtnClick = () => {
-    setExfilterToggle((prev) => !prev)
-    if (exFilterToggle === true) {
-      setToggleMsg('Off')
-    } else {
-      setToggleMsg('On')
+    // 이미 추가된 데이터 중복 제거
+    const getData = data?.list?.filter((obj) => !list.some((item) => obj.orderUid === item.orderUid))
+    if (getData && Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, ShippingRegisterFields))
     }
-  }
+  }, [data])
 
-  const modalClose = () => {
-    setAddModal(false)
-  }
+  useEffect(() => {
+    refetch()
+  }, [param.pageNum, param.pageSize])
 
   return (
     <>
@@ -115,91 +118,69 @@ const RequestAddModal = ({}) => {
         </BlueBarHeader>
         <BlueSubContainer style={{ padding: '0px 30px' }}>
           <FilterContianer style={{ paddingBottom: '0px' }}>
-            <FilterHeader style={{ height: '30px' }}>
-              <div style={{ display: 'flex' }}></div>
-            </FilterHeader>
+            <FilterHeader style={{ height: '30px' }}></FilterHeader>
 
-            {exFilterToggle && (
-              <>
-                <FilterSubcontianer style={{ paddingBottom: '10px' }}>
-                  <FilterLeft>
-                    <RowWrap modal>
-                      <PartWrap first>
-                        <h6 style={{ width: '120px' }}>출하지시 일자</h6>
-                        <GridWrap>
-                          <DateGrid bgColor={'white'} fontSize={17} />
-                          <Tilde>~</Tilde>
-                          <DateGrid bgColor={'white'} fontSize={17} />
-                        </GridWrap>
-                      </PartWrap>
-
-                      <PartWrap>
-                        <h6>목적지</h6>
-                        <Input />
-                        <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                          찾기
-                        </GreyBtn>
-                      </PartWrap>
-                    </RowWrap>
-                    <RowWrap modal none>
-                      <PartWrap>
-                        <h6 style={{ width: '120px' }}>창고구분</h6>
-                        <MainSelect />
-                      </PartWrap>
-
-                      <PartWrap>
-                        <h6>고객사 명/고객사코드</h6>
-                        <Input />
-                        <Input />
-                        <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                          찾기
-                        </GreyBtn>
-                      </PartWrap>
-                    </RowWrap>
-                  </FilterLeft>
-                  <FilterRight>
-                    <DoubleWrap>
-                      <h6>제품 번호 </h6>
-                      <textarea
-                        style={{ height: '80%' }}
-                        placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                      />
-                    </DoubleWrap>
-                  </FilterRight>
-                </FilterSubcontianer>
-                <FilterFooter>
-                  <div style={{ display: 'flex' }}>
-                    <p>초기화</p>
-                    <ResetImg
-                      src="/img/reset.png"
-                      style={{ marginLeft: '10px', marginRight: '20px' }}
-                      onClick={handleImageClick}
-                      className={isRotated ? 'rotate' : ''}
+            <GlobalFilterContainer>
+              <FilterSubcontianer style={{ paddingBottom: '10px' }}>
+                <FilterLeft>
+                  <RowWrap modal>
+                    <DateSearchSelect
+                      title={'출하 지시 일자'}
+                      startInitDate={param.shippingStartDate}
+                      endInitDate={param.shippingEndDate}
+                      startDateChange={(value) => onChange('shippingStartDate', value)}
+                      endDateChange={(value) => onChange('shippingEndDate', value)}
                     />
-                  </div>
-                  <div style={{ width: '180px' }}>
-                    <BlackBtn width={90} height={35}>
-                      검색
-                    </BlackBtn>
-                  </div>
-                </FilterFooter>
-              </>
-            )}
+                    <DestinationSearch
+                      name={param.destinationName}
+                      code={param.destinationCode}
+                      setName={(value) => onChange('destinationName', value)}
+                      setCode={(value) => onChange('destinationCode', value)}
+                    />
+                  </RowWrap>
+                  <RowWrap modal none>
+                    <StorageSelect value={param.storage} onChange={(e) => onChange('storage', e.label)} />
+                    <CustomerSearch
+                      name={param.customerName}
+                      code={param.customerCode}
+                      setName={(value) => onChange('customerName', value)}
+                      setCode={(value) => onChange('customerCode', value)}
+                    />
+                  </RowWrap>
+                </FilterLeft>
+                <FilterRight>
+                  <ProductNumberListSearch
+                    value={param.productNumberList}
+                    onChange={(e) => onChange('productNumberList', e.target.value)}
+                  />
+                </FilterRight>
+              </FilterSubcontianer>
+            </GlobalFilterContainer>
+            {/* footer */}
+            <GlobalFilterFooter reset={onReset} onSearch={refetch} />
             <TableContianer>
               <TCSubContainer bor>
-                <Hidden />
-
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <PageDropdown />
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'end', gap: '10px' }}>
+                  <PageDropdown
+                    handleDropdown={(e) =>
+                      setParam((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))
+                    }
+                  />
                 </div>
               </TCSubContainer>
-              <Test3 hei2={350} hei={100} />
-              <TCSubContainer></TCSubContainer>
+              <Table
+                hei2={350}
+                hei={100}
+                getCol={getCol}
+                getRow={getRow}
+                tablePagination={data?.pagination}
+                onPageChange={(value) => onChange('pageNum', value)}
+              />
             </TableContianer>
-          </FilterContianer>{' '}
+          </FilterContianer>
         </BlueSubContainer>
         <BlueBarBtnWrap style={{ padding: '10px' }}>
-          <BlackBtn fontSize={17} width={10} height={35}>
+          <BlackBtn fontSize={17} width={10} height={35} onClick={onAdd}>
             선택 추가
           </BlackBtn>
         </BlueBarBtnWrap>

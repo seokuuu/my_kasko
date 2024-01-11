@@ -9,6 +9,7 @@ import { FilterContianer, TableContianer } from '../../../../modal/External/Exte
 import { doubleClickedRowAtom, selectedRowsAtom } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
 import { searchCategoryOptions } from '../../constants'
+import usePaging from '../../hook/usePaging'
 import Header from './components/faq/Header'
 import TableHeader from './components/faq/TableHeader'
 
@@ -69,6 +70,8 @@ const FAQ = ({}) => {
       setDetailsRow([])
     }
   }, [detailRow])
+
+  const { pagination, onPageChanage } = usePaging(data, setSearch)
   return (
     <FilterContianer>
       {/* 헤더(카테고리탭 & 검색) */}
@@ -78,7 +81,13 @@ const FAQ = ({}) => {
         {/* 테이블 헤더 (목록 갯수 & 선택 갯수 * 삭제,등록 버튼) */}
         <TableHeader totalLength={data ? data.list.length : 0} selected={selected} refetch={refetch} />
         {/* 테이블 목록 */}
-        <Table getCol={FaqListFieldCols} getRow={rows} setChoiceComponent={() => {}} />
+        <Table
+          getCol={FaqListFieldCols}
+          getRow={rows}
+          setChoiceComponent={() => {}}
+          tablePagination={pagination}
+          onPageChange={onPageChanage}
+        />
       </TableContianer>
     </FilterContianer>
   )

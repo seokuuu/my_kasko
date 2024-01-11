@@ -462,7 +462,7 @@ const ClientPostModal = ({ setEditModal }) => {
                 </FlexPart>
                 <FlexPart>
                   <FlexTitle>
-                    경매 담당자 정보 (완)<span>*</span>
+                    경매 담당자 정보<span>*</span>
                   </FlexTitle>
                   <FlexContent>
                     <CustomInput name="memberName" placeholder=" 성함 입력" width={188} />
@@ -546,7 +546,6 @@ const ClientPostModal = ({ setEditModal }) => {
                     </div>
                   </FlexContent>
                 </FlexPart>
-                {console.log('radioSelections', radioSelections['사용자구분'])}
                 {
                   radioSelections['사용자구분'] && radioSelections['사용자구분'][1] && (
                   <FlexPart>
@@ -568,7 +567,7 @@ const ClientPostModal = ({ setEditModal }) => {
                           <FlexContent>
                             <MainSelect
                                 options={storageList}
-                                defaultValue={''}
+                                defaultValue={'구'}
                                 name="storage"
                                 onChange={(e) => {
                                   setSelected((p) => ({ ...p, storage: e.label, storageUid: e.value }))
@@ -580,7 +579,7 @@ const ClientPostModal = ({ setEditModal }) => {
                 }
                 {
                   radioSelections['사용자구분'] && radioSelections['사용자구분'][3] && (
-                        <FlexPart>
+                        <FlexPart style={{ alignItems: 'start' }}>
                           <FlexTitle style={{ minWidth: '170px' }}>권한 설정</FlexTitle>
                           <FlexContent2>
                             {checkDummy2.map((x, index) => (

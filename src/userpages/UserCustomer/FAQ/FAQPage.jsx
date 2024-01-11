@@ -12,6 +12,8 @@ const FAQPage = () => {
   const paramData = {
     pageNum: 1,
     pageSize: 50,
+    category: '카테고리', // This value is hard coded value. It is not user selected category.
+    keyword: '경매', // This is the user selected category.
   }
   const [param, setParam] = useState(paramData)
   const [expanded, setExpanded] = useState('고객센터')
@@ -30,6 +32,13 @@ const FAQPage = () => {
     setParam((prevParam) => ({
       ...prevParam,
       pageNum: Number(value),
+    }))
+  }
+
+  const onSelectedCategory = (category) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      keyword: category,
     }))
   }
 
@@ -54,6 +63,7 @@ const FAQPage = () => {
               faqList={faqList}
               faqPagination={faqPagination}
               onPageChange={onPageChange}
+              onSelectedCategory={onSelectedCategory}
             />
           </OverAllTable>
         </OverAllSub>

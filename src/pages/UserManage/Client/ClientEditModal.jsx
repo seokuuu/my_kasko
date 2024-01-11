@@ -28,6 +28,7 @@ import SignUpPost from '../../../modal/SignUp/SignUpPost'
 import {IncomeImgDiv} from '../../../userpages/UserMyPage/Profile/Profile'
 import DownloadButton from '../../../utils/DownloadButton'
 import {UserCheckDiv} from '../UserManage/UserPost'
+import {getStorageList} from "../../../api/search";
 
 const init = {
   id: '',
@@ -366,6 +367,8 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
     setEditModal(false)
   }
 
+  const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
+
   return (
     <div>
       <ModalOverlayC />
@@ -390,7 +393,7 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
                     아이디<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name={init.id} value={user && user.id} />
+                    <FlexInput name={init.id} value={user && user.id} disabled={true}/>
                   </FlexContent>
                 </FlexPart>
 
@@ -406,7 +409,7 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
                 </FlexPart>
                 <FlexPart>
                   <FlexTitle>
-                    경매 담당자 정보 (완)<span>*</span>
+                    경매 담당자 정보<span>*</span>
                   </FlexTitle>
                   <FlexContent>
                     <CustomInput
@@ -517,6 +520,7 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
                             name="type"
                             isChecked={checkRadio4[index]}
                             onClick={() => {
+                              if (checkRadio4.some((isChecked, i) => isChecked && i !== index)) return
                               setCheckRadio4(CheckBox(checkRadio4, checkRadio4.length, index))
                             }}
                           >
@@ -529,6 +533,18 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
                   </FlexContent>
                 </FlexPart>
                 {
+                    checkRadio4[1] && (
+                        <FlexPart>
+                          <FlexTitle>
+                            운송사 이름<span>*</span>
+                          </FlexTitle>
+                          <FlexContent>
+                            <FlexInput name="transportName" />
+                          </FlexContent>
+                        </FlexPart>
+                    )
+                }
+                {
                     checkRadio4[0] && (
                         <FlexPart>
                           <FlexTitle>
@@ -537,8 +553,10 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
                           <FlexContent>
                             <EditSelect
                                 name="storage"
-                                options={depositOptions}
-                                defaultValue={depositOptions[0]}
+                                options={storageList}
+                                defaultValue={''}
+                                value={storageList.find(option => option.value === resData?.storageUid)}
+                                isDisabled={true}
                                 onChange={(selectedOption) => handleSelectChange(selectedOption, 'storage')}
                             />
                           </FlexContent>
@@ -547,7 +565,7 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
                 }
                 {
                   checkRadio4[3] && (
-                        <FlexPart>
+                        <FlexPart style={{ alignItems: 'start' }}>
                           <FlexTitle style={{ minWidth: '170px' }}>권한 설정</FlexTitle>
                           <FlexContent2>
                             {checkDummy2.map((x, index) => (
