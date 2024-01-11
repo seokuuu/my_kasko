@@ -24,7 +24,7 @@ import { InputSearch, StorageSelect } from '../../../components/Search'
 
 const paramData = {
   pageNum: 1,
-  pageSize: 50,
+  pageSize: 3,
   driverName: '',
   carNumber: '',
   carType: '',

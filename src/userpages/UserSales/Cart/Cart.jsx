@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useAtom } from 'jotai'
 import { useMemo, useState } from 'react'
 import { useUserCartListQuery, useUserOrderMutaion } from '../../../api/user'
 import {
@@ -17,7 +17,9 @@ import {
   TableContianer
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
-import { selectedRowsAtom } from '../../../store/Layout/Layout'
+import { destiDelPopupAtom, popupObject, selectedRowsAtom } from '../../../store/Layout/Layout'
+import CustomPagination from '../../../components/pagination/CustomPagination'
+import AlertPopup from '../../../modal/Alert/AlertPopup'
 
 /**
  * @constant 최소 주문 중량(25톤/단위kg)
@@ -46,6 +48,15 @@ const Cart = ({}) => {
   const { mutate: requestOrder, loading: isOrderLoading } = useUserOrderMutaion(); // 주문하기 뮤테이션
   // 카테고리
   const isSingleCategory = useMemo(() => searchParam.category === CATEGORY.single, [searchParam]);
+  // 페이지 데이터
+  const paginationData = useMemo(() => {
+    let initialData = { pageNum: 1, startPage: 1, endPage: 1, maxPage: 1, listCount: 0 };
+    if(cartData && cartData.pagination) {
+      initialData = cartData.pagination;
+      initialData.endPage = Math.max(cartData.pagination.endPage, 1);
+    }
+    return initialData;
+  }, [cartData]);
   // 테이블 데이터
   const tableDisplayData = useMemo(() => {
     if(!cartData || !cartData.list) {
@@ -71,6 +82,9 @@ const Cart = ({}) => {
     }, 0);
     return sums;
   }, [selectedData]); // 총 선택 항목 중량
+  // POPUP
+  const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom) // 팝업 스위치
+  const [_, setNowPopup] = useAtom(popupObject);
 
   /**
    * 필터 핸들러
@@ -103,11 +117,21 @@ const Cart = ({}) => {
     e.preventDefault();
 
     if(!selectedData || selectedData.length < 1) {
-      return alert('주문할 제품을 선택해 주세요.');
+      setPopupSwitch(true);
+      setNowPopup({
+        num: '1',
+        content: '상품을 선택해 주세요.',
+      });
+      return;
     }
     
     if(selectedTotalWeight < MIN_ORDER_WEIGHT) {
-      return alert('25톤 이상 부터 주문이 가능합니다.');
+      setPopupSwitch(true);
+      setNowPopup({
+        num: '1',
+        content: '25톤 이상 부터 주문이 가능합니다.\n확인하시고 다시 시도해 주세요.',
+      });
+      return;
     }
 
     requestOrder({
@@ -176,11 +200,15 @@ const Cart = ({}) => {
         </TCSubContainer>
         {/* 테이블 */}
         <Table getCol={ isSingleCategory ? userCartListSingleFieldsCols : userCartListPackageFieldCols} getRow={tableDisplayData} />
+        {/* 페이지네이션 */}
+        <CustomPagination pagination={paginationData} onPageChange={p => { handleSearchParamChange({page: p}) }} />
         {/* 테이블 액션 */}
         <TCSubContainer style={{width: '100%', justifyContent: 'flex-end'}}>
             <SkyBtn disabled={isOrderLoading} onClick={handleSelectOrder}>선택 제품 주문</SkyBtn>
         </TCSubContainer>
       </TableContianer>
+      {/* 팝업 */}
+      { popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} /> }
     </FilterContianer>
   )
 };
