@@ -79,7 +79,36 @@ export const UserManageCustomerDestinationManageFieldsCols = [
     cellRenderer: BtnCellRenderer,
     cellRendererParams: {
       uidFieldName: '목적지 고유 번호',
-      editType: 'destination',
+      editType: 'userPageDestination',
+    },
+  },
+  {
+    field: '고객 코드',
+  },
+  { field: '대표', minWidth: 100 }, //숫자
+  { field: '목적지 코드', minWidth: 100 },
+  { field: '목적지 명', minWidth: 100 },
+  {
+    field: '담당자 연락처',
+    minWidth: 200,
+  },
+  {
+    field: '도착지 연락처',
+    minWidth: 100,
+  },
+  { field: '하차지 명', minWidth: 100 },
+  { field: '상세 주소', minWidth: 100 },
+  { field: '비고란' },
+]
+export const adminCustomerDestinationManageFieldsCols = [
+  { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  {
+    field: '수정',
+    maxWidth: 90,
+    cellRenderer: BtnCellRenderer,
+    cellRendererParams: {
+      uidFieldName: '목적지 고유 번호',
+      editType: 'adminPageDestination',
     },
   },
   {

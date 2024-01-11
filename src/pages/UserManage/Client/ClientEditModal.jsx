@@ -28,6 +28,7 @@ import SignUpPost from '../../../modal/SignUp/SignUpPost'
 import {IncomeImgDiv} from '../../../userpages/UserMyPage/Profile/Profile'
 import DownloadButton from '../../../utils/DownloadButton'
 import {UserCheckDiv} from '../UserManage/UserPost'
+import {getStorageList} from "../../../api/search";
 
 const init = {
   id: '',
@@ -366,6 +367,8 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
     setEditModal(false)
   }
 
+  const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
+
   return (
     <div>
       <ModalOverlayC />
@@ -550,8 +553,9 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
                           <FlexContent>
                             <EditSelect
                                 name="storage"
-                                options={depositOptions}
-                                defaultValue={resData?.storage}
+                                options={storageList}
+                                defaultValue={''}
+                                value={storageList.find(option => option.value === resData?.storageUid)}
                                 isDisabled={true}
                                 onChange={(selectedOption) => handleSelectChange(selectedOption, 'storage')}
                             />
@@ -561,7 +565,7 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
                 }
                 {
                   checkRadio4[3] && (
-                        <FlexPart>
+                        <FlexPart style={{ alignItems: 'start' }}>
                           <FlexTitle style={{ minWidth: '170px' }}>권한 설정</FlexTitle>
                           <FlexContent2>
                             {checkDummy2.map((x, index) => (
