@@ -1,34 +1,24 @@
-import { useEffect, useRef, useState } from 'react'
-
-import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
-import { btnCellUidAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-
-import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
-
-import { useAtom } from 'jotai'
-import { isArray } from 'lodash'
-import { useCallback } from 'react'
-import { deleteCustomerfavorite, getCustomerfavorite, getDetailCustomerfavorite } from '../../../api/myPage'
-import { UserPageUserPreferFields, UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
-import useMutationQuery from '../../../hooks/useMutationQuery'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { add_element_field } from '../../../lib/tableHelpers'
-import Table from '../../../pages/Table/Table'
-
-import { userpageUserPreferEditObject } from '../../../store/Layout/Layout'
-import PreferEdit from './PreferEdit'
-import { userpageUserPreferEdit } from '../../../store/Layout/Layout'
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { useAtom } from 'jotai';
+import { isArray } from 'lodash';
+import useMutationQuery from '../../../hooks/useMutationQuery';
+import useReactQuery from '../../../hooks/useReactQuery';
+import { deleteCustomerfavorite, getCustomerfavorite, getDetailCustomerfavorite } from '../../../api/myPage';
+import { UserPageUserPreferFields, UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage';
+import { add_element_field } from '../../../lib/tableHelpers';
+import Table from '../../../pages/Table/Table';
+import { userpageUserPreferEditObject, userpageUserPreferEdit, btnCellUidAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout';
+import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button';
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter';
+import PreferEdit from './PreferEdit';
+import PageDropdown from '../../../components/TableInner/PageDropdown';
 
 const Prefer = ({ setChoiceComponent }) => {
   const [switchEdit, setSwtichEdit] = useAtom(userpageUserPreferEdit)
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-
-  console.log('switchEdit', switchEdit)
   const [filterData, setFilterData] = useAtom(userpageUserPreferEditObject)
   const radioDummy = ['전체', '미진행', '진행중', '종료']
-
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
-
   const [savedRadioValue, setSavedRadioValue] = useState('')
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
@@ -72,16 +62,17 @@ const Prefer = ({ setChoiceComponent }) => {
   const getCol = tableField.current
   const checkedArray = useAtom(selectedRowsAtom)[0]
 
-  const dummy = {
+  const paramData = {
     pageNum: 1,
     pageSize: 50,
   }
-
-  const { isLoading, isError, data, isSuccess } = useReactQuery(dummy, 'getCustomerfavorite', getCustomerfavorite)
+  const [param, setParam] = useState(paramData)
+  const { isLoading, isError, data, isSuccess } = useReactQuery(param, 'getCustomerfavorite', getCustomerfavorite)
   const resData = data?.data?.data?.list
+  const resPagination = data?.data?.data?.pagination
 
   const detailData = data?.data?.data?.list
-
+  const [tablePagination, setTablePagination] = useState([])
   if (isError) console.log('데이터 request ERROR')
 
   useEffect(() => {
@@ -89,8 +80,9 @@ const Prefer = ({ setChoiceComponent }) => {
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, UserPageUserPreferFields))
+      setTablePagination(resPagination)
     }
-  }, [isSuccess, resData])
+  }, [isSuccess, data])
   // 삭제
   const mutation = useMutationQuery('userManage', deleteCustomerfavorite)
   const handleRemoveBtn = useCallback(() => {
@@ -105,6 +97,13 @@ const Prefer = ({ setChoiceComponent }) => {
 
   const goPostPage = () => {
     setChoiceComponent('등록')
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
   }
 
   useEffect(() => {
@@ -138,11 +137,22 @@ const Prefer = ({ setChoiceComponent }) => {
                   alignItems: 'center',
                 }}
               >
+                <PageDropdown
+                  handleDropdown={(e) =>
+                    setParam((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))
+                  }
+                />
                 <WhiteRedBtn onClick={handleRemoveBtn}>선택 삭제</WhiteRedBtn>
                 <SkyBtn onClick={goPostPage}>등록</SkyBtn>
               </div>
             </TCSubContainer>
-            <Table getCol={getCol} getRow={getRow} setChoiceComponent={setChoiceComponent} />
+            <Table
+              getCol={getCol}
+              getRow={getRow}
+              setChoiceComponent={setChoiceComponent}
+              tablePagination={tablePagination}
+              onPageChange={onPageChange}
+            />
           </TableContianer>
         </FilterContianer>
       )}
