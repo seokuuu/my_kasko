@@ -3,7 +3,7 @@ import {useCallback, useEffect, useRef, useState} from 'react'
 import Excel from '../../../components/TableInner/Excel'
 
 import {SkyBtn, WhiteRedBtn} from '../../../common/Button/Button'
-import {btnCellUidAtom, selectedRowsAtom, toggleAtom, userpageDestiEdit} from '../../../store/Layout/Layout'
+import {btnCellUidAtom, selectedRowsAtom, toggleAtom, userPageDestiEditModal} from '../../../store/Layout/Layout'
 
 import {FilterContianer, FilterHeader, TableContianer, TCSubContainer} from '../../../modal/External/ExternalFilter'
 
@@ -27,7 +27,7 @@ import DestinationEdit from './DestinationEdit'
 
 const Destination = ({ setChoiceComponent }) => {
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-  const [switchDestiEdit, setSwtichDestiEdit] = useAtom(userpageDestiEdit)
+  const [switchDestiEdit, setSwtichDestiEdit] = useAtom(userPageDestiEditModal)
   const radioDummy = ['전체', '미진행', '진행중', '종료']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
@@ -99,6 +99,9 @@ const Destination = ({ setChoiceComponent }) => {
       setGetRow(add_element_field(getData, UserManageCustomerDestinationManageFields))
     }
   }, [isSuccess, resData])
+
+  console.log('getRow =>', getRow)
+  console.log('switchDestiEdit => ', switchDestiEdit)
 
   const openPost = () => {
     setChoiceComponent('등록')
