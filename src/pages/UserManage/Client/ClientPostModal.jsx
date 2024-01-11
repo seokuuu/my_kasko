@@ -462,7 +462,7 @@ const ClientPostModal = ({ setEditModal }) => {
                 </FlexPart>
                 <FlexPart>
                   <FlexTitle>
-                    경매 담당자 정보 (완)<span>*</span>
+                    경매 담당자 정보<span>*</span>
                   </FlexTitle>
                   <FlexContent>
                     <CustomInput name="memberName" placeholder=" 성함 입력" width={188} />
@@ -546,7 +546,6 @@ const ClientPostModal = ({ setEditModal }) => {
                     </div>
                   </FlexContent>
                 </FlexPart>
-                {console.log('radioSelections', radioSelections['사용자구분'])}
                 {
                   radioSelections['사용자구분'] && radioSelections['사용자구분'][1] && (
                   <FlexPart>
