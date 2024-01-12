@@ -1,22 +1,25 @@
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { SkyBtn } from '../../common/Button/Button'
 import {
+  StandardConsoliateEdit,
   StandardDispatchEditAtom,
+  UsermanageDestiEditModal,
+  adminPageDestiEditModal,
+  auctionRoundEditPageAtom,
   btnCellRenderAtom,
   btnCellUidAtom,
   consolEditModalAtom,
+  operateAddAtom,
   surEditModalAtom,
-  userpageUserPreferEdit,
+  userPageDestiEditModal,
   usermanageClientEdit,
-  UsermanageDestiEditModal,
-  StandardConsoliateEdit,
-  auctionRoundEditPageAtom,
+  userpageUserPreferEdit,
 } from '../../store/Layout/Layout'
 
 import { UsermanageUserManageEditModal } from '../../store/Layout/Layout'
-const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
+const BtnCellRenderer = ({ data, uidFieldName, editType, moveUrl }) => {
   const uid = data[uidFieldName]
 
   const navigate = useNavigate()
@@ -35,11 +38,17 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
 
   const [userDestiEdit, setUserDestiEdit] = useAtom(UsermanageDestiEditModal) // 고객사 목적지 관리 수정 모달
 
+  const [userPageDestiEdit, setUserPageDestiEdit] = useAtom(userPageDestiEditModal)
+  const [adminPageDestiEdit, setAdminPageDestiEdit] = useAtom(adminPageDestiEditModal)
+
   const [consoliEdit, setConsoliEdit] = useAtom(StandardConsoliateEdit)
 
   const [userManageEditModal, setUserManageEditModal] = useAtom(UsermanageUserManageEditModal)
 
   const [auctionRoundEditModal, setAuctionRoundEditModal] = useAtom(auctionRoundEditPageAtom)
+
+  // 관리자 > 운영 관리 > 제품군 관리,창고 관리 > 등록,수정 모달 관련 값
+  const setProductRangeEditModal = useSetAtom(operateAddAtom)
 
   const btnClickedHandler = () => {
     switch (editType) {
@@ -73,6 +82,14 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
         setUidAtom(uid)
         setUserDestiEdit(true)
         break
+      case 'userPageDestination':
+        setUidAtom(uid)
+        setUserPageDestiEdit(true)
+        break
+      case 'adminPageDestination':
+        setUidAtom(uid)
+        setAdminPageDestiEdit(true)
+        break
       // 클레임 관리 목록 수정 버튼 => 클레임 수정 페이지로 이동
       case 'claimUpdate':
         setUidAtom(uid)
@@ -85,6 +102,13 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
       case 'auctionroundedit':
         setUidAtom(uid)
         setAuctionRoundEditModal(true)
+        break
+      case 'packageUpdate':
+        navigate('/product/packageedit/' + data[uidFieldName], { state: { data: data } })
+      // 관리자 > 운영관리 > 제품군 관리 목록 수정
+      case 'productRange':
+        setUidAtom(uid)
+        setProductRangeEditModal(true)
         break
       default:
         break

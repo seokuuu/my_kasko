@@ -1,7 +1,5 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-
-import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
 
@@ -76,7 +74,7 @@ const Recommend = ({}) => {
             <WhiteRedBtn>추천 상품 해제</WhiteRedBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        테이블 들어오는 부분
       </TableContianer>
     </FilterContianer>
   )

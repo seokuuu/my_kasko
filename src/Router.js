@@ -30,6 +30,7 @@ import WinningCreatePage from './pages/Auction/Winning/WinningCreatePage'
 import WinningPage from './pages/Auction/Winning/WinningPage'
 
 import OrderPage from './pages/Order/OrderPage'
+import AdminOrderDetailPage from './pages/Order/AdminOrderDetailPage'
 
 // 출고 관리
 import AchievementPage from './pages/Shipping/Achievement/AchievementPage'
@@ -166,14 +167,16 @@ import NoticePost from './pages/Operate/Common/Notice/NoticePost'
 import NoticeBoardPost from './pages/Operate/Exposure/NoticeBoard/NoticeBoardPost'
 import TestExcel from './pages/Test/TestExcel'
 import UserPost from './pages/UserManage/UserManage/UserPost'
+import OrderDetail from './userpages/UserSales/Order/OrderDetail'
 
+import ClientDestiCustomerFind from './pages/UserManage/ClientDestination/ClientDestiCustomerFind'
 // RoundAucProAdd
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
-        <Route path="/ppapp" element={<WinningProductAdd />} />
+        <Route path="/ppapp" element={<ClientDestiCustomerFind />} />
         <Route path="/ppap" element={<DefaultBlueBar />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />
@@ -204,10 +207,11 @@ const Router = () => {
           <Route path="/product/salesproduct" element={<SalesProductPage />}></Route>
           <Route path="/product/package" element={<PackageManagePage />}></Route>
           <Route path="/product/packagecreate" element={<PackageCreatePage />}></Route>
-          <Route path="/product/packageedit" element={<PackageCreatePage />}></Route>
+          <Route path="/product/packageedit/:id" element={<PackageCreatePage />}></Route>
           <Route path="/product/recommend" element={<RecommendPage />}></Route>
           <Route path="/product/recommendpkg" element={<RecommendPackPage />}></Route>
           <Route path="/product/prono" element={<PronoPage />}></Route>
+          {/* <Route path="/product/packageUpdate/:id" element={<PronoPage />}></Route> */}
         </Route>
         {/* 경매 관리  */}
         <Route path="/auction">
@@ -227,6 +231,7 @@ const Router = () => {
         </Route>
         {/* 주문 관리 */}
         <Route path="/order" element={<OrderPage />}></Route>
+        <Route path="/admin/order/detail" element={<AdminOrderDetailPage />}></Route>
         {/* 출고 관리 */}
         <Route path="/shipping">
           <Route path="/shipping/register" element={<RegisterPage />} />

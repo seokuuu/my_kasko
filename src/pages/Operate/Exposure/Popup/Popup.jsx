@@ -12,14 +12,12 @@ import {
   popupObject,
   popupTypeAtom,
   selectedRowsAtom,
-  toggleAtom,
 } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
+import CategoryTab from '../../UI/CategoryTab'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { commonListSearchInitValue, exposureTabOptions } from '../../constants'
-import CommonHeader from '../../UI/CommonHeader'
-import CategoryTab from '../../UI/CategoryTab'
-import HeaderToggle from '../../../../components/Toggle/HeaderToggle'
+import usePaging from '../../hook/usePaging'
 
 /**
  * @description
@@ -43,9 +41,8 @@ const Popup = ({}) => {
   const setNowPopup = useSetAtom(popupObject) // 팝업 객체
 
   // 팝업 목록 API
-  const { data, refetch } = usePopupListQuery(search)
+  const { data, refetch, isLoading } = usePopupListQuery(search)
 
-  console.log('팝업 목록 데이터 :', data)
   // 팝업 삭제 API
   const { mutate } = usePopupRemoveMutation()
   // 선택된 데이터 갯수
@@ -113,6 +110,8 @@ const Popup = ({}) => {
     }
   }, [detailRow])
 
+  const { pagination, onPageChanage } = usePaging(data, setSearch)
+
   return (
     <FilterContianer>
       {/* 헤더(카테고리탭 & 검색) */}
@@ -134,7 +133,14 @@ const Popup = ({}) => {
           selectedLength={selectedLength}
         />
         {/* 테이블 */}
-        <Table getCol={PopupListFieldCols} getRow={rows} setChoiceComponent={() => {}} />
+        <Table
+          getCol={PopupListFieldCols}
+          loading={isLoading}
+          getRow={rows}
+          setChoiceComponent={() => {}}
+          tablePagination={pagination}
+          onPageChange={onPageChanage}
+        />
       </TableContianer>
     </FilterContianer>
   )

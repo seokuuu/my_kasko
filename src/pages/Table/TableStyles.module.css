@@ -48,7 +48,9 @@
 .ag-theme-alpine ::-webkit-scrollbar-track {
   background: #f1f1f1; /* 트랙의 배경색 */
 }
-
+.ag-theme-quartz {
+  --ag-list-item-height: 14px;
+}
 /* 스크롤바 썸(손잡이) 스타일 */
 .ag-theme-alpine ::-webkit-scrollbar-thumb {
   background: #c8c8c8;

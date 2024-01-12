@@ -21,7 +21,7 @@ const PRODUCT_RANGE_KEYS = {
 // 제품군 목록 조회
 export function useProductRangeListQuery(params) {
   return useQuery({
-    queryKey: PRODUCT_RANGE_KEYS.getProductRangeList,
+    queryKey: [...PRODUCT_RANGE_KEYS.getProductRangeList, params.pageNum, params.pageSize],
     queryFn: async function () {
       const response = await client.get(urls, { params })
       return response.data.data
