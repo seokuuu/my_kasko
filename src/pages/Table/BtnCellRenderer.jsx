@@ -19,7 +19,7 @@ import {
 } from '../../store/Layout/Layout'
 
 import { UsermanageUserManageEditModal } from '../../store/Layout/Layout'
-const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
+const BtnCellRenderer = ({ data, uidFieldName, editType, moveUrl }) => {
   const uid = data[uidFieldName]
 
   const navigate = useNavigate()
@@ -103,6 +103,8 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
         setUidAtom(uid)
         setAuctionRoundEditModal(true)
         break
+      case 'packageUpdate':
+        navigate('/product/packageedit/' + data[uidFieldName], { state: { data: data } })
       // 관리자 > 운영관리 > 제품군 관리 목록 수정
       case 'productRange':
         setUidAtom(uid)

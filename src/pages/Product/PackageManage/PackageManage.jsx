@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAtom } from 'jotai'
 import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
@@ -9,10 +9,15 @@ import { BlackBtn, BtnWrap, YellBtn, BtnBound, WhiteRedBtn } from '../../../comm
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn, ExcelBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
-
+import {
+  blueModalAtom,
+  packageCreateAtom,
+  packageModeAtom,
+  toggleAtom,
+  packageDetailModal,
+} from '../../../store/Layout/Layout'
+import { add_element_field } from '../../../lib/tableHelpers'
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 import Package from '../../Sales/Package/Package'
@@ -42,32 +47,59 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import { packageCEAtom } from '../../../store/Layout/Layout'
 import Hidden from '../../../components/TableInner/Hidden'
+import { getPackageList } from '../../../api/SellProduct'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { packageDispatchFields, packageDispatchFieldsCols } from '../../../constants/admin/SellPackage'
+import Table from '../../Table/Table'
+import PackageManageFind from '../../../modal/Multi/PackageManage'
+import PackageDetailModal from '../../../modal/Multi/PackageDetailModal.jsx'
 const PackageManage = ({}) => {
-  const [packBtn, setPackBtn] = useAtom(packageCEAtom)
+  const [isCreate, setIsCreate] = useState(false)
+  const [packBtn, setPackBtn] = useAtom(packageModeAtom)
+  const [isModal, setIsModal] = useAtom(packageCreateAtom)
 
+  // 패키지생성 모달창 띄우기
   const onClickPostHandler = () => {
     setPackBtn('post')
+    setIsModal(true)
+    setIsCreate(true)
   }
 
   const checkSales = ['전체', '판매재', '판매제외제', '판매완료재']
-
   const checkShips = ['전체', '경매대상재', '상시판매 대상재']
-
   const checkTypes = ['전체', '특가', '일반']
 
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
   const [check2, setCheck2] = useState(Array.from({ length: checkShips.length }, () => false))
-
   const [check3, setCheck3] = useState(Array.from({ length: checkTypes.length }, () => false))
-
   //checkShips
   const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
-
   const [checkData2, setCheckData2] = useState(Array.from({ length: checkShips.length }, () => ''))
-
   const [checkData3, setCheckData3] = useState(Array.from({ length: checkTypes.length }, () => ''))
+  const [detailModal, setDatilModal] = useAtom(packageDetailModal)
+  const tableFields = useRef(packageDispatchFieldsCols)
+  const getCol = tableFields.current
 
+  const parameter = { pageNum: 1, pageSize: 1000, saleType: '' }
+  const { data, isSuccess } = useReactQuery(parameter, 'package-list', getPackageList)
+  const packageList = data?.r
+  const pagination = data?.pagination
+
+  const [getRow, setGetRow] = useState('')
+  const [filteredData, setFilterData] = useState([])
+
+  useEffect(() => {
+    if (packageList !== undefined && isSuccess) {
+      setFilterData(packageList)
+    }
+    if (!isSuccess && !filteredData) return null
+    if (Array.isArray(filteredData)) {
+      setGetRow(add_element_field(filteredData, packageDispatchFields))
+    }
+  }, [isSuccess, filteredData])
+
+  // 체크박스,라디오 관련 이펙트 함수
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
     const updatedCheck = checkSales.map((value, index) => {
@@ -76,12 +108,6 @@ const PackageManage = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData1(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check1])
 
   useEffect(() => {
@@ -92,12 +118,6 @@ const PackageManage = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData2(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check2])
 
   useEffect(() => {
@@ -108,20 +128,9 @@ const PackageManage = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData3(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check3])
 
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
+  const handleSelectChange = (selectedOption, name) => {}
   const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
@@ -287,24 +296,21 @@ const PackageManage = ({}) => {
             <WhiteRedBtn>패키지 해제</WhiteRedBtn>
 
             <WhiteSkyBtn onClick={onClickPostHandler}>
-              <Link to="/product/packagecreate" style={{ color: '#4C83D6' }}>
-                패키지 생성
-              </Link>
+              <p style={{ color: '#4C83D6' }}>패키지 생성</p>
+              {/* <Link to="/product/packagecreate" style={{ color: '#4C83D6' }}></Link> */}
             </WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
-        <TCSubContainer bor>
-          <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
-            <Hidden />
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
-            <Excel />
-          </div>
-        </TCSubContainer>
+        <Table
+          getRow={getRow}
+          getCol={getCol}
+          setChoiceComponent={() => {
+            // console.log('수정')
+          }}
+        />
       </TableContianer>
+      {isModal && <PackageManageFind isCreate={isCreate} url={'/product/packagecreate'} />}
+      {detailModal && <PackageDetailModal />}
     </FilterContianer>
   )
 }

@@ -380,6 +380,7 @@ const Table = ({
             pinnedTopRowData={pinnedTopRowData}
             onRowClicked={onRowClicked}
             getRowStyle={getRowStyle}
+            // rowHeight={40}
             overlayNoRowsTemplate={noRowsMessage}
             overlayLoadingTemplate="데이터를 불러오는 중..."
 

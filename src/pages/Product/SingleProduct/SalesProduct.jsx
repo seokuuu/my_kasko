@@ -16,8 +16,8 @@ import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn, ExcelBtn, YellBtn } from '../../../common/Button/Button'
 import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
-
+import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import ProductNumber from '../../../components/ProductNumber/ProductNumber'
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 import { QueryClient, useQueryClient } from '@tanstack/react-query'
@@ -57,7 +57,7 @@ import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constan
 import Table from '../../Table/Table'
 import { add_element_field } from '../../../lib/tableHelpers'
 import StandardFind from '../../../modal/Multi/StandardFind'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { getSpecList } from '../../../api/search'
 import { specAtom } from '../../../store/Layout/Layout'
 import { getStorageList, getSPartList } from '../../../api/search'
@@ -70,9 +70,13 @@ import {
   ProductOptions,
 } from '../../../common/Option/storage'
 import { Filtering } from '../../../utils/filtering'
+import { filter } from 'lodash'
+import SingleProduct from './SingleProduct'
+import { KilogramSum } from '../../../utils/KilogramSum'
 
 const SalesProduct = () => {
-  const checkSales = ['전체', '미응찰', '관심제품', '응찰']
+  const checkSales = ['전체', '판매재', '판매제외제', '판매 완료제']
+  // const checkSales = ['전체', '미응찰', '관심제품', '응찰']
   const checkShips = ['전체', '경매대상재', '상시판매 대상재']
   const checkTypes = ['전체', '특가', '일반']
   const radioDummy = ['전체', '낙찰', '낙찰 취소', '낙찰 확정']
@@ -86,9 +90,18 @@ const SalesProduct = () => {
   const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
   const [checkData2, setCheckData2] = useState(Array.from({ length: checkShips.length }, () => ''))
   const [checkData3, setCheckData3] = useState(Array.from({ length: checkTypes.length }, () => ''))
+
+  //state
+  const [filterData, setFilteredData] = useState([])
+  const [search, setSearch] = useState({
+    productNumber: [],
+  })
+  //store
   const [spec, setSpec] = useAtom(specAtom)
   const [isModal, setIsModal] = useState(blueModalAtom)
   const [productNumber, setProductNumber] = useState('')
+  const [pagination, setPagination] = useState({})
+  const checkBoxSelect = useAtomValue(selectedRowsAtom)
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
     const updatedCheck = checkSales.map((value, index) => {
@@ -97,12 +110,6 @@ const SalesProduct = () => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData1(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check1])
 
   useEffect(() => {
@@ -123,30 +130,11 @@ const SalesProduct = () => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData3(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check3])
 
   const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setProductNoNumber('')
-    setProductNumber('')
-    setSelect({})
-    setQuantity({})
-    setCheck1([])
-    setCheck2([])
-    setCheck3([])
-    setCheckData1([])
-    setCheckData1([])
-    setCheckData1([])
-    setIsRotated((prevIsRotated) => !prevIsRotated)
-  }
 
   const requestParameter = {
     pageNum: 1,
@@ -154,39 +142,17 @@ const SalesProduct = () => {
     type: '일반',
     category: '판매제품',
   }
-  const [request, setRequest] = useState({
-    pageNum: 1,
-    pageSize: 100,
-    type: '일반',
-    category: '판매제품',
-    proNo: '',
-    storage: '',
-    spart: '',
-    stockStatus: '',
-    supplier: '',
-    preferThickNess: '',
-    grade: '',
-    maker: '',
-    spec: '',
-    minThickness: '',
-    maxThickness: '',
-    minWidth: '',
-    maxWidth: '',
-    minLength: '',
-    maxLength: '',
-    minFailCount: '',
-    maxFailCount: '',
-    saleCategory: '',
-    saleType: '',
-    salePriceType: '',
-    productNumberList: '',
-  })
+  const { data, isSuccess } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
   const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
   const { data: spartList } = useReactQuery('', 'getSPartList', getSPartList)
+  const SaleProductList = data?.r
+  const SaleProductPages = data?.pagination
 
   const [getRow, setGetRow] = useState('')
   const tableField = useRef(SingleDispatchFieldsCols)
   const getCol = tableField.current
+
+  // Filter State
   const [select, setSelect] = useState({
     storage: '',
     sPart: '',
@@ -211,9 +177,6 @@ const SalesProduct = () => {
   const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
   const [toggleMsg, setToggleMsg] = useState('On')
 
-  const { data, isSuccess } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
-  const SaleProductList = data?.data.list
-
   const toggleBtnClick = () => {
     setExfilterToggle((prev) => !prev)
     if (exFilterToggle === true) {
@@ -222,13 +185,25 @@ const SalesProduct = () => {
       setToggleMsg('On')
     }
   }
+
   useEffect(() => {
-    // if (!isSuccess && !SingleProductList) return null
-    if (Array.isArray(SaleProductList)) {
-      setGetRow(add_element_field(SaleProductList, singleDispatchFields))
+    if (filterData === undefined) {
+      SaleProductList && setFilteredData(SaleProductList)
+    }
+
+    if (!isSuccess && !filterData) return null
+    if (Array.isArray(filterData)) {
+      setGetRow(add_element_field(filterData, singleDispatchFields))
     }
     //타입, 리액트쿼리, 데이터 확인 후 실행
-  }, [isSuccess, SaleProductList])
+  }, [isSuccess, filterData])
+
+  useEffect(() => {
+    if (isSuccess) {
+      setFilteredData(SaleProductList)
+      setPagination(SaleProductPages)
+    }
+  }, [isSuccess])
 
   const handleSelectChange = (name, value) => {
     setSelect((prevState) => ({
@@ -267,20 +242,59 @@ const SalesProduct = () => {
       minFailCount: Quantity.startSpecification, // 최소 유찰 횟수
       maxFailCount: Quantity.endSpecification, // 최대 유찰 횟수
 
-      saleCategoryList: checkData1.join(','), // 판매 구분
-      saleType: checkData2.join(','), // 판매 유형
-      salePriceType: checkData3.join(','), //판매가 유형
+      saleCategoryList: checkData1, // 판매 구분
+      saleType: checkData2.join(''), // 판매 유형
+      salePriceType: checkData3.join(''), //판매가 유형
 
-      productNumberList: '',
+      productNumberList: search.productNumber,
     }
     const filterData = Filtering(request)
 
     queryClient.prefetchQuery(['product', filterData], async () => {
       const res = await getSingleProducts(filterData)
-      console.log(res)
+      setFilteredData(res.data?.list)
+      setPagination(res.data?.pagination)
+      return res.data?.list
     })
   }
+  // 초기화
+  const handleImageClick = () => {
+    setProductNoNumber('')
+    setProductNumber('')
+    setSpec('')
+    setSelect(() => ({
+      storage: '',
+      sPart: '',
+      maker: '',
+      stocks: '',
+      supply: '',
+      grade: '',
+      preferThick: '',
+    }))
+    setQuantity({})
+    setCheck1([])
+    setCheck2([])
+    setCheck3([])
+    setCheckData1([])
+    setCheckData2([])
+    setCheckData3([])
+    setIsRotated((prevIsRotated) => !prevIsRotated)
 
+    if (
+      !spec ||
+      !productNoNumber ||
+      !productNumber ||
+      !select ||
+      !Quantity ||
+      !checkData1 ||
+      !checkData2 ||
+      !checkData3
+    ) {
+      setFilteredData(SalesProduct)
+      setPagination(SaleProductPages)
+    }
+    console.log('SELECT', select)
+  }
   return (
     <>
       {' '}
@@ -415,38 +429,38 @@ const SalesProduct = () => {
                   </PartWrap>
                   <PartWrap>
                     <h6>판매 유형</h6>
-                    <ExCheckWrap>
+                    <ExRadioWrap>
                       {checkShips.map((x, index) => (
-                        <ExCheckDiv>
-                          <StyledCheckSubSquDiv
-                            onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
+                        <RadioMainDiv>
+                          <RadioCircleDiv
+                            onClick={() => setCheck2(CheckBox(check2, check2.length, index))}
                             isChecked={check2[index]}
                           >
-                            <CheckImg2 src="/svg/check.svg" isChecked={check2[index]} />
-                          </StyledCheckSubSquDiv>
-                          <p>{x}</p>
-                        </ExCheckDiv>
+                            <RadioInnerCircleDiv isChecked={check2[index]} />
+                          </RadioCircleDiv>
+                          <div style={{ display: 'flex', marginLeft: '5px' }}>{x}</div>
+                        </RadioMainDiv>
                       ))}
-                    </ExCheckWrap>
+                    </ExRadioWrap>
                   </PartWrap>
                 </RowWrap>
 
                 <RowWrap>
                   <PartWrap first>
                     <h6>판매가 유형</h6>
-                    <ExCheckWrap>
+                    <ExRadioWrap>
                       {checkTypes.map((x, index) => (
-                        <ExCheckDiv>
-                          <StyledCheckSubSquDiv
-                            onClick={() => setCheck3(CheckBox(check3, check3.length, index, true))}
+                        <RadioMainDiv>
+                          <RadioCircleDiv
+                            onClick={() => setCheck3(CheckBox(check3, check3.length, index))}
                             isChecked={check3[index]}
                           >
-                            <CheckImg2 src="/svg/check.svg" isChecked={check3[index]} />
-                          </StyledCheckSubSquDiv>
-                          <p>{x}</p>
-                        </ExCheckDiv>
+                            <RadioInnerCircleDiv isChecked={check3[index]} />
+                          </RadioCircleDiv>
+                          <div style={{ display: 'flex', marginLeft: '5px' }}>{x}</div>
+                        </RadioMainDiv>
                       ))}
-                    </ExCheckWrap>
+                    </ExRadioWrap>
                   </PartWrap>
                 </RowWrap>
 
@@ -505,10 +519,7 @@ const SalesProduct = () => {
               </FilterLeft>
               <FilterRight>
                 <DoubleWrap>
-                  <h6>제품 번호 </h6>
-                  <textarea
-                    placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                  />
+                  <ProductNumber setState={setSearch} valueName={'productNumber'} height="100%" />
                 </DoubleWrap>
               </FilterRight>
             </FilterSubcontianer>
@@ -533,7 +544,8 @@ const SalesProduct = () => {
         <TableContianer>
           <TCSubContainer bor>
             <div>
-              조회 목록 (선택 <span>2</span> / 50개 )
+              조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
+              {pagination ? pagination?.listCount : SaleProductPages?.listCount}개 )
               <Hidden />
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
@@ -543,7 +555,8 @@ const SalesProduct = () => {
           </TCSubContainer>
           <TCSubContainer bor>
             <div>
-              선택 중량<span> 2 </span>kg / 총 중량 kg
+              선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총{' '}
+              {pagination ? pagination?.totalWeight : SaleProductPages?.totalWeight} 중량 kg
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <TGreyBtn>적용</TGreyBtn>
