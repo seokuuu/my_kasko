@@ -84,6 +84,7 @@ const getInfoRows = (data, salesNumber) => {
  * @todo
  * - 목적지 찾기/적용
  * - 목적지 승인요청
+ * - 입금요청서 키페어 확인(공급가액-제품대,운송비,총합, VAT-제품대,운송비,총합 || orderData.list에 있으면 그냥 쓸 것)
  */
 const OrderDetail = ({ salesNumber }) => {
   // API 파라미터
@@ -106,6 +107,7 @@ const OrderDetail = ({ salesNumber }) => {
 
   /**
    * 목적지 적용 핸들러 
+   * @description 서버 아닌 테이블에 노출되는 데이터에만 적용합니다.
    */
   function handleDestinationApply() {
     if(!destination) {
@@ -115,30 +117,24 @@ const OrderDetail = ({ salesNumber }) => {
       return alert('목적지를 적용할 상품을 선택해 주세요.');
     }
 
-    //
     setDestinationModifyItems(selectedData.map(v => ({ ...v, destination: destination })));
     // 테이블 상에서 목적지 바뀌도록 수정
   }
   
   /**
    * 목적지 승인 요청 핸들러
+   * @description 서버에 적용합니다.
+   * @todo API 확인
   */
  function handleDestinationApprovalRequest() {
     if(!destinationModifyItems.length < 1) {
       return alert('목적지를 적용할 상품을 선택해 주세요.');
     }
+
+    // 서버 승인 요청 API 코드
     
-    // 승인 요청
     setDestinationModifyItems([]);
     setDestination(null);
-  }
-
-  /**
-   * 입금 요청서 발행 함수
-   */
-  function handleReceiptPrint(e) {
-    e.preventDefaut();
-
   }
 
   // ERROR SECTION

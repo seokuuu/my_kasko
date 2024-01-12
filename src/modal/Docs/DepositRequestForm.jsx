@@ -33,8 +33,13 @@ const DUMMY_DATA = {
   freightCostVat: 0,
   totalPrice: 0,
 }
+
 /**
- * 
+ * 키 맵핑 데이터 반환 함수
+ * @description 한글키를 가진 데이터(테이블 데이터)를 요청서 변수키에 맞추어 변환합니다.
+ * @param {Array<any>} data 데이터 - [{ '고유번호': 0, ...}, ... ]와 같은 양식
+ * @param {object} keyPairs 키페어 - { uid: '고유번호', ...}와 같은 양식
+ * @returns {Array<any>} 변환데이터 - [{uid: 0, ...}, ...]와 같은 양식
  */
 function getKeyMappedData(data, keyPairs) {
   return data.map(d => {
