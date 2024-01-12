@@ -48,7 +48,7 @@ import { formatWeight } from '../../../utils/utils'
 const Package = () => {
   const [param, setParam] = useState({
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 50,
   })
   const [packageProductListData, setPackageProductListData] = useState(null)
   const [packageProductPagination, setPackageProductPagination] = useState([])
@@ -99,6 +99,14 @@ const Package = () => {
     setParam((prevParam) => ({
       ...prevParam,
       pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
     }))
   }
 
@@ -219,7 +227,12 @@ const Package = () => {
             <WhiteBlackBtn>노출 상태 변경</WhiteBlackBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={packageFieldsCols} getRow={packageProductListData} />
+        <Table
+          getCol={packageFieldsCols}
+          getRow={packageProductListData}
+          tablePagination={packageProductPagination}
+          onPageChange={onPageChange}
+        />
         <TableBottomWrap>
           <BlackBtn width={15} height={40}>
             등록
