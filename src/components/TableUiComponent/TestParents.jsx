@@ -75,16 +75,19 @@ const TestParents = () => {
    * @Func :페이징 이동버튼
    */
   const goToNextPage = () => {
+    // API 추가 필요
     const nextPage = Math.min(currentPage + 1, totalPage)
     onPageChange(nextPage)
   }
   const goToPreviousPage = () => {
+    // API 추가 필요
     if (currentPage > 1) {
       const prevPage = Math.min(currentPage - 1, totalPage)
       onPageChange(prevPage)
     }
   }
   const goToLastPage = () => {
+    // API 추가 필요
     let currentGroupLastPage = Math.ceil(currentPage / 5) * 5
     currentGroupLastPage = Math.min(currentGroupLastPage, totalPage)
 
@@ -98,6 +101,7 @@ const TestParents = () => {
     onPageChange(targetPage)
   }
   const goToStartOfRange = () => {
+    // API 추가 필요
     let startPageInGroup = Math.floor((currentPage - 1) / 5) * 5 + 1
 
     // 현재 페이지가 그룹의 시작 페이지일 경우, 이전 그룹의 마지막 페이지로 이동

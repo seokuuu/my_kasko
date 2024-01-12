@@ -110,7 +110,7 @@ export const noticeBoardListSearchInitValue = {
 // 많이 쓰이는 목록 검색 옵션
 export const commonListSearchInitValue = {
   pageNum: 1,
-  pageSize: 1,
+  pageSize: 50,
 }
 
 /* ==============================

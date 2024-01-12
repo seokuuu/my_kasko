@@ -39,6 +39,8 @@ import { UsermanageDestiEditModal, btnCellUidAtom, UsermanageFindModal } from '.
 
 import TableTest from '../../Table/TableTest'
 import DestinationEdit from './DestinationEdit'
+import Table from "../../Table/Table";
+import usePaging from "../../../hooks/usePaging";
 
 const ClientDestination = ({ setChoiceComponent }) => {
   const [findModal, setFindModal] = useAtom(UsermanageFindModal)
@@ -81,34 +83,16 @@ const ClientDestination = ({ setChoiceComponent }) => {
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
-  const [pageSizeGrid, setPageSizeGrid] = useState(50)
   const [query, setQuery] = useState({
     pageNum: 1,
     pageSize: 50,
   })
 
-  const { isLoading, isError, data, isSuccess } = useReactQuery(query, 'clientDestination', get_clientDestination)
-
-  const {
-    isLoading: isLoading2,
-    isError: isError2,
-    data: data2,
-    isSuccess: isSuccess2,
-  } = useReactQuery(uidAtom, 'detailclientDestination', get_detailClientDestination)
-
+  const { data, isSuccess } = useReactQuery(query, 'clientDestination', get_clientDestination)
   const resData = data?.data?.data?.list
-  const resData2 = data2?.data?.data
-
-  console.log('resData2', resData2)
   const pagination = data?.data?.data?.pagination
 
-  const matchingData = resData2
-
-  console.log('matchingData', matchingData)
-
-  if (isError) {
-    console.log('데이터 request ERROR')
-  }
+  const { onPageChanage } = usePaging(data, setQuery)
 
   useEffect(() => {
     let getData = resData
@@ -138,10 +122,6 @@ const ClientDestination = ({ setChoiceComponent }) => {
     }
   }, [checkedArray])
 
-  const handleDropdown = (e) => {
-    setPageSizeGrid(e.target.value)
-  }
-
   const setPostPage = () => {
     setChoiceComponent('등록')
   }
@@ -152,7 +132,6 @@ const ClientDestination = ({ setChoiceComponent }) => {
         <DestinationEdit
           setEditModal={setEditModal}
           uidAtom={uidAtom}
-          matchingData={matchingData}
           findModal={findModal}
         />
       ) : (
@@ -239,31 +218,30 @@ const ClientDestination = ({ setChoiceComponent }) => {
           <TableContianer>
             <TCSubContainer bor>
               <div>
-                조회 목록 (선택 <span>{checkedArray ? checkedArray.length : '0'}</span> / {pagination?.listCount} )
+                조회 목록 (선택 <span>{checkedArray ? checkedArray.length : '0'}</span> / {pagination?.listCount}개 )
                 <Hidden />
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
-                <PageDropdown handleDropdown={handleDropdown} />
-                <Excel />
+                <PageDropdown handleDropdown={(e) => setQuery((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))} />
+                <Excel getRow={getRow}/>
               </div>
             </TCSubContainer>
             <TCSubContainer>
-              <div>{/* 선택 중량<span> 2 </span>kg / 총 중량 kg */}</div>
+              <div>
+                선택<span> {checkedArray ? checkedArray.length : '0'} </span>(개)
+              </div>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <WhiteRedBtn onClick={handleRemoveBtn}>목적지 삭제</WhiteRedBtn>
                 <SkyBtn onClick={setPostPage}>목적지 등록</SkyBtn>
               </div>
             </TCSubContainer>
-            {/* <Test3 getCol={getCol} getRow={getRow} /> */}
-            {/* <Table getCol={getCol} getRow={getRow} setChoiceComponent={setChoiceComponent} /> */}
-            <TableTest
+            <Table
               getCol={getCol}
               getRow={getRow}
               setChoiceComponent={setChoiceComponent}
-              pagination={pagination}
-              setQuery={setQuery}
-              pageSizeGrid={pageSizeGrid}
-            />
+              tablePagination={pagination}
+              onPageChange={onPageChanage}
+              />
           </TableContianer>
         </FilterContianer>
       )}
