@@ -27,7 +27,7 @@ const CommonTableHeader = ({ totalLength, removeEventHandler, toRegister, title,
     <>
       <TCSubContainer bor>
         <div>
-          {title} 목록 (선택 <span>{selectedLength}</span> / {totalLength}개 )
+          조회 목록 (선택 <span>{selectedLength}</span> / {totalLength}개 )
         </div>
         <div></div>
       </TCSubContainer>
