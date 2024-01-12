@@ -24,4 +24,5 @@ export const NoticeListFields = {
   작성자: 'name',
   순번: 'id',
   고유값: 'uid',
+  조회수: 'count'
 }
