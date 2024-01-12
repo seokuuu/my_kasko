@@ -126,6 +126,7 @@ const Winning = ({ detailRow }) => {
   )
 
   console.log('extractedArray', extractedArray)
+
   // 낙찰 취소 POST
   const deleteMutation = useMutationQuery('', deleteBidding)
 
