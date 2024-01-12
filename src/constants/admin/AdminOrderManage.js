@@ -85,7 +85,7 @@ export const AdminOrderManageFieldsCols = [
   },
   {
     headerName: '주문 상태',
-    field: 'title',
+    field: 'status',
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 90,
@@ -125,7 +125,7 @@ export const AdminOrderManageFieldsCols = [
   },
   {
     headerName: '제품 번호',
-    field: 'storageName',
+    field: 'productNumber',
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 90,
@@ -133,7 +133,7 @@ export const AdminOrderManageFieldsCols = [
   },
   {
     headerName: 'ProNo.',
-    field: 'saleType',
+    field: 'productNoNumber',
     headerClass: 'custom-header-style',
     cellStyle: { textAlign: 'center' },
     width: 150,
@@ -142,19 +142,18 @@ export const AdminOrderManageFieldsCols = [
 ]
 
 export const DetailOrderFieldsManage = {
-  '고객 코드': 'customerCode',
-  고객사명: 'customerName',
-  '창고 이름': 'storageName',
-  '판매 유형': 'saleType',
-  '판매가 유형': 'salePriceType',
   '경매 번호': 'auctionNumber',
-  중량: 'weight',
-  '상시판매 주문번호': 'orderNumber',
-  '현대제철 주문번호': 'hsOrderNo',
-  '제품 개수': 'productCount',
+  '상시판매 번호': 'orderNumber',
   '상시판매 주문일자': 'createDate',
   패키지명: 'packageName',
   '패키지 번호': 'packageNumber',
-  '확정 전송가': 'confirmPrice',
-  입금요청액: 'totalPrice',
+  '주문 상태': 'status,',
+  '확정전송 일자': 'sendDate',
+  '주문 번호': '주문 번호하기',
+  고객사명: 'customerName',
+  '고객 코드': 'customerCode',
+  '제품 번호': 'productNumber',
+  'ProNo.': 'productNoNumber',
 }
+// 순번 주문일자  확정전송일자 주문번호 제품번호
+// 경매번호 상시판매번호 패키지명 패키지번호 주문상태
