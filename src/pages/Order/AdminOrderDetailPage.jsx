@@ -3,8 +3,8 @@ import { OverAllMain, OverAllSub, OverAllTable } from '../../common/Overall/Over
 import SideBar from '../../components/Left/SideBar'
 import Header from '../../components/Header/Header'
 import SubHeader from '../../components/Header/SubHeader'
-import OrderDetail from './OrderDetail'
 import { useState } from 'react'
+import AdminOrderDetail from './AdminOrderDetail'
 const OrderDetailPage = () => {
   const [expanded, setExpanded] = useState('주문 관리')
   const [depth2Color, setDepth2Color] = useState('주문 관리')
@@ -16,7 +16,7 @@ const OrderDetailPage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <OrderDetail />
+            <AdminOrderDetail />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>

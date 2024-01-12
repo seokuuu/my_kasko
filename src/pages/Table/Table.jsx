@@ -91,7 +91,7 @@ const Table = ({
   const [columnDefs, setColumnDefs] = useState([
     {
       field: '고객 코드',
-      minWidth: 180,
+      width: 45,
       checkboxSelection: checkboxSelection,
       headerCheckboxSelection: headerCheckboxSelection,
     },
@@ -271,8 +271,8 @@ const Table = ({
       sortable: true,
       resizable: true,
       filter: true,
-      flex: 1,
-      minWidth: 100,
+      // flex: 1,
+      // minWidth: 100,
     }
   }, [])
 
@@ -297,6 +297,7 @@ const Table = ({
     // other grid options
     // rowModelType: 'serverSide',
     rowModelType: 'clientSide',
+    headerHeight: 30,
     // paginationPageSize: size, // 요청할 페이지 사이즈
     cacheBlockSize: 100, // 캐시에 보관할 블록 사이즈
     maxBlocksInCache: 10, // 캐시에 최대로 보관할 블록 수
@@ -407,12 +408,8 @@ const Table = ({
           </ModalContainer>
         </>
       )}
-      
-      {tablePagination &&
-         <CustomPagination
-          pagination={tablePagination}
-          onPageChange={onPageChange}
-        />}
+
+      {tablePagination && <CustomPagination pagination={tablePagination} onPageChange={onPageChange} />}
     </div>
   )
 }

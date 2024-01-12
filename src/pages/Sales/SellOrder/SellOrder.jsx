@@ -1,10 +1,21 @@
-import { useAtom, useAtomValue } from 'jotai'
 import { useEffect, useRef, useState } from 'react'
+import { useAtom, useAtomValue } from 'jotai'
+import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom } from '../../../store/Layout/Layout'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getSaleProductList } from '../../../api/saleProduct'
+import { saleProductListFieldsCols, saleProductListResponseToTableRowMap } from '../../../constants/admin/saleProduct'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { KilogramSum } from '../../../utils/KilogramSum'
+import { formatWeight } from '../../../utils/utils'
 import { GreyBtn, SkyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import Excel from '../../../components/TableInner/Excel'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import Hidden from '../../../components/TableInner/Hidden'
+import Table from '../../Table/Table'
+import DateGrid from '../../../components/DateGrid/DateGrid'
 import {
   DoubleWrap,
   ExCheckWrap,
@@ -23,25 +34,14 @@ import {
   TableContianer,
   Tilde,
 } from '../../../modal/External/ExternalFilter'
-import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
-import Hidden from '../../../components/TableInner/Hidden'
 import { UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
-import Table from '../../Table/Table'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import { CheckBox } from '../../../common/Check/Checkbox'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { selectedRowsAtom } from '../../../store/Layout/Layout'
-import { getSaleProductList } from '../../../api/saleProduct'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { saleProductListFieldsCols, saleProductListResponseToTableRowMap } from '../../../constants/admin/saleProduct'
-import { add_element_field } from '../../../lib/tableHelpers'
-import { KilogramSum } from '../../../utils/KilogramSum'
-import { formatWeight } from '../../../utils/utils'
 
 const SellOrder = ({ setChoiceComponent }) => {
   const [param, setParam] = useState({
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 50,
   })
   const checkBoxSelect = useAtomValue(selectedRowsAtom)
   const checkSales = ['전체', '확정 전송', '확정전송 대기']
@@ -108,6 +108,13 @@ const SellOrder = ({ setChoiceComponent }) => {
     setParam((prevParam) => ({
       ...prevParam,
       pageSize: Number(event.target.value),
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
     }))
   }
 
@@ -238,7 +245,12 @@ const SellOrder = ({ setChoiceComponent }) => {
             <WhiteRedBtn>주문 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={saleProductListFieldsCols} getRow={saleProductListData} />
+        <Table
+          getCol={saleProductListFieldsCols}
+          getRow={saleProductListData}
+          tablePagination={saleProductPagination}
+          onPageChange={onPageChange}
+        />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
