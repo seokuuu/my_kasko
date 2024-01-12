@@ -83,32 +83,16 @@ const ClientDestination = ({ setChoiceComponent }) => {
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
-  const [pageSizeGrid, setPageSizeGrid] = useState(50)
   const [query, setQuery] = useState({
     pageNum: 1,
     pageSize: 50,
   })
 
-  const { isLoading, isError, data, isSuccess } = useReactQuery(query, 'clientDestination', get_clientDestination)
-
-  const {
-    isLoading: isLoading2,
-    isError: isError2,
-    data: data2,
-    isSuccess: isSuccess2,
-  } = useReactQuery(uidAtom, 'detailclientDestination', get_detailClientDestination)
-
+  const { data, isSuccess } = useReactQuery(query, 'clientDestination', get_clientDestination)
   const resData = data?.data?.data?.list
-  const resData2 = data2?.data?.data
-  const matchingData = resData2
-
   const pagination = data?.data?.data?.pagination
 
   const { onPageChanage } = usePaging(data, setQuery)
-
-  if (isError) {
-    console.log('데이터 request ERROR')
-  }
 
   useEffect(() => {
     let getData = resData
@@ -148,7 +132,6 @@ const ClientDestination = ({ setChoiceComponent }) => {
         <DestinationEdit
           setEditModal={setEditModal}
           uidAtom={uidAtom}
-          matchingData={matchingData}
           findModal={findModal}
         />
       ) : (
@@ -240,7 +223,7 @@ const ClientDestination = ({ setChoiceComponent }) => {
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <PageDropdown handleDropdown={(e) => setQuery((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))} />
-                <Excel />
+                <Excel getRow={getRow}/>
               </div>
             </TCSubContainer>
             <TCSubContainer>
