@@ -132,9 +132,6 @@ const Order = ({}) => {
 
   /**
    * 필터 검색 유효성 확인 메시지 반환 함수
-   * @description
-   * - 주문일자 검증
-   * - 최소값/최대값 검증
    */
   const getInvalidationMessage = useCallback(() => {
     // 주문일자 검증

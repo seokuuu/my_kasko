@@ -8,6 +8,7 @@ const urls = {
     requestOrder: '/sale-product/order',
     getOrder: '/sale-product/order',
     requestOrderCancel: '',
+    getDestination: '/auction/destination',
 };
 
 /* ==============================
@@ -95,6 +96,17 @@ export const useUserOrderDetailsQuery = (param) => useQuery({
     queryFn: async() => {
         const params = new URLSearchParams(param);
         const { data } = await client.get(`${urls.getOrder}?${params.toString()}`);
+        return data.data; 
+    },
+  });
+
+/**
+ * 목적지 변경 목록 API 쿼리 
+ */
+export const useUserDestinationQuery = (param) => useQuery({
+    queryKey: ["user","destination", "list", param],
+    queryFn: async() => {
+        const { data } = await client.get(urls.getDestination);
         return data.data; 
     },
   });

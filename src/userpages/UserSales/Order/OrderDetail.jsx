@@ -21,6 +21,7 @@ import {
   TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
+import DestinationChange from '../../../modal/Multi/DestinationChange'
 
 /**
  * @constant 기본 검색 값
@@ -97,8 +98,6 @@ const OrderDetail = ({ salesNumber }) => {
   const infoData = useMemo(() => getInfoRows(orderData?.list || [], salesNumber), [orderData, salesNumber]);
   // 선택항목 데이터
   const { selectedData, selectedWeightStr, selectedCountStr, hasSelected } = useTableSelection({weightKey: '중량'});
-  // 목적지 변경 모드
-  const [destinationSearch, setDestinationSearch] = useState(false);
   // 목적지 데이터 || 목적지 변경 항목 데이터
   const [destination, setDestination] = useState(null); // { code: '', name: '', tel: '' }
   const [destinationModifyItems, setDestinationModifyItems] = useState([]);
@@ -187,10 +186,12 @@ const OrderDetail = ({ salesNumber }) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <P>목적지</P>
-            <CustomInput placeholder="h50" width={60} />
-            <CustomInput placeholder="목적지명" width={120} />
-            <CustomInput placeholder="도착지 연락처" width={120} />
-            <WhiteBlackBtn onClick={v => {setDestinationSearch(true)}}>찾기</WhiteBlackBtn>
+            <DestinationChange 
+              customerCode={infoData[2]} 
+              customerName={infoData[1]} 
+              value={destination}
+              onSubmit={d => { setDestination(d) }} 
+            />
             <TGreyBtn onClick={handleDestinationApply}>적용</TGreyBtn>
             <BtnBound />
             <WhiteBlackBtn onClick={handleDestinationApprovalRequest}>목적지 승인 요청</WhiteBlackBtn>
@@ -207,8 +208,6 @@ const OrderDetail = ({ salesNumber }) => {
           </div>
         </TCSubContainer>
       </TableContianer>
-      {/* 목적지 변경 모달 */}
-      {/* { destinationSearch && <DestinationChange /> } */}
       {/* 입금 요청서 모달 */}
       { 
         receiptPrint && 

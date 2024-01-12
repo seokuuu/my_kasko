@@ -138,6 +138,22 @@ export const userOrderDetailsField = {
 };
 
 /**
+ * @constant 테이블컬럼 라벨 - 변수명 바인딩 객체
+ * @description 사용자 주문확인 상세 > 목적지 변경 모달에서 사용합니다.
+ * @todo 비고 없음
+ */
+export const userDestinationField = {
+  "고객코드": "uid",
+  "비고": "",
+  "목적지 코드": "destinationCode",
+  "목적지명": "destinationName",
+  "하차지명": "name",
+  "담당자 연락처": "managerPhone",
+  "하차지 연락처": "phone",
+  "상세주소": "address",
+};
+
+/**
  * @constant 테이블컬럼
  * @description 사용자 주문확인 > 목록 테이블에서 사용합니다.
  */
@@ -205,7 +221,7 @@ export const userOrderListFieldsCols = [
 
 /**
  * @constant 테이블컬럼
- * @description 사용자 주문확인 > 목록 테이블에서 사용합니다.
+ * @description 사용자 주문확인 상세 > 목록 테이블에서 사용합니다.
  */
 export const userOrderDetailsFieldsCols = [
   { field: "", maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
@@ -274,4 +290,20 @@ export const userOrderDetailsFieldsCols = [
   { field: "메모", minWidth: 100 },
   { field: "비고", minWidth: 100 },
   { field: "상시 판매가", minWidth: 100 },
+]
+
+/**
+ * @constant 테이블컬럼
+ * @description 사용자 주문확인 상세 > 목적지 변경 모달에서 사용합니다.
+ */
+export const userDestinationFieldsCols = [
+  { field: "", maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  { field: '고객코드', maxWidth: 100 },
+  { field: '비고', maxWidth: 100 },
+  { field: '목적지 코드', maxWidth: 100 },
+  { field: '목적지명', maxWidth: 100 },
+  { field: '하차지명', maxWidth: 100 },
+  { field: '담당자 연락처', maxWidth: 100 },
+  { field: '하차지 연락처', maxWidth: 100 },
+  { field: '상세주소', maxWidth: 100 },
 ]

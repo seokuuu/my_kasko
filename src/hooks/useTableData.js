@@ -19,6 +19,7 @@ export default function useTableData({ tableField, serverData }) {
      * @description 테이블 컴포넌트에 PROPS로 전달하는 값
      */
     const tableRowData = useMemo(() => {
+      console.log(serverData)
       if(!serverData || !serverData.list) {
         return [];
       }
