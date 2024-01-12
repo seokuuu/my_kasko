@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
-import { CustomInput, FlexInput } from '../../../common/Input/Input'
+import {useEffect, useState} from 'react'
+import {CustomInput, FlexInput} from '../../../common/Input/Input'
 import {
-  AddBtn,
   Bar,
   FlexContent,
   FlexPart,
@@ -10,25 +9,26 @@ import {
   OnePageFlexSubContainer,
   Right,
 } from '../../../common/OnePage/OnePage.Styled'
-import { AccountSelect, EditSelect, accountOptions, depositOptions } from '../../../common/Option/SignUp'
+import {accountOptions, AccountSelect, EditSelect} from '../../../common/Option/SignUp'
 
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
+import {BlackBtn, BtnWrap} from '../../../common/Button/Button'
 
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import {RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv} from '../../../common/Check/RadioImg'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { CheckBtn } from '../../User/SignUp/SignUp.Styled'
+import {CheckBox} from '../../../common/Check/Checkbox'
+import {CheckBtn} from '../../User/SignUp/SignUp.Styled'
 
-import { styled } from 'styled-components'
-import { checkBusinessNumber, updateCustomer } from '../../../api/myPage'
-import { getCustomerDetail, get_userDetail, resetCustomer } from '../../../api/userManage'
-import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+import {styled} from 'styled-components'
+import {checkBusinessNumber, updateCustomer} from '../../../api/myPage'
+import {get_userDetail, resetCustomer} from '../../../api/userManage'
+import {CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv} from '../../../common/Check/CheckImg'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { WhiteCloseBtn } from '../../../modal/Common/Common.Styled'
+import {WhiteCloseBtn} from '../../../modal/Common/Common.Styled'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
-import { GreyDiv, IncomeImgDiv } from '../../../userpages/UserMyPage/Profile/Profile'
+import {IncomeImgDiv} from '../../../userpages/UserMyPage/Profile/Profile'
 import DownloadButton from '../../../utils/DownloadButton'
-import { UserCheckDiv } from '../UserManage/UserPost'
+import {UserCheckDiv} from '../UserManage/UserPost'
+import {getStorageList} from "../../../api/search";
 
 const init = {
   id: '',
@@ -300,16 +300,20 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
   }
   const radioDummy = ['법인사업자', '개인사업자']
   const radioDummy2 = ['승인', '대기', '미승인']
-  const radioDummy3 = ['경매 시작가 제한', '경매 제한']
+  const radioDummy3 = ['제한 없음', '시작가 제한', '경매 제한']
   const radioDummy4 = ['창고', '운송사', '현대제철', '카스코철강', '고객사']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
-  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, () => false))
-  const [checkRadio3, setCheckRadio3] = useState(Array.from({ length: radioDummy3.length }, () => false))
-  const [checkRadio4, setCheckRadio4] = useState(Array.from({ length: radioDummy4.length }, () => false))
-
+  const [checkRadio2, setCheckRadio2] = useState(radioDummy2.map((text) => text === resData?.approvalStatus))
+  const [checkRadio3, setCheckRadio3] = useState(radioDummy3.map((text) => text === resData?.auctionStatus))
+  const [checkRadio4, setCheckRadio4] = useState(radioDummy4.map((text) => text === resData?.memberType))
   const [savedRadioValue, setSavedRadioValue] = useState('')
 
-  console.log('checkRadio2', checkRadio2)
+  useEffect(() => {
+    setCheckRadio2(radioDummy2.map((text) => text === resData?.approvalStatus))
+    setCheckRadio3(radioDummy3.map((text) => text === resData?.auctionStatus))
+    setCheckRadio4(radioDummy4.map((text) => text === resData?.memberType))
+  }, [resData])
+
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
     if (checkedIndex !== -1) {
@@ -341,8 +345,6 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
       businessType: updatedCheck.filter((item) => item !== ''),
     })
   }, [check])
-
-  console.log('ㅋㅋㅋ')
 
   // 비밀번호 초기화 버튼
   const resetPw = async () => {
@@ -377,6 +379,8 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
     setEditModal(false)
   }
 
+  const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
+
   return (
     <div>
       <ModalOverlayC />
@@ -384,7 +388,7 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
         {/* <ModalSubContainer> */}
         {/* <OnePageFlexContainerC> */}
         <MainTitleC style={{ fontSize: '18px' }}>
-          <div>고객사 상세 정보</div>
+          <div>고객사 수정</div>
 
           <WhiteCloseBtn onClick={modalOFF} src="/svg/white_btn_close.svg" />
         </MainTitleC>
@@ -401,7 +405,7 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
                     아이디<span>*</span>
                   </FlexTitle>
                   <FlexContent>
-                    <FlexInput name={init.id} value={user && user.id} />
+                    <FlexInput name={init.id} value={user && user.id} disabled={true}/>
                   </FlexContent>
                 </FlexPart>
 
@@ -487,11 +491,11 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
                   </FlexTitle>
                   <FlexContent>
                     <div
-                      style={{
-                        display: 'flex',
-                        gap: '80px',
-                        width: '100%',
-                      }}
+                        style={{
+                          display: 'flex',
+                          gap: '20px',
+                          minWidth: '450px',
+                        }}
                     >
                       {radioDummy3.map((text, index) => (
                         <RadioMainDiv key={index}>
@@ -528,6 +532,7 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
                             name="type"
                             isChecked={checkRadio4[index]}
                             onClick={() => {
+                              if (checkRadio4.some((isChecked, i) => isChecked && i !== index)) return
                               setCheckRadio4(CheckBox(checkRadio4, checkRadio4.length, index))
                             }}
                           >
@@ -539,35 +544,57 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
                     </div>
                   </FlexContent>
                 </FlexPart>
-                <FlexPart>
-                  <FlexTitle>
-                    창고 구분<span>*</span>
-                  </FlexTitle>
-                  <FlexContent>
-                    <EditSelect
-                      name="storage"
-                      options={depositOptions}
-                      defaultValue={depositOptions[0]}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'storage')}
-                    />
-                  </FlexContent>
-                </FlexPart>
-                <FlexPart>
-                  <FlexTitle style={{ minWidth: '170px' }}>권한 설정</FlexTitle>
-                  <FlexContent2>
-                    {checkDummy2.map((x, index) => (
-                      <UserCheckDiv style={{ width: '130px' }}>
-                        <StyledCheckSubSquDiv
-                          onClick={() => setCheck(CheckBox(check, check.length, index, true))}
-                          isChecked={check[index]}
-                        >
-                          <CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
-                        </StyledCheckSubSquDiv>
-                        <CheckTxt2 style={{ marginLeft: '5px' }}>{x}</CheckTxt2>
-                      </UserCheckDiv>
-                    ))}
-                  </FlexContent2>
-                </FlexPart>
+                {
+                  checkRadio4[1] && (
+                        <FlexPart>
+                          <FlexTitle>
+                            운송사 이름<span>*</span>
+                          </FlexTitle>
+                          <FlexContent>
+                            <FlexInput name="transportName" />
+                          </FlexContent>
+                        </FlexPart>
+                    )
+                }
+                {
+                    checkRadio4[0] && (
+                        <FlexPart>
+                          <FlexTitle>
+                            창고 구분<span>*</span>
+                          </FlexTitle>
+                          <FlexContent>
+                            <EditSelect
+                                name="storage"
+                                options={storageList}
+                                defaultValue={''}
+                                value={storageList.find(option => option.value === resData?.storageUid)}
+                                isDisabled={true}
+                                onChange={(selectedOption) => handleSelectChange(selectedOption, 'storage')}
+                            />
+                          </FlexContent>
+                        </FlexPart>
+                    )
+                }
+                {
+                    checkRadio4[3] && (
+                        <FlexPart style={{ alignItems: 'start' }}>
+                          <FlexTitle style={{ minWidth: '170px' }}>권한 설정</FlexTitle>
+                          <FlexContent2>
+                            {checkDummy2.map((x, index) => (
+                                <UserCheckDiv style={{ width: '130px' }}>
+                                  <StyledCheckSubSquDiv
+                                      onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
+                                      isChecked={check2[index]}
+                                  >
+                                    <CheckImg2 src="/svg/check.svg" isChecked={check2[index]} />
+                                  </StyledCheckSubSquDiv>
+                                  <CheckTxt2 style={{ marginLeft: '5px' }}>{x}</CheckTxt2>
+                                </UserCheckDiv>
+                            ))}
+                          </FlexContent2>
+                        </FlexPart>
+                    )
+                }
                 <Bar />
 
                 <FlexPart>

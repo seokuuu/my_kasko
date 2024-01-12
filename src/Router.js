@@ -169,13 +169,14 @@ import TestExcel from './pages/Test/TestExcel'
 import UserPost from './pages/UserManage/UserManage/UserPost'
 import OrderDetail from './userpages/UserSales/Order/OrderDetail'
 
+import ClientDestiCustomerFind from './pages/UserManage/ClientDestination/ClientDestiCustomerFind'
 // RoundAucProAdd
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
-        <Route path="/ppapp" element={<WinningProductAdd />} />
+        <Route path="/ppapp" element={<ClientDestiCustomerFind />} />
         <Route path="/ppap" element={<DefaultBlueBar />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />

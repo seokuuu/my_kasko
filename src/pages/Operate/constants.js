@@ -110,7 +110,7 @@ export const noticeBoardListSearchInitValue = {
 // 많이 쓰이는 목록 검색 옵션
 export const commonListSearchInitValue = {
   pageNum: 1,
-  pageSize: 50,
+  pageSize: 1,
 }
 
 /* ==============================
@@ -168,7 +168,7 @@ export const claimSearchCategoryOptions = [
 // 클레임 목록 검색 옵션 초기값
 export const claimInitState = {
   pageNum: 1,
-  pageSize: 1000,
+  pageSize: 1,
   claimStatus: claimSearchCategoryOptions[0],
   startDate: '',
   endDate: '',

@@ -17,6 +17,7 @@ import Table from '../../../Table/Table'
 import CommonHeader from '../../UI/CommonHeader'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { normalTabOptions, noticeListSearchInitValue, noticeSearchCategoryOptions } from '../../constants'
+import usePaging from "../../hook/usePaging";
 
 /**
  * @description
@@ -44,6 +45,7 @@ const Notice = ({ title, detailsUrl }) => {
   const { data, refetch } = useNoticeListQuery({
     ...search,
     category: search.category.label,
+    type: title
   })
 
   // 공지사항 삭제 API
@@ -112,6 +114,7 @@ const Notice = ({ title, detailsUrl }) => {
       setDetailsRow([])
     }
   }, [detailRow])
+  const { pagination, onPageChanage } = usePaging(data, setSearch)
   return (
     <FilterContianer>
       {/* 헤더(카테고리탭 & 검색) */}
@@ -136,7 +139,13 @@ const Notice = ({ title, detailsUrl }) => {
           selectedLength={selectedLength}
         />
 
-        <Table getCol={NoticeListFieldCols} getRow={rows} setChoiceComponent={() => {}} />
+        <Table
+          getCol={NoticeListFieldCols}
+          getRow={rows}
+          setChoiceComponent={() => {}}
+          tablePagination={pagination}
+          onPageChange={onPageChanage}
+        />
       </TableContianer>
     </FilterContianer>
   )

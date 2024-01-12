@@ -18,7 +18,7 @@ const AlertPopup = ({ propsRemove, setPopupSwitch }) => {
   console.log('nowPopup !!!', nowPopup)
 
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
-  const [checkNext, setCheckNext] = useState(false) //임시 next 작동시 reload
+  // const [checkNext, setCheckNext] = useState(false) //임시 next 작동시 reload
 
   // num / next을 받아 팝업 띄우는 컴포넌트의 onClickHandler
 
@@ -42,7 +42,7 @@ const AlertPopup = ({ propsRemove, setPopupSwitch }) => {
       nowPopup.func()
       firstPopupClick(nowPopup?.next)
       setNowPopupType(nextType)
-      setCheckNext(true)
+      // setCheckNext(true)
       setRowChecked([]) // 체크된 Atom 초기화
     } else if (nowPopup && !nowPopup?.next) {
       closePopup()

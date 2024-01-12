@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useState, useEffect } from 'react'
 import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
@@ -10,7 +10,7 @@ import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn } from '../../../common/Button/Button'
 import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
@@ -45,327 +45,214 @@ import { TableWrap, ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../..
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 import Excel from '../../../components/TableInner/Excel'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
+import { GlobalFilterContainer, GlobalFilterFooter, GlobalFilterHeader } from '../../../components/Filter'
+import { useShipmentListQuery, useShipmentStatusUpdateMutation } from '../../../api/shipment'
+import { ShippingRegisterFields, ShippingRegisterFieldsCols } from '../../../constants/admin/Shipping'
+import { useAtom } from 'jotai/index'
+import { formatWeight } from '../../../utils/utils'
+import { add_element_field } from '../../../lib/tableHelpers'
+import {
+  CustomerSearch,
+  DateSearchSelect,
+  DestinationSearch,
+  ProductNumberListSearch,
+  SpartSelect,
+  StorageSelect,
+} from '../../../components/Search'
+import Table from '../../Table/Table'
+import RequestSelector from './RequestSelector'
+import { getAddNewDestination } from './utils'
+
+const initData = {
+  pageNum: 1,
+  pageSize: 10,
+  shipmentStatus: '출하 지시',
+  storage: '',
+  customerCode: '',
+  customerName: '',
+  destinationCode: '',
+  destinationName: '',
+  auctionStartDate: '',
+  auctionEndDate: '',
+  shippingStartDate: '',
+  shippingEndDate: '',
+  spart: '',
+  productNumberList: '',
+}
 
 const Request = ({ setChoiceComponent }) => {
-  const titleData = [
-    '제품 중량(kg)',
-    '제품 공급가액',
-    '운반비 공급가액',
-    '제품 중량(kg)',
-    '제품 공급가액',
-    '운반비 공급가액',
-    '제품 중량(kg)',
-    '제품 공급가액',
-    '운반비 공급가액',
-  ]
-  const contentData = [
-    '986,742',
-    '986,742',
-    '986,742',
-    '986,742',
-    '986,742',
-    '986,742',
-    '986,742',
-    '986,742',
-    '986,742',
-  ]
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
-  const [isRotated, setIsRotated] = useState(false)
+  // data fetch
+  const [param, setParam] = useState(initData)
+  const { data, refetch } = useShipmentListQuery(param)
+  const { mutate: shipmentStatusUpdate } = useShipmentStatusUpdateMutation()
 
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated((prevIsRotated) => !prevIsRotated)
-  }
+  // Table
+  const tableField = useRef(ShippingRegisterFieldsCols)
+  const getCol = tableField.current
+  const [getRow, setGetRow] = useState('')
+  const [rowChecked, setRowChecked] = useAtom(selectedRowsAtom)
 
-  // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-  const [toggleMsg, setToggleMsg] = useState('On')
-  const toggleBtnClick = () => {
-    setExfilterToggle((prev) => !prev)
-    if (exFilterToggle === true) {
-      setToggleMsg('Off')
-    } else {
-      setToggleMsg('On')
+  const [selectorList, setSelectorList] = useState([]) // 선별 목록
+  const [destinations, setDestinations] = useState(new Array(3)) // 목적지
+
+  // 선별 목록 추가
+  const addSelectorList = () => {
+    try {
+      const newDestination = getAddNewDestination(rowChecked)
+      setDestinations(newDestination) // 목적지 등록
+      setSelectorList((prev) => [...new Set([...prev, ...rowChecked])]) // 선별 목록 데이터 등록
+      setRowChecked([]) // 테이블 체크 목록 초기화
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth',
+      })
+    } catch (error) {
+      window.alert(error.message)
     }
   }
 
-  const radioDummy = ['독차', '합짐']
-  const radioTableDummy = ['Y', 'N']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+  // 선별 목록 제거
+  const removeSelector = () => {
+    const key = '주문 고유 번호'
+    const deleteKeys = rowChecked.map((item) => item[key])
+    const newSelectors = selectorList.filter((item) => !deleteKeys.includes(item[key]))
+    setSelectorList(newSelectors)
+    setRowChecked([]) // 테이블 체크 목록 초기화
+  }
 
-  const [savedRadioValue, setSavedRadioValue] = useState('')
+  // param change
+  const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value }))
+
+  // reset event
+  const onReset = async () => {
+    await setParam(initData)
+    await refetch()
+  }
+
+  // 출하 취소
+  const onRegisterCancel = () => {
+    if (!rowChecked) {
+      return window.alert('제품을 선택해주세요.')
+    }
+    const uids = rowChecked.map((item) => item['주문 고유 번호'])
+    const shipmentStatus = '출하 대기'
+
+    if (window.confirm('출하 취소하시겠습니까?')) {
+      shipmentStatusUpdate({ shipmentStatus, uids })
+    }
+  }
+
   useEffect(() => {
-    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
+    const getData = data?.list
+    if (getData && Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, ShippingRegisterFields))
+    }
+  }, [data])
 
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
-  }, [checkRadio])
-
-  const [checkRadio2, setCheckRadio2] = useState(
-    Array.from({ length: radioTableDummy.length }, (_, index) => index === 0),
-  )
-  const [savedRadioValue2, setSavedRadioValue2] = useState('')
   useEffect(() => {
-    const checkedIndex = checkRadio2.findIndex((isChecked, index) => isChecked && index < radioTableDummy.length)
-
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
-  }, [checkRadio2])
+    refetch()
+  }, [param.pageNum, param.pageSize])
 
   return (
     <FilterContianer>
-      <FilterHeader>
-        <div style={{ display: 'flex' }}>
-          <h1>출고 요청</h1>
-          <Subtitle2
-            onClick={() => {
-              setChoiceComponent('requestRecom')
-            }}
-          >
-            선별 추천
-          </Subtitle2>
-        </div>
-
-        {/* 토글 쓰기 */}
-        <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
-      </FilterHeader>
-
-      {exFilterToggle && (
-        <>
-          <FilterSubcontianer>
-            <FilterLeft>
-              <RowWrap none>
-                <PartWrap first>
-                  <h6>창고 구분</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>고객사 명/고객사코드</h6>
-                  <Input />
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap>
-                <PartWrap first>
-                  <h6>목적지</h6>
-                  <CustomInput width={160} height={36} />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap>
-                <PartWrap first>
-                  <h6>경매 일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>출하 지시 일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap none>
-                <PartWrap first>
-                  <h6>구분</h6>
-                  <MainSelect />
-                </PartWrap>
-              </RowWrap>
-            </FilterLeft>
-            <FilterRight>
-              <DoubleWrap>
-                <h6>제품 번호 </h6>
-                <textarea
-                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                />
-              </DoubleWrap>
-            </FilterRight>
-          </FilterSubcontianer>
-          <FilterFooter>
-            <div style={{ display: 'flex' }}>
-              <p>초기화</p>
-              <ResetImg
-                src="/img/reset.png"
-                style={{ marginLeft: '10px', marginRight: '20px' }}
-                onClick={handleImageClick}
-                className={isRotated ? 'rotate' : ''}
+      {/* header */}
+      <GlobalFilterHeader
+        title={'출고 요청'}
+        subTitle={<Subtitle2 onClick={() => setChoiceComponent('requestRecom')}>선별 추천</Subtitle2>}
+      />
+      {/* container */}
+      <GlobalFilterContainer>
+        <FilterSubcontianer>
+          <FilterLeft>
+            <RowWrap none>
+              <StorageSelect value={param.storage} onChange={(e) => onChange('storage', e.label)} />
+              <CustomerSearch
+                name={param.customerName}
+                code={param.customerCode}
+                setName={(value) => onChange('customerName', value)}
+                setCode={(value) => onChange('customerCode', value)}
               />
-            </div>
-            <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40}>
-                검색
-              </BlackBtn>
-            </div>
-          </FilterFooter>
-        </>
-      )}
+            </RowWrap>
+            <RowWrap>
+              <DestinationSearch
+                name={param.destinationName}
+                code={param.destinationCode}
+                setName={(value) => onChange('destinationName', value)}
+                setCode={(value) => onChange('destinationCode', value)}
+              />
+            </RowWrap>
+            <RowWrap>
+              <DateSearchSelect
+                title={'경매 일자'}
+                startInitDate={param.auctionStartDate}
+                endInitDate={param.auctionEndDate}
+                startDateChange={(value) => onChange('auctionStartDate', value)}
+                endDateChange={(value) => onChange('auctionEndDate', value)}
+              />
+              <DateSearchSelect
+                title={'출하 지시 일자'}
+                startInitDate={param.shippingStartDate}
+                endInitDate={param.shippingEndDate}
+                startDateChange={(value) => onChange('shippingStartDate', value)}
+                endDateChange={(value) => onChange('shippingEndDate', value)}
+              />
+            </RowWrap>
+            <RowWrap none>
+              <SpartSelect value={param.spart} onChange={(e) => onChange('spart', e.label)} />
+            </RowWrap>
+          </FilterLeft>
+          <FilterRight>
+            <ProductNumberListSearch
+              value={param.productNumberList}
+              onChange={(e) => onChange('productNumberList', e.target.value)}
+            />
+          </FilterRight>
+        </FilterSubcontianer>
+      </GlobalFilterContainer>
+      {/* footer */}
+      <GlobalFilterFooter reset={onReset} onSearch={refetch} />
 
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
+            조회 목록 (선택 <span>{rowChecked?.length ?? 0}</span> / {data?.pagination?.listCount}개 )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown
+              handleDropdown={(e) => setParam((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))}
+            />
             <Excel />
           </div>
         </TCSubContainer>
         <TCSubContainer>
           <div>
-            선택 중량<span> 2 </span>kg / 총 중량 kg
+            선택 중량<span>{rowChecked?.length ?? 0}</span>kg / 총 중량 {data?.pagination?.totalWeight} kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>출하 취소</WhiteRedBtn>
-            <WhiteSkyBtn>선별 목록 추가</WhiteSkyBtn>
+            <WhiteRedBtn onClick={onRegisterCancel}>출하 취소</WhiteRedBtn>
+            <WhiteSkyBtn onClick={addSelectorList}>선별 목록 추가</WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table
+          getCol={getCol}
+          getRow={getRow}
+          tablePagination={data?.pagination}
+          onPageChange={(value) => onChange('pageNum', value)}
+        />
       </TableContianer>
-      <FilterHeader style={{}}>
-        <h1>선별 등록</h1>
-        {/* 토글 쓰기 */}
-      </FilterHeader>
-      <TableWrap style={{ marginTop: '5px' }}>
-        <ClaimTable>
-          <ClaimRow>
-            <ClaimTitle>출하 요청 일자</ClaimTitle>
-            <ClaimContent>2023.04.05</ClaimContent>
-            <ClaimTitle>순번</ClaimTitle>
-            <ClaimContent>001</ClaimContent>
-            <ClaimTitle>상차도 여부</ClaimTitle>
-            <ClaimContent>
-              <ExRadioWrap>
-                {radioTableDummy.map((text, index) => (
-                  <RadioMainDiv key={index}>
-                    <RadioCircleDiv
-                      isWhite
-                      isChecked={checkRadio2[index]}
-                      onClick={() => {
-                        setCheckRadio2(CheckBox(checkRadio2, checkRadio2.length, index))
-                      }}
-                    >
-                      <RadioInnerCircleDiv isChecked={checkRadio2[index]} />
-                    </RadioCircleDiv>
-
-                    <div style={{ display: 'flex', marginLeft: '5px' }}>
-                      <p>{text}</p>
-                    </div>
-                  </RadioMainDiv>
-                ))}
-              </ExRadioWrap>
-            </ClaimContent>
-          </ClaimRow>
-          <ClaimRow>
-            <ClaimTitle>목적지 1</ClaimTitle>
-            <ClaimContent>부산 광역시</ClaimContent>
-            <ClaimTitle>목적지 2</ClaimTitle>
-            <ClaimContent>천안시</ClaimContent>
-            <ClaimTitle>목적지 3</ClaimTitle>
-            <ClaimContent>-</ClaimContent>
-          </ClaimRow>
-          <ClaimRow>
-            <ClaimTitle>매출운임비</ClaimTitle>
-            <ClaimContent>154,585,000</ClaimContent>
-            <ClaimTitle>매입운임비</ClaimTitle>
-            <ClaimContent>456,485,200</ClaimContent>
-            <ClaimTitle>합짐비</ClaimTitle>
-            <ClaimContent>63,000</ClaimContent>
-          </ClaimRow>
-        </ClaimTable>
-      </TableWrap>
-
-      <SpaceDiv>
-        <h6>입찰 방식</h6>
-        <ExRadioWrap>
-          {radioDummy.map((text, index) => (
-            <RadioMainDiv key={index}>
-              <RadioCircleDiv
-                isChecked={checkRadio[index]}
-                onClick={() => {
-                  setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-                }}
-              >
-                <RadioInnerCircleDiv isChecked={checkRadio[index]} />
-              </RadioCircleDiv>
-
-              <div style={{ display: 'flex', marginLeft: '5px' }}>
-                <p style={{ fontSize: '16px' }}>{text}</p>
-              </div>
-            </RadioMainDiv>
-          ))}
-        </ExRadioWrap>
-      </SpaceDiv>
-
-      <TableContianer>
-        <TCSubContainer bor>
-          <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
-            <Hidden />
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}></div>
-        </TCSubContainer>
-        <TCSubContainer>
-          <div>
-            선택 중량<span> 2 </span>kg / 총 중량 kg
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>목록 제거</WhiteRedBtn>
-            <WhiteSkyBtn>선별 등록</WhiteSkyBtn>
-          </div>
-        </TCSubContainer>
-        <Test3 />
-      </TableContianer>
+      {/* 선별 등록 */}
+      <RequestSelector list={selectorList} destinations={destinations} removeSelector={removeSelector} />
     </FilterContianer>
   )
 }
 
 export default Request
 
-const SpaceDiv = styled.div`
-  position: relative;
-  display: flex;
-  top: -10px;
-  align-items: center;
-
-  > h6 {
-    font-size: 16px;
-    color: #6b6b6b;
-    width: 100px;
-  }
-`
-
 const Subtitle2 = styled.h5`
   margin-left: 20px;
   display: flex;
-  justify-content: ce;
+  justify-content: center;
   align-items: center;
   gap: 20px;
   font-size: 18px;

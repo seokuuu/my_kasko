@@ -42,13 +42,13 @@ import ClientPostModal from '../Client/ClientPostModal'
 import UserPost from './UserPost'
 import { UsermanageUserManageEditModal } from '../../../store/Layout/Layout'
 import UserEdit from './UserEdit'
+import usePaging from "../../../hooks/usePaging";
 const UserManage = ({ setChoiceComponent }) => {
   const [editModal, setEditModal] = useAtom(UsermanageUserManageEditModal)
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
   console.log('uidAtom', uidAtom)
   const [postModal, setPostModal] = useAtom(UsermanageUserPostModal)
-  const [types, setTypes] = useState(null) //카스코철강, 현대제철 , 운송, 창고
-  console.log('types', types)
+  const [types, setTypes] = useState('카스코철강') //카스코철강, 현대제철 , 운송, 창고
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
     //   ...prevState,
@@ -84,16 +84,19 @@ const UserManage = ({ setChoiceComponent }) => {
   const [getRow, setGetRow] = useState('')
   const tableField = useRef(UserManageFieldsCols)
   const getCol = tableField.current
-  const checkedArray = useAtom(selectedRowsAtom)[0]
+  let checkedArray = useAtom(selectedRowsAtom)[0]
 
-  const 임의데이터 = {
+  const paramData = {
     pageNum: 1,
     pageSize: 50,
     type: types,
   }
-  const { isLoading, isError, data, isSuccess } = useReactQuery(임의데이터, 'userManage', get_userManage)
+  const { isLoading, isError, data, isSuccess } = useReactQuery(paramData, 'userManage', get_userManage)
   const resData = data?.data?.data?.list
-  console.log('getRow', getRow)
+  const resPagination = data?.data?.data?.pagination
+
+  const [param, setParam] = useState(paramData);
+  const { onPageChanage } = usePaging(data, setParam)
 
   if (isError) console.log('데이터 request ERROR')
 
@@ -121,6 +124,10 @@ const UserManage = ({ setChoiceComponent }) => {
   const goPostPage = () => {
     setChoiceComponent('등록')
   }
+
+  useEffect(() => {
+    checkedArray = []
+  }, [types])
 
   return (
     <FilterContianer>
@@ -190,14 +197,14 @@ const UserManage = ({ setChoiceComponent }) => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
+            조회 목록 (선택 <span>{checkedArray ? checkedArray.length : '0'}</span> / {resPagination ? resPagination.listCount : '0'}개 )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}></div>
         </TCSubContainer>
         <TCSubContainer>
           <div>
-            선택 중량<span> 2 </span>kg / 총 중량 kg
+            선택<span> {checkedArray ? checkedArray.length : '0'} </span>(개)
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn onClick={handleRemoveBtn}>사용자 삭제</WhiteRedBtn>
@@ -212,7 +219,13 @@ const UserManage = ({ setChoiceComponent }) => {
         </TCSubContainer>
         {postModal && <UserPost setPostModal={setPostModal} />}
         {editModal && <UserEdit setEditModal={setEditModal} uidAtom={uidAtom} />}
-        <Table setChoiceComponent={setChoiceComponent} getCol={getCol} getRow={getRow} />
+        <Table
+            setChoiceComponent={setChoiceComponent}
+            getCol={getCol}
+            getRow={getRow}
+            tablePagination={resPagination}
+            onPageChange={onPageChanage}
+        />
       </TableContianer>
     </FilterContianer>
   )

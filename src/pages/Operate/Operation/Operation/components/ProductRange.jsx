@@ -22,6 +22,7 @@ import {
 import Table from '../../../../Table/Table'
 import CommonTableHeader from '../../../UI/CommonTableHeader'
 import { commonListSearchInitValue } from '../../../constants'
+import usePaging from '../../../hook/usePaging'
 
 /**
  * @description
@@ -133,6 +134,9 @@ const ProductRange = () => {
       setModal(true)
     }
   }, [detailRow])
+
+  const { pagination, onPageChanage } = usePaging(data, setSearch)
+
   return (
     <TableContianer>
       <CommonTableHeader
@@ -142,9 +146,13 @@ const ProductRange = () => {
         toRegister={() => setModal(true)}
         removeEventHandler={removeEventHandler}
       />
-
-      <Table getCol={ProductRangeFieldCols} getRow={rows} setChoiceComponent={() => {}} />
-
+      <Table
+        getCol={ProductRangeFieldCols}
+        getRow={rows}
+        setChoiceComponent={() => {}}
+        tablePagination={pagination}
+        onPageChange={onPageChanage}
+      />
       {modal && (
         <AddProduct
           initValue={detailsData ? detailsData.spart : ''}
