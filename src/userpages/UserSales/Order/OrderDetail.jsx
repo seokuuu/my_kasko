@@ -11,6 +11,7 @@ import { userOrderDetailsField, userOrderDetailsFieldsCols } from '../../../cons
 import useTableData from '../../../hooks/useTableData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'
+import DepositRequestForm from '../../../modal/Docs/DepositRequestForm'
 import {
   CustomInput,
   FilterContianer,
@@ -33,6 +34,25 @@ const initialSearchParams = {
  * @constant 주문정보 테이블 칼럼
  */
 const INFO_COLUMNS = ['주문 번호', '고객사', '고객코드', '총 수량', '총 중량(KG)', '입금 요청 금액(원)'];
+
+/**
+ * @constant 입금요청서 키페어
+ */
+const DEPOSIT_REQUET_KEY_PAIR = {
+  uid: '',
+  startDate: '',
+  customerName: '',
+  productNumber: '',
+  productName: '',
+  productSpec: '',
+  productWdh: '',
+  weight: '',
+  orderPrice: '',
+  orderPriceVat: '',
+  freightCost: '',
+  freightCostVat: '',
+  totalPrice: '',
+}
 
 /**
  * 주분 정보 테이블 로우 반환 함수
@@ -61,6 +81,9 @@ const getInfoRows = (data, salesNumber) => {
 /**
  * 사용자 주문 확인 상세 페이지
  * @param {string} props.salesNumber 상시판매 번호(경매 번호) 
+ * @todo
+ * - 목적지 찾기/적용
+ * - 목적지 승인요청
  */
 const OrderDetail = ({ salesNumber }) => {
   // API 파라미터
@@ -73,10 +96,13 @@ const OrderDetail = ({ salesNumber }) => {
   const infoData = useMemo(() => getInfoRows(orderData?.list || [], salesNumber), [orderData, salesNumber]);
   // 선택항목 데이터
   const { selectedData, selectedWeightStr, selectedCountStr, hasSelected } = useTableSelection({weightKey: '중량'});
-  // 목적지 데이터
+  // 목적지 변경 모드
+  const [destinationSearch, setDestinationSearch] = useState(false);
+  // 목적지 데이터 || 목적지 변경 항목 데이터
   const [destination, setDestination] = useState(null); // { code: '', name: '', tel: '' }
-  // 목적지 변경 데이터
   const [destinationModifyItems, setDestinationModifyItems] = useState([]);
+  // 입금요청서 발행 모드
+  const [receiptPrint, setReceiptPrint] = useState(false);
 
   /**
    * 목적지 적용 핸들러 
@@ -98,8 +124,8 @@ const OrderDetail = ({ salesNumber }) => {
    * 목적지 승인 요청 핸들러
   */
  function handleDestinationApprovalRequest() {
-   if(!destinationModifyItems.length < 1) {
-     return alert('목적지를 적용할 상품을 선택해 주세요.');
+    if(!destinationModifyItems.length < 1) {
+      return alert('목적지를 적용할 상품을 선택해 주세요.');
     }
     
     // 승인 요청
@@ -110,8 +136,9 @@ const OrderDetail = ({ salesNumber }) => {
   /**
    * 입금 요청서 발행 함수
    */
-  function handleReceiptPrint() {
-    // 입금 요청서 발행 함수
+  function handleReceiptPrint(e) {
+    e.preventDefaut();
+
   }
 
   // ERROR SECTION
@@ -167,10 +194,10 @@ const OrderDetail = ({ salesNumber }) => {
             <CustomInput placeholder="h50" width={60} />
             <CustomInput placeholder="목적지명" width={120} />
             <CustomInput placeholder="도착지 연락처" width={120} />
-            <WhiteBlackBtn>찾기</WhiteBlackBtn>
-            <TGreyBtn>적용</TGreyBtn>
+            <WhiteBlackBtn onClick={v => {setDestinationSearch(true)}}>찾기</WhiteBlackBtn>
+            <TGreyBtn onClick={handleDestinationApply}>적용</TGreyBtn>
             <BtnBound />
-            <WhiteBlackBtn>목적지 승인 요청</WhiteBlackBtn>
+            <WhiteBlackBtn onClick={handleDestinationApprovalRequest}>목적지 승인 요청</WhiteBlackBtn>
           </div>
         </TCSubContainer>
         {/* 테이블 */}
@@ -180,10 +207,20 @@ const OrderDetail = ({ salesNumber }) => {
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteSkyBtn>입금 요청서 발행</WhiteSkyBtn>
+            <WhiteSkyBtn onClick={() => { setReceiptPrint(true) }}>입금 요청서 발행</WhiteSkyBtn>
           </div>
         </TCSubContainer>
       </TableContianer>
+      {/* 목적지 변경 모달 */}
+      {/* { destinationSearch && <DestinationChange /> } */}
+      {/* 입금 요청서 모달 */}
+      { 
+        receiptPrint && 
+        <DepositRequestForm 
+          title="상시판매 입금요청서" 
+          keyPair={DEPOSIT_REQUET_KEY_PAIR}
+          handleClose={() => {setReceiptPrint(false)}} /> 
+        }
     </FilterContianer>
   )
 }
