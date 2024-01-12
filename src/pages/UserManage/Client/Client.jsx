@@ -132,7 +132,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
 
   const { isLoading, isError, data, isSuccess } = useReactQuery(query, 'getClient', getCustomer)
   const responseData = data?.data?.list
-
+  const [tablePagination, setPagination] = useState([])
   console.log('responseData', responseData)
 
   if (isError) {
@@ -143,6 +143,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
     if (!isSuccess && !responseData) return
     if (Array.isArray(responseData)) {
       setGetRow(add_element_field(responseData, UserManageCustomerManageFields))
+      setPagination(data.data.pagination)
     }
   }, [isSuccess, responseData])
 
@@ -192,7 +193,6 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
   const clientRestrict = async () => {
     if (selectedValue === undefined) return alert('선택해주세요 ')
     else if (selectedValue) {
-
       let req = { uids: [], auctionStatus: '' }
       checkedArray?.forEach((item) => {
         req.uids.push(item['순번'])
@@ -227,6 +227,21 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
     // if (value === false) return setRemoveModal(false)
   }
 
+  const handleTablePageSize = (event) => {
+    setQuery((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setQuery((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
+
   // //Modal
   const [auctionModal, setAuctionModal] = useAtom(AuctionRestrictionModal)
   const [removeModal, setRemoveModal] = useAtom(alertAtom)
@@ -246,7 +261,6 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
           <>
             <FilterSubcontianer>
               <FilterLeft>
-
                 <RowWrap>
                   <PartWrap>
                     <h6>회원 상태</h6>
@@ -325,7 +339,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
               <Hidden />
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <PageDropdown />
+              <PageDropdown handleDropdown={handleTablePageSize} />
               <Excel />
             </div>
           </TCSubContainer>
@@ -347,7 +361,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
               </WhiteSkyBtn>
             </div>
           </TCSubContainer>
-          <Table getCol={getCol} getRow={getRow} />
+          <Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
           {/* <Test3 /> */}
         </TableContianer>
       </FilterContianer>
