@@ -32,6 +32,7 @@ import Table from '../../Table/Table'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { popupDummy } from '../../../modal/Alert/PopupDummy'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 const Consolidation = ({}) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
@@ -136,14 +137,17 @@ const Consolidation = ({}) => {
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
 
-  const Param = {
+  const paramData = {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 50,
   }
 
   // GET
-  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getAdminConsolidation', getAdminConsolidation)
+  const [param, setParam] = useState(paramData)
+  const { isLoading, isError, data, isSuccess } = useReactQuery(param, 'getAdminConsolidation', getAdminConsolidation)
   const resData = data?.data?.data?.list
+  const [tablePagination, setTablePagination] = useState([])
+
   console.log('resData => ', resData)
 
   const matchingData = resData?.find((data) => data.uid === uidAtom)
@@ -158,6 +162,7 @@ const Consolidation = ({}) => {
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, StandardConsolidationFields))
+      setTablePagination(data.data.data.pagination)
     }
   }, [isSuccess, resData])
 
@@ -193,6 +198,21 @@ const Consolidation = ({}) => {
     [checkedArray],
   )
 
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
+
   return (
     <FilterContianer>
       <div>
@@ -215,6 +235,8 @@ const Consolidation = ({}) => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
+            <PageDropdown handleDropdown={handleTablePageSize} />
+
             <WhiteRedBtn
               onClick={() => {
                 firstPopupClick('2-6')
@@ -232,7 +254,7 @@ const Consolidation = ({}) => {
             </SkyBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
+        <Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
       </TableContianer>
       {btnCellModal && (
         <ConsolidationModal
