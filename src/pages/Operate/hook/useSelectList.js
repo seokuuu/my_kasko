@@ -19,7 +19,7 @@ const useSelectList = () => {
   const supplierList = [
     { label: '전체', value: '' },
     { label: '현대제철', value: '현대제철' },
-    { label: '카스코철강', value: '카스코철강' },
+    { label: '동은 스틸', value: '동은 스틸' },
   ]
 
   // 제품군 목록
