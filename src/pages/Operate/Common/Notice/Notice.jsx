@@ -17,7 +17,7 @@ import Table from '../../../Table/Table'
 import CommonHeader from '../../UI/CommonHeader'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { normalTabOptions, noticeListSearchInitValue, noticeSearchCategoryOptions } from '../../constants'
-import usePaging from "../../hook/usePaging";
+import usePaging from '../../hook/usePaging'
 
 /**
  * @description
@@ -45,7 +45,7 @@ const Notice = ({ title, detailsUrl }) => {
   const { data, refetch } = useNoticeListQuery({
     ...search,
     category: search.category.label,
-    type: title
+    type: title,
   })
 
   // 공지사항 삭제 API

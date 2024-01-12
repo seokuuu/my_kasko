@@ -90,9 +90,8 @@ export function get_clientDestination(data) {
   return client.get(`${urls.clientDestination}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
 }
 
-export function get_detailClientDestination(data) {
-  console.log('detail data =>', data)
-  return client.get(`${urls.clientDestination}/${data}`)
+export async function get_detailClientDestination(data) {
+  return await client.get(`${urls.clientDestination}/${data}`)
 }
 
 export function delete_clientDestination(id) {

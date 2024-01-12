@@ -137,6 +137,7 @@ const Storage = () => {
         totalLength={data ? data.list.length : 0}
         toRegister={() => setModal(true)}
         removeEventHandler={removeEventHandler}
+        setState={setSearch}
       />
       <Table
         getCol={StorageFieldCols}
@@ -144,6 +145,7 @@ const Storage = () => {
         setChoiceComponent={() => {}}
         tablePagination={pagination}
         onPageChange={onPageChanage}
+        noRowsMessage="고객 정보 목록이 비어있습니다."
       />
       {modal && (
         <AddProduct

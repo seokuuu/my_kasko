@@ -51,6 +51,7 @@ import { isArray } from 'lodash'
 // 경매 제품 추가(단일) 메인 컴포넌트
 // 경매 제품 추가 (패키지), 경매 목록 상세(종료된 경매)와 호환 가능
 const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, types, newResData, propsResData }) => {
+  const [tablePagination, setTablePagination] = useState([])
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 
   //checkSales
@@ -123,7 +124,7 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
   const { isLoading, isError, data, isSuccess } = useReactQuery(inputParams, 'getExtraProductList', getExtraProductList)
 
   const resData = data?.data?.data?.list
-
+  const resPagination = data?.data?.data?.pagination
   console.log('resData', resData)
 
   useEffect(() => {
@@ -132,6 +133,7 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, AuctionRoundExtraProductFields))
+      setTablePagination(resPagination)
     }
   }, [isSuccess, resData])
 
@@ -151,6 +153,21 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
     } else {
       alert('선택해주세요!')
     }
+  }
+
+  const handleTablePageSize = (event) => {
+    setInputParams((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setInputParams((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
   }
 
   return (
@@ -280,7 +297,7 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
                   <Hidden />
                 </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
-                  <PageDropdown />
+                  <PageDropdown handleDropdown={handleTablePageSize} />
                   <Excel />
                 </div>
               </TCSubContainer>
@@ -290,8 +307,14 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
                 </div>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}></div>
               </TCSubContainer>
-              <Table getCol={getCol} getRow={getRow} hei2={330} />
-              <TCSubContainer>
+              <Table
+                getCol={getCol}
+                getRow={getRow}
+                tablePagination={tablePagination}
+                onPageChange={onPageChange}
+                hei2={280}
+              />
+              <TCSubContainer style={{ marginTop: '25px' }}>
                 <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                   <BlackBtn width={13} height={40} onClick={handleAddBtn}>
                     제품 추가

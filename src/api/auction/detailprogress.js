@@ -13,3 +13,5 @@ export function getDetailProgress(data) {
     `${urls.detailprogress}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&customerCode=${data.customerCode}`,
   )
 }
+
+

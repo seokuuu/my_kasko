@@ -1,9 +1,11 @@
 import { useAtom, useSetAtom } from 'jotai'
 import React from 'react'
 import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
 import { TCSubContainer } from '../../../modal/External/ExternalFilter'
 import { popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Layout'
+import { onSizeChange } from '../utils'
 
 /**
  * @description
@@ -16,8 +18,17 @@ import { popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Lay
  * @param title 목록 타이틀
  * @param  selectedLength  선택된 데이터 갯수
  * @param isNoneBtn 삭제/등록 버튼이 없는 유무 true => 버튼 없음, false => 버튼 있음
+ * @param setState setState
  **/
-const CommonTableHeader = ({ totalLength, removeEventHandler, toRegister, title, selectedLength, isNoneBtn }) => {
+const CommonTableHeader = ({
+  totalLength,
+  removeEventHandler,
+  toRegister,
+  title,
+  selectedLength,
+  isNoneBtn,
+  setState,
+}) => {
   // 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom)
   const setNowPopupType = useSetAtom(popupTypeAtom) // 팝업 타입
@@ -29,7 +40,7 @@ const CommonTableHeader = ({ totalLength, removeEventHandler, toRegister, title,
         <div>
           조회 목록 (선택 <span>{selectedLength}</span> / {totalLength}개 )
         </div>
-        <div></div>
+        <PageDropdown handleDropdown={(e) => onSizeChange(e, setState)} />
       </TCSubContainer>
       <TCSubContainer>
         <div>

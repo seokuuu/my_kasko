@@ -12,6 +12,7 @@ const usePaging = (data, setState) => {
   function onPageChanage(page) {
     setState((p) => ({ ...p, pageNum: Number(page) }))
   }
+
   return { pagination, onPageChanage }
 }
 
