@@ -204,7 +204,7 @@ const Table = ({
 
   // 페이지 이동시에 테이블 선택이 겹칠 수 있으므로 초기화
   useEffect(() => {
-    setDetailRow(null)
+    // setDetailRow(null)
     setSelectedRows(null)
   }, [location])
 
