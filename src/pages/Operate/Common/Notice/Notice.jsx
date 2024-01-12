@@ -17,7 +17,7 @@ import Table from '../../../Table/Table'
 import CommonHeader from '../../UI/CommonHeader'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { normalTabOptions, noticeListSearchInitValue, noticeSearchCategoryOptions } from '../../constants'
-
+import usePaging from '../../../../hooks/usePaging'
 /**
  * @description
  * 운영관리-공지사항 & 자료실 컴포넌트

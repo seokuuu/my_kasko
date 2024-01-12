@@ -363,7 +363,7 @@ const Table = ({
             pinnedTopRowData={pinnedTopRowData}
             onRowClicked={onRowClicked}
             getRowStyle={getRowStyle}
-
+            // rowHeight={40}
             // sideBar={{ toolPanels: ['columns', 'filters'] }}
           />
         </div>
@@ -407,12 +407,8 @@ const Table = ({
           </ModalContainer>
         </>
       )}
-      
-      {tablePagination &&
-         <CustomPagination
-          pagination={tablePagination}
-          onPageChange={onPageChange}
-        />}
+
+      {tablePagination && <CustomPagination pagination={tablePagination} onPageChange={onPageChange} />}
     </div>
   )
 }

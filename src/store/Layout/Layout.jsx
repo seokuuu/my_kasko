@@ -256,7 +256,6 @@ export const userpageDestiEdit = atom(false)
 // 판매 구분 변경 -> (판매 제품 관리)
 
 export const hyunDaiMultiModal = atom(false)
-export const userPageDestiEditModal = atom(false)
 
 //판매제품 관리 -> 패키지 관리
 
@@ -267,5 +266,9 @@ export const packageCreateObjAtom = atom({
   packageName: '',
 })
 export const packageModeAtom = atom('')
+export const selectPackageAtom = atom({})
 export const singleAllProductModal = atom(false)
 export const packageDetailModal = atom(false)
+// 목적지 에딧 모달
+export const userPageDestiEditModal = atom(false)
+export const adminPageDestiEditModal = atom(false)

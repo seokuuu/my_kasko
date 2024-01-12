@@ -3,15 +3,15 @@ import styled from 'styled-components'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { packageDetailModal, packageModeAtom } from '../../store/Layout/Layout'
+import { packageDetailModal, packageModeAtom, selectPackageAtom } from '../../store/Layout/Layout'
 
 export default function LinkCellRenderer({ data, uidFieldName, editType, moveUrl }) {
   // const current = window.location.href
   const navigate = useNavigate()
   const [mode, setMode] = useAtom(packageModeAtom)
   const [isModal, setIsModal] = useAtom(packageDetailModal)
+  const [select, setSelet] = useAtom(selectPackageAtom)
   // const handleClick = () => {}
-
   const handleClick = () => {
     setMode('edit')
 
@@ -26,6 +26,7 @@ export default function LinkCellRenderer({ data, uidFieldName, editType, moveUrl
     switch (editType) {
       case 'openDetailModal':
         setIsModal(true)
+        setSelet(data)
         break
       case 'LinkTo':
         handleClick()

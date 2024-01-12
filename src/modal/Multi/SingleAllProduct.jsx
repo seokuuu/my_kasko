@@ -62,7 +62,7 @@ import { CRWSub } from '../../pages/Operate/Common/Datasheet/DatasheetEdit'
 import { BtnWrap } from '../../common/Button/Button'
 import { WhiteBtn } from '../../common/Button/Button'
 import { OverAllMain, OverAllTable } from '../../common/Overall/Overall.styled'
-const SingleAllProduct = () => {
+const SingleAllProduct = ({ setSelectPr, selectPr }) => {
   const DEFAULT_OBJ = { value: '', label: '전체' }
   const checkSales = ['전체', '판매재', '판매제외제', '판매 완료제']
   const checkShips = ['전체', '경매대상재', '상시판매 대상재']
@@ -287,6 +287,37 @@ const SingleAllProduct = () => {
       document.body.style.overflow = 'auto'
     }
   }, [])
+
+  const handleSelectProduct = () => {
+    setSelectPr(() =>
+      checkBoxSelect.map((item) => {
+        console.log({
+          ...item,
+          '제품 고유 번호': item['고유 번호'],
+        })
+        return {
+          ...item,
+          '패키지 번호': '',
+          '제품 고유 번호': item['고유 번호'],
+          '제품 창고': item['창고'],
+          '제품 매입처': item['매입처'],
+          '제품 제조사': item['제조사'],
+          '제품 경매 번호': item['경매 번호'],
+          '제품 판매 유형': item['판매 유형'],
+          '제품 판매 구분': item['판매 구분'],
+          '제품 판매가 유형': item['판매가 유형'],
+          제품군: item['제품군명'],
+          '제품 중량': item['중량'],
+          공급가: item['운반비 공급가'],
+          부가세: item['운반비 부가세'],
+          '경매 시작가': item['경매 시장 단가'],
+          '최종 수정자': item['최종 수정자'],
+        }
+      }),
+    )
+    modalClose()
+  }
+  // console.log(checkBoxSelect)
   return (
     <OutSide>
       <Container>
@@ -498,7 +529,7 @@ const SingleAllProduct = () => {
             <CRWMainBottom>
               <CRWSub>
                 <BtnWrap>
-                  <BlackBtn width={60} height={50}>
+                  <BlackBtn width={60} height={50} onClick={handleSelectProduct}>
                     등록
                   </BlackBtn>
                 </BtnWrap>

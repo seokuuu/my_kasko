@@ -9,7 +9,6 @@ import { BlackBtn, BtnWrap, YellBtn, BtnBound, WhiteRedBtn } from '../../../comm
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { GreyBtn, ExcelBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
   blueModalAtom,
@@ -53,6 +52,7 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { packageDispatchFields, packageDispatchFieldsCols } from '../../../constants/admin/SellPackage'
 import Table from '../../Table/Table'
 import PackageManageFind from '../../../modal/Multi/PackageManage'
+import PackageDetailModal from '../../../modal/Multi/PackageDetailModal.jsx'
 const PackageManage = ({}) => {
   const [isCreate, setIsCreate] = useState(false)
   const [packBtn, setPackBtn] = useAtom(packageModeAtom)
@@ -81,7 +81,7 @@ const PackageManage = ({}) => {
   const tableFields = useRef(packageDispatchFieldsCols)
   const getCol = tableFields.current
 
-  const parameter = { pageNum: 1, pageSize: 10, saleType: '상시판매 대상재' }
+  const parameter = { pageNum: 1, pageSize: 1000, saleType: '' }
   const { data, isSuccess } = useReactQuery(parameter, 'package-list', getPackageList)
   const packageList = data?.r
   const pagination = data?.pagination
@@ -310,7 +310,7 @@ const PackageManage = ({}) => {
         />
       </TableContianer>
       {isModal && <PackageManageFind isCreate={isCreate} url={'/product/packagecreate'} />}
-      {detailModal && <PackageManageFind />}
+      {detailModal && <PackageDetailModal />}
     </FilterContianer>
   )
 }

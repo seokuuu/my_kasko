@@ -2,6 +2,7 @@ import RecommendCellRenderer from "../../pages/Table/RecommendCellRenderer"
 import RecommendCellRenderer2 from "../../pages/Table/RecommendCellRenderer2"
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer.jsx'
 import LinkCellRender from '../../pages/Table/LinkCellRenderer.jsx'
+
 var checkboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0
@@ -11,7 +12,6 @@ var headerCheckboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0
 }
-
 export const packageDispatchFields= {
   '순번':'index',
   '패키지 이름': 'name',
@@ -119,4 +119,37 @@ export const packageProductsDispatchFieldsCols = [
   { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '최종 수정 일자', minWidth: 120 },
 ]
   
+
+
+export const packageDetailDispatchFieldsCols = [
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '순번', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지 번호',cellRenderer: LinkCellRender,
+      cellRendererParams: {
+        uidFieldName: '패키지 번호', // 해당 get의 uid (필수수)
+        editType: 'openDetailModal',
+        moveUrl:'/product/packageedit' // modal의 띄울 종류 (선택)
+      }, 
+    minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지 명', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품 고유 번호', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품 창고 명', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품 매입처', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품 제조사', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품 경매 번호', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품 판매 유형', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품 판매 구분', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품 판매가 유형', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품군', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품 중량', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '메모', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '비고', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '낙찰 단가', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '낙찰 총 단가', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '공급가', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '부가세', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '경매 시작가', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '최종수정자', minWidth: 100 },
+  { headerClass:'custom-header-style',cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '최종 수정 일자', minWidth: 120 },
+]
 

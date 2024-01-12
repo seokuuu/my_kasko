@@ -40,14 +40,31 @@ import { CRWMainBottom } from '../../Operate/Common/Datasheet/DatasheetEdit'
 import { CRWSub } from '../../Operate/Common/Datasheet/DatasheetEdit'
 import { useAtom } from 'jotai'
 import SingleAllProduct from '../../../modal/Multi/SingleAllProduct'
+import { packageCreateObjAtom } from '../../../store/Layout/Layout'
 const PackageCreate = () => {
   const radioDummy = ['경매', '상시']
   const prevData = useLocation().state?.data
+  const [packageObj, setPackageObj] = useAtom(packageCreateObjAtom)
+  const [packageName, setPackageName] = useState(prevData ? prevData['패키지 이름'] : packageObj?.packageName)
+  const [price, setPrice] = useState(prevData ? prevData['패키지 경매&판매 시작가'] : packageObj?.price)
+
   const [isModal, setIsModal] = useAtom(singleAllProductModal)
   const [mode, setMode] = useAtom(packageModeAtom)
-  console.log('MODE', mode)
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
   const [savedRadioValue, setSavedRadioValue] = useState('')
+  const [select, setSelect] = useState([])
+  useEffect(() => {
+    setCheckRadio(
+      Array.from({ length: radioDummy.length }, (_, index) => {
+        if (prevData !== undefined && prevData['판매 유형'] === '상시판매 대상재') {
+          return index === 1
+        } else {
+          return index === 0
+        }
+      }),
+    )
+  }, [prevData])
+
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
   }, [checkRadio])
@@ -98,10 +115,19 @@ const PackageCreate = () => {
   }
   useEffect(() => {
     if (isSuccess && prevData) {
-      setFilteredData(packageData)
+      setFilteredData((p) => {
+        packageData.map((item) => {
+          console.log('아이템', item)
+          // return {
+          //   ...item,
+          //   uid: item?.productUid,
+          // }
+        })
+      })
     }
-  }, [isSuccess, requestParams])
+  }, [isSuccess, requestParams, packageData])
 
+  console.log('아이템', filteredData)
   useEffect(() => {
     if (isSuccess && filteredData === undefined) {
       packageData && setFilteredData(packageData)
@@ -116,9 +142,24 @@ const PackageCreate = () => {
   const handleAddProduct = () => {
     setIsModal(true)
   }
+  const handleChangePackName = (e) => {
+    const { value, name } = e.currentTarget
+    if (name === 'packageName') {
+      setPackageName(value)
+    } else if (name === 'price') {
+      setPrice(value)
+    }
+  }
+
+  // console.log(
+  //   'SELECT',
+  //   select.map((i) => {
+  //     return
+  //   }),
+  // )
   return (
     <FilterContianer>
-      <p style={{ color: 'black' }}>{mode}</p>
+      <h1>{mode}</h1>
       <FilterHeader>
         <h1>패키지 {prevData ? '수정' : '생성'}</h1>
         {/* 토글 쓰기 */}
@@ -159,13 +200,13 @@ const PackageCreate = () => {
                 <div>
                   <h6>패키지 명 지정</h6>
                   <div>
-                    <Input />
+                    <Input name={'packageName'} value={packageName} onChange={handleChangePackName} />
                   </div>
                 </div>
                 <div>
                   <h6>시작가/판매가</h6>
                   <div>
-                    <Input />
+                    <Input name={'price'} value={price} onChange={handleChangePackName} />
                   </div>
                 </div>
               </FilterTCBSub>
@@ -193,7 +234,7 @@ const PackageCreate = () => {
             <WhiteBlackBtn onClick={handleAddProduct}>제품 추가</WhiteBlackBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
+        <Table getCol={getCol} getRow={select.length <= 0 ? [...getRow, ...select] : select} />
         <CRWMainBottom>
           <CRWSub>
             <BtnWrap>
@@ -207,7 +248,7 @@ const PackageCreate = () => {
           </CRWSub>
         </CRWMainBottom>
       </TableContianer>
-      {isModal && <SingleAllProduct />}
+      {isModal && <SingleAllProduct selectPr={select} setSelectPr={setSelect} />}
     </FilterContianer>
   )
 }

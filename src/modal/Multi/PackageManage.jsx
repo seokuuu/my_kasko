@@ -37,20 +37,30 @@ const PackageManageFind = ({ isCreate, url }) => {
   const radioDummy = ['경매', '상시']
 
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+  const [checkRadioValue, setCheckRadioValue] = useState(Array.from({ length: radioDummy.length }, () => ''))
+
   const [packageName, setPackageName] = useState('')
   const [packageObj, setPackageObj] = useAtom(packageCreateObjAtom)
+
+  useEffect(() => {
+    const update = radioDummy.map((value, idx) => {
+      return checkRadio[idx] ? value : ''
+    })
+    const filteredCheck = update.filter((item) => item !== '')
+    setCheckRadioValue(filteredCheck)
+  }, [checkRadio])
+
   const handleChange = (e) => {
-    setPackageName(e.currentTarge.value)
+    setPackageName(e.currentTarget.value)
   }
   const navigate = useNavigate()
   useEffect(() => {
     setPackageObj({
       packageNumber: '',
-      sellType: '경매',
+      sellType: checkRadioValue.join(''),
       packageName: packageName,
     })
-  }, [packageName])
-  console.log('checkRadio =>', checkRadio)
+  }, [packageName, checkRadioValue])
 
   return (
     // 판매 제품 관리 - 패키지 관리

@@ -92,7 +92,7 @@ const BtnCellRenderer = ({ data, uidFieldName, editType, moveUrl }) => {
       case 'claimUpdate':
         setUidAtom(uid)
         setModalMode('수정')
-        break
+      break
       case 'usermanagemanage':
         setUidAtom(uid)
         setUserManageEditModal(true)
