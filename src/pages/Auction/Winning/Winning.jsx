@@ -44,7 +44,7 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { AuctionWinningFields, AuctionWinningFieldsCols } from '../../../constants/admin/Auction'
 import { useQueryClient } from '@tanstack/react-query'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { getWinning, deleteBidding } from '../../../api/auction/winning'
+import { getWinning, deleteBidding, depositConfirm } from '../../../api/auction/winning'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { doubleClickedRowAtom } from '../../../store/Layout/Layout'
 import useMutationQuery from '../../../hooks/useMutationQuery'
@@ -124,12 +124,21 @@ const Winning = ({ detailRow }) => {
       return obj
     }, {}),
   )
+
+  console.log('extractedArray', extractedArray)
   // 낙찰 취소 POST
   const deleteMutation = useMutationQuery('', deleteBidding)
 
   // 낙찰 취소 버튼 Handler
   const deleteOnClickHandler = () => {
     deleteMutation.mutate(extractedArray)
+  }
+
+  // 입금
+  const depositMutation = useMutationQuery('', depositConfirm)
+
+  const depositOnClickHandler = () => {
+    depositMutation.mutate(extractedArray)
   }
 
   const [Param, setParam] = useState({
@@ -334,7 +343,7 @@ const Winning = ({ detailRow }) => {
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <SkyBtn>입금확인</SkyBtn>
+            <SkyBtn onClick={depositOnClickHandler}>입금 확인</SkyBtn>
           </div>
         </TCSubContainer>
       </TableContianer>

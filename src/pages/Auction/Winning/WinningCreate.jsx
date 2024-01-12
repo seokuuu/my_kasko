@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { BlackBtn, GreyBtn, SkyBtn } from '../../../common/Button/Button'
+import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
@@ -57,7 +57,7 @@ const WinningCreate = ({}) => {
   const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
 
   useEffect(() => {
-    // true에 해당되면, value를, false면 빈값을 반환
+    // true에 해당되면, value를, false면 빈값을 반환ㄴ
     const updatedCheck = checkSales.map((value, index) => {
       return check1[index] ? value : ''
     })
@@ -116,6 +116,7 @@ const WinningCreate = ({}) => {
   // GET
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getWinningCreate', getWinningCreate)
   const resData = data?.data?.data?.list
+  console.log('resData ', resData)
   const resPagination = data?.data?.data?.pagination
 
   console.log('resData', resData)
@@ -319,7 +320,7 @@ const WinningCreate = ({}) => {
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <SkyBtn>입금확인</SkyBtn>
+            <WhiteRedBtn>선택 목록 제거</WhiteRedBtn>
           </div>
         </TCSubContainer>
       </TableContianer>

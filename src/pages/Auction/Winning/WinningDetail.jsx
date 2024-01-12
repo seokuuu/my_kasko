@@ -11,7 +11,7 @@ import {
 } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { invenDestination, invenDestinationData, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import {
   CustomInput,
@@ -43,16 +43,22 @@ import DefaultBlueBar from '../../../modal/Multi/DefaultBlueBar'
 import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 
 import { useQueryClient } from '@tanstack/react-query'
-import { getWinningDetail } from '../../../api/auction/winning'
+import { getWinningDetail, partDeleteBidding, partDepositConfirm } from '../../../api/auction/winning'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import { AuctionWinningDetailFields, AuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../Table/Table'
+import InventoryFind from '../../../modal/Multi/InventoryFind'
+import { getDestinationFind } from '../../../api/search'
 
 // 경매 낙찰 상세
 const WinningDetail = ({ detailRow }) => {
+  const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
+  const [tablePagination, setTablePagination] = useState([])
+  const [destinationData, setDestinationData] = useAtom(invenDestinationData)
   console.log('winning detailRow', detailRow)
   const titleData = ['고객사 명', '고객 코드', '창고', '총 수량', '총 중량', '입금 요청 금액']
   const contentData = [
@@ -77,33 +83,75 @@ const WinningDetail = ({ detailRow }) => {
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
 
-  const [detailParams, setDetailParams] = useState({
-    pageNum: 1,
-    pageSize: 10,
-    auctionNumber: '',
-    storage: '',
-    customerDestinationUid: '',
-    biddingStatus: '',
-  })
+  const init = {
+    updateList: [],
+  }
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
+  const [input, setInput] = useState(init)
 
-    setDetailParams((p) => ({
-      ...p,
-      auctionNumber: detailRow?.['경매 번호'],
-      storage: detailRow?.['고객사명'],
-      customerDestinationUid: detailRow?.['고객사 목적지 고유 번호'],
-      biddingStatus: detailRow?.['낙찰 상태'],
-    }))
+  console.log('checkedArray', checkedArray)
+
+  // 낙찰 취소 관련
+  const keysToExtract = ['주문 고유 번호']
+
+  const keyMappings = {
+    '주문 고유 번호': 'orderUid',
+  }
+
+  const extractedArray = checkedArray?.reduce((result, item) => {
+    const orderUid = item[keysToExtract[0]]
+
+    // 중복 체크
+    if (!result.includes(orderUid)) {
+      // 중복이 아닌 경우에만 결과 배열에 추가
+      result.push(orderUid)
+    }
+
+    return result
   }, [])
+
+  console.log('extractedArray', extractedArray)
+
+  // Test 후 주석 해제 필
+  const [detailParams, setDetailParams] = useState({
+    // pageNum: 1,
+    // pageSize: 50,
+    // auctionNumber: '',
+    // storage: '',
+    // customerDestinationUid: '',
+    // biddingStatus: '',
+    pageNum: 1,
+    pageSize: 50,
+    auctionNumber: '2024010211',
+    storage: '우성',
+    customerDestinationUid: '165',
+    biddingStatus: '낙찰 취소',
+  })
 
   console.log('detailParams', detailParams)
 
-  const { isLoading, isError, data, isSuccess } = useReactQuery(detailParams, 'getDetailProgress', getWinningDetail)
-  const resData = data?.data?.data?.list
+  // Test 후 주석 해제 필
+  // useEffect(() => {
+  //   window.scrollTo(0, 0)
 
-  console.log('resData', resData)
+  //   setDetailParams((p) => ({
+  //     ...p,
+  //     auctionNumber: detailRow?.['경매 번호'],
+  //     storage: detailRow?.['고객사명'],
+  //     customerDestinationUid: detailRow?.['고객사 목적지 고유 번호'],
+  //     biddingStatus: detailRow?.['낙찰 상태'],
+  //   }))
+  // }, [])
+
+  console.log('detailParams', detailParams)
+
+  const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
+
+  const { isLoading, isError, data, isSuccess } = useReactQuery(detailParams, 'getWinningDetail', getWinningDetail)
+  const resData = data?.data?.data?.list
+  const resPagination = data?.data?.data?.pagination
+
+  console.log('resData !@#', resData)
 
   useEffect(() => {
     let getData = resData
@@ -111,8 +159,50 @@ const WinningDetail = ({ detailRow }) => {
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, AuctionWinningDetailFields))
+      setTablePagination(resPagination)
     }
   }, [isSuccess, resData])
+
+  useEffect(() => {
+    const productNumbers = checkedArray?.map((item) => item['제품 고유 번호'])
+
+    const auctionNumber = checkedArray?.[0]?.['경매 번호']
+
+    setInput((prevInput) => ({
+      ...prevInput,
+      auctionNumber: auctionNumber,
+    }))
+
+    const updatedBiddingList = productNumbers?.map((productUid) => ({
+      productUid,
+    }))
+
+    setInput((prevInput) => ({
+      ...prevInput,
+      biddingList: updatedBiddingList?.map((item) => ({
+        ...item,
+        productUid: item.productUid, // 유지하고 싶은 다른 속성은 그대로 두고
+      })),
+    }))
+
+    // setBiddingList(updatedBiddingList)
+  }, [checkedArray])
+
+  // 목적지 적용 버튼
+  const handleSetCustomerDestinationUid = () => {
+    const updatedWinningList = input.updateList.map((item) => ({
+      ...item,
+      customerDestinationUid: destinationData.uid,
+    }))
+
+    // setBiddingList(updatedBiddingList)
+    setInput((prevInput) => ({
+      ...prevInput,
+      updateList: [...updatedWinningList],
+    }))
+  }
+
+  console.log('input', input)
 
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
@@ -136,6 +226,7 @@ const WinningDetail = ({ detailRow }) => {
     //   [name]: selectedOption.label,
     // }));
   }
+
   const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
@@ -153,6 +244,29 @@ const WinningDetail = ({ detailRow }) => {
     } else {
       setToggleMsg('On')
     }
+  }
+
+  const onPageChange = (value) => {
+    setDetailParams((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
+
+  // 부분 낙찰 취소 POST
+  const deleteMutation = useMutationQuery('', partDeleteBidding)
+
+  // 부분 낙찰 취소 버튼 Handler
+  const deleteOnClickHandler = () => {
+    deleteMutation.mutate(extractedArray)
+  }
+
+  // 부분 입금 확인 POST
+  const depositMuation = useMutationQuery('', partDepositConfirm)
+
+  // 부분 입금 확인 버튼 Handler
+  const partDepostiHandler = () => {
+    depositMuation.mutate(extractedArray)
   }
 
   return (
@@ -252,32 +366,42 @@ const WinningDetail = ({ detailRow }) => {
           </div>
           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
             <p>목적지</p>
-            <CustomInput placeholder="h50" width={60} height={32} />
-            <CustomInput placeholder="목적지명" width={120} height={32} />
-            <CustomInput placeholder="도착지 연락처" width={120} height={32} />
-            <TWhiteBtn style={{ width: '50px' }} height={30}>
+            <CustomInput placeholder="h50" width={60} height={32} defaultValue={destinationData?.code} />
+            <CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destinationData?.name} />
+            {/* <CustomInput placeholder="도착지 연락처" width={120} height={32} /> */}
+            <TWhiteBtn
+              style={{ width: '50px' }}
+              height={30}
+              onClick={() => {
+                setDestinationPopUp(true)
+              }}
+            >
               찾기
             </TWhiteBtn>
-            <TGreyBtn>적용</TGreyBtn>
+            <TGreyBtn onClick={handleSetCustomerDestinationUid}>적용</TGreyBtn>
             <BtnBound style={{ margin: '0px' }} />
             <WhiteBlackBtn>목적지 승인 요청</WhiteBlackBtn>
+
             <BtnBound style={{ margin: '0px' }} />
             <WhiteRedBtn>목적지 변경 반려</WhiteRedBtn>
             <WhiteSkyBtn str>목적지 변경 승인</WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} setChoiceComponent={() => {}} />
+        <Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteSkyBtn>입금 요청서 발행</WhiteSkyBtn>
             <BtnBound style={{ margin: '0px' }} />
-            <WhiteRedBtn>부분 낙찰 취소 </WhiteRedBtn>
-            <SkyBtn>부분 입금 확인</SkyBtn>
+            <WhiteRedBtn onClick={deleteOnClickHandler}>부분 낙찰 취소 </WhiteRedBtn>
+            <SkyBtn onClick={partDepostiHandler}>부분 입금 확인</SkyBtn>
           </div>
         </TCSubContainer>
         {addModal && <DefaultBlueBar setAddModal={setAddModal} />}
       </TableContianer>
+      {destinationPopUp && (
+        <InventoryFind title={'목적지 찾기'} setSwitch={setDestinationPopUp} data={inventoryDestination} />
+      )}
     </FilterContianer>
   )
 }
