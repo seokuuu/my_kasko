@@ -62,7 +62,7 @@ const ProductRange = () => {
   const [modal, setModal] = useAtom(operateAddAtom)
   // 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom)
-  const setNowPopupType = useSetAtom(popupTypeAtom) // 팝업 타입
+  const setNowPopupType = useSetAtom(popupTypeAtom) // 팝업 타입 2(확인 취소 버튼이 있는 모달)
   const setNowPopup = useSetAtom(popupObject) // 팝업 객체
   // 테이블에서 선택된 값
   const selected = useAtomValue(selectedRowsAtom)
@@ -115,9 +115,9 @@ const ProductRange = () => {
     setPopupSwitch(true)
     setNowPopupType(2)
     setNowPopup({
-      num: '2-1',
+      num: '2-1', // 모달 번호
       title: '삭제하시겠습니까?',
-      next: '1-14',
+      next: '1-14', // 다음으로 나타날 모달 번호
       func() {
         if (selected && selected.length !== 0) {
           remove(selected.map((s) => s['고유값']))
@@ -134,6 +134,12 @@ const ProductRange = () => {
     }
   }, [uid])
 
+  // 삭제할 데이터 중 사용중인 제품군이 있다면 예외 모달을 띄워줍니다.
+  useEffect(() => {
+    if (removeData && removeData.data.data.length > 0) {
+      alert('삭제할 수 없습니다.\n해당 항목은 현재 사용 중입니다.')
+    }
+  }, [removeData])
   const { pagination, onPageChanage } = usePaging(data, setSearch)
 
   return (
