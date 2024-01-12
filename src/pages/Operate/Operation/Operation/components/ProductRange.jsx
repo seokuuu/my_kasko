@@ -12,6 +12,7 @@ import { add_element_field } from '../../../../../lib/tableHelpers'
 import { TableContianer } from '../../../../../modal/External/ExternalFilter'
 import AddProduct from '../../../../../modal/Operate/AddProduct'
 import {
+  btnCellUidAtom,
   doubleClickedRowAtom,
   operateAddAtom,
   popupAtom,
@@ -39,15 +40,15 @@ const ProductRange = () => {
   // 셀 클릭시 테이블 상세 데이터 조회
   const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
 
-  // 상세 ID
-  const [detailsId, setDetailsId] = useState(0)
+  // 상세 고유 번호
+  const [uid, setUid] = useAtom(btnCellUidAtom)
 
   // 제품군 관리 목록 API
-  const { data, refetch } = useProductRangeListQuery(search)
+  const { data, refetch, isLoading } = useProductRangeListQuery(search)
 
   // 제품군 상세 API
 
-  const { data: detailsData } = useProductRangeDetailsQuery(detailsId)
+  const { data: detailsData } = useProductRangeDetailsQuery(uid)
 
   // 제품군 등록 API
   const { mutate: register } = useProductRangeRegisterMutation()
@@ -55,8 +56,8 @@ const ProductRange = () => {
   // 제품군 수정 API
   const { mutate: update } = useProductRangeUpdateMutation()
   // 제품군 삭제 API
-  const { mutate: remove } = useProductRangeRemoveMutation()
-
+  const { mutate: remove, data: removeData } = useProductRangeRemoveMutation()
+  console.log('removeData :', removeData)
   // 모달
   const [modal, setModal] = useAtom(operateAddAtom)
   // 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
@@ -105,7 +106,7 @@ const ProductRange = () => {
     update({ uid: detailsData.uid, spart })
     setSpart('')
     setModal(false)
-    setDetailsId(0)
+    setUid('')
   }
 
   // 삭제 핸들러
@@ -128,12 +129,10 @@ const ProductRange = () => {
 
   // 상세 데이터값 조회 및 모달 창 오픈
   useEffect(() => {
-    if (detailRow && detailRow['고유값']) {
-      setDetailsId(detailRow['고유값'])
-      setDetailsRow([])
+    if (Boolean(uid)) {
       setModal(true)
     }
-  }, [detailRow])
+  }, [uid])
 
   const { pagination, onPageChanage } = usePaging(data, setSearch)
 
@@ -145,6 +144,7 @@ const ProductRange = () => {
         totalLength={data ? data.list.length : 0}
         toRegister={() => setModal(true)}
         removeEventHandler={removeEventHandler}
+        setState={setSearch}
       />
       <Table
         getCol={ProductRangeFieldCols}
@@ -152,6 +152,8 @@ const ProductRange = () => {
         setChoiceComponent={() => {}}
         tablePagination={pagination}
         onPageChange={onPageChanage}
+        noRowsMessage="제품군 목록이 비어있습니다."
+        loading={isLoading}
       />
       {modal && (
         <AddProduct
@@ -159,9 +161,9 @@ const ProductRange = () => {
           title={'제품군 추가'}
           contentTitle={'제품군 입력'}
           deliveryHandler={(v) => setSpart(v)}
-          register={detailsId ? productUpdate : productRegister}
+          register={uid ? productUpdate : productRegister}
           // 등록과 수정을 구분하기 위해 => 초기화 해주지 않으면 등록을 눌렀을 때, detailsId 값으로 인해 수정이 되는 경우가 있을 수 있습니다.
-          closeHandler={() => setDetailsId(0)}
+          closeHandler={() => setUid('')}
         />
       )}
     </TableContianer>

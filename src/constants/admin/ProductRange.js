@@ -13,7 +13,7 @@ export const ProductRangeFieldCols = [
     cellRenderer: BtnCellRenderer,
     cellRendererParams: {
       uidFieldName: '고유값',
-      editType: 'dispatch',
+      editType: 'productRange',
     },
   },
   { field: '순번', maxWidth: 100 },

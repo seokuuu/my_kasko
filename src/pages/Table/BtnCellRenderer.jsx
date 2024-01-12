@@ -1,19 +1,21 @@
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { SkyBtn } from '../../common/Button/Button'
 import {
+  StandardConsoliateEdit,
   StandardDispatchEditAtom,
+  UsermanageDestiEditModal,
+  adminPageDestiEditModal,
+  auctionRoundEditPageAtom,
   btnCellRenderAtom,
   btnCellUidAtom,
   consolEditModalAtom,
+  operateAddAtom,
   surEditModalAtom,
-  userpageUserPreferEdit,
+  userPageDestiEditModal,
   usermanageClientEdit,
-  UsermanageDestiEditModal,
-  StandardConsoliateEdit,
-  auctionRoundEditPageAtom,
-  userPageDestiEditModal, adminPageDestiEditModal
+  userpageUserPreferEdit,
 } from '../../store/Layout/Layout'
 
 import { UsermanageUserManageEditModal } from '../../store/Layout/Layout'
@@ -44,6 +46,9 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
   const [userManageEditModal, setUserManageEditModal] = useAtom(UsermanageUserManageEditModal)
 
   const [auctionRoundEditModal, setAuctionRoundEditModal] = useAtom(auctionRoundEditPageAtom)
+
+  // 관리자 > 운영 관리 > 제품군 관리,창고 관리 > 등록,수정 모달 관련 값
+  const setProductRangeEditModal = useSetAtom(operateAddAtom)
 
   const btnClickedHandler = () => {
     switch (editType) {
@@ -97,6 +102,11 @@ const BtnCellRenderer = ({ data, uidFieldName, editType }) => {
       case 'auctionroundedit':
         setUidAtom(uid)
         setAuctionRoundEditModal(true)
+        break
+      // 관리자 > 운영관리 > 제품군 관리 목록 수정
+      case 'productRange':
+        setUidAtom(uid)
+        setProductRangeEditModal(true)
         break
       default:
         break

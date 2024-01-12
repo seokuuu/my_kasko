@@ -7,6 +7,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { styled } from 'styled-components'
 import { BlackBtn, GreyBtn } from '../../common/Button/Button'
+import CustomPagination from '../../components/pagination/CustomPagination'
 import {
   BlueBarBtnWrap,
   BlueBarHeader,
@@ -17,7 +18,6 @@ import {
 } from '../../modal/Common/Common.Styled'
 import { blueModalAtom, doubleClickedRowAtom, pageSort, selectedRowsAtom } from '../../store/Layout/Layout'
 import './TableUi.css'
-import CustomPagination from '../../components/pagination/CustomPagination'
 // import TableStyle from './Table.module.css'
 
 // import { get } from 'lodash'
@@ -61,6 +61,8 @@ const Table = ({
   handleOnRowClicked,
   tablePagination,
   onPageChange,
+  noRowsMessage = '데이터가 존재하지 않습니다.', // 데이터 갯수가 0개일 때, 나타날 메시지입니다.
+  loading = false, // 로딩 여부
 }) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
@@ -336,6 +338,20 @@ const Table = ({
     return {} // Default style for non-clickable rows
   }
 
+  /**
+   * @description
+   * 로딩 중일때와 데이터가 길이가 0일 때를 구분하여 상황에 맞는 UI를 보여줍니다.
+   */
+  useEffect(() => {
+    if (gridRef.current.api) {
+      if (!loading && Array.isArray(getRow) && getRow.length === 0) {
+        gridRef.current.api.showNoRowsOverlay()
+      } else if (loading) {
+        gridRef.current.api.showLoadingOverlay()
+      }
+    }
+  }, [loading, getRow])
+
   return (
     <div style={containerStyle}>
       <TestContainer hei={hei}>
@@ -364,6 +380,8 @@ const Table = ({
             pinnedTopRowData={pinnedTopRowData}
             onRowClicked={onRowClicked}
             getRowStyle={getRowStyle}
+            overlayNoRowsTemplate={noRowsMessage}
+            overlayLoadingTemplate="데이터를 불러오는 중..."
 
             // sideBar={{ toolPanels: ['columns', 'filters'] }}
           />
