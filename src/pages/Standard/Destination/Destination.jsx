@@ -1,8 +1,8 @@
-import {useCallback, useEffect, useRef, useState} from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
-import {BlackBtn, GreyBtn, WhiteRedBtn, WhiteSkyBtn} from '../../../common/Button/Button'
+import { BlackBtn, GreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 
-import {useAtom} from 'jotai'
+import { useAtom } from 'jotai'
 import Hidden from '../../../components/TableInner/Hidden'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
@@ -30,7 +30,7 @@ import {
   popupObject,
   popupTypeAtom,
   selectedRowsAtom,
-  toggleAtom
+  toggleAtom,
 } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 
@@ -41,13 +41,13 @@ import {
   StandardDestinationPost,
 } from '../../../constants/admin/Standard'
 
-import {useMutation, useQueryClient} from '@tanstack/react-query'
-import {isArray} from 'lodash'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { isArray } from 'lodash'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
-import {add_element_field} from '../../../lib/tableHelpers'
+import { add_element_field } from '../../../lib/tableHelpers'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
-import {popupDummy} from '../../../modal/Alert/PopupDummy'
+import { popupDummy } from '../../../modal/Alert/PopupDummy'
 import TableModal from '../../../modal/Table/TableModal'
 import Upload from '../../../modal/Upload/Upload'
 import {
@@ -108,13 +108,15 @@ const Destination = ({}) => {
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
 
-  const Param = {
+  const paramData = {
     pageNum: 1,
     pageSize: 10,
   }
+  const [param, setParam] = useState(paramData)
+  const [pagination, setPagination] = useState([])
 
-  // GET
-  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getAdminDestination', getAdminDestination)
+  // param
+  const { isLoading, isError, data, isSuccess } = useReactQuery(param, 'getAdminDestination', getAdminDestination)
 
   const resData = data?.data?.data?.list
 
@@ -122,14 +124,13 @@ const Destination = ({}) => {
 
   const { data: data2, isSuccess2 } = useReactQuery('', 'getAdminDestinationSearch', getAdminDestinationSearch)
 
-  console.log('data2 => ', data2)
-
   useEffect(() => {
     let getData = resData
     //타입, 리액트쿼리, 데이터 확인 후 실행
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, StandardDestinaionFields))
+      setPagination(data?.data?.data?.pagination)
     }
   }, [isSuccess, resData])
 
@@ -223,13 +224,20 @@ const Destination = ({}) => {
   )
 
   const convertKey = {
-    '목적지 명': 'name'
+    '목적지 명': 'name',
   }
 
   console.log('editInput @@', editInput)
   console.log('uidAtom @@', uidAtom)
 
   console.log('resData', resData)
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
 
   return (
     <FilterContianer>
@@ -311,7 +319,7 @@ const Destination = ({}) => {
             </WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
+        <Table getCol={getCol} getRow={getRow} tablePagination={pagination} onPageChange={onPageChange} />
         {btnCellModal && (
           // Edit
           <TableModal

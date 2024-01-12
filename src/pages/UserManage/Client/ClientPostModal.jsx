@@ -567,7 +567,7 @@ const ClientPostModal = ({ setEditModal }) => {
                           <FlexContent>
                             <MainSelect
                                 options={storageList}
-                                defaultValue={''}
+                                defaultValue={'구'}
                                 name="storage"
                                 onChange={(e) => {
                                   setSelected((p) => ({ ...p, storage: e.label, storageUid: e.value }))
@@ -579,7 +579,7 @@ const ClientPostModal = ({ setEditModal }) => {
                 }
                 {
                   radioSelections['사용자구분'] && radioSelections['사용자구분'][3] && (
-                        <FlexPart>
+                        <FlexPart style={{ alignItems: 'start' }}>
                           <FlexTitle style={{ minWidth: '170px' }}>권한 설정</FlexTitle>
                           <FlexContent2>
                             {checkDummy2.map((x, index) => (

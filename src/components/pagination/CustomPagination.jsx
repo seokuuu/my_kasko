@@ -61,6 +61,7 @@ const CustomPagination = ({ pagination, onPageChange }) => {
             </svg>
           </button>
         )}
+
         {/* Todo : 이후 조건 수정 필요 (원본은 조건 없는 상태)  */}
         {pageNumbers.length === 0
           ? 1
@@ -69,7 +70,6 @@ const CustomPagination = ({ pagination, onPageChange }) => {
                 {page}
               </PageNum>
             ))}
-
         {/* > 화살표 */}
         {currentPage < maxPage && (
           <button style={{ backgroundColor: 'transparent' }} onClick={() => onPageChange(currentPage + 1)}>

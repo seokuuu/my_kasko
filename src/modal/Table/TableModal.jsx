@@ -72,7 +72,7 @@ const TableModal = ({
       firstPopupClick('2-4')
     }
   }
-
+  console.log('MODALINTABLE', Object?.keys(modalInTable))
   // 한글 key object의 uid에 해당하는 '목적지 고유 번호' 를 return
   const matchingRow = getRow && getRow?.find((row) => row[editTitle] === uidAtom)
 
@@ -84,6 +84,7 @@ const TableModal = ({
   console.log('matchingRow ###', matchingRow)
 
   const filteredRow = Object?.keys(modalInTable)?.reduce((acc, key) => {
+    console.log('ACC', matchingRow['입고일'])
     if (matchingRow && matchingRow[key]) {
       acc[key] = matchingRow[key]
     }

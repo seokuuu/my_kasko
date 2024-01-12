@@ -11,7 +11,7 @@ import {
   TCSubContainer,
   TableContianer,
 } from '../../../modal/External/ExternalFilter'
-import { ShippingDispatchFields, ShippingDispatchFieldsCols } from '../../../constants/admin/Shipping'
+import { DispatchFields, DispatchFieldsCols } from '../../../constants/admin/Shipping'
 import DispatchPost from '../../../modal/Multi/DispatchPost'
 import { StandardDispatchPostAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
@@ -24,7 +24,7 @@ import { InputSearch, StorageSelect } from '../../../components/Search'
 
 const paramData = {
   pageNum: 1,
-  pageSize: 50,
+  pageSize: 3,
   driverName: '',
   carNumber: '',
   carType: '',
@@ -36,7 +36,7 @@ const Dispatch = ({}) => {
   const [isModalPost, setIsModalPost] = useAtom(StandardDispatchPostAtom)
   const [isModalEdit, setIsModalEdit] = useAtom(StandardDispatchEditAtom)
   const [getRow, setGetRow] = useState('')
-  const tableField = useRef(ShippingDispatchFieldsCols)
+  const tableField = useRef(DispatchFieldsCols)
   const getCol = tableField.current
   const checkedArray = useAtom(selectedRowsAtom)[0]
 
@@ -74,7 +74,7 @@ const Dispatch = ({}) => {
     }
 
     if (Array.isArray(getData)) {
-      setGetRow(add_element_field(getData, ShippingDispatchFields))
+      setGetRow(add_element_field(getData, DispatchFields))
     }
   }, [isSuccess, data])
 
@@ -144,12 +144,7 @@ const Dispatch = ({}) => {
             <WhiteSkyBtn onClick={() => setIsModalPost(true)}>추가 등록</WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Table
-          getCol={getCol}
-          getRow={getRow}
-          tablePagination={data?.pagination}
-          onPageChange={onPageChange}
-        />
+        <Table getCol={getCol} getRow={getRow} tablePagination={data?.pagination} onPageChange={onPageChange} />
       </TableContianer>
       {isModalPost && <DispatchPost setIsModalPost={setIsModalPost} id={null} />}
       {isModalEdit && <DispatchPost setIsModalPost={setIsModalEdit} id={uidAtom} />}

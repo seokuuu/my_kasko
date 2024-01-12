@@ -17,6 +17,7 @@ import Table from '../../../Table/Table'
 import CommonHeader from '../../UI/CommonHeader'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { exposureTabOptions, noticeBoardListSearchInitValue, noticeBoardSearchCategoryOptions } from '../../constants'
+import usePaging from '../../hook/usePaging'
 
 /**
  * @description
@@ -109,6 +110,8 @@ const NoticeBoard = ({}) => {
       setDetailsRow([])
     }
   }, [detailRow])
+
+  const { pagination, onPageChanage } = usePaging(data, setSearch)
   return (
     <FilterContianer>
       {/* 헤더(카테고리탭 & 검색) */}
@@ -133,7 +136,13 @@ const NoticeBoard = ({}) => {
           selectedLength={selectedLength}
         />
         {/* 테이블 */}
-        <Table getCol={NoticeBoardListFieldCols} getRow={rows} setChoiceComponent={() => {}} />
+        <Table
+          getCol={NoticeBoardListFieldCols}
+          getRow={rows}
+          setChoiceComponent={() => {}}
+          tablePagination={pagination}
+          onPageChange={onPageChanage}
+        />
       </TableContianer>
     </FilterContianer>
   )

@@ -18,7 +18,12 @@ import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../comm
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 
-import { get_addressFind, patch_clientDestination, post_clientDestination } from '../../../api/userManage'
+import {
+  get_addressFind,
+  get_detailClientDestination,
+  patch_clientDestination,
+  post_clientDestination
+} from '../../../api/userManage'
 import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
 import { isEmptyObj } from '../../../lib'
 import useMutationQuery from '../../../hooks/useMutationQuery'
@@ -27,6 +32,7 @@ import { UsermanageFindModal, doubleClickedRowAtom, selectedRowsAtom } from '../
 import { useAtom } from 'jotai'
 import ClientDestiCustomerFind from './ClientDestiCustomerFind'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
+import useReactQuery from "../../../hooks/useReactQuery";
 
 const init = {
   uid: '',
@@ -59,23 +65,28 @@ const sidoMapping = {
   경북: '경상북도',
   경남: '경상남도',
 }
-const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
+const DestinationEdit = ({ uidAtom, setEditModal }) => {
+  const { data, isSuccess } = useReactQuery(uidAtom, 'detailclientDestination', get_detailClientDestination)
+  const matchingData = data?.data?.data
+
   const [postcodeModal, setPostcodeModal] = useState(false)
-  console.log('postcodeModal', postcodeModal)
   const [postFind, setPostFind] = useState(false)
-  const [address, setAddress] = useState(matchingData?.address)
+  const [address, setAddress] = useState()
+  const [detailAddress, setDetailAddress] = useState()
   const [postAddress, setPostAdress] = useState('')
-  const [detailAddress, setDetailAddress] = useState(matchingData?.addressDetail)
   const [isDaumPostOpen, setIsDaumPostOpen] = useState(false)
   const [findModal, setFindModal] = useAtom(UsermanageFindModal)
   const [customerFindResult, setCustomerFindResult] = useState()
+  const [customerNameInput, setCustomerNameInput] = useState({})
 
-  const [customerNameInput, setCustomerNameInput] = useState({
-    customerName: matchingData ? matchingData.customerName : '', // matchingData가 존재하면 해당 값을, 없으면 빈 문자열로 초기화
-    customerCode: matchingData ? matchingData.customerCode : '',
-  })
-
-  console.log('customerNameInput', customerNameInput)
+  useEffect(() => {
+    setAddress(matchingData?.address)
+    setDetailAddress(matchingData?.addressDetail)
+    setCustomerNameInput({
+      customerName: matchingData?.customerName,
+      customerCode: matchingData?.customerCode
+    })
+  }, [uidAtom, matchingData])
 
   const postCheck = () => {
     setPostFind(false)
@@ -136,7 +147,6 @@ const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
   }
 
   const daumPostHandleComplete = (data) => {
-    console.log('daum post data', data)
     const { address } = data
 
     // 지번 주소 전달
@@ -167,11 +177,6 @@ const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
     setSubmitData({ ...submitData, ...matchingData, ...customerNameInput })
   }, [matchingData, customerNameInput])
 
-  console.log('submitData', submitData)
-
-  console.log('submitData', submitData)
-  console.log('submitData?.customername', submitData?.customerName)
-  console.log('customerNameInput', customerNameInput)
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
     if (checkedIndex === 0) {
@@ -188,8 +193,6 @@ const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
 
   useEffect(() => {
     const checkedIndex = matchingData?.represent === 0 ? 1 : 0
-    console.log('checkedIndex', checkedIndex)
-
     //  represent: '', // (0: 미지정 / 1: 지정)
     //  const radioDummy = ['지정', '미지정']
     //  checkedIndex는 represent가 1로 들어오면 0이고, represent가 0으로 들어오면 1로 된다 (지정 / 미지정 렌더라 순서가 바뀌게)
@@ -200,8 +203,6 @@ const DestinationEdit = ({ uidAtom, matchingData, setEditModal }) => {
     // index가 1이고 checkIndex가 1이면 미지정에 체크
 
     const newCheckRadio = Array.from({ length: radioDummy.length }, (_, index) => index === checkedIndex)
-
-    console.log('newCheckRadio', newCheckRadio)
 
     setCheckRadio(newCheckRadio)
     setSubmitData({
