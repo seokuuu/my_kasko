@@ -12,31 +12,13 @@ const onCellClicked = (params) => {
   console.log('클릭 발생')
 }
 
-const LinkRenderer = (props) => {
-  const { data } = props
-  console.log('데이터확인', data)
-  const queryParams = new URLSearchParams({
-    auctionNumber: data.auctionNumber,
-    customerCode: data.customerCode,
-    storage: data.storageName,
-    customerDestinationUid: data.customerDestinationUid,
-    sendDate: data.sendDate,
-
-    saleType: data.saleType,
-    weight: data.weight,
-    customerDestinationAddress: data.customerDestinationAddress,
-    customerDestinationName: data.customerDestinationName,
-    customerName: data.customerName,
-    customerDestinationPhone: data.customerDestinationPhone,
-    totalPrice: data.totalPrice,
-  })
-
-  const url = `admin/order/detail?${queryParams}`
-
-  return (
-    <a href={url} target="_blank" style={{ color: 'blue', textDecoration: 'underline' }} rel="noreferrer">
-      {props.value || 'N'}
+const LinkRenderer = ({ value }) => {
+  return value ? (
+    <a href={`detail/${value}`} target="_blank" style={{ color: 'blue', textDecoration: 'underline' }} rel="noreferrer">
+      {value}
     </a>
+  ) : (
+    'N'
   )
 }
 
@@ -44,7 +26,7 @@ const LinkRenderer = (props) => {
     주문 관리 - 주문 관리 (Order)
 ============================== */
 
-export const OrderManageFieldsCols = [
+export const AdminOrderManageFieldsCols = [
   {
     field: '',
     width: 50,
@@ -54,7 +36,6 @@ export const OrderManageFieldsCols = [
     headerCheckboxSelection: headerCheckboxSelection,
   },
   {
-    headerName: '순번',
     field: '순번',
     width: 100,
     headerClass: 'custom-header-style',
@@ -63,20 +44,20 @@ export const OrderManageFieldsCols = [
     cellRenderer: (params) => params.value || 'N',
   },
   {
-    headerName: '중량',
-    field: 'weight',
-    headerClass: 'custom-header-style',
-    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-    width: 110,
-    cellRenderer: (params) => params.value || 'N',
-  },
-  {
-    headerName: '경매 / 상시 판매 번호',
+    headerName: '경매 번호',
     field: 'auctionNumber',
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-    width: 150,
-    cellRenderer: LinkRenderer,
+    width: 120,
+    cellRenderer: (params) => params.value || 'N',
+  },
+  {
+    headerName: '상시 판매 번호',
+    field: 'orderDate',
+    headerClass: 'custom-header-style',
+    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+    width: 120,
+    cellRenderer: (params) => params.value || 'N',
   },
   {
     headerName: '주문 일자',
@@ -91,7 +72,7 @@ export const OrderManageFieldsCols = [
     field: 'packageName',
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-    width: 90,
+    width: 100,
     cellRenderer: (params) => params.value || 'N',
   },
   {
@@ -112,7 +93,7 @@ export const OrderManageFieldsCols = [
   },
   {
     headerName: '확정전송 일자',
-    field: 'sendDate',
+    field: 'title',
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 107,
@@ -143,7 +124,7 @@ export const OrderManageFieldsCols = [
     cellRenderer: (params) => params.value || 'N',
   },
   {
-    headerName: '창고',
+    headerName: '제품 번호',
     field: 'storageName',
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
@@ -151,32 +132,16 @@ export const OrderManageFieldsCols = [
     cellRenderer: (params) => params.value || 'N',
   },
   {
-    headerName: '판매 구분',
-    field: 'title',
-    headerClass: 'custom-header-style',
-    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-    width: 100,
-    cellRenderer: (params) => params.value || 'N',
-  },
-  {
-    headerName: '판매 유형',
+    headerName: 'ProNo.',
     field: 'saleType',
     headerClass: 'custom-header-style',
-    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-    width: 100,
-    cellRenderer: (params) => params.value || 'N',
-  },
-  {
-    headerName: '판매가 유형',
-    field: 'salePriceType',
-    headerClass: 'custom-header-style',
     cellStyle: { textAlign: 'center' },
-    width: 100,
-    cellRenderer: (params) => params.value || 'N',
+    width: 150,
+    cellRenderer: LinkRenderer,
   },
 ]
 
-export const OrderFieldsManage = {
+export const DetailOrderFieldsManage = {
   '고객 코드': 'customerCode',
   고객사명: 'customerName',
   '창고 이름': 'storageName',
@@ -191,6 +156,5 @@ export const OrderFieldsManage = {
   패키지명: 'packageName',
   '패키지 번호': 'packageNumber',
   '확정 전송가': 'confirmPrice',
-  '확정전송 일자': 'sendDate',
   입금요청액: 'totalPrice',
 }

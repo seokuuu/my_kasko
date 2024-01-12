@@ -30,6 +30,7 @@ import WinningCreatePage from './pages/Auction/Winning/WinningCreatePage'
 import WinningPage from './pages/Auction/Winning/WinningPage'
 
 import OrderPage from './pages/Order/OrderPage'
+import AdminOrderDetailPage from './pages/Order/AdminOrderDetailPage'
 
 // 출고 관리
 import AchievementPage from './pages/Shipping/Achievement/AchievementPage'
@@ -166,6 +167,7 @@ import NoticePost from './pages/Operate/Common/Notice/NoticePost'
 import NoticeBoardPost from './pages/Operate/Exposure/NoticeBoard/NoticeBoardPost'
 import TestExcel from './pages/Test/TestExcel'
 import UserPost from './pages/UserManage/UserManage/UserPost'
+import OrderDetail from './userpages/UserSales/Order/OrderDetail'
 
 // RoundAucProAdd
 const Router = () => {
@@ -227,6 +229,7 @@ const Router = () => {
         </Route>
         {/* 주문 관리 */}
         <Route path="/order" element={<OrderPage />}></Route>
+        <Route path="/admin/order/detail" element={<AdminOrderDetailPage />}></Route>
         {/* 출고 관리 */}
         <Route path="/shipping">
           <Route path="/shipping/register" element={<RegisterPage />} />
