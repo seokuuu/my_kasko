@@ -55,11 +55,13 @@ const CustomPagination = ({ pagination, onPageChange }) => {
             </svg>
           </button>
         )}
-        {pageNumbers.map((page, index) => (
-          <PageNum key={index} isPage={page === currentPage} onClick={() => onPageChange(page)}>
-            {page}
-          </PageNum>
-        ))}
+        {pageNumbers.length === 0
+          ? 1
+          : pageNumbers.map((page, index) => (
+              <PageNum key={index} isPage={page === currentPage} onClick={() => onPageChange(page)}>
+                {page}
+              </PageNum>
+            ))}
         {currentPage < maxPage && (
           <button style={{ backgroundColor: 'transparent' }} onClick={() => onPageChange(currentPage + 1)}>
             <svg width="15" height="15" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">

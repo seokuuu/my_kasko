@@ -94,15 +94,17 @@ const Transport = ({}) => {
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
 
-  const Param = {
+  const paramData = {
     pageNum: 1,
-    pageSize: 20,
+    pageSize: 50,
     type: types, // (0: 매입 / 1: 매출)
   }
 
   // GET
-  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getAdminSurcharge', getAdminSurcharge)
+  const [param, setParam] = useState(paramData)
+  const { isLoading, isError, data, isSuccess } = useReactQuery(param, 'getAdminSurcharge', getAdminSurcharge)
   const resData = data?.data?.data?.list
+  const [tablePagination, setTablePagination] = useState([])
   console.log('resData => ', resData)
 
   useEffect(() => {
@@ -111,6 +113,7 @@ const Transport = ({}) => {
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, StandardSurchargeFields))
+      setTablePagination(data.data.data.pagination)
     }
   }, [isSuccess, resData])
 
@@ -211,6 +214,21 @@ const Transport = ({}) => {
     적용단가: 'effectCost',
   }
 
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
+
   return (
     <FilterContianer>
       <div>
@@ -243,12 +261,12 @@ const Transport = ({}) => {
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown handleDropdown={handleTablePageSize} />
             <Excel />
           </div>
         </TCSubContainer>
 
-        <Table getCol={getCol} getRow={getRow} />
+        <Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
