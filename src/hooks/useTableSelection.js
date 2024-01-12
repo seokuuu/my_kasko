@@ -3,19 +3,19 @@ import { useMemo } from "react";
 import { selectedRowsAtom } from "../store/Layout/Layout";
 
 /**
- * 테이블 셀렉트 hook
+ * 테이블 셀렉트 HOOK
  * @description 
  * - 전역에서 사용할 수 있는 테이블 셀렉트 함수입니다.
  * - 선택항목 목록, 선택항목 갯수, 선택항목 중량을 확인하기 위하여 사용합니다.
  * 
  * @param {string} param.weightKey 선택항목에서 중량값과 매칭되는 키
  * 
- * @return {Array<any>} selectedRows: 선택한 데이터
- * @return {number} selectedCount: 총 선택항목 갯수
- * @return {string} selectedCountStr: 총 선택항목 갯수 localString
- * @retutn {number} selectedWeight: 총 중량 
- * @retutn {string} selectedWeightStr: 총 선택항목 갯수 localString 
- * @return {boolean} hasSelected: 선택항목이 1개 이상인지 여부
+ * @returns {Array<any>} selectedRows: 선택한 데이터
+ * @returns {number} selectedCount: 총 선택항목 갯수
+ * @returns {string} selectedCountStr: 총 선택항목 갯수 localString
+ * @retutns {number} selectedWeight: 총 중량 
+ * @retutns {string} selectedWeightStr: 총 선택항목 갯수 localString 
+ * @returns {boolean} hasSelected: 선택항목이 1개 이상인지 여부
  * */
 export default function useTableSelection(param={}) {
   const { weightKey } = param;

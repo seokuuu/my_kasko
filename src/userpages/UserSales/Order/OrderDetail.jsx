@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import { styled } from 'styled-components'
 import { useUserOrderDetailsQuery } from '../../../api/user'
 import { BtnBound, TGreyBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
@@ -8,7 +8,9 @@ import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import CustomPagination from '../../../components/pagination/CustomPagination'
 import { userOrderDetailsField, userOrderDetailsFieldsCols } from '../../../constants/user/order'
-import { add_element_field } from '../../../lib/tableHelpers'
+import useTableData from '../../../hooks/useTableData'
+import useTableSearchParams from '../../../hooks/useTableSearchParams'
+import useTableSelection from '../../../hooks/useTableSelection'
 import {
   CustomInput,
   FilterContianer,
@@ -18,7 +20,14 @@ import {
   TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
-import useTableSelection from '../../../hooks/useTableSelection'
+
+/**
+ * @constant 기본 검색 값
+ */
+const initialSearchParams = {
+  pageNum: 1, 
+  pageSize: 50 
+}
 
 /**
  * @constant 주문정보 테이블 칼럼
@@ -55,57 +64,23 @@ const getInfoRows = (data, salesNumber) => {
  */
 const OrderDetail = ({ salesNumber }) => {
   // API 파라미터
-  const [searchParam, setSearchParam] = useState({ auctionNumber: salesNumber, pageNum: 1, pageSize: 50 }); // 테이블 조회 파라미터
+  const { searchParams, handleParamsChange, handlePageSizeChange } = useTableSearchParams({...initialSearchParams, auctionNumber: salesNumber});
   // API
-  const { data: orderData, isLoading, isError, isSuccess } = useUserOrderDetailsQuery(searchParam);
+  const { data: orderData, isSuccess, isLoading, isError } = useUserOrderDetailsQuery(searchParams);
+  // 테이블 데이터, 페이지 데이터, 총 중량
+  const { tableRowData, paginationData, totalWeight } = useTableData({ tableField: userOrderDetailsField, serverData: orderData });
   // 인포테이블 데이터
   const infoData = useMemo(() => getInfoRows(orderData?.list || [], salesNumber), [orderData, salesNumber]);
-  // 테이블 데이터
-  const tableDisplayData = useMemo(() => {
-    if(!orderData || !orderData.list) {
-      return [];
-    }
-    const rowData = orderData.list;
-    const displayData = add_element_field(rowData.map((v, idx) => ({...v, index: idx + 1})), userOrderDetailsField);
-    return displayData;
-  }, [orderData]); // 테이블 노출 데이터
-  // 페이지 데이터
-  const paginationData = useMemo(() => {
-    let initialData = { pageNum: 1, startPage: 1, endPage: 1, maxPage: 1, listCount: 0 };
-    if(orderData && orderData.pagination) {
-      initialData = orderData.pagination;
-      initialData.endPage = Math.max(orderData.pagination.endPage, 1);
-    }
-    return initialData;
-  }, [orderData]);
   // 선택항목 데이터
-  const { selectedData, selectedWeight, selectedWeightStr, selectedCount, selectedCountStr, hasSelected } = useTableSelection();
+  const { selectedData, selectedWeight, selectedWeightStr, selectedCount, selectedCountStr, hasSelected } = useTableSelection({weightKey: '중량'});
 
+  if(isError) {
+    return <div>주문을 확인할 수 없습니다.</div>
+  }
 
-  /**
-   * 필터 핸들러
-   * @param {object} param 파라미터 객체
-   */
-    function handleSearchParamChange(newParam) {
-      setSearchParam(prevParam => ({
-        ...prevParam,
-        ...newParam,
-        ...(!newParam['page']&& { page: 1 })
-      }));
-    }
-  
-    /**
-     * 조회갯수 변경 핸들러
-     * @param {number} searchSize 1페이지당 조회 갯수 
-     */
-    function handleSearchSizeChange(e) {
-      const newSize = e.target.value;
-  
-      if(newSize !== searchParam.pageSize && !isNaN(newSize)) {
-        handleSearchParamChange({ pageSize: newSize });
-      }
-    }
-
+  if(!isSuccess) {
+    return <></>
+  }
 
   return (
     <FilterContianer>
@@ -134,7 +109,6 @@ const OrderDetail = ({ salesNumber }) => {
           </ClaimTable>
         </TableWrap>
       </div>
-
       <TableContianer>
         {/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
         <TCSubContainer bor>
@@ -143,8 +117,8 @@ const OrderDetail = ({ salesNumber }) => {
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown handleDropdown={handleSearchSizeChange}/>
-            <Excel getRow={tableDisplayData} />
+            <PageDropdown handleDropdown={handlePageSizeChange}/>
+            <Excel getRow={tableRowData} />
           </div>
         </TCSubContainer>
         <TCSubContainer>
@@ -163,9 +137,9 @@ const OrderDetail = ({ salesNumber }) => {
           </div>
         </TCSubContainer>
         {/* 테이블 */}
-        <Table getRow={tableDisplayData} getCol={userOrderDetailsFieldsCols} />
+        <Table getRow={tableRowData} getCol={userOrderDetailsFieldsCols} />
         {/* 페이지네이션 */}
-        <CustomPagination pagination={paginationData} onPageChange={p => { handleSearchParamChange({page: p}) }} />
+        <CustomPagination pagination={paginationData} onPageChange={p => { handleParamsChange({page: p}) }} />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>

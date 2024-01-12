@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useUserCartListQuery, useUserOrderMutaion } from '../../../api/user'
 import {
   SkyBtn
@@ -9,8 +9,9 @@ import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import CustomPagination from '../../../components/pagination/CustomPagination'
 import { userCartListPackageField, userCartListPackageFieldCols, userCartListSingleField, userCartListSingleFieldsCols } from '../../../constants/user/cart'
+import useTableData from '../../../hooks/useTableData'
+import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'
-import { add_element_field } from '../../../lib/tableHelpers'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
 import {
   FilterContianer,
@@ -36,6 +37,15 @@ const CATEGORY = {
 };
 
 /**
+ * @constant 기본 검색 값
+ */
+const initialSearchParams = {
+  category: CATEGORY.single, 
+  pageNum: 1, 
+  pageSize: 50 
+}
+
+/**
  * 사용자 장바구니 페이지
  * @description
  * [1] 장바구니 목록을 조회합니다.
@@ -43,64 +53,23 @@ const CATEGORY = {
  */
 const Cart = ({}) => {
   // API 파라미터
-  const [searchParam, setSearchParam] = useState({ category: CATEGORY.single, pageNum: 1, pageSize: 50 }); // 테이블 조회 파라미터
+  const { searchParams, handleParamsChange, handlePageSizeChange } = useTableSearchParams(initialSearchParams);
   // API
-  const { data: cartData, isLoading, isError } = useUserCartListQuery(searchParam); // 카트 목록 조회 쿼리
+  const { data: cartData, isLoading, isError } = useUserCartListQuery(searchParams); // 카트 목록 조회 쿼리
   const { mutate: requestOrder, loading: isOrderLoading } = useUserOrderMutaion(); // 주문하기 뮤테이션
   // 카테고리
-  const isSingleCategory = useMemo(() => searchParam.category === CATEGORY.single, [searchParam]);
-  // 페이지 데이터
-  const paginationData = useMemo(() => {
-    let initialData = { pageNum: 1, startPage: 1, endPage: 1, maxPage: 1, listCount: 0 };
-    if(cartData && cartData.pagination) {
-      initialData = cartData.pagination;
-      initialData.endPage = Math.max(cartData.pagination.endPage, 1);
-    }
-    return initialData;
-  }, [cartData]);
-  // 테이블 데이터
-  const tableDisplayData = useMemo(() => {
-    if(!cartData || !cartData.list) {
-      return [];
-    }
-    const rowData = cartData.list;
-    const displayData = add_element_field(rowData.map((v, idx) => ({...v, index: idx + 1})),isSingleCategory? userCartListSingleField : userCartListPackageField);
-    return displayData;
-  }, [cartData, isSingleCategory]); // 테이블 노출 데이터
-  // 선택 항목
-  // 갯수
-  const totalCount = useMemo(() => (cartData && cartData.pagination)? cartData.pagination.listCount || 0 : 0 , [cartData]);
-  // 중량
-  const totalWeight = useMemo(() => (cartData && cartData.pagination)? cartData.pagination.totalWeight || 0 : 0 , [cartData]); // 총 중량
+  const isSingleCategory = useMemo(() => searchParams.category === CATEGORY.single, [searchParams]);
+  // 테이블 데이터, 페이지 데이터, 총 중량
+  const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({ 
+    tableField: isSingleCategory? userCartListSingleField : userCartListPackageField, 
+    serverData: cartData 
+  });
   // 선택 항목
   const { selectedData, selectedWeight, selectedWeightStr, selectedCountStr, selectedCount } = useTableSelection({ weightKey: isSingleCategory? '중량' : '패키지 상품 총 중량' });
   // POPUP
   const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom) // 팝업 스위치
   const [_, setNowPopup] = useAtom(popupObject);
 
-  /**
-   * 필터 핸들러
-   * @param {object} param 파라미터 객체
-   */
-  function handleSearchParamChange(newParam) {
-    setSearchParam(prevParam => ({
-      ...prevParam,
-      ...newParam,
-      ...(!newParam['page']&& { page: 1 })
-    }));
-  }
-
-  /**
-   * 조회갯수 변경 핸들러
-   * @param {number} searchSize 1페이지당 조회 갯수 
-   */
-  function handleSearchSizeChange(e) {
-    const newSize = e.target.value;
-
-    if(newSize !== searchParam.pageSize && !isNaN(newSize)) {
-      handleSearchParamChange({ pageSize: newSize });
-    }
-  }
 
   /**
    * 선택 항목 주문 핸들러
@@ -128,7 +97,7 @@ const Cart = ({}) => {
     }
 
     requestOrder({
-      type: searchParam.category === CATEGORY.single? 'normal' : 'package',
+      type: searchParams.category === CATEGORY.single? 'normal' : 'package',
       orderList: selectedData.map(v => ( 
         isSingleCategory
         ?{
@@ -164,9 +133,9 @@ const Cart = ({}) => {
               {
                 [{ text: '단일', value: CATEGORY.single }, { text: '패키지', value: CATEGORY.package }]
                 .map(v => (
-                  <a role="button" style={{cursor: 'pointer'}} onClick={() => { handleSearchParamChange({ category: v.value }) }}>
+                  <a role="button" style={{cursor: 'pointer'}} onClick={() => { handleParamsChange({ category: v.value }) }}>
                     {
-                      v.value === searchParam.category? <h5>{v.text}</h5> : <h6>{v.text}</h6>
+                      v.value === searchParams.category? <h5>{v.text}</h5> : <h6>{v.text}</h6>
                     }
                   </a>
                 ))
@@ -183,8 +152,8 @@ const Cart = ({}) => {
             <Hidden />
           </div>
           <div>
-            <PageDropdown handleDropdown={handleSearchSizeChange} />
-            <Excel getRow={tableDisplayData}/>
+            <PageDropdown handleDropdown={handlePageSizeChange} />
+            <Excel getRow={tableRowData}/>
           </div>
         </TCSubContainer>
         {/* 선택항목 중량 */}
@@ -192,9 +161,9 @@ const Cart = ({}) => {
             선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeight.toLocaleString()} (kg)
         </TCSubContainer>
         {/* 테이블 */}
-        <Table getCol={ isSingleCategory ? userCartListSingleFieldsCols : userCartListPackageFieldCols} getRow={tableDisplayData} />
+        <Table getCol={ isSingleCategory ? userCartListSingleFieldsCols : userCartListPackageFieldCols} getRow={tableRowData} />
         {/* 페이지네이션 */}
-        <CustomPagination pagination={paginationData} onPageChange={p => { handleSearchParamChange({page: p}) }} />
+        <CustomPagination pagination={paginationData} onPageChange={p => { handleParamsChange({page: p}) }} />
         {/* 테이블 액션 */}
         <TCSubContainer style={{width: '100%', justifyContent: 'flex-end'}}>
             <SkyBtn disabled={isOrderLoading} onClick={handleSelectOrder}>선택 제품 주문</SkyBtn>
