@@ -63,11 +63,9 @@ const SellOrder = ({ setChoiceComponent }) => {
   const [saleProductListData, setSaleProductListData] = useState(null)
   const [saleProductPagination, setSaleProductPagination] = useState([])
   useEffect(() => {
-    console.log('getSaleProductListRes---', getSaleProductListRes)
     if (getSaleProductListRes && getSaleProductListRes.data && getSaleProductListRes.data.data) {
       setSaleProductListData(formatTableRowData(getSaleProductListRes.data.data.list))
       setSaleProductPagination(getSaleProductListRes.data.data.pagination)
-      console.log('getSaleProductListRes.data.data.pagination---', getSaleProductListRes.data.data.pagination)
     }
   }, [isSuccess, getSaleProductListRes])
 
