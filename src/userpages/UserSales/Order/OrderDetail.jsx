@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { useUserOrderDetailsQuery } from '../../../api/user'
 import { BtnBound, TGreyBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
@@ -66,20 +66,57 @@ const OrderDetail = ({ salesNumber }) => {
   // API 파라미터
   const { searchParams, handleParamsChange, handlePageSizeChange } = useTableSearchParams({...initialSearchParams, auctionNumber: salesNumber});
   // API
-  const { data: orderData, isSuccess, isLoading, isError } = useUserOrderDetailsQuery(searchParams);
+  const { data: orderData, isError } = useUserOrderDetailsQuery(searchParams);
   // 테이블 데이터, 페이지 데이터, 총 중량
-  const { tableRowData, paginationData, totalWeight } = useTableData({ tableField: userOrderDetailsField, serverData: orderData });
+  const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({ tableField: userOrderDetailsField, serverData: orderData });
   // 인포테이블 데이터
   const infoData = useMemo(() => getInfoRows(orderData?.list || [], salesNumber), [orderData, salesNumber]);
   // 선택항목 데이터
-  const { selectedData, selectedWeight, selectedWeightStr, selectedCount, selectedCountStr, hasSelected } = useTableSelection({weightKey: '중량'});
+  const { selectedData, selectedWeightStr, selectedCountStr, hasSelected } = useTableSelection({weightKey: '중량'});
+  // 목적지 데이터
+  const [destination, setDestination] = useState(null); // { code: '', name: '', tel: '' }
+  // 목적지 변경 데이터
+  const [destinationModifyItems, setDestinationModifyItems] = useState([]);
 
-  if(isError) {
-    return <div>주문을 확인할 수 없습니다.</div>
+  /**
+   * 목적지 적용 핸들러 
+   */
+  function handleDestinationApply() {
+    if(!destination) {
+      return alert('목적지를 검색해 주세요.');
+    }
+    if(!hasSelected) {
+      return alert('목적지를 적용할 상품을 선택해 주세요.');
+    }
+
+    //
+    setDestinationModifyItems(selectedData.map(v => ({ ...v, destination: destination })));
+    // 테이블 상에서 목적지 바뀌도록 수정
+  }
+  
+  /**
+   * 목적지 승인 요청 핸들러
+  */
+ function handleDestinationApprovalRequest() {
+   if(!destinationModifyItems.length < 1) {
+     return alert('목적지를 적용할 상품을 선택해 주세요.');
+    }
+    
+    // 승인 요청
+    setDestinationModifyItems([]);
+    setDestination(null);
   }
 
-  if(!isSuccess) {
-    return <></>
+  /**
+   * 입금 요청서 발행 함수
+   */
+  function handleReceiptPrint() {
+    // 입금 요청서 발행 함수
+  }
+
+  // ERROR SECTION
+  if(isError) {
+    return <div>ERROR</div>
   }
 
   return (
@@ -113,7 +150,7 @@ const OrderDetail = ({ salesNumber }) => {
         {/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
+            조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -123,7 +160,7 @@ const OrderDetail = ({ salesNumber }) => {
         </TCSubContainer>
         <TCSubContainer>
           <div>
-            선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {0} (kg)
+            선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <P>목적지</P>

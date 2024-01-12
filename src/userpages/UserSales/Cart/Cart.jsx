@@ -86,7 +86,7 @@ const Cart = ({}) => {
       return;
     }
     
-    // 25톤 주석
+    // 25톤 이상 주문건만 주문 가능
     if(selectedWeight < MIN_ORDER_WEIGHT) {
       setPopupSwitch(true);
       setNowPopup({
@@ -116,12 +116,6 @@ const Cart = ({}) => {
     return <div>ERROR</div>
   }
 
-  // LOADING SECTION
-  if(isLoading) {
-    return <div>Loading</div>
-  }
-
-  // DATA SECTION
   return (
     <FilterContianer>
       {/* 섹션 | 카테고리 */}

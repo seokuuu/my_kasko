@@ -57,6 +57,9 @@ export const useUserOrderMutaion = () => useMutation({
 export const useUserOrderListQuery = (param) => useQuery({
     queryKey: ["user","order", param],
     queryFn: async() => {
+        if(params.productNumberList) {
+            params.productNumberList = params.productNumberList.replace(/[\n ,]+/g, ',');
+        }
         const params = new URLSearchParams(param);
         const { data } = await client.get(`${urls.getOrder}?${params.toString()}`);
         return data.data; 

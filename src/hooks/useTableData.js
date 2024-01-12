@@ -8,6 +8,9 @@ import { add_element_field } from "../lib/tableHelpers";
  * @returns tableRowData 테이블 데이터
  * @returns paginationData 페이지네이션 데이터
  * @returns totalWeight 총 중량
+ * @returns totalWeightStr 총 중량 (localeString)
+ * @returns totalCount 총 데이터 갯수
+ * @returns totalCountStr 총 데이터 갯수 (localeString)
  */
 export default function useTableData({ tableField, serverData }) {
 
@@ -45,6 +48,8 @@ export default function useTableData({ tableField, serverData }) {
       tableRowData,
       paginationData,
       totalWeight,
-      totalCount: paginationData.listCount.toLocaleString()
+      totalWeightStr: totalWeight.toLocaleString(),
+      totalCount: paginationData.listCount,
+      totalCountStr: paginationData.listCount.toLocaleString()
     })
 }
