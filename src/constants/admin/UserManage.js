@@ -27,12 +27,14 @@ export const UserManageCustomerManageFieldsCols = [
   {
     field: '',
     maxWidth: 50,
+    headerClass: 'custom-header-style',
     checkboxSelection: checkboxSelection,
     headerCheckboxSelection: headerCheckboxSelection,
   },
   {
     field: '수정',
     maxWidth: 90,
+    headerClass: 'custom-header-style',
     cellRenderer: BtnCellRenderer,
     cellRendererParams: {
       uidFieldName: '고객 구분',
@@ -40,20 +42,46 @@ export const UserManageCustomerManageFieldsCols = [
     },
   },
 
-  { field: '순번', minWidth: 100 }, //숫자
-  { field: '회원 상태', minWidth: 100 },
-  { field: '고객 코드', minWidth: 100 },
+  {
+    field: '순번',
+    minWidth: 100,
+    headerClass: 'custom-header-style',
+  }, //숫자
+  {
+    field: '회원 상태',
+    minWidth: 100,
+    headerClass: 'custom-header-style',
+  },
+  {
+    field: '고객 코드',
+    minWidth: 100,
+    headerClass: 'custom-header-style',
+  },
   {
     field: '고객사 명',
     minWidth: 200,
+    headerClass: 'custom-header-style',
   },
   {
     field: '사업자번호',
     minWidth: 100,
+    headerClass: 'custom-header-style',
   },
-  { field: '연락처', minWidth: 100 },
-  { field: '승인 여부', minWidth: 100 },
-  { field: '회원 제한 상태', minWidth: 100 },
+  {
+    field: '연락처',
+    minWidth: 100,
+    headerClass: 'custom-header-style',
+  },
+  {
+    field: '승인 여부',
+    minWidth: 100,
+    headerClass: 'custom-header-style',
+  },
+  {
+    field: '회원 제한 상태',
+    minWidth: 100,
+    headerClass: 'custom-header-style',
+  },
 ]
 
 // 사용자 목적지 관리 fields
@@ -101,10 +129,17 @@ export const UserManageCustomerDestinationManageFieldsCols = [
   { field: '비고란' },
 ]
 export const adminCustomerDestinationManageFieldsCols = [
-  { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  {
+    field: '',
+    maxWidth: 50,
+    headerClass: 'custom-header-style',
+    checkboxSelection: checkboxSelection,
+    headerCheckboxSelection: headerCheckboxSelection,
+  },
   {
     field: '수정',
     maxWidth: 90,
+    headerClass: 'custom-header-style',
     cellRenderer: BtnCellRenderer,
     cellRendererParams: {
       uidFieldName: '목적지 고유 번호',
@@ -113,21 +148,48 @@ export const adminCustomerDestinationManageFieldsCols = [
   },
   {
     field: '고객 코드',
+    minWidth: 100,
+    headerClass: 'custom-header-style',
   },
-  { field: '대표', minWidth: 100 }, //숫자
-  { field: '목적지 코드', minWidth: 100 },
-  { field: '목적지 명', minWidth: 100 },
+  {
+    field: '대표',
+    minWidth: 100,
+    headerClass: 'custom-header-style',
+  }, //숫자
+  {
+    field: '목적지 코드',
+    minWidth: 100,
+    headerClass: 'custom-header-style',
+  },
+  {
+    field: '목적지 명',
+    minWidth: 100,
+    headerClass: 'custom-header-style',
+  },
   {
     field: '담당자 연락처',
     minWidth: 200,
+    headerClass: 'custom-header-style',
   },
   {
     field: '도착지 연락처',
     minWidth: 100,
+    headerClass: 'custom-header-style',
   },
-  { field: '하차지 명', minWidth: 100 },
-  { field: '상세 주소', minWidth: 100 },
-  { field: '비고란' },
+  {
+    field: '하차지 명',
+    minWidth: 100,
+    headerClass: 'custom-header-style',
+  },
+  {
+    field: '상세 주소',
+    minWidth: 100,
+    headerClass: 'custom-header-style',
+  },
+  {
+    field: '비고란',
+    headerClass: 'custom-header-style',
+  },
 ]
 export const UserManageFields = {
   순번: 'uid',
@@ -137,10 +199,17 @@ export const UserManageFields = {
   '가입 일시': 'createDate',
 }
 export const UserManageFieldsCols = [
-  { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  {
+    field: '',
+    maxWidth: 50,
+    headerClass: 'custom-header-style',
+    checkboxSelection: checkboxSelection,
+    headerCheckboxSelection: headerCheckboxSelection,
+  },
   {
     field: '수정',
     maxWidth: 90,
+    headerClass: 'custom-header-style',
     cellRenderer: BtnCellRenderer,
     cellRendererParams: {
       uidFieldName: '순번',
@@ -149,13 +218,28 @@ export const UserManageFieldsCols = [
   },
   {
     field: '순번',
+    maxWidth: 100,
+    headerClass: 'custom-header-style',
   },
-  { field: '이름', minWidth: 100 }, //숫자
-  { field: '아이디', minWidth: 100 },
-  { field: '관리자 분류', minWidth: 100 },
+  {
+    field: '이름',
+    minWidth: 100,
+    headerClass: 'custom-header-style',
+  }, //숫자
+  {
+    field: '아이디',
+    minWidth: 100,
+    headerClass: 'custom-header-style',
+  },
+  {
+    field: '관리자 분류',
+    minWidth: 100,
+    headerClass: 'custom-header-style',
+  },
   {
     field: '가입 일시',
     minWidth: 200,
+    headerClass: 'custom-header-style',
   },
 ]
 
