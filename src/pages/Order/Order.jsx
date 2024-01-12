@@ -6,7 +6,6 @@ import Excel from '../../components/TableInner/Excel'
 import HeaderToggle from '../../components/Toggle/HeaderToggle'
 import { invenCustomer, invenCustomerData, pageSort, toggleAtom } from '../../store/Layout/Layout'
 import { selectedRowsAtom } from '../../store/Layout/Layout'
-import { useQueryClient } from '@tanstack/react-query'
 
 import {
   DoubleWrap,
@@ -37,16 +36,24 @@ import { add_element_field } from '../../lib/tableHelpers'
 import { getAdminOrder } from '../../service/admin/Order'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
 import { CheckBox } from '../../common/Check/Checkbox'
-import { columnDefs } from './etcVariable'
-import PagingComp from '../../components/paging/PagingComp'
 import axios from 'axios'
 import InventoryFind from '../../modal/Multi/InventoryFind'
 import { getCustomerFind } from '../../service/admin/Auction'
 import { getSPartList } from '../../api/search'
+import Table from '../Table/Table'
+import { OrderManageFieldsCols } from '../../constants/admin/OrderManage'
 import { KilogramSum } from '../../utils/KilogramSum'
-import Table from '../../pages/Table/Table'
+import { getOrderList } from '../../api/orderList'
 
 const Order = ({}) => {
+  const checkBoxSelect = useAtomValue(selectedRowsAtom)
+  const paramData = {
+    pageNum: 1,
+    pageSize: 3,
+  }
+  const [param, setParam] = useState(paramData)
+  const [orderPagination, setOrderPagination] = useState([])
+  const [orderListData, setOrderListData] = useState(null)
   const [checkSalesStart, setCheckSalesStart] = useState('') // 경매일자 시작
   const [checkSalesEnd, setCheckSalesEnd] = useState('') // 경매일자 끝
   const [checkConfirmStart, setCheckConfirmStart] = useState('') // 확정 전송 시작
@@ -112,183 +119,6 @@ const Order = ({}) => {
   }
 
   const [getRow, setGetRow] = useState('')
-  const tableField = useRef(OrderFieldsCols)
-
-  const getCol = tableField.current
-  const queryClient = useQueryClient()
-  const checkedArray = useAtom(selectedRowsAtom)[0]
-
-  const paramData = {
-    pageNum: 1,
-    pageSize: 10,
-  }
-
-  // GET
-  const [param, setParam] = useState(paramData)
-  const { isLoading, isError, data, isSuccess } = useReactQuery(param, 'getAdminOrder', getAdminOrder)
-  const resData = data?.data?.data?.list
-
-  console.log('resData', resData)
-
-  // Get 목적지 코드 Dropdown
-
-  const { data: data2, isSuccess2 } = useReactQuery('', 'getAdminOrder', getAdminOrder)
-  const [paginationData, setPaginationData] = useState([])
-  console.log('data2 => ', data2)
-
-  useEffect(() => {
-    let getData = resData
-    //타입, 리액트쿼리, 데이터 확인 후 실행
-    if (!isSuccess && !resData) return
-    if (Array.isArray(getData)) {
-      setGetRow(add_element_field(getData, OrderFields))
-      console.log('data---pagination---', data2.data.data.pagination)
-      setPaginationData(data2.data.data.pagination)
-    }
-  }, [isSuccess, resData])
-
-  /** 테이블컴포넌트 */
-  const [rowData, setRowData] = useState([])
-  const [gridApi, setGridApi] = useState(null)
-  const [gridColumnApi, setGridColumnApi] = useState(null)
-  const onGridReady = (params) => {
-    setGridApi(params.api)
-    setGridColumnApi(params.columnApi)
-    params.api.sizeColumnsToFit()
-  }
-  useEffect(() => {
-    console.log('그리드API', gridApi)
-    if (gridApi) console.log('그리드API-함수호출', gridApi.getSelectedNodes())
-  }, [gridApi])
-  const onCellClicked = async (params) => {
-    if (params.colDef.field === 'title') {
-      window.location.href = `/operate/notice/view/${params.data.no}`
-    }
-  }
-  const gridOptions = {
-    getRowStyle: (params) => {
-      if (params.node.rowPinned) return { 'font-weight': 'bold' }
-    },
-    headerHeight: 30,
-    rowHeight: 30,
-    pagination: true,
-    paginationPageSize: 3,
-  }
-  /**
-   * @description :페이징 처리 useState
-   */
-  const [currentPage, setCurrentPage] = useState(1)
-  const totalPage = Math.ceil(rowData.length / gridOptions.paginationPageSize)
-
-  /** 주문 관리 목록 데이터 가져오기 */
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/order?pageNum=1&pageSize=30`)
-        const data = await response.json()
-        const transformedData = data.data.list.map((item) => ({
-          auctionNumber: item.auctionNumber,
-          createDate: item.createDate,
-          packageName: item.packageName,
-          packageNumber: item.packageNumber,
-          customerCode: item.customerCode,
-          customerName: item.customerName,
-          storageName: item.storageName,
-          saleType: item.saleType,
-          salePriceType: item.salePriceType,
-          weight: item.weight,
-          orderNumber: item.orderNumber,
-          productCount: item.productCount,
-          totalPrice: item.totalPrice,
-        }))
-
-        setRowData(transformedData)
-      } catch (error) {
-        console.error('Error fetching data: ', error)
-      }
-    }
-
-    fetchData()
-  }, [])
-  const [checkedItems, setCheckedItems] = useState({})
-
-  // 체크박스 상태 변경 핸들러
-  const handleCheckboxChange = (item, isChecked) => {
-    setCheckedItems({ ...checkedItems, [item]: isChecked })
-  }
-
-  // 주문 취소 버튼 클릭 핸들러
-  const handleOrderCancel = () => {
-    const checkedUids = Object.keys(checkedItems).filter(
-      (customerDestinationUid) => checkedItems[customerDestinationUid],
-    )
-
-    const requestList = checkedUids.map((customerDestinationUid) => {
-      // rowData에서 uid에 해당하는 항목을 찾습니다.
-      const item = rowData.find((item) => item.customerDestinationUid === customerDestinationUid)
-      // 해당 항목에서 saleType을 가져옵니다. 항목이 없으면 기본값을 설정할 수 있습니다.
-      const saleType = item ? item.saleType : '기본값'
-
-      return { customerDestinationUid, saleType }
-    })
-
-    // 주문 취소 API 호출
-    axios
-      .post('/api/order/cancel', { requestList })
-      .then((response) => {
-        console.log('Order cancelled successfully:', response.data)
-      })
-      .catch((error) => {
-        console.error('Error cancelling order:', error)
-      })
-  }
-
-  // columnDefs 수정
-  // 체크박스 렌더러에 handleCheckboxChange 연결
-  const newColumnDefs = [
-    {
-      ...columnDefs.find((col) => col.field === 'check'),
-      cellRenderer: (params) => (
-        <input
-          type="checkbox"
-          checked={checkedItems[params.data.weight] || false}
-          onChange={(e) => handleCheckboxChange(params.data.weight, e.target.checked)}
-        />
-      ),
-    },
-    ...columnDefs.filter((col) => col.field !== 'check'),
-  ]
-
-  // 숫자를 천 단위로 구분하여 포맷팅하는 함수
-  const formatNumber = (number) => {
-    return new Intl.NumberFormat().format(number)
-  }
-  const totalWeightFormatted = formatNumber(data?.data?.data?.pagination?.totalWeight)
-  const totalListFormatted = formatNumber(data?.data?.data?.pagination?.listCount)
-
-  const [selected, setSelected] = useState({ sPart: '' })
-
-  // 고객사 팝업 상태,객체
-  const [customerPopUp, setCustomerPopUp] = useAtom(invenCustomer)
-  const [customerData, setCustomerData] = useAtom(invenCustomerData)
-
-  const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
-  // const [checkboxSelect, setCheckboxSelect] = useState(new Array(rowData.length).fill(false))
-
-  // const checkBoxHandler = (e, index) => {
-  //   const newCheckBox = [...checkboxSelect]
-  //   newCheckBox[index] = !newCheckBox[index]
-  //   setCheckboxSelect(newCheckBox)
-  // }
-  // console.log('주문 체크박스', checkboxSelect)
-
-  const handleTablePageSize = (event) => {
-    setParam((prevParam) => ({
-      ...prevParam,
-      pageSize: Number(event.target.value),
-      pageNum: 1,
-    }))
-  }
 
   const onPageChange = (value) => {
     setParam((prevParam) => ({
@@ -297,7 +127,54 @@ const Order = ({}) => {
     }))
   }
 
-  const checkBoxSelect = useAtomValue(selectedRowsAtom)
+  /** 데이터 가져오는 부분 React-Query로 변경 */
+  const { data: getOrderRes, isSuccess } = useReactQuery(param, 'getOrderList', getOrderList)
+  useEffect(() => {
+    if (getOrderRes && getOrderRes.data && getOrderRes.data.list) {
+      setOrderListData(getOrderRes.data.list)
+      setOrderPagination(getOrderRes.data.pagination)
+    }
+  }, [isSuccess, getOrderRes])
+
+  // 주문 취소 버튼 클릭 핸들러
+  // const handleOrderCancel = () => {
+  //   const checkedUids = Object.keys(checkedItems).filter(
+  //     (customerDestinationUid) => checkedItems[customerDestinationUid],
+  //   )
+
+  //   const requestList = checkedUids.map((customerDestinationUid) => {
+  //     // rowData에서 uid에 해당하는 항목을 찾습니다.
+  //     const item = rowData.find((item) => item.customerDestinationUid === customerDestinationUid)
+  //     // 해당 항목에서 saleType을 가져옵니다. 항목이 없으면 기본값을 설정할 수 있습니다.
+  //     const saleType = item ? item.saleType : '기본값'
+
+  //     return { customerDestinationUid, saleType }
+  //   })
+
+  //   // 주문 취소 API 호출
+  //   axios
+  //     .post('/api/order/cancel', { requestList })
+  //     .then((response) => {
+  //       console.log('Order cancelled successfully:', response.data)
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error cancelling order:', error)
+  //     })
+  // }
+
+  // 숫자를 천 단위로 구분하여 포맷팅하는 함수
+  const formatNumber = (number) => {
+    return new Intl.NumberFormat().format(number)
+  }
+
+  const [selected, setSelected] = useState({ sPart: '' })
+
+  // 고객사 팝업 상태,객체
+  const [customerPopUp, setCustomerPopUp] = useAtom(invenCustomer)
+  const [customerData, setCustomerData] = useAtom(invenCustomerData)
+
+  const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
+
   return (
     <FilterContianer>
       <FilterHeader>
@@ -464,8 +341,8 @@ const Order = ({}) => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>선택 수량</span> / {totalListFormatted}개 )
-            <Hidden />
+            조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /
+            {orderPagination?.listCount}개 )<Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown handleDropdown={handleDropdown} />
@@ -474,27 +351,23 @@ const Order = ({}) => {
         </TCSubContainer>
         <TCSubContainer>
           <div>
-            선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 중량{totalWeightFormatted} kg
+            선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn type="button" onClick={handleOrderCancel}>
+            <WhiteRedBtn type="button" onClick={() => {}}>
               주문 취소
             </WhiteRedBtn>
             <SkyBtn>확정 전송</SkyBtn>
           </div>
         </TCSubContainer>
         <Table
-          getCol={newColumnDefs}
-          getRow={rowData}
-          onGridReady={onGridReady}
-          onCellClicked={onCellClicked}
-          gridOptions={gridOptions}
-          height={330}
-          tablePagination={paginationData}
+          getCol={OrderManageFieldsCols}
+          getRow={orderListData}
+          tablePagination={orderPagination}
           onPageChange={onPageChange}
         />
-        <TCSubContainer>
-          <div style={{ display: 'flex', gap: '10px' }}>
+        <TCSubContainer style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <div>
             <WhiteRedBtn>입금 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
