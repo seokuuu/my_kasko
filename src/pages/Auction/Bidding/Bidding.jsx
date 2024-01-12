@@ -101,6 +101,7 @@ const Bidding = ({}) => {
   const [innerObject, setInnerObject] = useState({})
   const [biddingInput, setBiddingInput] = useState(null)
   const [biddingList, setBiddingList] = useState([])
+  const [tablePagination, setTablePagination] = useState([])
 
   console.log('biddingList @@', biddingList)
 
@@ -178,6 +179,7 @@ const Bidding = ({}) => {
   // 전체 GET
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getBidding', getBidding)
   const resData = data?.data?.data?.list
+  const resPagination = data?.data?.data?.pagination
 
   useEffect(() => {
     let getData = resData
@@ -185,8 +187,24 @@ const Bidding = ({}) => {
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, AuctionBiddingFields))
+      setTablePagination(resPagination)
     }
   }, [isSuccess, resData])
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
 
   return (
     <FilterContianer>
@@ -313,7 +331,7 @@ const Bidding = ({}) => {
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown handleDropdown={handleTablePageSize} />
             <Excel />
             <WhiteGrnBtn>
               <div>
@@ -361,7 +379,7 @@ const Bidding = ({}) => {
             </SkyBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
+        <Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
       </TableContianer>
       {destinationPopUp && (
         <InventoryFind title={'목적지 찾기'} setSwitch={setDestinationPopUp} data={inventoryDestination} />
