@@ -37,7 +37,6 @@ import { add_element_field } from '../../lib/tableHelpers'
 import { getAdminOrder } from '../../service/admin/Order'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
 import { CheckBox } from '../../common/Check/Checkbox'
-import TableUi from '../../components/TableUiComponent/TableUi'
 import { columnDefs } from './etcVariable'
 import PagingComp from '../../components/paging/PagingComp'
 import axios from 'axios'
@@ -45,6 +44,7 @@ import InventoryFind from '../../modal/Multi/InventoryFind'
 import { getCustomerFind } from '../../service/admin/Auction'
 import { getSPartList } from '../../api/search'
 import { KilogramSum } from '../../utils/KilogramSum'
+import Table from '../../pages/Table/Table'
 
 const Order = ({}) => {
   const [checkSalesStart, setCheckSalesStart] = useState('') // 경매일자 시작
@@ -118,13 +118,14 @@ const Order = ({}) => {
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
 
-  const Param = {
+  const paramData = {
     pageNum: 1,
     pageSize: 10,
   }
 
   // GET
-  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getAdminOrder', getAdminOrder)
+  const [param, setParam] = useState(paramData)
+  const { isLoading, isError, data, isSuccess } = useReactQuery(param, 'getAdminOrder', getAdminOrder)
   const resData = data?.data?.data?.list
 
   console.log('resData', resData)
@@ -132,7 +133,7 @@ const Order = ({}) => {
   // Get 목적지 코드 Dropdown
 
   const { data: data2, isSuccess2 } = useReactQuery('', 'getAdminOrder', getAdminOrder)
-
+  const [paginationData, setPaginationData] = useState([])
   console.log('data2 => ', data2)
 
   useEffect(() => {
@@ -141,6 +142,8 @@ const Order = ({}) => {
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, OrderFields))
+      console.log('data---pagination---', data2.data.data.pagination)
+      setPaginationData(data2.data.data.pagination)
     }
   }, [isSuccess, resData])
 
@@ -176,46 +179,6 @@ const Order = ({}) => {
    */
   const [currentPage, setCurrentPage] = useState(1)
   const totalPage = Math.ceil(rowData.length / gridOptions.paginationPageSize)
-
-  const onPageChange = (pageNumber) => {
-    gridApi.paginationGoToPage(pageNumber - 1)
-    setCurrentPage(pageNumber)
-  }
-
-  /**
-   * @Func :페이징 이동버튼
-   */
-  const goToNextPage = () => {
-    const nextPage = Math.min(currentPage + 1, totalPage)
-    onPageChange(nextPage)
-  }
-  const goToPreviousPage = () => {
-    if (currentPage > 1) {
-      const prevPage = Math.min(currentPage - 1, totalPage)
-      onPageChange(prevPage)
-    }
-  }
-  const goToLastPage = () => {
-    let currentGroupLastPage = Math.ceil(currentPage / 5) * 5
-    currentGroupLastPage = Math.min(currentGroupLastPage, totalPage)
-
-    // 현재 페이지가 그룹의 마지막 페이지인 경우, 다음 그룹의 마지막 페이지로 이동
-    let targetPage
-    // 다음 페이지 그룹의 1번째 페이지로 이동
-    if (currentPage === currentGroupLastPage) targetPage = Math.min(currentGroupLastPage + 1, totalPage)
-    // 현재 그룹의 마지막 페이지로 이동
-    else targetPage = currentGroupLastPage
-
-    onPageChange(targetPage)
-  }
-  const goToStartOfRange = () => {
-    let startPageInGroup = Math.floor((currentPage - 1) / 5) * 5 + 1
-
-    // 현재 페이지가 그룹의 시작 페이지일 경우, 이전 그룹의 마지막 페이지로 이동
-    if (currentPage === startPageInGroup && currentPage !== 1) startPageInGroup = Math.max(startPageInGroup - 1, 1)
-
-    onPageChange(startPageInGroup)
-  }
 
   /** 주문 관리 목록 데이터 가져오기 */
   useEffect(() => {
@@ -318,6 +281,21 @@ const Order = ({}) => {
   //   setCheckboxSelect(newCheckBox)
   // }
   // console.log('주문 체크박스', checkboxSelect)
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
 
   const checkBoxSelect = useAtomValue(selectedRowsAtom)
   return (
@@ -505,26 +483,16 @@ const Order = ({}) => {
             <SkyBtn>확정 전송</SkyBtn>
           </div>
         </TCSubContainer>
-        {/* 테이블 들어와야 하는 곳 + 페이지네이션 */}
-        <TableUi
-          columnDefs={newColumnDefs}
-          rowData={rowData}
+        <Table
+          getCol={newColumnDefs}
+          getRow={rowData}
           onGridReady={onGridReady}
           onCellClicked={onCellClicked}
           gridOptions={gridOptions}
           height={330}
+          tablePagination={paginationData}
+          onPageChange={onPageChange}
         />
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
-          <PagingComp
-            currentPage={currentPage}
-            totalPage={totalPage}
-            onPageChange={onPageChange}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-            goToLastPage={goToLastPage}
-            goToStartOfRange={goToStartOfRange}
-          />
-        </div>
         <TCSubContainer>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn>입금 취소</WhiteRedBtn>
