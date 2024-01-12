@@ -18,6 +18,7 @@ import { GreyBtn, BlackBtn } from '../../common/Button/Button'
 import { parsePath, useLocation, useNavigate } from 'react-router-dom'
 import PagingComp from '../../components/paging/PagingComp'
 import moment from 'moment'
+import { Pagination } from '@mui/material'
 var dateFilterParams = {
   comparator: (filterLocalDateAtMidnight, cellValue) => {
     var cellDate = asDate(cellValue)
@@ -321,9 +322,11 @@ const TableTest = ({
   // const [gridApi, setGridApi] = useState(null)
   const [gridColumnApi, setGridColumnApi] = useState(null)
 
+  /**
+   * @description 페이지네이션 API콜로 변경해야함.
+   */
   const onPageChange = (pageNumber) => {
-    gridApi.paginationGoToPage(pageNumber - 1)
-    setCurrentPage(pageNumber)
+    // API호출 필요
   }
   const onGridReady = (params) => {
     setGridApi(params.api)
@@ -390,7 +393,7 @@ const TableTest = ({
             // sideBar={{ toolPanels: ['columns', 'filters'] }}
           />
           {/* <Pagination getRow={getRow} /> */}
-          <PagingComp
+          <Pagination
             currentPage={currentPage}
             totalPage={totalPage}
             onPageChange={onPageChange}

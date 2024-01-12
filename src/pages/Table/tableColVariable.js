@@ -1,19 +1,19 @@
-// const checkboxSelection = function (params) {
-//   return params.columnApi.getRowGroupColumns().length === 0
-// }
+const checkboxSelection = function (params) {
+  return params.columnApi.getRowGroupColumns().length === 0
+}
 
-// const headerCheckboxSelection = function (params) {
-//   return params.columnApi.getRowGroupColumns().length === 0
-// }
-/** 셀의 내용을 지정할 수 있는 columnDefs */
+const headerCheckboxSelection = function (params) {
+  return params.columnApi.getRowGroupColumns().length === 0
+}
+
 export const columnDefs = [
   {
     headerName: '',
     field: 'check',
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8' },
-    checkboxSelection: true,
-    headerCheckboxSelection: true,
+    checkboxSelection: checkboxSelection,
+    headerCheckboxSelection: headerCheckboxSelection,
     width: 50,
   },
   {
@@ -95,45 +95,5 @@ export const columnDefs = [
     cellStyle: { borderRight: '1px solid #c8c8c8' },
     width: 110,
     cellRenderer: (params) => params.value || 'N/A',
-  },
-  {
-    headerName: '고객 코드',
-    field: 'customerCode',
-    headerClass: 'custom-header-style',
-    cellStyle: { borderRight: '1px solid #c8c8c8' },
-    width: 110,
-    cellRenderer: (params) => params.value || 'N/A',
-  },
-  {
-    headerName: '창고',
-    field: 'storageName',
-    headerClass: 'custom-header-style',
-    cellStyle: { borderRight: '1px solid #c8c8c8' },
-    width: 90,
-    cellRenderer: (params) => params.value || 'N',
-  },
-  {
-    headerName: '판매 구분',
-    field: 'title',
-    headerClass: 'custom-header-style',
-    cellStyle: { borderRight: '1px solid #c8c8c8' },
-    width: 100,
-    cellRenderer: (params) => params.value || 'N',
-  },
-  {
-    headerName: '판매 유형',
-    field: 'saleType',
-    headerClass: 'custom-header-style',
-    cellStyle: { borderRight: '1px solid #c8c8c8' },
-    width: 100,
-    cellRenderer: (params) => params.value || 'N',
-  },
-  {
-    headerName: '판매가 유형',
-    field: 'salePriceType',
-    headerClass: 'custom-header-style',
-    cellStyle: { borderRight: '1px solid #c8c8c8' },
-    width: 100,
-    cellRenderer: (params) => params.value || 'N',
   },
 ]

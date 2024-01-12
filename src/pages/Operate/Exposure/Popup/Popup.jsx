@@ -41,9 +41,8 @@ const Popup = ({}) => {
   const setNowPopup = useSetAtom(popupObject) // 팝업 객체
 
   // 팝업 목록 API
-  const { data, refetch } = usePopupListQuery(search)
+  const { data, refetch, isLoading } = usePopupListQuery(search)
 
-  console.log('팝업 목록 데이터 :', data)
   // 팝업 삭제 API
   const { mutate } = usePopupRemoveMutation()
   // 선택된 데이터 갯수
@@ -136,6 +135,7 @@ const Popup = ({}) => {
         {/* 테이블 */}
         <Table
           getCol={PopupListFieldCols}
+          loading={isLoading}
           getRow={rows}
           setChoiceComponent={() => {}}
           tablePagination={pagination}

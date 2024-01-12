@@ -115,8 +115,8 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
   }
 
   // ✅필드이름 설정(col)
-  const 테이블필드 = useRef(UserManageCustomerManageFieldsCols)
-  const getCol = 테이블필드.current
+  const tableField = useRef(UserManageCustomerManageFieldsCols)
+  const getCol = tableField.current
 
   const queryObject = {
     pageNum: 1,
@@ -340,7 +340,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <PageDropdown handleDropdown={handleTablePageSize} />
-              <Excel />
+              <Excel getRow={getRow} />
             </div>
           </TCSubContainer>
           <TCSubContainer>

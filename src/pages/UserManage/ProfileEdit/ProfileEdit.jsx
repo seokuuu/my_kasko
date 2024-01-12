@@ -43,7 +43,6 @@ const ProfileEdit = () => {
   const resData = data?.data?.data
 
   if (isSuccess) console.log('SUCCESS')
-  if (isError) alert('ERROR')
 
   const eventHandle = (e) => {
     const { name, value } = e.target
