@@ -39,6 +39,8 @@ import { UsermanageDestiEditModal, btnCellUidAtom, UsermanageFindModal } from '.
 
 import TableTest from '../../Table/TableTest'
 import DestinationEdit from './DestinationEdit'
+import Table from "../../Table/Table";
+import usePaging from "../../../hooks/usePaging";
 
 const ClientDestination = ({ setChoiceComponent }) => {
   const [findModal, setFindModal] = useAtom(UsermanageFindModal)
@@ -98,13 +100,11 @@ const ClientDestination = ({ setChoiceComponent }) => {
 
   const resData = data?.data?.data?.list
   const resData2 = data2?.data?.data
-
-  console.log('resData2', resData2)
-  const pagination = data?.data?.data?.pagination
-
   const matchingData = resData2
 
-  console.log('matchingData', matchingData)
+  const pagination = data?.data?.data?.pagination
+
+  const { onPageChanage } = usePaging(data, setQuery)
 
   if (isError) {
     console.log('데이터 request ERROR')
@@ -137,10 +137,6 @@ const ClientDestination = ({ setChoiceComponent }) => {
       alert('선택해주세요!')
     }
   }, [checkedArray])
-
-  const handleDropdown = (e) => {
-    setPageSizeGrid(e.target.value)
-  }
 
   const setPostPage = () => {
     setChoiceComponent('등록')
@@ -239,31 +235,30 @@ const ClientDestination = ({ setChoiceComponent }) => {
           <TableContianer>
             <TCSubContainer bor>
               <div>
-                조회 목록 (선택 <span>{checkedArray ? checkedArray.length : '0'}</span> / {pagination?.listCount} )
+                조회 목록 (선택 <span>{checkedArray ? checkedArray.length : '0'}</span> / {pagination?.listCount}개 )
                 <Hidden />
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
-                <PageDropdown handleDropdown={handleDropdown} />
+                <PageDropdown handleDropdown={(e) => setQuery((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))} />
                 <Excel />
               </div>
             </TCSubContainer>
             <TCSubContainer>
-              <div>{/* 선택 중량<span> 2 </span>kg / 총 중량 kg */}</div>
+              <div>
+                선택<span> {checkedArray ? checkedArray.length : '0'} </span>(개)
+              </div>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <WhiteRedBtn onClick={handleRemoveBtn}>목적지 삭제</WhiteRedBtn>
                 <SkyBtn onClick={setPostPage}>목적지 등록</SkyBtn>
               </div>
             </TCSubContainer>
-            {/* <Test3 getCol={getCol} getRow={getRow} /> */}
-            {/* <Table getCol={getCol} getRow={getRow} setChoiceComponent={setChoiceComponent} /> */}
-            <TableTest
+            <Table
               getCol={getCol}
               getRow={getRow}
               setChoiceComponent={setChoiceComponent}
-              pagination={pagination}
-              setQuery={setQuery}
-              pageSizeGrid={pageSizeGrid}
-            />
+              tablePagination={pagination}
+              onPageChange={onPageChanage}
+              />
           </TableContianer>
         </FilterContianer>
       )}
