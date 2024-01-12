@@ -113,6 +113,7 @@ export const adminCustomerDestinationManageFieldsCols = [
   },
   {
     field: '고객 코드',
+    minWidth: 100,
   },
   { field: '대표', minWidth: 100 }, //숫자
   { field: '목적지 코드', minWidth: 100 },
