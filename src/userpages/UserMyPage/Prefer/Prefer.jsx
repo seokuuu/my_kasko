@@ -1,17 +1,23 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { useAtom } from 'jotai';
-import { isArray } from 'lodash';
-import useMutationQuery from '../../../hooks/useMutationQuery';
-import useReactQuery from '../../../hooks/useReactQuery';
-import { deleteCustomerfavorite, getCustomerfavorite, getDetailCustomerfavorite } from '../../../api/myPage';
-import { UserPageUserPreferFields, UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage';
-import { add_element_field } from '../../../lib/tableHelpers';
-import Table from '../../../pages/Table/Table';
-import { userpageUserPreferEditObject, userpageUserPreferEdit, btnCellUidAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout';
-import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button';
-import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter';
-import PreferEdit from './PreferEdit';
-import PageDropdown from '../../../components/TableInner/PageDropdown';
+import { useEffect, useRef, useState, useCallback } from 'react'
+import { useAtom } from 'jotai'
+import { isArray } from 'lodash'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { deleteCustomerfavorite, getCustomerfavorite, getDetailCustomerfavorite } from '../../../api/myPage'
+import { UserPageUserPreferFields, UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
+import { add_element_field } from '../../../lib/tableHelpers'
+import Table from '../../../pages/Table/Table'
+import {
+  userpageUserPreferEditObject,
+  userpageUserPreferEdit,
+  btnCellUidAtom,
+  selectedRowsAtom,
+  toggleAtom,
+} from '../../../store/Layout/Layout'
+import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
+import PreferEdit from './PreferEdit'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 const Prefer = ({ setChoiceComponent }) => {
   const [switchEdit, setSwtichEdit] = useAtom(userpageUserPreferEdit)
@@ -70,9 +76,9 @@ const Prefer = ({ setChoiceComponent }) => {
   const { isLoading, isError, data, isSuccess } = useReactQuery(param, 'getCustomerfavorite', getCustomerfavorite)
   const resData = data?.data?.data?.list
   const resPagination = data?.data?.data?.pagination
-
-  const detailData = data?.data?.data?.list
   const [tablePagination, setTablePagination] = useState([])
+  const detailData = data?.data?.data?.list
+
   if (isError) console.log('데이터 request ERROR')
 
   useEffect(() => {

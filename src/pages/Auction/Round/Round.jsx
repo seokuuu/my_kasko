@@ -98,6 +98,9 @@ const Round = ({}) => {
     type: types,
   })
 
+  const [param, setParam] = useState(inputParams)
+  const [tablePagination, setTablePagination] = useState([])
+
   useEffect(() => {
     setInputParams((prevParams) => ({
       ...prevParams,
@@ -112,12 +115,21 @@ const Round = ({}) => {
   }, [inputParams])
 
   const resData = data?.data?.data?.list
+  const resPagination = data?.data?.data?.pagination
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
+
   useEffect(() => {
     let getData = resData
     //타입, 리액트쿼리, 데이터 확인 후 실행
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, AuctionRoundFields))
+      setTablePagination(resPagination)
     }
   }, [isSuccess, resData])
 
@@ -125,13 +137,6 @@ const Round = ({}) => {
   const auctionNum = matchingData?.number
   console.log('matchingData', matchingData?.number)
 
-  const handleDropdown = (e) => {
-    const page = e.target.value
-    setInputParams({
-      ...inputParams,
-      pageSize: page,
-    })
-  }
   // const 임의의UID = 22 //임의의 uid값 * 현재 에러나옴
   // const mutation = useMutationQuery('auction', () => deleteAuction(임의의UID))
 
@@ -165,6 +170,14 @@ const Round = ({}) => {
       setRoundModal(false)
     }
   }, [])
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
 
   console.log('types', types)
   return (
@@ -263,7 +276,7 @@ const Round = ({}) => {
                 <Hidden />
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
-                <PageDropdown handleDropdown={handleDropdown} />
+                <PageDropdown handleDropdown={handleTablePageSize} />
                 <Excel />
               </div>
             </TCSubContainer>
@@ -280,7 +293,7 @@ const Round = ({}) => {
                 </WhiteSkyBtn>
               </div>
             </TCSubContainer>
-            <Table getCol={getCol} getRow={getRow} />
+            <Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
             {roundModal && <AuctionRound setRoundModal={setRoundModal} types={types} />}
           </TableContianer>
         </FilterContianer>

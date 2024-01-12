@@ -77,21 +77,25 @@ const DetailProgress = ({}) => {
     }
   }
 
+  const [tablePagination, setTablePagination] = useState([])
+
   const [getRow, setGetRow] = useState('')
   const tableField = useRef(AuctionDetailProgressFieldsCols)
   const getCol = tableField.current
   const queryClient = useQueryClient()
   const checkedArray = useAtom(selectedRowsAtom)[0]
 
-  const [Param, setParam] = useState({
+  const paramData = {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 50,
     customerCode: 'K00000',
-  })
+  }
+  const [Param, setParam] = useState(paramData)
 
   // GET
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getDetailProgress', getDetailProgress)
   const resData = data?.data?.data?.list
+  const resPagination = data?.data?.data?.pagination
 
   console.log('resData', resData)
 
@@ -101,8 +105,24 @@ const DetailProgress = ({}) => {
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, AuctionDetailProgressFields))
+      setTablePagination(resPagination)
     }
   }, [isSuccess, resData])
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
 
   return (
     <FilterContianer>
@@ -201,11 +221,11 @@ const DetailProgress = ({}) => {
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown handleDropdown={handleTablePageSize} />
             <Excel />
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
+        <Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
       </TableContianer>
     </FilterContianer>
   )
