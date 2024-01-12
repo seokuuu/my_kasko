@@ -36,6 +36,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 
 const Progress = ({}) => {
+  const [tablePagination, setTablePagination] = useState([])
   const radioDummy = ['전체', '미진행', '진행중', '종료']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
@@ -90,6 +91,7 @@ const Progress = ({}) => {
   // GET
   const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getProgess', getProgess)
   const resData = data?.data?.data?.list
+  const resPagination = data?.data?.data?.pagination
 
   useEffect(() => {
     let getData = resData
@@ -97,10 +99,26 @@ const Progress = ({}) => {
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, AuctionProgressFields))
+      setTablePagination(resPagination)
     }
   }, [isSuccess, resData])
 
   console.log('getRow =>', getRow)
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
 
   return (
     <FilterContianer>
@@ -199,11 +217,11 @@ const Progress = ({}) => {
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown handleDropdown={handleTablePageSize} />
             <Excel />
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
+        <Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
       </TableContianer>
     </FilterContianer>
   )

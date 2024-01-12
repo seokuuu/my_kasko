@@ -761,6 +761,60 @@ export const AuctionWinningDetailFieldsCols = [
   })),
 ]
 
+/* ======================================================
+    경매 관리 - 경매 낙찰 관리 - "낙찰 생성" (winningCreate)
+========================================================= */
+
+export const AuctionWinningCreateFields = {
+  '제품 고유 번호': 'uid',
+  '제품 번호': 'number',
+  '규격 약호': 'spec',
+  창고: 'storagename',
+  두께: 'thickness',
+  폭: 'width',
+  길이: 'length',
+  중량: 'weight',
+  등급: 'grade',
+  '용도 코드': 'usageCode',
+  용도명: 'usageCodeName',
+  c: 'c',
+  si: 'si',
+  mn: 'mn',
+  p: 'p',
+  s: 's',
+  ts: 'ts',
+  yp: 'yp',
+  el: 'el',
+  제품군: 'spart',
+  품명: 'name',
+  '정척 여부': 'preferThickess',
+  '여재 원인 코드': 'causeCode',
+  '여재 원인명': 'causeCodeName',
+  '유찰 횟수': 'failCount',
+  '경매 등록 상태': 'registrationStatus',
+  매입처: 'supplier',
+  제조사: 'maker',
+  '판매 구분': 'saleCategory',
+  '판매 제외 사유': 'excludeSaleReason',
+  '재고 상태': 'stockStatus',
+  '판매 유형': 'saleType',
+  '판매가 유형': 'salePriceType',
+  생성일: 'createDate',
+  시작가: 'auctionStartPrice',
+  패키지명: 'packageName',
+  '패키지 번호': 'packageNumber',
+  'Pro.No 번호': 'productNoNumber',
+  매입가: 'price',
+}
+
+export const AuctionWinningCreateFieldsCols = [
+  { field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+  ...Object.keys(AuctionWinningCreateFields).map((item) => ({
+    field: item,
+    maxWidth: 200,
+  })),
+]
+
 /* ===========================================
     경매 관리 - 경매 시작 단가 관리 (startprice)
 ============================================== */

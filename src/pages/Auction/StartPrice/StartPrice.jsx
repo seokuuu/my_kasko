@@ -41,6 +41,7 @@ import Table from '../../Table/Table'
 import { useAtom } from 'jotai'
 
 const StartPrice = ({}) => {
+  const [tablePagination, setTablePagination] = useState([])
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 
   //checkSales
@@ -98,7 +99,7 @@ const StartPrice = ({}) => {
 
   const [Param, setParam] = useState({
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 50,
   })
 
   // GET
@@ -106,15 +107,31 @@ const StartPrice = ({}) => {
   const resData = data?.data?.data?.list
 
   console.log('resData', resData)
-
+  const resPagination = data?.data?.data?.pagination
   useEffect(() => {
     let getData = resData
     //타입, 리액트쿼리, 데이터 확인 후 실행
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, AuctionStartPriceFields))
+      setTablePagination(resPagination)
     }
   }, [isSuccess, resData])
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
 
   return (
     <FilterContianer>
@@ -218,7 +235,7 @@ const StartPrice = ({}) => {
             </TGreyBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
+        <Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
         <TCSubContainer>
           <div></div>
           <div>

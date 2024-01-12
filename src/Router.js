@@ -170,13 +170,14 @@ import UserPost from './pages/UserManage/UserManage/UserPost'
 import OrderDetail from './userpages/UserSales/Order/OrderDetail'
 
 import ClientDestiCustomerFind from './pages/UserManage/ClientDestination/ClientDestiCustomerFind'
+import WinningCreate from './pages/Auction/Winning/WinningCreate'
 // RoundAucProAdd
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
-        <Route path="/ppapp" element={<ClientDestiCustomerFind />} />
+        <Route path="/ppapp" element={<WinningCreate />} />
         <Route path="/ppap" element={<DefaultBlueBar />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />
@@ -323,7 +324,7 @@ const Router = () => {
           <Route path="/userpage/salessingle" element={<USalesSingle />}></Route>
           <Route path="/userpage/salespackage" element={<USalesPackage />}></Route>
           <Route path="/userpage/salescart" element={<USalesCart />}></Route>
-          <Route path="/userpage/salesorder" element={<USalesOrder />}></Route>
+          <Route path="/userpage/salesorder/:salesNumber?" element={<USalesOrder />}></Route>
 
           {/* 출고 실적 조회 */}
           <Route path="/userpage/performance" element={<UPerformance />}></Route>
