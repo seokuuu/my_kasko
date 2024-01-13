@@ -445,7 +445,7 @@ Table.propTypes = {
   topData: PropTypes.array,
   isRowClickable: PropTypes.bool,
   handleOnRowClicked: PropTypes.func,
-  tablePagination: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  tablePagination: PropTypes.oneOfType([PropTypes.array, PropTypes.object]), // Note: tablePagination type is object.
   onPageChange: PropTypes.func,
   noRowsMessage: PropTypes.string,
   loading: PropTypes.bool,
