@@ -1,13 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
 import { Link } from 'react-router-dom'
 import { MainSelect } from '../../../common/Option/Main'
 import { BlackBtn, BtnBound, BtnWrap, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
+
 import { GreyBtn, ExcelBtn, YellBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
   selectedRowsAtom,
@@ -32,9 +28,7 @@ import {
   PartWrap,
   PWRight,
   Input,
-  GridWrap,
   Tilde,
-  DoubleWrap,
   ResetImg,
   TableContianer,
   ExCheckWrap,
@@ -66,7 +60,6 @@ import { KilogramSum } from '../../../utils/KilogramSum'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import Multi2 from '../../../modal/Common/Multi2'
 import { changeCategoryAtom } from '../../../store/Layout/Popup'
-import TableModal from '../../../modal/Table/TableModal'
 import HyunDaiOriginal from './HyunDaiOriginal'
 import { popupObject } from '../../../store/Layout/Layout'
 const DEFAULT_OBJ = { value: '', label: '전체' }
@@ -238,7 +231,7 @@ const Hyundai = ({}) => {
 
   useEffect(() => {
     if (isSuccess) {
-      setFilteredData(() => hyunDaiList)
+      setFilteredData(hyunDaiList)
       setPagination(hyunDaiPage)
     }
   }, [isSuccess])
@@ -249,11 +242,10 @@ const Hyundai = ({}) => {
         setFilteredData((p) => {
           hyunDaiList.map((i, idx) => ({
             순번: idx,
-            ...p,
+            ...i,
           }))
         })
     }
-    console.log(filterData)
     if (!isSuccess && !filterData) return null
     if (Array.isArray(filterData)) {
       setGetRow(add_element_field(filterData, singleDispatchFields))
@@ -318,12 +310,12 @@ const Hyundai = ({}) => {
     setSelectProductNumber(() => checkBoxSelect?.map((i) => i['제품 번호']))
   }, [checkBoxSelect])
 
-  const option = {}
   const { mutate, isError } = useMutationQuery('change-category', patchSaleCategory)
   const changeSaleCategory = () => {
     const res = mutate(parameter, {
       onSuccess: () => {
         setIsMultiModal(false)
+        window.location.reload()
       },
       onError: (e) => {
         setErrorMsg(e.data.message)

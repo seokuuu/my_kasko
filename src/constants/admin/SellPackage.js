@@ -14,6 +14,7 @@ var headerCheckboxSelection = function (params) {
 }
 export const packageDispatchFields= {
   '순번':'index',
+  '고유 번호':'uid',
   '패키지 이름': 'name',
   '패키지 번호': 'number',
   '경매 번호': 'auctionNumber',
@@ -71,6 +72,7 @@ export const packageDispatchFieldsCols = [
       moveUrl:'/product/packageedit' // link로 보내려면 (선택)
     },
   },
+  { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '고유 번호', minWidth: 100,},
   { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지 이름', minWidth: 100,},
   { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지 번호', minWidth: 110,  
     cellRenderer: LinkCellRender,

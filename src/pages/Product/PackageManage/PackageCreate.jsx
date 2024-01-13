@@ -57,6 +57,8 @@ const PackageCreate = () => {
   const [savedRadioValue, setSavedRadioValue] = useState('')
   const [select, setSelect] = useState([])
   const [selectUid, setSelectUid] = useState([])
+  const [curUid, setCuruid] = useState([])
+
   useEffect(() => {
     setCheckRadio(
       Array.from({ length: radioDummy.length }, (_, index) => {
@@ -128,18 +130,14 @@ const PackageCreate = () => {
   }
   useEffect(() => {
     if (isSuccess && prevData) {
-      setFilteredData((p) => {
-        packageData.map((item) => {
-          console.log('아이템', item)
-          // return {
-          //   ...item,
-          //   uid: item?.productUid,
-          // }
-        })
-      })
+      setFilteredData(packageData)
     }
   }, [isSuccess, requestParams, packageData])
 
+  useEffect(() => {
+    setCuruid(filteredData.map((item) => item?.productUid))
+    console.log(curUid)
+  }, [isSuccess])
   useEffect(() => {
     if (isSuccess && filteredData === undefined) {
       packageData && setFilteredData(packageData)
@@ -170,9 +168,10 @@ const PackageCreate = () => {
     setSelectUid(() => select.map((i) => i['고유 번호']))
     console.log(selectUid)
   }, [select])
-  console.log(select)
 
   const [createRequest, setCreateRequest] = useState({})
+  const [updateRequest, setUpdateRequest] = useState({})
+
   useEffect(() => {
     setCreateRequest({
       name: packageName,
@@ -181,12 +180,31 @@ const PackageCreate = () => {
     })
   }, [packageName, savedRadioValue, selectUid])
 
+  useEffect(() => {
+    setUpdateRequest({
+      name: packageName,
+      saleType: savedRadioValue,
+      productUids: [...curUid, ...selectUid],
+      price: price,
+      uid: prevData['고유 번호'],
+    })
+  }, [packageName, savedRadioValue, selectUid, price])
+
   const { mutate: create } = useMutationQuery(['query'], postCreatePackage)
+  const { mutate: update } = useMutationQuery(['query'], postCreatePackage)
   const handleSubmit = () => {
     console.log('어디서 3번이 찍히는걸까 ')
     create(createRequest, {
       onSuccess: () => {
         window.location.reload()
+      },
+    })
+  }
+
+  const handleUpdate = () => {
+    update(updateRequest, {
+      onSuccess: () => {
+        // window.location.reload()
       },
     })
   }
@@ -267,16 +285,22 @@ const PackageCreate = () => {
             <WhiteBlackBtn onClick={handleAddProduct}>제품 추가</WhiteBlackBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={select.length <= 0 ? [...getRow, ...select] : select} />
+        <Table getCol={getCol} getRow={select.length === 0 ? getRow : [...getRow, ...select]} />
         <CRWMainBottom>
           <CRWSub>
             <BtnWrap>
               <WhiteBtn width={90} height={50} style={{ marginRight: '10px' }}>
                 돌아가기
               </WhiteBtn>
-              <BlackBtn width={90} height={50} onClick={handleSubmit}>
-                등록
-              </BlackBtn>
+              {!prevData ? (
+                <BlackBtn width={90} height={50} onClick={handleSubmit}>
+                  등록
+                </BlackBtn>
+              ) : (
+                <BlackBtn width={90} height={50} onClick={handleUpdate}>
+                  수정
+                </BlackBtn>
+              )}
             </BtnWrap>
           </CRWSub>
         </CRWMainBottom>
