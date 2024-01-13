@@ -5,6 +5,7 @@ import { SkyBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
+import CustomPagination from '../../../components/pagination/CustomPagination'
 import {
   userCartListPackageField,
   userCartListPackageFieldCols,
