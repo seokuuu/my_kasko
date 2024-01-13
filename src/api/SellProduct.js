@@ -26,7 +26,7 @@ export async function getSingleProducts(data) {
 
 
 export async function patchSaleCategory(data) {
-  return client.patch(`${urls.saleCategory}`,data)
+  return await client.patch(`${urls.saleCategory}`,data)
 }
 
 export async function gethyunDaiOriginal(data){
@@ -64,3 +64,25 @@ export async function getPackageProductsList(params) {
     console.log('RES',r)
     return {pagination,r}
 }
+
+
+export async function postCreatePackage(data){
+  try{
+    const response = await client.post(`${urls.package}`,data)    
+    return response.data
+  } catch(e){
+    console.log(e)
+  }
+
+}
+
+export async function postUpdatePackage(data){
+  try{
+    const response = await client.patch(`${urls.package}`,data)
+    return response.data
+  } catch(e){
+    console.log(e)
+  }
+
+}
+

@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { BlackBtn, BtnBound, GreyBtn, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
+import { BlackBtn, BtnBound, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
+
+import { GreyBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
   hyunDaiMultiModal,
@@ -232,7 +234,7 @@ const Hyundai = ({}) => {
 
   useEffect(() => {
     if (isSuccess) {
-      setFilteredData(() => hyunDaiList)
+      setFilteredData(hyunDaiList)
       setPagination(hyunDaiPage)
     }
   }, [isSuccess])
@@ -243,11 +245,10 @@ const Hyundai = ({}) => {
         setFilteredData((p) => {
           hyunDaiList.map((i, idx) => ({
             순번: idx,
-            ...p,
+            ...i,
           }))
         })
     }
-    console.log(filterData)
     if (!isSuccess && !filterData) return null
     if (Array.isArray(filterData)) {
       setGetRow(add_element_field(filterData, singleDispatchFields))
@@ -312,12 +313,12 @@ const Hyundai = ({}) => {
     setSelectProductNumber(() => checkBoxSelect?.map((i) => i['제품 번호']))
   }, [checkBoxSelect])
 
-  const option = {}
   const { mutate, isError } = useMutationQuery('change-category', patchSaleCategory)
   const changeSaleCategory = () => {
     const res = mutate(parameter, {
       onSuccess: () => {
         setIsMultiModal(false)
+        window.location.reload()
       },
       onError: (e) => {
         setErrorMsg(e.data.message)
