@@ -525,6 +525,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr }) => {
                 </div>
               </TCSubContainer>
               <Table getRow={getRow} getCol={getCol} />
+              
             </TableContianer>
             <CRWMainBottom>
               <CRWSub>
