@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Excel from '../../../components/TableInner/Excel'
 // import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, YellBtn, BtnBound, WhiteRedBtn, SkyBtn } from '../../../common/Button/Button'
+import { BlackBtn, BtnWrap, WhiteRedBtn } from '../../../common/Button/Button'
 // import DateGrid from '../../../components/DateGrid/DateGrid'
 // import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { WhiteBlackBtn } from '../../../common/Button/Button'
@@ -11,20 +11,23 @@ import { packageModeAtom, singleAllProductModal, toggleAtom } from '../../../sto
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 // import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
-import Hidden from '../../../components/TableInner/Hidden'
+import { useQuery } from '@tanstack/react-query'
 import { WhiteBtn } from '../../../common/Button/Button'
+import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 import {
+  ExRadioWrap,
   FilterContianer,
   FilterHeader,
-  Input,
-  TableContianer,
-  TCSubContainer,
-  FilterTopContainer,
-  FilterTCTop,
-  FilterTCBottom,
   FilterTCBSub,
+  FilterTCBottom,
+  FilterTCTop,
+  FilterTopContainer,
+  Input,
+  TCSubContainer,
+  TableContianer,
 } from '../../../modal/External/ExternalFilter'
+
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { ExRadioWrap } from '../../../modal/External/ExternalFilter'
 
@@ -32,15 +35,18 @@ import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../comm
 import useReactQuery from '../../../hooks/useReactQuery'
 import { getPackageProductsList, postCreatePackage } from '../../../api/SellProduct'
 import { useLocation } from 'react-router-dom'
+import { getPackageProductsList } from '../../../api/SellProduct'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 // import { getPackageProductsList } from '../../../api/packageProduct'
-import { add_element_field } from '../../../lib/tableHelpers'
-import { packageProductsDispatchFieldsCols, packageProductsDispatchFields } from '../../../constants/admin/SellPackage'
-import Table from '../../Table/Table'
-import { CRWMainBottom } from '../../Operate/Common/Datasheet/DatasheetEdit'
-import { CRWSub } from '../../Operate/Common/Datasheet/DatasheetEdit'
 import { useAtom } from 'jotai'
+import { packageProductsDispatchFields, packageProductsDispatchFieldsCols } from '../../../constants/admin/SellPackage'
+import { add_element_field } from '../../../lib/tableHelpers'
 import SingleAllProduct from '../../../modal/Multi/SingleAllProduct'
 import { packageCreateObjAtom } from '../../../store/Layout/Layout'
+import { CRWMainBottom, CRWSub } from '../../Operate/Common/Datasheet/DatasheetEdit'
+import usePaging from '../../Operate/hook/usePaging'
+import { onSizeChange } from '../../Operate/utils'
+import Table from '../../Table/Table'
 
 import useMutationQuery from '../../../hooks/useMutationQuery'
 
@@ -95,7 +101,7 @@ const PackageCreate = () => {
     },
   )
 
-  const { data, isSuccess } = useQuery(
+  const { data, isSuccess, isLoading } = useQuery(
     ['packageProducts', requestParams],
     () => getPackageProductsList(requestParams),
     {
@@ -108,7 +114,8 @@ const PackageCreate = () => {
 
   const [getRow, setGetRow] = useState('')
   const [filteredData, setFilteredData] = useState([])
-
+  console.log('data :', data)
+  console.log('filteredData :', filteredData)
   const handleSelectChange = (selectedOption, name) => {}
   const [isRotated, setIsRotated] = useState(false)
 
@@ -161,6 +168,14 @@ const PackageCreate = () => {
     }
   }
 
+  // console.log(
+  //   'SELECT',
+  //   select.map((i) => {
+  //     return
+  //   }),
+  // )
+
+  const { pagination, onPageChanage } = usePaging(data, setRequestParams)
   useEffect(() => {
     if (!select) return null
 
@@ -272,7 +287,7 @@ const PackageCreate = () => {
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown handleDropdown={(e) => onSizeChange(e, setRequestParams)} />
             <Excel />
           </div>
         </TCSubContainer>
@@ -285,6 +300,13 @@ const PackageCreate = () => {
             <WhiteBlackBtn onClick={handleAddProduct}>제품 추가</WhiteBlackBtn>
           </div>
         </TCSubContainer>
+        <Table
+          getCol={getCol}
+          getRow={select.length <= 0 ? [...getRow, ...select] : select}
+          tablePagination={pagination}
+          onPageChange={onPageChanage}
+          loading={isLoading}
+        />
         <Table getCol={getCol} getRow={select.length === 0 ? getRow : [...getRow, ...select]} />
         <CRWMainBottom>
           <CRWSub>
