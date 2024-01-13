@@ -25,12 +25,12 @@ import {
   FilterTCBottom,
   FilterTCBSub,
 } from '../../../modal/External/ExternalFilter'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { ExRadioWrap } from '../../../modal/External/ExternalFilter'
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { getPackageProductsList } from '../../../api/SellProduct'
+import { getPackageProductsList, postCreatePackage } from '../../../api/SellProduct'
 import { useLocation } from 'react-router-dom'
 // import { getPackageProductsList } from '../../../api/packageProduct'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -41,6 +41,9 @@ import { CRWSub } from '../../Operate/Common/Datasheet/DatasheetEdit'
 import { useAtom } from 'jotai'
 import SingleAllProduct from '../../../modal/Multi/SingleAllProduct'
 import { packageCreateObjAtom } from '../../../store/Layout/Layout'
+
+import useMutationQuery from '../../../hooks/useMutationQuery'
+
 const PackageCreate = () => {
   const radioDummy = ['경매', '상시']
   const prevData = useLocation().state?.data
@@ -53,6 +56,9 @@ const PackageCreate = () => {
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
   const [savedRadioValue, setSavedRadioValue] = useState('')
   const [select, setSelect] = useState([])
+  const [selectUid, setSelectUid] = useState([])
+  const [curUid, setCuruid] = useState([])
+
   useEffect(() => {
     setCheckRadio(
       Array.from({ length: radioDummy.length }, (_, index) => {
@@ -67,6 +73,15 @@ const PackageCreate = () => {
 
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
+
+    const updateValue = radioDummy[checkedIndex]
+    setSavedRadioValue(() => {
+      if (updateValue === '경매') {
+        return '경매 대상재'
+      } else if (updateValue === '상시') {
+        return '상시판매 대상재'
+      }
+    })
   }, [checkRadio])
   //checkSales
 
@@ -115,19 +130,14 @@ const PackageCreate = () => {
   }
   useEffect(() => {
     if (isSuccess && prevData) {
-      setFilteredData((p) => {
-        packageData.map((item) => {
-          console.log('아이템', item)
-          // return {
-          //   ...item,
-          //   uid: item?.productUid,
-          // }
-        })
-      })
+      setFilteredData(packageData)
     }
   }, [isSuccess, requestParams, packageData])
 
-  console.log('아이템', filteredData)
+  useEffect(() => {
+    setCuruid(filteredData.map((item) => item?.productUid))
+    console.log(curUid)
+  }, [isSuccess])
   useEffect(() => {
     if (isSuccess && filteredData === undefined) {
       packageData && setFilteredData(packageData)
@@ -151,12 +161,53 @@ const PackageCreate = () => {
     }
   }
 
-  // console.log(
-  //   'SELECT',
-  //   select.map((i) => {
-  //     return
-  //   }),
-  // )
+  useEffect(() => {
+    if (!select) return null
+
+    console.log(select.map((i) => i['고유 번호']))
+    setSelectUid(() => select.map((i) => i['고유 번호']))
+    console.log(selectUid)
+  }, [select])
+
+  const [createRequest, setCreateRequest] = useState({})
+  const [updateRequest, setUpdateRequest] = useState({})
+
+  useEffect(() => {
+    setCreateRequest({
+      name: packageName,
+      saleType: savedRadioValue,
+      productUids: selectUid,
+    })
+  }, [packageName, savedRadioValue, selectUid])
+
+  useEffect(() => {
+    setUpdateRequest({
+      name: packageName,
+      saleType: savedRadioValue,
+      productUids: [...curUid, ...selectUid],
+      price: price,
+      uid: prevData['고유 번호'],
+    })
+  }, [packageName, savedRadioValue, selectUid, price])
+
+  const { mutate: create } = useMutationQuery(['query'], postCreatePackage)
+  const { mutate: update } = useMutationQuery(['query'], postCreatePackage)
+  const handleSubmit = () => {
+    console.log('어디서 3번이 찍히는걸까 ')
+    create(createRequest, {
+      onSuccess: () => {
+        window.location.reload()
+      },
+    })
+  }
+
+  const handleUpdate = () => {
+    update(updateRequest, {
+      onSuccess: () => {
+        // window.location.reload()
+      },
+    })
+  }
   return (
     <FilterContianer>
       <h1>{mode}</h1>
@@ -234,16 +285,22 @@ const PackageCreate = () => {
             <WhiteBlackBtn onClick={handleAddProduct}>제품 추가</WhiteBlackBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={select.length <= 0 ? [...getRow, ...select] : select} />
+        <Table getCol={getCol} getRow={select.length === 0 ? getRow : [...getRow, ...select]} />
         <CRWMainBottom>
           <CRWSub>
             <BtnWrap>
               <WhiteBtn width={90} height={50} style={{ marginRight: '10px' }}>
                 돌아가기
               </WhiteBtn>
-              <BlackBtn width={90} height={50}>
-                등록
-              </BlackBtn>
+              {!prevData ? (
+                <BlackBtn width={90} height={50} onClick={handleSubmit}>
+                  등록
+                </BlackBtn>
+              ) : (
+                <BlackBtn width={90} height={50} onClick={handleUpdate}>
+                  수정
+                </BlackBtn>
+              )}
             </BtnWrap>
           </CRWSub>
         </CRWMainBottom>

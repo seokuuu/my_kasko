@@ -1,28 +1,29 @@
-import {useCallback, useEffect, useRef, useState} from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import Excel from '../../../components/TableInner/Excel'
 
-import {SkyBtn, WhiteRedBtn} from '../../../common/Button/Button'
-import {btnCellUidAtom, selectedRowsAtom, toggleAtom, userPageDestiEditModal} from '../../../store/Layout/Layout'
+import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { btnCellUidAtom, selectedRowsAtom, toggleAtom, userPageDestiEditModal } from '../../../store/Layout/Layout'
 
-import {FilterContianer, FilterHeader, TableContianer, TCSubContainer} from '../../../modal/External/ExternalFilter'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
 
 import useReactQuery from '../../../hooks/useReactQuery'
-import {useAtom} from 'jotai'
-import {isArray} from '../../../lib'
-import {deleteDestination} from '../../../api/myPage/userDestination'
-import {useMutation, useQueryClient} from '@tanstack/react-query'
+import { useAtom } from 'jotai'
+import { isArray } from '../../../lib'
+import { deleteDestination } from '../../../api/myPage/userDestination'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import {getDestination} from '../../../api/myPage'
+import { getDestination } from '../../../api/myPage'
 import Table from '../../../pages/Table/Table'
+import usePaging from '../../../hooks/usePaging'
 import {
   UserManageCustomerDestinationManageFields,
   UserManageCustomerDestinationManageFieldsCols,
 } from '../../../constants/admin/UserManage'
-import {add_element_field} from '../../../lib/tableHelpers'
+import { add_element_field } from '../../../lib/tableHelpers'
 import DestinationEdit from './DestinationEdit'
 
 const Destination = ({ setChoiceComponent }) => {
@@ -34,13 +35,6 @@ const Destination = ({ setChoiceComponent }) => {
   const [savedRadioValue, setSavedRadioValue] = useState('')
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
-
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
   }, [checkRadio])
 
   const handleSelectChange = (selectedOption, name) => {
@@ -82,14 +76,19 @@ const Destination = ({ setChoiceComponent }) => {
 
   console.log('checkedArray', checkedArray)
 
-  const dummy = {
+  const [request, setRequest] = useState({
     pageNum: 1,
     pageSize: 5,
-  }
-
-  const { isLoading, isError, data, isSuccess } = useReactQuery(dummy, 'getDestination', getDestination)
+  })
+  const { isLoading, isError, data, isSuccess } = useReactQuery(request, 'getDestination', getDestination)
+  const [pages, setPages] = useState([])
   const resData = data?.data?.data?.list
+  const pagination = data?.data?.data?.pagination
 
+  // const { onPageChange } = usePaging(data, setRequest)
+  const onPageChange = (value) => {
+    setRequest((p) => ({ ...p, pageNum: Number(value) }))
+  }
   if (isError) console.log('데이터 request ERROR')
 
   useEffect(() => {
@@ -97,6 +96,7 @@ const Destination = ({ setChoiceComponent }) => {
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, UserManageCustomerDestinationManageFields))
+      setPages(pagination)
     }
   }, [isSuccess, resData])
 
@@ -129,7 +129,7 @@ const Destination = ({ setChoiceComponent }) => {
       alert('선택해주세요!')
     }
   }, [checkedArray])
-
+  console.log(request.pageSize)
   return (
     <>
       {switchDestiEdit ? (
@@ -150,7 +150,11 @@ const Destination = ({ setChoiceComponent }) => {
                 <Hidden />
               </div>
               <div>
-                <PageDropdown />
+                <PageDropdown
+                  handleDropdown={(e) => {
+                    setRequest((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))
+                  }}
+                />
                 <Excel />
               </div>
             </TCSubContainer>
@@ -164,7 +168,13 @@ const Destination = ({ setChoiceComponent }) => {
               </div>
             </TCSubContainer>
 
-            <Table getCol={getCol} getRow={getRow} />
+            <Table
+              getCol={getCol}
+              getRow={getRow}
+              tablePagination={pages}
+              onPageChange={onPageChange}
+              isRowClickable={true}
+            />
           </TableContianer>
         </FilterContianer>
       )}
