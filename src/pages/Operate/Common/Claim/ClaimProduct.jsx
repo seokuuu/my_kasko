@@ -33,7 +33,7 @@ const ClaimProduct = () => {
   // 검색필터 상태값
   const [search, setSearch] = useState({
     pageNum: 1,
-    pageSize: 1,
+    pageSize: 50,
     storage: { label: '전체', value: '', address: null }, // 창고 구분
     supplier: supplierList[0], // 매입처
     spec: '', // 규격 약호
@@ -126,7 +126,12 @@ const ClaimProduct = () => {
 
       {/* 테이블 */}
       <TableContianer>
-        <CommonTableHeader isNoneBtn={true} totalLength={data && data.list.length} selectedLength={selectedLength} />
+        <CommonTableHeader
+          isNoneBtn={true}
+          totalLength={data && data.list.length}
+          selectedLength={selectedLength}
+          setState={setSearch}
+        />
         <Table
           getCol={ClaimProductListFieldCols}
           getRow={row}

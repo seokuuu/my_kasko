@@ -82,7 +82,7 @@ function createFormData(params, type) {
 export function useClaimListQuery(params) {
   console.log('클레임 목록 조회 :', Filtering(params))
   return useQuery({
-    queryKey: [...CLAIM_KEYS.getClaimList, params.pageNum],
+    queryKey: [...CLAIM_KEYS.getClaimList, params.pageNum, params.pageSize],
     queryFn: async function () {
       const response = await client.get(urls.claim, {
         params: FilteringV2(params),
@@ -99,7 +99,7 @@ export function useClaimListQuery(params) {
 // 클레임 등록할 제품 목록
 export function useProductListToRegisterClaimQuery(params) {
   return useQuery({
-    queryKey: [...CLAIM_KEYS.getProductToClaim, params.pageNum],
+    queryKey: [...CLAIM_KEYS.getProductToClaim, params.pageNum, params.pageSize],
     queryFn: async function () {
       const response = await client.get(urls.claimProduct, {
         params: FilteringV2(params),

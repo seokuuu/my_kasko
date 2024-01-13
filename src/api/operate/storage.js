@@ -21,7 +21,7 @@ const STORAGE_KEYS = {
 // 창고 목록 조회
 export function useStorageListQuery(params) {
   return useQuery({
-    queryKey: [...STORAGE_KEYS.getStorageList, params.pageNum],
+    queryKey: [...STORAGE_KEYS.getStorageList, params.pageNum, params.pageSize],
     queryFn: async function () {
       const response = await client.get(urls, { params })
       return response.data.data

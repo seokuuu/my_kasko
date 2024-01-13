@@ -79,7 +79,12 @@ const FAQ = ({}) => {
       {/* 테이블 */}
       <TableContianer>
         {/* 테이블 헤더 (목록 갯수 & 선택 갯수 * 삭제,등록 버튼) */}
-        <TableHeader totalLength={data ? data.list.length : 0} selected={selected} refetch={refetch} />
+        <TableHeader
+          totalLength={data ? data.list.length : 0}
+          selected={selected}
+          refetch={refetch}
+          setState={setSearch}
+        />
         {/* 테이블 목록 */}
         <Table
           getCol={FaqListFieldCols}

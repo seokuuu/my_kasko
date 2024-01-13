@@ -131,6 +131,7 @@ const Popup = ({}) => {
           toRegister={toRegister}
           title={'팝업'}
           selectedLength={selectedLength}
+          setState={setSearch}
         />
         {/* 테이블 */}
         <Table

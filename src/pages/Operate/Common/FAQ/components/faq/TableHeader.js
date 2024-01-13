@@ -3,15 +3,17 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useFaqRemoveMutation } from '../../../../../../api/operate/faq'
 import { SkyBtn, WhiteRedBtn } from '../../../../../../common/Button/Button'
+import PageDropdown from '../../../../../../components/TableInner/PageDropdown'
 import AlertPopup from '../../../../../../modal/Alert/AlertPopup'
 import { TCSubContainer } from '../../../../../../modal/External/ExternalFilter'
 import { popupAtom, popupObject, popupTypeAtom } from '../../../../../../store/Layout/Layout'
+import { onSizeChange } from '../../../../utils'
 
 /**
  * @description
  * FAQ 테이블 헤더입니다.
  */
-const TableHeader = ({ totalLength, selected, refetch }) => {
+const TableHeader = ({ totalLength, selected, refetch, setState }) => {
   const navigate = useNavigate()
 
   // FAQ 삭제 API
@@ -47,7 +49,7 @@ const TableHeader = ({ totalLength, selected, refetch }) => {
         <div>
           FAQ 목록 (선택 <span>{selectedLength}</span> / {totalLength}개 )
         </div>
-        <div></div>
+        <PageDropdown handleDropdown={(e) => onSizeChange(e, setState)} />
       </TCSubContainer>
       <TCSubContainer>
         <div>

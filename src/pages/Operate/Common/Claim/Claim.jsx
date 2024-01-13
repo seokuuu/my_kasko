@@ -15,8 +15,8 @@ import {
 import Table from '../../../Table/Table'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { claimInitState } from '../../constants'
-import ClaimHeader from './components/ClaimHeader'
 import usePaging from '../../hook/usePaging'
+import ClaimHeader from './components/ClaimHeader'
 
 /**
  * @description
@@ -103,6 +103,7 @@ const Claim = () => {
           selectedLength={selectedLength}
           toRegister={toRegister}
           removeEventHandler={removeEventHandler}
+          setState={setSearch}
         />
         <Table
           getCol={ClaimListFieldCols}

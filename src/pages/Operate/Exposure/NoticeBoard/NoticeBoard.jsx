@@ -134,6 +134,7 @@ const NoticeBoard = ({}) => {
           toRegister={toRegister}
           title={'전광판'}
           selectedLength={selectedLength}
+          setState={setSearch}
         />
         {/* 테이블 */}
         <Table
