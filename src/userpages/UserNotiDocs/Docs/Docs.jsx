@@ -43,7 +43,7 @@ import { UserNoticeListFieldCols, UserNoticeListFields } from '../../../constant
 import useReactQuery from '../../../hooks/useReactQuery'
 import { useNoticeListQuery } from '../../../api/operate/notice'
 import moment from 'moment'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import TableTest from '../../../pages/Table/TableTest'
 const Docs = () => {
   // const handleSelectChange = (selectedOption, name) => {
@@ -53,15 +53,16 @@ const Docs = () => {
   //   // }));
   // }
   const [title, setTitle] = useState('')
+  const { pathname } = useLocation()
 
-  const Params = {
+  const [params, setParams] = useState({
     type: '자료실',
     pageNum: 1,
-    pageSize: 100,
+    pageSize: 10,
     category: '제목',
-    keyword: title,
-  }
-  const { isSuccess, data: Docs, refetch } = useNoticeListQuery(Params)
+    keyword: '',
+  })
+  const { isSuccess, data: Docs, refetch } = useNoticeListQuery(params)
   const [isRotated, setIsRotated] = useState(false)
   const [getRow, setGetRow] = useState('')
   const navigate = useNavigate()
@@ -69,14 +70,21 @@ const Docs = () => {
   const getCol = tableField.current
   const [fixed, setFixed] = useState([])
   const fixedItem = Docs && Docs?.list.filter((i) => i.status !== 0)
-  // const resData = Docs?.list
-  // console.log(resData)
-  // Function to handle image click and toggle rotation
+  const [pages, setPages] = useState([])
   useEffect(() => {
     if (!title && fixedItem) {
       setFixed(fixedItem)
     }
   }, [Docs])
+
+  useEffect(() => {
+    setTitle('')
+    refetch()
+  }, [pathname])
+  useEffect(() => {
+    setParams((p) => ({ ...p, keyword: title }))
+  }, [title])
+
   // useEffect 관련 에러가 나와서 따로 빼서 처리
   const handleImageClick = () => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
@@ -155,6 +163,7 @@ const Docs = () => {
     if (!isSuccess && !getData) return null
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, UserNoticeListFields))
+      setPages(Docs?.pagination)
     }
   }
   useEffect(() => {
@@ -176,6 +185,9 @@ const Docs = () => {
 
   const handleSearch = () => {
     refetch()
+  }
+  const onPageChange = (num) => {
+    setParams((p) => ({ ...p, pageNum: Number(num) }))
   }
   return (
     <FilterContianer>
@@ -230,13 +242,20 @@ const Docs = () => {
             <Hidden />
           </div>
           <div style={{ gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown
+              handleDropdown={(e) => {
+                setParams((p) => ({ ...p, pageNum: 1, pageSize: e.target.value }))
+              }}
+            />
           </div>
         </TCSubContainer>
 
         <Table
           getRow={getRow}
           getCol={getCol}
+          isRowClickable={true}
+          tablePagination={pages}
+          onPageChange={onPageChange}
           setChoiceComponent={(e) => {
             const uid = e.고유값
             navigate(`/userpage/docs/${uid}`, { state: { data: e } })

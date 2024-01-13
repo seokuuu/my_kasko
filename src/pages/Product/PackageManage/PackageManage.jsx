@@ -81,23 +81,29 @@ const PackageManage = ({}) => {
   const tableFields = useRef(packageDispatchFieldsCols)
   const getCol = tableFields.current
 
-  const parameter = { pageNum: 1, pageSize: 1000, saleType: '' }
+  const [parameter, setParmeter] = useState({
+    pageNum: 1,
+    pageSize: 50,
+    saleType: '',
+  })
   const { data, isSuccess } = useReactQuery(parameter, 'package-list', getPackageList)
   const packageList = data?.r
   const pagination = data?.pagination
 
   const [getRow, setGetRow] = useState('')
+  const [pages, setPages] = useState([])
   const [filteredData, setFilterData] = useState([])
 
   useEffect(() => {
-    if (packageList !== undefined && isSuccess) {
-      setFilterData(packageList)
-    }
-    if (!isSuccess && !filteredData) return null
+    // if (packageList !== undefined && isSuccess) {
+    //   setFilterData(packageList)
+    // }
+    if (!isSuccess && !packageList) return
     if (Array.isArray(filteredData)) {
-      setGetRow(add_element_field(filteredData, packageDispatchFields))
+      setGetRow(add_element_field(packageList, packageDispatchFields))
+      setPages(pagination)
     }
-  }, [isSuccess, filteredData])
+  }, [isSuccess, packageList])
 
   // 체크박스,라디오 관련 이펙트 함수
   useEffect(() => {
@@ -149,7 +155,9 @@ const PackageManage = ({}) => {
       setToggleMsg('On')
     }
   }
-
+  const onChangePage = (value) => {
+    setParmeter((prev) => ({ ...prev, pageNum: Number(value) }))
+  }
   return (
     <FilterContianer>
       <FilterHeader>
@@ -280,7 +288,11 @@ const PackageManage = ({}) => {
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown
+              handleDropdown={(e) => {
+                setParmeter((p) => ({ ...p, pageNum: 1, pageSize: e.target.value }))
+              }}
+            />
             <Excel />
           </div>
         </TCSubContainer>
@@ -304,6 +316,9 @@ const PackageManage = ({}) => {
         <Table
           getRow={getRow}
           getCol={getCol}
+          tablePagination={pages}
+          onPageChange={onChangePage}
+          isRowClickable={true}
           setChoiceComponent={() => {
             // console.log('수정')
           }}

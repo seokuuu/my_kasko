@@ -43,28 +43,23 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { UserNoticeListFieldCols, UserNoticeListFields } from '../../../constants/userNotDoc'
 import { useNoticeListQuery } from '../../../api/operate/notice'
 import moment from 'moment'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import TableTest from '../../../pages/Table/TableTest'
 
 const Notice = () => {
   const [title, setTitle] = useState('')
+  const { pathname } = useLocation()
 
-  const Params = {
+  const [params, setParams] = useState({
     type: '공지사항',
     pageNum: 1,
     pageSize: 10,
     category: '제목',
-    keyword: title,
-  }
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
+    keyword: '',
+  })
   const [isRotated, setIsRotated] = useState(false)
 
-  const { isSuccess, data: notices, refetch } = useNoticeListQuery(Params)
+  const { isSuccess, data: notices, refetch } = useNoticeListQuery(params)
   const pagination = notices?.pagination
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
@@ -94,17 +89,21 @@ const Notice = () => {
   const [fixed, setFixed] = useState([])
   const fixedItem = notices && notices?.list.filter((i) => i.status !== 0)
   const notFixedItem = notices && topData2?.filter((i) => i.status !== 0)
-  console.log(fixedItem)
-
+  const [pages, setPages] = useState([])
   // 상단고정 데이터
-
+  console.log(pages)
   useEffect(() => {
     if (!title && fixedItem) {
       setFixed(fixedItem)
     }
   }, [notices])
-
-  console.log('FIXED', fixed)
+  useEffect(() => {
+    setTitle('')
+    refetch()
+  }, [pathname])
+  useEffect(() => {
+    setParams((p) => ({ ...p, keyword: title }))
+  }, [title])
   useEffect(() => {
     topData2.map((item, index) =>
       setResult((p) => [
@@ -143,31 +142,9 @@ const Notice = () => {
     [notices],
   )
 
-  // useEffect(() => {
-  //   if (notices) {
-  //     const newTopData = fixedItem.filter((d, index) => {
-  //       if (d.status) {
-  //         return {
-  //           ...d,
-  //           createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
-  //           작성자: d.name,
-  //           순번: '고정',
-  //           고유값: d.uid,
-  //           제목: d.getFile ? `${d.title} 📎` : `${d.title} `,
-  //           조회수: d.count,
-  //           타입: '자료실',
-  //         }
-  //       } else {
-  //         return null
-  //       }
-  //     })
-  //     setTopData2(newTopData)
-  //     // console.log('NEW TOP DATA :', newTopData)
-  //   }
-  // }, [notices])
   function createData(data) {
     var result = []
-    console.log(data)
+
     for (var i = 0; i < data?.length; i++) {
       result.push({
         작성일자: data[i].createDate ? moment(data[i].createDate).format('YYYY-MM-DD') : '-',
@@ -191,6 +168,7 @@ const Notice = () => {
   }
   useEffect(() => {
     gettingRow()
+    setPages(pagination)
     //타입, 리액트쿼리, 데이터 확인 후 실행
   }, [isSuccess, notices])
 
@@ -198,7 +176,9 @@ const Notice = () => {
     refetch()
   }
 
-  console.log('DATA2')
+  const onPageChange = (num) => {
+    setParams((p) => ({ ...p, pageNum: Number(num) }))
+  }
   return (
     <FilterContianer>
       <div>
@@ -252,14 +232,19 @@ const Notice = () => {
             <Hidden />
           </div>
           <div style={{ gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown
+              handleDropdown={(e) => {
+                setParams((p) => ({ ...p, pageNum: 1, pageSize: e.target.value }))
+              }}
+            />
           </div>
         </TCSubContainer>
         <div>
-          <TableTest
+          <Table
             getRow={getRow}
             getCol={getCol}
-            pagination={pagination}
+            tablePagination={pages}
+            onPageChange={onPageChange}
             setChoiceComponent={(e) => {
               const uid = e.고유값
               navigate(`/userpage/notice/${uid}`, { state: { data: e } })

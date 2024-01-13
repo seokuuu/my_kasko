@@ -28,15 +28,15 @@ import {
   TableContianer,
 } from '../../../modal/External/ExternalFilter'
 
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { ExRadioWrap } from '../../../modal/External/ExternalFilter'
+// import { useQuery } from '@tanstack/react-query'
+// import { ExRadioWrap } from '../../../modal/External/ExternalFilter'
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { getPackageProductsList, postCreatePackage } from '../../../api/SellProduct'
 import { useLocation } from 'react-router-dom'
-import { getPackageProductsList } from '../../../api/SellProduct'
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+// import { getPackageProductsList } from '../../../api/SellProduct'
+// import { RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 // import { getPackageProductsList } from '../../../api/packageProduct'
 import { useAtom } from 'jotai'
 import { packageProductsDispatchFields, packageProductsDispatchFieldsCols } from '../../../constants/admin/SellPackage'
@@ -307,7 +307,7 @@ const PackageCreate = () => {
           onPageChange={onPageChanage}
           loading={isLoading}
         />
-        <Table getCol={getCol} getRow={select.length === 0 ? getRow : [...getRow, ...select]} />
+        <div style={{ marginTop: '12px' }}>&nbsp;</div>
         <CRWMainBottom>
           <CRWSub>
             <BtnWrap>
