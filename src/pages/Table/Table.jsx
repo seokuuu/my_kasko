@@ -18,6 +18,7 @@ import {
 } from '../../modal/Common/Common.Styled'
 import { blueModalAtom, doubleClickedRowAtom, pageSort, selectedRowsAtom } from '../../store/Layout/Layout'
 import './TableUi.css'
+import PropTypes from 'prop-types'
 // import TableStyle from './Table.module.css'
 
 // import { get } from 'lodash'
@@ -431,6 +432,40 @@ const Table = ({
       {tablePagination && <CustomPagination pagination={tablePagination} onPageChange={onPageChange} />}
     </div>
   )
+}
+
+Table.propTypes = {
+  // Type definitions for each prop:
+  hei: PropTypes.number,
+  hei2: PropTypes.number,
+  getRow: PropTypes.array,
+  getCol: PropTypes.array,
+  setChoiceComponent: PropTypes.func,
+  size: PropTypes.number,
+  topData: PropTypes.array,
+  isRowClickable: PropTypes.bool,
+  handleOnRowClicked: PropTypes.func,
+  tablePagination: PropTypes.oneOfType([PropTypes.array, PropTypes.object]), // Note: tablePagination type is object.
+  onPageChange: PropTypes.func,
+  noRowsMessage: PropTypes.string,
+  loading: PropTypes.bool,
+}
+
+// Default props (optional but recommended for optional props):
+Table.defaultProps = {
+  hei: null, // Default value if not provided
+  hei2: null, // Default value if not provided
+  getRow: [], // Default to an empty array
+  getCol: [], // Default to an empty array
+  setChoiceComponent: () => {}, // Default to a no-op function
+  size: null, // Default value if not provided
+  topData: [], // Default to an empty array
+  isRowClickable: false, // Default to false
+  handleOnRowClicked: () => {}, // Default to a no-op function
+  tablePagination: {}, // Default value if not provided
+  onPageChange: () => {}, // Default to a no-op function
+  noRowsMessage: '데이터가 존재하지 않습니다.', // Default message
+  loading: false, // Default to false
 }
 
 export default Table
