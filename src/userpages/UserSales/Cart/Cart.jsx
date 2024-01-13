@@ -167,10 +167,7 @@ const Cart = ({}) => {
         <Table
           getCol={isSingleCategory ? userCartListSingleFieldsCols : userCartListPackageFieldCols}
           getRow={tableRowData}
-        />
-        {/* 페이지네이션 */}
-        <CustomPagination
-          pagination={paginationData}
+          tablePagination={paginationData}
           onPageChange={(p) => {
             handleParamsChange({ page: p })
           }}
