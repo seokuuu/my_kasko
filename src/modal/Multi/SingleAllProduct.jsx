@@ -62,6 +62,8 @@ import { CRWSub } from '../../pages/Operate/Common/Datasheet/DatasheetEdit'
 import { BtnWrap } from '../../common/Button/Button'
 import { WhiteBtn } from '../../common/Button/Button'
 import { OverAllMain, OverAllTable } from '../../common/Overall/Overall.styled'
+import usePaging from '../../hooks/usePaging'
+
 const SingleAllProduct = ({ setSelectPr, selectPr }) => {
   const DEFAULT_OBJ = { value: '', label: '전체' }
   const checkSales = ['전체', '판매재', '판매제외제', '판매 완료제']
@@ -78,17 +80,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr }) => {
   const [checkData2, setCheckData2] = useState(Array.from({ length: checkShips.length }, () => ''))
   const [checkData3, setCheckData3] = useState(Array.from({ length: checkTypes.length }, () => ''))
 
-  const requestParameter = {
-    pageNum: 1,
-    pageSize: 1000,
-    type: '일반',
-    category: '전체',
-  }
-
   const [getRow, setGetRow] = useState('')
-  const { data, isSuccess, refetch } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
-  const singleList = data?.r
-  const singleProductPage = data?.pagination
 
   const tableField = useRef(SingleDispatchFieldsCols)
   const getCol = tableField.current
@@ -115,13 +107,46 @@ const SingleAllProduct = ({ setSelectPr, selectPr }) => {
   const [productNoNumber, setProductNoNumber] = useState('')
   const [productNumber, setProductNumber] = useState('')
   const [pagiNation, setPagination] = useState({})
-  const [search, serSearch] = useState({
+  const [search, setSearch] = useState({
     productNumber: [],
   })
   const [storages, setStorages] = useState([])
   const [sparts, setSparts] = useState([])
   const selectedRef = useRef(null)
   const queryClient = new QueryClient()
+  const [requestParameter, setRequestParameter] = useState({
+    pageNum: 1,
+    pageSize: 50,
+    type: '일반',
+    category: '전체',
+  })
+  //✅ request, Data패칭
+  const [request, setRequest] = useState({
+    pageNum: 1,
+    pageSize: 50,
+    type: '일반',
+    category: '전체',
+    storage: { label: '전체', value: '' }, // 창고
+    spart: { label: '제품군', value: '' }, // 제품군
+    stockStatus: ProductOptions.stocks[0], //제품 상태
+    supplier: { label: '전체', value: '' }, // 매입처
+    preferThickNess: ProductOptions.preferThick[0], // 정척여부
+    grade: ProductOptions.grade[0], //제품 등급
+    maker: ProductOptions.stocks[0], // 제조사
+
+    spec: spec, //규격약호
+    minFailCount: 0, // 최소 유찰 횟수
+    maxFailCount: 0, // 최대 유찰 횟수
+
+    saleCategoryList: [], // 판매 구분
+    saleType: '', // 판매 유형
+    salePriceType: '', //판매가 유형
+
+    productNumberList: [],
+  })
+  const { data, isSuccess, refetch } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
+  const singleList = data?.r
+  const singleProductPage = data?.pagination
 
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
@@ -165,15 +190,13 @@ const SingleAllProduct = ({ setSelectPr, selectPr }) => {
 
   // 테이블 연결하기
   useEffect(() => {
-    if (filterData === undefined) {
-      singleList && setFilteredData(singleList)
-    }
-    if (!isSuccess && !filterData) return null
-    if (Array.isArray(filterData)) {
-      setGetRow(add_element_field(filterData, singleDispatchFields))
+    if (!isSuccess && !singleList) return
+    if (Array.isArray(singleList)) {
+      setGetRow(add_element_field(singleList, singleDispatchFields))
+      setPagination(singleProductPage)
     }
     //타입, 리액트쿼리, 데이터 확인 후 실행
-  }, [isSuccess, filterData])
+  }, [isSuccess, singleList])
 
   // 토글 쓰기
   const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -187,12 +210,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr }) => {
       setToggleMsg('On')
     }
   }
-  useEffect(() => {
-    if (isSuccess) {
-      setFilteredData(singleList)
-      setPagination(singleProductPage)
-    }
-  }, [isSuccess])
+
   useEffect(() => {
     if (storageList) return setStorages(storageList)
   }, [storageList])
@@ -241,7 +259,6 @@ const SingleAllProduct = ({ setSelectPr, selectPr }) => {
       setFilteredData(singleList)
       setPagination(singleProductPage)
     }
-    console.log('SELECT', select)
   }
 
   const handleSearch = () => {
@@ -273,7 +290,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr }) => {
     queryClient.prefetchQuery(['product', Filtering(request)], async () => {
       const res = await getSingleProducts(Filtering(request))
       // console.log('RES :', res.data)
-      setFilteredData(res.data?.list)
+      // setFilteredData(res.data?.list)
       setPagination(res.data?.pagination)
       return res.data?.list
     })
@@ -287,14 +304,12 @@ const SingleAllProduct = ({ setSelectPr, selectPr }) => {
       document.body.style.overflow = 'auto'
     }
   }, [])
-
+  const onPageChange = (value) => {
+    setRequestParameter((p) => ({ ...p, pageNum: Number(value) }))
+  }
   const handleSelectProduct = () => {
     setSelectPr(() =>
       checkBoxSelect.map((item) => {
-        console.log({
-          ...item,
-          '제품 고유 번호': item['고유 번호'],
-        })
         return {
           ...item,
           '패키지 번호': '',
@@ -515,7 +530,11 @@ const SingleAllProduct = ({ setSelectPr, selectPr }) => {
                   <Hidden />
                 </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
-                  <PageDropdown />
+                  <PageDropdown
+                    handleDropdown={(e) =>
+                      setRequestParameter((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))
+                    }
+                  />
                   <Excel />
                 </div>
               </TCSubContainer>
@@ -524,7 +543,13 @@ const SingleAllProduct = ({ setSelectPr, selectPr }) => {
                   선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총{singleProductPage?.totalWeight} 중량 kg
                 </div>
               </TCSubContainer>
-              <Table getRow={getRow} getCol={getCol} />
+              <Table
+                getRow={getRow}
+                getCol={getCol}
+                tablePagination={pagiNation}
+                isRowClickable={true}
+                onPageChange={onPageChange}
+              />
             </TableContianer>
             <CRWMainBottom>
               <CRWSub>

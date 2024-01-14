@@ -97,6 +97,8 @@ const RequestRecom = ({ setChoiceComponent }) => {
     }
   }, [data])
 
+  const onPageChange = (value) => {}
+
   return (
     <FilterContianer>
       {/* header */}
@@ -123,7 +125,7 @@ const RequestRecom = ({ setChoiceComponent }) => {
             <WhiteSkyBtn onClick={onRegister}>선별 등록</WhiteSkyBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={getRow} />
+        <Table getCol={getCol} getRow={getRow} tablePagination={[]} onPageChange={onPageChange} />
         <TCSubContainer style={{ paddingBottom: '0px' }}>
           <div>
             합계 금액(매입/매출 운임비):

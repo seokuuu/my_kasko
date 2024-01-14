@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Excel from '../../../components/TableInner/Excel'
 // import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, YellBtn, BtnBound, WhiteRedBtn, SkyBtn } from '../../../common/Button/Button'
+import { BlackBtn, BtnWrap, WhiteRedBtn } from '../../../common/Button/Button'
 // import DateGrid from '../../../components/DateGrid/DateGrid'
 // import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { WhiteBlackBtn } from '../../../common/Button/Button'
@@ -11,36 +11,39 @@ import { packageModeAtom, singleAllProductModal, toggleAtom } from '../../../sto
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 // import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
-import Hidden from '../../../components/TableInner/Hidden'
 import { WhiteBtn } from '../../../common/Button/Button'
+import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 import {
+  ExRadioWrap,
   FilterContianer,
   FilterHeader,
-  Input,
-  TableContianer,
-  TCSubContainer,
-  FilterTopContainer,
-  FilterTCTop,
-  FilterTCBottom,
   FilterTCBSub,
+  FilterTCBottom,
+  FilterTCTop,
+  FilterTopContainer,
+  Input,
+  TCSubContainer,
+  TableContianer,
 } from '../../../modal/External/ExternalFilter'
-import { useQuery } from '@tanstack/react-query'
-import { ExRadioWrap } from '../../../modal/External/ExternalFilter'
 
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { getPackageProductsList } from '../../../api/SellProduct'
+import { getPackageProductsList, postCreatePackage } from '../../../api/SellProduct'
 import { useLocation } from 'react-router-dom'
-// import { getPackageProductsList } from '../../../api/packageProduct'
-import { add_element_field } from '../../../lib/tableHelpers'
-import { packageProductsDispatchFieldsCols, packageProductsDispatchFields } from '../../../constants/admin/SellPackage'
-import Table from '../../Table/Table'
-import { CRWMainBottom } from '../../Operate/Common/Datasheet/DatasheetEdit'
-import { CRWSub } from '../../Operate/Common/Datasheet/DatasheetEdit'
 import { useAtom } from 'jotai'
+import { packageProductsDispatchFields, packageProductsDispatchFieldsCols } from '../../../constants/admin/SellPackage'
+import { add_element_field } from '../../../lib/tableHelpers'
 import SingleAllProduct from '../../../modal/Multi/SingleAllProduct'
 import { packageCreateObjAtom } from '../../../store/Layout/Layout'
+import { CRWMainBottom, CRWSub } from '../../Operate/Common/Datasheet/DatasheetEdit'
+import usePaging from '../../Operate/hook/usePaging'
+import { onSizeChange } from '../../Operate/utils'
+import Table from '../../Table/Table'
+
+import useMutationQuery from '../../../hooks/useMutationQuery'
+
 const PackageCreate = () => {
   const radioDummy = ['경매', '상시']
   const prevData = useLocation().state?.data
@@ -53,6 +56,9 @@ const PackageCreate = () => {
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
   const [savedRadioValue, setSavedRadioValue] = useState('')
   const [select, setSelect] = useState([])
+  const [selectUid, setSelectUid] = useState([])
+  const [curUid, setCuruid] = useState([])
+
   useEffect(() => {
     setCheckRadio(
       Array.from({ length: radioDummy.length }, (_, index) => {
@@ -67,6 +73,15 @@ const PackageCreate = () => {
 
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
+
+    const updateValue = radioDummy[checkedIndex]
+    setSavedRadioValue(() => {
+      if (updateValue === '경매') {
+        return '경매 대상재'
+      } else if (updateValue === '상시') {
+        return '상시판매 대상재'
+      }
+    })
   }, [checkRadio])
   //checkSales
 
@@ -80,7 +95,7 @@ const PackageCreate = () => {
     },
   )
 
-  const { data, isSuccess } = useQuery(
+  const { data, isSuccess, isLoading } = useQuery(
     ['packageProducts', requestParams],
     () => getPackageProductsList(requestParams),
     {
@@ -93,7 +108,8 @@ const PackageCreate = () => {
 
   const [getRow, setGetRow] = useState('')
   const [filteredData, setFilteredData] = useState([])
-
+  console.log('data :', data)
+  console.log('filteredData :', filteredData)
   const handleSelectChange = (selectedOption, name) => {}
   const [isRotated, setIsRotated] = useState(false)
 
@@ -115,19 +131,14 @@ const PackageCreate = () => {
   }
   useEffect(() => {
     if (isSuccess && prevData) {
-      setFilteredData((p) => {
-        packageData.map((item) => {
-          console.log('아이템', item)
-          // return {
-          //   ...item,
-          //   uid: item?.productUid,
-          // }
-        })
-      })
+      setFilteredData(packageData)
     }
   }, [isSuccess, requestParams, packageData])
 
-  console.log('아이템', filteredData)
+  useEffect(() => {
+    setCuruid(filteredData.map((item) => item?.productUid))
+    console.log(curUid)
+  }, [isSuccess])
   useEffect(() => {
     if (isSuccess && filteredData === undefined) {
       packageData && setFilteredData(packageData)
@@ -157,6 +168,55 @@ const PackageCreate = () => {
   //     return
   //   }),
   // )
+
+  const { pagination, onPageChanage } = usePaging(data, setRequestParams)
+  useEffect(() => {
+    if (!select) return null
+
+    console.log(select.map((i) => i['고유 번호']))
+    setSelectUid(() => select.map((i) => i['고유 번호']))
+    console.log(selectUid)
+  }, [select])
+
+  const [createRequest, setCreateRequest] = useState({})
+  const [updateRequest, setUpdateRequest] = useState({})
+
+  useEffect(() => {
+    setCreateRequest({
+      name: packageName,
+      saleType: savedRadioValue,
+      productUids: selectUid,
+    })
+  }, [packageName, savedRadioValue, selectUid])
+
+  useEffect(() => {
+    setUpdateRequest({
+      name: packageName,
+      saleType: savedRadioValue,
+      productUids: [...curUid, ...selectUid],
+      price: price,
+      uid: prevData['고유 번호'],
+    })
+  }, [packageName, savedRadioValue, selectUid, price])
+
+  const { mutate: create } = useMutationQuery(['query'], postCreatePackage)
+  const { mutate: update } = useMutationQuery(['query'], postCreatePackage)
+  const handleSubmit = () => {
+    console.log('어디서 3번이 찍히는걸까 ')
+    create(createRequest, {
+      onSuccess: () => {
+        window.location.reload()
+      },
+    })
+  }
+
+  const handleUpdate = () => {
+    update(updateRequest, {
+      onSuccess: () => {
+        // window.location.reload()
+      },
+    })
+  }
   return (
     <FilterContianer>
       <h1>{mode}</h1>
@@ -221,7 +281,7 @@ const PackageCreate = () => {
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
+            <PageDropdown handleDropdown={(e) => onSizeChange(e, setRequestParams)} />
             <Excel />
           </div>
         </TCSubContainer>
@@ -234,16 +294,29 @@ const PackageCreate = () => {
             <WhiteBlackBtn onClick={handleAddProduct}>제품 추가</WhiteBlackBtn>
           </div>
         </TCSubContainer>
-        <Table getCol={getCol} getRow={select.length <= 0 ? [...getRow, ...select] : select} />
+        <Table
+          getCol={getCol}
+          getRow={select.length <= 0 ? [...getRow, ...select] : select}
+          tablePagination={pagination}
+          onPageChange={onPageChanage}
+          loading={isLoading}
+        />
+        <Table getCol={getCol} getRow={select.length === 0 ? getRow : [...getRow, ...select]} />
         <CRWMainBottom>
           <CRWSub>
             <BtnWrap>
               <WhiteBtn width={90} height={50} style={{ marginRight: '10px' }}>
                 돌아가기
               </WhiteBtn>
-              <BlackBtn width={90} height={50}>
-                등록
-              </BlackBtn>
+              {!prevData ? (
+                <BlackBtn width={90} height={50} onClick={handleSubmit}>
+                  등록
+                </BlackBtn>
+              ) : (
+                <BlackBtn width={90} height={50} onClick={handleUpdate}>
+                  수정
+                </BlackBtn>
+              )}
             </BtnWrap>
           </CRWSub>
         </CRWMainBottom>

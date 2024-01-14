@@ -1,74 +1,69 @@
-import { useState, useEffect, useRef } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { BlackBtn, BtnBound, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnBound, BtnWrap, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn, ExcelBtn, YellBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
+
+import { GreyBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
-  selectedRowsAtom,
+  hyunDaiMultiModal,
   hyundaiModalAtom,
   hyundaiSpecAtom,
-  hyunDaiMultiModal,
-  toggleAtom,
   onClickCheckAtom,
+  selectedRowsAtom,
+  toggleAtom,
 } from '../../../store/Layout/Layout'
 
+import { useQueryClient } from '@tanstack/react-query'
+import { useAtom, useAtomValue } from 'jotai'
+import { getSingleProducts, patchSaleCategory } from '../../../api/SellProduct'
+import { getSPartList, getStorageList } from '../../../api/search'
+import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-import StandardFind from '../../../modal/Multi/StandardFind'
-import {
-  FilterContianer,
-  FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  ExCheckWrap,
-  ExCheckDiv,
-  ExInputsWrap,
-  SubTitle,
-  TCSubContainer,
-  MiniInput,
-  ExRadioWrap,
-} from '../../../modal/External/ExternalFilter'
+import { ProductOptions, supplierOptions } from '../../../common/Option/storage'
+import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import Excel from '../../../components/TableInner/Excel'
-import useReactQuery from '../../../hooks/useReactQuery'
-import useMutationQuery from '../../../hooks/useMutationQuery'
-import { getSingleProducts, gethyunDaiOriginal, patchSaleCategory } from '../../../api/SellProduct'
 import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constants/admin/Single'
-import Table from '../../Table/Table'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
-import { useAtom, useAtomValue } from 'jotai'
-import { QueryClient, useQueryClient } from '@tanstack/react-query'
+import {
+  ExCheckDiv,
+  ExCheckWrap,
+  ExInputsWrap,
+  ExRadioWrap,
+  FilterContianer,
+  FilterFooter,
+  FilterHeader,
+  FilterLeft,
+  FilterRight,
+  FilterSubcontianer,
+  Input,
+  MiniInput,
+  PWRight,
+  PartWrap,
+  ResetImg,
+  RowWrap,
+  SubTitle,
+  TCSubContainer,
+  TableContianer,
+  Tilde,
+} from '../../../modal/External/ExternalFilter'
+import StandardFind from '../../../modal/Multi/StandardFind'
 import { Filtering } from '../../../utils/filtering'
-import { getStorageList, getSPartList } from '../../../api/search'
-import { supplierOptions, ProductOptions } from '../../../common/Option/storage'
+import Table from '../../Table/Table'
 // import { requestDataAtom } from '../../../store/Table/SalesRequst'
 
-import ProductNumber from '../../../components/ProductNumber/ProductNumber'
-import { KilogramSum } from '../../../utils/KilogramSum'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import ProductNumber from '../../../components/ProductNumber/ProductNumber'
 import Multi2 from '../../../modal/Common/Multi2'
-import { changeCategoryAtom } from '../../../store/Layout/Popup'
-import TableModal from '../../../modal/Table/TableModal'
-import HyunDaiOriginal from './HyunDaiOriginal'
 import { popupObject } from '../../../store/Layout/Layout'
+import { changeCategoryAtom } from '../../../store/Layout/Popup'
+import { KilogramSum } from '../../../utils/KilogramSum'
+import usePaging from '../../Operate/hook/usePaging'
+import { onSizeChange } from '../../Operate/utils'
+import HyunDaiOriginal from './HyunDaiOriginal'
 const DEFAULT_OBJ = { value: '', label: '전체' }
 
 const Hyundai = ({}) => {
@@ -86,12 +81,12 @@ const Hyundai = ({}) => {
   const [checkData2, setCheckData2] = useState(Array.from({ length: checkShips.length }, () => ''))
   const [checkData3, setCheckData3] = useState(Array.from({ length: checkTypes.length }, () => ''))
 
-  const requestParameter = {
+  const [requestParameter, setRequestParameter] = useState({
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 50,
     type: '일반',
     category: '현대제철',
-  }
+  })
 
   const checkBoxSelect = useAtomValue(selectedRowsAtom)
   useEffect(() => {
@@ -135,7 +130,8 @@ const Hyundai = ({}) => {
   // Function to handle image click and toggle rotation
   const [isTableModal, setIsTableModal] = useAtom(onClickCheckAtom)
   const [getRow, setGetRow] = useState('')
-  const { data, isSuccess, refetch } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
+  const { data, isSuccess, refetch, isLoading } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
+  console.log('data :', data)
   const hyunDaiList = data?.r
   const hyunDaiPage = data?.pagination
 
@@ -238,7 +234,7 @@ const Hyundai = ({}) => {
 
   useEffect(() => {
     if (isSuccess) {
-      setFilteredData(() => hyunDaiList)
+      setFilteredData(hyunDaiList)
       setPagination(hyunDaiPage)
     }
   }, [isSuccess])
@@ -249,11 +245,10 @@ const Hyundai = ({}) => {
         setFilteredData((p) => {
           hyunDaiList.map((i, idx) => ({
             순번: idx,
-            ...p,
+            ...i,
           }))
         })
     }
-    console.log(filterData)
     if (!isSuccess && !filterData) return null
     if (Array.isArray(filterData)) {
       setGetRow(add_element_field(filterData, singleDispatchFields))
@@ -318,12 +313,12 @@ const Hyundai = ({}) => {
     setSelectProductNumber(() => checkBoxSelect?.map((i) => i['제품 번호']))
   }, [checkBoxSelect])
 
-  const option = {}
   const { mutate, isError } = useMutationQuery('change-category', patchSaleCategory)
   const changeSaleCategory = () => {
     const res = mutate(parameter, {
       onSuccess: () => {
         setIsMultiModal(false)
+        window.location.reload()
       },
       onError: (e) => {
         setErrorMsg(e.data.message)
@@ -342,6 +337,7 @@ const Hyundai = ({}) => {
     return res
   }
 
+  const { pagination, onPageChanage } = usePaging(data, setRequestParameter)
   return (
     <>
       <FilterContianer>
@@ -594,7 +590,7 @@ const Hyundai = ({}) => {
               <Hidden />
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <PageDropdown />
+              <PageDropdown handleDropdown={(e) => onSizeChange(e, setRequestParameter)} />
               <Excel />
             </div>
           </TCSubContainer>
@@ -618,7 +614,15 @@ const Hyundai = ({}) => {
               </WhiteBlackBtn>
             </div>
           </TCSubContainer>
-          <Table getRow={getRow} getCol={getCol} setChoiceComponent={() => {}} handleOnRowClicked={() => {}} />
+          <Table
+            getRow={getRow}
+            getCol={getCol}
+            setChoiceComponent={() => {}}
+            handleOnRowClicked={() => {}}
+            tablePagination={pagination}
+            onPageChange={onPageChanage}
+            loading={isLoading}
+          />
           <TCSubContainer bor>
             <div></div>
             <div style={{ display: 'flex', gap: '10px' }}>

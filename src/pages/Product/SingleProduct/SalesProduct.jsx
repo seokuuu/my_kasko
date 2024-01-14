@@ -1,78 +1,63 @@
-import { useState, useEffect, useRef } from 'react'
-import { styled } from 'styled-components'
+import { useQueryClient } from '@tanstack/react-query'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { MainSelect } from '../../../common/Option/Main'
 import {
   BlackBtn,
   BtnBound,
-  BtnWrap,
+  GreyBtn,
   TGreyBtn,
   WhiteBlackBtn,
   WhiteRedBtn,
   WhiteSkyBtn,
 } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn, ExcelBtn, YellBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-import ProductNumber from '../../../components/ProductNumber/ProductNumber'
+import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-import { QueryClient, useQueryClient } from '@tanstack/react-query'
+import { MainSelect } from '../../../common/Option/Main'
+import ProductNumber from '../../../components/ProductNumber/ProductNumber'
+import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
-  FilterContianer,
-  FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  GridWrap,
-  Tilde,
   DoubleWrap,
-  ResetImg,
-  TableContianer,
-  ExCheckWrap,
   ExCheckDiv,
   ExInputsWrap,
+  ExRadioWrap,
+  FilterContianer,
+  FilterFooter,
+  FilterHeader,
+  FilterLeft,
+  FilterRight,
+  FilterSubcontianer,
+  Input,
+  MiniInput,
+  PWRight,
+  PartWrap,
+  ResetImg,
+  RowWrap,
   SubTitle,
   TCSubContainer,
   TableBottomWrap,
-  MiniInput,
-  ExRadioWrap,
+  TableContianer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
-import Hidden from '../../../components/TableInner/Hidden'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
+import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
-import Excel from '../../../components/TableInner/Excel'
-import useReactQuery from '../../../hooks/useReactQuery'
+import { useAtom, useAtomValue } from 'jotai'
 import { getSingleProducts } from '../../../api/SellProduct'
+import { getSPartList, getStorageList } from '../../../api/search'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import { ProductOptions, supplierOptions } from '../../../common/Option/storage'
+import Excel from '../../../components/TableInner/Excel'
 import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constants/admin/Single'
-import Table from '../../Table/Table'
+import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import StandardFind from '../../../modal/Multi/StandardFind'
-import { useAtom, useAtomValue } from 'jotai'
-import { getSpecList } from '../../../api/search'
 import { specAtom } from '../../../store/Layout/Layout'
-import { getStorageList, getSPartList } from '../../../api/search'
-import {
-  supplierOptions,
-  makerOptions,
-  stocksStateOptions,
-  gradeOptions,
-  preferThickOptions,
-  ProductOptions,
-} from '../../../common/Option/storage'
-import { Filtering } from '../../../utils/filtering'
-import { filter } from 'lodash'
-import SingleProduct from './SingleProduct'
 import { KilogramSum } from '../../../utils/KilogramSum'
+import { Filtering } from '../../../utils/filtering'
+import usePaging from '../../Operate/hook/usePaging'
+import { onSizeChange } from '../../Operate/utils'
+import Table from '../../Table/Table'
 
 const SalesProduct = () => {
   const checkSales = ['전체', '판매재', '판매제외제', '판매 완료제']
@@ -136,13 +121,14 @@ const SalesProduct = () => {
 
   // Function to handle image click and toggle rotation
 
-  const requestParameter = {
+  const [requestParameter, setRequestParamter] = useState({
     pageNum: 1,
     pageSize: 1000,
     type: '일반',
     category: '판매제품',
-  }
-  const { data, isSuccess } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
+  })
+  const { data, isSuccess, isLoading } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
+  console.log('data :', data)
   const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
   const { data: spartList } = useReactQuery('', 'getSPartList', getSPartList)
   const SaleProductList = data?.r
@@ -295,6 +281,8 @@ const SalesProduct = () => {
     }
     console.log('SELECT', select)
   }
+
+  const { pagination: customPagination, onPageChanage } = usePaging(data, setRequestParamter)
   return (
     <>
       {' '}
@@ -549,7 +537,7 @@ const SalesProduct = () => {
               <Hidden />
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <PageDropdown />
+              <PageDropdown handleDropdown={(e) => onSizeChange(e, setRequestParamter)} />
               <Excel />
             </div>
           </TCSubContainer>
@@ -568,7 +556,13 @@ const SalesProduct = () => {
               <WhiteBlackBtn>판매 유형 변경</WhiteBlackBtn>
             </div>
           </TCSubContainer>
-          <Table getRow={getRow} getCol={getCol} />
+          <Table
+            getRow={getRow}
+            getCol={getCol}
+            loading={isLoading}
+            tablePagination={customPagination}
+            onPageChange={onPageChanage}
+          />
           <TCSubContainer bor>
             <div></div>
             <div style={{ display: 'flex', gap: '10px' }}>

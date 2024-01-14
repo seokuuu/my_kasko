@@ -32,7 +32,7 @@ import { add_element_field } from '../../lib/tableHelpers'
 export default function PackageDetailModal() {
   const [isModal, setIsModal] = useAtom(packageDetailModal)
   const select = useAtomValue(selectPackageAtom)
-  const [requestParams, setRequestParams] = useState({
+  const [param, setParam] = useState({
     pageNum: 1,
     pageSize: 1000,
     packageNumber: select['패키지 번호'],
@@ -43,9 +43,9 @@ export default function PackageDetailModal() {
   const getCol = tableField.current
   const [getRow, setGetRow] = useState('')
 
-  const { data, isSuccess } = useReactQuery(requestParams, 'package-list', getPackageProductsList)
+  const { data, isSuccess } = useReactQuery(param, 'package-list', getPackageProductsList)
   const detailList = data?.r
-  const detailPages = data?.pagination
+  const tablePagination = data?.pagination
   const [filteredData, setFilteredData] = useState([])
   // const [exFilterToggle, setExfilterToggle] = useAtom(toggleAtom)
   // const [toggleMsg, setToggleMsg] = useState('On')
@@ -76,6 +76,22 @@ export default function PackageDetailModal() {
       document.body.style.overflow = 'auto'
     }
   }, [])
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
+
   return (
     <OutSide>
       <Container>
@@ -124,7 +140,7 @@ export default function PackageDetailModal() {
                   <Hidden />
                 </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
-                  <PageDropdown />
+                  <PageDropdown handleDropdown={handleTablePageSize} />
                   <Excel />
                 </div>
               </TCSubContainer>
@@ -133,7 +149,7 @@ export default function PackageDetailModal() {
                   선택 중량<span> 2 </span>kg / 총 중량 kg
                 </div>
               </TCSubContainer>
-              <Table getRow={getRow} getCol={getCol} />
+              <Table getRow={getRow} getCol={getCol} tablePagination={tablePagination} onPageChange={onPageChange} />
             </TableContianer>
           </FilterContianer>
         </OverTable>

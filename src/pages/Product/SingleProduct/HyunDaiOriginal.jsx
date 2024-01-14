@@ -1,41 +1,37 @@
-import React, { useRef, useState, useEffect } from 'react'
-import TableModal from '../../../modal/Table/TableModal'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { gethyunDaiOriginal } from '../../../api/SellProduct'
-import { add_element_field } from '../../../lib/tableHelpers'
-import {
-  SingleDispatchFieldsCols,
-  StandardSingleEdit,
-  singleDispatchFields,
-} from '../../../constants/admin/HyunDaiOrigin'
 import { useAtom } from 'jotai'
-import { btnCellRenderAtom, btnCellUidAtom, onClickCheckAtom } from '../../../store/Layout/Layout'
-import Table from '../../Table/Table'
+import moment from 'moment'
+import React, { useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import { BlueBarHeader } from '../../../modal/Common/Common.Styled'
-import { WhiteCloseBtn } from '../../../modal/Common/Common.Styled'
+import { gethyunDaiOriginal } from '../../../api/SellProduct'
+import { queryClient } from '../../../api/query'
+import { BlackBtn } from '../../../common/Button/Button'
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import DateGrid from '../../../components/DateGrid/DateGrid'
+import Excel from '../../../components/TableInner/Excel'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constants/admin/HyunDaiOrigin'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { BlueBarHeader, WhiteCloseBtn } from '../../../modal/Common/Common.Styled'
 import {
   ExRadioWrap,
   FilterContianer,
   FilterFooter,
   FilterLeft,
   FilterSubcontianer,
+  GridWrap,
   PartWrap,
+  ResetImg,
   RowWrap,
   TCSubContainer,
   TableContianer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
-import Excel from '../../../components/TableInner/Excel'
-import { GridWrap } from '../../../modal/External/ExternalFilter'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { Tilde } from '../../../modal/External/ExternalFilter'
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { ResetImg } from '../../../modal/External/ExternalFilter'
-import { BlackBtn } from '../../../common/Button/Button'
-import moment from 'moment'
-import { queryClient } from '../../../api/query'
+import { btnCellRenderAtom, btnCellUidAtom, onClickCheckAtom } from '../../../store/Layout/Layout'
+import usePaging from '../../Operate/hook/usePaging'
+import { onSizeChange } from '../../Operate/utils'
+import Table from '../../Table/Table'
 
 const parameter = {
   pageNum: 2,
@@ -60,17 +56,17 @@ function HyunDaiOriginal({ title }) {
   const [radioData, setRadioData] = useState(Array.from({ length: radioDummy.length }, () => ''))
 
   const [request, setRequest] = useState({
-    pageNum: 2,
+    pageNum: 1,
     pageSize: 50,
-    startDate: '',
-    endDate: '',
-    timeOfDay: '',
+    startDate: '2023-08-17',
+    endDate: '2023-08-17',
+    timeOfDay: 'am',
   })
   const [isRotated, setIsRotated] = useState(false)
   const [getRow, setGetRow] = useState('')
   const tableRef = useRef(SingleDispatchFieldsCols)
   const getCol = tableRef.current
-  const { data: original, isSuccess } = useReactQuery(parameter, 'original', gethyunDaiOriginal)
+  const { data: original, isSuccess, isLoading } = useReactQuery(request, 'original', gethyunDaiOriginal)
   const [filterData, setFilteredData] = useState([])
   const [onClickCheck, setOnClickCheck] = useAtom(onClickCheckAtom)
   const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
@@ -78,7 +74,7 @@ function HyunDaiOriginal({ title }) {
   const d = original?.data?.list
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
-
+  console.log('data :', original)
   //====================== 라디오체크 (오전이냐 오후냐 선택하는 부분) ======================
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
@@ -134,10 +130,10 @@ function HyunDaiOriginal({ title }) {
 
   useEffect(() => {
     setRequest(() => ({
-      pageNum: 2,
-      pageSize: 10,
-      startDate: moment(startDate).format('YYYY-MM-DD') || '',
-      endDate: moment(endDate).format('YYYY-MM-DD') || '',
+      pageNum: 1,
+      pageSize: 50,
+      startDate: startDate ? moment(startDate).format('YYYY-MM-DD') : moment(new Date()).format('YYYY-MM-DD'),
+      endDate: endDate ? moment(endDate).format('YYYY-MM-DD') : moment(new Date()).format('YYYY-MM-DD'),
       timeOfDay: radioData.join(''),
     }))
   }, [startDate, endDate, radioData])
@@ -149,6 +145,8 @@ function HyunDaiOriginal({ title }) {
       return res.data?.list
     })
   }
+
+  const { pagination, onPageChanage } = usePaging(original?.data, setRequest)
   return (
     <OutSide>
       <Container>
@@ -210,14 +208,20 @@ function HyunDaiOriginal({ title }) {
           <TCSubContainer bor>
             <div>조회 목록 (총{' ' + original?.data?.pagination.listCount}개 )</div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <PageDropdown />
+              <PageDropdown handleDropdown={(e) => onSizeChange(e, setRequest)} />
               <Excel />
             </div>
           </TCSubContainer>
           <TCSubContainer bor>
             <div>총 {original?.data?.pagination.totalWeight} 중량 kg</div>
           </TCSubContainer>
-          <Table getRow={getRow} getCol={getCol} />
+          <Table
+            getRow={getRow}
+            getCol={getCol}
+            loading={isLoading}
+            tablePagination={pagination}
+            onPageChange={onPageChanage}
+          />
         </TableContianer>
       </Container>
     </OutSide>
