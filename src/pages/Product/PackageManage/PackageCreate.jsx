@@ -34,7 +34,7 @@ import {
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { getPackageProductsList, postCreatePackage } from '../../../api/SellProduct'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 // import { getPackageProductsList } from '../../../api/SellProduct'
 // import { RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 // import { getPackageProductsList } from '../../../api/packageProduct'
@@ -53,6 +53,8 @@ import useMutationQuery from '../../../hooks/useMutationQuery'
 const PackageCreate = () => {
   const radioDummy = ['경매', '상시']
   const prevData = useLocation().state?.data
+  const navigate = useNavigate()
+
   const [packageObj, setPackageObj] = useAtom(packageCreateObjAtom)
   const [packageName, setPackageName] = useState(prevData ? prevData['패키지 이름'] : packageObj?.packageName)
   const [price, setPrice] = useState(prevData ? prevData['패키지 경매&판매 시작가'] : packageObj?.price)
@@ -65,13 +67,21 @@ const PackageCreate = () => {
   const [selectUid, setSelectUid] = useState([])
   const [curUid, setCuruid] = useState([])
 
+  // 경매,상시 선택시 선택한 내용의 라디오가 선택되게끔 하는
   useEffect(() => {
     setCheckRadio(
       Array.from({ length: radioDummy.length }, (_, index) => {
-        if (prevData !== undefined && prevData['판매 유형'] === '상시판매 대상재') {
-          return index === 1
+        if (prevData === undefined) {
+          if (packageObj.sellType === '경매') return index === 0
+          else {
+            return index === 1
+          }
         } else {
-          return index === 0
+          if (prevData['판매 유형'] === '상시판매 대상재') {
+            return index === 1
+          } else {
+            return index === 0
+          }
         }
       }),
     )
@@ -96,7 +106,7 @@ const PackageCreate = () => {
   const [requestParams, setRequestParams] = useState(
     prevData && {
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 50,
       packageNumber: prevData['패키지 번호'],
     },
   )
@@ -108,25 +118,19 @@ const PackageCreate = () => {
       enabled: mode !== 'post',
     },
   )
+
   // const { data, isSuccess } = useReactQuery(requestParams, 'packageProducts', getPackageProductsList)
   const packageData = data?.r
   const packagePage = data?.pagination
 
+  console.log(packageData)
   const [getRow, setGetRow] = useState('')
   const [filteredData, setFilteredData] = useState([])
-  console.log('data :', data)
-  console.log('filteredData :', filteredData)
-  const handleSelectChange = (selectedOption, name) => {}
-  const [isRotated, setIsRotated] = useState(false)
-
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated((prevIsRotated) => !prevIsRotated)
-  }
 
   // 토글 쓰기
   const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
   const [toggleMsg, setToggleMsg] = useState('On')
+
   const toggleBtnClick = () => {
     setExfilterToggle((prev) => !prev)
     if (exFilterToggle === true) {
@@ -135,6 +139,7 @@ const PackageCreate = () => {
       setToggleMsg('On')
     }
   }
+
   useEffect(() => {
     if (isSuccess && prevData) {
       setFilteredData(packageData)
@@ -143,8 +148,8 @@ const PackageCreate = () => {
 
   useEffect(() => {
     setCuruid(filteredData.map((item) => item?.productUid))
-    console.log(curUid)
-  }, [isSuccess])
+  }, [isSuccess, filteredData])
+
   useEffect(() => {
     if (isSuccess && filteredData === undefined) {
       packageData && setFilteredData(packageData)
@@ -168,13 +173,6 @@ const PackageCreate = () => {
     }
   }
 
-  // console.log(
-  //   'SELECT',
-  //   select.map((i) => {
-  //     return
-  //   }),
-  // )
-
   const { pagination, onPageChanage } = usePaging(data, setRequestParams)
   useEffect(() => {
     if (!select) return null
@@ -196,22 +194,28 @@ const PackageCreate = () => {
   }, [packageName, savedRadioValue, selectUid])
 
   useEffect(() => {
-    setUpdateRequest({
-      name: packageName,
-      saleType: savedRadioValue,
-      productUids: [...curUid, ...selectUid],
-      price: price,
-      uid: prevData['고유 번호'],
-    })
+    setUpdateRequest(
+      prevData && {
+        name: packageName,
+        saleType: savedRadioValue,
+        productUids: [...curUid, ...selectUid],
+        price: price,
+        uid: prevData['고유 번호'],
+      },
+    )
   }, [packageName, savedRadioValue, selectUid, price])
 
   const { mutate: create } = useMutationQuery(['query'], postCreatePackage)
   const { mutate: update } = useMutationQuery(['query'], postCreatePackage)
   const handleSubmit = () => {
-    console.log('어디서 3번이 찍히는걸까 ')
+    // console.log('어디서 3번이 찍히는걸까 ')
     create(createRequest, {
       onSuccess: () => {
-        window.location.reload()
+        navigate(-1)
+        // console.log('성공')
+      },
+      onError: () => {
+        alert('Fail')
       },
     })
   }
@@ -219,13 +223,18 @@ const PackageCreate = () => {
   const handleUpdate = () => {
     update(updateRequest, {
       onSuccess: () => {
+        navigate(-1)
         // window.location.reload()
+      },
+      onError: (e) => {
+        alert(e)
       },
     })
   }
+
+  console.log('붙은 데이터 : ', [...getRow, ...select])
   return (
     <FilterContianer>
-      <h1>{mode}</h1>
       <FilterHeader>
         <h1>패키지 {prevData ? '수정' : '생성'}</h1>
         {/* 토글 쓰기 */}
@@ -302,7 +311,7 @@ const PackageCreate = () => {
         </TCSubContainer>
         <Table
           getCol={getCol}
-          getRow={select.length <= 0 ? [...getRow, ...select] : select}
+          getRow={select.length > 0 ? [...getRow, ...select] : getRow}
           tablePagination={pagination}
           onPageChange={onPageChanage}
           loading={isLoading}

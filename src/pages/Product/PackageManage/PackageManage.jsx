@@ -86,7 +86,7 @@ const PackageManage = ({}) => {
     pageSize: 50,
     saleType: '',
   })
-  const { data, isSuccess } = useReactQuery(parameter, 'package-list', getPackageList)
+  const { data, isSuccess, refetch } = useReactQuery(parameter, 'package-list', getPackageList)
   const packageList = data?.r
   const pagination = data?.pagination
 
@@ -95,9 +95,10 @@ const PackageManage = ({}) => {
   const [filteredData, setFilterData] = useState([])
 
   useEffect(() => {
-    // if (packageList !== undefined && isSuccess) {
-    //   setFilterData(packageList)
-    // }
+    refetch()
+  }, [])
+
+  useEffect(() => {
     if (!isSuccess && !packageList) return
     if (Array.isArray(filteredData)) {
       setGetRow(add_element_field(packageList, packageDispatchFields))

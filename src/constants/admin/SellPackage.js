@@ -73,7 +73,7 @@ export const packageDispatchFieldsCols = [
     },
   },
   { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '고유 번호', minWidth: 100,},
-  { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지 이름', minWidth: 100,},
+  { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지 이름', minWidth: 150,},
   { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지 번호', minWidth: 110,  
     cellRenderer: LinkCellRender,
     cellRendererParams: {
@@ -81,7 +81,7 @@ export const packageDispatchFieldsCols = [
       editType: 'openDetailModal',
       moveUrl:'/product/packageedit' // modal의 띄울 종류 (선택)
     }},
-  { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '경매 번호', minWidth: 100 },
+  { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '경매 번호', minWidth: 120 },
   { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '판매 구분', minWidth: 100 },
   { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '판매 유형', minWidth: 100 },
   { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지 경매&판매 시작가', minWidth: 200 },
