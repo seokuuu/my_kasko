@@ -14,7 +14,7 @@ const onCellClicked = (params) => {
 
 const LinkRenderer = ({ value }) => {
   return value ? (
-    <a href={`detail/${value}`} target="_blank" style={{ color: 'blue', textDecoration: 'underline' }} rel="noreferrer">
+    <a href={`detail/${value}`} style={{ color: 'blue', textDecoration: 'underline' }} rel="noreferrer">
       {value}
     </a>
   ) : (
@@ -142,6 +142,7 @@ export const AdminOrderManageFieldsCols = [
 ]
 
 export const DetailOrderFieldsManage = {
+  순번: '순번',
   '경매 번호': 'auctionNumber',
   '상시판매 번호': 'orderNumber',
   '상시판매 주문일자': 'createDate',
@@ -155,5 +156,4 @@ export const DetailOrderFieldsManage = {
   '제품 번호': 'productNumber',
   'ProNo.': 'productNoNumber',
 }
-// 순번 주문일자  확정전송일자 주문번호 제품번호
-// 경매번호 상시판매번호 패키지명 패키지번호 주문상태
+// 순번 - 차례대로 순번 1,2,3,4,5 처리하기

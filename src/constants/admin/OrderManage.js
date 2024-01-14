@@ -34,7 +34,7 @@ const LinkRenderer = (props) => {
   const url = `admin/order/detail?${queryParams}`
 
   return (
-    <a href={url} target="_blank" style={{ color: 'blue', textDecoration: 'underline' }} rel="noreferrer">
+    <a href={url} style={{ color: 'blue', textDecoration: 'underline' }} rel="noreferrer">
       {props.value || 'N'}
     </a>
   )

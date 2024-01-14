@@ -79,6 +79,8 @@ const AdminOrderDetail = ({}) => {
   const [param, setParam] = useState(paramData)
   const [detailOrderPagination, setDetailOrderPagination] = useState([])
   const [detailOrderListData, setDetailOrderListData] = useState(null)
+  const [checkOrderStart, setCheckOrderStart] = useState('') // 경매일자 시작
+  const [checkOrderEnd, setCheckOrderEnd] = useState('') // 경매일자 끝
 
   const { data: detailRes, isSuccess } = useReactQuery(param, 'getDetailOrderList', getDetailOrderList)
   useEffect(() => {
@@ -205,9 +207,19 @@ const AdminOrderDetail = ({}) => {
                   <PartWrap>
                     <h6>주문 일자</h6>
                     <GridWrap>
-                      <DateGrid bgColor={'white'} fontSize={17} />
+                      <DateGrid
+                        bgColor={'white'}
+                        fontSize={13}
+                        startDate={checkOrderStart}
+                        setStartDate={setCheckOrderStart}
+                      />
                       <Tilde>~</Tilde>
-                      <DateGrid bgColor={'white'} fontSize={17} />
+                      <DateGrid
+                        bgColor={'white'}
+                        fontSize={13}
+                        startDate={checkOrderEnd}
+                        setStartDate={setCheckOrderEnd}
+                      />
                     </GridWrap>
                   </PartWrap>
                   <PartWrap>
