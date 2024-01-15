@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import { popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Layout'
+import { popupAtom, popupObject, popupTypeAtom } from '../store/Layout/Layout'
 
 /**
  * @description
