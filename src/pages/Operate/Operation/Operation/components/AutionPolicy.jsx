@@ -5,7 +5,7 @@ import AuctionTopContents from './AuctionTopContents'
 import AuctionBottomContents from './AuctionBottomContents'
 import { useAutionPolicyMutation, useAutionPolicyQuery } from '../../../../../api/operate/autionPolicy'
 import moment from 'moment'
-import useConfirmMoal from '../../../../../hooks/useConfirmMoal'
+import useConfirmModal from '../../../../../hooks/useConfirmModal'
 import AlertPopup from '../../../../../modal/Alert/AlertPopup'
 
 /**
@@ -36,7 +36,7 @@ const AutionPolicy = () => {
 	})
 
 	// 확인 모달 관련 값들
-	const { popupSwitch, setPopupSwitch, setNowPopupType, nowPopup, setNowPopup, initConfirmModal } = useConfirmMoal()
+	const { popupSwitch, setPopupSwitch, setNowPopupType, nowPopup, setNowPopup, initConfirmModal } = useConfirmModal()
 
 	// 등록 및 수정
 	function submit() {

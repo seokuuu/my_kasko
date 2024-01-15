@@ -20,7 +20,7 @@ import { CustomSelect } from '../../../../common/Option/Main'
 import AlertPopup from '../../../../modal/Alert/AlertPopup'
 import { ExCheckWrap } from '../../../../modal/External/ExternalFilter'
 import { mainPopupSelectOptions } from '../../constants'
-import useConfirmMoal from '../../../../hooks/useConfirmMoal'
+import useConfirmModal from '../../../../hooks/useConfirmModal'
 // 팝업 등록
 const PopupPost = ({ isRegister }) => {
 	const { id } = useParams()
@@ -39,7 +39,7 @@ const PopupPost = ({ isRegister }) => {
 	})
 
 	// 확인 모달 관련 값들
-	const { popupSwitch, setPopupSwitch, setNowPopupType, nowPopup, setNowPopup, initConfirmModal } = useConfirmMoal()
+	const { popupSwitch, setPopupSwitch, setNowPopupType, nowPopup, setNowPopup, initConfirmModal } = useConfirmModal()
 
 	//  팝업 상세 API
 	const { data } = usePopupDetailsQuery(id)
