@@ -1,27 +1,25 @@
 import React, { Fragment, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
-import { useUserOrderDetailsQuery } from '../../../api/user'
+import { useUserDestinationUpdateRequestMutation, useUserOrderDetailsQuery } from '../../../api/user'
 import { BtnBound, TGreyBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import CustomPagination from '../../../components/pagination/CustomPagination'
 import { userOrderDetailsField, userOrderDetailsFieldsCols } from '../../../constants/user/order'
 import useTableData from '../../../hooks/useTableData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'
 import DepositRequestForm from '../../../modal/Docs/DepositRequestForm'
 import {
-  CustomInput,
   FilterContianer,
   FilterHeader,
   FilterTCTop,
   TCSubContainer,
-  TableContianer,
+  TableContianer
 } from '../../../modal/External/ExternalFilter'
-import Table from '../../../pages/Table/Table'
 import DestinationChange from '../../../modal/Multi/DestinationChange'
+import Table from '../../../pages/Table/Table'
 
 /**
  * @constant 기본 검색 값
@@ -34,7 +32,12 @@ const initialSearchParams = {
 /**
  * @constant 주문정보 테이블 칼럼
  */
-const INFO_COLUMNS = ['주문 번호', '고객사', '고객코드', '총 수량', '총 중량(KG)', '입금 요청 금액(원)']
+const INFO_COLUMNS = ['주문 번호', '고객사', '고객코드', '총 수량', '총 중량(KG)', '입금 요청 금액(원)'];
+
+/**
+ * @constant 제품번호 한글 키
+ */
+const UID_KEY = '고유 번호';
 
 /**
  * @constant 입금요청서 키페어
@@ -82,10 +85,6 @@ const getInfoRows = (data, salesNumber) => {
 /**
  * 사용자 주문 확인 상세 페이지
  * @param {string} props.salesNumber 상시판매 번호(경매 번호)
- * @todo
- * - 목적지 찾기/적용
- * - 목적지 승인요청
- * - 입금요청서 키페어 확인(공급가액-제품대,운송비,총합, VAT-제품대,운송비,총합 || orderData.list에 있으면 그냥 쓸 것)
  */
 const OrderDetail = ({ salesNumber }) => {
   // API 파라미터
@@ -103,81 +102,64 @@ const OrderDetail = ({ salesNumber }) => {
   // 인포테이블 데이터
   const infoData = useMemo(() => getInfoRows(orderData?.list || [], salesNumber), [orderData, salesNumber])
   // 선택항목 데이터
-<<<<<<< HEAD
-  const { selectedData, selectedWeightStr, selectedCountStr, hasSelected } = useTableSelection({weightKey: '중량'});
-=======
   const { selectedData, selectedWeightStr, selectedCountStr, hasSelected } = useTableSelection({ weightKey: '중량' })
-  // 목적지 변경 모드
-  const [destinationSearch, setDestinationSearch] = useState(false)
->>>>>>> master
   // 목적지 데이터 || 목적지 변경 항목 데이터
-  const [destination, setDestination] = useState(null) // { code: '', name: '', tel: '' }
-  const [destinationModifyItems, setDestinationModifyItems] = useState([])
+  const [destination, setDestination] = useState(null); // { code: '', name: '', tel: '' }
+  const [destinationUpdateItems, setDestinationUpdateItems] = useState([]);
+  // 목적지 변경 API
+  const { mutate: requestDestinationUpdate, isLoaidng: isRequstLoading } = useUserDestinationUpdateRequestMutation();
   // 입금요청서 발행 모드
-  const [receiptPrint, setReceiptPrint] = useState(false)
+  const [receiptPrint, setReceiptPrint] = useState(false);
+  // 목적지 변경항목 반영 테이블 데이터
+  const tableRowDataWithNewDestination = useMemo(() => {
+    const destinationItemUids = destinationUpdateItems.map(v => v[UID_KEY]);
+    const newTableRowData = tableRowData.map(v => {
+      if(destinationItemUids.includes(v[UID_KEY])) {
+        return ({...v, '목적지명': destination.name})
+      } 
+      return v;
+    });
+    return newTableRowData;
+  }, [destinationUpdateItems, tableRowData]);
 
   /**
-<<<<<<< HEAD
    * 목적지 적용 핸들러 
    * @description 서버 아닌 테이블에 노출되는 데이터에만 적용합니다.
-=======
-   * 목적지 적용 핸들러
->>>>>>> master
    */
   function handleDestinationApply() {
-    if (!destination) {
-      return alert('목적지를 검색해 주세요.')
+    if(!destination) {
+      return alert('목적지를 검색해 주세요.');
     }
-    if (!hasSelected) {
-      return alert('목적지를 적용할 상품을 선택해 주세요.')
-    }
-
-<<<<<<< HEAD
-    setDestinationModifyItems(selectedData.map(v => ({ ...v, destination: destination })));
-=======
-    //
-    setDestinationModifyItems(selectedData.map((v) => ({ ...v, destination: destination })))
->>>>>>> master
-    // 테이블 상에서 목적지 바뀌도록 수정
-  }
-
-  /**
-   * 목적지 승인 요청 핸들러
-<<<<<<< HEAD
-   * @description 서버에 적용합니다.
-   * @todo API 확인
-  */
- function handleDestinationApprovalRequest() {
-    if(!destinationModifyItems.length < 1) {
+    if(!hasSelected) {
       return alert('목적지를 적용할 상품을 선택해 주세요.');
     }
 
-    // 서버 승인 요청 API 코드
-    
-    setDestinationModifyItems([]);
+    setDestinationUpdateItems(selectedData.map(v => ({ ...v, destination: destination })));
+  }
+  
+  /**
+   * 목적지 승인 요청 핸들러
+   * @description 서버에 승인을 요청합니다.
+  */
+ function handleDestinationApprovalRequest() {
+    if(!destination) {
+      return alert('적용할 목적지를 선택해 주세요.');
+    }
+    if(destinationUpdateItems.length < 1) {
+      return alert('목적지를 적용할 상품을 선택해 주세요.');
+    }
+
+    requestDestinationUpdate({
+      updateList: destinationUpdateItems.map(v => ({
+        uid: v[UID_KEY],
+        requestCustomerDestinationUid: destination.uid
+      }))
+    });
+
+    setDestinationUpdateItems([]);
     setDestination(null);
   }
 
-=======
-   */
-  function handleDestinationApprovalRequest() {
-    if (!destinationModifyItems.length < 1) {
-      return alert('목적지를 적용할 상품을 선택해 주세요.')
-    }
-
-    // 승인 요청
-    setDestinationModifyItems([])
-    setDestination(null)
-  }
-
-  /**
-   * 입금 요청서 발행 함수
-   */
-  function handleReceiptPrint(e) {
-    e.preventDefaut()
-  }
-
->>>>>>> master
   // ERROR SECTION
   if (isError) {
     return <div>ERROR</div>
@@ -228,25 +210,12 @@ const OrderDetail = ({ salesNumber }) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <P>목적지</P>
-<<<<<<< HEAD
-            <DestinationChange 
+            <DestinationChange
               customerCode={infoData[2]} 
               customerName={infoData[1]} 
               value={destination}
               onSubmit={d => { setDestination(d) }} 
             />
-=======
-            <CustomInput placeholder="h50" width={60} />
-            <CustomInput placeholder="목적지명" width={120} />
-            <CustomInput placeholder="도착지 연락처" width={120} />
-            <WhiteBlackBtn
-              onClick={(v) => {
-                setDestinationSearch(true)
-              }}
-            >
-              찾기
-            </WhiteBlackBtn>
->>>>>>> master
             <TGreyBtn onClick={handleDestinationApply}>적용</TGreyBtn>
             <BtnBound />
             <WhiteBlackBtn onClick={handleDestinationApprovalRequest}>목적지 승인 요청</WhiteBlackBtn>
@@ -254,7 +223,7 @@ const OrderDetail = ({ salesNumber }) => {
         </TCSubContainer>
         {/* 테이블 */}
         <Table
-          getRow={tableRowData}
+          getRow={tableRowDataWithNewDestination}
           getCol={userOrderDetailsFieldsCols}
           loading={isLoading}
           paginationData={paginationData}

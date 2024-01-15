@@ -70,8 +70,8 @@ export const userOrderListField = {
  * @description 사용자 주문확인 상세 > 목록 테이블에서 사용합니다.
  */
 export const userOrderDetailsField = {
-  "고유 번호": "uid",
-  "제품 번호": "number",
+  "고유 번호": "orderUid",
+  "제품 번호": "productNumber",
   "규격 약호": "spec",
   "창고": "storageName",
   "제품 사양": "wdh",

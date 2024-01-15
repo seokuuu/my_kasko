@@ -9,6 +9,7 @@ const urls = {
     getOrder: '/sale-product/order',
     requestOrderCancel: '',
     getDestination: '/auction/destination',
+    modifyDestination: '/auction/successfulBid/request',
 };
 
 /* ==============================
@@ -110,3 +111,16 @@ export const useUserDestinationQuery = (param) => useQuery({
         return data.data; 
     },
   });
+
+export const useUserDestinationUpdateRequestMutation = () => useMutation({
+    mutationFn: async(param) => {
+        await client.post(urls.modifyDestination, param);
+    },
+    onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: 'order' });
+        return alert('목적지 변경 승인을 요청하였습니다.');
+    },
+    onError: () => {
+        return alert('목적지 변경 요청중 오류가 발생했습니다. 다시 시도해 주세요.');
+    }
+})
