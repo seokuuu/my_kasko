@@ -21,9 +21,9 @@ import usePaging from '../../hook/usePaging'
 
 /**
  * @description
- * 전광판 관리
+ * 전광판 관리 목록 내부 컴포넌트입니다.
  */
-const NoticeBoard = ({}) => {
+const NoticeBoard = () => {
   const navigate = useNavigate()
 
   // 서버 옵션(요청 변수)

@@ -16,8 +16,7 @@ import useConfirmMoal from '../../hook/useConfirmMoal'
 import IsExposure from './components/IsExposure'
 /**
  * @description
- * 전광판 등록
-
+ * 전광판 등록,수정 내부 컴포넌트입니다.
  */
 const NoticeBoardPost = () => {
   const { id } = useParams()

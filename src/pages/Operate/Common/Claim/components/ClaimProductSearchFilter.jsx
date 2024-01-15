@@ -1,12 +1,8 @@
 import { useAtom } from 'jotai'
 import React, { useState } from 'react'
 import { GreyBtn } from '../../../../../common/Button/Button'
-import { CheckImg2, StyledCheckSubSquDiv } from '../../../../../common/Check/CheckImg'
-import { CheckBox } from '../../../../../common/Check/Checkbox'
 import { MainSelect } from '../../../../../common/Option/Main'
 import {
-  ExCheckDiv,
-  ExCheckWrap,
   ExInputsWrap,
   FilterLeft,
   Input,
@@ -17,6 +13,7 @@ import {
   Tilde,
 } from '../../../../../modal/External/ExternalFilter'
 import { blueModalAtom } from '../../../../../store/Layout/Layout'
+import CustomCheckBox from '../../../UI/CustomCheckBox/CustomCheckBox'
 import useSelectList from '../../../hook/useSelectList'
 
 /**
@@ -24,13 +21,6 @@ import useSelectList from '../../../hook/useSelectList'
  * 클레임 제품 목록 검색 필터
  */
 const ClaimProductSearchFilter = ({ search, setSearch }) => {
-  const checkSales = ['전체', '판매재', '판매제외제']
-  const checkSaleType = ['전체', '경매 대상재', '상시 판매 대상재']
-  const checkSalePriceType = ['전체', '특가', '일반']
-  const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
-  const [check2, setCheck2] = useState(Array.from({ length: checkSales.length }, () => false))
-  const [check3, setCheck3] = useState(Array.from({ length: checkSales.length }, () => false))
-
   // 규격 약호 모달
   const [isModal, setIsModal] = useAtom(blueModalAtom)
 
@@ -155,36 +145,42 @@ const ClaimProductSearchFilter = ({ search, setSearch }) => {
         {/* 판매 구분 */}
         <PartWrap>
           <h6>판매 구분</h6>
-          <ExCheckWrap>
-            {checkSales.map((x, index) => (
-              <ExCheckDiv>
-                <StyledCheckSubSquDiv
-                  onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
-                  isChecked={check1[index]}
-                >
-                  <CheckImg2 src="/svg/check.svg" isChecked={check1[index]} />
-                </StyledCheckSubSquDiv>
-                <p>{x}</p>
-              </ExCheckDiv>
-            ))}
-          </ExCheckWrap>
+          <CustomCheckBox
+            initOptions={[
+              {
+                checked: false,
+                text: '판매재',
+                value: '판매재',
+              },
+              {
+                checked: false,
+                text: '판매제외제',
+                value: '판매제외제',
+              },
+            ]}
+            setState={setSearch}
+            stateKey="saleCategoryList"
+          />
         </PartWrap>
         {/* 판매 유형 */}
         <PartWrap>
           <h6>판매 유형</h6>
-          <ExCheckWrap>
-            {checkSaleType.map((x, index) => (
-              <ExCheckDiv>
-                <StyledCheckSubSquDiv
-                  onClick={() => setCheck2(CheckBox(check2, check2.length, index, true))}
-                  isChecked={check2[index]}
-                >
-                  <CheckImg2 src="/svg/check.svg" isChecked={check2[index]} />
-                </StyledCheckSubSquDiv>
-                <p>{x}</p>
-              </ExCheckDiv>
-            ))}
-          </ExCheckWrap>
+          <CustomCheckBox
+            initOptions={[
+              {
+                checked: false,
+                text: '경매 대상재',
+                value: '경매 대상재',
+              },
+              {
+                checked: false,
+                text: '상시 판매 대상재',
+                value: '상시 판매 대상재',
+              },
+            ]}
+            setState={setSearch}
+            stateKey="saleType"
+          />
         </PartWrap>
       </RowWrap>
       {/* 4행 */}
@@ -192,19 +188,22 @@ const ClaimProductSearchFilter = ({ search, setSearch }) => {
         {/* 판매가 유형 */}
         <PartWrap>
           <h6>판매가 유형</h6>
-          <ExCheckWrap>
-            {checkSalePriceType.map((x, index) => (
-              <ExCheckDiv>
-                <StyledCheckSubSquDiv
-                  onClick={() => setCheck3(CheckBox(check3, check3.length, index, true))}
-                  isChecked={check3[index]}
-                >
-                  <CheckImg2 src="/svg/check.svg" isChecked={check3[index]} />
-                </StyledCheckSubSquDiv>
-                <p>{x}</p>
-              </ExCheckDiv>
-            ))}
-          </ExCheckWrap>
+          <CustomCheckBox
+            initOptions={[
+              {
+                checked: false,
+                text: '특가',
+                value: '특가',
+              },
+              {
+                checked: false,
+                text: '일반',
+                value: '일반',
+              },
+            ]}
+            setState={setSearch}
+            stateKey="salePriceType"
+          />
         </PartWrap>
       </RowWrap>
       {/* 5행 */}
@@ -284,6 +283,7 @@ const ClaimProductSearchFilter = ({ search, setSearch }) => {
           </ExInputsWrap>
         </PartWrap>
       </RowWrap>
+      {/* <CustomCheckBox /> */}
     </FilterLeft>
   )
 }

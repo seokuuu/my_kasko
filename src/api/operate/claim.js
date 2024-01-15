@@ -117,7 +117,7 @@ export function useProductListToRegisterClaimQuery(params) {
 // 클레임 상세
 export function useClaimDetailsQuery(id) {
   return useQuery({
-    queryKey: CLAIM_KEYS.getClaim,
+    queryKey: [...CLAIM_KEYS.getClaim, id],
     queryFn: async function () {
       const response = await client.get(`${urls.claim}/${id}`)
       return response.data.data

@@ -32,7 +32,7 @@ export function useStorageListQuery(params) {
 // 창고 상세 조회
 export function useStorageDetailsQuery(id) {
   return useQuery({
-    queryKey: STORAGE_KEYS.getStorage,
+    queryKey: [...STORAGE_KEYS.getStorage, id],
     queryFn: async function () {
       const response = await client.get(`${urls}/${id}`)
 

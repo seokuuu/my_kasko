@@ -5,13 +5,7 @@ import { useClaimDeleteMutation, useClaimListQuery } from '../../../../api/opera
 import { ClaimListFieldCols, ClaimListFields } from '../../../../constants/admin/Claim'
 import { add_element_field } from '../../../../lib/tableHelpers'
 import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
-import {
-  doubleClickedRowAtom,
-  popupAtom,
-  popupObject,
-  popupTypeAtom,
-  selectedRowsAtom,
-} from '../../../../store/Layout/Layout'
+import { popupAtom, popupObject, popupTypeAtom, selectedRowsAtom } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { claimInitState } from '../../constants'
@@ -21,8 +15,6 @@ import ClaimHeader from './components/ClaimHeader'
 /**
  * @description
  * 클레임 관리 페이지 컴포넌트
- * @param {*} param0
- * @returns
  */
 const Claim = () => {
   const navigate = useNavigate()
@@ -34,9 +26,6 @@ const Claim = () => {
 
   // 목록 API(REQUEST PARAMETER)
   const [search, setSearch] = useState(claimInitState)
-
-  // 셀 클릭시 테이블 상세 데이터 조회
-  const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
 
   // 삭제 API
   const { mutate: remove } = useClaimDeleteMutation()
@@ -51,8 +40,6 @@ const Claim = () => {
 
   // 목록 API
   const { data, refetch } = useClaimListQuery({ ...search, claimStatus: search.claimStatus.value })
-
-  console.log('data :', data)
 
   // 등록 핸들러
   function toRegister() {
@@ -82,15 +69,6 @@ const Claim = () => {
       setRow(add_element_field(data.list, ClaimListFields))
     }
   }, [data])
-  // 상세 페이지 이동
-  useEffect(() => {
-    // 상세 페이지 이동시 상세 데이터 값 초기화
-    if (detailRow && detailRow['고유값']) {
-      navigate(`/operate/common/product/${detailRow['고유값']}`)
-
-      setDetailsRow([])
-    }
-  }, [detailRow])
 
   const { pagination, onPageChanage } = usePaging(data, setSearch)
   return (

@@ -23,7 +23,8 @@ const stylesOption = {
   checkedColor: 'red',
 }
 
-function CheckBoxGroup(props) {
+function 
+CheckBoxGroup(props) {
   const { data, setData, groupName, fontSize = stylesOption.fontSize, justifyContent, alignItems } = props
 
   function onChange(e) {
