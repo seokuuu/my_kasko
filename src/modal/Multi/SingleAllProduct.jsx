@@ -62,7 +62,7 @@ import { CRWSub } from '../../pages/Operate/Common/Datasheet/DatasheetEdit'
 import { BtnWrap } from '../../common/Button/Button'
 import { WhiteBtn } from '../../common/Button/Button'
 import { OverAllMain, OverAllTable } from '../../common/Overall/Overall.styled'
-import usePaging from '../../hooks/usePaging'
+import useTablePagination from '../../hooks/useTablePagination'
 
 const SingleAllProduct = ({ setSelectPr, selectPr }) => {
   const DEFAULT_OBJ = { value: '', label: '전체' }
