@@ -272,3 +272,4 @@ export const packageDetailModal = atom(false)
 // 목적지 에딧 모달
 export const userPageDestiEditModal = atom(false)
 export const adminPageDestiEditModal = atom(false)
+export const packageUidsAtom = atom([])

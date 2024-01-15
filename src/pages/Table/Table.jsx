@@ -18,6 +18,8 @@ import {
 } from '../../modal/Common/Common.Styled'
 import { blueModalAtom, doubleClickedRowAtom, pageSort, selectedRowsAtom } from '../../store/Layout/Layout'
 import './TableUi.css'
+import PropTypes from 'prop-types'
+import useDragginRow from '../../hooks/useDragginRow'
 // import TableStyle from './Table.module.css'
 
 // import { get } from 'lodash'
@@ -63,8 +65,10 @@ const Table = ({
   onPageChange,
   noRowsMessage = '데이터가 존재하지 않습니다.', // 데이터 갯수가 0개일 때, 나타날 메시지입니다.
   loading = false, // 로딩 여부
+  dragAndDrop = false,
 }) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
+  const [packageUids, setPackageUids] = useState([])
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
   const gridRef = useRef()
   const containerStyle = useMemo(() => {
@@ -91,6 +95,12 @@ const Table = ({
 
   // ---------------------------------------------------------------------
   const [columnDefs, setColumnDefs] = useState([
+    {
+      field: '고객 코드',
+      width: 45,
+      checkboxSelection: checkboxSelection,
+      headerCheckboxSelection: headerCheckboxSelection,
+    },
     {
       field: '고객 코드',
       width: 45,
@@ -300,6 +310,10 @@ const Table = ({
     // rowModelType: 'serverSide',
     rowModelType: 'clientSide',
     headerHeight: 30,
+    // rowDragManaged: true, // Enable row dragging
+    animateRows: true, // Enable row animations
+    // onRowDragEnd:
+    // animateRows: true,
     // paginationPageSize: size, // 요청할 페이지 사이즈
     cacheBlockSize: 100, // 캐시에 보관할 블록 사이즈
     maxBlocksInCache: 10, // 캐시에 최대로 보관할 블록 수
@@ -352,6 +366,9 @@ const Table = ({
     }
   }, [loading, getRow])
 
+  // Dragging Row
+  const { onRowDragEnd } = useDragginRow({ setRowData, rowData })
+
   return (
     <div style={containerStyle}>
       <TestContainer hei={hei}>
@@ -383,8 +400,8 @@ const Table = ({
             // rowHeight={40}
             overlayNoRowsTemplate={noRowsMessage}
             overlayLoadingTemplate="데이터를 불러오는 중..."
-
             // sideBar={{ toolPanels: ['columns', 'filters'] }}
+            onRowDragEnd={dragAndDrop ? onRowDragEnd : () => {}}
           />
         </div>
       </TestContainer>
@@ -431,6 +448,41 @@ const Table = ({
       {tablePagination && <CustomPagination pagination={tablePagination} onPageChange={onPageChange} />}
     </div>
   )
+}
+
+Table.propTypes = {
+  // Type definitions for each prop:
+  hei: PropTypes.number,
+  hei2: PropTypes.number,
+  getRow: PropTypes.array,
+  getCol: PropTypes.array,
+  setChoiceComponent: PropTypes.func,
+  size: PropTypes.number,
+  topData: PropTypes.array,
+  isRowClickable: PropTypes.bool,
+  handleOnRowClicked: PropTypes.func,
+  tablePagination: PropTypes.oneOfType([PropTypes.array, PropTypes.object]), // Note: tablePagination type is object.
+  onPageChange: PropTypes.func,
+  noRowsMessage: PropTypes.string,
+  loading: PropTypes.bool,
+  dragAndDrop: PropTypes.bool,
+}
+
+// Default props (optional but recommended for optional props):
+Table.defaultProps = {
+  hei: null, // Default value if not provided
+  hei2: null, // Default value if not provided
+  getRow: [], // Default to an empty array
+  getCol: [], // Default to an empty array
+  setChoiceComponent: () => {}, // Default to a no-op function
+  size: null, // Default value if not provided
+  topData: [], // Default to an empty array
+  isRowClickable: false, // Default to false
+  handleOnRowClicked: () => {}, // Default to a no-op function
+  tablePagination: {}, // Default value if not provided
+  onPageChange: () => {}, // Default to a no-op function
+  noRowsMessage: '데이터가 존재하지 않습니다.', // Default message
+  loading: false, // Default to false
 }
 
 export default Table

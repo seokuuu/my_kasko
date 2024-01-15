@@ -44,6 +44,7 @@ import StandardFind from '../../../modal/Multi/StandardFind'
 import {
   SingleProductModalAtom,
   SingleProductSpecAtom,
+  packageUidsAtom,
   selectedRowsAtom,
   toggleAtom,
 } from '../../../store/Layout/Layout'
@@ -52,6 +53,7 @@ import { Filtering } from '../../../utils/filtering'
 import usePaging from '../../Operate/hook/usePaging'
 import { onSizeChange } from '../../Operate/utils'
 import Table from '../../Table/Table'
+import useDragginRow from '../../../hooks/useDragginRow'
 
 const SingleProduct = () => {
   const DEFAULT_OBJ = { value: '', label: '전체' }
@@ -78,7 +80,7 @@ const SingleProduct = () => {
 
   const [getRow, setGetRow] = useState('')
   const { data, isSuccess, refetch, isLoading } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
-  console.log('data: ', data)
+
   const singleList = data?.r
   const singleProductPage = data?.pagination
   const tableField = useRef(SingleDispatchFieldsCols)
@@ -237,7 +239,6 @@ const SingleProduct = () => {
       setFilteredData(singleList)
       setPagination(singleProductPage)
     }
-    console.log('SELECT', select)
   }
 
   const handleSearch = () => {
@@ -275,7 +276,7 @@ const SingleProduct = () => {
     queryClient.prefetchQuery(['product', Filtering(request)], async () => {
       const res = await getSingleProducts(Filtering(request))
       // console.log('RES :', res.data)
-      setFilteredData(res.data?.list)
+      // setFilteredData(res.data?.list)
       setPagination(res.data?.pagination)
       return res.data?.list
     })

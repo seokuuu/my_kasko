@@ -128,7 +128,6 @@ const SalesProduct = () => {
     category: '판매제품',
   })
   const { data, isSuccess, isLoading } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
-  console.log('data :', data)
   const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
   const { data: spartList } = useReactQuery('', 'getSPartList', getSPartList)
   const SaleProductList = data?.r
