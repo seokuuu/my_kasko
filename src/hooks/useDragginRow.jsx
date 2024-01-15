@@ -1,7 +1,12 @@
 import { useAtom } from 'jotai'
 import { packageUidsAtom } from '../store/Layout/Layout'
+import { useLocation } from 'react-router-dom'
 export default function useDragginRow({ setRowData, rowData }) {
   const [packageUids, setPackageUids] = useAtom(packageUidsAtom)
+
+  const { pathname } = useLocation()
+  const len = pathname.split('/').length
+  const isPackaged = pathname.split('/')[len - 1]
   const onRowDragEnd = (event) => {
     const { api } = event
 
@@ -21,12 +26,10 @@ export default function useDragginRow({ setRowData, rowData }) {
       updatedRowData[targetIndex],
       updatedRowData[sourceIndex],
     ]
-
     // Update the state to trigger a re-render with the updated row order
     setRowData(updatedRowData)
-    setPackageUids(() => updatedRowData.map((i) => i['제품 번호']))
+    setPackageUids(() => updatedRowData.map((i) => (isPackaged === 'recommendpkg' ? i['고유 번호'] : i['제품 번호'])))
 
-    // console.log('UIDS', packageUids)
     // Refresh the grid to reflect the changes
     api.refreshCells()
   }

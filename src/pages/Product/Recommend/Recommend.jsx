@@ -13,13 +13,16 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import { WhiteBlackBtn, WhiteRedBtn, BlackBtn } from '../../../common/Button/Button'
 import { Link } from 'react-router-dom'
-import { getSingleProducts } from '../../../api/SellProduct'
+import { getSingleProducts, patchBeBestRecommend, patchChangeBestRecommend } from '../../../api/SellProduct'
 import useReactQuery from '../../../hooks/useReactQuery'
 import Hidden from '../../../components/TableInner/Hidden'
 import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constants/admin/Single'
 import { add_element_field } from '../../../lib/tableHelpers'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { packageUidsAtom } from '../../../store/Layout/Layout'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import { selectedRowsAtom } from '../../../store/Layout/Layout'
+
 const Recommend = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
@@ -78,7 +81,41 @@ const Recommend = ({}) => {
     setRequestParamter((p) => ({ ...p, pageNum: Number(value) }))
   }
   const [uids, setUids] = useAtom(packageUidsAtom)
-  console.log(uids)
+  const [selectUid, setSelectUid] = useState([])
+  const checkBoxSelect = useAtomValue(selectedRowsAtom)
+  console.log('체크셀렉트', checkBoxSelect)
+  const { mutate } = useMutationQuery('patchBest', patchChangeBestRecommend)
+  const { mutate: beTheRecommend } = useMutationQuery('patchBeRecommend', patchBeBestRecommend)
+
+  useEffect(() => {
+    if (checkBoxSelect) return setSelectUid(() => checkBoxSelect.map((i) => i['제품 번호']))
+  }, [checkBoxSelect])
+  const handleChangeBest = () => {
+    mutate(
+      { numbers: uids },
+      {
+        onSuccess: () => {
+          alert('순서변경 완료')
+          window.location.reload()
+        },
+        onError: () => {
+          alert('순서변경 실패')
+        },
+      },
+    )
+  }
+  const handleRemoveBest = () => {
+    beTheRecommend(
+      { status: false, numbers: selectUid },
+      {
+        onSuccess: () => {
+          alert('해제완료')
+          window.location.reload()
+        },
+      },
+    )
+  }
+
   return (
     <FilterContianer>
       <FilterHeader>
@@ -109,7 +146,7 @@ const Recommend = ({}) => {
             <WhiteBlackBtn>
               <img src="/img/belly.png" /> 순서 변경
             </WhiteBlackBtn>
-            <WhiteRedBtn>추천 상품 해제</WhiteRedBtn>
+            <WhiteRedBtn onClick={handleRemoveBest}>추천 상품 해제</WhiteRedBtn>
           </div>
         </TCSubContainer>
 
@@ -121,15 +158,9 @@ const Recommend = ({}) => {
           // tablePagination={pages}
           // onPageChange={onPageChange}
         />
-        <TCSubContainer bor>
-          <div></div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>제품 삭제</WhiteRedBtn>
-            <WhiteBlackBtn>제품 등록</WhiteBlackBtn>
-          </div>
-        </TCSubContainer>
+
         <TableBottomWrap>
-          <BlackBtn width={15} height={40} onClick={() => {}}>
+          <BlackBtn width={15} height={40} onClick={handleChangeBest}>
             저장
           </BlackBtn>
         </TableBottomWrap>

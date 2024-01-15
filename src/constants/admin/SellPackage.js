@@ -59,6 +59,7 @@ export const packageProductsDispatchFields = {
 
 
 export const packageDispatchFieldsCols = [
+  { rowDrag:true,headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '', width: 50, },
   { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '', minWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '순번', minWidth: 60 },
   {
@@ -96,6 +97,7 @@ export const packageDispatchFieldsCols = [
 
 
 export const packageProductsDispatchFieldsCols = [
+  { rowDrag:true,headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '', width: 50, },
   { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '', width: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '순번', minWidth: 100 },
   { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지 번호', minWidth: 100 },

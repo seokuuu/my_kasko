@@ -2,7 +2,7 @@ import { QueryClient } from '@tanstack/react-query'
 import { useAtom, useAtomValue } from 'jotai'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getSingleProducts } from '../../../api/SellProduct'
+import { getSingleProducts, patchBeBestRecommend } from '../../../api/SellProduct'
 import { getSPartList, getStorageList } from '../../../api/search'
 import { BlackBtn, GreyBtn, YellBtn } from '../../../common/Button/Button'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
@@ -54,6 +54,7 @@ import usePaging from '../../Operate/hook/usePaging'
 import { onSizeChange } from '../../Operate/utils'
 import Table from '../../Table/Table'
 import useDragginRow from '../../../hooks/useDragginRow'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
 const SingleProduct = () => {
   const DEFAULT_OBJ = { value: '', label: '전체' }
@@ -70,10 +71,10 @@ const SingleProduct = () => {
   const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
   const [checkData2, setCheckData2] = useState(Array.from({ length: checkShips.length }, () => ''))
   const [checkData3, setCheckData3] = useState(Array.from({ length: checkTypes.length }, () => ''))
-
+  const [bestProduct, setBestProduct] = useState([])
   const [requestParameter, setRequestParameter] = useState({
     pageNum: 1,
-    pageSize: 1000,
+    pageSize: 50,
     type: '일반',
     category: '전체',
   })
@@ -90,6 +91,7 @@ const SingleProduct = () => {
   const [spec, setSpec] = useAtom(SingleProductSpecAtom)
   const [isModal, setIsModal] = useAtom(SingleProductModalAtom)
   const checkBoxSelect = useAtomValue(selectedRowsAtom)
+  const [selectUid, setSelectUid] = useState([])
   const [select, setSelect] = useState({
     storage: '',
     sPart: '',
@@ -158,20 +160,17 @@ const SingleProduct = () => {
     }))
   }
   const [isRotated, setIsRotated] = useState(false)
-
-  // Function to handle image click and toggle rotation
-
   // 테이블 연결하기
   useEffect(() => {
-    if (filterData === undefined) {
-      singleList && setFilteredData(singleList)
-    }
-    if (!isSuccess && !filterData) return null
+    // if (filterData === undefined) {
+    //   singleList && setFilteredData(singleList)
+    // }
+    if (!isSuccess && !singleList) return
     if (Array.isArray(filterData)) {
-      setGetRow(add_element_field(filterData, singleDispatchFields))
+      setGetRow(add_element_field(singleList, singleDispatchFields))
     }
     //타입, 리액트쿼리, 데이터 확인 후 실행
-  }, [isSuccess, filterData])
+  }, [isSuccess, singleList])
 
   // 토글 쓰기
   const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -277,12 +276,38 @@ const SingleProduct = () => {
       const res = await getSingleProducts(Filtering(request))
       // console.log('RES :', res.data)
       // setFilteredData(res.data?.list)
+      // setBestProduct(() => ))
       setPagination(res.data?.pagination)
       return res.data?.list
     })
   }
-
+  // console.log(bestProduct)
   const { pagination, onPageChanage } = usePaging(data, setRequestParameter)
+  const { mutate: beRecommend } = useMutationQuery('beRecommend', patchBeBestRecommend)
+
+  useEffect(() => {
+    if (checkBoxSelect) return setSelectUid((p) => [...checkBoxSelect.map((i) => i['제품 번호'])])
+    console.log('왜 3번 연속으로 실릴까', selectUid)
+  }, [checkBoxSelect])
+  // console.log(checkBoxSelect)
+  const patchRecommend = () => {
+    beRecommend(
+      {
+        status: true,
+        numbers: selectUid,
+      },
+      {
+        onSuccess: () => {
+          setSelectUid([])
+        },
+        onError: (e) => {
+          console.log(e)
+          alert(e.data?.message)
+        },
+      },
+    )
+  }
+  console.log(selectUid)
   return (
     <>
       <FilterContianer>
@@ -549,7 +574,7 @@ const SingleProduct = () => {
               선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총{singleProductPage?.totalWeight} 중량 kg
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <YellBtn>추천제품지정 ( 0 / 10)</YellBtn>
+              <YellBtn onClick={patchRecommend}>추천제품지정 ( 0 / 10)</YellBtn>
             </div>
           </TCSubContainer>
           <Table

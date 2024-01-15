@@ -6,7 +6,11 @@ const urls = {
   saleCategory :'/single-product/sale-category',
   original:'/single-product/original',
   package:'package-product',
-  packageProducts:"/package-product/products"
+  packageProducts:"/package-product/products",
+  recommend:'/single-product/best-order',
+  beRecommend:'/single-product/best',
+  pkgrecommend:'/package-product/best-order',
+  pkgbeRecommend:'/package-product/best'
 }
 
 export async function getSingleProducts(data) {
@@ -86,3 +90,39 @@ export async function postUpdatePackage(data){
 
 }
 
+export async function patchChangeBestRecommend(data){
+  try{
+    const response = await client.patch(`${urls.recommend}`,data)
+    return response.data
+  } catch(e){
+    console.log(e)
+  }
+
+}
+export async function patchBeBestRecommend(data){
+  try{
+    const response = await client.patch(`${urls.beRecommend}`,data)
+    return response.data
+  } catch(e){
+    alert(e.data?.message)
+  }
+
+}
+export async function patchChangeBestPackageRecommend(data){
+  try{
+    const response = await client.patch(`${urls.pkgrecommend}`,data)
+    return response.data
+  } catch(e){
+    console.log(e)
+  }
+
+}
+export async function patchBeBestPackageRecommend(data){
+  try{
+    const response = await client.patch(`${urls.pkgbeRecommend}`,data)
+    return response.data
+  } catch(e){
+    alert(e.data?.message)
+  }
+
+}

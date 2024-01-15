@@ -62,6 +62,7 @@ const PackageManageFind = ({ isCreate, url }) => {
     })
   }, [packageName, checkRadioValue])
   console.log('Choose', packageObj)
+
   return (
     // 판매 제품 관리 - 패키지 관리
     <>

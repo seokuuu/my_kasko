@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
@@ -16,6 +16,7 @@ import {
   packageModeAtom,
   toggleAtom,
   packageDetailModal,
+  selectedRowsAtom,
 } from '../../../store/Layout/Layout'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { CheckBox } from '../../../common/Check/Checkbox'
@@ -47,12 +48,13 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import { packageCEAtom } from '../../../store/Layout/Layout'
 import Hidden from '../../../components/TableInner/Hidden'
-import { getPackageList } from '../../../api/SellProduct'
+import { getPackageList, patchBeBestPackageRecommend } from '../../../api/SellProduct'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { packageDispatchFields, packageDispatchFieldsCols } from '../../../constants/admin/SellPackage'
 import Table from '../../Table/Table'
 import PackageManageFind from '../../../modal/Multi/PackageManage'
 import PackageDetailModal from '../../../modal/Multi/PackageDetailModal.jsx'
+import useMutationQuery from '../../../hooks/useMutationQuery.js'
 const PackageManage = ({}) => {
   const [isCreate, setIsCreate] = useState(false)
   const [packBtn, setPackBtn] = useAtom(packageModeAtom)
@@ -158,6 +160,33 @@ const PackageManage = ({}) => {
   }
   const onChangePage = (value) => {
     setParmeter((prev) => ({ ...prev, pageNum: Number(value) }))
+  }
+  const [selectUids, setSelectUid] = useState([])
+  const checkBoxSelect = useAtomValue(selectedRowsAtom)
+  const { mutate: beRecommend } = useMutationQuery('beRecommend', patchBeBestPackageRecommend)
+
+  useEffect(() => {
+    if (checkBoxSelect) return setSelectUid((p) => [...checkBoxSelect.map((i) => i['고유 번호'])])
+    console.log('왜 3번 연속으로 실릴까', selectUids)
+  }, [checkBoxSelect])
+
+  const patchRecommend = () => {
+    beRecommend(
+      {
+        status: true,
+        uids: selectUids,
+      },
+      {
+        onSuccess: () => {
+          alert('추가 완료했습니다.')
+          setSelectUid([])
+        },
+        onError: (e) => {
+          console.log(e)
+          alert(e.data?.message)
+        },
+      },
+    )
   }
   return (
     <FilterContianer>
@@ -302,7 +331,7 @@ const PackageManage = ({}) => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <YellBtn>추천제품지정 (0 / 10)</YellBtn>
+            <YellBtn onClick={patchRecommend}>추천제품지정 (0 / 10)</YellBtn>
             <BtnBound />
             <WhiteBlackBtn>판매 구분 변경</WhiteBlackBtn>
             <BtnBound />
