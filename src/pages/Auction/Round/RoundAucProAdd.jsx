@@ -54,6 +54,8 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
   const [tablePagination, setTablePagination] = useState([])
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 
+
+
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
 
@@ -176,7 +178,7 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
       <ModalContainer style={{ width: '75%', height: '100%' }}>
         <BlueBarHeader style={{ height: '60px' }}>
           {/* <div>{title}</div> */}
-          <div>경매 제품 추가(단일)</div>
+          <div>경매 제품 추가({types})</div>
           <div>
             <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
           </div>

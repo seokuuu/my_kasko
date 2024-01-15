@@ -51,6 +51,11 @@ export function publishDepositForm(data) {
   return client.post(`${urls.winning}/deposit`, data)
 }
 
+// 고객사 목적지 목록 (경매 낙찰 관리)
+export const getAuctionDestination = () => {
+  return client.get(`${urls.winning}/destination`)
+}
+
 export function getWinningDetail(data) {
   console.log('data !@#', data)
   return client.get(

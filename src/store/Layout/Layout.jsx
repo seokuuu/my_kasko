@@ -124,6 +124,8 @@ export const aucProAddModalAtom = atom(false)
 // 경매 낙찰관리 - 낙찰 생성 - 고객사 찾기 버튼 Modal
 export const WinningCreateFindAtom = atom(false)
 
+export const WinningProductAddAtom = atom(false)
+
 /* ==============================
     기준 관리 (Standard)
 ============================== */
@@ -246,6 +248,18 @@ export const invenDestinationData = atom({
   code: '',
   name: '',
   uid: 0,
+})
+
+export const winningDestiData = atom({
+  uid: null,
+  code: '',
+  represent: 0,
+  destinationCode: null,
+  destinationName: null,
+  name: '',
+  managerPhone: '',
+  phone: '',
+  address: '',
 })
 
 // =======================================

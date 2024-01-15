@@ -1,15 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
-import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { BlackBtn, GreyBtn, NewBottomBtnWrap, SkyBtn, WhiteBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-import Test3 from '../../Test/Test3'
+import { invenDestination, selectedRowsAtom, toggleAtom, winningDestiData } from '../../../store/Layout/Layout'
 
 import {
   DoubleWrap,
-  ExInputsWrap,
   FilterContianer,
   FilterFooter,
   FilterHeader,
@@ -36,21 +34,37 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { InputContainer, NoOutInput, Unit } from '../../../common/Input/Input'
 
-import { WinningCreateFindAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
-import CustomerFind from '../../../modal/Multi/CustomerFind'
-import Table from '../../Table/Table'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { getDetailProgress } from '../../../api/auction/detailprogress'
-import { add_element_field } from '../../../lib/tableHelpers'
-import { AuctionWinningCreateFields, AuctionWinningCreateFieldsCols } from '../../../constants/admin/Auction'
 import { useQueryClient } from '@tanstack/react-query'
-import { getWinningCreate } from '../../../api/auction/winning'
+import { useAtom } from 'jotai'
+import { isArray } from 'lodash'
+import { getAuctionDestination } from '../../../api/auction/winning'
+import { AuctionWinningCreateFieldsCols } from '../../../constants/admin/Auction'
+import useReactQuery from '../../../hooks/useReactQuery'
+import CustomerFind from '../../../modal/Multi/CustomerFind'
+import InventoryFind from '../../../modal/Multi/InventoryFind'
+import { WinningCreateFindAtom, WinningProductAddAtom } from '../../../store/Layout/Layout'
+import Table from '../../Table/Table'
+import WinningProductAdd from './WinningProductAdd'
 
 const WinningCreate = ({}) => {
+  const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
+  const [destinationData, setDestinationData] = useAtom(winningDestiData)
+  console.log('destinationData', destinationData)
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
+  const [editData, setEditData] = useState({
+    auctionNumber: '',
+    addProductUids: [],
+    deleteAuctionProductList: [],
+  })
+
+  const [customerData, setCustomerData] = useState()
+  const [destiData, setDestiData] = useState()
+  console.log('customerData', customerData)
+
   const [isModal, setIsModal] = useAtom(WinningCreateFindAtom)
+  const [addProdModal, setAddProdModal] = useAtom(WinningProductAddAtom)
   //checkSales
+  console.log('addProdModal', addProdModal)
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
 
   //checkShips
@@ -97,6 +111,8 @@ const WinningCreate = ({}) => {
     }
   }
 
+  const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
+
   const [tablePagination, setTablePagination] = useState([])
 
   const [getRow, setGetRow] = useState('')
@@ -114,22 +130,36 @@ const WinningCreate = ({}) => {
   const [Param, setParam] = useState(paramData)
 
   // GET
-  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getWinningCreate', getWinningCreate)
-  const resData = data?.data?.data?.list
-  console.log('resData ', resData)
-  const resPagination = data?.data?.data?.pagination
 
-  console.log('resData', resData)
+  // const resPagination = data?.data?.data?.pagination
+  const [newResData, setNewResData] = useState([])
+
+  console.log('newResData', newResData)
 
   useEffect(() => {
-    let getData = resData
     //타입, 리액트쿼리, 데이터 확인 후 실행
-    if (!isSuccess && !resData) return
-    if (Array.isArray(getData)) {
-      setGetRow(add_element_field(getData, AuctionWinningCreateFields))
-      setTablePagination(resPagination)
+    if (Array.isArray(newResData)) {
+      const combinedData = [...newResData]
+
+      setGetRow(combinedData)
+      // setTablePagination(resPagination)
     }
-  }, [isSuccess, resData])
+  }, [newResData])
+
+  const handleRemoveBtn = useCallback(() => {
+    if (isArray(checkedArray) && checkedArray.length > 0) {
+      if (window.confirm('선택한 항목을 삭제 목록에 추가하시겠습니까?')) {
+        const filteredArray = newResData.filter(
+          (item) => !checkedArray.some((checkedItem) => checkedItem['제품 고유 번호'] === item['제품 고유 번호']),
+        )
+        setNewResData(filteredArray)
+      }
+    } else {
+      alert('선택해주세요!')
+    }
+  }, [checkedArray, newResData])
+
+  console.log('newResData =>', newResData)
 
   const handleTablePageSize = (event) => {
     setParam((prevParam) => ({
@@ -179,20 +209,46 @@ const WinningCreate = ({}) => {
                   >
                     찾기
                   </GreyBtn>
+                  <p style={{ color: '#4C83D6' }}>{customerData?.code}</p>
                 </div>
 
                 <div>
                   <h6 style={{ fontSize: '18px' }}>목적지</h6>
-                  <Input placeholder="코드" style={{ width: '60px', marginRight: '10px', fontSize: '16px' }} />
-                  <Input placeholder="목적지명" style={{ width: '120px', marginRight: '10px', fontSize: '16px' }} />
-                  <Input placeholder="하차지명" style={{ width: '130px', marginRight: '10px', fontSize: '16px' }} />
+                  <Input
+                    placeholder="코드"
+                    style={{ width: '60px', marginRight: '10px', fontSize: '16px' }}
+                    defaultValue={destinationData?.code}
+                  />
+                  <Input
+                    placeholder="목적지명"
+                    style={{ width: '120px', marginRight: '10px', fontSize: '16px' }}
+                    defaultValue={destinationData?.destinationName}
+                  />
+                  <Input
+                    placeholder="하차지명"
+                    style={{ width: '130px', marginRight: '10px', fontSize: '16px' }}
+                    defaultValue={destinationData?.name}
+                  />
                   <Input
                     placeholder="하차지 연락처"
                     style={{ width: '130px', marginRight: '10px', fontSize: '16px' }}
+                    defaultValue={destinationData?.phone}
                   />
-                  <Input placeholder="주소" style={{ width: '130px', marginRight: '10px', fontSize: '16px' }} />
+                  <Input
+                    placeholder="주소"
+                    style={{ width: '130px', marginRight: '10px', fontSize: '16px' }}
+                    defaultValue={destinationData?.address}
+                  />
 
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                  <GreyBtn
+                    style={{ width: '70px' }}
+                    height={35}
+                    margin={10}
+                    fontSize={17}
+                    onClick={() => {
+                      setDestinationPopUp(true)
+                    }}
+                  >
                     찾기
                   </GreyBtn>
                 </div>
@@ -313,18 +369,43 @@ const WinningCreate = ({}) => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <SkyBtn>제품 추가</SkyBtn>
+            <SkyBtn
+              onClick={() => {
+                setAddProdModal(true)
+              }}
+            >
+              제품 추가
+            </SkyBtn>
           </div>
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>선택 목록 제거</WhiteRedBtn>
+            <WhiteRedBtn onClick={handleRemoveBtn}>선택 목록 제거</WhiteRedBtn>
           </div>
         </TCSubContainer>
+        <NewBottomBtnWrap bottom={-5}>
+          <WhiteBtn width={13} height={40}>
+            돌아가기
+          </WhiteBtn>
+          <BlackBtn width={13} height={40}>
+            등록
+          </BlackBtn>
+        </NewBottomBtnWrap>
       </TableContianer>
-      {isModal && <CustomerFind setSwitch={setIsModal} />}
+      {isModal && <CustomerFind setSwitch={setIsModal} setModalData={setCustomerData} />}
+      {addProdModal && (
+        <WinningProductAdd setAddModal={setAddProdModal} newResData={newResData} setNewResData={setNewResData} />
+      )}
+      {destinationPopUp && (
+        <InventoryFind
+          title={'목적지 찾기'}
+          type={'낙찰 생성'}
+          setSwitch={setDestinationPopUp}
+          data={auctionDestination}
+        />
+      )}
     </FilterContianer>
   )
 }
