@@ -5,7 +5,7 @@ import { checkboxSelection, headerCheckboxSelection } from "../../pages/Table/ut
  * @description 사용자 주문확인 > 목록 테이블에서 사용합니다.
  */
 export const userOrderListField = {
-  "주문 고유 번호": "auctionBuildUid",
+  "주문 고유 번호": "orderUid",
   "상시판매 번호": "auctionNumber",
   "상시판매 상태": "auctionStatus",
   "상시판매 주문일자": "auctionCreateDate",

@@ -7,7 +7,7 @@ const urls = {
     getCart: '/sale-product/cart',
     requestOrder: '/sale-product/order',
     getOrder: '/sale-product/order',
-    requestOrderCancel: '',
+    requestOrderCancel: '/admin/order/cancel',
     getDestination: '/auction/destination',
     modifyDestination: '/auction/successfulBid/request',
 };
@@ -66,7 +66,7 @@ export const useUserOrderListQuery = (param) => useQuery({
         const { data } = await client.get(`${urls.getOrder}?${params.toString()}`);
         return data.data; 
     },
-  });
+});
 
 /**
  * 주문취소 API 뮤테이션
@@ -84,7 +84,7 @@ export const useUserOrderCancelMutaion = () => useMutation({
     onError: () => {
         return alert('주문 취소 중 오류가 발생했습니다.\n다시 시도해 주세요.');
     }
-  });
+});
 
 /**
  * 상시판매 주문확인상세 API 쿼리
@@ -99,7 +99,7 @@ export const useUserOrderDetailsQuery = (param) => useQuery({
         const { data } = await client.get(`${urls.getOrder}?${params.toString()}`);
         return data.data; 
     },
-  });
+});
 
 /**
  * 목적지 변경 목록 API 쿼리 
@@ -110,7 +110,7 @@ export const useUserDestinationQuery = (param) => useQuery({
         const { data } = await client.get(urls.getDestination);
         return data.data; 
     },
-  });
+});
 
 export const useUserDestinationUpdateRequestMutation = () => useMutation({
     mutationFn: async(param) => {

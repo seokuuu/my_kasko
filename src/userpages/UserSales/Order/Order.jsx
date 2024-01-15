@@ -76,6 +76,11 @@ const initialSearchParams = {
 const ORDER_STATUS_LIST = ['전체', '확정 전송', '확정 전송 대기', '주문 요청', '주문 취소', '주문 확정']
 
 /**
+ * @constant 주문 고유번호 키
+ */
+const UID_KEY = '주문 고유 번호';
+
+/**
  * @constant 쌍 입력 값
  */
 const pairValues = [
@@ -91,7 +96,6 @@ const pairValues = [
  * [2] 선택 항목을 주문취소 합니다.
  *
  * @todo
- * - 주문 취소 API 연동 (BE문의)
  * - 주문일자 입력 > 시작, 종료일 같음 (Err)
  * - 매입처 옵션 연동
  * - 규격약호 옵션 연동
@@ -185,7 +189,6 @@ const Order = ({}) => {
 
   /**
    * 선택 항목 주문 취소 핸들러
-   * @todo 주문취소하기 연동 | 취소하기 API 문의
    */
   function handleOrderCancel(e) {
     e.preventDefault()
@@ -194,7 +197,9 @@ const Order = ({}) => {
       return alert('주문 취소할 제품을 선택해 주세요.')
     }
 
-    // requestCancel({});
+    const cancelData = selectedData.map(v => ({ uid: v[UID_KEY], saleType: '상시 판매 대상재' }));
+
+    requestCancel({ requestList: cancelData });
   }
 
   /**
