@@ -354,6 +354,18 @@ const Order = ({}) => {
             선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
+            <button
+              type="button"
+              style={{
+                color: '#008859',
+                background: 'none',
+                border: '1px solid #008859',
+                padding: '5px',
+                fontSize: '14px',
+              }}
+            >
+              ★ 관심상품 등록
+            </button>
             <WhiteRedBtn type="button" onClick={() => {}}>
               주문 취소
             </WhiteRedBtn>

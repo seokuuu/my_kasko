@@ -39,7 +39,14 @@ const LinkRenderer = (props) => {
     </a>
   )
 }
-
+const TestRenderer = (props) => {
+  return (
+    <div>
+      <span style={{ color: '#008859' }}>★</span>
+      <span>{props.value || 'N'}</span>
+    </div>
+  )
+}
 /* ==============================
     주문 관리 - 주문 관리 (Order)
 ============================== */
@@ -67,8 +74,8 @@ export const OrderManageFieldsCols = [
     field: 'weight',
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-    width: 110,
-    cellRenderer: (params) => params.value || 'N',
+    width: 120,
+    cellRenderer: TestRenderer,
   },
   {
     headerName: '경매 / 상시 판매 번호',

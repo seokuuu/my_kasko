@@ -353,8 +353,40 @@ const Table = ({
     }
   }, [loading, getRow])
 
+  const onRecommendClick = () => {
+    if (!gridApi) {
+      console.error('Grid API가 초기화되지 않았습니다.')
+      return
+    }
+
+    const selectedNodes = gridApi.getSelectedNodes()
+    if (selectedNodes.length === 0) {
+      alert('행을 선택해주세요.')
+      return
+    }
+
+    selectedNodes.forEach((node) => {
+      const currentData = node.data
+      let updatedValue
+      // '대표' 필드의 현재 값에 '추천'을 추가합니다.
+      if (currentData['weight'].includes('★')) {
+        // '추천'을 제거합니다.
+        updatedValue = currentData['weight'].replace(`★`, '')
+      } else {
+        // '추천'이 없는 경우에만 추가합니다.
+        updatedValue = `${currentData['weight']} ★`
+      }
+      const updatedData = { ...currentData, weight: updatedValue }
+      node.updateData(updatedData)
+    })
+
+    gridApi.refreshCells({ force: true })
+  }
   return (
     <div style={containerStyle}>
+      <button type="button" onClick={onRecommendClick} style={{ border: '2px solid dodgerblue' }}>
+        추천
+      </button>
       <TestContainer hei={hei}>
         <div style={gridStyle} className="ag-theme-alpine">
           <AgGridReact
