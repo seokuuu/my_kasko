@@ -42,6 +42,7 @@ import Table from '../../../pages/Table/Table'
 import { toggleAtom } from '../../../store/Layout/Layout'
 import CustomerSearch from '../../../components/Search/CustomerSearch'
 import SpartSelect from '../../../components/Search/SpartSelect'
+import useTableSearchFieldData from '../../../hooks/useTableSearchFieldData'
 
 /**
  * @constant 기본 검색 값
@@ -124,6 +125,8 @@ const Order = ({}) => {
   const { selectedData, selectedWeightStr, selectedCountStr, hasSelected } = useTableSelection({ weightKey: '총 중량' })
   // NAVIGATION
   const navigate = useNavigate()
+  // 필드 옵션
+  const { supplierList, stockStatusList, gradeList } = useTableSearchFieldData();
 
   /**
    * 입력 핸들러
@@ -284,7 +287,7 @@ const Order = ({}) => {
                 {/* 매입처*/}
                 <PartWrap>
                   <h6>매입처</h6>
-                  <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
+                  <MainSelect options={supplierList} defaultValue={storageOptions[0]} />
                 </PartWrap>
                 {/* 규격약호 찾기 */}
                 <PartWrap>
@@ -317,8 +320,20 @@ const Order = ({}) => {
                       handleTypedInputChange({ key: 'spart', value: v.label })
                     }}
                   />
-                  <MainSelect />
-                  <MainSelect />
+                  <MainSelect 
+                    options={stockStatusList.map(v => v.value)} 
+                    value={tempSearchParams.maker || ''}
+                    onChange={e => {
+                      console.log(e);
+                    }} 
+                  />
+                  <MainSelect 
+                    options={gradeList} 
+                    value={tempSearchParams.grade || ''}
+                    onChange={e => {
+                      console.log(e);
+                    }}
+                  />
                 </PartWrap>
                 {/* 주문 일자 */}
                 <DateSearchSelect

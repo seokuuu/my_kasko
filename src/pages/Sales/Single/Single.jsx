@@ -33,7 +33,7 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { getSingleProducts } from '../../../api/SellProduct'
 import Table from '../../../pages/Table/Table'
-import { responseToTableRowMap, singleProductListFieldCols } from '../../../constants/admin/singleProduct'
+// import { responseToTableRowMap, singleProductListFieldCols } from '../../../constants/admin/singleProduct'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { formatWeight } from '../../../utils/utils'
@@ -70,7 +70,7 @@ const Single = ({}) => {
 	}, [isSuccess, getSingleProductsRes])
 
 	const formatTableRowData = (singleProductListData) => {
-		return add_element_field(singleProductListData, responseToTableRowMap)
+		// return add_element_field(singleProductListData, responseToTableRowMap)
 	}
 
 	// Function to handle image click and toggle rotation
@@ -276,12 +276,12 @@ const Single = ({}) => {
 						<WhiteBlackBtn>노출 상태 변경</WhiteBlackBtn>
 					</div>
 				</TCSubContainer>
-				<Table
+				{/* <Table
 					getCol={singleProductListFieldCols}
 					getRow={singleProductListData}
 					tablePagination={singleProductPagination}
 					onPageChange={onPageChange}
-				/>
+				/> */}
 				<TableBottomWrap>
 					<BlackBtn width={13} height={40} fontSize={17}>
 						저장
