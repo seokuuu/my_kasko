@@ -98,7 +98,7 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
     setParmeter((p) => ({
       ...p,
       saleCategory: checkData1 ? checkData1.join('') : '판매재', // 판매재, 판매제외재, 판매완료재
-      excludeSaleReason: checkData1.join('') !== '판매제외재' ? '' : checkData2.join(''), // 판매 제외재 사유
+      excludeSaleReason: checkData1.join('') !== '판매제외재' ? null : checkData2.join(''), // 판매 제외재 사유
       numbers: productNumbers, // 제품번호 목록
     }))
   }, [checkData1, checkData2])

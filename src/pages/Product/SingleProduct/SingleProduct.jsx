@@ -1,21 +1,22 @@
-import { useEffect, useState, useRef } from 'react'
-import { Link } from 'react-router-dom'
-import { BlackBtn, GreyBtn, YellBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
-import { storageOptions } from '../../../common/Option/SignUp'
-import Excel from '../../../components/TableInner/Excel'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import {
-  SingleProductModalAtom,
-  SingleProductSpecAtom,
-  toggleAtom,
-  selectedRowsAtom,
-} from '../../../store/Layout/Layout'
-import StandardFind from '../../../modal/Multi/StandardFind'
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
+import { QueryClient } from '@tanstack/react-query'
 import { useAtom, useAtomValue } from 'jotai'
+import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { getSingleProducts } from '../../../api/SellProduct'
+import { getSPartList, getStorageList } from '../../../api/search'
+import { BlackBtn, GreyBtn, YellBtn } from '../../../common/Button/Button'
+import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import { MainSelect } from '../../../common/Option/Main'
+import { ProductOptions, supplierOptions } from '../../../common/Option/storage'
+import Excel from '../../../components/TableInner/Excel'
+import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constants/admin/Single'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
 import {
   DoubleWrap,
   ExCheckDiv,
@@ -30,27 +31,27 @@ import {
   FilterSubcontianer,
   Input,
   MiniInput,
-  PartWrap,
   PWRight,
+  PartWrap,
   ResetImg,
   RowWrap,
   SubTitle,
-  TableContianer,
   TCSubContainer,
+  TableContianer,
   Tilde,
 } from '../../../modal/External/ExternalFilter'
-import { Filtering } from '../../../utils/filtering'
-import useReactQuery from '../../../hooks/useReactQuery'
-import Hidden from '../../../components/TableInner/Hidden'
-import { getSingleProducts } from '../../../api/SellProduct'
-import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constants/admin/Single'
-import { add_element_field } from '../../../lib/tableHelpers'
-import Table from '../../Table/Table'
-import { getStorageList, getSPartList } from '../../../api/search'
-import { QueryClient } from '@tanstack/react-query'
-import { supplierOptions, ProductOptions } from '../../../common/Option/storage'
+import StandardFind from '../../../modal/Multi/StandardFind'
+import {
+  SingleProductModalAtom,
+  SingleProductSpecAtom,
+  selectedRowsAtom,
+  toggleAtom,
+} from '../../../store/Layout/Layout'
 import { KilogramSum } from '../../../utils/KilogramSum'
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import { Filtering } from '../../../utils/filtering'
+import usePaging from '../../Operate/hook/usePaging'
+import { onSizeChange } from '../../Operate/utils'
+import Table from '../../Table/Table'
 
 const SingleProduct = () => {
   const DEFAULT_OBJ = { value: '', label: '전체' }
@@ -68,15 +69,16 @@ const SingleProduct = () => {
   const [checkData2, setCheckData2] = useState(Array.from({ length: checkShips.length }, () => ''))
   const [checkData3, setCheckData3] = useState(Array.from({ length: checkTypes.length }, () => ''))
 
-  const requestParameter = {
+  const [requestParameter, setRequestParameter] = useState({
     pageNum: 1,
     pageSize: 1000,
     type: '일반',
     category: '전체',
-  }
+  })
 
   const [getRow, setGetRow] = useState('')
-  const { data, isSuccess, refetch } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
+  const { data, isSuccess, refetch, isLoading } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
+  console.log('data: ', data)
   const singleList = data?.r
   const singleProductPage = data?.pagination
   const tableField = useRef(SingleDispatchFieldsCols)
@@ -278,6 +280,8 @@ const SingleProduct = () => {
       return res.data?.list
     })
   }
+
+  const { pagination, onPageChanage } = usePaging(data, setRequestParameter)
   return (
     <>
       <FilterContianer>
@@ -535,7 +539,7 @@ const SingleProduct = () => {
               <Hidden />
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <PageDropdown />
+              <PageDropdown handleDropdown={(e) => onSizeChange(e, setRequestParameter)} />
               <Excel />
             </div>
           </TCSubContainer>
@@ -547,7 +551,13 @@ const SingleProduct = () => {
               <YellBtn>추천제품지정 ( 0 / 10)</YellBtn>
             </div>
           </TCSubContainer>
-          <Table getRow={getRow} getCol={getCol} />
+          <Table
+            getRow={getRow}
+            getCol={getCol}
+            tablePagination={pagination}
+            onPageChange={onPageChanage}
+            loading={isLoading}
+          />
         </TableContianer>
       </FilterContianer>
 
