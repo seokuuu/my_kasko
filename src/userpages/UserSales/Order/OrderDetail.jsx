@@ -40,25 +40,6 @@ const INFO_COLUMNS = ['주문 번호', '고객사', '고객코드', '총 수량'
 const UID_KEY = '고유 번호';
 
 /**
- * @constant 입금요청서 키페어
- */
-const DEPOSIT_REQUET_KEY_PAIR = {
-  uid: '',
-  startDate: '',
-  customerName: '',
-  productNumber: '',
-  productName: '',
-  productSpec: '',
-  productWdh: '',
-  weight: '',
-  orderPrice: '',
-  orderPriceVat: '',
-  freightCost: '',
-  freightCostVat: '',
-  totalPrice: '',
-}
-
-/**
  * 주분 정보 테이블 로우 반환 함수
  * @param {*} data 주문상세목록 데이터
  * @return {array<string>}
@@ -121,6 +102,18 @@ const OrderDetail = ({ salesNumber }) => {
     });
     return newTableRowData;
   }, [destinationUpdateItems, tableRowData]);
+  // 입금 요청서 데이터
+  const depositRequestData = useMemo(() => {
+    if(orderData && orderData.list) {
+      const targetData = orderData.list[0];
+      return ({
+        storage: targetData.storageName,
+        customerDestinationUid: targetData.customerDestinationUid,
+        biddingStatus: '상시 판매'
+      })  
+    }
+    return null;
+  }, [orderData])
 
   /**
    * 목적지 적용 핸들러 
@@ -218,7 +211,7 @@ const OrderDetail = ({ salesNumber }) => {
             />
             <TGreyBtn onClick={handleDestinationApply}>적용</TGreyBtn>
             <BtnBound />
-            <WhiteBlackBtn onClick={handleDestinationApprovalRequest}>목적지 승인 요청</WhiteBlackBtn>
+            <WhiteBlackBtn disabled={isRequstLoading} onClick={handleDestinationApprovalRequest}>목적지 승인 요청</WhiteBlackBtn>
           </div>
         </TCSubContainer>
         {/* 테이블 */}
@@ -245,11 +238,12 @@ const OrderDetail = ({ salesNumber }) => {
         </TCSubContainer>
       </TableContianer>
       {/* 입금 요청서 모달 */}
-      {receiptPrint && (
+      {receiptPrint && depositRequestData && (
         <DepositRequestForm
           title="상시판매 입금요청서"
-          keyPair={DEPOSIT_REQUET_KEY_PAIR}
-          handleClose={() => {
+          auctionNumber={salesNumber}
+          {...depositRequestData}
+          onClose={() => {
             setReceiptPrint(false)
           }}
         />
