@@ -11,7 +11,7 @@ import { selectedRowsAtom } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
-import useSelectList from '../../hook/useSelectList'
+import useTableSearchFieldData from '../../../../hooks/useTableSearchFieldData'
 import ClaimProductHeader from './components/ClaimProductHeader'
 import { StyledBtnContainer } from './styles/StyledClaim'
 
@@ -19,7 +19,7 @@ const ClaimProduct = () => {
 	const navigate = useNavigate()
 
 	// 검색 셀렉트 옵션 목록
-	const { supplierList, makerList, stockStatusList, gradeList, preferThicknessList } = useSelectList()
+	const { supplierList, makerList, stockStatusList, gradeList, preferThicknessList } = useTableSearchFieldData()
 
 	// 목록 리스트
 	const [row, setRow] = useState([])

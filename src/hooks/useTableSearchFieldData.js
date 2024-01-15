@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
-import { getSPartList, getStorageList } from '../../../api/search'
-import useReactQuery from '../../../hooks/useReactQuery'
+import { getSPartList, getStorageList } from '../api/search'
+import useReactQuery from './useReactQuery'
 
 /**
  * @description
  * 검색 목록 SelectList에 사용되는 옵션 값들
  * @returns
  */
-const useSelectList = () => {
+const useTableSearchFieldData = () => {
 	// 창고 목록
 	const { data: storage } = useReactQuery('', 'getStorageList', getStorageList)
 	const storageList = useMemo(
@@ -117,4 +117,4 @@ const useSelectList = () => {
 	return { storageList, supplierList, spartList, makerList, stockStatusList, gradeList, preferThicknessList }
 }
 
-export default useSelectList
+export default useTableSearchFieldData
