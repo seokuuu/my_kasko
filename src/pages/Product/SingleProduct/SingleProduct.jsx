@@ -49,7 +49,7 @@ import {
 } from '../../../store/Layout/Layout'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { Filtering } from '../../../utils/filtering'
-import useTablePagination from '../../Operate/hook/useTablePaging'
+import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 import { onSizeChange } from '../../Operate/utils'
 import Table from '../../Table/Table'
 
@@ -281,7 +281,7 @@ const SingleProduct = () => {
 		})
 	}
 
-	const { pagination, onPageChanage } = useTablePagination(data, setRequestParameter)
+	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setRequestParameter)
 	return (
 		<>
 			<FilterContianer>

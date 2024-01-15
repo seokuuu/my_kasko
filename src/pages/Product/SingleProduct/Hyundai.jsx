@@ -61,7 +61,7 @@ import Multi2 from '../../../modal/Common/Multi2'
 import { popupObject } from '../../../store/Layout/Layout'
 import { changeCategoryAtom } from '../../../store/Layout/Popup'
 import { KilogramSum } from '../../../utils/KilogramSum'
-import useTablePagination from '../../Operate/hook/useTablePaging'
+import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 import { onSizeChange } from '../../Operate/utils'
 import HyunDaiOriginal from './HyunDaiOriginal'
 const DEFAULT_OBJ = { value: '', label: '전체' }
@@ -337,7 +337,7 @@ const Hyundai = ({}) => {
 		return res
 	}
 
-	const { pagination, onPageChanage } = useTablePagination(data, setRequestParameter)
+	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setRequestParameter)
 	return (
 		<>
 			<FilterContianer>

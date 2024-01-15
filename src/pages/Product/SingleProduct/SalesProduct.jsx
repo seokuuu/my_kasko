@@ -55,7 +55,7 @@ import StandardFind from '../../../modal/Multi/StandardFind'
 import { specAtom } from '../../../store/Layout/Layout'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { Filtering } from '../../../utils/filtering'
-import useTablePagination from '../../Operate/hook/useTablePaging'
+import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 import { onSizeChange } from '../../Operate/utils'
 import Table from '../../Table/Table'
 
@@ -282,7 +282,7 @@ const SalesProduct = () => {
 		console.log('SELECT', select)
 	}
 
-	const { pagination: customPagination, onPageChanage } = useTablePagination(data, setRequestParamter)
+	const { pagination: customPagination, onPageChanage } = useTablePaginationPageChange(data, setRequestParamter)
 	return (
 		<>
 			{' '}

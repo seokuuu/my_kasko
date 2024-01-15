@@ -42,7 +42,7 @@ import ClientPostModal from '../Client/ClientPostModal'
 import UserPost from './UserPost'
 import { UsermanageUserManageEditModal } from '../../../store/Layout/Layout'
 import UserEdit from './UserEdit'
-import useTablePagination from '../../../hooks/useTablePagination'
+import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 const UserManage = ({ setChoiceComponent }) => {
 	const [editModal, setEditModal] = useAtom(UsermanageUserManageEditModal)
 	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
@@ -96,7 +96,7 @@ const UserManage = ({ setChoiceComponent }) => {
 	const resPagination = data?.data?.data?.pagination
 
 	const [param, setParam] = useState(paramData)
-	const { onPageChanage } = useTablePagination(data, setParam)
+	const { onPageChanage } = useTablePaginationPageChange(data, setParam)
 
 	if (isError) console.log('데이터 request ERROR')
 

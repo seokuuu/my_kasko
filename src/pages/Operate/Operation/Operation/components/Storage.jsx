@@ -22,7 +22,7 @@ import {
 import Table from '../../../../Table/Table'
 import CommonTableHeader from '../../../UI/CommonTableHeader'
 import { commonListSearchInitValue } from '../../../constants'
-import useTablePagination from '../../../hook/useTablePaging'
+import useTablePaginationPageChange from '../../../../../hooks/useTablePaginationPageChange'
 
 /**
  * @description
@@ -128,7 +128,7 @@ const Storage = () => {
 		}
 	}, [detailRow])
 
-	const { pagination, onPageChanage } = useTablePagination(data, setSearch)
+	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setSearch)
 	return (
 		<TableContianer>
 			<CommonTableHeader

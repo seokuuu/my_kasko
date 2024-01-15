@@ -16,7 +16,7 @@ import Table from '../../../Table/Table'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { claimInitState } from '../../constants'
 import ClaimHeader from './components/ClaimHeader'
-import useTablePagination from '../../hook/useTablePaging'
+import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
 
 /**
  * @description
@@ -92,7 +92,7 @@ const Claim = () => {
 		}
 	}, [detailRow])
 
-	const { pagination, onPageChanage } = useTablePagination(data, setSearch)
+	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setSearch)
 	return (
 		<FilterContianer>
 			{/* 카테고리탭 & 검색필터 on & 검색 */}

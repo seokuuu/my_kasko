@@ -40,7 +40,7 @@ import { UsermanageDestiEditModal, btnCellUidAtom, UsermanageFindModal } from '.
 import TableTest from '../../Table/TableTest'
 import DestinationEdit from './DestinationEdit'
 import Table from '../../Table/Table'
-import useTablePagination from '../../../hooks/useTablePagination'
+import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 
 const ClientDestination = ({ setChoiceComponent }) => {
 	const [findModal, setFindModal] = useAtom(UsermanageFindModal)
@@ -92,7 +92,7 @@ const ClientDestination = ({ setChoiceComponent }) => {
 	const resData = data?.data?.data?.list
 	const pagination = data?.data?.data?.pagination
 
-	const { onPageChanage } = useTablePagination(data, setQuery)
+	const { onPageChanage } = useTablePaginationPageChange(data, setQuery)
 
 	useEffect(() => {
 		let getData = resData

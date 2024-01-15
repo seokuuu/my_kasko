@@ -17,7 +17,7 @@ import Table from '../../../Table/Table'
 import CategoryTab from '../../UI/CategoryTab'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { commonListSearchInitValue, exposureTabOptions } from '../../constants'
-import useTablePagination from '../../hook/useTablePaging'
+import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
 
 /**
  * @description
@@ -110,7 +110,7 @@ const Popup = ({}) => {
 		}
 	}, [detailRow])
 
-	const { pagination, onPageChanage } = useTablePagination(data, setSearch)
+	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setSearch)
 
 	return (
 		<FilterContianer>

@@ -10,7 +10,7 @@ import { FilterContianer, TableContianer } from '../../../../modal/External/Exte
 import { selectedRowsAtom } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
 import CommonTableHeader from '../../UI/CommonTableHeader'
-import useTablePagination from '../../hook/useTablePaging'
+import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
 import useSelectList from '../../hook/useSelectList'
 import ClaimProductHeader from './components/ClaimProductHeader'
 import { StyledBtnContainer } from './styles/StyledClaim'
@@ -118,7 +118,7 @@ const ClaimProduct = () => {
 		}
 	}, [selected])
 
-	const { pagination, onPageChanage } = useTablePagination(data, setSearch)
+	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setSearch)
 	return (
 		<FilterContianer>
 			{/* 카테고리탭 & 검색필터 on & 검색 */}

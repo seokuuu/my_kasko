@@ -29,7 +29,7 @@ import {
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
 import { btnCellRenderAtom, btnCellUidAtom, onClickCheckAtom } from '../../../store/Layout/Layout'
-import useTablePagination from '../../Operate/hook/useTablePaging'
+import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 import { onSizeChange } from '../../Operate/utils'
 import Table from '../../Table/Table'
 
@@ -146,7 +146,7 @@ function HyunDaiOriginal({ title }) {
 		})
 	}
 
-	const { pagination, onPageChanage } = useTablePagination(original?.data, setRequest)
+	const { pagination, onPageChanage } = useTablePaginationPageChange(original?.data, setRequest)
 	return (
 		<OutSide>
 			<Container>

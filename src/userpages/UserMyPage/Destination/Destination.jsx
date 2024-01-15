@@ -18,7 +18,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { getDestination } from '../../../api/myPage'
 import Table from '../../../pages/Table/Table'
-import useTablePagination from '../../../hooks/useTablePagination'
+import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 import {
 	UserManageCustomerDestinationManageFields,
 	UserManageCustomerDestinationManageFieldsCols,
@@ -85,7 +85,7 @@ const Destination = ({ setChoiceComponent }) => {
 	const resData = data?.data?.data?.list
 	const pagination = data?.data?.data?.pagination
 
-	// const { onPageChange } = useTablePagination(data, setRequest)
+	// const { onPageChange } = useTablePaginationPageChange(data, setRequest)
 	const onPageChange = (value) => {
 		setRequest((p) => ({ ...p, pageNum: Number(value) }))
 	}

@@ -17,7 +17,7 @@ import Table from '../../../Table/Table'
 import CommonHeader from '../../UI/CommonHeader'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { normalTabOptions, noticeListSearchInitValue, noticeSearchCategoryOptions } from '../../constants'
-import useTablePagination from '../../hook/useTablePaging'
+import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
 
 /**
  * @description
@@ -114,7 +114,7 @@ const Notice = ({ title, detailsUrl }) => {
 			setDetailsRow([])
 		}
 	}, [detailRow])
-	const { pagination, onPageChanage } = useTablePagination(data, setSearch)
+	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setSearch)
 	return (
 		<FilterContianer>
 			{/* 헤더(카테고리탭 & 검색) */}

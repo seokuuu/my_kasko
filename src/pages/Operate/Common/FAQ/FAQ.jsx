@@ -9,7 +9,7 @@ import { FilterContianer, TableContianer } from '../../../../modal/External/Exte
 import { doubleClickedRowAtom, selectedRowsAtom } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
 import { searchCategoryOptions } from '../../constants'
-import useTablePagination from '../../hook/useTablePaging'
+import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
 import Header from './components/faq/Header'
 import TableHeader from './components/faq/TableHeader'
 
@@ -71,7 +71,7 @@ const FAQ = ({}) => {
 		}
 	}, [detailRow])
 
-	const { pagination, onPageChanage } = useTablePagination(data, setSearch)
+	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setSearch)
 	return (
 		<FilterContianer>
 			{/* 헤더(카테고리탭 & 검색) */}
