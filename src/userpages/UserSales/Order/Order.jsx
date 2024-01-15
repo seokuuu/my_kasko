@@ -321,18 +321,20 @@ const Order = ({}) => {
                     }}
                   />
                   <MainSelect 
-                    options={stockStatusList.map(v => v.value)} 
-                    value={tempSearchParams.maker || ''}
-                    onChange={e => {
-                      console.log(e);
+                    options={stockStatusList} 
+                    defaultValue={stockStatusList[0]}
+                    value={stockStatusList.filter(({ label }) => label === tempSearchParams.maker)}
+                    onChange={(v) => {
+                      handleTypedInputChange({ key: 'maker', value: v.label })
                     }} 
                   />
                   <MainSelect 
                     options={gradeList} 
-                    value={tempSearchParams.grade || ''}
-                    onChange={e => {
-                      console.log(e);
-                    }}
+                    defaultValue={stockStatusList[0]}
+                    value={gradeList.filter(({ label }) => label === tempSearchParams.grade)}
+                    onChange={(v) => {
+                      handleTypedInputChange({ key: 'grade', value: v.label })
+                    }} 
                   />
                 </PartWrap>
                 {/* 주문 일자 */}
