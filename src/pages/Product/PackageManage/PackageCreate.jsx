@@ -11,7 +11,6 @@ import { packageModeAtom, singleAllProductModal, toggleAtom } from '../../../sto
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 // import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-import { useQuery } from '@tanstack/react-query'
 import { WhiteBtn } from '../../../common/Button/Button'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -28,11 +27,11 @@ import {
   TableContianer,
 } from '../../../modal/External/ExternalFilter'
 
+import { useQuery } from '@tanstack/react-query'
+import { useAtom } from 'jotai'
 import { useLocation } from 'react-router-dom'
 import { getPackageProductsList, postCreatePackage } from '../../../api/SellProduct'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
-// import { getPackageProductsList } from '../../../api/packageProduct'
-import { useAtom } from 'jotai'
 import { packageProductsDispatchFields, packageProductsDispatchFieldsCols } from '../../../constants/admin/SellPackage'
 import { add_element_field } from '../../../lib/tableHelpers'
 import SingleAllProduct from '../../../modal/Multi/SingleAllProduct'
