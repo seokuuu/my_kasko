@@ -56,6 +56,16 @@ export const getAuctionDestination = () => {
   return client.get(`${urls.winning}/destination`)
 }
 
+// 낙찰 생성 경매 번호
+export const getAuctionNumber = () => {
+  return client.get(`${urls.winning}/number`)
+}
+
+// 낙찰 생성
+export const successfulBid = (data) => {
+  return client.post(`${urls.winning}`, data)
+}
+
 export function getWinningDetail(data) {
   console.log('data !@#', data)
   return client.get(

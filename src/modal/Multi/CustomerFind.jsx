@@ -121,7 +121,9 @@ const CustomerFind = ({ title, setSwitch, setModalData }) => {
                   result.map((item, index) => (
                     <ResultRow
                       key={item.uid}
-                      onClick={() => handleCellClick(item.uid, item.name, item.code, item.businessNumber)}
+                      onClick={() =>
+                        handleCellClick(item.uid, item.name, item.code, item.businessNumber, item.memberUid)
+                      }
                     >
                       <ResultCell wid={50}>
                         <RadioMainDiv key={index}>

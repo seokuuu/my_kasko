@@ -47,10 +47,13 @@ import {
 } from '../../../modal/Common/Common.Styled'
 import Table from '../../Table/Table'
 import { isArray } from 'lodash'
+import { selectedRows2Switch } from '../../../store/Layout/Layout'
 
 // 낙찰 생성 제품 추가(단일) 메인 컴포넌트
-const WinningProductAdd = ({ setAddModal, newResData, setNewResData }) => {
+const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData }) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
+  const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
+
   const [tablePagination, setTablePagination] = useState([])
   const paramData = {
     pageNum: 1,
@@ -159,6 +162,17 @@ const WinningProductAdd = ({ setAddModal, newResData, setNewResData }) => {
       pageNum: Number(value),
     }))
   }
+
+  // 마운트시 switch false, 언마운트시 true (table onSelectionChanged 관련)
+  useEffect(() => {
+    if (addModal) {
+      setRowAtomSwitch(false)
+    }
+    return () => {
+      setRowAtomSwitch(true)
+    }
+  }, [addModal])
+
   return (
     <>
       <FadeOverlay />

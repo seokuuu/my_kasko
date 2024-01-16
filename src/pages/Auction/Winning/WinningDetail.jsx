@@ -170,6 +170,7 @@ const WinningDetail = ({ detailRow }) => {
 
   const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
 
+  console.log('inventoryDestination', inventoryDestination?.data?.data)
   const { isLoading, isError, data, isSuccess } = useReactQuery(detailParams, 'getWinningDetail', getWinningDetail)
   const resData = data?.data?.data?.list
   const resPagination = data?.data?.data?.pagination

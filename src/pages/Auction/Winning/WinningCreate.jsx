@@ -4,7 +4,13 @@ import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { invenDestination, selectedRowsAtom, toggleAtom, winningDestiData } from '../../../store/Layout/Layout'
+import {
+  invenDestination,
+  selectedRows2Switch,
+  selectedRowsAtom2,
+  toggleAtom,
+  winningDestiData,
+} from '../../../store/Layout/Layout'
 
 import {
   DoubleWrap,
@@ -37,7 +43,7 @@ import { InputContainer, NoOutInput, Unit } from '../../../common/Input/Input'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isArray } from 'lodash'
-import { getAuctionDestination } from '../../../api/auction/winning'
+import { getAuctionDestination, getAuctionNumber, successfulBid } from '../../../api/auction/winning'
 import { AuctionWinningCreateFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import CustomerFind from '../../../modal/Multi/CustomerFind'
@@ -45,6 +51,7 @@ import InventoryFind from '../../../modal/Multi/InventoryFind'
 import { WinningCreateFindAtom, WinningProductAddAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import WinningProductAdd from './WinningProductAdd'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
 const WinningCreate = ({}) => {
   const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
@@ -56,6 +63,26 @@ const WinningCreate = ({}) => {
     addProductUids: [],
     deleteAuctionProductList: [],
   })
+
+  const init = {
+    auctionNumber: '',
+    customerUid: null,
+    memberUid: null,
+    customerDestinationUid: null,
+    productList: [],
+  }
+
+  const productListInner = {
+    biddingPrice: null,
+    confirmPrice: null,
+  }
+
+  const [winningCreateData, setWinningCreateData] = useState(init)
+  const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
+
+  console.log('winningCreateInput', winningCreateInput)
+
+  console.log('winningCreateData', winningCreateData)
 
   const [customerData, setCustomerData] = useState()
   const [destiData, setDestiData] = useState()
@@ -111,7 +138,29 @@ const WinningCreate = ({}) => {
     }
   }
 
+  const { data: auctionNowNum } = useReactQuery('', 'getAuctionNumber', getAuctionNumber)
+
+  console.log('auctionNowNum', auctionNowNum?.data?.data)
+
   const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
+
+  const [propsUid, setPropsUid] = useState(null)
+  const [destiObject, setDestiObject] = useState()
+
+  // 목적지 찾기 및 목적지 uid, auctionNumber set //
+  useEffect(() => {
+    const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
+    setDestiObject(selectedObject)
+    setWinningCreateData((p) => ({
+      ...p,
+      customerDestinationUid: selectedObject?.uid,
+      auctionNumber: auctionNowNum?.data?.data,
+      customerUid: customerData?.uid,
+      memberUid: customerData?.memberUid,
+    }))
+  }, [propsUid, auctionNowNum, customerData])
+
+  console.log('destiObject', destiObject)
 
   const [tablePagination, setTablePagination] = useState([])
 
@@ -119,7 +168,29 @@ const WinningCreate = ({}) => {
   const tableField = useRef(AuctionWinningCreateFieldsCols)
   const getCol = tableField.current
   const queryClient = useQueryClient()
-  const checkedArray = useAtom(selectedRowsAtom)[0]
+  const checkedArray2 = useAtom(selectedRowsAtom2)[0]
+  const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
+
+  console.log('rowAtomSwitch main @@', rowAtomSwitch)
+
+  useEffect(() => {
+    const updatedProductList = checkedArray2?.map((item) => ({
+      productUid: item['제품 고유 번호'],
+      biddingPrice: winningCreateInput.biddingPrice,
+      confirmPrice: winningCreateInput.confirmPrice,
+      // 여기에 다른 필요한 속성을 추가할 수 있습니다.
+    }))
+
+    // winningCreateData를 업데이트하여 productList를 갱신
+    setWinningCreateData((prevData) => ({
+      ...prevData,
+      productList: updatedProductList,
+    }))
+  }, [checkedArray2, winningCreateInput])
+
+  console.log('checkedArray2', checkedArray2)
+
+  console.log('winningCreateData', winningCreateData)
 
   const paramData = {
     pageNum: 1,
@@ -130,7 +201,6 @@ const WinningCreate = ({}) => {
   const [Param, setParam] = useState(paramData)
 
   // GET
-
   // const resPagination = data?.data?.data?.pagination
   const [newResData, setNewResData] = useState([])
 
@@ -147,17 +217,17 @@ const WinningCreate = ({}) => {
   }, [newResData])
 
   const handleRemoveBtn = useCallback(() => {
-    if (isArray(checkedArray) && checkedArray.length > 0) {
+    if (isArray(checkedArray2) && checkedArray2.length > 0) {
       if (window.confirm('선택한 항목을 삭제 목록에 추가하시겠습니까?')) {
         const filteredArray = newResData.filter(
-          (item) => !checkedArray.some((checkedItem) => checkedItem['제품 고유 번호'] === item['제품 고유 번호']),
+          (item) => !checkedArray2.some((checkedItem) => checkedItem['제품 고유 번호'] === item['제품 고유 번호']),
         )
         setNewResData(filteredArray)
       }
     } else {
       alert('선택해주세요!')
     }
-  }, [checkedArray, newResData])
+  }, [checkedArray2, newResData])
 
   console.log('newResData =>', newResData)
 
@@ -176,6 +246,12 @@ const WinningCreate = ({}) => {
     }))
   }
 
+  const successfulBidMutation = useMutationQuery('', successfulBid)
+
+  const successfulBidOnClick = () => {
+    successfulBidMutation.mutate(winningCreateData)
+  }
+
   return (
     <FilterContianer>
       <FilterHeader>
@@ -191,7 +267,7 @@ const WinningCreate = ({}) => {
           <FilterTopContainer>
             <FilterTCTop>
               <h6>경매 번호</h6>
-              <p>2023041050</p>
+              <p>{auctionNowNum?.data?.data}</p>
             </FilterTCTop>
             <FilterTCBottom>
               <FilterTCBSubdiv>
@@ -217,27 +293,27 @@ const WinningCreate = ({}) => {
                   <Input
                     placeholder="코드"
                     style={{ width: '60px', marginRight: '10px', fontSize: '16px' }}
-                    defaultValue={destinationData?.code}
+                    defaultValue={destiObject?.code}
                   />
                   <Input
                     placeholder="목적지명"
                     style={{ width: '120px', marginRight: '10px', fontSize: '16px' }}
-                    defaultValue={destinationData?.destinationName}
+                    defaultValue={destiObject?.destinationName}
                   />
                   <Input
                     placeholder="하차지명"
                     style={{ width: '130px', marginRight: '10px', fontSize: '16px' }}
-                    defaultValue={destinationData?.name}
+                    defaultValue={destiObject?.name}
                   />
                   <Input
                     placeholder="하차지 연락처"
                     style={{ width: '130px', marginRight: '10px', fontSize: '16px' }}
-                    defaultValue={destinationData?.phone}
+                    defaultValue={destiObject?.phone}
                   />
                   <Input
                     placeholder="주소"
                     style={{ width: '130px', marginRight: '10px', fontSize: '16px' }}
-                    defaultValue={destinationData?.address}
+                    defaultValue={destiObject?.address}
                   />
 
                   <GreyBtn
@@ -257,19 +333,35 @@ const WinningCreate = ({}) => {
                 <div style={{ marginRight: '10px' }}>
                   <h6 style={{ fontSize: '18px' }}>낙찰가 총액</h6>
                   <InputContainer>
-                    <NoOutInput type="number" />
+                    <NoOutInput
+                      type="number"
+                      onChange={(e) => {
+                        setwinningCreateInput((p) => ({
+                          ...p,
+                          biddingPrice: parseInt(e.target.value) || null,
+                        }))
+                      }}
+                    />
                     <Unit>원</Unit>
                   </InputContainer>
                 </div>
-                <div style={{ marginRight: '10px' }}>
+                {/* <div style={{ marginRight: '10px' }}>
                   <h6 style={{ fontSize: '17px' }}>총 중량</h6>
                   <Input />
-                </div>
+                </div> */}
 
                 <div style={{ marginRight: '10px' }}>
                   <h6 style={{ fontSize: '17px' }}> 확정전송 총액</h6>
                   <InputContainer>
-                    <NoOutInput type="number" />
+                    <NoOutInput
+                      type="number"
+                      onChange={(e) => {
+                        setwinningCreateInput((p) => ({
+                          ...p,
+                          confirmPrice: parseInt(e.target.value) || null,
+                        }))
+                      }}
+                    />
                     <Unit>원</Unit>
                   </InputContainer>
                 </div>
@@ -389,14 +481,19 @@ const WinningCreate = ({}) => {
           <WhiteBtn width={13} height={40}>
             돌아가기
           </WhiteBtn>
-          <BlackBtn width={13} height={40}>
+          <BlackBtn width={13} height={40} onClick={successfulBidOnClick}>
             등록
           </BlackBtn>
         </NewBottomBtnWrap>
       </TableContianer>
       {isModal && <CustomerFind setSwitch={setIsModal} setModalData={setCustomerData} />}
       {addProdModal && (
-        <WinningProductAdd setAddModal={setAddProdModal} newResData={newResData} setNewResData={setNewResData} />
+        <WinningProductAdd
+          addModal={addProdModal}
+          setAddModal={setAddProdModal}
+          newResData={newResData}
+          setNewResData={setNewResData}
+        />
       )}
       {destinationPopUp && (
         <InventoryFind
@@ -404,6 +501,7 @@ const WinningCreate = ({}) => {
           type={'낙찰 생성'}
           setSwitch={setDestinationPopUp}
           data={auctionDestination}
+          setPropsUid={setPropsUid}
         />
       )}
     </FilterContianer>

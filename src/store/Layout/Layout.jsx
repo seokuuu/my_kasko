@@ -45,6 +45,9 @@ export const selectedRowsAtom = atom([])
 
 export const selectedRowsAtom2 = atom([])
 
+// 중복 방지 switch (모달 진입시 false로 막음)
+export const selectedRows2Switch = atom(true)
+
 // test3 테이블 체크했을시 데이터
 export const doubleClickedRowAtom = atom([])
 

@@ -16,7 +16,14 @@ import {
   NonFadeOverlay,
   WhiteCloseBtn,
 } from '../../modal/Common/Common.Styled'
-import { blueModalAtom, doubleClickedRowAtom, pageSort, selectedRowsAtom } from '../../store/Layout/Layout'
+import {
+  blueModalAtom,
+  doubleClickedRowAtom,
+  pageSort,
+  selectedRows2Switch,
+  selectedRowsAtom,
+  selectedRowsAtom2,
+} from '../../store/Layout/Layout'
 import './TableUi.css'
 import PropTypes from 'prop-types'
 // import TableStyle from './Table.module.css'
@@ -79,6 +86,9 @@ const Table = ({
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
   const [rowData, setRowData] = useState()
   const [selectedRowData, setSelectedRowData] = useState(null)
+  const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
+
+  console.log('rowAtomSwitch', rowAtomSwitch)
 
   var checkboxSelection = function (params) {
     // we put checkbox on the name if we are not doing grouping
@@ -219,6 +229,7 @@ const Table = ({
 
   const [gridApi, setGridApi] = useState(null)
   const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
+  const [selectedRows2, setSelectedRows2] = useAtom(selectedRowsAtom2)
   const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
   const navigate = useNavigate()
 
@@ -243,7 +254,11 @@ const Table = ({
       const selectedNodes = gridApi.getSelectedNodes()
       const selectedData = selectedNodes.map((node) => node.data)
       setSelectedRows(selectedData)
-      // console.log(selectedRows)
+
+      // 이중으로 check 사용 시
+      if (rowAtomSwitch) {
+        setSelectedRows2(selectedData)
+      }
     }
   }
   const autoGroupColumnDef = useMemo(() => {
