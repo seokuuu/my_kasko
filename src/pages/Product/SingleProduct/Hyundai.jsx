@@ -64,6 +64,8 @@ import { KilogramSum } from '../../../utils/KilogramSum'
 import usePaging from '../../Operate/hook/usePaging'
 import { onSizeChange } from '../../Operate/utils'
 import HyunDaiOriginal from './HyunDaiOriginal'
+import { CustomInput } from '../../../modal/External/ExternalFilter'
+
 const DEFAULT_OBJ = { value: '', label: '전체' }
 
 const Hyundai = ({}) => {
@@ -131,11 +133,10 @@ const Hyundai = ({}) => {
   const [isTableModal, setIsTableModal] = useAtom(onClickCheckAtom)
   const [getRow, setGetRow] = useState('')
   const { data, isSuccess, refetch, isLoading } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
-  console.log('data :', data)
+
   const hyunDaiList = data?.r
   const hyunDaiPage = data?.pagination
 
-  console.log(hyunDaiPage)
   const tableField = useRef(SingleDispatchFieldsCols)
   const getCol = tableField.current
   const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
@@ -313,7 +314,10 @@ const Hyundai = ({}) => {
     setSelectProductNumber(() => checkBoxSelect?.map((i) => i['제품 번호']))
   }, [checkBoxSelect])
 
+  // 상태구분 변경
+
   const { mutate, isError } = useMutationQuery('change-category', patchSaleCategory)
+
   const changeSaleCategory = () => {
     const res = mutate(parameter, {
       onSuccess: () => {
@@ -600,7 +604,11 @@ const Hyundai = ({}) => {
               {pagiNation ? pagiNation?.totalWeight : hyunDaiPage?.totalWeight} 중량 kg
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <TGreyBtn>적용</TGreyBtn>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <p>아울렛 일괄 변경</p>
+                <CustomInput placeholder="아울렛 입력" width={120} height={32} onChange={() => {}} />
+                <TGreyBtn>적용</TGreyBtn>
+              </div>
               <BtnBound />
               <WhiteBlackBtn
                 onClick={() => {

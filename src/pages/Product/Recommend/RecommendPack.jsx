@@ -21,6 +21,7 @@ import Table from '../../Table/Table'
 import { getPackageList, patchBeBestPackageRecommend, patchChangeBestPackageRecommend } from '../../../api/SellProduct'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { packageDispatchFieldsCols, packageDispatchFields } from '../../../constants/admin/SellPackage'
+import { packageRecommendDispatchFieldsCols } from '../../../constants/admin/Remcommed'
 const RecommendPack = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
@@ -44,7 +45,7 @@ const RecommendPack = ({}) => {
     saleType: '',
     bestStatus: '1',
   })
-  const tableFields = useRef(packageDispatchFieldsCols)
+  const tableFields = useRef(packageRecommendDispatchFieldsCols)
   const getCol = tableFields.current
   const [getRow, setGetRow] = useState('')
   const [pages, setPages] = useState([])

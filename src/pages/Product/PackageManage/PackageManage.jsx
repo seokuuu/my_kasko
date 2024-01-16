@@ -166,8 +166,7 @@ const PackageManage = ({}) => {
   const { mutate: beRecommend } = useMutationQuery('beRecommend', patchBeBestPackageRecommend)
 
   useEffect(() => {
-    if (checkBoxSelect) return setSelectUid((p) => [...checkBoxSelect.map((i) => i['고유 번호'])])
-    console.log('왜 3번 연속으로 실릴까', selectUids)
+    if (checkBoxSelect) return setSelectUid(() => [...checkBoxSelect.map((i) => i['고유 번호'])])
   }, [checkBoxSelect])
 
   const patchRecommend = () => {
@@ -331,7 +330,7 @@ const PackageManage = ({}) => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <YellBtn onClick={patchRecommend}>추천제품지정 (0 / 10)</YellBtn>
+            <YellBtn onClick={patchRecommend}>추천제품지정 ({pages?.bestCount} / 10)</YellBtn>
             <BtnBound />
             <WhiteBlackBtn>판매 구분 변경</WhiteBlackBtn>
             <BtnBound />

@@ -18,6 +18,7 @@ import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
+  CustomInput,
   DoubleWrap,
   ExCheckDiv,
   ExInputsWrap,
@@ -40,10 +41,10 @@ import {
   TableContianer,
   Tilde,
 } from '../../../modal/External/ExternalFilter'
-import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-
+import { blueModalAtom, popupObject, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import Multi2 from '../../../modal/Common/Multi2'
 import { useAtom, useAtomValue } from 'jotai'
-import { getSingleProducts } from '../../../api/SellProduct'
+import { getSingleProducts, patchSaleCategory } from '../../../api/SellProduct'
 import { getSPartList, getStorageList } from '../../../api/search'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import { ProductOptions, supplierOptions } from '../../../common/Option/storage'
@@ -58,6 +59,9 @@ import { Filtering } from '../../../utils/filtering'
 import usePaging from '../../Operate/hook/usePaging'
 import { onSizeChange } from '../../Operate/utils'
 import Table from '../../Table/Table'
+import { hyunDaiMultiModal } from '../../../store/Layout/Layout'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import { changeCategoryAtom } from '../../../store/Layout/Popup'
 
 const SalesProduct = () => {
   const checkSales = ['전체', '판매재', '판매제외제', '판매 완료제']
@@ -87,6 +91,9 @@ const SalesProduct = () => {
   const [productNumber, setProductNumber] = useState('')
   const [pagination, setPagination] = useState({})
   const checkBoxSelect = useAtomValue(selectedRowsAtom)
+  const currentPath = window.location.pathname
+  const [isMultiModal, setIsMultiModal] = useAtom(hyunDaiMultiModal)
+  const [parameter, setParameter] = useAtom(changeCategoryAtom)
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
     const updatedCheck = checkSales.map((value, index) => {
@@ -118,14 +125,15 @@ const SalesProduct = () => {
   }, [check3])
 
   const [isRotated, setIsRotated] = useState(false)
-
+  const [errorMsg, setErrorMsg] = useState('')
+  const [nowPopup, setNowPopup] = useAtom(popupObject)
   // Function to handle image click and toggle rotation
 
   const [requestParameter, setRequestParamter] = useState({
     pageNum: 1,
-    pageSize: 1000,
+    pageSize: 50,
     type: '일반',
-    category: '판매제품',
+    category: '동은스틸',
   })
   const { data, isSuccess, isLoading } = useReactQuery(requestParameter, 'product-list', getSingleProducts)
   const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
@@ -161,7 +169,7 @@ const SalesProduct = () => {
   // 토글 쓰기
   const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
   const [toggleMsg, setToggleMsg] = useState('On')
-
+  const [selectProductNumber, setSelectProductNumber] = useState([])
   const toggleBtnClick = () => {
     setExfilterToggle((prev) => !prev)
     if (exFilterToggle === true) {
@@ -204,9 +212,9 @@ const SalesProduct = () => {
   const handleSearch = () => {
     const request = {
       pageNum: 1,
-      pageSize: 1000,
+      pageSize: 50,
       type: '일반',
-      category: '판매제품',
+      category: '동은스틸',
 
       proNo: productNoNumber, //프로넘
       storage: select.storage, // 창고
@@ -280,7 +288,33 @@ const SalesProduct = () => {
     }
     console.log('SELECT', select)
   }
+  useEffect(() => {
+    if (checkBoxSelect?.length === 0) return
+    setSelectProductNumber(() => checkBoxSelect?.map((i) => i['제품 번호']))
+  }, [checkBoxSelect])
+  const { mutate, isError } = useMutationQuery('change-category', patchSaleCategory)
+  const changeSaleCategory = () => {
+    const res = mutate(parameter, {
+      onSuccess: () => {
+        setIsMultiModal(false)
+        window.location.reload()
+      },
+      onError: (e) => {
+        setErrorMsg(e.data.message)
+        setNowPopup({
+          num: '1-12',
+          title: '',
+          content: `${e.data.message}`,
+          func: () => {
+            console.log('hi')
+            setIsMultiModal(false)
+          },
+        })
+      },
+    })
 
+    return res
+  }
   const { pagination: customPagination, onPageChanage } = usePaging(data, setRequestParamter)
   return (
     <>
@@ -546,11 +580,22 @@ const SalesProduct = () => {
               {pagination ? pagination?.totalWeight : SaleProductPages?.totalWeight} 중량 kg
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <TGreyBtn>적용</TGreyBtn>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <p>아울렛 일괄 변경</p>
+                <CustomInput placeholder="아울렛 입력" width={120} height={32} onChange={() => {}} />
+                <TGreyBtn>적용</TGreyBtn>
+              </div>
               <BtnBound />
-              <WhiteSkyBtn>Pro. no 생성</WhiteSkyBtn>
-              <BtnBound />
-              <WhiteBlackBtn>판매 구분 변경</WhiteBlackBtn>
+              <WhiteBlackBtn
+                onClick={() => {
+                  if (checkBoxSelect == null) alert('제품을 선택해 주세요.')
+                  else {
+                    setIsMultiModal(true)
+                  }
+                }}
+              >
+                판매 구분 변경
+              </WhiteBlackBtn>
               <BtnBound />
               <WhiteBlackBtn>판매 유형 변경</WhiteBlackBtn>
             </div>
@@ -588,6 +633,20 @@ const SalesProduct = () => {
             }
             setIsModal(false)
           }}
+        />
+      )}
+      {isMultiModal === true && (
+        <Multi2
+          closeFn={(e, text) => {
+            const { tagName } = e.target
+            // console.log('TARGET :', e.target.tagName)
+            if (tagName === 'IMG') {
+              setIsMultiModal(false)
+            }
+          }}
+          errMsg={errorMsg}
+          saveFn={changeSaleCategory}
+          productNumbers={selectProductNumber}
         />
       )}
     </>

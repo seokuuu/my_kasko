@@ -22,6 +22,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import { packageUidsAtom } from '../../../store/Layout/Layout'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { selectedRowsAtom } from '../../../store/Layout/Layout'
+import { singleRecommendDispatchFields,packageRecommendDispatchFieldsCols, singleRecommendDispatchFieldsCols } from '../../../constants/admin/Remcommed'
 
 const Recommend = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
@@ -33,7 +34,7 @@ const Recommend = ({}) => {
   const [isRotated, setIsRotated] = useState(false)
   const [getRow, setGetRow] = useState('')
   // const [packageUids, setUids] = useAtom()
-  const tableField = useRef(SingleDispatchFieldsCols)
+  const tableField = useRef(singleRecommendDispatchFieldsCols)
   const getCol = tableField.current
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
@@ -71,7 +72,7 @@ const Recommend = ({}) => {
 
     if (!isSuccess && !singleData) return
     if (Array.isArray(singleData)) {
-      setGetRow(add_element_field(singleData, singleDispatchFields))
+      setGetRow(add_element_field(singleData, singleRecommendDispatchFields))
       setPages(pagination)
     }
     //타입, 리액트쿼리, 데이터 확인 후 실행
