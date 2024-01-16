@@ -8,10 +8,12 @@ import {
 	useStorageUpdateMutation,
 } from '../../../../../api/operate/storage'
 import { StorageFieldCols, StorageFields } from '../../../../../constants/admin/Storage'
+import useTablePaginationPageChange from '../../../../../hooks/useTablePaginationPageChange'
 import { add_element_field } from '../../../../../lib/tableHelpers'
 import { TableContianer } from '../../../../../modal/External/ExternalFilter'
 import AddProduct from '../../../../../modal/Operate/AddProduct'
 import {
+	btnCellUidAtom,
 	doubleClickedRowAtom,
 	operateAddAtom,
 	popupAtom,
@@ -22,7 +24,6 @@ import {
 import Table from '../../../../Table/Table'
 import CommonTableHeader from '../../../UI/CommonTableHeader'
 import { commonListSearchInitValue } from '../../../constants'
-import useTablePaginationPageChange from '../../../../../hooks/useTablePaginationPageChange'
 
 /**
  * @description
@@ -39,12 +40,12 @@ const Storage = () => {
 	// 셀 클릭시 테이블 상세 데이터 조회
 	const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
 	// 상세 ID
-	const [detailsId, setDetailsId] = useState(0)
-
+	// 상세 고유 번호
+	const [uid, setUid] = useAtom(btnCellUidAtom)
 	// 창고 관리 목록 API
-	const { data } = useStorageListQuery(search)
+	const { data, isLoading } = useStorageListQuery(search)
 	// 창고 상세 API
-	const { data: detailsData } = useStorageDetailsQuery(detailsId)
+	const { data: detailsData } = useStorageDetailsQuery(uid)
 	// 창고 등록 API
 	const { mutate: register } = useStorageRegisterMutation()
 	// 창고 수정 API
@@ -93,7 +94,7 @@ const Storage = () => {
 		update({ uid: detailsData.uid, storage, address: '' })
 		setStorage('')
 		setModal(false)
-		setDetailsId(0)
+		setUid('')
 	}
 	// 삭제 핸들러
 	function removeEventHandler() {
@@ -121,12 +122,10 @@ const Storage = () => {
 
 	// 상세 데이터값 조회 및 모달 창 오픈
 	useEffect(() => {
-		if (detailRow && detailRow['고유값']) {
-			setDetailsId(detailRow['고유값'])
-			setDetailsRow([])
+		if (Boolean(uid)) {
 			setModal(true)
 		}
-	}, [detailRow])
+	}, [uid])
 
 	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setSearch)
 	return (
@@ -146,16 +145,17 @@ const Storage = () => {
 				tablePagination={pagination}
 				onPageChange={onPageChanage}
 				noRowsMessage="고객 정보 목록이 비어있습니다."
+				loading={isLoading}
 			/>
 			{modal && (
 				<AddProduct
-					initValue={detailsData ? detailsData.storage : ''}
+					initValue={detailsData && Boolean(uid) ? detailsData.storage : ''}
 					title={detailsData ? '창고 수정' : '창고 추가'}
 					contentTitle={'창고명 입력'}
 					deliveryHandler={(v) => setStorage(v)}
-					register={detailsId ? productUpdate : productRegister}
+					register={uid ? productUpdate : productRegister}
 					// 등록과 수정을 구분하기 위해 => 초기화 해주지 않으면 등록을 눌렀을 때, detailsId 값으로 인해 수정이 되는 경우가 있을 수 있습니다.
-					closeHandler={() => setDetailsId(0)}
+					closeHandler={() => setUid('')}
 				/>
 			)}
 		</TableContianer>

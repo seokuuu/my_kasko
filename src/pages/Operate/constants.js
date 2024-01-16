@@ -168,7 +168,7 @@ export const claimSearchCategoryOptions = [
 // 클레임 목록 검색 옵션 초기값
 export const claimInitState = {
   pageNum: 1,
-  pageSize: 1,
+  pageSize: 50,
   claimStatus: claimSearchCategoryOptions[0],
   startDate: '',
   endDate: '',
