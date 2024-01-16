@@ -1,0 +1,31 @@
+#### 백로그는 아직 시작되지 않은 해야 할 작업이나 기능의 목록입니다.
+
+#### 항목을 우선 순위에 따라 정렬하는 것은 좋은 습관입니다.
+
+#### A backlog is a list of tasks or features that need to be done but have not yet been started.
+
+#### It's a good practice to order the items in this backlog based on their priority. This helps the team understand which tasks should be tackled first.
+
+#### Format: [ `In Progress` | `Done`, `Team Member`] : `Description`
+
+## High Priority
+
+#### 통신 예외 처리
+
+- [ - ] (클라이언트, 서버 오류 핸들링) 어떻게 오류 처리를 하는지 확인하인.
+
+## Medium Priority
+
+- [Done, Jin] (테스트) 테이블을 더 큰 테스트 데이터 세트를 가지고 Test.
+- [Done, Jin] (테스트) FAQ 테이블에서의 테이블 페이지네이션 기능 테스트.
+
+## Low Priority
+
+#### 공통
+
+- [ - ] (디자인, 글로볼) FAQ 상세 컨테이너 글로볼 스타일 작업.
+- [ - ] (디자인, 글로볼) FAQ 상세 버튼 글로볼 스타일 작업.
+- [ - ] (디자인, 글로볼) 테이블 스타일링 및 페이지네이션 스타일링 작업.
+- [ - ] 페이지별 / 사이드바 권한 설정 미작업.
+- [ - ] 사이드바와 page 컴포넌트 무분별한 재사용 방대한 양으로 인해 후순위 작업 or 다음 프로젝트에 수정 적용 예정.
+- [ - ] btnCellRender의 uidAtom 사용에서의 많은 렌더링
