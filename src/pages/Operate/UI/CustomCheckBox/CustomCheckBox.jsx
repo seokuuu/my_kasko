@@ -25,12 +25,14 @@ const mockInitOptions = [
  * @param stateKey 상위 state key값입니다.
  * @param setState 상위 setState입니다.
  * @param isExistEntireValue 전체 옵션 포함 여부 입니다.
+ * @param stateType state 형태입니다. 값은 "object"(객체 형태) 혹은 "single"(단일 형태)입니다.
  */
 const CustomCheckBox = ({
   setState = () => {},
   initOptions = mockInitOptions,
   stateKey,
   isExistEntireValue = true,
+  stateType = 'object',
 }) => {
   // 옵션값
   const [options, setOptions] = useState(initOptions)
@@ -46,8 +48,16 @@ const CustomCheckBox = ({
   )
   // 상위 setState에 체크된 values들을 할당합니다.
   useEffect(() => {
-    setState((p) => ({ ...p, [stateKey]: checkedValues }))
-  }, [checkedValues])
+    switch (stateType) {
+      case 'object':
+        setState((p) => ({ ...p, [stateKey]: checkedValues }))
+        break
+      case 'single':
+        setState(checkedValues)
+        break
+      default:
+    }
+  }, [checkedValues, stateType])
   return (
     <ExCheckWrap>
       {isExistEntireValue && <EntireCheck options={options} setOptions={setOptions} />}

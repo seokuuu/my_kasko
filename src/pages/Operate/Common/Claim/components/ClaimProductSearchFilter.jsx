@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import React, { useState } from 'react'
+import React from 'react'
 import { GreyBtn } from '../../../../../common/Button/Button'
 import { MainSelect } from '../../../../../common/Option/Main'
 import {
@@ -12,7 +12,8 @@ import {
   RowWrap,
   Tilde,
 } from '../../../../../modal/External/ExternalFilter'
-import { blueModalAtom } from '../../../../../store/Layout/Layout'
+import StandardFind from '../../../../../modal/Multi/StandardFind'
+import { claimProductModalAtom } from '../../../../../store/Layout/Layout'
 import CustomCheckBox from '../../../UI/CustomCheckBox/CustomCheckBox'
 import useSelectList from '../../../hook/useSelectList'
 
@@ -22,8 +23,11 @@ import useSelectList from '../../../hook/useSelectList'
  */
 const ClaimProductSearchFilter = ({ search, setSearch }) => {
   // 규격 약호 모달
-  const [isModal, setIsModal] = useAtom(blueModalAtom)
+  const [isModal, setIsModal] = useAtom(claimProductModalAtom)
 
+  // 규격 약호 값
+  // const [spec, setSpec] = useAtom(specAtom)
+  // console.log('spec :', spec)
   // 검색 셀렉트 옵션 목록
   const { storageList, supplierList, spartList, makerList, stockStatusList, gradeList, preferThicknessList } =
     useSelectList()
@@ -38,6 +42,17 @@ const ClaimProductSearchFilter = ({ search, setSearch }) => {
     const { name, value } = e.target
 
     setSearch((p) => ({ ...p, [name]: value }))
+  }
+
+  // 규격 약호 핸들러
+  function onSpecHandler(e, text) {
+    const { tagName } = e.target
+    if (tagName === 'IMG') {
+      setIsModal(false)
+    } else {
+      setSearch((p) => ({ ...p, spec: text }))
+      setIsModal(false)
+    }
   }
 
   // 규격 약호 모달
@@ -77,7 +92,7 @@ const ClaimProductSearchFilter = ({ search, setSearch }) => {
         {/* 규격약호 */}
         <PartWrap>
           <h6>규격 약호</h6>
-          <Input />
+          <Input readOnly={true} value={search.spec} />
           <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17} onClick={modalOpen}>
             찾기
           </GreyBtn>
@@ -284,6 +299,7 @@ const ClaimProductSearchFilter = ({ search, setSearch }) => {
         </PartWrap>
       </RowWrap>
       {/* <CustomCheckBox /> */}
+      {isModal === true && <StandardFind closeFn={onSpecHandler} />}
     </FilterLeft>
   )
 }
