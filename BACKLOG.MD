@@ -1,12 +1,10 @@
-#### 백로그는 아직 시작되지 않은 해야 할 작업이나 기능의 목록입니다.
+# Project Backlog
 
-#### 항목을 우선 순위에 따라 정렬하는 것은 좋은 습관입니다.
+## Introduction
 
-#### A backlog is a list of tasks or features that need to be done but have not yet been started.
-
-#### It's a good practice to order the items in this backlog based on their priority. This helps the team understand which tasks should be tackled first.
-
-#### Format: [ `In Progress` | `Done`, `Team Member`] : `Description`
+- **Backlog**: 백로그는 아직 시작되지 않은 해야 할 작업이나 기능의 목록입니다.
+- **Prioritization**: 항목들은 명확성과 집중을 위해 우선 순위에 따라 정렬됩니다.
+- **Format**: `[Status, Assignee]: Description`
 
 ## High Priority
 
