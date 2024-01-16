@@ -300,7 +300,7 @@ const AdminOrderDetail = ({}) => {
           />
           <TCSubContainer style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <div>
-              <WhiteRedBtn>입금 취소</WhiteRedBtn>
+              <WhiteRedBtn>부분 입금 취소</WhiteRedBtn>
             </div>
           </TCSubContainer>
         </TableContianer>

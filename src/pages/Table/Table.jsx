@@ -384,9 +384,6 @@ const Table = ({
   }
   return (
     <div style={containerStyle}>
-      <button type="button" onClick={onRecommendClick} style={{ border: '2px solid dodgerblue' }}>
-        추천
-      </button>
       <TestContainer hei={hei}>
         <div style={gridStyle} className="ag-theme-alpine">
           <AgGridReact

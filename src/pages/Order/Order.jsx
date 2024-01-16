@@ -27,7 +27,7 @@ import {
   Tilde,
 } from '../../modal/External/ExternalFilter'
 
-import { useAtom, useAtomValue } from 'jotai'
+import { atom, useAtom, useAtomValue } from 'jotai'
 import Hidden from '../../components/TableInner/Hidden'
 import PageDropdown from '../../components/TableInner/PageDropdown'
 import { OrderFields, OrderFieldsCols } from '../../constants/admin/Order'
@@ -135,32 +135,7 @@ const Order = ({}) => {
       setOrderPagination(getOrderRes.data.pagination)
     }
   }, [isSuccess, getOrderRes])
-
-  // 주문 취소 버튼 클릭 핸들러
-  // const handleOrderCancel = () => {
-  //   const checkedUids = Object.keys(checkedItems).filter(
-  //     (customerDestinationUid) => checkedItems[customerDestinationUid],
-  //   )
-
-  //   const requestList = checkedUids.map((customerDestinationUid) => {
-  //     // rowData에서 uid에 해당하는 항목을 찾습니다.
-  //     const item = rowData.find((item) => item.customerDestinationUid === customerDestinationUid)
-  //     // 해당 항목에서 saleType을 가져옵니다. 항목이 없으면 기본값을 설정할 수 있습니다.
-  //     const saleType = item ? item.saleType : '기본값'
-
-  //     return { customerDestinationUid, saleType }
-  //   })
-
-  //   // 주문 취소 API 호출
-  //   axios
-  //     .post('/api/order/cancel', { requestList })
-  //     .then((response) => {
-  //       console.log('Order cancelled successfully:', response.data)
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error cancelling order:', error)
-  //     })
-  // }
+  const totalWeight = getOrderRes?.data.pagination.totalWeight
 
   // 숫자를 천 단위로 구분하여 포맷팅하는 함수
   const formatNumber = (number) => {
@@ -175,6 +150,29 @@ const Order = ({}) => {
 
   const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
 
+  const makeRequest = (selectedRows) => {
+    return selectedRows.map((row) => ({
+      auctionNumber: row.auctionNumber,
+      customerCode: row.customerCode,
+      storage: row.storage,
+      customerDestinationUid: row.customerDestinationUid,
+      saleType: row.saleType,
+      sendDate: row.sendDate,
+    }))
+  }
+  // 주문 취소 버튼 클릭 핸들러
+  const handleOrderCancel = () => {
+    const requestList = makeRequest(checkBoxSelect)
+
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/admin/order/cancel-all`, requestList)
+      .then((response) => {
+        console.log('Order cancelled successfully:', response.data)
+      })
+      .catch((error) => {
+        console.error('Error cancelling order:', error)
+      })
+  }
   return (
     <FilterContianer>
       <FilterHeader>
@@ -351,22 +349,10 @@ const Order = ({}) => {
         </TCSubContainer>
         <TCSubContainer>
           <div>
-            선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 중량 kg
+            선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 {totalWeight}kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <button
-              type="button"
-              style={{
-                color: '#008859',
-                background: 'none',
-                border: '1px solid #008859',
-                padding: '5px',
-                fontSize: '14px',
-              }}
-            >
-              ★ 관심상품 등록
-            </button>
-            <WhiteRedBtn type="button" onClick={() => {}}>
+            <WhiteRedBtn type="button" onClick={handleOrderCancel}>
               주문 취소
             </WhiteRedBtn>
             <SkyBtn>확정 전송</SkyBtn>

@@ -1,3 +1,4 @@
+import { atom } from 'jotai'
 import React, { useState } from 'react'
 
 var checkboxSelection = function (params) {
@@ -39,14 +40,7 @@ const LinkRenderer = (props) => {
     </a>
   )
 }
-const TestRenderer = (props) => {
-  return (
-    <div>
-      <span style={{ color: '#008859' }}>★</span>
-      <span>{props.value || 'N'}</span>
-    </div>
-  )
-}
+
 /* ==============================
     주문 관리 - 주문 관리 (Order)
 ============================== */
@@ -57,8 +51,8 @@ export const OrderManageFieldsCols = [
     width: 50,
     headerClass: 'custom-header-style',
     checkboxSelection: checkboxSelection,
-    cellStyle: { borderRight: '1px solid #c8c8c8' },
     headerCheckboxSelection: headerCheckboxSelection,
+    cellStyle: { borderRight: '1px solid #c8c8c8' },
   },
   {
     headerName: '순번',
@@ -75,7 +69,7 @@ export const OrderManageFieldsCols = [
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 120,
-    cellRenderer: TestRenderer,
+    cellRenderer: (params) => params.value || 'N',
   },
   {
     headerName: '경매 / 상시 판매 번호',
