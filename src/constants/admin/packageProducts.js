@@ -1,31 +1,33 @@
+// 상시 판매 관리 > 패캐지
+
 var checkboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
-  return params.columnApi.getRowGroupColumns().length === 0
+	// we put checkbox on the name if we are not doing grouping
+	return params.columnApi.getRowGroupColumns().length === 0
 }
 
 var headerCheckboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
-  return params.columnApi.getRowGroupColumns().length === 0
+	// we put checkbox on the name if we are not doing grouping
+	return params.columnApi.getRowGroupColumns().length === 0
 }
 
 export const packageFieldsCols = [
-  { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
-  { field: '순번', minWidth: 100 },
-  { field: '패키지명', minWidth: 100 },
-  { field: '패키지번호', minWidth: 100 },
-  { field: '상시판매 번호', minWidth: 100 },
-  { field: '상시판매가', minWidth: 100 },
-  { field: '상시판매 상태', minWidth: 100 },
-  { field: '상시판매 주문일자', minWidth: 100 },
-  { field: '경매번호', minWidth: 100 },
-  { field: '판매구분', minWidth: 100 },
-  { field: '판매유형', minWidth: 100 },
-  { field: '경매시작단가', minWidth: 100 },
-  { field: '중량', minWidth: 100 },
-  { field: '메모', minWidth: 100 },
-  { field: '비고', minWidth: 100 },
-  { field: '최종수정자', minWidth: 100 },
-  { field: '최종수정일시', minWidth: 100 },
+	{ field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+	{ field: '순번', minWidth: 100 },
+	{ field: '패키지명', minWidth: 100 },
+	{ field: '패키지번호', minWidth: 100 },
+	{ field: '상시판매 번호', minWidth: 100 },
+	{ field: '상시판매가', minWidth: 100 },
+	{ field: '상시판매 상태', minWidth: 100 },
+	{ field: '상시판매 주문일자', minWidth: 100 },
+	{ field: '경매번호', minWidth: 100 },
+	{ field: '판매구분', minWidth: 100 },
+	{ field: '판매유형', minWidth: 100 },
+	{ field: '경매시작단가', minWidth: 100 },
+	{ field: '중량', minWidth: 100 },
+	{ field: '메모', minWidth: 100 },
+	{ field: '비고', minWidth: 100 },
+	{ field: '최종수정자', minWidth: 100 },
+	{ field: '최종수정일시', minWidth: 100 },
 ]
 
 /*
@@ -49,20 +51,20 @@ export const packageFieldsCols = [
 
 // TODO: Check the missing mapping with Hobin or Hyuk.
 export const packageResponseToTableRowMap = {
-  순번: 'uid', // Correct mapping to 'uid'
-  패키지명: 'name', // Correct mapping to 'name'
-  패키지번호: 'number', // Correct mapping to 'number'
-  '상시판매 번호': 'orderNumber', // Unclear: not in the response structure
-  상시판매가: 'price', // Correct mapping to 'price'
-  '상시판매 상태': 'auctionStatus', // Correct mapping to 'auctionStatus'
-  '상시판매 주문일자': 'orderDate', // Unclear: not in the response structure
-  경매번호: 'auctionNumber', // Double check with client after development. Correct mapping to 'auctionNumber'
-  판매구분: 'saleCategory', // Correct mapping to 'saleCategory'
-  판매유형: 'saleType', // Correct mapping to 'saleType'
-  경매시작단가: 'price', // Correct mapping to 'price'
-  중량: 'totalWeight', // Correct mapping to 'totalWeight'
-  메모: 'memo', // Correct mapping to 'memo'
-  비고: 'note', // Correct mapping to 'note'
-  최종수정자: 'updater', // Correct mapping to 'updater' from response
-  최종수정일시: 'updateDate', // Correct mapping to 'updateDate' from response
+	순번: 'uid', // Correct mapping to 'uid'
+	패키지명: 'name', // Correct mapping to 'name'
+	패키지번호: 'number', // Correct mapping to 'number'
+	'상시판매 번호': 'orderNumber', // Unclear: not in the response structure
+	상시판매가: 'price', // Correct mapping to 'price'
+	'상시판매 상태': 'auctionStatus', // Correct mapping to 'auctionStatus'
+	'상시판매 주문일자': 'orderDate', // Unclear: not in the response structure
+	경매번호: 'auctionNumber', // Double check with client after development. Correct mapping to 'auctionNumber'
+	판매구분: 'saleCategory', // Correct mapping to 'saleCategory'
+	판매유형: 'saleType', // Correct mapping to 'saleType'
+	경매시작단가: 'price', // Correct mapping to 'price'
+	중량: 'totalWeight', // Correct mapping to 'totalWeight'
+	메모: 'memo', // Correct mapping to 'memo'
+	비고: 'note', // Correct mapping to 'note'
+	최종수정자: 'updater', // Correct mapping to 'updater' from response
+	최종수정일시: 'updateDate', // Correct mapping to 'updateDate' from response
 }
