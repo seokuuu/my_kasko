@@ -27,12 +27,11 @@ import {
 	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { getPackageProductsList, postCreatePackage } from '../../../api/SellProduct'
-import { useLocation } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
+import { useLocation } from 'react-router-dom'
+import { getPackageProductsList, postCreatePackage } from '../../../api/SellProduct'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import { packageProductsDispatchFields, packageProductsDispatchFieldsCols } from '../../../constants/admin/SellPackage'
 import { add_element_field } from '../../../lib/tableHelpers'
 import SingleAllProduct from '../../../modal/Multi/SingleAllProduct'

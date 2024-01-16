@@ -13,6 +13,10 @@ import { PropsInput } from '../../../../common/Input/Input'
 import { ExRadioWrap } from '../../../../modal/External/ExternalFilter'
 
 import { TxtDiv } from '../../../User/SignUp/SignUp.Styled'
+/**
+ * @deprecated
+ * 사용하지 않은 컴포넌트입니다. 자료실 관련 컴포넌트는 Notice 디렉터리에서 관리합니다.
+ */
 const DatasheetEdit = () => {
   const radioDummy = ['노출', '미노출']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))

@@ -5,13 +5,13 @@ import { useNavigate } from 'react-router-dom'
 import { useProductListToRegisterClaimQuery } from '../../../../api/operate/claim'
 import { BlackBtn, WhiteBtn } from '../../../../common/Button/Button'
 import { ClaimProductListFieldCols, ClaimProductListFields } from '../../../../constants/admin/Claim'
+import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
+import useTableSearchFieldData from '../../../../hooks/useTableSearchFieldData'
 import { add_element_field } from '../../../../lib/tableHelpers'
 import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
 import { selectedRowsAtom } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
 import CommonTableHeader from '../../UI/CommonTableHeader'
-import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
-import useTableSearchFieldData from '../../../../hooks/useTableSearchFieldData'
 import ClaimProductHeader from './components/ClaimProductHeader'
 import { StyledBtnContainer } from './styles/StyledClaim'
 
@@ -33,7 +33,7 @@ const ClaimProduct = () => {
 	// 검색필터 상태값
 	const [search, setSearch] = useState({
 		pageNum: 1,
-		pageSize: 1,
+		pageSize: 50,
 		storage: { label: '전체', value: '', address: null }, // 창고 구분
 		supplier: supplierList[0], // 매입처
 		spec: '', // 규격 약호
@@ -126,7 +126,12 @@ const ClaimProduct = () => {
 
 			{/* 테이블 */}
 			<TableContianer>
-				<CommonTableHeader isNoneBtn={true} totalLength={data && data.list.length} selectedLength={selectedLength} />
+				<CommonTableHeader
+					isNoneBtn={true}
+					totalLength={data && data.list.length}
+					selectedLength={selectedLength}
+					setState={setSearch}
+				/>
 				<Table
 					getCol={ClaimProductListFieldCols}
 					getRow={row}

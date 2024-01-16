@@ -3,26 +3,18 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useClaimDeleteMutation, useClaimListQuery } from '../../../../api/operate/claim'
 import { ClaimListFieldCols, ClaimListFields } from '../../../../constants/admin/Claim'
+import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
 import { add_element_field } from '../../../../lib/tableHelpers'
 import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
-import {
-	doubleClickedRowAtom,
-	popupAtom,
-	popupObject,
-	popupTypeAtom,
-	selectedRowsAtom,
-} from '../../../../store/Layout/Layout'
+import { popupAtom, popupObject, popupTypeAtom, selectedRowsAtom } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { claimInitState } from '../../constants'
 import ClaimHeader from './components/ClaimHeader'
-import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
 
 /**
  * @description
  * 클레임 관리 페이지 컴포넌트
- * @param {*} param0
- * @returns
  */
 const Claim = () => {
 	const navigate = useNavigate()
@@ -34,9 +26,6 @@ const Claim = () => {
 
 	// 목록 API(REQUEST PARAMETER)
 	const [search, setSearch] = useState(claimInitState)
-
-	// 셀 클릭시 테이블 상세 데이터 조회
-	const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
 
 	// 삭제 API
 	const { mutate: remove } = useClaimDeleteMutation()
@@ -51,6 +40,7 @@ const Claim = () => {
 
 	// 목록 API
 	const { data, refetch } = useClaimListQuery({ ...search, claimStatus: search.claimStatus.value })
+	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setSearch)
 
 	console.log('data :', data)
 
@@ -82,17 +72,7 @@ const Claim = () => {
 			setRow(add_element_field(data.list, ClaimListFields))
 		}
 	}, [data])
-	// 상세 페이지 이동
-	useEffect(() => {
-		// 상세 페이지 이동시 상세 데이터 값 초기화
-		if (detailRow && detailRow['고유값']) {
-			navigate(`/operate/common/product/${detailRow['고유값']}`)
 
-			setDetailsRow([])
-		}
-	}, [detailRow])
-
-	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setSearch)
 	return (
 		<FilterContianer>
 			{/* 카테고리탭 & 검색필터 on & 검색 */}
@@ -103,6 +83,7 @@ const Claim = () => {
 					selectedLength={selectedLength}
 					toRegister={toRegister}
 					removeEventHandler={removeEventHandler}
+					setState={setSearch}
 				/>
 				<Table
 					getCol={ClaimListFieldCols}
