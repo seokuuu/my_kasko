@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useNoticeBoardListQuery, useNoticeBoardRemoveMutation } from '../../../../api/operate/noticeBoard'
 import { NoticeBoardListFieldCols, NoticeBoardListFields } from '../../../../constants/admin/NoticeBoard'
+import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
 import { add_element_field } from '../../../../lib/tableHelpers'
 import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
 import {
@@ -17,13 +18,12 @@ import Table from '../../../Table/Table'
 import CommonHeader from '../../UI/CommonHeader'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { exposureTabOptions, noticeBoardListSearchInitValue, noticeBoardSearchCategoryOptions } from '../../constants'
-import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
 
 /**
  * @description
- * 전광판 관리
+ * 전광판 관리 목록 내부 컴포넌트입니다.
  */
-const NoticeBoard = ({}) => {
+const NoticeBoard = () => {
 	const navigate = useNavigate()
 
 	// 서버 옵션(요청 변수)
@@ -134,6 +134,7 @@ const NoticeBoard = ({}) => {
 					toRegister={toRegister}
 					title={'전광판'}
 					selectedLength={selectedLength}
+					setState={setSearch}
 				/>
 				{/* 테이블 */}
 				<Table
