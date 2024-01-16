@@ -1,19 +1,31 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import React, { useEffect, useMemo } from 'react'
-import { ProductRangeFieldCols } from '../../../../../constants/admin/ProductRange'
+import React, { useEffect, useMemo, useState } from 'react'
+import {
+	useProductRangeDetailsQuery,
+	useProductRangeListQuery,
+	useProductRangeRegisterMutation,
+	useProductRangeRemoveMutation,
+	useProductRangeUpdateMutation,
+} from '../../../../../api/operate/productRange'
+import { ProductRangeFieldCols, ProductRangeFields } from '../../../../../constants/admin/ProductRange'
+import { add_element_field } from '../../../../../lib/tableHelpers'
 import { TableContianer } from '../../../../../modal/External/ExternalFilter'
 import AddProduct from '../../../../../modal/Operate/AddProduct'
 import {
-  operateAddAtom,
-  popupAtom,
-  popupObject,
-  popupTypeAtom,
-  selectedRowsAtom,
+	btnCellUidAtom,
+	doubleClickedRowAtom,
+	operateAddAtom,
+	popupAtom,
+	popupObject,
+	popupTypeAtom,
+	selectedRowsAtom,
 } from '../../../../../store/Layout/Layout'
 import Table from '../../../../Table/Table'
 import CommonTableHeader from '../../../UI/CommonTableHeader'
-import useProductRange from '../../../hook/useProductRange'
+import { commonListSearchInitValue } from '../../../constants'
+import useTablePaginationPageChange from '../../../../../hooks/useTablePaginationPageChange'
 import useProductRangeList from '../../../hook/useProductRangeList'
+import useProductRange from '../../../hook/useProductRange'
 
 /**
  * @description
@@ -52,20 +64,20 @@ const ProductRange = () => {
      *
      */
 
-    setPopupSwitch(true)
-    // setNowPopupType(2)
-    setNowPopup({
-      num: '2-1', // 모달 번호
-      title: '삭제하시겠습니까?',
-      next: '1-14', // 다음으로 나타날 모달 번호
-      func() {
-        if (selected && selected.length !== 0) {
-          remove(selected.map((s) => s['고유값']))
-          refetch()
-        }
-      },
-    })
-  }
+		setPopupSwitch(true)
+		// setNowPopupType(2)
+		setNowPopup({
+			num: '2-1', // 모달 번호
+			title: '삭제하시겠습니까?',
+			next: '1-14', // 다음으로 나타날 모달 번호
+			func() {
+				if (selected && selected.length !== 0) {
+					remove(selected.map((s) => s['고유값']))
+					refetch()
+				}
+			},
+		})
+	}
 
   // 삭제할 데이터 중 사용중인 제품군이 있다면 예외 모달을 띄워줍니다.
   useEffect(() => {

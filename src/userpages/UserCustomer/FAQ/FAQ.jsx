@@ -10,7 +10,7 @@ import {
   TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
-import { categories, corLabels, responseToTableRowMap } from './faqTableSetup'
+import { categories, corLabels, responseToTableRowMap } from '../../../constants/user/faqTableConfig'
 import { formatDateString } from '../../../utils/utils'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
