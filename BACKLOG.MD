@@ -8,9 +8,9 @@
 
 ## High Priority
 
-#### 통신 예외 처리
+- [ - ] (통신 예외 처리, 클라이언트, 서버 오류 핸들링) 어떻게 오류 처리를 하는지 확인하인.
 
-- [ - ] (클라이언트, 서버 오류 핸들링) 어떻게 오류 처리를 하는지 확인하인.
+- [In Progress, Jin] (검색 필터 Global Component 계발) 검색 필터를 Global Component로 만들어서 재사용성을 높이고, 검색 필터를 사용하는 모든 페이지에 적용.
 
 ## Medium Priority
 
