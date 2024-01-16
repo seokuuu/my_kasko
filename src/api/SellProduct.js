@@ -6,6 +6,8 @@ const urls = {
   saleCategory :'/single-product/sale-category',
   original:'/single-product/original',
   package:'package-product',
+  changeSaleType:'single-product/sale-type',
+  changeOutlet:'single-product/outlet',
   packageProducts:"/package-product/products",
   recommend:'/single-product/best-order',
   beRecommend:'/single-product/best',
@@ -26,11 +28,33 @@ export async function getSingleProducts(data) {
   })
   return {pagination,r}
 }
+export async function postExcelSubmitProduct(data) {
 
+  try{
+    return await client.post(`${urls.single}`,data,{
+      headers:{
+        "Content-Type":"multipart/form-data"
+      }
+    })
+  }catch(e){
+    alert(e?.data?.message)
+  }
+} 
 
 
 export async function patchSaleCategory(data) {
   return await client.patch(`${urls.saleCategory}`,data)
+}
+
+export async function patchOutlet(data) {
+  try{
+    return await client.patch(`${urls.changeOutlet}`,data)
+  }catch(e){
+    alert(e?.data.message)
+  }
+}
+export async function patchSaleType(data) {
+  return await client.patch(`${urls.changeSaleType}`,data)
 }
 
 export async function gethyunDaiOriginal(data){

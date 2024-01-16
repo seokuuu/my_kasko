@@ -13,7 +13,7 @@ import {
   selectedRowsAtom,
   toggleAtom,
 } from '../../../store/Layout/Layout'
-
+import { patchOutlet } from '../../../api/SellProduct'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAtom, useAtomValue } from 'jotai'
 import { getSingleProducts, patchSaleCategory } from '../../../api/SellProduct'
@@ -340,7 +340,44 @@ const Hyundai = ({}) => {
 
     return res
   }
+  const { mutate: changeOutlet, isError: outletError } = useMutationQuery('change-outlet', patchOutlet)
+  const [outletPrice, setOutletPrice] = useState(0)
+  const [outletParameter, setOutletParameter] = useState({
+    price: 10000, // 아울렛 등록 가격
+    numbers: ['FC53683103-1'], // 제품번호 목록
+  })
 
+  useEffect(() => {
+    setOutletParameter({
+      price: outletPrice,
+      numbers: selectProductNumber,
+    })
+  }, [selectProductNumber, outletPrice])
+  console.log(productNoNumber)
+  console.log(outletPrice)
+  // 아울렛
+  const handlechangeOutlet = () => {
+    const res = changeOutlet(outletParameter, {
+      onSuccess: () => {
+        setIsMultiModal(false)
+        window.location.reload()
+      },
+      onError: (e) => {
+        setErrorMsg(e.data.message)
+        setNowPopup({
+          num: '1-12',
+          title: '',
+          content: `${e.data.message}`,
+          func: () => {
+            console.log('hi')
+            setIsMultiModal(false)
+          },
+        })
+      },
+    })
+
+    return res
+  }
   const { pagination, onPageChanage } = usePaging(data, setRequestParameter)
   return (
     <>
@@ -606,8 +643,16 @@ const Hyundai = ({}) => {
             <div style={{ display: 'flex', gap: '10px' }}>
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <p>아울렛 일괄 변경</p>
-                <CustomInput placeholder="아울렛 입력" width={120} height={32} onChange={() => {}} />
-                <TGreyBtn>적용</TGreyBtn>
+                <CustomInput
+                  placeholder="아울렛 입력"
+                  value={outletPrice}
+                  width={120}
+                  height={32}
+                  onChange={(e) => {
+                    setOutletPrice(e.currentTarget.value)
+                  }}
+                />
+                <TGreyBtn onClick={handlechangeOutlet}>적용</TGreyBtn>
               </div>
               <BtnBound />
               <WhiteBlackBtn

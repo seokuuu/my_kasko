@@ -33,14 +33,6 @@ import usePaging from '../../Operate/hook/usePaging'
 import { onSizeChange } from '../../Operate/utils'
 import Table from '../../Table/Table'
 
-const parameter = {
-  pageNum: 2,
-  pageSize: 10,
-  startDate: '2023-08-17',
-  endDate: '2023-08-17',
-  timeOfDay: 'am',
-}
-
 function HyunDaiOriginal({ title }) {
   const radioDummy = [
     {
@@ -58,8 +50,8 @@ function HyunDaiOriginal({ title }) {
   const [request, setRequest] = useState({
     pageNum: 1,
     pageSize: 50,
-    startDate: '2023-08-17',
-    endDate: '2023-08-17',
+    startDate: '2023-01-01',
+    endDate: '2023-01-01',
     timeOfDay: 'am',
   })
   const [isRotated, setIsRotated] = useState(false)
@@ -137,7 +129,7 @@ function HyunDaiOriginal({ title }) {
       timeOfDay: radioData.join(''),
     }))
   }, [startDate, endDate, radioData])
-
+  console.log(request)
   const handleSubmit = () => {
     queryClient.prefetchQuery(['original', request], async () => {
       const res = await gethyunDaiOriginal(request)

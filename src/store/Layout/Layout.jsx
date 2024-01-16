@@ -273,3 +273,5 @@ export const packageDetailModal = atom(false)
 export const userPageDestiEditModal = atom(false)
 export const adminPageDestiEditModal = atom(false)
 export const packageUidsAtom = atom([])
+
+export const popupAtom2 = atom(false)

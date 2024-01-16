@@ -41,10 +41,16 @@ import {
   TableContianer,
   Tilde,
 } from '../../../modal/External/ExternalFilter'
-import { blueModalAtom, popupObject, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { blueModalAtom, popupAtom, popupObject, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import Multi2 from '../../../modal/Common/Multi2'
 import { useAtom, useAtomValue } from 'jotai'
-import { getSingleProducts, patchSaleCategory } from '../../../api/SellProduct'
+import {
+  getSingleProducts,
+  patchOutlet,
+  patchSaleCategory,
+  patchSaleType,
+  postExcelSubmitProduct,
+} from '../../../api/SellProduct'
 import { getSPartList, getStorageList } from '../../../api/search'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import { ProductOptions, supplierOptions } from '../../../common/Option/storage'
@@ -62,7 +68,9 @@ import Table from '../../Table/Table'
 import { hyunDaiMultiModal } from '../../../store/Layout/Layout'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { changeCategoryAtom } from '../../../store/Layout/Popup'
-
+import SalseType from '../../../modal/Multi/SaleType'
+import { changeSaleTypeAtom } from '../../../store/Layout/Popup'
+import UploadV2 from '../../../modal/Upload/UploadV2'
 const SalesProduct = () => {
   const checkSales = ['전체', '판매재', '판매제외제', '판매 완료제']
   // const checkSales = ['전체', '미응찰', '관심제품', '응찰']
@@ -94,6 +102,12 @@ const SalesProduct = () => {
   const currentPath = window.location.pathname
   const [isMultiModal, setIsMultiModal] = useAtom(hyunDaiMultiModal)
   const [parameter, setParameter] = useAtom(changeCategoryAtom)
+  const [parameter2, setParameter2] = useAtom(changeSaleTypeAtom)
+
+  // 판매유형 변경
+
+  const [isSaleType, setIsSaleType] = useState(false)
+
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
     const updatedCheck = checkSales.map((value, index) => {
@@ -124,11 +138,11 @@ const SalesProduct = () => {
     setCheckData3(filteredCheck)
   }, [check3])
 
+  const [uploadModal, setUploadModal] = useState(false)
   const [isRotated, setIsRotated] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [nowPopup, setNowPopup] = useAtom(popupObject)
   // Function to handle image click and toggle rotation
-
   const [requestParameter, setRequestParamter] = useState({
     pageNum: 1,
     pageSize: 50,
@@ -184,7 +198,7 @@ const SalesProduct = () => {
       SaleProductList && setFilteredData(SaleProductList)
     }
 
-    if (!isSuccess && !filterData) return null
+    if (!isSuccess && !filterData) return
     if (Array.isArray(filterData)) {
       setGetRow(add_element_field(filterData, singleDispatchFields))
     }
@@ -292,9 +306,74 @@ const SalesProduct = () => {
     if (checkBoxSelect?.length === 0) return
     setSelectProductNumber(() => checkBoxSelect?.map((i) => i['제품 번호']))
   }, [checkBoxSelect])
+  const [excelToJson, setExcelToJson] = useState([])
   const { mutate, isError } = useMutationQuery('change-category', patchSaleCategory)
+  const { mutate: changeSaleType, isError: saleTypeError } = useMutationQuery('change-saleType', patchSaleType)
+  const { mutate: changeOutlet, isError: outletError } = useMutationQuery('change-outlet', patchOutlet)
+
+  //판매 구분
   const changeSaleCategory = () => {
     const res = mutate(parameter, {
+      onSuccess: () => {
+        setIsMultiModal(false)
+        window.location.reload()
+      },
+      onError: (e) => {
+        setErrorMsg(e.data.message)
+        setNowPopup({
+          num: '1-12',
+          title: '',
+          content: `${e.data.message}`,
+          func: () => {
+            console.log('hi')
+            setIsMultiModal(false)
+          },
+        })
+      },
+    })
+
+    return res
+  }
+  // 판매 유형
+  const handlechangeSaleType = () => {
+    const res = changeSaleType(parameter2, {
+      onSuccess: () => {
+        setIsMultiModal(false)
+        window.location.reload()
+      },
+      onError: (e) => {
+        setErrorMsg(e.data.message)
+        setNowPopup({
+          num: '1-12',
+          title: '',
+          content: `${e.data.message}`,
+          func: () => {
+            console.log('hi')
+            setIsMultiModal(false)
+          },
+        })
+      },
+    })
+
+    return res
+  }
+  const [outletPrice, setOutletPrice] = useState(0)
+  const [outletParameter, setOutletParameter] = useState({
+    price: 10000, // 아울렛 등록 가격
+    numbers: ['FC53683103-1'], // 제품번호 목록
+  })
+
+  useEffect(() => {
+    setOutletParameter({
+      price: outletPrice,
+      numbers: selectProductNumber,
+    })
+  }, [selectProductNumber, outletPrice])
+  console.log(productNoNumber)
+  console.log(outletPrice)
+  // 아울렛
+  const handlechangeOutlet = () => {
+    const res = changeOutlet(outletParameter, {
       onSuccess: () => {
         setIsMultiModal(false)
         window.location.reload()
@@ -582,8 +661,16 @@ const SalesProduct = () => {
             <div style={{ display: 'flex', gap: '10px' }}>
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <p>아울렛 일괄 변경</p>
-                <CustomInput placeholder="아울렛 입력" width={120} height={32} onChange={() => {}} />
-                <TGreyBtn>적용</TGreyBtn>
+                <CustomInput
+                  placeholder="아울렛 입력"
+                  value={outletPrice}
+                  width={120}
+                  height={32}
+                  onChange={(e) => {
+                    setOutletPrice(e.currentTarget.value)
+                  }}
+                />
+                <TGreyBtn onClick={handlechangeOutlet}>적용</TGreyBtn>
               </div>
               <BtnBound />
               <WhiteBlackBtn
@@ -597,7 +684,13 @@ const SalesProduct = () => {
                 판매 구분 변경
               </WhiteBlackBtn>
               <BtnBound />
-              <WhiteBlackBtn>판매 유형 변경</WhiteBlackBtn>
+              <WhiteBlackBtn
+                onClick={() => {
+                  setIsSaleType(true)
+                }}
+              >
+                판매 유형 변경
+              </WhiteBlackBtn>
             </div>
           </TCSubContainer>
           <Table
@@ -611,7 +704,7 @@ const SalesProduct = () => {
             <div></div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <WhiteRedBtn>제품 삭제</WhiteRedBtn>
-              <WhiteBlackBtn>제품 등록</WhiteBlackBtn>
+              <WhiteBlackBtn onClick={() => setUploadModal(true)}>제품 등록</WhiteBlackBtn>
             </div>
           </TCSubContainer>
           <TableBottomWrap>
@@ -647,6 +740,28 @@ const SalesProduct = () => {
           errMsg={errorMsg}
           saveFn={changeSaleCategory}
           productNumbers={selectProductNumber}
+        />
+      )}
+      {isSaleType && (
+        <SalseType
+          closeFn={(e, text) => {
+            const { tagName } = e.target
+            if (tagName === 'IMG') {
+              setIsSaleType(false)
+            }
+          }}
+          errMsg={errorMsg}
+          saveFn={handlechangeSaleType}
+          productNumbers={selectProductNumber}
+        />
+      )}
+      {uploadModal && (
+        <UploadV2
+          originEngRowField={singleDispatchFields}
+          setModalSwitch={setUploadModal}
+          postApi={postExcelSubmitProduct}
+          setExcelToJson={setExcelToJson}
+          excelToJson={excelToJson}
         />
       )}
     </>
