@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePopupListQuery, usePopupRemoveMutation } from '../../../../api/operate/popup'
 import { PopupListFieldCols, PopupListFields } from '../../../../constants/admin/popup'
+import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
 import { add_element_field } from '../../../../lib/tableHelpers'
 import { FilterContianer, FilterHeader, TableContianer } from '../../../../modal/External/ExternalFilter'
 import {
@@ -17,7 +18,6 @@ import Table from '../../../Table/Table'
 import CategoryTab from '../../UI/CategoryTab'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { commonListSearchInitValue, exposureTabOptions } from '../../constants'
-import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
 
 /**
  * @description
@@ -131,6 +131,7 @@ const Popup = ({}) => {
 					toRegister={toRegister}
 					title={'팝업'}
 					selectedLength={selectedLength}
+					setState={setSearch}
 				/>
 				{/* 테이블 */}
 				<Table

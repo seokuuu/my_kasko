@@ -29,8 +29,8 @@ import StartPricePage from './pages/Auction/StartPrice/StartPricePage'
 import WinningCreatePage from './pages/Auction/Winning/WinningCreatePage'
 import WinningPage from './pages/Auction/Winning/WinningPage'
 
-import OrderPage from './pages/Order/OrderPage'
 import AdminOrderDetailPage from './pages/Order/AdminOrderDetailPage'
+import OrderPage from './pages/Order/OrderPage'
 
 // 출고 관리
 import AchievementPage from './pages/Shipping/Achievement/AchievementPage'
@@ -85,7 +85,6 @@ import PopupPostPage from './pages/Operate/Exposure/Popup/PopupPostPage'
 
 //운영 관리 - 일반 관리
 import ClaimPage from './pages/Operate/Common/Claim/ClaimPage'
-import DataSheetPage from './pages/Operate/Common/Datasheet/DatasheetPage'
 import FAQPage from './pages/Operate/Common/FAQ/FAQPage'
 import FAQPostPage from './pages/Operate/Common/FAQ/FAQPostPage'
 import NoticePage from './pages/Operate/Common/Notice/NoticePage'
@@ -96,10 +95,10 @@ import TermsPage from './pages/Operate/Terms/TermsPage'
 
 /// 사용자 페이지
 // 공지  & 자료실
-import UNotice from './userpages/UserNotiDocs/Notice/NoticePage'
-import UNoticeDetail from './userpages/UserNotiDocs/Notice/NoticeDetail'
-import UDocs from './userpages/UserNotiDocs/Docs/DocsPage'
 import UDocsDetail from './userpages/UserNotiDocs/Docs/DocsDetail'
+import UDocs from './userpages/UserNotiDocs/Docs/DocsPage'
+import UNoticeDetail from './userpages/UserNotiDocs/Notice/NoticeDetail'
+import UNotice from './userpages/UserNotiDocs/Notice/NoticePage'
 
 // 경매
 import UAuctionPackage from './userpages/UserAuction/Package/PackagePage'
@@ -123,8 +122,8 @@ import UPrefer from './userpages/UserMyPage/Prefer/PreferPage'
 import UProfile from './userpages/UserMyPage/Profile/ProfilePage'
 
 // 고객센터
-import UFAQ from './userpages/UserCustomer/FAQ/FAQPage'
 import UFAQDetail from './userpages/UserCustomer/FAQ/FAQDetail'
+import UFAQ from './userpages/UserCustomer/FAQ/FAQPage'
 import UTerms from './userpages/UserCustomer/Terms/TermsPage'
 
 //사용자 메인페이지
@@ -137,40 +136,15 @@ import DestinationEditPage from './userpages/UserMyPage/Destination/DestinationE
 import TestPopup from './modal/Common/TestPopup'
 
 import DefaultBlueBar from './modal/Multi/DefaultBlueBar'
-import RoundAucListPackEdit from './pages/Auction/Round/RoundAucListPackEdit'
-import TableGrid from './modal/Multi/TableGrid'
-import DestinationChange from './modal/Multi/DestinationChange'
-import CustomerFind from './modal/Multi/CustomerFind'
-import RoundAucProAdd from './pages/Auction/Round/RoundAucProAdd'
-import WinningProductAdd from './pages/Auction/Winning/WinningProductAdd'
-import Table2 from './pages/Table/Table2'
-import WeightSales from './modal/Multi/WeightSales'
-import RequestRecom from './pages/Shipping/Request/RequestRecom'
-import RequestAddModal from './pages/Shipping/Request/RequestAddModal'
-import TransportationCost from './modal/Multi/TransportationCost'
-import PackDetail from './pages/Auction/Bidding/PackDetail'
-import SalesPackDetail from './pages/Sales/Package/PackDetail'
-import WinningDetail from './pages/Auction/Winning/WinningDetail'
-import WinDepositForm from './pages/Auction/Winning/WinDepositForm'
-import FormTest from './pages/Auction/Winning/FormTest'
-import UserPackDetail from './userpages/UserSales/Package/UserPackDetail'
-import NoticeDetail from './userpages/UserNotiDocs/Notice/NoticeDetail'
-import Agreement from './modal/Common/Agreement'
-import InvoiceEdit from './pages/Shipping/Achievement/InvoiceEdit'
-import Invoice from './userpages/UserPerformance/UserPerformance/Invoice'
-import UserEdit from './pages/UserManage/UserManage/UserEdit'
 
 import TableTest from './modal/Table/TableTest'
 import ClaimProductPage from './pages/Operate/Common/Claim/ClaimProductPage'
 import OperateClaimRegisterPage from './pages/Operate/Common/Claim/OperateClaimRegisterPage'
-import NoticePost from './pages/Operate/Common/Notice/NoticePost'
-import NoticeBoardPost from './pages/Operate/Exposure/NoticeBoard/NoticeBoardPost'
 import TestExcel from './pages/Test/TestExcel'
-import UserPost from './pages/UserManage/UserManage/UserPost'
-import OrderDetail from './userpages/UserSales/Order/OrderDetail'
 
-import ClientDestiCustomerFind from './pages/UserManage/ClientDestination/ClientDestiCustomerFind'
 import WinningCreate from './pages/Auction/Winning/WinningCreate'
+import NoticeDetailsPage from './pages/Operate/Common/Notice/NoticeDetailsPage'
+import NoticeBoardDetailsPage from './pages/Operate/Exposure/NoticeBoard/NoticeBoardDetailsPage'
 // RoundAucProAdd
 const Router = () => {
   return (
@@ -288,16 +262,25 @@ const Router = () => {
           <Route path="/operate/popuppost" element={<PopupPostPage />}></Route>
           <Route path="/operate/faq" element={<FAQPage />}></Route>
           <Route path="/operate/noticeboard" element={<NoticeBoardPage />}></Route>
-          <Route path="/operate/noticeboard/register" element={<NoticeBoardPost />}></Route>
-          <Route path="/operate/noticeboard/:id" element={<NoticeBoardPost />}></Route>
+          <Route path="/operate/noticeboard/register" element={<NoticeBoardDetailsPage />}></Route>
+          <Route path="/operate/noticeboard/:id" element={<NoticeBoardDetailsPage />}></Route>
 
-          <Route path="/operate/notice" element={<NoticePage />}></Route>
-          <Route path="/operate/notice/register" element={<NoticePost title={'공지'} isRegister={true} />}></Route>
-          <Route path="/operate/notice/:id" element={<NoticePost title={'공지'} isRegister={false} />}></Route>
+          <Route path="/operate/notice" element={<NoticePage title={'공지사항'} detailsUrl={'notice'} />}></Route>
+          <Route
+            path="/operate/notice/register"
+            element={<NoticeDetailsPage title={'공지'} isRegister={true} />}
+          ></Route>
+          <Route path="/operate/notice/:id" element={<NoticeDetailsPage title={'공지'} isRegister={false} />}></Route>
 
-          <Route path="/operate/datasheet" element={<DataSheetPage />}></Route>
-          <Route path="/operate/datasheet/register" element={<NoticePost title={'자료실'} isRegister={true} />}></Route>
-          <Route path="/operate/datasheet/:id" element={<NoticePost title={'자료실'} isRegister={false} />}></Route>
+          <Route path="/operate/datasheet" element={<NoticePage title={'자료실'} detailsUrl={'datasheet'} />}></Route>
+          <Route
+            path="/operate/datasheet/register"
+            element={<NoticeDetailsPage title={'자료실'} isRegister={true} />}
+          ></Route>
+          <Route
+            path="/operate/datasheet/:id"
+            element={<NoticeDetailsPage title={'자료실'} isRegister={false} />}
+          ></Route>
           <Route path="/operate/terms" element={<TermsPage />}></Route>
           <Route path="/operate/footer" element={<FooterManagePage />}></Route>
 
