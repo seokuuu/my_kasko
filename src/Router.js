@@ -296,8 +296,8 @@ const Router = () => {
 				<Route path="/userpage">
 					<Route path="/userpage/notice" element={<UNotice />}></Route>
 					<Route path="/userpage/docs" element={<UDocs />}></Route>
-					<Route path="/userpage/docs/:id" element={<UDocsDetail />}></Route>
-					<Route path="/userpage/notice/:id" element={<UNoticeDetail />}></Route>
+					<Route path="/userpage/docs/:uid" element={<UDocsDetail />}></Route>
+					<Route path="/userpage/notice/:uid" element={<UNoticeDetail />}></Route>
 
 					{/* 경매 */}
 					<Route path="/userpage/actionsingle" element={<UAuctionSingle />}></Route>
