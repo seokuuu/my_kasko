@@ -43,6 +43,7 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import CustomerSearch from '../../../components/Search/CustomerSearch'
 import SpartSelect from '../../../components/Search/SpartSelect'
 import useTableSearchFieldData from '../../../hooks/useTableSearchFieldData'
+import StandardFind from '../../../modal/Multi/StandardFind'
 
 /**
  * @constant 기본 검색 값
@@ -127,6 +128,8 @@ const Order = ({}) => {
   const navigate = useNavigate()
   // 필드 옵션
   const { supplierList, stockStatusList, gradeList } = useTableSearchFieldData();
+  // 규격약호 옵션
+  const [standardCodeModalOn, setStandardCodeModalOn] = useState(false);
 
   /**
    * 입력 핸들러
@@ -149,6 +152,7 @@ const Order = ({}) => {
 
   /**
    * 필터 검색 유효성 확인 메시지 반환 함수
+   * @description 개발요구사항
    */
   const getInvalidationMessage = useCallback(() => {
     // 주문일자 검증
@@ -171,7 +175,7 @@ const Order = ({}) => {
       }
     }
 
-    return ''
+    return '';
   }, [tempSearchParams])
 
   /**
@@ -292,10 +296,25 @@ const Order = ({}) => {
                 {/* 규격약호 찾기 */}
                 <PartWrap>
                   <h6>규격 약호</h6>
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                  <Input readOnly value={tempSearchParams?.spec || ''} />
+                  <GreyBtn 
+                    style={{ width: '70px' }} 
+                    height={35} 
+                    margin={10} 
+                    fontSize={17}
+                    onClick={() => {setStandardCodeModalOn(true)}}
+                  >
                     찾기
-                  </GreyBtn>
+                  </GreyBtn> 
+                  {
+                    standardCodeModalOn &&
+                    <StandardFind
+                      closeFn={(_, filterText) => {
+                        handleTypedInputChange({ key: 'spec', value: filterText || '' });
+                        setStandardCodeModalOn(false);
+                      }}
+                    />
+                  }
                 </PartWrap>
               </RowWrap>
               {/* 고객사 찾기 */}
