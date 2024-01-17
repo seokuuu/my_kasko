@@ -48,7 +48,7 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import { packageCEAtom } from '../../../store/Layout/Layout'
 import Hidden from '../../../components/TableInner/Hidden'
-import { getPackageList, patchBeBestPackageRecommend } from '../../../api/SellProduct'
+import { deletePackage, getPackageList, patchBeBestPackageRecommend } from '../../../api/SellProduct'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { packageDispatchFields, packageDispatchFieldsCols } from '../../../constants/admin/SellPackage'
 import Table from '../../Table/Table'
@@ -164,6 +164,7 @@ const PackageManage = ({}) => {
   const [selectUids, setSelectUid] = useState([])
   const checkBoxSelect = useAtomValue(selectedRowsAtom)
   const { mutate: beRecommend } = useMutationQuery('beRecommend', patchBeBestPackageRecommend)
+  const { mutate: deletePkg } = useMutationQuery('deletePkg', deletePackage)
 
   useEffect(() => {
     if (checkBoxSelect) return setSelectUid(() => [...checkBoxSelect.map((i) => i['고유 번호'])])
@@ -187,6 +188,11 @@ const PackageManage = ({}) => {
       },
     )
   }
+  const handleDeletePkg = () => {
+    console.log(selectUids)
+    deletePkg(selectUids)
+  }
+
   return (
     <FilterContianer>
       <FilterHeader>
@@ -334,7 +340,7 @@ const PackageManage = ({}) => {
             <BtnBound />
             <WhiteBlackBtn>판매 구분 변경</WhiteBlackBtn>
             <BtnBound />
-            <WhiteRedBtn>패키지 해제</WhiteRedBtn>
+            <WhiteRedBtn onClick={handleDeletePkg}>패키지 해제</WhiteRedBtn>
 
             <WhiteSkyBtn onClick={onClickPostHandler}>
               <p style={{ color: '#4C83D6' }}>패키지 생성</p>

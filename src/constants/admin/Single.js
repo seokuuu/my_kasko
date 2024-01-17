@@ -2,6 +2,8 @@
 import RecommendCellRenderer from "../../pages/Table/RecommendCellRenderer"
 import RecommendCellRenderer2 from "../../pages/Table/RecommendCellRenderer2"
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer.jsx'
+import InputCellRenderer from "../../pages/Table/InputCellRenderer.jsx"
+import SelectEditor from "../../pages/Table/SelectEditor.jsx"
 
 
 var checkboxSelection = function (params) {
@@ -85,82 +87,137 @@ export const singleDispatchFields= {
   }
   
 
+export const SingleDispatchFieldsCols= [
+  { field: '',   headerClass:'custom-header-style',flex:1,
+    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+     minWidth: 50, checkboxSelection, headerCheckboxSelection },
+  ...Object.keys(singleDispatchFields).map((item) => ({
+    headerClass:'custom-header-style',flex:1,
+    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+    field: item,
+    minWidth: 100,
+  })),
+]
 
-
-export const SingleDispatchFieldsCols = [
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '', minWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '순번', minWidth: 60 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '고유 번호', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품 번호', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '규격 약호', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '창고', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품 사양', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '두께', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '폭', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '길이', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '중량', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품 등급', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '용도 코드', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '용도명', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: 'C%', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: 'Si', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: 'Mn', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: 'P', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: 'S', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: 'TS', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: 'YP', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: 'EL', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품군명', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품명', minWidth: 100 ,cellRenderer:RecommendCellRenderer2,cellRendererParams:{
-    uidFieldName:'제품명',
-    editType:'recommend'
+export const SingleSalesDispatchFieldsCols= [
+  { field: '',   headerClass:'custom-header-style',flex:1,
+  cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+  minWidth: 50, checkboxSelection, headerCheckboxSelection },
+  { field: '수정',   headerClass:'custom-header-style',flex:1,
+  cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+  minWidth: 100,  cellRenderer: BtnCellRenderer,
+  cellRendererParams: {
+    uidFieldName: '경매 번호',
+    editType: 'productModify',
   }},
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '정척 여부', minWidth: 100 },
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '여재 원인 코드', minWidth: 100 },
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '여재 원인명', minWidth: 100 },
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '입고일', minWidth: 100 },
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '유찰 횟수', minWidth: 100 },
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품 상태', minWidth: 100 },
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '경매 등록 상태', minWidth: 100 },
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '매입처', minWidth: 100 },
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제조사', minWidth: 100 },
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '판매 구분', minWidth: 100 },
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '판매 제외 사유', minWidth: 100 },
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '재고 상태', minWidth: 100 },
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '판매 유형', minWidth: 100 },
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '입고 상태', minWidth: 100 },
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '상시 판매 상태', minWidth: 100 },
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '판매가 유형', minWidth: 100 },
-  { headerClass:'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '추천 제품 여부', minWidth: 100, cellRenderer:RecommendCellRenderer,
-    cellRendererParams:{
-    uidFieldName:'추천 제품 여부',
-    editType:'recommend'
-  }},
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '등록 일자', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '최종 수정 일자', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '최종 수정자', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '매입가', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '노출 상태', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '경매 시작 단가', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '주문 상태', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '클레임 진행 상태', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '확정 전송 일자', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지명', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지번호', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: 'Pro.No', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '경매 번호', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품 낙찰 단가', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '낙찰 총 단가', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '기본 운임 단가', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '할증 운임 단가', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품 공급가', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '제품 부가세', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '운반비 공급가', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '운반비 부가세', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '목적지명', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '낙찰 상태', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '메모', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '비고', minWidth: 100 },
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '상시 판매가', minWidth: 100 },
-];
+  ...Object.keys(singleDispatchFields).map((item) => ({
+    headerClass:'custom-header-style',flex:1,
+    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+    field: item,
+    minWidth: 100,
+  })),
+]
+var optionFn = function (key){
+  
+  let options= [];
+  
+  switch (key){
+    case '재고 상태':
+    options =['자사 재고','타사 재고'];
+    break;
+    case '제조사':
+    options =['현대제철','동은스틸'];
+    break;
+    case '판매 구분':
+    options= ['판매재','판매 제외재','판매 완료재'];
+    break;
+    case '매입처':
+    options= ['현대제철','카스코 철강'];
+    break;
+    default:
+      break
+  }
 
+return options
+}
+/// 제품 수정 창에 데려올 필드와 설정하는 컬럼
+
+export const SingleModifyFields = {
+  "제품 번호": "number",
+  "저장 위치": "storage",
+  "저장 위치명": "storageName",
+  "규격 약호": "spec",
+  "제품 사양": "wdh",
+  "두께": "thickness",
+  "폭": "width",
+  "길이": "length",
+  "중량": "weight",
+  "등급": "grade",
+  "용도 코드": "usageCode",
+  "용도명": "usageCodeName",
+  "C%": "c",
+  "Si": "si",
+  "Mn": "mn",
+  "P": "p",
+  "S": "s",
+  "TS": "ts",
+  "YP": "yp",
+  "EL": "el",
+  "제품군 코드": "spartCode",
+  "제품군명": "spart",
+  "매입처": "supplier",
+  "제조사": "maker",
+  "품명": "name",
+  매입가:'price',
+  "정척 여부": "preferThickness",
+  "여재 원인 코드": "causeCode",
+  "여재 원인명": "causeCodeName",
+  "입고일": "receiptDate",
+  "재고 상태": "stockStatus",
+  "판매 구분":'saleCategory'
+};
+
+
+
+export const SingleModifyDispatchFieldsCols= [
+  { field: '',   headerClass:'custom-header-style',flex:1,
+    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+     minWidth: 50, checkboxSelection, headerCheckboxSelection },
+  ...Object.entries(SingleModifyFields).map(([k,v]) => {
+    console.log(k)
+    if(k !=='재고 상태' && k !== '판매 구분' && k !== '매입처' && k !=='제조사' ){
+      return {
+        headerClass:'custom-header-style',flex:1,
+        cellStyle: { borderRight: '1px solid #c8c8c8',width:'100px',padding:'0'},
+        field: k,
+        minWidth: 100,
+        editable:true,
+        cellRenderer:InputCellRenderer,
+        cellRendererParams:{
+          uidFieldName:k,
+          valueName:v,
+          type:'input'
+        
+        }
+      }
+    }else{
+      return {
+        headerClass:'custom-header-style',flex:1,
+        cellStyle: { borderRight: '1px solid #c8c8c8',width:'100px',padding:'0'},
+        field: k,
+        minWidth: 100,
+        editable:true,
+        cellEditor:'agSelectCellEditor',
+        cellRenderer:InputCellRenderer,
+        cellRendererParams:{
+          uidFieldName:k,
+          valueName:v,
+          type:'select'
+        },
+        cellEditorParams: {
+          values:optionFn(k), // 셀렉트 박스에 표시할 옵션들
+        },
+      }
+    }
+  }),
+]

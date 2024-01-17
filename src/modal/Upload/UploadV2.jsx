@@ -130,7 +130,6 @@ const UploadV2 = ({
       }
     }
   }
-  console.log('EXCEL TO JSON', excelToJson)
 
   const modalClose = () => {
     setModalSwitch(false)

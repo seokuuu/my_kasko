@@ -13,7 +13,7 @@ import {
   selectedRowsAtom,
   toggleAtom,
 } from '../../../store/Layout/Layout'
-import { patchOutlet } from '../../../api/SellProduct'
+import { patchOutlet, postingMemoAndNote } from '../../../api/SellProduct'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAtom, useAtomValue } from 'jotai'
 import { getSingleProducts, patchSaleCategory } from '../../../api/SellProduct'
@@ -47,6 +47,7 @@ import {
   RowWrap,
   SubTitle,
   TCSubContainer,
+  TableBottomWrap,
   TableContianer,
   Tilde,
 } from '../../../modal/External/ExternalFilter'
@@ -72,7 +73,7 @@ const Hyundai = ({}) => {
   const checkSales = ['전체', '판매재', '판매제외제', '판매 완료제']
   const checkShips = ['전체', '경매대상재', '상시판매 대상재']
   const checkTypes = ['전체', '특가', '일반']
-
+  const [memo, setMemo] = useState([])
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
   const [check2, setCheck2] = useState(Array.from({ length: checkShips.length }, (_, index) => index === 0))
@@ -340,21 +341,31 @@ const Hyundai = ({}) => {
 
     return res
   }
+  const { mutate: memoAndNote } = useMutationQuery('memo-note', postingMemoAndNote)
   const { mutate: changeOutlet, isError: outletError } = useMutationQuery('change-outlet', patchOutlet)
   const [outletPrice, setOutletPrice] = useState(0)
   const [outletParameter, setOutletParameter] = useState({
     price: 10000, // 아울렛 등록 가격
     numbers: ['FC53683103-1'], // 제품번호 목록
   })
-
+  const handleChangeMemo = (params) => {
+    const data = params?.data
+    setMemo((p) => [
+      ...p,
+      {
+        number: data['제품 번호'],
+        memo: data['비고'] || '',
+        note: data['메모'] || '',
+      },
+    ])
+  }
   useEffect(() => {
     setOutletParameter({
       price: outletPrice,
       numbers: selectProductNumber,
     })
   }, [selectProductNumber, outletPrice])
-  console.log(productNoNumber)
-  console.log(outletPrice)
+
   // 아울렛
   const handlechangeOutlet = () => {
     const res = changeOutlet(outletParameter, {
@@ -377,6 +388,14 @@ const Hyundai = ({}) => {
     })
 
     return res
+  }
+  const createMemoAndNote = () => {
+    memoAndNote(memo, {
+      onSuccess: () => {
+        alert('메모 성공')
+        window.location.reload()
+      },
+    })
   }
   const { pagination, onPageChanage } = usePaging(data, setRequestParameter)
   return (
@@ -675,6 +694,7 @@ const Hyundai = ({}) => {
             tablePagination={pagination}
             onPageChange={onPageChanage}
             loading={isLoading}
+            changeFn={handleChangeMemo}
           />
           <TCSubContainer bor>
             <div></div>
@@ -688,6 +708,11 @@ const Hyundai = ({}) => {
               </WhiteBlackBtn>
             </div>
           </TCSubContainer>
+          <TableBottomWrap>
+            <BlackBtn width={15} height={40} onClick={createMemoAndNote}>
+              저장
+            </BlackBtn>
+          </TableBottomWrap>
         </TableContianer>
       </FilterContianer>
 

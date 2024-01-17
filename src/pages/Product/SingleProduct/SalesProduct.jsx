@@ -41,21 +41,34 @@ import {
   TableContianer,
   Tilde,
 } from '../../../modal/External/ExternalFilter'
-import { blueModalAtom, popupAtom, popupObject, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import {
+  blueModalAtom,
+  popupAtom,
+  popupObject,
+  selectedRowsAtom,
+  singleProductModify,
+  toggleAtom,
+} from '../../../store/Layout/Layout'
 import Multi2 from '../../../modal/Common/Multi2'
 import { useAtom, useAtomValue } from 'jotai'
 import {
+  deleteProduct,
   getSingleProducts,
   patchOutlet,
   patchSaleCategory,
   patchSaleType,
   postExcelSubmitProduct,
+  postingMemoAndNote,
 } from '../../../api/SellProduct'
 import { getSPartList, getStorageList } from '../../../api/search'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import { ProductOptions, supplierOptions } from '../../../common/Option/storage'
 import Excel from '../../../components/TableInner/Excel'
-import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constants/admin/Single'
+import {
+  SingleDispatchFieldsCols,
+  SingleSalesDispatchFieldsCols,
+  singleDispatchFields,
+} from '../../../constants/admin/Single'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import StandardFind from '../../../modal/Multi/StandardFind'
@@ -71,6 +84,7 @@ import { changeCategoryAtom } from '../../../store/Layout/Popup'
 import SalseType from '../../../modal/Multi/SaleType'
 import { changeSaleTypeAtom } from '../../../store/Layout/Popup'
 import UploadV2 from '../../../modal/Upload/UploadV2'
+import SingleProductModify from './SingleProductModify'
 const SalesProduct = () => {
   const checkSales = ['전체', '판매재', '판매제외제', '판매 완료제']
   // const checkSales = ['전체', '미응찰', '관심제품', '응찰']
@@ -137,7 +151,7 @@ const SalesProduct = () => {
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData3(filteredCheck)
   }, [check3])
-
+  const [singleModfiy, setSingleModify] = useAtom(singleProductModify)
   const [uploadModal, setUploadModal] = useState(false)
   const [isRotated, setIsRotated] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
@@ -156,9 +170,9 @@ const SalesProduct = () => {
   const SaleProductPages = data?.pagination
 
   const [getRow, setGetRow] = useState('')
-  const tableField = useRef(SingleDispatchFieldsCols)
+  const tableField = useRef(SingleSalesDispatchFieldsCols)
   const getCol = tableField.current
-
+  const [memo, setMemo] = useState([])
   // Filter State
   const [select, setSelect] = useState({
     storage: '',
@@ -310,6 +324,28 @@ const SalesProduct = () => {
   const { mutate, isError } = useMutationQuery('change-category', patchSaleCategory)
   const { mutate: changeSaleType, isError: saleTypeError } = useMutationQuery('change-saleType', patchSaleType)
   const { mutate: changeOutlet, isError: outletError } = useMutationQuery('change-outlet', patchOutlet)
+  const { mutate: deletePr, isError: deleteError } = useMutationQuery('delete-Product', deleteProduct)
+  const { mutate: memoAndNote } = useMutationQuery('memo-note', postingMemoAndNote)
+
+  // Memo and Note
+  const handleChangeMemo = (params) => {
+    const data = params?.data
+    setMemo((p) => [
+      ...p,
+      {
+        number: data['제품 번호'],
+        memo: data['비고'] || '',
+        note: data['메모'] || '',
+      },
+    ])
+  }
+  const createMemoAndNote = () => {
+    memoAndNote(memo, {
+      onSuccess: () => {
+        window.location.reload()
+      },
+    })
+  }
 
   //판매 구분
   const changeSaleCategory = () => {
@@ -369,8 +405,7 @@ const SalesProduct = () => {
       numbers: selectProductNumber,
     })
   }, [selectProductNumber, outletPrice])
-  console.log(productNoNumber)
-  console.log(outletPrice)
+
   // 아울렛
   const handlechangeOutlet = () => {
     const res = changeOutlet(outletParameter, {
@@ -393,6 +428,17 @@ const SalesProduct = () => {
     })
 
     return res
+  }
+  // console.log(selectProductNumber.join(','))
+  const handleDelete = () => {
+    const confirm = window.confirm('정말로 삭제하시겠습니까?')
+    if (confirm) {
+      deletePr(selectProductNumber?.join(','), {
+        onSuccess: () => {
+          window.location.reload()
+        },
+      })
+    } else return
   }
   const { pagination: customPagination, onPageChanage } = usePaging(data, setRequestParamter)
   return (
@@ -699,16 +745,17 @@ const SalesProduct = () => {
             loading={isLoading}
             tablePagination={customPagination}
             onPageChange={onPageChanage}
+            changeFn={handleChangeMemo}
           />
           <TCSubContainer bor>
             <div></div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <WhiteRedBtn>제품 삭제</WhiteRedBtn>
+              <WhiteRedBtn onClick={handleDelete}>제품 삭제</WhiteRedBtn>
               <WhiteBlackBtn onClick={() => setUploadModal(true)}>제품 등록</WhiteBlackBtn>
             </div>
           </TCSubContainer>
           <TableBottomWrap>
-            <BlackBtn width={15} height={40}>
+            <BlackBtn width={15} height={40} onClick={createMemoAndNote}>
               저장
             </BlackBtn>
           </TableBottomWrap>
@@ -764,6 +811,7 @@ const SalesProduct = () => {
           excelToJson={excelToJson}
         />
       )}
+      {singleModfiy && <SingleProductModify title={'제품 수정'} />}
     </>
   )
 }

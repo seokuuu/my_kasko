@@ -66,6 +66,7 @@ const Table = ({
   noRowsMessage = '데이터가 존재하지 않습니다.', // 데이터 갯수가 0개일 때, 나타날 메시지입니다.
   loading = false, // 로딩 여부
   dragAndDrop = false,
+  changeFn,
 }) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [packageUids, setPackageUids] = useState([])
@@ -310,6 +311,7 @@ const Table = ({
     // rowModelType: 'serverSide',
     rowModelType: 'clientSide',
     headerHeight: 30,
+
     // rowDragManaged: true, // Enable row dragging
     animateRows: true, // Enable row animations
     // onRowDragEnd:
@@ -402,6 +404,7 @@ const Table = ({
             overlayLoadingTemplate="데이터를 불러오는 중..."
             // sideBar={{ toolPanels: ['columns', 'filters'] }}
             onRowDragEnd={dragAndDrop ? onRowDragEnd : () => {}}
+            onCellValueChanged={changeFn}
           />
         </div>
       </TestContainer>

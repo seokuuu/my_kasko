@@ -7,7 +7,7 @@ import { BlackBtn, BtnWrap, WhiteRedBtn } from '../../../common/Button/Button'
 // import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import { WhiteBlackBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { packageModeAtom, singleAllProductModal, toggleAtom } from '../../../store/Layout/Layout'
+import { packageModeAtom, selectedRowsAtom, singleAllProductModal, toggleAtom } from '../../../store/Layout/Layout'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 // import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
@@ -27,22 +27,15 @@ import {
   TableContianer,
 } from '../../../modal/External/ExternalFilter'
 
-// import { useQuery } from '@tanstack/react-query'
-// import { ExRadioWrap } from '../../../modal/External/ExternalFilter'
-
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
-// import useReactQuery from '../../../hooks/useReactQuery'
+
 import { getPackageProductsList, postCreatePackage } from '../../../api/SellProduct'
 import { useLocation, useNavigate } from 'react-router-dom'
-// import { getPackageProductsList } from '../../../api/SellProduct'
-// import { RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
-// import { getPackageProductsList } from '../../../api/packageProduct'
+
 import { useMutation, useQuery } from '@tanstack/react-query'
-// import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 import useReactQuery from '../../../hooks/useReactQuery'
-// import { getPackageProductsList, postCreatePackage } from '../../../api/SellProduct'
-// import { useLocation } from 'react-router-dom'
-import { useAtom } from 'jotai'
+
+import { useAtom, useAtomValue } from 'jotai'
 import { packageProductsDispatchFields, packageProductsDispatchFieldsCols } from '../../../constants/admin/SellPackage'
 import { add_element_field } from '../../../lib/tableHelpers'
 import SingleAllProduct from '../../../modal/Multi/SingleAllProduct'
@@ -70,7 +63,8 @@ const PackageCreate = () => {
   const [select, setSelect] = useState([])
   const [selectUid, setSelectUid] = useState([])
   const [curUid, setCuruid] = useState([])
-
+  const [check, setCheck] = useState([])
+  const checkBoxSelect = useAtomValue(selectedRowsAtom)
   // 경매,상시 선택시 선택한 내용의 라디오가 선택되게끔 하는
   useEffect(() => {
     setCheckRadio(
@@ -127,7 +121,6 @@ const PackageCreate = () => {
   const packageData = data?.r
   const packagePage = data?.pagination
 
-  console.log(packageData)
   const [getRow, setGetRow] = useState('')
   const [filteredData, setFilteredData] = useState([])
 
@@ -149,7 +142,7 @@ const PackageCreate = () => {
       setFilteredData(packageData)
     }
   }, [isSuccess, requestParams, packageData])
-
+  // 제품 추가하는 Uids
   useEffect(() => {
     setCuruid(filteredData.map((item) => item?.productUid))
   }, [isSuccess, filteredData])
@@ -181,13 +174,16 @@ const PackageCreate = () => {
   useEffect(() => {
     if (!select) return null
 
-    console.log(select.map((i) => i['고유 번호']))
     setSelectUid(() => select.map((i) => i['고유 번호']))
-    console.log(selectUid)
   }, [select])
 
   const [createRequest, setCreateRequest] = useState({})
   const [updateRequest, setUpdateRequest] = useState({})
+
+  // 기존 테이블에서 선택한 체크박스
+  useEffect(() => {
+    if (checkBoxSelect) return setCheck(() => [...checkBoxSelect.map((i) => i['제품 고유 번호'])])
+  }, [checkBoxSelect])
 
   useEffect(() => {
     setCreateRequest({
@@ -207,7 +203,7 @@ const PackageCreate = () => {
         uid: prevData['고유 번호'],
       },
     )
-  }, [packageName, savedRadioValue, selectUid, price])
+  }, [packageName, savedRadioValue, selectUid, price, curUid])
 
   const { mutate: create } = useMutationQuery(['query'], postCreatePackage)
   const { mutate: update } = useMutationQuery(['query'], postCreatePackage)
@@ -235,8 +231,29 @@ const PackageCreate = () => {
       },
     })
   }
+  const [sumArr, setSumArr] = useState([])
+  useEffect(() => {
+    if (getRow && select) {
+      setSumArr([...getRow, ...select])
+    }
+  }, [getRow, select])
 
-  console.log('붙은 데이터 : ', [...getRow, ...select])
+  const handleRemoveItem = () => {
+    if (prevData) {
+      if (select.length === 0) {
+        const filteredArr = getRow.filter((li) => !check.includes(li['제품 고유 번호']))
+        setGetRow(filteredArr)
+        setUpdateRequest((p) => ({ ...p, productUids: filteredArr.map((i) => i['제품 고유 번호']) }))
+      } else if (select.length > 0) {
+        const filteredArr = sumArr.filter((li) => !check.includes(li['제품 고유 번호']))
+        setSumArr(filteredArr)
+        setUpdateRequest((p) => ({ ...p, productUids: filteredArr.map((i) => i['제품 고유 번호']) }))
+      }
+    }
+    return { sumArr, updateRequest }
+  }
+  // console.log('select', select, getRow, sumArr, curUid)
+  // console.log('param', updateRequest)
   return (
     <FilterContianer>
       <FilterHeader>
@@ -309,13 +326,13 @@ const PackageCreate = () => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <WhiteRedBtn>목록 제거</WhiteRedBtn>
+            <WhiteRedBtn onClick={handleRemoveItem}>목록 제거</WhiteRedBtn>
             <WhiteBlackBtn onClick={handleAddProduct}>제품 추가</WhiteBlackBtn>
           </div>
         </TCSubContainer>
         <Table
           getCol={getCol}
-          getRow={select.length > 0 ? [...getRow, ...select] : getRow}
+          getRow={prevData ? (select.length > 0 ? sumArr : getRow) : select}
           tablePagination={pagination}
           onPageChange={onPageChanage}
           loading={isLoading}

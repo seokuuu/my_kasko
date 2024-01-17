@@ -12,7 +12,8 @@ const urls = {
   recommend:'/single-product/best-order',
   beRecommend:'/single-product/best',
   pkgrecommend:'/package-product/best-order',
-  pkgbeRecommend:'/package-product/best'
+  pkgbeRecommend:'/package-product/best',
+
 }
 
 export async function getSingleProducts(data) {
@@ -41,6 +42,34 @@ export async function postExcelSubmitProduct(data) {
   }
 } 
 
+
+export async function deleteProduct(data) {
+
+  try{
+    return await client.delete(`${urls.single}/${data}`)
+  }catch(e){
+    alert(e?.data?.message)
+  }
+} 
+export async function updateSingleProduct(data){
+  try{
+    const response = await client.patch(`${urls.single}`,data)
+    return response
+  } catch(e){
+    console.log(e)
+  }
+  
+}
+
+export async function postingMemoAndNote(data){
+  try{
+    const response = await client.patch(`${urls.single}/memo`,data)
+    return response
+  } catch(e){
+    console.log(e)
+  }
+  
+}
 
 export async function patchSaleCategory(data) {
   return await client.patch(`${urls.saleCategory}`,data)
@@ -150,3 +179,11 @@ export async function patchBeBestPackageRecommend(data){
   }
 
 }
+export async function deletePackage(data) {
+
+  try{
+    return await client.delete(`${urls.package}/${data}`)
+  }catch(e){
+    alert(e?.data?.message)
+  }
+} 

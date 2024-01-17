@@ -267,8 +267,43 @@ export const packageCreateObjAtom = atom({
 })
 export const packageModeAtom = atom('')
 export const selectPackageAtom = atom({})
+export const singleModifyObj = atom({})
 export const singleAllProductModal = atom(false)
 export const packageDetailModal = atom(false)
+export const singleProductModify = atom(false)
+export const requestSingleModify = atom({
+  storage: '',
+  storageName: '',
+  spec: '',
+  wdh: '',
+  thickness: '',
+  width: '',
+  length: '',
+  weight: '',
+  grade: '',
+  usageCode: '',
+  usageCodeName: '',
+  c: '',
+  si: '',
+  mn: '',
+  p: '',
+  s: '',
+  ts: '',
+  yp: '',
+  el: '',
+  spartCode: '',
+  spart: '',
+  supplier: '',
+  maker: '',
+  name: '',
+  preferThickness: '',
+  causeCode: '',
+  causeCodeName: '',
+  receiptDate: '',
+  stockStatus: '',
+  saleCategory: '',
+})
+
 // 목적지 에딧 모달
 export const userPageDestiEditModal = atom(false)
 export const adminPageDestiEditModal = atom(false)
