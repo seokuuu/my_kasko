@@ -96,7 +96,13 @@ const OrderDetail = ({ salesNumber }) => {
     const destinationItemUids = destinationUpdateItems.map(v => v[UID_KEY]);
     const newTableRowData = tableRowData.map(v => {
       if(destinationItemUids.includes(v[UID_KEY])) {
-        return ({...v, '목적지명': destination.name})
+        return ({
+          ...v, 
+          '변경요청 목적지명': destination.name,
+          '변경요청 목적지코드': destination.code,
+          '변경요청 목적지 주소': destination.address,
+          '변경요청 목적지 연락처': destination.phone,
+        })
       } 
       return v;
     });
