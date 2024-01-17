@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { client } from '../../api'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../components/MapTable/MapTable'
@@ -13,29 +13,78 @@ import {
 import { FilterContianer, FilterHeaderAlert, TableContianer } from '../../modal/External/ExternalFilter'
 
 /**
+ * @constant 입금요청서 요청 URL
+ * @description auction:경매, salesDeposit:상시판매
+ */
+const REQUEST_DEPOSIT_URL = {
+  aution: '/auction/successfulBid/deposit',
+  salesDeposit: '/sale-product/order/deposit-request'
+};
+
+/**
+ * @constant 총계 초기화 데이터
+ */
+const TOTAL_DATA = {
+  price: 0, // 낙찰금액
+  weight: 0, // 낙찰 중량
+  orderPrice: 0, // 제품대(공급가액)
+  freightCost: 0, // 운송비(공급가액)
+  sumCost: 0, // 총합(공급가액)
+  orderPriceVat: 0, // 제품대(VAT)
+  freightCostVat: 0, // 운송비(VAT)
+  sumCostVat: 0, // 총합(VAT)
+  sum: 0 // 총계
+}
+
+/**
  * [**] 입금 요청서 모달
  * @param {string} title 입금요청서 제목
- * @param {string} auctionNumber
- * @param {string} storage
- * @param {string} customerDestinationUid
- * @param {string} biddingStatus
+ * @param {boolean} salesDeposit 상시판매 여부
+ * @param {string} auctionNumber 경매번호|상시판매 번호 (경매|상시판매)
+ * @param {string} storage 창고 (경메)
+ * @param {string} customerDestinationUid 고객사 목적지 고유번호 (경매)
+ * @param {string} biddingStatus 낙찰상태 (경매)
  * @param {func} onClose 모달 닫기 핸들러 
  * @returns 
  */
-const DepositRequestForm = ({ title= '경매 입금 요청서', auctionNumber, storage, customerDestinationUid, biddingStatus, onClose }) => {
-  // 간략 정보
+const DepositRequestForm = ({ title= '경매 입금 요청서', auctionNumber, salesDeposit, storage, customerDestinationUid, biddingStatus, onClose }) => {
+  // 데이터
   const { data: infoData, isSuccess } = useQuery({
     queryKey: 'deposit-request',
     queryFn: async () => {
-      const { data } = await client.post('/auction/successfulBid/deposit', {
+      const requestUrl = salesDeposit? REQUEST_DEPOSIT_URL.salesDeposit : REQUEST_DEPOSIT_URL.aution;
+      const { data } = salesDeposit
+      ? await client.get(`${requestUrl}/${auctionNumber}`)
+      : await client.post(requestUrl, {
         auctionNumber: auctionNumber,
         storage: storage,
-        customerDestinationUid: customerDestinationUid,
-        biddingStatus: biddingStatus
-      });
-      return data;
+        biddingStatus: biddingStatus,
+        customerDestinationUid: customerDestinationUid
+      })
+      return data.data;
     }
   });
+  // 총계 데이터
+  const totalData = useMemo(() => {
+    const data = {...TOTAL_DATA};
+    if(infoData && infoData.list) {
+      for(const v of infoData.list) {
+        data.price += Number(v.totalPrice);
+        data.weight += Number(v.weight);
+        data.orderPrice += Number(v.orderPrice);
+        data.freightCost += Number(v.freightCost);
+        data.sumCost += Number(v.orderPrice + v.freightCost);
+        data.orderPriceVat += Number(v.orderPriceVat);
+        data.freightCostVat += Number(v.freightCostVat);
+        data.sumCostVat += Number(v.orderPriceVat + v.freightCostVat);
+        data.sum += Number(v.orderPrice + v.freightCost + v.orderPriceVat + v.freightCostVat);
+      }
+    }
+    for(const key in data) {
+      data[key] = data[key].toLocaleString();
+    }
+    return data;
+  }, [infoData])
 
   return (
     <>
@@ -51,7 +100,7 @@ const DepositRequestForm = ({ title= '경매 입금 요청서', auctionNumber, s
           <FilterContianer>
             {/* 요청서 제목 | 일자 */}
             <FormTitle>
-              {/* <b>{title} ({infoData?.auctionDate || '-'}일자</b>) */}
+              <b>{title} ({infoData?.auctionDate || '-'}일자</b>)
             </FormTitle>
             {/* 입금 정보 공지 */}
             <FilterHeaderAlert>
@@ -85,7 +134,7 @@ const DepositRequestForm = ({ title= '경매 입금 요청서', auctionNumber, s
               </div>
             </Text>
             {
-              isSuccess &&
+              infoData &&
               <TableContianer>
                 <ClaimTable style={{ margin: '20px 0px' }}>
                   <ClaimRow>
@@ -94,9 +143,9 @@ const DepositRequestForm = ({ title= '경매 입금 요청서', auctionNumber, s
                     <ClaimTitle>고객명</ClaimTitle>
                     <ClaimContent>{infoData.customerName}</ClaimContent>
                     <ClaimTitle>낙찰 중량</ClaimTitle>
-                    <ClaimContent bold>{infoData.weight}</ClaimContent>
+                    <ClaimContent bold>{totalData.weight}</ClaimContent>
                     <ClaimTitle>낙찰 금액</ClaimTitle>
-                    <ClaimContent bold>{infoData.price}</ClaimContent>
+                    <ClaimContent bold>{totalData.price}</ClaimContent>
                   </ClaimRow>
                 </ClaimTable>
                 <TableContainer>
@@ -144,14 +193,14 @@ const DepositRequestForm = ({ title= '경매 입금 요청서', auctionNumber, s
                       {/* 총계 */}
                       <tr style={{ border: '2px solid #c8c8c8' }}>
                         <Th colSpan="4">총계</Th>
-                        <Td blue bold>{infoData.weight}</Td>
-                        <Td>제품대</Td>
-                        <Td>운송비</Td>
-                        <Td>총합</Td>
-                        <Td>제품대</Td>
-                        <Td>운송비</Td>
-                        <Td>총합</Td>
-                        <Td>{infoData.price}</Td>
+                        <Td blue bold>{totalData.weight}</Td>
+                        <Td>{totalData.orderPrice}</Td>
+                        <Td>{totalData.freightCost}</Td>
+                        <Td>{totalData.sumCost}</Td>
+                        <Td>{totalData.orderPriceVat}</Td>
+                        <Td>{totalData.freightCostVat}</Td>
+                        <Td>{totalData.sumCostVat}</Td>
+                        <Td>{totalData.sum}</Td>
                       </tr>
                     </tbody>
                   </Table>

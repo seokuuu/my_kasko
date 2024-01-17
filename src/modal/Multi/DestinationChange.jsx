@@ -12,22 +12,26 @@ const STable = {
   Table: styled.table`
     max-width: 870px;
     min-width: 100%;
-    height: 240px;
+    max-height: 240px;
     border: 1px solid #000;
     border-bottom: 0;
     border-spacing: 0;
+    border-collapse: collapse;
+    table-layout: fixed;
+
+    tr {
+      height: 30px;;
+      line-height: 30px;
+    }
 
     th {
-      height: 30px;
       background-color: #DBE2F0;
       font-weight: 500;
       padding: 0;
-      border-bottom: 0;
+      border-bottom: 1px solid #000;
     }
 
     td {
-      height: 30px;
-      line-height: 30px;
       text-align: center;
       font-size: 15px;
       padding: 0;
@@ -43,6 +47,11 @@ const STable = {
   `,
   Input: styled.div`
     position: relative;
+    label {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
     input {
       position: absolute;
       top: 0;
@@ -95,7 +104,7 @@ const DestinationChange = ({ customerName, customerCode, value, onSubmit }) => {
         popupOn &&
         <>
           <FadeOverlay />
-          <ModalContainer style={{ width: '75%', height: '73%' }}>
+          <ModalContainer style={{ width: '75%', maxHeight: '73%' }}>
             <BlueBarHeader style={{ height: '60px' }}>
               <div>목적지 변경</div>
               <div>
@@ -112,7 +121,6 @@ const DestinationChange = ({ customerName, customerCode, value, onSubmit }) => {
                   <TCSubContainer>
                     <TCSDiv>고객사 목적지 목록</TCSDiv>
                   </TCSubContainer>
-                  {/* <Table getRow={tableRowData} getCol={userDestinationFieldsCols} /> */}
                   {
                     isSuccess && !destinationData && 
                     <div>고객사 목적지가 없습니다.</div>
@@ -123,9 +131,14 @@ const DestinationChange = ({ customerName, customerCode, value, onSubmit }) => {
                       <thead>
                         <tr>
                           <th>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <rect x="3.5" y="3.5" width="17" height="17" rx="0.5" stroke="#C8C8C8"/>
-                          </svg>
+                            <STable.Input>  
+                              <input type='radio' id="all" value="" readOnly />
+                              <label htmlFor="all">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                  <rect x="3.5" y="3.5" width="17" height="17" rx="0.5" stroke="#C8C8C8"/>
+                                </svg>
+                              </label> 
+                            </STable.Input>
                           </th>
                           <th>고객코드</th>
                           <th>비고</th>

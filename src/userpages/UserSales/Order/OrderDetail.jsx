@@ -102,18 +102,6 @@ const OrderDetail = ({ salesNumber }) => {
     });
     return newTableRowData;
   }, [destinationUpdateItems, tableRowData]);
-  // 입금 요청서 데이터
-  const depositRequestData = useMemo(() => {
-    if(orderData && orderData.list) {
-      const targetData = orderData.list[0];
-      return ({
-        storage: targetData.storageName,
-        customerDestinationUid: targetData.customerDestinationUid,
-        biddingStatus: '상시 판매'
-      })  
-    }
-    return null;
-  }, [orderData])
 
   /**
    * 목적지 적용 핸들러 
@@ -238,11 +226,11 @@ const OrderDetail = ({ salesNumber }) => {
         </TCSubContainer>
       </TableContianer>
       {/* 입금 요청서 모달 */}
-      {receiptPrint && depositRequestData && (
+      {receiptPrint &&  (
         <DepositRequestForm
           title="상시판매 입금요청서"
           auctionNumber={salesNumber}
-          {...depositRequestData}
+          salesDeposit
           onClose={() => {
             setReceiptPrint(false)
           }}
