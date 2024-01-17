@@ -9,15 +9,27 @@ import { BlueBarHeader, BlueSubContainer, FadeOverlay, ModalContainer, WhiteClos
  * 테이블 스타일
  */
 const STable = {
+  Wrapper: styled.div`
+    z-index: 10;
+    position: relative;
+    width: 100%;
+    max-height: 240px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  `,
   Table: styled.table`
     max-width: 870px;
     min-width: 100%;
-    max-height: 240px;
-    border: 1px solid #000;
+    border: 1px solid #c8c8c8;
     border-bottom: 0;
     border-spacing: 0;
-    border-collapse: collapse;
-    table-layout: fixed;
+    
+    thead {
+      z-index: 10;
+      position: sticky;
+      top: 0;
+      left: 0;
+    }
 
     tr {
       height: 30px;;
@@ -28,24 +40,25 @@ const STable = {
       background-color: #DBE2F0;
       font-weight: 500;
       padding: 0;
-      border-bottom: 1px solid #000;
+      border-bottom: 1px solid #c8c8c8;
     }
 
     td {
       text-align: center;
       font-size: 15px;
       padding: 0;
-      border-bottom: 1px solid #000;
+      border-bottom: 1px solid #c8c8c8;
     }
 
     th, td {
       padding: 0 4px;
       &:not(:last-child) {
-        border-right: 1px solid #000;
+        border-right: 1px solid #c8c8c8;
       }
     }
   `,
   Input: styled.div`
+    z-index: 1;
     position: relative;
     label {
       display: flex;
@@ -127,70 +140,72 @@ const DestinationChange = ({ customerName, customerCode, value, onSubmit }) => {
                   }
                   {
                     isSuccess && destinationData &&
-                    <STable.Table>
-                      <thead>
-                        <tr>
-                          <th>
-                            <STable.Input>  
-                              <input type='radio' id="all" value="" readOnly />
-                              <label htmlFor="all">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                  <rect x="3.5" y="3.5" width="17" height="17" rx="0.5" stroke="#C8C8C8"/>
-                                </svg>
-                              </label> 
-                            </STable.Input>
-                          </th>
-                          <th>고객코드</th>
-                          <th>비고</th>
-                          <th>목적지 코드</th>
-                          <th>목적지명</th>
-                          <th>하차지 명</th>
-                          <th>담당자 연락처</th>
-                          <th>하차지 연락처</th>
-                          <th>상세주소</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {
-                          destinationData?.map((v, idx) => (
-                            <tr key={v?.uid || idx}>
-                              <td>
-                                <STable.Input>
-                                  <input 
-                                    type="radio" 
-                                    id={`des-${idx}`}
-                                    checked={destination && destination?.uid === v?.uid} 
-                                    onChange={e => {
-                                      if(e.target.checked) setDestination(v);
-                                    }} 
-                                  />
-                                  <label htmlFor={`des-${idx}`}>
-                                    {
-                                      (destination && destination?.uid === v?.uid)
-                                      ? <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                          <rect x="3" y="3" width="18" height="18" rx="1" fill="#4C83D6"/>
-                                          <path d="M7 12.3636L11.1667 16L17 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                      : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                          <rect x="3.5" y="3.5" width="17" height="17" rx="0.5" stroke="#C8C8C8"/>
-                                        </svg>
-                                    }
-                                  </label>
-                                </STable.Input>
-                              </td>
-                              <td>{v?.code}</td>
-                              <td>{v?.represent? '대표 목적지' : '-'}</td>
-                              <td>{v?.code}</td>
-                              <td>{v?.name}</td>
-                              <td>하차지명</td>
-                              <td>{v?.managerPhone}</td>
-                              <td>{v?.phone}</td>
-                              <td>{v?.address}</td>
-                            </tr>
-                          ))
-                        }
-                      </tbody>
-                    </STable.Table>
+                    <STable.Wrapper>
+                      <STable.Table>
+                        <thead>
+                          <tr>
+                            <th>
+                              <STable.Input>  
+                                <input type='radio' id="all" value="" readOnly />
+                                <label htmlFor="all">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#DBE2F0">
+                                    <rect x="3.5" y="3.5" width="17" height="17" rx="0.5" stroke="#C8C8C8"/>
+                                  </svg>
+                                </label> 
+                              </STable.Input>
+                            </th>
+                            <th>고객코드</th>
+                            <th>비고</th>
+                            <th>목적지 코드</th>
+                            <th>목적지명</th>
+                            <th>하차지 명</th>
+                            <th>담당자 연락처</th>
+                            <th>하차지 연락처</th>
+                            <th>상세주소</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {
+                            destinationData?.map((v, idx) => (
+                              <tr key={v?.uid || idx}>
+                                <td>
+                                  <STable.Input>
+                                    <input 
+                                      type="radio" 
+                                      id={`des-${idx}`}
+                                      checked={destination && destination?.uid === v?.uid} 
+                                      onChange={e => {
+                                        if(e.target.checked) setDestination(v);
+                                      }} 
+                                    />
+                                    <label htmlFor={`des-${idx}`}>
+                                      {
+                                        (destination && destination?.uid === v?.uid)
+                                        ? <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <rect x="3" y="3" width="18" height="18" rx="1" fill="#4C83D6"/>
+                                            <path d="M7 12.3636L11.1667 16L17 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                          </svg>
+                                        : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <rect x="3.5" y="3.5" width="17" height="17" rx="0.5" stroke="#C8C8C8"/>
+                                          </svg>
+                                      }
+                                    </label>
+                                  </STable.Input>
+                                </td>
+                                <td>{v?.code}</td>
+                                <td>{v?.represent? '대표 목적지' : '-'}</td>
+                                <td>{v?.code}</td>
+                                <td>{v?.name}</td>
+                                <td>하차지명</td>
+                                <td>{v?.managerPhone}</td>
+                                <td>{v?.phone}</td>
+                                <td>{v?.address}</td>
+                              </tr>
+                            ))
+                          }
+                        </tbody>
+                      </STable.Table>
+                    </STable.Wrapper>
                   }
                 </TableContianer>
               </FilterContianer>
