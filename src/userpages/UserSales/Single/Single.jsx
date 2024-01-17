@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useUserSingleProductListQuery } from '../../../api/user'
-import { BlackBtn, GreyBtn, WhiteGrnBtn } from '../../../common/Button/Button'
+import { BlackBtn, GreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
@@ -79,7 +79,7 @@ const Single = ({}) => {
     serverData: singleData,
   })
   // 선택 항목
-  const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr, hasSelected } = useTableSelection({ weightKey: '총 중량' })
+  const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr, hasSelected } = useTableSelection({ weightKey: '중량' })
   // 필드 옵션
   const { supplierList, stockStatusList, gradeList } = useTableSearchFieldData();
   // 규격약호 검색 모달

@@ -3,15 +3,25 @@ import { useAtom } from 'jotai'
 import { WhiteGrnBtn } from '../../../common/Button/Button'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
 import { destiDelPopupAtom, popupObject } from '../../../store/Layout/Layout'
+import useWishList from '../../../hooks/useWishList'
+
+function getWishList() {
+
+}
+
+function saveWishList() {
+
+}
 
 /**
  * 관심 상품 등록 버튼
  * @returns 
  */
 const AddWishButton = ({ products }) => {
+  const { addWishList } = useWishList();
   // POPUP
-  const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom) // 팝업 스위치
-  const [_, setNowPopup] = useAtom(popupObject)
+  const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom); // 팝업 스위치
+  const [_, setNowPopup] = useAtom(popupObject);
 
   function handleWishAdd(e) {
     e.preventDefault();

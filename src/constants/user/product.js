@@ -13,11 +13,11 @@ export const PROD_CATEGORY = {
  * @description 사용자 주문확인 > 단일 테이블에서 사용합니다.
 */
 export const userSingleProductField = {
-  "고유 번호": "orderUid",
+  "고유 번호": "uid",
   "상시판매 번호": "auctionNumber",
   "상시판매 주문일자": "auctionCreateDate",
-  "제품번호": "productNumber",
-  "프로넘(ProNo.)": "productProNumber",
+  "제품번호": "number",
+  "프로넘(ProNo.)": "productNoNumber",
   "창고": "storageName",
   "상시판매 상태": "saleStatus",
   "승인상태": "approvalStatus",
