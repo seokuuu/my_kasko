@@ -19,7 +19,7 @@ const DateSearchSelect = ({ title, startInitDate, endInitDate, startDateChange, 
   }, [startDate])
 
   useEffect(() => {
-    endDateChange(startDate)
+    endDateChange(endDate)
   }, [endDate])
 
   return (

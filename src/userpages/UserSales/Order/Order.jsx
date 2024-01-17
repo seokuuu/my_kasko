@@ -7,7 +7,9 @@ import { CheckBox } from '../../../common/Check/Checkbox'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
+import CustomerSearch from '../../../components/Search/CustomerSearch'
 import DateSearchSelect from '../../../components/Search/DateSearchSelect'
+import SpartSelect from '../../../components/Search/SpartSelect'
 import StorageSelect from '../../../components/Search/StorageSelect'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
@@ -15,6 +17,7 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { userOrderListField, userOrderListFieldsCols } from '../../../constants/user/order'
 import useTableData from '../../../hooks/useTableData'
+import useTableSearchFieldData from '../../../hooks/useTableSearchFieldData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'
 import {
@@ -38,12 +41,9 @@ import {
   TableContianer,
   Tilde,
 } from '../../../modal/External/ExternalFilter'
+import StandardFind from '../../../modal/Multi/StandardFind'
 import Table from '../../../pages/Table/Table'
 import { toggleAtom } from '../../../store/Layout/Layout'
-import CustomerSearch from '../../../components/Search/CustomerSearch'
-import SpartSelect from '../../../components/Search/SpartSelect'
-import useTableSearchFieldData from '../../../hooks/useTableSearchFieldData'
-import StandardFind from '../../../modal/Multi/StandardFind'
 
 /**
  * @constant 기본 검색 값
@@ -84,6 +84,7 @@ const UID_KEY = '주문 고유 번호';
 
 /**
  * @constant 쌍 입력 값
+ * @description 입력 유효성 검증시 사용합니다.
  */
 const pairValues = [
   { name: '두께', keys: ['minThickness', 'maxThickness'] },
@@ -93,15 +94,8 @@ const pairValues = [
 
 /**
  * 상시판매 주문확인 목록
- * @description
- * [1] 주문 목록을 조회합니다.
- * [2] 선택 항목을 주문취소 합니다.
- *
  * @todo
- * - 주문일자 입력 > 시작, 종료일 같음 (Err)
- * - 매입처 옵션 연동
- * - 규격약호 옵션 연동
- * - 구분 2, 3번째 옵션 연동
+ * - 필터 초기화시 주문일자 변경되지 않음
  */
 const Order = ({}) => {
   // API 파라미터
@@ -115,7 +109,7 @@ const Order = ({}) => {
     handleParamsReset,
   } = useTableSearchParams({ ...initialSearchParams })
   // API
-  const { data: orderData, isSuccess, isError, isLoading } = useUserOrderListQuery(searchParams) // 주문확인 목록 조회 쿼리
+  const { data: orderData, isError, isLoading } = useUserOrderListQuery(searchParams) // 주문확인 목록 조회 쿼리
   const { mutate: requestCancel, loading: isCancelLoading } = useUserOrderCancelMutaion() // 주문취소 뮤테이션
   // 테이블 데이터, 페이지 데이터, 총 중량
   const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
@@ -124,12 +118,12 @@ const Order = ({}) => {
   })
   // 선택 항목
   const { selectedData, selectedWeightStr, selectedCountStr, hasSelected } = useTableSelection({ weightKey: '총 중량' })
-  // NAVIGATION
-  const navigate = useNavigate()
   // 필드 옵션
   const { supplierList, stockStatusList, gradeList } = useTableSearchFieldData();
-  // 규격약호 옵션
+  // 규격약호 검색 모달
   const [standardCodeModalOn, setStandardCodeModalOn] = useState(false);
+  // NAVIGATION
+  const navigate = useNavigate();
 
   /**
    * 입력 핸들러
@@ -152,7 +146,6 @@ const Order = ({}) => {
 
   /**
    * 필터 검색 유효성 확인 메시지 반환 함수
-   * @description 개발요구사항
    */
   const getInvalidationMessage = useCallback(() => {
     // 주문일자 검증
@@ -183,15 +176,15 @@ const Order = ({}) => {
    * @param {*} e
    */
   function handleFilterSearch(e) {
-    e.preventDefault()
+    e.preventDefault();
 
-    const warning = getInvalidationMessage()
+    const warning = getInvalidationMessage();
 
     if (warning) {
-      return alert(warning)
+      return alert(warning);
     }
 
-    handleSearch()
+    handleSearch();
   }
 
   /**
@@ -219,6 +212,10 @@ const Order = ({}) => {
     }
   }
 
+  /**
+   * UI COMMONT PROPERTIES
+   * @description 페이지 내 공통 UI 처리 함수입니다.
+   */
   /* ============================== COMMON start ============================== */
   // CHECKS
   const [checkRadio, setCheckRadio] = useState(
@@ -247,7 +244,6 @@ const Order = ({}) => {
     return <div>ERROR</div>
   }
 
-  // DATA SECTION
   return (
     <FilterContianer>
       <FilterHeader>
@@ -291,7 +287,13 @@ const Order = ({}) => {
                 {/* 매입처*/}
                 <PartWrap>
                   <h6>매입처</h6>
-                  <MainSelect options={supplierList} defaultValue={storageOptions[0]} />
+                  <MainSelect 
+                    options={supplierList} 
+                    defaultValue={storageOptions[0]} 
+                    onChange={v => {
+                      handleTypedInputChange({ key: 'supplier', value: v.label, radioType: true });
+                    }}
+                  />
                 </PartWrap>
                 {/* 규격약호 찾기 */}
                 <PartWrap>
@@ -344,15 +346,15 @@ const Order = ({}) => {
                     defaultValue={stockStatusList[0]}
                     value={stockStatusList.filter(({ label }) => label === tempSearchParams.maker)}
                     onChange={(v) => {
-                      handleTypedInputChange({ key: 'maker', value: v.label })
+                      handleTypedInputChange({ key: 'maker', value: v.label === stockStatusList[0].label? '' : v.label })
                     }} 
                   />
                   <MainSelect 
                     options={gradeList} 
-                    defaultValue={stockStatusList[0]}
+                    defaultValue={gradeList[0]}
                     value={gradeList.filter(({ label }) => label === tempSearchParams.grade)}
                     onChange={(v) => {
-                      handleTypedInputChange({ key: 'grade', value: v.label })
+                      handleTypedInputChange({ key: 'grade', value:v.label === gradeList[0].label? '' : v.label  })
                     }} 
                   />
                 </PartWrap>
@@ -468,7 +470,10 @@ const Order = ({}) => {
               <ResetImg
                 src="/img/reset.png"
                 style={{ marginLeft: '10px', marginRight: '20px' }}
-                onClick={handleImageClick}
+                onClick={() => {
+                  handleParamsReset();
+                  handleImageClick();
+                }}
                 className={isRotated ? 'rotate' : ''}
               />
             </button>

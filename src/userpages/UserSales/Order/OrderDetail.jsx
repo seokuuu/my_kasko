@@ -45,7 +45,7 @@ const UID_KEY = '고유 번호';
  * @return {array<string>}
  */
 const getInfoRows = (data, salesNumber) => {
-  const initialData = [salesNumber, '-', '-', 0, 0, 0]
+  const initialData = [salesNumber, '-', '-', 0, 0, 0];
   if (data) {
     initialData[1] = data[0]?.customerName || '-' // 고객사
     initialData[2] = data[0]?.customerCode || '-' // 고객코드
@@ -105,7 +105,7 @@ const OrderDetail = ({ salesNumber }) => {
 
   /**
    * 목적지 적용 핸들러 
-   * @description 서버 아닌 테이블에 노출되는 데이터에만 적용합니다.
+   * @description 서버 요청 하지 않으며, 테이블에 노출되는 데이터에만 적용합니다.
    */
   function handleDestinationApply() {
     if(!destination) {

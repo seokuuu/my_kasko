@@ -5,7 +5,6 @@ import { SkyBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import CustomPagination from '../../../components/pagination/CustomPagination'
 import {
   userCartListPackageField,
   userCartListPackageFieldCols,
@@ -50,9 +49,6 @@ const initialSearchParams = {
 
 /**
  * 사용자 장바구니 페이지
- * @description
- * [1] 장바구니 목록을 조회합니다.
- * [2] 선택 제품을 주문합니다.
  */
 const Cart = ({}) => {
   // API 파라미터
@@ -60,7 +56,7 @@ const Cart = ({}) => {
   // API
   const { data: cartData, isLoading, isError } = useUserCartListQuery(searchParams) // 카트 목록 조회 쿼리
   const { mutate: requestOrder, loading: isOrderLoading } = useUserOrderMutaion() // 주문하기 뮤테이션
-  // 카테고리
+  // 카테고리 (단일| 패키지)
   const isSingleCategory = useMemo(() => searchParams.category === CATEGORY.single, [searchParams])
   // 테이블 데이터, 페이지 데이터, 총 중량
   const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
@@ -71,7 +67,7 @@ const Cart = ({}) => {
   const { selectedData, selectedWeight, selectedWeightStr, selectedCountStr, selectedCount } = useTableSelection({
     weightKey: isSingleCategory ? '중량' : '패키지 상품 총 중량',
   })
-  // POPUP
+  // POPUP(선택제품주문)
   const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom) // 팝업 스위치
   const [_, setNowPopup] = useAtom(popupObject)
 
