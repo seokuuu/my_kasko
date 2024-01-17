@@ -9,10 +9,6 @@ var headerCheckboxSelection = function (params) {
   return params.columnApi.getRowGroupColumns().length === 0
 }
 
-const onCellClicked = (params) => {
-  console.log('클릭 발생')
-}
-
 const LinkRenderer = (props) => {
   const { data } = props
   console.log('데이터확인', data)
@@ -60,7 +56,6 @@ export const OrderManageFieldsCols = [
     width: 100,
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-    onCellClicked: onCellClicked,
     cellRenderer: (params) => params.value || 'N',
   },
   {

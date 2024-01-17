@@ -1,5 +1,5 @@
-import { useAtom } from 'jotai'
-import { useState } from 'react'
+import { useAtom, useAtomValue } from 'jotai'
+import { useEffect, useState } from 'react'
 import { BlackBtn, GreyBtn, SwitchBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { CustomSelect2, MainSelect } from '../../../common/Option/Main'
 import DateGrid from '../../../components/DateGrid/DateGrid'
@@ -37,12 +37,17 @@ import {
   RightTextarea,
   FilterWrap,
 } from '../../../modal/External/ExternalFilter'
-import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
-import Test3 from '../../Test/Test3'
+import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { storageOptions } from '../../../common/Option/Main'
+import Table from '../../Table/Table'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getInComingList } from '../../../api/stock'
+import { StockIncomingFields, stockFields } from '../../../constants/admin/StockIncoming'
+import { KilogramSum } from '../../../utils/KilogramSum'
+import { add_element_field } from '../../../lib/tableHelpers'
 const Incoming = ({}) => {
   const handleSelectChange = (selectedOption, name) => {
     // setInput(prevState => ({
@@ -74,6 +79,35 @@ const Incoming = ({}) => {
   const modalOpen = () => {
     setIsModal(true)
   }
+
+  const formatTableRowData = (inComingData) => {
+    return add_element_field(inComingData, stockFields)
+  }
+  // 데이터 가져오기
+  const paramData = {
+    pageNum: 1,
+    pageSize: 5,
+  }
+  const [param, setParam] = useState(paramData)
+  const [inComingPagination, setInComingPagination] = useState([])
+  const [inComingListData, setInComingListData] = useState(null)
+  const { data: inComingData, isSuccess } = useReactQuery(param, 'getInComingList', getInComingList)
+  useEffect(() => {
+    if (inComingData && inComingData.data && inComingData.data.list) {
+      setInComingListData(formatTableRowData(inComingData.data.list))
+      setInComingPagination(inComingData.data.pagination)
+    }
+  }, [inComingData, isSuccess])
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
+
+  const checkBoxSelect = useAtomValue(selectedRowsAtom)
+  const totalWeight = inComingData?.data.pagination.totalWeight
+  const formattedTotalWeight = totalWeight && totalWeight.toLocaleString()
 
   return (
     <FilterContianer>
@@ -125,8 +159,6 @@ const Incoming = ({}) => {
                   </PartWrap>
                 </RowWrap>
 
-                {/* RowWrap none : border-bottom이 없음
-PartWrap first : Row의 제일 앞에 오는 Part (제목 width 고정용) */}
                 <RowWrap none>
                   <PartWrap first>
                     <h6>두께(MM)</h6>
@@ -177,77 +209,6 @@ PartWrap first : Row의 제일 앞에 오는 Part (제목 width 고정용) */}
                 </BlackBtn>
               </div>
             </FilterFooter>
-
-            {/* 구버젼 끝 */}
-            {/* 신버젼 시작 */}
-            {/* <NewFilterWrap>
-              <NewFilterLeft>
-                <NewRow bor>
-                  <RowInWrap>
-                    <NewTitle first>창고구분</NewTitle>
-                    <CustomSelect2 />
-                  </RowInWrap>
-                  <RowInWrap>
-                    <NewTitle>매입처</NewTitle>
-                    <CustomSelect2 />
-                  </RowInWrap>
-                  <RowInWrap>
-                    <NewTitle>규격 약호</NewTitle>
-                    <Input />
-                    <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17} onClick={modalOpen}>
-                      찾기
-                    </GreyBtn>
-                  </RowInWrap>
-                </NewRow>
-                <Bar />
-                <NewRow>
-                  <RowInWrap>
-                    <NewTitle first>입고일자</NewTitle>
-                    <DateGrid width={140} bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid width={140} bgColor={'white'} fontSize={17} />
-                  </RowInWrap>
-                  <RowInWrap>
-                    <NewTitle>구분</NewTitle>
-                    <CustomSelect2 />
-                    <CustomSelect2 />
-                    <CustomSelect2 />
-                  </RowInWrap>
-                </NewRow>
-                <Bar />
-                <NewRow>
-                  <RowInWrap>
-                    <NewTitle>두께(MM)</NewTitle>
-                    <MiniInput /> <Tilde>~</Tilde>
-                    <MiniInput />
-                  </RowInWrap>
-                  <RowInWrap>
-                    <NewTitle>폭(MM)</NewTitle>
-                    <MiniInput /> <Tilde>~</Tilde>
-                    <MiniInput />
-                  </RowInWrap>
-                  <RowInWrap>
-                    <NewTitle>길이(MM)</NewTitle>
-                    <MiniInput /> <Tilde>~</Tilde>
-                    <MiniInput />
-                  </RowInWrap>
-                </NewRow>
-                <NewRow bor>
-                  <RowInWrap>
-                    <NewTitle first>구분2</NewTitle>
-                    <CustomSelect2 />
-                    <CustomSelect2 />
-                  </RowInWrap>
-                </NewRow>
-              </NewFilterLeft>
-              <NewFilterRight>
-                <RightTitle>제품번호</RightTitle>
-                <RightTextarea
-                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                ></RightTextarea>
-              </NewFilterRight>
-            </NewFilterWrap> */}
-            {/* 신버젼 끝 */}
           </>
         )}
       </div>
@@ -255,7 +216,8 @@ PartWrap first : Row의 제일 앞에 오는 Part (제목 width 고정용) */}
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
+            조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /
+            {inComingPagination?.listCount}개 )<Hidden />
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -265,14 +227,19 @@ PartWrap first : Row의 제일 앞에 오는 Part (제목 width 고정용) */}
         </TCSubContainer>
         <TCSubContainer>
           <div>
-            선택 중량<span> 2 </span>kg / 총 중량 kg
+            선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 {formattedTotalWeight}kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <SwitchBtn>입고 확정</SwitchBtn>
           </div>
         </TCSubContainer>
 
-        <Test3 />
+        <Table
+          getCol={StockIncomingFields}
+          getRow={inComingListData}
+          tablePagination={inComingPagination}
+          onPageChange={onPageChange}
+        />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>

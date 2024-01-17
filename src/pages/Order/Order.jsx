@@ -136,11 +136,7 @@ const Order = ({}) => {
     }
   }, [isSuccess, getOrderRes])
   const totalWeight = getOrderRes?.data.pagination.totalWeight
-
-  // 숫자를 천 단위로 구분하여 포맷팅하는 함수
-  const formatNumber = (number) => {
-    return new Intl.NumberFormat().format(number)
-  }
+  const formattedTotalWeight = totalWeight && totalWeight.toLocaleString()
 
   const [selected, setSelected] = useState({ sPart: '' })
 
@@ -349,7 +345,7 @@ const Order = ({}) => {
         </TCSubContainer>
         <TCSubContainer>
           <div>
-            선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 {totalWeight}kg
+            선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 {formattedTotalWeight}kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteRedBtn type="button" onClick={handleOrderCancel}>

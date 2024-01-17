@@ -299,7 +299,6 @@ const Table = ({
   const gridOptions = {
     // other grid options
     // rowModelType: 'serverSide',
-    rowModelType: 'clientSide',
     headerHeight: 30,
     // paginationPageSize: size, // 요청할 페이지 사이즈
     cacheBlockSize: 100, // 캐시에 보관할 블록 사이즈
