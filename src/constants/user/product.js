@@ -14,8 +14,8 @@ export const PROD_CATEGORY = {
 */
 export const userSingleProductField = {
   "고유 번호": "uid",
-  "상시판매 번호": "auctionNumber",
-  "상시판매 주문일자": "auctionCreateDate",
+  "상시판매 번호": "orderNumber",
+  "상시판매 주문일자": "saleOrderDate",
   "제품번호": "number",
   "프로넘(ProNo.)": "productNoNumber",
   "창고": "storageName",
