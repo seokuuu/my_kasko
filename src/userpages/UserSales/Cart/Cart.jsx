@@ -1,7 +1,5 @@
-import { useAtom } from 'jotai'
 import { useMemo } from 'react'
-import { useUserCartListQuery, useUserOrderMutaion } from '../../../api/user'
-import { SkyBtn } from '../../../common/Button/Button'
+import { useUserCartListQuery } from '../../../api/user'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -11,10 +9,10 @@ import {
   userCartListSingleField,
   userCartListSingleFieldsCols,
 } from '../../../constants/user/cart'
+import { PROD_CATEGORY } from '../../../constants/user/product'
 import useTableData from '../../../hooks/useTableData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'
-import AlertPopup from '../../../modal/Alert/AlertPopup'
 import {
   FilterContianer,
   FilterHeader,
@@ -23,41 +21,27 @@ import {
   TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
-import { destiDelPopupAtom, popupObject } from '../../../store/Layout/Layout'
-
-/**
- * @constant 최소 주문 중량(25톤/단위kg)
- */
-const MIN_ORDER_WEIGHT = 25_000
-
-/**
- * @constant 상품 카테고리(단일|패키지)
- */
-const CATEGORY = {
-  single: 'SINGLE',
-  package: 'PACKAGE',
-}
+import AddOrderButton from '../_components/AddOrderButton'
 
 /**
  * @constant 기본 검색 값
  */
 const initialSearchParams = {
-  category: CATEGORY.single,
+  category: PROD_CATEGORY.single,
   pageNum: 1,
   pageSize: 50,
 }
 
 /**
- * 사용자 장바구니 페이지
+ * (사용자)사용자 장바구니 페이지
  */
 const Cart = ({}) => {
   // API 파라미터
   const { searchParams, handleParamsChange, handlePageSizeChange } = useTableSearchParams(initialSearchParams)
   // API
   const { data: cartData, isLoading, isError } = useUserCartListQuery(searchParams) // 카트 목록 조회 쿼리
-  const { mutate: requestOrder, loading: isOrderLoading } = useUserOrderMutaion() // 주문하기 뮤테이션
   // 카테고리 (단일| 패키지)
-  const isSingleCategory = useMemo(() => searchParams.category === CATEGORY.single, [searchParams])
+  const isSingleCategory = useMemo(() => searchParams.category === PROD_CATEGORY.single, [searchParams])
   // 테이블 데이터, 페이지 데이터, 총 중량
   const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
     tableField: isSingleCategory ? userCartListSingleField : userCartListPackageField,
@@ -67,50 +51,6 @@ const Cart = ({}) => {
   const { selectedData, selectedWeight, selectedWeightStr, selectedCountStr, selectedCount } = useTableSelection({
     weightKey: isSingleCategory ? '중량' : '패키지 상품 총 중량',
   })
-  // POPUP(선택제품주문)
-  const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom) // 팝업 스위치
-  const [_, setNowPopup] = useAtom(popupObject)
-
-  /**
-   * 선택 항목 주문 핸들러
-   */
-  function handleSelectOrder(e) {
-    e.preventDefault()
-
-    if (selectedCount < 1) {
-      setPopupSwitch(true)
-      setNowPopup({
-        num: '1',
-        content: '상품을 선택해 주세요.',
-      })
-      return
-    }
-
-    // 25톤 이상 주문건만 주문 가능
-    if (selectedWeight < MIN_ORDER_WEIGHT) {
-      setPopupSwitch(true)
-      setNowPopup({
-        num: '1',
-        content: '25톤 이상 부터 주문이 가능합니다.\n확인하시고 다시 시도해 주세요.',
-      })
-      return
-    }
-
-    requestOrder({
-      type: searchParams.category === CATEGORY.single ? 'normal' : 'package',
-      orderList: selectedData.map((v) =>
-        isSingleCategory
-          ? {
-              productUid: v['고유 번호'] || '',
-              salePrice: v['상시판매가'] || 0,
-            }
-          : {
-              packageNumber: v['패키지 번호'] || 0,
-              salePrice: v['패키지 상품 총 중량'] || 0,
-            },
-      ),
-    })
-  }
 
   // ERROR SECTION
   if (isError) {
@@ -126,8 +66,8 @@ const Cart = ({}) => {
             <h1>장바구니</h1>
             <SubTitle>
               {[
-                { text: '단일', value: CATEGORY.single },
-                { text: '패키지', value: CATEGORY.package },
+                { text: '단일', value: PROD_CATEGORY.single },
+                { text: '패키지', value: PROD_CATEGORY.package },
               ].map((v) => (
                 <a
                   role="button"
@@ -170,13 +110,9 @@ const Cart = ({}) => {
         />
         {/* 테이블 액션 */}
         <TCSubContainer style={{ width: '100%', justifyContent: 'flex-end' }}>
-          <SkyBtn disabled={isOrderLoading} onClick={handleSelectOrder}>
-            선택 제품 주문
-          </SkyBtn>
+          <AddOrderButton category={searchParams.category} totalWeight={selectedWeight} products={selectedData} />
         </TCSubContainer>
       </TableContianer>
-      {/* 팝업 */}
-      {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
     </FilterContianer>
   )
 }
