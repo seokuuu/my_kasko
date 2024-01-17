@@ -22,7 +22,7 @@ const POPUP_KEYS = {
 // 팝업 목록 조회
 export function usePopupListQuery(params) {
   return useQuery({
-    queryKey: [...POPUP_KEYS.getPopupList, params.pageNum],
+    queryKey: [...POPUP_KEYS.getPopupList, params.pageNum, params.pageSize],
     queryFn: async function () {
       const response = await client.get(urls, { params })
       return response.data.data

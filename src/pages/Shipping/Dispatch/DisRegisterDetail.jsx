@@ -1,242 +1,228 @@
-import React, { useEffect, useState, Fragment } from 'react'
-
-import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import { toggleAtom } from '../../../store/Layout/Layout'
-import Test3 from '../../Test/Test3'
-
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { TableWrap } from '../../../components/MapTable/MapTable'
+import React, { useEffect, useState, useRef } from 'react'
+import { BlackBtn, WhiteBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import {
-  ExRadioWrap,
-  FilterContianer,
-  FilterHeader,
-  TableContianer,
-  TCSubContainer,
-} from '../../../modal/External/ExternalFilter'
-
-import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
-
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
-
+	aucProAddModalAtom,
+	doubleClickedRowAtom,
+	selectedRowsAtom,
+	StandardDispatchDetailAtom,
+} from '../../../store/Layout/Layout'
+import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
+import {
+	useRemoveDispatchMutation,
+	useShipmentDispatchDetailsQuery,
+	useShipmentMergeDeleteMutation,
+	useShipmentMergeStatusUpdateMutation,
+	useShipmentMergeUpdateMutation,
+} from '../../../api/shipment'
+import { ShippingDispatchDetailsFieldsCols, ShippingDispatchDetailsFields } from '../../../constants/admin/Shipping'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { GlobalFilterHeader } from '../../../components/Filter'
+import Table from '../../Table/Table'
+import DisRegisterDetailHeader from './DisRegisterDetailHeader'
+import { useAtom } from 'jotai/index'
+import RequestAddModal from '../Request/RequestAddModal'
+import { BlueBarBtnWrap } from '../../../modal/Common/Common.Styled'
+import { useAuth } from '../../../store/auth'
+import DispatchDetail from '../../../modal/Multi/DispatchDetail'
 
-const DisRegisterDetail = ({}) => {
-  const radioTableDummy = ['Y', 'N']
+const DisRegisterDetail = ({ id }) => {
+	const user = useAuth()
+	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
+	const [isPostModal, setIsPostModal] = useAtom(StandardDispatchDetailAtom)
 
-  const [checkRadio2, setCheckRadio2] = useState(
-    Array.from({ length: radioTableDummy.length }, (_, index) => index === 0),
-  )
+	// Table
+	const tableField = useRef(ShippingDispatchDetailsFieldsCols)
+	const getCol = tableField.current
+	const [getRow, setGetRow] = useState('')
+	const [rowChecked, setRowChecked] = useAtom(selectedRowsAtom)
 
-  const [savedRadioValue2, setSavedRadioValue2] = useState('')
-  useEffect(() => {
-    const checkedIndex = checkRadio2.findIndex((isChecked, index) => isChecked && index < radioTableDummy.length)
+	// 모달
+	const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
 
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
-  }, [checkRadio2])
+	const { data, isLoading } = useShipmentDispatchDetailsQuery(id)
+	const [list, setList] = useState([])
+	const [selectedId, setSelectedId] = useState(null) // 체크 박스 선택한 id 값
+	const [dockStatus, setDockStatus] = useState(null) // 상차도 여부
 
-  const [isRotated, setIsRotated] = useState(false)
+	const { mutate: removeDispatch } = useRemoveDispatchMutation() // 배차 취소
+	const { mutate: updateMerge } = useShipmentMergeUpdateMutation() // 선별 목록 변경
+	const { mutate: deleteMerge } = useShipmentMergeDeleteMutation() // 선별 목록 해제
+	const { mutate: statusUpdateMerge } = useShipmentMergeStatusUpdateMutation() //선별 승인 상태 변경
 
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated((prevIsRotated) => !prevIsRotated)
-  }
+	// 목록 추가 모달 오픈
+	const addListModalOpen = () => setAddModal(true)
+	// 목록 추가 모달 오픈
+	const addListModalClose = () => setAddModal(false)
 
-  // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-  const [toggleMsg, setToggleMsg] = useState('On')
-  const toggleBtnClick = () => {
-    setExfilterToggle((prev) => !prev)
-    if (exFilterToggle === true) {
-      setToggleMsg('Off')
-    } else {
-      setToggleMsg('On')
-    }
-  }
+	// 목록 추가
+	const onListAdd = (selectedData) => {
+		try {
+			const newList = [...new Set([...list, ...selectedData])]
+			const destinations = [...new Set(newList.map((item) => item.destinationName))]
+			if (destinations.length > 3) {
+				throw new Error('목적지가 3개 이상입니다.')
+			}
+			setList(newList) // 선별 목록 데이터 등록
+			setRowChecked([]) // 테이블 체크 목록 초기화
+			addListModalClose()
+		} catch (error) {
+			window.alert(error.message)
+		}
+	}
 
-  const NewDummy = {
-    '고객사 명': '삼우',
-    '고객사 코드': '123123',
-    '목적지 1': '부산 광역시',
-    '고객사 명2': '삼우',
-    '고객사 코드2': '123123',
-    '목적지 2': '부산 광역시',
-    '고객사 명3': '삼우',
-    '고객사 코드3': '123123',
-    '목적지 3': '부산 광역시',
-    '출하 요청 일자': '2023.04.05',
-    '출고 일자': '2023.04.05',
-    '상차도 여부': 'Radio',
-    매출운임비: '154,585,000',
-    매입운임비: '456,485,200',
-    합짐비: '63,000',
-    '운전사 명': '홍길동',
-    차량번호: '12가 3456',
-    '기사 연락처': '01012341234',
-  }
+	// 목록 제거
+	const onListRemove = () => {
+		const key = '주문 고유 번호'
+		const deleteKeys = rowChecked.map((item) => item[key])
+		const newSelectors = list.filter((item) => !deleteKeys.includes(item?.orderUid))
+		setList(newSelectors)
+		setRowChecked([]) // 테이블 체크 목록 초기화
+	}
 
-  const entries = Object.entries(NewDummy)
-  const chunkedEntries = []
+	// 배차 취소
+	const onRemoveDispatch = () => {
+		const targetData = data[0]
+		const driverStatus = Boolean(targetData.driverStatus)
+		if (!driverStatus) {
+			return window.alert('취소하기 전 배차를 등록해주세요.')
+		}
+		if (window.confirm('배차 취소를 하시겠습니까?')) {
+			removeDispatch(targetData.outUid)
+		}
+	}
 
-  for (let i = 0; i < entries.length; i += 3) {
-    chunkedEntries.push(entries.slice(i, i + 3))
-  }
+	// 배차 등록
+	const onSetDispatch = () => {
+		const outUid = data[0].outUid
+		setSelectedId(outUid)
+		setIsPostModal(true)
+	}
 
-  return (
-    <FilterContianer>
-      <FilterHeader>
-        <h1>배차/출고 등록 상세</h1>
-        {/* 토글 쓰기 */}
-      </FilterHeader>
+	// 승인 요청
+	const onRequest = () => {
+		const body = {
+			productOutUid: data[0].outUid,
+			status: '요청',
+		}
+		if (window.confirm('요청하시겠습니까?')) {
+			statusUpdateMerge(body)
+		}
+	}
 
-      {/* <TableWrap style={{ marginTop: '5px' }}>
-        <ClaimTable>
-          <ClaimRow>
-            <ClaimTitle>목적지 1</ClaimTitle>
-            <ClaimContent>부산 광역시</ClaimContent>
-            <ClaimTitle>목적지 2</ClaimTitle>
-            <ClaimContent>천안시</ClaimContent>
-            <ClaimTitle>목적지 3</ClaimTitle>
-            <ClaimContent>-</ClaimContent>
-          </ClaimRow>
-          <ClaimRow>
-            <ClaimTitle>목적지 1</ClaimTitle>
-            <ClaimContent>부산 광역시</ClaimContent>
-            <ClaimTitle>목적지 2</ClaimTitle>
-            <ClaimContent>천안시</ClaimContent>
-            <ClaimTitle>목적지 3</ClaimTitle>
-            <ClaimContent>-</ClaimContent>
-          </ClaimRow>
-          <ClaimRow>
-            <ClaimTitle>목적지 1</ClaimTitle>
-            <ClaimContent>부산 광역시</ClaimContent>
-            <ClaimTitle>목적지 2</ClaimTitle>
-            <ClaimContent>천안시</ClaimContent>
-            <ClaimTitle>목적지 3</ClaimTitle>
-            <ClaimContent>-</ClaimContent>
-          </ClaimRow>
-          <ClaimRow>
-            <ClaimTitle>출하 요청 일자</ClaimTitle>
-            <ClaimContent>2023.04.05</ClaimContent>
-            <ClaimTitle>순번</ClaimTitle>
-            <ClaimContent>001</ClaimContent>
-            <ClaimTitle>상차도 여부</ClaimTitle>
-            <ClaimContent>
-              <ExRadioWrap>
-                {radioTableDummy.map((text, index) => (
-                  <RadioMainDiv key={index}>
-                    <RadioCircleDiv
-                      isChecked={checkRadio2[index]}
-                      onClick={() => {
-                        setCheckRadio2(CheckBox(checkRadio2, checkRadio2.length, index))
-                      }}
-                    >
-                      <RadioInnerCircleDiv isChecked={checkRadio2[index]} />
-                    </RadioCircleDiv>
+	// 요청 승인 반려
+	const onRequestReject = () => {
+		const body = {
+			productOutUid: data[0].outUid,
+			status: '반려',
+		}
+		if (window.confirm('반려하시겠습니까?')) {
+			statusUpdateMerge(body)
+		}
+	}
 
-                    <div style={{ display: 'flex', marginLeft: '5px' }}>
-                      <p>{text}</p>
-                    </div>
-                  </RadioMainDiv>
-                ))}
-              </ExRadioWrap>
-            </ClaimContent>
-          </ClaimRow>
+	// 요청 승인
+	const onRequestApproval = () => {
+		const body = {
+			productOutUid: data[0].outUid,
+			status: '승인',
+		}
+		if (window.confirm('승인하시겠습니까?')) {
+			statusUpdateMerge(body)
+		}
+	}
 
-          <ClaimRow>
-            <ClaimTitle>매출운임비</ClaimTitle>
-            <ClaimContent>154,585,000</ClaimContent>
-            <ClaimTitle>매입운임비</ClaimTitle>
-            <ClaimContent>456,485,200</ClaimContent>
-            <ClaimTitle>합짐비</ClaimTitle>
-            <ClaimContent>63,000</ClaimContent>
-          </ClaimRow>
-          <ClaimRow>
-            <ClaimTitle>운전사 명</ClaimTitle>
-            <ClaimContent>홍길동</ClaimContent>
-            <ClaimTitle>차량번호</ClaimTitle>
-            <ClaimContent>12가 3456</ClaimContent>
-            <ClaimTitle>기사 연락처</ClaimTitle>
-            <ClaimContent>01012341234</ClaimContent>
-          </ClaimRow>
-        </ClaimTable>
-      </TableWrap> */}
+	// 선별 목록 수정
+	const onUpdateMerge = () => {
+		const productOutUid = data[0].outUid
+		const orderUids = data.map((item) => item.orderUid)
+		const updateOrderUids = list.map((item) => item.orderUid)
+		let isEqual =
+			orderUids.every((val) => updateOrderUids.includes(val)) && updateOrderUids.every((val) => orderUids.includes(val))
+		const body = {
+			productOutUid,
+			dockStatus,
+			orderUids: updateOrderUids,
+		}
+		if (isEqual) {
+			return window.alert('변경할 목록을 추가하거나 제거해주세요.')
+		}
+		if (body.orderUids.length === 0) {
+			return window.alert('변경할 목록을 추가해주세요.')
+		}
+		if (window.confirm('변경 하시겠습니까? (창고사 일 경우 자동으로 승인상태가 요청으로 변경됩니다.)')) {
+			updateMerge(body)
+		}
+	}
 
-      <TableWrap style={{ marginTop: '5px' }}>
-        <ClaimTable>
-          {chunkedEntries.map((chunk, i) => (
-            <ClaimRow key={i}>
-              {chunk.map(([title, content], j) => (
-                <Fragment key={j}>
-                  <ClaimTitle>{title}</ClaimTitle>
-                  <ClaimContent>
-                    {content === 'Radio' ? (
-                      <ExRadioWrap>
-                        {radioTableDummy.map((text, index) => (
-                          <RadioMainDiv key={index}>
-                            <RadioCircleDiv
-                              isChecked={checkRadio2[index]}
-                              onClick={() => {
-                                setCheckRadio2(CheckBox(checkRadio2, checkRadio2.length, index))
-                              }}
-                            >
-                              <RadioInnerCircleDiv isChecked={checkRadio2[index]} />
-                            </RadioCircleDiv>
+	// 선별 취소
+	const onDeleteMerge = () => {
+		if (data[0].outStatus === '승인') {
+			return window.alert('이미 승인된 상태이므로 선별 취소가 불가능합니다.')
+		}
+		if (window.confirm('선별 취소하시겠습니까?')) {
+			deleteMerge(data[0].outUid)
+		}
+	}
 
-                            <div style={{ display: 'flex', marginLeft: '5px' }}>
-                              <p>{text}</p>
-                            </div>
-                          </RadioMainDiv>
-                        ))}
-                      </ExRadioWrap>
-                    ) : (
-                      content
-                    )}
-                  </ClaimContent>
-                </Fragment>
-              ))}
-            </ClaimRow>
-          ))}
-        </ClaimTable>
-      </TableWrap>
+	const backTo = () => setDetailRow(false)
 
-      <TableContianer>
-        <TCSubContainer bor>
-          <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
-            <Hidden />
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
-          </div>
-        </TCSubContainer>
-        <TCSubContainer>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>선별 변경 요청 승인 반려</WhiteRedBtn>
-            <WhiteSkyBtn>선별 변경 요청 승인</WhiteSkyBtn>
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>목록 제거</WhiteRedBtn>
-            <WhiteSkyBtn>추가 등록</WhiteSkyBtn>
-            <WhiteRedBtn>배차 취소</WhiteRedBtn>
-            <WhiteSkyBtn>배차 등록</WhiteSkyBtn>
-          </div>
-        </TCSubContainer>
-        <Test3 />
-        <TCSubContainer>
-          <div></div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>선별 취소</WhiteRedBtn>
-          </div>
-        </TCSubContainer>
-      </TableContianer>
-    </FilterContianer>
-  )
+	useEffect(() => {
+		if (list && Array.isArray(list)) {
+			setGetRow(add_element_field(list, ShippingDispatchDetailsFields))
+		}
+	}, [list])
+
+	useEffect(() => {
+		if (data && Array.isArray(data)) {
+			setList(data)
+		}
+	}, [data])
+
+	return (
+		<FilterContianer>
+			<GlobalFilterHeader title={'배차/출고 등록 상세'} enableSearchFilters={false} />
+			<DisRegisterDetailHeader data={list} dockStatus={dockStatus} setDockStatus={setDockStatus} />
+			<TableContianer>
+				<TCSubContainer bor>
+					<div>
+						조회 목록 (<span>{data?.length}개</span>)
+						<Hidden />
+					</div>
+				</TCSubContainer>
+				<TCSubContainer>
+					<div style={{ display: 'flex', gap: '10px' }}>
+						{/*<WhiteSkyBtn onClick={onRequest}>선별 변경 요청</WhiteSkyBtn>*/}
+						<WhiteRedBtn onClick={onRequestReject}>선별 변경 요청 승인 반려</WhiteRedBtn>
+						<WhiteSkyBtn onClick={onRequestApproval}>선별 변경 요청 승인</WhiteSkyBtn>
+					</div>
+					<div style={{ display: 'flex', gap: '10px' }}>
+						<WhiteRedBtn onClick={onListRemove}>목록 제거</WhiteRedBtn>
+						<WhiteSkyBtn onClick={addListModalOpen}>추가 등록</WhiteSkyBtn>
+						<WhiteRedBtn onClick={onRemoveDispatch}>배차 취소</WhiteRedBtn>
+						<WhiteSkyBtn onClick={onSetDispatch}>배차 등록</WhiteSkyBtn>
+					</div>
+				</TCSubContainer>
+				<Table getCol={getCol} getRow={getRow} loading={isLoading} />
+				<TCSubContainer>
+					<div></div>
+					<div style={{ display: 'flex', gap: '10px' }}>
+						<WhiteRedBtn onClick={onDeleteMerge}>선별 취소</WhiteRedBtn>
+					</div>
+				</TCSubContainer>
+				<BlueBarBtnWrap style={{ gap: '12px' }}>
+					<WhiteBtn fontSize={17} width={10} height={35} onClick={backTo}>
+						돌아가기
+					</WhiteBtn>
+					<BlackBtn fontSize={17} width={10} height={35} onClick={onUpdateMerge}>
+						저장
+					</BlackBtn>
+				</BlueBarBtnWrap>
+			</TableContianer>
+			{addModal && <RequestAddModal list={list} onListAdd={onListAdd} />}
+			{isPostModal && <DispatchDetail id={selectedId} setIsPostModal={setIsPostModal} />}
+		</FilterContianer>
+	)
 }
 
 export default DisRegisterDetail
