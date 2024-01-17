@@ -62,7 +62,7 @@ export function useShipmentStatusUpdateMutation() {
 			queryClient.invalidateQueries(QUERY_KEY.dispatchDetails)
 		},
 		onError() {
-			window.alert('수정에 실패하였습니다.')
+			window.alert('실패하였습니다.')
 		},
 	})
 }
