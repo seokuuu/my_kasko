@@ -282,7 +282,7 @@ const Table = ({
   }, [])
   const defaultColDef = useMemo(() => {
     return {
-      editable: true,
+      editable: false,
       enableRowGroup: true,
       enablePivot: true,
       enableValue: true,

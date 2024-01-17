@@ -12,5 +12,8 @@
   "[javascriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "search.exclude": { "**/node_modules": true }
+  "search.exclude": {
+    "**/node_modules": true
+  },
+  "window.zoomLevel": 0.75
 }
