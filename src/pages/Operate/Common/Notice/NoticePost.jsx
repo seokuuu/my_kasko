@@ -40,8 +40,6 @@ const NoticePost = ({ title, isRegister }) => {
 		deleteFileList: [], // 삭제할 파일 인덱스(uid)
 	})
 
-	console.log('form :', form)
-
 	// 상단 노출 여부 라디오 UI 관련 state
 	const radioDummy = ['노출', '미노출']
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
@@ -123,7 +121,7 @@ const NoticePost = ({ title, isRegister }) => {
    * 상세 데이터값이 있다면 form 데이터 바인딩
    */
 	useEffect(() => {
-		if (id && data) {
+		if (!isRegister && id && data) {
 			setCheckRadio(Boolean(data.status) ? [true, false] : [false, true])
 
 			setForm({
