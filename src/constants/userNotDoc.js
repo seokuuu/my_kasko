@@ -31,6 +31,6 @@ export const UserNoticeListFields = {
 	작성일자: 'createDate',
 	작성자: 'name',
 	순번: 'uid',
-	// 고유값: 'uid',
+	고유값: 'uid',
 	조회수: 'count',
 }
