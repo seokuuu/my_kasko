@@ -23,7 +23,7 @@ const ProductRange = () => {
 	// 목록 관련 데이터 훅입니다.
 	const { mappingData, rows, refetch, isLoading, setSearch, pagination, onPageChanage } = useProductRangeList()
 	// 수정,등록,삭제,상세 관련 데이터 훅입니다.
-	const { remove, removeData, detailsData, onSpartChange, initUid, onDetermineFunction } = useProductRange()
+	const { remove, detailsData, onSpartChange, initUid, onDetermineFunction } = useProductRange()
 	// 모달
 	const [modal, setModal] = useAtom(operateAddAtom)
 	// 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
