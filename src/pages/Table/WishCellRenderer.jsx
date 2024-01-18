@@ -5,23 +5,30 @@ const wishIcon = `
   </svg>
 `;
 
+const textTag = (clickable = false, text='') => clickable
+                                                      ? `<button class="text" style="background:transparent;text-decoration:underline;color: #4C83D6;font-weight:medium;">${text}</button>`
+                                                      : `<span class="text">${text}</span>`
+
 /**
  * 관심상품 테이블 Cell Renderer
  */
 class WishCellRenderer {
   eGui;
+  eButton;
   cellValue;
+  clickEventListener;
 
   init(params) {
     this.cellValue = this.getValueToDisplay(params);
-
     this.eGui = document.createElement('div');
-    this.renderCell(params);
+
+    this.renderCell();
   }
 
   refresh(params) {
     this.cellValue = this.getValueToDisplay(params);
-    this.renderCell(params);
+    this.renderCell();
+
     return true;
   }
 
@@ -33,17 +40,32 @@ class WishCellRenderer {
     return params.valueFormatted ? params.valueFormatted : params.value;
   }
 
+  destroy() {
+    if (this.eButton) {
+      this.eButton.removeEventListener('click', this.clickEventListener);
+    }
+  }
+
   // custom
-  renderCell(params) {
-    const textValue = params.value?.value || '-';
-    const wishValue = Boolean(params.value?.wish);
+  renderCell() {
+    const textValue = this.cellValue?.value || '-';
+    const wishValue = Boolean(this.cellValue?.wish);
+    const clickHandler = this.cellValue?.clickHandler;
 
     this.eGui.innerHTML = `
-          <div style="display:flex;align-items:center;gap:4px;">
-            <span class="text">${textValue}</span>
+          <div style="display:flex;align-items:center;justify-content:center;gap:4px;height:34px;">
+            ${textTag(Boolean(clickHandler), textValue)}
             ${wishValue? wishIcon : ''}
           </div>
     `;
+
+    this.destroy();
+
+    if(clickHandler) {
+      this.eButton = this.eGui.querySelector('.text');
+      this.clickEventListener = () => { clickHandler(textValue); }
+      this.eButton.addEventListener('click', this.clickEventListener);
+    }
   }
 }
 

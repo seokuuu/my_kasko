@@ -6,7 +6,7 @@ import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { PROD_CATEGORY, userPackageProductField, userPackageProductFieldsCols } from '../../../constants/user/product'
+import { PROD_CATEGORY, userPackageProductField, getUserPackageProductFieldsCols } from '../../../constants/user/product'
 import useTableData from '../../../hooks/useTableData'
 import useTableSearchFieldData from '../../../hooks/useTableSearchFieldData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
@@ -36,6 +36,7 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import AddCartButton from '../_components/AddCartButton'
 import AddOrderButton from '../_components/AddOrderButton'
 import AddWishButton from '../_components/AddWishButton'
+import UserPackageDetail from './UserPackDetail'
 
 /**
  * @constant 기본 검색 값
@@ -87,6 +88,8 @@ const Package = ({}) => {
   // 규격약호 검색 모달
   const [standardCodeModalOn, setStandardCodeModalOn] = useState(false);
   const { wishProdNums } = useWishList();
+  // 패키지 상세보기
+  const [selectedPackageNumber, setSelectedPackageNumber] = useState('');
 
   /**
    * 필터 검색 핸들러
@@ -102,6 +105,10 @@ const Package = ({}) => {
     // }
 
     handleSearch();
+  }
+
+  function handlePackageNumberClick(num) {
+    setSelectedPackageNumber(num);
   }
 
   /**
@@ -269,7 +276,7 @@ const Package = ({}) => {
         {/* 테이블 */}
         <Table
           getRow={tableRowData}
-          getCol={userPackageProductFieldsCols}
+          getCol={getUserPackageProductFieldsCols(handlePackageNumberClick)}
           isLoading={isLoading}
           tablePagination={paginationData}
           onPageChange={(p) => {
@@ -282,6 +289,13 @@ const Package = ({}) => {
           <AddOrderButton category={PROD_CATEGORY.package} totalWeight={selectedWeight} products={selectedData} />
         </TCSubContainer>
       </TableContianer>
+      {/* 패키지 상세 보기 */}
+      { selectedPackageNumber && 
+        <UserPackageDetail 
+          packageNumber={selectedPackageNumber}
+          onClose={() => { setSelectedPackageNumber('') }} 
+        />
+      }
     </FilterContianer>
   )
 }

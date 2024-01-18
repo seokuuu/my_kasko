@@ -133,13 +133,18 @@ export const userSingleProductFieldsCols = [
  * @constant 테이블컬럼
  * @description 사용자 주문확인 > 패키지 테이블에서 사용합니다.
  */
-export const userPackageProductFieldsCols = [
+export const getUserPackageProductFieldsCols = (numberClickHandler=undefined) => [
   { field: "", maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   { field: "고유 번호", minWidth: 100 },
   { field: "상시판매 번호", minWidth: 100 },
   { field: "상시판매 주문일자", minWidth: 100 },
   { field: "패키지명", minWidth: 100 },
-  { field: "패키지번호", minWidth: 100, cellRenderer: WishCellRenderer },
+  { 
+    field: "패키지번호", 
+    minWidth: 100, 
+    cellRenderer: WishCellRenderer, 
+    valueGetter: (v) => ({...v.data[v.column.colId], clickHandler: numberClickHandler }) 
+  },
   { field: "창고", minWidth: 100 },
   { field: "상시판매 상태", minWidth: 100 },
   { field: "승인상태", minWidth: 100 },
