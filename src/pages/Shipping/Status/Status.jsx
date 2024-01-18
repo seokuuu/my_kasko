@@ -1,194 +1,200 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
-
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteRedBtn, WhiteSkyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
-
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
+import { WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { doubleClickedRowAtom, selectedRowsAtom } from '../../../store/Layout/Layout'
 
 import {
-  TCSubContainer,
-  FilterContianer,
-  FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-  CustomInput,
+	FilterContianer,
+	FilterLeft,
+	FilterSubcontianer,
+	RowWrap,
+	TableContianer,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 
-import { ClaimTable, ClaimRow, ClaimTitle, ClaimContent } from '../Claim/ClaimRegister'
+import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../Claim/ClaimRegister'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
+import { useShipmentDispatchListQuery, useShipmentStatusUpdateMutation } from '../../../api/shipment'
+import { useAtomValue } from 'jotai'
+import { ShippingDispatchFields, ShippingDispatchFieldsCols } from '../../../constants/admin/Shipping'
+import { GlobalFilterContainer, GlobalFilterFooter, GlobalFilterHeader } from '../../../components/Filter'
+import { CustomerSearch, DateSearchSelect, DestinationSearch, StorageSelect } from '../../../components/Search'
+import Table from '../../Table/Table'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { useAtom } from 'jotai/index'
+import { useNavigate } from 'react-router-dom'
 
-const Status = ({}) => {
-  const titleData = ['제품 중량(kg)', '제품 공급가액', '운반비 공급가액']
-  const contentData = ['986,742', '986,742', '986,742']
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
-  const [isRotated, setIsRotated] = useState(false)
+const initData = {
+	pageNum: 1,
+	pageSize: 50,
+	shipmentStatus: '출고 등록',
+	storage: '',
+	customerCode: '',
+	customerName: '',
+	destinationCode: '',
+	destinationName: '',
+	shipmentRequestStartDate: '',
+	shipmentRequestEndDate: '',
+	shippingStartDate: '',
+	shippingEndDate: '',
+	shipmentStartDate: '',
+	shipmentEndDate: '',
+}
 
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated((prevIsRotated) => !prevIsRotated)
-  }
+const Status = () => {
+	const navigate = useNavigate()
+	// Table
+	const tableField = useRef(ShippingDispatchFieldsCols)
+	const getCol = tableField.current
+	const [getRow, setGetRow] = useState('')
+	const rowChecked = useAtomValue(selectedRowsAtom)
+	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
 
-  // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-  const [toggleMsg, setToggleMsg] = useState('On')
-  const toggleBtnClick = () => {
-    setExfilterToggle((prev) => !prev)
-    if (exFilterToggle === true) {
-      setToggleMsg('Off')
-    } else {
-      setToggleMsg('On')
-    }
-  }
+	// data fetch
+	const [param, setParam] = useState(initData)
+	const { isLoading, data, refetch } = useShipmentDispatchListQuery(param)
+	const { mutate: shipmentStatusUpdate } = useShipmentStatusUpdateMutation() // 출고 상태 변경
 
-  return (
-    <FilterContianer>
-      <FilterHeader>
-        <h1>출고 현황</h1>
-        {/* 토글 쓰기 */}
-        <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
-      </FilterHeader>
+	// param change
+	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
 
-      {exFilterToggle && (
-        <>
-          <FilterSubcontianer>
-            <FilterLeft>
-              <RowWrap>
-                <PartWrap first>
-                  <h6>창고 구분</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
-                </PartWrap>
-                <PartWrap>
-                  <h6>목적지</h6>
-                  <CustomInput width={160} height={36} />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-                <PartWrap>
-                  <h6>고객사 명/고객사코드</h6>
-                  <Input />
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-              </RowWrap>
+	// reset event
+	const onReset = async () => {
+		await setParam(initData)
+		await refetch()
+	}
 
-              <RowWrap none>
-                <PartWrap>
-                  <h6 style={{ width: '130px' }}>출하 지시 일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
-                </PartWrap>
+	// 출고 취소
+	const onShipmentCancel = () => {
+		if (!rowChecked || rowChecked?.length === 0) {
+			return window.alert('출고 취소할 제품을 선택해주세요.')
+		}
+		const shipmentStatus = '출고 취소'
+		const uids = rowChecked.map((item) => item['출고 고유번호'])
+		if (window.confirm('출고 취소하시겠습니까?')) {
+			shipmentStatusUpdate({ shipmentStatus, uids })
+		}
+	}
 
-                <PartWrap>
-                  <h6>출고 요청 일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap none>
-                <PartWrap>
-                  <h6 style={{ width: '130px' }}>출고 일자</h6>
-                  <GridWrap>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                    <Tilde>~</Tilde>
-                    <DateGrid bgColor={'white'} fontSize={17} />
-                  </GridWrap>
-                </PartWrap>
-              </RowWrap>
-            </FilterLeft>
-          </FilterSubcontianer>
-          <FilterFooter>
-            <div style={{ display: 'flex' }}>
-              <p>초기화</p>
-              <ResetImg
-                src="/img/reset.png"
-                style={{ marginLeft: '10px', marginRight: '20px' }}
-                onClick={handleImageClick}
-                className={isRotated ? 'rotate' : ''}
-              />
-            </div>
-            <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40}>
-                검색
-              </BlackBtn>
-            </div>
-          </FilterFooter>
-        </>
-      )}
+	// 운송 완료
+	const onShipmentCompletion = () => {
+		if (!rowChecked || rowChecked?.length === 0) {
+			return window.alert('출고 취소할 제품을 선택해주세요.')
+		}
+		const shipmentStatus = '운송 완료'
+		const uids = rowChecked.map((item) => item['출고 고유번호'])
+		if (window.confirm('운송 완료 처리하시겠습니까?')) {
+			shipmentStatusUpdate({ shipmentStatus, uids })
+		}
+	}
 
-      <TableContianer>
-        <TCSubContainer bor>
-          <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
-            <Hidden />
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
-          </div>
-        </TCSubContainer>
-        <TCSubContainer>
-          <div></div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>출고 취소</WhiteRedBtn>
-          </div>
-        </TCSubContainer>
-        <Test3 />
-        <TCSubContainer>
-          <div></div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteBlackBtn>운송 완료</WhiteBlackBtn>
-            <WhiteSkyBtn>수취서 출력</WhiteSkyBtn>
-          </div>
-        </TCSubContainer>
-      </TableContianer>
-    </FilterContianer>
-  )
+	useEffect(() => {
+		const getData = data?.list
+		if (getData && Array.isArray(getData)) {
+			setGetRow(add_element_field(getData, ShippingDispatchFields))
+		}
+	}, [data])
+
+	useEffect(() => {
+		refetch()
+	}, [param.pageNum, param.pageSize])
+
+	useEffect(() => {
+		if (detailRow && detailRow['출고 고유번호']) {
+			navigate(`/shipping/status/${detailRow['출고 고유번호']}`)
+		}
+		return () => setDetailRow(false)
+	}, [detailRow])
+
+	return (
+		<FilterContianer>
+			<GlobalFilterHeader title={'출고 현황'} />
+
+			<GlobalFilterContainer>
+				<FilterSubcontianer>
+					<FilterLeft>
+						<RowWrap>
+							<StorageSelect value={param.storage} onChange={(e) => onChange('storage', e.label)} />
+							<DestinationSearch
+								name={param.destinationName}
+								code={param.destinationCode}
+								setName={(value) => onChange('destinationName', value)}
+								setCode={(value) => onChange('destinationCode', value)}
+							/>
+							<CustomerSearch
+								name={param.customerName}
+								code={param.customerCode}
+								setName={(value) => onChange('customerName', value)}
+								setCode={(value) => onChange('customerCode', value)}
+							/>
+						</RowWrap>
+
+						<RowWrap none>
+							<DateSearchSelect
+								title={'출하 지시 일자'}
+								startInitDate={param.shippingStartDate}
+								endInitDate={param.shippingEndDate}
+								startDateChange={(value) => onChange('shippingStartDate', value)}
+								endDateChange={(value) => onChange('shippingEndDate', value)}
+							/>
+
+							<DateSearchSelect
+								title={'출고 요청 일자'}
+								startInitDate={param.shipmentRequestStartDate}
+								endInitDate={param.shipmentRequestEndDate}
+								startDateChange={(value) => onChange('shipmentRequestStartDate', value)}
+								endDateChange={(value) => onChange('shipmentRequestEndDate', value)}
+							/>
+						</RowWrap>
+						<RowWrap none>
+							<DateSearchSelect
+								title={'출고 일자'}
+								startInitDate={param.shipmentStartDate}
+								endInitDate={param.shipmentEndDate}
+								startDateChange={(value) => onChange('shipmentStartDate', value)}
+								endDateChange={(value) => onChange('shipmentEndDate', value)}
+							/>
+						</RowWrap>
+					</FilterLeft>
+				</FilterSubcontianer>
+			</GlobalFilterContainer>
+			{/* footer */}
+			<GlobalFilterFooter reset={onReset} onSearch={refetch} />
+
+			<TableContianer>
+				<TCSubContainer bor>
+					<div>
+						조회 목록 (선택 <span>2</span> / {param.pageSize}개 )
+						<Hidden />
+					</div>
+					<div style={{ display: 'flex', gap: '10px' }}>
+						<PageDropdown handleDropdown={(e) => onChange('pageSize', Number(e.target.value))} />
+					</div>
+				</TCSubContainer>
+				<TCSubContainer>
+					<div></div>
+					<div style={{ display: 'flex', gap: '10px' }}>
+						<WhiteRedBtn onClick={onShipmentCancel}>출고 취소</WhiteRedBtn>
+					</div>
+				</TCSubContainer>
+				<Table
+					getCol={getCol}
+					getRow={getRow}
+					loading={isLoading}
+					tablePagination={data?.pagination}
+					onPageChange={(value) => onChange('pageNum', value)}
+				/>
+				<TCSubContainer>
+					<div></div>
+					<div style={{ display: 'flex', gap: '10px' }}>
+						<WhiteBlackBtn onClick={onShipmentCompletion}>운송 완료</WhiteBlackBtn>
+						<WhiteSkyBtn>수취서 출력</WhiteSkyBtn>
+					</div>
+				</TCSubContainer>
+			</TableContianer>
+		</FilterContianer>
+	)
 }
 
 export default Status
-
-const TableWrap = styled.div`
-  margin: 30px auto;
-`

@@ -11,6 +11,7 @@ const DRIVER_URL = '/driver'
 export const QUERY_KEY = {
   list: ['driver', 'list'],
   get: ['driver', 'details'],
+  findAll: ['driver', 'find'],
   carNumberValid: ['driver', 'car-number-valid'],
   update: ['driver', 'update'],
   create: ['driver', 'create'],
@@ -26,6 +27,12 @@ export function useDriverListQuery(params) {
       return response.data.data
     },
   })
+}
+
+// 검색 모달 (기사명 검색)
+export async function getSearchDriverByNameListQuery(driverName) {
+  const response = await client.get(`${DRIVER_URL}/find?driverName=${driverName}`)
+  return response.data.data
 }
 
 // 상세
