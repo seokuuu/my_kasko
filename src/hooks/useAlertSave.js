@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
-import { unstable_useBlocker } from 'react-router-dom'
+import { useBlocker } from 'react-router-dom'
 import { popupAtom, popupObject } from '../store/Layout/Layout'
 
 /**
@@ -11,7 +11,7 @@ import { popupAtom, popupObject } from '../store/Layout/Layout'
 const useAlertSave = (isNotEqualPrevious) => {
 	const setNowPopup = useSetAtom(popupObject)
 	const setPopupSwitch = useSetAtom(popupAtom)
-	const blocker = unstable_useBlocker(
+	const blocker = useBlocker(
 		({ currentLocation, nextLocation }) => isNotEqualPrevious && currentLocation.pathname !== nextLocation.pathname,
 	)
 	/**
