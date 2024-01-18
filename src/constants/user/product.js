@@ -1,3 +1,4 @@
+import WishCellRenderer from "../../pages/Table/WishCellRenderer";
 import { checkboxSelection, headerCheckboxSelection } from "../../pages/Table/util";
 
 /**
@@ -92,7 +93,7 @@ export const userSingleProductFieldsCols = [
   { field: "고유 번호", minWidth: 100 },
   { field: "상시판매 번호", minWidth: 100 },
   { field: "상시판매 주문일자", minWidth: 100 },
-  { field: "제품번호", minWidth: 100 },
+  { field: "제품번호", minWidth: 100,  cellRenderer: WishCellRenderer },
   { field: "프로넘(ProNo.)", minWidth: 100 },
   { field: "창고", minWidth: 100 },
   { field: "상시판매 상태", minWidth: 100 },

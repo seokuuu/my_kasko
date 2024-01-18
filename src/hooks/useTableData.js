@@ -1,10 +1,13 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { add_element_field } from "../lib/tableHelpers";
+import useWishList, { getProductNumber } from "./useWishList";
 
 /**
- * 
+ * 테이블 데이터 HOOK
  * @param {object} param.tableField 테이블 필드 - add_element_field의 두번째 인자로 넘기는 값
  * @param {object} param.serverData 서버 데이터 - { pagination, list } 형식의 데이터
+ * @param {string} param.wish.cellKey 관심상품 아이콘과 맵핑할 테이블 CELL명
+ * @param {string} param.wish.valueKey 고유번호 키
  * @returns tableRowData 테이블 데이터
  * @returns paginationData 페이지네이션 데이터
  * @returns totalWeight 총 중량
@@ -12,21 +15,26 @@ import { add_element_field } from "../lib/tableHelpers";
  * @returns totalCount 총 데이터 갯수
  * @returns totalCountStr 총 데이터 갯수 (localeString)
  */
-export default function useTableData({ tableField, serverData }) {
+export default function useTableData({ tableField, serverData, wish }) {
+    // 관심상품목록 노출 PROPS
+    const { cellKey: wishCellKey, valueKey: wishValueKey } = wish;
+    // 관심상품목록 HOOK
+    const { wishProdNums } = useWishList();
 
     /**
      * 테이블 데이터
      * @description 테이블 컴포넌트에 PROPS로 전달하는 값
      */
     const tableRowData = useMemo(() => {
-      console.log(serverData)
       if(!serverData || !serverData.list) {
         return [];
       }
-      const rowData = serverData.list;
+      const rowData = (wishCellKey && wishValueKey)
+                    ? getRowDataWishWish({ data: serverData.list, wishProdNums: wishProdNums, valueKey: wishValueKey, cellKey: wishCellKey })
+                    : serverData.list;
       const displayData = add_element_field(rowData.map((v, idx) => ({...v, index: idx + 1})), tableField);
       return displayData;
-    }, [serverData]); // 테이블 노출 데이터
+    }, [serverData, wishProdNums]); // 테이블 노출 데이터
 
     /**
      * 페이지 데이터
@@ -43,7 +51,10 @@ export default function useTableData({ tableField, serverData }) {
 
     // 총 중량 데이터
     const totalWeight = useMemo(() => (serverData && serverData.pagination)? serverData.pagination.totalWeight || 0 : 0 , [serverData]); 
-    // 총 갯수 데이터
+
+    useEffect(() => {
+      console.log('wish', wishProdNums);
+    }, [wishProdNums])
 
     return ({
       tableRowData,
@@ -53,4 +64,23 @@ export default function useTableData({ tableField, serverData }) {
       totalCount: paginationData.listCount,
       totalCountStr: paginationData.listCount.toLocaleString()
     })
+}
+
+/**
+ * 
+ */
+function getRowDataWishWish({ data=[], wishProdNums=[], valueKey='', cellKey='', }) {
+  if(!cellKey || !valueKey) {
+    return data;
+  }
+  
+  const dataWithWish = data.map(v => ({
+    ...v, 
+    [cellKey] : { 
+      value: v[cellKey], 
+      wish: wishProdNums.includes(getProductNumber(v[valueKey]))
+    }
+  }));
+
+  return dataWithWish;
 }

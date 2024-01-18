@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useUserSingleProductListQuery } from '../../../api/user'
 import { BlackBtn, GreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
@@ -35,6 +35,7 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import AddCartButton from '../_components/AddCartButton'
 import AddOrderButton from '../_components/AddOrderButton'
 import AddWishButton from '../_components/AddWishButton'
+import useWishList from '../../../hooks/useWishList'
 
 /**
  * @constant 기본 검색 값
@@ -77,13 +78,22 @@ const Single = ({}) => {
   const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
     tableField: userSingleProductField,
     serverData: singleData,
-  })
+    wish: {
+      valueKey: 'number',
+      cellKey: 'number',
+    }
+  });
   // 선택 항목
   const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr, hasSelected } = useTableSelection({ weightKey: '중량' })
   // 필드 옵션
   const { supplierList, stockStatusList, gradeList } = useTableSearchFieldData();
   // 규격약호 검색 모달
   const [standardCodeModalOn, setStandardCodeModalOn] = useState(false);
+  const { wishProdNums } = useWishList();
+
+  useEffect(() => {
+    console.log(wishProdNums, 'wish in page');
+  }, [wishProdNums]);
 
   /**
    * 필터 검색 핸들러
@@ -261,7 +271,7 @@ const Single = ({}) => {
           <div>
             선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
           </div>
-          <AddWishButton products={selectedData} uidKey={"고유 번호"} />
+          <AddWishButton products={selectedData} productNumberKey={"제품번호"} />
         </TCSubContainer>
         {/* 테이블 */}
         <Table
