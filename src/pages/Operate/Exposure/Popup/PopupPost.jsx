@@ -18,11 +18,11 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { usePopupDetailsQuery, usePopupRegisterMutation, usePopupUpdateMutation } from '../../../../api/operate/popup'
 import { InputA, PropsInput } from '../../../../common/Input/Input'
 import { CustomSelect } from '../../../../common/Option/Main'
+import useNotSaveData from '../../../../hooks/useAlertSave'
 import useConfirmModal from '../../../../hooks/useConfirmModal'
 import AlertPopup from '../../../../modal/Alert/AlertPopup'
 import { ExCheckWrap } from '../../../../modal/External/ExternalFilter'
 import { mainPopupSelectOptions } from '../../constants'
-import useNotSaveData from '../../hook/useNotSaveData'
 // 팝업 등록
 const PopupPost = ({ isRegister }) => {
 	const { id } = useParams()
@@ -40,9 +40,12 @@ const PopupPost = ({ isRegister }) => {
 		position: mainPopupSelectOptions[0],
 	}
 
-	console.log('initForm :', initForm)
+	// console.log('initForm :', initForm)
 	// 등록/수정 폼
+	// const [form, setForm] = useState(initForm)
+
 	const [form, setForm] = useState(initForm)
+	// console.log(' Form :', form)
 
 	console.log()
 	// 확인 모달 관련 값들
@@ -56,7 +59,6 @@ const PopupPost = ({ isRegister }) => {
 	// 팝업 수정 API
 	const { mutate: update } = usePopupUpdateMutation()
 
-	console.log('form :', form)
 	// 인풋 핸들러(제목,링크)
 	function commonChangeHandler(e) {
 		const { name, value } = e.target
@@ -122,7 +124,8 @@ const PopupPost = ({ isRegister }) => {
 	// 객체의 깊은 비교를 위해 loadash의 isEqual을 사용합니다.
 	const condition = useMemo(() => (isEqual(initForm, form) ? true : false), [form])
 
-	useNotSaveData(!condition && isRegister)
+	// useUpdatePopup(initForm)
+	useNotSaveData(!condition && isRegister, form)
 
 	useEffect(() => {
 		const updatedCheck = checkDummy.map((value, index) => {
@@ -146,7 +149,7 @@ const PopupPost = ({ isRegister }) => {
 
 	useEffect(() => {
 		if (data && id) {
-			console.log('startDate :', data.startDate)
+			// console.log('startDate :', data.startDate)
 			setCheck([Boolean(data.status)])
 			setForm((p) => ({
 				...p,
