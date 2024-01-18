@@ -9,9 +9,9 @@ import { faqOptions } from '../../../../common/Option/SignUp'
 import { useNavigate } from 'react-router-dom'
 import { useFaqDetailsQuery, useFaqRegisterMutation, useFaqUpdateMutation } from '../../../../api/operate/faq'
 import { BlackBtn, BtnWrap, WhiteBtn } from '../../../../common/Button/Button'
+import useConfirmModal from '../../../../hooks/useConfirmModal'
 import AlertPopup from '../../../../modal/Alert/AlertPopup'
 import { faqListSearchInitValue } from '../../constants'
-import useConfirmModal from '../../../../hooks/useConfirmModal'
 
 /**
  * @description
@@ -90,17 +90,6 @@ const FAQPost = ({ detailsId }) => {
 			register({ ...form, category: form.category.label })
 		}
 	}
-
-	// useEffect(() => {
-	//   if (nowPopup.num === '1-12') {
-	//     if (detailsId && data) {
-	//       update({ ...form, category: form.category.label, uid: detailsId })
-	//     } else {
-	//       register({ ...form, category: form.category.label })
-	//     }
-	//     initConfirmModal()
-	//   }
-	// }, [nowPopup])
 
 	/**
 	 * 상세 데이터값이 있다면 form 데이터 바인딩

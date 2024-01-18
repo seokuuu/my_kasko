@@ -18,6 +18,7 @@ import Table from '../../../Table/Table'
 import CommonHeader from '../../UI/CommonHeader'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { exposureTabOptions, noticeBoardListSearchInitValue, noticeBoardSearchCategoryOptions } from '../../constants'
+import useCloseConfirmModal from '../../hook/useCloseConfirmModal'
 
 /**
  * @description
@@ -85,13 +86,16 @@ const NoticeBoard = () => {
 				? data.list.map((d, index) => ({
 						...d,
 						createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
-						id: data.list.length - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
+						id: data.pagination.listCount - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
 						uid: d.uid,
 						status: d.status ? 'Y' : 'N',
 				  }))
 				: [],
 		[data],
 	)
+
+	// 페이지 진입시 확인 모달을 닫아줍니다.
+	useCloseConfirmModal()
 
 	// 테이블 데이터 리스트 값 설정
 	useEffect(() => {

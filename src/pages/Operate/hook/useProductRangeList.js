@@ -30,7 +30,7 @@ const useProductRangeList = () => {
 			data
 				? data.list.map((d, index) => ({
 						...d,
-						id: data.list.length - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
+						id: data.pagination.listCount - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
 						uid: d.uid,
 				  }))
 				: [],

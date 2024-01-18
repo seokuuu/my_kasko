@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { ProductRangeFieldCols } from '../../../../../constants/admin/ProductRange'
 import { TableContianer } from '../../../../../modal/External/ExternalFilter'
 import AddProduct from '../../../../../modal/Operate/AddProduct'
@@ -38,26 +38,13 @@ const ProductRange = () => {
 	// 삭제 핸들러
 	function removeEventHandler() {
 		if (!selectedLength && selectedLength === 0) return alert('삭제할 목록을 선택해주세요.')
-		console.log('removeData :', removeData)
-		/**
-		 * @description
-		 * 모달 관련 섦명
-		 * setNowPopup에 넘겨주는 객체의 num의 첫번째 숫자 관련한 모달이 나타납니다.
-		 * 확인을 누를시 ( 2번의 경우),next값이 있는 경우, fun 함수가 실행되고 next 값의 첫번째 숫자에 대한 모달이 나타납니다.
-		 * 취소를 누를시 ,모달이 닫힙니다.
-		 * @todo
-		 * 확인을 누를시, 분기처리
-		 * removeData 값 여부에 따라 어떤 모달 넘버를 넘겨줄지에 대한 분기 처리
-		 *
-		 *
-		 */
 
 		setPopupSwitch(true)
 		// setNowPopupType(2)
 		setNowPopup({
 			num: '2-1', // 모달 번호
 			title: '삭제하시겠습니까?',
-			next: '1-14', // 다음으로 나타날 모달 번호
+			next: '1-435', // 다음으로 나타날 모달 번호
 			func() {
 				if (selected && selected.length !== 0) {
 					remove(selected.map((s) => s['고유값']))
@@ -66,13 +53,13 @@ const ProductRange = () => {
 			},
 		})
 	}
-
-	// 삭제할 데이터 중 사용중인 제품군이 있다면 예외 모달을 띄워줍니다.
-	useEffect(() => {
-		if (removeData && removeData.data.data.length > 0) {
-			alert('삭제할 수 없습니다.\n해당 항목은 현재 사용 중입니다.')
-		}
-	}, [removeData])
+	// console.log('removeData :', removeData)
+	// // 삭제할 데이터 중 사용중인 제품군이 있다면 예외 모달을 띄워줍니다.
+	// useEffect(() => {
+	// 	if (removeData && removeData.data.data.length > 0) {
+	// 		alert('삭제할 수 없습니다.\n해당 항목은 현재 사용 중입니다.')
+	// 	}
+	// }, [removeData])
 
 	return (
 		<TableContianer>

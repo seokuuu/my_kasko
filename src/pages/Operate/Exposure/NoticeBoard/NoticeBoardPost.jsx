@@ -11,8 +11,8 @@ import {
 	useNoticeBoardUpdateMutation,
 } from '../../../../api/operate/noticeBoard'
 import { PropsTextArea } from '../../../../common/Input/Input'
-import AlertPopup from '../../../../modal/Alert/AlertPopup'
 import useConfirmModal from '../../../../hooks/useConfirmModal'
+import AlertPopup from '../../../../modal/Alert/AlertPopup'
 import IsExposure from './components/IsExposure'
 /**
  * @description
@@ -58,7 +58,13 @@ const NoticeBoardPost = () => {
 			num: '2-1',
 			title: '저장하시겠습니까?',
 			next: '1-12',
-			func() {},
+			func() {
+				if (id && data) {
+					update({ ...form, status: Number(form.status), uid: data.uid })
+				} else {
+					register({ ...form, status: Number(form.status) })
+				}
+			},
 		})
 	}
 
@@ -89,16 +95,16 @@ const NoticeBoardPost = () => {
 	 * 등록 or 수정 API 요청
 	 * detailsId와 data가 있다면 수정 API 없다면 등록 API
 	 */
-	useEffect(() => {
-		if (nowPopup.num === '1-12') {
-			if (id && data) {
-				update({ ...form, status: Number(form.status), uid: data.uid })
-			} else {
-				register({ ...form, status: Number(form.status) })
-			}
-			initConfirmModal()
-		}
-	}, [nowPopup])
+	// useEffect(() => {
+	// 	if (nowPopup.num === '1-12') {
+	// 		if (id && data) {
+	// 			update({ ...form, status: Number(form.status), uid: data.uid })
+	// 		} else {
+	// 			register({ ...form, status: Number(form.status) })
+	// 		}
+	// 		initConfirmModal()
+	// 	}
+	// }, [nowPopup])
 
 	useEffect(() => {
 		if (id && data) {

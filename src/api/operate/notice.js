@@ -3,8 +3,10 @@
 ============================== */
 
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { useSetAtom } from 'jotai'
 import { useNavigate } from 'react-router-dom'
 import { client } from '..'
+import { popupObject } from '../../store/Layout/Layout'
 import { queryClient } from '../query'
 
 // 폼 데이터 헤더
@@ -15,161 +17,164 @@ const urls = 'notice'
 
 // 쿼리키
 const NOTICE_KEYS = {
-  getNoticeList: ['operate', 'notice', 'list'],
-  getNotice: ['operate', 'notice', 'details'],
-  registerNotice: ['operate', 'notice', 'register'],
-  updateNotice: ['operate', 'notice', 'update'],
-  removeNotice: ['operate', 'notice', 'remove'],
-  changeExposure: ['operate', 'notice', 'exposure'],
+	getNoticeList: ['operate', 'notice', 'list'],
+	getNotice: ['operate', 'notice', 'details'],
+	registerNotice: ['operate', 'notice', 'register'],
+	updateNotice: ['operate', 'notice', 'update'],
+	removeNotice: ['operate', 'notice', 'remove'],
+	changeExposure: ['operate', 'notice', 'exposure'],
 }
 
 /// 공지&자료실 목록 조회
 export function useNoticeListQuery(params) {
-  return useQuery({
-    queryKey: [...NOTICE_KEYS.getNoticeList, params.type, params.pageNum],
-    queryFn: async function () {
-      const response = await client.get(urls, {
-        params,
-      })
+	return useQuery({
+		queryKey: [...NOTICE_KEYS.getNoticeList, params.type, params.pageNum],
+		queryFn: async function () {
+			const response = await client.get(urls, {
+				params,
+			})
 
-      return response.data.data
-    },
-  })
+			return response.data.data
+		},
+	})
 }
 
 /// 공지&자료실 상세
 export function useNoticeDetailsQuery(id) {
-  return useQuery({
-    queryKey: NOTICE_KEYS.getNotice,
-    queryFn: async function () {
-      const response = await client.get(`${urls}/${id}`)
+	return useQuery({
+		queryKey: NOTICE_KEYS.getNotice,
+		queryFn: async function () {
+			const response = await client.get(`${urls}/${id}`)
 
-      return response.data.data
-    },
-    enabled: !!id,
-  })
+			return response.data.data
+		},
+		enabled: !!id,
+	})
 }
 
 // 공지 & 자료실 등록(type 값에 따라 성공시 리다이렉트되는 url이 다릅니다.)
 function createFormData(params, type, isRegister) {
-  const form = new FormData()
+	const form = new FormData()
 
-  // 파일이 아닌 데이터(등록)
-  const registerNoneFileData = {
-    title: params.title,
-    content: params.content,
-    status: params.status,
-    type,
-  }
+	// 파일이 아닌 데이터(등록)
+	const registerNoneFileData = {
+		title: params.title,
+		content: params.content,
+		status: params.status,
+		type,
+	}
 
-  // 파일이 아닌 데이터(수정)
-  const updateNoneFileData = {
-    uid: params.uid,
-    title: params.title,
-    content: params.content,
-    status: params.status,
-    deleteFileList: params.deleteFileList,
-    type,
-  }
+	// 파일이 아닌 데이터(수정)
+	const updateNoneFileData = {
+		uid: params.uid,
+		title: params.title,
+		content: params.content,
+		status: params.status,
+		deleteFileList: params.deleteFileList,
+		type,
+	}
 
-  // 파일 데이터
-  const fileData = params.fileList
+	// 파일 데이터
+	const fileData = params.fileList
 
-  // 폼 데이터에 파일이 아닌 데이터 추가
-  form.append(
-    'request',
-    // JSON.stringify(noneFileData),
-    new Blob([JSON.stringify(isRegister ? registerNoneFileData : updateNoneFileData)], {
-      type: 'application/json',
-    }),
-  )
+	// 폼 데이터에 파일이 아닌 데이터 추가
+	form.append(
+		'request',
+		// JSON.stringify(noneFileData),
+		new Blob([JSON.stringify(isRegister ? registerNoneFileData : updateNoneFileData)], {
+			type: 'application/json',
+		}),
+	)
 
-  // 폼 데이터에 파일 데이터 추가
-  if (fileData) {
-    fileData.forEach((f) => {
-      console.log('post file :', f)
-      form.append(`fileList`, f)
-    })
-  }
+	// 폼 데이터에 파일 데이터 추가
+	if (fileData) {
+		fileData.forEach((f) => {
+			console.log('post file :', f)
+			form.append(`fileList`, f)
+		})
+	}
 
-  return form
+	return form
 }
 
 // 공지&자료실 등록
 export function useNoticeRegisterMutation(type) {
-  const navigate = useNavigate()
-  return useMutation({
-    mutationKey: NOTICE_KEYS.registerNotice,
-    mutationFn: async function (params) {
-      const form = createFormData(params, type, true)
+	const navigate = useNavigate()
+	const setNowPopup = useSetAtom(popupObject)
 
-      return client.post(urls, form, { headers })
-    },
-    onSuccess() {
-      if (type === '공지사항') {
-        navigate('/operate/notice')
-      } else {
-        navigate('/operate/datasheet')
-      }
-      queryClient.invalidateQueries({
-        queryKey: NOTICE_KEYS.getNoticeList,
-      })
-    },
-    onError(error) {
-      console.log('등록 에러 :', error)
-    },
-  })
+	return useMutation({
+		mutationKey: NOTICE_KEYS.registerNotice,
+		mutationFn: async function (params) {
+			const form = createFormData(params, type, true)
+
+			return client.post(urls, form, { headers })
+		},
+		onSuccess() {
+			if (type === '공지사항') {
+				setNowPopup((p) => ({ ...p, next: '1-12', func: () => navigate('/operate/notice') }))
+			} else {
+				setNowPopup((p) => ({ ...p, next: '1-12', func: () => navigate('/operate/datasheet') }))
+			}
+			queryClient.invalidateQueries({
+				queryKey: NOTICE_KEYS.getNoticeList,
+			})
+		},
+		onError(error) {
+			console.log('등록 에러 :', error)
+		},
+	})
 }
 // 공지 & 자료실 수정
 export function useNoticeUpdateMutation(type) {
-  const navigate = useNavigate()
+	const navigate = useNavigate()
+	const setNowPopup = useSetAtom(popupObject)
 
-  return useMutation({
-    mutationKey: NOTICE_KEYS.updateNotice,
-    mutationFn: async function (params) {
-      const form = createFormData(params, type, false)
-      return client.patch(urls, form, { headers })
-    },
-    onSuccess() {
-      if (type === '공지사항') {
-        navigate('/operate/notice')
-      } else {
-        navigate('/operate/datasheet')
-      }
-      queryClient.invalidateQueries({
-        queryKey: NOTICE_KEYS.getNoticeList,
-      })
-    },
-    onError(error) {
-      console.error(error)
-    },
-  })
+	return useMutation({
+		mutationKey: NOTICE_KEYS.updateNotice,
+		mutationFn: async function (params) {
+			const form = createFormData(params, type, false)
+			return client.patch(urls, form, { headers })
+		},
+		onSuccess() {
+			if (type === '공지사항') {
+				setNowPopup((p) => ({ ...p, next: '1-12', func: () => navigate('/operate/notice') }))
+			} else {
+				setNowPopup((p) => ({ ...p, next: '1-12', func: () => navigate('/operate/datasheet') }))
+			}
+			queryClient.invalidateQueries({
+				queryKey: NOTICE_KEYS.getNoticeList,
+			})
+		},
+		onError(error) {
+			console.error(error)
+		},
+	})
 }
 
 // 공지 & 자료실 삭제
 export function useNoticeRemoveMutation() {
-  return useMutation({
-    mutationKey: NOTICE_KEYS.removeNotice,
-    mutationFn: async function (id) {
-      return client.delete(`${urls}/${id}`)
-    },
-    onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: NOTICE_KEYS.getNoticeList,
-      })
-    },
-    onError() {
-      alert('삭제에 실패하였습니다.')
-    },
-  })
+	return useMutation({
+		mutationKey: NOTICE_KEYS.removeNotice,
+		mutationFn: async function (id) {
+			return client.delete(`${urls}/${id}`)
+		},
+		onSuccess() {
+			queryClient.invalidateQueries({
+				queryKey: NOTICE_KEYS.getNoticeList,
+			})
+		},
+		onError() {
+			alert('삭제에 실패하였습니다.')
+		},
+	})
 }
 
 // 상단 노출 변경
 export function useNoticeExposureMutation() {
-  return useMutation({
-    mutationKey: NOTICE_KEYS.changeExposure,
-    mutationFn: async function (params) {
-      return client.patch(`${urls}/status`, params)
-    },
-  })
+	return useMutation({
+		mutationKey: NOTICE_KEYS.changeExposure,
+		mutationFn: async function (params) {
+			return client.patch(`${urls}/status`, params)
+		},
+	})
 }

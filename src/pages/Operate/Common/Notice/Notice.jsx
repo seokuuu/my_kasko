@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useNoticeListQuery, useNoticeRemoveMutation } from '../../../../api/operate/notice'
 import { NoticeListFieldCols, NoticeListFields } from '../../../../constants/admin/Notice'
+import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
 import { add_element_field } from '../../../../lib/tableHelpers'
 import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
 import {
@@ -17,7 +18,7 @@ import Table from '../../../Table/Table'
 import CommonHeader from '../../UI/CommonHeader'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { normalTabOptions, noticeListSearchInitValue, noticeSearchCategoryOptions } from '../../constants'
-import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
+import useCloseConfirmModal from '../../hook/useCloseConfirmModal'
 
 /**
  * @description
@@ -66,7 +67,7 @@ const Notice = ({ title, detailsUrl }) => {
 				? data.list.map((d, index) => ({
 						...d,
 						createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
-						id: data.list.length - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
+						id: data.pagination.listCount - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
 						uid: d.uid,
 						status: d.status ? 'Y' : 'N',
 				  }))
@@ -96,6 +97,9 @@ const Notice = ({ title, detailsUrl }) => {
 			},
 		})
 	}
+
+	// 페이지 진입시 확인 모달을 닫아줍니다.
+	useCloseConfirmModal()
 	// 테이블 데이터 리스트 값 설정
 	useEffect(() => {
 		if (mappingData) {

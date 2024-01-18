@@ -12,6 +12,7 @@ import { FilterContianer, TableContianer } from '../../../../modal/External/Exte
 import { selectedRowsAtom } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
 import CommonTableHeader from '../../UI/CommonTableHeader'
+import useCloseConfirmModal from '../../hook/useCloseConfirmModal'
 import ClaimProductHeader from './components/ClaimProductHeader'
 import { StyledBtnContainer } from './styles/StyledClaim'
 
@@ -103,6 +104,8 @@ const ClaimProduct = () => {
 
 		navigate('/operate/common/product/register')
 	}
+
+	useCloseConfirmModal()
 
 	useEffect(() => {
 		if (mappingData) {

@@ -10,6 +10,7 @@ import { popupAtom, popupObject, popupTypeAtom, selectedRowsAtom } from '../../.
 import Table from '../../../Table/Table'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { claimInitState } from '../../constants'
+import useCloseConfirmModal from '../../hook/useCloseConfirmModal'
 import ClaimHeader from './components/ClaimHeader'
 
 /**
@@ -66,6 +67,8 @@ const Claim = () => {
 			},
 		})
 	}
+
+	useCloseConfirmModal()
 
 	useEffect(() => {
 		if (data) {

@@ -13,8 +13,8 @@ import {
 	useNoticeRegisterMutation,
 	useNoticeUpdateMutation,
 } from '../../../../api/operate/notice'
-import AlertPopup from '../../../../modal/Alert/AlertPopup'
 import useConfirmModal from '../../../../hooks/useConfirmModal'
+import AlertPopup from '../../../../modal/Alert/AlertPopup'
 import AttachedFile from './components/AttachedFile'
 import IsExposure from './components/IsExposure'
 /**
@@ -98,7 +98,13 @@ const NoticePost = ({ title, isRegister }) => {
 			num: '2-1',
 			title: '저장하시겠습니까?',
 			next: '1-12',
-			func() {},
+			func() {
+				if (id && data) {
+					update(updateParams)
+				} else {
+					register(registerParams)
+				}
+			},
 		})
 	}
 
@@ -107,17 +113,16 @@ const NoticePost = ({ title, isRegister }) => {
 	 * 등록 or 수정 API 요청
 	 * detailsId와 data가 있다면 수정 API 없다면 등록 API
 	 */
-	useEffect(() => {
-		if (nowPopup.num === '1-12') {
-			if (id && data) {
-				console.log('수정 API')
-				update(updateParams)
-			} else {
-				register(registerParams)
-			}
-			initConfirmModal()
-		}
-	}, [nowPopup])
+	// useEffect(() => {
+	// 	if (nowPopup.num === '1-12') {
+	// 		if (id && data) {
+	// 			update(updateParams)
+	// 		} else {
+	// 			register(registerParams)
+	// 		}
+	// 		initConfirmModal()
+	// 	}
+	// }, [nowPopup])
 	/**
    @description
    * 상세 데이터값이 있다면 form 데이터 바인딩

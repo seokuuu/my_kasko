@@ -10,6 +10,7 @@ import { FilterContianer, TableContianer } from '../../../../modal/External/Exte
 import { doubleClickedRowAtom, selectedRowsAtom } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
 import { searchCategoryOptions } from '../../constants'
+import useCloseConfirmModal from '../../hook/useCloseConfirmModal'
 import Header from './components/faq/Header'
 import TableHeader from './components/faq/TableHeader'
 
@@ -23,7 +24,7 @@ const FAQ = ({}) => {
 	// 서버 옵션(요청 변수)
 	const [search, setSearch] = useState({
 		pageNum: 1,
-		pageSize: 10,
+		pageSize: 50,
 		category: searchCategoryOptions[0],
 		keyword: '',
 	})
@@ -36,6 +37,7 @@ const FAQ = ({}) => {
 	// 목록 API
 	const { data, refetch } = useFaqListQuery({ ...search, category: search.category.label })
 
+	console.log('data :', data)
 	/**
 	 * @constant
 	 * @description
@@ -48,13 +50,14 @@ const FAQ = ({}) => {
 				? data.list.map((d, index) => ({
 						...d,
 						createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
-						id: data.list.length - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
+						id: data.pagination.listCount - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
 						uid: d.uid,
 				  }))
 				: [],
 		[data],
 	)
-
+	// 페이지 진입시 확인 모달을 닫아줍니다.
+	useCloseConfirmModal()
 	// 테이블 데이터 리스트 값 설정
 	useEffect(() => {
 		if (mappingData) {
