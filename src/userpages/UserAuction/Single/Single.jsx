@@ -158,7 +158,7 @@ const Single = ({}) => {
 
   const init = {
     auctionNumber: null,
-    type: '단일',
+    type: '단일'
   }
   const [winningCreateData, setWinningCreateData] = useState(init)
   // 목적지 찾기 및 목적지 uid, auctionNumber set //
@@ -174,12 +174,17 @@ const Single = ({}) => {
     }))
   }, [propsUid, auctionNumber])
 
+  const [finalInput, setFinalInput] = useState({
+    biddingPrice: null,
+    customerDestinationUid: null,
+  })
+
   // biddingList에 들어갈 3총사를 다 넣어줌.
   useEffect(() => {
     const updatedProductList = checkedArray?.map((item) => ({
       productUid: item['제품 고유 번호'],
-      biddingPrice: winningCreateInput.biddingPrice,
-      customerDestinationUid: destiObject?.uid,
+      biddingPrice: finalInput?.biddingPrice,
+      customerDestinationUid: finalInput?.customerDestinationUid,
       // 여기에 다른 필요한 속성을 추가할 수 있습니다.
     }))
 
@@ -188,7 +193,7 @@ const Single = ({}) => {
       ...prevData,
       biddingList: updatedProductList,
     }))
-  }, [checkedArray, winningCreateInput, destiObject])
+  }, [checkedArray, finalInput])
 
   const handleTablePageSize = (event) => {
     setParam((prevParam) => ({
@@ -212,7 +217,9 @@ const Single = ({}) => {
     postMutation.mutate(winningCreateData)
   }
 
-  console.log('winningCreateData', winningCreateData)
+  console.log('winningCreateData <33', winningCreateData)
+  console.log('finalInput <33 !!!', finalInput)
+  console.log('destiObject <33', destiObject)
 
   return (
     <FilterContianer>
@@ -393,7 +400,17 @@ const Single = ({}) => {
             >
               찾기
             </TWhiteBtn>
-            <TGreyBtn>적용</TGreyBtn>
+            <TGreyBtn
+              onClick={() => {
+                setFinalInput((prevFinalInput) => ({
+                  ...prevFinalInput,
+                  customerDestinationUid: destiObject && destiObject.uid,
+                }))
+              }}
+            >
+              적용
+            </TGreyBtn>
+
             <BtnBound style={{ margin: '0px' }} />
             <p>일괄 경매 응찰</p>
             <CustomInput
@@ -407,7 +424,17 @@ const Single = ({}) => {
                 }))
               }}
             />
-            <TGreyBtn height={30} style={{ width: '50px' }}>
+            <TGreyBtn
+              height={30}
+              style={{ width: '50px' }}
+              onClick={() => {
+                setFinalInput((p) => ({
+                  ...p,
+
+                  biddingPrice: winningCreateInput?.biddingPrice,
+                }))
+              }}
+            >
               적용
             </TGreyBtn>
             <BtnBound style={{ margin: '0px' }} />
