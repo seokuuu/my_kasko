@@ -261,7 +261,7 @@ const Single = ({}) => {
           <div>
             선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
           </div>
-          <AddWishButton products={selectedData} />
+          <AddWishButton products={selectedData} uidKey={"고유 번호"} />
         </TCSubContainer>
         {/* 테이블 */}
         <Table

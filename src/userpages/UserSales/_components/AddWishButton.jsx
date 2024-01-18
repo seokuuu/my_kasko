@@ -17,7 +17,7 @@ function saveWishList() {
  * 관심 상품 등록 버튼
  * @returns 
  */
-const AddWishButton = ({ products }) => {
+const AddWishButton = ({ products, uidKey }) => {
   const { addWishList } = useWishList();
   // POPUP
   const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom); // 팝업 스위치
@@ -35,7 +35,7 @@ const AddWishButton = ({ products }) => {
       return
     }
 
-    // 관심상품 등록
+    addWishList(products, uidKey);
   }
 
   return (
