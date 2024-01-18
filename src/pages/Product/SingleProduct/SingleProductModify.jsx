@@ -136,9 +136,10 @@ function SingleProductModify({ title }) {
   const { mutate } = useMutationQuery('modifyProduct', updateSingleProduct)
   const handleSubmit = () => {
     mutate(values, {
-      // onSuccess: () => {
-      //   alert('Success')
-      // },
+      onSuccess: (d) => {
+        alert('수정했습니다.')
+        if (d?.data?.status === 200) setSingleModify(false)
+      },
     })
   }
   return (

@@ -56,7 +56,7 @@ export async function updateSingleProduct(data){
     const response = await client.patch(`${urls.single}`,data)
     return response
   } catch(e){
-    console.log(e)
+    alert(e?.data?.message)
   }
   
 }
@@ -138,7 +138,7 @@ export async function postUpdatePackage(data){
     const response = await client.patch(`${urls.package}`,data)
     return response.data
   } catch(e){
-    console.log(e)
+    alert(e?.data.message)
   }
 
 }

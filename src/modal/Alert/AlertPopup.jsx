@@ -29,13 +29,6 @@ const AlertPopup = ({ propsRemove, setPopupSwitch, saveFn, err }) => {
 
   // 기존 modalPopup이 아닌, 다수의 modal로 인해 해당 props는 propsPopup, setPopupSwitch으로 명함.
   const closePopup = () => {
-    // setNowPopup({
-    //   num: '2-4',
-    //   title: '현재 작업 중인 내용이 저장되지 않았습니다. \n페이지를 나가시겠습니까?',
-    //   content: '',
-    //   func: () => {
-    //   },
-    // })
     setPopupSwitch(false)
     setModalSwitch(false)
   }

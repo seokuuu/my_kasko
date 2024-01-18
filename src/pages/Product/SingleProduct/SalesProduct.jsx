@@ -85,7 +85,10 @@ import SalseType from '../../../modal/Multi/SaleType'
 import { changeSaleTypeAtom } from '../../../store/Layout/Popup'
 import UploadV2 from '../../../modal/Upload/UploadV2'
 import SingleProductModify from './SingleProductModify'
+import { popupDummy } from '../../../modal/Alert/PopupDummy'
+import AlertPopup from '../../../modal/Alert/AlertPopup'
 const SalesProduct = () => {
+  const [popup, setPopup] = useAtom(popupAtom)
   const checkSales = ['전체', '판매재', '판매제외제', '판매 완료제']
   // const checkSales = ['전체', '미응찰', '관심제품', '응찰']
   const checkShips = ['전체', '경매대상재', '상시판매 대상재']
@@ -339,10 +342,30 @@ const SalesProduct = () => {
       },
     ])
   }
+
+  const openFirstModal = (num, callback) => {
+    setPopup(true)
+    const firstPopup = popupDummy.find((popup) => {
+      if (popup.num === num) {
+        return (popup.func = callback)
+      }
+
+      console.log(popup)
+    })
+    // console.log(firstPopup)
+    setNowPopup(firstPopup)
+  }
   const createMemoAndNote = () => {
     memoAndNote(memo, {
-      onSuccess: () => {
-        window.location.reload()
+      onSuccess: (d) => {
+        if (d?.data?.status === 200) {
+          setPopup(false)
+          window.location.reload()
+        }
+        if (d?.data?.status === 400) {
+          setPopup(false)
+          window.location.reload()
+        }
       },
     })
   }
@@ -350,7 +373,7 @@ const SalesProduct = () => {
   //판매 구분
   const changeSaleCategory = () => {
     const res = mutate(parameter, {
-      onSuccess: () => {
+      onSuccess: (d) => {
         setIsMultiModal(false)
         window.location.reload()
       },
@@ -395,8 +418,8 @@ const SalesProduct = () => {
   }
   const [outletPrice, setOutletPrice] = useState(0)
   const [outletParameter, setOutletParameter] = useState({
-    price: 10000, // 아울렛 등록 가격
-    numbers: ['FC53683103-1'], // 제품번호 목록
+    price: 0, // 아울렛 등록 가격
+    numbers: [], // 제품번호 목록
   })
 
   useEffect(() => {
@@ -688,6 +711,7 @@ const SalesProduct = () => {
           </>
         )}
         <TableContianer>
+          
           <TCSubContainer bor>
             <div>
               조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
@@ -755,7 +779,7 @@ const SalesProduct = () => {
             </div>
           </TCSubContainer>
           <TableBottomWrap>
-            <BlackBtn width={15} height={40} onClick={createMemoAndNote}>
+            <BlackBtn width={15} height={40} onClick={() => openFirstModal('2-3', createMemoAndNote)}>
               저장
             </BlackBtn>
           </TableBottomWrap>
@@ -777,6 +801,7 @@ const SalesProduct = () => {
       )}
       {isMultiModal === true && (
         <Multi2
+          length={3}
           closeFn={(e, text) => {
             const { tagName } = e.target
             // console.log('TARGET :', e.target.tagName)
@@ -812,6 +837,7 @@ const SalesProduct = () => {
         />
       )}
       {singleModfiy && <SingleProductModify title={'제품 수정'} />}
+      {popup && <AlertPopup saveFn={createMemoAndNote} err={'안됩니다'} setPopupSwitch={setPopup} />}
     </>
   )
 }

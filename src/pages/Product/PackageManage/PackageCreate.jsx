@@ -29,7 +29,7 @@ import {
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 
-import { getPackageProductsList, postCreatePackage } from '../../../api/SellProduct'
+import { getPackageProductsList, postCreatePackage, postUpdatePackage } from '../../../api/SellProduct'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -206,7 +206,7 @@ const PackageCreate = () => {
   }, [packageName, savedRadioValue, selectUid, price, curUid])
 
   const { mutate: create } = useMutationQuery(['query'], postCreatePackage)
-  const { mutate: update } = useMutationQuery(['query'], postCreatePackage)
+  const { mutate: update } = useMutationQuery(['query'], postUpdatePackage)
   const handleSubmit = () => {
     // console.log('어디서 3번이 찍히는걸까 ')
     create(createRequest, {
@@ -224,10 +224,9 @@ const PackageCreate = () => {
     update(updateRequest, {
       onSuccess: () => {
         navigate(-1)
-        // window.location.reload()
       },
       onError: (e) => {
-        alert(e)
+        alert(e?.data?.message)
       },
     })
   }
@@ -249,6 +248,9 @@ const PackageCreate = () => {
         setSumArr(filteredArr)
         setUpdateRequest((p) => ({ ...p, productUids: filteredArr.map((i) => i['제품 고유 번호']) }))
       }
+    } else {
+      const filteredArr = select.filter((li) => !check.includes(li['제품 고유 번호']))
+      setSelect(filteredArr)
     }
     return { sumArr, updateRequest }
   }

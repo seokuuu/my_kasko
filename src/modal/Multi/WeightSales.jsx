@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { BlackBtn, WhiteRedBtn } from '../../common/Button/Button'
 import Test3 from '../../pages/Test/Test3'
-import { toggleAtom } from '../../store/Layout/Layout'
-
+import { toggleAtom, weightAtom, weightObj } from '../../store/Layout/Layout'
+import Table from '../../pages/Table/Table'
 import {
   FilterContianer,
   TableContianer,
@@ -13,9 +13,12 @@ import {
 
 import { useAtom } from 'jotai'
 import { aucProAddModalAtom } from '../../store/Layout/Layout'
-
+import useReactQuery from '../../hooks/useReactQuery'
 import styled from 'styled-components'
 import { BlueBarHeader, BlueSubContainer, FadeOverlay, ModalContainer, WhiteCloseBtn } from '../Common/Common.Styled'
+import { getDetailStocks } from '../../api/stocks/Inventory'
+import { add_element_field } from '../../lib/tableHelpers'
+import { StockInventoryFieldCols, StockInventoryFields } from '../../constants/admin/StockInventory'
 // 중량 판매 등록
 // !!! 보류 !!!
 const WeightSales = ({}) => {
@@ -27,12 +30,28 @@ const WeightSales = ({}) => {
 
   const titleData = ['패키지 명', '수량', '시작가']
   const contentData = ['알뜰패키지', '50', '3598']
-  const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
+  const [addModal, setAddModal] = useAtom(weightAtom)
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
-
+  const [weightModal, setWeightModal] = useAtom(weightAtom)
+  const [selectObj, setSelectObj] = useAtom(weightObj)
+  const {
+    data: TableData,
+    isLoading,
+    isSuccess,
+  } = useReactQuery(selectObj['제품 고유 번호'], 'getInventroyStockDetail', getDetailStocks)
   const [rows, setRows] = useState([])
   const [checkedRows, setCheckedRows] = useState([])
-  const tableTitle = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'a', 'b', 'c', 'd', 'a', 'b', 'c', 'd']
+
+  const tableRowData = useMemo(() => {
+    if (!TableData || !TableData?.data?.list) {
+      return []
+    }
+    const rowData = TableData?.data?.list
+    const displayData = add_element_field(rowData, StockInventoryFields)
+    return displayData
+  }, [isSuccess, TableData])
+
+  const tableTitle = StockInventoryFieldCols
 
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
@@ -48,12 +67,6 @@ const WeightSales = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData1(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check1])
 
   const handleSelectChange = (selectedOption, name) => {
@@ -108,7 +121,7 @@ const WeightSales = ({}) => {
   return (
     <>
       <FadeOverlay />
-      <ModalContainer style={{ width: '50%', height: '93%' }}>
+      <ModalContainer style={{ width: '50%', height: '86%' }}>
         <BlueBarHeader style={{ height: '60px' }}>
           {/* <div>{title}</div> */}
           <div>중량 판매 등록</div>
@@ -123,7 +136,8 @@ const WeightSales = ({}) => {
                 <h6 style={{ fontSize: '17px' }}>중량 판매 대상 제품</h6>
                 <p>2023041050</p>
               </FilterTCTop>
-              <Test3 hei2={330} hei={100} />
+              {/* <Test3 hei2={330} hei={100} /> */}
+              <Table hei2={330} hei={100} />
             </TableContianer>
           </FilterContianer>
           <FilterContianer style={{ color: '#B02525', paddingLeft: '20px', paddingTop: '5px' }}>
@@ -140,42 +154,52 @@ const WeightSales = ({}) => {
             <img src="/img/circle_add.png" alt="add row" />
           </PowerMiddle>
           <TableContainer>
-            <Table>
-              <thead>
-                <TableRow>
-                  <TableHeaderCell>
-                    <Checkbox
-                      type="checkbox"
-                      checked={checkedRows.length === rows.length}
-                      onChange={() =>
-                        checkedRows.length === rows.length
-                          ? setCheckedRows([])
-                          : setCheckedRows(rows.map((row) => row.id))
-                      }
-                    />
-                  </TableHeaderCell>
-                  {tableTitle.map((title, index) => (
-                    <TableHeaderCell key={index}>{title}</TableHeaderCell>
-                  ))}
-                </TableRow>
-              </thead>
-              <tbody>
-                {rows.map((row) => (
-                  <TableRow key={row.id}>
-                    <TableCell>
+            <div style={{ border: '1px solid', padding: '4px 2px', overflow: 'scroll' }}>
+              <TCSubContainer>
+                <div>
+                  중량 판매 (<span>2</span> /4 ){/* <Hidden /> */}
+                </div>
+              </TCSubContainer>
+              <SubTables>
+                <thead>
+                  <TableRow>
+                    <TableHeaderCell>
                       <Checkbox
                         type="checkbox"
-                        checked={checkedRows.includes(row.id)}
-                        onChange={() => handleCheck(row.id)}
+                        checked={checkedRows.length === rows.length}
+                        onChange={() =>
+                          checkedRows.length === rows.length
+                            ? setCheckedRows([])
+                            : setCheckedRows(rows.map((row) => row.id))
+                        }
                       />
-                    </TableCell>
-                    {row.content.map((content, index) => (
-                      <TableCell key={index}>{content}</TableCell>
-                    ))}
+                    </TableHeaderCell>
+                    {tableTitle.map((title, index) =>
+                      title.field !== '' ? <TableHeaderCell key={index}>{title.field}</TableHeaderCell> : null,
+                    )}
                   </TableRow>
-                ))}
-              </tbody>
-            </Table>
+                </thead>
+                <tbody>
+                  {rows.map((row) => (
+                    <TableRow key={row.id}>
+                      <TableCell>
+                        <Checkbox
+                          type="checkbox"
+                          checked={checkedRows.includes(row.id)}
+                          onChange={() => handleCheck(row.id)}
+                        />
+                      </TableCell>
+                      {row.content.map((content, index) => (
+                        <TableCell key={index}>
+                          <input />
+                          {content}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </tbody>
+              </SubTables>
+            </div>
           </TableContainer>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -200,7 +224,8 @@ const WeightSales = ({}) => {
 export default WeightSales
 
 const TableContainer = styled.div`
-  max-width: 900px;
+  width: 100%;
+  margin-bottom: 20px;
   overflow-x: scroll;
 `
 
@@ -215,24 +240,47 @@ const PowerMiddle = styled.div`
   padding: 10px;
 `
 const TableRow = styled.tr`
-  width: 100px;
+  width: 100%;
+  display: flex;
+  height: 40px;
+  font-size: 15px;
+  cursor: pointer;
 `
 
 const TableHeaderCell = styled.th`
   text-align: center;
   border: 1px solid #000;
-  width: 100px;
+  width: 150px;
+  margin-top: 4px;
+  padding: 8px 2px;
+  background-color: #dbe2f0;
+  &:first-child {
+    width: 50px;
+    padding: 8px 16px;
+  }
 `
 
 const TableCell = styled.td`
   text-align: center;
   border: 1px solid #000;
-  width: 100px;
+  width: 150px;
+  padding: 4px 2px;
+  &:first-child {
+    width: 50px;
+    padding: 8px 16px;
+  }
+  input {
+    max-width: 128px;
+    height: 30px;
+    border: 1px solid #000;
+    width: max-content;
+  }
 `
 
-const Table = styled.table`
+const SubTables = styled.table`
   min-width: 900px;
   border-collapse: collapse;
+  overflow: scroll;
 `
 const Checkbox = styled.input`
   margin-right: 10px;

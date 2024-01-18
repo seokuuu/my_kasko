@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { BlackBtn, GreyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
@@ -6,13 +6,19 @@ import DateGrid from '../../../components/DateGrid/DateGrid'
 import Excel from '../../../components/TableInner/Excel'
 
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
-import Test3 from '../../Test/Test3'
-
+import {
+  StockMultiModal,
+  popupObject,
+  selectedRowsAtom,
+  toggleAtom,
+  weightAtom,
+  weightObj,
+} from '../../../store/Layout/Layout'
+import Table from '../../../pages/Table/Table'
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Multi from '../../../modal/Common/Multi'
@@ -38,22 +44,62 @@ import {
   TCSubContainer,
   Tilde,
 } from '../../../modal/External/ExternalFilter'
+import usePaging from '../../Operate/hook/usePaging'
 import { modalAtom } from '../../../store/Layout/Layout'
-
+import useTableData from '../../../hooks/useTableData'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getInventoryStocks, patchStockCategory } from '../../../api/stocks/Inventory'
+import { StockInventoryFieldCols, StockInventoryFields } from '../../../constants/admin/StockInventory'
+import { add_element_field } from '../../../lib/tableHelpers'
+import Multi2 from '../../../modal/Common/Multi2'
+import { isArray } from 'lodash'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import { changeCategoryAtom } from '../../../store/Layout/Popup'
+import SellWeight from '../../../modal/Multi/SellWeight'
+import WeightSales from '../../../modal/Multi/WeightSales'
 const Inventory = ({}) => {
   const checkSales = ['전체', '판매재', '판매제외제']
-
   const checkShips = ['전체', '출고완료', '미출고']
-
+  const [request, setRequest] = useState({
+    pageNum: 1,
+    pageSize: 50,
+    reciptStatus: '입고 확정',
+  })
+  const checkBoxSelect = useAtomValue(selectedRowsAtom)
+  console.log(checkBoxSelect)
+  const { data: TableData, isLoading, isSuccess } = useReactQuery(request, 'getInventroyStock', getInventoryStocks)
+  const { mutate, isError } = useMutationQuery('change-category2', patchStockCategory)
+  // const { tableRowData, paginationData, totalWeight } = useTableData(data, StockInventoryFields)
+  const table = useRef(StockInventoryFieldCols)
+  const getCol = table.current
+  const page = TableData?.data?.pagination
+  const [pagenations, setPaginations] = useState([])
+  const [weight, setWeight] = useAtom(weightAtom)
+  const [isMulti, setIsMulti] = useAtom(StockMultiModal)
+  const [selectObj, setSelectObj] = useAtom(weightObj)
+  const [selectProductNumber, setSelectProductNumber] = useState([])
+  // console.log(tableRowData)
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
   const [check2, setCheck2] = useState(Array.from({ length: checkShips.length }, () => false))
-
   //checkShips
   const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
-
   const [checkData2, setCheckData2] = useState(Array.from({ length: checkShips.length }, () => ''))
 
+  const tableRowData = useMemo(() => {
+    if (!TableData || !TableData?.data?.list) {
+      return []
+    }
+    const rowData = TableData?.data?.list
+    const displayData = add_element_field(rowData, StockInventoryFields)
+    setPaginations(page)
+    return displayData
+  }, [isSuccess, TableData])
+
+  useEffect(() => {
+    if (checkBoxSelect?.length === 0) return
+    setSelectProductNumber(() => checkBoxSelect?.map((i) => i['제품 번호']))
+  }, [checkBoxSelect])
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
     const updatedCheck = checkSales.map((value, index) => {
@@ -62,12 +108,6 @@ const Inventory = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData1(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check1])
 
   useEffect(() => {
@@ -78,20 +118,9 @@ const Inventory = ({}) => {
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
     setCheckData2(filteredCheck)
-
-    // 전송용 input에 담을 때
-    // setInput({
-    //   ...input,
-    //   businessType: updatedCheck.filter(item => item !== ''),
-    // });
   }, [check2])
 
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
+  const handleSelectChange = (selectedOption, name) => {}
   const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
@@ -110,13 +139,39 @@ const Inventory = ({}) => {
       setToggleMsg('On')
     }
   }
-
+  const [parameter, setParameter] = useAtom(changeCategoryAtom)
+  const [nowPopup, setNowPopup] = useAtom(popupObject)
   const [modalSwitch, setModalSwitch] = useAtom(modalAtom)
-
+  const [errorMsg, setErrorMsg] = useState('')
   const openModal = () => {
     setModalSwitch(true)
   }
 
+  const changeSaleCategory = () => {
+    const res = mutate(parameter, {
+      onSuccess: (d) => {
+        if (d?.data.status === 200) {
+          setIsMulti(false)
+          window.location.reload()
+        }
+      },
+      onError: (e) => {
+        setErrorMsg(e.data.message)
+        setNowPopup({
+          num: '1-12',
+          title: '',
+          content: `${e.data.message}`,
+          func: () => {
+            setIsMulti(false)
+          },
+        })
+      },
+    })
+
+    return res
+  }
+
+  const { pagination: customPagination, onPageChanage } = usePaging(TableData, setRequest)
   return (
     <FilterContianer>
       <FilterHeader>
@@ -281,13 +336,56 @@ const Inventory = ({}) => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteBlackBtn onClick={() => openModal()}>판매 구분 변경</WhiteBlackBtn>
+            <WhiteBlackBtn
+              onClick={() => {
+                if (!isArray(checkBoxSelect)) return
+                if (checkBoxSelect.length === 0) {
+                  alert('제품을 선택해주세요')
+                } else {
+                  openModal()
+                }
+              }}
+            >
+              판매 구분 변경
+            </WhiteBlackBtn>
             <WhiteRedBtn>입고 확정 취소</WhiteRedBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getRow={tableRowData} getCol={getCol} tablePagination={page} onPageChange={onPageChanage} />
       </TableContianer>
-      {modalSwitch && <Multi modalSwitch={modalSwitch} setModalSwitch={setModalSwitch} />}
+      {/* {isMulti === true && (
+        <Multi2
+          closeFn={(e, text) => {
+            const { tagName } = e.target
+            // console.log('TARGET :', e.target.tagName)
+            if (tagName === 'IMG') {
+              setIsMulti(false)
+            }
+          }}
+          errMsg={errorMsg}
+          saveFn={changeSaleCategory}
+          productNumbers={selectProductNumber}
+        />
+      )} */}
+      {modalSwitch && (
+        <Multi2
+          closeFn={(e, text) => {
+            const { tagName } = e.target
+            // console.log('TARGET :', e.target.tagName)
+            if (tagName === 'IMG') {
+              setModalSwitch(false)
+            }
+          }}
+          length={2}
+          setModalSwitch={setModalSwitch}
+          errMsg={errorMsg}
+          saveFn={changeSaleCategory}
+          productNumbers={selectProductNumber}
+        />
+      )}
+      {/* {weight && <SellWeight />} */}
+      {/* {weight && <SellWeight />} */}
+      {weight && <WeightSales />}
     </FilterContianer>
   )
 }
