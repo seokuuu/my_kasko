@@ -1,5 +1,5 @@
 const ProductSearchFields = ({ search, setSearch, customRenderProp }) => {
-	//TODO Refactor this component to either have reusable logic or use hooks.
+	//TODO Update this component to either have reusable logic or hooks.
 
 	return customRenderProp ? customRenderProp({ search, setSearch }) : <></>
 }

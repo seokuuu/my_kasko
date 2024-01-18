@@ -76,13 +76,6 @@ const Package = () => {
 		return add_element_field(packageProductListData, packageResponseToTableRowMap)
 	}
 
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
-
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 	const [toggleMsg, setToggleMsg] = useState('On')
@@ -93,11 +86,6 @@ const Package = () => {
 		} else {
 			setToggleMsg('On')
 		}
-	}
-
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
-	const modalOpen = () => {
-		setIsModal(true)
 	}
 
 	const handleTablePageSize = (event) => {

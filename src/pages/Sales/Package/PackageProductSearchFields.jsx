@@ -96,10 +96,6 @@ const PackageProductSearchFields = ({ search, setSearch }) => {
 				</RowWrap>
 				{/* 2행 */}
 				<RowWrap>
-					{/* 구분 */}
-					<PartWrap></PartWrap>
-				</RowWrap>
-				<RowWrap>
 					{/* 두깨 */}
 					<PartWrap>
 						<h6>두께(MM)</h6>
@@ -165,6 +161,7 @@ const PackageProductSearchFields = ({ search, setSearch }) => {
 					</PartWrap>
 				</RowWrap>
 			</FilterLeft>
+			{isModal === true && <StandardFind closeFn={onSpecHandler} />}
 			<FilterRight>
 				<ProductNumber
 					initialValue={search.productNumberList}
