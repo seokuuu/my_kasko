@@ -177,7 +177,7 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         {/* 테스트 URL */}
-        <Route path="/ppapp" element={<WinningCreate />} />
+        <Route path="/ppapp" element={<WeightSales />} />
         <Route path="/ppap" element={<DefaultBlueBar />} />
         <Route path="/TableTest" element={<TableTest />} />
         <Route path="/test" element={<Test />} />
@@ -315,7 +315,7 @@ const Router = () => {
           <Route path="/userpage/notice/:id" element={<UNoticeDetail />}></Route>
 
           {/* 경매 */}
-          <Route path="/userpage/actionsingle" element={<UAuctionSingle />}></Route>
+          <Route path="/userpage/auctionsingle" element={<UAuctionSingle />}></Route>
           <Route path="/userpage/auctionpackage" element={<UAuctionPackage />}></Route>
           <Route path="/userpage/actionstatus" element={<UAuctionStatus />}></Route>
           <Route path="/userpage/auctionwinning" element={<UAuctionWinning />}></Route>

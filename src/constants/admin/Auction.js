@@ -20,9 +20,6 @@ export const AuctionUnitPricePost = {
   '적용 단가': 'input',
 }
 
-
-
-
 // 해당 값 쓰일 컴포넌트 -> Upload로 props로 전달
 // const dropdownProps = [
 //   { options: AuctionUnitPricePostDropOptions, defaultValue: AuctionUnitPricePostDropOptions[0] },
@@ -336,15 +333,7 @@ export const AuctionBiddingFields = {
 
 export const AuctionBiddingFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
-  {
-    field: '수정',
-    maxWidth: 90,
-    cellRenderer: BtnCellRenderer,
-    cellRendererParams: {
-      uidFieldName: '경매 제품 고유 번호',
-      editType: 'auctionbidding',
-    },
-  },
+
   { field: '경매 제품 고유 번호', minWidth: 100 },
   { field: '경매 고유 번호', minWidth: 100 },
   { field: '제품 고유 번호', minWidth: 100 },

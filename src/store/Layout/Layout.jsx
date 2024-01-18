@@ -292,3 +292,10 @@ export const packageDetailModal = atom(false)
 // 목적지 에딧 모달
 export const userPageDestiEditModal = atom(false)
 export const adminPageDestiEditModal = atom(false)
+
+/* ==============================
+    경매 (userpage/auction)
+============================== */
+
+// 사용자 - 경매(단일) - 목적지 찾기
+export const userPageSingleDestiFindAtom = atom(false)
