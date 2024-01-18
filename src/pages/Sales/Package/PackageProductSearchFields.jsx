@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
 import { GreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
-import useTableSearchFieldData from '../../../hooks/useTableSearchFieldData'
+import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
 	ExInputsWrap,
 	FilterRight,
@@ -29,7 +29,7 @@ const PackageProductSearchFields = ({ search, setSearch }) => {
 		stockStatusList,
 		gradeList,
 		preferThicknessList,
-	} = useTableSearchFieldData()
+	} = useGlobalProductSearchFieldData()
 
 	function commonSelectHandler(e, name) {
 		setSearch((p) => ({ ...p, [name]: e }))

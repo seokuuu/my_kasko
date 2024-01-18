@@ -11,7 +11,7 @@ import {
 } from '../../modal/External/ExternalFilter'
 import ProductSearchFields from './ProductSearchFields'
 import { globalProductSearchToggleAtom } from '../../store/Layout/GlobalProductSearch'
-import useTableSearchFieldData from '../../hooks/useTableSearchFieldData'
+import useGlobalProductSearchFieldData from '../../hooks/useGlobalProductSearchFieldData'
 
 const GlobalProductSearch = ({
 	// prettier-ignore
@@ -32,7 +32,7 @@ const GlobalProductSearch = ({
 		preferThicknessList,
 		spartList,
 		storageList,
-	} = useTableSearchFieldData()
+	} = useGlobalProductSearchFieldData()
 
 	const initialSearchParams = useMemo(() => {
 		return {
