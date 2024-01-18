@@ -146,6 +146,7 @@ import WinningCreate from './pages/Auction/Winning/WinningCreate'
 import NoticeDetailsPage from './pages/Operate/Common/Notice/NoticeDetailsPage'
 import NoticeBoardDetailsPage from './pages/Operate/Exposure/NoticeBoard/NoticeBoardDetailsPage'
 import StatusPage from './pages/Shipping/Status/StatusPage'
+import ShipmentInvoicePage from './pages/Shipping/Achievement/ShipmentInvoicePage'
 // RoundAucProAdd
 const Router = () => {
 	return (
@@ -217,6 +218,7 @@ const Router = () => {
 					<Route path="/shipping/status" element={<StatusPage />} />
 					<Route path="/shipping/status/:id" element={<StatusDetailPage />} />
 					<Route path="/shipping/achievement" element={<AchievementPage />} />
+					<Route path="/shipping/achievement/invoice" element={<ShipmentInvoicePage />} />
 					<Route path="/shipping/claim/register" element={<ClaimRegisterPage />} />
 				</Route>
 				{/* 기준 관리 */}
