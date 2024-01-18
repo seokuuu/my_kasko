@@ -1,50 +1,31 @@
-import { useEffect, useMemo, useState, useRef } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../../pages/Test/Test3'
+import { BlackBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
-import BlueBar from '../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
-import { FilterWrap } from '../../../modal/External/ExternalFilter'
+import {
+	FilterContianer,
+	FilterFooter,
+	FilterHeader,
+	FilterRight,
+	FilterSubOneContainer,
+	FilterWrap,
+	Input,
+	PartWrap,
+	ResetImg,
+	RowWrap,
+	TableContianer,
+	TCSubContainer,
+} from '../../../modal/External/ExternalFilter'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../../pages/Table/Table'
-import {
-	TCSubContainer,
-	FilterContianer,
-	FilterHeader,
-	FilterFooter,
-	FilterSubOneContainer,
-	FilterLeft,
-	FilterRight,
-	RowWrap,
-	PartWrap,
-	PWRight,
-	Input,
-	GridWrap,
-	Tilde,
-	DoubleWrap,
-	ResetImg,
-	TableContianer,
-	InputStartWrap,
-	FilterHeaderAlert,
-	PageSelect,
-	HiddenBtn,
-} from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { UserNoticeListFieldCols, UserNoticeListFields } from '../../../constants/userNotDoc'
 import { useNoticeListQuery } from '../../../api/operate/notice'
 import moment from 'moment'
 import { useNavigate } from 'react-router-dom'
-import TableTest from '../../../pages/Table/TableTest'
 import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 
 const Notice = () => {
@@ -57,12 +38,7 @@ const Notice = () => {
 		category: '',
 		keyword: title,
 	}
-	const handleSelectChange = (selectedOption, name) => {
-		// setInput(prevState => ({
-		//   ...prevState,
-		//   [name]: selectedOption.label,
-		// }));
-	}
+
 	const [isRotated, setIsRotated] = useState(false)
 
 	const [param, setParam] = useState(Params)
@@ -87,8 +63,6 @@ const Notice = () => {
 		}
 	}
 
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
-
 	const [getRow, setGetRow] = useState('')
 	const navigate = useNavigate()
 	const tableField = useRef(UserNoticeListFieldCols)
@@ -97,10 +71,6 @@ const Notice = () => {
 	const [result, setResult] = useState([])
 	const [fixed, setFixed] = useState([])
 	const fixedItem = notices && notices?.list.filter((i) => i.status !== 0)
-	const notFixedItem = notices && topData2?.filter((i) => i.status !== 0)
-	console.log(fixedItem)
-
-	// 상단고정 데이터
 
 	useEffect(() => {
 		if (!title && fixedItem) {
@@ -191,6 +161,10 @@ const Notice = () => {
 			pageNum: 1,
 		}))
 	}
+
+	useEffect(() => {
+		refetch()
+	}, [])
 
 	return (
 		<FilterContianer>

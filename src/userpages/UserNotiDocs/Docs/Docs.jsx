@@ -26,7 +26,6 @@ import { useNoticeListQuery } from '../../../api/operate/notice'
 import moment from 'moment'
 import { useNavigate } from 'react-router-dom'
 import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
-import { AuctionRoundFields } from '../../../constants/admin/Auction'
 
 const Docs = () => {
 	const [title, setTitle] = useState('')
@@ -43,7 +42,7 @@ const Docs = () => {
 	const { isSuccess, data: Docs, refetch } = useNoticeListQuery(param)
 	const pagination = Docs?.pagination
 
-	const { onPageChange } = useTablePaginationPageChange(Docs, setParam)
+	const { onPageChanage } = useTablePaginationPageChange(Docs, setParam)
 
 	const [isRotated, setIsRotated] = useState(false)
 	const [getRow, setGetRow] = useState('')
@@ -52,25 +51,18 @@ const Docs = () => {
 	const getCol = tableField.current
 	const [fixed, setFixed] = useState([])
 	const fixedItem = Docs && Docs?.list.filter((i) => i.status !== 0)
-	// const resData = Docs?.list
-	// console.log(resData)
-	// Function to handle image click and toggle rotation
 	useEffect(() => {
 		if (!title && fixedItem) {
 			setFixed(fixedItem)
 		}
 	}, [Docs, isSuccess])
 
-	// useEffect 관련 에러가 나와서 따로 빼서 처리
 	const handleImageClick = () => {
 		setIsRotated((prevIsRotated) => !prevIsRotated)
 	}
 
 	const [topData, setTopData] = useState([])
-	const [result, setResult] = useState([])
-	// 상단고정 데이터
 
-	console.log(topData)
 	const mappingData2 = useMemo(
 		() =>
 			Docs
@@ -111,7 +103,6 @@ const Docs = () => {
 				}
 			})
 			setTopData(newTopData)
-			console.log('NEW TOP DATA :', newTopData)
 		}
 	}, [Docs])
 
@@ -174,6 +165,10 @@ const Docs = () => {
 		}))
 	}
 
+	useEffect(() => {
+		refetch()
+	}, [])
+
 	return (
 		<FilterContianer>
 			<div>
@@ -230,16 +225,14 @@ const Docs = () => {
 						<PageDropdown handleDropdown={handleTablePageSize} />
 					</div>
 				</TCSubContainer>
-
 				<Table
 					getRow={getRow}
 					getCol={getCol}
 					tablePagination={pagination}
-					onPageChange={onPageChange}
 					isRowClickable={true}
 					handleOnRowClicked={handleOnRowClicked}
+					onPageChange={onPageChanage}
 					topData={createData(fixed)}
-					// type={'자료실'}
 				/>
 			</TableContianer>
 		</FilterContianer>
