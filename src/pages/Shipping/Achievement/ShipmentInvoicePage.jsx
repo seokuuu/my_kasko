@@ -3,12 +3,12 @@ import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/O
 import SideBar from '../../../components/Left/SideBar'
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
-import StatusDetail from './StatusDetail'
 import { useState } from 'react'
+import ShipmentInvoice from './ShipmentInvoice'
 
-const StatusDetailPage = () => {
+const ShipmentInvoicePage = () => {
 	const [expanded, setExpanded] = useState('출고 관리')
-	const [depth2Color, setDepth2Color] = useState('출고 현황')
+	const [depth2Color, setDepth2Color] = useState('출고 실적')
 	return (
 		<>
 			<Header />
@@ -17,7 +17,7 @@ const StatusDetailPage = () => {
 				<OverAllSub>
 					<SubHeader />
 					<OverAllTable>
-						<StatusDetail />
+						<ShipmentInvoice />
 					</OverAllTable>
 				</OverAllSub>
 			</OverAllMain>
@@ -25,4 +25,4 @@ const StatusDetailPage = () => {
 	)
 }
 
-export default StatusDetailPage
+export default ShipmentInvoicePage

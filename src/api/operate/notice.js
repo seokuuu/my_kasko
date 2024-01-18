@@ -42,7 +42,7 @@ export function useNoticeListQuery(params) {
 /// 공지&자료실 상세
 export function useNoticeDetailsQuery(id) {
 	return useQuery({
-		queryKey: NOTICE_KEYS.getNotice,
+		queryKey: [...NOTICE_KEYS.getNotice, id],
 		queryFn: async function () {
 			const response = await client.get(`${urls}/${id}`)
 

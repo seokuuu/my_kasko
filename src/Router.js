@@ -145,6 +145,8 @@ import TestExcel from './pages/Test/TestExcel'
 import WinningCreate from './pages/Auction/Winning/WinningCreate'
 import NoticeDetailsPage from './pages/Operate/Common/Notice/NoticeDetailsPage'
 import NoticeBoardDetailsPage from './pages/Operate/Exposure/NoticeBoard/NoticeBoardDetailsPage'
+// import StatusPage from './pages/Shipping/Status/StatusPage'
+// import ShipmentInvoicePage from './pages/Shipping/Achievement/ShipmentInvoicePage'
 // RoundAucProAdd
 const Router = () => {
 	return (

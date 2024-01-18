@@ -65,11 +65,11 @@ export const ShippingRegisterFields = {
 	제품군: 'spart',
 	제품등급: 'gradle',
 	상시판매가: 'salePrice',
-	두께: 'grade',
+	등급: 'grade',
 	폭: 'weight',
-	길이: 'thickness',
+	두께: 'thickness',
 	중량: 'width',
-	규격약호: 'length',
+	길이: 'length',
 	TS: 'ts',
 	YP: 'yp',
 	'C%': 'c',
@@ -124,6 +124,10 @@ export const ShippingRegisterFields = {
 	'운전기사 연락처': 'driverPhone',
 	차량번호: 'carNumber',
 	'차량 종류': 'carType',
+	'추가 타입': 'extraType',
+	추가비: 'extraCost',
+	공차비: 'extraFreightCost',
+	출고번호: 'outNumber',
 }
 
 export const ShippingRegisterFieldsCols = [
@@ -237,5 +241,32 @@ export const ShippingDispatchDetailsFieldsCols = [
 	...Object.keys(ShippingDispatchDetailsFields).map((item) => ({
 		field: item,
 		maxWidth: 200,
+	})),
+]
+
+// 출고 거래명세서
+export const ShippingInvoiceFields = {
+	경매번호: 'auctionNumber',
+	상시판매번호: 'orderNumber',
+	창고: 'storageName',
+	제품번호: 'productNumber',
+	등급: 'grade',
+	중량: 'weight',
+	두께: 'thickness',
+	폭: 'width',
+	길이: 'length',
+	규격약호: 'spec',
+	낙찰가: 'biddingPrice',
+	제품공급가: 'orderPrice',
+	제품부가세: 'orderPriceVat',
+	운임비공급가: 'freightCost',
+	운임비부가세: 'freightCostVat',
+}
+
+// 출고 거래명세서
+export const ShippingInvoiceFieldsCols = [
+	...Object.keys(ShippingInvoiceFields).map((item) => ({
+		field: item,
+		maxWidth: 120,
 	})),
 ]

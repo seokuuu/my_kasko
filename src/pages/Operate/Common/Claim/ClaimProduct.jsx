@@ -6,7 +6,7 @@ import { useProductListToRegisterClaimQuery } from '../../../../api/operate/clai
 import { BlackBtn, WhiteBtn } from '../../../../common/Button/Button'
 import { ClaimProductListFieldCols, ClaimProductListFields } from '../../../../constants/admin/Claim'
 import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
-import useTableSearchFieldData from '../../../../hooks/useTableSearchFieldData'
+import useGlobalProductSearchFieldData from '../../../../hooks/useGlobalProductSearchFieldData'
 import { add_element_field } from '../../../../lib/tableHelpers'
 import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
 import { selectedRowsAtom } from '../../../../store/Layout/Layout'
@@ -20,7 +20,7 @@ const ClaimProduct = () => {
 	const navigate = useNavigate()
 
 	// 검색 셀렉트 옵션 목록
-	const { supplierList, makerList, stockStatusList, gradeList, preferThicknessList } = useTableSearchFieldData()
+	const { supplierList, makerList, stockStatusList, gradeList, preferThicknessList } = useGlobalProductSearchFieldData()
 
 	// 목록 리스트
 	const [row, setRow] = useState([])
