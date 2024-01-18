@@ -11,7 +11,7 @@ import Package from './Package';
 
 import { useState } from 'react';
 
-const SinglePage = () => {
+const PackagePage = () => {
   const [expanded, setExpanded] = useState('상시판매');
   const [depth2Color, setDepth2Color] = useState('패키지');
   return (
@@ -34,4 +34,4 @@ const SinglePage = () => {
   );
 };
 
-export default SinglePage;
+export default PackagePage;

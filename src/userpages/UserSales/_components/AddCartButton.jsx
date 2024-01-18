@@ -5,9 +5,11 @@ import { SkyBtn } from '../../../common/Button/Button'
 import { PROD_CATEGORY } from '../../../constants/user/product'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
 import { destiDelPopupAtom, popupObject } from '../../../store/Layout/Layout'
+import { getProductNumber } from '../../../hooks/useWishList'
 
 /**
  * 선택 제품 장바구니 추가 컴포넌트
+ * @todo API 변수 parameter 확인
  */
 const AddCartButton = ({ category, products=[] }) => {
   // API
@@ -34,8 +36,8 @@ const AddCartButton = ({ category, products=[] }) => {
     addCart({
       category: category === PROD_CATEGORY.single ? 'SINGLE' : 'PACKAGE',
       uids:products.map((v) => category === PROD_CATEGORY.single
-          ? (v['고유 번호'] || 0)
-          : (v['패키지 번호'] || 0)
+          ? (getProductNumber(v['고유 번호'] )|| 0)
+          : (getProductNumber(v['고유 번호']) || 0)
       ),
     })
   }

@@ -1,4 +1,4 @@
-import RecommendCellRenderer from "../../pages/Table/RecommendCellRenderer";
+import WishCellRenderer from "../../pages/Table/WishCellRenderer";
 import { checkboxSelection, headerCheckboxSelection } from '../../pages/Table/util';
 
 /**
@@ -7,7 +7,7 @@ import { checkboxSelection, headerCheckboxSelection } from '../../pages/Table/ut
  */
 export const userCartListSingleField = {
   "고유 번호": "productUid",
-  "제품 번호": "number",
+  "제품번호": "number",
   "규격 약호": "spec",
   "창고": "storage",
   "창고명": "storageName",
@@ -69,10 +69,7 @@ export const userCartListPackageField = {
  */
 export const userCartListSingleFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
-  { field: '제품 번호', minWidth: 100,cellRenderer:RecommendCellRenderer,cellRendererParams:{
-    uidFieldName:'제품 번호',
-    editType:'recommend'
-  } },
+  { field: "제품번호", minWidth: 100,  cellRenderer: WishCellRenderer },
   { field: "규격 약호", minWidth: 100 },
   { field: "창고", minWidth: 100 },
   { field: "창고명", minWidth: 100 },

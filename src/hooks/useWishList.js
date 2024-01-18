@@ -46,6 +46,8 @@ export default function useWishList() {
     const addProdNums = products.map(v => getProductNumber(v[prodNumKey])).filter(v => v.length > 0);
     const mergedProdNums = getMergedProdNums(wishProdNums, addProdNums);
 
+    console.log(mergedProdNums,products);
+
     setWishProdNums(mergedProdNums);
     saveWishList(mergedProdNums, userId);
     alert('관심상품으로 등록하였습니다.');

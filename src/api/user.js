@@ -41,7 +41,7 @@ export const useUserSingleProductListQuery = (param) => useQuery({
  * @param {number} param.pageSize 페이지당 조회 갯수 
  */
 export const useUserPackageProductListQuery = (param) => useQuery({
-    queryKey: ["user","single", param],
+    queryKey: ["user","package", param],
     queryFn: async() => {
         const { data } = await client.get(getUrlWithSearchParam(urls.packageProductList, param));
         return data.data; 

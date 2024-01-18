@@ -79,6 +79,7 @@ const OrderDetail = ({ salesNumber }) => {
   const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
     tableField: userOrderDetailsField,
     serverData: orderData,
+    wish: { display: true, cellKey: 'productNumber', valueKey: 'productNumber' }
   })
   // 인포테이블 데이터
   const infoData = useMemo(() => getInfoRows(orderData?.list || [], salesNumber), [orderData, salesNumber])

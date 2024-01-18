@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useUserCartListQuery } from '../../../api/user'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
@@ -46,11 +46,12 @@ const Cart = ({}) => {
   const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
     tableField: isSingleCategory ? userCartListSingleField : userCartListPackageField,
     serverData: cartData,
+    wish: { display: true }
   })
   // 선택 항목
   const { selectedData, selectedWeight, selectedWeightStr, selectedCountStr, selectedCount } = useTableSelection({
     weightKey: isSingleCategory ? '중량' : '패키지 상품 총 중량',
-  })
+  });
 
   // ERROR SECTION
   if (isError) {

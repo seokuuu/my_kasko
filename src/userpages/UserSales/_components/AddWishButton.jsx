@@ -7,7 +7,6 @@ import useWishList from '../../../hooks/useWishList'
 
 /**
  * 관심 상품 등록 버튼
- * @returns 
  */
 const AddWishButton = ({ products, productNumberKey }) => {
   const { addWishList } = useWishList();

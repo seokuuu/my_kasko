@@ -13,6 +13,7 @@ const MIN_ORDER_WEIGHT = 25_000
 
 /**
  * 선택 제품 주문 컴포넌트
+ * @todo API 변수 parameter 확인
  */
 const AddOrderButton = ({ category, totalWeight, products=[] }) => {
   // API
@@ -55,8 +56,8 @@ const AddOrderButton = ({ category, totalWeight, products=[] }) => {
               salePrice: v['상시판매가'] || 0,
             }
           : {
-              packageNumber: v['패키지 번호'] || 0,
-              salePrice: v['패키지 상품 총 중량'] || 0,
+              packageNumber: v['패키지번호'] || 0,
+              salePrice: v['상시 판매가'] || 0,
             },
       ),
     })

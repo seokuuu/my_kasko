@@ -78,10 +78,7 @@ const Single = ({}) => {
   const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
     tableField: userSingleProductField,
     serverData: singleData,
-    wish: {
-      valueKey: 'number',
-      cellKey: 'number',
-    }
+    wish: { display: true }
   });
   // 선택 항목
   const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr, hasSelected } = useTableSelection({ weightKey: '중량' })
@@ -90,10 +87,6 @@ const Single = ({}) => {
   // 규격약호 검색 모달
   const [standardCodeModalOn, setStandardCodeModalOn] = useState(false);
   const { wishProdNums } = useWishList();
-
-  useEffect(() => {
-    console.log(wishProdNums, 'wish in page');
-  }, [wishProdNums]);
 
   /**
    * 필터 검색 핸들러

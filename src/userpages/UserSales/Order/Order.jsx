@@ -115,6 +115,7 @@ const Order = ({}) => {
   const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
     tableField: userOrderListField,
     serverData: orderData,
+    wish: { display: true, cellKey: 'productNumber', valueKey: 'productNumber' }
   })
   // 선택 항목
   const { selectedData, selectedWeightStr, selectedCountStr, hasSelected } = useTableSelection({ weightKey: '총 중량' })
