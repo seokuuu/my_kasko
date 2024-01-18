@@ -11,7 +11,10 @@ const useTableSearchFieldData = () => {
 	// 창고 목록
 	const { data: storage } = useReactQuery('', 'getStorageList', getStorageList)
 	const storageList = useMemo(
-		() => (storage ? [{ label: '전체', value: '', address: null }, ...storage] : []),
+		() =>
+			storage
+				? [{ label: '전체', value: '', address: null }, ...storage.map((item) => ({ ...item, value: item.label }))]
+				: [{ label: '전체', value: '', address: null }],
 		[storage],
 	)
 
@@ -19,12 +22,18 @@ const useTableSearchFieldData = () => {
 	const supplierList = [
 		{ label: '전체', value: '' },
 		{ label: '현대제철', value: '현대제철' },
-		{ label: '동은 스틸', value: '동은 스틸' },
+		{ label: '동은 스틸', value: '동은스틸' },
 	]
 
 	// 제품군 목록
 	const { data: spart } = useReactQuery('', 'getSPartList', getSPartList)
-	const spartList = useMemo(() => (spart ? [{ label: '제품군', value: '' }, ...spart] : []), [spart])
+	const spartList = useMemo(
+		() =>
+			spart
+				? [{ label: '제품군', value: '' }, ...spart.map((item) => ({ ...item, value: item.label }))]
+				: [{ label: '제품군', value: '' }],
+		[spart],
+	)
 
 	// 제조사 목록
 	const makerList = [
