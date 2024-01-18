@@ -2,7 +2,7 @@ import { useAtom } from 'jotai'
 import React from 'react'
 import { GreyBtn } from '../../../../../common/Button/Button'
 import { MainSelect } from '../../../../../common/Option/Main'
-import useTableSearchFieldData from '../../../../../hooks/useTableSearchFieldData'
+import useGlobalProductSearchFieldData from '../../../../../hooks/useGlobalProductSearchFieldData'
 import {
 	ExInputsWrap,
 	FilterLeft,
@@ -30,7 +30,7 @@ const ClaimProductSearchFilter = ({ search, setSearch }) => {
 	// console.log('spec :', spec)
 	// 검색 셀렉트 옵션 목록
 	const { storageList, supplierList, spartList, makerList, stockStatusList, gradeList, preferThicknessList } =
-		useTableSearchFieldData()
+		useGlobalProductSearchFieldData()
 
 	// 셀렉트 박스 핸들러
 	function commonSelectHandler(e, name) {
