@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
-import { BlackBtn, GreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
-import { MainSelect, storageOptions } from '../../../common/Option/Main'
+import { BlackBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
@@ -37,7 +36,6 @@ import { responseToTableRowMap, singleProductListFieldCols } from '../../../cons
 import { add_element_field } from '../../../lib/tableHelpers'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { formatWeight } from '../../../utils/utils'
-import { InputSearch, StorageSelect } from '../../../components/Search'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import SingleProductSearchFields from './SingleProductSearchFields'
 import { isEqual } from 'lodash'
