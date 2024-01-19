@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { client } from '../index'
 import { queryClient } from '../query'
+import useAlert from '../../store/Alert/useAlert'
 
 const MERGE_CODE_URL = '/admin/mergecost'
 const SHIPMENT_URL = '/shipment'
@@ -235,17 +236,18 @@ export function useShipmentAddExtraCostMutation() {
 
 // 추가비 및 공차비 삭제
 export function useShipmentRemoveExtraCostMutation() {
+	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: QUERY_KEY.removeExtraCost,
 		mutationFn: async function (id) {
 			return client.delete(`${SHIPMENT_EXTRA_COST_URL}/${id}`)
 		},
 		onSuccess() {
-			window.alert('완료되었습니다.')
+			simpleAlert('완료되었습니다.')
 			queryClient.invalidateQueries(QUERY_KEY.list)
 		},
 		onError(error) {
-			window.alert(error?.message ?? '실패하였습니다.')
+			simpleAlert(error?.message ?? '실패하였습니다.')
 		},
 	})
 }

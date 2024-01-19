@@ -32,6 +32,7 @@ import {
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Excel from '../../../components/TableInner/Excel'
 import Table from '../../Table/Table'
+import useAlert from '../../../store/Alert/useAlert'
 
 const initData = {
 	pageNum: 1,
@@ -59,6 +60,7 @@ const initData = {
 const Achievement = () => {
 	const navigate = useNavigate()
 	const [addedModal, setAddedModal] = useAtom(achievementAddedAtom)
+	const { simpleAlert, showAlert, simpleConfirm, showConfirm, redAlert } = useAlert()
 
 	// Table
 	const tableField = useRef(ShippingRegisterFieldsCols)
@@ -83,10 +85,10 @@ const Achievement = () => {
 
 	const openExtarCostModal = () => {
 		if (!selectedRows) {
-			return window.alert('추가할 제품을 선택해주세요.')
+			return simpleAlert('추가할 제품을 선택해주세요.')
 		}
 		if (selectedRows.length > 1) {
-			return window.alert('하나의 제품만 선택해주세요.')
+			return simpleAlert('하나의 제품만 선택해주세요.')
 		}
 		const selectedRow = selectedRows[0]
 		const copiedData = data.list
@@ -97,22 +99,20 @@ const Achievement = () => {
 
 	const onRemoveExtraCost = () => {
 		if (!selectedRows) {
-			return window.alert('삭제할 제품을 선택해주세요.')
+			return simpleAlert('삭제할 제품을 선택해주세요.')
 		}
 		if (selectedRows.length > 1) {
-			return window.alert('하나의 제품만 선택해주세요.')
+			return simpleAlert('하나의 제품만 선택해주세요.')
 		}
 		const selectedRow = selectedRows[0]
 		const copiedData = data.list
 		const findData = copiedData.find((item) => item.orderUid === selectedRow['주문 고유 번호'])
 
 		if (!findData.extraCost && !findData.extraFreightCost) {
-			return window.alert('등록된 추가비 및 공차비가 존재하지 않습니다.')
+			return simpleAlert('등록된 추가비 및 공차비가 존재하지 않습니다.')
 		}
 
-		if (window.confirm('등록된 추가 및 공차비를 삭제하시겠습니까?')) {
-			removeExtarCost(findData.orderUid)
-		}
+		redAlert('등록된 추가 및 공차비를 삭제하시겠습니까?', () => removeExtarCost(findData.orderUid))
 	}
 
 	const toInvoice = () => {
