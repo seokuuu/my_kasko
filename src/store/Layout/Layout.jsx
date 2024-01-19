@@ -46,6 +46,9 @@ export const selectedRowsAtom = atom([])
 
 export const selectedRowsAtom2 = atom([])
 
+// 중복 방지 switch (모달 진입시 false로 막음)
+export const selectedRows2Switch = atom(true)
+
 // test3 테이블 체크했을시 데이터
 export const doubleClickedRowAtom = atom([])
 
@@ -124,6 +127,11 @@ export const aucProAddModalAtom = atom(false)
 
 // 경매 낙찰관리 - 낙찰 생성 - 고객사 찾기 버튼 Modal
 export const WinningCreateFindAtom = atom(false)
+
+export const WinningProductAddAtom = atom(false)
+
+// 경매 시작 단가 관리 - 단가 등록 Modal
+export const AuctionUnitPriceAtom = atom(false)
 
 /* ==============================
     기준 관리 (Standard)
@@ -249,6 +257,18 @@ export const invenDestinationData = atom({
   uid: 0,
 })
 
+export const winningDestiData = atom({
+  uid: null,
+  code: '',
+  represent: 0,
+  destinationCode: null,
+  destinationName: null,
+  name: '',
+  managerPhone: '',
+  phone: '',
+  address: '',
+})
+
 // =======================================
 
 // 목적지 관리 수정 switch
@@ -273,3 +293,10 @@ export const packageDetailModal = atom(false)
 // 목적지 에딧 모달
 export const userPageDestiEditModal = atom(false)
 export const adminPageDestiEditModal = atom(false)
+
+/* ==============================
+    경매 (userpage/auction)
+============================== */
+
+// 사용자 - 경매(단일) - 목적지 찾기
+export const userPageSingleDestiFindAtom = atom(false)

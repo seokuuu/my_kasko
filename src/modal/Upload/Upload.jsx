@@ -27,8 +27,6 @@ import { popupDummy } from '../Alert/PopupDummy'
 
 import { useRef } from 'react'
 import styled from 'styled-components'
-import { KrFiledtoEng } from '../../lib/tableHelpers'
-import { readExcelFile } from '../../utils/ReadExcelFile'
 
 import { CustomSelect } from '../../common/Option/Main'
 import { Input, Table, Td, Th } from '../Table/TableModal'
@@ -62,6 +60,10 @@ const Upload = ({
   onEditHandler,
   dropdownProps,
   width,
+  convertKey,
+  handleSelectChange,
+  dropInput,
+  setDropInput,
 }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
@@ -89,21 +91,21 @@ const Upload = ({
     setNowPopupType(firstType)
   }, [nowPopup, nowPopupType])
 
-  const handleFileExcel = async (event) => {
-    const selectedFile = event.target.files[0]
+  // const handleFileExcel = async (event) => {
+  //   const selectedFile = event.target.files[0]
 
-    if (selectedFile) {
-      setSelectedFile(selectedFile)
-      setUploadProgress(0)
+  //   if (selectedFile) {
+  //     setSelectedFile(selectedFile)
+  //     setUploadProgress(0)
 
-      try {
-        const jsonData = await readExcelFile(selectedFile) // Excel 파일을 JSON으로 변환
+  //     try {
+  //       const jsonData = await readExcelFile(selectedFile) // Excel 파일을 JSON으로 변환
 
-        const mappedData = KrFiledtoEng(jsonData, originEngRowField)
-        setExcelToJson(mappedData)
-      } catch (error) {}
-    }
-  }
+  //       const mappedData = KrFiledtoEng(jsonData, originEngRowField)
+  //       setExcelToJson(mappedData)
+  //     } catch (error) {}
+  //   }
+  // }
 
   const modalClose = () => {
     setModalSwitch(false)
@@ -190,12 +192,12 @@ const Upload = ({
                         accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                         ref={fileInputRef}
                         style={{ display: 'none' }}
-                        onChange={handleFileExcel}
+                        // onChange={handleFileExcel}
                       />
                       <UldWrap>
                         {selectedFile && (
                           <div>
-                            <div>{selectedFile.name}</div>
+                            <div>{selectedFile?.name}</div>
                             <div>
                               <progress value={uploadProgress} max="100" />
                             </div>
@@ -233,27 +235,45 @@ const Upload = ({
                     <tr>
                       {Object.entries(modalInTable)?.map(([key, value], index) => (
                         <Td key={index}>
+                          {console.log('key ==>', key)}
                           {value === 'input' ? (
                             value === '작성일' ? (
                               <div>{date}</div>
                             ) : (
-                              <Input type="text" />
+                              <Input
+                                type="text"
+                                name={convertKey && convertKey[key]}
+                                onChange={(e) => {
+                                  onEditHandler(e)
+                                }}
+                              />
                             )
                           ) : value === 'dropdown' ? (
                             <CustomSelect
                               options={dropdownProps[0]?.options}
                               defaultValue={dropdownProps[0]?.defaultValue}
+                              onChange={(selectedValue) =>
+                                onEditHandler({ target: { name: 'spart', value: selectedValue.label } })
+                              }
                             />
                           ) : value === 'dropdown2' ? (
                             <CustomSelect
                               options={dropdownProps[1]?.options}
                               defaultValue={dropdownProps[1]?.defaultValue}
+                              onChange={(selectedValue) =>
+                                onEditHandler({ target: { name: 'preferThickness', value: selectedValue.label } })
+                              }
                             />
                           ) : value === 'dropdown3' ? (
                             <CustomSelect
                               options={dropdownProps[2].options}
                               defaultValue={dropdownProps[2].defaultValue}
+                              onChange={(selectedValue) =>
+                                onEditHandler({ target: { name: 'grade', value: selectedValue.value } })
+                              }
                             />
+                          ) : key === '적용일자' ? (
+                            <>{date}</>
                           ) : (
                             ''
                           )}

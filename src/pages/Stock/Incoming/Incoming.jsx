@@ -260,7 +260,9 @@ PartWrap first : Row의 제일 앞에 오는 Part (제목 width 고정용) */}
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown />
-            <Excel />
+            <Excel
+            //  getRow={getRow}
+            />
           </div>
         </TCSubContainer>
         <TCSubContainer>
