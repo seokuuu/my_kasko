@@ -4,13 +4,13 @@ import styled from 'styled-components'
 import { BlackBtn } from '../../common/Button/Button'
 import { operateAddAtom } from '../../store/Layout/Layout'
 import {
-  BlueBarHeader,
-  BlueInput,
-  BlueMainDiv,
-  BlueSubContainer,
-  FadeOverlay,
-  ModalContainer,
-  WhiteCloseBtn,
+	BlueBarHeader,
+	BlueInput,
+	BlueMainDiv,
+	BlueSubContainer,
+	FadeOverlay,
+	ModalContainer,
+	WhiteCloseBtn,
 } from '../Common/Common.Styled'
 
 /**
@@ -24,66 +24,67 @@ import {
 
  */
 const AddProduct = ({ title, contentTitle, deliveryHandler, register, initValue, closeHandler }) => {
-  const setModal = useSetAtom(operateAddAtom)
+	const setModal = useSetAtom(operateAddAtom)
 
-  // 인풋
-  const [value, setValue] = useState('')
-  // 모달 닫기
-  function closeModal() {
-    setValue('')
-    setModal(false)
-    closeHandler()
-  }
+	// 인풋
+	const [value, setValue] = useState('')
+	console.log('value :', value)
+	// 모달 닫기
+	function closeModal() {
+		setValue('')
+		setModal(false)
+		closeHandler()
+	}
 
-  useEffect(() => {
-    if (deliveryHandler) deliveryHandler(value)
-  }, [value])
+	useEffect(() => {
+		if (deliveryHandler) deliveryHandler(value)
+	}, [value])
 
-  // 초기 데이터값 바인딩
-  useEffect(() => {
-    setValue(initValue)
-  }, [initValue])
+	// 초기 데이터값 바인딩
+	useEffect(() => {
+		setValue(initValue)
+	}, [initValue])
 
-  //  모달 컴포넌트가 사라지면 값 초기화
-  useEffect(() => {
-    return () => setValue('')
-  }, [])
+	//  모달 컴포넌트가 사라지면 값 초기화
+	useEffect(() => {
+		return () => setValue('')
+	}, [])
 
-  console.log('value :', value)
-  return (
-    <>
-      <FadeOverlay />
-      <ModalContainer width={500}>
-        <BlueBarHeader>
-          <div>{title}</div>
-          <div>
-            <WhiteCloseBtn onClick={closeModal} src="/svg/white_btn_close.svg" />
-          </div>
-        </BlueBarHeader>
+	console.log('value :', value)
+	return (
+		<>
+			<FadeOverlay />
+			<ModalContainer width={500}>
+				<BlueBarHeader>
+					<div>{title}</div>
+					<div>
+						<WhiteCloseBtn onClick={closeModal} src="/svg/white_btn_close.svg" />
+					</div>
+				</BlueBarHeader>
 
-        <BlueSubContainer>
-          <BlueMainDiv
-            style={{ height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '50px' }}
-          >
-            <h1>{contentTitle}</h1>
-            <BlueInput placeholder="" value={value} onChange={(e) => setValue(e.target.value)} />
-          </BlueMainDiv>
-        </BlueSubContainer>
-        <BtnContainer>
-          <BlackBtn width={30} height={40} onClick={register}>
-            적용
-          </BlackBtn>
-        </BtnContainer>
-      </ModalContainer>
-    </>
-  )
+				<BlueSubContainer>
+					<BlueMainDiv
+						style={{ height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '50px' }}
+					>
+						<h1>{contentTitle}</h1>
+						<BlueInput placeholder="" value={value} onChange={(e) => setValue(e.target.value)} />
+					</BlueMainDiv>
+				</BlueSubContainer>
+				<BtnContainer>
+					<BlackBtn width={30} height={40} onClick={register}>
+						적용
+					</BlackBtn>
+				</BtnContainer>
+			</ModalContainer>
+		</>
+	)
 }
 
 export default AddProduct
 
 const BtnContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 32px;
 `

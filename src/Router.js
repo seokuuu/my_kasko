@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Route, Routes, createBrowserRouter } from 'react-router-dom'
 
 import CalendarModal from './modal/Calender/Calendar'
 import Test from './pages/Test/Test'
@@ -145,8 +145,8 @@ import TestExcel from './pages/Test/TestExcel'
 import WinningCreate from './pages/Auction/Winning/WinningCreate'
 import NoticeDetailsPage from './pages/Operate/Common/Notice/NoticeDetailsPage'
 import NoticeBoardDetailsPage from './pages/Operate/Exposure/NoticeBoard/NoticeBoardDetailsPage'
-import StatusPage from './pages/Shipping/Status/StatusPage'
-import ShipmentInvoicePage from './pages/Shipping/Achievement/ShipmentInvoicePage'
+// import StatusPage from './pages/Shipping/Status/StatusPage'
+// import ShipmentInvoicePage from './pages/Shipping/Achievement/ShipmentInvoicePage'
 // RoundAucProAdd
 const Router = () => {
 	return (
@@ -330,7 +330,9 @@ const Router = () => {
 				</Route>
 			</Routes>
 		</BrowserRouter>
+
 	)
 }
+export const router = createBrowserRouter([{ path: '*', Component: Router }])
 
 export default Router

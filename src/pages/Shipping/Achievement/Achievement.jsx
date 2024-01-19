@@ -198,7 +198,7 @@ const Achievement = () => {
 						<RowWrap>
 							<DateSearchSelect
 								title={'경매 일자'}
-								sta자rtInitDate={param.auctionStartDate}
+								startInitDate={param.auctionStartDate}
 								endInitDate={param.auctionEndDate}
 								startDateChange={(value) => onChange('auctionStartDate', value)}
 								endDateChange={(value) => onChange('auctionEndDate', value)}

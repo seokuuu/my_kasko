@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 
 import { BlackBtn, WhiteBtn } from '../../../../common/Button/Button'
 import { CenterRectangleWrap } from '../../../../common/OnePage/OnePage.Styled'
 
+import { isEqual } from 'lodash'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
 	useNoticeBoardDetailsQuery,
@@ -11,8 +12,8 @@ import {
 	useNoticeBoardUpdateMutation,
 } from '../../../../api/operate/noticeBoard'
 import { PropsTextArea } from '../../../../common/Input/Input'
-import AlertPopup from '../../../../modal/Alert/AlertPopup'
-import useConfirmModal from '../../../../hooks/useConfirmModal'
+import useBlockRoute from '../../../../hooks/useBlockRoute'
+import useAlert from '../../../../store/Alert/useAlert'
 import IsExposure from './components/IsExposure'
 /**
  * @description
@@ -22,11 +23,15 @@ const NoticeBoardPost = () => {
 	const { id } = useParams()
 	const navigate = useNavigate()
 
+	const initForm = { title: '', status: true }
+
+	const [observeClick, setObserveClick] = useState(false)
+
 	// 등록 폼
-	const [form, setForm] = useState({ title: '', status: true })
+	const [form, setForm] = useState(initForm)
 
 	// 확인 모달 관련 값들
-	const { popupSwitch, setPopupSwitch, setNowPopupType, nowPopup, setNowPopup, initConfirmModal } = useConfirmModal()
+	const { simpleAlert, simpleConfirm } = useAlert()
 
 	//  전광판 상세 API
 	const { data } = useNoticeBoardDetailsQuery(id)
@@ -46,20 +51,22 @@ const NoticeBoardPost = () => {
 		setForm((p) => ({ ...p, [name]: value }))
 	}
 
+	function onSubmit() {
+		if (id && data) {
+			update({ ...form, status: Number(form.status), uid: data.uid })
+		} else {
+			register({ ...form, status: Number(form.status) })
+		}
+		setObserveClick(true)
+	}
+
 	// 등록 핸들러
 	function submitHandler() {
 		if (!form.title) {
-			return alert('내용을 입력해주세요.')
+			return simpleAlert('내용을 입력해주세요.')
 		}
 
-		setPopupSwitch(true)
-		setNowPopupType(2)
-		setNowPopup({
-			num: '2-1',
-			title: '저장하시겠습니까?',
-			next: '1-12',
-			func() {},
-		})
+		simpleConfirm('저장하시겠습니까?', onSubmit)
 	}
 
 	const checkDummy = ['노출 안함']
@@ -69,6 +76,9 @@ const NoticeBoardPost = () => {
 	const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
+	const blockCondition = useMemo(() => !isEqual(initForm, form) && !Boolean(id) && !observeClick, [form, observeClick])
+	useBlockRoute(blockCondition)
+
 	useEffect(() => {
 		const updatedCheck = checkDummy.map((value, index) => {
 			return check[index] ? value : ''
@@ -76,29 +86,7 @@ const NoticeBoardPost = () => {
 		// 그냥 배열에 담을 때
 		const filteredCheck = updatedCheck.filter((item) => item !== '')
 		setCheckData(filteredCheck)
-
-		// 전송용 input에 담을 때
-		// setInput({
-		//   ...input,
-		//   businessType: updatedCheck.filter(item => item !== ''),
-		// });
 	}, [check])
-
-	/**
-	 * @description
-	 * 등록 or 수정 API 요청
-	 * detailsId와 data가 있다면 수정 API 없다면 등록 API
-	 */
-	useEffect(() => {
-		if (nowPopup.num === '1-12') {
-			if (id && data) {
-				update({ ...form, status: Number(form.status), uid: data.uid })
-			} else {
-				register({ ...form, status: Number(form.status) })
-			}
-			initConfirmModal()
-		}
-	}, [nowPopup])
 
 	useEffect(() => {
 		if (id && data) {
@@ -151,7 +139,6 @@ const NoticeBoardPost = () => {
 						</BtnWrap>
 					</CRWSub>
 				</CRWMain>
-				{popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
 			</CenterRectangleWrap>
 		</>
 	)
