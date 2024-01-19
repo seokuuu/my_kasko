@@ -54,8 +54,6 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
   const [tablePagination, setTablePagination] = useState([])
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 
-
-
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
 
@@ -300,7 +298,7 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
                 </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <PageDropdown handleDropdown={handleTablePageSize} />
-                  <Excel />
+                  <Excel getRow={getRow} />
                 </div>
               </TCSubContainer>
               <TCSubContainer>

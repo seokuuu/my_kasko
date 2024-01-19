@@ -436,15 +436,7 @@ export const AuctionProgressFields = {
 
 export const AuctionProgressFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
-  {
-    field: '수정',
-    maxWidth: 90,
-    cellRenderer: BtnCellRenderer,
-    cellRendererParams: {
-      uidFieldName: '경매 제품 고유 번호',
-      editType: 'auctionprogress',
-    },
-  },
+
   { field: '경매 제품 고유 번호', minWidth: 100 },
   { field: '고객 코드', minWidth: 100 },
   { field: '회사명', minWidth: 100 },

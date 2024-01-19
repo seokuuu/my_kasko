@@ -591,7 +591,7 @@ const Hyundai = ({}) => {
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <PageDropdown handleDropdown={(e) => onSizeChange(e, setRequestParameter)} />
-              <Excel />
+              <Excel getRow={getRow} />
             </div>
           </TCSubContainer>
           <TCSubContainer bor>

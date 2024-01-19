@@ -209,7 +209,7 @@ function HyunDaiOriginal({ title }) {
             <div>조회 목록 (총{' ' + original?.data?.pagination.listCount}개 )</div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <PageDropdown handleDropdown={(e) => onSizeChange(e, setRequest)} />
-              <Excel />
+              <Excel getRow={getRow} />
             </div>
           </TCSubContainer>
           <TCSubContainer bor>

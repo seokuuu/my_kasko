@@ -155,7 +155,7 @@ const Destination = ({ setChoiceComponent }) => {
                     setRequest((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))
                   }}
                 />
-                <Excel />
+                <Excel getRow={getRow} />
               </div>
             </TCSubContainer>
             <TCSubContainer>

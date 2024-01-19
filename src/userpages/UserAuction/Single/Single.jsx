@@ -146,7 +146,6 @@ const Single = ({}) => {
 
   useEffect(() => {
     let getData = resData
-    //타입, 리액트쿼리, 데이터 확인 후 실행
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, AuctionBiddingFields))
@@ -154,17 +153,16 @@ const Single = ({}) => {
     }
   }, [isSuccess, resData])
 
+  // 경매 번호 가져오기
   const auctionNumber = checkedArray?.[0]?.['경매 번호']
 
   const init = {
     auctionNumber: null,
-    type: '단일'
+    type: '단일',
   }
   const [winningCreateData, setWinningCreateData] = useState(init)
-  // 목적지 찾기 및 목적지 uid, auctionNumber set //
 
-  // uid 같은놈들 object를 추려서, 해당 destiobject 에 넣음.(아직 destiobject에)
-  // 경매 번호 넣어줌 set.
+  //
   useEffect(() => {
     const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
     setDestiObject(selectedObject)
@@ -366,7 +364,7 @@ const Single = ({}) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown handleTablePageSize={handleTablePageSize} />
-            <Excel />
+            <Excel getRow={getRow} />
             <WhiteGrnBtn>
               <div>
                 <img src="/img/grnstar.png" />

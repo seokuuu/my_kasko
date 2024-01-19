@@ -538,7 +538,7 @@ const SalesProduct = () => {
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <PageDropdown handleDropdown={(e) => onSizeChange(e, setRequestParamter)} />
-              <Excel />
+              <Excel getRow={getRow} />
             </div>
           </TCSubContainer>
           <TCSubContainer bor>

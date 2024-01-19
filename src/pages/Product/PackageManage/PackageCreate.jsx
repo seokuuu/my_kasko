@@ -282,7 +282,7 @@ const PackageCreate = () => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown handleDropdown={(e) => onSizeChange(e, setRequestParams)} />
-            <Excel />
+            <Excel getRow={getRow} />
           </div>
         </TCSubContainer>
         <TCSubContainer bor>

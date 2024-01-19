@@ -61,11 +61,12 @@ import { useAtom } from 'jotai'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { getAuctionDestination } from '../../../api/auction/winning'
-import { getBidding } from '../../../api/auction/bidding'
+import { getBidding, postBidding } from '../../../api/auction/bidding'
 import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constants/admin/Auction'
 import { useQueryClient } from '@tanstack/react-query'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../../pages/Table/Table'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
 const Single = ({}) => {
   const radioDummy = ['전체', '미응찰', '관심제품', '응찰']
@@ -145,7 +146,6 @@ const Single = ({}) => {
 
   useEffect(() => {
     let getData = resData
-    //타입, 리액트쿼리, 데이터 확인 후 실행
     if (!isSuccess && !resData) return
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, AuctionBiddingFields))
@@ -153,6 +153,7 @@ const Single = ({}) => {
     }
   }, [isSuccess, resData])
 
+  // 경매 번호 가져오기
   const auctionNumber = checkedArray?.[0]?.['경매 번호']
 
   const init = {
@@ -160,7 +161,8 @@ const Single = ({}) => {
     type: '패키지',
   }
   const [winningCreateData, setWinningCreateData] = useState(init)
-  // 목적지 찾기 및 목적지 uid, auctionNumber set //
+
+  //
   useEffect(() => {
     const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
     setDestiObject(selectedObject)
@@ -170,11 +172,17 @@ const Single = ({}) => {
     }))
   }, [propsUid, auctionNumber])
 
+  const [finalInput, setFinalInput] = useState({
+    biddingPrice: null,
+    customerDestinationUid: null,
+  })
+
+  // biddingList에 들어갈 3총사를 다 넣어줌.
   useEffect(() => {
     const updatedProductList = checkedArray?.map((item) => ({
       productUid: item['제품 고유 번호'],
-      biddingPrice: winningCreateInput.biddingPrice,
-      customerDestinationUid: destiObject?.uid,
+      biddingPrice: finalInput?.biddingPrice,
+      customerDestinationUid: finalInput?.customerDestinationUid,
       // 여기에 다른 필요한 속성을 추가할 수 있습니다.
     }))
 
@@ -183,7 +191,7 @@ const Single = ({}) => {
       ...prevData,
       biddingList: updatedProductList,
     }))
-  }, [checkedArray, winningCreateInput, destiObject])
+  }, [checkedArray, finalInput])
 
   const handleTablePageSize = (event) => {
     setParam((prevParam) => ({
@@ -198,6 +206,13 @@ const Single = ({}) => {
       ...prevParam,
       pageNum: Number(value),
     }))
+  }
+
+  const postMutation = useMutationQuery('', postBidding)
+
+  // 응찰 버튼 POST
+  const confirmOnClickHandler = () => {
+    postMutation.mutate(winningCreateData)
   }
 
   console.log('winningCreateData', winningCreateData)
@@ -347,7 +362,7 @@ const Single = ({}) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown handleDropdown={handleTablePageSize} />
-            <Excel />
+            <Excel getRow={getRow} />
             <WhiteGrnBtn>
               <div>
                 <img src="/img/grnstar.png" />
@@ -381,7 +396,16 @@ const Single = ({}) => {
             >
               찾기
             </TWhiteBtn>
-            <TGreyBtn>적용</TGreyBtn>
+            <TGreyBtn
+              onClick={() => {
+                setFinalInput((prevFinalInput) => ({
+                  ...prevFinalInput,
+                  customerDestinationUid: destiObject && destiObject.uid,
+                }))
+              }}
+            >
+              적용
+            </TGreyBtn>
             <BtnBound style={{ margin: '0px' }} />
             <p>일괄 경매 응찰</p>
             <CustomInput
@@ -395,11 +419,21 @@ const Single = ({}) => {
                 }))
               }}
             />
-            <TGreyBtn height={30} style={{ width: '50px' }}>
+            <TGreyBtn
+              height={30}
+              style={{ width: '50px' }}
+              onClick={() => {
+                setFinalInput((p) => ({
+                  ...p,
+
+                  biddingPrice: winningCreateInput?.biddingPrice,
+                }))
+              }}
+            >
               적용
             </TGreyBtn>
             <BtnBound style={{ margin: '0px' }} />
-            <SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50}>
+            <SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50} onClick={confirmOnClickHandler}>
               응찰
             </SkyBtn>
           </div>
