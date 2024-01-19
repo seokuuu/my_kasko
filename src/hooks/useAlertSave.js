@@ -20,6 +20,7 @@ const useAlertSave = (isNotEqualPrevious) => {
 	 * @todo 다음 모달이 뜨지 않도록 해야합니다.
 	 *
 	 */
+
 	useEffect(() => {
 		if (blocker.state === 'blocked') {
 			setPopupSwitch(true)
@@ -32,7 +33,7 @@ const useAlertSave = (isNotEqualPrevious) => {
 				},
 			})
 		}
-	}, [blocker.state])
+	}, [blocker])
 }
 
 export default useAlertSave
