@@ -51,6 +51,7 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import axios from 'axios'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
+import useAlert from '../../../store/Alert/useAlert'
 const Incoming = ({}) => {
   const { simpleConfirm } = useAlert()
 
@@ -86,7 +87,7 @@ const Incoming = ({}) => {
   const paramData = {
     pageNum: 1,
     pageSize: 5,
-    // orderStatus:'확정 전송',
+    orderStatus:'확정 전송',
     // receiptStatusList: '입고 요청',
   }
   const [param, setParam] = useState(paramData)
@@ -136,15 +137,14 @@ const Incoming = ({}) => {
     setSelectInComeNumber(() => checkBoxSelect?.map((i) => i['제품 번호']))
   }, [checkBoxSelect])
   const handleDelete = () => {
-    const confirm = window.confirm('정말로 삭제하시겠습니까?')
-    if (confirm) {
+    simpleConfirm('정말로 삭제하시겠습니까?', () => {
       deleteIncome(selectInComeNumber?.join(','), {
         onSuccess: () => {
-          window.location.reload()
+          window.location.reload();
         },
-      })
-    } else return
-  }
+      });
+    });
+  };
 
   /**
    * @description 제품 등록
@@ -154,6 +154,7 @@ const Incoming = ({}) => {
     <>
     <FilterContianer>
       <div>
+        <div onClick={() => simpleConfirm('안녕하세요', () => console.log('심플confirm'))}>심플Confirm</div>
         <FilterHeader>
           <h1>입고 관리</h1>
           {/* 토글 쓰기 */}
