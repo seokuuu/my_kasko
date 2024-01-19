@@ -6,6 +6,7 @@ const urls = {
     get: '/user/signup',
     singleProductList: '/single-product',
     packageProductList: '/package-product',
+    packageProductDetailsList: '/package-product/products',
     cartList: '/sale-product/cart', // GET
     cartRequest: '/sale-product/cart', // POST
     orderRequest: '/sale-product/order', // POST
@@ -44,6 +45,19 @@ export const useUserPackageProductListQuery = (param) => useQuery({
     queryKey: ["user","package", param],
     queryFn: async() => {
         const { data } = await client.get(getUrlWithSearchParam(urls.packageProductList, param));
+        return data.data; 
+    },
+});
+
+/**
+ * 상시판매 패키지 상세 목록 API 쿼리
+ * @param {number} param.pageNum 페이지 
+ * @param {number} param.pageSize 페이지당 조회 갯수 
+ */
+export const useUserPackageProductDetailsListQuery = (param) => useQuery({
+    queryKey: ["user","package", "details", param],
+    queryFn: async() => {
+        const { data } = await client.get(getUrlWithSearchParam(urls.packageProductDetailsList, param));
         return data.data; 
     },
 });

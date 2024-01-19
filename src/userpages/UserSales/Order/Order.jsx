@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { useCallback, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useUserOrderCancelMutaion, useUserOrderListQuery } from '../../../api/user'
 import { BlackBtn, GreyBtn, WhiteRedBtn } from '../../../common/Button/Button'
@@ -44,6 +44,7 @@ import {
 import StandardFind from '../../../modal/Multi/StandardFind'
 import Table from '../../../pages/Table/Table'
 import { toggleAtom } from '../../../store/Layout/Layout'
+import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 
 /**
  * @constant 기본 검색 값
@@ -115,7 +116,7 @@ const Order = ({}) => {
   const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
     tableField: userOrderListField,
     serverData: orderData,
-    wish: { display: true, cellKey: 'productNumber', valueKey: 'productNumber' }
+    wish: { display: true, key: ['productNumber', 'packageNumber'] }
   })
   // 선택 항목
   const { selectedData, selectedWeightStr, selectedCountStr, hasSelected } = useTableSelection({ weightKey: '총 중량' })
@@ -123,6 +124,8 @@ const Order = ({}) => {
   const { supplierList, stockStatusList, gradeList } = useTableSearchFieldData();
   // 규격약호 검색 모달
   const [standardCodeModalOn, setStandardCodeModalOn] = useState(false);
+  // 패키지 상세보기
+  const { setPackageReadOnlyViewer } = useContext(PackageViewerDispatchContext);
   // NAVIGATION
   const navigate = useNavigate();
 
@@ -514,7 +517,7 @@ const Order = ({}) => {
         {/* 테이블 */}
         <Table
           getRow={tableRowData}
-          getCol={userOrderListFieldsCols}
+          getCol={(userOrderListFieldsCols(setPackageReadOnlyViewer))}
           isLoading={isLoading}
           isRowClickable
           handleOnRowClicked={handleTableRowClick}

@@ -19,14 +19,14 @@ class WishCellRenderer {
   clickEventListener;
 
   init(params) {
-    this.cellValue = this.getValueToDisplay(params);
+    this.cellValue = params.value;
     this.eGui = document.createElement('div');
 
     this.renderCell();
   }
 
   refresh(params) {
-    this.cellValue = this.getValueToDisplay(params);
+    this.cellValue = params.value;
     this.renderCell();
 
     return true;
@@ -54,7 +54,7 @@ class WishCellRenderer {
 
     this.eGui.innerHTML = `
           <div style="display:flex;align-items:center;justify-content:center;gap:4px;height:34px;">
-            ${textTag(Boolean(clickHandler), textValue)}
+            ${textTag(Boolean(this.cellValue?.value && clickHandler), textValue)}
             ${wishValue? wishIcon : ''}
           </div>
     `;

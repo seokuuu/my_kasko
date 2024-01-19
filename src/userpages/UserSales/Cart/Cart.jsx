@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import { useUserCartListQuery } from '../../../api/user'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
@@ -22,6 +22,7 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
 import AddOrderButton from '../_components/AddOrderButton'
+import { PACKAGE_VIEWER_ACTION, PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 
 /**
  * @constant 기본 검색 값
@@ -46,12 +47,14 @@ const Cart = ({}) => {
   const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
     tableField: isSingleCategory ? userCartListSingleField : userCartListPackageField,
     serverData: cartData,
-    wish: { display: true }
+    wish: { display: true, key: ['number', 'packageNumber']}
   })
   // 선택 항목
   const { selectedData, selectedWeight, selectedWeightStr, selectedCountStr, selectedCount } = useTableSelection({
     weightKey: isSingleCategory ? '중량' : '패키지 상품 총 중량',
   });
+  // 패키지 상세보기
+  const { setPackageReadOnlyViewer } = useContext(PackageViewerDispatchContext);
 
   // ERROR SECTION
   if (isError) {
@@ -102,7 +105,7 @@ const Cart = ({}) => {
         </TCSubContainer>
         {/* 테이블 */}
         <Table
-          getCol={isSingleCategory ? userCartListSingleFieldsCols : userCartListPackageFieldCols}
+          getCol={isSingleCategory ? userCartListSingleFieldsCols : userCartListPackageFieldCols(setPackageReadOnlyViewer)}
           getRow={tableRowData}
           tablePagination={paginationData}
           onPageChange={(p) => {

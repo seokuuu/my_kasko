@@ -12,15 +12,29 @@ import { PROD_CATEGORY } from '../../../constants/user/product'
 const MIN_ORDER_WEIGHT = 25_000
 
 /**
+ * @constant 버튼 타입
+ */
+export const ORDER_BUTTON_TYPE = {
+  default: 'default',
+  simple: 'simple'
+}
+
+/**
  * 선택 제품 주문 컴포넌트
  * @todo API 변수 parameter 확인
+ * @param {string} param.category 상품 카테고리(단일|패키지) 
+ * @param {string} param.products 상품 목록 
+ * @param {string} param.totalWeight 총 중량 
+ * @param {string} param.buttontType 버튼 타입(default|simple) 
  */
-const AddOrderButton = ({ category, totalWeight, products=[] }) => {
+const AddOrderButton = ({ category, totalWeight, products=[], buttonType }) => {
   // API
   const { mutate: requestOrder, loading: isOrderLoading } = useUserOrderMutaion() // 주문하기 뮤테이션
   // POPUP(선택제품주문)
   const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom) // 팝업 스위치
   const [_, setNowPopup] = useAtom(popupObject)
+  // 버튼 타입
+  const isTableButton =  !buttonType || buttonType !== ORDER_BUTTON_TYPE.default;
 
   /**
    * 선택 항목 주문 핸들러
@@ -65,7 +79,8 @@ const AddOrderButton = ({ category, totalWeight, products=[] }) => {
 
   return (
     <>
-      <SkyBtn disabled={isOrderLoading} onClick={handleSelectOrder}>선택 제품 주문</SkyBtn>
+      { buttonType === ORDER_BUTTON_TYPE.default && buttonType === undefined && <SkyBtn disabled={isOrderLoading} onClick={handleSelectOrder}>선택 제품 주문</SkyBtn> }
+      { buttonType === ORDER_BUTTON_TYPE.simple &&  <SkyBtn style={{ borderRadius: '0px' }} width={14} height={38} fontSize={18} onClick={handleSelectOrder}>제품구매</SkyBtn> }
       {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
     </>
   )

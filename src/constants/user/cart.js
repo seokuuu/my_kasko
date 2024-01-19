@@ -114,10 +114,15 @@ export const userCartListSingleFieldsCols = [
  * @constant 테이블컬럼
  * @description 사용자 장바구니 > 패키지 테이블에서 사용합니다.
  */
-export const userCartListPackageFieldCols = [
+export const userCartListPackageFieldCols = (numberClickHandler=undefined) =>  [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   {field: "패키지 이름", minWidth: 100 },
-  {field: "패키지 번호" , minWidth: 100 },
+  { 
+    field: "패키지 번호", 
+    minWidth: 100, 
+    cellRenderer: WishCellRenderer, 
+    valueGetter: (v) => ({...v.data[v.column.colId], clickHandler: numberClickHandler }) 
+  },
   {field: "패지키 판매 유형", minWidth: 130 },
   {field: "패키지 판매 구분" , minWidth: 130  },
   {field: "패키지 상시 판매가" , minWidth: 150 },

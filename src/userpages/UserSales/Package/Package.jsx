@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useUserPackageProductListQuery } from '../../../api/user'
 import { BlackBtn, GreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
@@ -6,7 +6,7 @@ import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { PROD_CATEGORY, userPackageProductField, getUserPackageProductFieldsCols } from '../../../constants/user/product'
+import { PROD_CATEGORY, getUserPackageProductFieldsCols, userPackageProductField } from '../../../constants/user/product'
 import useTableData from '../../../hooks/useTableData'
 import useTableSearchFieldData from '../../../hooks/useTableSearchFieldData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
@@ -36,7 +36,7 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import AddCartButton from '../_components/AddCartButton'
 import AddOrderButton from '../_components/AddOrderButton'
 import AddWishButton from '../_components/AddWishButton'
-import UserPackageDetail from './UserPackDetail'
+import { PACKAGE_VIEWER_ACTION, PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 
 /**
  * @constant 기본 검색 값
@@ -89,7 +89,7 @@ const Package = ({}) => {
   const [standardCodeModalOn, setStandardCodeModalOn] = useState(false);
   const { wishProdNums } = useWishList();
   // 패키지 상세보기
-  const [selectedPackageNumber, setSelectedPackageNumber] = useState('');
+  const {setPackageActionViewer} = useContext(PackageViewerDispatchContext);
 
   /**
    * 필터 검색 핸들러
@@ -105,10 +105,6 @@ const Package = ({}) => {
     // }
 
     handleSearch();
-  }
-
-  function handlePackageNumberClick(num) {
-    setSelectedPackageNumber(num);
   }
 
   /**
@@ -276,7 +272,7 @@ const Package = ({}) => {
         {/* 테이블 */}
         <Table
           getRow={tableRowData}
-          getCol={getUserPackageProductFieldsCols(handlePackageNumberClick)}
+          getCol={getUserPackageProductFieldsCols(setPackageActionViewer)}
           isLoading={isLoading}
           tablePagination={paginationData}
           onPageChange={(p) => {
@@ -289,13 +285,6 @@ const Package = ({}) => {
           <AddOrderButton category={PROD_CATEGORY.package} totalWeight={selectedWeight} products={selectedData} />
         </TCSubContainer>
       </TableContianer>
-      {/* 패키지 상세 보기 */}
-      { selectedPackageNumber && 
-        <UserPackageDetail 
-          packageNumber={selectedPackageNumber}
-          onClose={() => { setSelectedPackageNumber('') }} 
-        />
-      }
     </FilterContianer>
   )
 }

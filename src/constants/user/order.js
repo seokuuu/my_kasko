@@ -140,14 +140,19 @@ export const userDestinationField = {
  * @constant 테이블컬럼
  * @description 사용자 주문확인 > 목록 테이블에서 사용합니다.
  */
-export const userOrderListFieldsCols = [
+export const userOrderListFieldsCols = (numberClickHandler=undefined) =>  [
   { field: "", maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   { field: "주문 고유 번호", minWidth: 140 },
   { field: "상시판매 번호", minWidth: 140 },
   { field: "상시판매 주문일자", minWidth: 140 },
   { field: "상시판매 상태", minWidth: 140 },
   { field: "패키지명", minWidth: 100 },
-  { field: "패키지번호", minWidth: 100 },
+  { 
+    field: "패키지번호", 
+    minWidth: 100, 
+    cellRenderer: WishCellRenderer, 
+    valueGetter: (v) => ({...v.data[v.column.colId], clickHandler: numberClickHandler }) 
+  },
   { field: "고객사명", minWidth: 100 },
   { field: "고객코드", minWidth: 100 },
   { field: "제품번호", minWidth: 100,  cellRenderer: WishCellRenderer },

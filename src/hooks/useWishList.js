@@ -96,7 +96,7 @@ function getMergedProdNums(prevProdNums=[], addProdNums=[]) {
  * @returns {string[]} 위시리스트 ProductNumber 목록
  */
 function getWishList(userId='') {
-  const savedData = sessionStorage.getItem(USER_WISH_STORAGE_KEY(userId));
+  const savedData = localStorage.getItem(USER_WISH_STORAGE_KEY(userId));
   const parsedData = savedData? JSON.parse(savedData) : [];
   return parsedData;
 }
@@ -108,7 +108,7 @@ function getWishList(userId='') {
  */
 function saveWishList(productNumbers=[], userId='') {
   if(userId.length > 0) {
-    sessionStorage.setItem(
+    localStorage.setItem(
       USER_WISH_STORAGE_KEY(userId), 
       JSON.stringify(productNumbers)
     );
@@ -123,7 +123,7 @@ function saveWishList(productNumbers=[], userId='') {
  * 위 형식에서 value만을 추출하는 함수입니다.
  */
 export function getProductNumber(value) {
-  if(typeof value === 'string') {
+  if(typeof value === 'string' || typeof value === 'number') {
     return value + '';
   }
   if(typeof value === 'object') {

@@ -1,22 +1,34 @@
 import { useAtom } from 'jotai'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useUserAddCartMutaion } from '../../../api/user'
-import { SkyBtn } from '../../../common/Button/Button'
+import { GreenBtn, SkyBtn } from '../../../common/Button/Button'
 import { PROD_CATEGORY } from '../../../constants/user/product'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
 import { destiDelPopupAtom, popupObject } from '../../../store/Layout/Layout'
 import { getProductNumber } from '../../../hooks/useWishList'
 
 /**
- * 선택 제품 장바구니 추가 컴포넌트
- * @todo API 변수 parameter 확인
+ * @constant 버튼 타입
  */
-const AddCartButton = ({ category, products=[] }) => {
+export const CART_BUTTON_TYPE = {
+  default: 'default',
+  simple: 'simple'
+}
+
+/**
+ * 선택 제품 장바구니 추가 컴포넌트
+ * @param {string} param.category 상품 카테고리(단일|패키지) 
+ * @param {string} param.products 상품 목록 
+ * @param {string} param.buttontType 버튼 타입(default|simple) 
+ */
+const AddCartButton = ({ category, products=[], buttonType }) => {
   // API
   const { mutate: addCart, isLoading } = useUserAddCartMutaion() // 장바구니 추가하기 뮤테이션
   // POPUP(선택제품주문)
   const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom) // 팝업 스위치
   const [_, setNowPopup] = useAtom(popupObject)
+  // 버튼 타입
+  const isTableButton = !buttonType || buttonType !== CART_BUTTON_TYPE.default;
 
   /**
    * 선택 항목 장바구니 추가 핸들러
@@ -43,8 +55,9 @@ const AddCartButton = ({ category, products=[] }) => {
   }
 
   return (
-    <>
-      <SkyBtn disabled={isLoading} onClick={handleSelectOrder}>선택 제품 장바구니 추가</SkyBtn>
+    <>  
+      { buttonType === CART_BUTTON_TYPE.default || buttonType === undefined && <SkyBtn disabled={isLoading} onClick={handleSelectOrder}>선택 제품 장바구니 추가</SkyBtn> }
+      { buttonType === CART_BUTTON_TYPE.simple && <GreenBtn width={14} height={38} fontSize={18} onClick={handleSelectOrder}>장바구니</GreenBtn> }
       {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
     </>
   )
