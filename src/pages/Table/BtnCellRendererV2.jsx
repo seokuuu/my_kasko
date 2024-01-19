@@ -12,11 +12,11 @@ const BtnCellRendererV2 = ({ data, uidFieldName, editType, moveUrl }) => {
     setWeight(true)
     setObj(data)
   }
-
+  console.log('DATA : ', data)
   return (
     <>
       <SkyBtn style={{ marginLeft: 'auto', marginRight: 'auto' }} onClick={btnClickedHandler}>
-        중량 판매
+        {data['중량 판매 개수'] === 0 ? '중량 판매' : '수정'}
       </SkyBtn>
     </>
   )

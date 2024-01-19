@@ -5,7 +5,8 @@ import { client } from '../index'
 const urls = {
   stocks:'admin/stock',
   stocksWeight:'admin/stock/weight',
-  stockCategory:'/admin/stock'
+  stockCategory:'/admin/stock',
+  createWeightStocks:'/admin/stock/weight'
 }
 
 
@@ -24,4 +25,12 @@ export const getDetailStocks = async (data) => {
 
 export async function patchStockCategory(data) {
   return await client.patch(`${urls.stockCategory}`,data)
+}
+
+export async function postStocks(data){
+  try{
+    return await client.post(`${urls.createWeightStocks}`,data)
+  }catch(e){
+    alert(e.data?.message)
+  }
 }

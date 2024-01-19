@@ -12,6 +12,10 @@ var headerCheckboxSelection = function (params) {
 
 
 export const StockInventoryFields = {
+  '제품 고유 번호': 'uid',
+  '제품 번호': 'productNumber',
+  '고객 코드': 'customerCode',
+  '고객사명': 'customerName',
   '등급': 'grade',
   '중량': 'weight',
   '두께': 'thickness',
@@ -25,9 +29,6 @@ export const StockInventoryFields = {
   'si': 'si',
   'el': 'el',
   'mn': 'mn',
-  '제품 고유 번호': 'uid',
-  '고객 코드': 'customerCode',
-  '고객사명': 'customerName',
   '창고': 'storageName',
   '입고일': 'receiptDate',
   '제품군': 'spart',
@@ -38,7 +39,6 @@ export const StockInventoryFields = {
   '판매 유형': 'saleType',
   '판매가 유형 (특가 / 일반)': 'salePriceType',
   '경매 번호': 'auctionNumber',
-  '제품 번호': 'productNumber',
   '정척 여부 (Y / N)': 'preferThickness',
   '유찰 횟수': 'failCount',
   '규격 약호': 'spec',
@@ -92,6 +92,43 @@ export const StockInventoryFieldCols = [
     editType: 'weight',
   } },
    ...Object.entries(StockInventoryFields).map(([k,v]) => (
+        {
+          headerClass:'custom-header-style',flex:1,
+          cellStyle: { borderRight: '1px solid #c8c8c8',width:'100px',textAlign:'center'},
+          field: k,
+          minWidth: 100,
+        }))
+] 
+
+
+
+
+
+export const StockDetailInventoryFields = {
+  // '중량 제품 번호':'productNoNumber',
+  '제품 고유 번호': 'uid',
+  '제품 번호': 'number',
+  '중량': 'weight',
+  '폭': 'width',
+  '길이': 'length',
+  '제조사': 'maker',
+  '판매 구분': 'saleCategory',
+  '유찰 횟수': 'failCount',
+  '수정자': 'updateMember',
+  '수정 날짜':'updateDate',
+  '중량 판매 개수': 'splitCount',
+}
+
+
+
+
+export const StockInventoryDetailFieldCols = [
+  { field: '',   headerClass:'custom-header-style',flex:1,
+    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+     minWidth: 50, checkboxSelection, headerCheckboxSelection },
+
+
+   ...Object.entries(StockDetailInventoryFields).map(([k,v]) => (
         {
           headerClass:'custom-header-style',flex:1,
           cellStyle: { borderRight: '1px solid #c8c8c8',width:'100px',textAlign:'center'},

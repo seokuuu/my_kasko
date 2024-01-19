@@ -31,10 +31,7 @@ import styled from 'styled-components'
 import { KrFiledtoEng } from '../../lib/tableHelpers'
 import { readExcelFile } from '../../utils/ReadExcelFile'
 
-import { CustomSelect } from '../../common/Option/Main'
-import { Input, Table, Td, Th } from '../Table/TableModal'
 import useMutationQuery from '../../hooks/useMutationQuery'
-import { postExcelSubmitProduct } from '../../api/SellProduct'
 
 // 1. Upload를 사용하는 컴포넌트에서 originEngRowField props를 받는다
 // ex) Destination.jsx에서 StandardDestinaionFields를 받음.
@@ -52,18 +49,11 @@ import { postExcelSubmitProduct } from '../../api/SellProduct'
 
 // 목적지 등록 기획 오류로 인한 보류 !!!
 const UploadV2 = ({
-  modalSwitch,
   setModalSwitch,
   title,
   originEngRowField,
-  excelToJson,
+
   setExcelToJson,
-  propsHandler,
-  modalInTable,
-  getRow,
-  uidAtom,
-  onEditHandler,
-  dropdownProps,
   width,
   postApi,
 }) => {

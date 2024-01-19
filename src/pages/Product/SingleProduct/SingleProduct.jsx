@@ -299,10 +299,12 @@ const SingleProduct = () => {
       {
         onSuccess: () => {
           setSelectUid([])
+          window.location.reload()
         },
         onError: (e) => {
-          console.log(e)
-          alert(e.data?.message)
+          if (e?.data?.status === 400) {
+            alert(e.data?.message)
+          }
         },
       },
     )
@@ -574,7 +576,7 @@ const SingleProduct = () => {
               선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총{singleProductPage?.totalWeight} 중량 kg
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <YellBtn onClick={patchRecommend}>추천제품지정 ( 0 / 10)</YellBtn>
+              <YellBtn onClick={patchRecommend}>추천제품지정 ( {singleProductPage?.bestCount} / 10)</YellBtn>
             </div>
           </TCSubContainer>
           <Table
