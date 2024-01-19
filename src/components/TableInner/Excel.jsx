@@ -6,8 +6,9 @@ const Excel = ({ getRow }) => {
   const exportToXLSX = () => {
     const jsonData = getRow
 
-    const keys = Object.keys(jsonData[0])
+    console.log('jsonData', jsonData)
 
+    const keys = Object.keys(jsonData[0])
     const data = [keys].concat(jsonData.map((item) => keys.map((key) => item[key])))
 
     const ws_name = 'SheetJS'

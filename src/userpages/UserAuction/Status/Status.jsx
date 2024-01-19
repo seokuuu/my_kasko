@@ -1,60 +1,44 @@
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
+import { useEffect, useRef, useState } from 'react'
+import { BlackBtn, GreyBtn } from '../../../common/Button/Button'
+import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import {
-  GreyBtn,
-  ExcelBtn,
-  WhiteGrnBtn,
-  IndigoBtn,
-  BlueBtn,
-  SkyBtn,
-  SwitchBtn,
-  TGreyBtn,
-  TWhiteBtn,
-} from '../../../common/Button/Button'
-import Test3 from '../../../pages/Test/Test3'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import {
+  DoubleWrap,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubcontianer,
+  FilterHeader,
   FilterLeft,
   FilterRight,
-  RowWrap,
+  FilterSubcontianer,
+  Input,
+  MiniInput,
   PartWrap,
   PWRight,
-  Input,
-  TCSubContainer,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
   ResetImg,
+  RowWrap,
   TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-  MiniInput,
+  TCSubContainer,
+  Tilde,
 } from '../../../modal/External/ExternalFilter'
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 import Hidden from '../../../components/TableInner/Hidden'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getProgess } from '../../../api/auction/progress'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { AuctionProgressFields, AuctionProgressFieldsCols } from '../../../constants/admin/Auction'
+import { useQueryClient } from '@tanstack/react-query'
+import { useAtom } from 'jotai'
+import Table from '../../../pages/Table/Table'
 
 const Status = ({}) => {
+  const [tablePagination, setTablePagination] = useState([])
   const radioDummy = ['전체', '미진행', '진행중', '종료']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
@@ -93,6 +77,49 @@ const Status = ({}) => {
     } else {
       setToggleMsg('On')
     }
+  }
+
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(AuctionProgressFieldsCols)
+  const getCol = tableField.current
+  const queryClient = useQueryClient()
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  const [Param, setParam] = useState({
+    pageNum: 1,
+    pageSize: 50,
+  })
+
+  // GET
+  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getProgess', getProgess)
+  const resData = data?.data?.data?.list
+  const resPagination = data?.data?.data?.pagination
+
+  useEffect(() => {
+    let getData = resData
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, AuctionProgressFields))
+      setTablePagination(resPagination)
+    }
+  }, [isSuccess, resData])
+
+  console.log('getRow =>', getRow)
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
   }
 
   return (
@@ -192,11 +219,11 @@ const Status = ({}) => {
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
-            <Excel />
+            <PageDropdown handleDropdown={handleTablePageSize} />
+            <Excel getRow={getRow} />
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
       </TableContianer>
     </FilterContianer>
   )

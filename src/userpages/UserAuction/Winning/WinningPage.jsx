@@ -19,7 +19,7 @@ const SinglePage = () => {
         <OverAllSub>
           <SubHeader />
           <OverAllTable>
-            <WinningDetail />
+            <Winning />
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>

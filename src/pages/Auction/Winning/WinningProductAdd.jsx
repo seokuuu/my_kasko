@@ -1,19 +1,10 @@
-import { useEffect, useState } from 'react'
-import {
-  BlackBtn,
-  BtnBound,
-  GreyBtn,
-  SkyBtn,
-  TGreyBtn,
-  WhiteBlackBtn,
-  WhiteRedBtn,
-} from '../../../common/Button/Button'
+import { useEffect, useRef, useState } from 'react'
+import { BlackBtn, BtnBound, GreyBtn, TGreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
-import Test3 from '../../Test/Test3'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import {
   CustomInput,
@@ -38,11 +29,15 @@ import {
   Tilde,
 } from '../../../modal/External/ExternalFilter'
 
+import { useAtom } from 'jotai'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { aucProAddModalAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
 
+import { useQueryClient } from '@tanstack/react-query'
+import { getWinningCreate } from '../../../api/auction/winning'
+import { AuctionWinningCreateFields, AuctionWinningCreateFieldsCols } from '../../../constants/admin/Auction'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
 import {
   BlueBarHeader,
   BlueSubContainer,
@@ -51,12 +46,22 @@ import {
   WhiteCloseBtn,
 } from '../../../modal/Common/Common.Styled'
 import Table from '../../Table/Table'
+import { isArray } from 'lodash'
+import { selectedRows2Switch } from '../../../store/Layout/Layout'
 
 // 낙찰 생성 제품 추가(단일) 메인 컴포넌트
-const WinningProductAdd = ({}) => {
-  const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
+const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData }) => {
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
+  const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
 
+  const [tablePagination, setTablePagination] = useState([])
+  const paramData = {
+    pageNum: 1,
+    pageSize: 50,
+    saleType: '경매 대상재',
+    registrationStatus: '경매 등록 대기',
+  }
+  const [Param, setParam] = useState(paramData)
   //checkSales
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
 
@@ -92,6 +97,50 @@ const WinningProductAdd = ({}) => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
   }
 
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(AuctionWinningCreateFieldsCols)
+  const getCol = tableField.current
+  const queryClient = useQueryClient()
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+
+  // GET
+  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getWinningCreate', getWinningCreate)
+  const resData = data?.data?.data?.list
+  console.log('resData Modal ', resData)
+  const resPagination = data?.data?.data?.pagination
+
+  useEffect(() => {
+    let getData = resData
+    //타입, 리액트쿼리, 데이터 확인 후 실행
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, AuctionWinningCreateFields))
+      setTablePagination(resPagination)
+    }
+  }, [isSuccess, resData])
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const handleAddBtn = () => {
+    if (isArray(checkedArray) && checkedArray.length > 0) {
+      if (window.confirm('선택한 항목을 추가하시겠습니까?')) {
+        checkedArray.forEach((item) => {
+          console.log('item =>', item)
+          setNewResData((prevData) => [...prevData, item])
+        })
+        setAddModal(false)
+      }
+    } else {
+      alert('선택해주세요!')
+    }
+  }
+
   // 토글 쓰기
   const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
   const [toggleMsg, setToggleMsg] = useState('On')
@@ -107,6 +156,22 @@ const WinningProductAdd = ({}) => {
   const modalClose = () => {
     setAddModal(false)
   }
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
+
+  // 마운트시 switch false, 언마운트시 true (table onSelectionChanged 관련)
+  useEffect(() => {
+    if (addModal) {
+      setRowAtomSwitch(false)
+    }
+    return () => {
+      setRowAtomSwitch(true)
+    }
+  }, [addModal])
 
   return (
     <>
@@ -232,7 +297,7 @@ const WinningProductAdd = ({}) => {
                 </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <PageDropdown />
-                  <Excel />
+                  <Excel getRow={getRow} />
                 </div>
               </TCSubContainer>
               <TCSubContainer>
@@ -253,11 +318,17 @@ const WinningProductAdd = ({}) => {
                   </TGreyBtn>
                 </div>
               </TCSubContainer>
-              <Table hei2={280} />
-              <TCSubContainer style={{ padding: '0px' }}>
+              <Table
+                getCol={getCol}
+                getRow={getRow}
+                hei2={250}
+                tablePagination={tablePagination}
+                onPageChange={onPageChange}
+              />
+              <TCSubContainer style={{ padding: '0px', position: 'relative', top: '40px' }}>
                 <div></div>
                 <div>
-                  <BlackBtn style={{ position: 'relative', top: '10px', width: '150px', height: '35px' }}>
+                  <BlackBtn style={{ width: '150px', height: '35px' }} onClick={handleAddBtn}>
                     제품 추가
                   </BlackBtn>
                 </div>
