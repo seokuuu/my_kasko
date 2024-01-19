@@ -44,7 +44,6 @@ import {
   TCSubContainer,
   Tilde,
 } from '../../../modal/External/ExternalFilter'
-import usePaging from '../../Operate/hook/usePaging'
 import { modalAtom } from '../../../store/Layout/Layout'
 import useTableData from '../../../hooks/useTableData'
 import useReactQuery from '../../../hooks/useReactQuery'
@@ -57,6 +56,7 @@ import useMutationQuery from '../../../hooks/useMutationQuery'
 import { changeCategoryAtom } from '../../../store/Layout/Popup'
 import SellWeight from '../../../modal/Multi/SellWeight'
 import WeightSales from '../../../modal/Multi/WeightSales'
+import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 const Inventory = ({}) => {
   const checkSales = ['전체', '판매재', '판매제외제']
   const checkShips = ['전체', '출고완료', '미출고']
@@ -171,7 +171,7 @@ const Inventory = ({}) => {
     return res
   }
 
-  const { pagination: customPagination, onPageChanage } = usePaging(TableData, setRequest)
+  const { pagination: customPagination, onPageChanage } = useTablePaginationPageChange(TableData, setRequest)
   return (
     <FilterContianer>
       <FilterHeader>
