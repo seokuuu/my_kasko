@@ -17,7 +17,7 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { userOrderListField, userOrderListFieldsCols } from '../../../constants/user/order'
 import useTableData from '../../../hooks/useTableData'
-import useTableSearchFieldData from '../../../hooks/useTableSearchFieldData'
+// import useTableSearchFieldData from '../../../hooks/useTableSearchFieldData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'
 import {
@@ -121,7 +121,7 @@ const Order = ({}) => {
   // 선택 항목
   const { selectedData, selectedWeightStr, selectedCountStr, hasSelected } = useTableSelection({ weightKey: '총 중량' })
   // 필드 옵션
-  const { supplierList, stockStatusList, gradeList } = useTableSearchFieldData();
+  // const { supplierList, stockStatusList, gradeList } = useTableSearchFieldData();
   // 규격약호 검색 모달
   const [standardCodeModalOn, setStandardCodeModalOn] = useState(false);
   // 패키지 상세보기
@@ -290,7 +290,7 @@ const Order = ({}) => {
                   }}
                 />
                 {/* 매입처*/}
-                <PartWrap>
+                {/* <PartWrap>
                   <h6>매입처</h6>
                   <MainSelect 
                     options={supplierList} 
@@ -299,7 +299,7 @@ const Order = ({}) => {
                       handleTypedInputChange({ key: 'supplier', value: v.label, radioType: true });
                     }}
                   />
-                </PartWrap>
+                </PartWrap> */}
                 {/* 규격약호 찾기 */}
                 <PartWrap>
                   <h6>규격 약호</h6>
@@ -346,22 +346,22 @@ const Order = ({}) => {
                       handleTypedInputChange({ key: 'spart', value: v.label })
                     }}
                   />
-                  <MainSelect 
+                  {/* <MainSelect 
                     options={stockStatusList} 
                     defaultValue={stockStatusList[0]}
                     value={stockStatusList.filter(({ label }) => label === tempSearchParams.maker)}
                     onChange={(v) => {
                       handleTypedInputChange({ key: 'maker', value: v.label === stockStatusList[0].label? '' : v.label })
                     }} 
-                  />
-                  <MainSelect 
+                  /> */}
+                  {/* <MainSelect 
                     options={gradeList} 
                     defaultValue={gradeList[0]}
                     value={gradeList.filter(({ label }) => label === tempSearchParams.grade)}
                     onChange={(v) => {
                       handleTypedInputChange({ key: 'grade', value:v.label === gradeList[0].label? '' : v.label  })
                     }} 
-                  />
+                  /> */}
                 </PartWrap>
                 {/* 주문 일자 */}
                 <DateSearchSelect

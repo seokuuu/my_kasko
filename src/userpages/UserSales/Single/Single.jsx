@@ -8,7 +8,7 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { PROD_CATEGORY, userSingleProductField, userSingleProductFieldsCols } from '../../../constants/user/product'
 import useTableData from '../../../hooks/useTableData'
-import useTableSearchFieldData from '../../../hooks/useTableSearchFieldData'
+// import useTableSearchFieldData from '../../../hooks/useTableSearchFieldData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'
 import useWishList from '../../../hooks/useWishList'
@@ -83,7 +83,7 @@ const Single = ({}) => {
   // 선택 항목
   const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr, hasSelected } = useTableSelection({ weightKey: '중량' })
   // 필드 옵션
-  const { supplierList, stockStatusList, gradeList } = useTableSearchFieldData();
+  // const { supplierList, stockStatusList, gradeList } = useTableSearchFieldData();
   // 규격약호 검색 모달
   const [standardCodeModalOn, setStandardCodeModalOn] = useState(false);
   const { wishProdNums } = useWishList();
