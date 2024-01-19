@@ -49,6 +49,10 @@ const OperateClaimRegister = ({ pageType }) => {
 	// 제품 목록에서 등록을 위해 선택된 값
 	const selected = useAtomValue(selectedRowsAtom)
 
+	// 제품 목록에서 선택한 productUid 추출
+	const registableProductUid = pageType === 'register' && selected.length > 0 ? selected[0]['제품 고유 번호'] : 0
+
+	console.log('registableProductUid :', registableProductUid)
 	// 확인 모달 관련 값들
 	const { popupSwitch, setPopupSwitch, setNowPopupType, nowPopup, setNowPopup, initConfirmModal } = useConfirmModal()
 
@@ -90,11 +94,14 @@ const OperateClaimRegister = ({ pageType }) => {
 		fileList: form.file,
 		claimStatus: form.claimStatus.label.trim(),
 	}
+	// 상세 API
+	const { data: detailsData } = useClaimDetailsQuery(id)
 
+	console.log('details Data :', detailsData)
 	// 등록 요청 PARAMETER
 	const requestParams = {
 		...commonParams,
-		productUid: 1232,
+		productUid: registableProductUid,
 	}
 	// 수정 API
 	const { mutate: update } = useClaimUpdateMutaion()
@@ -102,13 +109,10 @@ const OperateClaimRegister = ({ pageType }) => {
 	const updateParams = {
 		...commonParams,
 		uid: id,
-		productUid: 12352,
+		productUid: detailsData?.productUid ?? 0,
 		deleteFileList: form.deleteFileList,
 	}
-	// 상세 API
-	const { data: detailsData } = useClaimDetailsQuery(id)
 
-	console.log('details Data :', detailsData)
 	// 날짜 핸들러
 	function dateHandler(date, name) {
 		setForm((p) => ({ ...p, [name]: date }))

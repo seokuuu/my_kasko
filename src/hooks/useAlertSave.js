@@ -6,7 +6,7 @@ import { popupAtom, popupObject } from '../store/Layout/Layout'
 /**
  * @description
  * 특정 조건이 있을 때, 라우터 변경을 방지하고 작성중이던 폼에 대하여 저장 취소 컨펌 모달을 띄워줍니다.
- * @param {boolean} isNotEqualPrevious 변경 여부
+ * @param {boolean} isNotEqualPrevious 변경 여부입니다.(이전 내용과 변경된 내용 비교 여부 값)
  */
 const useAlertSave = (isNotEqualPrevious) => {
 	const setNowPopup = useSetAtom(popupObject)
