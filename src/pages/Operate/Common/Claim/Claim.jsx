@@ -1,12 +1,12 @@
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useClaimDeleteMutation, useClaimListQuery } from '../../../../api/operate/claim'
 import { ClaimListFieldCols, ClaimListFields } from '../../../../constants/admin/Claim'
 import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
+import useTableSelection from '../../../../hooks/useTableSelection'
 import { add_element_field } from '../../../../lib/tableHelpers'
 import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
-import { popupAtom, popupObject, popupTypeAtom, selectedRowsAtom } from '../../../../store/Layout/Layout'
+import useAlert from '../../../../store/Alert/useAlert'
 import Table from '../../../Table/Table'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { claimInitState } from '../../constants'
@@ -19,10 +19,8 @@ import ClaimHeader from './components/ClaimHeader'
 const Claim = () => {
 	const navigate = useNavigate()
 
-	// 테이블에서 선택된 값
-	const selected = useAtomValue(selectedRowsAtom)
-	// 선택된 데이터 갯수
-	const selectedLength = useMemo(() => (selected ? selected.length : 0), [selected])
+	// 테이블에서 선택된 값,선택된 데이터 갯수
+	const { selectedData, selectedCount } = useTableSelection()
 
 	// 목록 API(REQUEST PARAMETER)
 	const [search, setSearch] = useState(claimInitState)
@@ -34,10 +32,7 @@ const Claim = () => {
 	const [row, setRow] = useState([])
 
 	// 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
-	const [popupSwitch, setPopupSwitch] = useAtom(popupAtom)
-	const setNowPopupType = useSetAtom(popupTypeAtom) // 팝업 타입
-	const setNowPopup = useSetAtom(popupObject) // 팝업 객체
-
+	const { simpleConfirm } = useAlert()
 	// 목록 API
 	const { data, refetch } = useClaimListQuery({ ...search, claimStatus: search.claimStatus.value })
 	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setSearch)
@@ -51,27 +46,26 @@ const Claim = () => {
 
 	// 삭제 핸들러
 	function removeEventHandler() {
-		if (!selectedLength && selectedLength === 0) return alert('삭제할 목록을 선택해주세요.')
-		setPopupSwitch(true)
-		setNowPopupType(2)
-		setNowPopup({
-			num: '2-1',
-			title: '삭제하시겠습니까?',
-			next: '1-14',
-			func() {
-				if (selected && selected.length !== 0) {
-					remove(selected.map((s) => s['고유값']))
-					refetch()
-				}
-			},
-		})
+		if (!selectedCount && selectedCount === 0) return alert('삭제할 목록을 선택해주세요.')
+		simpleConfirm('삭제하시겠습니까?', () => remove(selectedData.map((s) => s['고유값'])))
 	}
 
+	const mappingData = useMemo(
+		() =>
+			data
+				? data.list.map((d, index) => ({
+						...d,
+						id: data.pagination.listCount - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
+				  }))
+				: [],
+		[data],
+	)
+
 	useEffect(() => {
-		if (data) {
-			setRow(add_element_field(data.list, ClaimListFields))
+		if (mappingData) {
+			setRow(add_element_field(mappingData, ClaimListFields))
 		}
-	}, [data])
+	}, [mappingData])
 
 	return (
 		<FilterContianer>
@@ -80,7 +74,7 @@ const Claim = () => {
 			<TableContianer>
 				<CommonTableHeader
 					totalLength={data && data.list.length}
-					selectedLength={selectedLength}
+					selectedLength={selectedCount}
 					toRegister={toRegister}
 					removeEventHandler={removeEventHandler}
 					setState={setSearch}

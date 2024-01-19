@@ -1,23 +1,19 @@
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import moment from 'moment'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useNoticeListQuery, useNoticeRemoveMutation } from '../../../../api/operate/notice'
 import { NoticeListFieldCols, NoticeListFields } from '../../../../constants/admin/Notice'
+import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
+import useTableSelection from '../../../../hooks/useTableSelection'
 import { add_element_field } from '../../../../lib/tableHelpers'
 import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
-import {
-	doubleClickedRowAtom,
-	popupAtom,
-	popupObject,
-	popupTypeAtom,
-	selectedRowsAtom,
-} from '../../../../store/Layout/Layout'
+import useAlert from '../../../../store/Alert/useAlert'
+import { doubleClickedRowAtom } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
 import CommonHeader from '../../UI/CommonHeader'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { normalTabOptions, noticeListSearchInitValue, noticeSearchCategoryOptions } from '../../constants'
-import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
 
 /**
  * @description
@@ -32,14 +28,12 @@ const Notice = ({ title, detailsUrl }) => {
 	const [search, setSearch] = useState(noticeListSearchInitValue(title))
 	// 셀 클릭시 테이블 상세 데이터 조회
 	const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
-	// 테이블에서 선택된 값
-	const selected = useAtomValue(selectedRowsAtom)
+	// 테이블에서 선택된 값,선택된 데이터 갯수
+	const { selectedData, selectedCount } = useTableSelection()
 	// 목록 리스트
 	const [rows, setRows] = useState([])
 	// 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
-	const [popupSwitch, setPopupSwitch] = useAtom(popupAtom)
-	const setNowPopupType = useSetAtom(popupTypeAtom) // 팝업 타입
-	const setNowPopup = useSetAtom(popupObject) // 팝업 객체
+	const { simpleConfirm } = useAlert()
 
 	// 공지사항 목록 API
 	const { data, refetch } = useNoticeListQuery({
@@ -50,9 +44,6 @@ const Notice = ({ title, detailsUrl }) => {
 
 	// 공지사항 삭제 API
 	const { mutate } = useNoticeRemoveMutation()
-
-	// 선택된 데이터 갯수
-	const selectedLength = useMemo(() => (selected ? selected.length : 0), [selected])
 
 	/**
 	 * @constant
@@ -66,7 +57,7 @@ const Notice = ({ title, detailsUrl }) => {
 				? data.list.map((d, index) => ({
 						...d,
 						createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
-						id: data.list.length - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
+						id: data.pagination.listCount - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
 						uid: d.uid,
 						status: d.status ? 'Y' : 'N',
 				  }))
@@ -81,21 +72,10 @@ const Notice = ({ title, detailsUrl }) => {
 
 	// 삭제 핸들러
 	function removeEventHandler() {
-		if (!selectedLength && selectedLength === 0) return alert('삭제할 목록을 선택해주세요.')
-		setPopupSwitch(true)
-		setNowPopupType(2)
-		setNowPopup({
-			num: '2-1',
-			title: '삭제하시겠습니까?',
-			next: '1-14',
-			func() {
-				if (selected && selected.length !== 0) {
-					mutate(selected.map((s) => s['고유값']))
-					refetch()
-				}
-			},
-		})
+		if (!selectedCount && selectedCount === 0) return alert('삭제할 목록을 선택해주세요.')
+		simpleConfirm('삭제하시겠습니까?', () => mutate(selectedData.map((s) => s['고유값'])))
 	}
+
 	// 테이블 데이터 리스트 값 설정
 	useEffect(() => {
 		if (mappingData) {
@@ -132,11 +112,11 @@ const Notice = ({ title, detailsUrl }) => {
 				{/* 테이블 헤더 */}
 				<CommonTableHeader
 					totalLength={data ? data.list.length : 0}
-					selected={selected}
+					selected={selectedData}
 					removeEventHandler={removeEventHandler}
 					toRegister={toRegister}
 					title={title === '공지사항' ? '공지사항' : '게시글'}
-					selectedLength={selectedLength}
+					selectedLength={selectedCount}
 				/>
 
 				<Table

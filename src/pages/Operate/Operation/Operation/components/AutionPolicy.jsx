@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { BtnContainer, Container } from '../styles/StyledAutcion'
-import { BlackBtn, WhiteBtn } from '../../../../../common/Button/Button'
-import AuctionTopContents from './AuctionTopContents'
-import AuctionBottomContents from './AuctionBottomContents'
-import { useAutionPolicyMutation, useAutionPolicyQuery } from '../../../../../api/operate/autionPolicy'
 import moment from 'moment'
-import useConfirmModal from '../../../../../hooks/useConfirmModal'
-import AlertPopup from '../../../../../modal/Alert/AlertPopup'
+import React, { useState } from 'react'
+import { useAutionPolicyMutation, useAutionPolicyQuery } from '../../../../../api/operate/autionPolicy'
+import { BlackBtn, WhiteBtn } from '../../../../../common/Button/Button'
+import useAlert from '../../../../../store/Alert/useAlert'
+import { BtnContainer, Container } from '../styles/StyledAutcion'
+import AuctionBottomContents from './AuctionBottomContents'
+import AuctionTopContents from './AuctionTopContents'
 
 /**
  * @description
@@ -18,6 +17,9 @@ const AutionPolicy = () => {
 
 	// 등록/수정 API
 	const { mutate } = useAutionPolicyMutation()
+
+	// 확인 모달
+	const { simpleConfirm } = useAlert()
 
 	//FORM
 	const [form, setForm] = useState({
@@ -35,33 +37,21 @@ const AutionPolicy = () => {
 		pmEffectDate: '',
 	})
 
-	// 확인 모달 관련 값들
-	const { popupSwitch, setPopupSwitch, setNowPopupType, nowPopup, setNowPopup, initConfirmModal } = useConfirmModal()
-
 	// 등록 및 수정
 	function submit() {
-		setPopupSwitch(true)
-		setNowPopupType(2)
-		setNowPopup({
-			num: '2-1',
-			title: '저장하시겠습니까?',
-			next: '1-12',
-			func: save,
-		})
-	}
-
-	const save = () => {
-		mutate({
-			uid: data.uid,
-			weight: Number(form.weight),
-			weightEffectDate: moment(form.weightEffectDate).format('YYYY-MM-DD'),
-			amStartTime: `${form.amStartHour}:${form.amStartMinute}:00`,
-			amEndTime: `${form.amEndHour}:${form.amEndMinute}:00`,
-			amEffectDate: moment(form.amEffectDate).format('YYYY-MM-DD'),
-			pmStartTime: `${form.pmStartHour}:${form.pmStartMinute}:00`,
-			pmEndTime: `${form.pmEndHour}:${form.pmEndMinute}:00`,
-			pmEffectDate: moment(form.pmEffectDate).format('YYYY-MM-DD'),
-		})
+		simpleConfirm('저장하시겠습니까?', () =>
+			mutate({
+				uid: data.uid,
+				weight: Number(form.weight),
+				weightEffectDate: moment(form.weightEffectDate).format('YYYY-MM-DD'),
+				amStartTime: `${form.amStartHour}:${form.amStartMinute}:00`,
+				amEndTime: `${form.amEndHour}:${form.amEndMinute}:00`,
+				amEffectDate: moment(form.amEffectDate).format('YYYY-MM-DD'),
+				pmStartTime: `${form.pmStartHour}:${form.pmStartMinute}:00`,
+				pmEndTime: `${form.pmEndHour}:${form.pmEndMinute}:00`,
+				pmEffectDate: moment(form.pmEffectDate).format('YYYY-MM-DD'),
+			}),
+		)
 	}
 
 	return (
@@ -104,7 +94,6 @@ const AutionPolicy = () => {
 					수정 완료
 				</BlackBtn>
 			</BtnContainer>
-			{popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
 		</Container>
 	)
 }

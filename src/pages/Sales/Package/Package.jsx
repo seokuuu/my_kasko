@@ -1,38 +1,16 @@
 import { useEffect, useState } from 'react'
-import { styled } from 'styled-components'
-import { useAtom, useAtomValue } from 'jotai'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { useAtomValue } from 'jotai'
 import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteBlackBtn, ExcelBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
+import { BlackBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom, selectedRowsAtom } from '../../../store/Layout/Layout'
-import BlueBar from '../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../store/Layout/Layout'
-import { ExInputsWrap, FilterWrap, MiniInput } from '../../../modal/External/ExternalFilter'
+import { FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
 	FilterContianer,
 	FilterHeader,
-	FilterFooter,
-	FilterSubcontianer,
-	FilterLeft,
 	TCSubContainer,
-	FilterRight,
-	RowWrap,
-	PartWrap,
-	PWRight,
-	Input,
-	GridWrap,
 	TableBottomWrap,
-	Tilde,
-	DoubleWrap,
-	ResetImg,
 	TableContianer,
-	InputStartWrap,
 	FilterHeaderAlert,
 } from '../../../modal/External/ExternalFilter'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -151,7 +129,7 @@ const Package = () => {
 							// prettier-ignore
 							param={param}
 							isToggleSeparate={true}
-							customRenderProp={(props) => <PackageProductSearchFields {...props} />}
+							renderCustomSearchFields={(props) => <PackageProductSearchFields {...props} />}
 							globalProductSearchOnClick={globalProductSearchOnClick}
 							globalProductResetOnClick={globalProductResetOnClick}
 						/>
