@@ -1,13 +1,14 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { client } from '../index'
 import { queryClient } from '../query'
+import useAlert from '../../store/Alert/useAlert'
 
 const MERGE_CODE_URL = '/admin/mergecost'
 const SHIPMENT_URL = '/shipment'
 const SHIPMENT_MERGE_URL = `${SHIPMENT_URL}/merge`
 const SHIPMENT_OUT_URL = `${SHIPMENT_URL}/out`
 const SHIPMENT_DRIVER_URL = `${SHIPMENT_URL}/driver`
-const SHIPMENT_ORDER_RECEIPT_URL = `${SHIPMENT_URL}/order-receipt`
+const SHIPMENT_ORDER_INVOICE_URL = `${SHIPMENT_URL}/invoice`
 const SHIPMENT_ORDER_STATEMENT_URL = `${SHIPMENT_URL}/order-statement`
 const SHIPMENT_EXTRA_COST_URL = `${SHIPMENT_URL}/extra-cost`
 
@@ -24,6 +25,9 @@ export const QUERY_KEY = {
 	dispatchDetails: ['shipment', 'dispatch', 'details'],
 	setDispatch: ['shipment', 'dispatch', 'set'],
 	removeDispatch: ['shipment', 'dispatch', 'remove'],
+	addExtraCost: ['shipment', 'extra', 'add'],
+	removeExtraCost: ['shipment', 'extra', 'remove'],
+	invoice: ['shipment', 'invoice'],
 }
 
 // 합짐비 목록 조회
@@ -62,7 +66,7 @@ export function useShipmentStatusUpdateMutation() {
 			queryClient.invalidateQueries(QUERY_KEY.dispatchDetails)
 		},
 		onError() {
-			window.alert('수정에 실패하였습니다.')
+			window.alert('실패하였습니다.')
 		},
 	})
 }
@@ -209,5 +213,53 @@ export function useRemoveDispatchMutation() {
 		onError(error) {
 			window.alert(error?.message ?? '실패하였습니다.')
 		},
+	})
+}
+
+// 추가비 및 공차비 추가
+export function useShipmentAddExtraCostMutation() {
+	return useMutation({
+		mutationKey: QUERY_KEY.addExtraCost,
+		mutationFn: async function (param) {
+			return client.post(SHIPMENT_EXTRA_COST_URL, param)
+		},
+		onSuccess() {
+			window.alert('완료되었습니다.')
+			window.location.reload()
+			queryClient.invalidateQueries(QUERY_KEY.list)
+		},
+		onError(error) {
+			window.alert(error?.message ?? '실패하였습니다.')
+		},
+	})
+}
+
+// 추가비 및 공차비 삭제
+export function useShipmentRemoveExtraCostMutation() {
+	const { simpleAlert } = useAlert()
+	return useMutation({
+		mutationKey: QUERY_KEY.removeExtraCost,
+		mutationFn: async function (id) {
+			return client.delete(`${SHIPMENT_EXTRA_COST_URL}/${id}`)
+		},
+		onSuccess() {
+			simpleAlert('완료되었습니다.')
+			queryClient.invalidateQueries(QUERY_KEY.list)
+		},
+		onError(error) {
+			simpleAlert(error?.message ?? '실패하였습니다.')
+		},
+	})
+}
+
+// 출고 거래명세서 출력
+export function useShipmentInvoiceListQuery(params) {
+	return useQuery({
+		queryKey: QUERY_KEY.invoice,
+		queryFn: async function () {
+			const response = await client.get(SHIPMENT_ORDER_INVOICE_URL, { params })
+			return response.data.data
+		},
+		enabled: !!params,
 	})
 }

@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai'
 import { useState } from 'react'
-import { blueModalAtom, invenCustomerData, invenDestinationData } from '../../store/Layout/Layout'
+import { blueModalAtom, invenCustomerData, invenDestinationData, winningDestiData } from '../../store/Layout/Layout'
 import {
   BlueBarHeader,
   BlueBlackBtn,
@@ -9,24 +9,21 @@ import {
   BlueSubContainer,
   FadeOverlay,
   ModalContainer,
-  WhiteCloseBtn,
-  ResultContainer,
-  ResultRow,
   ResultCell,
+  ResultContainer,
   ResultHead,
+  ResultRow,
+  WhiteCloseBtn,
 } from '../Common/Common.Styled'
 
 import { GreyBtn } from '../../common/Button/Button'
 import { TxtInput } from '../../common/Input/Input'
 
-import { getCustomerFind } from '../../service/admin/Auction'
-import useReactQuery from '../../hooks/useReactQuery'
 import styled from 'styled-components'
-import { Radio, Checkbox } from '@mui/material'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 
 // 고객사 찾기
-const InventoryFind = ({ title, setSwitch, data }) => {
+const InventoryFind = ({ title, setSwitch, data, type, setPropsUid }) => {
   const matchData = { name: '고객명', code: '고객사 코드', businessNumber: '사업자번호' }
   const destinationData = { name: '목적지', code: '목적지 코드' }
 
@@ -34,7 +31,7 @@ const InventoryFind = ({ title, setSwitch, data }) => {
 
   const customerGetData = data?.data?.data
 
-  console.log('data', customerGetData)
+  console.log('customerGetData', customerGetData)
 
   const [isModal, setIsModal] = useAtom(blueModalAtom)
   const [searchTerm, setSearchTerm] = useState('')
@@ -42,6 +39,8 @@ const InventoryFind = ({ title, setSwitch, data }) => {
   const [clickedResult, setClickedResult] = useState()
   const [selectedUid, setSelectedUid] = useState(null)
   const [selectedUids, setSelectedUids] = useState([])
+
+  console.log('selectedUid', selectedUid)
 
   console.log('clickedResult', clickedResult)
 
@@ -87,13 +86,18 @@ const InventoryFind = ({ title, setSwitch, data }) => {
       setResult(filteredResult || [])
     }
   }
-  const handleCellClick = (uid, name, code, businessNumber) => {
+  const handleCellClick = (uid, name, code, businessNumber, destinationName, phone, address) => {
     console.log('클릭한 셀 데이터:', { uid, name, code, businessNumber })
-    setClickedResult({ uid, name, code, businessNumber })
+    if (type === '낙찰 생성') {
+      setClickedResult({ code, destinationName, name, phone, address })
+      setPropsUid(uid)
+    } else {
+      setClickedResult({ uid, name, code, businessNumber })
+    }
+
     setSelectedUid(uid) // 클릭한 셀의 uid를 저장
   }
 
-  // console.log('목적지',sele)
   return (
     <>
       <FadeOverlay />
@@ -148,7 +152,19 @@ const InventoryFind = ({ title, setSwitch, data }) => {
                   result.map((item, index) => (
                     <ResultRow
                       key={item.uid}
-                      onClick={() => handleCellClick(item.uid, item.name, item.code, item.businessNumber)}
+                      onClick={() =>
+                        handleCellClick(
+                          item.uid,
+                          item.name,
+                          item.code,
+                          item.businessNumber,
+                          item.code,
+                          item.destinationName,
+                          item.name,
+                          item.phone,
+                          item.address,
+                        )
+                      }
                     >
                       <ResultCell wid={50}>
                         <RadioMainDiv key={index}>
@@ -156,7 +172,17 @@ const InventoryFind = ({ title, setSwitch, data }) => {
                             isChecked={item.uid === selectedUid}
                             onClick={(event) => {
                               event.stopPropagation() // 상위 요소의 onClick 이벤트 막기
-                              handleCellClick(item.uid, item.name, item.code, item.businessNumber) // 셀 클릭 이벤트 처리
+                              handleCellClick(
+                                item.uid,
+                                item.name,
+                                item.code,
+                                item.businessNumber,
+                                item.code,
+                                item.destinationName,
+                                item.name,
+                                item.phone,
+                                item.address,
+                              ) // 셀 클릭 이벤트 처리
                             }}
                           >
                             <RadioInnerCircleDiv isChecked={item.uid === selectedUid} />
@@ -181,6 +207,8 @@ const InventoryFind = ({ title, setSwitch, data }) => {
                 setSwitch(false)
                 return title === '고객사 찾기'
                   ? Object.assign(invenCustomerData.init, clickedResult)
+                  : type === '낙찰 생성'
+                  ? Object.assign(winningDestiData.init, clickedResult)
                   : Object.assign(invenDestinationData.init, clickedResult)
               }}
             >

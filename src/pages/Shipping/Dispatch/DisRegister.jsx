@@ -71,7 +71,7 @@ const DisRegister = ({}) => {
 	const { mutate: shipmentStatusUpdate } = useShipmentStatusUpdateMutation() // 출고 상태 변경
 
 	// param change
-	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value }))
+	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, page: 1 }))
 
 	const onRemoveDispatch = () => {
 		if (!rowChecked || rowChecked?.length === 0) {
@@ -117,7 +117,6 @@ const DisRegister = ({}) => {
 		if (!driverStatusArray.every((value) => !!value)) {
 			return window.alert('출고 등록을 하려면 배차 등록은 필수입니다.')
 		}
-		console.log(uids)
 		if (window.confirm('출고 등록하시겠습니까?')) {
 			shipmentStatusUpdate({ shipmentStatus, uids })
 		}

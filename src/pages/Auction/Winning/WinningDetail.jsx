@@ -43,7 +43,15 @@ import DefaultBlueBar from '../../../modal/Multi/DefaultBlueBar'
 import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 
 import { useQueryClient } from '@tanstack/react-query'
-import { getWinningDetail, partDeleteBidding, partDepositConfirm } from '../../../api/auction/winning'
+import {
+  destiApproveReq,
+  destiChangeApprove,
+  destiChangeReject,
+  getWinningDetail,
+  partDeleteBidding,
+  partDepositConfirm,
+  publishDepositForm,
+} from '../../../api/auction/winning'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import { AuctionWinningDetailFields, AuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
@@ -110,7 +118,22 @@ const WinningDetail = ({ detailRow }) => {
     return result
   }, [])
 
-  console.log('extractedArray', extractedArray)
+  const keysToExtractDeposit = ['경매 번호', '창고', '고객사 목적지 고유 번호', '낙찰 상태']
+
+  const keyMappingsDeposit = {
+    '경매 번호': 'auctionNumber',
+    창고: 'storage',
+    '고객사 목적지 고유 번호': 'customerDestinationUid',
+    '낙찰 상태': 'biddingStatus',
+  }
+
+  // 입금 요청서 발행에 사용될 array
+  const extractedArrayDeposit = checkedArray?.map((item) =>
+    keysToExtractDeposit.reduce((obj, key) => {
+      obj[keyMappingsDeposit[key]] = item[key]
+      return obj
+    }, {}),
+  )
 
   // Test 후 주석 해제 필
   const [detailParams, setDetailParams] = useState({
@@ -147,6 +170,7 @@ const WinningDetail = ({ detailRow }) => {
 
   const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
 
+  console.log('inventoryDestination', inventoryDestination?.data?.data)
   const { isLoading, isError, data, isSuccess } = useReactQuery(detailParams, 'getWinningDetail', getWinningDetail)
   const resData = data?.data?.data?.list
   const resPagination = data?.data?.data?.pagination
@@ -164,24 +188,17 @@ const WinningDetail = ({ detailRow }) => {
   }, [isSuccess, resData])
 
   useEffect(() => {
-    const productNumbers = checkedArray?.map((item) => item['제품 고유 번호'])
+    const productNumbers = checkedArray?.map((item) => item['주문 고유 번호'])
 
-    const auctionNumber = checkedArray?.[0]?.['경매 번호']
-
-    setInput((prevInput) => ({
-      ...prevInput,
-      auctionNumber: auctionNumber,
-    }))
-
-    const updatedBiddingList = productNumbers?.map((productUid) => ({
-      productUid,
+    const updatedBiddingList = productNumbers?.map((uid) => ({
+      uid,
     }))
 
     setInput((prevInput) => ({
       ...prevInput,
-      biddingList: updatedBiddingList?.map((item) => ({
+      updateList: updatedBiddingList?.map((item) => ({
         ...item,
-        productUid: item.productUid, // 유지하고 싶은 다른 속성은 그대로 두고
+        uid: item.uid, // 유지하고 싶은 다른 속성은 그대로 두고
       })),
     }))
 
@@ -192,7 +209,7 @@ const WinningDetail = ({ detailRow }) => {
   const handleSetCustomerDestinationUid = () => {
     const updatedWinningList = input.updateList.map((item) => ({
       ...item,
-      customerDestinationUid: destinationData.uid,
+      requestCustomerDestinationUid: destinationData.uid,
     }))
 
     // setBiddingList(updatedBiddingList)
@@ -269,6 +286,27 @@ const WinningDetail = ({ detailRow }) => {
     depositMuation.mutate(extractedArray)
   }
 
+  // 목적지 승인 요청 POST
+  const destiApproveMutation = useMutationQuery('', destiApproveReq)
+  const destiApproveOnClickHandler = () => {
+    destiApproveMutation.mutate(input)
+  }
+
+  // 목적지 변경 반려 POST
+  const destiChangeRejMutation = useMutationQuery('', destiChangeReject)
+  const destiChangeRejOnClickHandler = () => {
+    destiChangeRejMutation.mutate(input)
+  }
+  // 목적지 변경 승인 POST
+  const destiChangeApproveMutation = useMutationQuery('', destiChangeApprove)
+  const destiChangeApprovOnClickHandler = () => {
+    destiChangeApproveMutation.mutate(input)
+  }
+
+  const publishDepositMutation = useMutationQuery('', publishDepositForm)
+  const publishDepositOnClickHandler = () => {
+    publishDepositMutation.mutate(extractedArrayDeposit)
+  }
   return (
     <FilterContianer>
       <FilterHeader>
@@ -357,7 +395,7 @@ const WinningDetail = ({ detailRow }) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown />
-            <Excel />
+            <Excel getRow={getRow} />
           </div>
         </TCSubContainer>
         <TCSubContainer>
@@ -380,18 +418,20 @@ const WinningDetail = ({ detailRow }) => {
             </TWhiteBtn>
             <TGreyBtn onClick={handleSetCustomerDestinationUid}>적용</TGreyBtn>
             <BtnBound style={{ margin: '0px' }} />
-            <WhiteBlackBtn>목적지 승인 요청</WhiteBlackBtn>
+            <WhiteBlackBtn onClick={destiApproveOnClickHandler}>목적지 승인 요청</WhiteBlackBtn>
 
             <BtnBound style={{ margin: '0px' }} />
-            <WhiteRedBtn>목적지 변경 반려</WhiteRedBtn>
-            <WhiteSkyBtn str>목적지 변경 승인</WhiteSkyBtn>
+            <WhiteRedBtn onClick={destiChangeRejOnClickHandler}>목적지 변경 반려</WhiteRedBtn>
+            <WhiteSkyBtn str onClick={destiChangeApprovOnClickHandler}>
+              목적지 변경 승인
+            </WhiteSkyBtn>
           </div>
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteSkyBtn>입금 요청서 발행</WhiteSkyBtn>
+            <WhiteSkyBtn onClick={publishDepositOnClickHandler}>입금 요청서 발행</WhiteSkyBtn>
             <BtnBound style={{ margin: '0px' }} />
             <WhiteRedBtn onClick={deleteOnClickHandler}>부분 낙찰 취소 </WhiteRedBtn>
             <SkyBtn onClick={partDepostiHandler}>부분 입금 확인</SkyBtn>

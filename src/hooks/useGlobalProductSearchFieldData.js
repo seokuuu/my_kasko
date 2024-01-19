@@ -7,11 +7,14 @@ import useReactQuery from './useReactQuery'
  * 검색 목록 SelectList에 사용되는 옵션 값들
  * @returns
  */
-const useTableSearchFieldData = () => {
+const useGlobalProductSearchFieldData = () => {
 	// 창고 목록
 	const { data: storage } = useReactQuery('', 'getStorageList', getStorageList)
 	const storageList = useMemo(
-		() => (storage ? [{ label: '전체', value: '', address: null }, ...storage] : []),
+		() =>
+			storage
+				? [{ label: '전체', value: '', address: null }, ...storage.map((item) => ({ ...item, value: item.label }))]
+				: [{ label: '전체', value: '', address: null }],
 		[storage],
 	)
 
@@ -19,12 +22,18 @@ const useTableSearchFieldData = () => {
 	const supplierList = [
 		{ label: '전체', value: '' },
 		{ label: '현대제철', value: '현대제철' },
-		{ label: '동은 스틸', value: '동은 스틸' },
+		{ label: '동은 스틸', value: '동은스틸' },
 	]
 
 	// 제품군 목록
 	const { data: spart } = useReactQuery('', 'getSPartList', getSPartList)
-	const spartList = useMemo(() => (spart ? [{ label: '제품군', value: '' }, ...spart] : []), [spart])
+	const spartList = useMemo(
+		() =>
+			spart
+				? [{ label: '제품군', value: '' }, ...spart.map((item) => ({ ...item, value: item.label }))]
+				: [{ label: '제품군', value: '' }],
+		[spart],
+	)
 
 	// 제조사 목록
 	const makerList = [
@@ -117,4 +126,4 @@ const useTableSearchFieldData = () => {
 	return { storageList, supplierList, spartList, makerList, stockStatusList, gradeList, preferThicknessList }
 }
 
-export default useTableSearchFieldData
+export default useGlobalProductSearchFieldData

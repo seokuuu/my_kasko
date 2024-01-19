@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { BlackBtn, WhiteBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import {
 	aucProAddModalAtom,
@@ -15,7 +15,7 @@ import {
 	useShipmentMergeStatusUpdateMutation,
 	useShipmentMergeUpdateMutation,
 } from '../../../api/shipment'
-import { ShippingDispatchDetailsFieldsCols, ShippingDispatchDetailsFields } from '../../../constants/admin/Shipping'
+import { ShippingDispatchDetailsFields, ShippingDispatchDetailsFieldsCols } from '../../../constants/admin/Shipping'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { GlobalFilterHeader } from '../../../components/Filter'
 import Table from '../../Table/Table'

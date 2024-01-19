@@ -26,7 +26,7 @@ import { Radio, Checkbox } from '@mui/material'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 
 // 고객사 찾기
-const CustomerFind = ({ title, setSwitch }) => {
+const CustomerFind = ({ title, setSwitch, setModalData }) => {
   const matchData = { name: '고객명', code: '고객사 코드', businessNumber: '사업자번호' }
 
   const { isLoading, isError, data, isSuccess } = useReactQuery('', 'getCustomerFind', getCustomerFind)
@@ -72,10 +72,15 @@ const CustomerFind = ({ title, setSwitch }) => {
     }
   }
 
-  const handleCellClick = (uid, name, code, businessNumber) => {
-    console.log('클릭한 셀 데이터:', { uid, name, code, businessNumber })
-    setClickedResult({ uid, name, code, businessNumber })
+  const handleCellClick = (uid, name, code, businessNumber, memberUid) => {
+    console.log('클릭한 셀 데이터:', { uid, name, code, businessNumber, memberUid })
+    setClickedResult({ uid, name, code, businessNumber, memberUid })
     setSelectedUid(uid) // 클릭한 셀의 uid를 저장
+  }
+
+  const applyOnClick = () => {
+    setModalData(clickedResult)
+    setSwitch(false)
   }
 
   return (
@@ -116,7 +121,9 @@ const CustomerFind = ({ title, setSwitch }) => {
                   result.map((item, index) => (
                     <ResultRow
                       key={item.uid}
-                      onClick={() => handleCellClick(item.uid, item.name, item.code, item.businessNumber)}
+                      onClick={() =>
+                        handleCellClick(item.uid, item.name, item.code, item.businessNumber, item.memberUid)
+                      }
                     >
                       <ResultCell wid={50}>
                         <RadioMainDiv key={index}>
@@ -140,7 +147,7 @@ const CustomerFind = ({ title, setSwitch }) => {
             </BlueMainDiv>
           </div>
           <BlueBtnWrap>
-            <BlueBlackBtn>적용</BlueBlackBtn>
+            <BlueBlackBtn onClick={applyOnClick}>적용</BlueBlackBtn>
           </BlueBtnWrap>
         </BlueSubContainer>
       </ModalContainer>

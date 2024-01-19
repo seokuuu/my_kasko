@@ -1,136 +1,203 @@
-import React, { useState } from 'react'
-import { GreyBtn } from '../../common/Button/Button'
-import { TxtInput } from '../../common/Input/Input'
+import React, { useEffect, useState } from 'react'
 import {
-  Bar,
-  BlueBarHeader,
-  BlueBlackBtn,
-  BlueBtnWrap,
-  BlueInput,
-  BlueMainDiv,
-  BlueRadioWrap,
-  BlueSubContainer,
-  BlueSubDiv,
-  FadeOverlay,
-  ModalContainer,
-  WhiteCloseBtn,
+	Bar,
+	BlueBarHeader,
+	BlueBlackBtn,
+	BlueBtnWrap,
+	BlueInput,
+	BlueMainDiv,
+	BlueRadioWrap,
+	BlueSubContainer,
+	BlueSubDiv,
+	FadeOverlay,
+	ModalContainer,
+	WhiteCloseBtn,
 } from '../Common/Common.Styled'
 
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
-
-import { CheckBox } from '../../common/Check/Checkbox'
-
 import { styled } from 'styled-components'
-import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
-import { ExCheckDiv } from '../External/ExternalFilter'
+import { useShipmentAddExtraCostMutation } from '../../api/shipment'
+import { RadioSearchButton } from '../../components/Search'
 
-const Achievement = ({ setAddedModal }) => {
-  const modalClose = () => {
-    setAddedModal(false)
-  }
+import { getAdminTransportation } from '../../service/admin/Standard'
+import { formatWeight } from '../../utils/utils'
 
-  const radioDummy = ['해당없음', '추가', '차감']
+const initData = {
+	orderUid: '',
+	extraType: null,
+	extraCost: 0,
+	extraContents: '',
+	isFreightCost: false,
+	transportationCost: 0,
+	extraFreightCost: 0,
+}
 
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-  const checkDummy = ['공차비 추가']
-  const [check1, setCheck1] = useState(Array.from({ length: checkDummy.length }, () => false))
+const isNumber = (value) => /^\d*$/.test(value)
 
-  console.log('checkRadio =>', checkRadio)
+const Achievement = ({ setAddedModal, data }) => {
+	const [param, setParam] = useState(initData)
+	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value }))
+	const onNumberChange = (key, value) => {
+		let newValue = value.replace(/,/g, '')
+		if (!isNumber(newValue)) newValue = ''
+		setParam((prev) => ({ ...prev, [key]: newValue }))
+	}
 
-  return (
-    // 판매 제품 관리 - 패키지 관리
-    <>
-      <FadeOverlay />
-      <ModalContainer width={500}>
-        <BlueBarHeader>
-          <div>추가비 및 공차비 추가</div>
-          <div>
-            <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
-          </div>
-        </BlueBarHeader>
-        <BlueSubContainer>
-          <div>
-            <BlueMainDiv>
-              <BlueSubDiv style={{ height: '30px' }}>
-                <h6>출고번호 번호</h6>
-                <p style={{ color: '#4C83D6' }}>20230403-001</p>
-              </BlueSubDiv>
-            </BlueMainDiv>
-            <BlueMainDiv>
-              <div style={{ display: 'flex', alignItems: 'center', fontSize: '16px' }}>
-                <div style={{ width: '80px' }}>고객사</div>
-                <TxtInput />
-                <GreyBtn height={40} width={15} margin={5}>
-                  찾기
-                </GreyBtn>
-              </div>
-            </BlueMainDiv>
-            <Bar width={90} color="#c8c8c8" top={15} />
-            <BlueMainDiv style={{ border: 'none' }}>
-              <BlueSubDiv style={{ height: '50px' }}>
-                <BlueRadioWrap style={{ gap: '50px', padding: '0px', marginLeft: '-10px' }}>
-                  {radioDummy.map((text, index) => (
-                    <RadioMainDiv key={index}>
-                      <RadioCircleDiv
-                        isChecked={checkRadio[index]}
-                        onClick={() => {
-                          setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-                        }}
-                      >
-                        <RadioInnerCircleDiv isChecked={checkRadio[index]} />
-                      </RadioCircleDiv>
-                      <div style={{ display: 'flex', marginLeft: '5px', color: 'black' }}>{text}</div>
-                    </RadioMainDiv>
-                  ))}
-                </BlueRadioWrap>
-              </BlueSubDiv>
-              <div style={{ display: 'flex', gap: '20px' }}>
-                <BlueInput style={{ width: '40%' }} placeholder="추가비" />
-                <BlueInput style={{ width: '40%' }} placeholder="금액을 입력해 주세요." />
-              </div>
-            </BlueMainDiv>
-            <CheckDiv>
-              {checkDummy.map((x, index) => (
-                <ExCheckDiv>
-                  <StyledCheckSubSquDiv
-                    onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
-                    isChecked={check1[index]}
-                  >
-                    <CheckImg2 src="/svg/check.svg" isChecked={check1[index]} />
-                  </StyledCheckSubSquDiv>
-                  <p>{x}</p>
-                </ExCheckDiv>
-              ))}
-            </CheckDiv>
-            <BlueMainDiv style={{ border: 'none' }}>
-              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                <BlueInput style={{ width: '40%' }} placeholder="출고 중량" /> *
-                <BlueInput style={{ width: '40%' }} placeholder="목적지/목적지 코드" />
-                <GreyBtn width={13} height={35} fontSize={16}>
-                  찾기
-                </GreyBtn>
-              </div>
-              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                <p>=</p>
-                <BlueInput style={{ width: '40%', marginTop: '10px' }} placeholder="금액" />
-              </div>
-            </BlueMainDiv>
-          </div>
-          <BlueBtnWrap>
-            <BlueBlackBtn>저장</BlueBlackBtn>
-          </BlueBtnWrap>
-        </BlueSubContainer>
-      </ModalContainer>
-    </>
-  )
+	const { mutate: addExtraCost } = useShipmentAddExtraCostMutation() // 추가비 및 공차비 추가
+
+	// 추가비 및 공차비 추가
+	const onAddExtraCost = () => {
+		if (param.extraType === null && !param.isFreightCost) {
+			return window.alert('추가할 내용을 입력해주세요.')
+		}
+		const body = {
+			orderUid: data?.orderUid,
+		}
+		if (param.extraType !== null) {
+			body.extraType = param.extraType
+			body.extraCost = Number(param.extraCost)
+			body.extraContents = param.extraType
+		}
+		if (!!param.isFreightCost) {
+			body.extraFreightCost = param.extraFreightCost
+		}
+		addExtraCost(body)
+	}
+
+	const modalClose = () => setAddedModal(false)
+
+	// 운반비 단가 조회
+	const getTransportation = async () => {
+		const paramData = {
+			pageNum: 1,
+			pageSize: 5,
+			type: 1, // (0: 매입 / 1: 매출)
+			storage: data?.storageName,
+			destinationName: data.destinationName,
+			destinationCode: data.destinationCode,
+		}
+		const response = await getAdminTransportation(paramData)
+		const transportationCost = response?.data?.data?.list[0].effectCost ?? 0
+		const weight = data?.weight ?? 0
+		onChange('transportationCost', transportationCost)
+		onChange('extraFreightCost', weight * transportationCost)
+	}
+
+	useEffect(() => {
+		if (data) {
+			getTransportation()
+		}
+	}, [data])
+
+	return (
+		// 판매 제품 관리 - 패키지 관리
+		<>
+			<FadeOverlay />
+			<ModalContainer width={500}>
+				<BlueBarHeader>
+					<div>추가비 및 공차비 추가</div>
+					<div>
+						<WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
+					</div>
+				</BlueBarHeader>
+				<BlueSubContainer>
+					<div>
+						<BlueMainDiv>
+							<BlueSubDiv style={{ height: '30px', margin: 0 }}>
+								<h6>출고번호 번호</h6>
+								<p style={{ color: '#4C83D6' }}>{data?.outNumber ?? '-'}</p>
+							</BlueSubDiv>
+						</BlueMainDiv>
+						<BlueMainDiv>
+							<BlueSubDiv style={{ height: '30px', margin: 0 }}>
+								<h6>고객사</h6>
+								<p>{data?.customerName ?? '-'}</p>
+							</BlueSubDiv>
+						</BlueMainDiv>
+						<Bar width={90} color="#c8c8c8" top={15} />
+						<BlueMainDiv style={{ border: 'none' }}>
+							<BlueSubDiv style={{ height: '50px' }}>
+								<BlueRadioWrap style={{ gap: '50px', padding: '0px', marginLeft: '-10px' }}>
+									<RadioSearchButton
+										options={[
+											{ label: '해당 없음', value: null },
+											{ label: '추가', value: '추가' },
+											{ label: '감소', value: '감소' },
+										]}
+										value={param.extraType}
+										onChange={(value) => onChange('extraType', value)}
+									/>
+								</BlueRadioWrap>
+							</BlueSubDiv>
+							{param.extraType && (
+								<BlueInput
+									value={Number(param.extraCost).toLocaleString()}
+									onChange={(e) => onNumberChange('extraCost', e.target.value)}
+									placeholder={param.extraType === '추가' ? '추가 금액을 입력해 주세요.' : '차감 금액을 입력해 주세요.'}
+								/>
+							)}
+						</BlueMainDiv>
+
+						<BlueRadioWrap style={{ marginLeft: '20px' }}>
+							<RadioSearchButton
+								title={'공차비'}
+								options={[
+									{ label: '미포함', value: false },
+									{ label: '포함', value: true },
+								]}
+								value={param.isFreightCost}
+								onChange={(value) => onChange('isFreightCost', value)}
+							/>
+						</BlueRadioWrap>
+						{param.isFreightCost && (
+							<BlueMainDiv style={{ border: 'none' }}>
+								<div style={{ display: 'flex', gap: '20px' }}>
+									<InputColWrap>
+										<p>제품 중량</p>
+										<BlueInput value={formatWeight(Number(data?.weight))} readOnly />
+										<AbsoluteDiv>*</AbsoluteDiv>
+									</InputColWrap>
+									<InputColWrap>
+										<p>운반비 단가</p>
+										<BlueInput value={formatWeight(Number(param?.transportationCost))} readOnly />
+										<AbsoluteDiv>=</AbsoluteDiv>
+									</InputColWrap>
+									<InputColWrap>
+										<p>공차비</p>
+										<BlueInput value={formatWeight(Number(param?.extraFreightCost))} readOnly />
+									</InputColWrap>
+								</div>
+							</BlueMainDiv>
+						)}
+					</div>
+					<BlueBtnWrap>
+						<BlueBlackBtn onClick={onAddExtraCost}>저장</BlueBlackBtn>
+					</BlueBtnWrap>
+				</BlueSubContainer>
+			</ModalContainer>
+		</>
+	)
 }
 
 export default Achievement
 
-const CheckDiv = styled.div`
-  display: flex;
-  margin-left: 30px;
-  position: relative;
-  top: 15px;
-  font-size: 16px;
+const InputColWrap = styled.div`
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	position: relative;
+
+	& p {
+		font-size: 16px;
+		color: #6b6b6b;
+	}
+
+	& input {
+		width: 100%;
+	}
+`
+const AbsoluteDiv = styled.div`
+	position: absolute;
+	bottom: 7px;
+	right: -16px;
 `
