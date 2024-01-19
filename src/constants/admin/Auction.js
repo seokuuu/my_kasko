@@ -26,31 +26,26 @@ export const AuctionUnitPricePost = {
 //   { options: AuctionUnitPricePostDropOptions2, defaultValue: AuctionUnitPricePostDropOptions2[0] },
 // ]
 
-//dropdown
+//dropdown spart
 export const AuctionUnitPricePostDropOptions = [
-  { value: 'ask0', label: '제품군 ' },
-  { value: 'ask1', label: '1' },
-  { value: 'ask2', label: '2' },
-  { value: 'ask3', label: '3' },
-  { value: 'ask4', label: '4' },
+  { value: '', label: '제품군 ' },
+  { value: '후판', label: '후판' },
 ]
 
-//dropdown2
+//dropdown2 preferThickness
 export const AuctionUnitPricePostDropOptions2 = [
-  { value: 'ask0', label: '정척여부 ' },
-  { value: 'ask1', label: '1' },
-  { value: 'ask2', label: '2' },
-  { value: 'ask3', label: '3' },
-  { value: 'ask4', label: '4' },
+  { value: '', label: '정척여부 ' },
+  { value: 'Y', label: 'Y' },
+  { value: 'N', label: 'N' },
 ]
 
-//dropdown3
+//dropdown3 grade
 export const AuctionUnitPricePostDropOptions3 = [
-  { value: 'ask0', label: '제품등급 ' },
-  { value: 'ask1', label: '1' },
-  { value: 'ask2', label: '2' },
-  { value: 'ask3', label: '3' },
-  { value: 'ask4', label: '4' },
+  { value: '', label: '제품등급 ' },
+  { value: '1', label: '1' },
+  { value: '2', label: '2' },
+  { value: '3', label: '3' },
+  { value: '4', label: '4' },
 ]
 
 // !! 영역이 좁으므로 Upload props에 width값 1000 주고 쓰기 !!!
@@ -338,15 +333,7 @@ export const AuctionBiddingFields = {
 
 export const AuctionBiddingFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
-  {
-    field: '수정',
-    maxWidth: 90,
-    cellRenderer: BtnCellRenderer,
-    cellRendererParams: {
-      uidFieldName: '경매 제품 고유 번호',
-      editType: 'auctionbidding',
-    },
-  },
+
   { field: '경매 제품 고유 번호', minWidth: 100 },
   { field: '경매 고유 번호', minWidth: 100 },
   { field: '제품 고유 번호', minWidth: 100 },
@@ -449,15 +436,7 @@ export const AuctionProgressFields = {
 
 export const AuctionProgressFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
-  {
-    field: '수정',
-    maxWidth: 90,
-    cellRenderer: BtnCellRenderer,
-    cellRendererParams: {
-      uidFieldName: '경매 제품 고유 번호',
-      editType: 'auctionprogress',
-    },
-  },
+
   { field: '경매 제품 고유 번호', minWidth: 100 },
   { field: '고객 코드', minWidth: 100 },
   { field: '회사명', minWidth: 100 },
@@ -831,6 +810,7 @@ export const AuctionStartPriceFields = {
 }
 
 export const AuctionStartPriceFieldsCols = [
+  { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   { field: '고유 번호', minWidth: 150 },
   { field: '제품군', minWidth: 120 },
   { field: '정척 여부', minWidth: 120 },

@@ -1,47 +1,77 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { BlackBtn, BtnBound, GreyBtn, SkyBtn, TGreyBtn, TWhiteBtn, WhiteGrnBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
+import { useState, useEffect, useRef } from 'react'
+import { styled } from 'styled-components'
 import { storageOptions } from '../../../common/Option/SignUp'
+import { Link } from 'react-router-dom'
+import { MainSelect } from '../../../common/Option/Main'
+import { BlackBtn, BtnBound, BtnWrap } from '../../../common/Button/Button'
+import DateGrid from '../../../components/DateGrid/DateGrid'
+import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
 import Excel from '../../../components/TableInner/Excel'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import {
+  GreyBtn,
+  ExcelBtn,
+  WhiteGrnBtn,
+  IndigoBtn,
+  BlueBtn,
+  SkyBtn,
+  SwitchBtn,
+  TGreyBtn,
+  TWhiteBtn,
+} from '../../../common/Button/Button'
 import Test3 from '../../../pages/Test/Test3'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
+import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 
 import {
-  CustomInput,
-  DoubleWrap,
-  ExRadioWrap,
   FilterContianer,
-  FilterFooter,
   FilterHeader,
-  FilterHeaderAlert,
+  FilterFooter,
+  FilterSubcontianer,
   FilterLeft,
   FilterRight,
-  FilterSubcontianer,
-  Input,
-  MiniInput,
+  RowWrap,
   PartWrap,
   PWRight,
-  ResetImg,
-  RowWrap,
-  SubTitle,
-  TableContianer,
+  Input,
   TCSubContainer,
+  GridWrap,
   Tilde,
+  DoubleWrap,
+  ResetImg,
+  TableContianer,
+  ExRadioWrap,
+  SubTitle,
+  FilterHeaderAlert,
+  FHALeft,
+  ExInputsWrap,
+  MiniInput,
+  CustomInput,
 } from '../../../modal/External/ExternalFilter'
 
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
+import Hidden from '../../../components/TableInner/Hidden'
 
-const Package = ({}) => {
+import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
+import { useAtom } from 'jotai'
+import InventoryFind from '../../../modal/Multi/InventoryFind'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { getAuctionDestination } from '../../../api/auction/winning'
+import { getBidding, postBidding } from '../../../api/auction/bidding'
+import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constants/admin/Auction'
+import { useQueryClient } from '@tanstack/react-query'
+import { add_element_field } from '../../../lib/tableHelpers'
+import Table from '../../../pages/Table/Table'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+
+const Single = ({}) => {
   const radioDummy = ['전체', '미응찰', '관심제품', '응찰']
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-
+  const [destinationPopUp, setDestinationPopUp] = useAtom(userPageSingleDestiFindAtom)
   const [savedRadioValue, setSavedRadioValue] = useState('')
   useEffect(() => {
     const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
@@ -79,13 +109,121 @@ const Package = ({}) => {
     }
   }
 
+  const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
+
+  console.log('auctionDestination', auctionDestination?.data?.data)
+
+  const [customerData, setCustomerData] = useState()
+  const [propsUid, setPropsUid] = useState(null)
+  const [destiObject, setDestiObject] = useState()
+
+  const productListInner = {
+    biddingPrice: null,
+    customerDestinationUid: null,
+  }
+
+  const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
+
+  console.log('winningCreateInput', winningCreateInput)
+
+  const [getRow, setGetRow] = useState('')
+  const tableField = useRef(AuctionBiddingFieldsCols)
+  const getCol = tableField.current
+  const queryClient = useQueryClient()
+  const checkedArray = useAtom(selectedRowsAtom)[0]
+  const [tablePagination, setTablePagination] = useState([])
+
+  const [Param, setParam] = useState({
+    pageNum: 1,
+    pageSize: 50,
+    type: '패키지',
+  })
+
+  // 전체 GET
+  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getBidding', getBidding)
+  const resData = data?.data?.data?.list
+  const resPagination = data?.data?.data?.pagination
+
+  useEffect(() => {
+    let getData = resData
+    if (!isSuccess && !resData) return
+    if (Array.isArray(getData)) {
+      setGetRow(add_element_field(getData, AuctionBiddingFields))
+      setTablePagination(resPagination)
+    }
+  }, [isSuccess, resData])
+
+  // 경매 번호 가져오기
+  const auctionNumber = checkedArray?.[0]?.['경매 번호']
+
+  const init = {
+    auctionNumber: null,
+    type: '패키지',
+  }
+  const [winningCreateData, setWinningCreateData] = useState(init)
+
+  //
+  useEffect(() => {
+    const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
+    setDestiObject(selectedObject)
+    setWinningCreateData((p) => ({
+      ...p,
+      auctionNumber: auctionNumber,
+    }))
+  }, [propsUid, auctionNumber])
+
+  const [finalInput, setFinalInput] = useState({
+    biddingPrice: null,
+    customerDestinationUid: null,
+  })
+
+  // biddingList에 들어갈 3총사를 다 넣어줌.
+  useEffect(() => {
+    const updatedProductList = checkedArray?.map((item) => ({
+      productUid: item['제품 고유 번호'],
+      biddingPrice: finalInput?.biddingPrice,
+      customerDestinationUid: finalInput?.customerDestinationUid,
+      // 여기에 다른 필요한 속성을 추가할 수 있습니다.
+    }))
+
+    // winningCreateData를 업데이트하여 productList를 갱신
+    setWinningCreateData((prevData) => ({
+      ...prevData,
+      biddingList: updatedProductList,
+    }))
+  }, [checkedArray, finalInput])
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  const onPageChange = (value) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageNum: Number(value),
+    }))
+  }
+
+  const postMutation = useMutationQuery('', postBidding)
+
+  // 응찰 버튼 POST
+  const confirmOnClickHandler = () => {
+    postMutation.mutate(winningCreateData)
+  }
+
+  console.log('winningCreateData', winningCreateData)
+
   return (
     <FilterContianer>
       <FilterHeader>
         <div style={{ display: 'flex' }}>
           <h1>경매 응찰</h1>
           <SubTitle>
-            <Link to={`/userpage/actionsingle`}>
+            <Link to={`/userpage/auctionsingle`}>
               <h6>단일</h6>
             </Link>
             <h5>패키지</h5>
@@ -193,7 +331,7 @@ const Package = ({}) => {
               <DoubleWrap>
                 <h6>제품 번호 </h6>
                 <textarea
-                  placeholder='복수 조회 진행 &#13;&#10;   "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
+                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
                 />
               </DoubleWrap>
             </FilterRight>
@@ -223,8 +361,8 @@ const Package = ({}) => {
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
-            <Excel />
+            <PageDropdown handleDropdown={handleTablePageSize} />
+            <Excel getRow={getRow} />
             <WhiteGrnBtn>
               <div>
                 <img src="/img/grnstar.png" />
@@ -246,29 +384,73 @@ const Package = ({}) => {
             }}
           >
             <p>목적지</p>
-            <CustomInput placeholder="h50" width={60} height={32} />
-            <CustomInput placeholder="목적지명" width={120} height={32} />
-            <CustomInput placeholder="도착지 연락처" width={120} height={32} />
-            <TWhiteBtn style={{ width: '50px' }} height={30}>
+            <CustomInput placeholder="h50" width={60} height={32} defaultValue={destiObject?.code} />
+            <CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destiObject?.destinationName} />
+            <CustomInput placeholder="도착지 연락처" width={120} height={32} defaultValue={destiObject?.name} />
+            <TWhiteBtn
+              style={{ width: '50px' }}
+              height={30}
+              onClick={() => {
+                setDestinationPopUp(true)
+              }}
+            >
               찾기
             </TWhiteBtn>
-            <TGreyBtn>적용</TGreyBtn>
-            <BtnBound style={{ margin: '0px' }} />
-            <p>일괄 경매 응찰</p>
-            <CustomInput placeholder="응찰가 + 최고가 입력" width={140} height={32} />
-            <TGreyBtn height={30} style={{ width: '50px' }}>
+            <TGreyBtn
+              onClick={() => {
+                setFinalInput((prevFinalInput) => ({
+                  ...prevFinalInput,
+                  customerDestinationUid: destiObject && destiObject.uid,
+                }))
+              }}
+            >
               적용
             </TGreyBtn>
             <BtnBound style={{ margin: '0px' }} />
-            <SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50}>
+            <p>일괄 경매 응찰</p>
+            <CustomInput
+              placeholder="응찰가 + 최고가 입력"
+              width={140}
+              height={32}
+              onChange={(e) => {
+                setwinningCreateInput((p) => ({
+                  ...p,
+                  biddingPrice: parseInt(e.target.value) || null,
+                }))
+              }}
+            />
+            <TGreyBtn
+              height={30}
+              style={{ width: '50px' }}
+              onClick={() => {
+                setFinalInput((p) => ({
+                  ...p,
+
+                  biddingPrice: winningCreateInput?.biddingPrice,
+                }))
+              }}
+            >
+              적용
+            </TGreyBtn>
+            <BtnBound style={{ margin: '0px' }} />
+            <SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50} onClick={confirmOnClickHandler}>
               응찰
             </SkyBtn>
           </div>
         </TCSubContainer>
-        <Test3 />
+        <Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
       </TableContianer>
+      {destinationPopUp && (
+        <InventoryFind
+          title={'목적지 찾기'}
+          type={'낙찰 생성'}
+          setSwitch={setDestinationPopUp}
+          data={auctionDestination}
+          setPropsUid={setPropsUid}
+        />
+      )}
     </FilterContianer>
   )
 }
 
-export default Package
+export default Single

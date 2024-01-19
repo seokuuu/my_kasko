@@ -1,15 +1,19 @@
-import { useEffect, useRef, useState } from 'react'
-import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { BlackBtn, GreyBtn, NewBottomBtnWrap, SkyBtn, WhiteBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-import Test3 from '../../Test/Test3'
+import {
+  invenDestination,
+  selectedRows2Switch,
+  selectedRowsAtom2,
+  toggleAtom,
+  winningDestiData,
+} from '../../../store/Layout/Layout'
 
 import {
   DoubleWrap,
-  ExInputsWrap,
   FilterContianer,
   FilterFooter,
   FilterHeader,
@@ -36,21 +40,58 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { InputContainer, NoOutInput, Unit } from '../../../common/Input/Input'
 
-import { WinningCreateFindAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
-import CustomerFind from '../../../modal/Multi/CustomerFind'
-import Table from '../../Table/Table'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { getDetailProgress } from '../../../api/auction/detailprogress'
-import { add_element_field } from '../../../lib/tableHelpers'
-import { AuctionWinningCreateFields, AuctionWinningCreateFieldsCols } from '../../../constants/admin/Auction'
 import { useQueryClient } from '@tanstack/react-query'
-import { getWinningCreate } from '../../../api/auction/winning'
+import { useAtom } from 'jotai'
+import { isArray } from 'lodash'
+import { getAuctionDestination, getAuctionNumber, successfulBid } from '../../../api/auction/winning'
+import { AuctionWinningCreateFieldsCols } from '../../../constants/admin/Auction'
+import useReactQuery from '../../../hooks/useReactQuery'
+import CustomerFind from '../../../modal/Multi/CustomerFind'
+import InventoryFind from '../../../modal/Multi/InventoryFind'
+import { WinningCreateFindAtom, WinningProductAddAtom } from '../../../store/Layout/Layout'
+import Table from '../../Table/Table'
+import WinningProductAdd from './WinningProductAdd'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
 const WinningCreate = ({}) => {
+  const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
+  const [destinationData, setDestinationData] = useAtom(winningDestiData)
+  console.log('destinationData', destinationData)
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
+  const [editData, setEditData] = useState({
+    auctionNumber: '',
+    addProductUids: [],
+    deleteAuctionProductList: [],
+  })
+
+  const init = {
+    auctionNumber: '',
+    customerUid: null,
+    memberUid: null,
+    customerDestinationUid: null,
+    productList: [],
+  }
+
+  const productListInner = {
+    biddingPrice: null,
+    confirmPrice: null,
+  }
+
+  const [winningCreateData, setWinningCreateData] = useState(init)
+  const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
+
+  console.log('winningCreateInput', winningCreateInput)
+
+  console.log('winningCreateData', winningCreateData)
+
+  const [customerData, setCustomerData] = useState()
+  const [destiData, setDestiData] = useState()
+  console.log('customerData', customerData)
+
   const [isModal, setIsModal] = useAtom(WinningCreateFindAtom)
+  const [addProdModal, setAddProdModal] = useAtom(WinningProductAddAtom)
   //checkSales
+  console.log('addProdModal', addProdModal)
   const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
 
   //checkShips
@@ -97,13 +138,59 @@ const WinningCreate = ({}) => {
     }
   }
 
+  const { data: auctionNowNum } = useReactQuery('', 'getAuctionNumber', getAuctionNumber)
+
+  console.log('auctionNowNum', auctionNowNum?.data?.data)
+
+  const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
+
+  const [propsUid, setPropsUid] = useState(null)
+  const [destiObject, setDestiObject] = useState()
+
+  // 목적지 찾기 및 목적지 uid, auctionNumber set //
+  useEffect(() => {
+    const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
+    setDestiObject(selectedObject)
+    setWinningCreateData((p) => ({
+      ...p,
+      customerDestinationUid: selectedObject?.uid,
+      auctionNumber: auctionNowNum?.data?.data,
+      customerUid: customerData?.uid,
+      memberUid: customerData?.memberUid,
+    }))
+  }, [propsUid, auctionNowNum, customerData])
+
+  console.log('destiObject', destiObject)
+
   const [tablePagination, setTablePagination] = useState([])
 
   const [getRow, setGetRow] = useState('')
   const tableField = useRef(AuctionWinningCreateFieldsCols)
   const getCol = tableField.current
   const queryClient = useQueryClient()
-  const checkedArray = useAtom(selectedRowsAtom)[0]
+  const checkedArray2 = useAtom(selectedRowsAtom2)[0]
+  const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
+
+  console.log('rowAtomSwitch main @@', rowAtomSwitch)
+
+  useEffect(() => {
+    const updatedProductList = checkedArray2?.map((item) => ({
+      productUid: item['제품 고유 번호'],
+      biddingPrice: winningCreateInput.biddingPrice,
+      confirmPrice: winningCreateInput.confirmPrice,
+      // 여기에 다른 필요한 속성을 추가할 수 있습니다.
+    }))
+
+    // winningCreateData를 업데이트하여 productList를 갱신
+    setWinningCreateData((prevData) => ({
+      ...prevData,
+      productList: updatedProductList,
+    }))
+  }, [checkedArray2, winningCreateInput])
+
+  console.log('checkedArray2', checkedArray2)
+
+  console.log('winningCreateData', winningCreateData)
 
   const paramData = {
     pageNum: 1,
@@ -114,22 +201,35 @@ const WinningCreate = ({}) => {
   const [Param, setParam] = useState(paramData)
 
   // GET
-  const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getWinningCreate', getWinningCreate)
-  const resData = data?.data?.data?.list
-  console.log('resData ', resData)
-  const resPagination = data?.data?.data?.pagination
+  // const resPagination = data?.data?.data?.pagination
+  const [newResData, setNewResData] = useState([])
 
-  console.log('resData', resData)
+  console.log('newResData', newResData)
 
   useEffect(() => {
-    let getData = resData
     //타입, 리액트쿼리, 데이터 확인 후 실행
-    if (!isSuccess && !resData) return
-    if (Array.isArray(getData)) {
-      setGetRow(add_element_field(getData, AuctionWinningCreateFields))
-      setTablePagination(resPagination)
+    if (Array.isArray(newResData)) {
+      const combinedData = [...newResData]
+
+      setGetRow(combinedData)
+      // setTablePagination(resPagination)
     }
-  }, [isSuccess, resData])
+  }, [newResData])
+
+  const handleRemoveBtn = useCallback(() => {
+    if (isArray(checkedArray2) && checkedArray2.length > 0) {
+      if (window.confirm('선택한 항목을 삭제 목록에 추가하시겠습니까?')) {
+        const filteredArray = newResData.filter(
+          (item) => !checkedArray2.some((checkedItem) => checkedItem['제품 고유 번호'] === item['제품 고유 번호']),
+        )
+        setNewResData(filteredArray)
+      }
+    } else {
+      alert('선택해주세요!')
+    }
+  }, [checkedArray2, newResData])
+
+  console.log('newResData =>', newResData)
 
   const handleTablePageSize = (event) => {
     setParam((prevParam) => ({
@@ -144,6 +244,12 @@ const WinningCreate = ({}) => {
       ...prevParam,
       pageNum: Number(value),
     }))
+  }
+
+  const successfulBidMutation = useMutationQuery('', successfulBid)
+
+  const successfulBidOnClick = () => {
+    successfulBidMutation.mutate(winningCreateData)
   }
 
   return (
@@ -161,7 +267,7 @@ const WinningCreate = ({}) => {
           <FilterTopContainer>
             <FilterTCTop>
               <h6>경매 번호</h6>
-              <p>2023041050</p>
+              <p>{auctionNowNum?.data?.data}</p>
             </FilterTCTop>
             <FilterTCBottom>
               <FilterTCBSubdiv>
@@ -179,20 +285,46 @@ const WinningCreate = ({}) => {
                   >
                     찾기
                   </GreyBtn>
+                  <p style={{ color: '#4C83D6' }}>{customerData?.code}</p>
                 </div>
 
                 <div>
                   <h6 style={{ fontSize: '18px' }}>목적지</h6>
-                  <Input placeholder="코드" style={{ width: '60px', marginRight: '10px', fontSize: '16px' }} />
-                  <Input placeholder="목적지명" style={{ width: '120px', marginRight: '10px', fontSize: '16px' }} />
-                  <Input placeholder="하차지명" style={{ width: '130px', marginRight: '10px', fontSize: '16px' }} />
+                  <Input
+                    placeholder="코드"
+                    style={{ width: '60px', marginRight: '10px', fontSize: '16px' }}
+                    defaultValue={destiObject?.code}
+                  />
+                  <Input
+                    placeholder="목적지명"
+                    style={{ width: '120px', marginRight: '10px', fontSize: '16px' }}
+                    defaultValue={destiObject?.destinationName}
+                  />
+                  <Input
+                    placeholder="하차지명"
+                    style={{ width: '130px', marginRight: '10px', fontSize: '16px' }}
+                    defaultValue={destiObject?.name}
+                  />
                   <Input
                     placeholder="하차지 연락처"
                     style={{ width: '130px', marginRight: '10px', fontSize: '16px' }}
+                    defaultValue={destiObject?.phone}
                   />
-                  <Input placeholder="주소" style={{ width: '130px', marginRight: '10px', fontSize: '16px' }} />
+                  <Input
+                    placeholder="주소"
+                    style={{ width: '130px', marginRight: '10px', fontSize: '16px' }}
+                    defaultValue={destiObject?.address}
+                  />
 
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+                  <GreyBtn
+                    style={{ width: '70px' }}
+                    height={35}
+                    margin={10}
+                    fontSize={17}
+                    onClick={() => {
+                      setDestinationPopUp(true)
+                    }}
+                  >
                     찾기
                   </GreyBtn>
                 </div>
@@ -201,19 +333,35 @@ const WinningCreate = ({}) => {
                 <div style={{ marginRight: '10px' }}>
                   <h6 style={{ fontSize: '18px' }}>낙찰가 총액</h6>
                   <InputContainer>
-                    <NoOutInput type="number" />
+                    <NoOutInput
+                      type="number"
+                      onChange={(e) => {
+                        setwinningCreateInput((p) => ({
+                          ...p,
+                          biddingPrice: parseInt(e.target.value) || null,
+                        }))
+                      }}
+                    />
                     <Unit>원</Unit>
                   </InputContainer>
                 </div>
-                <div style={{ marginRight: '10px' }}>
+                {/* <div style={{ marginRight: '10px' }}>
                   <h6 style={{ fontSize: '17px' }}>총 중량</h6>
                   <Input />
-                </div>
+                </div> */}
 
                 <div style={{ marginRight: '10px' }}>
                   <h6 style={{ fontSize: '17px' }}> 확정전송 총액</h6>
                   <InputContainer>
-                    <NoOutInput type="number" />
+                    <NoOutInput
+                      type="number"
+                      onChange={(e) => {
+                        setwinningCreateInput((p) => ({
+                          ...p,
+                          confirmPrice: parseInt(e.target.value) || null,
+                        }))
+                      }}
+                    />
                     <Unit>원</Unit>
                   </InputContainer>
                 </div>
@@ -304,8 +452,8 @@ const WinningCreate = ({}) => {
             <Hidden />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
-            <Excel />
+            <PageDropdown handleDropdown={handleTablePageSize} />
+            <Excel getRow={getRow} />
           </div>
         </TCSubContainer>
         <TCSubContainer>
@@ -313,18 +461,49 @@ const WinningCreate = ({}) => {
             선택 중량<span> 2 </span>kg / 총 중량 kg
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <SkyBtn>제품 추가</SkyBtn>
+            <SkyBtn
+              onClick={() => {
+                setAddProdModal(true)
+              }}
+            >
+              제품 추가
+            </SkyBtn>
           </div>
         </TCSubContainer>
         <Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn>선택 목록 제거</WhiteRedBtn>
+            <WhiteRedBtn onClick={handleRemoveBtn}>선택 목록 제거</WhiteRedBtn>
           </div>
         </TCSubContainer>
+        <NewBottomBtnWrap bottom={-5}>
+          <WhiteBtn width={13} height={40}>
+            돌아가기
+          </WhiteBtn>
+          <BlackBtn width={13} height={40} onClick={successfulBidOnClick}>
+            등록
+          </BlackBtn>
+        </NewBottomBtnWrap>
       </TableContianer>
-      {isModal && <CustomerFind setSwitch={setIsModal} />}
+      {isModal && <CustomerFind setSwitch={setIsModal} setModalData={setCustomerData} />}
+      {addProdModal && (
+        <WinningProductAdd
+          addModal={addProdModal}
+          setAddModal={setAddProdModal}
+          newResData={newResData}
+          setNewResData={setNewResData}
+        />
+      )}
+      {destinationPopUp && (
+        <InventoryFind
+          title={'목적지 찾기'}
+          type={'낙찰 생성'}
+          setSwitch={setDestinationPopUp}
+          data={auctionDestination}
+          setPropsUid={setPropsUid}
+        />
+      )}
     </FilterContianer>
   )
 }

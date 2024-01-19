@@ -126,6 +126,7 @@ const Winning = ({ detailRow }) => {
   )
 
   console.log('extractedArray', extractedArray)
+
   // 낙찰 취소 POST
   const deleteMutation = useMutationQuery('', deleteBidding)
 
@@ -318,7 +319,7 @@ const Winning = ({ detailRow }) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown handleDropdown={handleTablePageSize} />
-            <Excel />
+            <Excel getRow={getRow} />
           </div>
         </TCSubContainer>
         <TCSubContainer>
