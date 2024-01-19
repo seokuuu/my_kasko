@@ -37,12 +37,16 @@ import {
 import { UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import { CheckBox } from '../../../common/Check/Checkbox'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
+import SellOrderSearchFields from './SellOrderSearchFields'
+import { isEqual } from 'lodash'
 
 const SellOrder = ({ setChoiceComponent }) => {
-	const [param, setParam] = useState({
+	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
-	})
+	}
+	const [param, setParam] = useState(paramData)
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const checkSales = ['전체', '확정 전송', '확정전송 대기']
 	const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
@@ -58,7 +62,12 @@ const SellOrder = ({ setChoiceComponent }) => {
 		isError,
 		data: getSaleProductListRes,
 		isSuccess,
+		refetch,
 	} = useReactQuery(param, 'getSaleProductList', getSaleProductList)
+
+	if (isError) {
+		window.alert('데이터를 불러오는데 실패했습니다.')
+	}
 
 	const [saleProductListData, setSaleProductListData] = useState(null)
 	const [saleProductPagination, setSaleProductPagination] = useState([])
@@ -116,6 +125,25 @@ const SellOrder = ({ setChoiceComponent }) => {
 		}))
 	}
 
+	const globalProductResetOnClick = () => {
+		// if resetting the search field shouldn't rerender table
+		// then we need to create paramData object to reset the search field
+		setParam(paramData)
+	}
+
+	const globalProductSearchOnClick = (userSearchParam) => {
+		setParam((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				refetch()
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+			}
+		})
+	}
+
 	return (
 		<FilterContianer>
 			<div>
@@ -152,73 +180,81 @@ const SellOrder = ({ setChoiceComponent }) => {
 					</div>
 				</FilterHeaderAlert>
 				{exFilterToggle && (
-					<FilterSubcontianer>
-						<FilterLeft>
-							<RowWrap none>
-								<PartWrap first>
-									<h6>창고 구분</h6>
-									<PWRight>
-										<MainSelect />
-									</PWRight>
-								</PartWrap>
+					// <FilterSubcontianer>
+					// 	<FilterLeft>
+					// 		<RowWrap none>
+					// 			<PartWrap first>
+					// 				<h6>창고 구분</h6>
+					// 				<PWRight>
+					// 					<MainSelect />
+					// 				</PWRight>
+					// 			</PartWrap>
 
-								<PartWrap>
-									<h6>구분</h6>
-									<MainSelect />
-								</PartWrap>
-							</RowWrap>
-							<RowWrap>
-								<PartWrap>
-									<h6>고객사 명/고객사코드</h6>
-									<Input />
-									<Input />
-									<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-										찾기
-									</GreyBtn>
-								</PartWrap>
-							</RowWrap>
-							<RowWrap>
-								<PartWrap>
-									<h6 style={{ width: '165px' }}>상시판매 주문일자</h6>
-									<GridWrap>
-										<DateGrid width={130} bgColor={'white'} fontSize={17} />
-										<Tilde>~</Tilde>
-										<DateGrid width={130} bgColor={'white'} fontSize={17} />
-									</GridWrap>
-								</PartWrap>
-								<PartWrap>
-									<h6>상시 판매 번호</h6>
-									<Input />
-								</PartWrap>
-							</RowWrap>
-							<RowWrap none>
-								<PartWrap first>
-									<h6>주문 상태</h6>
-									<ExCheckWrap>
-										{checkSales.map((x, index) => (
-											<ExCheckWrap style={{ marginRight: '15px' }}>
-												<StyledCheckSubSquDiv
-													onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
-													isChecked={check1[index]}
-												>
-													<CheckImg2 src="/svg/check.svg" isChecked={check1[index]} />
-												</StyledCheckSubSquDiv>
-												<p>{x}</p>
-											</ExCheckWrap>
-										))}
-									</ExCheckWrap>
-								</PartWrap>
-							</RowWrap>
-						</FilterLeft>
-						<FilterRight>
-							<DoubleWrap>
-								<h6>제품 번호 </h6>
-								<textarea
-									placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-								/>
-							</DoubleWrap>
-						</FilterRight>
-					</FilterSubcontianer>
+					// 			<PartWrap>
+					// 				<h6>구분</h6>
+					// 				<MainSelect />
+					// 			</PartWrap>
+					// 		</RowWrap>
+					// 		<RowWrap>
+					// 			<PartWrap>
+					// 				<h6>고객사 명/고객사코드</h6>
+					// 				<Input />
+					// 				<Input />
+					// 				<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+					// 					찾기
+					// 				</GreyBtn>
+					// 			</PartWrap>
+					// 		</RowWrap>
+					// 		<RowWrap>
+					// 			<PartWrap>
+					// 				<h6 style={{ width: '165px' }}>상시판매 주문일자</h6>
+					// 				<GridWrap>
+					// 					<DateGrid width={130} bgColor={'white'} fontSize={17} />
+					// 					<Tilde>~</Tilde>
+					// 					<DateGrid width={130} bgColor={'white'} fontSize={17} />
+					// 				</GridWrap>
+					// 			</PartWrap>
+					// 			<PartWrap>
+					// 				<h6>상시 판매 번호</h6>
+					// 				<Input />
+					// 			</PartWrap>
+					// 		</RowWrap>
+					// 		<RowWrap none>
+					// 			<PartWrap first>
+					// 				<h6>주문 상태</h6>
+					// 				<ExCheckWrap>
+					// 					{checkSales.map((x, index) => (
+					// 						<ExCheckWrap style={{ marginRight: '15px' }}>
+					// 							<StyledCheckSubSquDiv
+					// 								onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
+					// 								isChecked={check1[index]}
+					// 							>
+					// 								<CheckImg2 src="/svg/check.svg" isChecked={check1[index]} />
+					// 							</StyledCheckSubSquDiv>
+					// 							<p>{x}</p>
+					// 						</ExCheckWrap>
+					// 					))}
+					// 				</ExCheckWrap>
+					// 			</PartWrap>
+					// 		</RowWrap>
+					// 	</FilterLeft>
+					// 	<FilterRight>
+					// 		<DoubleWrap>
+					// 			<h6>제품 번호 </h6>
+					// 			<textarea
+					// 				placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
+					// 			/>
+					// 		</DoubleWrap>
+					// 	</FilterRight>
+					// </FilterSubcontianer>
+					<GlobalProductSearch
+						// prettier-ignore
+						param={param}
+						isToggleSeparate={true}
+						renderCustomSearchFields={(props) => <SellOrderSearchFields {...props} />}
+						globalProductSearchOnClick={globalProductSearchOnClick}
+						globalProductResetOnClick={globalProductResetOnClick}
+					/>
 				)}
 			</div>
 			<TableContianer>

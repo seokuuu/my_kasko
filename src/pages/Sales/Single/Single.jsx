@@ -178,7 +178,7 @@ const Single = ({}) => {
 							// prettier-ignore
 							param={param}
 							isToggleSeparate={true}
-							customRenderProp={(props) => <SingleProductSearchFields {...props} />}
+							renderCustomSearchFields={(props) => <SingleProductSearchFields {...props} />}
 							globalProductSearchOnClick={globalProductSearchOnClick}
 							globalProductResetOnClick={globalProductResetOnClick}
 						/>

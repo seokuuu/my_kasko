@@ -17,7 +17,7 @@ const GlobalProductSearch = ({
 	// prettier-ignore
 	globalProductResetOnClick,
 	globalProductSearchOnClick,
-	customRenderProp,
+	renderCustomSearchFields,
 	isToggleSeparate = false,
 }) => {
 	const [toggle, setToggle] = useAtom(globalProductSearchToggleAtom)
@@ -164,13 +164,13 @@ const GlobalProductSearch = ({
 				</FilterHeader>
 			)}
 			{toggle && (
-				<FilterWrap style={{ marginTop: '25px', marginBottom: '50px ' }}>
+				<FilterWrap style={{ marginTop: '25px', marginBottom: '25px ' }}>
 					<FilterSubcontianer>
 						<ProductSearchFields
 							// prettier-ignore
 							search={userSearchParam}
 							setSearch={setUserSearchParam}
-							customRenderProp={customRenderProp}
+							renderCustomSearchFields={renderCustomSearchFields}
 						/>
 					</FilterSubcontianer>
 					<FilterFooter>
