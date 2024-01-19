@@ -65,10 +65,6 @@ const SellOrder = ({ setChoiceComponent }) => {
 		refetch,
 	} = useReactQuery(param, 'getSaleProductList', getSaleProductList)
 
-	if (isError) {
-		window.alert('데이터를 불러오는데 실패했습니다.')
-	}
-
 	const [saleProductListData, setSaleProductListData] = useState(null)
 	const [saleProductPagination, setSaleProductPagination] = useState([])
 	useEffect(() => {
@@ -284,6 +280,7 @@ const SellOrder = ({ setChoiceComponent }) => {
 					getRow={saleProductListData}
 					tablePagination={saleProductPagination}
 					onPageChange={onPageChange}
+					loading={isLoading}
 				/>
 				<TCSubContainer>
 					<div></div>
