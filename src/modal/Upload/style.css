@@ -1,7 +1,7 @@
 progress::-webkit-progress-value {
-    background-color: #4c83d6; /* 원하는 색상으로 변경 */
+  background-color: #4c83d6; /* 원하는 색상으로 변경 */
 }
 
 progress::-webkit-progress-bar {
-    background-color: lightgray; /* 원하는 색상으로 변경 */
+  background-color: lightgray; /* 원하는 색상으로 변경 */
 }

@@ -16,7 +16,7 @@ import {
 import { blueModalAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
-import { ExRadioWrap } from '../External/ExternalFilter'
+import { CustomInput, ExRadioWrap, Input } from '../External/ExternalFilter'
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
 
 import { CheckBox } from '../../common/Check/Checkbox'
@@ -24,22 +24,22 @@ import { useEffect } from 'react'
 import CommonTest from '../Alert/PopupMessages'
 import { popupMessages } from '../Alert/PopupMessages'
 import AlertPopup from '../Alert/AlertPopup'
-import { popupAtom } from '../../store/Layout/Layout'
+import { popupAtom2 } from '../../store/Layout/Layout'
 
 import { popupObject } from '../../store/Layout/Layout'
 import { popupDummy } from '../Alert/PopupDummy'
 import { popupTypeAtom } from '../../store/Layout/Layout'
-import { changeCategoryAtom } from '../../store/Layout/Popup'
+import { changeSaleTypeAtom } from '../../store/Layout/Popup'
 
-const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productNumbers, length }) => {
-  const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
+const SalseType = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productNumbers }) => {
+  const [popupSwitch, setPopupSwitch] = useAtom(popupAtom2) // 팝업 스위치
 
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
 
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
 
-  const [parameter, setParmeter] = useAtom(changeCategoryAtom)
-
+  const [parameter, setParmeter] = useAtom(changeSaleTypeAtom)
+  console.log('에러')
   // 처음 팝업 띄우는 컴포넌트의 onClickHandler
   const firstPopupClick = (num, callBack) => {
     setPopupSwitch(true)
@@ -54,6 +54,7 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
     setNowPopup(firstPopup)
   }
 
+  console.log('에러2')
   // 팝업 타입 최신화
   useEffect(() => {
     const firstType = nowPopup.num.split('-')[0]
@@ -64,45 +65,49 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
     setModalSwitch(false)
   }
 
-  const radioDummy = length == 3 ? ['판매재', '판매제외재', '판매완료재'] : ['판매제', '판매제외제']
-  const radioDummy2 = ['불량', '제외 요청', '기타 사유']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-  const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, (_, index) => index === 0))
-  const [checkData1, setCheckData1] = useState(Array.from({ length: radioDummy.length }, () => ''))
-  const [checkData2, setCheckData2] = useState(Array.from({ length: radioDummy.length }, () => ''))
-
-  // console.log('', (popupMessages[1].find((message) => message.num === '4') || {}).title)
-
+  console.log('에러3')
+  // const radioDummy = ['판매재', '판매제외재', '판매완료재']
+  const radioDummy2 = ['경매 대상재', '상시판매 대상자']
+  // const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy2.length }, (_, index) => index === 0))
+  const [checkData, setCheckData] = useState(Array.from({ length: radioDummy2.length }, () => ''))
+  const [price, setPrice] = useState('0')
+  const handleChangePrice = (e) => {
+    setPrice(e.currentTarget.value)
+  }
   useEffect(() => {
     // true에 해당되면, value를, false면 빈값을 반환
-    const updatedCheck = radioDummy.map((value, index) => {
+    const updatedCheck = radioDummy2.map((value, index) => {
       return checkRadio[index] ? value : ''
     })
     // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
     const filteredCheck = updatedCheck.filter((item) => item !== '')
-    setCheckData1(filteredCheck)
+    setCheckData(filteredCheck)
   }, [checkRadio])
 
-  useEffect(() => {
-    // true에 해당되면, value를, false면 빈값을 반환
-    const updatedCheck = radioDummy2.map((value, index) => {
-      return checkRadio2[index] ? value : ''
-    })
-    // 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-    const filteredCheck = updatedCheck.filter((item) => item !== '')
-    setCheckData2(filteredCheck)
-  }, [checkRadio2])
-
-  // console.log('라디오값', checkData1)
+  console.log('에러5')
   useEffect(() => {
     setParmeter((p) => ({
       ...p,
-      saleCategory: checkData1 ? checkData1.join('') : '판매재', // 판매재, 판매제외재, 판매완료재
-      excludeSaleReason: checkData1.join('') !== '판매제외재' ? null : checkData2.join(''), // 판매 제외재 사유
+      saleType: checkData.join(''), // 경매 대상재 / 상시판매 대상재
+      salePrice: price, // 상시 판매가
       numbers: productNumbers, // 제품번호 목록
     }))
-  }, [checkData1, checkData2])
+  }, [checkData, price])
 
+  // console.log(parameter)
+  // useEffect(() => {
+  //   if (checkData.join('') === '상시판매 대상자') {
+  //     setPrice(price)
+  //   } else {
+  //     setPrice('0')
+  //   }
+
+  //   // console.log(e)
+  // }, [checkData, price])
+  console.log(price)
+  console.log(parameter)
+  console.log('에러6')
   return (
     // 재고 관리 - 판매 구분 변경
     <>
@@ -120,7 +125,7 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
               <BlueSubDiv>
                 <h6>판매 구분</h6>
                 <ExRadioWrap>
-                  {radioDummy.map((text, index) => (
+                  {radioDummy2.map((text, index) => (
                     <RadioMainDiv key={index}>
                       <RadioCircleDiv
                         isChecked={checkRadio[index]}
@@ -137,22 +142,14 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
               </BlueSubDiv>
               {checkRadio[1] && (
                 <BlueSubDiv bor>
-                  <h6>판매 제외 사유</h6>
-                  <ExRadioWrap>
-                    {radioDummy2.map((text, index) => (
-                      <RadioMainDiv key={index}>
-                        <RadioCircleDiv
-                          isChecked={checkRadio2[index]}
-                          onClick={() => {
-                            setCheckRadio2(CheckBox(checkRadio2, checkRadio2.length, index))
-                          }}
-                        >
-                          <RadioInnerCircleDiv isChecked={checkRadio2[index]} />
-                        </RadioCircleDiv>
-                        <div style={{ display: 'flex', marginLeft: '17px', color: 'black' }}>{text}</div>
-                      </RadioMainDiv>
-                    ))}
-                  </ExRadioWrap>
+                  <h6>상시 판매 가격</h6>
+                  <CustomInput
+                    width={300}
+                    height={40}
+                    placeholder="상시 판매 가격"
+                    value={price}
+                    onChange={handleChangePrice}
+                  />
                 </BlueSubDiv>
               )}
             </BlueMainDiv>
@@ -175,4 +172,4 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
   )
 }
 
-export default Multi2
+export default SalseType
