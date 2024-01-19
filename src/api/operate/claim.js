@@ -100,7 +100,7 @@ export function useClaimListQuery(params) {
 // 클레임 등록할 제품 목록
 export function useProductListToRegisterClaimQuery(params) {
 	return useQuery({
-		queryKey: [...CLAIM_KEYS.getProductToClaim, params.pageNum, params.pageSize],
+		queryKey: [...CLAIM_KEYS.getProductToClaim, params],
 		queryFn: async function () {
 			const response = await client.get(urls.claimProduct, {
 				params: FilteringV2(params),
