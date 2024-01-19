@@ -23,7 +23,7 @@ const FAQ = ({}) => {
 	// 서버 옵션(요청 변수)
 	const [search, setSearch] = useState({
 		pageNum: 1,
-		pageSize: 10,
+		pageSize: 50,
 		category: searchCategoryOptions[0],
 		keyword: '',
 	})
@@ -36,6 +36,7 @@ const FAQ = ({}) => {
 	// 목록 API
 	const { data, refetch } = useFaqListQuery({ ...search, category: search.category.label })
 
+	console.log('data :', data)
 	/**
 	 * @constant
 	 * @description
@@ -48,7 +49,7 @@ const FAQ = ({}) => {
 				? data.list.map((d, index) => ({
 						...d,
 						createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
-						id: data.list.length - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
+						id: data.pagination.listCount - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
 						uid: d.uid,
 				  }))
 				: [],
@@ -79,7 +80,7 @@ const FAQ = ({}) => {
 			{/* 테이블 */}
 			<TableContianer>
 				{/* 테이블 헤더 (목록 갯수 & 선택 갯수 * 삭제,등록 버튼) */}
-				<TableHeader totalLength={data ? data.list.length : 0} selected={selected} refetch={refetch} />
+				<TableHeader totalLength={data ? data.list.length : 0} selected={selected} />
 				{/* 테이블 목록 */}
 				<Table
 					getCol={FaqListFieldCols}

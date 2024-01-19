@@ -9,9 +9,8 @@ import { faqOptions } from '../../../../common/Option/SignUp'
 import { useNavigate } from 'react-router-dom'
 import { useFaqDetailsQuery, useFaqRegisterMutation, useFaqUpdateMutation } from '../../../../api/operate/faq'
 import { BlackBtn, BtnWrap, WhiteBtn } from '../../../../common/Button/Button'
-import AlertPopup from '../../../../modal/Alert/AlertPopup'
+import useAlert from '../../../../store/Alert/useAlert'
 import { faqListSearchInitValue } from '../../constants'
-import useConfirmModal from '../../../../hooks/useConfirmModal'
 
 /**
  * @description
@@ -23,8 +22,7 @@ const FAQPost = ({ detailsId }) => {
 	// 등록 폼
 	const [form, setForm] = useState(faqListSearchInitValue)
 	// 확인 모달 관련 값들
-	const { popupSwitch, setPopupSwitch, setNowPopupType, nowPopup, setNowPopup, initConfirmModal } = useConfirmModal()
-
+	const { simpleConfirm, simpleAlert } = useAlert()
 	// FAQ 등록 API
 	const { mutate: register } = useFaqRegisterMutation()
 	// FAQ 수정 API
@@ -50,34 +48,6 @@ const FAQPost = ({ detailsId }) => {
 	function selectChangeHandler(e) {
 		setForm((p) => ({ ...p, category: e }))
 	}
-
-	/**
-   *@description
-   등록 핸들러
-   등록 폼 유효성 검사 및 모달 띄우기
-   */
-	function submitHandler() {
-		if (form.category === '카테고리') {
-			return alert('카테고리를 선택해주세요.')
-		}
-
-		if (!form.title) {
-			return alert('제목을 입력해주세요.')
-		}
-
-		if (!form.content) {
-			return alert('내용을 입력해주세요.')
-		}
-		setPopupSwitch(true)
-		setNowPopupType(2)
-		setNowPopup({
-			num: '2-1',
-			title: '저장하시겠습니까?',
-			next: '1-12',
-			func: () => submit(),
-		})
-	}
-
 	/**
 	 * @description
 	 * 등록 or 수정 API 요청
@@ -90,17 +60,26 @@ const FAQPost = ({ detailsId }) => {
 			register({ ...form, category: form.category.label })
 		}
 	}
+	/**
+   *@description
+   등록 핸들러
+   등록 폼 유효성 검사 및 모달 띄우기
+   */
+	function submitHandler() {
+		if (form.category === '카테고리') {
+			return simpleAlert('카테고리를 선택해주세요.')
+		}
 
-	// useEffect(() => {
-	//   if (nowPopup.num === '1-12') {
-	//     if (detailsId && data) {
-	//       update({ ...form, category: form.category.label, uid: detailsId })
-	//     } else {
-	//       register({ ...form, category: form.category.label })
-	//     }
-	//     initConfirmModal()
-	//   }
-	// }, [nowPopup])
+		if (!form.title) {
+			return simpleAlert('제목을 입력해주세요.')
+		}
+
+		if (!form.content) {
+			return simpleAlert('내용을 입력해주세요.')
+		}
+
+		simpleConfirm('저장하시겠습니까?', submit)
+	}
 
 	/**
 	 * 상세 데이터값이 있다면 form 데이터 바인딩
@@ -156,7 +135,6 @@ const FAQPost = ({ detailsId }) => {
 					{detailsId ? '저장' : '등록'}
 				</BlackBtn>
 			</BtnWrap>
-			{popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
 		</OnePageContainer>
 	)
 }

@@ -5,6 +5,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { client } from '..'
+import useAlert from '../../store/Alert/useAlert'
 import { queryClient } from '../query'
 
 // 폼 데이터 헤더
@@ -98,6 +99,8 @@ function createFormData(params, type, isRegister) {
 // 공지&자료실 등록
 export function useNoticeRegisterMutation(type) {
 	const navigate = useNavigate()
+	const { simpleAlert, showAlert } = useAlert()
+
 	return useMutation({
 		mutationKey: NOTICE_KEYS.registerNotice,
 		mutationFn: async function (params) {
@@ -107,22 +110,23 @@ export function useNoticeRegisterMutation(type) {
 		},
 		onSuccess() {
 			if (type === '공지사항') {
-				navigate('/operate/notice')
+				showAlert({ title: '등록이 완료되었습니다.', func: () => navigate('/operate/notice') })
 			} else {
-				navigate('/operate/datasheet')
+				showAlert({ title: '등록이 완료되었습니다.', func: () => navigate('/operate/datasheet') })
 			}
 			queryClient.invalidateQueries({
 				queryKey: NOTICE_KEYS.getNoticeList,
 			})
 		},
-		onError(error) {
-			console.log('등록 에러 :', error)
+		onError() {
+			simpleAlert('등록에 실패하였습니다.')
 		},
 	})
 }
 // 공지 & 자료실 수정
 export function useNoticeUpdateMutation(type) {
 	const navigate = useNavigate()
+	const { simpleAlert, showAlert } = useAlert()
 
 	return useMutation({
 		mutationKey: NOTICE_KEYS.updateNotice,
@@ -132,34 +136,36 @@ export function useNoticeUpdateMutation(type) {
 		},
 		onSuccess() {
 			if (type === '공지사항') {
-				navigate('/operate/notice')
+				showAlert({ title: '수정이 완료되었습니다.', func: () => navigate('/operate/notice') })
 			} else {
-				navigate('/operate/datasheet')
+				showAlert({ title: '수정이 완료되었습니다.', func: () => navigate('/operate/datasheet') })
 			}
 			queryClient.invalidateQueries({
 				queryKey: NOTICE_KEYS.getNoticeList,
 			})
 		},
-		onError(error) {
-			console.error(error)
+		onError() {
+			simpleAlert('수정에 실패하였습니다.')
 		},
 	})
 }
 
 // 공지 & 자료실 삭제
 export function useNoticeRemoveMutation() {
+	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: NOTICE_KEYS.removeNotice,
 		mutationFn: async function (id) {
 			return client.delete(`${urls}/${id}`)
 		},
 		onSuccess() {
+			simpleAlert('삭제되었습니다.')
 			queryClient.invalidateQueries({
 				queryKey: NOTICE_KEYS.getNoticeList,
 			})
 		},
 		onError() {
-			alert('삭제에 실패하였습니다.')
+			simpleAlert('삭제에 실패하였습니다.')
 		},
 	})
 }
