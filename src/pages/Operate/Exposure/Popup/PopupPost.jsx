@@ -120,10 +120,9 @@ const PopupPost = ({ isRegister }) => {
 	// 등록하는 도중, 페이지가 나가게 될때에 대한 조건입니다.
 	// 기존 initForm 값과 변경된 form값을 비교하여 변경된 것이 있다면 true 로 변경해줍니다.
 	// 객체의 깊은 비교를 위해 loadash의 isEqual을 사용합니다.
-	const condition = useMemo(() => !isEqual(initForm, form) && isRegister && !observeClick, [form, observeClick])
+	const blockCondition = useMemo(() => !isEqual(initForm, form) && isRegister && !observeClick, [form, observeClick])
 
-	// useUpdatePopup(initForm)
-	useBlockRoute(condition)
+	useBlockRoute(blockCondition)
 
 	useEffect(() => {
 		const updatedCheck = checkDummy.map((value, index) => {

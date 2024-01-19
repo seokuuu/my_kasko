@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
+import { isEqual } from 'lodash'
 import moment from 'moment/moment'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { useClaimDetailsQuery, useClaimRegisterMutation, useClaimUpdateMutaion } from '../../../../api/operate/claim'
@@ -13,6 +14,7 @@ import { MainSelect } from '../../../../common/Option/Main'
 import DateGrid from '../../../../components/DateGrid/DateGrid'
 import TextEditor from '../../../../components/Editor/TextEditor'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, DateTitle } from '../../../../components/MapTable/MapTable'
+import useBlockRoute from '../../../../hooks/useBlockRoute'
 import useAlert from '../../../../store/Alert/useAlert'
 import { selectedRowsAtom } from '../../../../store/Layout/Layout'
 import AttachedFile from '../Notice/components/AttachedFile'
@@ -58,24 +60,27 @@ const OperateClaimRegister = ({ pageType }) => {
 	const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
 	// const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
 
+	const [observeClick, setObserveClick] = useState(false)
+
 	// 폼 초깃값
 	const initForm = {
-		content: '',
+		content: '<p></p>\n',
 		file: [], // 새로 담을 파일
 		existFile: [], // 기존 파일 데이터
 		deleteFileList: [], // 삭제할 파일 인덱스(uid)
 		claimStatus: { value: 'ask0', label: '진행중 ' }, // 클레임 진행상태
 		requestDate: '', // 클레임 요청일
 		registrationDate: '', // 현대제철 클레임 등록일
-		processor: Array.from({ length: checkDummy.length }, () => ''), // 반품 진행
+		processor: [], //Array.from({ length: checkDummy.length }, () => ''), // 반품 진행
 		kaskoReturnDate: '', // 카스코 반품일
 		hsReturnDate: '', // 현대제철 반품일
 		endDate: '', // 클레임 종료일
 	}
 
+	console.log('initForm :', initForm)
+
 	// 등록 폼
 	const [form, setForm] = useState(initForm)
-	// console.log('checkData :', checkData)
 	console.log('form :', form)
 
 	// 등록 API
@@ -123,10 +128,14 @@ const OperateClaimRegister = ({ pageType }) => {
 		} else {
 			register(requestParams)
 		}
+		setObserveClick(true)
 	}
 	function onSubmitHandler() {
 		simpleConfirm('저장하시겠습니까?', onSubmit)
 	}
+	const blockCondition = useMemo(() => !isEqual(initForm, form) && !Boolean(id) && !observeClick, [form, observeClick])
+
+	useBlockRoute(blockCondition)
 
 	useEffect(() => {
 		return () => setForm(initForm)
