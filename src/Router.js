@@ -150,7 +150,7 @@ import NoticeBoardDetailsPage from './pages/Operate/Exposure/NoticeBoard/NoticeB
 // RoundAucProAdd
 const Router = () => {
 	return (
-		<BrowserRouter>
+
 			<Routes>
 				{/* 테스트 URL */}
 				<Route path="/ppapp" element={<WinningCreate />} />
@@ -215,10 +215,10 @@ const Router = () => {
 					<Route path="/shipping/request" element={<RequestPage />} />
 					<Route path="/shipping/dispatch" element={<DispatchPage />} />
 					<Route path="/shipping/dispatch/register" element={<DisRegisterPage />} />
-					<Route path="/shipping/status" element={<StatusPage />} />
+					{/* <Route path="/shipping/status" element={<StatusPage />} /> */}
 					<Route path="/shipping/status/:id" element={<StatusDetailPage />} />
 					<Route path="/shipping/achievement" element={<AchievementPage />} />
-					<Route path="/shipping/achievement/invoice" element={<ShipmentInvoicePage />} />
+					{/* <Route path="/shipping/achievement/invoice" element={<ShipmentInvoicePage />} /> */}
 					<Route path="/shipping/claim/register" element={<ClaimRegisterPage />} />
 				</Route>
 				{/* 기준 관리 */}
@@ -329,7 +329,7 @@ const Router = () => {
 					<Route path="/userpage/userterms" element={<UTerms />}></Route>
 				</Route>
 			</Routes>
-		</BrowserRouter>
+	
 
 	)
 }
