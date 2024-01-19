@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
-import { getSPartList, getStorageList } from '../api/search'
+import { getDestinationFind, getSPartList, getStorageList } from '../api/search'
 import useReactQuery from './useReactQuery'
+import { getCustomerFind } from '../service/admin/Auction'
 
 /**
  * @description
@@ -123,7 +124,24 @@ const useGlobalProductSearchFieldData = () => {
 			value: 'N',
 		},
 	]
-	return { storageList, supplierList, spartList, makerList, stockStatusList, gradeList, preferThicknessList }
+
+	// 고객사 찾기
+	const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
+
+	// 목적지 찾기
+	const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
+
+	return {
+		storageList,
+		supplierList,
+		spartList,
+		makerList,
+		stockStatusList,
+		gradeList,
+		preferThicknessList,
+		inventoryDestination,
+		inventoryCustomer,
+	}
 }
 
 export default useGlobalProductSearchFieldData
