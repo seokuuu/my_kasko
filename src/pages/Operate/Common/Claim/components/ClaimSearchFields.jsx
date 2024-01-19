@@ -9,13 +9,7 @@ import { claimSearchCategoryOptions } from '../../../constants'
  * @description
  * 클레임 관리 검색 필터입니다.
  */
-const ClaimSearchFields = ({
-	search,
-	setSearch,
-	commonDropdownButtonHandler,
-	commonNumInputHandler,
-	onSpecHandler,
-}) => {
+const ClaimSearchFields = ({ search, setSearch, commonDropdownButtonHandler }) => {
 	// 검색 필터 날짜 핸들러
 	function dateHandler(date, name) {
 		setSearch((p) => ({ ...p, [name]: date }))
@@ -45,7 +39,7 @@ const ClaimSearchFields = ({
 					<PartWrap />
 				</RowWrap>
 			</FilterLeft>
-			<FilterRight>
+			<FilterRight style={{ height: '100px' }}>
 				{/* 제품 번호 */}
 				<ProductNumber
 					initialValue={search.productNumberList}
