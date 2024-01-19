@@ -32,7 +32,7 @@ export function useProductRangeListQuery(params) {
 // 제품군 상세 조회
 export function useProductRangeDetailsQuery(id) {
   return useQuery({
-    queryKey: [PRODUCT_RANGE_KEYS.getProductRange, id],
+    queryKey: [...PRODUCT_RANGE_KEYS.getProductRange, id],
     queryFn: async function () {
       const response = await client.get(`${urls}/${id}`)
 

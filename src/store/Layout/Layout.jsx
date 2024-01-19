@@ -16,6 +16,7 @@ export const blueModalAtom = atom(false)
 export const hyundaiModalAtom = atom(false)
 export const standardModalAtom = atom(false)
 export const SingleProductModalAtom = atom(false)
+export const claimProductModalAtom = atom(false)
 // 규격약호 선택 값
 export const specAtom = atom('')
 export const hyundaiSpecAtom = atom('')

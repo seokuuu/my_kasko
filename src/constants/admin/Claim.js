@@ -12,7 +12,7 @@ export const ClaimListFieldCols = [
     maxWidth: 90,
     cellRenderer: BtnCellRenderer,
     cellRendererParams: {
-      uidFieldName: 'uid',
+      uidFieldName: '고유값',
       editType: 'claimUpdate',
     },
   },
