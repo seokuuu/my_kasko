@@ -34,7 +34,7 @@ const Claim = () => {
 	// 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
 	const { simpleConfirm } = useAlert()
 	// 목록 API
-	const { data, refetch } = useClaimListQuery({ ...search, claimStatus: search.claimStatus.value })
+	const { data, refetch } = useClaimListQuery(search)
 	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setSearch)
 
 	console.log('data :', data)

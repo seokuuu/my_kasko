@@ -7,7 +7,7 @@ import qs from 'qs'
 import { useNavigate } from 'react-router-dom'
 import { client, formHeaders } from '..'
 import useAlert from '../../store/Alert/useAlert'
-import { Filtering, FilteringV2 } from '../../utils/filtering'
+import { FilteringV2 } from '../../utils/filtering'
 import { queryClient } from '../query'
 
 // API URL
@@ -81,9 +81,8 @@ function createFormData(params, type) {
 
 // 클레임 목록 조회
 export function useClaimListQuery(params) {
-	console.log('클레임 목록 조회 :', Filtering(params))
 	return useQuery({
-		queryKey: [...CLAIM_KEYS.getClaimList, params.pageNum, params.pageSize],
+		queryKey: [...CLAIM_KEYS.getClaimList, params],
 		queryFn: async function () {
 			const response = await client.get(urls.claim, {
 				params: FilteringV2(params),
