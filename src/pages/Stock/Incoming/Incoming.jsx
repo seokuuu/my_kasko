@@ -44,7 +44,7 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { storageOptions } from '../../../common/Option/Main'
 import Table from '../../Table/Table'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { deleteIncomeProduct, getInComingList } from '../../../api/stock'
+import { deleteIncomeProduct, getInComingList, postExcelSubmitProduct } from '../../../api/stock'
 import { StockIncomingFields, stockFields } from '../../../constants/admin/StockIncoming'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -52,8 +52,9 @@ import axios from 'axios'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
 import useAlert from '../../../store/Alert/useAlert'
+import UploadV2 from '../../../modal/Upload/UploadV2'
 const Incoming = ({}) => {
-  const { simpleConfirm } = useAlert()
+  const { simpleConfirm, simpleAlert } = useAlert()
 
   const [isRotated, setIsRotated] = useState(false)
 
@@ -120,6 +121,7 @@ const Incoming = ({}) => {
       console.log('재고수신 API 호출')
       await axios.post(`${process.env.REACT_APP_API_URL}/admin/store/receipt`,{});
       await refetch()
+      simpleAlert('재고수신이 완료되었습니다.')
     }
     catch(error){
       console.log('재고수신 에러발생',error);
@@ -134,13 +136,13 @@ const Incoming = ({}) => {
   const [selectInComeNumber, setSelectInComeNumber] = useState([])
   useEffect(() => {
     if (checkBoxSelect?.length === 0) return
-    setSelectInComeNumber(() => checkBoxSelect?.map((i) => i['제품 번호']))
+    setSelectInComeNumber(() => checkBoxSelect?.map((i) => i['제품 고유 번호']))
   }, [checkBoxSelect])
   const handleDelete = () => {
     simpleConfirm('정말로 삭제하시겠습니까?', () => {
       deleteIncome(selectInComeNumber?.join(','), {
         onSuccess: () => {
-          window.location.reload();
+          refetch()
         },
       });
     });
@@ -149,12 +151,13 @@ const Incoming = ({}) => {
   /**
    * @description 제품 등록
    */
+  const [uploadModal, setUploadModal] = useState(false)
+  const [excelToJson, setExcelToJson] = useState([])
 
   return (
     <>
     <FilterContianer>
       <div>
-        <div onClick={() => simpleConfirm('안녕하세요', () => console.log('심플confirm'))}>심플Confirm</div>
         <FilterHeader>
           <h1>입고 관리</h1>
           {/* 토글 쓰기 */}
@@ -288,13 +291,22 @@ const Incoming = ({}) => {
         <TCSubContainer>
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteBlackBtn>제품 등록</WhiteBlackBtn>
+            <WhiteBlackBtn onClick={()=>setUploadModal(true)}>제품 등록</WhiteBlackBtn>
             <WhiteRedBtn onClick={handleDelete}>제품 삭제</WhiteRedBtn>
             <WhiteSkyBtn onClick={stockReceive}>재고 수신</WhiteSkyBtn>
           </div>
         </TCSubContainer>
       </TableContianer>
     </FilterContianer>
+      {uploadModal && (
+        <UploadV2
+          originEngRowField={stockFields}
+          setModalSwitch={setUploadModal}
+          postApi={postExcelSubmitProduct()}
+          setExcelToJson={setExcelToJson}
+          excelToJson={excelToJson}
+        />
+      )}
   </>
   )
 }

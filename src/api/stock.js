@@ -23,3 +23,15 @@ export async function deleteIncomeProduct(data) {
     alert(e?.data?.message)
   }
 }
+
+export async function postExcelSubmitProduct(data) {
+  try{
+    return await client.post(`${urls.incoming}`,data,{
+      headers:{
+        "Content-Type":"multipart/form-data"
+      }
+    })
+  }catch(e){
+    alert(e?.data?.message)
+  }
+}

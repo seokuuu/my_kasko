@@ -124,7 +124,7 @@ const Order = ({}) => {
 	const formatTableRowData = (orderRes) => {
 		return add_element_field(orderRes, orderFieldData)
 	}
-	const { data: getOrderRes, isSuccess } = useReactQuery(param, 'getOrderList', getOrderList)
+	const { data: getOrderRes, isSuccess, refetch } = useReactQuery(param, 'getOrderList', getOrderList)
 	useEffect(() => {
 		if (getOrderRes && getOrderRes.data && getOrderRes.data.list) {
 			setOrderListData(formatTableRowData(getOrderRes.data.list))
@@ -157,7 +157,7 @@ const Order = ({}) => {
 		const requestList = makeRequest(checkBoxSelect)
 		console.log('요청List', requestList)
 		const token =
-			'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjYwIiwiYXV0aCI6Iuy5tOyKpOy9lOyyoOqwlSzsnqzqs6DqtIDrpqws6rK966ek6rSA66asLOyDgeyLnO2MkOunpOq0gOumrCzso7zrrLjqtIDrpqws7YyQ66ek7KCc7ZKI6rSA66asLOy2nOqzoOq0gOumrCzquLDspIDqtIDrpqws7Jq07JiB6rSA66asIiwiZXhwIjoxNzA1NDc0OTk2fQ.rkc-ubRirtSAWnbHk-GR2rEVM7Mv2Zd9nUyn8Vl23GY5_nG8zaUf-SrCDg3ZGHKUTMqq-xosGuBEaCb4bhy6Tg'
+			'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjYwIiwiYXV0aCI6Iuy5tOyKpOy9lOyyoOqwlSzsnqzqs6DqtIDrpqws6rK966ek6rSA66asLOyDgeyLnO2MkOunpOq0gOumrCzso7zrrLjqtIDrpqws7YyQ66ek7KCc7ZKI6rSA66asLOy2nOqzoOq0gOumrCzquLDspIDqtIDrpqws7Jq07JiB6rSA66asIiwiZXhwIjoxNzA1NjY3NjA3fQ.UJCsPlF4tYFfmj26utCNwb6vhaDWtQKTkNPh5Qs1c-RVsQI6hW35mmMDch9qxAe5AIROG1bYiEx7Ntg3IXnBpA'
 		axios
 			.post(`${process.env.REACT_APP_API_URL}/admin/order/cancel-all`, requestList, {
 				headers: {
@@ -166,9 +166,30 @@ const Order = ({}) => {
 			})
 			.then((response) => {
 				console.log('Order cancelled successfully:', response.data)
+				refetch()
 			})
 			.catch((error) => {
 				console.error('Error cancelling order:', error)
+			})
+	}
+
+	// 입금 취소 버튼 클릭 핸들러
+	const handleDepositCancel = () => {
+		const requestList = makeRequest(checkBoxSelect)
+		const token =
+			'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjYwIiwiYXV0aCI6Iuy5tOyKpOy9lOyyoOqwlSzsnqzqs6DqtIDrpqws6rK966ek6rSA66asLOyDgeyLnO2MkOunpOq0gOumrCzso7zrrLjqtIDrpqws7YyQ66ek7KCc7ZKI6rSA66asLOy2nOqzoOq0gOumrCzquLDspIDqtIDrpqws7Jq07JiB6rSA66asIiwiZXhwIjoxNzA1NjY3NjA3fQ.UJCsPlF4tYFfmj26utCNwb6vhaDWtQKTkNPh5Qs1c-RVsQI6hW35mmMDch9qxAe5AIROG1bYiEx7Ntg3IXnBpA'
+		axios
+			.post(`${process.env.REACT_APP_API_URL}/admin/order/deposit-all`, requestList, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			})
+			.then((response) => {
+				console.log('Deposit cancelled successfully:', response.data)
+				refetch()
+			})
+			.catch((error) => {
+				console.error('Error cancelling deposit:', error)
 			})
 	}
 	return (
@@ -364,7 +385,7 @@ const Order = ({}) => {
 				/>
 				<TCSubContainer style={{ display: 'flex', justifyContent: 'flex-end' }}>
 					<div>
-						<WhiteRedBtn>입금 취소</WhiteRedBtn>
+						<WhiteRedBtn type="button" onClick={handleDepositCancel}>입금 취소</WhiteRedBtn>
 					</div>
 				</TCSubContainer>
 			</TableContianer>
