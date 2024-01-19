@@ -3,6 +3,7 @@ import qs from 'qs'
 
 const urls = {
   incoming: '/admin/store',
+  incomeDelete: '/admin/store',
 }
 
 export async function getInComingList(data) {
@@ -13,4 +14,12 @@ export async function getInComingList(data) {
     },
   })
   return response.data
+}
+
+export async function deleteIncomeProduct(data) {
+  try{
+    return await client.delete(`${urls.incomeDelete}/${data}`)
+  }catch(e){
+    alert(e?.data?.message)
+  }
 }

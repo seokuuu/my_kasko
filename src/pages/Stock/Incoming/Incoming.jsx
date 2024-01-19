@@ -44,17 +44,16 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { storageOptions } from '../../../common/Option/Main'
 import Table from '../../Table/Table'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { getInComingList } from '../../../api/stock'
+import { deleteIncomeProduct, getInComingList } from '../../../api/stock'
 import { StockIncomingFields, stockFields } from '../../../constants/admin/StockIncoming'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { add_element_field } from '../../../lib/tableHelpers'
+import axios from 'axios'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import AlertPopup from '../../../modal/Alert/AlertPopup'
 const Incoming = ({}) => {
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
+  const { simpleConfirm } = useAlert()
+
   const [isRotated, setIsRotated] = useState(false)
 
   // Function to handle image click and toggle rotation
@@ -87,11 +86,13 @@ const Incoming = ({}) => {
   const paramData = {
     pageNum: 1,
     pageSize: 5,
+    // orderStatus:'확정 전송',
+    // receiptStatusList: '입고 요청',
   }
   const [param, setParam] = useState(paramData)
   const [inComingPagination, setInComingPagination] = useState([])
   const [inComingListData, setInComingListData] = useState(null)
-  const { data: inComingData, isSuccess } = useReactQuery(param, 'getInComingList', getInComingList)
+  const { data: inComingData, isSuccess, refetch } = useReactQuery(param, 'getInComingList', getInComingList)
   useEffect(() => {
     if (inComingData && inComingData.data && inComingData.data.list) {
       setInComingListData(formatTableRowData(inComingData.data.list))
@@ -109,7 +110,48 @@ const Incoming = ({}) => {
   const totalWeight = inComingData?.data.pagination.totalWeight
   const formattedTotalWeight = totalWeight && totalWeight.toLocaleString()
 
+
+  /**
+   * @description 재고 수신
+   */
+  const stockReceive = async () => {
+    try{
+      console.log('재고수신 API 호출')
+      await axios.post(`${process.env.REACT_APP_API_URL}/admin/store/receipt`,{});
+      await refetch()
+    }
+    catch(error){
+      console.log('재고수신 에러발생',error);
+    }
+  }
+
+
+  /**
+   * @description 제품 삭제
+   */
+  const { mutate: deleteIncome} = useMutationQuery('deleteIncomeProduct',deleteIncomeProduct)
+  const [selectInComeNumber, setSelectInComeNumber] = useState([])
+  useEffect(() => {
+    if (checkBoxSelect?.length === 0) return
+    setSelectInComeNumber(() => checkBoxSelect?.map((i) => i['제품 번호']))
+  }, [checkBoxSelect])
+  const handleDelete = () => {
+    const confirm = window.confirm('정말로 삭제하시겠습니까?')
+    if (confirm) {
+      deleteIncome(selectInComeNumber?.join(','), {
+        onSuccess: () => {
+          window.location.reload()
+        },
+      })
+    } else return
+  }
+
+  /**
+   * @description 제품 등록
+   */
+
   return (
+    <>
     <FilterContianer>
       <div>
         <FilterHeader>
@@ -244,12 +286,13 @@ const Incoming = ({}) => {
           <div></div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <WhiteBlackBtn>제품 등록</WhiteBlackBtn>
-            <WhiteRedBtn>제품 삭제</WhiteRedBtn>
-            <WhiteSkyBtn>재고 수신</WhiteSkyBtn>
+            <WhiteRedBtn onClick={handleDelete}>제품 삭제</WhiteRedBtn>
+            <WhiteSkyBtn onClick={stockReceive}>재고 수신</WhiteSkyBtn>
           </div>
         </TCSubContainer>
       </TableContianer>
     </FilterContianer>
+  </>
   )
 }
 
