@@ -9,20 +9,20 @@ import { styled } from 'styled-components'
 import { BlackBtn, GreyBtn } from '../../common/Button/Button'
 import CustomPagination from '../../components/pagination/CustomPagination'
 import {
-  BlueBarBtnWrap,
-  BlueBarHeader,
-  BlueSubContainer,
-  ModalContainer,
-  NonFadeOverlay,
-  WhiteCloseBtn,
+	BlueBarBtnWrap,
+	BlueBarHeader,
+	BlueSubContainer,
+	ModalContainer,
+	NonFadeOverlay,
+	WhiteCloseBtn,
 } from '../../modal/Common/Common.Styled'
 import {
-  blueModalAtom,
-  doubleClickedRowAtom,
-  pageSort,
-  selectedRows2Switch,
-  selectedRowsAtom,
-  selectedRowsAtom2,
+	blueModalAtom,
+	doubleClickedRowAtom,
+	pageSort,
+	selectedRows2Switch,
+	selectedRowsAtom,
+	selectedRowsAtom2,
 } from '../../store/Layout/Layout'
 import './TableUi.css'
 import PropTypes from 'prop-types'
@@ -32,19 +32,19 @@ import PropTypes from 'prop-types'
 // import BtnCellRenderer from './BtnCellRenderer'
 
 var dateFilterParams = {
-  comparator: (filterLocalDateAtMidnight, cellValue) => {
-    var cellDate = asDate(cellValue)
-    if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
-      return 0
-    }
-    if (cellDate < filterLocalDateAtMidnight) {
-      return -1
-    }
-    if (cellDate > filterLocalDateAtMidnight) {
-      return 1
-    }
-    return 0
-  },
+	comparator: (filterLocalDateAtMidnight, cellValue) => {
+		var cellDate = asDate(cellValue)
+		if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
+			return 0
+		}
+		if (cellDate < filterLocalDateAtMidnight) {
+			return -1
+		}
+		if (cellDate > filterLocalDateAtMidnight) {
+			return 1
+		}
+		return 0
+	},
 }
 
 var ageType = 'everyone'
@@ -53,24 +53,24 @@ var maxAge = null
 var countryFilter = null
 
 const asDate = (dateAsString) => {
-  var splitFields = dateAsString.split('/')
-  return new Date(Number.parseInt(splitFields[2]), Number.parseInt(splitFields[1]) - 1, Number.parseInt(splitFields[0]))
+	var splitFields = dateAsString.split('/')
+	return new Date(Number.parseInt(splitFields[2]), Number.parseInt(splitFields[1]) - 1, Number.parseInt(splitFields[0]))
 }
 
 const Table = ({
-  hei,
-  hei2,
-  getRow,
-  getCol,
-  setChoiceComponent,
-  size,
-  topData,
-  isRowClickable,
-  handleOnRowClicked,
-  tablePagination,
-  onPageChange,
-  noRowsMessage = '데이터가 존재하지 않습니다.', // 데이터 갯수가 0개일 때, 나타날 메시지입니다.
-  loading = false, // 로딩 여부
+	hei,
+	hei2,
+	getRow,
+	getCol,
+	setChoiceComponent,
+	size,
+	topData,
+	isRowClickable,
+	handleOnRowClicked,
+	tablePagination,
+	onPageChange,
+	noRowsMessage = '데이터가 존재하지 않습니다.', // 데이터 갯수가 0개일 때, 나타날 메시지입니다.
+	loading = false, // 로딩 여부
 }) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
@@ -460,127 +460,127 @@ const Table = ({
                       </ResultBlock>
                     )
                   })} */}
-                </FSResult>
-              </FindSpec>
-            </BlueSubContainer>
-            <BlueBarBtnWrap>
-              <BlackBtn onClick={modalClose} width={30} height={40}>
-                확인
-              </BlackBtn>
-            </BlueBarBtnWrap>
-          </ModalContainer>
-        </>
-      )}
+								</FSResult>
+							</FindSpec>
+						</BlueSubContainer>
+						<BlueBarBtnWrap>
+							<BlackBtn onClick={modalClose} width={30} height={40}>
+								확인
+							</BlackBtn>
+						</BlueBarBtnWrap>
+					</ModalContainer>
+				</>
+			)}
 
-      {tablePagination && <CustomPagination pagination={tablePagination} onPageChange={onPageChange} />}
-    </div>
-  )
+			{tablePagination && <CustomPagination pagination={tablePagination} onPageChange={onPageChange} />}
+		</div>
+	)
 }
 
 Table.propTypes = {
-  // Type definitions for each prop:
-  hei: PropTypes.number,
-  hei2: PropTypes.number,
-  getRow: PropTypes.array,
-  getCol: PropTypes.array,
-  setChoiceComponent: PropTypes.func,
-  size: PropTypes.number,
-  topData: PropTypes.array,
-  isRowClickable: PropTypes.bool,
-  handleOnRowClicked: PropTypes.func,
-  tablePagination: PropTypes.oneOfType([PropTypes.array, PropTypes.object]), // Note: tablePagination type is object.
-  onPageChange: PropTypes.func,
-  noRowsMessage: PropTypes.string,
-  loading: PropTypes.bool,
+	// Type definitions for each prop:
+	hei: PropTypes.number,
+	hei2: PropTypes.number,
+	getRow: PropTypes.array,
+	getCol: PropTypes.array,
+	setChoiceComponent: PropTypes.func,
+	size: PropTypes.number,
+	topData: PropTypes.array,
+	isRowClickable: PropTypes.bool,
+	handleOnRowClicked: PropTypes.func,
+	tablePagination: PropTypes.oneOfType([PropTypes.array, PropTypes.object]), // Note: tablePagination type is object.
+	onPageChange: PropTypes.func,
+	noRowsMessage: PropTypes.string,
+	loading: PropTypes.bool,
 }
 
 // Default props (optional but recommended for optional props):
 Table.defaultProps = {
-  hei: null, // Default value if not provided
-  hei2: null, // Default value if not provided
-  getRow: [], // Default to an empty array
-  getCol: [], // Default to an empty array
-  setChoiceComponent: () => {}, // Default to a no-op function
-  size: null, // Default value if not provided
-  topData: [], // Default to an empty array
-  isRowClickable: false, // Default to false
-  handleOnRowClicked: () => {}, // Default to a no-op function
-  tablePagination: {}, // Default value if not provided
-  onPageChange: () => {}, // Default to a no-op function
-  noRowsMessage: '데이터가 존재하지 않습니다.', // Default message
-  loading: false, // Default to false
+	hei: null, // Default value if not provided
+	hei2: null, // Default value if not provided
+	getRow: [], // Default to an empty array
+	getCol: [], // Default to an empty array
+	setChoiceComponent: () => {}, // Default to a no-op function
+	size: null, // Default value if not provided
+	topData: [], // Default to an empty array
+	isRowClickable: false, // Default to false
+	handleOnRowClicked: () => {}, // Default to a no-op function
+	tablePagination: {}, // Default value if not provided
+	onPageChange: () => {}, // Default to a no-op function
+	noRowsMessage: '데이터가 존재하지 않습니다.', // Default message
+	loading: false, // Default to false
 }
 
 export default Table
 
 const TestContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: ${({ hei }) => (hei ? `${hei}%` : '100%')};
-  .ag-paging-panel {
-    justify-content: center !important;
-  }
+	display: flex;
+	flex-direction: column;
+	height: ${({ hei }) => (hei ? `${hei}%` : '100%')};
+	.ag-paging-panel {
+		justify-content: center !important;
+	}
 `
 
 export const TestHeader = styled.div`
-  font-size: 13px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-around;
-  border: 1px solid grey;
-  padding: 10px;
-  border-radius: 5px;
+	font-size: 13px;
+	margin-bottom: 10px;
+	display: flex;
+	justify-content: space-around;
+	border: 1px solid grey;
+	padding: 10px;
+	border-radius: 5px;
 `
 
 export const FindSpec = styled.div`
-  width: 100%;
-  height: 300px;
+	width: 100%;
+	height: 300px;
 `
 
 export const FSTitle = styled.div`
-  width: 100%;
-  height: 50px;
-  border: 1px solid #c8c8c8;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
+	width: 100%;
+	height: 50px;
+	border: 1px solid #c8c8c8;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
 
-  input {
-    border: 1px solid #c8c8c8;
-    height: 30px;
-    width: 300px;
-  }
+	input {
+		border: 1px solid #c8c8c8;
+		height: 30px;
+		width: 300px;
+	}
 `
 
 export const FSResult = styled.div`
-  width: 100%;
-  height: 295px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  padding: 5px;
-  overflow: scroll;
-  border: 1px solid #c8c8c8;
+	width: 100%;
+	height: 295px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 5px;
+	padding: 5px;
+	overflow: scroll;
+	border: 1px solid #c8c8c8;
 `
 
 export const ResultBlock = styled.div`
-  width: 24%;
-  height: 50px;
-  border: 1px solid black;
-  cursor: pointer;
-  font-size: 16px;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  display: flex;
+	width: 24%;
+	height: 50px;
+	border: 1px solid black;
+	cursor: pointer;
+	font-size: 16px;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	display: flex;
 
-  &:hover {
-    background-color: #eee;
-  }
+	&:hover {
+		background-color: #eee;
+	}
 `
 
 export const RBInput = styled.input`
-  font-size: 16px;
+	font-size: 16px;
 `
 
 export const Pagination = styled.ul``
