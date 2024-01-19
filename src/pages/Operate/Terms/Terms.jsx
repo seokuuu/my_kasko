@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
 	FWTitle,
 	FullWrap,
@@ -11,6 +11,7 @@ import {
 import { isObject } from 'lodash'
 import { usePolicyMutation, usePolicyQuery } from '../../../api/operate'
 import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
+import useBlockRoute from '../../../hooks/useBlockRoute'
 import useAlert from '../../../store/Alert/useAlert'
 import { formatDateString } from '../../../utils/utils'
 
@@ -19,7 +20,9 @@ const Terms = () => {
 	const { simpleConfirm } = useAlert()
 
 	// 약관 데이터
-	const [resData, setResData] = useState('')
+	const initContent = ''
+	const [resData, setResData] = useState({})
+	const [content, setContent] = useState(initContent)
 	// 약관 타입
 	const [type, setType] = useState('이용 약관') // (이용약관 / 개인정보 처리방침 / 개인정보 수집 동의)
 	// 약관 조회 API
@@ -29,9 +32,15 @@ const Terms = () => {
 
 	const responseData = data?.data?.data
 
+	console.log('responseData :', responseData)
+
+	const blockCondition = useMemo(() => responseData?.content !== content, [content, data])
+	console.log('blockCondition :', blockCondition)
+	useBlockRoute(blockCondition)
 	// data  바인딩
 	useEffect(() => {
 		if (isSuccess && isObject(responseData)) {
+			setContent(responseData.content)
 			setResData(responseData)
 		}
 	}, [data, type, isSuccess])
@@ -40,7 +49,7 @@ const Terms = () => {
 		mutate({
 			uid: resData.uid,
 			type: resData.type,
-			content: resData.content,
+			content: content,
 		})
 	}
 	const handleSubmit = () => {
@@ -69,10 +78,7 @@ const Terms = () => {
 					<h6>최근 수정일 : {resData ? formatDateString(resData.updateDate) : ''}</h6>
 				</FWTitle>
 				<FullWrap style={{ marginTop: '30px', height: '30vw' }}>
-					<textarea
-						value={resData ? resData.content : '입력해주세요.'}
-						onChange={(e) => setResData((prev) => ({ ...prev, content: e.target.value }))}
-					></textarea>
+					<textarea value={content} onChange={(e) => setContent(e.target.value)}></textarea>
 				</FullWrap>
 			</OnePageSubContainer>
 			<BtnWrap bottom={-30}>

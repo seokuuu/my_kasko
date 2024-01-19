@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 
 import { BlackBtn, WhiteBtn } from '../../../../common/Button/Button'
@@ -7,14 +7,14 @@ import TextEditor from '../../../../components/Editor/TextEditor'
 
 import { PropsInput } from '../../../../common/Input/Input'
 
+import { isEqual } from 'lodash'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
 	useNoticeDetailsQuery,
 	useNoticeRegisterMutation,
 	useNoticeUpdateMutation,
 } from '../../../../api/operate/notice'
-import useConfirmModal from '../../../../hooks/useConfirmModal'
-import AlertPopup from '../../../../modal/Alert/AlertPopup'
+import useBlockRoute from '../../../../hooks/useBlockRoute'
 import useAlert from '../../../../store/Alert/useAlert'
 import AttachedFile from './components/AttachedFile'
 import IsExposure from './components/IsExposure'
@@ -27,20 +27,22 @@ import IsExposure from './components/IsExposure'
 const NoticePost = ({ title, isRegister }) => {
 	const navigate = useNavigate()
 	const { id } = useParams()
+	const [observeClick, setObserveClick] = useState(false)
 
 	// 확인 모달 관련 값들
 	const { simpleConfirm } = useAlert()
-	const { popupSwitch, setPopupSwitch, setNowPopupType, nowPopup, setNowPopup, initConfirmModal } = useConfirmModal()
 
 	// 등록 폼
-	const [form, setForm] = useState({
+
+	const initForm = {
 		status: true, // 상단 노출 여부
 		title: '', // 제목
-		content: '', // 내용
+		content: '<p></p>\n', // 내용
 		file: [], // 새로 담을 파일 뎅터
 		existFile: [], // 기존 파일 데이터
 		deleteFileList: [], // 삭제할 파일 인덱스(uid)
-	})
+	}
+	const [form, setForm] = useState(initForm)
 
 	// 상단 노출 여부 라디오 UI 관련 state
 	const radioDummy = ['노출', '미노출']
@@ -84,6 +86,7 @@ const NoticePost = ({ title, isRegister }) => {
 		} else {
 			register(registerParams)
 		}
+		setObserveClick(true)
 	}
 
 	/**
@@ -102,12 +105,9 @@ const NoticePost = ({ title, isRegister }) => {
 
 		simpleConfirm('저장하시겠습니까?', onSubmit)
 	}
+	const blockCondtion = useMemo(() => !isEqual(initForm, form) && !Boolean(id) && !observeClick, [form, observeClick])
 
-	/**
-	 * @description
-	 * 등록 or 수정 API 요청
-	 * detailsId와 data가 있다면 수정 API 없다면 등록 API
-	 */
+	useBlockRoute(blockCondtion)
 
 	/**
    @description
@@ -173,7 +173,6 @@ const NoticePost = ({ title, isRegister }) => {
 						</BtnWrap>
 					</CRWSub>
 				</CRWMain>
-				{popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
 			</CenterRectangleWrap>
 		</>
 	)

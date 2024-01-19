@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 
 import { BlackBtn, WhiteBtn } from '../../../../common/Button/Button'
 import { CenterRectangleWrap } from '../../../../common/OnePage/OnePage.Styled'
 
+import { isEqual } from 'lodash'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
 	useNoticeBoardDetailsQuery,
@@ -11,6 +12,7 @@ import {
 	useNoticeBoardUpdateMutation,
 } from '../../../../api/operate/noticeBoard'
 import { PropsTextArea } from '../../../../common/Input/Input'
+import useBlockRoute from '../../../../hooks/useBlockRoute'
 import useAlert from '../../../../store/Alert/useAlert'
 import IsExposure from './components/IsExposure'
 /**
@@ -21,8 +23,12 @@ const NoticeBoardPost = () => {
 	const { id } = useParams()
 	const navigate = useNavigate()
 
+	const initForm = { title: '', status: true }
+
+	const [observeClick, setObserveClick] = useState(false)
+
 	// 등록 폼
-	const [form, setForm] = useState({ title: '', status: true })
+	const [form, setForm] = useState(initForm)
 
 	// 확인 모달 관련 값들
 	const { simpleAlert, simpleConfirm } = useAlert()
@@ -51,6 +57,7 @@ const NoticeBoardPost = () => {
 		} else {
 			register({ ...form, status: Number(form.status) })
 		}
+		setObserveClick(true)
 	}
 
 	// 등록 핸들러
@@ -68,6 +75,9 @@ const NoticeBoardPost = () => {
 	const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
 	const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+
+	const blockCondition = useMemo(() => !isEqual(initForm, form) && !Boolean(id) && !observeClick, [form, observeClick])
+	useBlockRoute(blockCondition)
 
 	useEffect(() => {
 		const updatedCheck = checkDummy.map((value, index) => {

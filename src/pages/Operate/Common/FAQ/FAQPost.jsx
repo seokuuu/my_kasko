@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import { FullWrap2, MainTitle, OnePageContainer, OnePageSubContainer } from '../../../../common/OnePage/OnePage.Styled'
 
@@ -6,11 +6,12 @@ import { CustomInput, CustomTextArea } from '../../../../common/Input/Input'
 import { CustomSelect } from '../../../../common/Option/Main'
 import { faqOptions } from '../../../../common/Option/SignUp'
 
+import { isEqual } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import { useFaqDetailsQuery, useFaqRegisterMutation, useFaqUpdateMutation } from '../../../../api/operate/faq'
 import { BlackBtn, BtnWrap, WhiteBtn } from '../../../../common/Button/Button'
+import useBlockRoute from '../../../../hooks/useBlockRoute'
 import useAlert from '../../../../store/Alert/useAlert'
-import { faqListSearchInitValue } from '../../constants'
 
 /**
  * @description
@@ -19,8 +20,16 @@ import { faqListSearchInitValue } from '../../constants'
 const FAQPost = ({ detailsId }) => {
 	const navigate = useNavigate()
 
+	const [observeClick, setObserveClick] = useState(false)
+
+	const initForm = {
+		title: '',
+		content: '',
+		category: '',
+	}
 	// 등록 폼
-	const [form, setForm] = useState(faqListSearchInitValue)
+	const [form, setForm] = useState(initForm)
+	console.log('form :', form)
 	// 확인 모달 관련 값들
 	const { simpleConfirm, simpleAlert } = useAlert()
 	// FAQ 등록 API
@@ -59,6 +68,7 @@ const FAQPost = ({ detailsId }) => {
 		} else {
 			register({ ...form, category: form.category.label })
 		}
+		setObserveClick(true)
 	}
 	/**
    *@description
@@ -80,7 +90,12 @@ const FAQPost = ({ detailsId }) => {
 
 		simpleConfirm('저장하시겠습니까?', submit)
 	}
+	const blockCondition = useMemo(
+		() => !isEqual(initForm, form) && !Boolean(detailsId) && !observeClick,
+		[form, observeClick],
+	)
 
+	useBlockRoute(blockCondition)
 	/**
 	 * 상세 데이터값이 있다면 form 데이터 바인딩
 	 */
