@@ -1,4 +1,6 @@
 /* eslint-disable no-restricted-globals */
+import RecommendCellRenderer from '../../pages/Table/RecommendCellRenderer'
+import RecommendCellRenderer2 from '../../pages/Table/RecommendCellRenderer2'
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer.jsx'
 import InputCellRenderer from "../../pages/Table/InputCellRenderer.jsx"
 

@@ -1,7 +1,7 @@
 export const popupDummy = [
-  // 1 : title + content 검정버튼(확인)
-  // 2 : title + content 검정버튼(확인) + 흰색버튼(취소)
-  // 3 : title + content 빨강버튼(삭제) + 흰색버튼(취소)
+  // 1-n : title + content 검정버튼(확인)
+  // 2-n : title + content 검정버튼(확인) + 흰색버튼(취소)
+  // 3-n : title + content 빨강버튼(삭제) + 흰색버튼(취소)
   // ------------------------------------------------
   // 1
   {

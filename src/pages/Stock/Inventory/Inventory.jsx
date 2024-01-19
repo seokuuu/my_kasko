@@ -328,7 +328,9 @@ const Inventory = ({}) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown />
-            <Excel />
+            <Excel
+            //  getRow={getRow}
+            />
           </div>
         </TCSubContainer>
         <TCSubContainer>

@@ -1,28 +1,15 @@
-import { OverAllMain, OverAllSub, OverAllTable } from '../../../../common/Overall/Overall.styled'
-
-import Header from '../../../../components/Header/Header'
-import SubHeader from '../../../../components/Header/SubHeader'
-import SideBar from '../../../../components/Left/SideBar'
+import CommonLayout from '../../UI/CommonLayout'
 import Notice from './Notice'
 
-import { useState } from 'react'
-
-const NoticePage = () => {
-  const [expanded, setExpanded] = useState('운영 관리')
-  const [depth2Color, setDepth2Color] = useState('일반 관리')
+/**
+ * @description
+ * 관리자 > 운영 관리 > 일반 관리 > 공지사항,자료실 관리 입니다.
+ */
+const NoticePage = ({ title, detailsUrl }) => {
   return (
-    <>
-      <Header />
-      <OverAllMain>
-        <SideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
-        <OverAllSub>
-          <SubHeader />
-          <OverAllTable>
-            <Notice title={'공지사항'} detailsUrl={'notice'} />
-          </OverAllTable>
-        </OverAllSub>
-      </OverAllMain>
-    </>
+    <CommonLayout sidebarTitle={'운영 관리'} sidebarSubTitle={'일반 관리'}>
+      <Notice title={title} detailsUrl={detailsUrl} />
+    </CommonLayout>
   )
 }
 

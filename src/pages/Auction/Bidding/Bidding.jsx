@@ -50,6 +50,8 @@ const Bidding = ({}) => {
   const [destinationData, setDestinationData] = useAtom(invenDestinationData)
   // 고객사 팝업 상태,객체
 
+  console.log('destinationData', destinationData)
+
   const [types, setTypes] = useState('단일')
   const radioDummy = ['전체', '미진행', '진행중', '종료']
 
@@ -332,7 +334,7 @@ const Bidding = ({}) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown handleDropdown={handleTablePageSize} />
-            <Excel />
+            <Excel getRow={getRow} />
             <WhiteGrnBtn>
               <div>
                 <img src="/img/grnstar.png" />

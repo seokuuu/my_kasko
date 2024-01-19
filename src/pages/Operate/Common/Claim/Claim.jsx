@@ -1,120 +1,95 @@
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useClaimDeleteMutation, useClaimListQuery } from '../../../../api/operate/claim'
 import { ClaimListFieldCols, ClaimListFields } from '../../../../constants/admin/Claim'
+import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
+import useTableSelection from '../../../../hooks/useTableSelection'
 import { add_element_field } from '../../../../lib/tableHelpers'
 import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
-import {
-  doubleClickedRowAtom,
-  popupAtom,
-  popupObject,
-  popupTypeAtom,
-  selectedRowsAtom,
-} from '../../../../store/Layout/Layout'
+import useAlert from '../../../../store/Alert/useAlert'
 import Table from '../../../Table/Table'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import { claimInitState } from '../../constants'
 import ClaimHeader from './components/ClaimHeader'
-import usePaging from '../../hook/usePaging'
 
 /**
  * @description
  * 클레임 관리 페이지 컴포넌트
- * @param {*} param0
- * @returns
  */
 const Claim = () => {
-  const navigate = useNavigate()
+	const navigate = useNavigate()
 
-  // 테이블에서 선택된 값
-  const selected = useAtomValue(selectedRowsAtom)
-  // 선택된 데이터 갯수
-  const selectedLength = useMemo(() => (selected ? selected.length : 0), [selected])
+	// 테이블에서 선택된 값,선택된 데이터 갯수
+	const { selectedData, selectedCount } = useTableSelection()
 
-  // 목록 API(REQUEST PARAMETER)
-  const [search, setSearch] = useState(claimInitState)
+	// 목록 API(REQUEST PARAMETER)
+	const [search, setSearch] = useState(claimInitState)
 
-  // 셀 클릭시 테이블 상세 데이터 조회
-  const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
+	// 삭제 API
+	const { mutate: remove } = useClaimDeleteMutation()
 
-  // 삭제 API
-  const { mutate: remove } = useClaimDeleteMutation()
+	// 목록 리스트
+	const [row, setRow] = useState([])
 
-  // 목록 리스트
-  const [row, setRow] = useState([])
+	// 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
+	const { simpleConfirm } = useAlert()
+	// 목록 API
+	const { data, refetch } = useClaimListQuery({ ...search, claimStatus: search.claimStatus.value })
+	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setSearch)
 
-  // 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
-  const [popupSwitch, setPopupSwitch] = useAtom(popupAtom)
-  const setNowPopupType = useSetAtom(popupTypeAtom) // 팝업 타입
-  const setNowPopup = useSetAtom(popupObject) // 팝업 객체
+	console.log('data :', data)
 
-  // 목록 API
-  const { data, refetch } = useClaimListQuery({ ...search, claimStatus: search.claimStatus.value })
+	// 등록 핸들러
+	function toRegister() {
+		navigate(`/operate/common/product`)
+	}
 
-  console.log('data :', data)
+	// 삭제 핸들러
+	function removeEventHandler() {
+		if (!selectedCount && selectedCount === 0) return alert('삭제할 목록을 선택해주세요.')
+		simpleConfirm('삭제하시겠습니까?', () => remove(selectedData.map((s) => s['고유값'])))
+	}
 
-  // 등록 핸들러
-  function toRegister() {
-    navigate(`/operate/common/product`)
-  }
+	const mappingData = useMemo(
+		() =>
+			data
+				? data.list.map((d, index) => ({
+						...d,
+						id: data.pagination.listCount - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
+				  }))
+				: [],
+		[data],
+	)
 
-  // 삭제 핸들러
-  function removeEventHandler() {
-    if (!selectedLength && selectedLength === 0) return alert('삭제할 목록을 선택해주세요.')
-    setPopupSwitch(true)
-    setNowPopupType(2)
-    setNowPopup({
-      num: '2-1',
-      title: '삭제하시겠습니까?',
-      next: '1-14',
-      func() {
-        if (selected && selected.length !== 0) {
-          remove(selected.map((s) => s['고유값']))
-          refetch()
-        }
-      },
-    })
-  }
+	useEffect(() => {
+		if (mappingData) {
+			setRow(add_element_field(mappingData, ClaimListFields))
+		}
+	}, [mappingData])
 
-  useEffect(() => {
-    if (data) {
-      setRow(add_element_field(data.list, ClaimListFields))
-    }
-  }, [data])
-  // 상세 페이지 이동
-  useEffect(() => {
-    // 상세 페이지 이동시 상세 데이터 값 초기화
-    if (detailRow && detailRow['고유값']) {
-      navigate(`/operate/common/product/${detailRow['고유값']}`)
-
-      setDetailsRow([])
-    }
-  }, [detailRow])
-
-  const { pagination, onPageChanage } = usePaging(data, setSearch)
-  return (
-    <FilterContianer>
-      {/* 카테고리탭 & 검색필터 on & 검색 */}
-      <ClaimHeader search={search} setSearch={setSearch} refetch={refetch} />
-      <TableContianer>
-        <CommonTableHeader
-          totalLength={data && data.list.length}
-          selectedLength={selectedLength}
-          toRegister={toRegister}
-          removeEventHandler={removeEventHandler}
-        />
-        <Table
-          getCol={ClaimListFieldCols}
-          getRow={row}
-          setChoiceComponent={() => {}}
-          tablePagination={pagination}
-          onPageChange={onPageChanage}
-        />
-        {/* <Test3 title={'규격 약호 찾기'} /> */}
-      </TableContianer>
-    </FilterContianer>
-  )
+	return (
+		<FilterContianer>
+			{/* 카테고리탭 & 검색필터 on & 검색 */}
+			<ClaimHeader search={search} setSearch={setSearch} refetch={refetch} />
+			<TableContianer>
+				<CommonTableHeader
+					totalLength={data && data.list.length}
+					selectedLength={selectedCount}
+					toRegister={toRegister}
+					removeEventHandler={removeEventHandler}
+					setState={setSearch}
+				/>
+				<Table
+					getCol={ClaimListFieldCols}
+					getRow={row}
+					setChoiceComponent={() => {}}
+					tablePagination={pagination}
+					onPageChange={onPageChanage}
+				/>
+				{/* <Test3 title={'규격 약호 찾기'} /> */}
+			</TableContianer>
+		</FilterContianer>
+	)
 }
 
 export default Claim

@@ -75,7 +75,7 @@ import StandardFind from '../../../modal/Multi/StandardFind'
 import { specAtom } from '../../../store/Layout/Layout'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { Filtering } from '../../../utils/filtering'
-import usePaging from '../../Operate/hook/usePaging'
+import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 import { onSizeChange } from '../../Operate/utils'
 import Table from '../../Table/Table'
 import { hyunDaiMultiModal } from '../../../store/Layout/Layout'
@@ -463,7 +463,7 @@ const SalesProduct = () => {
       })
     } else return
   }
-  const { pagination: customPagination, onPageChanage } = usePaging(data, setRequestParamter)
+  const { pagination: customPagination, onPageChanage } = useTablePaginationPageChange(data, setRequestParamter)
   return (
     <>
       {' '}
@@ -711,7 +711,6 @@ const SalesProduct = () => {
           </>
         )}
         <TableContianer>
-          
           <TCSubContainer bor>
             <div>
               조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}

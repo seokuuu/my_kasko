@@ -1,43 +1,25 @@
-import { useEffect, useMemo, useState, useRef } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../../pages/Test/Test3'
+import { BlackBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
-import BlueBar from '../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
-import { FilterWrap } from '../../../modal/External/ExternalFilter'
+import {
+  FilterContianer,
+  FilterFooter,
+  FilterHeader,
+  FilterRight,
+  FilterSubOneContainer,
+  FilterWrap,
+  Input,
+  PartWrap,
+  ResetImg,
+  RowWrap,
+  TableContianer,
+  TCSubContainer,
+} from '../../../modal/External/ExternalFilter'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../../pages/Table/Table'
-import {
-  TCSubContainer,
-  FilterContianer,
-  FilterHeader,
-  FilterFooter,
-  FilterSubOneContainer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  InputStartWrap,
-  FilterHeaderAlert,
-  PageSelect,
-  HiddenBtn,
-} from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { UserNoticeListFieldCols, UserNoticeListFields } from '../../../constants/userNotDoc'
@@ -45,22 +27,26 @@ import { useNoticeListQuery } from '../../../api/operate/notice'
 import moment from 'moment'
 import { useNavigate, useLocation } from 'react-router-dom'
 import TableTest from '../../../pages/Table/TableTest'
+import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 
 const Notice = () => {
   const [title, setTitle] = useState('')
-  const { pathname } = useLocation()
 
-  const [params, setParams] = useState({
+  const Params = {
     type: '공지사항',
     pageNum: 1,
-    pageSize: 10,
-    category: '제목',
-    keyword: '',
-  })
+    pageSize: 50,
+    category: '',
+    keyword: title,
+  }
+
   const [isRotated, setIsRotated] = useState(false)
 
-  const { isSuccess, data: notices, refetch } = useNoticeListQuery(params)
+  const [param, setParam] = useState(Params)
+  const { isSuccess, data: notices, refetch } = useNoticeListQuery(param)
   const pagination = notices?.pagination
+
+  const { onPageChanage } = useTablePaginationPageChange(notices, setParam)
   // Function to handle image click and toggle rotation
   const handleImageClick = () => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
@@ -78,8 +64,6 @@ const Notice = () => {
     }
   }
 
-  const [isModal, setIsModal] = useAtom(blueModalAtom)
-
   const [getRow, setGetRow] = useState('')
   const navigate = useNavigate()
   const tableField = useRef(UserNoticeListFieldCols)
@@ -88,22 +72,13 @@ const Notice = () => {
   const [result, setResult] = useState([])
   const [fixed, setFixed] = useState([])
   const fixedItem = notices && notices?.list.filter((i) => i.status !== 0)
-  const notFixedItem = notices && topData2?.filter((i) => i.status !== 0)
-  const [pages, setPages] = useState([])
-  // 상단고정 데이터
-  console.log(pages)
+
   useEffect(() => {
     if (!title && fixedItem) {
       setFixed(fixedItem)
     }
   }, [notices])
-  useEffect(() => {
-    setTitle('')
-    refetch()
-  }, [pathname])
-  useEffect(() => {
-    setParams((p) => ({ ...p, keyword: title }))
-  }, [title])
+
   useEffect(() => {
     topData2.map((item, index) =>
       setResult((p) => [
@@ -144,7 +119,7 @@ const Notice = () => {
 
   function createData(data) {
     var result = []
-
+    console.log(data)
     for (var i = 0; i < data?.length; i++) {
       result.push({
         작성일자: data[i].createDate ? moment(data[i].createDate).format('YYYY-MM-DD') : '-',
@@ -168,7 +143,6 @@ const Notice = () => {
   }
   useEffect(() => {
     gettingRow()
-    setPages(pagination)
     //타입, 리액트쿼리, 데이터 확인 후 실행
   }, [isSuccess, notices])
 
@@ -176,9 +150,23 @@ const Notice = () => {
     refetch()
   }
 
-  const onPageChange = (num) => {
-    setParams((p) => ({ ...p, pageNum: Number(num) }))
+  const handleOnRowClicked = (e) => {
+    const uid = e.data.고유값
+    navigate(`/userpage/notice/${uid}`)
   }
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  useEffect(() => {
+    refetch()
+  }, [])
+
   return (
     <FilterContianer>
       <div>
@@ -228,29 +216,22 @@ const Notice = () => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            조회 목록 ({notices?.pagination?.listCount}개 )
+            조회 목록 ({pagination?.listCount}개 )
             <Hidden />
           </div>
           <div style={{ gap: '10px' }}>
-            <PageDropdown
-              handleDropdown={(e) => {
-                setParams((p) => ({ ...p, pageNum: 1, pageSize: e.target.value }))
-              }}
-            />
+            <PageDropdown handleDropdown={handleTablePageSize} />
           </div>
         </TCSubContainer>
         <div>
           <Table
             getRow={getRow}
             getCol={getCol}
-            tablePagination={pages}
-            onPageChange={onPageChange}
-            setChoiceComponent={(e) => {
-              const uid = e.고유값
-              navigate(`/userpage/notice/${uid}`, { state: { data: e } })
-            }}
+            tablePagination={pagination}
+            isRowClickable={true}
+            handleOnRowClicked={handleOnRowClicked}
+            onPageChange={onPageChanage}
             topData={createData(fixed)}
-            type={'공지사항'}
           />
         </div>
       </TableContianer>

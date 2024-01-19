@@ -1,68 +1,49 @@
-import { useState, useRef, useEffect, useMemo } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Table from '../../../pages/Table/Table'
 import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../../pages/Test/Test3'
+import { BlackBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom } from '../../../store/Layout/Layout'
-import BlueBar from '../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
-import { FilterWrap } from '../../../modal/External/ExternalFilter'
-import { add_element_field } from '../../../lib/tableHelpers'
 import {
-  TCSubContainer,
   FilterContianer,
-  FilterHeader,
   FilterFooter,
-  FilterSubOneContainer,
-  FilterLeft,
+  FilterHeader,
   FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
+  FilterSubOneContainer,
+  FilterWrap,
   Input,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
+  PartWrap,
   ResetImg,
+  RowWrap,
   TableContianer,
-  InputStartWrap,
-  FilterHeaderAlert,
-  PageSelect,
-  HiddenBtn,
+  TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
+import { add_element_field } from '../../../lib/tableHelpers'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { UserNoticeListFieldCols, UserNoticeListFields } from '../../../constants/userNotDoc'
-import useReactQuery from '../../../hooks/useReactQuery'
 import { useNoticeListQuery } from '../../../api/operate/notice'
 import moment from 'moment'
-import { useNavigate, useLocation } from 'react-router-dom'
-import TableTest from '../../../pages/Table/TableTest'
-const Docs = () => {
-  // const handleSelectChange = (selectedOption, name) => {
-  //   // setInput(prevState => ({
-  //   //   ...prevState,
-  //   //   [name]: selectedOption.label,
-  //   // }));
-  // }
-  const [title, setTitle] = useState('')
-  const { pathname } = useLocation()
+import { useNavigate } from 'react-router-dom'
+import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 
-  const [params, setParams] = useState({
+const Docs = () => {
+  const [title, setTitle] = useState('')
+
+  const Params = {
     type: '자료실',
     pageNum: 1,
-    pageSize: 10,
-    category: '제목',
-    keyword: '',
-  })
-  const { isSuccess, data: Docs, refetch } = useNoticeListQuery(params)
+    pageSize: 50,
+    category: '',
+    keyword: title,
+  }
+
+  const [param, setParam] = useState(Params)
+  const { isSuccess, data: Docs, refetch } = useNoticeListQuery(param)
+  const pagination = Docs?.pagination
+
+  const { onPageChanage } = useTablePaginationPageChange(Docs, setParam)
+
   const [isRotated, setIsRotated] = useState(false)
   const [getRow, setGetRow] = useState('')
   const navigate = useNavigate()
@@ -70,31 +51,18 @@ const Docs = () => {
   const getCol = tableField.current
   const [fixed, setFixed] = useState([])
   const fixedItem = Docs && Docs?.list.filter((i) => i.status !== 0)
-  const [pages, setPages] = useState([])
   useEffect(() => {
     if (!title && fixedItem) {
       setFixed(fixedItem)
     }
-  }, [Docs])
+  }, [Docs, isSuccess])
 
-  useEffect(() => {
-    setTitle('')
-    refetch()
-  }, [pathname])
-  useEffect(() => {
-    setParams((p) => ({ ...p, keyword: title }))
-  }, [title])
-
-  // useEffect 관련 에러가 나와서 따로 빼서 처리
   const handleImageClick = () => {
     setIsRotated((prevIsRotated) => !prevIsRotated)
   }
 
   const [topData, setTopData] = useState([])
-  const [result, setResult] = useState([])
-  // 상단고정 데이터
 
-  console.log(topData)
   const mappingData2 = useMemo(
     () =>
       Docs
@@ -115,7 +83,6 @@ const Docs = () => {
         : [],
     [Docs],
   )
-  console.log(Docs)
 
   useEffect(() => {
     if (Docs) {
@@ -136,7 +103,6 @@ const Docs = () => {
         }
       })
       setTopData(newTopData)
-      console.log('NEW TOP DATA :', newTopData)
     }
   }, [Docs])
 
@@ -163,7 +129,6 @@ const Docs = () => {
     if (!isSuccess && !getData) return null
     if (Array.isArray(getData)) {
       setGetRow(add_element_field(getData, UserNoticeListFields))
-      setPages(Docs?.pagination)
     }
   }
   useEffect(() => {
@@ -186,9 +151,24 @@ const Docs = () => {
   const handleSearch = () => {
     refetch()
   }
-  const onPageChange = (num) => {
-    setParams((p) => ({ ...p, pageNum: Number(num) }))
+
+  const handleOnRowClicked = (e) => {
+    const uid = e.data.고유값
+    navigate(`/userpage/docs/${uid}`)
   }
+
+  const handleTablePageSize = (event) => {
+    setParam((prevParam) => ({
+      ...prevParam,
+      pageSize: Number(event.target.value),
+      pageNum: 1,
+    }))
+  }
+
+  useEffect(() => {
+    refetch()
+  }, [])
+
   return (
     <FilterContianer>
       <div>
@@ -238,30 +218,21 @@ const Docs = () => {
       <TableContianer>
         <TCSubContainer bor>
           <div>
-            게시글 목록 ({Docs?.pagination?.listCount}개)
+            게시글 목록 ({pagination?.listCount}개)
             <Hidden />
           </div>
           <div style={{ gap: '10px' }}>
-            <PageDropdown
-              handleDropdown={(e) => {
-                setParams((p) => ({ ...p, pageNum: 1, pageSize: e.target.value }))
-              }}
-            />
+            <PageDropdown handleDropdown={handleTablePageSize} />
           </div>
         </TCSubContainer>
-
         <Table
           getRow={getRow}
           getCol={getCol}
+          tablePagination={pagination}
           isRowClickable={true}
-          tablePagination={pages}
-          onPageChange={onPageChange}
-          setChoiceComponent={(e) => {
-            const uid = e.고유값
-            navigate(`/userpage/docs/${uid}`, { state: { data: e } })
-          }}
+          handleOnRowClicked={handleOnRowClicked}
+          onPageChange={onPageChanage}
           topData={createData(fixed)}
-          // type={'자료실'}
         />
       </TableContianer>
     </FilterContianer>

@@ -1,5 +1,5 @@
-import { client } from ".";
-import qs from "qs";
+import { client } from '.'
+import qs from 'qs'
 
 const urls = {
   single: '/single-product',
@@ -17,17 +17,17 @@ const urls = {
 }
 
 export async function getSingleProducts(data) {
-  const response =  await client.get(`${urls.single}`,
-  { params: data , 
-    paramsSerializer:(param)=>{ 
-      return qs.stringify(param)
-    }}
-    ) 
-  const pagination = response.data?.data?.pagination
-  const r =response.data?.data.list.map((i,idx)=>{
-    return {index:idx+1 , ...i}
-  })
-  return {pagination,r}
+	const response = await client.get(`${urls.single}`, {
+		params: data,
+		paramsSerializer: (param) => {
+			return qs.stringify(param)
+		},
+	})
+	const pagination = response.data?.data?.pagination
+	const r = response.data?.data.list.map((i, idx) => {
+		return { index: idx + 1, ...i }
+	})
+	return { pagination, r }
 }
 export async function postExcelSubmitProduct(data) {
 
@@ -72,7 +72,7 @@ export async function postingMemoAndNote(data){
 }
 
 export async function patchSaleCategory(data) {
-  return await client.patch(`${urls.saleCategory}`,data)
+	return await client.patch(`${urls.saleCategory}`, data)
 }
 
 export async function patchOutlet(data) {
@@ -92,45 +92,41 @@ export async function gethyunDaiOriginal(data){
  return response.data
 }
 
-
-
 export async function getPackageList(params) {
-  const response = await client.get(`${urls.package}`,{
-    params:params,
-    paramsSerializer:(param)=>{
-      return qs.stringify(param)
-    }
-    
-  })
-  const pagination = response.data?.data?.pagination
-  const r =response.data?.data.list.map((i,idx)=>{
-    return {index:idx+1 , ...i}
-  })
-  return {pagination,r}
+	const response = await client.get(`${urls.package}`, {
+		params: params,
+		paramsSerializer: (param) => {
+			return qs.stringify(param)
+		},
+	})
+	const pagination = response.data?.data?.pagination
+	const r = response.data?.data.list.map((i, idx) => {
+		return { index: idx + 1, ...i }
+	})
+	return { pagination, r }
 }
 export async function getPackageProductsList(params) {
-  const response = await client.get(`${urls.packageProducts}`,{
-    params:params,
-    paramsSerializer:(param)=>{
-      return qs.stringify(param)
-    }})
-    const pagination = response.data?.data?.pagination
-    const r =response.data?.data.list.map((i,idx)=>{
-      return {index:idx+1 , ...i}
-    })
-    console.log('RES',r)
-    return {pagination,r}
+	const response = await client.get(`${urls.packageProducts}`, {
+		params: params,
+		paramsSerializer: (param) => {
+			return qs.stringify(param)
+		},
+	})
+	const pagination = response.data?.data?.pagination
+	const r = response.data?.data.list.map((i, idx) => {
+		return { index: idx + 1, ...i }
+	})
+	console.log('RES', r)
+	return { pagination, r }
 }
 
-
-export async function postCreatePackage(data){
-  try{
-    const response = await client.post(`${urls.package}`,data)    
-    return response.data
-  } catch(e){
-    console.log(e)
-  }
-
+export async function postCreatePackage(data) {
+	try {
+		const response = await client.post(`${urls.package}`, data)
+		return response.data
+	} catch (e) {
+		console.log(e)
+	}
 }
 
 export async function postUpdatePackage(data){

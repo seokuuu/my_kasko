@@ -95,8 +95,7 @@ const BtnCellRenderer = ({ data, uidFieldName, editType, moveUrl }) => {
         break
       // 클레임 관리 목록 수정 버튼 => 클레임 수정 페이지로 이동
       case 'claimUpdate':
-        setUidAtom(uid)
-        setModalMode('수정')
+        navigate(`/operate/common/product/${uid}`)
         break
       case 'usermanagemanage':
         setUidAtom(uid)
@@ -108,6 +107,7 @@ const BtnCellRenderer = ({ data, uidFieldName, editType, moveUrl }) => {
         break
       case 'packageUpdate':
         navigate('/product/packageedit/' + data[uidFieldName], { state: { data: data } })
+
       // 관리자 > 운영관리 > 제품군 관리 목록 수정
       case 'productRange':
         setUidAtom(uid)

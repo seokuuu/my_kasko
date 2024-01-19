@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 
-var checkboxSelection = function (params) {
+var checkboxSelection = function(params) {
   return params.columnApi.getRowGroupColumns().length === 0
 }
 
-var headerCheckboxSelection = function (params) {
+var headerCheckboxSelection = function(params) {
   return params.columnApi.getRowGroupColumns().length === 0
 }
 
@@ -14,7 +14,7 @@ const onCellClicked = (params) => {
 
 const LinkRenderer = ({ value }) => {
   return value ? (
-    <a href={`detail/${value}`} target="_blank" style={{ color: 'blue', textDecoration: 'underline' }} rel="noreferrer">
+    <a href={`detail/${value}`} style={{ color: 'blue', textDecoration: 'underline' }} rel="noreferrer">
       {value}
     </a>
   ) : (
@@ -26,7 +26,7 @@ const LinkRenderer = ({ value }) => {
     주문 관리 - 주문 관리 (Order)
 ============================== */
 
-export const AdminOrderManageFieldsCols = [
+export const proNoFieldCols = [
   {
     field: '',
     width: 50,
@@ -36,7 +36,7 @@ export const AdminOrderManageFieldsCols = [
     headerCheckboxSelection: headerCheckboxSelection,
   },
   {
-    field: '순번',
+    headerName: '순번',
     width: 100,
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
@@ -44,117 +44,170 @@ export const AdminOrderManageFieldsCols = [
     cellRenderer: (params) => params.value || 'N',
   },
   {
-    headerName: '경매 번호',
-    field: 'auctionNumber',
+    headerName: '제품 번호',
+    field: ['제품 번호'],
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 120,
     cellRenderer: (params) => params.value || 'N',
   },
   {
-    headerName: '상시 판매 번호',
-    field: 'orderDate',
+    headerName: '창고',
+    field: ['창고'],
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 120,
     cellRenderer: (params) => params.value || 'N',
   },
   {
-    headerName: '주문 일자',
-    field: 'orderDate',
+    headerName: 'ProNo.',
+    field: ['ProNo.'],
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 107,
     cellRenderer: (params) => params.value || 'N',
   },
   {
-    headerName: '패키지 명',
-    field: 'packageName',
+    headerName: '등록 일자',
+    field: ['등록 일자'],
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 100,
     cellRenderer: (params) => params.value || 'N',
   },
   {
-    headerName: '패키지 번호',
-    field: 'packageNumber',
+    headerName: '입고 상태',
+    field: ['입고 상태'],
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 100,
     cellRenderer: (params) => params.value || 'N',
   },
   {
-    headerName: '주문 상태',
-    field: 'title',
+    headerName: '매입 구분',
+    field: ['매입 구분'],
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 90,
     cellRenderer: (params) => params.value || 'N',
   },
   {
-    headerName: '확정전송 일자',
-    field: 'title',
+    headerName: '매입처',
+    field: ['매입처'],
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 107,
     cellRenderer: (params) => params.value || 'N',
   },
   {
-    headerName: '주문 번호',
-    field: 'orderNumber',
+    headerName: '제조사',
+    field: ['제조사'],
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 110,
     cellRenderer: (params) => params.value || '-',
   },
   {
-    headerName: '고객사 명',
-    field: 'customerName',
+    headerName: '경매 등록 상태',
+    field: ['경매 등록 상태'],
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 110,
     cellRenderer: (params) => params.value || 'N',
   },
   {
-    headerName: '고객 코드',
-    field: 'customerCode',
+    headerName: '경매 번호',
+    field: ['경매 번호'],
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 110,
     cellRenderer: (params) => params.value || 'N',
   },
   {
-    headerName: '제품 번호',
-    field: 'storageName',
+    headerName: '판매 구분',
+    field: ['판매 구분'],
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 90,
     cellRenderer: (params) => params.value || 'N',
   },
   {
-    headerName: 'ProNo.',
-    field: 'saleType',
+    headerName: '판매 유형',
+    field: ['판매 유형'],
     headerClass: 'custom-header-style',
     cellStyle: { textAlign: 'center' },
     width: 150,
     cellRenderer: LinkRenderer,
   },
+  {
+    headerName: '판매가 유형',
+    field: ['판매가 유형'],
+    headerClass: 'custom-header-style',
+    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+    width: 90,
+    cellRenderer: (params) => params.value || 'N',
+  },
+  {
+    headerName: '창고',
+    field: ['창고'],
+    headerClass: 'custom-header-style',
+    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+    width: 90,
+    cellRenderer: (params) => params.value || 'N',
+  },
 ]
 
-export const DetailOrderFieldsManage = {
-  '고객 코드': 'customerCode',
-  고객사명: 'customerName',
-  '창고 이름': 'storageName',
-  '판매 유형': 'saleType',
-  '판매가 유형': 'salePriceType',
+export const proNoFieldManage = {
+  '제품 고유 번호': 'uid',
+  '제품 번호': 'number',
+  창고: 'storageName',
+  'Pro.No 번호': 'productNoNumber',
+  '등록 일자': 'createDate',
+  '입고 상태': 'receiptStatus',
+  매입처: 'supplier',
+  제조사: 'maker',
+  '경매 등록 상태': 'registrationStatus',
   '경매 번호': 'auctionNumber',
-  중량: 'weight',
-  '상시판매 주문번호': 'orderNumber',
-  '현대제철 주문번호': 'hsOrderNo',
-  '제품 개수': 'productCount',
-  '상시판매 주문일자': 'createDate',
+  '판매 구분': 'saleCategory',
+  '판매가 유형': 'salePriceType',
+  제품군: 'spart',
+  '정척 여부': 'preferThickness',
+  '유찰 횟수': 'failCount',
+  매입가: 'price',
+  시작가: 'auctionStartPrice',
+  '낙찰 상태': 'biddingStatus',
+  '규격 약호': 'spec',
+  '여재 원인': 'causeCode',
+  '여재 원인명': 'causeCodeName',
+  '용도 코드': 'usageCode',
+  용도명: 'usageCodeName',
+  메모: 'memo',
+  '제품 낙찰단가': 'productBiddingPrice',
+  '기본 운임단가': 'freightFee',
+  '할증 운임단가': 'extraUnitPrice',
+  '낙찰 총 단가': 'totalBiddingPrice',
+  '제품 공급가': 'orderPrice',
+  '운송비 공급가': 'freightCost',
+  '총 공급가': 'totalSupplyPrice',
+  '제품대 부가세': 'orderPriceVat',
+  '운송비 부가세': 'freightCostVat',
+  '총 부가세': 'totalVat',
+  '제품 금액': 'totalOrderPrice',
+  '운반비 금액': 'totalFreightCost',
+  비고: 'note',
+  '재고 상태': 'stockStatus',
+  '주문 상태': 'orderStatus',
+  '상시 판매가': 'salePrice',
+  '상시 판매 상태': 'saleStatus',
+  '확정 전송일': 'sendDate',
   패키지명: 'packageName',
   '패키지 번호': 'packageNumber',
-  '확정 전송가': 'confirmPrice',
-  입금요청액: 'totalPrice',
+  '판매 제외 사유': 'excludeSaleReason',
+  '클레임 진행 상태': 'claimStatus',
+  '최종 수정자': 'lastedUpdater',
+  등급: 'grade',
+  중량: 'weight',
+  두께: 'thickness',
+  폭: 'width',
+  길이: 'length',
 }

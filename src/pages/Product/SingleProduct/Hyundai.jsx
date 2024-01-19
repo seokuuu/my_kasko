@@ -62,7 +62,7 @@ import Multi2 from '../../../modal/Common/Multi2'
 import { popupObject } from '../../../store/Layout/Layout'
 import { changeCategoryAtom } from '../../../store/Layout/Popup'
 import { KilogramSum } from '../../../utils/KilogramSum'
-import usePaging from '../../Operate/hook/usePaging'
+import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 import { onSizeChange } from '../../Operate/utils'
 import HyunDaiOriginal from './HyunDaiOriginal'
 import { CustomInput } from '../../../modal/External/ExternalFilter'
@@ -397,7 +397,7 @@ const Hyundai = ({}) => {
       },
     })
   }
-  const { pagination, onPageChanage } = usePaging(data, setRequestParameter)
+  const { pagination, onPageChanage } = useTablePaginationPageChange(data, setRequestParameter)
   return (
     <>
       <FilterContianer>

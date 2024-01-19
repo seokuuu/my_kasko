@@ -28,7 +28,7 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
-
+// import usePaiging from '../../../hooks/queries'
 import { getPackageProductsList, postCreatePackage, postUpdatePackage } from '../../../api/SellProduct'
 import { useLocation, useNavigate } from 'react-router-dom'
 
@@ -41,7 +41,7 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import SingleAllProduct from '../../../modal/Multi/SingleAllProduct'
 import { packageCreateObjAtom } from '../../../store/Layout/Layout'
 import { CRWMainBottom, CRWSub } from '../../Operate/Common/Datasheet/DatasheetEdit'
-import usePaging from '../../Operate/hook/usePaging'
+import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 import { onSizeChange } from '../../Operate/utils'
 import Table from '../../Table/Table'
 
@@ -170,7 +170,7 @@ const PackageCreate = () => {
     }
   }
 
-  const { pagination, onPageChanage } = usePaging(data, setRequestParams)
+  const { pagination, onPageChanage } = useTablePaginationPageChange(data, setRequestParams)
   useEffect(() => {
     if (!select) return null
 
