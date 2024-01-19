@@ -13,3 +13,8 @@ export const changeCategoryAtom = atom({
   excludeSaleReason: '', // 판매 제외재 사유
   numbers: [], // 제품번호 목록
 })
+export const changeSaleTypeAtom = atom({
+  saleType: '경매 대상재', // 경매 대상재 / 상시판매 대상재
+  salePrice: '', // 상시 판매가
+  numbers: [], // 제품번호 목록
+})
