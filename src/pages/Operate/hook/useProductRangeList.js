@@ -13,7 +13,7 @@ const useProductRangeList = () => {
 	// 서버 옵션(요청 변수)
 	const [search, setSearch] = useState(commonListSearchInitValue)
 	// 제품군 관리 목록 API
-	const { data, refetch, isLoading } = useProductRangeListQuery(search)
+	const { data, isLoading } = useProductRangeListQuery(search)
 	// 페이지네이션
 	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setSearch)
 	// 목록 리스트
@@ -43,7 +43,7 @@ const useProductRangeList = () => {
 			setRows(add_element_field(mappingData, ProductRangeFields))
 		}
 	}, [mappingData])
-	return { mappingData, refetch, isLoading, rows, setSearch, pagination, onPageChanage }
+	return { mappingData, isLoading, rows, setSearch, pagination, onPageChanage }
 }
 
 export default useProductRangeList

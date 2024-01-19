@@ -13,8 +13,7 @@ import { MainSelect } from '../../../../common/Option/Main'
 import DateGrid from '../../../../components/DateGrid/DateGrid'
 import TextEditor from '../../../../components/Editor/TextEditor'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, DateTitle } from '../../../../components/MapTable/MapTable'
-import useConfirmModal from '../../../../hooks/useConfirmModal'
-import AlertPopup from '../../../../modal/Alert/AlertPopup'
+import useAlert from '../../../../store/Alert/useAlert'
 import { selectedRowsAtom } from '../../../../store/Layout/Layout'
 import AttachedFile from '../Notice/components/AttachedFile'
 
@@ -54,7 +53,7 @@ const OperateClaimRegister = ({ pageType }) => {
 
 	console.log('registableProductUid :', registableProductUid)
 	// 확인 모달 관련 값들
-	const { popupSwitch, setPopupSwitch, setNowPopupType, nowPopup, setNowPopup, initConfirmModal } = useConfirmModal()
+	const { simpleConfirm } = useAlert()
 
 	const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
 	// const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
@@ -118,31 +117,15 @@ const OperateClaimRegister = ({ pageType }) => {
 		setForm((p) => ({ ...p, [name]: date }))
 	}
 
-	// 등록 API 요청
-	function registerClaim() {
-		register(requestParams)
+	function onSubmit() {
+		if (id && detailsData) {
+			update(updateParams)
+		} else {
+			register(requestParams)
+		}
 	}
-
-	// 수정 API 요청
-	function updateClaim() {
-		update(updateParams)
-	}
-
 	function onSubmitHandler() {
-		setPopupSwitch(true)
-		setNowPopupType(2)
-		setNowPopup({
-			num: '2-1',
-			title: '저장하시겠습니까?',
-			next: '1-12',
-			func() {
-				if (id && detailsData) {
-					updateClaim()
-				} else {
-					registerClaim()
-				}
-			},
-		})
+		simpleConfirm('저장하시겠습니까?', onSubmit)
 	}
 
 	useEffect(() => {
@@ -154,16 +137,8 @@ const OperateClaimRegister = ({ pageType }) => {
 		const updatedCheck = checkDummy.map((value, index) => {
 			return check[index] ? value : ''
 		})
-		// 그냥 배열에 담을 때
 		const filteredCheck = updatedCheck.filter((item) => item !== '')
-		// setCheckData(filteredCheck)
 		setForm((p) => ({ ...p, processor: filteredCheck }))
-
-		// 전송용 input에 담을 때
-		// setInput({
-		//   ...input,
-		//   businessType: updatedCheck.filter(item => item !== ''),
-		// });
 	}, [check])
 
 	// selected 값이 있다면 상단 내용 데이터 바인딩(등록 & 수정)
@@ -362,7 +337,6 @@ const OperateClaimRegister = ({ pageType }) => {
 						</BtnWrap>
 					</CRWSub>
 				</CRWMain>
-				{popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
 			</CenterRectangleWrap>
 		</>
 	)

@@ -15,6 +15,7 @@ import {
 } from '../../../../api/operate/notice'
 import useConfirmModal from '../../../../hooks/useConfirmModal'
 import AlertPopup from '../../../../modal/Alert/AlertPopup'
+import useAlert from '../../../../store/Alert/useAlert'
 import AttachedFile from './components/AttachedFile'
 import IsExposure from './components/IsExposure'
 /**
@@ -28,6 +29,7 @@ const NoticePost = ({ title, isRegister }) => {
 	const { id } = useParams()
 
 	// 확인 모달 관련 값들
+	const { simpleConfirm } = useAlert()
 	const { popupSwitch, setPopupSwitch, setNowPopupType, nowPopup, setNowPopup, initConfirmModal } = useConfirmModal()
 
 	// 등록 폼
@@ -76,6 +78,14 @@ const NoticePost = ({ title, isRegister }) => {
 		setForm((p) => ({ ...p, [name]: value }))
 	}
 
+	function onSubmit() {
+		if (id && data) {
+			update(updateParams)
+		} else {
+			register(registerParams)
+		}
+	}
+
 	/**
    *@description
    등록 핸들러
@@ -90,20 +100,7 @@ const NoticePost = ({ title, isRegister }) => {
 			return alert('내용을 입력해주세요.')
 		}
 
-		setPopupSwitch(true)
-		setNowPopupType(2)
-		setNowPopup({
-			num: '2-1',
-			title: '저장하시겠습니까?',
-			next: '1-12',
-			func() {
-				if (id && data) {
-					update(updateParams)
-				} else {
-					register(registerParams)
-				}
-			},
-		})
+		simpleConfirm('저장하시겠습니까?', onSubmit)
 	}
 
 	/**
@@ -111,16 +108,7 @@ const NoticePost = ({ title, isRegister }) => {
 	 * 등록 or 수정 API 요청
 	 * detailsId와 data가 있다면 수정 API 없다면 등록 API
 	 */
-	// useEffect(() => {
-	// 	if (nowPopup.num === '1-12') {
-	// 		if (id && data) {
-	// 			update(updateParams)
-	// 		} else {
-	// 			register(registerParams)
-	// 		}
-	// 		initConfirmModal()
-	// 	}
-	// }, [nowPopup])
+
 	/**
    @description
    * 상세 데이터값이 있다면 form 데이터 바인딩

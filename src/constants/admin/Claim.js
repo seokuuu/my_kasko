@@ -7,6 +7,7 @@ import { checkboxSelection, headerCheckboxSelection } from '../../pages/Table/ut
 // 클레임 관리 목록 헤더
 export const ClaimListFieldCols = [
 	{ field: '', checkboxSelection, headerCheckboxSelection, maxWidth: 50, headerClass: 'custom-header-style' },
+	{ field: '순번', headerClass: 'custom-header-style', maxWidth: 90 },
 	{
 		field: '수정',
 		maxWidth: 90,
@@ -87,6 +88,7 @@ export const ClaimListFieldCols = [
 
 // 클레임 관리 목록 키값 맵핑
 export const ClaimListFields = {
+	순번: 'id',
 	고유값: 'uid',
 	경매일자: 'auctionStartDate',
 	입고일자: 'receiptDate',

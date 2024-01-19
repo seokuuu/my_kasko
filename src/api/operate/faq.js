@@ -3,10 +3,9 @@
 ============================== */
 
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { useSetAtom } from 'jotai'
 import { useNavigate } from 'react-router-dom'
 import { client } from '..'
-import { popupObject } from '../../store/Layout/Layout'
+import useAlert from '../../store/Alert/useAlert'
 import { queryClient } from '../query'
 
 // API URL
@@ -47,7 +46,7 @@ export function useFaqDetailsQuery(id) {
 // 등록
 export function useFaqRegisterMutation() {
 	const navigate = useNavigate()
-	const setNowPopup = useSetAtom(popupObject)
+	const { simpleAlert, showAlert } = useAlert()
 
 	return useMutation({
 		mutationKey: FAQ_KEYS.create,
@@ -55,10 +54,13 @@ export function useFaqRegisterMutation() {
 			return client.post(urls, params)
 		},
 		onSuccess() {
-			setNowPopup((p) => ({ ...p, next: '1-12', func: () => navigate('/operate/faq') }))
+			showAlert({ title: '등록이 완료되었습니다.', func: () => navigate('/operate/faq') })
 			queryClient.invalidateQueries({
 				queryKey: FAQ_KEYS.getList,
 			})
+		},
+		onError() {
+			simpleAlert('등록에 실패하였습니다.')
 		},
 	})
 }
@@ -66,7 +68,7 @@ export function useFaqRegisterMutation() {
 // 수정
 export function useFaqUpdateMutation() {
 	const navigate = useNavigate()
-	const setNowPopup = useSetAtom(popupObject)
+	const { simpleAlert, showAlert } = useAlert()
 
 	return useMutation({
 		mutationKey: FAQ_KEYS.update,
@@ -74,28 +76,33 @@ export function useFaqUpdateMutation() {
 			return client.patch(urls, params)
 		},
 		onSuccess() {
-			setNowPopup((p) => ({ ...p, next: '1-12', func: () => navigate('/operate/faq') }))
+			showAlert({ title: '저장이 완료되었습니다.', func: () => navigate('/operate/faq') })
 			queryClient.invalidateQueries({
 				queryKey: FAQ_KEYS.getList,
 			})
+		},
+		onError() {
+			simpleAlert('저장에 실패하였습니다.')
 		},
 	})
 }
 
 // 삭제
 export function useFaqRemoveMutation() {
+	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: FAQ_KEYS.remove,
 		mutationFn: async function (id) {
 			return client.delete(`${urls}/${id}`)
 		},
 		onSuccess() {
+			simpleAlert('삭제되었습니다.')
 			queryClient.invalidateQueries({
 				queryKey: FAQ_KEYS.getList,
 			})
 		},
 		onError() {
-			alert('삭제에 실패하였습니다.')
+			simpleAlert('삭제에 실패하였습니다.')
 		},
 	})
 }

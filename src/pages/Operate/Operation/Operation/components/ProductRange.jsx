@@ -1,9 +1,11 @@
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import React, { useMemo } from 'react'
+import { useAtom } from 'jotai'
+import React from 'react'
 import { ProductRangeFieldCols } from '../../../../../constants/admin/ProductRange'
+import useTableSelection from '../../../../../hooks/useTableSelection'
 import { TableContianer } from '../../../../../modal/External/ExternalFilter'
 import AddProduct from '../../../../../modal/Operate/AddProduct'
-import { operateAddAtom, popupAtom, popupObject, selectedRowsAtom } from '../../../../../store/Layout/Layout'
+import useAlert from '../../../../../store/Alert/useAlert'
+import { operateAddAtom } from '../../../../../store/Layout/Layout'
 import Table from '../../../../Table/Table'
 import CommonTableHeader from '../../../UI/CommonTableHeader'
 import useProductRange from '../../../hook/useProductRange'
@@ -15,43 +17,25 @@ import useProductRangeList from '../../../hook/useProductRangeList'
  */
 const ProductRange = () => {
 	// 목록 관련 데이터 훅입니다.
-	const { mappingData, rows, refetch, isLoading, setSearch, pagination, onPageChanage } = useProductRangeList()
+	const { mappingData, rows, isLoading, setSearch, pagination, onPageChanage } = useProductRangeList()
 	// 수정,등록,삭제,상세 관련 데이터 훅입니다.
 	const { remove, detailsData, onSpartChange, initUid, onDetermineFunction } = useProductRange()
-	// 모달
+	// 모달(등록,수정 모달 & 확인 모달)
 	const [modal, setModal] = useAtom(operateAddAtom)
-	// 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
-	const setPopupSwitch = useSetAtom(popupAtom)
-	const setNowPopup = useSetAtom(popupObject) // 팝업 객체
-	// 테이블에서 선택된 값
-	const selected = useAtomValue(selectedRowsAtom)
-	// 선택된 데이터 갯수
-	const selectedLength = useMemo(() => (selected ? selected.length : 0), [selected])
-
+	const { simpleConfirm } = useAlert()
+	// 테이블에서 선택된 값,선택된 데이터 갯수
+	const { selectedData, selectedCount } = useTableSelection()
 	// 삭제 핸들러
 	function removeEventHandler() {
-		if (!selectedLength && selectedLength === 0) return alert('삭제할 목록을 선택해주세요.')
+		if (!selectedCount && selectedCount === 0) return alert('삭제할 목록을 선택해주세요.')
 
-		setPopupSwitch(true)
-		// setNowPopupType(2)
-		setNowPopup({
-			num: '2-1', // 모달 번호
-			title: '삭제하시겠습니까?',
-			next: '1-435', // 다음으로 나타날 모달 번호
-			func() {
-				if (selected && selected.length !== 0) {
-					remove(selected.map((s) => s['고유값']))
-					refetch()
-				}
-			},
-		})
+		simpleConfirm('삭제하시겠습니까?', () => remove(selectedData.map((s) => s['고유값'])))
 	}
-
 	return (
 		<TableContianer>
 			<CommonTableHeader
 				title={detailsData ? '제품군 수정' : '제품군 추가'}
-				selectedLength={selectedLength}
+				selectedLength={selectedCount}
 				totalLength={mappingData ? mappingData.length : 0}
 				toRegister={() => setModal(true)}
 				removeEventHandler={removeEventHandler}

@@ -18,10 +18,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { usePopupDetailsQuery, usePopupRegisterMutation, usePopupUpdateMutation } from '../../../../api/operate/popup'
 import { InputA, PropsInput } from '../../../../common/Input/Input'
 import { CustomSelect } from '../../../../common/Option/Main'
-import useNotSaveData from '../../../../hooks/useAlertSave'
-import useConfirmModal from '../../../../hooks/useConfirmModal'
-import AlertPopup from '../../../../modal/Alert/AlertPopup'
+import useBlockRoute from '../../../../hooks/useBlockRoute'
 import { ExCheckWrap } from '../../../../modal/External/ExternalFilter'
+import useAlert from '../../../../store/Alert/useAlert'
 import { mainPopupSelectOptions } from '../../constants'
 // 팝업 등록
 const PopupPost = ({ isRegister }) => {
@@ -29,6 +28,14 @@ const PopupPost = ({ isRegister }) => {
 
 	const navigate = useNavigate()
 
+	const { simpleConfirm } = useAlert()
+
+	/**
+	 * @description
+	 * 특정 버튼의 클릭 여부를 관찰하는 상태값입니다.
+	 * 목적 : 특정 폼에서 등록,수정 버튼을 눌렀는지에 대한 여부를 확인하기 위한 용도입니다.
+	 */
+	const [observeClick, setObserveClick] = useState(false)
 	// 폼 초깃값
 	const initForm = {
 		title: '',
@@ -45,11 +52,6 @@ const PopupPost = ({ isRegister }) => {
 	// const [form, setForm] = useState(initForm)
 
 	const [form, setForm] = useState(initForm)
-	// console.log(' Form :', form)
-
-	console.log()
-	// 확인 모달 관련 값들
-	const { popupSwitch, setPopupSwitch, setNowPopupType, nowPopup, setNowPopup, initConfirmModal } = useConfirmModal()
 	//  팝업 상세 API
 	const { data } = usePopupDetailsQuery(id)
 
@@ -71,8 +73,32 @@ const PopupPost = ({ isRegister }) => {
 	function dateHandler(date, name) {
 		setForm((p) => ({ ...p, [name]: date }))
 	}
-	// 등록/수정 핸들러
 
+	function onSubmit() {
+		if (id && data) {
+			update({
+				...form,
+				status: form.status,
+				position: form.position.value,
+				popupTitle: '',
+				startDate: moment(form.startDate ? form.startDate : new Date()).format('YYYY-MM-DD hh:mm:ss'),
+				endDate: moment(form.endDate ? form.endDate : new Date()).format('YYYY-MM-DD hh:mm:ss'),
+				uid: data.uid,
+			})
+		} else {
+			register({
+				...form,
+				status: form.status,
+				position: form.position.value,
+				popupTitle: '',
+				startDate: moment(form.startDate ? form.startDate : new Date()).format('YYYY-MM-DD hh:mm:ss'),
+				endDate: moment(form.endDate ? form.endDate : new Date()).format('YYYY-MM-DD hh:mm:ss'),
+			})
+		}
+		setObserveClick(true)
+	}
+
+	// 등록/수정 핸들러
 	function submitHandler() {
 		if (!form.title) {
 			return alert('제목을 입력해주세요.')
@@ -84,35 +110,7 @@ const PopupPost = ({ isRegister }) => {
 			return alert('링크를 입력해주세요.')
 		}
 
-		setPopupSwitch(true)
-		setNowPopup({
-			num: '2-1',
-			title: '저장하시겠습니까?',
-			next: '1-12',
-			func() {
-				if (id && data) {
-					update({
-						...form,
-						status: form.status,
-						position: form.position.value,
-						popupTitle: '',
-						startDate: moment(form.startDate ? form.startDate : new Date()).format('YYYY-MM-DD hh:mm:ss'),
-						endDate: moment(form.endDate ? form.endDate : new Date()).format('YYYY-MM-DD hh:mm:ss'),
-						uid: data.uid,
-					})
-				} else {
-					register({
-						...form,
-						status: form.status,
-						position: form.position.value,
-						popupTitle: '',
-						startDate: moment(form.startDate ? form.startDate : new Date()).format('YYYY-MM-DD hh:mm:ss'),
-						endDate: moment(form.endDate ? form.endDate : new Date()).format('YYYY-MM-DD hh:mm:ss'),
-					})
-				}
-				// initConfirmModal()
-			},
-		})
+		simpleConfirm('저장하시겠습니까?', onSubmit)
 	}
 	const checkDummy = ['노출 안함']
 
@@ -122,10 +120,10 @@ const PopupPost = ({ isRegister }) => {
 	// 등록하는 도중, 페이지가 나가게 될때에 대한 조건입니다.
 	// 기존 initForm 값과 변경된 form값을 비교하여 변경된 것이 있다면 true 로 변경해줍니다.
 	// 객체의 깊은 비교를 위해 loadash의 isEqual을 사용합니다.
-	const condition = useMemo(() => (isEqual(initForm, form) ? true : false), [form])
+	const condition = useMemo(() => !isEqual(initForm, form) && isRegister && !observeClick, [form, observeClick])
 
 	// useUpdatePopup(initForm)
-	useNotSaveData(!condition && isRegister, form)
+	useBlockRoute(condition)
 
 	useEffect(() => {
 		const updatedCheck = checkDummy.map((value, index) => {
@@ -259,7 +257,6 @@ const PopupPost = ({ isRegister }) => {
 						</BtnWrap>
 					</CRWSub>
 				</CRWMain>
-				{popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
 			</CenterRectangleWrap>
 		</>
 	)

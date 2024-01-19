@@ -3,10 +3,9 @@
 ============================== */
 
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { useSetAtom } from 'jotai'
 import { useNavigate } from 'react-router-dom'
 import { client } from '..'
-import { popupObject } from '../../store/Layout/Layout'
+import useAlert from '../../store/Alert/useAlert'
 import { queryClient } from '../query'
 
 // API ENDPOINT
@@ -48,22 +47,20 @@ export function usePopupDetailsQuery(id) {
 // 팝업 등록
 export function usePopupRegisterMutation() {
 	const navigate = useNavigate()
-	const setNowPopup = useSetAtom(popupObject)
+	const { showAlert, simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: POPUP_KEYS.registerPopup,
 		mutationFn: async function (params) {
 			return client.post(urls, params)
 		},
-		// 성공시 나올 팝업에 대한 함수를 전달해줍니다.
 		onSuccess() {
-			setNowPopup((p) => ({ ...p, next: '1-12', func: () => navigate('/operate/exposure') }))
-
+			showAlert({ title: '저장이 완료되었습니다.', content: '', func: () => navigate('/operate/exposure') })
 			queryClient.invalidateQueries({
 				queryKey: POPUP_KEYS.getPopupList,
 			})
 		},
 		onError() {
-			alert('등록에 실패하였습니다.')
+			simpleAlert('등록에 실패하였습니다.')
 		},
 	})
 }
@@ -71,8 +68,7 @@ export function usePopupRegisterMutation() {
 // 팝업 수정
 export function usePopupUpdateMutation() {
 	const navigate = useNavigate()
-
-	const setNowPopup = useSetAtom(popupObject)
+	const { showAlert, simpleAlert } = useAlert()
 
 	return useMutation({
 		mutationKey: POPUP_KEYS.updatePopup,
@@ -80,33 +76,34 @@ export function usePopupUpdateMutation() {
 			return client.patch(urls, params)
 		},
 		onSuccess() {
-			setNowPopup((p) => ({ ...p, next: '1-12', func: () => navigate('/operate/exposure') }))
+			showAlert({ title: '저장이 완료되었습니다.', content: '', func: () => navigate('/operate/exposure') })
 
 			queryClient.invalidateQueries({
 				queryKey: POPUP_KEYS.getPopupList,
 			})
-			// navigate('/operate/exposure')
 		},
 		onError() {
-			alert('수정에 실패하였습니다.')
+			simpleAlert('수정에 실패하였습니다.')
 		},
 	})
 }
 
 // 팝업 삭제
 export function usePopupRemoveMutation() {
+	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: POPUP_KEYS.removePopup,
 		mutationFn: async function (id) {
 			return client.delete(`${urls}/${id}`)
 		},
 		onSuccess() {
+			simpleAlert('삭제되었습니다.')
 			queryClient.invalidateQueries({
 				queryKey: POPUP_KEYS.getPopupList,
 			})
 		},
 		onError() {
-			alert('삭제에 실패하였습니다.')
+			simpleAlert('삭제에 실패하였습니다.')
 		},
 	})
 }

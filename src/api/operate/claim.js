@@ -3,11 +3,10 @@
 ============================== */
 
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { useSetAtom } from 'jotai'
 import qs from 'qs'
 import { useNavigate } from 'react-router-dom'
 import { client, formHeaders } from '..'
-import { popupObject } from '../../store/Layout/Layout'
+import useAlert from '../../store/Alert/useAlert'
 import { Filtering, FilteringV2 } from '../../utils/filtering'
 import { queryClient } from '../query'
 
@@ -131,7 +130,7 @@ export function useClaimDetailsQuery(id) {
 // 등록
 export function useClaimRegisterMutation() {
 	const navigate = useNavigate()
-	const setNowPopup = useSetAtom(popupObject)
+	const { simpleAlert, showAlert } = useAlert()
 
 	return useMutation({
 		mutationKey: CLAIM_KEYS.registerClaim,
@@ -139,10 +138,10 @@ export function useClaimRegisterMutation() {
 			return client.post(urls.claim, createFormData(params, 'register'), { headers: formHeaders })
 		},
 		onSuccess() {
-			setNowPopup((p) => ({ ...p, next: '1-12', func: () => navigate('/operate/common/product') }))
+			showAlert({ title: '등록이 완료되었습니다.', content: '', func: () => navigate('/operate/common/product') })
 		},
 		onError() {
-			alert('등록에 실패하였습니다.')
+			simpleAlert('등록에 실패하였습니다.')
 		},
 	})
 }
@@ -150,7 +149,7 @@ export function useClaimRegisterMutation() {
 // 수정
 export function useClaimUpdateMutaion() {
 	const navigate = useNavigate()
-	const setNowPopup = useSetAtom(popupObject)
+	const { simpleAlert, showAlert } = useAlert()
 
 	return useMutation({
 		mutationKey: CLAIM_KEYS.updateClaim,
@@ -158,26 +157,28 @@ export function useClaimUpdateMutaion() {
 			return client.patch(urls.claim, createFormData(params, 'update'), { headers: formHeaders })
 		},
 		onSuccess() {
-			setNowPopup((p) => ({ ...p, next: '1-12', func: () => navigate('/operate/common') }))
+			showAlert({ title: '수정이 완료되었습니다.', content: '', func: () => navigate('/operate/common/product') })
 		},
 		onError() {
-			alert('수정에 실패하였습니다.')
+			simpleAlert('수정에 실패하였습니다.')
 		},
 	})
 }
 
 // 삭제
 export function useClaimDeleteMutation() {
+	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: CLAIM_KEYS.removeClaim,
 		mutationFn: async function (params) {
 			return client.delete(`${urls.claim}/${params}`)
 		},
 		onSuccess() {
+			simpleAlert('삭제되었습니다.')
 			queryClient.invalidateQueries({ queryKey: CLAIM_KEYS.getClaimList })
 		},
 		onError() {
-			alert('삭제에 실패하였습니다.')
+			simpleAlert('삭제에 실패하였습니다.')
 		},
 	})
 }

@@ -1,4 +1,4 @@
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import React, { useEffect, useMemo, useState } from 'react'
 import {
 	useStorageDetailsQuery,
@@ -9,18 +9,12 @@ import {
 } from '../../../../../api/operate/storage'
 import { StorageFieldCols, StorageFields } from '../../../../../constants/admin/Storage'
 import useTablePaginationPageChange from '../../../../../hooks/useTablePaginationPageChange'
+import useTableSelection from '../../../../../hooks/useTableSelection'
 import { add_element_field } from '../../../../../lib/tableHelpers'
 import { TableContianer } from '../../../../../modal/External/ExternalFilter'
 import AddProduct from '../../../../../modal/Operate/AddProduct'
-import {
-	btnCellUidAtom,
-	doubleClickedRowAtom,
-	operateAddAtom,
-	popupAtom,
-	popupObject,
-	popupTypeAtom,
-	selectedRowsAtom,
-} from '../../../../../store/Layout/Layout'
+import useAlert from '../../../../../store/Alert/useAlert'
+import { btnCellUidAtom, operateAddAtom } from '../../../../../store/Layout/Layout'
 import Table from '../../../../Table/Table'
 import CommonTableHeader from '../../../UI/CommonTableHeader'
 import { commonListSearchInitValue } from '../../../constants'
@@ -37,8 +31,7 @@ const Storage = () => {
 	const [search, setSearch] = useState(commonListSearchInitValue)
 	// 목록 리스트
 	const [rows, setRows] = useState([])
-	// 셀 클릭시 테이블 상세 데이터 조회
-	const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
+
 	// 상세 ID
 	// 상세 고유 번호
 	const [uid, setUid] = useAtom(btnCellUidAtom)
@@ -52,17 +45,12 @@ const Storage = () => {
 	const { mutate: update } = useStorageUpdateMutation()
 	// 창고 삭제 API
 	const { mutate: remove } = useStorageRemoveMutation()
-
+	// 테이블에서 선택된 값,선택된 데이터 갯수
+	const { selectedData, selectedCount } = useTableSelection()
 	// 모달
 	const [modal, setModal] = useAtom(operateAddAtom)
 	// 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
-	const [popupSwitch, setPopupSwitch] = useAtom(popupAtom)
-	const setNowPopupType = useSetAtom(popupTypeAtom) // 팝업 타입
-	const setNowPopup = useSetAtom(popupObject) // 팝업 객체
-	// 테이블에서 선택된 값
-	const selected = useAtomValue(selectedRowsAtom)
-	// 선택된 데이터 갯수
-	const selectedLength = useMemo(() => (selected ? selected.length : 0), [selected])
+	const { simpleConfirm } = useAlert()
 
 	/**
 	 * @constant
@@ -98,19 +86,9 @@ const Storage = () => {
 	}
 	// 삭제 핸들러
 	function removeEventHandler() {
-		if (!selectedLength && selectedLength === 0) return alert('삭제할 목록을 선택해주세요.')
-		setPopupSwitch(true)
-		setNowPopupType(2)
-		setNowPopup({
-			num: '2-1',
-			title: '삭제하시겠습니까?',
-			next: '1-14',
-			func() {
-				if (selected && selected.length !== 0) {
-					remove(selected.map((s) => s['고유값']))
-				}
-			},
-		})
+		if (!selectedCount && selectedCount === 0) return alert('삭제할 목록을 선택해주세요.')
+
+		simpleConfirm('삭제하시겠습니까?', () => remove(selectedData.map((s) => s['고유값'])))
 	}
 
 	// 테이블 데이터 리스트 값 설정
@@ -132,7 +110,7 @@ const Storage = () => {
 		<TableContianer>
 			<CommonTableHeader
 				title={'창고'}
-				selectedLength={selectedLength}
+				selectedLength={selectedCount}
 				totalLength={data ? data.list.length : 0}
 				toRegister={() => setModal(true)}
 				removeEventHandler={removeEventHandler}

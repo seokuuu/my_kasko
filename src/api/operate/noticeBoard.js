@@ -3,10 +3,9 @@
 ============================== */
 
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { useSetAtom } from 'jotai'
 import { useNavigate } from 'react-router-dom'
 import { client } from '..'
-import { popupObject } from '../../store/Layout/Layout'
+import useAlert from '../../store/Alert/useAlert'
 import { queryClient } from '../query'
 
 // API ENDPOINT
@@ -48,7 +47,7 @@ export function useNoticeBoardDetailsQuery(id) {
 // 전광판 등록
 export function useNoticeBoardRegisterMutation() {
 	const navigate = useNavigate()
-	const setNowPopup = useSetAtom(popupObject)
+	const { simpleAlert, showAlert } = useAlert()
 
 	return useMutation({
 		mutationKey: NOTICE_BOARD_KEYS.registerNoticeBoard,
@@ -56,14 +55,13 @@ export function useNoticeBoardRegisterMutation() {
 			return client.post(urls, params)
 		},
 		onSuccess() {
-			setNowPopup((p) => ({ ...p, next: '1-12', func: () => navigate('/operate/noticeBoard') }))
-
+			showAlert({ title: '등록이 완료되었습니다.', content: '', func: () => navigate('/operate/noticeBoard') })
 			queryClient.invalidateQueries({
 				queryKey: NOTICE_BOARD_KEYS.getNoticeBoardList,
 			})
 		},
 		onError() {
-			alert('등록에 실패하였습니다.')
+			simpleAlert('등록에 실패하였습니다.')
 		},
 	})
 }
@@ -71,7 +69,7 @@ export function useNoticeBoardRegisterMutation() {
 // 전광판 수정
 export function useNoticeBoardUpdateMutation() {
 	const navigate = useNavigate()
-	const setNowPopup = useSetAtom(popupObject)
+	const { simpleAlert, showAlert } = useAlert()
 
 	return useMutation({
 		mutationKey: NOTICE_BOARD_KEYS.updateNoticeBoard,
@@ -79,32 +77,34 @@ export function useNoticeBoardUpdateMutation() {
 			return client.patch(urls, params)
 		},
 		onSuccess() {
-			setNowPopup((p) => ({ ...p, next: '1-12', func: () => navigate('/operate/noticeBoard') }))
+			showAlert({ title: '수정이 완료되었습니다.', content: '', func: () => navigate('/operate/noticeBoard') })
 
 			queryClient.invalidateQueries({
 				queryKey: NOTICE_BOARD_KEYS.getNoticeBoardList,
 			})
 		},
 		onError() {
-			alert('수정에 실패하였습니다.')
+			simpleAlert('수정에 실패하였습니다.')
 		},
 	})
 }
 
 // 전광판 삭제
 export function useNoticeBoardRemoveMutation() {
+	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: NOTICE_BOARD_KEYS.removeNoticeBoard,
 		mutationFn: async function (id) {
 			return client.delete(`${urls}/${id}`)
 		},
 		onSuccess() {
+			simpleAlert('삭제되었습니다.')
 			queryClient.invalidateQueries({
 				queryKey: NOTICE_BOARD_KEYS.getNoticeBoardList,
 			})
 		},
 		onError() {
-			alert('삭제에 실패하였습니다.')
+			simpleAlert('삭제에 실패하였습니다.')
 		},
 	})
 }

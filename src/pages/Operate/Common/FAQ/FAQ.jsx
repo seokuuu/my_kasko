@@ -10,7 +10,6 @@ import { FilterContianer, TableContianer } from '../../../../modal/External/Exte
 import { doubleClickedRowAtom, selectedRowsAtom } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
 import { searchCategoryOptions } from '../../constants'
-import useCloseConfirmModal from '../../hook/useCloseConfirmModal'
 import Header from './components/faq/Header'
 import TableHeader from './components/faq/TableHeader'
 
@@ -56,8 +55,7 @@ const FAQ = ({}) => {
 				: [],
 		[data],
 	)
-	// 페이지 진입시 확인 모달을 닫아줍니다.
-	useCloseConfirmModal()
+
 	// 테이블 데이터 리스트 값 설정
 	useEffect(() => {
 		if (mappingData) {
@@ -82,7 +80,7 @@ const FAQ = ({}) => {
 			{/* 테이블 */}
 			<TableContianer>
 				{/* 테이블 헤더 (목록 갯수 & 선택 갯수 * 삭제,등록 버튼) */}
-				<TableHeader totalLength={data ? data.list.length : 0} selected={selected} refetch={refetch} />
+				<TableHeader totalLength={data ? data.list.length : 0} selected={selected} />
 				{/* 테이블 목록 */}
 				<Table
 					getCol={FaqListFieldCols}

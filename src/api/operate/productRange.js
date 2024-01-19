@@ -3,9 +3,8 @@
 ============================== */
 
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { useSetAtom } from 'jotai'
 import { client } from '..'
-import { popupObject } from '../../store/Layout/Layout'
+import useAlert from '../../store/Alert/useAlert'
 import { queryClient } from '../query'
 
 // API ENDPOINT
@@ -46,6 +45,7 @@ export function useProductRangeDetailsQuery(id) {
 
 // 제품군 등록
 export function useProductRangeRegisterMutation() {
+	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: PRODUCT_RANGE_KEYS.registerProductRange,
 		mutationFn: async function (params) {
@@ -57,13 +57,15 @@ export function useProductRangeRegisterMutation() {
 			})
 		},
 		onError() {
-			alert('등록에 실패하였습니다.')
+			simpleAlert('등록에 실패하였습니다.')
 		},
 	})
 }
 
 // 제품군 수정
 export function useProductRangeUpdateMutation() {
+	const { simpleAlert } = useAlert()
+
 	return useMutation({
 		mutationKey: PRODUCT_RANGE_KEYS.updateProductRange,
 		mutationFn: async function (params) {
@@ -75,19 +77,14 @@ export function useProductRangeUpdateMutation() {
 			})
 		},
 		onError() {
-			alert('수정에 실패하였습니다.')
+			simpleAlert('수정에 실패하였습니다.')
 		},
 	})
 }
 
 // 제품군 삭제
-/**
- * @description
- * 서버에서의 예외를 api 함수내에서 처리
- * @returns
- */
 export function useProductRangeRemoveMutation() {
-	const setPop = useSetAtom(popupObject)
+	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: PRODUCT_RANGE_KEYS.removeProductRange,
 		mutationFn: async function (id) {
@@ -95,9 +92,9 @@ export function useProductRangeRemoveMutation() {
 		},
 		onSuccess(data) {
 			if (data.data.data.length > 0) {
-				setPop((p) => ({ ...p, title: '삭제할 수 없습니다.\n해당 항목은 현재 사용 중입니다.' }))
+				simpleAlert('삭제할 수 없습니다.\n해당 항목은 현재 사용 중입니다.')
 			} else {
-				setPop((p) => ({ ...p, title: '삭제되었습니다.' }))
+				simpleAlert('삭제되었습니다.')
 			}
 
 			queryClient.invalidateQueries({
@@ -105,7 +102,7 @@ export function useProductRangeRemoveMutation() {
 			})
 		},
 		onError(error) {
-			alert('삭제에 실패하였습니다.')
+			simpleAlert('삭제에 실패하였습니다.')
 		},
 	})
 }
