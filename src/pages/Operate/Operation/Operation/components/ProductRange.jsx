@@ -3,13 +3,7 @@ import React, { useMemo } from 'react'
 import { ProductRangeFieldCols } from '../../../../../constants/admin/ProductRange'
 import { TableContianer } from '../../../../../modal/External/ExternalFilter'
 import AddProduct from '../../../../../modal/Operate/AddProduct'
-import {
-	operateAddAtom,
-	popupAtom,
-	popupObject,
-	popupTypeAtom,
-	selectedRowsAtom,
-} from '../../../../../store/Layout/Layout'
+import { operateAddAtom, popupAtom, popupObject, selectedRowsAtom } from '../../../../../store/Layout/Layout'
 import Table from '../../../../Table/Table'
 import CommonTableHeader from '../../../UI/CommonTableHeader'
 import useProductRange from '../../../hook/useProductRange'
@@ -27,8 +21,7 @@ const ProductRange = () => {
 	// 모달
 	const [modal, setModal] = useAtom(operateAddAtom)
 	// 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
-	const [popupSwitch, setPopupSwitch] = useAtom(popupAtom)
-	const setNowPopupType = useSetAtom(popupTypeAtom) // 팝업 타입 2(확인 취소 버튼이 있는 모달)
+	const setPopupSwitch = useSetAtom(popupAtom)
 	const setNowPopup = useSetAtom(popupObject) // 팝업 객체
 	// 테이블에서 선택된 값
 	const selected = useAtomValue(selectedRowsAtom)
@@ -53,13 +46,6 @@ const ProductRange = () => {
 			},
 		})
 	}
-	// console.log('removeData :', removeData)
-	// // 삭제할 데이터 중 사용중인 제품군이 있다면 예외 모달을 띄워줍니다.
-	// useEffect(() => {
-	// 	if (removeData && removeData.data.data.length > 0) {
-	// 		alert('삭제할 수 없습니다.\n해당 항목은 현재 사용 중입니다.')
-	// 	}
-	// }, [removeData])
 
 	return (
 		<TableContianer>
