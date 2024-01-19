@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useUserSingleProductListQuery } from '../../../api/user'
 import { BlackBtn, GreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
@@ -11,6 +11,7 @@ import useTableData from '../../../hooks/useTableData'
 import useTableSearchFieldData from '../../../hooks/useTableSearchFieldData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'
+import useWishList from '../../../hooks/useWishList'
 import {
   DoubleWrap,
   FilterContianer,
@@ -35,7 +36,6 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import AddCartButton from '../_components/AddCartButton'
 import AddOrderButton from '../_components/AddOrderButton'
 import AddWishButton from '../_components/AddWishButton'
-import useWishList from '../../../hooks/useWishList'
 
 /**
  * @constant 기본 검색 값

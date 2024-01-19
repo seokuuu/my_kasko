@@ -41,6 +41,19 @@ const parameter = {
 	timeOfDay: 'am',
 }
 
+export default HyunDaiOriginal
+
+export const Container = styled.div`
+	max-width: 80%;
+	max-height: 700px;
+	margin: auto;
+	position: absolute;
+	top: 43%;
+	width: 100%;
+	left: 55%;
+	transform: translate(-50%, -50%);
+`
+
 function HyunDaiOriginal({ title }) {
 	const radioDummy = [
 		{
@@ -227,19 +240,6 @@ function HyunDaiOriginal({ title }) {
 		</OutSide>
 	)
 }
-
-export default HyunDaiOriginal
-
-export const Container = styled.div`
-	max-width: 80%;
-	max-height: 700px;
-	margin: auto;
-	position: absolute;
-	top: 43%;
-	width: 100%;
-	left: 55%;
-	transform: translate(-50%, -50%);
-`
 
 export const OutSide = styled.div`
 	background-color: rgba(0, 0, 0, 0.2);

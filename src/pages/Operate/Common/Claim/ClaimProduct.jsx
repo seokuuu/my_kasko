@@ -1,15 +1,14 @@
-import { useAtomValue } from 'jotai'
 import moment from 'moment/moment'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useProductListToRegisterClaimQuery } from '../../../../api/operate/claim'
 import { BlackBtn, WhiteBtn } from '../../../../common/Button/Button'
 import { ClaimProductListFieldCols, ClaimProductListFields } from '../../../../constants/admin/Claim'
+import useGlobalProductSearchFieldData from '../../../../hooks/useGlobalProductSearchFieldData'
 import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
-import useTableSearchFieldData from '../../../../hooks/useTableSearchFieldData'
+import useTableSelection from '../../../../hooks/useTableSelection'
 import { add_element_field } from '../../../../lib/tableHelpers'
 import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
-import { selectedRowsAtom } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import ClaimProductHeader from './components/ClaimProductHeader'
@@ -19,15 +18,13 @@ const ClaimProduct = () => {
 	const navigate = useNavigate()
 
 	// 검색 셀렉트 옵션 목록
-	const { supplierList, makerList, stockStatusList, gradeList, preferThicknessList } = useTableSearchFieldData()
+	const { supplierList, makerList, stockStatusList, gradeList, preferThicknessList } = useGlobalProductSearchFieldData()
 
 	// 목록 리스트
 	const [row, setRow] = useState([])
-	// 테이블에서 선택된 값
-	const selected = useAtomValue(selectedRowsAtom)
 
-	// 선택된 데이터 갯수
-	const selectedLength = useMemo(() => (selected ? selected.length : 0), [selected])
+	// 테이블에서 선택된 값,선택된 데이터 갯수
+	const { selectedData, selectedCount } = useTableSelection()
 	// 검색 필터 상태 초기값
 
 	// 검색필터 상태값
@@ -99,7 +96,7 @@ const ClaimProduct = () => {
 	)
 
 	function claimRegister() {
-		if (!selected || selected.length === 0) return alert('등록할 제품을 선택해주세요.')
+		if (!selectedData || selectedData.length === 0) return alert('등록할 제품을 선택해주세요.')
 
 		navigate('/operate/common/product/register')
 	}
@@ -112,11 +109,11 @@ const ClaimProduct = () => {
 
 	// 제품을 2개이상 선택할 시, 새로고침
 	useEffect(() => {
-		if (selected && selected.length > 1) {
+		if (selectedCount > 1) {
 			alert('제품은 1개만 선택 가능합니다.')
 			window.location.reload()
 		}
-	}, [selected])
+	}, [selectedCount])
 
 	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setSearch)
 	return (
@@ -129,7 +126,7 @@ const ClaimProduct = () => {
 				<CommonTableHeader
 					isNoneBtn={true}
 					totalLength={data && data.list.length}
-					selectedLength={selectedLength}
+					selectedLength={selectedCount}
 					setState={setSearch}
 				/>
 				<Table

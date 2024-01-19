@@ -16,7 +16,14 @@ import {
   NonFadeOverlay,
   WhiteCloseBtn,
 } from '../../modal/Common/Common.Styled'
-import { blueModalAtom, doubleClickedRowAtom, pageSort, selectedRowsAtom } from '../../store/Layout/Layout'
+import {
+  blueModalAtom,
+  doubleClickedRowAtom,
+  pageSort,
+  selectedRows2Switch,
+  selectedRowsAtom,
+  selectedRowsAtom2,
+} from '../../store/Layout/Layout'
 import './TableUi.css'
 import PropTypes from 'prop-types'
 // import TableStyle from './Table.module.css'
@@ -79,6 +86,9 @@ const Table = ({
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
   const [rowData, setRowData] = useState()
   const [selectedRowData, setSelectedRowData] = useState(null)
+  const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
+
+  console.log('rowAtomSwitch', rowAtomSwitch)
 
   var checkboxSelection = function (params) {
     // we put checkbox on the name if we are not doing grouping
@@ -219,6 +229,7 @@ const Table = ({
 
   const [gridApi, setGridApi] = useState(null)
   const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
+  const [selectedRows2, setSelectedRows2] = useAtom(selectedRowsAtom2)
   const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
   const navigate = useNavigate()
 
@@ -243,7 +254,11 @@ const Table = ({
       const selectedNodes = gridApi.getSelectedNodes()
       const selectedData = selectedNodes.map((node) => node.data)
       setSelectedRows(selectedData)
-      // console.log(selectedRows)
+
+      // 이중으로 check 사용 시
+      if (rowAtomSwitch) {
+        setSelectedRows2(selectedData)
+      }
     }
   }
   const autoGroupColumnDef = useMemo(() => {
@@ -267,7 +282,7 @@ const Table = ({
   }, [])
   const defaultColDef = useMemo(() => {
     return {
-      editable: true,
+      editable: false,
       enableRowGroup: true,
       enablePivot: true,
       enableValue: true,
@@ -299,7 +314,6 @@ const Table = ({
   const gridOptions = {
     // other grid options
     // rowModelType: 'serverSide',
-    rowModelType: 'clientSide',
     headerHeight: 30,
     // paginationPageSize: size, // 요청할 페이지 사이즈
     cacheBlockSize: 100, // 캐시에 보관할 블록 사이즈
@@ -353,6 +367,35 @@ const Table = ({
     }
   }, [loading, getRow])
 
+  const onRecommendClick = () => {
+    if (!gridApi) {
+      console.error('Grid API가 초기화되지 않았습니다.')
+      return
+    }
+
+    const selectedNodes = gridApi.getSelectedNodes()
+    if (selectedNodes.length === 0) {
+      alert('행을 선택해주세요.')
+      return
+    }
+
+    selectedNodes.forEach((node) => {
+      const currentData = node.data
+      let updatedValue
+      // '대표' 필드의 현재 값에 '추천'을 추가합니다.
+      if (currentData['weight'].includes('★')) {
+        // '추천'을 제거합니다.
+        updatedValue = currentData['weight'].replace(`★`, '')
+      } else {
+        // '추천'이 없는 경우에만 추가합니다.
+        updatedValue = `${currentData['weight']} ★`
+      }
+      const updatedData = { ...currentData, weight: updatedValue }
+      node.updateData(updatedData)
+    })
+
+    gridApi.refreshCells({ force: true })
+  }
   return (
     <div style={containerStyle}>
       <TestContainer hei={hei}>

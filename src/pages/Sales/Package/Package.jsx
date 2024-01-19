@@ -1,38 +1,16 @@
 import { useEffect, useState } from 'react'
-import { styled } from 'styled-components'
-import { useAtom, useAtomValue } from 'jotai'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { useAtomValue } from 'jotai'
 import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap, WhiteBlackBtn, ExcelBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import { GreyBtn } from '../../../common/Button/Button'
-import Test3 from '../../Test/Test3'
+import { BlackBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { toggleAtom, selectedRowsAtom } from '../../../store/Layout/Layout'
-import BlueBar from '../../../modal/BlueBar/BlueBar'
-import { blueModalAtom } from '../../../store/Layout/Layout'
-import { ExInputsWrap, FilterWrap, MiniInput } from '../../../modal/External/ExternalFilter'
+import { FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
 	FilterContianer,
 	FilterHeader,
-	FilterFooter,
-	FilterSubcontianer,
-	FilterLeft,
 	TCSubContainer,
-	FilterRight,
-	RowWrap,
-	PartWrap,
-	PWRight,
-	Input,
-	GridWrap,
 	TableBottomWrap,
-	Tilde,
-	DoubleWrap,
-	ResetImg,
 	TableContianer,
-	InputStartWrap,
 	FilterHeaderAlert,
 } from '../../../modal/External/ExternalFilter'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -41,18 +19,19 @@ import Table from '../../../pages/Table/Table'
 import { add_element_field } from '../../../lib/tableHelpers'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { getPackageProductList } from '../../../api/packageProduct.js'
-import {
-	packageFieldsCols,
-	packageResponseToTableRowMap,
-} from '../../../constants/admin/packageProducts.js'
+import { packageFieldsCols, packageResponseToTableRowMap } from '../../../constants/admin/packageProducts.js'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { formatWeight } from '../../../utils/utils'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
+import PackageProductSearchFields from './PackageProductSearchFields'
+import { isEqual } from 'lodash'
 
 const Package = () => {
-	const [param, setParam] = useState({
+	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
-	})
+	}
+	const [param, setParam] = useState(paramData)
 	const [packageProductListData, setPackageProductListData] = useState(null)
 	const [packageProductPagination, setPackageProductPagination] = useState([])
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
@@ -61,6 +40,7 @@ const Package = () => {
 		isError,
 		data: getPackageProductListRes,
 		isSuccess,
+		refetch,
 	} = useReactQuery(param, 'getPackageProductList', getPackageProductList)
 
 	useEffect(() => {
@@ -74,13 +54,6 @@ const Package = () => {
 		return add_element_field(packageProductListData, packageResponseToTableRowMap)
 	}
 
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
-
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 	const [toggleMsg, setToggleMsg] = useState('On')
@@ -91,11 +64,6 @@ const Package = () => {
 		} else {
 			setToggleMsg('On')
 		}
-	}
-
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
-	const modalOpen = () => {
-		setIsModal(true)
 	}
 
 	const handleTablePageSize = (event) => {
@@ -111,6 +79,25 @@ const Package = () => {
 			...prevParam,
 			pageNum: Number(value),
 		}))
+	}
+
+	const globalProductResetOnClick = () => {
+		// if resetting the search field shouldn't rerender table
+		// then we need to create paramData object to reset the search field
+		setParam(paramData)
+	}
+
+	const globalProductSearchOnClick = (userSearchParam) => {
+		setParam((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				refetch()
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+			}
+		})
 	}
 
 	return (
@@ -138,73 +125,14 @@ const Package = () => {
 				</FilterHeaderAlert>
 				{exFilterToggle && (
 					<FilterWrap>
-						<FilterSubcontianer>
-							<FilterLeft>
-								<RowWrap>
-									<PartWrap first>
-										<h6>규격 약호</h6>
-										<Input />
-										<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17} onClick={modalOpen}>
-											찾기
-										</GreyBtn>
-									</PartWrap>
-									<PartWrap>
-										<h6>구분</h6>
-										<MainSelect />
-										<MainSelect />
-									</PartWrap>
-									<PartWrap />
-								</RowWrap>
-								<RowWrap style={{ borderBottom: '0px' }}>
-									<PartWrap first>
-										<h6>두께(MM)</h6>
-										<ExInputsWrap>
-											<MiniInput /> <Tilde>~</Tilde>
-											<MiniInput />
-										</ExInputsWrap>
-									</PartWrap>
-									<PartWrap>
-										<h6>폭(MM)</h6>
-										<ExInputsWrap>
-											<MiniInput /> <Tilde>~</Tilde>
-											<MiniInput />
-										</ExInputsWrap>
-									</PartWrap>
-									<PartWrap>
-										<h6>길이(MM)</h6>
-										<ExInputsWrap>
-											<MiniInput /> <Tilde>~</Tilde>
-											<MiniInput />
-										</ExInputsWrap>
-									</PartWrap>
-								</RowWrap>
-							</FilterLeft>
-							<FilterRight>
-								<DoubleWrap>
-									<h6>제품 번호 </h6>
-									<textarea
-										placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-										style={{ height: '100px' }}
-									/>
-								</DoubleWrap>
-							</FilterRight>
-						</FilterSubcontianer>
-						<FilterFooter>
-							<div style={{ display: 'flex' }}>
-								<p>초기화</p>
-								<ResetImg
-									src="/img/reset.png"
-									style={{ marginLeft: '10px', marginRight: '20px' }}
-									onClick={handleImageClick}
-									className={isRotated ? 'rotate' : ''}
-								/>
-							</div>
-							<div style={{ width: '180px' }}>
-								<BlackBtn width={100} height={40}>
-									검색
-								</BlackBtn>
-							</div>
-						</FilterFooter>
+						<GlobalProductSearch
+							// prettier-ignore
+							param={param}
+							isToggleSeparate={true}
+							renderCustomSearchFields={(props) => <PackageProductSearchFields {...props} />}
+							globalProductSearchOnClick={globalProductSearchOnClick}
+							globalProductResetOnClick={globalProductResetOnClick}
+						/>
 					</FilterWrap>
 				)}
 			</div>

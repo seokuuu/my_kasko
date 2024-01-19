@@ -1,19 +1,15 @@
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import moment from 'moment'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useNoticeBoardListQuery, useNoticeBoardRemoveMutation } from '../../../../api/operate/noticeBoard'
 import { NoticeBoardListFieldCols, NoticeBoardListFields } from '../../../../constants/admin/NoticeBoard'
 import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
+import useTableSelection from '../../../../hooks/useTableSelection'
 import { add_element_field } from '../../../../lib/tableHelpers'
 import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
-import {
-	doubleClickedRowAtom,
-	popupAtom,
-	popupObject,
-	popupTypeAtom,
-	selectedRowsAtom,
-} from '../../../../store/Layout/Layout'
+import useAlert from '../../../../store/Alert/useAlert'
+import { doubleClickedRowAtom } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
 import CommonHeader from '../../UI/CommonHeader'
 import CommonTableHeader from '../../UI/CommonTableHeader'
@@ -30,14 +26,12 @@ const NoticeBoard = () => {
 	const [search, setSearch] = useState(noticeBoardListSearchInitValue)
 	// 셀 클릭시 테이블 상세 데이터 조회
 	const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
-	// 테이블에서 선택된 값
-	const selected = useAtomValue(selectedRowsAtom)
+	// 테이블에서 선택된 값,선택된 데이터 갯수
+	const { selectedData, selectedCount } = useTableSelection()
 	// 목록 리스트
 	const [rows, setRows] = useState([])
 	// 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
-	const [popupSwitch, setPopupSwitch] = useAtom(popupAtom)
-	const setNowPopupType = useSetAtom(popupTypeAtom) // 팝업 타입
-	const setNowPopup = useSetAtom(popupObject) // 팝업 객체
+	const { simpleConfirm } = useAlert()
 
 	// 전광판 목록 API
 	const { data, refetch } = useNoticeBoardListQuery({
@@ -48,9 +42,6 @@ const NoticeBoard = () => {
 	// 전광판 삭제 API
 	const { mutate } = useNoticeBoardRemoveMutation()
 
-	// 선택된 데이터 갯수
-	const selectedLength = useMemo(() => (selected ? selected.length : 0), [selected])
-
 	// 등록 핸들러
 	function toRegister() {
 		navigate(`/operate/noticeBoard/register`)
@@ -58,20 +49,9 @@ const NoticeBoard = () => {
 
 	// 삭제 핸들러
 	function removeEventHandler() {
-		if (!selectedLength && selectedLength === 0) return alert('삭제할 목록을 선택해주세요.')
-		setPopupSwitch(true)
-		setNowPopupType(2)
-		setNowPopup({
-			num: '2-1',
-			title: '삭제하시겠습니까?',
-			next: '1-14',
-			func() {
-				if (selected && selected.length !== 0) {
-					mutate(selected.map((s) => s['고유값']))
-					refetch()
-				}
-			},
-		})
+		if (!selectedCount && selectedCount === 0) return alert('삭제할 목록을 선택해주세요.')
+
+		simpleConfirm('삭제하시겠습니까?', () => mutate(selectedData.map((s) => s['고유값'])))
 	}
 	/**
 	 * @constant
@@ -85,7 +65,7 @@ const NoticeBoard = () => {
 				? data.list.map((d, index) => ({
 						...d,
 						createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
-						id: data.list.length - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
+						id: data.pagination.listCount - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
 						uid: d.uid,
 						status: d.status ? 'Y' : 'N',
 				  }))
@@ -129,11 +109,11 @@ const NoticeBoard = () => {
 				{/* 테이블 헤더 */}
 				<CommonTableHeader
 					totalLength={data ? data.list.length : 0}
-					selected={selected}
+					selected={selectedData}
 					removeEventHandler={removeEventHandler}
 					toRegister={toRegister}
 					title={'전광판'}
-					selectedLength={selectedLength}
+					selectedLength={selectedCount}
 					setState={setSearch}
 				/>
 				{/* 테이블 */}

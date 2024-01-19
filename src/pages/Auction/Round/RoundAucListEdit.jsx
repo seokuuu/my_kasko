@@ -61,6 +61,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
     deleteAuctionProductList: [],
   })
 
+  console.log('newResData auc prod add => ', newResData)
+
   const [addList, setAddList] = useState([])
   const [deleteList, setDeleteList] = useState([])
   const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -332,7 +334,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <PageDropdown />
-            <Excel />
+            <Excel getRow={getRow} />
           </div>
         </TCSubContainer>
         <TCSubContainer>

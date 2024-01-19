@@ -176,7 +176,7 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
       <ModalContainer style={{ width: '75%', height: '100%' }}>
         <BlueBarHeader style={{ height: '60px' }}>
           {/* <div>{title}</div> */}
-          <div>경매 제품 추가(단일)</div>
+          <div>경매 제품 추가({types})</div>
           <div>
             <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
           </div>
@@ -298,7 +298,7 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
                 </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <PageDropdown handleDropdown={handleTablePageSize} />
-                  <Excel />
+                  <Excel getRow={getRow} />
                 </div>
               </TCSubContainer>
               <TCSubContainer>
