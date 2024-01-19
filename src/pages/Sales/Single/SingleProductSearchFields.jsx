@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { GreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
@@ -14,12 +14,17 @@ import {
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
 import StandardFind from '../../../modal/Multi/StandardFind'
-import { claimProductModalAtom } from '../../../store/Layout/Layout'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
+import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 
-const SingleProductSearchFields = ({ search, setSearch }) => {
-	const [isModal, setIsModal] = useAtom(claimProductModalAtom)
-
+const SingleProductSearchFields = ({
+	// prettier-ignore
+	search,
+	setSearch,
+	commonDropdownButtonHandler,
+	commonNumInputHandler,
+	onSpecHandler,
+}) => {
 	const {
 		// prettier-ignore
 		storageList,
@@ -31,33 +36,7 @@ const SingleProductSearchFields = ({ search, setSearch }) => {
 		preferThicknessList,
 	} = useGlobalProductSearchFieldData()
 
-	// 셀렉트 박스 핸들러
-	function commonSelectHandler(e, name) {
-		setSearch((p) => ({ ...p, [name]: e }))
-	}
-
-	// 숫자 인풋 핸들러
-	function commonNumInputHandler(e) {
-		const { name, value } = e.target
-
-		setSearch((p) => ({ ...p, [name]: value }))
-	}
-
-	// 규격 약호 핸들러
-	function onSpecHandler(e, text) {
-		const { tagName } = e.target
-		if (tagName === 'IMG') {
-			setIsModal(false)
-		} else {
-			setSearch((p) => ({ ...p, spec: text }))
-			setIsModal(false)
-		}
-	}
-
-	// 규격 약호 모달
-	function modalOpen() {
-		setIsModal(true)
-	}
+	const setIsKyuModal = useSetAtom(kyuModalAtom)
 
 	return (
 		<>
@@ -72,7 +51,7 @@ const SingleProductSearchFields = ({ search, setSearch }) => {
 								// defaultValue={storageList[0]}
 								value={search.storage}
 								name="storage"
-								onChange={(e) => commonSelectHandler(e, 'storage')}
+								onChange={(e) => commonDropdownButtonHandler(e, 'storage')}
 							/>
 						</PWRight>
 					</PartWrap>
@@ -85,7 +64,7 @@ const SingleProductSearchFields = ({ search, setSearch }) => {
 								defaultValue={supplierList[0]}
 								value={search.supplier}
 								name="supplier"
-								onChange={(e) => commonSelectHandler(e, 'supplier')}
+								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
 							/>
 						</PWRight>
 					</PartWrap>
@@ -93,7 +72,13 @@ const SingleProductSearchFields = ({ search, setSearch }) => {
 					<PartWrap>
 						<h6>규격 약호</h6>
 						<Input readOnly={true} value={search.spec} />
-						<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17} onClick={modalOpen}>
+						<GreyBtn
+							style={{ width: '70px' }}
+							height={35}
+							margin={10}
+							fontSize={17}
+							onClick={() => setIsKyuModal(true)}
+						>
 							찾기
 						</GreyBtn>
 					</PartWrap>
@@ -110,7 +95,7 @@ const SingleProductSearchFields = ({ search, setSearch }) => {
 								defaultValue={spartList[0]}
 								value={search.spart}
 								name="spart"
-								onChange={(e) => commonSelectHandler(e, 'spart')}
+								onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
 							/>
 						</PWRight>
 						{/* 제조사 */}
@@ -120,7 +105,7 @@ const SingleProductSearchFields = ({ search, setSearch }) => {
 								defaultValue={makerList[0]}
 								value={search.maker}
 								name="maker"
-								onChange={(e) => commonSelectHandler(e, 'maker')}
+								onChange={(e) => commonDropdownButtonHandler(e, 'maker')}
 							/>
 						</PWRight>
 						{/* 재고 상태 */}
@@ -130,7 +115,7 @@ const SingleProductSearchFields = ({ search, setSearch }) => {
 								defaultValue={stockStatusList[0]}
 								value={search.stockStatus}
 								name="stockStatus"
-								onChange={(e) => commonSelectHandler(e, 'stockStatus')}
+								onChange={(e) => commonDropdownButtonHandler(e, 'stockStatus')}
 							/>
 						</PWRight>
 						{/* 등급 */}
@@ -140,7 +125,7 @@ const SingleProductSearchFields = ({ search, setSearch }) => {
 								defaultValue={gradeList[0]}
 								value={search.grade}
 								name="grade"
-								onChange={(e) => commonSelectHandler(e, 'grade')}
+								onChange={(e) => commonDropdownButtonHandler(e, 'grade')}
 							/>
 						</PWRight>
 						{/* 정척여부 */}
@@ -150,7 +135,7 @@ const SingleProductSearchFields = ({ search, setSearch }) => {
 								defaultValue={preferThicknessList[0]}
 								value={search.preferThickness}
 								name="preferThickness"
-								onChange={(e) => commonSelectHandler(e, 'preferThickness')}
+								onChange={(e) => commonDropdownButtonHandler(e, 'preferThickness')}
 							/>
 						</PWRight>
 					</PartWrap>
@@ -243,7 +228,7 @@ const SingleProductSearchFields = ({ search, setSearch }) => {
 						</ExInputsWrap>
 					</PartWrap>
 				</RowWrap>
-				{isModal === true && <StandardFind closeFn={onSpecHandler} />}
+				{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
 			</FilterLeft>
 			<FilterRight>
 				<ProductNumber
