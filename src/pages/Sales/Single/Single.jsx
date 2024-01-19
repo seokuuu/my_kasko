@@ -1,32 +1,19 @@
 import { useEffect, useState } from 'react'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { BlackBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
-	DoubleWrap,
 	EditGear,
-	ExInputsWrap,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
 	FilterHeaderAlert,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
 	FilterWrap,
-	Input,
-	MiniInput,
-	PWRight,
-	PartWrap,
-	ResetImg,
-	RowWrap,
 	TCSubContainer,
 	TableBottomWrap,
 	TableContianer,
-	Tilde,
 } from '../../../modal/External/ExternalFilter'
-import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import useReactQuery from '../../../hooks/useReactQuery'
@@ -40,7 +27,7 @@ import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalP
 import SingleProductSearchFields from './SingleProductSearchFields'
 import { isEqual } from 'lodash'
 
-const Single = ({}) => {
+const Single = () => {
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const [singleProductListData, setSingleProductListData] = useState(null)
 	const [singleProductPagination, setSingleProductPagination] = useState([])
@@ -86,16 +73,10 @@ const Single = ({}) => {
 		}
 	}
 
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
-
 	const [noticeEdit, setnoticeEdit] = useState(false)
 
 	const noticeEditOnClickHandler = () => {
 		setnoticeEdit((prev) => !prev)
-	}
-
-	const modalOpen = () => {
-		setIsModal(true)
 	}
 
 	const handleTablePageSize = (event) => {
@@ -115,7 +96,7 @@ const Single = ({}) => {
 
 	const globalProductResetOnClick = () => {
 		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search field
+		// then we need to create paramData object to reset the search fields.
 		setParam(paramData)
 	}
 
