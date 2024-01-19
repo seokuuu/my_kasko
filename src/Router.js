@@ -297,7 +297,7 @@ const Router = () => {
 				<Route path="/userpage/notice/:id" element={<UNoticeDetail />}></Route>
 
 				{/* 경매 */}
-				<Route path="/userpage/actionsingle" element={<UAuctionSingle />}></Route>
+				<Route path="/userpage/auctionsingle" element={<UAuctionSingle />}></Route>
 				<Route path="/userpage/auctionpackage" element={<UAuctionPackage />}></Route>
 				<Route path="/userpage/actionstatus" element={<UAuctionStatus />}></Route>
 				<Route path="/userpage/auctionwinning" element={<UAuctionWinning />}></Route>
