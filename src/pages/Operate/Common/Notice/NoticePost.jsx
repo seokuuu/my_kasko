@@ -14,7 +14,6 @@ import {
 	useNoticeRegisterMutation,
 	useNoticeUpdateMutation,
 } from '../../../../api/operate/notice'
-import useBlockRoute from '../../../../hooks/useBlockRoute'
 import useAlert from '../../../../store/Alert/useAlert'
 import AttachedFile from './components/AttachedFile'
 import IsExposure from './components/IsExposure'
@@ -107,7 +106,7 @@ const NoticePost = ({ title, isRegister }) => {
 	}
 	const blockCondtion = useMemo(() => !isEqual(initForm, form) && !Boolean(id) && !observeClick, [form, observeClick])
 
-	useBlockRoute(blockCondtion)
+	// useBlockRoute(blockCondtion)
 
 	/**
    @description

@@ -1,4 +1,4 @@
-import { Route, Routes, createBrowserRouter } from 'react-router-dom'
+import { Route, Routes, createBrowserRouter, useBlocker } from 'react-router-dom'
 
 import CalendarModal from './modal/Calender/Calendar'
 import Test from './pages/Test/Test'
@@ -152,6 +152,7 @@ import StatusPage from './pages/Shipping/Status/StatusPage'
 // RoundAucProAdd
 const Router = () => {
 	return (
+
 		<Routes>
 			{/* 테스트 URL */}
 			<Route path="/ppapp" element={<WinningCreate />} />
@@ -216,10 +217,12 @@ const Router = () => {
 				<Route path="/shipping/request" element={<RequestPage />} />
 				<Route path="/shipping/dispatch" element={<DispatchPage />} />
 				<Route path="/shipping/dispatch/register" element={<DisRegisterPage />} />
+
 				<Route path="/shipping/status" element={<StatusPage />} />
 				<Route path="/shipping/status/:id" element={<StatusDetailPage />} />
 				<Route path="/shipping/achievement" element={<AchievementPage />} />
 				<Route path="/shipping/achievement/invoice" element={<ShipmentInvoicePage />} />
+
 				<Route path="/shipping/claim/register" element={<ClaimRegisterPage />} />
 			</Route>
 			{/* 기준 관리 */}
@@ -296,8 +299,10 @@ const Router = () => {
 			<Route path="/userpage">
 				<Route path="/userpage/notice" element={<UNotice />}></Route>
 				<Route path="/userpage/docs" element={<UDocs />}></Route>
+
 				<Route path="/userpage/docs/:uid" element={<UDocsDetail />}></Route>
 				<Route path="/userpage/notice/:uid" element={<UNoticeDetail />}></Route>
+
 
 				{/* 경매 */}
 				<Route path="/userpage/auctionsingle" element={<UAuctionSingle />}></Route>
@@ -327,6 +332,7 @@ const Router = () => {
 				<Route path="/userpage/userterms" element={<UTerms />}></Route>
 			</Route>
 		</Routes>
+
 	)
 }
 export const router = createBrowserRouter([{ path: '*', Component: Router }])

@@ -12,7 +12,6 @@ import {
 	useNoticeBoardUpdateMutation,
 } from '../../../../api/operate/noticeBoard'
 import { PropsTextArea } from '../../../../common/Input/Input'
-import useBlockRoute from '../../../../hooks/useBlockRoute'
 import useAlert from '../../../../store/Alert/useAlert'
 import IsExposure from './components/IsExposure'
 /**
@@ -77,7 +76,7 @@ const NoticeBoardPost = () => {
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
 	const blockCondition = useMemo(() => !isEqual(initForm, form) && !Boolean(id) && !observeClick, [form, observeClick])
-	useBlockRoute(blockCondition)
+	// useBlockRoute(blockCondition)
 
 	useEffect(() => {
 		const updatedCheck = checkDummy.map((value, index) => {

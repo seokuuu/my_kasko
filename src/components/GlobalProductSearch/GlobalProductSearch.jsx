@@ -1,7 +1,7 @@
-import { useState, useMemo, useRef } from 'react'
 import { useAtom } from 'jotai'
+import { useMemo, useRef, useState } from 'react'
 import { BlackBtn } from '../../common/Button/Button'
-import HeaderToggle from '../Toggle/HeaderToggle'
+import useGlobalProductSearchFieldData from '../../hooks/useGlobalProductSearchFieldData'
 import {
 	FilterFooter,
 	FilterHeader,
@@ -9,9 +9,9 @@ import {
 	FilterWrap,
 	ResetImg,
 } from '../../modal/External/ExternalFilter'
-import ProductSearchFields from './ProductSearchFields'
 import { globalProductSearchToggleAtom } from '../../store/Layout/GlobalProductSearch'
-import useGlobalProductSearchFieldData from '../../hooks/useGlobalProductSearchFieldData'
+import HeaderToggle from '../Toggle/HeaderToggle'
+import ProductSearchFields from './ProductSearchFields'
 
 const GlobalProductSearch = ({
 	// prettier-ignore

@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { useProductListToRegisterClaimQuery } from '../../../../api/operate/claim'
 import { BlackBtn, WhiteBtn } from '../../../../common/Button/Button'
 import { ClaimProductListFieldCols, ClaimProductListFields } from '../../../../constants/admin/Claim'
-import useGlobalProductSearchFieldData from '../../../../hooks/useGlobalProductSearchFieldData'
 import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPageChange'
 import useTableSelection from '../../../../hooks/useTableSelection'
 import { add_element_field } from '../../../../lib/tableHelpers'
@@ -17,9 +16,6 @@ import { StyledBtnContainer } from './styles/StyledClaim'
 const ClaimProduct = () => {
 	const navigate = useNavigate()
 
-	// 검색 셀렉트 옵션 목록
-	const { supplierList, makerList, stockStatusList, gradeList, preferThicknessList } = useGlobalProductSearchFieldData()
-
 	// 목록 리스트
 	const [row, setRow] = useState([])
 
@@ -31,44 +27,10 @@ const ClaimProduct = () => {
 	const [search, setSearch] = useState({
 		pageNum: 1,
 		pageSize: 50,
-		storage: { label: '전체', value: '', address: null }, // 창고 구분
-		supplier: supplierList[0], // 매입처
-		spec: '', // 규격 약호
-		spart: { label: '제품군', value: '' }, // 제품군
-		maker: makerList[0], // 제조사
-		stockStatus: stockStatusList[0], // 재고 상태
-		grade: gradeList[0], // 등급
-		preferThickness: preferThicknessList[0], // 정척 여부
-		saleCategoryList: [], // 판매 구분
-		saleType: [], // 판매 유형
-		salePriceType: [], // 판매가 유형
-		minThickness: 0, // 최소 두깨,
-		maxThickness: 0, // 최대 두깨
-		minWidth: 0, // 최소 폭
-		maxWidth: 0, // 최대 폭
-		minLength: 0, // 최소 길이
-		maxLength: 0, // 최대 길이
-		minFailCount: 0, // 유찰 횟수 범위 시작
-		maxFailCount: 0, // 유찰 횟수 범위 종료
-		productNumberList: [],
 	})
 
-	console.log('search :', search)
-	// 목록 요청 PARAMETER
-	const listRequestParams = {
-		...search,
-		storage: search.storage.value,
-		supplier: search.supplier.value,
-		spart: search.spart.value,
-		maker: search.maker.value,
-		stockStatus: search.stockStatus.value,
-		grade: search.grade.value,
-		preferThickness: search.preferThickness.value,
-	}
 	// 목록 API
-	const { data, refetch } = useProductListToRegisterClaimQuery(listRequestParams)
-
-	console.log('data :', data)
+	const { data, refetch } = useProductListToRegisterClaimQuery(search)
 
 	/**
 	 * @constant
@@ -132,8 +94,7 @@ const ClaimProduct = () => {
 				<Table
 					getCol={ClaimProductListFieldCols}
 					getRow={row}
-					setChoiceComponent={() => {}}
-					tablePagination={pagination}
+ 					tablePagination={pagination}
 					onPageChange={onPageChanage}
 				/>
 				{/* 버튼 */}

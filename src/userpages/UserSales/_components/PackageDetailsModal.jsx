@@ -52,7 +52,7 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 		packageNumber: packageNumber,
 	})
 	// API
-	const { data: packageData, isError, isLoading } = useUserPackageProductDetailsListQuery(searchParams) // 상시판매 패키지 목록 조회 쿼리
+	const { data: packageData, isLoading } = useUserPackageProductDetailsListQuery(searchParams) // 상시판매 패키지 목록 조회 쿼리
 	// 테이블 데이터, 페이지 데이터, 총 중량
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
 		tableField: userPackageDetailsField,
