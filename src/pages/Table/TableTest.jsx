@@ -389,19 +389,12 @@ const TableTest = ({
             onGridReady={onGridReady}
             onSelectionChanged={onSelectionChanged}
             pinnedTopRowData={topData}
+            R
+            // rowDragManaged={true}
             // suppressPaginationPanel={true} //커스터마이징하려고 페이지네이션 지움
             // sideBar={{ toolPanels: ['columns', 'filters'] }}
           />
           {/* <Pagination getRow={getRow} /> */}
-          <Pagination
-            currentPage={currentPage}
-            totalPage={totalPage}
-            onPageChange={onPageChange}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-            goToLastPage={goToLastPage}
-            goToStartOfRange={goToStartOfRange}
-          />
         </div>
       </TestContainer>
 

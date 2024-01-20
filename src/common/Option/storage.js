@@ -1,14 +1,14 @@
 export const supplierOptions = [
   { value: '', label: '전체' },
   { value: '현대제철', label: '현대제철' },
-  { value: '카스코 철강', label: '카스코 철강' },
+  { value: '동은스틸', label: '동은스틸' },
 ]
 
 export const ProductOptions = {
   maker: [
     { value: '', label: '전체' },
     { value: '현대제철', label: '현대제철' },
-    { value: '동은스틸', label: '동은스틸' },
+    { value: '미정', label: '미정' },
   ],
   stocks: [
     { value: '', label: '전체' },

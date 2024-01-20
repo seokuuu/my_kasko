@@ -42,6 +42,8 @@ export const singleDispatchFields= {
   
 
 
+
+
 export const SingleDispatchFieldsCols = [
   { headerClass:'custom-header-style',field: '제품 번호', minWidth: 100 },
   { headerClass:'custom-header-style',field: '규격 약호', minWidth: 100 },

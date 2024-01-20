@@ -12,10 +12,13 @@ import {
   btnCellUidAtom,
   consolEditModalAtom,
   operateAddAtom,
+  singleModifyObj,
+  singleProductModify,
   surEditModalAtom,
   userPageDestiEditModal,
   usermanageClientEdit,
   userpageUserPreferEdit,
+  weightAtom,
 } from '../../store/Layout/Layout'
 
 import { UsermanageUserManageEditModal } from '../../store/Layout/Layout'
@@ -26,7 +29,7 @@ const BtnCellRenderer = ({ data, uidFieldName, editType, moveUrl }) => {
 
   const [overallData, setOverallData] = useState(data)
   const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-  console.log('uidAtom @@@', uidAtom)
+  // console.log('uidAtom @@@', uidAtom)
   const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
   const [modalMode, setModalMode] = useAtom(surEditModalAtom) // 할증 관리 modal
   const [dispatchModalMode, setDispatchModalMode] = useAtom(StandardDispatchEditAtom)
@@ -44,12 +47,12 @@ const BtnCellRenderer = ({ data, uidFieldName, editType, moveUrl }) => {
   const [consoliEdit, setConsoliEdit] = useAtom(StandardConsoliateEdit)
 
   const [userManageEditModal, setUserManageEditModal] = useAtom(UsermanageUserManageEditModal)
-
   const [auctionRoundEditModal, setAuctionRoundEditModal] = useAtom(auctionRoundEditPageAtom)
-
+  const [singleModify, setSingleModify] = useAtom(singleProductModify)
+  const [modifyObj, setModifyObj] = useAtom(singleModifyObj)
+  const [weight, setWeight] = useAtom(weightAtom)
   // 관리자 > 운영 관리 > 제품군 관리,창고 관리 > 등록,수정 모달 관련 값
   const setProductRangeEditModal = useSetAtom(operateAddAtom)
-
   const btnClickedHandler = () => {
     switch (editType) {
       case 'table':
@@ -110,6 +113,13 @@ const BtnCellRenderer = ({ data, uidFieldName, editType, moveUrl }) => {
         setUidAtom(uid)
         setProductRangeEditModal(true)
         break
+      case 'productModify':
+        setUidAtom(uid)
+        setSingleModify(true)
+        console.log('선택된 데이터', data)
+        setModifyObj(data)
+      case 'weight':
+        setUidAtom(uid)
       default:
         break
     }

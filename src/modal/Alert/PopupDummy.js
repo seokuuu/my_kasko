@@ -134,4 +134,11 @@ export const popupDummy = [
     title: '팝업 등록',
     content: '작성하신 내용으로 팝업을 등록하시겠습니까?',
   },
+
+  {
+    num: '3-5',
+    title: '',
+    content: '등록하시겠습니까?',
+  },
 ]
+
