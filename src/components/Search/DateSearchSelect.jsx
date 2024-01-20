@@ -11,27 +11,16 @@ import { GridWrap, PartWrap, Tilde } from '../../modal/External/ExternalFilter'
  * @param endDateChange 종료일자 set event
  */
 const DateSearchSelect = ({ title, startInitDate, endInitDate, startDateChange, endDateChange }) => {
-  const [startDate, setStartDate] = useState(startInitDate)
-  const [endDate, setEndDate] = useState(endInitDate)
-
-  useEffect(() => {
-    startDateChange(startDate)
-  }, [startDate])
-
-  useEffect(() => {
-    endDateChange(endDate)
-  }, [endDate])
-
-  return (
-    <PartWrap first>
-      <h6>{title}</h6>
-      <GridWrap>
-        <DateGrid bgColor={'white'} fontSize={17} startDate={startDate} setStartDate={setStartDate} />
-        <Tilde>~</Tilde>
-        <DateGrid bgColor={'white'} fontSize={17} startDate={endDate} setStartDate={setEndDate} />
-      </GridWrap>
-    </PartWrap>
-  )
+	return (
+		<PartWrap first>
+			<h6>{title}</h6>
+			<GridWrap>
+				<DateGrid bgColor={'white'} fontSize={17} startDate={startInitDate} setStartDate={startDateChange} />
+				<Tilde>~</Tilde>
+				<DateGrid bgColor={'white'} fontSize={17} startDate={endInitDate} setStartDate={endDateChange} isEnd={true} />
+			</GridWrap>
+		</PartWrap>
+	)
 }
 
-export default React.memo(DateSearchSelect)
+export default DateSearchSelect

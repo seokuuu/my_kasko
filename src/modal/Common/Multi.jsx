@@ -30,7 +30,7 @@ import { popupObject } from '../../store/Layout/Layout'
 import { popupDummy } from '../Alert/PopupDummy'
 import { popupTypeAtom } from '../../store/Layout/Layout'
 
-const Multi = ({ modalSwitch, setModalSwitch }) => {
+const Multi = ({ modalSwitch, setModalSwitch, saveFn }) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
 
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
@@ -124,7 +124,7 @@ const Multi = ({ modalSwitch, setModalSwitch }) => {
             >
               저장
             </BlueBlackBtn>
-            {popupSwitch && <AlertPopup />}
+            {popupSwitch && <AlertPopup saveFn={saveFn} />}
           </BlueBtnWrap>
         </BlueSubContainer>
       </ModalContainer>

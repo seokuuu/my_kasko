@@ -1,57 +1,35 @@
-import { useAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { GreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
-	ExInputsWrap,
 	FilterRight,
 	FilterLeft,
 	Input,
-	MiniInput,
 	PWRight,
 	PartWrap,
 	RowWrap,
 	Tilde,
 	GridWrap,
-	ExCheckWrap,
 } from '../../../modal/External/ExternalFilter'
 import StandardFind from '../../../modal/Multi/StandardFind'
-import { claimProductModalAtom } from '../../../store/Layout/Layout'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import DateGrid from '../../../components/DateGrid/DateGrid'
-import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 
-const SellOrderSearchFields = ({ search, setSearch }) => {
-	const [isKyuModalAtom, setIsKyuModal] = kyuModalAtom // Boolean
-
+const SellOrderSearchFields = ({
+	search,
+	setSearch,
+	commonDropdownButtonHandler,
+	commonNumInputHandler,
+	onSpecHandler,
+}) => {
 	const {
 		// prettier-ignore
 		storageList,
-		supplierList,
 		spartList,
-		makerList,
-		stockStatusList,
-		gradeList,
-		preferThicknessList,
 	} = useGlobalProductSearchFieldData()
-
-	// 셀렉트 박스 핸들러
-	function commonSelectHandler(e, name) {
-		setSearch((p) => ({ ...p, [name]: e }))
-	}
-
-	// 규격 약호 핸들러
-	function onSpecHandler(e, text) {
-		const { tagName } = e.target
-		if (tagName === 'IMG') {
-			setIsKyuModal(false)
-		} else {
-			setSearch((p) => ({ ...p, spec: text }))
-			setIsKyuModal(false)
-		}
-	}
 
 	return (
 		<>
@@ -66,7 +44,7 @@ const SellOrderSearchFields = ({ search, setSearch }) => {
 								// defaultValue={storageList[0]}
 								value={search.storage}
 								name="storage"
-								onChange={(e) => commonSelectHandler(e, 'storage')}
+								onChange={(e) => commonDropdownButtonHandler(e, 'storage')}
 							/>
 						</PWRight>
 					</PartWrap>
@@ -78,7 +56,7 @@ const SellOrderSearchFields = ({ search, setSearch }) => {
 							defaultValue={spartList[0]}
 							value={search.spart}
 							name="spart"
-							onChange={(e) => commonSelectHandler(e, 'spart')}
+							onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
 						/>
 					</PWRight>
 				</RowWrap>
@@ -136,7 +114,7 @@ const SellOrderSearchFields = ({ search, setSearch }) => {
 					height="100%"
 				/>
 			</FilterRight>
-			{isKyuModalAtom === true && <StandardFind closeFn={onSpecHandler} />}
+			{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
 		</>
 	)
 }
