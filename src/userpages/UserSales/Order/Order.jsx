@@ -8,7 +8,6 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { userOrderListField, userOrderListFieldsCols } from '../../../constants/user/order'
 import useTableData from '../../../hooks/useTableData'
-// import useTableSearchFieldData from '../../../hooks/useTableSearchFieldData'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import useTableSelection from '../../../hooks/useTableSelection'
 import {
@@ -26,6 +25,7 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 import OrderSearchFields from './OrderSearchFields'
 import moment from 'moment'
+import useAlert from '../../../store/Alert/useAlert'
 
 /**
  * @constant 기본 페이지 검색 값
@@ -80,6 +80,8 @@ const Order = ({}) => {
 	const { setPackageReadOnlyViewer } = useContext(PackageViewerDispatchContext)
 	// NAVIGATION
 	const navigate = useNavigate()
+	// ALERT
+	const { simpleAlert } = useAlert()
 
 	/**
 	 * 필터 검색 핸들러
@@ -123,7 +125,7 @@ const Order = ({}) => {
 		e.preventDefault()
 
 		if (!hasSelected) {
-			return alert('주문 취소할 제품을 선택해 주세요.')
+			return simpleAlert('주문 취소할 제품을 선택해 주세요.')
 		}
 
 		const cancelData = selectedData.map((v) => ({ uid: v[UID_KEY], saleType: '상시 판매 대상재' }))

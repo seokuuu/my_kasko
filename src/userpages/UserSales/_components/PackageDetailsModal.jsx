@@ -89,11 +89,6 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 			setToggleMsg('On')
 		}
 	}
-	// RESET
-	const [isRotated, setIsRotated] = useState(false)
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
 	/* ============================== COMMON end ============================== */
 
 	return (

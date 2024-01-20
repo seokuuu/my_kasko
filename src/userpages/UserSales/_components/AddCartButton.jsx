@@ -1,66 +1,64 @@
-import { useAtom } from 'jotai'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { useUserAddCartMutaion } from '../../../api/user'
 import { GreenBtn, SkyBtn } from '../../../common/Button/Button'
 import { PROD_CATEGORY } from '../../../constants/user/product'
-import AlertPopup from '../../../modal/Alert/AlertPopup'
-import { destiDelPopupAtom, popupObject } from '../../../store/Layout/Layout'
 import { getProductNumber } from '../../../hooks/useWishList'
+import useAlert from '../../../store/Alert/useAlert'
 
 /**
  * @constant 버튼 타입
  */
 export const CART_BUTTON_TYPE = {
-  default: 'default',
-  simple: 'simple'
+	default: 'default',
+	simple: 'simple',
 }
 
 /**
  * 선택 제품 장바구니 추가 컴포넌트
- * @param {string} param.category 상품 카테고리(단일|패키지) 
- * @param {string} param.products 상품 목록 
- * @param {string} param.buttontType 버튼 타입(default|simple) 
+ * @param {string} param.category 상품 카테고리(단일|패키지)
+ * @param {string} param.products 상품 목록
+ * @param {string} param.buttontType 버튼 타입(default|simple)
  */
-const AddCartButton = ({ category, products=[], buttonType }) => {
-  // API
-  const { mutate: addCart, isLoading } = useUserAddCartMutaion() // 장바구니 추가하기 뮤테이션
-  // POPUP(선택제품주문)
-  const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom) // 팝업 스위치
-  const [_, setNowPopup] = useAtom(popupObject)
-  // 버튼 타입
-  const isTableButton = !buttonType || buttonType !== CART_BUTTON_TYPE.default;
+const AddCartButton = ({ category, products = [], buttonType }) => {
+	// API
+	const { mutate: addCart, isLoading } = useUserAddCartMutaion() // 장바구니 추가하기 뮤테이션
+	// ALERT
+	const { simpleAlert } = useAlert()
 
-  /**
-   * 선택 항목 장바구니 추가 핸들러
-   */
-  function handleSelectOrder(e) {
-    e.preventDefault()
+	/**
+	 * 선택 항목 장바구니 추가 핸들러
+	 */
+	function handleSelectOrder(e) {
+		e.preventDefault()
 
-    if (products.length < 1) {
-      setPopupSwitch(true)
-      setNowPopup({
-        num: '1',
-        content: '장바구니에 추가할 상품을 선택해 주세요.',
-      })
-      return
-    }
+		if (products.length < 1) {
+			return simpleAlert('장바구니에 추가할 상품을 선택해 주세요')
+		}
 
-    addCart({
-      category: category === PROD_CATEGORY.single ? 'SINGLE' : 'PACKAGE',
-      uids:products.map((v) => category === PROD_CATEGORY.single
-          ? (getProductNumber(v['고유 번호'] )|| 0)
-          : (getProductNumber(v['고유 번호']) || 0)
-      ),
-    })
-  }
+		addCart({
+			category: category === PROD_CATEGORY.single ? 'SINGLE' : 'PACKAGE',
+			uids: products.map((v) =>
+				category === PROD_CATEGORY.single
+					? getProductNumber(v['고유 번호']) || 0
+					: getProductNumber(v['고유 번호']) || 0,
+			),
+		})
+	}
 
-  return (
-    <>  
-      { buttonType === CART_BUTTON_TYPE.default || buttonType === undefined && <SkyBtn disabled={isLoading} onClick={handleSelectOrder}>선택 제품 장바구니 추가</SkyBtn> }
-      { buttonType === CART_BUTTON_TYPE.simple && <GreenBtn width={14} height={38} fontSize={18} onClick={handleSelectOrder}>장바구니</GreenBtn> }
-      {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
-    </>
-  )
+	return (
+		<>
+			{(buttonType === CART_BUTTON_TYPE.default || buttonType === undefined) && (
+				<SkyBtn disabled={isLoading} onClick={handleSelectOrder}>
+					선택 제품 장바구니 추가
+				</SkyBtn>
+			)}
+			{buttonType === CART_BUTTON_TYPE.simple && (
+				<GreenBtn width={14} height={38} fontSize={18} onClick={handleSelectOrder}>
+					장바구니
+				</GreenBtn>
+			)}
+		</>
+	)
 }
 
 export default AddCartButton
