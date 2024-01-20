@@ -114,6 +114,7 @@ const GlobalProductSearch = ({
 			dockStatus: false, // 상차도 여부 (Dock status)
 			orderType: '', // 주문 타입 (Order type)
 			orderNumber: '', // 주문 번호 (Order number)
+			carType: '', // 차량종류
 		}
 	}, [storageList, supplierList, spartList, makerList, stockStatusList, gradeList, preferThicknessList])
 
