@@ -21,6 +21,7 @@ import CustomerSearch from '../../../components/Search/CustomerSearch'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import { useState } from 'react'
 import { CheckBox } from '../../../common/Check/Checkbox'
+import DateSearchSelect from '../../../components/Search/DateSearchSelect'
 
 /**
  * @constant 주문 상태
@@ -144,6 +145,20 @@ const OrderSearchFields = ({
 								onChange={(e) => commonDropdownButtonHandler(e, 'grade')}
 							/>
 						</PWRight>
+					</PartWrap>
+					<PartWrap>
+						{/* 주문 일자 */}
+						<DateSearchSelect
+							title="주문일자"
+							startInitDate={search.orderStartDate ? new Date(search.orderStartDate) : ''}
+							endInitDate={search.orderEndDate ? new Date(search.orderEndDate) : ''}
+							startDateChange={(v) => {
+								setSearch((prev) => ({ ...prev, orderStartDate: v }))
+							}}
+							endDateChange={(v) => {
+								setSearch((prev) => ({ ...prev, orderEndDate: v }))
+							}}
+						/>
 					</PartWrap>
 				</RowWrap>
 				{/* 두께 |  폭 | 길이 */}

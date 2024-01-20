@@ -44,8 +44,7 @@ const getValidParams = (params) => {
 		let value = params[key]
 		if (Array.isArray(value)) {
 			value = value.length < 1 ? null : value.toString()
-		}
-		if (typeof value === 'string' && value.length < 1) {
+		} else if (typeof value === 'string' && value.length < 1) {
 			value = null
 		}
 		return value ? { ...acc, [key]: value } : acc

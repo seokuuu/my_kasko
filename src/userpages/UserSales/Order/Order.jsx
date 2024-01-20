@@ -9,6 +9,7 @@ import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { userOrderListField, userOrderListFieldsCols } from '../../../constants/user/order'
 import useTableData from '../../../hooks/useTableData'
 // import useTableSearchFieldData from '../../../hooks/useTableSearchFieldData'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import useTableSelection from '../../../hooks/useTableSelection'
 import {
 	AlertImg,
@@ -24,34 +25,7 @@ import Table from '../../../pages/Table/Table'
 import { toggleAtom } from '../../../store/Layout/Layout'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 import OrderSearchFields from './OrderSearchFields'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-
-/**
- * @constant 기본 검색 값
- */
-const initialSearchParams = {
-	pageNum: 1, // 페이지 번호
-	pageSize: 50, // 페이지 갯수
-	auctionNumber: '', // 상시판매 번호
-	orderStatusList: '', // 주문상태(전체 / 확정 전송 / 확정 전송 대기 / 주문 요청 / 주문취소 / 주문확정)
-	orderStartDate: '', // 주문일자, 상시판매일자 (20240301 format)
-	orderEndDate: '', // 주문일자, 상시판매일자 (20240301 format)
-	customerCode: '', // 고객사 코드
-	customerName: '', // 고객사 명
-	storage: '', // 창고구분
-	supplier: '', // 매입처
-	spec: '', // 규격약호
-	spart: '', // 제품군
-	maker: '', // 제조사
-	grade: '', // 제품 등급
-	minThickness: '', // 최소 두께
-	maxThickness: '', // 최대 두께
-	minWidth: '', // 최소 폭
-	maxWidth: '', // 최대 폭
-	minLength: '', // 최소 길이
-	maxLength: '', // 최대 길이
-	productNumberList: '', // 제품 번호
-}
+import moment from 'moment'
 
 /**
  * @constant 기본 페이지 검색 값
@@ -74,9 +48,10 @@ const getValidParams = (params) => {
 		let value = params[key]
 		if (Array.isArray(value)) {
 			value = value.length < 1 ? null : value.toString()
-		}
-		if (typeof value === 'string' && value.length < 1) {
+		} else if (typeof value === 'string' && value.length < 1) {
 			value = null
+		} else if (key === 'orderStartDate' || key === 'orderEndDate') {
+			value = value ? moment(value).format('YYYYMMDD') : null
 		}
 		return value ? { ...acc, [key]: value } : acc
 	}, {})
