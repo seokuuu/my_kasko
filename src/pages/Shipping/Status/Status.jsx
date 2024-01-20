@@ -60,7 +60,7 @@ const Status = () => {
 		}
 		const shipmentStatus = '운송 완료'
 		const uids = selectedRows.map((item) => item['출고 고유번호'])
-		simpleConfirm('운송 완료 처리하시겠습니까?', shipmentStatusUpdate({ shipmentStatus, uids }))
+		simpleConfirm('운송 완료 처리하시겠습니까?', () => shipmentStatusUpdate({ shipmentStatus, uids }))
 	}
 
 	const handleTablePageSize = (event) => {
