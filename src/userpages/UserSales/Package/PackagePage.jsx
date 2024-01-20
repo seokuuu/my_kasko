@@ -10,12 +10,13 @@ import SubHeader from '../../../components/Header/SubHeader';
 import Package from './Package';
 
 import { useState } from 'react';
+import UserSalesWrapper from '../_layouts/UserSalesWrapper';
 
-const SinglePage = () => {
+const PackagePage = () => {
   const [expanded, setExpanded] = useState('상시판매');
   const [depth2Color, setDepth2Color] = useState('패키지');
   return (
-    <>
+    <UserSalesWrapper>
       <Header />
       <OverAllMain>
         <UserSideBar
@@ -30,8 +31,8 @@ const SinglePage = () => {
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>
-    </>
+    </UserSalesWrapper>
   );
 };
 
-export default SinglePage;
+export default PackagePage;
