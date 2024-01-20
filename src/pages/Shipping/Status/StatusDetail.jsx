@@ -10,19 +10,16 @@ import Table from '../../Table/Table'
 import { BlueBarBtnWrap } from '../../../modal/Common/Common.Styled'
 import { useNavigate, useParams } from 'react-router-dom'
 import StausDetailHeader from './StausDetailHeader'
+import useAlert from '../../../store/Alert/useAlert'
 
 const DisRegisterDetail = () => {
 	const { id } = useParams()
 	const navigate = useNavigate()
 
-	// Table
-	const tableField = useRef(ShippingDispatchDetailsFieldsCols)
-	const getCol = tableField.current
-	const [getRow, setGetRow] = useState('')
-
-	// data fetch
-	const { data, isLoading } = useShipmentDispatchDetailsQuery(id)
+	const [getRow, setGetRow] = useState([])
 	const [list, setList] = useState([])
+
+	const { data, isLoading } = useShipmentDispatchDetailsQuery(id)
 
 	const backTo = () => navigate(-1)
 
@@ -49,7 +46,7 @@ const DisRegisterDetail = () => {
 						<Hidden />
 					</div>
 				</TCSubContainer>
-				<Table getCol={getCol} getRow={getRow} loading={isLoading} />
+				<Table getCol={ShippingDispatchDetailsFieldsCols} getRow={getRow} loading={isLoading} />
 				<BlueBarBtnWrap style={{ gap: '12px' }}>
 					<WhiteBtn fontSize={17} width={10} height={35} onClick={backTo}>
 						돌아가기

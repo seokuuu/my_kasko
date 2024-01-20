@@ -7,6 +7,7 @@ import {
 	BlueInput,
 	BlueMainDiv,
 	BlueOneDiv,
+	BlueRadioWrap,
 	BlueSubContainer,
 	BlueSubDiv,
 	FadeOverlay,
@@ -18,35 +19,23 @@ import {
 	WhiteCloseBtn,
 } from '../Common/Common.Styled'
 
-import { useAtom } from 'jotai'
-import { blueModalAtom } from '../../store/Layout/Layout'
-
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
-import { BlueRadioWrap } from '../Common/Common.Styled'
 
-import { GreyBtn } from '../../common/Button/Button'
-import { CheckBox } from '../../common/Check/Checkbox'
+import { BlackBtn, GreyBtn } from '../../common/Button/Button'
 import { TxtInput } from '../../common/Input/Input'
-
-import { BlackBtn } from '../../common/Button/Button'
 import { CustomSelect } from '../../common/Option/Main'
-import { storageOptions } from '../../common/Option/SignUp'
 
 import { BMDTitle } from './CustomerFind'
 
 import useReactQuery from '../../hooks/useReactQuery'
-import { getCustomerFind } from '../../service/admin/Auction'
-import { RadioSearchButton } from '../../components/Search'
-import {
-	driverCarNumberValidQuery,
-	getSearchDriverByNameListQuery,
-	useSearchDriverNameListQuery,
-} from '../../api/driver'
+import { driverCarNumberValidQuery, getSearchDriverByNameListQuery } from '../../api/driver'
 import { getStorageList } from '../../api/search'
 import { phoneRegex } from '../../common/Regex/Regex'
 import { useSetDispatchMutation } from '../../api/shipment'
+import useAlert from '../../store/Alert/useAlert'
 
 const DispatchDetail = ({ id, setIsPostModal }) => {
+	const { simpleAlert, simpleConfirm } = useAlert()
 	const matchData = { name: '기사명', carNumber: '차량 번호', carType: '차량 종류', phone: '기사 연락처' }
 	const [mode, setMode] = useState('검색') // 등록 방식 - 검색 / 직접등록
 	const [search, setSearch] = useState('') // 검색어
@@ -81,12 +70,12 @@ const DispatchDetail = ({ id, setIsPostModal }) => {
 
 	const onRegister = () => {
 		if (!selectedUid) {
-			return window.alert('등록할 기사를 선택해주세요.')
+			return simpleAlert('등록할 기사를 선택해주세요.')
 		}
-		if (window.confirm('배차 등록 하시겠습니까?')) {
+		simpleConfirm('배차 등록 하시겠습니까?', () => {
 			setDispatch({ productOutUid: id, driverUid: selectedUid })
 			modalClose()
-		}
+		})
 	}
 
 	useEffect(() => {
@@ -178,6 +167,7 @@ const DispatchDetail = ({ id, setIsPostModal }) => {
 }
 
 const DrvierPost = ({ id, data, setData, onSubmit, modalClose }) => {
+	const { simpleAlert } = useAlert()
 	const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
 
 	const isNumber = (value) => /^\d*$/.test(value)
@@ -195,7 +185,7 @@ const DrvierPost = ({ id, data, setData, onSubmit, modalClose }) => {
 		if (!carNumber) return
 
 		const isValid = await driverCarNumberValidQuery(carNumber)
-		if (!isValid) window.alert('이미 등록된 차량 번호입니다.')
+		if (!isValid) simpleAlert('이미 등록된 차량 번호입니다.')
 
 		setData((prev) => ({ ...prev, isCarNumberValid: isValid }))
 	}
@@ -227,7 +217,7 @@ const DrvierPost = ({ id, data, setData, onSubmit, modalClose }) => {
 			onSubmit({ productOutUid: id, ...data })
 			modalClose()
 		} catch (error) {
-			window.alert(error.message)
+			simpleAlert(error.message)
 		}
 	}
 
