@@ -6,3 +6,6 @@ export const globalProductSearchToggleAtom = atom(true)
 
 // 규경 약호 모달
 export const kyuModalAtom = atom(false)
+
+// 고객사 명 모달
+export const customerModalAtom = atom(false)

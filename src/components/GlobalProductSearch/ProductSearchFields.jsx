@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { kyuModalAtom } from '../../store/Layout/GlobalProductSearch'
+import { kyuModalAtom, customerModalAtom } from '../../store/Layout/GlobalProductSearch'
 
 //TODO 재사용하는 핸들러를 여기에 업데이트 해주세요
 const ProductSearchFields = ({ search, setSearch, renderCustomSearchFields }) => {
@@ -28,6 +28,16 @@ const ProductSearchFields = ({ search, setSearch, renderCustomSearchFields }) =>
 		}
 	}
 
+	// 고객사 명 모달
+	const setCustomerModalAtom = useSetAtom(customerModalAtom)
+
+	// 모달 버튼 핸들러
+	const modalButtonClickHandler = (type) => {
+		if (type === 'customer') {
+			setCustomerModalAtom(true)
+		}
+	}
+
 	return renderCustomSearchFields ? (
 		renderCustomSearchFields({
 			search,
@@ -35,6 +45,8 @@ const ProductSearchFields = ({ search, setSearch, renderCustomSearchFields }) =>
 			commonDropdownButtonHandler,
 			commonNumInputHandler,
 			onSpecHandler,
+			modalButtonClickHandler,
+			setCustomerModalAtom,
 		})
 	) : (
 		<></>

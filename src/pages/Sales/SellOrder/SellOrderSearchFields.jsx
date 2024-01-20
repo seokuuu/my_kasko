@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { GreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
@@ -12,24 +12,30 @@ import {
 	Tilde,
 	GridWrap,
 } from '../../../modal/External/ExternalFilter'
-import StandardFind from '../../../modal/Multi/StandardFind'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
-import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
+import { customerModalAtom } from '../../../store/Layout/GlobalProductSearch'
+import InventoryFind from '../../../modal/Multi/InventoryFind'
 
 const SellOrderSearchFields = ({
 	search,
 	setSearch,
 	commonDropdownButtonHandler,
-	commonNumInputHandler,
-	onSpecHandler,
+	modalButtonClickHandler,
+	setCustomerModalAtom,
 }) => {
 	const {
 		// prettier-ignore
 		storageList,
 		spartList,
+		inventoryCustomer,
 	} = useGlobalProductSearchFieldData()
+
+	const handleInventoryFindButtonOnClick = (data) => {
+		commonDropdownButtonHandler(data.code, 'customerCode')
+		commonDropdownButtonHandler(data.name, 'customerName')
+	}
 
 	return (
 		<>
@@ -63,10 +69,16 @@ const SellOrderSearchFields = ({
 				{/* 2행 */}
 				<RowWrap>
 					<PartWrap>
-						<h6>고객사 명/고객사코드</h6>
-						<Input />
-						<Input />
-						<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+						<h6>고객사 명</h6>
+						<Input value={search.customerName} readOnly name="customerName" />
+						<Input value={search.customerCode} readOnly name="customerCode" />
+						<GreyBtn
+							style={{ width: '70px' }}
+							height={35}
+							margin={10}
+							fontSize={17}
+							onClick={() => modalButtonClickHandler('customer')}
+						>
 							찾기
 						</GreyBtn>
 					</PartWrap>
@@ -114,7 +126,14 @@ const SellOrderSearchFields = ({
 					height="100%"
 				/>
 			</FilterRight>
-			{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
+			{useAtomValue(customerModalAtom) === true && (
+				<InventoryFind
+					title={'고객사 찾기'}
+					handleButtonOnClick={handleInventoryFindButtonOnClick}
+					setSwitch={setCustomerModalAtom}
+					data={inventoryCustomer}
+				/>
+			)}
 		</>
 	)
 }

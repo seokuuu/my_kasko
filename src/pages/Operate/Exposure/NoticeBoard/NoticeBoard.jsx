@@ -36,7 +36,7 @@ const NoticeBoard = () => {
 	// 전광판 목록 API
 	const { data, refetch } = useNoticeBoardListQuery({
 		...search,
-		category: search.category.label,
+		// category: search.category.label,
 	})
 
 	// 전광판 삭제 API

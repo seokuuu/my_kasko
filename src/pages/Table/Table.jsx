@@ -26,6 +26,7 @@ import {
 } from '../../store/Layout/Layout'
 import './TableUi.css'
 import PropTypes from 'prop-types'
+import useDragginRow from '../../hooks/useDragginRow'
 // import TableStyle from './Table.module.css'
 
 // import { get } from 'lodash'
@@ -71,389 +72,407 @@ const Table = ({
 	onPageChange,
 	noRowsMessage = '데이터가 존재하지 않습니다.', // 데이터 갯수가 0개일 때, 나타날 메시지입니다.
 	loading = false, // 로딩 여부
+	dragAndDrop = false,
+	changeFn,
 }) => {
-  const [selectedCountry, setSelectedCountry] = useState(null)
-  const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
-  const gridRef = useRef()
-  const containerStyle = useMemo(() => {
-    if (hei2) {
-      return { width: '100%', height: `${hei2}px` }
-    } else {
-      return { width: '100%', height: '500px' }
-    }
-  }, [hei2])
+	const [selectedCountry, setSelectedCountry] = useState(null)
+	const [packageUids, setPackageUids] = useState([])
+	const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
+	const gridRef = useRef()
+	const containerStyle = useMemo(() => {
+		if (hei2) {
+			return { width: '100%', height: `${hei2}px` }
+		} else {
+			return { width: '100%', height: '500px' }
+		}
+	}, [hei2])
 
-  const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
-  const [rowData, setRowData] = useState()
-  const [selectedRowData, setSelectedRowData] = useState(null)
-  const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
+	const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
+	const [rowData, setRowData] = useState()
+	const [selectedRowData, setSelectedRowData] = useState(null)
+	const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
 
-  console.log('rowAtomSwitch', rowAtomSwitch)
+	console.log('rowAtomSwitch', rowAtomSwitch)
 
-  var checkboxSelection = function (params) {
-    // we put checkbox on the name if we are not doing grouping
-    return params.columnApi.getRowGroupColumns().length === 0
-  }
+	var checkboxSelection = function (params) {
+		// we put checkbox on the name if we are not doing grouping
+		return params.columnApi.getRowGroupColumns().length === 0
+	}
 
-  var headerCheckboxSelection = function (params) {
-    // we put checkbox on the name if we are not doing grouping
-    return params.columnApi.getRowGroupColumns().length === 0
-  }
+	var headerCheckboxSelection = function (params) {
+		// we put checkbox on the name if we are not doing grouping
+		return params.columnApi.getRowGroupColumns().length === 0
+	}
 
-  // ---------------------------------------------------------------------
-  const [columnDefs, setColumnDefs] = useState([
-    {
-      field: '고객 코드',
-      width: 45,
-      checkboxSelection: checkboxSelection,
-      headerCheckboxSelection: headerCheckboxSelection,
-    },
+	// ---------------------------------------------------------------------
+	const [columnDefs, setColumnDefs] = useState([
+		{
+			field: '고객 코드',
+			width: 45,
+			checkboxSelection: checkboxSelection,
+			headerCheckboxSelection: headerCheckboxSelection,
+		},
+		{
+			field: '고객 코드',
+			width: 45,
+			checkboxSelection: checkboxSelection,
+			headerCheckboxSelection: headerCheckboxSelection,
+		},
 
-    { field: '대표', maxWidth: 80 }, //숫자
-    { field: '목적지 코드' },
-    { field: '목적지 명', maxWidth: 90 },
-    {
-      field: '담당자 연락처',
-    },
-    {
-      field: '하차지 명',
-    },
-    { field: '도착지 연락처' },
-    { field: '상세 주소' },
-    { field: '비고란' },
-  ])
+		{ field: '대표', maxWidth: 80 }, //숫자
+		{ field: '목적지 코드' },
+		{ field: '목적지 명', maxWidth: 90 },
+		{
+			field: '담당자 연락처',
+		},
+		{
+			field: '하차지 명',
+		},
+		{ field: '도착지 연락처' },
+		{ field: '상세 주소' },
+		{ field: '비고란' },
+	])
 
-  // const defaultColDef = useMemo(() => {
-  //   return {
-  //     flex: 1,
-  //     minWidth: 120,
-  //     filter: true,
-  //   }
-  // }, [])
+	// const defaultColDef = useMemo(() => {
+	//   return {
+	//     flex: 1,
+	//     minWidth: 120,
+	//     filter: true,
+	//   }
+	// }, [])
 
-  // const dummyD = {
-  //   '고객 코드': 'nope',
-  //   대표: 'nope',
-  //   '목적지 코드': 'nope',
-  //   '목적지 명': 'nope',
-  //   '담당자 연락처': 'nope',
-  //   '하차지 명': 'nope',
-  //   '도착지 연락처': 'nope',
-  //   '상세 주소': 'nope',
-  //   비고란: 'nope',
-  // }
+	// const dummyD = {
+	//   '고객 코드': 'nope',
+	//   대표: 'nope',
+	//   '목적지 코드': 'nope',
+	//   '목적지 명': 'nope',
+	//   '담당자 연락처': 'nope',
+	//   '하차지 명': 'nope',
+	//   '도착지 연락처': 'nope',
+	//   '상세 주소': 'nope',
+	//   비고란: 'nope',
+	// }
 
-  // const dummyData = Array(300).fill(dummyD)
+	// const dummyData = Array(300).fill(dummyD)
 
-  // console.log(getCol)
-  useEffect(() => {
-    if (getCol) {
-      setColumnDefs(getCol)
-    }
-    if (getRow && getRow.length > 0) {
-      setRowData(getRow)
-    } else {
-      setRowData(null)
-    }
-  }, [getRow, getCol])
+	// console.log(getCol)
+	useEffect(() => {
+		if (getCol) {
+			setColumnDefs(getCol)
+		}
+		if (getRow && getRow.length > 0) {
+			setRowData(getRow)
+		} else {
+			setRowData(null)
+		}
+	}, [getRow, getCol])
 
-  // ---------------------------------------------------------------------
+	// ---------------------------------------------------------------------
 
-  const countries = rowData?.map((item) => item.country)
-  const uniqueCountriesSet = new Set(countries)
-  const uniqueCountries = Array.from(uniqueCountriesSet)
-  const sortedCountries = uniqueCountries.sort()
-  // console.log(sortedCountries)
+	const countries = rowData?.map((item) => item.country)
+	const uniqueCountriesSet = new Set(countries)
+	const uniqueCountries = Array.from(uniqueCountriesSet)
+	const sortedCountries = uniqueCountries.sort()
+	// console.log(sortedCountries)
 
-  const externalFilterChanged = useCallback((newValue) => {
-    ageType = newValue
-    gridRef.current.api.onFilterChanged()
-  }, [])
-  const isExternalFilterPresent = useCallback(() => {
-    // if ageType is not everyone or either minAge or maxAge is set, then we are filtering
-    return ageType !== 'everyone' || minAge !== null || maxAge !== null || countryFilter !== null
-  }, [])
+	const externalFilterChanged = useCallback((newValue) => {
+		ageType = newValue
+		gridRef.current.api.onFilterChanged()
+	}, [])
+	const isExternalFilterPresent = useCallback(() => {
+		// if ageType is not everyone or either minAge or maxAge is set, then we are filtering
+		return ageType !== 'everyone' || minAge !== null || maxAge !== null || countryFilter !== null
+	}, [])
 
-  const onMinAgeChange = useCallback((event) => {
-    minAge = event.target.value !== '' ? parseInt(event.target.value) : null
-    gridRef.current.api.onFilterChanged()
-  }, [])
+	const onMinAgeChange = useCallback((event) => {
+		minAge = event.target.value !== '' ? parseInt(event.target.value) : null
+		gridRef.current.api.onFilterChanged()
+	}, [])
 
-  const onMaxAgeChange = useCallback((event) => {
-    maxAge = event.target.value !== '' ? parseInt(event.target.value) : null
-    gridRef.current.api.onFilterChanged()
-  }, [])
+	const onMaxAgeChange = useCallback((event) => {
+		maxAge = event.target.value !== '' ? parseInt(event.target.value) : null
+		gridRef.current.api.onFilterChanged()
+	}, [])
 
-  const onCountryFilterChange = useCallback((event) => {
-    const newCountryFilter = event.target.value.trim()
-    const filters = newCountryFilter.split(/,|\n/).map((filter) => filter.trim()) // 스페이스 요청시 (/,|\n|\s+/) 이걸로 바꾸자.
-    countryFilter = filters.length > 0 ? filters : null
-    gridRef.current.api.onFilterChanged()
-  }, [])
+	const onCountryFilterChange = useCallback((event) => {
+		const newCountryFilter = event.target.value.trim()
+		const filters = newCountryFilter.split(/,|\n/).map((filter) => filter.trim()) // 스페이스 요청시 (/,|\n|\s+/) 이걸로 바꾸자.
+		countryFilter = filters.length > 0 ? filters : null
+		gridRef.current.api.onFilterChanged()
+	}, [])
 
-  const onFindButtonClick = () => {
-    const newCountryFilter = filterText.trim()
-    const gridApi = gridRef.current.api
+	const onFindButtonClick = () => {
+		const newCountryFilter = filterText.trim()
+		const gridApi = gridRef.current.api
 
-    // 입력한 국가명으로 grid의 Country 필터를 작동
-    gridApi.setFilterModel({
-      country: {
-        type: 'set',
-        values: [newCountryFilter],
-      },
-    })
-    gridApi.onFilterChanged()
-  }
+		// 입력한 국가명으로 grid의 Country 필터를 작동
+		gridApi.setFilterModel({
+			country: {
+				type: 'set',
+				values: [newCountryFilter],
+			},
+		})
+		gridApi.onFilterChanged()
+	}
 
-  const handleResultBlockClick = useCallback((country) => {
-    setSelectedCountry(country)
-    setFilterText(country) // 클릭한 국가로 필터 텍스트를 설정합니다
-  }, [])
+	const handleResultBlockClick = useCallback((country) => {
+		setSelectedCountry(country)
+		setFilterText(country) // 클릭한 국가로 필터 텍스트를 설정합니다
+	}, [])
 
-  const [isModal, setIsModal] = useAtom(blueModalAtom)
-  const location = useLocation()
+	const [isModal, setIsModal] = useAtom(blueModalAtom)
+	const location = useLocation()
 
-  // 페이지 이동시에 테이블 선택이 겹칠 수 있으므로 초기화
-  useEffect(() => {
-    // setDetailRow(null)
-    setSelectedRows(null)
-  }, [location])
+	// 페이지 이동시에 테이블 선택이 겹칠 수 있으므로 초기화
+	useEffect(() => {
+		// setDetailRow(null)
+		setSelectedRows(null)
+	}, [location])
 
-  const modalOpen = () => {
-    setIsModal(true)
-  }
+	const modalOpen = () => {
+		setIsModal(true)
+	}
 
-  const modalClose = () => {
-    setIsModal(false)
-  }
+	const modalClose = () => {
+		setIsModal(false)
+	}
 
-  const [gridApi, setGridApi] = useState(null)
-  const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
-  const [selectedRows2, setSelectedRows2] = useAtom(selectedRowsAtom2)
-  const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
-  const navigate = useNavigate()
+	const [gridApi, setGridApi] = useState(null)
+	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
+	const [selectedRows2, setSelectedRows2] = useAtom(selectedRowsAtom2)
+	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
+	const navigate = useNavigate()
 
-  // 일단 router 이동 등록
-  const onRowDoubleClicked = (event) => {
-    // const path = event.data['고객 코드']
-    // console.log(event.data)
-    setDetailRow(event.data)
-    setChoiceComponent(event.data)
-    // navigate(`/userpage/userdestination/${path}`)
-    // console.log('Double clicked row UID: ', event.data)
-  }
+	// 일단 router 이동 등록
+	const onRowDoubleClicked = (event) => {
+		// const path = event.data['고객 코드']
+		// console.log(event.data)
+		setDetailRow(event.data)
+		setChoiceComponent(event.data)
+		// navigate(`/userpage/userdestination/${path}`)
+		// console.log('Double clicked row UID: ', event.data)
+	}
 
-  // Grid api 설정확인
-  const onGridReady = (params) => {
-    setGridApi(params.api)
-  }
+	// Grid api 설정확인
+	const onGridReady = (params) => {
+		setGridApi(params.api)
+	}
 
-  // 체크했을때 jotai 전역상태값 설정
-  const onSelectionChanged = () => {
-    if (gridApi) {
-      const selectedNodes = gridApi.getSelectedNodes()
-      const selectedData = selectedNodes.map((node) => node.data)
-      setSelectedRows(selectedData)
+	// 체크했을때 jotai 전역상태값 설정
+	const onSelectionChanged = () => {
+		if (gridApi) {
+			const selectedNodes = gridApi.getSelectedNodes()
+			const selectedData = selectedNodes.map((node) => node.data)
+			setSelectedRows(selectedData)
 
-      // 이중으로 check 사용 시
-      if (rowAtomSwitch) {
-        setSelectedRows2(selectedData)
-      }
-    }
-  }
-  const autoGroupColumnDef = useMemo(() => {
-    return {
-      headerName: 'Group',
-      minWidth: 170,
-      field: 'athlete',
-      valueGetter: (params) => {
-        if (params.node.group) {
-          return params.node.key
-        } else {
-          return params.data[params.colDef.field]
-        }
-      },
-      headerCheckboxSelection: true,
-      cellRenderer: 'agGroupCellRenderer',
-      cellRendererParams: {
-        checkbox: true,
-      },
-    }
-  }, [])
-  const defaultColDef = useMemo(() => {
-    return {
-      editable: false,
-      enableRowGroup: true,
-      enablePivot: true,
-      enableValue: true,
-      sortable: true,
-      resizable: true,
-      filter: true,
-      // flex: 1,
-      // minWidth: 100,
-    }
-  }, [])
+			// 이중으로 check 사용 시
+			if (rowAtomSwitch) {
+				setSelectedRows2(selectedData)
+			}
+		}
+	}
+	const autoGroupColumnDef = useMemo(() => {
+		return {
+			headerName: 'Group',
+			minWidth: 170,
+			field: 'athlete',
+			valueGetter: (params) => {
+				if (params.node.group) {
+					return params.node.key
+				} else {
+					return params.data[params.colDef.field]
+				}
+			},
+			headerCheckboxSelection: true,
+			cellRenderer: 'agGroupCellRenderer',
+			cellRendererParams: {
+				checkbox: true,
+			},
+		}
+	}, [])
+	const defaultColDef = useMemo(() => {
+		return {
+			editable: false,
+			enableRowGroup: true,
+			enablePivot: true,
+			enableValue: true,
+			sortable: true,
+			resizable: true,
+			filter: true,
+			// flex: 1,
+			// minWidth: 100,
+		}
+	}, [])
 
-  const [sortNum] = useAtom(pageSort)
+	const [sortNum] = useAtom(pageSort)
 
-  const onPageSizeChanged = useCallback(
-    (sortNum) => {
-      console.log(sortNum)
-      gridRef.current.api.paginationSetPageSize(Number(sortNum))
-    },
-    [sortNum],
-  )
+	const onPageSizeChanged = useCallback(
+		(sortNum) => {
+			console.log(sortNum)
+			gridRef.current.api.paginationSetPageSize(Number(sortNum))
+		},
+		[sortNum],
+	)
 
-  useEffect(() => {
-    if (gridRef?.current?.api?.paginationSetPageSize) {
-      gridRef.current.api.paginationSetPageSize(Number(sortNum))
-    }
-  }, [sortNum])
+	useEffect(() => {
+		if (gridRef?.current?.api?.paginationSetPageSize) {
+			gridRef.current.api.paginationSetPageSize(Number(sortNum))
+		}
+	}, [sortNum])
 
-  //Options
-  const gridOptions = {
-    // other grid options
-    // rowModelType: 'serverSide',
-    headerHeight: 30,
-    // paginationPageSize: size, // 요청할 페이지 사이즈
-    cacheBlockSize: 100, // 캐시에 보관할 블록 사이즈
-    maxBlocksInCache: 10, // 캐시에 최대로 보관할 블록 수
-    // 서버 측 데이터 요청을 처리하는 함수
-    serverSideDatasource: {
-      getRows: async function (params) {
-        // 백엔드로부터 데이터 가져오기
-        // const response = await fetch('/inventory-ledger?pageNum=1&pageSize=1')
-        // const rowData = await response.json()
-        // console.log(rowData)
-        // ag-Grid에 데이터 설정
-        // params.successCallback(getRow)
-      },
-    },
-    // overlayNoRowsTemplate:
-    //   '<div style="padding: 20px; border: 2px solid #666; background: #EEF3FB; fontsize: 20px; ">항목이 존재하지 않습니다.</div>',
-  }
-  // new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
+	//Options
+	const gridOptions = {
+		// other grid options
+		// rowModelType: 'serverSide',
+		headerHeight: 30,
 
-  // console.log('gridOptions', gridOptions)
-  const pinnedTopRowData = useMemo(() => {
-    return topData
-  }, [topData])
+		// rowDragManaged: true, // Enable row dragging
+		animateRows: true, // Enable row animations
+		// onRowDragEnd:
+		// animateRows: true,
+		// paginationPageSize: size, // 요청할 페이지 사이즈
+		cacheBlockSize: 100, // 캐시에 보관할 블록 사이즈
+		maxBlocksInCache: 10, // 캐시에 최대로 보관할 블록 수
+		// 서버 측 데이터 요청을 처리하는 함수
+		serverSideDatasource: {
+			getRows: async function (params) {
+				// 백엔드로부터 데이터 가져오기
+				// const response = await fetch('/inventory-ledger?pageNum=1&pageSize=1')
+				// const rowData = await response.json()
+				// console.log(rowData)
+				// ag-Grid에 데이터 설정
+				// params.successCallback(getRow)
+			},
+		},
+		// overlayNoRowsTemplate:
+		//   '<div style="padding: 20px; border: 2px solid #666; background: #EEF3FB; fontsize: 20px; ">항목이 존재하지 않습니다.</div>',
+	}
+	// new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
 
-  const onRowClicked = (row) => {
-    // Assuming each row has a unique ID or some identifier
-    if (handleOnRowClicked) {
-      handleOnRowClicked(row)
-    }
-  }
+	// console.log('gridOptions', gridOptions)
+	const pinnedTopRowData = useMemo(() => {
+		return topData
+	}, [topData])
 
-  const getRowStyle = () => {
-    if (isRowClickable) {
-      return { cursor: 'pointer' }
-    }
-    return {} // Default style for non-clickable rows
-  }
+	const onRowClicked = (row) => {
+		// Assuming each row has a unique ID or some identifier
+		if (handleOnRowClicked) {
+			handleOnRowClicked(row)
+		}
+	}
 
-  /**
-   * @description
-   * 로딩 중일때와 데이터가 길이가 0일 때를 구분하여 상황에 맞는 UI를 보여줍니다.
-   */
-  useEffect(() => {
-    if (gridRef.current.api) {
-      if (!loading && Array.isArray(getRow) && getRow.length === 0) {
-        gridRef.current.api.showNoRowsOverlay()
-      } else if (loading) {
-        gridRef.current.api.showLoadingOverlay()
-      }
-    }
-  }, [loading, getRow])
+	const getRowStyle = () => {
+		if (isRowClickable) {
+			return { cursor: 'pointer' }
+		}
+		return {} // Default style for non-clickable rows
+	}
 
-  const onRecommendClick = () => {
-    if (!gridApi) {
-      console.error('Grid API가 초기화되지 않았습니다.')
-      return
-    }
+	/**
+	 * @description
+	 * 로딩 중일때와 데이터가 길이가 0일 때를 구분하여 상황에 맞는 UI를 보여줍니다.
+	 */
+	useEffect(() => {
+		if (gridRef.current.api) {
+			if (!loading && Array.isArray(getRow) && getRow.length === 0) {
+				gridRef.current.api.showNoRowsOverlay()
+			} else if (loading) {
+				gridRef.current.api.showLoadingOverlay()
+			}
+		}
+	}, [loading, getRow])
 
-    const selectedNodes = gridApi.getSelectedNodes()
-    if (selectedNodes.length === 0) {
-      alert('행을 선택해주세요.')
-      return
-    }
+	// Dragging Row
+	const { onRowDragEnd } = useDragginRow({ setRowData, rowData })
 
-    selectedNodes.forEach((node) => {
-      const currentData = node.data
-      let updatedValue
-      // '대표' 필드의 현재 값에 '추천'을 추가합니다.
-      if (currentData['weight'].includes('★')) {
-        // '추천'을 제거합니다.
-        updatedValue = currentData['weight'].replace(`★`, '')
-      } else {
-        // '추천'이 없는 경우에만 추가합니다.
-        updatedValue = `${currentData['weight']} ★`
-      }
-      const updatedData = { ...currentData, weight: updatedValue }
-      node.updateData(updatedData)
-    })
+	const onRecommendClick = () => {
+		if (!gridApi) {
+			console.error('Grid API가 초기화되지 않았습니다.')
+			return
+		}
 
-    gridApi.refreshCells({ force: true })
-  }
-  return (
-    <div style={containerStyle}>
-      <TestContainer hei={hei}>
-        <div style={gridStyle} className="ag-theme-alpine">
-          <AgGridReact
-            // {...gridOptions}
-            onGridReady={onGridReady}
-            columnDefs={columnDefs}
-            rowData={rowData}
-            defaultColDef={defaultColDef}
-            gridOptions={gridOptions}
-            ref={gridRef}
-            onRowDoubleClicked={onRowDoubleClicked}
-            autoGroupColumnDef={autoGroupColumnDef}
-            animateRows={true}
-            suppressRowClickSelection={true}
-            groupSelectsChildren={true}
-            rowSelection={'multiple'}
-            rowGroupPanelShow={'always'}
-            pivotPanelShow={'always'}
-            pagination={true}
-            paginationPageSize={size}
-            isExternalFilterPresent={isExternalFilterPresent}
-            // doesExternalFilterPass={doesExternalFilterPass}
-            onSelectionChanged={onSelectionChanged}
-            pinnedTopRowData={pinnedTopRowData}
-            onRowClicked={onRowClicked}
-            getRowStyle={getRowStyle}
-            // rowHeight={40}
-            overlayNoRowsTemplate={noRowsMessage}
-            overlayLoadingTemplate="데이터를 불러오는 중..."
+		const selectedNodes = gridApi.getSelectedNodes()
+		if (selectedNodes.length === 0) {
+			alert('행을 선택해주세요.')
+			return
+		}
 
-            // sideBar={{ toolPanels: ['columns', 'filters'] }}
-          />
-        </div>
-      </TestContainer>
+		selectedNodes.forEach((node) => {
+			const currentData = node.data
+			let updatedValue
+			// '대표' 필드의 현재 값에 '추천'을 추가합니다.
+			if (currentData['weight'].includes('★')) {
+				// '추천'을 제거합니다.
+				updatedValue = currentData['weight'].replace(`★`, '')
+			} else {
+				// '추천'이 없는 경우에만 추가합니다.
+				updatedValue = `${currentData['weight']} ★`
+			}
+			const updatedData = { ...currentData, weight: updatedValue }
+			node.updateData(updatedData)
+		})
 
-      {isModal && (
-        <>
-          <NonFadeOverlay />
-          <ModalContainer width={550}>
-            <BlueBarHeader>
-              <div>규격 약호 찾기</div>
-              <div>
-                <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
-              </div>
-            </BlueBarHeader>
-            <BlueSubContainer>
-              <FindSpec>
-                <FSTitle>
-                  <div>검색</div>
-                  <RBInput placeholder="회사 명" value={filterText} onChange={(e) => setFilterText(e.target.value)} />
-                  <GreyBtn width={15} height={30} fontSize={16} onClick={onFindButtonClick}>
-                    찾기
-                  </GreyBtn>
-                </FSTitle>
-                <FSResult>
-                  {/* {filteredCountries.map((x, index) => {
+		gridApi.refreshCells({ force: true })
+	}
+	return (
+		<div style={containerStyle}>
+			<TestContainer hei={hei}>
+				<div style={gridStyle} className="ag-theme-alpine">
+					<AgGridReact
+						// {...gridOptions}
+						onGridReady={onGridReady}
+						columnDefs={columnDefs}
+						rowData={rowData}
+						defaultColDef={defaultColDef}
+						gridOptions={gridOptions}
+						ref={gridRef}
+						onRowDoubleClicked={onRowDoubleClicked}
+						autoGroupColumnDef={autoGroupColumnDef}
+						animateRows={true}
+						suppressRowClickSelection={true}
+						groupSelectsChildren={true}
+						rowSelection={'multiple'}
+						rowGroupPanelShow={'always'}
+						pivotPanelShow={'always'}
+						pagination={true}
+						paginationPageSize={size}
+						isExternalFilterPresent={isExternalFilterPresent}
+						// doesExternalFilterPass={doesExternalFilterPass}
+						onSelectionChanged={onSelectionChanged}
+						pinnedTopRowData={pinnedTopRowData}
+						onRowClicked={onRowClicked}
+						getRowStyle={getRowStyle}
+						// rowHeight={40}
+						overlayNoRowsTemplate={noRowsMessage}
+						overlayLoadingTemplate="데이터를 불러오는 중..."
+						// sideBar={{ toolPanels: ['columns', 'filters'] }}
+						onRowDragEnd={dragAndDrop ? onRowDragEnd : () => {}}
+						onCellValueChanged={changeFn}
+					/>
+				</div>
+			</TestContainer>
+
+			{isModal && (
+				<>
+					<NonFadeOverlay />
+					<ModalContainer width={550}>
+						<BlueBarHeader>
+							<div>규격 약호 찾기</div>
+							<div>
+								<WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
+							</div>
+						</BlueBarHeader>
+						<BlueSubContainer>
+							<FindSpec>
+								<FSTitle>
+									<div>검색</div>
+									<RBInput placeholder="회사 명" value={filterText} onChange={(e) => setFilterText(e.target.value)} />
+									<GreyBtn width={15} height={30} fontSize={16} onClick={onFindButtonClick}>
+										찾기
+									</GreyBtn>
+								</FSTitle>
+								<FSResult>
+									{/* {filteredCountries.map((x, index) => {
                     return (
                       <ResultBlock key={index} onClick={() => handleResultBlockClick(x)}>
                         {x}

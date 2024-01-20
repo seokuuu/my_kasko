@@ -24,6 +24,7 @@ export const packageDispatchFields= {
   '중량': 'totalWeight',
   '메모': 'memo',
   '비고': 'note',
+  '시작가':'price',
   '경매 상태': 'auctionStatus',
   '최종 수정자': 'updater',
   '최종 수정 일자': 'updateDate',
@@ -73,7 +74,7 @@ export const packageDispatchFieldsCols = [
     },
   },
   { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '고유 번호', minWidth: 100,},
-  { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지 이름', minWidth: 100,},
+  { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지 이름', minWidth: 150,},
   { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지 번호', minWidth: 110,  
     cellRenderer: LinkCellRender,
     cellRendererParams: {
@@ -81,7 +82,8 @@ export const packageDispatchFieldsCols = [
       editType: 'openDetailModal',
       moveUrl:'/product/packageedit' // modal의 띄울 종류 (선택)
     }},
-  { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '경매 번호', minWidth: 100 },
+  { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '경매 번호', minWidth: 120 },
+  { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '시작가', minWidth: 120 },
   { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '판매 구분', minWidth: 100 },
   { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '판매 유형', minWidth: 100 },
   { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지 경매&판매 시작가', minWidth: 200 },
@@ -96,7 +98,7 @@ export const packageDispatchFieldsCols = [
 
 
 export const packageProductsDispatchFieldsCols = [
-  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '', width: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '', minWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '순번', minWidth: 100 },
   { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지 번호', minWidth: 100 },
   { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '패키지 명', minWidth: 100 },
@@ -151,6 +153,7 @@ export const packageDetailDispatchFieldsCols = [
   { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '낙찰 총 단가', minWidth: 100 },
   { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '공급가', minWidth: 100 },
   { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '부가세', minWidth: 100 },
+  { headerClass: 'custom-header-style', flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '시작가', minWidth: 120 },
   { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '경매 시작가', minWidth: 100 },
   { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '최종수정자', minWidth: 100 },
   { headerClass:'custom-header-style',flex:1,cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },field: '최종 수정 일자', minWidth: 120 },
