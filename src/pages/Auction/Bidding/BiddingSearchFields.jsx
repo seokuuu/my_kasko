@@ -8,7 +8,7 @@ import { CustomerSearch, DateSearchSelect } from '../../../components/Search'
 import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 
-const WinningSearchFields = ({
+const BiddingSearchFields = ({
 	// prettier-ignore
 	search,
 	setSearch,
@@ -131,4 +131,4 @@ const WinningSearchFields = ({
 	)
 }
 
-export default WinningSearchFields
+export default BiddingSearchFields

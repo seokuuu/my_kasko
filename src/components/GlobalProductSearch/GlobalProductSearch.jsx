@@ -90,8 +90,8 @@ const GlobalProductSearch = ({
 			driverName: '', // 기사명 (Driver name)
 			carNumber: '', // 차량 번호 (Car number)
 			memberUid: null, // 회원 고유 번호 (Member UID)
-			startSendDate: '', // 시작 확정 전송일 (Start send date)
-			endSendDate: '', // 종료 확정 전송일 (End send date)
+			startSendDate: '', // 시작 확정 전송일 (Start send date), 확정 전송 일자
+			endSendDate: '', // 종료 확정 전송일 (End send date) , 확정 전송 일자
 			claimStatus: '', // 클레임 진행 상태 (Claim status)
 			timeOfDay: '', // 시간대 (Time of day)
 			exceptSplitProduct: false, // 중량 판매 제품 제외 여부 (Exclude split product)
