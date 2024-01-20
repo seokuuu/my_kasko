@@ -91,7 +91,7 @@ const CommonHeader = ({
 					<GlobalProductSearch
 						param={search}
 						isToggleSeparate={true}
-						renderCustomSearchFields={(props) => <FAQSearchFields {...props} />}
+						renderCustomSearchFields={(props) => <FAQSearchFields {...props} searchOptions={searchCategoryOptions} />}
 						globalProductSearchOnClick={globalProductSearchOnClick}
 						globalProductResetOnClick={globalProductResetOnClick}
 					/>
