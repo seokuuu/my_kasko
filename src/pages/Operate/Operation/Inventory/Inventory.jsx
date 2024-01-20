@@ -179,31 +179,6 @@ const Inventory = ({}) => {
 
 	const [isRotated, setIsRotated] = useState(false)
 
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-		// window.location.reload()
-		setCheck1([])
-		setCheck2([])
-		setCheck3([])
-		setCheck4([])
-		setCheck5([])
-		setCheckSalesStart('')
-		setCheckSalesEnd('')
-		setStart2('')
-		setStart3('')
-		setStart4('')
-		setStart5('')
-		setEnd2('')
-		setEnd3('')
-		setEnd4('')
-		setEnd5('')
-		setSelected((p) => ({ storage: null, sPart: null }))
-		setDestinationData({ name: '', code: '' })
-		setCustomerData({ name: '', code: '' })
-		setProductNumber('')
-	}
-
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 	const [toggleMsg, setToggleMsg] = useState('On')
@@ -313,10 +288,10 @@ const Inventory = ({}) => {
 					/>
 				</div>
 			</TableContianer>
-			{customerPopUp && <InventoryFind title={'고객사 찾기'} setSwitch={setCustomerPopUp} data={inventoryCustomer} />}
+			{/* {customerPopUp && <InventoryFind title={'고객사 찾기'} setSwitch={setCustomerPopUp} data={inventoryCustomer} />}
 			{destinationPopUp && (
 				<InventoryFind title={'목적지 찾기'} setSwitch={setDestinationPopUp} data={inventoryDestination} />
-			)}
+			)} */}
 		</FilterContianer>
 	)
 }
