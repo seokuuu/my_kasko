@@ -9,7 +9,6 @@ import { add_element_field } from '../../../../lib/tableHelpers'
 import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
 import { doubleClickedRowAtom, selectedRowsAtom } from '../../../../store/Layout/Layout'
 import Table from '../../../Table/Table'
-import { searchCategoryOptions } from '../../constants'
 import Header from './components/faq/Header'
 import TableHeader from './components/faq/TableHeader'
 
@@ -24,8 +23,8 @@ const FAQ = ({}) => {
 	const [search, setSearch] = useState({
 		pageNum: 1,
 		pageSize: 50,
-		category: searchCategoryOptions[0],
-		keyword: '',
+		// category: searchCategoryOptions[0],
+		// keyword: '',
 	})
 	// 셀 클릭시 테이블 상세 데이터 조회
 	const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
@@ -34,7 +33,7 @@ const FAQ = ({}) => {
 	// 목록 리스트
 	const [rows, setRows] = useState([])
 	// 목록 API
-	const { data, refetch } = useFaqListQuery({ ...search, category: search.category.label })
+	const { data, refetch } = useFaqListQuery(search)
 
 	console.log('data :', data)
 	/**

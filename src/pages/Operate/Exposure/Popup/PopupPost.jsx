@@ -18,7 +18,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { usePopupDetailsQuery, usePopupRegisterMutation, usePopupUpdateMutation } from '../../../../api/operate/popup'
 import { InputA, PropsInput } from '../../../../common/Input/Input'
 import { CustomSelect } from '../../../../common/Option/Main'
-import useBlockRoute from '../../../../hooks/useBlockRoute'
 import { ExCheckWrap } from '../../../../modal/External/ExternalFilter'
 import useAlert from '../../../../store/Alert/useAlert'
 import { mainPopupSelectOptions } from '../../constants'
@@ -122,7 +121,7 @@ const PopupPost = ({ isRegister }) => {
 	// 객체의 깊은 비교를 위해 loadash의 isEqual을 사용합니다.
 	const blockCondition = useMemo(() => !isEqual(initForm, form) && isRegister && !observeClick, [form, observeClick])
 
-	useBlockRoute(blockCondition)
+	// useBlockRoute(blockCondition)
 
 	useEffect(() => {
 		const updatedCheck = checkDummy.map((value, index) => {
