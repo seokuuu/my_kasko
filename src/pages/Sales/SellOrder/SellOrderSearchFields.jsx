@@ -42,7 +42,7 @@ const SellOrderSearchFields = ({
 			<FilterLeft>
 				<RowWrap>
 					{/* 창고 구분 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>창고 구분</h6>
 						<PWRight>
 							<MainSelect
@@ -68,7 +68,7 @@ const SellOrderSearchFields = ({
 				</RowWrap>
 				{/* 2행 */}
 				<RowWrap>
-					<PartWrap>
+					<PartWrap first>
 						<h6>고객사 명</h6>
 						<Input value={search.customerName} readOnly name="customerName" />
 						<Input value={search.customerCode} readOnly name="customerCode" />
@@ -85,7 +85,7 @@ const SellOrderSearchFields = ({
 				</RowWrap>
 				<RowWrap>
 					{/* 구분 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6 style={{ width: '165px' }}>상시판매 주문일자</h6>
 						<GridWrap>
 							<DateGrid width={130} bgColor={'white'} fontSize={17} />
