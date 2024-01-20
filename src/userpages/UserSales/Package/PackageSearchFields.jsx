@@ -29,10 +29,6 @@ const PackageSearchFields = ({
 		// prettier-ignore
 		storageList,
 		supplierList,
-		spartList,
-		makerList,
-		stockStatusList,
-		gradeList,
 	} = useGlobalProductSearchFieldData()
 
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
@@ -82,7 +78,7 @@ const PackageSearchFields = ({
 					</PartWrap>
 				</RowWrap>
 				{/* 두께 |  폭 | 길이 */}
-				<RowWrap>
+				<RowWrap none>
 					{/* 두깨 */}
 					<PartWrap>
 						<h6>두께(MM)</h6>
@@ -105,7 +101,7 @@ const PackageSearchFields = ({
 						</ExInputsWrap>
 					</PartWrap>
 				</RowWrap>
-				<RowWrap>
+				<RowWrap none>
 					{/* 폭 */}
 					<PartWrap>
 						<h6>폭(MM)</h6>

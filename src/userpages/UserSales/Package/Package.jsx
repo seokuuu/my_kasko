@@ -1,7 +1,5 @@
 import { useContext, useState } from 'react'
 import { useUserPackageProductListQuery } from '../../../api/user'
-import { BlackBtn, GreyBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -12,29 +10,15 @@ import {
 	userPackageProductField,
 } from '../../../constants/user/product'
 import useTableData from '../../../hooks/useTableData'
-// import useTableSearchFieldData from '../../../hooks/useTableSearchFieldData'
-import useTableSearchParams from '../../../hooks/useTableSearchParams'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import useTableSelection from '../../../hooks/useTableSelection'
-import useWishList from '../../../hooks/useWishList'
 import {
-	DoubleWrap,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
 	FilterHeaderAlert,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
 	FilterWrap,
-	Input,
-	MiniInput,
-	PWRight,
-	PartWrap,
-	ResetImg,
-	RowWrap,
 	TCSubContainer,
 	TableContianer,
-	Tilde,
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
 import { toggleAtom } from '../../../store/Layout/Layout'
@@ -42,7 +26,6 @@ import AddCartButton from '../_components/AddCartButton'
 import AddOrderButton from '../_components/AddOrderButton'
 import AddWishButton from '../_components/AddWishButton'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import PackageSearchFields from './PackageSearchFields'
 
 /**

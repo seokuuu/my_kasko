@@ -5,6 +5,7 @@ import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
 	ExInputsWrap,
+	ExRadioWrap,
 	FilterLeft,
 	FilterRight,
 	Input,
@@ -16,8 +17,17 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 import StandardFind from '../../../modal/Multi/StandardFind'
+import CustomerSearch from '../../../components/Search/CustomerSearch'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import { useState } from 'react'
+import { CheckBox } from '../../../common/Check/Checkbox'
 
-const SingleSearchFields = ({
+/**
+ * @constant 주문 상태
+ */
+const ORDER_STATUS_LIST = ['전체', '주문요청', '주문취소', '주문확정']
+
+const OrderSearchFields = ({
 	// prettier-ignore
 	search,
 	setSearch,
@@ -35,6 +45,13 @@ const SingleSearchFields = ({
 	} = useGlobalProductSearchFieldData()
 
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
+
+	/* ============================== COMMON start ============================== */
+	// CHECKS
+	const [checkRadio, setCheckRadio] = useState(
+		Array.from({ length: ORDER_STATUS_LIST.length }, (_, index) => index === 0),
+	)
+	/* ============================== COMMON end ============================== */
 
 	return (
 		<>
@@ -79,6 +96,19 @@ const SingleSearchFields = ({
 							찾기
 						</GreyBtn>
 					</PartWrap>
+				</RowWrap>
+				{/* 고객사 찾기 */}
+				<RowWrap>
+					<CustomerSearch
+						name={search.customerName || ''}
+						code={search.customerCode || ''}
+						setName={(n) => {
+							setSearch((prev) => ({ ...prev, customerName: n }))
+						}}
+						setCode={(c) => {
+							setSearch((prev) => ({ ...prev, customerCode: c }))
+						}}
+					/>
 				</RowWrap>
 				{/* 구분 */}
 				<RowWrap>
@@ -160,6 +190,8 @@ const SingleSearchFields = ({
 							/>
 						</ExInputsWrap>
 					</PartWrap>
+				</RowWrap>
+				<RowWrap none>
 					{/* 길이 */}
 					<PartWrap>
 						<h6>길이(MM)</h6>
@@ -181,6 +213,26 @@ const SingleSearchFields = ({
 							/>
 						</ExInputsWrap>
 					</PartWrap>
+					{/* 진행상태 */}
+					<PartWrap first>
+						<h6>진행 상태</h6>
+						<ExRadioWrap>
+							{ORDER_STATUS_LIST.map((text, index) => (
+								<RadioMainDiv key={index}>
+									<RadioCircleDiv
+										isChecked={checkRadio[index]}
+										onClick={() => {
+											setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
+											setSearch((prev) => ({ ...prev, orderStatusList: text === '전체' ? '' : text }))
+										}}
+									>
+										<RadioInnerCircleDiv isChecked={checkRadio[index]} />
+									</RadioCircleDiv>
+									<div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
+								</RadioMainDiv>
+							))}
+						</ExRadioWrap>
+					</PartWrap>
 				</RowWrap>
 			</FilterLeft>
 			{/* 제품 번호 */}
@@ -198,4 +250,4 @@ const SingleSearchFields = ({
 	)
 }
 
-export default SingleSearchFields
+export default OrderSearchFields
