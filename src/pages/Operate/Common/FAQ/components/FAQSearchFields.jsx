@@ -7,7 +7,7 @@ import { searchCategoryOptions } from '../../../constants'
  * @description
  * FAQ 목록 검색필터입니다.
  */
-const FAQSearchFields = ({ search, setSearch, commonDropdownButtonHandler }) => {
+const FAQSearchFields = ({ search, setSearch, commonDropdownButtonHandler,searchOptions }) => {
 	return (
 		<>
 			<FilterLeft>

@@ -38,7 +38,7 @@ const Notice = ({ title, detailsUrl }) => {
 	// 공지사항 목록 API
 	const { data, refetch } = useNoticeListQuery({
 		...search,
-		category: search.category.label,
+		// category: search.category.label,
 		type: title,
 	})
 

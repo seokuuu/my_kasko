@@ -10,7 +10,6 @@ import { isEqual } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import { useFaqDetailsQuery, useFaqRegisterMutation, useFaqUpdateMutation } from '../../../../api/operate/faq'
 import { BlackBtn, BtnWrap, WhiteBtn } from '../../../../common/Button/Button'
-import useBlockRoute from '../../../../hooks/useBlockRoute'
 import useAlert from '../../../../store/Alert/useAlert'
 
 /**
@@ -95,7 +94,7 @@ const FAQPost = ({ detailsId }) => {
 		[form, observeClick],
 	)
 
-	useBlockRoute(blockCondition)
+	// useBlockRoute(blockCondition)
 	/**
 	 * 상세 데이터값이 있다면 form 데이터 바인딩
 	 */

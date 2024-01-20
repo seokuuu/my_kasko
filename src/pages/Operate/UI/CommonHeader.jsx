@@ -1,19 +1,10 @@
+import { isEqual } from 'lodash'
 import React, { useState } from 'react'
-import { BlackBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import {
-	FilterFooter,
-	FilterHeader,
-	FilterLeft,
-	FilterSubcontianer,
-	FilterWrap,
-	Input,
-	PartWrap,
-	ResetImg,
-	RowWrap,
-} from '../../../modal/External/ExternalFilter'
+import { FilterHeader, FilterWrap } from '../../../modal/External/ExternalFilter'
 import { toggleAtom } from '../../../store/Layout/Layout'
+import FAQSearchFields from '../Common/FAQ/components/FAQSearchFields'
 import CategoryTab from './CategoryTab'
 
 /**
@@ -63,6 +54,29 @@ const CommonHeader = ({
 		setSearch(searchInitValue)
 	}
 
+	const paramData = {
+		pageNum: 1,
+		pageSize: 50,
+	}
+
+	const globalProductResetOnClick = () => {
+		// if resetting the search field shouldn't rerender table
+		// then we need to create paramData object to reset the search fields.
+		setSearch(paramData)
+	}
+
+	const globalProductSearchOnClick = (userSearchParam) => {
+		setSearch((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				refetch()
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+			}
+		})
+	}
 	return (
 		<div>
 			<FilterHeader>
@@ -74,7 +88,14 @@ const CommonHeader = ({
 			</FilterHeader>
 			{exFilterToggle && (
 				<FilterWrap>
-					<FilterSubcontianer>
+					<GlobalProductSearch
+						param={search}
+						isToggleSeparate={true}
+						renderCustomSearchFields={(props) => <FAQSearchFields {...props} />}
+						globalProductSearchOnClick={globalProductSearchOnClick}
+						globalProductResetOnClick={globalProductResetOnClick}
+					/>
+					{/* <FilterSubcontianer>
 						<FilterLeft>
 							<RowWrap>
 								<PartWrap>
@@ -91,14 +112,11 @@ const CommonHeader = ({
 										value={search.keyword}
 										onChange={(e) => setSearch((p) => ({ ...p, keyword: e.target.value }))}
 									/>
-									{/* <GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen}>
-                    찾기
-                  </GreyBtn> */}
 								</PartWrap>
 							</RowWrap>
 						</FilterLeft>
-					</FilterSubcontianer>
-					<FilterFooter>
+					</FilterSubcontianer> */}
+					{/* <FilterFooter>
 						<div style={{ display: 'flex' }}>
 							<p>초기화</p>
 							<ResetImg
@@ -113,7 +131,7 @@ const CommonHeader = ({
 								검색
 							</BlackBtn>
 						</div>
-					</FilterFooter>
+					</FilterFooter> */}
 				</FilterWrap>
 			)}
 		</div>

@@ -23,7 +23,7 @@ const NOTICE_BOARD_KEYS = {
 // 전광판 목록 조회
 export function useNoticeBoardListQuery(params) {
 	return useQuery({
-		queryKey: [...NOTICE_BOARD_KEYS.getNoticeBoardList, params.pageNum, params.pageSize],
+		queryKey: [...NOTICE_BOARD_KEYS.getNoticeBoardList, params],
 		queryFn: async function () {
 			const response = await client.get(urls, { params })
 			return response.data.data

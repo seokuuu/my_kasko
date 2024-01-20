@@ -1,11 +1,11 @@
-import { isEqual } from 'lodash'
 import React, { useState } from 'react'
 import GlobalProductSearch from '../../../../../../components/GlobalProductSearch/GlobalProductSearch'
 import HeaderToggle from '../../../../../../components/Toggle/HeaderToggle'
 import { FilterHeader, FilterWrap } from '../../../../../../modal/External/ExternalFilter'
 import { toggleAtom } from '../../../../../../store/Layout/Layout'
 import CategoryTab from '../../../../UI/CategoryTab'
-import { faqListSearchInitValue, normalTabOptions } from '../../../../constants'
+import { normalTabOptions } from '../../../../constants'
+import useGlobalSearch from '../../../../hook/useGlobalSearch'
 import FAQSearchFields from '../FAQSearchFields'
 
 /**
@@ -16,7 +16,7 @@ import FAQSearchFields from '../FAQSearchFields'
 const Header = ({ search, setSearch, refetch }) => {
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 	const [toggleMsg, setToggleMsg] = useState('On')
-	const [isRotated, setIsRotated] = useState(false)
+	// const [isRotated, setIsRotated] = useState(false)
 	// const [isModal, setIsModal] = useAtom(blueModalAtom)
 
 	const toggleBtnClick = () => {
@@ -28,45 +28,7 @@ const Header = ({ search, setSearch, refetch }) => {
 		}
 	}
 
-	// 초기화
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-		refetch()
-	}
-
-	// 검색
-	function searchHandler() {
-		refetch()
-		setSearch(faqListSearchInitValue)
-	}
-
-	// const modalOpen = () => {
-	//   setIsModal(true)
-	// }
-
-	const paramData = {
-		pageNum: 1,
-		pageSize: 50,
-	}
-
-	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
-		setSearch(paramData)
-	}
-
-	const globalProductSearchOnClick = (userSearchParam) => {
-		setSearch((prevParam) => {
-			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				refetch()
-				return prevParam
-			}
-			return {
-				...prevParam,
-				...userSearchParam,
-			}
-		})
-	}
+	const { globalProductResetOnClick, globalProductSearchOnClick } = useGlobalSearch({ setSearch, refetch })
 	return (
 		<div>
 			<FilterHeader>
