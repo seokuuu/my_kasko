@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useUserSingleProductListQuery } from '../../../api/user'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { PROD_CATEGORY, userSingleProductField, userSingleProductFieldsCols } from '../../../constants/user/product'
 import useTableData from '../../../hooks/useTableData'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import useTableSelection from '../../../hooks/useTableSelection'
 import {
 	FilterContianer,
@@ -22,7 +22,6 @@ import AddCartButton from '../_components/AddCartButton'
 import AddOrderButton from '../_components/AddOrderButton'
 import AddWishButton from '../_components/AddWishButton'
 import SingleSearchFields from './SingleSearchFields'
-import { isArray } from 'lodash'
 
 /**
  * @constant 기본 페이지 검색 값
@@ -38,7 +37,7 @@ const initialPageParams = {
 const getValidParams = (params) => {
 	const validParams = Object.keys(params).reduce((acc, key) => {
 		let value = params[key]
-		if (isArray(value)) {
+		if (Array.isArray(value)) {
 			value = value.length < 1 ? null : value.toString()
 		}
 		if (typeof value === 'string' && value.length < 1) {
@@ -118,11 +117,6 @@ const Single = () => {
 		} else {
 			setToggleMsg('On')
 		}
-	}
-	// RESET
-	const [isRotated, setIsRotated] = useState(false)
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
 	}
 	/* ============================== COMMON end ============================== */
 

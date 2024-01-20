@@ -17,7 +17,7 @@ import {
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 import StandardFind from '../../../modal/Multi/StandardFind'
 
-const SingleSearchFields = ({
+const PackageSearchFields = ({
 	// prettier-ignore
 	search,
 	setSearch,
@@ -31,6 +31,7 @@ const SingleSearchFields = ({
 		supplierList,
 		spartList,
 		makerList,
+		stockStatusList,
 		gradeList,
 	} = useGlobalProductSearchFieldData()
 
@@ -80,42 +81,6 @@ const SingleSearchFields = ({
 						</GreyBtn>
 					</PartWrap>
 				</RowWrap>
-				{/* 구분 */}
-				<RowWrap>
-					<PartWrap first>
-						<h6>구분</h6>
-						{/* 제품군 */}
-						<PWRight>
-							<MainSelect
-								options={spartList}
-								defaultValue={spartList[0]}
-								value={search.spart}
-								name="spart"
-								onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
-							/>
-						</PWRight>
-						{/* 제조사 */}
-						<PWRight>
-							<MainSelect
-								options={makerList}
-								defaultValue={makerList[0]}
-								value={search.maker}
-								name="maker"
-								onChange={(e) => commonDropdownButtonHandler(e, 'maker')}
-							/>
-						</PWRight>
-						{/* 등급 */}
-						<PWRight>
-							<MainSelect
-								options={gradeList}
-								defaultValue={gradeList[0]}
-								value={search.grade}
-								name="grade"
-								onChange={(e) => commonDropdownButtonHandler(e, 'grade')}
-							/>
-						</PWRight>
-					</PartWrap>
-				</RowWrap>
 				{/* 두께 |  폭 | 길이 */}
 				<RowWrap>
 					{/* 두깨 */}
@@ -139,6 +104,8 @@ const SingleSearchFields = ({
 							/>
 						</ExInputsWrap>
 					</PartWrap>
+				</RowWrap>
+				<RowWrap>
 					{/* 폭 */}
 					<PartWrap>
 						<h6>폭(MM)</h6>
@@ -185,12 +152,21 @@ const SingleSearchFields = ({
 			</FilterLeft>
 			{/* 제품 번호 */}
 			<FilterRight>
-				<ProductNumber
-					initialValue={search.productNumberList}
-					setState={setSearch}
-					valueName={'productNumberList'}
-					height="100%"
-				/>
+				<div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+					<ProductNumber
+						initialValue={search.productNumberList}
+						setState={setSearch}
+						valueName={'productNumberList'}
+						height="100%"
+					/>
+					<ProductNumber
+						title="패키지 번호"
+						initialValue={search.packageNumberList || []}
+						setState={setSearch}
+						valueName={'packageNumberList'}
+						height="100%"
+					/>
+				</div>
 			</FilterRight>
 			{/* 규격 약호 */}
 			{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
@@ -198,4 +174,4 @@ const SingleSearchFields = ({
 	)
 }
 
-export default SingleSearchFields
+export default PackageSearchFields
