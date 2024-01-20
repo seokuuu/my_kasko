@@ -154,16 +154,14 @@ const Single = () => {
 					)}
 				</FilterHeaderAlert>
 				{exFilterToggle && (
-					<FilterWrap>
-						<GlobalProductSearch
-							// prettier-ignore
-							param={param}
-							isToggleSeparate={true}
-							renderCustomSearchFields={(props) => <SingleProductSearchFields {...props} />}
-							globalProductSearchOnClick={globalProductSearchOnClick}
-							globalProductResetOnClick={globalProductResetOnClick}
-						/>
-					</FilterWrap>
+					<GlobalProductSearch
+						// prettier-ignore
+						param={param}
+						isToggleSeparate={true}
+						renderCustomSearchFields={(props) => <SingleProductSearchFields {...props} />}
+						globalProductSearchOnClick={globalProductSearchOnClick}
+						globalProductResetOnClick={globalProductResetOnClick}
+					/>
 				)}
 			</div>
 			<TableContianer>

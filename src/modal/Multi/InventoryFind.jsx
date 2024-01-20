@@ -19,11 +19,12 @@ import {
 import { GreyBtn } from '../../common/Button/Button'
 import { TxtInput } from '../../common/Input/Input'
 
+import { getCustomerFind } from '../../service/admin/Auction'
 import styled from 'styled-components'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 
 // 고객사 찾기
-const InventoryFind = ({ title, setSwitch, data, type, setPropsUid }) => {
+const InventoryFind = ({ title, setSwitch, data, type, setPropsUid, handleButtonClick }) => {
   const matchData = { name: '고객명', code: '고객사 코드', businessNumber: '사업자번호' }
   const destinationData = { name: '목적지', code: '목적지 코드' }
 
@@ -205,6 +206,7 @@ const InventoryFind = ({ title, setSwitch, data, type, setPropsUid }) => {
             <BlueBlackBtn
               onClick={() => {
                 setSwitch(false)
+                handleButtonClick(clickResult)
                 return title === '고객사 찾기'
                   ? Object.assign(invenCustomerData.init, clickedResult)
                   : type === '낙찰 생성'
@@ -224,6 +226,6 @@ const InventoryFind = ({ title, setSwitch, data, type, setPropsUid }) => {
 export default InventoryFind
 
 export const BMDTitle = styled.div`
-  display: flex;
-  justify-content: center;
+	display: flex;
+	justify-content: center;
 `
