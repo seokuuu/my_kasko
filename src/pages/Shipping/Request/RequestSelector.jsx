@@ -6,8 +6,10 @@ import Table from '../../Table/Table'
 import { useShipmentMergeMutation } from '../../../api/shipment'
 import MergeHeader from './MergeHeader'
 import { calculateTotal } from './utils'
+import useAlert from '../../../store/Alert/useAlert'
 
 const RequestSelector = ({ list, destinations, removeSelector }) => {
+	const { simpleAlert, simpleConfirm } = useAlert()
 	const [dockStatus, setDockStatus] = useState(false) // 상차도 여부
 	const [mergeCost, setMergeCost] = useState(0) // 합짐비
 
@@ -16,14 +18,10 @@ const RequestSelector = ({ list, destinations, removeSelector }) => {
 	// 선별 등록
 	const onRegister = () => {
 		const orderUids = list?.map((item) => item['주문 고유 번호'])
-
 		if (orderUids.length === 0) {
-			return window.alert('선별 목록에 제품을 추가해주세요.')
+			return simpleAlert('선별 목록에 제품을 추가해주세요.')
 		}
-
-		if (window.confirm('선별 등록하시겠습니까?')) {
-			onCreateMerge({ dockStatus, orderUids })
-		}
+		simpleConfirm('선별 등록하시겠습니까?', () => onCreateMerge({ dockStatus, orderUids }))
 	}
 
 	return (
