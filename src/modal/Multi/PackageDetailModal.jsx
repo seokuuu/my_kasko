@@ -47,17 +47,8 @@ export default function PackageDetailModal() {
   const detailList = data?.r
   const tablePagination = data?.pagination
   const [filteredData, setFilteredData] = useState([])
-  // const [exFilterToggle, setExfilterToggle] = useAtom(toggleAtom)
-  // const [toggleMsg, setToggleMsg] = useState('On')
-  // const toggleBtnClick = () => {
-  //   setExfilterToggle((prev) => !prev)
-  //   if (exFilterToggle === true) {
-  //     setToggleMsg('Off')
-  //   } else {
-  //     setToggleMsg('On')
-  //   }
-  // }
-  // console.log(Object.entries(select).map(([k, v]) => {}))
+
+  console.log('ROW', getRow)
   useEffect(() => {
     if (filteredData && isSuccess) {
       detailList && setFilteredData(detailList)
@@ -124,10 +115,10 @@ export default function PackageDetailModal() {
                   {titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
                     <Fragment key={idx}>
                       <ClaimTitle>{title}</ClaimTitle>
-                      {title === '패키지 명' && <ClaimContent>{select['패키지 이름']}</ClaimContent>}
+                      {title === '패키지 명' && <ClaimContent>{detailList[0].packageName}</ClaimContent>}
                       {title === '수량' && <ClaimContent>{filteredData.length}</ClaimContent>}
-                      {title === '상시판매가' && <ClaimContent>{select['패키지 경매&판매 시작가']}</ClaimContent>}
-                      {title === '시작가' && <ClaimContent>{select['패키지 경매&판매 시작가']}</ClaimContent>}
+                      {title === '상시판매가' && <ClaimContent>{detailList[0].packagePrice}</ClaimContent>}
+                      {title === '시작가' && <ClaimContent>{detailList[0].auctionStartPrice}</ClaimContent>}
                     </Fragment>
                   ))}
                 </ClaimRow>
@@ -141,7 +132,7 @@ export default function PackageDetailModal() {
                 </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <PageDropdown handleDropdown={handleTablePageSize} />
-                  <Excel />
+                  <Excel getRow={getRow} />
                 </div>
               </TCSubContainer>
               <TCSubContainer bor>

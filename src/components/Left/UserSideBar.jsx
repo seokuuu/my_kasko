@@ -32,7 +32,7 @@ const data = [
   {
     depth1: '경매',
     depth2: [
-      { title: '경매(단일)', link: 'userpage/actionsingle' },
+      { title: '경매(단일)', link: 'userpage/auctionsingle' },
       { title: '경매(패키지)', link: 'userpage/auctionpackage' },
       { title: '경매 진행 조회', link: 'userpage/actionstatus' },
       { title: '낙찰 확인', link: 'userpage/auctionwinning' },
