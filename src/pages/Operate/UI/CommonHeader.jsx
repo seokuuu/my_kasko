@@ -1,10 +1,10 @@
-import { isEqual } from 'lodash'
 import React, { useState } from 'react'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { FilterHeader, FilterWrap } from '../../../modal/External/ExternalFilter'
 import { toggleAtom } from '../../../store/Layout/Layout'
 import FAQSearchFields from '../Common/FAQ/components/FAQSearchFields'
+import useGlobalSearch from '../hook/useGlobalSearch'
 import CategoryTab from './CategoryTab'
 
 /**
@@ -31,8 +31,6 @@ const CommonHeader = ({
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 	const [toggleMsg, setToggleMsg] = useState('On')
 
-	const [isRotated, setIsRotated] = useState(false)
-
 	const toggleBtnClick = () => {
 		setExfilterToggle((prev) => !prev)
 		if (exFilterToggle === true) {
@@ -42,41 +40,8 @@ const CommonHeader = ({
 		}
 	}
 
-	// 초기화
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-		refetch()
-	}
+	const { globalProductSearchOnClick, globalProductResetOnClick } = useGlobalSearch({ setSearch, refetch })
 
-	// 검색
-	function searchHandler() {
-		refetch()
-		setSearch(searchInitValue)
-	}
-
-	const paramData = {
-		pageNum: 1,
-		pageSize: 50,
-	}
-
-	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
-		setSearch(paramData)
-	}
-
-	const globalProductSearchOnClick = (userSearchParam) => {
-		setSearch((prevParam) => {
-			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				refetch()
-				return prevParam
-			}
-			return {
-				...prevParam,
-				...userSearchParam,
-			}
-		})
-	}
 	return (
 		<div>
 			<FilterHeader>
@@ -95,43 +60,6 @@ const CommonHeader = ({
 						globalProductSearchOnClick={globalProductSearchOnClick}
 						globalProductResetOnClick={globalProductResetOnClick}
 					/>
-					{/* <FilterSubcontianer>
-						<FilterLeft>
-							<RowWrap>
-								<PartWrap>
-									<h6>검색</h6>
-									<MainSelect
-										options={searchCategoryOptions}
-										defaultValue={searchCategoryOptions[0]}
-										value={search.category}
-										onChange={(e) => {
-											setSearch((p) => ({ ...p, category: e }))
-										}}
-									/>
-									<Input
-										value={search.keyword}
-										onChange={(e) => setSearch((p) => ({ ...p, keyword: e.target.value }))}
-									/>
-								</PartWrap>
-							</RowWrap>
-						</FilterLeft>
-					</FilterSubcontianer> */}
-					{/* <FilterFooter>
-						<div style={{ display: 'flex' }}>
-							<p>초기화</p>
-							<ResetImg
-								src="/img/reset.png"
-								style={{ marginLeft: '10px', marginRight: '20px' }}
-								onClick={handleImageClick}
-								className={isRotated ? 'rotate' : ''}
-							/>
-						</div>
-						<div style={{ width: '180px' }}>
-							<BlackBtn width={100} height={40} onClick={searchHandler}>
-								검색
-							</BlackBtn>
-						</div>
-					</FilterFooter> */}
 				</FilterWrap>
 			)}
 		</div>
