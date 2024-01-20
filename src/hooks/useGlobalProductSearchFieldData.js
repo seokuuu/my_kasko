@@ -125,12 +125,6 @@ const useGlobalProductSearchFieldData = () => {
 		},
 	]
 
-	// 고객사 찾기
-	const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
-
-	// 목적지 찾기
-	const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
-
 	return {
 		storageList,
 		supplierList,
@@ -139,8 +133,8 @@ const useGlobalProductSearchFieldData = () => {
 		stockStatusList,
 		gradeList,
 		preferThicknessList,
-		inventoryDestination,
-		inventoryCustomer,
+		// inventoryDestination,
+		// inventoryCustomer,
 	}
 }
 

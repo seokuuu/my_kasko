@@ -2,6 +2,7 @@ import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/O
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
 import UserSideBar from '../../../components/Left/UserSideBar'
+import UserSalesWrapper from '../_layouts/UserSalesWrapper'
 import Order from './Order'
 import OrderDetail from './OrderDetail'
 import { useState } from 'react'
@@ -13,7 +14,7 @@ const OrderPage = () => {
   const { salesNumber } = useParams(); 
 
   return (
-    <>
+    <UserSalesWrapper>
       <Header />
       <OverAllMain>
         <UserSideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
@@ -24,7 +25,7 @@ const OrderPage = () => {
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>
-    </>
+    </UserSalesWrapper>
   )
 }
 

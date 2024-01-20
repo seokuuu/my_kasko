@@ -2,21 +2,12 @@ import { useAtomValue } from 'jotai'
 import { GreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import {
-	FilterRight,
-	FilterLeft,
-	Input,
-	PWRight,
-	PartWrap,
-	RowWrap,
-	Tilde,
-	GridWrap,
-} from '../../../modal/External/ExternalFilter'
+import { FilterRight, FilterLeft, Input, PWRight, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
-import DateGrid from '../../../components/DateGrid/DateGrid'
 import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
 import { customerModalAtom } from '../../../store/Layout/GlobalProductSearch'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
+import { DateSearchSelect, InputSearch } from '../../../components/Search'
 
 const SellOrderSearchFields = ({
 	search,
@@ -42,12 +33,12 @@ const SellOrderSearchFields = ({
 			<FilterLeft>
 				<RowWrap>
 					{/* 창고 구분 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>창고 구분</h6>
 						<PWRight>
 							<MainSelect
 								options={storageList}
-								// defaultValue={storageList[0]}
+								defaultValue={storageList[0]}
 								value={search.storage}
 								name="storage"
 								onChange={(e) => commonDropdownButtonHandler(e, 'storage')}
@@ -68,7 +59,7 @@ const SellOrderSearchFields = ({
 				</RowWrap>
 				{/* 2행 */}
 				<RowWrap>
-					<PartWrap>
+					<PartWrap first>
 						<h6>고객사 명</h6>
 						<Input value={search.customerName} readOnly name="customerName" />
 						<Input value={search.customerCode} readOnly name="customerCode" />
@@ -85,17 +76,21 @@ const SellOrderSearchFields = ({
 				</RowWrap>
 				<RowWrap>
 					{/* 구분 */}
-					<PartWrap>
-						<h6 style={{ width: '165px' }}>상시판매 주문일자</h6>
-						<GridWrap>
-							<DateGrid width={130} bgColor={'white'} fontSize={17} />
-							<Tilde>~</Tilde>
-							<DateGrid width={130} bgColor={'white'} fontSize={17} />
-						</GridWrap>
+					<PartWrap first>
+						<DateSearchSelect
+							title={'상시판매 주문일자'}
+							startInitDate={search.orderStartDate}
+							endInitDate={search.orderEndDate}
+							startDateChange={(value) => commonDropdownButtonHandler(value, 'orderStartDate')}
+							endDateChange={(value) => commonDropdownButtonHandler(value, 'orderEndDate')}
+						/>
 					</PartWrap>
 					<PartWrap>
-						<h6>상시 판매 번호</h6>
-						<Input />
+						<InputSearch
+							title={'상시 판매 번호'}
+							value={search.productName}
+							onChange={(value) => commonDropdownButtonHandler(value, 'auctionNumber')}
+						/>
 					</PartWrap>
 				</RowWrap>
 				<PartWrap first>
@@ -114,7 +109,7 @@ const SellOrderSearchFields = ({
 							},
 						]}
 						setState={setSearch}
-						stateKey="saleCategoryList"
+						stateKey="orderStatusList"
 					/>
 				</PartWrap>
 			</FilterLeft>
