@@ -46,7 +46,7 @@ const PickerWrap = styled.div`
 	height: ${(props) => (props.height ? `${props.height}px` : '37px')};
 	border: 1px solid #c8c8c8;
 	left: ${(props) => props.left}px;
-	background-color: ${(props) => props.bgColor};
+	background-color: ${(props) => (props.bgColor ? `${props.bgColor}` : 'white')};
 	align-items: center;
 `
 
