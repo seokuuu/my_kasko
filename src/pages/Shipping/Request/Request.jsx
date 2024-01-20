@@ -33,7 +33,6 @@ const Request = ({ setChoiceComponent }) => {
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 	const exFilterToggle = useAtomValue(toggleAtom)
 
-	// data fetch
 	const [param, setParam] = useState(initData)
 	const [rows, setRows] = useState([])
 	const [pagination, setPagination] = useState(null)

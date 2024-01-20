@@ -147,12 +147,12 @@ import NoticeDetailsPage from './pages/Operate/Common/Notice/NoticeDetailsPage'
 import NoticeBoardDetailsPage from './pages/Operate/Exposure/NoticeBoard/NoticeBoardDetailsPage'
 import ShipmentInvoicePage from './pages/Shipping/Achievement/ShipmentInvoicePage'
 import StatusPage from './pages/Shipping/Status/StatusPage'
+import DisRegisterDetailPage from './pages/Shipping/Dispatch/DisRegisterDetailPage'
 // import StatusPage from './pages/Shipping/Status/StatusPage'
 // import ShipmentInvoicePage from './pages/Shipping/Achievement/ShipmentInvoicePage'
 // RoundAucProAdd
 const Router = () => {
 	return (
-
 		<Routes>
 			{/* 테스트 URL */}
 			<Route path="/ppapp" element={<WinningCreate />} />
@@ -217,12 +217,11 @@ const Router = () => {
 				<Route path="/shipping/request" element={<RequestPage />} />
 				<Route path="/shipping/dispatch" element={<DispatchPage />} />
 				<Route path="/shipping/dispatch/register" element={<DisRegisterPage />} />
-
+				<Route path="/shipping/dispatch/register/:id" element={<DisRegisterDetailPage />} />
 				<Route path="/shipping/status" element={<StatusPage />} />
 				<Route path="/shipping/status/:id" element={<StatusDetailPage />} />
 				<Route path="/shipping/achievement" element={<AchievementPage />} />
 				<Route path="/shipping/achievement/invoice" element={<ShipmentInvoicePage />} />
-
 				<Route path="/shipping/claim/register" element={<ClaimRegisterPage />} />
 			</Route>
 			{/* 기준 관리 */}
@@ -299,10 +298,8 @@ const Router = () => {
 			<Route path="/userpage">
 				<Route path="/userpage/notice" element={<UNotice />}></Route>
 				<Route path="/userpage/docs" element={<UDocs />}></Route>
-
 				<Route path="/userpage/docs/:uid" element={<UDocsDetail />}></Route>
 				<Route path="/userpage/notice/:uid" element={<UNoticeDetail />}></Route>
-
 
 				{/* 경매 */}
 				<Route path="/userpage/auctionsingle" element={<UAuctionSingle />}></Route>
@@ -332,7 +329,6 @@ const Router = () => {
 				<Route path="/userpage/userterms" element={<UTerms />}></Route>
 			</Route>
 		</Routes>
-
 	)
 }
 export const router = createBrowserRouter([{ path: '*', Component: Router }])
