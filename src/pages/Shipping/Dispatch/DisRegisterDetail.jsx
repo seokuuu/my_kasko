@@ -1,11 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BlackBtn, WhiteBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import {
-	aucProAddModalAtom,
-	doubleClickedRowAtom,
-	selectedRowsAtom,
-	StandardDispatchDetailAtom,
-} from '../../../store/Layout/Layout'
+import { aucProAddModalAtom, selectedRowsAtom, StandardDispatchDetailAtom } from '../../../store/Layout/Layout'
 import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
 import {
@@ -23,28 +18,23 @@ import DisRegisterDetailHeader from './DisRegisterDetailHeader'
 import { useAtom } from 'jotai/index'
 import RequestAddModal from '../Request/RequestAddModal'
 import { BlueBarBtnWrap } from '../../../modal/Common/Common.Styled'
-import { useAuth } from '../../../store/auth'
 import DispatchDetail from '../../../modal/Multi/DispatchDetail'
+import { useNavigate } from 'react-router-dom'
+import useAlert from '../../../store/Alert/useAlert'
 
 const DisRegisterDetail = ({ id }) => {
-	const user = useAuth()
-	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
+	const navigate = useNavigate()
+	const { simpleAlert, simpleConfirm } = useAlert()
 	const [isPostModal, setIsPostModal] = useAtom(StandardDispatchDetailAtom)
-
-	// Table
-	const tableField = useRef(ShippingDispatchDetailsFieldsCols)
-	const getCol = tableField.current
-	const [getRow, setGetRow] = useState('')
-	const [rowChecked, setRowChecked] = useAtom(selectedRowsAtom)
-
-	// 모달
 	const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
+	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 
-	const { data, isLoading } = useShipmentDispatchDetailsQuery(id)
+	const [rows, setRows] = useState('')
 	const [list, setList] = useState([])
 	const [selectedId, setSelectedId] = useState(null) // 체크 박스 선택한 id 값
 	const [dockStatus, setDockStatus] = useState(null) // 상차도 여부
 
+	const { data, isLoading } = useShipmentDispatchDetailsQuery(id)
 	const { mutate: removeDispatch } = useRemoveDispatchMutation() // 배차 취소
 	const { mutate: updateMerge } = useShipmentMergeUpdateMutation() // 선별 목록 변경
 	const { mutate: deleteMerge } = useShipmentMergeDeleteMutation() // 선별 목록 해제
@@ -64,20 +54,23 @@ const DisRegisterDetail = ({ id }) => {
 				throw new Error('목적지가 3개 이상입니다.')
 			}
 			setList(newList) // 선별 목록 데이터 등록
-			setRowChecked([]) // 테이블 체크 목록 초기화
+			setSelectedRows([]) // 테이블 체크 목록 초기화
 			addListModalClose()
 		} catch (error) {
-			window.alert(error.message)
+			simpleAlert(error.message)
 		}
 	}
 
 	// 목록 제거
 	const onListRemove = () => {
+		if (!selectedRows || selectedRows.length === 0) {
+			return simpleAlert('제품을 선택해주세요.')
+		}
 		const key = '주문 고유 번호'
-		const deleteKeys = rowChecked.map((item) => item[key])
+		const deleteKeys = selectedRows.map((item) => item[key])
 		const newSelectors = list.filter((item) => !deleteKeys.includes(item?.orderUid))
 		setList(newSelectors)
-		setRowChecked([]) // 테이블 체크 목록 초기화
+		setSelectedRows([]) // 테이블 체크 목록 초기화
 	}
 
 	// 배차 취소
@@ -85,11 +78,9 @@ const DisRegisterDetail = ({ id }) => {
 		const targetData = data[0]
 		const driverStatus = Boolean(targetData.driverStatus)
 		if (!driverStatus) {
-			return window.alert('취소하기 전 배차를 등록해주세요.')
+			return simpleAlert('취소하기 전 배차를 등록해주세요.')
 		}
-		if (window.confirm('배차 취소를 하시겠습니까?')) {
-			removeDispatch(targetData.outUid)
-		}
+		simpleConfirm('배차 취소를 하시겠습니까?', () => removeDispatch(targetData.outUid))
 	}
 
 	// 배차 등록
@@ -105,9 +96,7 @@ const DisRegisterDetail = ({ id }) => {
 			productOutUid: data[0].outUid,
 			status: '요청',
 		}
-		if (window.confirm('요청하시겠습니까?')) {
-			statusUpdateMerge(body)
-		}
+		simpleConfirm('요청하시겠습니까?', () => statusUpdateMerge(body))
 	}
 
 	// 요청 승인 반려
@@ -116,9 +105,7 @@ const DisRegisterDetail = ({ id }) => {
 			productOutUid: data[0].outUid,
 			status: '반려',
 		}
-		if (window.confirm('반려하시겠습니까?')) {
-			statusUpdateMerge(body)
-		}
+		simpleConfirm('반려하시겠습니까?', () => statusUpdateMerge(body))
 	}
 
 	// 요청 승인
@@ -127,9 +114,7 @@ const DisRegisterDetail = ({ id }) => {
 			productOutUid: data[0].outUid,
 			status: '승인',
 		}
-		if (window.confirm('승인하시겠습니까?')) {
-			statusUpdateMerge(body)
-		}
+		simpleConfirm('승인하시겠습니까?', () => statusUpdateMerge(body))
 	}
 
 	// 선별 목록 수정
@@ -145,31 +130,27 @@ const DisRegisterDetail = ({ id }) => {
 			orderUids: updateOrderUids,
 		}
 		if (isEqual) {
-			return window.alert('변경할 목록을 추가하거나 제거해주세요.')
+			return simpleAlert('변경할 목록을 추가하거나 제거해주세요.')
 		}
 		if (body.orderUids.length === 0) {
-			return window.alert('변경할 목록을 추가해주세요.')
+			return simpleAlert('변경할 목록을 추가해주세요.')
 		}
-		if (window.confirm('변경 하시겠습니까? (창고사 일 경우 자동으로 승인상태가 요청으로 변경됩니다.)')) {
-			updateMerge(body)
-		}
+		simpleConfirm('변경 하시겠습니까? (창고사 일 경우 자동으로 승인상태가 요청으로 변경됩니다.)', () =>
+			updateMerge(body),
+		)
 	}
 
 	// 선별 취소
 	const onDeleteMerge = () => {
 		if (data[0].outStatus === '승인') {
-			return window.alert('이미 승인된 상태이므로 선별 취소가 불가능합니다.')
+			return simpleAlert('이미 승인된 상태이므로 선별 취소가 불가능합니다.')
 		}
-		if (window.confirm('선별 취소하시겠습니까?')) {
-			deleteMerge(data[0].outUid)
-		}
+		simpleConfirm('선별 취소하시겠습니까?', () => deleteMerge(data[0].outUid))
 	}
-
-	const backTo = () => setDetailRow(false)
 
 	useEffect(() => {
 		if (list && Array.isArray(list)) {
-			setGetRow(add_element_field(list, ShippingDispatchDetailsFields))
+			setRows(add_element_field(list, ShippingDispatchDetailsFields))
 		}
 	}, [list])
 
@@ -203,7 +184,7 @@ const DisRegisterDetail = ({ id }) => {
 						<WhiteSkyBtn onClick={onSetDispatch}>배차 등록</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={getCol} getRow={getRow} loading={isLoading} />
+				<Table getCol={ShippingDispatchDetailsFieldsCols} getRow={rows} loading={isLoading} />
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -211,7 +192,7 @@ const DisRegisterDetail = ({ id }) => {
 					</div>
 				</TCSubContainer>
 				<BlueBarBtnWrap style={{ gap: '12px' }}>
-					<WhiteBtn fontSize={17} width={10} height={35} onClick={backTo}>
+					<WhiteBtn fontSize={17} width={10} height={35} onClick={() => navigate(-1)}>
 						돌아가기
 					</WhiteBtn>
 					<BlackBtn fontSize={17} width={10} height={35} onClick={onUpdateMerge}>

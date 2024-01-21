@@ -1,4 +1,4 @@
-import { Route, Routes, createBrowserRouter } from 'react-router-dom'
+import { Route, Routes, createBrowserRouter, useBlocker } from 'react-router-dom'
 
 import CalendarModal from './modal/Calender/Calendar'
 import Test from './pages/Test/Test'
@@ -145,6 +145,9 @@ import TestExcel from './pages/Test/TestExcel'
 import WinningCreate from './pages/Auction/Winning/WinningCreate'
 import NoticeDetailsPage from './pages/Operate/Common/Notice/NoticeDetailsPage'
 import NoticeBoardDetailsPage from './pages/Operate/Exposure/NoticeBoard/NoticeBoardDetailsPage'
+import ShipmentInvoicePage from './pages/Shipping/Achievement/ShipmentInvoicePage'
+import StatusPage from './pages/Shipping/Status/StatusPage'
+import DisRegisterDetailPage from './pages/Shipping/Dispatch/DisRegisterDetailPage'
 // import StatusPage from './pages/Shipping/Status/StatusPage'
 // import ShipmentInvoicePage from './pages/Shipping/Achievement/ShipmentInvoicePage'
 // RoundAucProAdd
@@ -214,10 +217,11 @@ const Router = () => {
 				<Route path="/shipping/request" element={<RequestPage />} />
 				<Route path="/shipping/dispatch" element={<DispatchPage />} />
 				<Route path="/shipping/dispatch/register" element={<DisRegisterPage />} />
-				{/* <Route path="/shipping/status" element={<StatusPage />} /> */}
+				<Route path="/shipping/dispatch/register/:id" element={<DisRegisterDetailPage />} />
+				<Route path="/shipping/status" element={<StatusPage />} />
 				<Route path="/shipping/status/:id" element={<StatusDetailPage />} />
 				<Route path="/shipping/achievement" element={<AchievementPage />} />
-				{/* <Route path="/shipping/achievement/invoice" element={<ShipmentInvoicePage />} /> */}
+				<Route path="/shipping/achievement/invoice" element={<ShipmentInvoicePage />} />
 				<Route path="/shipping/claim/register" element={<ClaimRegisterPage />} />
 			</Route>
 			{/* 기준 관리 */}

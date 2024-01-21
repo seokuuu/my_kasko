@@ -27,7 +27,7 @@ const NOTICE_KEYS = {
 /// 공지&자료실 목록 조회
 export function useNoticeListQuery(params) {
 	return useQuery({
-		queryKey: [...NOTICE_KEYS.getNoticeList, params.type, params.pageNum],
+		queryKey: [...NOTICE_KEYS.getNoticeList, params],
 		queryFn: async function () {
 			const response = await client.get(urls, {
 				params,

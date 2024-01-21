@@ -1,10 +1,7 @@
-import { useAtom, useSetAtom } from 'jotai'
 import React from 'react'
 import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import AlertPopup from '../../../modal/Alert/AlertPopup'
 import { TCSubContainer } from '../../../modal/External/ExternalFilter'
-import { popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Layout'
 import { onSizeChange } from '../utils'
 
 /**
@@ -21,41 +18,35 @@ import { onSizeChange } from '../utils'
  * @param setState setState
  **/
 const CommonTableHeader = ({
-  totalLength,
-  removeEventHandler,
-  toRegister,
-  title,
-  selectedLength,
-  isNoneBtn,
-  setState,
+	totalLength,
+	removeEventHandler,
+	toRegister,
+	title,
+	selectedLength,
+	isNoneBtn,
+	setState,
 }) => {
-  // 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
-  const [popupSwitch, setPopupSwitch] = useAtom(popupAtom)
-  const setNowPopupType = useSetAtom(popupTypeAtom) // 팝업 타입
-  const setNowPopup = useSetAtom(popupObject) // 팝업 객체
-
-  return (
-    <>
-      <TCSubContainer bor>
-        <div>
-          조회 목록 (선택 <span>{selectedLength}</span> / {totalLength}개 )
-        </div>
-        <PageDropdown handleDropdown={(e) => onSizeChange(e, setState)} />
-      </TCSubContainer>
-      <TCSubContainer>
-        <div>
-          선택 <span> {selectedLength} </span>(개)
-        </div>
-        {!isNoneBtn && (
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <WhiteRedBtn onClick={removeEventHandler}>{title} 삭제</WhiteRedBtn>
-            <SkyBtn onClick={toRegister}>{title} 등록</SkyBtn>
-          </div>
-        )}
-      </TCSubContainer>
-      {popupSwitch && <AlertPopup setPopupSwitch={setPopupSwitch} />}
-    </>
-  )
+	return (
+		<>
+			<TCSubContainer bor>
+				<div>
+					조회 목록 (선택 <span>{selectedLength}</span> / {totalLength}개 )
+				</div>
+				<PageDropdown handleDropdown={(e) => onSizeChange(e, setState)} />
+			</TCSubContainer>
+			<TCSubContainer>
+				<div>
+					선택 <span> {selectedLength} </span>(개)
+				</div>
+				{!isNoneBtn && (
+					<div style={{ display: 'flex', gap: '10px' }}>
+						<WhiteRedBtn onClick={removeEventHandler}>{title} 삭제</WhiteRedBtn>
+						<SkyBtn onClick={toRegister}>{title} 등록</SkyBtn>
+					</div>
+				)}
+			</TCSubContainer>
+		</>
+	)
 }
 
 export default CommonTableHeader

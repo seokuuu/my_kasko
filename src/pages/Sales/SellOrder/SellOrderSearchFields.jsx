@@ -1,47 +1,44 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { GreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import {
-	FilterRight,
-	FilterLeft,
-	Input,
-	PWRight,
-	PartWrap,
-	RowWrap,
-	Tilde,
-	GridWrap,
-} from '../../../modal/External/ExternalFilter'
-import StandardFind from '../../../modal/Multi/StandardFind'
+import { FilterRight, FilterLeft, Input, PWRight, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
-import DateGrid from '../../../components/DateGrid/DateGrid'
 import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
-import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
+import { customerModalAtom } from '../../../store/Layout/GlobalProductSearch'
+import InventoryFind from '../../../modal/Multi/InventoryFind'
+import { DateSearchSelect, InputSearch } from '../../../components/Search'
 
 const SellOrderSearchFields = ({
 	search,
 	setSearch,
 	commonDropdownButtonHandler,
-	commonNumInputHandler,
-	onSpecHandler,
+	modalButtonClickHandler,
+	setCustomerModalAtom,
 }) => {
 	const {
 		// prettier-ignore
 		storageList,
 		spartList,
+		inventoryCustomer,
 	} = useGlobalProductSearchFieldData()
+
+	const handleInventoryFindButtonOnClick = (data) => {
+		commonDropdownButtonHandler(data.code, 'customerCode')
+		commonDropdownButtonHandler(data.name, 'customerName')
+	}
 
 	return (
 		<>
 			<FilterLeft>
 				<RowWrap>
 					{/* 창고 구분 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>창고 구분</h6>
 						<PWRight>
 							<MainSelect
 								options={storageList}
-								// defaultValue={storageList[0]}
+								defaultValue={storageList[0]}
 								value={search.storage}
 								name="storage"
 								onChange={(e) => commonDropdownButtonHandler(e, 'storage')}
@@ -62,28 +59,38 @@ const SellOrderSearchFields = ({
 				</RowWrap>
 				{/* 2행 */}
 				<RowWrap>
-					<PartWrap>
-						<h6>고객사 명/고객사코드</h6>
-						<Input />
-						<Input />
-						<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
+					<PartWrap first>
+						<h6>고객사 명</h6>
+						<Input value={search.customerName} readOnly name="customerName" />
+						<Input value={search.customerCode} readOnly name="customerCode" />
+						<GreyBtn
+							style={{ width: '70px' }}
+							height={35}
+							margin={10}
+							fontSize={17}
+							onClick={() => modalButtonClickHandler('customer')}
+						>
 							찾기
 						</GreyBtn>
 					</PartWrap>
 				</RowWrap>
 				<RowWrap>
 					{/* 구분 */}
-					<PartWrap>
-						<h6 style={{ width: '165px' }}>상시판매 주문일자</h6>
-						<GridWrap>
-							<DateGrid width={130} bgColor={'white'} fontSize={17} />
-							<Tilde>~</Tilde>
-							<DateGrid width={130} bgColor={'white'} fontSize={17} />
-						</GridWrap>
+					<PartWrap first>
+						<DateSearchSelect
+							title={'상시판매 주문일자'}
+							startInitDate={search.orderStartDate}
+							endInitDate={search.orderEndDate}
+							startDateChange={(value) => commonDropdownButtonHandler(value, 'orderStartDate')}
+							endDateChange={(value) => commonDropdownButtonHandler(value, 'orderEndDate')}
+						/>
 					</PartWrap>
 					<PartWrap>
-						<h6>상시 판매 번호</h6>
-						<Input />
+						<InputSearch
+							title={'상시 판매 번호'}
+							value={search.productName}
+							onChange={(value) => commonDropdownButtonHandler(value, 'auctionNumber')}
+						/>
 					</PartWrap>
 				</RowWrap>
 				<PartWrap first>
@@ -102,7 +109,7 @@ const SellOrderSearchFields = ({
 							},
 						]}
 						setState={setSearch}
-						stateKey="saleCategoryList"
+						stateKey="orderStatusList"
 					/>
 				</PartWrap>
 			</FilterLeft>
@@ -114,7 +121,14 @@ const SellOrderSearchFields = ({
 					height="100%"
 				/>
 			</FilterRight>
-			{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
+			{useAtomValue(customerModalAtom) === true && (
+				<InventoryFind
+					title={'고객사 찾기'}
+					handleButtonOnClick={handleInventoryFindButtonOnClick}
+					setSwitch={setCustomerModalAtom}
+					data={inventoryCustomer}
+				/>
+			)}
 		</>
 	)
 }

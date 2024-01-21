@@ -54,19 +54,20 @@ export function useShipmentListQuery(params) {
 
 // 출고 상태 변경
 export function useShipmentStatusUpdateMutation() {
+	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: QUERY_KEY.statusUpdate,
 		mutationFn: async function (params) {
 			return client.post(SHIPMENT_URL, params)
 		},
 		onSuccess() {
-			window.alert('완료되었습니다.')
+			simpleAlert('완료되었습니다.')
 			queryClient.invalidateQueries(QUERY_KEY.list)
 			queryClient.invalidateQueries(QUERY_KEY.dispatchList)
 			queryClient.invalidateQueries(QUERY_KEY.dispatchDetails)
 		},
-		onError() {
-			window.alert('실패하였습니다.')
+		onError(error) {
+			simpleAlert(error?.message ?? '실패하였습니다.')
 		},
 	})
 }
@@ -84,77 +85,81 @@ export function useShipmentMergeListQuery() {
 
 // 선별 등록
 export function useShipmentMergeMutation() {
+	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: QUERY_KEY.createMerge,
 		mutationFn: async function (params) {
 			return client.post(SHIPMENT_MERGE_URL, params)
 		},
 		onSuccess() {
-			window.alert('선별 등록 완료되었습니다.')
+			simpleAlert('선별 등록 완료되었습니다.')
 			window.location.reload()
 			queryClient.invalidateQueries({
 				queryKey: QUERY_KEY.list,
 			})
 		},
 		onError(error) {
-			window.alert(error?.message ?? '등록 실패하였습니다.')
+			simpleAlert(error?.message ?? '등록 실패하였습니다.')
 		},
 	})
 }
 
 // 선별 목록 변경
 export function useShipmentMergeUpdateMutation() {
+	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: QUERY_KEY.updateMerge,
 		mutationFn: async function (params) {
 			return client.put(SHIPMENT_MERGE_URL, params)
 		},
 		onSuccess() {
-			window.alert('변경 완료되었습니다.')
+			simpleAlert('변경 완료되었습니다.')
 			window.location.reload()
 			queryClient.invalidateQueries(QUERY_KEY.dispatchList)
 			queryClient.invalidateQueries(QUERY_KEY.dispatchDetails)
 		},
 		onError(error) {
-			window.alert(error?.message ?? '변경 실패하였습니다.')
+			simpleAlert(error?.message ?? '변경 실패하였습니다.')
 		},
 	})
 }
 
 // 선별 목록 해제
 export function useShipmentMergeDeleteMutation() {
+	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: QUERY_KEY.deleteMerge,
 		mutationFn: async function (id) {
 			return client.delete(`${SHIPMENT_MERGE_URL}/${id}`)
 		},
 		onSuccess() {
-			window.alert('해제 완료되었습니다.')
+			simpleAlert('해제 완료되었습니다.')
 			window.location.reload()
 			queryClient.invalidateQueries(QUERY_KEY.dispatchList)
 			queryClient.invalidateQueries(QUERY_KEY.dispatchDetails)
 		},
 		onError(error) {
-			window.alert(error?.message ?? '해제 실패하였습니다.')
+			simpleAlert(error?.message ?? '해제 실패하였습니다.')
 		},
 	})
 }
 
 // 선별 요청 승인 / 반려
 export function useShipmentMergeStatusUpdateMutation() {
+	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: QUERY_KEY.statusUpdateMerge,
 		mutationFn: async function (params) {
 			return client.patch(SHIPMENT_MERGE_URL, params)
 		},
 		onSuccess() {
-			window.alert('승인 상태 변경 완료되었습니다.')
+			simpleAlert('승인 상태 변경 완료되었습니다.')
 			window.location.reload()
 			queryClient.invalidateQueries(QUERY_KEY.dispatchList)
 			queryClient.invalidateQueries(QUERY_KEY.dispatchDetails)
 		},
 		onError(error) {
-			window.alert(error?.message ?? '승인 상태 변경 실패하였습니다.')
+			simpleAlert(error?.message ?? '승인 상태 변경 실패하였습니다.')
 		},
 	})
 }
@@ -182,54 +187,57 @@ export function useShipmentDispatchDetailsQuery(id) {
 
 // 배차 기사 등록
 export function useSetDispatchMutation() {
+	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: QUERY_KEY.setDispatch,
 		mutationFn: async function (params) {
 			return client.post(SHIPMENT_DRIVER_URL, params)
 		},
 		onSuccess() {
-			window.alert('배차 등록되었습니다.')
+			simpleAlert('배차 등록되었습니다.')
 			queryClient.invalidateQueries(QUERY_KEY.dispatchList)
 			queryClient.invalidateQueries(QUERY_KEY.dispatchDetails)
 		},
 		onError(error) {
-			window.alert(error?.message ?? '등록 실패하였습니다.')
+			simpleAlert(error?.message ?? '등록 실패하였습니다.')
 		},
 	})
 }
 
 // 배차 기사 등록 취소
 export function useRemoveDispatchMutation() {
+	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: QUERY_KEY.removeDispatch,
 		mutationFn: async function (id) {
 			return client.delete(`${SHIPMENT_DRIVER_URL}/${id}`)
 		},
 		onSuccess() {
-			window.alert('배차 취소가 완료되었습니다.')
+			simpleAlert('배차 취소가 완료되었습니다.')
 			queryClient.invalidateQueries(QUERY_KEY.dispatchList)
 			queryClient.invalidateQueries(QUERY_KEY.dispatchDetails)
 		},
 		onError(error) {
-			window.alert(error?.message ?? '실패하였습니다.')
+			simpleAlert(error?.message ?? '실패하였습니다.')
 		},
 	})
 }
 
 // 추가비 및 공차비 추가
 export function useShipmentAddExtraCostMutation() {
+	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: QUERY_KEY.addExtraCost,
 		mutationFn: async function (param) {
 			return client.post(SHIPMENT_EXTRA_COST_URL, param)
 		},
 		onSuccess() {
-			window.alert('완료되었습니다.')
+			simpleAlert('완료되었습니다.')
 			window.location.reload()
 			queryClient.invalidateQueries(QUERY_KEY.list)
 		},
 		onError(error) {
-			window.alert(error?.message ?? '실패하였습니다.')
+			simpleAlert(error?.message ?? '실패하였습니다.')
 		},
 	})
 }

@@ -198,7 +198,7 @@ const WinningDetail = ({ detailRow }) => {
 				</FilterHeader>
 				<FilterTCTop>
 					<h6>경매 번호</h6>
-					<p>2023041050</p>
+					<p>{detailRow && detailRow['경매 번호']}</p>
 				</FilterTCTop>
 
 				<TableWrap style={{ marginTop: '5px' }}>
@@ -225,10 +225,10 @@ const WinningDetail = ({ detailRow }) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown />
-
 						<Excel
 						// getRow={getRow}
 						/>
+
 
 						{/*<Excel getRow={getRow} />*/}
 					</div>
@@ -239,7 +239,6 @@ const WinningDetail = ({ detailRow }) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<P>목적지</P>
-
 						<CustomInput placeholder="h50" width={60} height={32} defaultValue={destinationData?.code} />
 						<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destinationData?.name} />
 						<WhiteBlackBtn
@@ -270,7 +269,6 @@ const WinningDetail = ({ detailRow }) => {
 					</div>
 				</TCSubContainer>
 				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
-
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -278,7 +276,6 @@ const WinningDetail = ({ detailRow }) => {
 					</div>
 				</TCSubContainer>
 			</TableContianer>
-
 			{destinationPopUp && (
 				<InventoryFind title={'목적지 찾기'} setSwitch={setDestinationPopUp} data={inventoryDestination} />
 			)}

@@ -6,24 +6,26 @@ import SubHeader from '../../../components/Header/SubHeader'
 import DisRegisterDetail from './DisRegisterDetail'
 
 import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 const DisRegisterDetailPage = () => {
-  const [expanded, setExpanded] = useState('출고 관리')
-  const [depth2Color, setDepth2Color] = useState('배차/출고 등록')
-  return (
-    <>
-      <Header />
-      <OverAllMain>
-        <SideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
-        <OverAllSub>
-          <SubHeader />
-          <OverAllTable>
-            <DisRegisterDetail />
-          </OverAllTable>
-        </OverAllSub>
-      </OverAllMain>
-    </>
-  )
+	const { id } = useParams()
+	const depth2Color = '배차/출고 등록'
+	const [expanded, setExpanded] = useState('출고 관리')
+	return (
+		<>
+			<Header />
+			<OverAllMain>
+				<SideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
+				<OverAllSub>
+					<SubHeader />
+					<OverAllTable>
+						<DisRegisterDetail id={id} />
+					</OverAllTable>
+				</OverAllSub>
+			</OverAllMain>
+		</>
+	)
 }
 
 export default DisRegisterDetailPage

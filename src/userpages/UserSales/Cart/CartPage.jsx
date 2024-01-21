@@ -10,12 +10,13 @@ import SubHeader from '../../../components/Header/SubHeader';
 import Cart from './Cart';
 
 import { useState } from 'react';
+import UserSalesWrapper from '../_layouts/UserSalesWrapper';
 
 const CartPage = () => {
   const [expanded, setExpanded] = useState('상시판매');
   const [depth2Color, setDepth2Color] = useState('장바구니');
   return (
-    <>
+    <UserSalesWrapper>
       <Header />
       <OverAllMain>
         <UserSideBar
@@ -30,7 +31,7 @@ const CartPage = () => {
           </OverAllTable>
         </OverAllSub>
       </OverAllMain>
-    </>
+    </UserSalesWrapper>
   );
 };
 
