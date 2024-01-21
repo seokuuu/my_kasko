@@ -1,58 +1,46 @@
 import {
-	FilterSubcontianer,
 	ExInputsWrap,
-	FilterRight,
 	FilterLeft,
+	FilterRight,
 	Input,
 	MiniInput,
-	PWRight,
 	PartWrap,
+	PWRight,
 	RowWrap,
+	SearchContainer,
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
-import { CustomerSearch, DateSearchSelect, ProductNumberListSearch } from '../../../components/Search'
+import { CustomerSearch, DateSearchSelect } from '../../../components/Search'
 import React from 'react'
 import { GreyBtn } from '../../../common/Button/Button'
-import { useAtom } from 'jotai/index'
-import { claimProductModalAtom } from '../../../store/Layout/Layout'
+import { useAtomValue, useSetAtom } from 'jotai/index'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import { MainSelect } from '../../../common/Option/Main'
 import StandardFind from '../../../modal/Multi/StandardFind'
+import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
+import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 
-const UserPerformanceFilter = ({ param, onChange }) => {
-	const [isModal, setIsModal] = useAtom(claimProductModalAtom)
+const UserPerformanceFilter = ({ search, setSearch, commonNumInputHandler, onSpecHandler }) => {
+	const setIsKyuModal = useSetAtom(kyuModalAtom)
 	const { storageList, spartList, gradeList } = useGlobalProductSearchFieldData()
-
-	// 규격 약호 핸들러
-	function onSpecHandler(e, text) {
-		const { tagName } = e.target
-		if (tagName === 'IMG') {
-			setIsModal(false)
-		} else {
-			onChange('spec', text)
-			setIsModal(false)
-		}
+	const onChange = (key, value) => {
+		setSearch((p) => ({ ...p, [key]: value }))
 	}
-	// 규격 약호 모달
-	function modalOpen() {
-		setIsModal(true)
-	}
-
 	return (
-		<FilterSubcontianer>
+		<SearchContainer>
 			<FilterLeft>
 				<RowWrap>
 					<DateSearchSelect
 						title={'경매 일자'}
-						sta자rtInitDate={param.auctionStartDate}
-						endInitDate={param.auctionEndDate}
+						startInitDate={search.auctionStartDate}
+						endInitDate={search.auctionEndDate}
 						startDateChange={(value) => onChange('auctionStartDate', value)}
 						endDateChange={(value) => onChange('auctionEndDate', value)}
 					/>
 					<DateSearchSelect
 						title={'출고 일자'}
-						startInitDate={param.shipmentStartDate}
-						endInitDate={param.shipmentEndDate}
+						startInitDate={search.shipmentStartDate}
+						endInitDate={search.shipmentEndDate}
 						startDateChange={(value) => onChange('shipmentStartDate', value)}
 						endDateChange={(value) => onChange('shipmentEndDate', value)}
 					/>
@@ -63,7 +51,8 @@ const UserPerformanceFilter = ({ param, onChange }) => {
 						<PWRight>
 							<MainSelect
 								options={storageList}
-								value={param.storage}
+								// defaultValue={storageList[0]}
+								value={search.storage}
 								name="storage"
 								onChange={(e) => onChange('storage', e)}
 							/>
@@ -71,8 +60,14 @@ const UserPerformanceFilter = ({ param, onChange }) => {
 					</PartWrap>
 					<PartWrap>
 						<h6>규격 약호</h6>
-						<Input readOnly={true} value={param.spec} />
-						<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17} onClick={modalOpen}>
+						<Input readOnly={true} value={search.spec} />
+						<GreyBtn
+							style={{ width: '70px' }}
+							height={35}
+							margin={10}
+							fontSize={17}
+							onClick={() => setIsKyuModal(true)}
+						>
 							찾기
 						</GreyBtn>
 					</PartWrap>
@@ -84,7 +79,7 @@ const UserPerformanceFilter = ({ param, onChange }) => {
 						<MainSelect
 							options={spartList}
 							defaultValue={spartList[0]}
-							value={param.spart}
+							value={search.spart}
 							name="spart"
 							onChange={(e) => onChange('spart', e)}
 						/>
@@ -92,15 +87,15 @@ const UserPerformanceFilter = ({ param, onChange }) => {
 						<MainSelect
 							options={gradeList}
 							defaultValue={gradeList[0]}
-							value={param.grade}
+							value={search.grade}
 							name="grade"
 							onChange={(e) => onChange('grade', e)}
 						/>
 					</PartWrap>
 					<PartWrap>
 						<CustomerSearch
-							name={param.customerName}
-							code={param.customerCode}
+							name={search.customerName}
+							code={search.customerCode}
 							setName={(value) => onChange('customerName', value)}
 							setCode={(value) => onChange('customerCode', value)}
 						/>
@@ -114,16 +109,16 @@ const UserPerformanceFilter = ({ param, onChange }) => {
 							<MiniInput
 								type="number"
 								name="minThickness"
-								value={param.minThickness}
-								onChange={(e) => onChange(e.target.name, e.target.value)}
+								value={search.minThickness}
+								onChange={commonNumInputHandler}
 								min={0}
 							/>
 							<Tilde>~</Tilde>
 							<MiniInput
 								type="number"
 								name="maxThickness"
-								value={param.maxThickness}
-								onChange={(e) => onChange(e.target.name, e.target.value)}
+								value={search.maxThickness}
+								onChange={commonNumInputHandler}
 								min={0}
 							/>
 						</ExInputsWrap>
@@ -135,16 +130,16 @@ const UserPerformanceFilter = ({ param, onChange }) => {
 							<MiniInput
 								type="number"
 								name="minWidth"
-								value={param.minWidth}
-								onChange={(e) => onChange(e.target.name, e.target.value)}
+								value={search.minWidth}
+								onChange={commonNumInputHandler}
 								min={0}
 							/>
 							<Tilde>~</Tilde>
 							<MiniInput
 								type="number"
 								name="maxWidth"
-								value={param.maxWidth}
-								onChange={(e) => onChange(e.target.name, e.target.value)}
+								value={search.maxWidth}
+								onChange={commonNumInputHandler}
 								min={0}
 							/>
 						</ExInputsWrap>
@@ -156,30 +151,32 @@ const UserPerformanceFilter = ({ param, onChange }) => {
 							<MiniInput
 								type="number"
 								name="minLength"
-								value={param.minLength}
-								onChange={(e) => onChange(e.target.name, e.target.value)}
+								value={search.minLength}
+								onChange={commonNumInputHandler}
 								min={0}
 							/>
 							<Tilde>~</Tilde>
 							<MiniInput
 								type="number"
 								name="maxLength"
-								value={param.maxLength}
-								onChange={(e) => onChange(e.target.name, e.target.value)}
+								value={search.maxLength}
+								onChange={commonNumInputHandler}
 								min={0}
 							/>
 						</ExInputsWrap>
 					</PartWrap>
 				</RowWrap>
-				{isModal === true && <StandardFind closeFn={onSpecHandler} />}
+				{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
 			</FilterLeft>
 			<FilterRight>
-				<ProductNumberListSearch
-					value={param.productNumberList}
-					onChange={(e) => onChange('productNumberList', e.target.value)}
+				<ProductNumber
+					initialValue={search.productNumberList}
+					setState={setSearch}
+					valueName={'productNumberList'}
+					height="100%"
 				/>
 			</FilterRight>
-		</FilterSubcontianer>
+		</SearchContainer>
 	)
 }
 

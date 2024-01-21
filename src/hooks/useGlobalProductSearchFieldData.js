@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
-import { getSPartList, getStorageList } from '../api/search'
+import { getDestinationFind, getSPartList, getStorageList } from '../api/search'
 import useReactQuery from './useReactQuery'
+import { getCustomerFind } from '../service/admin/Auction'
 
 /**
  * @description
@@ -123,7 +124,18 @@ const useGlobalProductSearchFieldData = () => {
 			value: 'N',
 		},
 	]
-	return { storageList, supplierList, spartList, makerList, stockStatusList, gradeList, preferThicknessList }
+
+	return {
+		storageList,
+		supplierList,
+		spartList,
+		makerList,
+		stockStatusList,
+		gradeList,
+		preferThicknessList,
+		// inventoryDestination,
+		// inventoryCustomer,
+	}
 }
 
 export default useGlobalProductSearchFieldData

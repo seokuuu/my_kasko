@@ -1,106 +1,121 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Excel from '../../../components/TableInner/Excel'
-import { selectedRowsAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import Hidden from '../../../components/TableInner/Hidden'
 import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { ShippingRegisterFields, ShippingRegisterFieldsCols } from '../../../constants/admin/Shipping'
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { add_element_field } from '../../../lib/tableHelpers'
-import { GlobalFilterContainer, GlobalFilterFooter, GlobalFilterHeader } from '../../../components/Filter'
+import { GlobalFilterHeader } from '../../../components/Filter'
 import { useShipmentListQuery } from '../../../api/shipment'
 import Table from '../../../pages/Table/Table'
 import UserPerformanceFilter from './UserPerformanceFilter'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
+import { isEqual } from 'lodash'
+import { formatWeight } from '../../../utils/utils'
+import { KilogramSum } from '../../../utils/KilogramSum'
 
 const initData = {
 	pageNum: 1,
 	pageSize: 50,
 	shipmentStatus: '운송 완료',
-	auctionStartDate: '',
-	auctionEndDate: '',
-	shipmentStartDate: '',
-	shipmentEndDate: '',
-	storage: '',
-	spec: '',
-	spart: '',
-	grade: '',
-	customerCode: '',
-	customerName: '',
-	minThickness: 0, // 최소 두께 (Minimum thickness)
-	maxThickness: 0, // 최대 두께 (Maximum thickness)
-	minWidth: 0, // 최소 폭 (Minimum width)
-	maxWidth: 0, // 최대 폭 (Maximum width)
-	minLength: 0, // 최소 길이 (Minimum length)
-	maxLength: 0, // 최대 길이 (Maximum length)
-	productNumberList: '',
 }
 
-const UserPerformance = ({}) => {
-	// Table
-	const tableField = useRef(ShippingRegisterFieldsCols)
-	const getCol = tableField.current
-	const [getRow, setGetRow] = useState('')
-	const selectedRows = useAtom(selectedRowsAtom)[0]
+const UserPerformance = () => {
+	const selectedRows = useAtomValue(selectedRowsAtom)
+	const exFilterToggle = useAtomValue(toggleAtom)
 
-	// data fetch
+	const [rows, setRows] = useState([])
+	const [pagination, setPagination] = useState(null)
+
 	const [param, setParam] = useState(initData)
 	const { data, refetch, isLoading } = useShipmentListQuery(param)
 
-	// param change
-	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
+	const handleTablePageSize = (event) => {
+		setParam((prevParam) => ({
+			...prevParam,
+			pageSize: Number(event.target.value),
+			pageNum: 1,
+		}))
+	}
 
-	// reset event
-	const onReset = async () => {
-		await setParam(initData)
-		await refetch()
+	const onPageChange = (value) => {
+		setParam((prevParam) => ({
+			...prevParam,
+			pageNum: Number(value),
+		}))
+	}
+
+	const resetOnClick = () => {
+		setParam(initData)
+	}
+
+	const searchOnClick = (userSearchParam) => {
+		setParam((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+				pageNum: 1,
+			}
+		})
 	}
 
 	useEffect(() => {
-		const getData = data?.list
-		if (getData && Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, ShippingRegisterFields))
+		refetch()
+	}, [param])
+
+	useEffect(() => {
+		const list = data?.list
+		if (list && Array.isArray(list)) {
+			setRows(add_element_field(list, ShippingRegisterFields))
+			setPagination(data?.pagination)
 		}
 	}, [data])
 
-	useEffect(() => {
-		refetch()
-	}, [param.pageNum, param.pageSize])
-
 	return (
 		<FilterContianer>
-			{/* header */}
 			<GlobalFilterHeader title={'출고 실적 조회'} />
-			<GlobalFilterContainer>
-				<UserPerformanceFilter param={param} onChange={onChange} />
-			</GlobalFilterContainer>
-			{/* footer */}
-			<GlobalFilterFooter reset={onReset} onSearch={refetch} />
-
+			{exFilterToggle && (
+				<GlobalProductSearch
+					param={param}
+					isToggleSeparate={true}
+					globalProductSearchOnClick={searchOnClick}
+					globalProductResetOnClick={resetOnClick}
+					renderCustomSearchFields={(props) => <UserPerformanceFilter {...props} />}
+				/>
+			)}
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>2</span> / 50개 )
+						조회 목록 (선택 <span>{selectedRows?.length > 0 ? selectedRows?.length : '0'}</span> /{' '}
+						{pagination?.listCount}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown />
-						<Excel />
+						<PageDropdown handleDropdown={handleTablePageSize} />
+						<Excel getRow={rows} sheetName={'출고 실적'} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>
 					<div>
-						선택 중량<span> 2 </span>kg / 총 중량 kg
+						선택 중량
+						<span> {formatWeight(KilogramSum(selectedRows))} </span>
+						kg / 총 중량 {formatWeight(pagination?.totalWeight)} kg
 					</div>
 					<div></div>
 				</TCSubContainer>
 				<Table
-					getCol={getCol}
-					getRow={getRow}
+					getCol={ShippingRegisterFieldsCols}
+					getRow={rows}
 					loading={isLoading}
-					tablePagination={data?.pagination}
-					onPageChange={(value) => onChange('pageNum', value)}
+					tablePagination={pagination}
+					onPageChange={onPageChange}
 				/>
 			</TableContianer>
 		</FilterContianer>

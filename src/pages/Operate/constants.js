@@ -79,8 +79,8 @@ export const noticeSearchCategoryOptions = [
 export const noticeListSearchInitValue = (type) => ({
 	pageNum: 1,
 	pageSize: 50,
-	category: noticeSearchCategoryOptions[0],
-	keyword: '',
+	// category: noticeSearchCategoryOptions[0],
+	// keyword: '',
 	type, // 공지사항 or 자료실
 })
 
@@ -103,8 +103,8 @@ export const noticeBoardSearchCategoryOptions = [
 export const noticeBoardListSearchInitValue = {
 	pageNum: 1,
 	pageSize: 50,
-	category: noticeBoardSearchCategoryOptions[0],
-	keyword: '',
+	// category: noticeBoardSearchCategoryOptions[0],
+	// keyword: '',
 }
 
 // 많이 쓰이는 목록 검색 옵션
@@ -169,10 +169,10 @@ export const claimSearchCategoryOptions = [
 export const claimInitState = {
 	pageNum: 1,
 	pageSize: 50,
-	claimStatus: claimSearchCategoryOptions[0],
-	startDate: '',
-	endDate: '',
-	productNumberList: [], //제품 번호
+	// claimStatus: claimSearchCategoryOptions[0],
+	// startDate: '',
+	// endDate: '',
+	// productNumberList: [], //제품 번호
 }
 
 // 클레임 상품 목록 검색 옵션 초깃값

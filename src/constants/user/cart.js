@@ -1,4 +1,4 @@
-import RecommendCellRenderer from "../../pages/Table/RecommendCellRenderer";
+import WishCellRenderer from "../../pages/Table/WishCellRenderer";
 import { checkboxSelection, headerCheckboxSelection } from '../../pages/Table/util';
 
 /**
@@ -7,7 +7,7 @@ import { checkboxSelection, headerCheckboxSelection } from '../../pages/Table/ut
  */
 export const userCartListSingleField = {
   "고유 번호": "productUid",
-  "제품 번호": "number",
+  "제품번호": "number",
   "규격 약호": "spec",
   "창고": "storage",
   "창고명": "storageName",
@@ -69,10 +69,7 @@ export const userCartListPackageField = {
  */
 export const userCartListSingleFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
-  { field: '제품 번호', minWidth: 100,cellRenderer:RecommendCellRenderer,cellRendererParams:{
-    uidFieldName:'제품 번호',
-    editType:'recommend'
-  } },
+  { field: "제품번호", minWidth: 100,  cellRenderer: WishCellRenderer },
   { field: "규격 약호", minWidth: 100 },
   { field: "창고", minWidth: 100 },
   { field: "창고명", minWidth: 100 },
@@ -117,10 +114,15 @@ export const userCartListSingleFieldsCols = [
  * @constant 테이블컬럼
  * @description 사용자 장바구니 > 패키지 테이블에서 사용합니다.
  */
-export const userCartListPackageFieldCols = [
+export const userCartListPackageFieldCols = (numberClickHandler=undefined) =>  [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   {field: "패키지 이름", minWidth: 100 },
-  {field: "패키지 번호" , minWidth: 100 },
+  { 
+    field: "패키지 번호", 
+    minWidth: 100, 
+    cellRenderer: WishCellRenderer, 
+    valueGetter: (v) => ({...v.data[v.column.colId], clickHandler: numberClickHandler }) 
+  },
   {field: "패지키 판매 유형", minWidth: 130 },
   {field: "패키지 판매 구분" , minWidth: 130  },
   {field: "패키지 상시 판매가" , minWidth: 150 },

@@ -11,7 +11,6 @@ import {
 import { isObject } from 'lodash'
 import { usePolicyMutation, usePolicyQuery } from '../../../api/operate'
 import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
-import useBlockRoute from '../../../hooks/useBlockRoute'
 import useAlert from '../../../store/Alert/useAlert'
 import { formatDateString } from '../../../utils/utils'
 
@@ -36,7 +35,7 @@ const Terms = () => {
 
 	const blockCondition = useMemo(() => responseData?.content !== content, [content, data])
 	console.log('blockCondition :', blockCondition)
-	useBlockRoute(blockCondition)
+	// useBlockRoute(blockCondition)
 	// data  바인딩
 	useEffect(() => {
 		if (isSuccess && isObject(responseData)) {

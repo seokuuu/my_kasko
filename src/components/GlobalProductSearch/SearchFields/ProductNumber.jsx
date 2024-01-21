@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { DoubleWrap } from '../../../modal/External/ExternalFilter'
 
-const ProductNumber = ({ stateValue, setState, valueName, height = '100px' }) => {
+const ProductNumber = ({ stateValue, setState, valueName, title, height = '100px' }) => {
 	const [value, setValue] = useState(stateValue || '')
 
 	const onChange = (e) => {
@@ -26,7 +26,7 @@ const ProductNumber = ({ stateValue, setState, valueName, height = '100px' }) =>
 
 	return (
 		<DoubleWrap>
-			<h6>제품 번호</h6>
+			<h6>{title || '제품 번호'}</h6>
 			<textarea
 				value={value}
 				onChange={onChange}
