@@ -42,6 +42,9 @@ import Table from '../Table/Table'
 import { orderFieldData, OrderManageFieldsCols } from '../../constants/admin/OrderManage'
 import { KilogramSum } from '../../utils/KilogramSum'
 import { getOrderList } from '../../api/orderList'
+import GlobalProductSearch from '../../components/GlobalProductSearch/GlobalProductSearch'
+import OrderSearchFields from './OrderSearchFields'
+import { isEqual } from 'lodash'
 
 const Order = ({}) => {
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
@@ -84,7 +87,6 @@ const Order = ({}) => {
 		//   businessType: updatedCheck.filter(item => item !== ''),
 		// });
 	}, [check1])
-
 
 	const [isRotated, setIsRotated] = useState(false)
 
@@ -192,6 +194,27 @@ const Order = ({}) => {
 				console.error('Error cancelling deposit:', error)
 			})
 	}
+
+	/**
+	 * 검색하는 부분
+	 */
+	const globalProductSearchOnClick = (userSearchParam) => {
+		setParam((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				refetch()
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+			}
+		})
+	}
+	const globalProductResetOnClick = () => {
+		// if resetting the search field shouldn't rerender table
+		// then we need to create paramData object to reset the search fields.
+		setParam(paramData)
+	}
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -204,155 +227,13 @@ const Order = ({}) => {
 
 			{exFilterToggle && (
 				<>
-					<FilterSubcontianer>
-						<FilterLeft>
-							<RowWrap none>
-								<PartWrap first>
-									<h6>창고 구분</h6>
-									<PWRight>
-										<MainSelect />
-									</PWRight>
-								</PartWrap>
-
-								<PartWrap>
-									<h6>고객사 명/고객사코드</h6>
-									<Input value={customerData.name} readOnly name="customerName" />
-									<Input value={customerData.code} readOnly name="customerCode" />
-									<GreyBtn
-										style={{ width: '70px' }}
-										height={35}
-										margin={10}
-										fontSize={17}
-										onClick={() => setCustomerPopUp(true)}
-									>
-										찾기
-									</GreyBtn>
-								</PartWrap>
-							</RowWrap>
-							<RowWrap>
-								<PartWrap first>
-									<h6>구분</h6>
-									<PWRight>
-										<MainSelect
-											options={spartList}
-											defaultValue={''}
-											name="sPart"
-											onChange={(e) =>
-												setSelected((p) => ({
-													...p,
-													sPart: e.label,
-												}))
-											}
-										/>
-									</PWRight>
-								</PartWrap>
-							</RowWrap>
-							<RowWrap>
-								<PartWrap first>
-									<h6>경매 일자</h6>
-									<GridWrap>
-										<DateGrid
-											width={130}
-											bgColor={'white'}
-											fontSize={13}
-											startDate={checkSalesStart}
-											setStartDate={setCheckSalesStart}
-										/>
-										<Tilde>~</Tilde>
-										<DateGrid
-											width={130}
-											bgColor={'white'}
-											fontSize={13}
-											startDate={checkSalesEnd}
-											setStartDate={setCheckSalesEnd}
-										/>
-									</GridWrap>
-								</PartWrap>
-								<PartWrap>
-									<h6>확정 전송 일자</h6>
-									<GridWrap>
-										<DateGrid
-											width={130}
-											bgColor={'white'}
-											fontSize={13}
-											startDate={checkConfirmStart}
-											setStartDate={setCheckConfirmStart}
-										/>
-										<Tilde>~</Tilde>
-										<DateGrid
-											width={130}
-											bgColor={'white'}
-											fontSize={13}
-											startDate={checkConfirmEnd}
-											setStartDate={setCheckConfirmEnd}
-										/>
-									</GridWrap>
-								</PartWrap>
-							</RowWrap>
-							<RowWrap none>
-								<PartWrap>
-									<h6>상시 판매 주문 일자</h6>
-									<GridWrap>
-										<DateGrid
-											width={130}
-											bgColor={'white'}
-											fontSize={13}
-											startDate={checkAllTimeStart}
-											setStartDate={setCheckAllTimeStart}
-										/>
-										<Tilde>~</Tilde>
-										<DateGrid
-											width={130}
-											bgColor={'white'}
-											fontSize={13}
-											startDate={checkAllTimeEnd}
-											setStartDate={setCheckAllTimeEnd}
-										/>
-									</GridWrap>
-								</PartWrap>
-								<PartWrap>
-									<h6>주문 상태</h6>
-									<ExCheckWrap>
-										{checkSales.map((x, index) => (
-											<ExCheckWrap style={{ marginRight: '15px' }}>
-												<StyledCheckSubSquDiv
-													onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
-													isChecked={check1[index]}
-												>
-													<CheckImg2 src="/svg/check.svg" isChecked={check1[index]} />
-												</StyledCheckSubSquDiv>
-												<p>{x}</p>
-											</ExCheckWrap>
-										))}
-									</ExCheckWrap>
-								</PartWrap>
-							</RowWrap>
-						</FilterLeft>
-						<FilterRight>
-							<DoubleWrap>
-								<h6>제품 번호 </h6>
-								<textarea
-									placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-								/>
-							</DoubleWrap>
-						</FilterRight>
-					</FilterSubcontianer>
-					<FilterFooter>
-						<div style={{ display: 'flex' }}>
-							<p>초기화</p>
-							<ResetImg
-								src="/img/reset.png"
-								style={{ marginLeft: '10px', marginRight: '20px' }}
-								onClick={handleImageClick}
-								className={isRotated ? 'rotate' : ''}
-							/>
-						</div>
-						<div style={{ width: '180px' }}>
-							<BlackBtn width={100} height={40}>
-								검색
-							</BlackBtn>
-						</div>
-					</FilterFooter>
+					<GlobalProductSearch
+						param={param}
+						isToggleSeparate={true}
+						renderCustomSearchFields={(props) => <OrderSearchFields {...props} />}
+						globalProductSearchOnClick={globalProductSearchOnClick}
+						globalProductResetOnClick={globalProductResetOnClick}
+					/>
 				</>
 			)}
 			<TableContianer>
@@ -385,7 +266,9 @@ const Order = ({}) => {
 				/>
 				<TCSubContainer style={{ display: 'flex', justifyContent: 'flex-end' }}>
 					<div>
-						<WhiteRedBtn type="button" onClick={handleDepositCancel}>입금 취소</WhiteRedBtn>
+						<WhiteRedBtn type="button" onClick={handleDepositCancel}>
+							입금 취소
+						</WhiteRedBtn>
 					</div>
 				</TCSubContainer>
 			</TableContianer>

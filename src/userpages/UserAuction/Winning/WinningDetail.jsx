@@ -198,87 +198,6 @@ const WinningDetail = ({ detailRow }) => {
 				</FilterHeader>
 				<FilterTCTop>
 					<h6>경매 번호</h6>
-					<p>{detailRow && detailRow['경매 번호']}</p>
-				</FilterTCTop>
-
-				<TableWrap style={{ marginTop: '5px' }}>
-					<ClaimTable>
-						{chunkedEntries.map((chunk, i) => (
-							<ClaimRow key={i}>
-								{chunk.map(([title, content], j) => (
-									<Fragment key={j}>
-										<ClaimTitle>{title}</ClaimTitle>
-										<ClaimContent>{content}</ClaimContent>
-									</Fragment>
-								))}
-							</ClaimRow>
-						))}
-					</ClaimTable>
-				</TableWrap>
-			</div>
-
-
-const WinningDetail = ({}) => {
-	const NewDummy = {
-		'고객사 명': '(주) 아이덴잇',
-		'고객 코드': 'K00-0012',
-		'': '',
-		'총 수량': '30',
-		'총 중량(KG)': '4,612,157',
-		'입금 요청 금액 (원)': '45,237,876',
-		'제품금액(VAT 포함)': '000',
-		'운임비(VAT 포함)': '000',
-		ㅤ: 'ㅤ',
-	}
-
-	const entries = Object.entries(NewDummy)
-	const chunkedEntries = []
-
-	for (let i = 0; i < entries.length; i += 3) {
-		chunkedEntries.push(entries.slice(i, i + 3))
-	}
-
-	const handleSelectChange = (selectedOption, name) => {
-		// setInput(prevState => ({
-		//   ...prevState,
-		//   [name]: selectedOption.label,
-		// }));
-	}
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
-
-	// 토글 쓰기
-	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-	const [toggleMsg, setToggleMsg] = useState('On')
-	const toggleBtnClick = () => {
-		setExfilterToggle((prev) => !prev)
-		if (exFilterToggle === true) {
-			setToggleMsg('Off')
-		} else {
-			setToggleMsg('On')
-		}
-	}
-
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
-
-	console.log('isModal =>', isModal)
-
-	const modalOpen = () => {
-		setIsModal(true)
-	}
-
-	return (
-		<FilterContianer>
-			<div>
-				<FilterHeader>
-					<h1>낙찰 확인 상세</h1>
-				</FilterHeader>
-				<FilterTCTop>
-					<h6>경매 번호</h6>
 					<p>2023041050</p>
 				</FilterTCTop>
 
@@ -298,7 +217,6 @@ const WinningDetail = ({}) => {
 				</TableWrap>
 			</div>
 
-
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
@@ -313,7 +231,6 @@ const WinningDetail = ({}) => {
 						/>
 
 						{/*<Excel getRow={getRow} />*/}
-
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
@@ -365,7 +282,6 @@ const WinningDetail = ({}) => {
 			{destinationPopUp && (
 				<InventoryFind title={'목적지 찾기'} setSwitch={setDestinationPopUp} data={inventoryDestination} />
 			)}
-
 		</FilterContianer>
 	)
 }

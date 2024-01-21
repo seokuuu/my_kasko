@@ -7,7 +7,7 @@ import useReactQuery from './useReactQuery'
  * 검색 목록 SelectList에 사용되는 옵션 값들
  * @returns
  */
-const useGlobalProductSearchFieldData = () => {
+const useGlobalProductSearchFieldData = (startDate, endDate) => {
 	// 창고 목록
 	const { data: storage } = useReactQuery('', 'getStorageList', getStorageList)
 	const storageList = useMemo(
@@ -123,7 +123,17 @@ const useGlobalProductSearchFieldData = () => {
 			value: 'N',
 		},
 	]
-	return { storageList, supplierList, spartList, makerList, stockStatusList, gradeList, preferThicknessList }
+	return {
+		storageList,
+		supplierList,
+		spartList,
+		makerList,
+		stockStatusList,
+		gradeList,
+		preferThicknessList,
+		startDate,
+		endDate,
+	}
 }
 
 export default useGlobalProductSearchFieldData
