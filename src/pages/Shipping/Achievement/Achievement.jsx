@@ -1,90 +1,48 @@
-import React, { useEffect, useRef, useState } from 'react'
-
+import React, { useEffect, useState } from 'react'
 import { WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import { achievementAddedAtom, selectedRowsAtom } from '../../../store/Layout/Layout'
-
-import { Link, useNavigate } from 'react-router-dom'
+import { achievementAddedAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { useNavigate } from 'react-router-dom'
 import Hidden from '../../../components/TableInner/Hidden'
-import {
-	FilterContianer,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
-	RowWrap,
-	TableContianer,
-	TCSubContainer,
-} from '../../../modal/External/ExternalFilter'
-
+import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import AchievementModal from '../../../modal/Multi/Achievement'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { useShipmentListQuery, useShipmentRemoveExtraCostMutation } from '../../../api/shipment'
 import { ShippingRegisterFields, ShippingRegisterFieldsCols } from '../../../constants/admin/Shipping'
 import { add_element_field } from '../../../lib/tableHelpers'
-import { GlobalFilterContainer, GlobalFilterFooter, GlobalFilterHeader } from '../../../components/Filter'
-import {
-	CustomerSearch,
-	DateSearchSelect,
-	DestinationSearch,
-	ProductNumberListSearch,
-	SpartSelect,
-	StorageSelect,
-} from '../../../components/Search'
+import { GlobalFilterHeader } from '../../../components/Filter'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Excel from '../../../components/TableInner/Excel'
 import Table from '../../Table/Table'
 import useAlert from '../../../store/Alert/useAlert'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
+import AchievementSearchFilter from './AchievementSearchFilter'
+import { isEqual } from 'lodash'
+import { formatWeight } from '../../../utils/utils'
+import { KilogramSum } from '../../../utils/KilogramSum'
 
 const initData = {
 	pageNum: 1,
 	pageSize: 50,
 	shipmentStatus: '운송 완료',
-	storage: '',
-	spart: '',
-	customerCode: '',
-	customerName: '',
-	destinationCode: '',
-	destinationName: '',
-	orderStartDate: '',
-	orderEndDate: '',
-	auctionStartDate: '',
-	auctionEndDate: '',
-	shipmentRequestStartDate: '',
-	shipmentRequestEndDate: '',
-	shippingStartDate: '',
-	shippingEndDate: '',
-	shipmentStartDate: '',
-	shipmentEndDate: '',
-	productNumberList: '',
 }
 
 const Achievement = () => {
 	const navigate = useNavigate()
+	const { simpleAlert, redAlert } = useAlert()
 	const [addedModal, setAddedModal] = useAtom(achievementAddedAtom)
-	const { simpleAlert, showAlert, simpleConfirm, showConfirm, redAlert } = useAlert()
+	const exFilterToggle = useAtomValue(toggleAtom)
+	const selectedRows = useAtomValue(selectedRowsAtom)
 
-	// Table
-	const tableField = useRef(ShippingRegisterFieldsCols)
-	const getCol = tableField.current
-	const [getRow, setGetRow] = useState('')
-	const selectedRows = useAtom(selectedRowsAtom)[0]
-
-	// data fetch
+	const [getRow, setGetRow] = useState([])
+	const [pagination, setPagination] = useState(null)
 	const [param, setParam] = useState(initData)
+
 	const { data, refetch, isLoading } = useShipmentListQuery(param)
 	const [selectedData, setSelectedData] = useState(null)
 	const { mutate: removeExtarCost } = useShipmentRemoveExtraCostMutation() // 추가비 및 공차비 삭제
 
-	// param change
-	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
-
-	// reset event
-	const onReset = async () => {
-		await setParam(initData)
-		await refetch()
-	}
-
 	const openExtarCostModal = () => {
-		if (!selectedRows) {
+		if (!selectedRows || selectedRows?.length === 0) {
 			return simpleAlert('추가할 제품을 선택해주세요.')
 		}
 		if (selectedRows.length > 1) {
@@ -98,7 +56,7 @@ const Achievement = () => {
 	}
 
 	const onRemoveExtraCost = () => {
-		if (!selectedRows) {
+		if (!selectedRows || selectedRows?.length === 0) {
 			return simpleAlert('삭제할 제품을 선택해주세요.')
 		}
 		if (selectedRows.length > 1) {
@@ -116,13 +74,13 @@ const Achievement = () => {
 	}
 
 	const toInvoice = () => {
-		if (!selectedRows) {
-			return window.alert('삭제할 제품을 선택해주세요.')
+		if (!selectedRows || selectedRows?.length === 0) {
+			return simpleAlert('제품을 선택해주세요.')
 		}
 		const findNumbers = [...new Set(selectedRows.map((item) => `${item['고객코드']}/${item['출고번호']}`))]
 
 		if (findNumbers.length > 1) {
-			return window.alert('거래명세서는 하나의 출고번호와 고객사으로 확인할 수 있습니다.')
+			return simpleAlert('거래명세서는 하나의 출고번호와 고객사으로 확인할 수 있습니다.')
 		}
 		const findData = findNumbers[0].split('/')
 		const customerCode = findData[0]
@@ -131,11 +89,11 @@ const Achievement = () => {
 	}
 
 	const toClaim = () => {
-		if (!selectedRows) {
-			return window.alert('클레임 등록할 제품을 선택해주세요.')
+		if (!selectedRows || selectedRows?.length === 0) {
+			return simpleAlert('클레임 등록할 제품을 선택해주세요.')
 		}
 		if (selectedRows.length > 1) {
-			return window.alert('하나의 제품만 선택해주세요.')
+			return simpleAlert('하나의 제품만 선택해주세요.')
 		}
 		const selectedRow = selectedRows[0]
 		const copiedData = data.list
@@ -143,101 +101,77 @@ const Achievement = () => {
 		navigate(`/shipping/claim/register`, { state: findData })
 	}
 
-	useEffect(() => {
-		const getData = data?.list
-		if (getData && Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, ShippingRegisterFields))
-		}
-	}, [data])
+	const handleTablePageSize = (event) => {
+		setParam((prevParam) => ({
+			...prevParam,
+			pageSize: Number(event.target.value),
+			pageNum: 1,
+		}))
+	}
+
+	const onPageChange = (value) => {
+		setParam((prevParam) => ({
+			...prevParam,
+			pageNum: Number(value),
+		}))
+	}
+
+	const resetOnClick = () => setParam(initData)
+
+	const searchOnClick = (userSearchParam) => {
+		setParam((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+				pageNum: 1,
+			}
+		})
+	}
 
 	useEffect(() => {
 		refetch()
-	}, [param.pageNum, param.pageSize])
+	}, [param])
+
+	useEffect(() => {
+		const list = data?.list
+		if (list && Array.isArray(list)) {
+			setGetRow(add_element_field(list, ShippingRegisterFields))
+			setPagination(data?.pagination)
+		}
+	}, [data])
 
 	return (
 		<FilterContianer>
-			{/* header */}
 			<GlobalFilterHeader title={'출고 실적'} />
-			<GlobalFilterContainer>
-				<FilterSubcontianer>
-					<FilterLeft>
-						<RowWrap>
-							<StorageSelect value={param.storage} onChange={(e) => onChange('storage', e.label)} />
-							<SpartSelect value={param.spart} onChange={(e) => onChange('spart', e.label)} />
-						</RowWrap>
-						<RowWrap>
-							<CustomerSearch
-								name={param.customerName}
-								code={param.customerCode}
-								setName={(value) => onChange('customerName', value)}
-								setCode={(value) => onChange('customerCode', value)}
-							/>
-							<DestinationSearch
-								name={param.destinationName}
-								code={param.destinationCode}
-								setName={(value) => onChange('destinationName', value)}
-								setCode={(value) => onChange('destinationCode', value)}
-							/>
-						</RowWrap>
-						<RowWrap>
-							<DateSearchSelect
-								title={'주문 일자'}
-								startInitDate={param.orderStartDate}
-								endInitDate={param.orderEndDate}
-								startDateChange={(value) => onChange('orderStartDate', value)}
-								endDateChange={(value) => onChange('orderEndDate', value)}
-							/>
-							<DateSearchSelect
-								title={'출고 일자'}
-								startInitDate={param.shipmentStartDate}
-								endInitDate={param.shipmentEndDate}
-								startDateChange={(value) => onChange('shipmentStartDate', value)}
-								endDateChange={(value) => onChange('shipmentEndDate', value)}
-							/>
-						</RowWrap>
-						<RowWrap>
-							<DateSearchSelect
-								title={'경매 일자'}
-								startInitDate={param.auctionStartDate}
-								endInitDate={param.auctionEndDate}
-								startDateChange={(value) => onChange('auctionStartDate', value)}
-								endDateChange={(value) => onChange('auctionEndDate', value)}
-							/>
-							<DateSearchSelect
-								title={'상시 판매 일자'}
-								startInitDate={param.orderStartDate}
-								endInitDate={param.orderEndDate}
-								startDateChange={(value) => onChange('orderStartDate', value)}
-								endDateChange={(value) => onChange('orderEndDate', value)}
-							/>
-						</RowWrap>
-					</FilterLeft>
-					<FilterRight>
-						<ProductNumberListSearch
-							value={param.productNumberList}
-							onChange={(e) => onChange('productNumberList', e.target.value)}
-						/>
-					</FilterRight>
-				</FilterSubcontianer>
-			</GlobalFilterContainer>
-			{/* footer */}
-			<GlobalFilterFooter reset={onReset} onSearch={refetch} />
+			{exFilterToggle && (
+				<GlobalProductSearch
+					param={param}
+					isToggleSeparate={true}
+					globalProductSearchOnClick={searchOnClick}
+					globalProductResetOnClick={resetOnClick}
+					renderCustomSearchFields={(props) => <AchievementSearchFilter {...props} />}
+				/>
+			)}
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>2</span> / 50개 )
+						조회 목록 (선택 <span>{selectedRows?.length > 0 ? selectedRows?.length : '0'}</span> /{' '}
+						{pagination?.listCount}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown
-							handleDropdown={(e) => setParam((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))}
-						/>
-						<Excel />
+						<PageDropdown handleDropdown={handleTablePageSize} />
+						<Excel getRow={getRow} sheetName={'출고실적'} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량<span> 2 </span>kg / 총 중량 kg
+						선택 중량
+						<span> {formatWeight(KilogramSum(selectedRows))} </span>
+						kg / 총 중량 {formatWeight(pagination?.totalWeight)} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteRedBtn onClick={onRemoveExtraCost}>추가비 및 공차비 삭제</WhiteRedBtn>
@@ -245,11 +179,11 @@ const Achievement = () => {
 					</div>
 				</TCSubContainer>
 				<Table
-					getCol={getCol}
+					getCol={ShippingRegisterFieldsCols}
 					getRow={getRow}
 					loading={isLoading}
-					tablePagination={data?.pagination}
-					onPageChange={(value) => onChange('pageNum', value)}
+					tablePagination={pagination}
+					onPageChange={onPageChange}
 				/>
 				<TCSubContainer>
 					<div></div>

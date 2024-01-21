@@ -1,9 +1,5 @@
-import { useMergeListQuery } from '../../../api/shipment'
 import React, { useEffect, useState } from 'react'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
-import { RadioSearchButton } from '../../../components/Search'
-import { calculateTotal } from '../Request/utils'
-import { formatWeight } from '../../../utils/utils'
 import moment from 'moment'
 
 const InvoiceDetailHeader = ({ data }) => {
