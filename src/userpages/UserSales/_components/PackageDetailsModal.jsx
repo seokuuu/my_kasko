@@ -72,42 +72,18 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 		weightKey: '총 중량',
 	})
 
-	/**
-	 * UI COMMONT PROPERTIES
-	 * @description 페이지 내 공통 UI 처리 함수입니다.
-	 * @todo 테이블 공통 컴포넌트로 전환
-	 */
-	/* ============================== COMMON start ============================== */
-	// FILTER ON TOGGLE
-	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-	const [toggleMsg, setToggleMsg] = useState('On')
-	const toggleBtnClick = () => {
-		setExfilterToggle((prev) => !prev)
-		if (exFilterToggle === true) {
-			setToggleMsg('Off')
-		} else {
-			setToggleMsg('On')
-		}
-	}
-	/* ============================== COMMON end ============================== */
-
 	return (
 		<>
 			<FadeOverlay />
-			<ModalContainer style={{ width: '75%', height: '98vh' }}>
+			<ModalContainer style={{ width: '75%', maxHeight: '98vh' }}>
 				<BlueBarHeader style={{ height: '60px' }}>
 					<div>패키지 상세 보기</div>
 					<div>
 						<WhiteCloseBtn onClick={onClose} src="/svg/white_btn_close.svg" />
 					</div>
 				</BlueBarHeader>
-				<BlueSubContainer style={{ padding: '0px 30px' }}>
+				<BlueSubContainer style={{ padding: '20px 30px' }}>
 					<FilterContianer>
-						<FilterHeader>
-							<div style={{ display: 'flex' }}></div>
-							{/* 토글 쓰기 */}
-							<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
-						</FilterHeader>
 						<FilterTopContainer>
 							<FilterTCTop>
 								<h6>패키지 번호</h6>
