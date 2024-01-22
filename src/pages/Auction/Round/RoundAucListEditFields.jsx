@@ -21,7 +21,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 import StandardFind from '../../../modal/Multi/StandardFind'
 
-const BiddingSearchFields = ({
+const RoundAucListEditFields = ({
 	// prettier-ignore
 	search,
 	setSearch,
@@ -82,6 +82,7 @@ const BiddingSearchFields = ({
 							/>
 						</PWRight>
 					</PartWrap>
+
 					{/* 규격약호 */}
 					<PartWrap>
 						<h6>규격 약호</h6>
@@ -111,6 +112,21 @@ const BiddingSearchFields = ({
 								name="supplier"
 								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
 							/>
+
+							<MainSelect
+								options={stockStatusList}
+								defaultValue={stockStatusList[0]}
+								value={search.stockStatus}
+								name="stockStatus"
+								onChange={(e) => commonDropdownButtonHandler(e, 'stockStatus')}
+							/>
+							<MainSelect
+								options={makerList}
+								defaultValue={makerList[0]}
+								value={search.maker}
+								name="maker"
+								onChange={(e) => commonDropdownButtonHandler(e, 'maker')}
+							/>
 							<MainSelect
 								options={gradeList}
 								defaultValue={gradeList[0]}
@@ -118,10 +134,18 @@ const BiddingSearchFields = ({
 								name="grade"
 								onChange={(e) => commonDropdownButtonHandler(e, 'grade')}
 							/>
+
+							<MainSelect
+								options={preferThicknessList}
+								defaultValue={preferThicknessList[0]}
+								value={search.preferThickness}
+								name="preferThickness"
+								onChange={(e) => commonDropdownButtonHandler(e, 'preferThickness')}
+							/>
 						</PWRight>
 					</PartWrap>
 				</RowWrap>
-				<RowWrap>
+				<RowWrap none>
 					<PartWrap first>
 						<h6>두께(MM)</h6>
 						<ExInputsWrap>
@@ -185,6 +209,31 @@ const BiddingSearchFields = ({
 						</ExInputsWrap>
 					</PartWrap>
 				</RowWrap>
+				<RowWrap>
+					{/* 창고 구분 */}
+
+					<PartWrap first>
+						<h6>유찰 횟수</h6>
+						<ExInputsWrap>
+							<Input
+								type="number"
+								name="minFailCount"
+								value={search.minFailCount}
+								onChange={commonNumInputHandler}
+								min={0}
+							/>
+							<Tilde>~</Tilde>
+							<Input
+								type="number"
+								name="maxFailCount"
+								value={search.maxFailCount}
+								onChange={commonNumInputHandler}
+								min={0}
+							/>
+						</ExInputsWrap>
+					</PartWrap>
+					{/* 규격약호 */}
+				</RowWrap>
 			</FilterLeft>
 			{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
 			<FilterRight>
@@ -199,4 +248,4 @@ const BiddingSearchFields = ({
 	)
 }
 
-export default BiddingSearchFields
+export default RoundAucListEditFields

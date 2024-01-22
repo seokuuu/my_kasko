@@ -21,7 +21,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 import StandardFind from '../../../modal/Multi/StandardFind'
 
-const BiddingSearchFields = ({
+const ProgressSearchFields = ({
 	// prettier-ignore
 	search,
 	setSearch,
@@ -49,14 +49,14 @@ const BiddingSearchFields = ({
 	const [param, setParam] = useState(init)
 	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
 
-	console.log('param', param)
-
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
+
+	console.log('param', param)
 
 	return (
 		<>
 			<FilterLeft>
-				<RowWrap>
+				<RowWrap none>
 					{/* 창고 구분 */}
 					<PartWrap first>
 						<h6>창고 구분 </h6>
@@ -71,19 +71,6 @@ const BiddingSearchFields = ({
 						</PWRight>
 					</PartWrap>
 					<PartWrap>
-						<h6>매입처</h6>
-						<PWRight>
-							<MainSelect
-								options={supplierList}
-								defaultValue={supplierList[0]}
-								value={search.supplier}
-								name="supplier"
-								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
-							/>
-						</PWRight>
-					</PartWrap>
-					{/* 규격약호 */}
-					<PartWrap>
 						<h6>규격 약호</h6>
 						<Input readOnly={true} value={search.spec} />
 						<GreyBtn
@@ -96,6 +83,11 @@ const BiddingSearchFields = ({
 							찾기
 						</GreyBtn>
 					</PartWrap>
+
+					{/* 규격약호 */}
+				</RowWrap>
+				<RowWrap>
+					<CustomerSearch search={search} setSearch={setSearch} />
 				</RowWrap>
 				{/* 2행 */}
 				<RowWrap>
@@ -121,7 +113,9 @@ const BiddingSearchFields = ({
 						</PWRight>
 					</PartWrap>
 				</RowWrap>
+
 				<RowWrap>
+					{/* 두께 */}
 					<PartWrap first>
 						<h6>두께(MM)</h6>
 						<ExInputsWrap>
@@ -199,4 +193,4 @@ const BiddingSearchFields = ({
 	)
 }
 
-export default BiddingSearchFields
+export default ProgressSearchFields
