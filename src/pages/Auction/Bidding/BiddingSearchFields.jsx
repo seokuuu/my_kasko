@@ -32,10 +32,10 @@ const BiddingSearchFields = ({
 		destinationCode: '',
 		destinationName: '',
 	}
-
+	const [param, setParam] = useState(init)
 	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
 
-	const [param, setParam] = useState(init)
+	console.log('param', param)
 
 	return (
 		<>

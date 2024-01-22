@@ -84,7 +84,7 @@ const Single = () => {
 			...prevParam,
 			pageSize: Number(event.target.value),
 			pageNum: 1,
-		}))
+	}))
 	}
 
 	const onPageChange = (value) => {

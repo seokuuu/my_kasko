@@ -121,6 +121,8 @@ const GlobalProductSearch = ({
 	const initialParamRef = useRef(initialSearchParams)
 	const [userSearchParam, setUserSearchParam] = useState({ ...initialSearchParams })
 
+	console.log('userSearchParam !!!', userSearchParam)
+
 	const getUpdatedProperties = () => {
 		let updatedProperties = {}
 		for (let key in userSearchParam) {
