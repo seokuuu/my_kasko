@@ -1,12 +1,8 @@
+import { useQuery } from '@tanstack/react-query'
 import React, { useMemo } from 'react'
-import { FilterHeaderAlert } from '../../modal/External/ExternalFilter'
-import {
-  FilterContianer,
-  TableContianer
-} from '../../modal/External/ExternalFilter'
-import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../components/MapTable/MapTable'
-import moment from 'moment'
 import styled from 'styled-components'
+import { client } from '../../api'
+import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../components/MapTable/MapTable'
 import {
   BlueBarHeader,
   BlueSubContainer,
@@ -14,91 +10,81 @@ import {
   ModalContainer,
   WhiteCloseBtn,
 } from '../../modal/Common/Common.Styled'
+import { FilterContianer, FilterHeaderAlert, TableContianer } from '../../modal/External/ExternalFilter'
 
 /**
- * @constant 제품 더미 데이터
+ * @constant 입금요청서 요청 URL
+ * @description auction:경매, salesDeposit:상시판매
  */
-const DUMMY_DATA = {
-  uid: 0,
-  startDate: '',
-  customerName: '-',
-  productNumber: '-',
-  productName: '-',
-  productSpec: '-',
-  productWdh: '-',
-  weight: 0,
-  orderPrice: 0,
-  orderPriceVat: 9,
-  freightCost: 0,
-  freightCostVat: 0,
-  totalPrice: 0,
-}
+const REQUEST_DEPOSIT_URL = {
+  aution: '/auction/successfulBid/deposit',
+  salesDeposit: '/sale-product/order/deposit-request'
+};
+
 /**
- * 
+ * @constant 총계 초기화 데이터
  */
-function getKeyMappedData(data, keyPairs) {
-  return data.map(d => {
-    let newD = {...d};
-    for(const enKey in keyPairs) {
-      const koKey = keyPairs[enKey];
-      if(d[koKey] !== undefined) {
-        newD[enKey] = d[koKey];
-        delete newD[koKey];
-      }
-    }
-    return newD;
-  })
+const TOTAL_DATA = {
+  price: 0, // 낙찰금액
+  weight: 0, // 낙찰 중량
+  orderPrice: 0, // 제품대(공급가액)
+  freightCost: 0, // 운송비(공급가액)
+  sumCost: 0, // 총합(공급가액)
+  orderPriceVat: 0, // 제품대(VAT)
+  freightCostVat: 0, // 운송비(VAT)
+  sumCostVat: 0, // 총합(VAT)
+  sum: 0 // 총계
 }
 
 /**
  * [**] 입금 요청서 모달
  * @param {string} title 입금요청서 제목
- * @param {object} keyPairs 입금요청서 key-value pair
- * @param {Array<any>} data 입금 데이터 
- * @param {string} date 경매일자
- * @param {func} handleClose 모달 닫기 핸들러 
+ * @param {boolean} salesDeposit 상시판매 여부
+ * @param {string} auctionNumber 경매번호|상시판매 번호 (경매|상시판매)
+ * @param {string} storage 창고 (경메)
+ * @param {string} customerDestinationUid 고객사 목적지 고유번호 (경매)
+ * @param {string} biddingStatus 낙찰상태 (경매)
+ * @param {func} onClose 모달 닫기 핸들러 
  * @returns 
  */
-const DepositRequestForm = ({ title= '경매 입금 요청서', keyPairs, data, date, handleClose }) => {
-  // 제품 정보
-  const productData = useMemo(() => !data? [DUMMY_DATA] : keyPairs? getKeyMappedData(data) : data, [data]);
-  // 간략 정보
-  const infoData = useMemo(() => {
-    const info = ({ 
-      date: date || moment(productData[0].startDate || new Date()).format('YYYY.MM.DD'), 
-      customerName: productData[0].customerName || '-',
-      totalWeight: 0,
-      totalPrice: 0
-     });
-    if(!info.totalWeight || !info.totalPrice) {
-      productData.forEach(v => {
-        info.totalWeight += v.weight;
-        info.totalPrice += v.totalPrice;
+const DepositRequestForm = ({ title= '경매 입금 요청서', auctionNumber, salesDeposit, storage, customerDestinationUid, biddingStatus, onClose }) => {
+  // 데이터
+  const { data: infoData, isSuccess } = useQuery({
+    queryKey: 'deposit-request',
+    queryFn: async () => {
+      const requestUrl = salesDeposit? REQUEST_DEPOSIT_URL.salesDeposit : REQUEST_DEPOSIT_URL.aution;
+      const { data } = salesDeposit
+      ? await client.get(`${requestUrl}/${auctionNumber}`)
+      : await client.post(requestUrl, {
+        auctionNumber: auctionNumber,
+        storage: storage,
+        biddingStatus: biddingStatus,
+        customerDestinationUid: customerDestinationUid
       })
+      return data.data;
     }
-    info.totalWeight = info.totalWeight.toLocaleString();
-    info.totalPrice = info.totalPrice.toLocaleString();
-    return info;
-  }
-  , [productData]);
-  // 총계 정보
-  const totalData = useMemo(() => productData.reduce(
-    (acc, cur) => {
-      acc.weight += parseFloat(cur.weight)
-      acc.orderPrice += cur.orderPrice
-      acc.freightCost += cur.freightCost
-      acc.orderPriceVat += cur.orderPriceVat
-      acc.freightCostVat += cur.freightCostVat
-      return acc
-    },
-    {
-      weight: 0,
-      orderPrice: 0,
-      freightCost: 0,
-      orderPriceVat: 0,
-      freightCostVat: 0,
-    },
-  ), [productData])
+  });
+  // 총계 데이터
+  const totalData = useMemo(() => {
+    const data = {...TOTAL_DATA};
+    if(infoData && infoData.list) {
+      for(const v of infoData.list) {
+        data.price += Number(v.totalPrice);
+        data.weight += Number(v.weight);
+        data.orderPrice += Number(v.orderPrice);
+        data.freightCost += Number(v.freightCost);
+        data.sumCost += Number(v.orderPrice + v.freightCost);
+        data.orderPriceVat += Number(v.orderPriceVat);
+        data.freightCostVat += Number(v.freightCostVat);
+        data.sumCostVat += Number(v.orderPriceVat + v.freightCostVat);
+        data.sum += Number(v.orderPrice + v.freightCost + v.orderPriceVat + v.freightCostVat);
+      }
+    }
+    for(const key in data) {
+      data[key] = data[key].toLocaleString();
+    }
+    return data;
+  }, [infoData])
 
   return (
     <>
@@ -107,14 +93,14 @@ const DepositRequestForm = ({ title= '경매 입금 요청서', keyPairs, data, 
         <BlueBarHeader style={{ height: '20px' }}>
           <div></div>
           <div>
-            <WhiteCloseBtn onClick={e => { handleClose(); }} src="/svg/white_btn_close.svg" />
+            <WhiteCloseBtn onClick={e => { onClose(); }} src="/svg/white_btn_close.svg" />
           </div>
         </BlueBarHeader>
         <BlueSubContainer style={{ padding: '0px 30px' }}>
           <FilterContianer>
             {/* 요청서 제목 | 일자 */}
             <FormTitle>
-              <b>{title} ({date}일자</b>)
+              <b>{title} ({infoData?.auctionDate || '-'}일자</b>)
             </FormTitle>
             {/* 입금 정보 공지 */}
             <FilterHeaderAlert>
@@ -147,77 +133,80 @@ const DepositRequestForm = ({ title= '경매 입금 요청서', keyPairs, data, 
                 </b>
               </div>
             </Text>
-            <TableContianer>
-              <ClaimTable style={{ margin: '20px 0px' }}>
-                <ClaimRow>
-                  <ClaimTitle>경매일자</ClaimTitle>
-                  <ClaimContent>{infoData.date}</ClaimContent>
-                  <ClaimTitle>고객명</ClaimTitle>
-                  <ClaimContent>{infoData.customerName}</ClaimContent>
-                  <ClaimTitle>낙찰 중량</ClaimTitle>
-                  <ClaimContent bold>{infoData.totalWeight}</ClaimContent>
-                  <ClaimTitle>낙찰 금액</ClaimTitle>
-                  <ClaimContent bold>{infoData.totalPrice}</ClaimContent>
-                </ClaimRow>
-              </ClaimTable>
-              <TableContainer>
-                <Table>
-                  <thead>
-                    <tr>
-                      <Th rowSpan="2">제품 정보</Th>
-                      <Th rowSpan="2">품명</Th>
-                      <Th rowSpan="2">규격 약호</Th>
-                      <Th rowSpan="2">제품 사양</Th>
-                      <Th rowSpan="2">중량</Th>
-                      <Th colSpan="3">공급가액</Th>
-                      <Th colSpan="3">VAT</Th>
-                      <Th rowSpan="2">총계</Th>
-                    </tr>
-                    <SubheaderRow>
-                      <Th>제품대</Th>
-                      <Th>운송비</Th>
-                      <Th>총합</Th>
-                      <Th>제품대</Th>
-                      <Th>운송비</Th>
-                      <Th>총합</Th>
-                    </SubheaderRow>
-                  </thead>
-                  <tbody>
-                    {/* 테이블 내용 추가 */}
-                    {
-                      productData.map(v => (
-                        <tr key={v.uid}>
-                          <Td>{v.productName}</Td>
-                          <Td>품명</Td>
-                          <Td>규격약호</Td>
-                          <Td>제품사양</Td>
-                          <Td>{v.weight}</Td>
-                          <Td>제품대</Td>
-                          <Td>운송비</Td>
-                          <Td>총합</Td>
-                          <Td>제품대</Td>
-                          <Td>운송비</Td>
-                          <Td>총합</Td>
-                          <Td>{v.totalPrice}</Td>
-                        </tr>
-                      ))
-                    }
-                    {/* 총계 */}
-                    <tr style={{ border: '2px solid #c8c8c8' }}>
-                      <Th colSpan="4">총계</Th>
-                      <Td blue bold>{totalData.weight}</Td>
-                      <Td>제품대</Td>
-                      <Td>운송비</Td>
-                      <Td>총합</Td>
-                      <Td>제품대</Td>
-                      <Td>운송비</Td>
-                      <Td>총합</Td>
-                      <Td>{totalData.orderPrice}</Td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </TableContainer>
-            </TableContianer>
+            {
+              infoData &&
+              <TableContianer>
+                <ClaimTable style={{ margin: '20px 0px' }}>
+                  <ClaimRow>
+                    <ClaimTitle>경매일자</ClaimTitle>
+                    <ClaimContent>{infoData.auctionDate}</ClaimContent>
+                    <ClaimTitle>고객명</ClaimTitle>
+                    <ClaimContent>{infoData.customerName}</ClaimContent>
+                    <ClaimTitle>낙찰 중량</ClaimTitle>
+                    <ClaimContent bold>{totalData.weight}</ClaimContent>
+                    <ClaimTitle>낙찰 금액</ClaimTitle>
+                    <ClaimContent bold>{totalData.price}</ClaimContent>
+                  </ClaimRow>
+                </ClaimTable>
+                <TableContainer>
+                  <Table>
+                    <thead>
+                      <tr>
+                        <Th rowSpan="2">제품 정보</Th>
+                        <Th rowSpan="2">품명</Th>
+                        <Th rowSpan="2">규격 약호</Th>
+                        <Th rowSpan="2">제품 사양</Th>
+                        <Th rowSpan="2">중량</Th>
+                        <Th colSpan="3">공급가액</Th>
+                        <Th colSpan="3">VAT</Th>
+                        <Th rowSpan="2">총계</Th>
+                      </tr>
+                      <SubheaderRow>
+                        <Th>제품대</Th>
+                        <Th>운송비</Th>
+                        <Th>총합</Th>
+                        <Th>제품대</Th>
+                        <Th>운송비</Th>
+                        <Th>총합</Th>
+                      </SubheaderRow>
+                    </thead>
+                    <tbody>
+                      {/* 테이블 내용 추가 */}
+                      {
+                        infoData.list.map(v => (
+                          <tr key={v.uid}>
+                            <Td>{v.productNumber}</Td>
+                            <Td>{v.productName}</Td>
+                            <Td>{v.productSpec}</Td>
+                            <Td>{v.productWdh}</Td>
+                            <Td>{v.weight}</Td>
+                            <Td>{v.orderPrice}</Td>
+                            <Td>{v.freightCost}</Td>
+                            <Td>{v.orderPrice + v.freightCost}</Td>
+                            <Td>{v.orderPriceVat}</Td>
+                            <Td>{v.freightCostVat}</Td>
+                            <Td>{v.orderPriceVat + v.freightCostVat}</Td>
+                            <Td>{v.totalPrice}</Td>
+                          </tr>
+                        ))
+                      }
+                      {/* 총계 */}
+                      <tr style={{ border: '2px solid #c8c8c8' }}>
+                        <Th colSpan="4">총계</Th>
+                        <Td blue bold>{totalData.weight}</Td>
+                        <Td>{totalData.orderPrice}</Td>
+                        <Td>{totalData.freightCost}</Td>
+                        <Td>{totalData.sumCost}</Td>
+                        <Td>{totalData.orderPriceVat}</Td>
+                        <Td>{totalData.freightCostVat}</Td>
+                        <Td>{totalData.sumCostVat}</Td>
+                        <Td>{totalData.sum}</Td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </TableContainer>
+              </TableContianer>
+            }
           </FilterContianer>
         </BlueSubContainer>
         <div style={{ float: 'right', padding: '20px 30px' }}>

@@ -1,243 +1,201 @@
-import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { useState } from 'react'
+import { useUserSingleProductListQuery } from '../../../api/user'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import {
-  GreyBtn,
-  ExcelBtn,
-  WhiteGrnBtn,
-  IndigoBtn,
-  BlueBtn,
-  SkyBtn,
-  SwitchBtn,
-  TGreyBtn,
-  TWhiteBtn,
-} from '../../../common/Button/Button'
-import Test3 from '../../../pages/Test/Test3'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom } from '../../../store/Layout/Layout'
-
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
-
-import {
-  FilterContianer,
-  FilterHeader,
-  FilterFooter,
-  FilterSubcontianer,
-  FilterLeft,
-  FilterRight,
-  RowWrap,
-  PartWrap,
-  PWRight,
-  Input,
-  TCSubContainer,
-  GridWrap,
-  Tilde,
-  DoubleWrap,
-  ResetImg,
-  TableContianer,
-  ExRadioWrap,
-  SubTitle,
-  FilterHeaderAlert,
-  FHALeft,
-  ExInputsWrap,
-  MiniInput,
-} from '../../../modal/External/ExternalFilter'
-
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
-
-import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { PROD_CATEGORY, userSingleProductField, userSingleProductFieldsCols } from '../../../constants/user/product'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
+import {
+	FilterContianer,
+	FilterHeader,
+	FilterHeaderAlert,
+	FilterWrap,
+	TCSubContainer,
+	TableContianer,
+} from '../../../modal/External/ExternalFilter'
+import Table from '../../../pages/Table/Table'
+import { toggleAtom } from '../../../store/Layout/Layout'
+import AddCartButton from '../_components/AddCartButton'
+import AddOrderButton from '../_components/AddOrderButton'
+import AddWishButton from '../_components/AddWishButton'
+import SingleSearchFields from './SingleSearchFields'
 
-const Single = ({}) => {
-  const radioDummy = ['전체', '미진행', '진행중', '종료']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+/**
+ * @constant 기본 페이지 검색 값
+ */
+const initialPageParams = {
+	pageNum: 1, // 페이지 번호
+	pageSize: 50, // 페이지 갯수
+}
 
-  const [savedRadioValue, setSavedRadioValue] = useState('')
-  useEffect(() => {
-    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
+/**
+ * 유효 PARAMS 반환 함수
+ */
+const getValidParams = (params) => {
+	const validParams = Object.keys(params).reduce((acc, key) => {
+		let value = params[key]
+		if (Array.isArray(value)) {
+			value = value.length < 1 ? null : value.toString()
+		} else if (typeof value === 'string' && value.length < 1) {
+			value = null
+		}
+		return value ? { ...acc, [key]: value } : acc
+	}, {})
+	return validParams
+}
 
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
-  }, [checkRadio])
+/**
+ * (사용자)상시판매 단일
+ */
+const Single = () => {
+	// API PARAMS
+	const [searchParams, setSearchParams] = useState({ ...initialPageParams })
+	const [pageParams, setPageParams] = useState({ ...initialPageParams })
+	// API
+	const { data: singleData, isLoading } = useUserSingleProductListQuery(searchParams) // 주문확인 목록 조회 쿼리
+	// 테이블 데이터, 페이지 데이터, 총 중량
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
+		tableField: userSingleProductField,
+		serverData: singleData,
+		wish: { display: true },
+	})
+	// 선택 항목
+	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr, hasSelected } = useTableSelection({
+		weightKey: '중량',
+	})
 
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
-  const [isRotated, setIsRotated] = useState(false)
+	/**
+	 * 필터 검색 핸들러
+	 */
+	function handleFilterSearch(params) {
+		const validParams = getValidParams(params)
+		setSearchParams({ ...validParams, ...pageParams, pageNum: 1 })
+	}
 
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated((prevIsRotated) => !prevIsRotated)
-  }
+	/**
+	 * 초기화 핸들러
+	 */
+	function handleFilterReset() {
+		setSearchParams({ ...initialPageParams })
+	}
 
-  // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-  const [toggleMsg, setToggleMsg] = useState('On')
-  const toggleBtnClick = () => {
-    setExfilterToggle((prev) => !prev)
-    if (exFilterToggle === true) {
-      setToggleMsg('Off')
-    } else {
-      setToggleMsg('On')
-    }
-  }
+	/**
+	 * 페이지넘버 핸들러
+	 */
+	function handlePageNumChange(num) {
+		const newPageParams = { ...pageParams, pageNum: num }
+		setPageParams(newPageParams)
+		setSearchParams((prev) => ({ ...prev, ...newPageParams }))
+	}
 
-  return (
-    <FilterContianer>
-      <FilterHeader>
-        <div style={{ display: 'flex' }}>
-          <h1>단일</h1>
-        </div>
-        {/* 토글 쓰기 */}
-        <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
-      </FilterHeader>
-      <FilterHeaderAlert>
-        <div style={{ display: 'flex' }}>
-          <div style={{ marginRight: '20px' }}>
-            <img src="/img/notice.png" />
-          </div>
-          <div style={{ marginTop: '6px' }}>
-            <div>· 주의사항 영역</div>
-            <div style={{ marginTop: '6px' }}>
-              <div>· 주의사항 영역</div>
-            </div>
-          </div>
-        </div>
+	/**
+	 * 페이지사이즈 핸들러
+	 */
 
-        <div>
-          수정
-          <img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-        </div>
-      </FilterHeaderAlert>
-      {exFilterToggle && (
-        <>
-          <FilterSubcontianer>
-            <FilterLeft>
-              <RowWrap>
-                <PartWrap first>
-                  <h6>창고 구분</h6>
-                  <PWRight>
-                    <MainSelect />
-                  </PWRight>
-                </PartWrap>
-                <PartWrap>
-                  <h6>매입처</h6>
-                  <PWRight>
-                    <MainSelect />
-                  </PWRight>
-                </PartWrap>
+	function handlePageSizeChange(e) {
+		const num = e.target.value
+		const newPageParams = { pageSize: num, pageNum: 1 }
+		setPageParams(newPageParams)
+		setSearchParams((prev) => ({ ...prev, ...newPageParams }))
+	}
 
-                <PartWrap>
-                  <h6>규격 약호</h6>
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-              </RowWrap>
+	/**
+	 * UI COMMONT PROPERTIES
+	 * @description 페이지 내 공통 UI 처리 함수입니다.
+	 */
+	/* ============================== COMMON start ============================== */
+	// FILTER ON TOGGLE
+	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+	const [toggleMsg, setToggleMsg] = useState('On')
+	const toggleBtnClick = () => {
+		setExfilterToggle((prev) => !prev)
+		if (exFilterToggle === true) {
+			setToggleMsg('Off')
+		} else {
+			setToggleMsg('On')
+		}
+	}
+	/* ============================== COMMON end ============================== */
 
-              <RowWrap>
-                <PartWrap first>
-                  <h6>구분</h6>
-                  <MainSelect />
-                  <MainSelect />
-                  <MainSelect />
-                </PartWrap>
-              </RowWrap>
-              <RowWrap none>
-                <PartWrap first>
-                  <h6>두께(MM)</h6>
-                  <MiniInput /> <Tilde>~</Tilde>
-                  <MiniInput />
-                </PartWrap>
-                <PartWrap>
-                  <h6>폭(MM)</h6>
-                  <MiniInput /> <Tilde>~</Tilde>
-                  <MiniInput />
-                </PartWrap>
-                <PartWrap>
-                  <h6>길이(MM)</h6>
-                  <MiniInput /> <Tilde>~</Tilde>
-                  <MiniInput />
-                </PartWrap>
-              </RowWrap>
-            </FilterLeft>
-            <FilterRight>
-              <DoubleWrap>
-                <h6>제품 번호 </h6>
-                <textarea
-                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                />
-              </DoubleWrap>
-            </FilterRight>
-          </FilterSubcontianer>
-          <FilterFooter>
-            <div style={{ display: 'flex' }}>
-              <p>초기화</p>
-              <ResetImg
-                src="/img/reset.png"
-                style={{ marginLeft: '10px', marginRight: '20px' }}
-                onClick={handleImageClick}
-                className={isRotated ? 'rotate' : ''}
-              />
-            </div>
-            <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40}>
-                검색
-              </BlackBtn>
-            </div>
-          </FilterFooter>
-        </>
-      )}
-      <TableContianer>
-        <TCSubContainer bor>
-          <div>
-            조회 목록 (선택 <span>2</span> / 50개 )
-            <Hidden />
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <PageDropdown />
-            <Excel
-            //  getRow={getRow}
-            />
-          </div>
-        </TCSubContainer>
-        <TCSubContainer bor>
-          <div>
-            선택 중량<span> 2 </span>kg / 총 중량 kg
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              gap: '10px',
-              alignItems: 'center',
-            }}
-          >
-            <WhiteGrnBtn>
-              <div>
-                <img src="/img/grnstar.png" />
-              </div>
-              관심상품 등록
-            </WhiteGrnBtn>
-          </div>
-        </TCSubContainer>
-        <Test3 />
-      </TableContianer>
-    </FilterContianer>
-  )
+	return (
+		<FilterContianer>
+			<FilterHeader>
+				<div style={{ display: 'flex' }}>
+					<h1>단일</h1>
+				</div>
+				{/* 검색필터 ON|OFF */}
+				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
+			</FilterHeader>
+			{/* 공지사항 */}
+			<FilterHeaderAlert>
+				<div style={{ display: 'flex' }}>
+					<div style={{ marginRight: '20px' }}>
+						<img src="/img/notice.png" />
+					</div>
+					<div style={{ marginTop: '6px' }}>
+						<div>· 주의사항 영역</div>
+						<div style={{ marginTop: '6px' }}>
+							<div>· 주의사항 영역</div>
+						</div>
+					</div>
+				</div>
+				<div>
+					수정
+					<img style={{ marginLeft: '10px' }} src="/img/setting.png" />
+				</div>
+			</FilterHeaderAlert>
+			{/* 검색 필터 */}
+			{exFilterToggle && (
+				<FilterWrap>
+					<GlobalProductSearch
+						param={searchParams}
+						isToggleSeparate={true}
+						renderCustomSearchFields={(props) => <SingleSearchFields {...props} />}
+						globalProductSearchOnClick={handleFilterSearch}
+						globalProductResetOnClick={handleFilterReset}
+					/>
+				</FilterWrap>
+			)}
+			<TableContianer>
+				{/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
+				<TCSubContainer bor>
+					<div>
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
+						<Hidden />
+					</div>
+					<div style={{ display: 'flex', gap: '10px' }}>
+						<PageDropdown handleDropdown={handlePageSizeChange} />
+						<Excel getRow={tableRowData} />
+					</div>
+				</TCSubContainer>
+				{/* 선택항목 중량 | 관심상품 등록 */}
+				<TCSubContainer bor>
+					<div>
+						선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
+					</div>
+					<AddWishButton products={selectedData} productNumberKey={'제품번호'} />
+				</TCSubContainer>
+				{/* 테이블 */}
+				<Table
+					getRow={tableRowData}
+					getCol={userSingleProductFieldsCols}
+					isLoading={isLoading}
+					tablePagination={paginationData}
+					onPageChange={(p) => {
+						handlePageNumChange(p)
+					}}
+				/>
+				{/* 테이블 액션 */}
+				<TCSubContainer style={{ width: '100%', justifyContent: 'flex-end', gap: 8 }}>
+					<AddCartButton category={PROD_CATEGORY.single} products={selectedData} />
+					<AddOrderButton category={PROD_CATEGORY.single} totalWeight={selectedWeight} products={selectedData} />
+				</TCSubContainer>
+			</TableContianer>
+		</FilterContianer>
+	)
 }
 
 export default Single

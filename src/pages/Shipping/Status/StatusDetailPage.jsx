@@ -7,8 +7,8 @@ import StatusDetail from './StatusDetail'
 import { useState } from 'react'
 
 const StatusDetailPage = () => {
+	const depth2Color = '출고 현황'
 	const [expanded, setExpanded] = useState('출고 관리')
-	const [depth2Color, setDepth2Color] = useState('출고 현황')
 	return (
 		<>
 			<Header />

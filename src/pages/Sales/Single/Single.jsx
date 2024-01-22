@@ -1,8 +1,16 @@
-import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
+import { isEqual } from 'lodash'
+import { useEffect, useState } from 'react'
+import { getSingleProducts } from '../../../api/SellProduct'
 import { BlackBtn, WhiteBlackBtn } from '../../../common/Button/Button'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
+import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { responseToTableRowMap, singleProductListFieldCols } from '../../../constants/admin/singleProduct'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
 import {
 	EditGear,
 	FilterContianer,
@@ -13,19 +21,11 @@ import {
 	TableBottomWrap,
 	TableContianer,
 } from '../../../modal/External/ExternalFilter'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-import Hidden from '../../../components/TableInner/Hidden'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { getSingleProducts } from '../../../api/SellProduct'
 import Table from '../../../pages/Table/Table'
-import { responseToTableRowMap, singleProductListFieldCols } from '../../../constants/admin/singleProduct'
-import { add_element_field } from '../../../lib/tableHelpers'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { formatWeight } from '../../../utils/utils'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import SingleProductSearchFields from './SingleProductSearchFields'
-import { isEqual } from 'lodash'
 
 const Single = () => {
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
@@ -58,7 +58,7 @@ const Single = () => {
 	}, [isSuccess, getSingleProductsRes])
 
 	const formatTableRowData = (singleProductListData) => {
-		return add_element_field(singleProductListData, responseToTableRowMap)
+		// return add_element_field(singleProductListData, responseToTableRowMap)
 	}
 
 	// 토글 쓰기
@@ -84,7 +84,7 @@ const Single = () => {
 			...prevParam,
 			pageSize: Number(event.target.value),
 			pageNum: 1,
-		}))
+	}))
 	}
 
 	const onPageChange = (value) => {
@@ -186,12 +186,12 @@ const Single = () => {
 						<WhiteBlackBtn>노출 상태 변경</WhiteBlackBtn>
 					</div>
 				</TCSubContainer>
-				<Table
+				{/* <Table
 					getCol={singleProductListFieldCols}
 					getRow={singleProductListData}
 					tablePagination={singleProductPagination}
 					onPageChange={onPageChange}
-				/>
+				/> */}
 				<TableBottomWrap>
 					<BlackBtn width={13} height={40} fontSize={17}>
 						저장

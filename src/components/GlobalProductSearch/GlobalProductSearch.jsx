@@ -1,7 +1,7 @@
-import { useState, useMemo, useRef } from 'react'
 import { useAtom } from 'jotai'
+import { useMemo, useRef, useState } from 'react'
 import { BlackBtn } from '../../common/Button/Button'
-import HeaderToggle from '../Toggle/HeaderToggle'
+import useGlobalProductSearchFieldData from '../../hooks/useGlobalProductSearchFieldData'
 import {
 	FilterFooter,
 	FilterHeader,
@@ -9,9 +9,9 @@ import {
 	FilterWrap,
 	ResetImg,
 } from '../../modal/External/ExternalFilter'
-import ProductSearchFields from './ProductSearchFields'
 import { globalProductSearchToggleAtom } from '../../store/Layout/GlobalProductSearch'
-import useGlobalProductSearchFieldData from '../../hooks/useGlobalProductSearchFieldData'
+import HeaderToggle from '../Toggle/HeaderToggle'
+import ProductSearchFields from './ProductSearchFields'
 
 const GlobalProductSearch = ({
 	// prettier-ignore
@@ -90,8 +90,8 @@ const GlobalProductSearch = ({
 			driverName: '', // 기사명 (Driver name)
 			carNumber: '', // 차량 번호 (Car number)
 			memberUid: null, // 회원 고유 번호 (Member UID)
-			startSendDate: '', // 시작 확정 전송일 (Start send date)
-			endSendDate: '', // 종료 확정 전송일 (End send date)
+			startSendDate: '', // 시작 확정 전송일 (Start send date), 확정 전송 일자
+			endSendDate: '', // 종료 확정 전송일 (End send date) , 확정 전송 일자
 			claimStatus: '', // 클레임 진행 상태 (Claim status)
 			timeOfDay: '', // 시간대 (Time of day)
 			exceptSplitProduct: false, // 중량 판매 제품 제외 여부 (Exclude split product)
@@ -114,11 +114,14 @@ const GlobalProductSearch = ({
 			dockStatus: false, // 상차도 여부 (Dock status)
 			orderType: '', // 주문 타입 (Order type)
 			orderNumber: '', // 주문 번호 (Order number)
+			carType: '', // 차량종류
 		}
 	}, [storageList, supplierList, spartList, makerList, stockStatusList, gradeList, preferThicknessList])
 
 	const initialParamRef = useRef(initialSearchParams)
 	const [userSearchParam, setUserSearchParam] = useState({ ...initialSearchParams })
+
+	console.log('userSearchParam !!!', userSearchParam)
 
 	const getUpdatedProperties = () => {
 		let updatedProperties = {}

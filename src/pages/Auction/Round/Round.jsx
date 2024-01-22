@@ -1,49 +1,36 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { BlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
+import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom2, toggleAtom } from '../../../store/Layout/Layout'
 
 import Table from '../../Table/Table'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import {
-	DoubleWrap,
-	ExRadioWrap,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
-	GridWrap,
-	Input,
-	PartWrap,
-	ResetImg,
-	RowWrap,
 	StyledHeading,
 	StyledSubHeading,
 	SubTitle,
 	TCSubContainer,
 	TableContianer,
-	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
-import { isArray } from 'lodash'
+import { isArray, isEqual } from 'lodash'
 import { deleteAuction, getAuction } from '../../../api/auction/round'
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { AuctionRoundFields, AuctionRoundFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import AuctionRound from '../../../modal/Multi/AuctionRound'
 import { auctionRoundEditPageAtom, btnCellUidAtom, roundPostModalAtom } from '../../../store/Layout/Layout'
 import RoundAucListEdit from './RoundAucListEdit'
+import RoundSearchFields from './RoundSearchFields'
 
 const Round = ({}) => {
 	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
@@ -91,30 +78,31 @@ const Round = ({}) => {
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom2)[0]
 
-	const [originalRow, setOriginalRow] = useState([]) //원본 row를 저장해서 radio check에러 막기
-	const [inputParams, setInputParams] = useState({
+	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
 		type: types,
-	})
+	}
 
-	const [param, setParam] = useState(inputParams)
+	const [originalRow, setOriginalRow] = useState([]) //원본 row를 저장해서 radio check에러 막기
+
+	const [param, setParam] = useState(paramData)
 	const [tablePagination, setTablePagination] = useState([])
 
 	useEffect(() => {
-		setInputParams((prevParams) => ({
+		setParam((prevParams) => ({
 			...prevParams,
 			type: types,
 		}))
 	}, [types])
 
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(inputParams, 'auction', getAuction)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(paramData, 'auction', getAuction)
 
 	console.log('isLoading', isLoading)
 
 	useEffect(() => {
 		refetch()
-	}, [inputParams])
+	}, [param])
 
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
@@ -181,6 +169,25 @@ const Round = ({}) => {
 		}))
 	}
 
+	const globalProductResetOnClick = () => {
+		// if resetting the search field shouldn't rerender table
+		// then we need to create paramData object to reset the search fields.
+		setParam(paramData)
+	}
+	// import
+	const globalProductSearchOnClick = (userSearchParam) => {
+		setParam((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				refetch()
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+			}
+		})
+	}
+
 	console.log('types', types)
 	return (
 		<>
@@ -205,7 +212,7 @@ const Round = ({}) => {
 					</FilterHeader>
 					{exFilterToggle && (
 						<>
-							<FilterSubcontianer>
+							{/* <FilterSubcontianer>
 								<FilterLeft>
 									<RowWrap>
 										<PartWrap first>
@@ -252,8 +259,8 @@ const Round = ({}) => {
 										/>
 									</DoubleWrap>
 								</FilterRight>
-							</FilterSubcontianer>
-							<FilterFooter>
+							</FilterSubcontianer> */}
+							{/* <FilterFooter>
 								<div style={{ display: 'flex' }}>
 									<p>초기화</p>
 									<ResetImg
@@ -268,7 +275,14 @@ const Round = ({}) => {
 										검색
 									</BlackBtn>
 								</div>
-							</FilterFooter>
+							</FilterFooter> */}
+							<GlobalProductSearch
+								param={param}
+								isToggleSeparate={true}
+								renderCustomSearchFields={(props) => <RoundSearchFields {...props} />} // 만들어야함 -> WinningSearchFields
+								globalProductSearchOnClick={globalProductSearchOnClick} // import
+								globalProductResetOnClick={globalProductResetOnClick} // import
+							/>
 						</>
 					)}
 					<TableContianer>
