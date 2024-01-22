@@ -1,7 +1,8 @@
 import React from 'react'
 import { MainSelect } from '../../../../common/Option/Main'
 import ProductNumber from '../../../../components/ProductNumber/ProductNumber'
-import { CustomerSearch, DateSearchSelect, DestinationSearch } from '../../../../components/Search'
+import { DateSearchSelect, DestinationSearch } from '../../../../components/Search'
+import CustomerSearch from '../../../../components/Search/CustomerSearch'
 import useGlobalProductSearchFieldData from '../../../../hooks/useGlobalProductSearchFieldData'
 import { FilterLeft, FilterRight, PWRight, PartWrap, RowWrap } from '../../../../modal/External/ExternalFilter'
 import CustomCheckBox from '../../UI/CustomCheckBox/CustomCheckBox'
@@ -51,12 +52,9 @@ const InventorySearchFields = ({ search, setSearch, commonDropdownButtonHandler 
 							/>
 						</PWRight>
 					</PartWrap>
-					<CustomerSearch
-						name={search.customerName}
-						code={search.customerCode}
-						setName={(value) => onChange('customerName', value)}
-						setCode={(value) => onChange('customerCode', value)}
-					/>
+					{/* 고객사 */}
+					<CustomerSearch search={search} setSearch={setSearch} />
+					{/* 목적지 */}
 					<DestinationSearch
 						name={search.destinationName}
 						code={search.destinationCode}

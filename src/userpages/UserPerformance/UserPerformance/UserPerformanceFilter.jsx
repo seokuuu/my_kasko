@@ -1,24 +1,24 @@
+import { useAtomValue, useSetAtom } from 'jotai/index'
+import React from 'react'
+import { GreyBtn } from '../../../common/Button/Button'
+import { MainSelect } from '../../../common/Option/Main'
+import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
+import { CustomerSearch, DateSearchSelect } from '../../../components/Search'
+import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
 	ExInputsWrap,
 	FilterLeft,
 	FilterRight,
 	Input,
 	MiniInput,
-	PartWrap,
 	PWRight,
+	PartWrap,
 	RowWrap,
 	SearchContainer,
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
-import { CustomerSearch, DateSearchSelect } from '../../../components/Search'
-import React from 'react'
-import { GreyBtn } from '../../../common/Button/Button'
-import { useAtomValue, useSetAtom } from 'jotai/index'
-import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import { MainSelect } from '../../../common/Option/Main'
 import StandardFind from '../../../modal/Multi/StandardFind'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
-import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 
 const UserPerformanceFilter = ({ search, setSearch, commonNumInputHandler, onSpecHandler }) => {
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
@@ -93,12 +93,7 @@ const UserPerformanceFilter = ({ search, setSearch, commonNumInputHandler, onSpe
 						/>
 					</PartWrap>
 					<PartWrap>
-						<CustomerSearch
-							name={search.customerName}
-							code={search.customerCode}
-							setName={(value) => onChange('customerName', value)}
-							setCode={(value) => onChange('customerCode', value)}
-						/>
+						<CustomerSearch search={search} setSearch={setSearch} />
 					</PartWrap>
 				</RowWrap>
 				<RowWrap none>
