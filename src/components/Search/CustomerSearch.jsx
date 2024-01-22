@@ -31,7 +31,7 @@ const CustomerSearch = ({ search, setSearch }) => {
 			<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17} onClick={() => setModal(true)}>
 				찾기
 			</GreyBtn>
-			{modal === true && (
+			{modal && (
 				<InventoryFind
 					title={'고객사 찾기'}
 					handleButtonOnClick={handleInventoryFindButtonOnClick}
