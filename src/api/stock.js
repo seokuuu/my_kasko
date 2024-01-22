@@ -3,7 +3,6 @@ import qs from 'qs'
 
 const urls = {
   incoming: '/admin/store',
-  incomeDelete: '/admin/store',
 }
 
 export async function getInComingList(data) {
@@ -18,7 +17,15 @@ export async function getInComingList(data) {
 
 export async function deleteIncomeProduct(data) {
   try{
-    return await client.delete(`${urls.incomeDelete}/${data}`)
+    return await client.delete(`${urls.incoming}/${data}`)
+  }catch(e){
+    alert(e?.data?.message)
+  }
+}
+export async function incomingConfirm(data){
+  try{
+    const response = await client.post(`${urls.incoming}/confirm/${data}`);
+    return response;
   }catch(e){
     alert(e?.data?.message)
   }
@@ -35,3 +42,4 @@ export async function postExcelSubmitProduct(data) {
     alert(e?.data?.message)
   }
 }
+
