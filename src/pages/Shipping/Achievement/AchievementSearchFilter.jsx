@@ -1,4 +1,12 @@
 import React from 'react'
+import { MainSelect } from '../../../common/Option/Main'
+import {
+	CustomerSearch,
+	DateSearchSelect,
+	DestinationSearch,
+	ProductNumberListSearch,
+} from '../../../components/Search'
+import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
 	FilterLeft,
 	FilterRight,
@@ -7,14 +15,6 @@ import {
 	RowWrap,
 	SearchContainer,
 } from '../../../modal/External/ExternalFilter'
-import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import {
-	CustomerSearch,
-	DateSearchSelect,
-	DestinationSearch,
-	ProductNumberListSearch,
-} from '../../../components/Search'
-import { MainSelect } from '../../../common/Option/Main'
 
 const AchievementSearchFilter = ({ search, setSearch }) => {
 	const { storageList, spartList } = useGlobalProductSearchFieldData()
@@ -50,12 +50,8 @@ const AchievementSearchFilter = ({ search, setSearch }) => {
 					</PartWrap>
 				</RowWrap>
 				<RowWrap>
-					<CustomerSearch
-						name={search.customerName}
-						code={search.customerCode}
-						setName={(value) => onChange('customerName', value)}
-						setCode={(value) => onChange('customerCode', value)}
-					/>
+					<CustomerSearch search={search} setSearch={setSearch} />
+
 					<DestinationSearch
 						name={search.destinationName}
 						code={search.destinationCode}
