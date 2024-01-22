@@ -1,27 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ClaimContent2, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
 import { FilterContianer, TableContianer } from '../../../modal/External/ExternalFilter'
 import { GlobalFilterHeader } from '../../../components/Filter'
 import InvoiceDetailHeader from './InvoiceDetailHeader'
 import { useShipmentInvoiceListQuery } from '../../../api/shipment'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import Table from '../../Table/Table'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { ShippingInvoiceFields, ShippingInvoiceFieldsCols } from '../../../constants/admin/Shipping'
 import { formatWeight } from '../../../utils/utils'
 
 const ShipmentInvoice = () => {
-	// Table
-	const tableField = useRef(ShippingInvoiceFieldsCols)
-	const getCol = tableField.current
 	const [getRow, setGetRow] = useState('')
 
 	const [searchParams] = useSearchParams()
 	const customerCode = searchParams.get('customerCode')
 	const outNumber = searchParams.get('outNumber')
 
-	console.log('customerCode: ', customerCode)
-	console.log('outNumber: ', outNumber)
 	const { data, isLoading } = useShipmentInvoiceListQuery({ customerCode, outNumber })
 	const [details, setDetails] = useState()
 
@@ -53,7 +48,7 @@ const ShipmentInvoice = () => {
 			<InvoiceDetailHeader data={data} />
 			{/* table */}
 			<TableContianer>
-				<Table getCol={getCol} getRow={getRow} loading={isLoading} />
+				<Table getCol={ShippingInvoiceFieldsCols} getRow={getRow} loading={isLoading} />
 			</TableContianer>
 			{/* invoice footer */}
 			<TableWrap style={{ marginTop: '10px' }}>

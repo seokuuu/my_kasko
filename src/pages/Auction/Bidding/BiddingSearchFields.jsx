@@ -6,7 +6,6 @@ import { FilterLeft, FilterRight, PWRight, PartWrap, RowWrap } from '../../../mo
 import { useState } from 'react'
 import { CustomerSearch, DateSearchSelect } from '../../../components/Search'
 import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
-import DateGrid from '../../../components/DateGrid/DateGrid'
 
 const BiddingSearchFields = ({
 	// prettier-ignore
@@ -58,12 +57,7 @@ const BiddingSearchFields = ({
 
 					{/* 규격약호 */}
 					<PartWrap>
-						<CustomerSearch
-							name={param.customerName}
-							code={param.customerCode}
-							setName={(value) => onChange('customerName', value)}
-							setCode={(value) => onChange('customerCode', value)}
-						/>
+						<CustomerSearch search={search} setSearch={setSearch} />
 					</PartWrap>
 				</RowWrap>
 				{/* 2행 */}

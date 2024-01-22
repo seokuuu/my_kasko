@@ -3,7 +3,7 @@ import Excel from '../../../components/TableInner/Excel'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import Hidden from '../../../components/TableInner/Hidden'
-import { FilterContianer, FilterWrap, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
+import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { ShippingRegisterFields, ShippingRegisterFieldsCols } from '../../../constants/admin/Shipping'
@@ -24,7 +24,7 @@ const initData = {
 	shipmentStatus: '운송 완료',
 }
 
-const UserPerformance = ({}) => {
+const UserPerformance = () => {
 	const selectedRows = useAtomValue(selectedRowsAtom)
 	const exFilterToggle = useAtomValue(toggleAtom)
 
@@ -33,8 +33,6 @@ const UserPerformance = ({}) => {
 
 	const [param, setParam] = useState(initData)
 	const { data, refetch, isLoading } = useShipmentListQuery(param)
-
-	console.log('param ::::::::: ', param)
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -63,6 +61,7 @@ const UserPerformance = ({}) => {
 			return {
 				...prevParam,
 				...userSearchParam,
+				pageNum: 1,
 			}
 		})
 	}
@@ -83,15 +82,13 @@ const UserPerformance = ({}) => {
 		<FilterContianer>
 			<GlobalFilterHeader title={'출고 실적 조회'} />
 			{exFilterToggle && (
-				<FilterWrap>
-					<GlobalProductSearch
-						param={param}
-						isToggleSeparate={true}
-						globalProductSearchOnClick={searchOnClick}
-						globalProductResetOnClick={resetOnClick}
-						renderCustomSearchFields={(props) => <UserPerformanceFilter {...props} />}
-					/>
-				</FilterWrap>
+				<GlobalProductSearch
+					param={param}
+					isToggleSeparate={true}
+					globalProductSearchOnClick={searchOnClick}
+					globalProductResetOnClick={resetOnClick}
+					renderCustomSearchFields={(props) => <UserPerformanceFilter {...props} />}
+				/>
 			)}
 			<TableContianer>
 				<TCSubContainer bor>
@@ -102,7 +99,7 @@ const UserPerformance = ({}) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						<Excel getRow={rows} />
+						<Excel getRow={rows} sheetName={'출고 실적'} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>

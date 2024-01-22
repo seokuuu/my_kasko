@@ -1,53 +1,48 @@
+import { useAtomValue, useSetAtom } from 'jotai/index'
+import React from 'react'
+import { GreyBtn } from '../../../common/Button/Button'
+import { MainSelect } from '../../../common/Option/Main'
+import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
+import { CustomerSearch, DateSearchSelect } from '../../../components/Search'
+import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
-	FilterSubcontianer,
 	ExInputsWrap,
-	FilterRight,
 	FilterLeft,
+	FilterRight,
 	Input,
 	MiniInput,
 	PWRight,
 	PartWrap,
 	RowWrap,
+	SearchContainer,
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
-import { CustomerSearch, DateSearchSelect, ProductNumberListSearch } from '../../../components/Search'
-import React from 'react'
-import { GreyBtn } from '../../../common/Button/Button'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai/index'
-import { claimProductModalAtom } from '../../../store/Layout/Layout'
-import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import { MainSelect } from '../../../common/Option/Main'
 import StandardFind from '../../../modal/Multi/StandardFind'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
-import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 
-const UserPerformanceFilter = ({
-	search,
-	setSearch,
-	commonDropdownButtonHandler,
-	commonNumInputHandler,
-	onSpecHandler,
-}) => {
+const UserPerformanceFilter = ({ search, setSearch, commonNumInputHandler, onSpecHandler }) => {
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
 	const { storageList, spartList, gradeList } = useGlobalProductSearchFieldData()
-
+	const onChange = (key, value) => {
+		setSearch((p) => ({ ...p, [key]: value }))
+	}
 	return (
-		<FilterSubcontianer>
+		<SearchContainer>
 			<FilterLeft>
 				<RowWrap>
 					<DateSearchSelect
 						title={'경매 일자'}
 						startInitDate={search.auctionStartDate}
 						endInitDate={search.auctionEndDate}
-						startDateChange={(value) => commonDropdownButtonHandler(value, 'auctionStartDate')}
-						endDateChange={(value) => commonDropdownButtonHandler(value, 'auctionEndDate')}
+						startDateChange={(value) => onChange('auctionStartDate', value)}
+						endDateChange={(value) => onChange('auctionEndDate', value)}
 					/>
 					<DateSearchSelect
 						title={'출고 일자'}
 						startInitDate={search.shipmentStartDate}
 						endInitDate={search.shipmentEndDate}
-						startDateChange={(value) => commonDropdownButtonHandler(value, 'shipmentStartDate')}
-						endDateChange={(value) => commonDropdownButtonHandler(value, 'shipmentEndDate')}
+						startDateChange={(value) => onChange('shipmentStartDate', value)}
+						endDateChange={(value) => onChange('shipmentEndDate', value)}
 					/>
 				</RowWrap>
 				<RowWrap>
@@ -59,7 +54,7 @@ const UserPerformanceFilter = ({
 								// defaultValue={storageList[0]}
 								value={search.storage}
 								name="storage"
-								onChange={(e) => commonDropdownButtonHandler(e, 'storage')}
+								onChange={(e) => onChange('storage', e)}
 							/>
 						</PWRight>
 					</PartWrap>
@@ -86,7 +81,7 @@ const UserPerformanceFilter = ({
 							defaultValue={spartList[0]}
 							value={search.spart}
 							name="spart"
-							onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
+							onChange={(e) => onChange('spart', e)}
 						/>
 						{/* 등급 */}
 						<MainSelect
@@ -94,16 +89,11 @@ const UserPerformanceFilter = ({
 							defaultValue={gradeList[0]}
 							value={search.grade}
 							name="grade"
-							onChange={(e) => commonDropdownButtonHandler(e, 'grade')}
+							onChange={(e) => onChange('grade', e)}
 						/>
 					</PartWrap>
 					<PartWrap>
-						<CustomerSearch
-							name={search.customerName}
-							code={search.customerCode}
-							setName={(value) => commonDropdownButtonHandler(value, 'customerName')}
-							setCode={(value) => commonDropdownButtonHandler(value, 'customerCode')}
-						/>
+						<CustomerSearch search={search} setSearch={setSearch} />
 					</PartWrap>
 				</RowWrap>
 				<RowWrap none>
@@ -181,7 +171,7 @@ const UserPerformanceFilter = ({
 					height="100%"
 				/>
 			</FilterRight>
-		</FilterSubcontianer>
+		</SearchContainer>
 	)
 }
 

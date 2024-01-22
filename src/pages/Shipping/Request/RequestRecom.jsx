@@ -1,8 +1,7 @@
-import React, { useEffect, useRef } from 'react'
-import { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import { TCSubContainer, FilterContianer, TableContianer } from '../../../modal/External/ExternalFilter'
+import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import { useShipmentMergeListQuery, useShipmentMergeMutation } from '../../../api/shipment'
 import { GlobalFilterHeader } from '../../../components/Filter'
 import { ShippingRegisterFields, ShippingRegisterFieldsCols } from '../../../constants/admin/Shipping'
@@ -13,79 +12,75 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import MergeHeader from './MergeHeader'
 import { calculateTotal, calculateTowDataTotal, getAddNewDestination } from './utils'
 import RequestAddModal from './RequestAddModal'
+import useAlert from '../../../store/Alert/useAlert'
 
 const RequestRecom = ({ setChoiceComponent }) => {
-	// Table
-	const tableField = useRef(ShippingRegisterFieldsCols)
-	const getCol = tableField.current
-	const [getRow, setGetRow] = useState('')
-	const [rowChecked, setRowChecked] = useAtom(selectedRowsAtom)
-
-	// 모달
+	const { simpleAlert, simpleConfirm } = useAlert()
 	const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
+	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 
-	const { mutate: onCreateMerge } = useShipmentMergeMutation()
-	const { data } = useShipmentMergeListQuery()
 	const [list, setList] = useState([]) // useShipmentMergeListQuery + 직접 추가한 목록
+	const [rows, setRows] = useState('')
 	const [dockStatus, setDockStatus] = useState(false) // 상차도 여부
 	const [mergeCost, setMergeCost] = useState(0) // 합짐비
 	const [destinations, setDestinations] = useState(new Array(3)) // 목적지
+
+	const { data, isLoading } = useShipmentMergeListQuery()
+	const { mutate: onCreateMerge } = useShipmentMergeMutation()
 
 	// 목적지 get
 	const getDestinations = () => {
 		const destination = data.map((item) => item?.destinationName)
 		const duplicationDestination = [...new Set(destination)]
-
 		while (duplicationDestination.length < 3) {
 			duplicationDestination.push('-')
 		}
-
 		setDestinations(duplicationDestination)
 	}
 
 	// 목록 제거
 	const onListRemove = () => {
+		if (!selectedRows || selectedRows.length === 0) {
+			return simpleAlert('제품을 선택해주세요.')
+		}
 		const key = '주문 고유 번호'
-		const deleteKeys = rowChecked.map((item) => item[key])
+		const deleteKeys = selectedRows.map((item) => item[key])
 		const newSelectors = list.filter((item) => !deleteKeys.includes(item?.orderUid))
 		setList(newSelectors)
-		setRowChecked([]) // 테이블 체크 목록 초기화
+		setSelectedRows([]) // 테이블 체크 목록 초기화
 	}
 
 	// 목록 추가 모달 오픈
 	const addListModalOpen = () => setAddModal(true)
+
 	// 목록 추가 모달 오픈
 	const addListModalClose = () => setAddModal(false)
 
 	// 목록 추가
 	const onListAdd = (selectedData) => {
 		try {
-			const newDestination = getAddNewDestination(rowChecked)
+			const newDestination = getAddNewDestination(selectedRows)
 			setDestinations(newDestination) // 목적지 등록
 			setList((prev) => [...new Set([...prev, ...selectedData])]) // 선별 목록 데이터 등록
-			setRowChecked([]) // 테이블 체크 목록 초기화
+			setSelectedRows([]) // 테이블 체크 목록 초기화
 			addListModalClose()
 		} catch (error) {
-			window.alert(error.message)
+			simpleAlert(error.message)
 		}
 	}
 
 	// 선별 등록
 	const onRegister = () => {
 		const orderUids = list?.map((item) => item?.orderUid)
-
 		if (orderUids.length === 0) {
-			return window.alert('선별 목록에 제품을 추가해주세요.')
+			return simpleAlert('선별 목록에 제품을 추가해주세요.')
 		}
-
-		if (window.confirm('선별 등록하시겠습니까?')) {
-			onCreateMerge({ dockStatus, orderUids })
-		}
+		simpleConfirm('선별 등록하시겠습니까?', () => onCreateMerge({ dockStatus, orderUids }))
 	}
 
 	useEffect(() => {
 		if (list && Array.isArray(list)) {
-			setGetRow(add_element_field(list, ShippingRegisterFields))
+			setRows(add_element_field(list, ShippingRegisterFields))
 		}
 	}, [list])
 
@@ -96,11 +91,8 @@ const RequestRecom = ({ setChoiceComponent }) => {
 		}
 	}, [data])
 
-	const onPageChange = (value) => {}
-
 	return (
 		<FilterContianer>
-			{/* header */}
 			<GlobalFilterHeader
 				title={'선별 추천 목록'}
 				enableSearchFilters={false}
@@ -124,7 +116,7 @@ const RequestRecom = ({ setChoiceComponent }) => {
 						<WhiteSkyBtn onClick={onRegister}>선별 등록</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={getCol} getRow={getRow} tablePagination={[]} onPageChange={onPageChange} />
+				<Table getCol={ShippingRegisterFieldsCols} getRow={rows} isLoading={isLoading} />
 				<TCSubContainer style={{ paddingBottom: '0px' }}>
 					<div>
 						합계 금액(매입/매출 운임비):
