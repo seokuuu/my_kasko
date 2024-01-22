@@ -9,7 +9,7 @@ import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Table from '../../Table/Table'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { deleteIncomeProduct, getInComingList, postExcelSubmitProduct } from '../../../api/stock'
+import { deleteIncomeProduct, getInComingList, incomingConfirm, postExcelSubmitProduct } from '../../../api/stock'
 import { StockIncomingFields, stockFields } from '../../../constants/admin/StockIncoming'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -52,6 +52,7 @@ const Incoming = ({}) => {
 	const formatTableRowData = (inComingData) => {
 		return add_element_field(inComingData, stockFields)
 	}
+	const [getRow, setGetRow] = useState('')
 	// 데이터 가져오기
 	const paramData = {
 		pageNum: 1,
@@ -80,12 +81,12 @@ const Incoming = ({}) => {
 	const totalWeight = inComingData?.data.pagination.totalWeight
 	const formattedTotalWeight = totalWeight && totalWeight.toLocaleString()
 
+
 	/**
 	 * @description 재고 수신
 	 */
 	const stockReceive = async () => {
 		try {
-			console.log('재고수신 API 호출')
 			await axios.post(`${process.env.REACT_APP_API_URL}/admin/store/receipt`, {})
 			await refetch()
 			simpleAlert('재고수신이 완료되었습니다.')
@@ -119,7 +120,7 @@ const Incoming = ({}) => {
 	const [uploadModal, setUploadModal] = useState(false)
 	const [excelToJson, setExcelToJson] = useState([])
 	/**
-	 * 검색하는 부분
+	 * @description 검색하는 부분
 	 */
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
@@ -138,6 +139,21 @@ const Incoming = ({}) => {
 		// then we need to create paramData object to reset the search fields.
 		setParam(paramData)
 	}
+
+	const { mutate: incomeConfirm } = useMutationQuery('incomingConfirm', incomingConfirm)
+	const handleConfirm = async() => {
+		simpleConfirm('입고 확정으로 바꾸시겠습니까?', () => {
+			incomeConfirm(selectInComeNumber?.join(','), {
+				onSuccess: () => {
+					refetch()
+				},
+			})
+		})
+	}
+	useEffect(() => {
+		console.log('checkBox값 추적', checkBoxSelect)
+	}, [checkBoxSelect])
+
 	return (
 		<>
 			<FilterContianer>
@@ -170,7 +186,7 @@ const Incoming = ({}) => {
 						<div style={{ display: 'flex', gap: '10px' }}>
 							<PageDropdown />
 							<Excel
-							//  getRow={getRow}
+							 getRow={getRow}
 							/>
 						</div>
 					</TCSubContainer>
@@ -179,7 +195,7 @@ const Incoming = ({}) => {
 							선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 {formattedTotalWeight}kg
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
-							<SwitchBtn>입고 확정</SwitchBtn>
+							<SwitchBtn onClick={handleConfirm}>입고 확정</SwitchBtn>
 						</div>
 					</TCSubContainer>
 

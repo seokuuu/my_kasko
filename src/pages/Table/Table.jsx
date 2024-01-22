@@ -387,7 +387,6 @@ const Table = ({
 
 	const onRecommendClick = () => {
 		if (!gridApi) {
-			console.error('Grid API가 초기화되지 않았습니다.')
 			return
 		}
 
@@ -414,6 +413,12 @@ const Table = ({
 
 		gridApi.refreshCells({ force: true })
 	}
+
+	// 체크박스 선택한 행 데이터 별도 출력
+	const sample = {
+		columnDefs:[],
+	}
+
 	return (
 		<div style={containerStyle}>
 			<TestContainer hei={hei}>
@@ -427,6 +432,7 @@ const Table = ({
 						gridOptions={gridOptions}
 						ref={gridRef}
 						onRowDoubleClicked={onRowDoubleClicked}
+						onSelectionChanged={onSelectionChanged}
 						autoGroupColumnDef={autoGroupColumnDef}
 						animateRows={true}
 						suppressRowClickSelection={true}
@@ -450,6 +456,8 @@ const Table = ({
 						onCellValueChanged={changeFn}
 					/>
 				</div>
+			{/*	SelectedRowsTable 선택된 테이블만 보여주는 컴포넌트*/}
+				<SeletedRowsTable selectedRows={selectedRows} />
 			</TestContainer>
 
 			{isModal && (
@@ -603,3 +611,14 @@ export const RBInput = styled.input`
 `
 
 export const Pagination = styled.ul``
+
+
+export const SeletedRowsTable=({selectedRows}) =>{
+	const columnDefs=[{headerName:'고객 코드', field:'sample고객'},]
+	return (
+		<div>
+			<AgGridReact
+			/>
+		</div>
+	)
+}

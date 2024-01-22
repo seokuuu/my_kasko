@@ -42,6 +42,7 @@ import ProNoPage from './ProNoPage'
 import axios from 'axios'
 import { add_element_field } from '../../lib/tableHelpers'
 import { orderFieldData } from '../../constants/admin/OrderManage'
+import { KilogramSum } from '../../utils/KilogramSum'
 const useQuery = () => {
 	return new URLSearchParams(useLocation().search)
 }
@@ -176,14 +177,9 @@ const AdminOrderDetail = ({}) => {
 	const handleOrderCancel = () => {
 		const requestList = makeRequest(checkBoxSelect)
 		console.log('요청List', requestList)
-		const token =
-			'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjYwIiwiYXV0aCI6Iuy5tOyKpOy9lOyyoOqwlSzsnqzqs6DqtIDrpqws6rK966ek6rSA66asLOyDgeyLnO2MkOunpOq0gOumrCzso7zrrLjqtIDrpqws7YyQ66ek7KCc7ZKI6rSA66asLOy2nOqzoOq0gOumrCzquLDspIDqtIDrpqws7Jq07JiB6rSA66asIiwiZXhwIjoxNzA1NDc0OTk2fQ.rkc-ubRirtSAWnbHk-GR2rEVM7Mv2Zd9nUyn8Vl23GY5_nG8zaUf-SrCDg3ZGHKUTMqq-xosGuBEaCb4bhy6Tg'
+
 		axios
-			.post(`${process.env.REACT_APP_API_URL}/admin/order/cancel-all`, requestList, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			})
+			.post(`${process.env.REACT_APP_API_URL}/admin/order/cancel-all`, requestList, {})
 			.then((response) => {
 				console.log('Order cancelled successfully:', response.data)
 			})
@@ -221,80 +217,14 @@ const AdminOrderDetail = ({}) => {
 
 				{exFilterToggle && (
 					<>
-						<FilterSubcontianer>
-							<FilterLeft>
-								<RowWrap>
-									<PartWrap>
-										<h6>주문 일자</h6>
-										<GridWrap>
-											<DateGrid
-												bgColor={'white'}
-												fontSize={13}
-												startDate={checkOrderStart}
-												setStartDate={setCheckOrderStart}
-											/>
-											<Tilde>~</Tilde>
-											<DateGrid
-												bgColor={'white'}
-												fontSize={13}
-												startDate={checkOrderEnd}
-												setStartDate={setCheckOrderEnd}
-											/>
-										</GridWrap>
-									</PartWrap>
-									<PartWrap>
-										<h6>주문 상태</h6>
-										<ExCheckWrap>
-											{checkSales.map((x, index) => (
-												<ExCheckDiv>
-													<StyledCheckSubSquDiv
-														onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
-														isChecked={check1[index]}
-													>
-														<CheckImg2 src="/svg/check.svg" isChecked={check1[index]} />
-													</StyledCheckSubSquDiv>
-													<p>{x}</p>
-												</ExCheckDiv>
-											))}
-										</ExCheckWrap>
-									</PartWrap>
-								</RowWrap>
-								<RowWrap style={{ borderBottom: '0px' }}>
-									<PartWrap />
-									<PartWrap />
-								</RowWrap>
-							</FilterLeft>
-							<FilterRight>
-								<DoubleWrap>
-									<h6>제품 번호 </h6>
-									<textarea
-										placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-									/>
-								</DoubleWrap>
-							</FilterRight>
-						</FilterSubcontianer>
-						<FilterFooter>
-							<div style={{ display: 'flex' }}>
-								<p>초기화</p>
-								<ResetImg
-									src="/img/reset.png"
-									style={{ marginLeft: '10px', marginRight: '20px' }}
-									onClick={handleImageClick}
-									className={isRotated ? 'rotate' : ''}
-								/>
-							</div>
-							<div style={{ width: '180px' }}>
-								<BlackBtn width={100} height={40}>
-									검색
-								</BlackBtn>
-							</div>
-						</FilterFooter>
+						<div>검색 컴포넌트</div>
 					</>
 				)}
 				<TableContianer>
 					<TCSubContainer bor>
 						<div>
-							조회 목록 (선택 <span>2</span> / 50개 )
+							조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /
+							{detailOrderPagination?.listCount}개 )<Hidden />
 							<Hidden />
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
@@ -304,10 +234,10 @@ const AdminOrderDetail = ({}) => {
 					</TCSubContainer>
 					<TCSubContainer>
 						<div>
-							선택 중량<span> 2 </span>kg / 총 중량 kg
+							선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 {}kg
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
-							<WhiteRedBtn>부분 주문 취소</WhiteRedBtn>
+							<WhiteRedBtn onClick={handleOrderCancel}>부분 주문 취소</WhiteRedBtn>
 							<SkyBtn>부분 확정 전송</SkyBtn>
 						</div>
 					</TCSubContainer>

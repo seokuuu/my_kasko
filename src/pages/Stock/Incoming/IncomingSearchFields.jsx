@@ -95,10 +95,10 @@ const IncomingSearchFields = ({
 					<PartWrap>
 						<DateSearchSelect
 							title={'구분'}
-							startInitDate={search.incomingStartDate}
-							endInitDate={search.incomingEndDate}
-							startDateChange={(value) => onChange('incomingStartDate', value)}
-							endDateChange={(value) => onChange('incomingEndDate', value)}
+							startInitDate={search.receiptDate}
+							endInitDate={search.receiptDate}
+							startDateChange={(value) => onChange('receiptDate', value)}
+							endDateChange={(value) => onChange('receiptDate', value)}
 						/>
 						{/* 제품군 */}
 						<PWRight>
