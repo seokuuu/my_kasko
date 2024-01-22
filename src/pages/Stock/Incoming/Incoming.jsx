@@ -1,7 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai'
 import { useEffect, useState } from 'react'
-import { CustomSelect2, MainSelect } from '../../../common/Option/Main'
-import DateGrid from '../../../components/DateGrid/DateGrid'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
@@ -9,7 +7,6 @@ import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layo
 
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { storageOptions } from '../../../common/Option/Main'
 import Table from '../../Table/Table'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { deleteIncomeProduct, getInComingList, postExcelSubmitProduct } from '../../../api/stock'

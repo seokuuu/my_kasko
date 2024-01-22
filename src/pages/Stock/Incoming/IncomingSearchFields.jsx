@@ -19,6 +19,7 @@ import { GreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import { useState } from 'react'
+import { DateSearchSelect } from '../../../components/Search'
 
 const IncomingSearchFields = ({
 	// prettier-ignore
@@ -40,8 +41,9 @@ const IncomingSearchFields = ({
 	} = useGlobalProductSearchFieldData()
 
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
-	const [checkSalesStart, setCheckSalesStart] = useState('') // 경매일자 시작
-	const [checkSalesEnd, setCheckSalesEnd] = useState('') // 경매일자 끝
+	const onChange = (key, value) => {
+		setSearch((p) => ({ ...p, [key]: value }))
+	}
 	return (
 		<>
 			<FilterLeft>
@@ -91,26 +93,13 @@ const IncomingSearchFields = ({
 				<RowWrap>
 					{/* 구분 */}
 					<PartWrap>
-						<h6>구분</h6>
-						<PWRight>
-							<DateGrid
-								width={130}
-								bgColor={'white'}
-								fontSize={13}
-								startDate={checkSalesStart}
-								setStartDate={setCheckSalesStart}
-							/>
-						</PWRight>
-						<Tilde>~</Tilde>
-						<PWRight>
-							<DateGrid
-								width={130}
-								bgColor={'white'}
-								fontSize={13}
-								startDate={checkSalesEnd}
-								setStartDate={setCheckSalesEnd}
-							/>
-						</PWRight>
+						<DateSearchSelect
+							title={'구분'}
+							startInitDate={search.incomingStartDate}
+							endInitDate={search.incomingEndDate}
+							startDateChange={(value) => onChange('incomingStartDate', value)}
+							endDateChange={(value) => onChange('incomingEndDate', value)}
+						/>
 						{/* 제품군 */}
 						<PWRight>
 							<MainSelect
