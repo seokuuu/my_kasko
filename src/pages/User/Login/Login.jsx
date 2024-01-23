@@ -89,10 +89,8 @@ const Login = () => {
 
 	useEffect(() => {
 		const savedId = getSavedIdFromLocalStorage()
-		if (savedId) {
-			setId(savedId)
-			setCheck(true)
-		}
+		setId(savedId)
+		setCheck(true)
 	}, [])
 
 	const handleSaveId = () => {
@@ -196,6 +194,10 @@ const Login = () => {
 						content: `임시 비밀번호를 사용하고 있습니다.\n비밀번호를 변경해 주세요.`,
 						func: () => loginCheck(),
 					})
+				}
+
+				if (check) {
+					saveIdToLocalStorage(id)
 				}
 			} catch (e) {
 				loginError(e.data)
