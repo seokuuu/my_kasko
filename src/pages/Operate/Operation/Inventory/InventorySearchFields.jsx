@@ -34,11 +34,9 @@ const InventorySearchFields = ({ search, setSearch, commonDropdownButtonHandler 
 	return (
 		<>
 			<FilterLeft
-				style={
-					{
-						// maxWidth: '60%',
-					}
-				}
+				style={{
+					maxWidth: '70%',
+				}}
 			>
 				<RowWrap first>
 					<PartWrap>
@@ -54,6 +52,8 @@ const InventorySearchFields = ({ search, setSearch, commonDropdownButtonHandler 
 					</PartWrap>
 					{/* 고객사 */}
 					<CustomerSearch search={search} setSearch={setSearch} />
+				</RowWrap>
+				<RowWrap>
 					{/* 목적지 */}
 					<DestinationSearch
 						name={search.destinationName}

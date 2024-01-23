@@ -4,8 +4,8 @@ import { alertAtom, initAlertAtomData } from './alertAtom'
 const useAlert = () => {
 	const setAlert = useSetAtom(alertAtom)
 
-	const simpleAlert = (title) => {
-		setAlert({ ...initAlertAtomData, isOpen: true, isConfirm: false, title })
+	const simpleAlert = (title, func = () => {}) => {
+		setAlert({ ...initAlertAtomData, isOpen: true, isConfirm: false, title, func })
 	}
 
 	const showAlert = ({ title, content, func }) => {

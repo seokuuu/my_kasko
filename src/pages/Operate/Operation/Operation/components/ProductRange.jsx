@@ -22,12 +22,12 @@ const ProductRange = () => {
 	const { remove, detailsData, onSpartChange, initUid, onDetermineFunction } = useProductRange()
 	// 모달(등록,수정 모달 & 확인 모달)
 	const [modal, setModal] = useAtom(operateAddAtom)
-	const { simpleConfirm } = useAlert()
+	const { simpleConfirm, simpleAlert } = useAlert()
 	// 테이블에서 선택된 값,선택된 데이터 갯수
 	const { selectedData, selectedCount } = useTableSelection()
 	// 삭제 핸들러
 	function removeEventHandler() {
-		if (!selectedCount && selectedCount === 0) return alert('삭제할 목록을 선택해주세요.')
+		if (!selectedCount && selectedCount === 0) return simpleAlert('삭제할 목록을 선택해주세요.')
 
 		simpleConfirm('삭제하시겠습니까?', () => remove(selectedData.map((s) => s['고유값'])))
 	}
