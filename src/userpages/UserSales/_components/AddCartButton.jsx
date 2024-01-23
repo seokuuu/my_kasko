@@ -1,9 +1,9 @@
 import React from 'react'
 import { useUserAddCartMutaion } from '../../../api/user'
 import { GreenBtn, SkyBtn } from '../../../common/Button/Button'
-import { PROD_CATEGORY } from '../../../constants/user/product'
 import { getProductNumber } from '../../../hooks/useWishList'
 import useAlert from '../../../store/Alert/useAlert'
+import { PROD_CATEGORY } from '../../../constants/user/constantKey'
 
 /**
  * @constant 버튼 타입

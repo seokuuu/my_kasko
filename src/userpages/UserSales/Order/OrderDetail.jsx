@@ -6,7 +6,7 @@ import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../..
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { userOrderDetailsField, userOrderDetailsFieldsCols } from '../../../constants/user/order'
+import { userOrderDetailsField, userOrderDetailsFieldsCols } from '../../../constants/user/orderTable'
 import useTableData from '../../../hooks/useTableData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'

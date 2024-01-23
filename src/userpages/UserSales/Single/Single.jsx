@@ -5,7 +5,7 @@ import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { PROD_CATEGORY, userSingleProductField, userSingleProductFieldsCols } from '../../../constants/user/product'
+import { userSingleProductField, userSingleProductFieldsCols } from '../../../constants/user/productTable'
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
 import {
@@ -22,6 +22,7 @@ import AddCartButton from '../_components/AddCartButton'
 import AddOrderButton from '../_components/AddOrderButton'
 import AddWishButton from '../_components/AddWishButton'
 import SingleSearchFields from './SingleSearchFields'
+import { PROD_CATEGORY } from '../../../constants/user/constantKey'
 
 /**
  * @constant 기본 페이지 검색 값

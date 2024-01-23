@@ -1,5 +1,7 @@
 import WishCellRenderer from "../../pages/Table/WishCellRenderer";
 import { checkboxSelection, headerCheckboxSelection } from "../../pages/Table/util";
+import { getNormalTableRows } from "../../utils/table";
+import { PROD_COL_NAME } from "./constantKey";
 
 /**
  * @constant 테이블컬럼 라벨 - 변수명 바인딩 객체
@@ -11,7 +13,7 @@ export const userOrderListField = {
   "상시판매 주문일자": "auctionCreateDate",
   "상시판매 상태": "orderStatus",
   "패키지명": "packageName",
-  "패키지번호": "packageNumber",
+  [PROD_COL_NAME.packageNumber]: "packageNumber",
   "고객사명": "customerName",
   "고객코드": "customerCode",
   "제품번호": "productNumber",
@@ -22,7 +24,7 @@ export const userOrderListField = {
   "판매유형": "saleType",
   "판매가유형": "salePriceType",
   "제품군": "spart",
-  "상시 판매가": "salePrice",
+  [PROD_COL_NAME.salePrice]: "salePrice",
   "제품 등급": "grade",
   "제품 수량": "quantity",
   "총 중량": "totalWeight",
@@ -60,15 +62,15 @@ export const userOrderListField = {
  * @description 사용자 주문확인 상세 > 목록 테이블에서 사용합니다.
  */
 export const userOrderDetailsField = {
-  "고유 번호": "orderUid",
+  [PROD_COL_NAME.productUid]: "orderUid",
   "상시판매 번호": "auctionNumber",
   "상시판매 주문일자": "auctionCreateDate",
   "상시판매 상태": "orderStatus",
   "패키지명": "packageName",
-  "패키지번호": "packageNumber",
+  [PROD_COL_NAME.packageNumber]: "packageNumber",
   "고객사명": "customerName",
   "고객코드": "customerCode",
-  "제품번호": "productNumber",
+  [PROD_COL_NAME.productNumber]: "productNumber",
   "프로넘(ProNo.)": "productProNumber",
   "창고": "storageName",
   "상시판매 상태": "saleStatus",
@@ -76,7 +78,7 @@ export const userOrderDetailsField = {
   "판매유형": "saleType",
   "판매가유형": "salePriceType",
   "제품군": "spart",
-  "상시 판매가": "salePrice",
+  [PROD_COL_NAME.salePrice]: "salePrice",
   "제품 등급": "grade",
   "목적지 코드": "customerDestinationCode",
   "목적지 명": "custonerDestinationName",
@@ -140,7 +142,7 @@ export const userDestinationField = {
  * @constant 테이블컬럼
  * @description 사용자 주문확인 > 목록 테이블에서 사용합니다.
  */
-export const userOrderListFieldsCols = (numberClickHandler=undefined) =>  [
+export const userOrderListFieldsCols = (numberClickHandler=undefined) => getNormalTableRows([
   { field: "", maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   { field: "주문 고유 번호", minWidth: 140 },
   { field: "상시판매 번호", minWidth: 140 },
@@ -148,7 +150,7 @@ export const userOrderListFieldsCols = (numberClickHandler=undefined) =>  [
   { field: "상시판매 상태", minWidth: 140 },
   { field: "패키지명", minWidth: 100 },
   { 
-    field: "패키지번호", 
+    field: PROD_COL_NAME.packageNumber, 
     minWidth: 100, 
     cellRenderer: WishCellRenderer, 
     valueGetter: (v) => ({...v.data[v.column.colId], clickHandler: numberClickHandler }) 
@@ -163,7 +165,7 @@ export const userOrderListFieldsCols = (numberClickHandler=undefined) =>  [
   { field: "판매유형", minWidth: 100 },
   { field: "판매가유형", minWidth: 140 },
   { field: "제품군", minWidth: 100 },
-  { field: "상시 판매가", minWidth: 140 },
+  { field: PROD_COL_NAME.salePrice, minWidth: 140 },
   { field: "제품 등급", minWidth: 140 },
   { field: "제품 수량", minWidth: 140 },
   { field: "총 중량", minWidth: 140 },
@@ -194,23 +196,24 @@ export const userOrderListFieldsCols = (numberClickHandler=undefined) =>  [
   { field: "용도 코드", minWidth: 100 },
   { field: "용도명", minWidth: 100 },
   { field: "메모", minWidth: 140 },
-];
+]);
 
 /**
  * @constant 테이블컬럼
  * @description 사용자 주문확인 상세 > 목록 테이블에서 사용합니다.
  */
-export const userOrderDetailsFieldsCols = [
+export const userOrderDetailsFieldsCols = (numberClickHandler=undefined) => getNormalTableRows([
   { field: "", maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   { field: "고유 번호", minWidth: 100 },
   { field: "상시판매 번호", minWidth: 100 },
   { field: "상시판매 주문일자", minWidth: 100 },
   { field: "상시판매 상태", minWidth: 100 },
   { field: "패키지명", minWidth: 100 },
-  { field: "패키지번호", minWidth: 100 },
+  { field: PROD_COL_NAME.packageNumber, minWidth: 100,    cellRenderer: WishCellRenderer, 
+  valueGetter: (v) => ({...v.data[v.column.colId], clickHandler: numberClickHandler })  },
   { field: "고객사명", minWidth: 100 },
   { field: "고객코드", minWidth: 100 },
-  { field: "제품번호", minWidth: 100,  cellRenderer: WishCellRenderer },
+  { field: PROD_COL_NAME.productNumber, minWidth: 100,  cellRenderer: WishCellRenderer },
   { field: "프로넘(ProNo.)", minWidth: 100 },
   { field: "창고", minWidth: 100 },
   { field: "상시판매 상태", minWidth: 100 },
@@ -218,7 +221,7 @@ export const userOrderDetailsFieldsCols = [
   { field: "판매유형", minWidth: 100 },
   { field: "판매가유형", minWidth: 100 },
   { field: "제품군", minWidth: 100 },
-  { field: "상시 판매가", minWidth: 100 },
+  { field: PROD_COL_NAME.salePrice, minWidth: 100 },
   { field: "제품 등급", minWidth: 100 },
   { field: "목적지 코드", minWidth: 100 },
   { field: "목적지 명", minWidth: 100 },
@@ -261,14 +264,14 @@ export const userOrderDetailsFieldsCols = [
   { field: "용도 코드", minWidth: 100 },
   { field: "용도명", minWidth: 100 },
   { field: "메모", minWidth: 100 },
-  { field: "상시 판매가", minWidth: 100 },
-]
+  { field: PROD_COL_NAME.salePrice, minWidth: 100 },
+]);
 
 /**
  * @constant 테이블컬럼
  * @description 사용자 주문확인 상세 > 목적지 변경 모달에서 사용합니다.
  */
-export const userDestinationFieldsCols = [
+export const userDestinationFieldsCols = getNormalTableRows([
   { field: "", maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   { field: '고객코드', maxWidth: 100 },
   { field: '비고', maxWidth: 100 },
@@ -278,4 +281,4 @@ export const userDestinationFieldsCols = [
   { field: '담당자 연락처', maxWidth: 100 },
   { field: '하차지 연락처', maxWidth: 100 },
   { field: '상세주소', maxWidth: 100 },
-]
+]);

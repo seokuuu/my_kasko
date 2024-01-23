@@ -1,16 +1,14 @@
-import React, { Fragment, useMemo, useState } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import styled from 'styled-components'
 import { useUserPackageProductDetailsListQuery } from '../../../api/user'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
-	PROD_CATEGORY,
 	getUserPackageDetailsFieldsCols,
 	userPackageDetailsField,
-} from '../../../constants/user/product'
+} from '../../../constants/user/productTable'
 import useTableData from '../../../hooks/useTableData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'
@@ -23,16 +21,15 @@ import {
 } from '../../../modal/Common/Common.Styled'
 import {
 	FilterContianer,
-	FilterHeader,
 	FilterTCTop,
 	FilterTopContainer,
 	TCSubContainer,
-	TableContianer,
+	TableContianer
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
-import { toggleAtom } from '../../../store/Layout/Layout'
 import AddCartButton, { CART_BUTTON_TYPE } from './AddCartButton'
 import AddOrderButton, { ORDER_BUTTON_TYPE } from './AddOrderButton'
+import { PROD_CATEGORY } from '../../../constants/user/constantKey'
 
 /**
  * @constant 기본 검색 값
