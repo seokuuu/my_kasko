@@ -3,9 +3,11 @@
 ============================== */
 
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { useSetAtom } from 'jotai'
 import { useNavigate } from 'react-router-dom'
 import { client } from '..'
 import useAlert from '../../store/Alert/useAlert'
+import { selectedRowsAtom } from '../../store/Layout/Layout'
 import { queryClient } from '../query'
 
 // API URL
@@ -90,6 +92,8 @@ export function useFaqUpdateMutation() {
 // 삭제
 export function useFaqRemoveMutation() {
 	const { simpleAlert } = useAlert()
+	const setSelected = useSetAtom(selectedRowsAtom)
+
 	return useMutation({
 		mutationKey: FAQ_KEYS.remove,
 		mutationFn: async function (id) {
@@ -100,6 +104,7 @@ export function useFaqRemoveMutation() {
 			queryClient.invalidateQueries({
 				queryKey: FAQ_KEYS.getList,
 			})
+			setSelected([])
 		},
 		onError() {
 			simpleAlert('삭제에 실패하였습니다.')
