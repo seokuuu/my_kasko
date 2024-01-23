@@ -14,8 +14,8 @@ import {
 	RowWrap,
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
-import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 import StandardFind from '../../../modal/Multi/StandardFind'
+import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 
 const PackageSearchFields = ({
 	// prettier-ignore
