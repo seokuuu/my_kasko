@@ -1,16 +1,16 @@
 import { useContext, useState } from 'react'
 import { useUserPackageProductListQuery } from '../../../api/user'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKey'
 import {
-	PROD_CATEGORY,
 	getUserPackageProductFieldsCols,
 	userPackageProductField,
-} from '../../../constants/user/product'
+} from '../../../constants/user/productTable'
 import useTableData from '../../../hooks/useTableData'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import useTableSelection from '../../../hooks/useTableSelection'
 import {
 	FilterContianer,
@@ -22,6 +22,7 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
 import { toggleAtom } from '../../../store/Layout/Layout'
+import { getValidParams } from '../../../utils/parameters'
 import AddCartButton from '../_components/AddCartButton'
 import AddOrderButton from '../_components/AddOrderButton'
 import AddWishButton from '../_components/AddWishButton'
@@ -37,29 +38,13 @@ const initialPageParams = {
 }
 
 /**
- * 유효 PARAMS 반환 함수
- */
-const getValidParams = (params) => {
-	const validParams = Object.keys(params).reduce((acc, key) => {
-		let value = params[key]
-		if (Array.isArray(value)) {
-			value = value.length < 1 ? null : value.toString()
-		} else if (typeof value === 'string' && value.length < 1) {
-			value = null
-		}
-		return value ? { ...acc, [key]: value } : acc
-	}, {})
-	return validParams
-}
-
-/**
  * (사용자)상시판매 패키지
  */
 const Package = ({}) => {
 	const [searchParams, setSearchParams] = useState({ ...initialPageParams })
 	const [pageParams, setPageParams] = useState({ ...initialPageParams })
 	// API
-	const { data: packageData, isError, isLoading } = useUserPackageProductListQuery(searchParams) // 상시판매 패키지 목록 조회 쿼리
+	const { data: packageData, isLoading } = useUserPackageProductListQuery(searchParams) // 상시판매 패키지 목록 조회 쿼리
 	// 테이블 데이터, 페이지 데이터, 총 중량
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
 		tableField: userPackageProductField,
@@ -67,7 +52,7 @@ const Package = ({}) => {
 		wish: { display: true },
 	})
 	// 선택 항목
-	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr, hasSelected } = useTableSelection({
+	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
 		weightKey: '중량 합계',
 	})
 	// 패키지 상세보기
@@ -182,13 +167,13 @@ const Package = ({}) => {
 					<div>
 						선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 					</div>
-					<AddWishButton products={selectedData} productNumberKey={'패키지번호'} />
+					<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.packageNumber} />
 				</TCSubContainer>
 				{/* 테이블 */}
 				<Table
 					getRow={tableRowData}
 					getCol={getUserPackageProductFieldsCols(setPackageActionViewer)}
-					isLoading={isLoading}
+					loading={isLoading}
 					tablePagination={paginationData}
 					onPageChange={(p) => {
 						handlePageNumChange(p)

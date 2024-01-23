@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { add_element_field } from "../lib/tableHelpers";
 import useWishList, { getProductNumber } from "./useWishList";
-import { forEach } from "lodash";
 
 /**
  * 제품번호 기본키
@@ -24,7 +23,8 @@ const PROD_NUM_KEY = 'number';
  */
 export default function useTableData({ tableField, serverData, wish }) {
     // 관심상품목록 노출 PROPS
-    const { display: wishDisplay, key: wishKey = [PROD_NUM_KEY] } = wish || {};
+    const wishDisplay = Boolean(wish?.display);
+    const wishKey = wish?.key || [PROD_NUM_KEY];
     // 관심상품목록 HOOK
     const { wishProdNums } = useWishList();
 
