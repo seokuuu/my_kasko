@@ -1,9 +1,9 @@
 import { useAtom, useAtomValue } from 'jotai'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
-import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { blueModalAtom, selectedRowsAtom, singleProductModify, toggleAtom } from '../../../store/Layout/Layout'
 
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -21,6 +21,9 @@ import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalP
 import IncomingSearchFields from './IncomingSearchFields'
 import { SwitchBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { isEqual } from 'lodash'
+import SingleProductModify from '../../Product/SingleProduct/SingleProductModify'
+import IncomingModify from './IncomingModify'
+import SelectedRowsTable from '../../Table/SelectTable'
 const Incoming = ({}) => {
 	const { simpleConfirm, simpleAlert } = useAlert()
 
@@ -150,10 +153,17 @@ const Incoming = ({}) => {
 			})
 		})
 	}
+
 	useEffect(() => {
 		console.log('checkBox값 추적', checkBoxSelect)
 	}, [checkBoxSelect])
 
+	const [singleModfiy, setSingleModify] = useAtom(singleProductModify)
+
+	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
+	useEffect(() => {
+		console.log('체크박스체크박스',checkBoxSelect)
+	}, [checkBoxSelect])
 	return (
 		<>
 			<FilterContianer>
@@ -186,7 +196,7 @@ const Incoming = ({}) => {
 						<div style={{ display: 'flex', gap: '10px' }}>
 							<PageDropdown />
 							<Excel
-							 getRow={getRow}
+								getRow={getRow}
 							/>
 						</div>
 					</TCSubContainer>
@@ -213,17 +223,22 @@ const Incoming = ({}) => {
 							<WhiteSkyBtn onClick={stockReceive}>재고 수신</WhiteSkyBtn>
 						</div>
 					</TCSubContainer>
+					{checkBoxSelect?.length > 0 && <SelectedRowsTable selectedRows={selectedRows} columns={StockIncomingFields} />}
 				</TableContianer>
+
 			</FilterContianer>
+			{singleModfiy && <IncomingModify title={'제품 수정'} />}
 			{uploadModal && (
 				<UploadV2
 					originEngRowField={stockFields}
 					setModalSwitch={setUploadModal}
-					postApi={postExcelSubmitProduct()}
+					postApi={postExcelSubmitProduct}
 					setExcelToJson={setExcelToJson}
 					excelToJson={excelToJson}
 				/>
 			)}
+
+			{/*<SelectedRowsTable selectedRows={checkBoxSelect} />*/}
 		</>
 	)
 }

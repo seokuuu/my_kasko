@@ -21,11 +21,12 @@ import Table from '../../Table/Table'
 import { SingleModifyDispatchFieldsCols, SingleModifyFields } from '../../../constants/admin/Single'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { Filtering } from '../../../utils/filtering'
-function SingleProductModify({ title }) {
+import { StockIncomingFields } from '../../../constants/admin/StockIncoming'
+function IncomingModify({ title }) {
   const [request, setRequest] = useAtom(requestSingleModify)
   const [isRotated, setIsRotated] = useState(false)
   const [getRow, setGetRow] = useState('')
-  const tableRef = useRef(SingleModifyDispatchFieldsCols)
+  const tableRef = useRef(StockIncomingFields)
   const getCol = tableRef.current
   const [filterData, setFilteredData] = useState([])
   const [singleModfiy, setSingleModify] = useAtom(singleProductModify)
@@ -51,16 +52,6 @@ function SingleProductModify({ title }) {
         grade: p['제품 등급'],
         usageCode: p['용도 코드'],
         usageCodeName: p['용도명'],
-        c: p['C%'],
-        si: p['Si'],
-        mn: p['Mn'],
-        p: p['P'],
-        s: p['S'],
-        ts: p['TS'],
-        yp: p['YP'],
-        el: p['EL'],
-        spartCode: p['제품명'],
-        spart: p['제품군명'],
         supplier: p['매입처'],
         maker: p['제조사'],
         name: p['제품명'],
@@ -101,25 +92,12 @@ function SingleProductModify({ title }) {
       number: p['제품 번호'],
       storage: p['저장 위치'],
       storageName: p['저장 위치명'],
-      spec: p['규격 약호'],
-      wdh: p['제품 사양'],
       thickness: p['두께'],
       width: p['폭'],
       length: p['길이'],
       weight: p['중량'],
-      grade: p['등급'],
       usageCode: p['용도 코드'],
       usageCodeName: p['용도명'],
-      c: p['C%'],
-      si: p['Si'],
-      mn: p['Mn'],
-      p: p['P'],
-      s: p['S'],
-      ts: p['TS'],
-      yp: p['YP'],
-      el: p['EL'],
-      spartCode: p['제품군 코드'],
-      spart: p['제품군명'],
       supplier: p['매입처'],
       maker: p['제조사'],
       name: p['품명'],
@@ -169,7 +147,7 @@ function SingleProductModify({ title }) {
   )
 }
 
-export default SingleProductModify
+export default IncomingModify
 
 export const Container = styled.div`
   max-width: 60%;

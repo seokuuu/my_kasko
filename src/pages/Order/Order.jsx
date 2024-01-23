@@ -158,14 +158,8 @@ const Order = ({}) => {
 	const handleOrderCancel = () => {
 		const requestList = makeRequest(checkBoxSelect)
 		console.log('요청List', requestList)
-		const token =
-			'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjYwIiwiYXV0aCI6Iuy5tOyKpOy9lOyyoOqwlSzsnqzqs6DqtIDrpqws6rK966ek6rSA66asLOyDgeyLnO2MkOunpOq0gOumrCzso7zrrLjqtIDrpqws7YyQ66ek7KCc7ZKI6rSA66asLOy2nOqzoOq0gOumrCzquLDspIDqtIDrpqws7Jq07JiB6rSA66asIiwiZXhwIjoxNzA1NjY3NjA3fQ.UJCsPlF4tYFfmj26utCNwb6vhaDWtQKTkNPh5Qs1c-RVsQI6hW35mmMDch9qxAe5AIROG1bYiEx7Ntg3IXnBpA'
 		axios
-			.post(`${process.env.REACT_APP_API_URL}/admin/order/cancel-all`, requestList, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			})
+			.post(`${process.env.REACT_APP_API_URL}/admin/order/cancel-all`, requestList,{})
 			.then((response) => {
 				console.log('Order cancelled successfully:', response.data)
 				refetch()
@@ -178,14 +172,8 @@ const Order = ({}) => {
 	// 입금 취소 버튼 클릭 핸들러
 	const handleDepositCancel = () => {
 		const requestList = makeRequest(checkBoxSelect)
-		const token =
-			'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjYwIiwiYXV0aCI6Iuy5tOyKpOy9lOyyoOqwlSzsnqzqs6DqtIDrpqws6rK966ek6rSA66asLOyDgeyLnO2MkOunpOq0gOumrCzso7zrrLjqtIDrpqws7YyQ66ek7KCc7ZKI6rSA66asLOy2nOqzoOq0gOumrCzquLDspIDqtIDrpqws7Jq07JiB6rSA66asIiwiZXhwIjoxNzA1NjY3NjA3fQ.UJCsPlF4tYFfmj26utCNwb6vhaDWtQKTkNPh5Qs1c-RVsQI6hW35mmMDch9qxAe5AIROG1bYiEx7Ntg3IXnBpA'
 		axios
-			.post(`${process.env.REACT_APP_API_URL}/admin/order/deposit-all`, requestList, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			})
+			.post(`${process.env.REACT_APP_API_URL}/admin/order/deposit-all`, requestList, {})
 			.then((response) => {
 				console.log('Deposit cancelled successfully:', response.data)
 				refetch()

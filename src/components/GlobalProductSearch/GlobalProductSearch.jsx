@@ -115,6 +115,9 @@ const GlobalProductSearch = ({
 			orderType: '', // 주문 타입 (Order type)
 			orderNumber: '', // 주문 번호 (Order number)
 			carType: '', // 차량종류
+			receiptDate:'',
+			createDate:'',
+			updateDate:'',
 		}
 	}, [storageList, supplierList, spartList, makerList, stockStatusList, gradeList, preferThicknessList])
 

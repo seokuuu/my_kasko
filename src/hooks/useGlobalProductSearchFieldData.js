@@ -8,7 +8,7 @@ import { getCustomerFind } from '../service/admin/Auction'
  * 검색 목록 SelectList에 사용되는 옵션 값들
  * @returns
  */
-const useGlobalProductSearchFieldData = (startDate, endDate) => {
+const useGlobalProductSearchFieldData = () => {
 	// 창고 목록
 	const { data: storage } = useReactQuery('', 'getStorageList', getStorageList)
 	const storageList = useMemo(

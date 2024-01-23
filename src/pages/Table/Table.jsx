@@ -27,6 +27,7 @@ import {
 import './TableUi.css'
 import PropTypes from 'prop-types'
 import useDragginRow from '../../hooks/useDragginRow'
+import SelectedRowsTable from './SelectTable'
 // import TableStyle from './Table.module.css'
 
 // import { get } from 'lodash'
@@ -343,6 +344,7 @@ const Table = ({
 				// ag-Grid에 데이터 설정
 				// params.successCallback(getRow)
 			},
+			onSelectionChanged: onSelectionChanged,
 		},
 		// overlayNoRowsTemplate:
 		//   '<div style="padding: 20px; border: 2px solid #666; background: #EEF3FB; fontsize: 20px; ">항목이 존재하지 않습니다.</div>',
@@ -444,7 +446,6 @@ const Table = ({
 						paginationPageSize={size}
 						isExternalFilterPresent={isExternalFilterPresent}
 						// doesExternalFilterPass={doesExternalFilterPass}
-						onSelectionChanged={onSelectionChanged}
 						pinnedTopRowData={pinnedTopRowData}
 						onRowClicked={onRowClicked}
 						getRowStyle={getRowStyle}
@@ -456,10 +457,9 @@ const Table = ({
 						onCellValueChanged={changeFn}
 					/>
 				</div>
-			{/*	SelectedRowsTable 선택된 테이블만 보여주는 컴포넌트*/}
-				<SeletedRowsTable selectedRows={selectedRows} />
-			</TestContainer>
 
+			</TestContainer>
+			{/*{selectedRows && <SelectedRowsTable selectedRows={selectedRows} />}*/}
 			{isModal && (
 				<>
 					<NonFadeOverlay />
@@ -611,14 +611,3 @@ export const RBInput = styled.input`
 `
 
 export const Pagination = styled.ul``
-
-
-export const SeletedRowsTable=({selectedRows}) =>{
-	const columnDefs=[{headerName:'고객 코드', field:'sample고객'},]
-	return (
-		<div>
-			<AgGridReact
-			/>
-		</div>
-	)
-}
