@@ -1,46 +1,38 @@
 import { useAtom } from 'jotai'
 import { useCallback, useState } from 'react'
-import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
+import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
 	EditGear,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
 	FilterHeaderAlert,
-	FilterLeft,
-	FilterSubcontianer,
 	FilterWrap,
-	Input,
-	PartWrap,
-	ResetImg,
-	RowWrap,
 	TCSubContainer,
 	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import { adminPageDestiEditModal, blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { isArray } from 'lodash'
+import { isArray, isEqual } from 'lodash'
 import { useEffect, useRef } from 'react'
-import { delete_clientDestination, get_clientDestination, get_detailClientDestination } from '../../../api/userManage'
+import { delete_clientDestination, get_clientDestination } from '../../../api/userManage'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import {
-	adminCustomerDestinationManageFieldsCols,
 	UserManageCustomerDestinationManageFields,
-	UserManageCustomerDestinationManageFieldsCols,
+	adminCustomerDestinationManageFieldsCols,
 } from '../../../constants/admin/UserManage'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
-import { UsermanageDestiEditModal, btnCellUidAtom, UsermanageFindModal } from '../../../store/Layout/Layout'
+import { UsermanageFindModal, btnCellUidAtom } from '../../../store/Layout/Layout'
 
-import TableTest from '../../Table/TableTest'
-import DestinationEdit from './DestinationEdit'
-import Table from '../../Table/Table'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
+import Table from '../../Table/Table'
+import ClientDestinationSearchFields from './ClientDestinationSearchFields'
+import DestinationEdit from './DestinationEdit'
 
 const ClientDestination = ({ setChoiceComponent }) => {
 	const [findModal, setFindModal] = useAtom(UsermanageFindModal)
@@ -83,16 +75,19 @@ const ClientDestination = ({ setChoiceComponent }) => {
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
-	const [query, setQuery] = useState({
+
+	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
-	})
+	}
 
-	const { data, isSuccess } = useReactQuery(query, 'clientDestination', get_clientDestination)
+	const [param, setParam] = useState(paramData)
+
+	const { data, isSuccess, refetch } = useReactQuery(param, 'clientDestination', get_clientDestination)
 	const resData = data?.data?.data?.list
 	const pagination = data?.data?.data?.pagination
 
-	const { onPageChanage } = useTablePaginationPageChange(data, setQuery)
+	const { onPageChanage } = useTablePaginationPageChange(data, setParam)
 
 	useEffect(() => {
 		let getData = resData
@@ -124,6 +119,25 @@ const ClientDestination = ({ setChoiceComponent }) => {
 
 	const setPostPage = () => {
 		setChoiceComponent('등록')
+	}
+
+	const globalProductResetOnClick = () => {
+		// if resetting the search field shouldn't rerender table
+		// then we need to create paramData object to reset the search fields.
+		setParam(paramData)
+	}
+	// import
+	const globalProductSearchOnClick = (userSearchParam) => {
+		setParam((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				refetch()
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+			}
+		})
 	}
 
 	return (
@@ -173,7 +187,7 @@ const ClientDestination = ({ setChoiceComponent }) => {
 						</FilterHeaderAlert>
 						{exFilterToggle && (
 							<FilterWrap>
-								<FilterSubcontianer>
+								{/* <FilterSubcontianer>
 									<FilterLeft>
 										<RowWrap>
 											<PartWrap>
@@ -184,11 +198,6 @@ const ClientDestination = ({ setChoiceComponent }) => {
 													찾기
 												</GreyBtn>
 											</PartWrap>
-											<PartWrap />
-											<PartWrap />
-											<PartWrap />
-											<PartWrap />
-											<PartWrap />
 										</RowWrap>
 									</FilterLeft>
 								</FilterSubcontianer>
@@ -207,7 +216,14 @@ const ClientDestination = ({ setChoiceComponent }) => {
 											검색
 										</BlackBtn>
 									</div>
-								</FilterFooter>
+								</FilterFooter> */}
+								<GlobalProductSearch
+									param={param}
+									isToggleSeparate={true}
+									renderCustomSearchFields={(props) => <ClientDestinationSearchFields {...props} />}
+									globalProductSearchOnClick={globalProductSearchOnClick} //
+									globalProductResetOnClick={globalProductResetOnClick} //
+								/>
 							</FilterWrap>
 						)}
 					</div>
@@ -220,7 +236,7 @@ const ClientDestination = ({ setChoiceComponent }) => {
 							<div style={{ display: 'flex', gap: '10px' }}>
 								<PageDropdown
 									handleDropdown={(e) =>
-										setQuery((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))
+										setParam((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))
 									}
 								/>
 								<Excel getRow={getRow} />

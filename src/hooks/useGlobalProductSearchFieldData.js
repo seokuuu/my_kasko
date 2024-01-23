@@ -125,6 +125,22 @@ const useGlobalProductSearchFieldData = () => {
 		},
 	]
 
+	// 고객사 유형
+	const customerList = [
+		{
+			label: '고객사 유형',
+			value: '',
+		},
+		{
+			label: 'Y',
+			value: 'Y',
+		},
+		{
+			label: 'N',
+			value: 'N',
+		},
+	]
+
 	return {
 		storageList,
 		supplierList,
