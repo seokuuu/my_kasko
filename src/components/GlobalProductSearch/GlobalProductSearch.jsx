@@ -168,7 +168,7 @@ const GlobalProductSearch = ({
 			)}
 			{toggle && (
 				<FilterWrap style={{ marginTop: '25px', marginBottom: '25px ' }}>
-					<FilterSubcontianer>
+					<FilterSubcontianer modal style={{ height: '100%' }}>
 						<ProductSearchFields
 							// prettier-ignore
 							search={userSearchParam}
