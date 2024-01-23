@@ -58,7 +58,7 @@ const Single = () => {
 	}, [isSuccess, getSingleProductsRes])
 
 	const formatTableRowData = (singleProductListData) => {
-		// return add_element_field(singleProductListData, responseToTableRowMap)
+		return add_element_field(singleProductListData, responseToTableRowMap)
 	}
 
 	// 토글 쓰기
@@ -84,7 +84,7 @@ const Single = () => {
 			...prevParam,
 			pageSize: Number(event.target.value),
 			pageNum: 1,
-	}))
+		}))
 	}
 
 	const onPageChange = (value) => {
@@ -186,12 +186,13 @@ const Single = () => {
 						<WhiteBlackBtn>노출 상태 변경</WhiteBlackBtn>
 					</div>
 				</TCSubContainer>
-				{/* <Table
+				<Table
 					getCol={singleProductListFieldCols}
 					getRow={singleProductListData}
+					loading={isLoading}
 					tablePagination={singleProductPagination}
 					onPageChange={onPageChange}
-				/> */}
+				/>
 				<TableBottomWrap>
 					<BlackBtn width={13} height={40} fontSize={17}>
 						저장

@@ -1,10 +1,10 @@
 export const categories = ['경매', '상시판매', '입금', '약관', '출고', '기타']
 
 export const corLabels = [
-	{ headerClass: 'custom-header-style', field: '순번', maxWidth: 100 },
-	{ headerClass: 'custom-header-style', field: '카테고리', minWidth: 100 },
-	{ headerClass: 'custom-header-style', field: '제목', minWidth: 100, flex: 1 },
-	{ headerClass: 'custom-header-style', field: '작성일자', minWidth: 100 },
+	{ headerClass: 'custom-header-style', field: '순번', maxWidth: 100, cellStyle: { 'text-align': 'center' } },
+	{ headerClass: 'custom-header-style', field: '카테고리', minWidth: 100, cellStyle: { 'text-align': 'center' } },
+	{ headerClass: 'custom-header-style', field: '제목', minWidth: 100, flex: 1, cellStyle: { 'text-align': 'center' } },
+	{ headerClass: 'custom-header-style', field: '작성일자', minWidth: 100, cellStyle: { 'text-align': 'center' } },
 ]
 
 export const responseToTableRowMap = {
