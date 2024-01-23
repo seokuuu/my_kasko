@@ -26,6 +26,7 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import { getValidParams } from '../../../utils/parameters'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 import OrderSearchFields from './OrderSearchFields'
+import CautionBox, { CAUTION_CATEGORY } from '../../../components/CautionBox'
 
 /**
  * @constant 기본 페이지 검색 값
@@ -154,23 +155,8 @@ const Order = ({}) => {
 				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 			</FilterHeader>
 			{/* 공지사항 */}
-			<FilterHeaderAlert>
-				<div style={{ display: 'flex' }}>
-					<div style={{ marginRight: '20px' }}>
-						<img src="/img/notice.png" />
-					</div>
-					<div style={{ marginTop: '6px' }}>
-						<FilterAlterTxt style={{ marginTop: '0px' }}>
-							· 경매 남은 시간은 본 화면에서 발생되는 메시지 창에 따라 다소 지연될 수 있습니다. 경매 남은 시간을
-							최신으로 갱신하려면 다시 조회해 주세요.
-						</FilterAlterTxt>
-					</div>
-				</div>
-				<AlertImg>
-					수정
-					<img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-				</AlertImg>
-			</FilterHeaderAlert>
+			{/* @todo eitable 주석처리 */}
+			<CautionBox category={CAUTION_CATEGORY.singleProduct} editable/>
 			{/* 검색 필터 */}
 			{exFilterToggle && (
 				<FilterWrap>

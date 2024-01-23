@@ -24,6 +24,7 @@ import AddCartButton from '../_components/AddCartButton'
 import AddOrderButton from '../_components/AddOrderButton'
 import AddWishButton from '../_components/AddWishButton'
 import SingleSearchFields from './SingleSearchFields'
+import CautionBox, { CAUTION_CATEGORY } from '../../../components/CautionBox'
 
 /**
  * @constant 기본 페이지 검색 값
@@ -116,23 +117,7 @@ const Single = () => {
 				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 			</FilterHeader>
 			{/* 공지사항 */}
-			<FilterHeaderAlert>
-				<div style={{ display: 'flex' }}>
-					<div style={{ marginRight: '20px' }}>
-						<img src="/img/notice.png" />
-					</div>
-					<div style={{ marginTop: '6px' }}>
-						<div>· 주의사항 영역</div>
-						<div style={{ marginTop: '6px' }}>
-							<div>· 주의사항 영역</div>
-						</div>
-					</div>
-				</div>
-				<div>
-					수정
-					<img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-				</div>
-			</FilterHeaderAlert>
+			<CautionBox category={CAUTION_CATEGORY.singleProduct} />
 			{/* 검색 필터 */}
 			{exFilterToggle && (
 				<FilterWrap>
