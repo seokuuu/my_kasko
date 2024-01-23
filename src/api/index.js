@@ -34,7 +34,7 @@ client.interceptors.response.use(
 		try {
 			const { response, config } = error
 			/** 토큰으로 인한 오류일 시 리플레쉬 토큰 조회 후 리패치 */
-			if (response.status === 401) {
+			if (response?.status === 401) {
 				// return refreshAccessToken().then(() => client(config))
 				localStorage.removeItem('accessToken')
 				alert('로그인 후 이용해 주세요.')
@@ -42,7 +42,7 @@ client.interceptors.response.use(
 			}
 			return Promise.reject(response)
 		} catch (e) {
-			console.log('error', '네트워크 오류가 발생했습니다.')
+			console.error('error', '네트워크 오류가 발생했습니다.', e)
 			return Promise.reject(e)
 		}
 	},

@@ -200,28 +200,28 @@ const Login = () => {
 					saveIdToLocalStorage(id)
 				}
 			} catch (e) {
-				loginError(e.data)
+				loginError(e?.data)
 			}
 		},
 		[id, pw],
 	)
 
 	const loginError = (error) => {
-		if (error.message === '관리자가 승인 대기중 입니다.') {
+		if (error?.message === '관리자가 승인 대기중 입니다.') {
 			showAlert({
 				title: '회원가입 승인 중',
 				content: '관리자가 승인 대기중 입니다.\n' + '관리자 승인 후 이용하실 수 있습니다.',
 			})
 			return
 		}
-		if (error.message === '장기 미 로그인 회원입니다.') {
+		if (error?.message === '장기 미 로그인 회원입니다.') {
 			showAlert({
 				title: '안내',
 				content: `장기 미 로그인(90일)으로 인해 로그인이 제한되었습니다.\n카스코 철강으로 문의주세요.`,
 			})
 			return
 		}
-		if (error.message === '탈퇴한 회원입니다.') {
+		if (error?.message === '탈퇴한 회원입니다.') {
 			simpleAlert('탈퇴 처리된 회원입니다.')
 			return
 		}
