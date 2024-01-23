@@ -165,7 +165,6 @@ const Router = () => {
 			<Route path="/test4" element={<Countdown />} />
 			<Route path="/popup" element={<TestPopup />} />
 			<Route path="/excel" element={<TestExcel />} />
-			<Route path="/common" element={<SellOrderDetailPage />} />
 			<Route path="/*" element={<NotFound />} />
 			{/* 로그인, 회원가입, 아이디 찾기, 비밀번호 재발급, 캘린더, 메인 */}
 			<Route path="/" element={<Login />} />
@@ -207,6 +206,7 @@ const Router = () => {
 				<Route path="/sales/single" element={<SinglePage />}></Route>
 				<Route path="/sales/package" element={<PackagePage />}></Route>
 				<Route path="/sales/order" element={<SellOrderPage />}></Route>
+				<Route path="/sales/order/:id" element={<SellOrderDetailPage />} />
 			</Route>
 			{/* 주문 관리 */}
 			<Route path="/order" element={<OrderPage />}></Route>

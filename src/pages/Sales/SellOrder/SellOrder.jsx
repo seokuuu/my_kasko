@@ -4,7 +4,7 @@ import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
 import { selectedRowsAtom } from '../../../store/Layout/Layout'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { getSaleProductList } from '../../../api/saleProduct'
-import { singleProductListFieldCols, responseToTableRowMap } from '../../../constants/admin/singleProduct'
+import { saleProductListFieldsCols, saleProductListResponseToTableRowMap } from '../../../constants/admin/saleProduct'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { formatWeight } from '../../../utils/utils'
@@ -25,6 +25,7 @@ import { UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManag
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import SellOrderSearchFields from './SellOrderSearchFields'
 import { isEqual } from 'lodash'
+import { useNavigate } from 'react-router-dom'
 
 const SellOrder = ({ setChoiceComponent }) => {
 	const paramData = {
@@ -33,6 +34,7 @@ const SellOrder = ({ setChoiceComponent }) => {
 	}
 	const [param, setParam] = useState(paramData)
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+	const navigate = useNavigate()
 	const checkSales = ['전체', '확정 전송', '확정전송 대기']
 	const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
 	const handleSelectChange = (selectedOption, name) => {
@@ -60,7 +62,7 @@ const SellOrder = ({ setChoiceComponent }) => {
 	}, [isSuccess, getSaleProductListRes])
 
 	const formatTableRowData = (rowData) => {
-		return add_element_field(rowData, responseToTableRowMap)
+		return add_element_field(rowData, saleProductListResponseToTableRowMap)
 	}
 	// Function to handle image click and toggle rotation
 	const handleImageClick = () => {
@@ -123,6 +125,11 @@ const SellOrder = ({ setChoiceComponent }) => {
 				...userSearchParam,
 			}
 		})
+	}
+
+	const handleOnRowClicked = (row) => {
+		const uid = row.data.uid
+		navigate(`/sales/order/${uid}`)
 	}
 
 	return (
@@ -195,11 +202,12 @@ const SellOrder = ({ setChoiceComponent }) => {
 					</div>
 				</TCSubContainer>
 				<Table
-					getCol={singleProductListFieldCols}
+					getCol={saleProductListFieldsCols}
 					getRow={saleProductListData}
-					tablePagination={saleProductPagination}
-					onPageChange={onPageChange}
+					handleOnRowClicked={handleOnRowClicked}
 					loading={isLoading}
+					onPageChange={onPageChange}
+					tablePagination={saleProductPagination}
 				/>
 				<TCSubContainer>
 					<div></div>

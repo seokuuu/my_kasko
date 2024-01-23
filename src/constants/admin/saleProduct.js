@@ -47,7 +47,7 @@ export const saleProductListFieldsCols = [
 ]
 
 export const saleProductListResponseToTableRowMap = {
-	순번: 'uid', // This field 'sequence' was not in the original response. Please replace with the correct field if necessary.
+	uid: 'auctionNumber', // This field 'sequence' was not in the original response. Please replace with the correct field if necessary.
 	'상시판매 번호': 'auctionNumber',
 	'상시판매 주문일자': 'auctionCreateDate',
 	고객사명: 'customerName',
