@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState } from 'react'
+import React, { Fragment, useContext, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { useUserDestinationUpdateRequestMutation, useUserOrderDetailsQuery } from '../../../api/user'
 import { BtnBound, TGreyBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
@@ -6,7 +6,7 @@ import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../..
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { userOrderDetailsField, userOrderDetailsFieldsCols } from '../../../constants/user/order'
+import { userOrderDetailsField, userOrderDetailsFieldsCols } from '../../../constants/user/orderTable'
 import useTableData from '../../../hooks/useTableData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'
@@ -21,6 +21,7 @@ import {
 import DestinationChange from '../../../modal/Multi/DestinationChange'
 import Table from '../../../pages/Table/Table'
 import useAlert from '../../../store/Alert/useAlert'
+import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 
 /**
  * @constant 기본 검색 값
@@ -112,6 +113,8 @@ const OrderDetail = ({ salesNumber }) => {
 	}, [destinationUpdateItems, tableRowData])
 	// ALERT
 	const { simpleAlert } = useAlert()
+	// 패키지 상세보기
+	const { setPackageReadOnlyViewer } = useContext(PackageViewerDispatchContext)
 
 	/**
 	 * 목적지 적용 핸들러
@@ -219,7 +222,7 @@ const OrderDetail = ({ salesNumber }) => {
 				{/* 테이블 */}
 				<Table
 					getRow={tableRowDataWithNewDestination}
-					getCol={userOrderDetailsFieldsCols}
+					getCol={userOrderDetailsFieldsCols(setPackageReadOnlyViewer)}
 					loading={isLoading}
 					paginationData={paginationData}
 					onPageChange={(p) => {

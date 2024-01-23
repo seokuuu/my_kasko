@@ -135,7 +135,7 @@ const OperateClaimRegister = ({ pageType }) => {
 	}
 	const blockCondition = useMemo(() => !isEqual(initForm, form) && !Boolean(id) && !observeClick, [form, observeClick])
 
-	// useBlockRoute(blockCondition)
+	useBlockRoute(blockCondition)
 
 	useEffect(() => {
 		return () => setForm(initForm)

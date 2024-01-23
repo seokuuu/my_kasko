@@ -79,9 +79,7 @@ const STable = {
 /**
  * 목적지 변경 모달
  * @param {*} param.value 현재 선택 값
- * @param {*} param.onSubmit 선택값 적용 핸들러 
- * @todo
- * - 목적지 목록 > 어떤 테이블 컴포넌트 사용할 것인지 확인(선텍 데이터 때문에 중첩 문제 발생)
+ * @param {*} param.onSubmit 선택값 적용 핸들러
  */
 const DestinationChange = ({ customerName, customerCode, value, onSubmit }) => {
   const [popupOn, setPopupOn] = useState(false);

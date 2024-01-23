@@ -1,9 +1,5 @@
-import { useAtomValue, useSetAtom } from 'jotai/index'
-import React from 'react'
-import { GreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
-import { CustomerSearch, DateSearchSelect } from '../../../components/Search'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
 	ExInputsWrap,
@@ -14,47 +10,63 @@ import {
 	PWRight,
 	PartWrap,
 	RowWrap,
-	SearchContainer,
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
-import StandardFind from '../../../modal/Multi/StandardFind'
-import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 
-const UserPerformanceFilter = ({ search, setSearch, commonNumInputHandler, onSpecHandler }) => {
-	const setIsKyuModal = useSetAtom(kyuModalAtom)
-	const { storageList, spartList, gradeList } = useGlobalProductSearchFieldData()
-	const onChange = (key, value) => {
-		setSearch((p) => ({ ...p, [key]: value }))
+import { useState } from 'react'
+import { CustomerSearch, DateSearchSelect } from '../../../components/Search'
+import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
+import { GreyBtn } from '../../../common/Button/Button'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
+import StandardFind from '../../../modal/Multi/StandardFind'
+
+const ProgressSearchFields = ({
+	// prettier-ignore
+	search,
+	setSearch,
+	commonDropdownButtonHandler,
+	commonNumInputHandler,
+	onSpecHandler,
+}) => {
+	const {
+		// prettier-ignore
+		storageList,
+		supplierList,
+		spartList,
+		makerList,
+		stockStatusList,
+		gradeList,
+		preferThicknessList,
+	} = useGlobalProductSearchFieldData()
+
+	const init = {
+		customerCode: '',
+		customerName: '',
+		destinationCode: '',
+		destinationName: '',
 	}
+	const [param, setParam] = useState(init)
+	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
+
+	const setIsKyuModal = useSetAtom(kyuModalAtom)
+
+	console.log('param', param)
+
 	return (
-		<SearchContainer>
+		<>
 			<FilterLeft>
-				<RowWrap>
-					<DateSearchSelect
-						title={'경매 일자'}
-						startInitDate={search.auctionStartDate}
-						endInitDate={search.auctionEndDate}
-						startDateChange={(value) => onChange('auctionStartDate', value)}
-						endDateChange={(value) => onChange('auctionEndDate', value)}
-					/>
-					<DateSearchSelect
-						title={'출고 일자'}
-						startInitDate={search.shipmentStartDate}
-						endInitDate={search.shipmentEndDate}
-						startDateChange={(value) => onChange('shipmentStartDate', value)}
-						endDateChange={(value) => onChange('shipmentEndDate', value)}
-					/>
-				</RowWrap>
-				<RowWrap>
-					<PartWrap>
-						<h6>창고 구분</h6>
+				<RowWrap none>
+					{/* 창고 구분 */}
+					<PartWrap first>
+						<h6>창고 구분 </h6>
 						<PWRight>
 							<MainSelect
 								options={storageList}
 								// defaultValue={storageList[0]}
 								value={search.storage}
 								name="storage"
-								onChange={(e) => onChange('storage', e)}
+								onChange={(e) => commonDropdownButtonHandler(e, 'storage')}
 							/>
 						</PWRight>
 					</PartWrap>
@@ -71,34 +83,40 @@ const UserPerformanceFilter = ({ search, setSearch, commonNumInputHandler, onSpe
 							찾기
 						</GreyBtn>
 					</PartWrap>
+
+					{/* 규격약호 */}
 				</RowWrap>
 				<RowWrap>
+					<CustomerSearch search={search} setSearch={setSearch} />
+				</RowWrap>
+				{/* 2행 */}
+				<RowWrap>
+					{/* 구분 */}
 					<PartWrap first>
 						<h6>구분</h6>
 						{/* 제품군 */}
-						<MainSelect
-							options={spartList}
-							defaultValue={spartList[0]}
-							value={search.spart}
-							name="spart"
-							onChange={(e) => onChange('spart', e)}
-						/>
-						{/* 등급 */}
-						<MainSelect
-							options={gradeList}
-							defaultValue={gradeList[0]}
-							value={search.grade}
-							name="grade"
-							onChange={(e) => onChange('grade', e)}
-						/>
-					</PartWrap>
-					<PartWrap>
-						<CustomerSearch search={search} setSearch={setSearch} />
+						<PWRight>
+							<MainSelect
+								options={supplierList}
+								defaultValue={supplierList[0]}
+								value={search.supplier}
+								name="supplier"
+								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
+							/>
+							<MainSelect
+								options={gradeList}
+								defaultValue={gradeList[0]}
+								value={search.grade}
+								name="grade"
+								onChange={(e) => commonDropdownButtonHandler(e, 'grade')}
+							/>
+						</PWRight>
 					</PartWrap>
 				</RowWrap>
-				<RowWrap none>
-					{/* 두깨 */}
-					<PartWrap>
+
+				<RowWrap>
+					{/* 두께 */}
+					<PartWrap first>
 						<h6>두께(MM)</h6>
 						<ExInputsWrap>
 							<MiniInput
@@ -161,8 +179,8 @@ const UserPerformanceFilter = ({ search, setSearch, commonNumInputHandler, onSpe
 						</ExInputsWrap>
 					</PartWrap>
 				</RowWrap>
-				{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
 			</FilterLeft>
+			{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
 			<FilterRight>
 				<ProductNumber
 					initialValue={search.productNumberList}
@@ -171,8 +189,8 @@ const UserPerformanceFilter = ({ search, setSearch, commonNumInputHandler, onSpe
 					height="100%"
 				/>
 			</FilterRight>
-		</SearchContainer>
+		</>
 	)
 }
 
-export default UserPerformanceFilter
+export default ProgressSearchFields

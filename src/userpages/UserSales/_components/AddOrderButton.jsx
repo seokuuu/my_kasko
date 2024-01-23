@@ -1,7 +1,8 @@
 import React from 'react'
 import { useUserOrderMutaion } from '../../../api/user'
 import { SkyBtn } from '../../../common/Button/Button'
-import { PROD_CATEGORY } from '../../../constants/user/product'
+import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKey'
+import { getProductNumber } from '../../../hooks/useWishList'
 import useAlert from '../../../store/Alert/useAlert'
 
 /**
@@ -51,12 +52,12 @@ const AddOrderButton = ({ category, totalWeight, products = [], buttonType }) =>
 			orderList: products.map((v) =>
 				category === PROD_CATEGORY.single
 					? {
-							productUid: v['고유 번호'] || '',
-							salePrice: v['상시판매가'] || 0,
+							productUid: v[PROD_COL_NAME.productUid] || '',
+							salePrice: v[PROD_COL_NAME.salePrice] || 0,
 					  }
 					: {
-							packageNumber: v['패키지번호'] || 0,
-							salePrice: v['상시 판매가'] || 0,
+							packageNumber: getProductNumber(v[PROD_COL_NAME.packageNumber]) || 0,
+							salePrice: v[PROD_COL_NAME.salePrice] || 0,
 					  },
 			),
 		})

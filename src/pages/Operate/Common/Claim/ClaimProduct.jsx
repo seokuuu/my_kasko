@@ -8,6 +8,7 @@ import useTablePaginationPageChange from '../../../../hooks/useTablePaginationPa
 import useTableSelection from '../../../../hooks/useTableSelection'
 import { add_element_field } from '../../../../lib/tableHelpers'
 import { FilterContianer, TableContianer } from '../../../../modal/External/ExternalFilter'
+import useAlert from '../../../../store/Alert/useAlert'
 import Table from '../../../Table/Table'
 import CommonTableHeader from '../../UI/CommonTableHeader'
 import ClaimProductHeader from './components/ClaimProductHeader'
@@ -16,6 +17,7 @@ import { StyledBtnContainer } from './styles/StyledClaim'
 const ClaimProduct = () => {
 	const navigate = useNavigate()
 
+	const { simpleAlert } = useAlert()
 	// 목록 리스트
 	const [row, setRow] = useState([])
 
@@ -58,7 +60,7 @@ const ClaimProduct = () => {
 	)
 
 	function claimRegister() {
-		if (!selectedData || selectedData.length === 0) return alert('등록할 제품을 선택해주세요.')
+		if (!selectedData || selectedData.length === 0) return simpleAlert('등록할 제품을 선택해주세요.')
 
 		navigate('/operate/common/product/register')
 	}
@@ -72,7 +74,7 @@ const ClaimProduct = () => {
 	// 제품을 2개이상 선택할 시, 새로고침
 	useEffect(() => {
 		if (selectedCount > 1) {
-			alert('제품은 1개만 선택 가능합니다.')
+			simpleAlert('제품은 1개만 선택 가능합니다.')
 			window.location.reload()
 		}
 	}, [selectedCount])
@@ -94,7 +96,7 @@ const ClaimProduct = () => {
 				<Table
 					getCol={ClaimProductListFieldCols}
 					getRow={row}
- 					tablePagination={pagination}
+					tablePagination={pagination}
 					onPageChange={onPageChanage}
 				/>
 				{/* 버튼 */}

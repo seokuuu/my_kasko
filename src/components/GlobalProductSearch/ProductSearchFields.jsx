@@ -3,7 +3,7 @@ import { kyuModalAtom, customerModalAtom } from '../../store/Layout/GlobalProduc
 
 //TODO 재사용하는 핸들러를 여기에 업데이트 해주세요
 const ProductSearchFields = ({ search, setSearch, renderCustomSearchFields }) => {
-	// 드롭다운 버튼 핸들러
+	// 드롭다운 버튼 핸들러 & input & date
 	function commonDropdownButtonHandler(e, name) {
 		setSearch((p) => ({ ...p, [name]: e }))
 	}

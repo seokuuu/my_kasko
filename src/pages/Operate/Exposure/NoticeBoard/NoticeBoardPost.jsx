@@ -14,6 +14,7 @@ import {
 import { PropsTextArea } from '../../../../common/Input/Input'
 import useAlert from '../../../../store/Alert/useAlert'
 import IsExposure from './components/IsExposure'
+import useBlockRoute from '../../../../hooks/useBlockRoute'
 /**
  * @description
  * 전광판 등록,수정 내부 컴포넌트입니다.
@@ -76,7 +77,7 @@ const NoticeBoardPost = () => {
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
 	const blockCondition = useMemo(() => !isEqual(initForm, form) && !Boolean(id) && !observeClick, [form, observeClick])
-	// useBlockRoute(blockCondition)
+	useBlockRoute(blockCondition)
 
 	useEffect(() => {
 		const updatedCheck = checkDummy.map((value, index) => {

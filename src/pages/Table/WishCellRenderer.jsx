@@ -54,8 +54,8 @@ class WishCellRenderer {
 
     this.eGui.innerHTML = `
           <div style="display:flex;align-items:center;justify-content:center;gap:4px;height:34px;">
-            ${textTag(Boolean(this.cellValue?.value && clickHandler), textValue)}
             ${wishValue? wishIcon : ''}
+            ${textTag(Boolean(this.cellValue?.value && clickHandler), textValue)}
           </div>
     `;
 

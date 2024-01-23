@@ -9,6 +9,7 @@ import {
 	PWRight,
 	PartWrap,
 	RowWrap,
+	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
 import { useState } from 'react'
@@ -16,7 +17,7 @@ import { CustomerSearch, DateSearchSelect, InputSearch, RadioSearchButton } from
 import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 
-const RoundSearchFields = ({
+const StartPriceFields = ({
 	// prettier-ignore
 	search,
 	setSearch,
@@ -58,6 +59,34 @@ const RoundSearchFields = ({
 		<>
 			<FilterLeft>
 				<RowWrap>
+					<PartWrap first>
+						<h6>구분</h6>
+						<PWRight>
+							<MainSelect
+								options={gradeList}
+								defaultValue={gradeList[0]}
+								value={search.grade}
+								name="grade"
+								onChange={(e) => commonDropdownButtonHandler(e, 'grade')}
+							/>
+							<MainSelect
+								options={spartList}
+								defaultValue={spartList[0]}
+								value={search.spart}
+								name="spart"
+								onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
+							/>
+							<MainSelect
+								options={preferThicknessList}
+								defaultValue={preferThicknessList[0]}
+								value={search.preferThickness}
+								name="preferThickness"
+								onChange={(e) => commonDropdownButtonHandler(e, 'preferThickness')}
+							/>
+						</PWRight>
+					</PartWrap>
+				</RowWrap>
+				<RowWrap>
 					{/* 창고 구분 */}
 					<PartWrap first>
 						<DateSearchSelect
@@ -69,41 +98,31 @@ const RoundSearchFields = ({
 						/>
 					</PartWrap>
 					<PartWrap>
-						{/* minFailCount 수정하기 !! */}
-						<h6>경매 회차 번호</h6>
+						<h6>유찰 횟수</h6>
 						<ExInputsWrap>
-							{/* minFailCount 변경해야 함. */}
-							<Input name="minFailCount" value={search.minFailCount} onChange={commonNumInputHandler} />
+							<Input
+								type="number"
+								name="minFailCount"
+								value={search.minFailCount}
+								onChange={commonNumInputHandler}
+								min={0}
+							/>
+							<Tilde>~</Tilde>
+							<Input
+								type="number"
+								name="maxFailCount"
+								value={search.maxFailCount}
+								onChange={commonNumInputHandler}
+								min={0}
+							/>
 						</ExInputsWrap>
 					</PartWrap>
 					{/* 규격약호 */}
 				</RowWrap>
-				<RowWrap>
-					{/* driverStatus 수정하기 !! */}
-					<PartWrap first>
-						<h6>진행 상태</h6>
-						<RadioSearchButton
-							options={[
-								{ label: '전체', value: '' },
-								{ label: 'Y', value: true },
-								{ label: 'N', value: false },
-							]}
-							value={search.driverStatus}
-							onChange={(value) => onChange('driverStatus', value)}
-						/>
-					</PartWrap>
-				</RowWrap>
 			</FilterLeft>
-			<FilterRight>
-				<ProductNumber
-					initialValue={search.productNumberList}
-					setState={setSearch}
-					valueName={'productNumberList'}
-					height="100%"
-				/>
-			</FilterRight>
+			<FilterRight></FilterRight>
 		</>
 	)
 }
 
-export default RoundSearchFields
+export default StartPriceFields

@@ -118,7 +118,11 @@ export function useNoticeRegisterMutation(type) {
 				queryKey: NOTICE_KEYS.getNoticeList,
 			})
 		},
-		onError() {
+		onError(error) {
+			if (error.data.status === 400) {
+				return simpleAlert(error.data.message)
+			}
+
 			simpleAlert('등록에 실패하였습니다.')
 		},
 	})
@@ -144,8 +148,12 @@ export function useNoticeUpdateMutation(type) {
 				queryKey: NOTICE_KEYS.getNoticeList,
 			})
 		},
-		onError() {
-			simpleAlert('수정에 실패하였습니다.')
+		onError(error) {
+			if (error.data.status === 400) {
+				return simpleAlert(error.data.message)
+			}
+
+			simpleAlert('등록에 실패하였습니다.')
 		},
 	})
 }

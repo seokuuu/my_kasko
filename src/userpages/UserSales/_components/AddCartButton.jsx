@@ -1,9 +1,9 @@
 import React from 'react'
 import { useUserAddCartMutaion } from '../../../api/user'
 import { GreenBtn, SkyBtn } from '../../../common/Button/Button'
-import { PROD_CATEGORY } from '../../../constants/user/product'
 import { getProductNumber } from '../../../hooks/useWishList'
 import useAlert from '../../../store/Alert/useAlert'
+import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKey'
 
 /**
  * @constant 버튼 타입
@@ -39,8 +39,8 @@ const AddCartButton = ({ category, products = [], buttonType }) => {
 			category: category === PROD_CATEGORY.single ? 'SINGLE' : 'PACKAGE',
 			uids: products.map((v) =>
 				category === PROD_CATEGORY.single
-					? getProductNumber(v['고유 번호']) || 0
-					: getProductNumber(v['고유 번호']) || 0,
+					? getProductNumber(v[PROD_COL_NAME.productUid]) || 0
+					: getProductNumber(v[PROD_COL_NAME.packageUid]) || 0,
 			),
 		})
 	}

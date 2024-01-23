@@ -1,5 +1,3 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-import { GreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
@@ -14,10 +12,16 @@ import {
 	RowWrap,
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
-import StandardFind from '../../../modal/Multi/StandardFind'
-import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 
-const PackageSearchFields = ({
+import { useState } from 'react'
+import { CustomerSearch, DateSearchSelect } from '../../../components/Search'
+import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
+import { GreyBtn } from '../../../common/Button/Button'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
+import StandardFind from '../../../modal/Multi/StandardFind'
+
+const RoundAucListEditFields = ({
 	// prettier-ignore
 	search,
 	setSearch,
@@ -29,7 +33,23 @@ const PackageSearchFields = ({
 		// prettier-ignore
 		storageList,
 		supplierList,
+		spartList,
+		makerList,
+		stockStatusList,
+		gradeList,
+		preferThicknessList,
 	} = useGlobalProductSearchFieldData()
+
+	const init = {
+		customerCode: '',
+		customerName: '',
+		destinationCode: '',
+		destinationName: '',
+	}
+	const [param, setParam] = useState(init)
+	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
+
+	console.log('param', param)
 
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
 
@@ -37,8 +57,9 @@ const PackageSearchFields = ({
 		<>
 			<FilterLeft>
 				<RowWrap>
+					{/* 창고 구분 */}
 					<PartWrap first>
-						<h6>창고 구분</h6>
+						<h6>창고 구분 </h6>
 						<PWRight>
 							<MainSelect
 								options={storageList}
@@ -49,7 +70,6 @@ const PackageSearchFields = ({
 							/>
 						</PWRight>
 					</PartWrap>
-					{/* 매입처 */}
 					<PartWrap>
 						<h6>매입처</h6>
 						<PWRight>
@@ -62,7 +82,8 @@ const PackageSearchFields = ({
 							/>
 						</PWRight>
 					</PartWrap>
-					{/* 규격약호 찾기 */}
+
+					{/* 규격약호 */}
 					<PartWrap>
 						<h6>규격 약호</h6>
 						<Input readOnly={true} value={search.spec} />
@@ -77,10 +98,55 @@ const PackageSearchFields = ({
 						</GreyBtn>
 					</PartWrap>
 				</RowWrap>
-				{/* 두께 |  폭 | 길이 */}
+				{/* 2행 */}
+				<RowWrap>
+					{/* 구분 */}
+					<PartWrap first>
+						<h6>구분</h6>
+						{/* 제품군 */}
+						<PWRight>
+							<MainSelect
+								options={supplierList}
+								defaultValue={supplierList[0]}
+								value={search.supplier}
+								name="supplier"
+								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
+							/>
+
+							<MainSelect
+								options={stockStatusList}
+								defaultValue={stockStatusList[0]}
+								value={search.stockStatus}
+								name="stockStatus"
+								onChange={(e) => commonDropdownButtonHandler(e, 'stockStatus')}
+							/>
+							<MainSelect
+								options={makerList}
+								defaultValue={makerList[0]}
+								value={search.maker}
+								name="maker"
+								onChange={(e) => commonDropdownButtonHandler(e, 'maker')}
+							/>
+							<MainSelect
+								options={gradeList}
+								defaultValue={gradeList[0]}
+								value={search.grade}
+								name="grade"
+								onChange={(e) => commonDropdownButtonHandler(e, 'grade')}
+							/>
+
+							<MainSelect
+								options={preferThicknessList}
+								defaultValue={preferThicknessList[0]}
+								value={search.preferThickness}
+								name="preferThickness"
+								onChange={(e) => commonDropdownButtonHandler(e, 'preferThickness')}
+							/>
+						</PWRight>
+					</PartWrap>
+				</RowWrap>
 				<RowWrap none>
-					{/* 두깨 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>두께(MM)</h6>
 						<ExInputsWrap>
 							<MiniInput
@@ -100,8 +166,6 @@ const PackageSearchFields = ({
 							/>
 						</ExInputsWrap>
 					</PartWrap>
-				</RowWrap>
-				<RowWrap none>
 					{/* 폭 */}
 					<PartWrap>
 						<h6>폭(MM)</h6>
@@ -145,29 +209,43 @@ const PackageSearchFields = ({
 						</ExInputsWrap>
 					</PartWrap>
 				</RowWrap>
+				<RowWrap>
+					{/* 창고 구분 */}
+
+					<PartWrap first>
+						<h6>유찰 횟수</h6>
+						<ExInputsWrap>
+							<Input
+								type="number"
+								name="minFailCount"
+								value={search.minFailCount}
+								onChange={commonNumInputHandler}
+								min={0}
+							/>
+							<Tilde>~</Tilde>
+							<Input
+								type="number"
+								name="maxFailCount"
+								value={search.maxFailCount}
+								onChange={commonNumInputHandler}
+								min={0}
+							/>
+						</ExInputsWrap>
+					</PartWrap>
+					{/* 규격약호 */}
+				</RowWrap>
 			</FilterLeft>
-			{/* 제품 번호 */}
-			<FilterRight>
-				<div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-					<ProductNumber
-						initialValue={search.productNumberList}
-						setState={setSearch}
-						valueName={'productNumberList'}
-						height="100%"
-					/>
-					<ProductNumber
-						title="패키지 번호"
-						initialValue={search.packageNumberList || []}
-						setState={setSearch}
-						valueName={'packageNumberList'}
-						height="100%"
-					/>
-				</div>
-			</FilterRight>
-			{/* 규격 약호 */}
 			{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
+			<FilterRight>
+				<ProductNumber
+					initialValue={search.productNumberList}
+					setState={setSearch}
+					valueName={'productNumberList'}
+					height="100%"
+				/>
+			</FilterRight>
 		</>
 	)
 }
 
-export default PackageSearchFields
+export default RoundAucListEditFields
