@@ -21,7 +21,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 import StandardFind from '../../../modal/Multi/StandardFind'
 
-const BiddingSearchFields = ({
+const WinningDetailSearchFields = ({
 	// prettier-ignore
 	search,
 	setSearch,
@@ -199,4 +199,4 @@ const BiddingSearchFields = ({
 	)
 }
 
-export default BiddingSearchFields
+export default WinningDetailSearchFields

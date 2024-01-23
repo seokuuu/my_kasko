@@ -272,7 +272,7 @@ const Bidding = ({}) => {
 			</FilterHeaderAlert>
 			{exFilterToggle && (
 				<>
-					<FilterSubcontianer>
+					{/* <FilterSubcontianer>
 						<FilterLeft>
 							<RowWrap>
 								<PartWrap first>
@@ -330,7 +330,7 @@ const Bidding = ({}) => {
 								/>
 							</DoubleWrap>
 						</FilterRight>
-					</FilterSubcontianer>
+					</FilterSubcontianer> */}
 					{/* <FilterFooter>
             <div style={{ display: 'flex' }}>
               <p>초기화</p>

@@ -151,11 +151,12 @@ import DisRegisterDetailPage from './pages/Shipping/Dispatch/DisRegisterDetailPa
 // import StatusPage from './pages/Shipping/Status/StatusPage'
 // import ShipmentInvoicePage from './pages/Shipping/Achievement/ShipmentInvoicePage'
 // RoundAucProAdd
+import RoundAucProAdd from './pages/Auction/Round/RoundAucProAdd'
 const Router = () => {
 	return (
 		<Routes>
 			{/* 테스트 URL */}
-			<Route path="/ppapp" element={<WinningCreate />} />
+			<Route path="/ppapp" element={<RoundAucProAdd />} />
 			<Route path="/ppap" element={<DefaultBlueBar />} />
 			<Route path="/TableTest" element={<TableTest />} />
 			<Route path="/test" element={<Test />} />
@@ -165,7 +166,6 @@ const Router = () => {
 			<Route path="/test4" element={<Countdown />} />
 			<Route path="/popup" element={<TestPopup />} />
 			<Route path="/excel" element={<TestExcel />} />
-			<Route path="/common" element={<SellOrderDetailPage />} />
 			<Route path="/*" element={<NotFound />} />
 			{/* 로그인, 회원가입, 아이디 찾기, 비밀번호 재발급, 캘린더, 메인 */}
 			<Route path="/" element={<Login />} />
@@ -207,6 +207,7 @@ const Router = () => {
 				<Route path="/sales/single" element={<SinglePage />}></Route>
 				<Route path="/sales/package" element={<PackagePage />}></Route>
 				<Route path="/sales/order" element={<SellOrderPage />}></Route>
+				<Route path="/sales/order/:id" element={<SellOrderDetailPage />} />
 			</Route>
 			{/* 주문 관리 */}
 			<Route path="/order" element={<OrderPage />}></Route>
