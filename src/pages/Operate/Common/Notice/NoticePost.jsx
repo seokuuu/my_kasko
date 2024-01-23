@@ -14,6 +14,7 @@ import {
 	useNoticeRegisterMutation,
 	useNoticeUpdateMutation,
 } from '../../../../api/operate/notice'
+import useBlockRoute from '../../../../hooks/useBlockRoute'
 import useAlert from '../../../../store/Alert/useAlert'
 import AttachedFile from './components/AttachedFile'
 import IsExposure from './components/IsExposure'
@@ -29,7 +30,7 @@ const NoticePost = ({ title, isRegister }) => {
 	const [observeClick, setObserveClick] = useState(false)
 
 	// 확인 모달 관련 값들
-	const { simpleConfirm } = useAlert()
+	const { simpleConfirm, simpleAlert } = useAlert()
 
 	// 등록 폼
 
@@ -95,18 +96,18 @@ const NoticePost = ({ title, isRegister }) => {
    */
 	function submitHandler() {
 		if (!form.title) {
-			return alert('제목을 입력해주세요.')
+			return simpleAlert('제목을 입력해주세요.')
 		}
 
 		if (!form.content) {
-			return alert('내용을 입력해주세요.')
+			return simpleAlert('내용을 입력해주세요.')
 		}
 
 		simpleConfirm('저장하시겠습니까?', onSubmit)
 	}
 	const blockCondtion = useMemo(() => !isEqual(initForm, form) && !Boolean(id) && !observeClick, [form, observeClick])
 
-	// useBlockRoute(blockCondtion)
+	useBlockRoute(blockCondtion)
 
 	/**
    @description
