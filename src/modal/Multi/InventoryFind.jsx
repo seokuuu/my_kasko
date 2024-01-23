@@ -205,7 +205,9 @@ const InventoryFind = ({ title, setSwitch, data, type, setPropsUid, handleButton
 						<BlueBlackBtn
 							onClick={() => {
 								setSwitch(false)
-								handleButtonOnClick(clickedResult)
+								if (handleButtonOnClick) {
+									handleButtonOnClick(clickedResult)
+								}
 								return title === '고객사 찾기'
 									? Object.assign(invenCustomerData.init, clickedResult)
 									: type === '낙찰 생성'
