@@ -55,7 +55,7 @@ export const userCartListSingleField = {
  * @description 사용자 장바구니 > 패키지 테이블에서 사용합니다.
  */
 export const userCartListPackageField = {
-  "패키지 고유 번호" :"packageUid",
+  [PROD_COL_NAME.packageUid] :"packageUid",
   "패키지 이름" :"packageName",
   [PROD_COL_NAME.packageNumber] :"packageNumber",
   "패지키 판매 유형" :"packageSaleType",

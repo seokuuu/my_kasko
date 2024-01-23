@@ -5,9 +5,10 @@ import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../compone
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
+import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKey'
 import {
-	getUserPackageDetailsFieldsCols,
 	userPackageDetailsField,
+	userPackageDetailsFieldsCols,
 } from '../../../constants/user/productTable'
 import useTableData from '../../../hooks/useTableData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
@@ -29,7 +30,6 @@ import {
 import Table from '../../../pages/Table/Table'
 import AddCartButton, { CART_BUTTON_TYPE } from './AddCartButton'
 import AddOrderButton, { ORDER_BUTTON_TYPE } from './AddOrderButton'
-import { PROD_CATEGORY } from '../../../constants/user/constantKey'
 
 /**
  * @constant 기본 검색 값
@@ -51,10 +51,23 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 	// API
 	const { data: packageData, isLoading } = useUserPackageProductDetailsListQuery(searchParams) // 상시판매 패키지 목록 조회 쿼리
 	// 테이블 데이터, 페이지 데이터, 총 중량
-	const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalWeight } = useTableData({
 		tableField: userPackageDetailsField,
 		serverData: packageData,
 		wish: { display: true, key: ['packageNumber'] },
+	})
+	// 장바구니, 주문하기 데이터
+	const cartOrderDatas = useMemo(() => {
+		if (tableRowData.length < 1) {
+			return [];
+		}
+		const targetData = tableRowData[0];
+		console.log(targetData);
+		return [{
+			[PROD_COL_NAME.packageUid]: targetData[PROD_COL_NAME.packageUid],
+			[PROD_COL_NAME.packageNumber]: packageNumber,
+			[PROD_COL_NAME.salePrice]: targetData[PROD_COL_NAME.salePrice],
+		}];
 	})
 	// 요약정보 데이터
 	const infoData = useMemo(() => {
@@ -65,7 +78,7 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 		return [targetData['패키지 명'], totalCountStr, targetData['상시판매 시작가']]
 	}, [tableRowData, totalCountStr])
 	// 선택 항목
-	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr, hasSelected } = useTableSelection({
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({
 		weightKey: '총 중량',
 	})
 
@@ -120,8 +133,8 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 							{/* 테이블 */}
 							<Table
 								getRow={tableRowData}
-								getCol={getUserPackageDetailsFieldsCols}
-								isLoading={isLoading}
+								getCol={userPackageDetailsFieldsCols}
+								loading={isLoading}
 								tablePagination={paginationData}
 								onPageChange={(p) => {
 									handleParamsChange({ page: p })
@@ -132,13 +145,13 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 								<Bottom style={{ display: 'flex', marginTop: 30 }}>
 									<AddCartButton
 										category={PROD_CATEGORY.package}
-										products={selectedData}
+										products={cartOrderDatas}
 										buttonType={CART_BUTTON_TYPE.simple}
 									/>
 									<AddOrderButton
 										category={PROD_CATEGORY.package}
-										totalWeight={selectedWeight}
-										products={selectedData}
+										totalWeight={totalWeight}
+										products={cartOrderDatas}
 										buttonType={ORDER_BUTTON_TYPE.simple}
 									/>
 								</Bottom>

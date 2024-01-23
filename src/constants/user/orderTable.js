@@ -209,8 +209,11 @@ export const userOrderDetailsFieldsCols = (numberClickHandler=undefined) => getN
   { field: "상시판매 주문일자", minWidth: 100 },
   { field: "상시판매 상태", minWidth: 100 },
   { field: "패키지명", minWidth: 100 },
-  { field: PROD_COL_NAME.packageNumber, minWidth: 100,    cellRenderer: WishCellRenderer, 
-  valueGetter: (v) => ({...v.data[v.column.colId], clickHandler: numberClickHandler })  },
+  { 
+    field: PROD_COL_NAME.packageNumber, minWidth: 100,    
+    cellRenderer: WishCellRenderer, 
+    valueGetter: (v) => ({...v.data[v.column.colId], clickHandler: numberClickHandler })
+  },
   { field: "고객사명", minWidth: 100 },
   { field: "고객코드", minWidth: 100 },
   { field: PROD_COL_NAME.productNumber, minWidth: 100,  cellRenderer: WishCellRenderer },

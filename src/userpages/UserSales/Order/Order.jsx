@@ -26,6 +26,7 @@ import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 import OrderSearchFields from './OrderSearchFields'
 import moment from 'moment'
 import useAlert from '../../../store/Alert/useAlert'
+import { getValidParams } from '../../../utils/parameters'
 
 /**
  * @constant 기본 페이지 검색 값
@@ -39,24 +40,6 @@ const initialPageParams = {
  * @constant 주문 고유번호 키
  */
 const UID_KEY = '주문 고유 번호'
-
-/**
- * 유효 PARAMS 반환 함수
- */
-const getValidParams = (params) => {
-	const validParams = Object.keys(params).reduce((acc, key) => {
-		let value = params[key]
-		if (Array.isArray(value)) {
-			value = value.length < 1 ? null : value.toString()
-		} else if (typeof value === 'string' && value.length < 1) {
-			value = null
-		} else if (key === 'orderStartDate' || key === 'orderEndDate') {
-			value = value ? moment(value).format('YYYYMMDD') : null
-		}
-		return value ? { ...acc, [key]: value } : acc
-	}, {})
-	return validParams
-}
 
 /**
  * (사용자)상시판매 주문확인 목록
@@ -229,7 +212,7 @@ const Order = ({}) => {
 				<Table
 					getRow={tableRowData}
 					getCol={userOrderListFieldsCols(setPackageReadOnlyViewer)}
-					isLoading={isLoading}
+					loading={isLoading}
 					isRowClickable
 					handleOnRowClicked={handleTableRowClick}
 					tablePagination={paginationData}
