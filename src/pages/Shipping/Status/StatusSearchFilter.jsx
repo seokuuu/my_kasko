@@ -1,8 +1,8 @@
-import { FilterLeft, PartWrap, PWRight, RowWrap, SearchContainer } from '../../../modal/External/ExternalFilter'
-import { CustomerSearch, DateSearchSelect, DestinationSearch } from '../../../components/Search'
 import React from 'react'
-import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import { MainSelect } from '../../../common/Option/Main'
+import { CustomerSearch, DateSearchSelect, DestinationSearch } from '../../../components/Search'
+import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
+import { FilterLeft, PWRight, PartWrap, RowWrap, SearchContainer } from '../../../modal/External/ExternalFilter'
 
 const StatusSearchFilter = ({ search, setSearch }) => {
 	const { storageList } = useGlobalProductSearchFieldData()
@@ -31,12 +31,7 @@ const StatusSearchFilter = ({ search, setSearch }) => {
 						setName={(value) => onChange('destinationName', value)}
 						setCode={(value) => onChange('destinationCode', value)}
 					/>
-					<CustomerSearch
-						name={search.customerName}
-						code={search.customerCode}
-						setName={(value) => onChange('customerName', value)}
-						setCode={(value) => onChange('customerCode', value)}
-					/>
+					<CustomerSearch search={search} setSearch={setSearch} />
 				</RowWrap>
 
 				<RowWrap none>

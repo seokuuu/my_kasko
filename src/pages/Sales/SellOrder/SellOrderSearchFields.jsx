@@ -1,13 +1,10 @@
-import { useAtomValue } from 'jotai'
-import { GreyBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
-import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import { FilterRight, FilterLeft, Input, PWRight, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
-import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
-import { customerModalAtom } from '../../../store/Layout/GlobalProductSearch'
-import InventoryFind from '../../../modal/Multi/InventoryFind'
 import { DateSearchSelect, InputSearch } from '../../../components/Search'
+import CustomerSearch from '../../../components/Search/CustomerSearch'
+import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
+import { FilterLeft, FilterRight, PWRight, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
+import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
 
 const SellOrderSearchFields = ({
 	search,
@@ -20,13 +17,13 @@ const SellOrderSearchFields = ({
 		// prettier-ignore
 		storageList,
 		spartList,
-		inventoryCustomer,
+		// inventoryCustomer,
 	} = useGlobalProductSearchFieldData()
 
-	const handleInventoryFindButtonOnClick = (data) => {
-		commonDropdownButtonHandler(data.code, 'customerCode')
-		commonDropdownButtonHandler(data.name, 'customerName')
-	}
+	// const handleInventoryFindButtonOnClick = (data) => {
+	// 	commonDropdownButtonHandler(data.code, 'customerCode')
+	// 	commonDropdownButtonHandler(data.name, 'customerName')
+	// }
 
 	return (
 		<>
@@ -59,7 +56,8 @@ const SellOrderSearchFields = ({
 				</RowWrap>
 				{/* 2행 */}
 				<RowWrap>
-					<PartWrap first>
+					<CustomerSearch search={search} setSearch={setSearch} />
+					{/* <PartWrap first>
 						<h6>고객사 명</h6>
 						<Input value={search.customerName} readOnly name="customerName" />
 						<Input value={search.customerCode} readOnly name="customerCode" />
@@ -72,7 +70,7 @@ const SellOrderSearchFields = ({
 						>
 							찾기
 						</GreyBtn>
-					</PartWrap>
+					</PartWrap> */}
 				</RowWrap>
 				<RowWrap>
 					{/* 구분 */}
@@ -121,14 +119,14 @@ const SellOrderSearchFields = ({
 					height="100%"
 				/>
 			</FilterRight>
-			{useAtomValue(customerModalAtom) === true && (
+			{/* {useAtomValue(customerModalAtom) === true && (
 				<InventoryFind
 					title={'고객사 찾기'}
 					handleButtonOnClick={handleInventoryFindButtonOnClick}
 					setSwitch={setCustomerModalAtom}
 					data={inventoryCustomer}
 				/>
-			)}
+			)} */}
 		</>
 	)
 }

@@ -18,6 +18,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { usePopupDetailsQuery, usePopupRegisterMutation, usePopupUpdateMutation } from '../../../../api/operate/popup'
 import { InputA, PropsInput } from '../../../../common/Input/Input'
 import { CustomSelect } from '../../../../common/Option/Main'
+import useBlockRoute from '../../../../hooks/useBlockRoute'
 import { ExCheckWrap } from '../../../../modal/External/ExternalFilter'
 import useAlert from '../../../../store/Alert/useAlert'
 import { mainPopupSelectOptions } from '../../constants'
@@ -27,7 +28,7 @@ const PopupPost = ({ isRegister }) => {
 
 	const navigate = useNavigate()
 
-	const { simpleConfirm } = useAlert()
+	const { simpleConfirm, simpleAlert } = useAlert()
 
 	/**
 	 * @description
@@ -51,6 +52,7 @@ const PopupPost = ({ isRegister }) => {
 	// const [form, setForm] = useState(initForm)
 
 	const [form, setForm] = useState(initForm)
+	console.log('form :', form)
 	//  팝업 상세 API
 	const { data } = usePopupDetailsQuery(id)
 
@@ -100,13 +102,13 @@ const PopupPost = ({ isRegister }) => {
 	// 등록/수정 핸들러
 	function submitHandler() {
 		if (!form.title) {
-			return alert('제목을 입력해주세요.')
+			return simpleAlert('제목을 입력해주세요.')
 		}
 		if (!form.content) {
-			return alert('게시글을 입력해주세요.')
+			return simpleAlert('게시글을 입력해주세요.')
 		}
 		if (!form.link) {
-			return alert('링크를 입력해주세요.')
+			return simpleAlert('링크를 입력해주세요.')
 		}
 
 		simpleConfirm('저장하시겠습니까?', onSubmit)
@@ -121,7 +123,7 @@ const PopupPost = ({ isRegister }) => {
 	// 객체의 깊은 비교를 위해 loadash의 isEqual을 사용합니다.
 	const blockCondition = useMemo(() => !isEqual(initForm, form) && isRegister && !observeClick, [form, observeClick])
 
-	// useBlockRoute(blockCondition)
+	useBlockRoute(blockCondition)
 
 	useEffect(() => {
 		const updatedCheck = checkDummy.map((value, index) => {

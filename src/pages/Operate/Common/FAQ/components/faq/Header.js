@@ -4,7 +4,7 @@ import HeaderToggle from '../../../../../../components/Toggle/HeaderToggle'
 import { FilterHeader, FilterWrap } from '../../../../../../modal/External/ExternalFilter'
 import { toggleAtom } from '../../../../../../store/Layout/Layout'
 import CategoryTab from '../../../../UI/CategoryTab'
-import { normalTabOptions } from '../../../../constants'
+import { normalTabOptions, searchCategoryOptions } from '../../../../constants'
 import useGlobalSearch from '../../../../hook/useGlobalSearch'
 import FAQSearchFields from '../FAQSearchFields'
 
@@ -43,7 +43,7 @@ const Header = ({ search, setSearch, refetch }) => {
 					<GlobalProductSearch
 						param={search}
 						isToggleSeparate={true}
-						renderCustomSearchFields={(props) => <FAQSearchFields {...props} />}
+						renderCustomSearchFields={(props) => <FAQSearchFields {...props} searchOptions={searchCategoryOptions} />}
 						globalProductSearchOnClick={globalProductSearchOnClick}
 						globalProductResetOnClick={globalProductResetOnClick}
 					/>

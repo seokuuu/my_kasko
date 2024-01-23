@@ -1,7 +1,12 @@
 import { useAtomValue, useSetAtom } from 'jotai'
+import { useState } from 'react'
 import { GreyBtn } from '../../../common/Button/Button'
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import { MainSelect } from '../../../common/Option/Main'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
+import { CustomerSearch } from '../../../components/Search'
+import DateSearchSelect from '../../../components/Search/DateSearchSelect'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
 	ExInputsWrap,
@@ -15,13 +20,8 @@ import {
 	RowWrap,
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
-import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 import StandardFind from '../../../modal/Multi/StandardFind'
-import CustomerSearch from '../../../components/Search/CustomerSearch'
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
-import { useState } from 'react'
-import { CheckBox } from '../../../common/Check/Checkbox'
-import DateSearchSelect from '../../../components/Search/DateSearchSelect'
+import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 
 /**
  * @constant 주문 상태
@@ -100,16 +100,7 @@ const OrderSearchFields = ({
 				</RowWrap>
 				{/* 고객사 찾기 */}
 				<RowWrap>
-					<CustomerSearch
-						name={search.customerName || ''}
-						code={search.customerCode || ''}
-						setName={(n) => {
-							setSearch((prev) => ({ ...prev, customerName: n }))
-						}}
-						setCode={(c) => {
-							setSearch((prev) => ({ ...prev, customerCode: c }))
-						}}
-					/>
+					<CustomerSearch search={search} setSearch={setSearch} />
 				</RowWrap>
 				{/* 구분 */}
 				<RowWrap>

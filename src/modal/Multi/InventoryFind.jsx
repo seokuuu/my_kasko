@@ -19,7 +19,6 @@ import {
 import { GreyBtn } from '../../common/Button/Button'
 import { TxtInput } from '../../common/Input/Input'
 
-import { getCustomerFind } from '../../service/admin/Auction'
 import styled from 'styled-components'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 
