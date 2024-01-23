@@ -8,8 +8,8 @@ import {
   userCartListPackageFieldCols,
   userCartListSingleField,
   userCartListSingleFieldsCols,
-} from '../../../constants/user/cart'
-import { PROD_CATEGORY } from '../../../constants/user/product'
+} from '../../../constants/user/cartTable'
+import { PROD_CATEGORY } from '../../../constants/user/constantKey'
 import useTableData from '../../../hooks/useTableData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'
@@ -22,7 +22,7 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
 import AddOrderButton from '../_components/AddOrderButton'
-import { PACKAGE_VIEWER_ACTION, PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
+import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 
 /**
  * @constant 기본 검색 값

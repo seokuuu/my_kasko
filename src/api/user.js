@@ -2,6 +2,7 @@ import { client } from './index'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { queryClient } from './query'
 import useAlert from '../store/Alert/useAlert'
+import { getUrlWithSearchParam } from '../utils/parameters'
 
 const urls = {
 	get: '/user/signup',
@@ -206,19 +207,3 @@ export const useUserDestinationUpdateRequestMutation = () => {
 		},
 	})
 }
-
-/* ==================== COMMON UTILS start==================== */
-/**
- * 제품번호 목록을 포함한 필터 파라미터 반환 함수
- * @param {string} url API url
- * @param {string} param.productNumberList 제품번호 목록
- * @returns {string} url including searchParams
- */
-function getUrlWithSearchParam(url, param) {
-	if (param && param.productNumberList) {
-		param.productNumberList = param.productNumberList.replace(/[\n ,]+/g, ',')
-	}
-	const params = new URLSearchParams(param)
-	return `${url}?${params.toString()}`
-}
-/* ==================== COMMON UTILS end ==================== */

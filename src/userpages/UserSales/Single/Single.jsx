@@ -5,7 +5,8 @@ import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { PROD_CATEGORY, userSingleProductField, userSingleProductFieldsCols } from '../../../constants/user/product'
+import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKey'
+import { userSingleProductField, userSingleProductFieldsCols } from '../../../constants/user/productTable'
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
 import {
@@ -18,6 +19,7 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
 import { toggleAtom } from '../../../store/Layout/Layout'
+import { getValidParams } from '../../../utils/parameters'
 import AddCartButton from '../_components/AddCartButton'
 import AddOrderButton from '../_components/AddOrderButton'
 import AddWishButton from '../_components/AddWishButton'
@@ -29,22 +31,6 @@ import SingleSearchFields from './SingleSearchFields'
 const initialPageParams = {
 	pageNum: 1, // 페이지 번호
 	pageSize: 50, // 페이지 갯수
-}
-
-/**
- * 유효 PARAMS 반환 함수
- */
-const getValidParams = (params) => {
-	const validParams = Object.keys(params).reduce((acc, key) => {
-		let value = params[key]
-		if (Array.isArray(value)) {
-			value = value.length < 1 ? null : value.toString()
-		} else if (typeof value === 'string' && value.length < 1) {
-			value = null
-		}
-		return value ? { ...acc, [key]: value } : acc
-	}, {})
-	return validParams
 }
 
 /**
@@ -176,13 +162,13 @@ const Single = () => {
 					<div>
 						선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 					</div>
-					<AddWishButton products={selectedData} productNumberKey={'제품번호'} />
+					<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
 				</TCSubContainer>
 				{/* 테이블 */}
 				<Table
 					getRow={tableRowData}
 					getCol={userSingleProductFieldsCols}
-					isLoading={isLoading}
+					loading={isLoading}
 					tablePagination={paginationData}
 					onPageChange={(p) => {
 						handlePageNumChange(p)
