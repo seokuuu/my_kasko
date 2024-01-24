@@ -39,6 +39,10 @@ import { AuctionWinningFields, AuctionWinningFieldsCols } from '../../../constan
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../../pages/Table/Table'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
+import ProgressSearchFields from '../../../pages/Auction/Progress/ProgressSearchFields'
+import { isEqual } from 'lodash'
+import UserWinningSearchFields from './UserWinningSearchFields'
 
 const Winning = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
@@ -94,11 +98,12 @@ const Winning = ({}) => {
 		}
 	}
 
-	const [Param, setParam] = useState({
+	const paramData = {
 		pageNum: 1,
-		pageSize: 10,
+		pageSize: 50,
 		orderType: '경매',
-	})
+	}
+	const [param, setParam] = useState(paramData)
 
 	const [getRow, setGetRow] = useState('')
 	const tableField = useRef(AuctionWinningFieldsCols)
@@ -108,7 +113,7 @@ const Winning = ({}) => {
 	const checkedArray = useAtom(selectedRowsAtom)[0]
 
 	// GET
-	const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getDetailProgress', getWinning)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getDetailProgress', getWinning)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 	console.log('resData', resData)
@@ -136,6 +141,25 @@ const Winning = ({}) => {
 			...prevParam,
 			pageNum: Number(value),
 		}))
+	}
+
+	const globalProductResetOnClick = () => {
+		// if resetting the search field shouldn't rerender table
+		// then we need to create paramData object to reset the search fields.
+		setParam(paramData)
+	}
+	// import
+	const globalProductSearchOnClick = (userSearchParam) => {
+		setParam((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				refetch()
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+			}
+		})
 	}
 
 	return (
@@ -174,7 +198,7 @@ const Winning = ({}) => {
 			</FilterHeaderAlert>
 			{exFilterToggle && (
 				<>
-					<FilterSubcontianer>
+					{/* <FilterSubcontianer>
 						<FilterLeft>
 							<RowWrap>
 								<PartWrap first>
@@ -227,8 +251,8 @@ const Winning = ({}) => {
 								/>
 							</DoubleWrap>
 						</FilterRight>
-					</FilterSubcontianer>
-					<FilterFooter>
+					</FilterSubcontianer> */}
+					{/* <FilterFooter>
 						<div style={{ display: 'flex' }}>
 							<p>초기화</p>
 							<ResetImg
@@ -243,7 +267,14 @@ const Winning = ({}) => {
 								검색
 							</BlackBtn>
 						</div>
-					</FilterFooter>
+					</FilterFooter> */}
+					<GlobalProductSearch
+						param={param}
+						isToggleSeparate={true}
+						renderCustomSearchFields={(props) => <UserWinningSearchFields {...props} />}
+						globalProductSearchOnClick={globalProductSearchOnClick}
+						globalProductResetOnClick={globalProductResetOnClick}
+					/>
 				</>
 			)}
 			<TableContianer>

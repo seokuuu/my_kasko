@@ -1,41 +1,44 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
-import { StyledCheckMainDiv, StyledCheckSubDiv, CheckImg } from '../../../common/Check/CheckImg'
+import { CheckImg, StyledCheckMainDiv, StyledCheckSubDiv } from '../../../common/Check/CheckImg'
 
 import {
 	Container,
-	SubContainer,
-	Title,
-	LoginContainer,
-	LoginSubContainer,
-	InputWrap,
-	Input,
-	InputBtmWrap,
-	InputBottomWrap,
 	IbwLeft,
 	IbwRight,
-	LoginBtnWrap,
-	LoginBtn,
 	IbwTxt,
+	IbwWrap,
+	ImgWrap,
+	Input,
+	InputBottomWrap,
+	InputBtmWrap,
+	InputWrap,
 	LoginBottom,
 	LoginBottom2,
-	ImgWrap,
-	IbwWrap,
+	LoginBtn,
+	LoginBtnWrap,
+	LoginContainer,
+	LoginSubContainer,
+	SubContainer,
+	Title,
 } from './Login.Styled'
-
-import { useAtom } from 'jotai'
-import { headerAtom, accordionAtom, subHeaderAtom } from '../../../store/Layout/Layout'
+import { accordionAtom, headerAtom, subHeaderAtom } from '../../../store/Layout/Layout'
 import { login } from '../../../api/auth'
-import { useAuth, useUpdateAuth } from '../../../store/auth'
+import { authoritiesAtom, useAuth, useUpdateAuth } from '../../../store/auth'
+import { useSetAtom } from 'jotai/index'
+import useAlert from '../../../store/Alert/useAlert'
+import { useAtom } from 'jotai'
 
 const Login = () => {
+	const { simpleAlert, showAlert } = useAlert()
 	const navigate = useNavigate()
-	const [showHeader, setShowHeader] = useAtom(headerAtom)
-	const [showAccordion, setShowAccordion] = useAtom(accordionAtom)
-	const [showSubHeader, setShowSubHeader] = useAtom(subHeaderAtom)
+	const setShowHeader = useSetAtom(headerAtom)
+	const setShowAccordion = useSetAtom(accordionAtom)
+	const setShowSubHeader = useSetAtom(subHeaderAtom)
 	const auth = useAuth()
 	const updateAuth = useUpdateAuth()
+	const [authorities, setAuthorities] = useAtom(authoritiesAtom)
 
 	setShowHeader(false)
 	setShowAccordion(false)
@@ -53,15 +56,10 @@ const Login = () => {
 	const [idBottom, setIdBottom] = useState('')
 	const [bottomColor, setBottomColor] = useState('')
 	const [pwBottom, setPwBottom] = useState('')
-	const [isLogin, setIsLogin] = useState(false)
 
 	const idRegex = /^[a-z0-9]{4,12}$/
 	// const passwordRegex = /^(?=.*[a-z])(?=.*[0-9])[a-z0-9]{4,12}$/;
 	const passwordRegex = /^[a-z0-9]{4,12}$/
-
-	const idDummy = {
-		userId: ['wkdqaz', 'solskjaer73', 'asd123'],
-	}
 
 	const handleIdChange = useCallback((e) => {
 		const value = e.target.value
@@ -91,10 +89,8 @@ const Login = () => {
 
 	useEffect(() => {
 		const savedId = getSavedIdFromLocalStorage()
-		if (savedId) {
-			setId(savedId)
-			setCheck(true)
-		}
+		setId(savedId)
+		setCheck(true)
 	}, [])
 
 	const handleSaveId = () => {
@@ -114,7 +110,6 @@ const Login = () => {
 			setIdBottom('올바른 내용이 아닙니다.')
 			setBottomColor('#d92f2f')
 			setIdPlaceholderColor('#d92f2f')
-			setIsLogin(false)
 		} else if (id && isIdValid) {
 			setIdBottom('')
 			setIdPlaceholderColor('#4ca9ff')
@@ -124,18 +119,11 @@ const Login = () => {
 			setPwBottom('영문, 숫자 조합 4~12자리로 입력해 주세요')
 			setBottomColor('#d92f2f')
 			setPwPlaceholderColor('#d92f2f')
-			setIsLogin(false)
 		} else if (pw && isPasswordValid) {
 			setPwBottom('')
 			setPwPlaceholderColor('#4ca9ff')
 		}
-
-		if (isIdValid && isPasswordValid && isLogin) {
-			setPwBottom('등록되지 않은 회원입니다.')
-			setBottomColor('#d92f2f')
-			setPwPlaceholderColor('#d92f2f')
-		}
-	}, [id, pw, idBottom, pwBottom, isLogin])
+	}, [id, pw, idBottom, pwBottom])
 
 	useEffect(() => {
 		if (id && isIdValid) {
@@ -190,17 +178,55 @@ const Login = () => {
 			}
 			try {
 				const { data: res } = await login(requestData)
-				console.log('로그인 된 정보 : ', res)
-				sessionStorage.setItem('accessToken', res.data?.accessToken)
-				localStorage.setItem('refreshToken', res.data?.refreshToken)
+				const user = res.data
+				const name = user.name
+				const authorities = user.roles.authorities
+				const role = user.roles.role
+
+				localStorage.setItem('accessToken', user?.accessToken)
+				localStorage.setItem('refreshToken', user?.refreshToken)
+				setAuthorities({ name, role, authorities })
 				await updateAuth()
-				navigate('/main')
+
+				if (user?.useTempPassword) {
+					return showAlert({
+						title: '비밀번호를 변경해 주세요.',
+						content: `임시 비밀번호를 사용하고 있습니다.\n비밀번호를 변경해 주세요.`,
+						func: () => loginCheck(),
+					})
+				}
+
+				if (check) {
+					saveIdToLocalStorage(id)
+				}
 			} catch (e) {
-				setIsLogin(true)
+				loginError(e?.data)
 			}
 		},
 		[id, pw],
 	)
+
+	const loginError = (error) => {
+		if (error?.message === '관리자가 승인 대기중 입니다.') {
+			showAlert({
+				title: '회원가입 승인 중',
+				content: '관리자가 승인 대기중 입니다.\n' + '관리자 승인 후 이용하실 수 있습니다.',
+			})
+			return
+		}
+		if (error?.message === '장기 미 로그인 회원입니다.') {
+			showAlert({
+				title: '안내',
+				content: `장기 미 로그인(90일)으로 인해 로그인이 제한되었습니다.\n카스코 철강으로 문의주세요.`,
+			})
+			return
+		}
+		if (error?.message === '탈퇴한 회원입니다.') {
+			simpleAlert('탈퇴 처리된 회원입니다.')
+			return
+		}
+		simpleAlert('아이디 또는 비밀번호가 틀렸습니다')
+	}
 
 	const handleKeyPress = (e) => {
 		if (e.key == 'Enter') {
@@ -209,13 +235,28 @@ const Login = () => {
 		}
 	}
 
+	const loginCheck = () => {
+		if (auth && authorities?.role) {
+			if (!localStorage.getItem('accessToken')) {
+				setAuthorities({ name: '', role: '', authorities: [] })
+				updateAuth()
+				return
+			}
+			navigate(authorities.role === '고객사' ? '/userpage/main' : 'main')
+		}
+	}
+
+	useEffect(() => {
+		loginCheck()
+	}, [auth, authorities])
+
 	return (
 		<Container>
 			<SubContainer>
 				<Title>
-					<Link to={`/userpage/main`}>
-						<img src="/img/login_logo.png" alt="" />
-					</Link>
+					<img src="/img/login_logo.png" alt="" />
+					{/*<Link to={`/userpage/main`}>*/}
+					{/*</Link>*/}
 				</Title>
 				<LoginContainer>
 					<LoginSubContainer>
@@ -299,9 +340,9 @@ const Login = () => {
 					</LoginBottom2>
 				</LoginBottom>
 				<ImgWrap>
-					<Link to={`/main`}>
-						<img src="/img/login_kasko.png" />
-					</Link>
+					<img src="/img/login_kasko.png" />
+					{/*<Link to={`/main`}>*/}
+					{/*</Link>*/}
 					<p>Copyright 2023 카스코철강. All Rights Reserved.</p>
 				</ImgWrap>
 			</SubContainer>

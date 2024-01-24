@@ -1,11 +1,20 @@
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import { ExInputsWrap, FilterLeft, FilterRight, Input, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
+import {
+	ExInputsWrap,
+	FilterLeft,
+	FilterRight,
+	Input,
+	PWRight,
+	PartWrap,
+	RowWrap,
+} from '../../../modal/External/ExternalFilter'
 
 import { useState } from 'react'
-import { DateSearchSelect, RadioSearchButton } from '../../../components/Search'
+import { DateSearchSelect, DestinationSearch, RadioSearchButton } from '../../../components/Search'
+import { MainSelect } from '../../../common/Option/Main'
 
-const RoundSearchFields = ({
+const TransportSearchFilter = ({
 	// prettier-ignore
 	search,
 	setSearch,
@@ -46,9 +55,26 @@ const RoundSearchFields = ({
 	return (
 		<>
 			<FilterLeft>
-				<RowWrap>
-					{/* 창고 구분 */}
-					<PartWrap first>
+				<RowWrap style={{ gap: '20px' }}>
+					<PartWrap>
+						{/* !!! 수정 */}
+						<h6>출발지</h6>
+						<MainSelect
+							options={supplierList}
+							defaultValue={supplierList[0]}
+							value={search.supplier}
+							name="supplier"
+							onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
+						/>
+					</PartWrap>
+					<DestinationSearch
+						short={true}
+						name={search.destinationName}
+						code={search.destinationCode}
+						setName={(value) => onChange('destinationName', value)}
+						setCode={(value) => onChange('destinationCode', value)}
+					/>
+					<PartWrap>
 						<DateSearchSelect
 							title={'경매 일자'}
 							startInitDate={search.auctionStartDate}
@@ -57,42 +83,22 @@ const RoundSearchFields = ({
 							endDateChange={(value) => commonDropdownButtonHandler(value, 'auctionEndDate')}
 						/>
 					</PartWrap>
+					{/* !!! 수정 */}
 					<PartWrap>
-						{/* minFailCount 수정하기 !! */}
-						<h6>경매 회차 번호</h6>
-						<ExInputsWrap>
-							{/* minFailCount 변경해야 함. */}
-							<Input name="minFailCount" value={search.minFailCount} onChange={commonNumInputHandler} />
-						</ExInputsWrap>
-					</PartWrap>
-					{/* 규격약호 */}
-				</RowWrap>
-				<RowWrap>
-					{/* driverStatus 수정하기 !! */}
-					<PartWrap first>
-						<h6>진행 상태</h6>
-						<RadioSearchButton
-							options={[
-								{ label: '전체', value: '' },
-								{ label: 'Y', value: true },
-								{ label: 'N', value: false },
-							]}
-							value={search.driverStatus}
-							onChange={(value) => onChange('driverStatus', value)}
+						<h6>제품구분</h6>
+						<MainSelect
+							options={supplierList}
+							defaultValue={supplierList[0]}
+							value={search.supplier}
+							name="supplier"
+							onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
 						/>
 					</PartWrap>
 				</RowWrap>
 			</FilterLeft>
-			<FilterRight>
-				<ProductNumber
-					initialValue={search.productNumberList}
-					setState={setSearch}
-					valueName={'productNumberList'}
-					height="100%"
-				/>
-			</FilterRight>
+			<FilterRight></FilterRight>
 		</>
 	)
 }
 
-export default RoundSearchFields
+export default TransportSearchFilter
