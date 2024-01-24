@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { getFaqList } from '../../../api/customerService'
-import FAQ from './FAQ'
+import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
 import UserSideBar from '../../../components/Left/UserSideBar'
-import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
 import useReactQuery from '../../../hooks/useReactQuery'
+import FAQ from './FAQ'
 
 const FAQPage = () => {
 	const depth2Color = 'FAQ'
