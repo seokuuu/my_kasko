@@ -41,7 +41,7 @@ class WishCellRenderer {
   }
 
   destroy() {
-    if (this.eButton) {
+    if (this.eButton && this.clickEventListener) {
       this.eButton.removeEventListener('click', this.clickEventListener);
     }
   }

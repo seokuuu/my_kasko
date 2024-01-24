@@ -6,5 +6,10 @@
  * - 셀 스타일 중앙으로 지정
  */
 export function getNormalTableRows(tableRows = []) {
-  return tableRows.map(v => ({...v, ...!v.cellRenderer && {cellRenderer: (params) => params?.value || '-'}, ...!v.cellStyle && {cellStyle: { textAlign: 'center' }}}));
+  return tableRows.map(v => ({
+    ...v, 
+    ...!v.cellRenderer && {cellRenderer: (params) => params?.value || '-'}, 
+    ...!v.cellStyle && {cellStyle: { textAlign: 'center' }},
+    ...!v.minWidth && { minWidth: 100 }
+  }));
 }

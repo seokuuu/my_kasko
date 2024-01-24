@@ -4,7 +4,6 @@ import { useUserDestinationUpdateRequestMutation, useUserOrderDetailsQuery } fro
 import { BtnBound, TGreyBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
 import Excel from '../../../components/TableInner/Excel'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { userOrderDetailsField, userOrderDetailsFieldsCols } from '../../../constants/user/orderTable'
 import useTableData from '../../../hooks/useTableData'
@@ -19,7 +18,8 @@ import {
 	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import DestinationChange from '../../../modal/Multi/DestinationChange'
-import Table from '../../../pages/Table/Table'
+import TableV2 from '../../../pages/Table/TableV2'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import useAlert from '../../../store/Alert/useAlert'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 
@@ -114,7 +114,7 @@ const OrderDetail = ({ salesNumber }) => {
 	// ALERT
 	const { simpleAlert } = useAlert()
 	// 패키지 상세보기
-	const { setPackageReadOnlyViewer } = useContext(PackageViewerDispatchContext)
+	const { setPackageReadOnlyViewer } = useContext(PackageViewerDispatchContext);
 
 	/**
 	 * 목적지 적용 핸들러
@@ -189,9 +189,9 @@ const OrderDetail = ({ salesNumber }) => {
 			<TableContianer>
 				{/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
 				<TCSubContainer bor>
-					<div>
+					<div style={{flex: 1}}>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handlePageSizeChange} />
@@ -220,7 +220,7 @@ const OrderDetail = ({ salesNumber }) => {
 					</div>
 				</TCSubContainer>
 				{/* 테이블 */}
-				<Table
+				<TableV2
 					getRow={tableRowDataWithNewDestination}
 					getCol={userOrderDetailsFieldsCols(setPackageReadOnlyViewer)}
 					loading={isLoading}

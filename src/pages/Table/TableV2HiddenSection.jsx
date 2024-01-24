@@ -7,25 +7,34 @@ const SHiddenSection = {
   Section: styled.div`
     display: flex;
     flex-direction: column;
+    flex: 1;
     gap: 8px;
     max-width: calc(100% - 240px);
-    padding: 0 10px;
+    padding: 0 12px;
   `,
   Button: styled.button`
     display: flex;
-    gap: 4px;
+    gap: 2px;
     width: max-content;
     color: ${(props) => props.theme.colors.TxtAlter};
     background-color: transparent;
+    
     &:disabled {
       opacity: 0.5;
     }
+    
+    img {
+      transform: rotate(${({$on}) => $on? 180 : 0}deg);
+    }
   `,
   HiddenBox: styled.div`
+    width: 100%;
+
     ul {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
+      width: 100%;
 
       li {
         button {
@@ -44,6 +53,9 @@ const SHiddenSection = {
   `
 }
 
+/**
+ * 숨긴 항목 섹션
+ */
 const TableV2HiddenSection = () => {
   const [hiddenSectionShow, setHiddenSectionShow] = useState(false);
   const hiddenColumns = useAtomValue(tableHiddenColumnAtom);
@@ -52,6 +64,7 @@ const TableV2HiddenSection = () => {
   return (
     <SHiddenSection.Section>
       <SHiddenSection.Button 
+        $on={hiddenSectionShow}
         disabled={hiddenColumns.length < 1}
         onClick={() => { setHiddenSectionShow(show => !show) }}
       >

@@ -26,7 +26,7 @@ import {
 	selectedRowsAtom,
 	selectedRowsAtom2,
 } from '../../store/Layout/Layout'
-import { tableResetColumnAtom, tableHiddenColumnAtom, tableShowColumnAtom } from '../../store/Table/Table'
+import { tableRestoreColumnAtom, tableHiddenColumnAtom, tableShowColumnAtom } from '../../store/Table/Table'
 import './TableUi.css'
 
 /**
@@ -113,6 +113,10 @@ const PROPS_FUNC = {
 	}
 }
 
+/**
+ * 기본 테이블
+ * @description 숨긴 항목 기능 추가 테이블
+ */
 const TableV2 = ({
 	hei,
 	hei2,
@@ -153,13 +157,11 @@ const TableV2 = ({
 	const setDetailRow = useSetAtom(doubleClickedRowAtom) // 상세넘어가기 처리
 	const setHiddenColumn = useSetAtom(tableHiddenColumnAtom); // 테이블 칼럼 숨기기 처리
 	const showColumnId = useAtomValue(tableShowColumnAtom); // 테이블 노출 칼럼
-	const setShowColumnClear = useSetAtom(tableResetColumnAtom); // 테이블 노출 칼럼 처리
-	// Dragging Row
-	/**
-	 * @todo 컬럼 드래그앤드랍
-	 */
+	const setShowColumnClear = useSetAtom(tableRestoreColumnAtom); // 테이블 노출 칼럼 처리
+	// DRAG&DROP
 	const { onRowDragEnd } = useDragginRow({ setRowData, rowData }) // 컬럼데이터 드래그앤드랍
-	// HIDDEN
+	//
+	const [isModal, setIsModal] = useAtom(blueModalAtom)
 
 	/**
 	 * 체크박스 선택 처리 핸들러
@@ -237,8 +239,6 @@ const TableV2 = ({
 		})
 		gridApi.onFilterChanged()
 	}
-
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
 	/* ==================== OTHERS end ==================== */
 
 	/* ==================== STATES start ==================== */
@@ -276,6 +276,7 @@ const TableV2 = ({
 		if (getCol) {
 			setColumnDefs(getCol)
 		}
+
 		if (getRow && getRow.length > 0) {
 			setRowData(getRow)
 		} else {
@@ -288,10 +289,6 @@ const TableV2 = ({
 		setSelectedRows(null)
 	}, [location])
 	/* ==================== INITIALIZE end ==================== */
-
-	useEffect(() => {
-		console.log(gridRef.current)
-	}, [gridRef])
 
 	return (
 		<div style={containerStyle}>
@@ -330,7 +327,7 @@ const TableV2 = ({
 						onGridReady={(params) => { setGridApi(params.api) }}
 						onColumnVisible={onColumnVisibleChange}
 						{...dragAndDrop && { onRowDragEnd: onRowDragEnd }}
-						{...isRowClickable && { getRowStyle: { cursor: 'pointer' } }}
+						{...isRowClickable && { getRowStyle: () => ({ cursor: 'pointer' }) }}
 						{...handleOnRowClicked && { onRowClicked: (row) => { handleOnRowClicked(row) } }}
 					/>
 				</div>

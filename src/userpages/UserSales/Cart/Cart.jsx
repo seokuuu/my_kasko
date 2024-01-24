@@ -1,7 +1,6 @@
 import { useContext, useMemo } from 'react'
 import { useUserCartListQuery } from '../../../api/user'
 import Excel from '../../../components/TableInner/Excel'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import {
   userCartListPackageField,
@@ -20,7 +19,8 @@ import {
   TCSubContainer,
   TableContianer,
 } from '../../../modal/External/ExternalFilter'
-import Table from '../../../pages/Table/Table'
+import TableV2 from '../../../pages/Table/TableV2'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import AddOrderButton from '../_components/AddOrderButton'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 
@@ -90,9 +90,9 @@ const Cart = ({}) => {
       <TableContianer>
         {/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
         <TCSubContainer bor>
-          <div>
+          <div style={{flex: 1}}>
             조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount.toLocaleString()}개 )
-            <Hidden />
+            <TableV2HiddenSection />
           </div>
           <div>
             <PageDropdown handleDropdown={handlePageSizeChange} />
@@ -104,7 +104,7 @@ const Cart = ({}) => {
           선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeight.toLocaleString()} (kg)
         </TCSubContainer>
         {/* 테이블 */}
-        <Table
+        <TableV2
           getCol={isSingleCategory ? userCartListSingleFieldsCols : userCartListPackageFieldCols(setPackageReadOnlyViewer)}
           getRow={tableRowData}
           tablePagination={paginationData}

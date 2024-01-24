@@ -3,7 +3,6 @@ import { useUserPackageProductListQuery } from '../../../api/user'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKey'
@@ -20,7 +19,8 @@ import {
 	TCSubContainer,
 	TableContianer
 } from '../../../modal/External/ExternalFilter'
-import Table from '../../../pages/Table/Table'
+import TableV2 from '../../../pages/Table/TableV2'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import { toggleAtom } from '../../../store/Layout/Layout'
 import { getValidParams } from '../../../utils/parameters'
 import AddCartButton from '../_components/AddCartButton'
@@ -137,9 +137,9 @@ const Package = ({}) => {
 			<TableContianer>
 				{/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
 				<TCSubContainer bor>
-					<div>
+					<div style={{flex: 1}}>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handlePageSizeChange} />
@@ -154,7 +154,7 @@ const Package = ({}) => {
 					<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.packageNumber} />
 				</TCSubContainer>
 				{/* 테이블 */}
-				<Table
+				<TableV2
 					getRow={tableRowData}
 					getCol={getUserPackageProductFieldsCols(setPackageActionViewer)}
 					loading={isLoading}
