@@ -13,14 +13,8 @@ import { SCautionBox } from './styles';
 import { getHasEditAuth } from './utils';
 
 /**
- * 편집권한 확인 함수
- */
-
-/**
  * 주의사항
- * @param {boolean} param.editable 편집가능 여부 
  * @param {boolean} param.category 카테고리
- * @returns 
  */
 const CautionBox = ({category}) => {
   const [editForm, setEditForm] = useState(EditorState.createEmpty());
