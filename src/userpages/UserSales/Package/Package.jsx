@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react'
 import { useUserPackageProductListQuery } from '../../../api/user'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
@@ -15,10 +16,9 @@ import useTableSelection from '../../../hooks/useTableSelection'
 import {
 	FilterContianer,
 	FilterHeader,
-	FilterHeaderAlert,
 	FilterWrap,
 	TCSubContainer,
-	TableContianer,
+	TableContianer
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
 import { toggleAtom } from '../../../store/Layout/Layout'
@@ -28,7 +28,6 @@ import AddOrderButton from '../_components/AddOrderButton'
 import AddWishButton from '../_components/AddWishButton'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 import PackageSearchFields from './PackageSearchFields'
-import CautionBox, { CAUTION_CATEGORY } from '../../../components/CautionBox'
 
 /**
  * @constant 기본 페이지 검색 값

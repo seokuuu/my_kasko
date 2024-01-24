@@ -2,6 +2,7 @@ import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useUserOrderCancelMutaion, useUserOrderListQuery } from '../../../api/user'
 import { WhiteRedBtn } from '../../../common/Button/Button'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
@@ -11,14 +12,11 @@ import { userOrderListField, userOrderListFieldsCols } from '../../../constants/
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
 import {
-	AlertImg,
-	FilterAlterTxt,
 	FilterContianer,
 	FilterHeader,
-	FilterHeaderAlert,
 	FilterWrap,
 	TCSubContainer,
-	TableContianer,
+	TableContianer
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
 import useAlert from '../../../store/Alert/useAlert'
@@ -26,7 +24,6 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import { getValidParams } from '../../../utils/parameters'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 import OrderSearchFields from './OrderSearchFields'
-import CautionBox, { CAUTION_CATEGORY } from '../../../components/CautionBox'
 
 /**
  * @constant 기본 페이지 검색 값
@@ -156,7 +153,7 @@ const Order = ({}) => {
 			</FilterHeader>
 			{/* 공지사항 */}
 			{/* @todo eitable 주석처리 */}
-			<CautionBox category={CAUTION_CATEGORY.singleProduct} editable/>
+			<CautionBox category={CAUTION_CATEGORY.singleProduct} />
 			{/* 검색 필터 */}
 			{exFilterToggle && (
 				<FilterWrap>

@@ -1,35 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
 import { ContentState, EditorState, convertToRaw } from 'draft-js';
+import 'draft-js/dist/Draft.css';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Editor } from 'react-draft-wysiwyg';
 import { client } from '../../api';
-import { EditGear, FilterHeaderAlert } from '../../modal/External/ExternalFilter';
+import { FilterHeaderAlert } from '../../modal/External/ExternalFilter';
 import useAlert from '../../store/Alert/useAlert';
+import { CAUTION_QUERY_KEY, EDITOR_OPTIONS } from './constants';
 import { SCautionBox } from './styles';
-import 'draft-js/dist/Draft.css';
+import { getHasEditAuth } from './utils';
 
 /**
- * @constant 쿼리키
+ * 편집권한 확인 함수
  */
-const CAUTION_QUERY_KEY = 'caution';
-
-const EDITOR_OPTIONS = {
-  toolbar: {
-    options: ['inline', 'list', 'colorPicker']
-  }
-}
-
-/**
- * @constant 주의사항 카테고리
- */
-export const CAUTION_CATEGORY = Object.freeze({
-  auction: 'auction',
-  singleProduct: 'product',
-  packageProduct: 'package',
-  order: 'order'
-});
 
 /**
  * 주의사항
@@ -37,11 +22,11 @@ export const CAUTION_CATEGORY = Object.freeze({
  * @param {boolean} param.category 카테고리
  * @returns 
  */
-const CautionBox = ({editable, category}) => {
-
+const CautionBox = ({category}) => {
   const [editForm, setEditForm] = useState(EditorState.createEmpty());
   const [editMode, setEditMode] = useState(false);
-  const readOnly = useMemo(() => !editable || !editMode, [editMode, editable]);
+  const editable = getHasEditAuth(category);
+  const readOnly = useMemo(() => !editable || !editMode, [editMode]);
   const { data: cautionData, refetch: requestData  } = useQuery({
     queryKey: [CAUTION_QUERY_KEY, category],
     queryFn: async() => {
@@ -51,7 +36,6 @@ const CautionBox = ({editable, category}) => {
   });
   // ALERT
   const { simpleAlert } = useAlert();
-  // 
 
   /**
    * 편집 토글 핸들러
@@ -98,7 +82,8 @@ const CautionBox = ({editable, category}) => {
     }
   }
 
-  // // 편집폼 초기화
+
+  // 편집폼 초기화
   useEffect(() => {
     initEditorForm(cautionData);
   }, [editMode, cautionData]); 
@@ -113,7 +98,7 @@ const CautionBox = ({editable, category}) => {
           <Editor 
             toolbar={EDITOR_OPTIONS.toolbar} 
             toolbarHidden={readOnly}
-            placeholder={readOnly? "주의 사항 등록 예정" : "주의사항을 등록해 주세요"}
+            placeholder={editMode? "" : "주의 사항 등록 예정" }
             localization={{ locale: 'ko' }}
             wrapperClassName={`caution-editor-wrapper${readOnly? '--readonly' : ''}`}
             toolbarClassName='caution-editor-toolbar'
@@ -128,22 +113,20 @@ const CautionBox = ({editable, category}) => {
       {
         editable &&
         <SCautionBox.Buttons>
-          <EditGear 
-            as="button" 
+          <SCautionBox.Button
             type="button" 
             onClick={handleEditToggle}
           >
               { editMode? '완료' : '수정' }
               <img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-          </EditGear>
+          </SCautionBox.Button>
           {
             editMode && 
-            <EditGear 
-              as="button" 
+            <SCautionBox.Button
               type="button"
               style={{opacity: 0.5}} 
               onClick={() => {setEditMode(false)}} 
-            >취소</EditGear>
+            >취소</SCautionBox.Button>
           }
         </SCautionBox.Buttons>
       }
