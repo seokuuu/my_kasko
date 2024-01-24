@@ -17,13 +17,14 @@ import {
 	TCSubContainer,
 	TableContianer
 } from '../../../modal/External/ExternalFilter'
-import Table from '../../../pages/Table/Table'
+import TableV2 from '../../../pages/Table/TableV2'
 import { toggleAtom } from '../../../store/Layout/Layout'
 import { getValidParams } from '../../../utils/parameters'
 import AddCartButton from '../_components/AddCartButton'
 import AddOrderButton from '../_components/AddOrderButton'
 import AddWishButton from '../_components/AddWishButton'
 import SingleSearchFields from './SingleSearchFields'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 
 /**
  * @constant 기본 페이지 검색 값
@@ -134,7 +135,7 @@ const Single = () => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handlePageSizeChange} />
@@ -149,7 +150,7 @@ const Single = () => {
 					<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
 				</TCSubContainer>
 				{/* 테이블 */}
-				<Table
+				<TableV2
 					getRow={tableRowData}
 					getCol={userSingleProductFieldsCols}
 					loading={isLoading}
