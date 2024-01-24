@@ -28,10 +28,13 @@ import { postAuction } from '../../api/auction/round'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
 import useMutationQuery from '../../hooks/useMutationQuery'
 import { ExCheckDiv, ExCheckWrap } from '../External/ExternalFilter'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import useAlert from '../../store/Alert/useAlert'
 
-const AuctionRound = ({ setRoundModal, types }) => {
+const AuctionRound = ({ setRoundModal, types, refetch }) => {
 	const [isModal, setIsModal] = useAtom(blueModalAtom)
-
+	const queryClient = useQueryClient()
+	const { simpleConfirm, simpleAlert } = useAlert()
 	const modalClose = () => {
 		setRoundModal(false)
 	}
@@ -152,7 +155,20 @@ const AuctionRound = ({ setRoundModal, types }) => {
 		}))
 	}, [times])
 
-	const mutation = useMutationQuery('', postAuction)
+	// const mutation = useMutationQuery('', postAuction)
+
+	const mutation = useMutation(postAuction, {
+		onSuccess: () => {
+			queryClient.invalidateQueries('auction')
+			simpleAlert('등록 되었습니다.', () => {
+				setRoundModal(false)
+				refetch()
+			})
+		},
+		onError: () => {
+			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		},
+	})
 
 	const submitHandle = (e) => {
 		if (checkRadio[0]) {
@@ -254,7 +270,7 @@ const AuctionRound = ({ setRoundModal, types }) => {
 								</>
 							)}
 
-							<BlueSubDiv style={{ height: '80px' }} bor>
+							{/* <BlueSubDiv style={{ height: '80px' }} bor>
 								<h6>경매 번호</h6>
 								<div>
 									<input
@@ -262,7 +278,7 @@ const AuctionRound = ({ setRoundModal, types }) => {
 										placeholder="경매 번호 자동 생성"
 									/>
 								</div>
-							</BlueSubDiv>
+							</BlueSubDiv> */}
 						</BlueMainDiv>
 						<BlueBtnWrap>
 							<BlueBlackBtn onClick={submitHandle}>등록</BlueBlackBtn>

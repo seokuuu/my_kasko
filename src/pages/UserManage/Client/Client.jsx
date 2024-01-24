@@ -1,28 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { BlackBtn, BtnBound, GreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import { MainSelect, usermanageClientStatusOptions } from '../../../common/Option/Main'
+import { BtnBound, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
-
-import {
-	ExCheckDiv,
-	ExCheckWrap,
-	FilterContianer,
-	FilterFooter,
-	FilterHeader,
-	FilterLeft,
-	FilterSubcontianer,
-	Input,
-	PartWrap,
-	ResetImg,
-	RowWrap,
-	TableContianer,
-	TCSubContainer,
-} from '../../../modal/External/ExternalFilter'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 
 import { alertAtom, alertAtom2, AuctionRestrictionModal } from '../../../store/Layout/Layout'
 
@@ -39,16 +21,13 @@ import { UserManageCustomerManageFields, UserManageCustomerManageFieldsCols } fr
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 // import { log } from '../../../lib'
-import { isString } from 'lodash'
-import Table from '../../Table/Table'
-import { usermanageClientEdit } from '../../../store/Layout/Layout'
-import ClientEditModal from './ClientEditModal'
-import { btnCellUidAtom } from '../../../store/Layout/Layout'
-import ClientPostModal from './ClientPostModal'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import RoundSearchFields from '../../Auction/Round/RoundSearchFields'
-import ClientSearchFields from './ClientSearchFields'
 import useAlert from '../../../store/Alert/useAlert'
+import { btnCellUidAtom, usermanageClientEdit } from '../../../store/Layout/Layout'
+import Table from '../../Table/Table'
+import ClientEditModal from './ClientEditModal'
+import ClientPostModal from './ClientPostModal'
+import ClientSearchFields from './ClientSearchFields'
 
 const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
 	const { simpleConfirm, simpleAlert } = useAlert()
@@ -172,7 +151,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
 	const handleRemoveBtn = useCallback(() => {
 		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
 
-		simpleConfirm('삭제하시겠습니까?', () => propsRemove)
+		simpleConfirm('선택한 항목을 삭제하시겠습니까?', () => propsRemove)
 	}, [checkedArray])
 
 	const setPostPage = () => {

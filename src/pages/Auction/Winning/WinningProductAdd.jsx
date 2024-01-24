@@ -50,9 +50,11 @@ import { isArray, isEqual } from 'lodash'
 import { selectedRows2Switch } from '../../../store/Layout/Layout'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import WinningCreateSearchFields from './WinningCreateSearchFields'
+import useAlert from '../../../store/Alert/useAlert'
 
 // 낙찰 생성 제품 추가(단일) 메인 컴포넌트
 const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData }) => {
+	const { simpleConfirm, simpleAlert } = useAlert()
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
 
@@ -129,17 +131,30 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData })
 		}))
 	}
 
+	// const handleAddBtn = () => {
+	// 	if (isArray(checkedArray) && checkedArray.length > 0) {
+	// 		if (window.confirm('선택한 항목을 추가하시겠습니까?')) {
+	// 			checkedArray.forEach((item) => {
+	// 				console.log('item =>', item)
+	// 				setNewResData((prevData) => [...prevData, item])
+	// 			})
+	// 			setAddModal(false)
+	// 		}
+	// 	} else {
+	// 		alert('선택해주세요!')
+	// 	}
+	// }
+
 	const handleAddBtn = () => {
-		if (isArray(checkedArray) && checkedArray.length > 0) {
-			if (window.confirm('선택한 항목을 추가하시겠습니까?')) {
+		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
+		else {
+			simpleConfirm('선택한 항목을 추가하시겠습니까?', () =>
 				checkedArray.forEach((item) => {
 					console.log('item =>', item)
 					setNewResData((prevData) => [...prevData, item])
-				})
-				setAddModal(false)
-			}
-		} else {
-			alert('선택해주세요!')
+					setAddModal(false)
+				}),
+			)
 		}
 	}
 
