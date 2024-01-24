@@ -2,6 +2,7 @@ import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useUserOrderCancelMutaion, useUserOrderListQuery } from '../../../api/user'
 import { WhiteRedBtn } from '../../../common/Button/Button'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
@@ -11,14 +12,11 @@ import { userOrderListField, userOrderListFieldsCols } from '../../../constants/
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
 import {
-	AlertImg,
-	FilterAlterTxt,
 	FilterContianer,
 	FilterHeader,
-	FilterHeaderAlert,
 	FilterWrap,
 	TCSubContainer,
-	TableContianer,
+	TableContianer
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
 import useAlert from '../../../store/Alert/useAlert'
@@ -154,23 +152,8 @@ const Order = ({}) => {
 				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 			</FilterHeader>
 			{/* 공지사항 */}
-			<FilterHeaderAlert>
-				<div style={{ display: 'flex' }}>
-					<div style={{ marginRight: '20px' }}>
-						<img src="/img/notice.png" />
-					</div>
-					<div style={{ marginTop: '6px' }}>
-						<FilterAlterTxt style={{ marginTop: '0px' }}>
-							· 경매 남은 시간은 본 화면에서 발생되는 메시지 창에 따라 다소 지연될 수 있습니다. 경매 남은 시간을
-							최신으로 갱신하려면 다시 조회해 주세요.
-						</FilterAlterTxt>
-					</div>
-				</div>
-				<AlertImg>
-					수정
-					<img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-				</AlertImg>
-			</FilterHeaderAlert>
+			{/* @todo eitable 주석처리 */}
+			<CautionBox category={CAUTION_CATEGORY.singleProduct} />
 			{/* 검색 필터 */}
 			{exFilterToggle && (
 				<FilterWrap>
