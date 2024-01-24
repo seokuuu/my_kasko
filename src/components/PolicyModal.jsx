@@ -1,4 +1,4 @@
-import { FadeOverlay, ModalContainer, WhiteCloseBtn } from '../modal/Common/Common.Styled'
+import { FadeOverlay, ModalContainer } from '../modal/Common/Common.Styled'
 import React from 'react'
 import { usePolicyQuery } from '../api/operate'
 import { styled } from 'styled-components'
