@@ -1,72 +1,42 @@
-import { useState, useEffect, useRef } from 'react'
-import { styled } from 'styled-components'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { MainSelect } from '../../../common/Option/Main'
-import { BlackBtn, BtnBound, BtnWrap } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../../common/Toggle/Toggle'
-import Excel from '../../../components/TableInner/Excel'
 import {
-	GreyBtn,
-	ExcelBtn,
-	WhiteGrnBtn,
-	IndigoBtn,
-	BlueBtn,
-	SkyBtn,
-	SwitchBtn,
-	TGreyBtn,
-	TWhiteBtn,
+	BtnBound, SkyBtn, TGreyBtn,
+	TWhiteBtn, WhiteGrnBtn
 } from '../../../common/Button/Button'
-import Test3 from '../../../pages/Test/Test3'
+import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { StyledCheckMainDiv, StyledCheckSubSquDiv, CheckImg2 } from '../../../common/Check/CheckImg'
 
 import {
+	CustomInput,
 	FilterContianer,
 	FilterHeader,
-	FilterFooter,
-	FilterSubcontianer,
-	FilterLeft,
-	FilterRight,
-	RowWrap,
-	PartWrap,
-	PWRight,
-	Input,
-	TCSubContainer,
-	GridWrap,
-	Tilde,
-	DoubleWrap,
-	ResetImg,
-	TableContianer,
-	ExRadioWrap,
-	SubTitle,
 	FilterHeaderAlert,
-	FHALeft,
-	ExInputsWrap,
-	MiniInput,
-	CustomInput,
+	SubTitle,
+	TableContianer,
+	TCSubContainer
 } from '../../../modal/External/ExternalFilter'
 
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../../common/Check/RadioImg'
 
-import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
-import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
-import { useAtom } from 'jotai'
-import InventoryFind from '../../../modal/Multi/InventoryFind'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { getAuctionDestination } from '../../../api/auction/winning'
-import { getBidding, postBidding } from '../../../api/auction/bidding'
-import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constants/admin/Auction'
 import { useQueryClient } from '@tanstack/react-query'
-import { add_element_field } from '../../../lib/tableHelpers'
-import Table from '../../../pages/Table/Table'
+import { useAtom } from 'jotai'
+import { isEqual } from 'lodash'
+import { getBidding, postBidding } from '../../../api/auction/bidding'
+import { getAuctionDestination } from '../../../api/auction/winning'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
+import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constants/admin/Auction'
 import useMutationQuery from '../../../hooks/useMutationQuery'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
+import InventoryFind from '../../../modal/Multi/InventoryFind'
+import Table from '../../../pages/Table/Table'
+import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
+import UserBiddingSearchFields from './UserBiddingSearchFields'
 
 const Single = ({}) => {
 	const radioDummy = ['전체', '미응찰', '관심제품', '응찰']
@@ -133,14 +103,15 @@ const Single = ({}) => {
 	const checkedArray = useAtom(selectedRowsAtom)[0]
 	const [tablePagination, setTablePagination] = useState([])
 
-	const [Param, setParam] = useState({
+	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
 		type: '단일',
-	})
+	}
+	const [param, setParam] = useState(paramData)
 
 	// 전체 GET
-	const { isLoading, isError, data, isSuccess } = useReactQuery(Param, 'getBidding', getBidding)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getBidding', getBidding)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
@@ -215,8 +186,26 @@ const Single = ({}) => {
 		postMutation.mutate(winningCreateData)
 	}
 
-	console.log('winningCreateData <33', winningCreateData)
+	const globalProductResetOnClick = () => {
+		// if resetting the search field shouldn't rerender table
+		// then we need to create paramData object to reset the search fields.
+		setParam(paramData)
+	}
+	// import
+	const globalProductSearchOnClick = (userSearchParam) => {
+		setParam((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				refetch()
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+			}
+		})
+	}
 
+	console.log('winningCreateData <33', winningCreateData)
 
 	return (
 		<FilterContianer>
@@ -257,7 +246,7 @@ const Single = ({}) => {
 			</FilterHeaderAlert>
 			{exFilterToggle && (
 				<>
-					<FilterSubcontianer>
+					{/* <FilterSubcontianer>
 						<FilterLeft>
 							<RowWrap>
 								<PartWrap first>
@@ -352,7 +341,14 @@ const Single = ({}) => {
 								검색
 							</BlackBtn>
 						</div>
-					</FilterFooter>
+					</FilterFooter> */}
+					<GlobalProductSearch
+						param={param}
+						isToggleSeparate={true}
+						renderCustomSearchFields={(props) => <UserBiddingSearchFields {...props} />} // 만들어야함 -> WinningSearchFields
+						globalProductSearchOnClick={globalProductSearchOnClick} // import
+						globalProductResetOnClick={globalProductResetOnClick} // import
+					/>
 				</>
 			)}
 			<TableContianer>

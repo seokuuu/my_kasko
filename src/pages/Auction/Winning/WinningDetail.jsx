@@ -61,9 +61,10 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../Table/Table'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import { getDestinationFind } from '../../../api/search'
-import WinningDetailSearchFields from './WinningDetailSearchFields'
+import WinningCreateSearchFields from './WinningCreateSearchFields'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { isEqual } from 'lodash'
+import WinningDetailFields from './WinningDetailFields'
 
 // 경매 낙찰 상세
 const WinningDetail = ({ detailRow }) => {
@@ -407,9 +408,9 @@ const WinningDetail = ({ detailRow }) => {
 					<GlobalProductSearch
 						param={param}
 						isToggleSeparate={true}
-						renderCustomSearchFields={(props) => <WinningDetailSearchFields {...props} />} // 만들어야함 -> WinningSearchFields
-						globalProductSearchOnClick={globalProductSearchOnClick} // import
-						globalProductResetOnClick={globalProductResetOnClick} // import
+						renderCustomSearchFields={(props) => <WinningDetailFields {...props} />}
+						globalProductSearchOnClick={globalProductSearchOnClick}
+						globalProductResetOnClick={globalProductResetOnClick}
 					/>
 				</>
 			)}

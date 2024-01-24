@@ -13,15 +13,14 @@ import {
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import { useState } from 'react'
-import { CustomerSearch, DateSearchSelect } from '../../../components/Search'
-import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
-import { GreyBtn } from '../../../common/Button/Button'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
+import { useState } from 'react'
+import { GreyBtn } from '../../../common/Button/Button'
 import StandardFind from '../../../modal/Multi/StandardFind'
+import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
+import { RadioSearchButton } from '../../../components/Search'
 
-const ProgressSearchFields = ({
+const UserBiddingSearchFields = ({
 	// prettier-ignore
 	search,
 	setSearch,
@@ -48,14 +47,21 @@ const ProgressSearchFields = ({
 	}
 	const [param, setParam] = useState(init)
 	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
-	const setIsKyuModal = useSetAtom(kyuModalAtom)
+
+	const onChangeRadio = (key, value) => {
+		setSearch((p) => ({ ...p, [key]: value }))
+	}
 
 	console.log('param', param)
+
+	const setIsKyuModal = useSetAtom(kyuModalAtom)
+
+	console.log('search.driverStatus', search.driverStatus)
 
 	return (
 		<>
 			<FilterLeft>
-				<RowWrap none>
+				<RowWrap>
 					{/* 창고 구분 */}
 					<PartWrap first>
 						<h6>창고 구분 </h6>
@@ -70,6 +76,19 @@ const ProgressSearchFields = ({
 						</PWRight>
 					</PartWrap>
 					<PartWrap>
+						<h6>매입처</h6>
+						<PWRight>
+							<MainSelect
+								options={supplierList}
+								defaultValue={supplierList[0]}
+								value={search.supplier}
+								name="supplier"
+								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
+							/>
+						</PWRight>
+					</PartWrap>
+					{/* 규격약호 */}
+					<PartWrap>
 						<h6>규격 약호</h6>
 						<Input readOnly={true} value={search.spec} />
 						<GreyBtn
@@ -82,11 +101,23 @@ const ProgressSearchFields = ({
 							찾기
 						</GreyBtn>
 					</PartWrap>
-
-					{/* 규격약호 */}
 				</RowWrap>
 				<RowWrap>
-					<CustomerSearch search={search} setSearch={setSearch} />
+					{/* TODO : 라디오 컴포넌트 수정하기 */}
+					{/* driverStatus 수정하기 !! */}
+					<PartWrap first>
+						<h6>진행 상태</h6>
+						<RadioSearchButton
+							options={[
+								{ label: '전체', value: '' },
+								{ label: '미응찰', value: false },
+								{ label: '관심제품', value: true },
+								{ label: '응찰', value: true },
+							]}
+							value={search.driverStatus}
+							onChange={(value) => onChangeRadio('driverStatus', value)}
+						/>
+					</PartWrap>
 				</RowWrap>
 				{/* 2행 */}
 				<RowWrap>
@@ -112,9 +143,7 @@ const ProgressSearchFields = ({
 						</PWRight>
 					</PartWrap>
 				</RowWrap>
-
 				<RowWrap>
-					{/* 두께 */}
 					<PartWrap first>
 						<h6>두께(MM)</h6>
 						<ExInputsWrap>
@@ -192,4 +221,4 @@ const ProgressSearchFields = ({
 	)
 }
 
-export default ProgressSearchFields
+export default UserBiddingSearchFields

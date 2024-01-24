@@ -1,11 +1,20 @@
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import { ExInputsWrap, FilterLeft, FilterRight, Input, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
+import {
+	ExInputsWrap,
+	FilterLeft,
+	FilterRight,
+	Input,
+	PWRight,
+	PartWrap,
+	RowWrap,
+} from '../../../modal/External/ExternalFilter'
 
 import { useState } from 'react'
-import { DateSearchSelect, RadioSearchButton } from '../../../components/Search'
+import { CustomerSearch, DateSearchSelect, RadioSearchButton } from '../../../components/Search'
+import { MainSelect } from '../../../common/Option/Main'
 
-const RoundSearchFields = ({
+const UserWinningSearchFields = ({
 	// prettier-ignore
 	search,
 	setSearch,
@@ -57,25 +66,31 @@ const RoundSearchFields = ({
 							endDateChange={(value) => commonDropdownButtonHandler(value, 'auctionEndDate')}
 						/>
 					</PartWrap>
-					<PartWrap>
-						{/* minFailCount 수정하기 !! */}
-						<h6>경매 회차 번호</h6>
-						<ExInputsWrap>
-							{/* minFailCount 변경해야 함. */}
-							<Input name="minFailCount" value={search.minFailCount} onChange={commonNumInputHandler} />
-						</ExInputsWrap>
+					<PartWrap first>
+						<h6>창고 구분 </h6>
+						<PWRight>
+							<MainSelect
+								options={storageList}
+								// defaultValue={storageList[0]}
+								value={search.storage}
+								name="storage"
+								onChange={(e) => commonDropdownButtonHandler(e, 'storage')}
+							/>
+						</PWRight>
 					</PartWrap>
 					{/* 규격약호 */}
 				</RowWrap>
 				<RowWrap>
+					<CustomerSearch search={search} setSearch={setSearch} />
 					{/* driverStatus 수정하기 !! */}
 					<PartWrap first>
 						<h6>진행 상태</h6>
 						<RadioSearchButton
 							options={[
 								{ label: '전체', value: '' },
-								{ label: 'Y', value: true },
-								{ label: 'N', value: false },
+								{ label: '낙찰', value: false },
+								{ label: '낙찰 취소', value: false },
+								{ label: '낙찰 확정', value: false },
 							]}
 							value={search.driverStatus}
 							onChange={(value) => onChange('driverStatus', value)}
@@ -95,4 +110,4 @@ const RoundSearchFields = ({
 	)
 }
 
-export default RoundSearchFields
+export default UserWinningSearchFields
