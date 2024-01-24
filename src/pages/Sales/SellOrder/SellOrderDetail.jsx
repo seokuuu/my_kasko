@@ -1,7 +1,15 @@
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import React, { useState, Fragment, useEffect } from 'react'
 import { styled } from 'styled-components'
-import { BtnBound, SkyBtn, TGreyBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import {
+	BtnBound,
+	SkyBtn,
+	TGreyBtn,
+	TWhiteBtn,
+	WhiteBlackBtn,
+	WhiteRedBtn,
+	WhiteSkyBtn,
+} from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -13,7 +21,13 @@ import {
 	TCSubContainer,
 	TableContianer,
 } from '../../../modal/External/ExternalFilter'
-import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
+import {
+	blueModalAtom,
+	invenDestination,
+	invenDestinationData,
+	selectedRowsAtom,
+	toggleAtom,
+} from '../../../store/Layout/Layout'
 import Test3 from '../../Test/Test3'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import { TableWrap } from '../../../components/MapTable/MapTable'
@@ -27,6 +41,12 @@ import {
 import { add_element_field } from '../../../lib/tableHelpers'
 import useAlert from '../../../store/Alert/useAlert'
 import Table from '../../Table/Table'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import { destiApproveReq, destiChangeApprove, destiChangeReject } from '../../../api/auction/winning'
+import InventoryFind from '../../../modal/Multi/InventoryFind'
+import { getDestinationFind } from '../../../api/search'
+import { formatWeight } from '../../../utils/utils'
+import { KilogramSum } from '../../../utils/KilogramSum'
 const SellOrderDetail = () => {
 	const { id } = useParams()
 	const { simpleAlert, showAlert, simpleConfirm, showConfirm, redAlert } = useAlert()
@@ -117,6 +137,62 @@ const SellOrderDetail = () => {
 		}))
 	}
 
+	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
+	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
+	const init = {
+		updateList: [
+			{
+				uid: 9307, // orderUid
+				requestCustomerDestinationUid: 61, // destination uid
+			},
+		],
+		// memberUid: 1660,
+	}
+
+	const [input, setInput] = useState(init)
+
+	// 목적지 적용 버튼
+	const handleSetCustomerDestinationUid = () => {
+		const updatedWinningList = input.updateList?.map((item) => ({
+			...item,
+			requestCustomerDestinationUid: destinationData.uid,
+		}))
+
+		// setBiddingList(updatedBiddingList)
+		setInput((prevInput) => ({
+			...prevInput,
+			updateList: [...updatedWinningList],
+		}))
+	}
+
+	// 목적지 승인 요청 POST
+	const destiApproveMutation = useMutationQuery('', destiApproveReq)
+	const destiApproveOnClickHandler = () => {
+		destiApproveMutation.mutate(input)
+	}
+
+	// 목적지 변경 반려 POST
+	const destiChangeRejMutation = useMutationQuery('', destiChangeReject)
+	const destiChangeRejOnClickHandler = () => {
+		destiChangeRejMutation.mutate(input)
+	}
+	// 목적지 변경 승인 POST
+	const destiChangeApproveMutation = useMutationQuery('', destiChangeApprove)
+	const destiChangeApprovOnClickHandler = () => {
+		destiChangeApproveMutation.mutate(input)
+	}
+
+	const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
+	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+
+	const handleTablePageSize = (event) => {
+		setParam((prevParam) => ({
+			...prevParam,
+			pageSize: Number(event.target.value),
+			pageNum: 1,
+		}))
+	}
+
 	return (
 		<FilterContianer>
 			<div>
@@ -132,7 +208,7 @@ const SellOrderDetail = () => {
 						{[0, 1].map((index) => (
 							<ClaimRow key={index}>
 								{titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
-									<Fragment agmentkey={title}>
+									<Fragment key={title}>
 										<ClaimTitle>{title}</ClaimTitle>
 										<ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
 									</Fragment>
@@ -146,31 +222,44 @@ const SellOrderDetail = () => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>2</span> / 50개 )
+						조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
+						{saleProductDetailPagination?.listCount}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown />
-						<Excel
-						//  getRow={getRow}
-						/>
+						<PageDropdown handleDropdown={handleTablePageSize} />
+						<Excel getRow={saleProductDetailData} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량<span> 2 </span>kg / 총 중량 kg
+						선택 중량
+						<span> {formatWeight(KilogramSum(checkBoxSelect))} </span>
+						kg / 총 중량 {formatWeight(saleProductDetailPagination.totalWeight)} kg
 					</div>
-					<div style={{ display: 'flex', gap: '10px' }}>
-						<P>목적지</P>
-						<CustomInput placeholder="h50" width={60} />
-						<CustomInput placeholder="목적지명" width={120} />
-						<CustomInput placeholder="도착지 연락처" width={120} />
-						<TGreyBtn>적용</TGreyBtn>
-						<BtnBound />
-						<WhiteBlackBtn>목적지 승인 요청</WhiteBlackBtn>
-						<BtnBound />
-						<WhiteRedBtn>목적지 변경 반려</WhiteRedBtn>
-						<WhiteSkyBtn>목적지 변경 반려</WhiteSkyBtn>
+					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+						<p>목적지</p>
+						<CustomInput placeholder="h50" width={60} height={32} defaultValue={destinationData?.code} />
+						<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destinationData?.name} />
+						{/* <CustomInput placeholder="도착지 연락처" width={120} height={32} /> */}
+						<TWhiteBtn
+							style={{ writingMode: 'horizontal-tb' }}
+							height={30}
+							onClick={() => {
+								setDestinationPopUp(true)
+							}}
+						>
+							찾기
+						</TWhiteBtn>
+						<TGreyBtn onClick={handleSetCustomerDestinationUid}>적용</TGreyBtn>
+						<BtnBound style={{ margin: '0px' }} />
+						<WhiteBlackBtn onClick={destiApproveOnClickHandler}>목적지 승인 요청</WhiteBlackBtn>
+
+						<BtnBound style={{ margin: '0px' }} />
+						<WhiteRedBtn onClick={destiChangeRejOnClickHandler}>목적지 변경 반려</WhiteRedBtn>
+						<WhiteSkyBtn str onClick={destiChangeApprovOnClickHandler}>
+							목적지 변경 승인
+						</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
 				{/* <Test3 /> */}
@@ -189,6 +278,14 @@ const SellOrderDetail = () => {
 					</div>
 				</TCSubContainer>
 			</TableContianer>
+			{destinationPopUp && (
+				<InventoryFind
+					title={'목적지 찾기'}
+					setSwitch={setDestinationPopUp}
+					data={inventoryDestination}
+					handleButtonOnClick={() => {}}
+				/>
+			)}
 		</FilterContianer>
 	)
 }
