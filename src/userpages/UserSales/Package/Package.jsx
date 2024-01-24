@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react'
 import { useUserPackageProductListQuery } from '../../../api/user'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
@@ -15,10 +16,9 @@ import useTableSelection from '../../../hooks/useTableSelection'
 import {
 	FilterContianer,
 	FilterHeader,
-	FilterHeaderAlert,
 	FilterWrap,
 	TCSubContainer,
-	TableContianer,
+	TableContianer
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
 import { toggleAtom } from '../../../store/Layout/Layout'
@@ -121,23 +121,7 @@ const Package = ({}) => {
 				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 			</FilterHeader>
 			{/* 공지사항 */}
-			<FilterHeaderAlert>
-				<div style={{ display: 'flex' }}>
-					<div style={{ marginRight: '20px' }}>
-						<img src="/img/notice.png" />
-					</div>
-					<div style={{ marginTop: '6px' }}>
-						<div>· 주의사항 영역</div>
-						<div style={{ marginTop: '6px' }}>
-							<div>· 주의사항 영역</div>
-						</div>
-					</div>
-				</div>
-				<div>
-					수정
-					<img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-				</div>
-			</FilterHeaderAlert>
+			<CautionBox category={CAUTION_CATEGORY.packageProduct} />
 			{/* 검색 필터 */}
 			{exFilterToggle && (
 				<FilterWrap>
