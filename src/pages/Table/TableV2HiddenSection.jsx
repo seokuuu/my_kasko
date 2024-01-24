@@ -71,7 +71,9 @@ const TableV2HiddenSection = ({ popupTable = false }) => {
         disabled={hiddenColumns.length < 1}
         onClick={() => { setHiddenSectionShow(show => !show) }}
       >
-        숨긴 항목
+        <span>
+          숨긴 항목 ({hiddenColumns[tableType].length})
+        </span>
         <img src="/img/arrow_B.png" />
       </SHiddenSection.Button>
       {

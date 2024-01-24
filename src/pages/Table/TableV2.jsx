@@ -204,6 +204,7 @@ const TableV2 = ({
 		}
 
 		const columnId = event.column.colId;
+		console.log(event, columnId);
 		setHiddenColumn({ 
 			type: tableType, 
 			value: columnId 
