@@ -177,7 +177,8 @@ const PackageProductSearchModalFields = ({
 										},
 									]}
 									setState={setSearch}
-									stateKey="saleType"
+									stateKey="saleTypeList"
+									stateType="object"
 								/>
 							</ExCheckWrap>
 						</PartWrap>
@@ -200,7 +201,8 @@ const PackageProductSearchModalFields = ({
 									},
 								]}
 								setState={setSearch}
-								stateKey="salePriceType"
+								stateKey="salePriceTypeList"
+								stateType="object"
 							/>
 						</PartWrap>
 					</RowWrap>

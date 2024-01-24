@@ -11,6 +11,7 @@ const urls = {
   packageProducts:"/package-product/products",
   recommend:'/single-product/best-order',
   beRecommend:'/single-product/best',
+  pkgSaleCategory :'/package-product/sale-category',
   pkgrecommend:'/package-product/best-order',
   pkgbeRecommend:'/package-product/best',
 
@@ -118,6 +119,10 @@ export async function getPackageProductsList(params) {
 	})
 	console.log('RES', r)
 	return { pagination, r }
+}
+
+export async function patchPkgSaleCategory(data) {
+	return await client.patch(`${urls.pkgSaleCategory}`, data)
 }
 
 export async function postCreatePackage(data) {

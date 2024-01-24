@@ -156,15 +156,13 @@ const SingleAllProduct = ({ setSelectPr, selectPr }) => {
 							<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 						</FilterHeader>
 						{exFilterToggle && (
-							<>
-								<GlobalProductSearch
-									param={param}
-									isToggleSeparate={true}
-									renderCustomSearchFields={(props) => <PackageProductSearchModalFields {...props} />}
-									globalProductSearchOnClick={globalProductSearchOnClick}
-									globalProductResetOnClick={globalProductResetOnClick}
-								/>
-							</>
+							<GlobalProductSearch
+								param={param}
+								isToggleSeparate={true}
+								renderCustomSearchFields={(props) => <PackageProductSearchModalFields {...props} />}
+								globalProductSearchOnClick={globalProductSearchOnClick}
+								globalProductResetOnClick={globalProductResetOnClick}
+							/>
 						)}
 						<TableContianer>
 							<TCSubContainer bor>

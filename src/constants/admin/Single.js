@@ -3,11 +3,11 @@ import RecommendCellRenderer from '../../pages/Table/RecommendCellRenderer'
 import RecommendCellRenderer2 from '../../pages/Table/RecommendCellRenderer2'
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer.jsx'
 import InputCellRenderer from "../../pages/Table/InputCellRenderer.jsx"
+import { FieldsSettings } from '../../utils/fieldsSetting.js'
 
 
 
 var checkboxSelection = function (params) {
-
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0
 }
@@ -18,19 +18,22 @@ var headerCheckboxSelection = function (params) {
 }
 
 export const singleDispatchFields= {
-    '순번':'index',
-    '고유 번호': 'uid',
-    '제품 번호': 'number',
-    '규격 약호': 'spec',
-    '창고': 'storageName',
-    '제품 사양': 'wdh',
-    '두께': 'thickness',
-    '폭': 'width',
-    '길이': 'length',
-    '중량': 'weight',
-    '제품 등급': 'grade',
-    '용도 코드': 'usageCode',
-    '용도명': 'usageCodeName',
+  '순번':'index',
+  '고유 번호': 'uid',
+  '제품 번호': 'number',
+  '규격 약호': 'spec',
+  '창고': 'storageName',
+  '제품 사양': 'wdh',
+  '두께': 'thickness',
+  '폭': 'width',
+  '길이': 'length',
+  '중량': 'weight',
+  '제품 등급': 'grade',
+  '용도 코드': 'usageCode',
+  '용도명': 'usageCodeName',
+  '경매 등록 상태': 'registrationStatus',
+  '아울렛 상태':'outletStatus',
+  '아울렛 가격':'outletPrice',
     'C%': 'c',
     'Si': 'si',
     'Mn': 'mn',
@@ -47,7 +50,6 @@ export const singleDispatchFields= {
     '입고일': 'receiptDate',
     '유찰 횟수': 'failCount',
     '제품 상태': 'productStatus',
-    '경매 등록 상태': 'registrationStatus',
     '매입처': 'supplier',
     '제조사': 'maker',
     '판매 구분': 'saleCategory',
@@ -88,15 +90,7 @@ export const singleDispatchFields= {
   
 
 export const SingleDispatchFieldsCols= [
-  { field: '',   headerClass:'custom-header-style',flex:1,
-    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-     minWidth: 50, checkboxSelection, headerCheckboxSelection },
-  ...Object.keys(singleDispatchFields).map((item) => ({
-    headerClass:'custom-header-style',flex:1,
-    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-    field: item,
-    minWidth: 100,
-  })),
+    ...FieldsSettings(singleDispatchFields).FieldsCols
 ]
 
 export const SingleSalesDispatchFieldsCols= [
@@ -110,12 +104,20 @@ export const SingleSalesDispatchFieldsCols= [
     uidFieldName: '경매 번호',
     editType: 'productModify',
   }},
-  ...Object.keys(singleDispatchFields).map((item) => ({
+    ...Object.keys(singleDispatchFields).map((item) => ({
     headerClass:'custom-header-style',flex:1,
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     field: item,
+    editable:(item === '메모' || item === '비고' )? true:false,
     minWidth: 100,
-  })),
+    cellRenderer:(params) => {
+      if(typeof params.value === 'boolean'){
+        return params.value ? 'Y' : 'N';
+      }else{
+        return params.value
+      }
+    }
+  })), 
 ]
 var optionFn = function (key){
   
@@ -184,7 +186,7 @@ export const SingleModifyDispatchFieldsCols= [
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
      minWidth: 50, checkboxSelection, headerCheckboxSelection },
   ...Object.entries(SingleModifyFields).map(([k,v]) => {
-    console.log(k)
+
     if(k !=='재고 상태' && k !== '판매 구분' && k !== '매입처' && k !=='제조사' ){
       return {
         headerClass:'custom-header-style',flex:1,
@@ -192,7 +194,7 @@ export const SingleModifyDispatchFieldsCols= [
         field: k,
         minWidth: 100,
         editable:true,
-        cellRenderer:InputCellRenderer,
+        cellRenderer: InputCellRenderer,
         cellRendererParams:{
           uidFieldName:k,
           valueName:v,

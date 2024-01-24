@@ -12,13 +12,13 @@ import {
 	PartWrap,
 	RowWrap,
 	Tilde,
-	GridWrap,
 } from '../../../modal/External/ExternalFilter'
 import StandardFind from '../../../modal/Multi/StandardFind'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
-import DateGrid from '../../../components/DateGrid/DateGrid'
+
+import DateSearchSelect from '../../../components/Search/DateSearchSelect'
 
 const InventorySearchFields = ({
 	// prettier-ignore
@@ -90,22 +90,24 @@ const InventorySearchFields = ({
 					</PartWrap>
 				</RowWrap>
 				<RowWrap>
-					<PartWrap first>
-						<h6>입고일자</h6>
-						<GridWrap>
-							<DateGrid bgColor={'white'} fontSize={17} width={130} />
-							<Tilde>~</Tilde>
-							<DateGrid bgColor={'white'} fontSize={17} width={130} />
-						</GridWrap>
+					<PartWrap>
+						<DateSearchSelect
+							title={'입고일자'}
+							startInitDate={search.startSendDate}
+							endInitDate={search.endSendDate}
+							startDateChange={(value) => commonDropdownButtonHandler(value, 'startSendDate')}
+							endDateChange={(value) => commonDropdownButtonHandler(value, 'endSendDate')}
+						/>
 					</PartWrap>
 
 					<PartWrap>
-						<h6>출고일자</h6>
-						<GridWrap>
-							<DateGrid bgColor={'white'} fontSize={17} width={130} />
-							<Tilde>~</Tilde>
-							<DateGrid bgColor={'white'} fontSize={17} width={130} />
-						</GridWrap>
+						<DateSearchSelect
+							title={'출고일자'}
+							startInitDate={search.shipmentStartDate}
+							endInitDate={search.shipmentEndDate}
+							startDateChange={(value) => commonDropdownButtonHandler(value, 'shipmentStartDate')}
+							endDateChange={(value) => commonDropdownButtonHandler(value, 'shipmentEndDate')}
+						/>
 					</PartWrap>
 				</RowWrap>
 				<RowWrap>
@@ -126,6 +128,7 @@ const InventorySearchFields = ({
 							]}
 							setState={setSearch}
 							stateKey="saleCategoryList"
+							stateType="object"
 						/>
 					</PartWrap>
 				</RowWrap>
@@ -163,7 +166,8 @@ const InventorySearchFields = ({
 									},
 								]}
 								setState={setSearch}
-								stateKey="saleCategoryList"
+								stateKey="shipmentStatusList"
+								stateType="object"
 							/>
 						</PartWrap>
 					</PartWrap>

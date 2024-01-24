@@ -178,6 +178,7 @@ const PackageProductSearchFields = ({
 									]}
 									setState={setSearch}
 									stateKey="saleType"
+									stateType="single"
 								/>
 							</ExCheckWrap>
 						</PartWrap>

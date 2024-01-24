@@ -29,7 +29,7 @@ import {
 import { modalAtom } from '../../../store/Layout/Layout'
 
 import useReactQuery from '../../../hooks/useReactQuery'
-import { getInventoryStocks, patchStockCategory } from '../../../api/stocks/Inventory'
+import { getInventoryStocks, patchStockCategory, postCancelInStock } from '../../../api/stocks/Inventory'
 import { StockInventoryFieldCols, StockInventoryFields } from '../../../constants/admin/StockInventory'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Multi2 from '../../../modal/Common/Multi2'
@@ -42,12 +42,13 @@ import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageC
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import InventorySearchFields from './InventorySearchFields'
 import { isEqual } from 'lodash'
+import useAlert from '../../../store/Alert/useAlert'
+import { KilogramSum } from '../../../utils/KilogramSum'
 
 const Inventory = ({}) => {
 	const paramData = { pageNum: 1, pageSize: 50, reciptStatus: '입고 확정' }
 	const [param, setParam] = useState(paramData)
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
-
 	const {
 		data: TableData,
 		isLoading,
@@ -93,25 +94,40 @@ const Inventory = ({}) => {
 	const openModal = () => {
 		setModalSwitch(true)
 	}
-
+	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const changeSaleCategory = () => {
 		const res = mutate(parameter, {
 			onSuccess: (d) => {
 				if (d?.data.status === 200) {
-					setIsMulti(false)
-					window.location.reload()
+					showAlert({
+						title: '저장되었습니다.',
+						func: () => {
+							setIsMulti(false)
+							window.location.reload()
+						},
+					})
+				}
+				if (d.data.status === 400) {
+					showAlert({
+						title: `${d.data.message}`,
+						func: () => {
+							setIsMulti(false)
+							// window.location.reload()
+						},
+					})
 				}
 			},
 			onError: (e) => {
 				setErrorMsg(e.data.message)
-				setNowPopup({
-					num: '1-12',
-					title: '',
-					content: `${e.data.message}`,
-					func: () => {
-						setIsMulti(false)
-					},
-				})
+				if (e.data.status === 400) {
+					showAlert({
+						title: errorMsg,
+						func: () => {
+							setIsMulti(false)
+							// window.location.reload()
+						},
+					})
+				}
 			},
 		})
 
@@ -135,6 +151,25 @@ const Inventory = ({}) => {
 			}
 		})
 	}
+	const { mutate: cancelInStock } = useMutationQuery('cancelInStock', postCancelInStock)
+	const handleCancelInStock = () => {
+		const dataUid = checkBoxSelect?.map((item) => item['제품 고유 번호'])
+		console.log(dataUid)
+		cancelInStock(dataUid, {
+			onSuccess: () => {
+				showAlert({
+					title: '삭제에 성공했습니다.',
+					func: () => {
+						window.location.reload()
+					},
+				})
+			},
+		})
+	}
+
+	useEffect(() => {
+		if (checkBoxSelect) return setSelectProductNumber((p) => [...checkBoxSelect.map((i) => i['제품 번호'])])
+	}, [checkBoxSelect])
 	const { pagination: customPagination, onPageChanage } = useTablePaginationPageChange(TableData, setParam)
 	return (
 		<FilterContianer>
@@ -158,19 +193,22 @@ const Inventory = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>2</span> / 50개 )
+						조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
+						{pagenations ? pagenations?.listCount : TableData?.listCount}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown />
-						<Excel
-						//  getRow={getRow}
+						<PageDropdown
+							handleDropdown={(e) => {
+								setParam((p) => ({ ...p, pageNum: 1, pageSize: e.target.value }))
+							}}
 						/>
+						<Excel getRow={TableData} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량<span> 2 </span>kg / 총 중량 kg
+						선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총 {pagenations?.totalWeight} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteBlackBtn
@@ -185,7 +223,7 @@ const Inventory = ({}) => {
 						>
 							판매 구분 변경
 						</WhiteBlackBtn>
-						<WhiteRedBtn>입고 확정 취소</WhiteRedBtn>
+						<WhiteRedBtn onClick={handleCancelInStock}>입고 확정 취소</WhiteRedBtn>
 					</div>
 				</TCSubContainer>
 				<Table getRow={tableRowData} getCol={getCol} tablePagination={page} onPageChange={onPageChanage} />
@@ -195,7 +233,6 @@ const Inventory = ({}) => {
 				<Multi2
 					closeFn={(e, text) => {
 						const { tagName } = e.target
-						// console.log('TARGET :', e.target.tagName)
 						if (tagName === 'IMG') {
 							setModalSwitch(false)
 						}
@@ -205,6 +242,7 @@ const Inventory = ({}) => {
 					errMsg={errorMsg}
 					saveFn={changeSaleCategory}
 					productNumbers={selectProductNumber}
+					isPkg={false}
 				/>
 			)}
 

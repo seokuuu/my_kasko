@@ -14,6 +14,7 @@ var headerCheckboxSelection = function (params) {
 export const StockInventoryFields = {
   '제품 고유 번호': 'uid',
   '제품 번호': 'productNumber',
+  '출고 번호':'outNumber',
   '고객 코드': 'customerCode',
   '고객사명': 'customerName',
   '등급': 'grade',
@@ -31,6 +32,7 @@ export const StockInventoryFields = {
   'mn': 'mn',
   '창고': 'storageName',
   '입고일': 'receiptDate',
+  '출고일':'outDate',
   '제품군': 'spart',
   '재고 상태': 'stockStatus',
   '매입처': 'supplier',
@@ -76,6 +78,7 @@ export const StockInventoryFields = {
   '매입 운반비': 'inboundFreightAmount',
   '매출 운반비': 'outboundFreightAmount',
   '시작가': 'auctionStartPrice'
+  
 }
 
 
@@ -105,12 +108,13 @@ export const StockInventoryFieldCols = [
 
 
 export const StockDetailInventoryFields = {
-  // '중량 제품 번호':'productNoNumber',
+  '중량 제품 번호':'splitProductUid',
   '제품 고유 번호': 'uid',
   '제품 번호': 'number',
   '중량': 'weight',
-  '폭': 'width',
   '길이': 'length',
+  '두께': 'thickness',
+  '폭': 'width',
   '제조사': 'maker',
   '판매 구분': 'saleCategory',
   '유찰 횟수': 'failCount',

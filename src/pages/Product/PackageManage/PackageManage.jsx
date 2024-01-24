@@ -13,13 +13,19 @@ import {
 	toggleAtom,
 	packageDetailModal,
 	selectedRowsAtom,
+	popupAtom,
 } from '../../../store/Layout/Layout'
 import { add_element_field } from '../../../lib/tableHelpers'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
-import { deletePackage, getPackageList, patchBeBestPackageRecommend } from '../../../api/SellProduct'
+import {
+	deletePackage,
+	getPackageList,
+	patchBeBestPackageRecommend,
+	patchPkgSaleCategory,
+} from '../../../api/SellProduct'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { packageDispatchFields, packageDispatchFieldsCols } from '../../../constants/admin/SellPackage'
 import Table from '../../Table/Table'
@@ -29,6 +35,10 @@ import useMutationQuery from '../../../hooks/useMutationQuery.js'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch.jsx'
 import PackageProductSearchFields from './PackageProductSearchFields.jsx'
 import { isEqual } from 'lodash'
+import Multi2 from '../../../modal/Common/Multi2.jsx'
+import { changeCategoryAtom, changePkgSaleTypeAtom } from '../../../store/Layout/Popup.jsx'
+import useAlert from '../../../store/Alert/useAlert.js'
+import { KilogramSum } from '../../../utils/KilogramSum.js'
 
 const PackageManage = ({}) => {
 	const [isCreate, setIsCreate] = useState(false)
@@ -86,15 +96,19 @@ const PackageManage = ({}) => {
 	const onChangePage = (value) => {
 		setParam((prev) => ({ ...prev, pageNum: Number(value) }))
 	}
+	const [selectProductNumber, setSelectProductNumber] = useState([])
 	const [selectUids, setSelectUid] = useState([])
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const { mutate: beRecommend } = useMutationQuery('beRecommend', patchBeBestPackageRecommend)
 	const { mutate: deletePkg } = useMutationQuery('deletePkg', deletePackage)
 
 	useEffect(() => {
-		if (checkBoxSelect) return setSelectUid(() => [...checkBoxSelect.map((i) => i['고유 번호'])])
+		if (checkBoxSelect) {
+			setSelectProductNumber(() => [...checkBoxSelect.map((i) => i['패키지 번호'])])
+			setSelectUid(() => [...checkBoxSelect.map((i) => i['고유 번호'])])
+		}
 	}, [checkBoxSelect])
-
+	console.log(selectProductNumber)
 	const patchRecommend = () => {
 		beRecommend(
 			{
@@ -135,7 +149,23 @@ const PackageManage = ({}) => {
 			}
 		})
 	}
-
+	const [isPopup, setIsPopup] = useState(false)
+	const [popUp, setPopup] = useAtom(popupAtom)
+	const [request, setRequest] = useAtom(changePkgSaleTypeAtom)
+	const { mutate: changeCT } = useMutationQuery('change-Pkg-category', patchPkgSaleCategory)
+	const { simpleAlert, redAlert } = useAlert()
+	const handleOpenSaleType = () => {
+		changeCT(request, {
+			onSuccess: () => {
+				simpleAlert('저장이 되었습니다.')
+				window.location.reload()
+			},
+			onError: (e) => {
+				redAlert(e?.data?.message)
+			},
+		})
+	}
+	console.log(selectProductNumber)
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -155,7 +185,8 @@ const PackageManage = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>2</span> / 50개 )
+						조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
+						{pagination ? pagination?.listCount : pagination?.listCount}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -164,17 +195,27 @@ const PackageManage = ({}) => {
 								setParam((p) => ({ ...p, pageNum: 1, pageSize: e.target.value }))
 							}}
 						/>
-						<Excel />
+						<Excel getRow={getRow} sheetName="판매제품_패키지관리" />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>
 					<div>
-						선택 중량<span> 2 </span>kg / 총 중량 kg
+						선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총{' '}
+						{pagination
+							? pagination?.totalWeight.toLocaleString('ko-kr')
+							: pagination?.totalWeight.toLocaleString('ko-kr')}{' '}
+						중량 kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<YellBtn onClick={patchRecommend}>추천제품지정 ({pages?.bestCount} / 10)</YellBtn>
 						<BtnBound />
-						<WhiteBlackBtn>판매 구분 변경</WhiteBlackBtn>
+						<WhiteBlackBtn
+							onClick={() => {
+								setIsPopup(true)
+							}}
+						>
+							판매 구분 변경
+						</WhiteBlackBtn>
 						<BtnBound />
 						<WhiteRedBtn onClick={handleDeletePkg}>패키지 해제</WhiteRedBtn>
 
@@ -197,6 +238,22 @@ const PackageManage = ({}) => {
 			</TableContianer>
 			{isModal && <PackageManageFind isCreate={isCreate} url={'/product/packagecreate'} />}
 			{detailModal && <PackageDetailModal />}
+			{isPopup && (
+				<Multi2
+					closeFn={(e, text) => {
+						const { tagName } = e.target
+						// console.log('TARGET :', e.target.tagName)
+						if (tagName === 'IMG') {
+							setIsPopup(false)
+						}
+					}}
+					// errMsg={errorMsg}
+					saveFn={handleOpenSaleType}
+					productNumbers={selectUids}
+					length={3}
+					isPkg={true}
+				/>
+			)}
 		</FilterContianer>
 	)
 }

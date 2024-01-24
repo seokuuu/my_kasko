@@ -14,7 +14,7 @@ import {
 } from '../External/ExternalFilter'
 import HeaderToggle from '../../components/Toggle/HeaderToggle'
 import { useAtom, useAtomValue } from 'jotai'
-import { packageDetailModal, selectPackageAtom, toggleAtom } from '../../store/Layout/Layout'
+import { packageDetailModal, selectPackageAtom, selectedRowsAtom, toggleAtom } from '../../store/Layout/Layout'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../components/MapTable/MapTable'
 import Table from '../../pages/Table/Table'
 import Hidden from '../../components/TableInner/Hidden'
@@ -28,13 +28,14 @@ import {
 import useReactQuery from '../../hooks/useReactQuery'
 import { getPackageProductsList } from '../../api/SellProduct'
 import { add_element_field } from '../../lib/tableHelpers'
+import { KilogramSum } from '../../utils/KilogramSum'
 
 export default function PackageDetailModal() {
 	const [isModal, setIsModal] = useAtom(packageDetailModal)
 	const select = useAtomValue(selectPackageAtom)
 	const [param, setParam] = useState({
 		pageNum: 1,
-		pageSize: 1000,
+		pageSize: 50,
 		packageNumber: select['패키지 번호'],
 	})
 
@@ -47,14 +48,13 @@ export default function PackageDetailModal() {
 	const detailList = data?.r
 	const tablePagination = data?.pagination
 	const [filteredData, setFilteredData] = useState([])
-	console.log(filteredData)
 	// console.log('ROW', detailList)
+
 	useEffect(() => {
 		if (filteredData && isSuccess) {
 			detailList && setFilteredData(detailList)
 		}
-	}, [isSuccess])
-	useEffect(() => {
+		console.log('error1')
 		if (!isSuccess && !filteredData) return null
 		if (Array.isArray(filteredData)) {
 			setGetRow(add_element_field(filteredData, packageProductsDispatchFields))
@@ -76,13 +76,14 @@ export default function PackageDetailModal() {
 		}))
 	}
 
+	console.log('필터 데이터', filteredData[0])
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
 			...prevParam,
 			pageNum: Number(value),
 		}))
 	}
-
+	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	return (
 		<OutSide>
 			<Container>
@@ -115,16 +116,16 @@ export default function PackageDetailModal() {
 									{titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
 										<Fragment key={idx}>
 											<ClaimTitle>{title}</ClaimTitle>
-											{/* {title === '패키지 명' && (
-												// <ClaimContent>{filteredData && filteredData[0].packageName}</ClaimContent>
+											{title === '패키지 명' && (
+												<ClaimContent>{detailList ? detailList[0].packageName : null}</ClaimContent>
 											)}
 											{title === '수량' && <ClaimContent>{filteredData.length}</ClaimContent>}
 											{title === '상시판매가' && (
-												// <ClaimContent>{filteredData && filteredData[0].packagePrice}</ClaimContent>
+												<ClaimContent>{detailList ? detailList[0].packagePrice : null}</ClaimContent>
 											)}
 											{title === '시작가' && (
-												// <ClaimContent>{filteredData && filteredData[0].auctionStartPrice}</ClaimContent>
-											)} */}
+												<ClaimContent>{detailList ? detailList[0].auctionStartPrice : null}</ClaimContent>
+											)}
 										</Fragment>
 									))}
 								</ClaimRow>
@@ -133,7 +134,8 @@ export default function PackageDetailModal() {
 						<TableContianer>
 							<TCSubContainer bor>
 								<div>
-									조회 목록 (선택 <span>0</span>/ 50개)
+									조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
+									{tablePagination ? tablePagination?.listCount : tablePagination?.listCount}개 )
 									<Hidden />
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
@@ -142,8 +144,8 @@ export default function PackageDetailModal() {
 								</div>
 							</TCSubContainer>
 							<TCSubContainer bor>
-								<div style={{ marginTop: '10px', marginBottom: '10px' }}>
-									선택 중량<span> 2 </span>kg / 총 중량 kg
+								<div>
+									선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총 {tablePagination?.totalWeight} kg
 								</div>
 							</TCSubContainer>
 							<Table getRow={getRow} getCol={getCol} tablePagination={tablePagination} onPageChange={onPageChange} />

@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { GreyBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
-import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
+import { GreyBtn } from '../../../../common/Button/Button'
+import { MainSelect } from '../../../../common/Option/Main'
+import useGlobalProductSearchFieldData from '../../../../hooks/useGlobalProductSearchFieldData'
 import {
 	ExInputsWrap,
 	FilterRight,
@@ -12,10 +12,13 @@ import {
 	PartWrap,
 	RowWrap,
 	Tilde,
-} from '../../../modal/External/ExternalFilter'
-import StandardFind from '../../../modal/Multi/StandardFind'
-import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
-import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
+} from '../../../../modal/External/ExternalFilter'
+import StandardFind from '../../../../modal/Multi/StandardFind'
+import ProductNumber from '../../../../components/GlobalProductSearch/SearchFields/ProductNumber'
+import { kyuModalAtom } from '../../../../store/Layout/GlobalProductSearch'
+import { InputSearch } from '../../../../components/Search'
+import CustomCheckBox from '../../../Operate/UI/CustomCheckBox/CustomCheckBox'
+import { DoubleWrap, ExCheckWrap } from '../../../../modal/External/ExternalFilter'
 
 const SingleSellProductSearchFields = ({
 	// prettier-ignore
@@ -39,10 +42,18 @@ const SingleSellProductSearchFields = ({
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
 
 	return (
-      <>
+		<>
 			<FilterLeft>
-				<RowWrap>
-					{/* 창고 구분 */}
+				<RowWrap none>
+					<PartWrap first>
+						<PartWrap>
+							<InputSearch
+								title={'ProNo.'}
+								value={search.proNo}
+								onChange={(value) => commonDropdownButtonHandler(value, 'proNo')}
+							/>
+						</PartWrap>
+					</PartWrap>
 					<PartWrap>
 						<h6>창고 구분</h6>
 						<PWRight>
@@ -68,7 +79,8 @@ const SingleSellProductSearchFields = ({
 							/>
 						</PWRight>
 					</PartWrap>
-					{/* 규격약호 */}
+				</RowWrap>
+				<RowWrap>
 					<PartWrap>
 						<h6>규격 약호</h6>
 						<Input readOnly={true} value={search.spec} />
@@ -83,7 +95,6 @@ const SingleSellProductSearchFields = ({
 						</GreyBtn>
 					</PartWrap>
 				</RowWrap>
-				{/* 2행 */}
 				<RowWrap>
 					{/* 구분 */}
 					<PartWrap>
@@ -140,6 +151,78 @@ const SingleSellProductSearchFields = ({
 						</PWRight>
 					</PartWrap>
 				</RowWrap>
+				<RowWrap>
+					<PartWrap first>
+						<h6>판매 구분</h6>
+						<ExCheckWrap>
+							<CustomCheckBox
+								initOptions={[
+									{
+										checked: false,
+										text: '판매재',
+										value: '판매재',
+									},
+									{
+										checked: false,
+										text: '판매제외재',
+										value: '판매제외재',
+									},
+									{
+										checked: false,
+										text: '판매완료재',
+										value: '판매완료재',
+									},
+								]}
+								setState={setSearch}
+								stateKey="saleCategoryList"
+							/>
+						</ExCheckWrap>
+					</PartWrap>
+					<PartWrap>
+						<h6>판매 유형</h6>
+						<CustomCheckBox
+							initOptions={[
+								{
+									checked: false,
+									text: '경매 대상재',
+									value: '경매 대상재',
+								},
+								{
+									checked: false,
+									text: '상시판매 대상재',
+									value: '상시판매 대상재',
+								},
+							]}
+							setState={setSearch}
+							stateKey="saleTypeList"
+							stateType="object"
+						/>
+					</PartWrap>
+				</RowWrap>
+
+				<RowWrap>
+					<PartWrap first>
+						<h6>판매가 유형</h6>
+						<CustomCheckBox
+							initOptions={[
+								{
+									checked: false,
+									text: '특가',
+									value: '특가',
+								},
+								{
+									checked: false,
+									text: '일반',
+									value: '일반',
+								},
+							]}
+							setState={setSearch}
+							stateKey="salePriceTypeList"
+							stateType="object"
+						/>
+					</PartWrap>
+				</RowWrap>
+
 				<RowWrap>
 					{/* 두깨 */}
 					<PartWrap>
@@ -231,12 +314,9 @@ const SingleSellProductSearchFields = ({
 				{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
 			</FilterLeft>
 			<FilterRight>
-				<ProductNumber
-					initialValue={search.productNumberList}
-					setState={setSearch}
-					valueName={'productNumberList'}
-					height="100%"
-				/>
+				<DoubleWrap>
+					<ProductNumber setState={setSearch} valueName={'productNumber'} height="100%" />
+				</DoubleWrap>
 			</FilterRight>
 		</>
 	)
