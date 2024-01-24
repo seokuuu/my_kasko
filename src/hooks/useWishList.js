@@ -21,7 +21,6 @@ const MAX_WISH_COUNT = 10;
  */
 const USER_WISH_STORAGE_KEY = (userId) => `${WISH_STORAGE_KEY}_${userId}`; 
 
-
 /**
  * 관심상품 HOOK
  */
@@ -45,8 +44,6 @@ export default function useWishList() {
 
     const addProdNums = products.map(v => getProductNumber(v[prodNumKey])).filter(v => v.length > 0);
     const mergedProdNums = getMergedProdNums(wishProdNums, addProdNums);
-
-    console.log(mergedProdNums,products);
 
     setWishProdNums(mergedProdNums);
     saveWishList(mergedProdNums, userId);

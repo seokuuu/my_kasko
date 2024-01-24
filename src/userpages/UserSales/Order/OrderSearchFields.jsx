@@ -26,7 +26,7 @@ import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 /**
  * @constant 주문 상태
  */
-const ORDER_STATUS_LIST = ['전체', '주문요청', '주문취소', '주문확정']
+const ORDER_STATUS_LIST = ['전체', '주문 요청', '주문 취소', '주문 확정']
 
 const OrderSearchFields = ({
 	// prettier-ignore
