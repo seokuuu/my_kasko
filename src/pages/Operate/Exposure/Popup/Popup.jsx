@@ -29,6 +29,7 @@ const Popup = ({}) => {
 	const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
 	// 테이블에서 선택된 값,선택된 데이터 갯수
 	const { selectedData, selectedCount } = useTableSelection()
+	console.log('selectedData :', selectedData)
 	// 목록 리스트
 	const [rows, setRows] = useState([])
 	// 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)

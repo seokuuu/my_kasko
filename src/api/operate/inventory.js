@@ -8,9 +8,8 @@ const urls = {
 export async function getInventoryLedger(data) {
   const response = await client.get(`${urls.inventory}`, {
     params: data,
-    paramsSerializer: (param) => {
-      return qs.stringify(param)
-    },
+
+    
   })
 
   return response
