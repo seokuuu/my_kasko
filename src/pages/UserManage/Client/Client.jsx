@@ -48,8 +48,10 @@ import ClientPostModal from './ClientPostModal'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import RoundSearchFields from '../../Auction/Round/RoundSearchFields'
 import ClientSearchFields from './ClientSearchFields'
+import useAlert from '../../../store/Alert/useAlert'
 
 const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
+	const { simpleConfirm, simpleAlert } = useAlert()
 	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
 	const [editModal, setEditModal] = useAtom(usermanageClientEdit)
 	console.log('editModal', editModal)
@@ -160,16 +162,24 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
 		},
 	})
 
+	// 선택한 것 삭제 요청 (해당 함수 func 인자로 전달)
+	const propsRemove = () => {
+		checkedArray.forEach((item) => {
+			mutation.mutate(item['운반비 고유 번호']) //mutation.mutate로 api 인자 전해줌
+		})
+	}
+
 	const handleRemoveBtn = useCallback(() => {
-		if (!isArray(checkedArray) || !checkedArray.length > 0) return alert('선택해주세요!')
-		// setRemoveModal(true)
+		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
+
+		simpleConfirm('삭제하시겠습니까?', () => propsRemove)
 	}, [checkedArray])
 
 	const setPostPage = () => {
 		setModal(true)
 	}
 	const openAuctionModal = () => {
-		if (!checkedArray) return alert('고객을 선택해주세요')
+		if (!checkedArray) return simpleAlert('고객을 선택해주세요')
 		setAuctionModal(true)
 	}
 
@@ -178,13 +188,6 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
 			queryClient.invalidateQueries('transportation')
 		},
 	})
-
-	// 선택한 것 삭제 요청 (해당 함수 func 인자로 전달)
-	const propsRemove = () => {
-		checkedArray.forEach((item) => {
-			mutation.mutate(item['운반비 고유 번호']) //mutation.mutate로 api 인자 전해줌
-		})
-	}
 
 	// 경매 제한 상태 변경
 	const mutationAuction = useMutation(postChangeAuction, {
