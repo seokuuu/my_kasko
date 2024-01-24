@@ -31,7 +31,6 @@ const SelectedRowsTable = ({ selectedRows, columns }) => {
         console.error('Error fetching data: ', error)
       }
     }
-
     fetchData()
   }, [])
   const onGridReady = (params) => {
@@ -52,7 +51,6 @@ const SelectedRowsTable = ({ selectedRows, columns }) => {
     rowHeight: 30,
     /** 페이징 처리위해 필요 */
     pagination: true,
-    paginationPageSize: 1,
   }
   // 만약 선택된 행이 없으면 아무것도 렌더링하지 않습니다.
   if (!selectedRows.length) {
@@ -60,10 +58,9 @@ const SelectedRowsTable = ({ selectedRows, columns }) => {
   }
   return (
     <>
-      <p>이 부분만 하면 나옴</p>
       <TableUi
         columnDefs={columnDefs}
-        rowData={rowData}
+        rowData={selectedRows}
         onGridReady={onGridReady}
         onCellClicked={onCellClicked}
         gridOptions={gridOptions}

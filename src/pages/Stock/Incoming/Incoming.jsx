@@ -223,7 +223,6 @@ const Incoming = ({}) => {
 							<WhiteSkyBtn onClick={stockReceive}>재고 수신</WhiteSkyBtn>
 						</div>
 					</TCSubContainer>
-					{checkBoxSelect?.length > 0 && <SelectedRowsTable selectedRows={selectedRows} columns={StockIncomingFields} />}
 				</TableContianer>
 
 			</FilterContianer>
@@ -237,8 +236,6 @@ const Incoming = ({}) => {
 					excelToJson={excelToJson}
 				/>
 			)}
-
-			{/*<SelectedRowsTable selectedRows={checkBoxSelect} />*/}
 		</>
 	)
 }
