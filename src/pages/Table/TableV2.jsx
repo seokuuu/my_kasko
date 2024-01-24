@@ -71,29 +71,12 @@ const TABLE_OPTION = {
 	], 
 	defaultColDef: {
 		editable: false,
-		enableRowGroup: true,
+		enableRowGroup: false,
 		enablePivot: true,
 		enableValue: true,
 		sortable: true,
 		resizable: true,
 		filter: true,
-	},
-	defaultAutoGroupColumnDef: {
-		headerName: 'Group',
-		minWidth: 170,
-		field: 'athlete',
-		valueGetter: (params) => {
-			if (params.node.group) {
-				return params.node.key
-			} else {
-				return params.data[params.colDef.field]
-			}
-		},
-		headerCheckboxSelection: true,
-		cellRenderer: 'agGroupCellRenderer',
-		cellRendererParams: {
-			checkbox: true,
-		},
 	},
 	defaultGridOptions: {
 		headerHeight: 30,
@@ -204,7 +187,6 @@ const TableV2 = ({
 		}
 
 		const columnId = event.column.colId;
-		console.log(event, columnId);
 		setHiddenColumn({ 
 			type: tableType, 
 			value: columnId 
@@ -311,14 +293,13 @@ const TableV2 = ({
 						ref={gridRef}
 						// col&row options
 						defaultColDef={TABLE_OPTION.defaultColDef}
-						autoGroupColumnDef={TABLE_OPTION.defaultAutoGroupColumnDef}
 						columnDefs={columnDefs}
 						rowData={rowData}
 						pinnedTopRowData={pinnedTopRowData}
 						// tableOptoins
 						gridOptions={TABLE_OPTION.defaultGridOptions}
 						rowSelection={'multiple'}
-						rowGroupPanelShow={'always'}
+						rowGroupPanelShow={'never'}
 						pivotPanelShow={'always'}
 						animateRows={true}
 						suppressRowClickSelection={true}
