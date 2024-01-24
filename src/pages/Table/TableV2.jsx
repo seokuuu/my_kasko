@@ -26,7 +26,7 @@ import {
 	selectedRowsAtom,
 	selectedRowsAtom2,
 } from '../../store/Layout/Layout'
-import { tableRestoreColumnAtom, tableHiddenColumnAtom, tableShowColumnAtom } from '../../store/Table/Table'
+import { tableRestoreColumnAtom, tableHiddenColumnAtom, tableShowColumnAtom, tableResetColumnAtom, TABLE_TYPE } from '../../store/Table/Table'
 import './TableUi.css'
 
 /**
@@ -133,6 +133,7 @@ const TableV2 = ({
 	loading = false, // 로딩 여부
 	dragAndDrop = false,
 	changeFn,
+	popupTable = undefined // 팝업 테이블 여부
 }) => {
 	// AG-GRID TABLE
 	const gridRef = useRef()
@@ -150,6 +151,8 @@ const TableV2 = ({
 	const pinnedTopRowData = useMemo(() => topData, [topData]) // 핀고정 데이터
 	// ROUTER
 	const location = useLocation();
+	// TABLE TYPE
+	const tableType = useMemo(() => popupTable? TABLE_TYPE.popupTable : TABLE_TYPE.pageTable, [popupTable]);
 	// COMMON STORES
 	const rowAtomSwitch = useAtomValue(selectedRows2Switch) // 2th 테이블 체크박스 여부
 	const setSelectedRows = useSetAtom(selectedRowsAtom) // 테이블 선택 체크박스 처리
@@ -158,6 +161,7 @@ const TableV2 = ({
 	const setHiddenColumn = useSetAtom(tableHiddenColumnAtom); // 테이블 칼럼 숨기기 처리
 	const showColumnId = useAtomValue(tableShowColumnAtom); // 테이블 노출 칼럼
 	const setShowColumnClear = useSetAtom(tableRestoreColumnAtom); // 테이블 노출 칼럼 처리
+	const setResetHiddenColumn = useSetAtom(tableResetColumnAtom); // 테이블 숨김항목 초기화 처리
 	// DRAG&DROP
 	const { onRowDragEnd } = useDragginRow({ setRowData, rowData }) // 컬럼데이터 드래그앤드랍
 	//
@@ -200,7 +204,10 @@ const TableV2 = ({
 		}
 
 		const columnId = event.column.colId;
-		setHiddenColumn(columnId);
+		setHiddenColumn({ 
+			type: tableType, 
+			value: columnId 
+		});
 	}
 
 	/**
@@ -219,7 +226,7 @@ const TableV2 = ({
 		}, [])
 
 		api.applyColumnState({ state: applyState});
-		setShowColumnClear();
+		setShowColumnClear({ type: tableType });
 	}
 
 	/* ==================== OTHERS start ==================== */
@@ -266,7 +273,8 @@ const TableV2 = ({
 
 	// 노출칼럼 변경
 	useEffect(() => {
-		onColumnShow(showColumnId);
+		const showId = showColumnId[tableType];
+		onColumnShow(showId);
 	}, [showColumnId])
 	/* ==================== STATES start ==================== */
 
@@ -284,10 +292,11 @@ const TableV2 = ({
 		}
 	}, [getRow, getCol])
 
-	// 테이블 선택 초기화
+	// 테이블 선택, 숨김항목 초기화
 	useEffect(() => {
-		setSelectedRows(null)
-	}, [location])
+		setSelectedRows(null);
+		setResetHiddenColumn({ type: tableType});
+	}, [location, tableType])
 	/* ==================== INITIALIZE end ==================== */
 
 	return (

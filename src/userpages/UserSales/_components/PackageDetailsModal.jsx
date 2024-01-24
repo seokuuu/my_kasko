@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from 'react'
+import React, { Fragment, useLayoutEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { useUserPackageProductDetailsListQuery } from '../../../api/user'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
@@ -30,6 +30,10 @@ import {
 import Table from '../../../pages/Table/Table'
 import AddCartButton, { CART_BUTTON_TYPE } from './AddCartButton'
 import AddOrderButton, { ORDER_BUTTON_TYPE } from './AddOrderButton'
+import { selectedRows2Switch } from '../../../store/Layout/Layout'
+import { useSetAtom } from 'jotai'
+import TableV2 from '../../../pages/Table/TableV2'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 
 /**
  * @constant 기본 검색 값
@@ -81,6 +85,16 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 	const { selectedWeightStr, selectedCountStr } = useTableSelection({
 		weightKey: '총 중량',
 	})
+	// 팝업 테이블 처리 스토어
+  const setRowAtomSwitch = useSetAtom(selectedRows2Switch)
+
+	useLayoutEffect(() => {
+		setRowAtomSwitch(false);
+
+		return(() => {
+			setRowAtomSwitch(true);
+		})
+	}, [])
 
 	return (
 		<>
@@ -117,7 +131,7 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 							<TCSubContainer bor>
 								<div>
 									조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-									<Hidden />
+									<TableV2HiddenSection popupTable/>
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
 									<PageDropdown handleDropdown={handlePageSizeChange} />
@@ -131,7 +145,7 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 								</div>
 							</TCSubContainer>
 							{/* 테이블 */}
-							<Table
+							<TableV2
 								getRow={tableRowData}
 								getCol={userPackageDetailsFieldsCols}
 								loading={isLoading}
@@ -139,6 +153,7 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 								onPageChange={(p) => {
 									handleParamsChange({ page: p })
 								}}
+								popupTable
 							/>
 							{/* 패키지 상세 액션 */}
 							{action && (

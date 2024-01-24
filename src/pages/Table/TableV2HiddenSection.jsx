@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai';
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useMemo, useState } from 'react';
 import { styled } from 'styled-components';
-import { tableHiddenColumnAtom, tableShowColumnAtom } from '../../store/Table/Table';
+import { TABLE_TYPE, tableHiddenColumnAtom, tableShowColumnAtom } from '../../store/Table/Table';
 
 const SHiddenSection = {
   Section: styled.div`
@@ -56,10 +56,13 @@ const SHiddenSection = {
 /**
  * 숨긴 항목 섹션
  */
-const TableV2HiddenSection = () => {
-  const [hiddenSectionShow, setHiddenSectionShow] = useState(false);
+const TableV2HiddenSection = ({ popupTable = false }) => {
+  	// TABLE TYPE
+	const tableType = useMemo(() => popupTable? TABLE_TYPE.popupTable : TABLE_TYPE.pageTable, [popupTable]);
   const hiddenColumns = useAtomValue(tableHiddenColumnAtom);
   const setShowColumn = useSetAtom(tableShowColumnAtom);
+  // 섹션 숨김 처리
+  const [hiddenSectionShow, setHiddenSectionShow] = useState(false);
 
   return (
     <SHiddenSection.Section>
@@ -76,9 +79,9 @@ const TableV2HiddenSection = () => {
         <SHiddenSection.HiddenBox>
           <ul>
             {
-              hiddenColumns.map((v, idx) => (
+              hiddenColumns[tableType].map((v, idx) => (
                 <li key={v + (idx + '')}>
-                  <button onClick={() => { setShowColumn(v) }}>
+                  <button onClick={() => { setShowColumn({ type: tableType, value: v }) }}>
                     {v}
                     <svg width="16" height="16" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M3.75 3.75L14.25 14.25" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
