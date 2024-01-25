@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { BlackBtn, GreyBtn, NewBottomBtnWrap, SkyBtn, WhiteBtn, WhiteRedBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
-import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
@@ -13,26 +11,15 @@ import {
 } from '../../../store/Layout/Layout'
 
 import {
-	DoubleWrap,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
 	FilterTCBottom,
 	FilterTCBSubdiv,
 	FilterTCTop,
 	FilterTopContainer,
 	Input,
-	MiniInput,
-	PartWrap,
-	PWRight,
-	ResetImg,
-	RowWrap,
 	TableContianer,
 	TCSubContainer,
-	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
 import Hidden from '../../../components/TableInner/Hidden'
@@ -44,18 +31,20 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isArray, isEqual } from 'lodash'
 import { getAuctionDestination, getAuctionNumber, successfulBid } from '../../../api/auction/winning'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { AuctionWinningCreateFieldsCols } from '../../../constants/admin/Auction'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import CustomerFind from '../../../modal/Multi/CustomerFind'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import { WinningCreateFindAtom, WinningProductAddAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
-import WinningProductAdd from './WinningProductAdd'
-import useMutationQuery from '../../../hooks/useMutationQuery'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import BiddingSearchFields from '../Bidding/BiddingSearchFields'
+import WinningProductAdd from './WinningProductAdd'
+import useAlert from '../../../store/Alert/useAlert'
 
 const WinningCreate = ({}) => {
+	const { simpleConfirm, simpleAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [destinationData, setDestinationData] = useAtom(winningDestiData)
 	console.log('destinationData', destinationData)
@@ -218,17 +207,28 @@ const WinningCreate = ({}) => {
 		}
 	}, [newResData])
 
+	// const handleRemoveBtn = useCallback(() => {
+	// 	if (isArray(checkedArray2) && checkedArray2.length > 0) {
+	// 		if (window.confirm('선택한 항목을 삭제 목록에 추가하시겠습니까?')) {
+	// 			const filteredArray = newResData.filter(
+	// 				(item) => !checkedArray2.some((checkedItem) => checkedItem['제품 고유 번호'] === item['제품 고유 번호']),
+	// 			)
+	// 			setNewResData(filteredArray)
+	// 		}
+	// 	} else {
+	// 		alert('선택해주세요!')
+	// 	}
+	// }, [checkedArray2, newResData])
+
 	const handleRemoveBtn = useCallback(() => {
-		if (isArray(checkedArray2) && checkedArray2.length > 0) {
-			if (window.confirm('선택한 항목을 삭제 목록에 추가하시겠습니까?')) {
-				const filteredArray = newResData.filter(
-					(item) => !checkedArray2.some((checkedItem) => checkedItem['제품 고유 번호'] === item['제품 고유 번호']),
-				)
-				setNewResData(filteredArray)
-			}
-		} else {
-			alert('선택해주세요!')
-		}
+		if (!isArray(checkedArray2) || !checkedArray2.length > 0) return simpleAlert('선택해주세요!')
+
+		simpleConfirm('선택한 항목을 삭제 목록에 추가하시겠습니까?', () => {
+			const filteredArray = newResData.filter(
+				(item) => !checkedArray2.some((checkedItem) => checkedItem['제품 고유 번호'] === item['제품 고유 번호']),
+			)
+			setNewResData(filteredArray)
+		})
 	}, [checkedArray2, newResData])
 
 	console.log('newResData =>', newResData)

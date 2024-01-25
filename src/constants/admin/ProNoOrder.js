@@ -61,7 +61,7 @@ export const proNoFieldCols = [
   },
   {
     headerName: 'ProNo.',
-    field: ['ProNo.'],
+    field: ['Pro.No 번호'],
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 107,
