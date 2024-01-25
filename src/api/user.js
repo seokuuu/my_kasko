@@ -126,11 +126,33 @@ export const useUserAddCartMutaion = () => {
 			await client.post(USER_URL.cartRequest, cartParam)
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: 'cart' })
+			queryClient.invalidateQueries({ queryKey: ['user','cart'] })
 			simpleAlert('장바구니에 추가하였습니다.')
 		},
 		onError: (error) => {
 			simpleAlert(error?.data?.message || '장바구니 추가에 실패하였습니다.')
+		},
+	})
+}
+
+/**
+ * 장바구니 삭제하기 API 뮤테이션
+ * @param {*} cartParam
+ * @description 장바구니 삭제하기 API
+ */
+export const useUserDelCartMutaion = () => {
+	const { simpleAlert } = useAlert()
+
+	return useMutation({
+		mutationFn: async (cartParam) => {
+			await client.delete(`${USER_URL.cartRequest}/${cartParam}`)
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['user','cart'] })
+			simpleAlert('장바구니에서 삭제하였습니다.')
+		},
+		onError: (error) => {
+			simpleAlert(error?.data?.message || '장바구니 삭제에 실패하였습니다.')
 		},
 	})
 }
@@ -148,7 +170,7 @@ export const useUserOrderMutaion = () => {
 			await client.post(USER_URL.orderRequest, orderParam)
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: 'cart' })
+			queryClient.invalidateQueries({ queryKey:['user','cart'] })
 			return simpleAlert('주문을 완료하였습니다.')
 		},
 		onError: (error) => {

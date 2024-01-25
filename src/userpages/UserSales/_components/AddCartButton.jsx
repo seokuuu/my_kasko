@@ -1,6 +1,6 @@
 import React from 'react'
 import { useUserAddCartMutaion } from '../../../api/user'
-import { GreenBtn, SkyBtn } from '../../../common/Button/Button'
+import { GreenBtn, SkyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import { getProductNumber } from '../../../hooks/useWishList'
 import useAlert from '../../../store/Alert/useAlert'
 import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKey'
@@ -48,9 +48,9 @@ const AddCartButton = ({ category, products = [], buttonType }) => {
 	return (
 		<>
 			{(buttonType === CART_BUTTON_TYPE.default || buttonType === undefined) && (
-				<SkyBtn disabled={isLoading} onClick={handleSelectOrder}>
+				<WhiteBlackBtn disabled={isLoading} onClick={handleSelectOrder}>
 					선택 제품 장바구니 추가
-				</SkyBtn>
+				</WhiteBlackBtn>
 			)}
 			{buttonType === CART_BUTTON_TYPE.simple && (
 				<GreenBtn width={14} height={38} fontSize={18} onClick={handleSelectOrder}>
