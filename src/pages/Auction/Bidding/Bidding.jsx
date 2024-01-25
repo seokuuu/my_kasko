@@ -389,7 +389,7 @@ const Bidding = ({}) => {
 				</TCSubContainer>
 				<TCSubContainer bor>
 					<div>
-						선택 중량<span> 2 </span>kg / 총 중량 kg
+						선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 					</div>
 					<div
 						style={{
