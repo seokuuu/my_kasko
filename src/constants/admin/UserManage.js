@@ -125,7 +125,7 @@ export const UserManageCustomerDestinationManageFieldsCols = [
 	},
 	{ headerClass: 'custom-header-style', field: '대표', minWidth: 100 }, //숫자
 	{ headerClass: 'custom-header-style', field: '목적지 코드', minWidth: 100 },
-	{ headerClass: 'custom-header-style', field: '목적지 명', minWidth: 100 },
+	{ headerClass: 'custom-header-style', field: '목적지 명', minWidth: 200 },
 	{
 		headerClass: 'custom-header-style',
 		field: '담당자 연락처',
