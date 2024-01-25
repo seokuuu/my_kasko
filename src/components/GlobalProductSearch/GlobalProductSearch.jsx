@@ -63,7 +63,7 @@ const GlobalProductSearch = ({
 			bestStatus: false, // 추천 상품 여부 (Best status)
 			saleType: '', // 판매 유형 (Sale type)
 			saleTypeList: [], // 판매 유형 목록 (Sale type list)
-			salePriceType: '', // 판매가 유형 (Sale price type)
+			salePriceType: '', // – (Sale price type)
 			salePriceTypeList: [], // 판매가 유형 목록 (Sale price type list)
 			customerName: '', // 고객사 명 (Customer name)
 			minThickness: 0, // 최소 두께 (Minimum thickness)
