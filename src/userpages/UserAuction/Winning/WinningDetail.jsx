@@ -216,7 +216,6 @@ const WinningDetail = ({ detailRow }) => {
 					</ClaimTable>
 				</TableWrap>
 			</div>
-
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
@@ -229,9 +228,7 @@ const WinningDetail = ({ detailRow }) => {
 						// getRow={getRow}
 						/>
 
-
 						{/*<Excel getRow={getRow} />*/}
-
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>

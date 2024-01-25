@@ -177,7 +177,7 @@ export function useShipmentDispatchListQuery(params) {
 // 배차/출고 등록 상세 페이지
 export function useShipmentDispatchDetailsQuery(id) {
 	return useQuery({
-		queryKey: QUERY_KEY.dispatchDetails,
+		queryKey: [...QUERY_KEY.dispatchDetails,id],
 		queryFn: async function () {
 			const response = await client.get(`${SHIPMENT_OUT_URL}/${id}`)
 			return response.data.data

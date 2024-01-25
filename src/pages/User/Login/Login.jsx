@@ -235,11 +235,11 @@ const Login = () => {
 		}
 	}
 
-	const loginCheck = () => {
+	const loginCheck = async () => {
 		if (auth && authorities?.role) {
-			if (!localStorage.getItem('accessToken')) {
+			if (localStorage.getItem('accessToken') == null) {
 				setAuthorities({ name: '', role: '', authorities: [] })
-				updateAuth()
+				await updateAuth()
 				return
 			}
 			navigate(authorities.role === '고객사' ? '/userpage/main' : 'main')
@@ -255,8 +255,6 @@ const Login = () => {
 			<SubContainer>
 				<Title>
 					<img src="/img/login_logo.png" alt="" />
-					{/*<Link to={`/userpage/main`}>*/}
-					{/*</Link>*/}
 				</Title>
 				<LoginContainer>
 					<LoginSubContainer>
@@ -341,8 +339,6 @@ const Login = () => {
 				</LoginBottom>
 				<ImgWrap>
 					<img src="/img/login_kasko.png" />
-					{/*<Link to={`/main`}>*/}
-					{/*</Link>*/}
 					<p>Copyright 2023 카스코철강. All Rights Reserved.</p>
 				</ImgWrap>
 			</SubContainer>

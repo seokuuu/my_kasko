@@ -12,6 +12,7 @@ const DisRegisterDetailPage = () => {
 	const { id } = useParams()
 	const depth2Color = '배차/출고 등록'
 	const [expanded, setExpanded] = useState('출고 관리')
+
 	return (
 		<>
 			<Header />
