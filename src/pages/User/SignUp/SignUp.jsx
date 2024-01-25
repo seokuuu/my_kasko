@@ -545,6 +545,7 @@ const SignUp = () => {
 									<Title>
 										<h4>경매 담당자 정보</h4>
 										{errors.memberName && <ErrorMsg>{errors.memberName.message}</ErrorMsg>}
+										{errors.memberTitle && <ErrorMsg>{errors.memberTitle.message}</ErrorMsg>}
 									</Title>
 									<DropWrap>
 										<TxtDropInput

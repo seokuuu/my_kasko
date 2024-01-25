@@ -15,9 +15,12 @@ export const UserManageCustomerManageFields = {
 	순번: 'uid',
 	'고객 구분': 'memberUid',
 	'회원 상태': 'status',
+	'고객사 아이디': 'id',
 	'고객 코드': 'code',
 	'고객사 명': 'name',
 	사업자번호: 'businessNumber',
+	대표자: 'ceoName',
+	고객사유형: 'businessType',
 	연락처: 'phone',
 	'승인 여부': 'approvalStatus',
 	'회원 제한 상태': 'auctionStatus',
@@ -53,8 +56,8 @@ export const UserManageCustomerManageFieldsCols = [
 		headerClass: 'custom-header-style',
 	},
 	{
-		field: '고객 코드',
-		minWidth: 100,
+		field: '고객사 아이디',
+		minWidth: 200,
 		headerClass: 'custom-header-style',
 	},
 	{
@@ -63,7 +66,22 @@ export const UserManageCustomerManageFieldsCols = [
 		headerClass: 'custom-header-style',
 	},
 	{
+		field: '고객 코드',
+		minWidth: 100,
+		headerClass: 'custom-header-style',
+	},
+	{
 		field: '사업자번호',
+		minWidth: 100,
+		headerClass: 'custom-header-style',
+	},
+	{
+		field: '대표자',
+		minWidth: 100,
+		headerClass: 'custom-header-style',
+	},
+	{
+		field: '고객사유형',
 		minWidth: 100,
 		headerClass: 'custom-header-style',
 	},
