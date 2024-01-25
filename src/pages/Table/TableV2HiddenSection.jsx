@@ -71,7 +71,7 @@ const SHiddenSection = {
  * 숨긴 항목 섹션
  * @param {boolean} props.popupTable 팝업 테이블 여부 
  * @description
- * - TableV2HiddenSection과 함께 사용됩니다.
+ * - TableV2과 함께 사용됩니다.
  * - 팝업 테이블의 경우, TableV2와 TableV2HiddenSection에 popupTable 속성을 추가해야 합니다.
  */
 const TableV2HiddenSection = ({ popupTable = false }) => {

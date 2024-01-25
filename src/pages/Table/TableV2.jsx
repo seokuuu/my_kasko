@@ -102,6 +102,13 @@ var GRID_SETTIGS = {
 	}
 }
 
+/**
+ * 테이블
+ * @param {boolean} props.popupTable 팝업 테이블 여부 
+ * @description
+ * - TableV2HiddenSection과 함께 사용됩니다.
+ * - 팝업 테이블의 경우, TableV2와 TableV2HiddenSection에 popupTable 속성을 추가해야 합니다.
+ */
 const TableV2 = ({
 	hei,
 	hei2,
