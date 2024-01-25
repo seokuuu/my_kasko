@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import React, { Fragment, useEffect, useLayoutEffect, useMemo } from 'react'
 import styled from 'styled-components'
-import { useUserPackageProductDetailsListQuery } from '../../../api/user'
+import { USER_URL, useUserPackageProductDetailsListQuery } from '../../../api/user'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import Excel from '../../../components/TableInner/Excel'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -33,6 +33,7 @@ import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import { selectedRows2Switch } from '../../../store/Layout/Layout'
 import AddCartButton, { CART_BUTTON_TYPE } from './AddCartButton'
 import AddOrderButton, { ORDER_BUTTON_TYPE } from './AddOrderButton'
+import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 
 /**
  * @constant 기본 검색 값
@@ -54,7 +55,7 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 	// API
 	const { data: packageData, isLoading } = useUserPackageProductDetailsListQuery(searchParams) // 상시판매 패키지 목록 조회 쿼리
 	// 테이블 데이터, 페이지 데이터, 총 중량
-	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalWeight } = useTableData({
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalWeight, totalCount } = useTableData({
 		tableField: userPackageDetailsField,
 		serverData: packageData,
 		wish: { display: true, key: ['packageNumber'] },
@@ -134,7 +135,11 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
 									<PageDropdown handleDropdown={handlePageSizeChange} />
-									<Excel getRow={tableRowData} />
+									<TableV2ExcelDownloader
+										requestUrl={USER_URL.packageProductDetailsList} 
+										requestCount={totalCount}
+										field={userPackageDetailsField}
+									/>
 								</div>
 							</TCSubContainer>
 							{/* 선택항목 중량 | 관심상품 등록 */}
