@@ -47,6 +47,7 @@ const Single = () => {
 		tableField: userSingleProductField,
 		serverData: singleData,
 		wish: { display: true },
+		best: { display: true }
 	})
 	// 선택 항목
 	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr, hasSelected } = useTableSelection({

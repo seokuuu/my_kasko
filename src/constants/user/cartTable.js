@@ -1,4 +1,4 @@
-import WishCellRenderer from "../../pages/Table/WishCellRenderer";
+import MarkerCellRenderer from "../../pages/Table/MarkerCellRenderer";
 import { checkboxSelection, headerCheckboxSelection } from '../../pages/Table/util';
 import { getNormalTableRows } from "../../utils/table";
 import { PROD_COL_NAME } from "./constantKey";
@@ -71,7 +71,7 @@ export const userCartListPackageField = {
  */
 export const userCartListSingleFieldsCols = getNormalTableRows([
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
-  { field: PROD_COL_NAME.productNumber, minWidth: 250,  cellRenderer: WishCellRenderer },
+  { field: PROD_COL_NAME.productNumber, minWidth: 250,  cellRenderer: MarkerCellRenderer },
   { field: "규격 약호" },
   { field: "창고" },
   { field: "창고명" },
@@ -122,7 +122,7 @@ export const userCartListPackageFieldCols = (numberClickHandler=undefined) =>  g
   { 
     field: PROD_COL_NAME.packageNumber, 
     minWidth: 100, 
-    cellRenderer: WishCellRenderer, 
+    cellRenderer: MarkerCellRenderer, 
     valueGetter: (v) => ({...v.data[v.column.colId], clickHandler: numberClickHandler }) 
   },
   {field: "패지키 판매 유형", minWidth: 130 },
