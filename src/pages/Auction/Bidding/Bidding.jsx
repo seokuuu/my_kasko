@@ -54,6 +54,10 @@ import BiddingSearchFields from './BiddingSearchFields'
 import { isEqual } from 'lodash'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { getAuctionDestination } from '../../../api/auction/winning'
+import useTableSelection from '../../../hooks/useTableSelection'
+import useTableData from '../../../hooks/useTableData'
+import { PROD_COL_NAME } from '../../../constants/user/constantKey'
+import AddWishButton from '../../../userpages/UserSales/_components/AddWishButton'
 
 const Bidding = ({}) => {
 	const [destinationPopUp, setDestinationPopUp] = useAtom(userPageSingleDestiFindAtom)
@@ -228,6 +232,21 @@ const Bidding = ({}) => {
 
 	console.log('winningCreateData <33', winningCreateData)
 
+	/* ==================== 관심상품 등록 start ==================== */
+	// 선택상품(checked product) - 선택상품 정보를 조회합니다.
+	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	});
+	// 테이블 데이터, 페이지 데이터, 총 중량
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
+		tableField: AuctionBiddingFields,
+		serverData: data?.data?.data,
+		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		best: { display: true }
+	});
+	
+	/* ==================== 관심상품 등록 end ==================== */
+
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -356,18 +375,16 @@ const Bidding = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>2</span> / 50개 )
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
 						<Excel getRow={getRow} />
-						<WhiteGrnBtn>
-							<div>
-								<img src="/img/grnstar.png" />
-							</div>
-							관심상품 등록
-						</WhiteGrnBtn>
+						<AddWishButton
+							products={selectedData} 
+							productNumberKey={types === '단일'? PROD_COL_NAME.productNumber : PROD_COL_NAME.packageNumber} 
+						/>
 					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>
@@ -437,7 +454,7 @@ const Bidding = ({}) => {
 						</SkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
+				<Table getCol={getCol} getRow={tableRowData} tablePagination={tablePagination} onPageChange={onPageChange} />
 			</TableContianer>
 			{destinationPopUp && (
 				<InventoryFind
