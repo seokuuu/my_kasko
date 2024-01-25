@@ -15,7 +15,6 @@ import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
-
 import {
 	CustomInput,
 	DoubleWrap,
@@ -53,58 +52,33 @@ import RoundAucProAdd from './RoundAucProAdd'
 import { isArray, isEqual } from 'lodash'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import RoundAucListEditFields from './RoundAucListEditFields'
+import useAlert from '../../../store/Alert/useAlert'
 
 //경매 목록 수정(단일)
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	const [newResData, setNewResData] = useState([])
+	const [addAuction, setAddAuction] = useState({
+		productUid: null,
+		auctionStartPrice: null,
+	})
+	const [delAuction, setDelAuction] = useState({
+		productUid: null,
+		auctionProductUid: null,
+	})
 	const [editData, setEditData] = useState({
 		type: types,
 		auctionNumber: auctionNum,
-		addProductUids: [],
+		addAuctionProductList: [],
 		deleteAuctionProductList: [],
 	})
+	const { simpleAlert, simpleConfirm } = useAlert()
 
 	console.log('newResData auc prod add => ', newResData)
 
-	const [addList, setAddList] = useState([])
-	const [deleteList, setDeleteList] = useState([])
-	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
+	const [rows, setRows] = useState('')
+	const [list, setList] = useState([])
 	const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
-	//checkSales
-	const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
-
-	//checkShips
-	const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
-
-	useEffect(() => {
-		// true에 해당되면, value를, false면 빈값을 반환
-		const updatedCheck = checkSales.map((value, index) => {
-			return check1[index] ? value : ''
-		})
-		// 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-		const filteredCheck = updatedCheck.filter((item) => item !== '')
-		setCheckData1(filteredCheck)
-
-		// 전송용 input에 담을 때
-		// setInput({
-		//   ...input,
-		//   businessType: updatedCheck.filter(item => item !== ''),
-		// });
-	}, [check1])
-
-	const handleSelectChange = (selectedOption, name) => {
-		// setInput(prevState => ({
-		//   ...prevState,
-		//   [name]: selectedOption.label,
-		// }));
-	}
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
-
+	const [pagination, setPagination] = useState(null)
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 	const [toggleMsg, setToggleMsg] = useState('On')
@@ -121,10 +95,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	const tableField = useRef(AuctionRoundDetailFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
-	const checkedArray = useAtom(selectedRowsAtom)[0]
-	console.log('checkedArray', checkedArray)
-
-	const [originalRow, setOriginalRow] = useState([]) //원본 row를 저장해서 radio check에러 막기
+	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
+	// const checkedArray = useAtom(selectedRowsAtom)[0]
 
 	const paramData = {
 		pageNum: 1,
@@ -148,75 +120,123 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 
 	const resData = data?.data?.data?.list
 
-	const [resData2, setResData2] = useState(null)
+	// const [resData2, setResData2] = useState(null)
 
-	useEffect(() => {
-		if (isSuccess) {
-			setResData2(resData)
-		}
-	}, [isSuccess, data]) // `data`를 의존성 배열에 추가했습니다.
+	// useEffect(() => {
+	// 	if (isSuccess) {
+	// 		setResData2(resData)
+	// 	}
+	// }, [isSuccess, data]) // `data`를 의존성 배열에 추가했습니다.
 
-	console.log('resData2', resData2)
+	// console.log('resData2', resData2)
+
+	const [startPrice, setStartPrice] = useState(null)
+	const [realStartPrice, realSetStartPrice] = useState(null)
+
+	console.log('realStartPrice', realStartPrice)
 
 	// Todo
+	// useEffect(() => {
+	// 	// let getData = resData
+	// 	// //타입, 리액트쿼리, 데이터 확인 후 실행
+	// 	// if (!isSuccess && !resData) return
+	// 	// if (Array.isArray(getData)) {
+	// 	//   setGetRow(add_element_field(getData, AuctionRoundDetailFields))
+	// 	// }
+	// 	// let getData = resData
+
+	// 	//타입, 리액트쿼리, 데이터 확인 후 실행
+
+	// 	// newResData : 추가한 애들
+	// 	// updatedData : 원래 resData
+	// 	// 둘다 상태관리를 해야하며,
+	// 	if (!isSuccess && !resData2) return
+	// 	if (Array.isArray(resData2, newResData)) {
+	// 		const updatedData = add_element_field(resData2, AuctionRoundDetailFields)
+	// 		const combinedData = [...newResData, ...updatedData]
+	// 		setGetRow(combinedData)
+	// 	}
+	// }, [isSuccess, resData2, newResData])
 	useEffect(() => {
-		// let getData = resData
-		// //타입, 리액트쿼리, 데이터 확인 후 실행
-		// if (!isSuccess && !resData) return
-		// if (Array.isArray(getData)) {
-		//   setGetRow(add_element_field(getData, AuctionRoundDetailFields))
-		// }
-		// let getData = resData
-
-		//타입, 리액트쿼리, 데이터 확인 후 실행
-
-		// newResData : 추가한 애들
-		// updatedData : 원래 resData
-		// 둘다 상태관리를 해야하며,
-		if (!isSuccess && !resData2) return
-		if (Array.isArray(resData2, newResData)) {
-			const updatedData = add_element_field(resData2, AuctionRoundDetailFields)
-			const combinedData = [...newResData, ...updatedData]
-			setGetRow(combinedData)
+		if (list && Array.isArray(list)) {
+			setRows(add_element_field(list, AuctionRoundDetailFields))
 		}
-	}, [isSuccess, resData2, newResData])
+	}, [list])
 
-	// input의 addProductUids 값 채우기
 	useEffect(() => {
-		const uniqueNumbers = newResData?.map((item) => item['고유 번호'])
-		setEditData({ ...editData, addProductUids: uniqueNumbers })
-	}, [newResData])
+		if (resData && Array.isArray(resData)) {
+			setList(resData)
+		}
+	}, [resData])
 
-	// TODO : 경매 회차 관리 resData 쪽 object 눈속임으로 없애기 ..`
-	// input의 deleteAuctionProductList 값 채우기
-	const handleRemoveBtn = useCallback(() => {
-		if (isArray(checkedArray) && checkedArray.length > 0) {
-			if (window.confirm('선택한 항목을 삭제 목록에 추가하시겠습니까?')) {
-				const resultRemove = checkedArray
-					.filter((item) => item && item['경매 제품 고유 번호'] !== undefined && item['경매 제품 고유 번호'] !== null)
-					.map((item) => item['경매 제품 고유 번호'])
+	// // input의 addAuctionProductList 값 채우기
+	// useEffect(() => {
+	// 	const uniqueNumbers = newResData?.map((item) => ({
+	// 		productUid: item['고유 번호'],
+	// 		auctionStartPrice: realStartPrice,
+	// 	}))
 
-				setEditData({ ...editData, deleteAuctionProductList: resultRemove })
+	// 	setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
+	// }, [newResData, checkedArray, realStartPrice])
 
-				// '원래 DATA' 관련 object array 삭제
-				const filteredArray2 = resData2.filter(
-					(item) =>
-						!checkedArray.some((checkedItem) => checkedItem['경매 제품 고유 번호'] === item['경매 제품 고유 번호']),
-				)
-				console.log('filteredArray2', filteredArray2)
-				setResData2(filteredArray2)
+	// // TODO : 경매 회차 관리 resData 쪽 object 눈속임으로 없애기 ..`
+	// // input의 deleteAuctionProductList 값 채우기
+	// const handleRemoveBtn = useCallback(() => {
+	// 	if (isArray(checkedArray) && checkedArray.length > 0) {
+	// 		if (window.confirm('선택한 항목을 삭제 목록에 추가하시겠습니까?')) {
+	// 			const resultRemove = checkedArray
+	// 				.filter((item) => item && item['경매 제품 고유 번호'] !== undefined && item['경매 제품 고유 번호'] !== null)
+	// 				.map((item) => item['경매 제품 고유 번호'])
 
-				// '추가한 DATA' 관련 array
-				const filteredArray = newResData.filter(
-					(item) =>
-						!checkedArray.some((checkedItem) => checkedItem['경매 제품 고유 번호'] === item['경매 제품 고유 번호']),
-				)
-				setNewResData(filteredArray)
+	// 			setEditData({ ...editData, deleteAuctionProductList: resultRemove })
+
+	// 			// '원래 DATA' 관련 object array 삭제
+	// 			const filteredArray2 = resData2.filter(
+	// 				(item) =>
+	// 					!checkedArray.some((checkedItem) => checkedItem['경매 제품 고유 번호'] === item['경매 제품 고유 번호']),
+	// 			)
+	// 			console.log('filteredArray2', filteredArray2)
+	// 			setResData2(filteredArray2)
+
+	// 			// '추가한 DATA' 관련 array
+	// 			const filteredArray = newResData.filter(
+	// 				(item) =>
+	// 					!checkedArray.some((checkedItem) => checkedItem['경매 제품 고유 번호'] === item['경매 제품 고유 번호']),
+	// 			)
+	// 			setNewResData(filteredArray)
+	// 		}
+	// 	} else {
+	// 		alert('선택해주세요!')
+	// 	}
+	// }, [checkedArray, editData, setEditData, newResData, setNewResData])
+
+	// 목록 추가
+
+	const onListAdd = (selectedData) => {
+		try {
+			const newList = [...new Set([...selectedData, ...list])]
+			const destinations = [...new Set(newList.map((item) => item.destinationName))]
+			if (destinations.length > 3) {
+				throw new Error('목적지가 3개 이상입니다.')
 			}
-		} else {
-			alert('선택해주세요!')
+			setList(newList) // 선별 목록 데이터 등록
+			setSelectedRows([]) // 테이블 체크 목록 초기화
+		} catch (error) {
+			simpleAlert(error.message)
 		}
-	}, [checkedArray, editData, setEditData, newResData, setNewResData])
+	}
+
+	// 목록 제거
+	const onListRemove = () => {
+		if (!selectedRows || selectedRows.length === 0) {
+			return simpleAlert('제품을 선택해주세요.')
+		}
+		const key = '제품 고유 번호'
+		const deleteKeys = selectedRows.map((item) => item[key])
+		const newSelectors = list.filter((item) => !deleteKeys.includes(item?.productUid))
+		setList(newSelectors)
+		setSelectedRows([]) // 테이블 체크 목록 초기화
+	}
 
 	console.log('nesRES', newResData)
 	console.log('editData @@@ ', editData)
@@ -376,8 +396,21 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
 						<p>시작가 일괄 변경</p>
-						<CustomInput placeholder="" width={120} height={32} />
-						<TGreyBtn height={30} style={{ width: '50px' }}>
+						<CustomInput
+							placeholder=""
+							width={120}
+							height={32}
+							onChange={(e) => {
+								setStartPrice(parseInt(e.target.value))
+							}}
+						/>
+						<TGreyBtn
+							height={30}
+							style={{ width: '50px' }}
+							onClick={() => {
+								realSetStartPrice(startPrice)
+							}}
+						>
 							적용
 						</TGreyBtn>
 						<BtnBound />
@@ -390,20 +423,22 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 						</SkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={getCol} getRow={getRow} />
+				<Table getCol={AuctionRoundDetailFieldsCols} getRow={rows} loading={isLoading} />
 				<TCSubContainer>
 					<div style={{ display: 'flex', gap: '10px' }}></div>
 					<div>
-						<WhiteRedBtn onClick={handleRemoveBtn}>선택 목록 제거</WhiteRedBtn>
+						<WhiteRedBtn onClick={onListRemove}>선택 목록 제거</WhiteRedBtn>
 					</div>
 				</TCSubContainer>
 				{addModal && (
 					<RoundAucProAdd
 						setAddModal={setAddModal}
-						newResData={newResData}
-						setNewResData={setNewResData}
+						// newResData={newResData}
+						// setNewResData={setNewResData}
 						types={types}
-						propsResData={resData}
+						// propsResData={resData}
+						list={list}
+						onListAdd={onListAdd}
 					/>
 				)}
 				<NewBottomBtnWrap bottom={-5}>
