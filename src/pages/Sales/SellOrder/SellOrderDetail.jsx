@@ -104,7 +104,7 @@ const SellOrderDetail = () => {
 	} = usePostSaleProductOrderConfirm() // 부분 입금 확인
 
 	useEffect(() => {
-		if (getSaleProductDetailResponse && getSaleProductDetailResponse.data && getSaleProductDetailResponse.data.data) {
+		if (getSaleProductDetailResponse?.data?.data) {
 			const { list, pagination } = getSaleProductDetailResponse.data.data
 
 			if (list && list.length > 0) {
@@ -156,85 +156,68 @@ const SellOrderDetail = () => {
 		}))
 	}
 
-	// 부분 주문 취소 버튼
-	const depositOrderCancelButtonOnClickHandler = () => {
+	const handleButtonClick = (alertMessage, mapFunction, mutationFunction) => {
 		if (checkBoxSelect === null || checkBoxSelect.length === 0) {
-			return simpleAlert('주문 취소할 제품을 선택해 주세요.')
+			return simpleAlert(alertMessage)
 		}
 
-		const cancelData = checkBoxSelect.map((value) => ({ uid: value['주문번호'], saleType: '상시판매 대상재' }))
+		const data = checkBoxSelect.map(mapFunction)
 
-		mutateDepositOrderCancel({ requestList: cancelData })
+		mutationFunction({ updateList: data })
+	}
+
+	// 부분 주문 취소 버튼
+	const depositOrderCancelButtonOnClickHandler = () => {
+		handleButtonClick(
+			'주문 취소할 제품을 선택해 주세요.',
+			(value) => ({ uid: value['주문번호'], saleType: '상시판매 대상재' }),
+			mutateDepositOrderCancel,
+		)
 	}
 
 	// 부분 입금 확인 버튼
 	const depositOrderConfirmButtonOnClickHandler = () => {
-		if (checkBoxSelect === null || checkBoxSelect.length === 0) {
-			return simpleAlert('입금 확인할 제품을 선택해 주세요.')
-		}
-
-		const auctionNumbersList = {
-			// TODO: Ask // 경매 번호 ? 상시판매 번호 ? (상시판매 번호 is null from server response)
-			auctionNumbers: checkBoxSelect.map((value) => value['경매번호']),
-		}
-
-		mutateDepositOrderConfirm({ requestList: auctionNumbersList })
+		handleButtonClick(
+			'입금 확인할 제품을 선택해 주세요.',
+			(value) => ({ auctionNumbers: value['경매번호'] }),
+			mutateDepositOrderConfirm,
+		)
 	}
 
 	// 목적지 승인 요청 버튼
 	const destinationRequestButtonOnClickHandler = () => {
-		if (checkBoxSelect === null || checkBoxSelect.length === 0) {
-			return simpleAlert('목적지를 적용할 제품을 선택해 주세요.')
-		}
-
-		const updateData = checkBoxSelect.map((value) => ({
-			uid: value['주문번호'],
-			requestCustomerDestinationUid: destinationData.uid,
-		}))
-
-		mutateAuctionSuccessfulBidRequest({ updateList: updateData })
+		handleButtonClick(
+			'목적지를 적용할 제품을 선택해 주세요.',
+			(value) => ({ uid: value['주문번호'], requestCustomerDestinationUid: destinationData.uid }),
+			mutateAuctionSuccessfulBidRequest,
+		)
 	}
 
 	// 목적지 변경 승인 버튼
 	const destinationChangeApproveButtonOnClickHandler = () => {
-		if (checkBoxSelect === null || checkBoxSelect.length === 0) {
-			return simpleAlert('목적지 변경 승일할 제품을 선택해 주세요.')
-		}
-
-		const confirmData = checkBoxSelect.map((value) => ({
-			uid: value['주문번호'],
-			requestCustomerDestinationUid: destinationData.uid,
-		}))
-
-		mutateAuctionSuccessfulBidApprove({ updateList: confirmData })
+		handleButtonClick(
+			'목적지 변경 승일할 제품을 선택해 주세요.',
+			(value) => ({ uid: value['주문번호'], requestCustomerDestinationUid: destinationData.uid }),
+			mutateAuctionSuccessfulBidApprove,
+		)
 	}
 
 	// 목적지 변경 반려 버튼
 	const destinationChangeRejectButtonOnClickHandler = () => {
-		if (checkBoxSelect === null || checkBoxSelect.length === 0) {
-			return simpleAlert('목적지 변경 반려할 제품을 선택해 주세요.')
-		}
-
-		const rejectData = checkBoxSelect.map((value) => ({
-			uid: value['주문번호'],
-			requestCustomerDestinationUid: destinationData.uid,
-		}))
-
-		mutateAuctionSuccessfulBidReject({ updateList: rejectData })
+		handleButtonClick(
+			'목적지 변경 반려할 제품을 선택해 주세요.',
+			(value) => ({ uid: value['주문번호'], requestCustomerDestinationUid: destinationData.uid }),
+			mutateAuctionSuccessfulBidReject,
+		)
 	}
 
 	// 목적지 적용 버튼
 	const updateCustomerDestinationButtonOnClick = () => {
-		if (checkBoxSelect === null || checkBoxSelect.length === 0) {
-			return simpleAlert('목적지를 적용할 제품을 선택해 주세요.')
-		}
-
-		const updateData = checkBoxSelect.map((value) => ({
-			uid: value['주문번호'],
-			requestCustomerDestinationUid: destinationData.uid,
-		}))
-
-		mutateAuctionSuccessfulBidRequest({ updateList: updateData })
+		handleButtonClick(
+			'목적지를 적용할 제품을 선택해 주세요.',
+			(value) => ({ uid: value['주문번호'], requestCustomerDestinationUid: destinationData.uid }),
+			mutateAuctionSuccessfulBidRequest,
+		)
 	}
 
 	return (
