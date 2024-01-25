@@ -74,7 +74,7 @@ export const StockIncomingFields = [
 	},
 	{
 		headerName: '입고일자',
-		field: '입고 일자',
+		field: '입고일',
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		width: 120,

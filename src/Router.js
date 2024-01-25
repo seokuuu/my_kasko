@@ -152,11 +152,12 @@ import DisRegisterDetailPage from './pages/Shipping/Dispatch/DisRegisterDetailPa
 // import ShipmentInvoicePage from './pages/Shipping/Achievement/ShipmentInvoicePage'
 // RoundAucProAdd
 import RoundAucProAdd from './pages/Auction/Round/RoundAucProAdd'
+import CarrierManage from './pages/UserManage/CarrierManage/CarrierManage'
 const Router = () => {
 	return (
 		<Routes>
 			{/* 테스트 URL */}
-			<Route path="/ppapp" element={<RoundAucProAdd />} />
+			<Route path="/ppapp" element={<CarrierManage />} />
 			<Route path="/ppap" element={<DefaultBlueBar />} />
 			<Route path="/TableTest" element={<TableTest />} />
 			<Route path="/test" element={<Test />} />
@@ -311,7 +312,7 @@ const Router = () => {
 				{/* 상시 판매 */}
 				<Route path="/userpage/salessingle" element={<USalesSingle />}></Route>
 				<Route path="/userpage/salespackage" element={<USalesPackage />}></Route>
-				<Route path="/userpage/salescart" element={<USalesCart />}></Route>
+				<Route path="/userpage/salescart/:product?" element={<USalesCart />}></Route>
 				<Route path="/userpage/salesorder/:salesNumber?" element={<USalesOrder />}></Route>
 
 				{/* 출고 실적 조회 */}

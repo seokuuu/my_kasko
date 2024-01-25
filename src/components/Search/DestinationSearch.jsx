@@ -13,8 +13,9 @@ import { invenDestination } from '../../store/Layout/Layout'
  * @param code 목적지 코드
  * @param setName 목적지 명 set 이벤트
  * @param setCode 목적지 코드 set 이벤트
+ * @param short 제목을 "목적지" 로 전달
  */
-const DestinationSearch = ({ name, code, setName, setCode }) => {
+const DestinationSearch = ({ name, code, setName, setCode, short }) => {
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
 
@@ -27,9 +28,11 @@ const DestinationSearch = ({ name, code, setName, setCode }) => {
 		setCode(data.code)
 	}
 
+	console.log('short', short)
+
 	return (
 		<PartWrap first>
-			<h6>목적지/목적지 코드</h6>
+			{short ? <h6>목적지</h6> : <h6>목적지/목적지 코드</h6>}
 			<CustomInput width={200} height={36} value={name && code ? name + '/' + code : ''} />
 			<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17} onClick={modalOpen}>
 				찾기

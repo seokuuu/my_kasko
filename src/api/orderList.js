@@ -10,6 +10,8 @@ const urls = {
 	orderDetailProno: '/admin/order/product',
 	orderCancel: '/admin/order/cancel', // 상시 판매 관리 > 주문 확인 > 부분 취소
 	orderDeposit: '/admin/order/deposit', // 상시 판매 관리 > 주문 확인 상세 > 부분 입금 취소
+	cancleAllOrderList: '/admin/order/cancel-all',
+	depositCancleAllOrderList: '/admin/order/deposit-all',
 }
 
 export async function useOrderCancel(data) {
@@ -62,4 +64,21 @@ export async function getProNoList(data) {
 		},
 	})
 	return response.data
+}
+
+export async function cancelAllOrderList(data) {
+	try {
+		const response = await client.post(`${urls.cancleAllOrderList}`, data)
+		return response.data
+	} catch (e) {
+		throw new Error('주문 취소 중 오류가 발생했습니다.')
+	}
+}
+export async function depositCancleAllOrderList(data) {
+	try {
+		const response = await client.post(`${urls.depositCancleAllOrderList}`, data)
+		return response.data
+	} catch (e) {
+		throw new Error('입금 취소 중 오류가 발생했습니다.')
+	}
 }

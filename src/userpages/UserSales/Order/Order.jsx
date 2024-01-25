@@ -1,31 +1,30 @@
 import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useUserOrderCancelMutaion, useUserOrderListQuery } from '../../../api/user'
+import { USER_URL, useUserOrderCancelMutaion, useUserOrderListQuery } from '../../../api/user'
 import { WhiteRedBtn } from '../../../common/Button/Button'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { userOrderListField, userOrderListFieldsCols } from '../../../constants/user/order'
+import { userOrderListField, userOrderListFieldsCols } from '../../../constants/user/orderTable'
 import useTableData from '../../../hooks/useTableData'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import useTableSelection from '../../../hooks/useTableSelection'
 import {
-	AlertImg,
-	FilterAlterTxt,
 	FilterContianer,
 	FilterHeader,
-	FilterHeaderAlert,
 	FilterWrap,
 	TCSubContainer,
-	TableContianer,
+	TableContianer
 } from '../../../modal/External/ExternalFilter'
-import Table from '../../../pages/Table/Table'
+import TableV2 from '../../../pages/Table/TableV2'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
+import useAlert from '../../../store/Alert/useAlert'
 import { toggleAtom } from '../../../store/Layout/Layout'
+import { getValidParams } from '../../../utils/parameters'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 import OrderSearchFields from './OrderSearchFields'
-import moment from 'moment'
-import useAlert from '../../../store/Alert/useAlert'
+import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 
 /**
  * @constant 기본 페이지 검색 값
@@ -41,24 +40,6 @@ const initialPageParams = {
 const UID_KEY = '주문 고유 번호'
 
 /**
- * 유효 PARAMS 반환 함수
- */
-const getValidParams = (params) => {
-	const validParams = Object.keys(params).reduce((acc, key) => {
-		let value = params[key]
-		if (Array.isArray(value)) {
-			value = value.length < 1 ? null : value.toString()
-		} else if (typeof value === 'string' && value.length < 1) {
-			value = null
-		} else if (key === 'orderStartDate' || key === 'orderEndDate') {
-			value = value ? moment(value).format('YYYYMMDD') : null
-		}
-		return value ? { ...acc, [key]: value } : acc
-	}, {})
-	return validParams
-}
-
-/**
  * (사용자)상시판매 주문확인 목록
  * @todo
  * - 필터 초기화시 주문일자 변경되지 않음
@@ -66,13 +47,14 @@ const getValidParams = (params) => {
 const Order = ({}) => {
 	const [searchParams, setSearchParams] = useState({ ...initialPageParams })
 	const [pageParams, setPageParams] = useState({ ...initialPageParams })
-	const { data: orderData, isError, isLoading } = useUserOrderListQuery(searchParams) // 주문확인 목록 조회 쿼리
+	const { data: orderData, isLoading } = useUserOrderListQuery(searchParams) // 주문확인 목록 조회 쿼리
 	const { mutate: requestCancel, loading: isCancelLoading } = useUserOrderCancelMutaion() // 주문취소 뮤테이션
 	// 테이블 데이터, 페이지 데이터, 총 중량
-	const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: userOrderListField,
 		serverData: orderData,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		best: { display: true }
 	})
 	// 선택 항목
 	const { selectedData, selectedWeightStr, selectedCountStr, hasSelected } = useTableSelection({ weightKey: '총 중량' })
@@ -146,7 +128,6 @@ const Order = ({}) => {
 	/**
 	 * UI COMMONT PROPERTIES
 	 * @description 페이지 내 공통 UI 처리 함수입니다.
-	 * @todo 테이블 공통 컴포넌트로 전환
 	 */
 	/* ============================== COMMON start ============================== */
 	// FILTER ON TOGGLE
@@ -172,23 +153,7 @@ const Order = ({}) => {
 				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 			</FilterHeader>
 			{/* 공지사항 */}
-			<FilterHeaderAlert>
-				<div style={{ display: 'flex' }}>
-					<div style={{ marginRight: '20px' }}>
-						<img src="/img/notice.png" />
-					</div>
-					<div style={{ marginTop: '6px' }}>
-						<FilterAlterTxt style={{ marginTop: '0px' }}>
-							· 경매 남은 시간은 본 화면에서 발생되는 메시지 창에 따라 다소 지연될 수 있습니다. 경매 남은 시간을
-							최신으로 갱신하려면 다시 조회해 주세요.
-						</FilterAlterTxt>
-					</div>
-				</div>
-				<AlertImg>
-					수정
-					<img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-				</AlertImg>
-			</FilterHeaderAlert>
+			<CautionBox category={CAUTION_CATEGORY.singleProduct} />
 			{/* 검색 필터 */}
 			{exFilterToggle && (
 				<FilterWrap>
@@ -205,13 +170,17 @@ const Order = ({}) => {
 			<TableContianer>
 				{/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
 				<TCSubContainer bor>
-					<div>
+					<div style={{flex: 1}}>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handlePageSizeChange} />
-						<Excel getRow={tableRowData} />
+						<TableV2ExcelDownloader
+							requestUrl={USER_URL.orderList} 
+							requestCount={totalCount}
+							field={userOrderListField} 
+						/>
 					</div>
 				</TCSubContainer>
 				{/* 선택항목 중량 | 주문 취소 */}
@@ -226,10 +195,10 @@ const Order = ({}) => {
 					</div>
 				</TCSubContainer>
 				{/* 테이블 */}
-				<Table
+				<TableV2
 					getRow={tableRowData}
 					getCol={userOrderListFieldsCols(setPackageReadOnlyViewer)}
-					isLoading={isLoading}
+					loading={isLoading}
 					isRowClickable
 					handleOnRowClicked={handleTableRowClick}
 					tablePagination={paginationData}

@@ -1,15 +1,15 @@
-import { useContext, useMemo } from 'react'
-import { useUserCartListQuery } from '../../../api/user'
+import { useContext, useEffect, useMemo } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { USER_URL, useUserCartListQuery } from '../../../api/user'
 import Excel from '../../../components/TableInner/Excel'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import {
   userCartListPackageField,
   userCartListPackageFieldCols,
   userCartListSingleField,
   userCartListSingleFieldsCols,
-} from '../../../constants/user/cart'
-import { PROD_CATEGORY } from '../../../constants/user/product'
+} from '../../../constants/user/cartTable'
+import { PROD_CATEGORY } from '../../../constants/user/constantKey'
 import useTableData from '../../../hooks/useTableData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'
@@ -20,25 +20,34 @@ import {
   TCSubContainer,
   TableContianer,
 } from '../../../modal/External/ExternalFilter'
-import Table from '../../../pages/Table/Table'
+import TableV2 from '../../../pages/Table/TableV2'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import AddOrderButton from '../_components/AddOrderButton'
-import { PACKAGE_VIEWER_ACTION, PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
+import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
+import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 
 /**
  * @constant 기본 검색 값
  */
 const initialSearchParams = {
-  category: PROD_CATEGORY.single,
   pageNum: 1,
   pageSize: 50,
 }
 
 /**
+ * @constant 사용자 카트 URL
+ */
+const USER_CART_URL = '/userpage/salescart';
+
+/**
  * (사용자)사용자 장바구니 페이지
  */
 const Cart = ({}) => {
+  // PATH 파라미터
+  const { product: productType } = useParams();
   // API 파라미터
-  const { searchParams, handleParamsChange, handlePageSizeChange } = useTableSearchParams(initialSearchParams)
+  const initialParams = useMemo(() => ({...initialSearchParams, category: productType || PROD_CATEGORY.single }), [productType]);
+  const { searchParams, handleParamsChange, handlePageSizeChange } = useTableSearchParams(initialParams)
   // API
   const { data: cartData, isLoading, isError } = useUserCartListQuery(searchParams) // 카트 목록 조회 쿼리
   // 카테고리 (단일| 패키지)
@@ -47,14 +56,25 @@ const Cart = ({}) => {
   const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
     tableField: isSingleCategory ? userCartListSingleField : userCartListPackageField,
     serverData: cartData,
-    wish: { display: true, key: ['number', 'packageNumber']}
+    wish: { display: true, key: ['number', 'packageNumber']},
+    best: { display: true }
   })
   // 선택 항목
-  const { selectedData, selectedWeight, selectedWeightStr, selectedCountStr, selectedCount } = useTableSelection({
+  const { selectedData, selectedWeight, selectedWeightStr, selectedCountStr } = useTableSelection({
     weightKey: isSingleCategory ? '중량' : '패키지 상품 총 중량',
   });
   // 패키지 상세보기
   const { setPackageReadOnlyViewer } = useContext(PackageViewerDispatchContext);
+  // navigate
+  const navigate =useNavigate();
+
+  useEffect(() => {
+    if(!productType || !Object.values(PROD_CATEGORY).includes(productType)) {
+      navigate(`${USER_CART_URL}/${PROD_CATEGORY.single}`);
+    } else {
+      handleParamsChange({...initialParams, category: productType })
+    }
+  }, [productType])
 
   // ERROR SECTION
   if (isError) {
@@ -73,15 +93,13 @@ const Cart = ({}) => {
                 { text: '단일', value: PROD_CATEGORY.single },
                 { text: '패키지', value: PROD_CATEGORY.package },
               ].map((v) => (
-                <a
+                <Link
                   role="button"
                   style={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    handleParamsChange({ category: v.value })
-                  }}
+                  to={`${USER_CART_URL}/${v.value}`}
                 >
                   {v.value === searchParams.category ? <h5>{v.text}</h5> : <h6>{v.text}</h6>}
-                </a>
+                </Link>
               ))}
             </SubTitle>
           </div>
@@ -90,13 +108,17 @@ const Cart = ({}) => {
       <TableContianer>
         {/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
         <TCSubContainer bor>
-          <div>
+          <div style={{flex: 1}}>
             조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount.toLocaleString()}개 )
-            <Hidden />
+            <TableV2HiddenSection />
           </div>
           <div>
             <PageDropdown handleDropdown={handlePageSizeChange} />
-            <Excel getRow={tableRowData} />
+            <TableV2ExcelDownloader 
+              requestUrl={`${USER_URL.cartList}/${productType}`} 
+              requestCount={totalCount} 
+              field={isSingleCategory? userCartListSingleField : userCartListPackageField} 
+            />
           </div>
         </TCSubContainer>
         {/* 선택항목 중량 */}
@@ -104,10 +126,11 @@ const Cart = ({}) => {
           선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeight.toLocaleString()} (kg)
         </TCSubContainer>
         {/* 테이블 */}
-        <Table
+        <TableV2
           getCol={isSingleCategory ? userCartListSingleFieldsCols : userCartListPackageFieldCols(setPackageReadOnlyViewer)}
           getRow={tableRowData}
           tablePagination={paginationData}
+          loading={isLoading}
           onPageChange={(p) => {
             handleParamsChange({ page: p })
           }}

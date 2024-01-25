@@ -48,7 +48,6 @@ const ProgressSearchFields = ({
 	}
 	const [param, setParam] = useState(init)
 	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
-
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
 
 	console.log('param', param)

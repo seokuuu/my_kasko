@@ -2,8 +2,9 @@ import { client } from './index'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { queryClient } from './query'
 import useAlert from '../store/Alert/useAlert'
+import { getUrlWithSearchParam } from '../utils/parameters'
 
-const urls = {
+export const USER_URL = {
 	get: '/user/signup',
 	singleProductList: '/single-product',
 	packageProductList: '/package-product',
@@ -21,7 +22,7 @@ const urls = {
     회원 정보
 ============================== */
 export function getUser() {
-	return client.get(urls.get)
+	return client.get(USER_URL.get)
 }
 
 /**
@@ -33,7 +34,7 @@ export const useUserSingleProductListQuery = (param) =>
 	useQuery({
 		queryKey: ['user', 'single', param],
 		queryFn: async () => {
-			const { data } = await client.get(getUrlWithSearchParam(urls.singleProductList, param))
+			const { data } = await client.get(getUrlWithSearchParam(USER_URL.singleProductList, param))
 			return data.data
 		},
 	})
@@ -47,7 +48,7 @@ export const useUserPackageProductListQuery = (param) =>
 	useQuery({
 		queryKey: ['user', 'package', param],
 		queryFn: async () => {
-			const { data } = await client.get(getUrlWithSearchParam(urls.packageProductList, param))
+			const { data } = await client.get(getUrlWithSearchParam(USER_URL.packageProductList, param))
 			return data.data
 		},
 	})
@@ -61,7 +62,7 @@ export const useUserPackageProductDetailsListQuery = (param) =>
 	useQuery({
 		queryKey: ['user', 'package', 'details', param],
 		queryFn: async () => {
-			const { data } = await client.get(getUrlWithSearchParam(urls.packageProductDetailsList, param))
+			const { data } = await client.get(getUrlWithSearchParam(USER_URL.packageProductDetailsList, param))
 			return data.data
 		},
 	})
@@ -77,7 +78,7 @@ export const useUserCartListQuery = (param) =>
 		queryKey: ['user', 'cart', param],
 		queryFn: async () => {
 			const { data } = await client.get(
-				`${urls.cartList}/${param.category}?pageNum=${param.pageNum || 1}&pageSize=${param.pageSize || 50}`,
+				`${USER_URL.cartList}/${param.category}?pageNum=${param.pageNum || 1}&pageSize=${param.pageSize || 50}`,
 			)
 			return data.data
 		},
@@ -92,7 +93,7 @@ export const useUserOrderListQuery = (param) =>
 	useQuery({
 		queryKey: ['user', 'order', param],
 		queryFn: async () => {
-			const { data } = await client.get(getUrlWithSearchParam(urls.orderList, param))
+			const { data } = await client.get(getUrlWithSearchParam(USER_URL.orderList, param))
 			return data.data
 		},
 	})
@@ -107,7 +108,7 @@ export const useUserOrderDetailsQuery = (param) =>
 	useQuery({
 		queryKey: ['user', 'order', 'details', param],
 		queryFn: async () => {
-			const { data } = await client.get(getUrlWithSearchParam(urls.orderList, param))
+			const { data } = await client.get(getUrlWithSearchParam(USER_URL.orderList, param))
 			return data.data
 		},
 	})
@@ -122,7 +123,7 @@ export const useUserAddCartMutaion = () => {
 
 	return useMutation({
 		mutationFn: async (cartParam) => {
-			await client.post(urls.cartRequest, cartParam)
+			await client.post(USER_URL.cartRequest, cartParam)
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: 'cart' })
@@ -144,7 +145,7 @@ export const useUserOrderMutaion = () => {
 
 	return useMutation({
 		mutationFn: async (orderParam) => {
-			await client.post(urls.orderRequest, orderParam)
+			await client.post(USER_URL.orderRequest, orderParam)
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: 'cart' })
@@ -166,7 +167,7 @@ export const useUserOrderCancelMutaion = () => {
 
 	return useMutation({
 		mutationFn: async (cancelParam) => {
-			await client.post(urls.orderCancel, cancelParam)
+			await client.post(USER_URL.orderCancel, cancelParam)
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: 'order' })
@@ -185,7 +186,7 @@ export const useUserDestinationQuery = (param) =>
 	useQuery({
 		queryKey: ['user', 'destination', 'list', param],
 		queryFn: async () => {
-			const { data } = await client.get(urls.destinationList)
+			const { data } = await client.get(USER_URL.destinationList)
 			return data.data
 		},
 	})
@@ -195,7 +196,7 @@ export const useUserDestinationUpdateRequestMutation = () => {
 
 	return useMutation({
 		mutationFn: async (param) => {
-			await client.post(urls.destinationUpdate, param)
+			await client.post(USER_URL.destinationUpdate, param)
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: 'order' })
@@ -206,19 +207,3 @@ export const useUserDestinationUpdateRequestMutation = () => {
 		},
 	})
 }
-
-/* ==================== COMMON UTILS start==================== */
-/**
- * 제품번호 목록을 포함한 필터 파라미터 반환 함수
- * @param {string} url API url
- * @param {string} param.productNumberList 제품번호 목록
- * @returns {string} url including searchParams
- */
-function getUrlWithSearchParam(url, param) {
-	if (param && param.productNumberList) {
-		param.productNumberList = param.productNumberList.replace(/[\n ,]+/g, ',')
-	}
-	const params = new URLSearchParams(param)
-	return `${url}?${params.toString()}`
-}
-/* ==================== COMMON UTILS end ==================== */

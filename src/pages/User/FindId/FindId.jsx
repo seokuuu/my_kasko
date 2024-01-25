@@ -1,309 +1,274 @@
-import { styled } from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
-import React, {useState, useCallback, useEffect} from 'react';
-import {
-  Container,
-  SubContainer,
-  Title,
-  LoginContainer,
-  LoginSubContainer,
-} from '../Login/Login.Styled';
-
-import { IbwTxt } from '../Login/Login.Styled';
-import { busIdRegex, phoneRegex } from '../../../common/Regex/Regex';
-// import { BlueBtn, WhiteBtn } from '../../common/Button/Button';
-import {BlueBtn, GreyBtn, WhiteBtn} from '../../../common/Button/Button';
-import { useAtom } from 'jotai';
-import {
-  headerAtom,
-  accordionAtom,
-  subHeaderAtom,
-} from '../../../store/Layout/Layout';
-import {findById} from "../../../api/auth";
+import { styled } from 'styled-components'
+import { Link, useNavigate } from 'react-router-dom'
+import React, { useCallback, useEffect, useState } from 'react'
+import { Container, IbwTxt, LoginContainer, LoginSubContainer, SubContainer, Title } from '../Login/Login.Styled'
+import { busIdRegex, phoneRegex } from '../../../common/Regex/Regex'
+import { BlueBtn, WhiteBtn } from '../../../common/Button/Button'
+import { accordionAtom, headerAtom, subHeaderAtom } from '../../../store/Layout/Layout'
+import { findById } from '../../../api/auth'
+import { useSetAtom } from 'jotai/index'
+import useAlert from '../../../store/Alert/useAlert'
 
 const FindId = () => {
-  const [showHeader, setShowHeader] = useAtom(headerAtom);
-  const [showAccordion, setShowAccordion] = useAtom(accordionAtom);
-  const [showSubHeader, setShowSubHeader] = useAtom(subHeaderAtom);
-  setShowHeader(false);
-  setShowAccordion(false);
-  setShowSubHeader(false);
-  const navigate = useNavigate();
+	const { showAlert } = useAlert()
+	const setShowHeader = useSetAtom(headerAtom)
+	const setShowAccordion = useSetAtom(accordionAtom)
+	const setShowSubHeader = useSetAtom(subHeaderAtom)
 
-  const [finder, setFinder] = useState(null);
-  const [isActive, setIsActive] = useState(false);
-  const [findPageNum, setFindPageNum] = useState(0);
+	setShowHeader(false)
+	setShowAccordion(false)
+	setShowSubHeader(false)
+	const navigate = useNavigate()
 
-  const dummy = [
-    {
-      name: '가숙호',
-      busId: '1234512345',
-      contact: '01012341234',
-    },
-  ];
+	const [finder, setFinder] = useState(null)
+	const [findPageNum, setFindPageNum] = useState(0)
+	const [isActive, setIsActive] = useState(false)
 
-  const info = {
-    name: '',
-    busNum: '',
-    contact: '',
-  };
+	const info = {
+		name: '',
+		busNum: '',
+		contact: '',
+	}
 
-  const [input, setInput] = useState(info);
+	const [input, setInput] = useState(info)
 
-  const normalAlert = {
-    alertColor: '',
-    nameMsg: '',
-    busNumMsg: '',
-    contactMsg: '',
-  };
+	const normalAlert = {
+		alertColor: '',
+		nameMsg: '',
+		busNumMsg: '',
+		contactMsg: '',
+	}
 
-  const [alert, setAlert] = useState(normalAlert);
+	const [alert, setAlert] = useState(normalAlert)
 
-  const commonHandler = useCallback(
-    e => {
-      const { name, value } = e.target;
-      setInput({ ...input, [name]: value });
+	const commonHandler = useCallback(
+		(e) => {
+			const { name, value } = e.target
+			setInput({ ...input, [name]: value })
+			errorCheck(name, value)
+		},
+		[input, info],
+	)
 
-      if (name === 'name') {
-        if (!value) {
-          setAlert(prevState => ({
-            ...prevState,
-            alertColor: 'red',
-            nameMsg: '내용을 확인해 주세요',
-            busNumMsg: '',
-            contactMsg: '',
-          }));
-        } else {
-          setAlert(prevState => ({
-            ...prevState,
-            alertColor: '',
-            nameMsg: '',
-            busNumMsg: '',
-            contactMsg: '',
-          }));
-        }
-      } else if (name === 'busNum') {
-        if (!value || !busIdRegex.test(value)) {
-          setAlert(prevState => ({
-            ...prevState,
-            alertColor: 'red',
-            nameMsg: '',
-            busNumMsg: '올바른 사업자 번호가 아닙니다',
-            contactMsg: '',
-          }));
-        } else {
-          setAlert(prevState => ({
-            ...prevState,
-            alertColor: '',
-            nameMsg: '',
-            busNumMsg: '',
-            contactMsg: '',
-          }));
-        }
-      } else if (name === 'contact') {
-        if (!value || !phoneRegex.test(value)) {
-          setAlert(prevState => ({
-            ...prevState,
-            alertColor: 'red',
-            nameMsg: '',
-            busNumMsg: '',
-            contactMsg: '올바른 번호가 아닙니다',
-          }));
-        } else {
-          setAlert(prevState => ({
-            ...prevState,
-            alertColor: '',
-            nameMsg: '',
-            busNumMsg: '',
-            contactMsg: '',
-          }));
-        }
-      }
-    },
-    [input, info]
-  );
+	const errorCheck = (name, value) => {
+		if (name === 'name' && !value) {
+			return setAlert((prevState) => ({
+				...prevState,
+				alertColor: 'red',
+				nameMsg: '내용을 확인해 주세요',
+			}))
+		}
 
-  /** 아이디 찾기 */
-  const onFindId = async () => {
-    const requestData = {
-      name: input.name,
-      businessNumber: input.busNum,
-      phone: input.contact
-    }
-    try {
-      const { data: res } = await findById(requestData);
-      setFinder(res.data);
-      setFindPageNum(1);
-    } catch (e) {
-      window.alert(e.data.message || '찾을 수 없는 회원입니다.');
-    }
-  }
+		if (name === 'busNum' && (!value || !busIdRegex.test(value))) {
+			return setAlert((prevState) => ({
+				...prevState,
+				alertColor: 'red',
+				busNumMsg: '올바른 사업자 번호가 아닙니다',
+			}))
+		}
 
-  return (
-    <>
-      {findPageNum === 0 && (
-        <Container>
-          <SubContainer>
-            <Title style={{ marginTop: '10px', marginBottom: '20px' }}>
-              <img src="/img/login_logo.png" alt="" />
-              <FindMsg style={{ left: '-60px' }}>
-                회원가입 시 등록한 정보를 입력해 주세요.
-              </FindMsg>
-            </Title>
-            <LoginContainer>
-              <LoginSubContainer>
-                <FindContainer>
-                  <FindTitleMsg>
-                    <h4>대표자 성명</h4>
-                    <p>{alert.nameMsg}</p>
-                  </FindTitleMsg>
+		if (name === 'contact' && (!value || !phoneRegex.test(value))) {
+			return setAlert((prevState) => ({
+				...prevState,
+				alertColor: 'red',
+				contactMsg: '올바른 번호가 아닙니다',
+			}))
+		}
 
-                  <input
-                    placeholder=""
-                    onChange={commonHandler}
-                    name="name"
-                    value={input.name}
-                  ></input>
-                </FindContainer>
-                <FindContainer>
-                  <FindTitleMsg>
-                    <h4>사업자 번호</h4>
-                    <p>{alert.busNumMsg}</p>
-                  </FindTitleMsg>
-                  <input
-                    placeholder="사업자 번호 입력('-' 제외)"
-                    onChange={commonHandler}
-                    name="busNum"
-                    value={input.busNum}
-                  ></input>
-                </FindContainer>
-                <FindContainer>
-                  <FindTitleMsg>
-                    <h4>대표 연락처</h4>
-                    <p>{alert.contactMsg}</p>
-                  </FindTitleMsg>
-                  <input
-                    placeholder="'-' 제외"
-                    onChange={commonHandler}
-                    name="contact"
-                    value={input.contact}
-                  ></input>
-                </FindContainer>
-                    <BlueBtn
-                        type="button"
-                        onClick={onFindId}
-                        width={100}
-                        height={40}
-                        fontSize={16}
-                    >
-                      아이디 찾기
-                    </BlueBtn>
-                <IbwTxt>
-                  아이디가 기억나셨나요?{' '}
-                  <Link to={`/reissuepw`}>비밀번호 재발급</Link>
-                </IbwTxt>
-              </LoginSubContainer>
-            </LoginContainer>
-          </SubContainer>
-        </Container>
-      )}
-      {findPageNum === 1 && (
-        <>
-          <Container>
-            <SubContainer>
-              <Title style={{ marginTop: '10px', marginBottom: '20px' }}>
-                <img src="/img/login_logo.png" alt="" />
-                <FindMsg style={{ left: '-60px' }}>
-                  아이디 찾기 결과입니다. 아래 정보를 확인해 주세요.
-                </FindMsg>
-              </Title>
-              <LoginContainer style={{ width: '450px' }}>
-                <FindIdResult>
-                  아이디 : <span> {finder}</span>
-                </FindIdResult>
-                <BtnWrap>
-                  <BlueBtn onClick={() => navigate('/')} height={40} width={90} fontSize={16} type="button">
-                    로그인
-                  </BlueBtn>
-                  <WhiteBtn
-                    onClick={() => {
-                      navigate('/reissuepw');
-                    }}
-                    type="button"
-                    height={40}
-                    width={90}
-                    fontSize={16}
-                  >
-                    비밀번호 재발급
-                  </WhiteBtn>
-                </BtnWrap>
-              </LoginContainer>
-            </SubContainer>
-          </Container>
-        </>
-      )}
-    </>
-  );
-};
+		setAlert((prevState) => ({
+			...prevState,
+			alertColor: '',
+			nameMsg: '',
+			busNumMsg: '',
+			contactMsg: '',
+		}))
+	}
 
-export default FindId;
+	const isValid = () => {
+		if (!input.name) {
+			errorCheck('name', input.name)
+			return setIsActive(false)
+		}
+		if (!input.busNum || !busIdRegex.test(input.busNum)) {
+			errorCheck('busNum', input.busNum)
+			return setIsActive(false)
+		}
+		if (!input.contact || !phoneRegex.test(input.contact)) {
+			errorCheck('contact', input.contact)
+			return setIsActive(false)
+		}
+		return setIsActive(true)
+	}
+
+	/** 아이디 찾기 */
+	const onFindId = async () => {
+		const requestData = {
+			name: input.name,
+			businessNumber: input.busNum,
+			phone: input.contact,
+		}
+		try {
+			const { data: res } = await findById(requestData)
+			setFinder(res.data)
+			setFindPageNum(1)
+		} catch (e) {
+			showAlert({
+				title: '입력하신 정보로 가입 된 아이디가 없습니다.',
+				content: '내용을 다시 한번 확인해주세요.',
+			})
+		}
+	}
+
+	useEffect(() => {
+		isValid()
+	}, [input])
+
+	return (
+		<>
+			{findPageNum === 0 && (
+				<Container>
+					<SubContainer>
+						<Title style={{ marginTop: '10px', marginBottom: '20px' }}>
+							<img src="/img/login_logo.png" alt="" />
+							<FindMsg style={{ left: '-60px' }}>회원가입 시 등록한 정보를 입력해 주세요.</FindMsg>
+						</Title>
+						<LoginContainer>
+							<LoginSubContainer>
+								<FindContainer>
+									<FindTitleMsg>
+										<h4>대표자 성명</h4>
+										<p>{alert.nameMsg}</p>
+									</FindTitleMsg>
+
+									<input placeholder="" onChange={commonHandler} name="name" value={input.name}></input>
+								</FindContainer>
+								<FindContainer>
+									<FindTitleMsg>
+										<h4>사업자 번호</h4>
+										<p>{alert.busNumMsg}</p>
+									</FindTitleMsg>
+									<input
+										placeholder="사업자 번호 입력('-' 제외)"
+										onChange={commonHandler}
+										name="busNum"
+										value={input.busNum}
+									></input>
+								</FindContainer>
+								<FindContainer>
+									<FindTitleMsg>
+										<h4>대표 연락처</h4>
+										<p>{alert.contactMsg}</p>
+									</FindTitleMsg>
+									<input placeholder="'-' 제외" onChange={commonHandler} name="contact" value={input.contact}></input>
+								</FindContainer>
+								<CustomBtn type="button" onClick={onFindId} width={100} height={40} fontSize={16} isActive={isActive}>
+									아이디 찾기
+								</CustomBtn>
+								<IbwTxt>
+									아이디가 기억나셨나요? <Link to={`/reissuepw`}>비밀번호 재발급</Link>
+								</IbwTxt>
+							</LoginSubContainer>
+						</LoginContainer>
+					</SubContainer>
+				</Container>
+			)}
+			{findPageNum === 1 && (
+				<Container>
+					<SubContainer>
+						<Title style={{ marginTop: '10px', marginBottom: '20px' }}>
+							<img src="/img/login_logo.png" alt="" />
+							<FindMsg style={{ left: '-60px' }}>아이디 찾기 결과입니다. 아래 정보를 확인해 주세요.</FindMsg>
+						</Title>
+						<LoginContainer style={{ width: '450px' }}>
+							<FindIdResult>
+								아이디 : <span> {finder}</span>
+							</FindIdResult>
+							<BtnWrap>
+								<BlueBtn onClick={() => navigate('/')} height={40} width={90} fontSize={16} type="button">
+									로그인
+								</BlueBtn>
+								<WhiteBtn
+									onClick={() => {
+										navigate('/reissuepw')
+									}}
+									type="button"
+									height={40}
+									width={90}
+									fontSize={16}
+								>
+									비밀번호 재발급
+								</WhiteBtn>
+							</BtnWrap>
+						</LoginContainer>
+					</SubContainer>
+				</Container>
+			)}
+		</>
+	)
+}
+
+export default FindId
 
 export const FindContainer = styled.div`
-  color: black;
-  text-align: left;
-  margin-bottom: 24px;
+	color: black;
+	text-align: left;
+	margin-bottom: 24px;
 
-  h4 {
-    font-size: 18px;
-  }
+	h4 {
+		font-size: 18px;
+	}
 
-  h5 {
-    font-size: 16px;
-  }
-  input {
-    margin-top: 5px;
-    border: 1px solid #e1e1e1;
-    width: 100%;
-    height: 40px;
-  }
-`;
+	h5 {
+		font-size: 16px;
+	}
+	input {
+		margin-top: 5px;
+		border: 1px solid #e1e1e1;
+		width: 100%;
+		height: 40px;
+	}
+`
 
 export const FindMsg = styled.div`
-  margin: 20px 0px 20px 0px;
-  font-size: 16px;
-  width: 400px;
-  position: relative;
-  left: -15px;
-`;
+	margin: 20px 0px 20px 0px;
+	font-size: 16px;
+	width: 400px;
+	position: relative;
+	left: -15px;
+`
 
 export const FindTitleMsg = styled.div`
-  display: flex;
-  height: 20px;
-  p {
-    margin-left: 6px;
-    margin-top: 3px;
-    color: red;
-  }
-`;
+	display: flex;
+	height: 20px;
+	p {
+		margin-left: 6px;
+		margin-top: 3px;
+		color: red;
+	}
+`
 
 const FindIdResult = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 20px;
-  width: 90%;
-  height: 100px;
-  border: 1px solid black;
-  font-size: 18px;
-`;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 20px;
+	width: 90%;
+	height: 100px;
+	border: 1px solid black;
+	font-size: 18px;
+`
 
 const BtnWrap = styled.div`
-  position: relative;
-  left: 20px;
+	position: relative;
+	left: 20px;
 
-  button {
-    margin-bottom: 10px;
-  }
-`;
+	button {
+		margin-bottom: 10px;
+	}
+`
+
+const CustomBtn = styled(BlueBtn)`
+	background: ${(props) => (props.isActive ? '#061737' : '#D7D7D7')};
+`

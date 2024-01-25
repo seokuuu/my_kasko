@@ -3,8 +3,10 @@
 ============================== */
 
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { useSetAtom } from 'jotai'
 import { client } from '..'
 import useAlert from '../../store/Alert/useAlert'
+import { selectedRowsAtom } from '../../store/Layout/Layout'
 import { queryClient } from '../query'
 
 // API ENDPOINT
@@ -85,6 +87,8 @@ export function useProductRangeUpdateMutation() {
 // 제품군 삭제
 export function useProductRangeRemoveMutation() {
 	const { simpleAlert } = useAlert()
+	const setSelected = useSetAtom(selectedRowsAtom)
+
 	return useMutation({
 		mutationKey: PRODUCT_RANGE_KEYS.removeProductRange,
 		mutationFn: async function (id) {
@@ -96,6 +100,7 @@ export function useProductRangeRemoveMutation() {
 			} else {
 				simpleAlert('삭제되었습니다.')
 			}
+			setSelected([])
 
 			queryClient.invalidateQueries({
 				queryKey: PRODUCT_RANGE_KEYS.getProductRangeList,

@@ -17,9 +17,8 @@ root.render(
 		<GlobalStyle />
 		<ThemeProvider theme={KaskoTheme}>
 			<QueryClientProvider client={queryClient}>
-				<RouterProvider router={router} />
 				<AlertComponent />
-				{/* <Router /> */}
+				<RouterProvider router={router} />
 				<ReactQueryDevtools position="top-right" initialIsOpen={false} />
 			</QueryClientProvider>
 		</ThemeProvider>

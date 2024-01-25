@@ -1,16 +1,15 @@
-import React, { Fragment, useMemo, useState } from 'react'
+import { useSetAtom } from 'jotai'
+import React, { Fragment, useEffect, useLayoutEffect, useMemo } from 'react'
 import styled from 'styled-components'
-import { useUserPackageProductDetailsListQuery } from '../../../api/user'
+import { USER_URL, useUserPackageProductDetailsListQuery } from '../../../api/user'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import Excel from '../../../components/TableInner/Excel'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKey'
 import {
-	PROD_CATEGORY,
-	getUserPackageDetailsFieldsCols,
 	userPackageDetailsField,
-} from '../../../constants/user/product'
+	userPackageDetailsFieldsCols,
+} from '../../../constants/user/productTable'
 import useTableData from '../../../hooks/useTableData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'
@@ -23,16 +22,18 @@ import {
 } from '../../../modal/Common/Common.Styled'
 import {
 	FilterContianer,
-	FilterHeader,
 	FilterTCTop,
 	FilterTopContainer,
 	TCSubContainer,
-	TableContianer,
+	TableContianer
 } from '../../../modal/External/ExternalFilter'
+import TableV2 from '../../../pages/Table/TableV2'
 import Table from '../../../pages/Table/Table'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
+import { selectedRows2Switch } from '../../../store/Layout/Layout'
 import AddCartButton, { CART_BUTTON_TYPE } from './AddCartButton'
 import AddOrderButton, { ORDER_BUTTON_TYPE } from './AddOrderButton'
+import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 
 /**
  * @constant 기본 검색 값
@@ -54,10 +55,23 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 	// API
 	const { data: packageData, isLoading } = useUserPackageProductDetailsListQuery(searchParams) // 상시판매 패키지 목록 조회 쿼리
 	// 테이블 데이터, 페이지 데이터, 총 중량
-	const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalWeight, totalCount } = useTableData({
 		tableField: userPackageDetailsField,
 		serverData: packageData,
 		wish: { display: true, key: ['packageNumber'] },
+		best: { display: true }
+	})
+	// 장바구니, 주문하기 데이터
+	const cartOrderDatas = useMemo(() => {
+		if (tableRowData.length < 1) {
+			return [];
+		}
+		const targetData = tableRowData[0];
+		return [{
+			[PROD_COL_NAME.packageUid]: targetData[PROD_COL_NAME.packageUid],
+			[PROD_COL_NAME.packageNumber]: packageNumber,
+			[PROD_COL_NAME.salePrice]: targetData[PROD_COL_NAME.salePrice],
+		}];
 	})
 	// 요약정보 데이터
 	const infoData = useMemo(() => {
@@ -68,46 +82,32 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 		return [targetData['패키지 명'], totalCountStr, targetData['상시판매 시작가']]
 	}, [tableRowData, totalCountStr])
 	// 선택 항목
-	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr, hasSelected } = useTableSelection({
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({
 		weightKey: '총 중량',
 	})
+	// 팝업 테이블 처리 스토어
+  const setRowAtomSwitch = useSetAtom(selectedRows2Switch)
 
-	/**
-	 * UI COMMONT PROPERTIES
-	 * @description 페이지 내 공통 UI 처리 함수입니다.
-	 * @todo 테이블 공통 컴포넌트로 전환
-	 */
-	/* ============================== COMMON start ============================== */
-	// FILTER ON TOGGLE
-	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-	const [toggleMsg, setToggleMsg] = useState('On')
-	const toggleBtnClick = () => {
-		setExfilterToggle((prev) => !prev)
-		if (exFilterToggle === true) {
-			setToggleMsg('Off')
-		} else {
-			setToggleMsg('On')
-		}
-	}
-	/* ============================== COMMON end ============================== */
+	useEffect(() => {
+		setRowAtomSwitch(false);
+
+		return(() => {
+			setRowAtomSwitch(true);
+		})
+	}, [])
 
 	return (
 		<>
 			<FadeOverlay />
-			<ModalContainer style={{ width: '75%', height: '98vh' }}>
+			<ModalContainer style={{ width: '75%', maxHeight: '98vh' }}>
 				<BlueBarHeader style={{ height: '60px' }}>
 					<div>패키지 상세 보기</div>
 					<div>
 						<WhiteCloseBtn onClick={onClose} src="/svg/white_btn_close.svg" />
 					</div>
 				</BlueBarHeader>
-				<BlueSubContainer style={{ padding: '0px 30px' }}>
+				<BlueSubContainer style={{ padding: '20px 30px' }}>
 					<FilterContianer>
-						<FilterHeader>
-							<div style={{ display: 'flex' }}></div>
-							{/* 토글 쓰기 */}
-							<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
-						</FilterHeader>
 						<FilterTopContainer>
 							<FilterTCTop>
 								<h6>패키지 번호</h6>
@@ -131,11 +131,15 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 							<TCSubContainer bor>
 								<div>
 									조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-									<Hidden />
+									<TableV2HiddenSection popupTable/>
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
 									<PageDropdown handleDropdown={handlePageSizeChange} />
-									<Excel getRow={tableRowData} />
+									<TableV2ExcelDownloader
+										requestUrl={USER_URL.packageProductDetailsList} 
+										requestCount={totalCount}
+										field={userPackageDetailsField}
+									/>
 								</div>
 							</TCSubContainer>
 							{/* 선택항목 중량 | 관심상품 등록 */}
@@ -145,27 +149,28 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 								</div>
 							</TCSubContainer>
 							{/* 테이블 */}
-							<Table
+							<TableV2
 								getRow={tableRowData}
-								getCol={getUserPackageDetailsFieldsCols}
-								isLoading={isLoading}
+								getCol={userPackageDetailsFieldsCols()}
+								loading={isLoading}
 								tablePagination={paginationData}
 								onPageChange={(p) => {
 									handleParamsChange({ page: p })
 								}}
+								popupTable
 							/>
 							{/* 패키지 상세 액션 */}
 							{action && (
 								<Bottom style={{ display: 'flex', marginTop: 30 }}>
 									<AddCartButton
 										category={PROD_CATEGORY.package}
-										products={selectedData}
+										products={cartOrderDatas}
 										buttonType={CART_BUTTON_TYPE.simple}
 									/>
 									<AddOrderButton
 										category={PROD_CATEGORY.package}
-										totalWeight={selectedWeight}
-										products={selectedData}
+										totalWeight={totalWeight}
+										products={cartOrderDatas}
 										buttonType={ORDER_BUTTON_TYPE.simple}
 									/>
 								</Bottom>

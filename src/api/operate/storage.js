@@ -3,8 +3,10 @@
 ============================== */
 
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { useSetAtom } from 'jotai'
 import { client } from '..'
 import useAlert from '../../store/Alert/useAlert'
+import { selectedRowsAtom } from '../../store/Layout/Layout'
 import { queryClient } from '../query'
 
 // API ENDPOINT
@@ -86,6 +88,8 @@ export function useStorageUpdateMutation() {
 // 창고 삭제
 export function useStorageRemoveMutation() {
 	const { simpleAlert } = useAlert()
+	const setSelected = useSetAtom(selectedRowsAtom)
+
 	return useMutation({
 		mutationKey: STORAGE_KEYS.removeStorage,
 		mutationFn: async function (id) {
@@ -100,6 +104,7 @@ export function useStorageRemoveMutation() {
 			queryClient.invalidateQueries({
 				queryKey: STORAGE_KEYS.getStorageList,
 			})
+			setSelected([])
 		},
 		onError() {
 			simpleAlert('삭제에 실패하였습니다.')

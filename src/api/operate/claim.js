@@ -3,10 +3,12 @@
 ============================== */
 
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { useSetAtom } from 'jotai'
 import qs from 'qs'
 import { useNavigate } from 'react-router-dom'
 import { client, formHeaders } from '..'
 import useAlert from '../../store/Alert/useAlert'
+import { selectedRowsAtom } from '../../store/Layout/Layout'
 import { FilteringV2 } from '../../utils/filtering'
 import { queryClient } from '../query'
 
@@ -167,6 +169,8 @@ export function useClaimUpdateMutaion() {
 // 삭제
 export function useClaimDeleteMutation() {
 	const { simpleAlert } = useAlert()
+	const setSelected = useSetAtom(selectedRowsAtom)
+
 	return useMutation({
 		mutationKey: CLAIM_KEYS.removeClaim,
 		mutationFn: async function (params) {
@@ -175,6 +179,7 @@ export function useClaimDeleteMutation() {
 		onSuccess() {
 			simpleAlert('삭제되었습니다.')
 			queryClient.invalidateQueries({ queryKey: CLAIM_KEYS.getClaimList })
+			setSelected([])
 		},
 		onError() {
 			simpleAlert('삭제에 실패하였습니다.')

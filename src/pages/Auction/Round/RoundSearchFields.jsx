@@ -1,20 +1,9 @@
-import { MainSelect } from '../../../common/Option/Main'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import {
-	ExInputsWrap,
-	FilterLeft,
-	FilterRight,
-	Input,
-	PWRight,
-	PartWrap,
-	RowWrap,
-} from '../../../modal/External/ExternalFilter'
+import { ExInputsWrap, FilterLeft, FilterRight, Input, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
 
 import { useState } from 'react'
-import { CustomerSearch, DateSearchSelect, InputSearch, RadioSearchButton } from '../../../components/Search'
-import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
-import DateGrid from '../../../components/DateGrid/DateGrid'
+import { DateSearchSelect, RadioSearchButton } from '../../../components/Search'
 
 const RoundSearchFields = ({
 	// prettier-ignore

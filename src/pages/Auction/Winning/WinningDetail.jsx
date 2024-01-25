@@ -61,9 +61,10 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../Table/Table'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import { getDestinationFind } from '../../../api/search'
-import WinningDetailSearchFields from './WinningDetailSearchFields'
+import WinningCreateSearchFields from './WinningCreateSearchFields'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { isEqual } from 'lodash'
+import WinningDetailFields from './WinningDetailFields'
 
 // 경매 낙찰 상세
 const WinningDetail = ({ detailRow }) => {
@@ -206,17 +207,20 @@ const WinningDetail = ({ detailRow }) => {
 	}, [checkedArray])
 
 	// 목적지 적용 버튼
+	// 테스트 시 수정하기
 	const handleSetCustomerDestinationUid = () => {
-		const updatedWinningList = input.updateList?.map((item) => ({
-			...item,
-			requestCustomerDestinationUid: destinationData.uid,
-		}))
+		if (checkedArray) {
+			const updatedWinningList = input.updateList?.map((item) => ({
+				...item,
+				requestCustomerDestinationUid: destinationData.uid,
+			}))
 
-		// setBiddingList(updatedBiddingList)
-		setInput((prevInput) => ({
-			...prevInput,
-			updateList: [...updatedWinningList],
-		}))
+			// setBiddingList(updatedBiddingList)
+			setInput((prevInput) => ({
+				...prevInput,
+				updateList: [...updatedWinningList],
+			}))
+		}
 	}
 
 	console.log('input', input)
@@ -326,6 +330,9 @@ const WinningDetail = ({ detailRow }) => {
 			}
 		})
 	}
+
+
+
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -407,9 +414,9 @@ const WinningDetail = ({ detailRow }) => {
 					<GlobalProductSearch
 						param={param}
 						isToggleSeparate={true}
-						renderCustomSearchFields={(props) => <WinningDetailSearchFields {...props} />} // 만들어야함 -> WinningSearchFields
-						globalProductSearchOnClick={globalProductSearchOnClick} // import
-						globalProductResetOnClick={globalProductResetOnClick} // import
+						renderCustomSearchFields={(props) => <WinningDetailFields {...props} />}
+						globalProductSearchOnClick={globalProductSearchOnClick}
+						globalProductResetOnClick={globalProductResetOnClick}
 					/>
 				</>
 			)}

@@ -414,6 +414,11 @@ const Table = ({
 
 		gridApi.refreshCells({ force: true })
 	}
+
+	useEffect(() => {
+		console.log(gridRef, 'grid ref')
+	}, [gridRef])
+
 	return (
 		<div style={containerStyle}>
 			<TestContainer hei={hei}>
