@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useUserSingleProductListQuery } from '../../../api/user'
+import { USER_URL, useUserSingleProductListQuery } from '../../../api/user'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
@@ -24,6 +24,7 @@ import AddCartButton from '../_components/AddCartButton'
 import AddOrderButton from '../_components/AddOrderButton'
 import AddWishButton from '../_components/AddWishButton'
 import SingleSearchFields from './SingleSearchFields'
+import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 
 /**
  * @constant 기본 페이지 검색 값
@@ -43,14 +44,14 @@ const Single = () => {
 	// API
 	const { data: singleData, isLoading } = useUserSingleProductListQuery(searchParams) // 주문확인 목록 조회 쿼리
 	// 테이블 데이터, 페이지 데이터, 총 중량
-	const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: userSingleProductField,
 		serverData: singleData,
 		wish: { display: true },
 		best: { display: true }
 	})
 	// 선택 항목
-	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr, hasSelected } = useTableSelection({
+	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
 		weightKey: '중량',
 	})
 
@@ -139,7 +140,11 @@ const Single = () => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handlePageSizeChange} />
-						<Excel getRow={tableRowData} />
+						<TableV2ExcelDownloader 
+							requestUrl={USER_URL.singleProductList} 
+							requestCount={totalCount}
+							field={userSingleProductField} 
+						/>
 					</div>
 				</TCSubContainer>
 				{/* 선택항목 중량 | 관심상품 등록 */}

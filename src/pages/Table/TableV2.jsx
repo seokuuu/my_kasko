@@ -245,30 +245,6 @@ const TableV2 = ({
 		setShowColumnClear({ type: tableType });
 	};
 
-	/* ==================== INITIALIZE start ==================== */
-	// 테이블 칼럼, 로우 데이터 초기화
-	useEffect(() => {
-		if (getCol) {
-			setColumnDefs(getCol)
-		}
-		if (getRow && getRow.length > 0) {
-			setRowData(getRow)
-		} else {
-			setRowData(null)
-		}
-	}, [getRow, getCol])
-
-	// 페이지 이동시에 테이블 선택이 겹칠 수 있으므로 초기화
-	useEffect(() => {
-		setSelectedRows(null)
-	}, [location])
-
-	// 테이블 선택, 숨김항목 초기화
-	useEffect(() => {
-		setResetHiddenColumn({ type: tableType });
-	}, [location, tableType])
-	/* ==================== INITIALIZE end ==================== */
-
 	/* ==================== STATE start ==================== */
 	// 페이지네이션 변경
 	useEffect(() => {
@@ -295,6 +271,31 @@ const TableV2 = ({
 	}, [showColumnId])
 	/* ==================== STATE end ==================== */
 
+	/* ==================== INITIALIZE start ==================== */
+	// 테이블 칼럼, 로우 데이터 초기화
+	useEffect(() => {
+		if (getCol) {
+			setColumnDefs(getCol)
+		}
+		if (getRow && getRow.length > 0) {
+			setRowData(getRow)
+		} else {
+			setRowData(null)
+		}
+		console.log(getRow, getRow.length)
+	}, [getRow, getCol])
+
+	// 페이지 이동시에 테이블 선택이 겹칠 수 있으므로 초기화
+	useEffect(() => {
+		setSelectedRows(null)
+	}, [location])
+
+	// 테이블 선택, 숨김항목 초기화
+	useEffect(() => {
+		setResetHiddenColumn({ type: tableType });
+	}, [location, tableType])
+	/* ==================== INITIALIZE end ==================== */
+
 	return (
 		<div style={containerStyle}>
 			<TestContainer hei={hei}>
@@ -314,8 +315,7 @@ const TableV2 = ({
 						rowSelection={'multiple'}
 						rowGroupPanelShow={'never'}
 						pivotPanelShow={'always'}
-						pagination={true}
-						paginationPageSize={size}
+						pagination={false}
 						isExternalFilterPresent={false}
 						onSelectionChanged={onSelectionChanged}
 						pinnedTopRowData={pinnedTopRowData}

@@ -1,6 +1,6 @@
 import React, { Fragment, useContext, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
-import { useUserDestinationUpdateRequestMutation, useUserOrderDetailsQuery } from '../../../api/user'
+import { USER_URL, useUserDestinationUpdateRequestMutation, useUserOrderDetailsQuery } from '../../../api/user'
 import { BtnBound, TGreyBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
 import Excel from '../../../components/TableInner/Excel'
@@ -22,6 +22,7 @@ import TableV2 from '../../../pages/Table/TableV2'
 import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import useAlert from '../../../store/Alert/useAlert'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
+import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 
 /**
  * @constant 기본 검색 값
@@ -78,7 +79,7 @@ const OrderDetail = ({ salesNumber }) => {
 	// API
 	const { data: orderData, isError, isLoading } = useUserOrderDetailsQuery(searchParams)
 	// 테이블 데이터, 페이지 데이터, 총 중량
-	const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: userOrderDetailsField,
 		serverData: orderData,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
@@ -192,7 +193,11 @@ const OrderDetail = ({ salesNumber }) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handlePageSizeChange} />
-						<Excel getRow={tableRowData} />
+						<TableV2ExcelDownloader
+							requestUrl={USER_URL.OrderDetail} 
+							requestCount={totalCount}
+							field={userOrderDetailsField} 
+						/>
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
