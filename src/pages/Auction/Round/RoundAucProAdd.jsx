@@ -49,13 +49,14 @@ import Table from '../../Table/Table'
 import { isArray, isEqual } from 'lodash'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import RoundAucListEditFields from './RoundAucListEditFields'
+import useAlert from '../../../store/Alert/useAlert'
 
 // 경매 제품 추가(단일) 메인 컴포넌트
 // 경매 제품 추가 (패키지), 경매 목록 상세(종료된 경매)와 호환 가능
 const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, types, newResData, propsResData }) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
-
+	const { simpleConfirm, simpleAlert } = useAlert()
 	//checkSales
 	const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
 
@@ -149,16 +150,15 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
 	}
 
 	const handleAddBtn = () => {
-		if (isArray(checkedArray) && checkedArray.length > 0) {
-			if (window.confirm('선택한 항목을 추가하시겠습니까?')) {
+		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
+		else {
+			simpleConfirm('선택한 항목을 추가하시겠습니까?', () =>
 				checkedArray.forEach((item) => {
 					console.log('item =>', item)
 					setNewResData((prevData) => [...prevData, item])
-				})
-				setAddModal(false)
-			}
-		} else {
-			alert('선택해주세요!')
+					setAddModal(false)
+				}),
+			)
 		}
 	}
 

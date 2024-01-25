@@ -301,12 +301,12 @@ const Winning = ({}) => {
 					onPageChange={onPageChange}
 					setChoiceComponent={() => {}}
 				/>
-				<TCSubContainer>
+				{/* <TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<SkyBtn>입금확인</SkyBtn>
 					</div>
-				</TCSubContainer>
+				</TCSubContainer> */}
 			</TableContianer>
 		</FilterContianer>
 	)

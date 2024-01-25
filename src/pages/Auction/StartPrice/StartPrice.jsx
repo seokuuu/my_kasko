@@ -34,7 +34,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isArray, isEqual } from 'lodash'
 import moment from 'moment'
-import { deleteStartPrice, getStartPrice, unitPricePost } from '../../../api/auction/startprice'
+import { deleteStartPrice, getStartPrice, patchEditPrice, unitPricePost } from '../../../api/auction/startprice'
 import Hidden from '../../../components/TableInner/Hidden'
 import {
 	AuctionStartPriceFields,
@@ -52,8 +52,13 @@ import Table from '../../Table/Table'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import StartPriceFields from './StartPriceFields'
+import UploadV2 from '../../../modal/Upload/UploadV2'
+import { postExcelSubmitProduct } from '../../../api/SellProduct'
 
 const StartPrice = ({}) => {
+	const [uploadModal, setUploadModal] = useState(false)
+	const [excelToJson, setExcelToJson] = useState([])
+
 	const [insertList, setInsertList] = useState({ insertList: [] })
 	console.log('insertList', insertList)
 	const [tablePagination, setTablePagination] = useState([])
@@ -64,7 +69,7 @@ const StartPrice = ({}) => {
 	const effectDate = moment(applyDate).format('YYYY-MM-DD')
 	const nowDate = new Date()
 	const nowRealDate = moment(nowDate).format('YYYY-MM-DD')
-	const [effectPrice, setEffectPrice] = useState()
+	const [effectPrice, setEffectPrice] = useState() // 단가
 	const [initObject, setInitObject] = useState()
 
 	const [modalSwitch, setModalSwitch] = useAtom(AuctionUnitPriceAtom)
@@ -270,6 +275,11 @@ const StartPrice = ({}) => {
 		})
 	}
 
+	const editPriceMutation = useMutationQuery('', patchEditPrice)
+	const editPriceOnClickHandler = () => {
+		editPriceMutation.mutate(initObject)
+	}
+
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -389,7 +399,7 @@ const StartPrice = ({}) => {
 							startDate={applyDate}
 							setStartDate={setApplyDate}
 						/>
-						<TGreyBtn height={30} style={{ width: '50px' }}>
+						<TGreyBtn height={30} style={{ width: '50px' }} onClick={editPriceOnClickHandler}>
 							적용
 						</TGreyBtn>
 					</div>
@@ -410,13 +420,13 @@ const StartPrice = ({}) => {
 						</WhiteBlackBtn>
 					</div>
 				</TCSubContainer>
-				<NewBottomBtnWrap bottom={0}>
+				{/* <NewBottomBtnWrap bottom={0}>
 					<BlackBtn width={12} height={40}>
 						저장
 					</BlackBtn>
-				</NewBottomBtnWrap>
+				</NewBottomBtnWrap> */}
 			</TableContianer>
-			{modalSwitch && (
+			{/* {modalSwitch && (
 				<Upload
 					modalSwitch={modalSwitch}
 					setModalSwitch={setModalSwitch}
@@ -433,6 +443,15 @@ const StartPrice = ({}) => {
 					handleSelectChange={handleSelectChange}
 					dropInput={dropInput}
 					setDropInput={setDropInput}
+				/>
+			)} */}
+			{modalSwitch && (
+				<UploadV2
+					originEngRowField={AuctionStartPriceFields}
+					setModalSwitch={setUploadModal}
+					postApi={postExcelSubmitProduct}
+					setExcelToJson={setExcelToJson}
+					excelToJson={excelToJson}
 				/>
 			)}
 		</FilterContianer>
