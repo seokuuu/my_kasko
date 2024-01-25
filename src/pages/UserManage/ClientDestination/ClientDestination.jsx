@@ -75,7 +75,7 @@ const ClientDestination = ({ setChoiceComponent }) => {
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
-
+	console.log('checkedArray', checkedArray)
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
@@ -109,7 +109,11 @@ const ClientDestination = ({ setChoiceComponent }) => {
 		if (isArray(checkedArray) && checkedArray.length > 0) {
 			if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
 				checkedArray.forEach((item) => {
-					mutation.mutate(item['uid']) //mutation.mutate로 api 인자 전해줌
+					mutation.mutate(item['목적지 고유 번호'], {
+						onSuccess: () => {
+							window.location.reload()
+						},
+					}) //mutation.mutate로 api 인자 전해줌
 				})
 			}
 		} else {
