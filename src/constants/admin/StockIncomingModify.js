@@ -1,35 +1,4 @@
-import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
-
-var checkboxSelection = function (params) {
-	return params.columnApi.getRowGroupColumns().length === 0
-}
-
-var headerCheckboxSelection = function (params) {
-	return params.columnApi.getRowGroupColumns().length === 0
-}
-
-
-export const StockIncomingFields = [
-	{
-		field: '',
-		width: 50,
-		headerClass: 'custom-header-style',
-		checkboxSelection: checkboxSelection,
-		headerCheckboxSelection: headerCheckboxSelection,
-		cellStyle: { borderRight: '1px solid #c8c8c8' },
-	},
-	{
-		headerName: '수정',
-		field: '수정',
-		width: 100,
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		cellRenderer: BtnCellRenderer,
-		cellRendererParams: {
-			uidFieldName: '경매 번호',
-			editType: 'productModify',
-		},
-	},
+export const StockIncomingModifyFields = [
 	{
 		headerName: '순번',
 		field: '',
@@ -40,6 +9,7 @@ export const StockIncomingFields = [
 	{
 		headerName: '제품 번호',
 		field: '제품 번호',
+		editable: true,
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		width: 150,
@@ -48,6 +18,7 @@ export const StockIncomingFields = [
 	{
 		headerName: '창고',
 		field: '창고',
+		editable: true,
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		width: 190,
@@ -56,6 +27,7 @@ export const StockIncomingFields = [
 	{
 		headerName: '입고상태',
 		field: '입고 상태',
+		editable: true,
 		headerClass: 'custom-header-style',
 		cellStyle: function (params) {
 			if (params.value === '입고 확정') {
@@ -72,6 +44,7 @@ export const StockIncomingFields = [
 	{
 		headerName: '입고일자',
 		field: '입고일',
+		editable: true,
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		width: 120,
@@ -80,6 +53,7 @@ export const StockIncomingFields = [
 	{
 		headerName: '매입구분',
 		field: '매입 구분',
+		editable: true,
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		width: 90,
@@ -88,6 +62,7 @@ export const StockIncomingFields = [
 	{
 		headerName: '제품군',
 		field: '제품군',
+		editable: true,
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		width: 107,
@@ -96,6 +71,7 @@ export const StockIncomingFields = [
 	{
 		headerName: '재고상태',
 		field: '재고 상태',
+		editable: true,
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		width: 110,
@@ -104,6 +80,7 @@ export const StockIncomingFields = [
 	{
 		headerName: '매입처',
 		field: '매입처',
+		editable: true,
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		width: 110,
@@ -112,6 +89,7 @@ export const StockIncomingFields = [
 	{
 		headerName: '제조사',
 		field: '제조사',
+		editable: true,
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		width: 110,
@@ -120,6 +98,7 @@ export const StockIncomingFields = [
 	{
 		headerName: '등급',
 		field: '등급',
+		editable: true,
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		width: 90,
@@ -128,6 +107,7 @@ export const StockIncomingFields = [
 	{
 		headerName: '정척여부',
 		field: '정척 여부',
+		editable: true,
 		headerClass: 'custom-header-style',
 		cellStyle: function (params) {
 			if (params.value === 'Y') {
@@ -142,6 +122,7 @@ export const StockIncomingFields = [
 	{
 		headerName: '두께(MM)',
 		field: '두께',
+		editable: true,
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		width: 100,
@@ -156,6 +137,7 @@ export const StockIncomingFields = [
 	{
 		headerName: '폭(MM)',
 		field: '폭',
+		editable: true,
 		headerClass: 'custom-header-style',
 		cellStyle: { textAlign: 'center' },
 		width: 100,
@@ -188,8 +170,8 @@ export const stockFields = {
 	입고일: 'receiptDate',
 	제품군: 'spart',
 	'재고 상태': 'stockStatus',
-	매입처: 'supplier',
-	제조사: 'maker',
+	'매입처': 'supplier',
+	'제조사': 'maker',
 	'제품 번호': 'number',
 	'정척 여부': 'preferThickness',
 	'유찰 횟수': 'failCount',
