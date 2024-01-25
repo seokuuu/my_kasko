@@ -56,6 +56,7 @@ const useQuery = () => {
 const AdminOrderDetail = ({}) => {
 	const query = useQuery()
 	const { simpleConfirm, simpleAlert } = useAlert()
+	const [getRow, setGetRow] = useState('')
 
 	// 쿼리 스트링에서 값 추출
 	const auctionNumber = query.get('auctionNumber')
@@ -283,7 +284,7 @@ const AdminOrderDetail = ({}) => {
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
 							<PageDropdown />
-							<Excel />
+							<Excel getRow={getRow}/>
 						</div>
 					</TCSubContainer>
 					<TCSubContainer>
