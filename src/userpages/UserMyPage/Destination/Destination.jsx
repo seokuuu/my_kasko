@@ -3,52 +3,36 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Excel from '../../../components/TableInner/Excel'
 
 import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
-import { btnCellUidAtom, selectedRowsAtom, toggleAtom, userPageDestiEditModal } from '../../../store/Layout/Layout'
+import { btnCellUidAtom, userPageDestiEditModal } from '../../../store/Layout/Layout'
 
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 
-import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 
-import useReactQuery from '../../../hooks/useReactQuery'
-import { useAtom } from 'jotai'
-import { isArray } from '../../../lib'
-import { deleteDestination } from '../../../api/myPage/userDestination'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useAtom } from 'jotai'
+import { deleteDestination } from '../../../api/myPage/userDestination'
+import useReactQuery from '../../../hooks/useReactQuery'
 
-import { getDestination } from '../../../api/myPage'
-import Table from '../../../pages/Table/Table'
-import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
+import { destinationQueryKey, getDestination } from '../../../api/myPage'
 import {
 	UserManageCustomerDestinationManageFields,
 	UserManageCustomerDestinationManageFieldsCols,
 } from '../../../constants/admin/UserManage'
+import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
+import Table from '../../../pages/Table/Table'
+import useAlert from '../../../store/Alert/useAlert'
 import DestinationEdit from './DestinationEdit'
 
 const Destination = ({ setChoiceComponent }) => {
+	const { simpleAlert, simpleConfirm } = useAlert()
+	// 선택된 항목
+	const { selectedCount, selectedData } = useTableSelection()
+
 	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
 	const [switchDestiEdit, setSwtichDestiEdit] = useAtom(userPageDestiEditModal)
-	const radioDummy = ['전체', '미진행', '진행중', '종료']
-	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-
-	const [savedRadioValue, setSavedRadioValue] = useState('')
-	useEffect(() => {
-		const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
-	}, [checkRadio])
-
-	const handleSelectChange = (selectedOption, name) => {
-		// setInput(prevState => ({
-		//   ...prevState,
-		//   [name]: selectedOption.label,
-		// }));
-	}
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
 
 	useEffect(() => {
 		// 컴포넌트가 언마운트될 때 switchEdit을 재설정하는 정리 함수
@@ -57,39 +41,25 @@ const Destination = ({ setChoiceComponent }) => {
 		}
 	}, [])
 
-	// 토글 쓰기
-	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-	const [toggleMsg, setToggleMsg] = useState('On')
-	const toggleBtnClick = () => {
-		setExfilterToggle((prev) => !prev)
-		if (exFilterToggle === true) {
-			setToggleMsg('Off')
-		} else {
-			setToggleMsg('On')
-		}
-	}
-
 	const [getRow, setGetRow] = useState('')
 	const tableField = useRef(UserManageCustomerDestinationManageFieldsCols)
 	const getCol = tableField.current
-	const checkedArray = useAtom(selectedRowsAtom)[0]
 
-	console.log('checkedArray', checkedArray)
-
+	// 리스트 옵션
 	const [request, setRequest] = useState({
 		pageNum: 1,
-		pageSize: 5,
+		pageSize: 50,
 	})
-	const { isLoading, isError, data, isSuccess } = useReactQuery(request, 'getDestination', getDestination)
+
+	// 리스트 API
+	const { isLoading, isError, data, isSuccess } = useReactQuery(request, destinationQueryKey.list, getDestination)
 	const [pages, setPages] = useState([])
 	const resData = data?.data?.data?.list
 	const pagination = data?.data?.data?.pagination
 
-	// const { onPageChange } = useTablePaginationPageChange(data, setRequest)
 	const onPageChange = (value) => {
 		setRequest((p) => ({ ...p, pageNum: Number(value) }))
 	}
-	if (isError) console.log('데이터 request ERROR')
 
 	useEffect(() => {
 		let getData = resData
@@ -100,40 +70,35 @@ const Destination = ({ setChoiceComponent }) => {
 		}
 	}, [isSuccess, resData])
 
-	console.log('getRow =>', getRow)
-	console.log('switchDestiEdit => ', switchDestiEdit)
-
 	const openPost = () => {
 		setChoiceComponent('등록')
 	}
-
-	// const openEdit = async () => {
-	//   setChoiceComponent('수정')
-	// }
 
 	const queryClient = useQueryClient()
 	const mutation = useMutation(deleteDestination, {
 		onSuccess: () => {
 			queryClient.invalidateQueries('destination')
 		},
+		onError() {
+			simpleAlert('삭제에 실패하였습니다.')
+		},
 	})
 
 	const handleRemoveBtn = useCallback(() => {
-		if (isArray(checkedArray) && checkedArray.length > 0) {
-			if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
-				checkedArray.forEach((item) => {
-					mutation.mutate(item['uid'])
-				})
-			}
-		} else {
-			alert('선택해주세요!')
-		}
-	}, [checkedArray])
-	console.log(request.pageSize)
+		if (selectedCount === 0) return simpleAlert('항목을 선택해주세요.')
+
+		simpleConfirm('선텍하신 항목을 삭제하시겠습니까?', () =>
+			mutation.mutate(selectedData.map((s) => s['목적지 고유 번호'])),
+		)
+	}, [selectedData])
 	return (
 		<>
 			{switchDestiEdit ? (
-				<DestinationEdit setSwtichDestiEdit={setSwtichDestiEdit} uidAtom={uidAtom} />
+				<DestinationEdit
+					setSwtichDestiEdit={setSwtichDestiEdit}
+					uidAtom={uidAtom}
+					setChoiceComponent={setChoiceComponent}
+				/>
 			) : (
 				<FilterContianer>
 					<div>
@@ -146,21 +111,21 @@ const Destination = ({ setChoiceComponent }) => {
 					<TableContianer>
 						<TCSubContainer bor>
 							<div>
-								조회 목록 (선택 <span>2</span> / 50개 )
+								조회 목록 (선택 <span>{selectedCount}</span> /{request.pageSize}개 )
 								<Hidden />
 							</div>
-							<div>
+							<div style={{ display: 'flex', gap: '10px' }}>
 								<PageDropdown
 									handleDropdown={(e) => {
 										setRequest((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))
 									}}
 								/>
-								<Excel />
+								<Excel getRow={getRow} sheetName="목적지 관리" />
 							</div>
 						</TCSubContainer>
 						<TCSubContainer>
 							<div>
-								선택 <span> 2 </span>개
+								선택 <span> {selectedCount} </span>개
 							</div>
 							<div style={{ display: 'flex', gap: '10px' }}>
 								<WhiteRedBtn onClick={handleRemoveBtn}>목적지 삭제</WhiteRedBtn>
@@ -174,6 +139,7 @@ const Destination = ({ setChoiceComponent }) => {
 							tablePagination={pages}
 							onPageChange={onPageChange}
 							isRowClickable={true}
+							loading={isLoading}
 						/>
 					</TableContianer>
 				</FilterContianer>

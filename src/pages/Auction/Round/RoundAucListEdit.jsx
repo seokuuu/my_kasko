@@ -168,11 +168,15 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 		// let getData = resData
 
 		//타입, 리액트쿼리, 데이터 확인 후 실행
+
+		// newResData : 추가한 애들
+		// updatedData : 원래 resData
+		// 둘다 상태관리를 해야하며,
 		if (!isSuccess && !resData2) return
 		if (Array.isArray(resData2, newResData)) {
-			const combinedData = [...newResData, ...resData2]
-			const updatedData = add_element_field(combinedData, AuctionRoundDetailFields)
-			setGetRow(updatedData)
+			const updatedData = add_element_field(resData2, AuctionRoundDetailFields)
+			const combinedData = [...newResData, ...updatedData]
+			setGetRow(combinedData)
 		}
 	}, [isSuccess, resData2, newResData])
 
@@ -193,16 +197,18 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 
 				setEditData({ ...editData, deleteAuctionProductList: resultRemove })
 
-				// 'resData2' 관련 object array 삭제
+				// '원래 DATA' 관련 object array 삭제
 				const filteredArray2 = resData2.filter(
 					(item) =>
 						!checkedArray.some((checkedItem) => checkedItem['경매 제품 고유 번호'] === item['경매 제품 고유 번호']),
 				)
+				console.log('filteredArray2', filteredArray2)
 				setResData2(filteredArray2)
 
-				// '제품 추가' 관련 object array 삭제
+				// '추가한 DATA' 관련 array
 				const filteredArray = newResData.filter(
-					(item) => !checkedArray.some((checkedItem) => checkedItem['고유 번호'] === item['고유 번호']),
+					(item) =>
+						!checkedArray.some((checkedItem) => checkedItem['경매 제품 고유 번호'] === item['경매 제품 고유 번호']),
 				)
 				setNewResData(filteredArray)
 			}

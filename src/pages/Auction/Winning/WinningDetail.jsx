@@ -207,17 +207,20 @@ const WinningDetail = ({ detailRow }) => {
 	}, [checkedArray])
 
 	// 목적지 적용 버튼
+	// 테스트 시 수정하기
 	const handleSetCustomerDestinationUid = () => {
-		const updatedWinningList = input.updateList?.map((item) => ({
-			...item,
-			requestCustomerDestinationUid: destinationData.uid,
-		}))
+		if (checkedArray) {
+			const updatedWinningList = input.updateList?.map((item) => ({
+				...item,
+				requestCustomerDestinationUid: destinationData.uid,
+			}))
 
-		// setBiddingList(updatedBiddingList)
-		setInput((prevInput) => ({
-			...prevInput,
-			updateList: [...updatedWinningList],
-		}))
+			// setBiddingList(updatedBiddingList)
+			setInput((prevInput) => ({
+				...prevInput,
+				updateList: [...updatedWinningList],
+			}))
+		}
 	}
 
 	console.log('input', input)
@@ -327,6 +330,9 @@ const WinningDetail = ({ detailRow }) => {
 			}
 		})
 	}
+
+
+
 	return (
 		<FilterContianer>
 			<FilterHeader>

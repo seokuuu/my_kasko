@@ -1,24 +1,26 @@
-import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import { categories, corLabels, responseToTableRowMap } from '../../../constants/user/faqTableConfig'
 import { add_element_field } from '../../../lib/tableHelpers'
 import {
 	FilterContianer,
 	FilterHeader,
 	SubTitle,
-	TableContianer,
 	TCSubContainer,
+	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
-import { categories, corLabels, responseToTableRowMap } from '../../../constants/user/faqTableConfig'
 import { formatDateString } from '../../../utils/utils'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 const FAQ = ({ faqList, faqPagination, onPageChange, handleTablePageSize, onSelectedCategory, isLoading, isError }) => {
 	const [faqListData, setFaqListData] = useState(null)
 	const [faqPaginationData, setFaqPaginationData] = useState(null)
 	const [selectedCategory, setSelectedCategory] = useState('경매')
 	const navigate = useNavigate()
+
+	console.log('faqPagination :', faqPagination)
 
 	useEffect(() => {
 		setFaqListData(formatTableRowData(faqList))
@@ -58,6 +60,8 @@ const FAQ = ({ faqList, faqPagination, onPageChange, handleTablePageSize, onSele
 		navigate(`/userpage/userfaq/${faqUid}`)
 	}
 
+	// 목록 갯수
+	const listCount = useMemo(() => faqPagination.listCount, [faqPagination])
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -74,7 +78,7 @@ const FAQ = ({ faqList, faqPagination, onPageChange, handleTablePageSize, onSele
 			</FilterHeader>
 			<TableContianer>
 				<TCSubContainer bor>
-					<div>게시글 목록 (123개 )</div>
+					<div>게시글 목록 ({listCount}개 )</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
 					</div>

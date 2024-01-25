@@ -1,13 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import {
-	BtnBound, SkyBtn, TGreyBtn,
-	TWhiteBtn, WhiteGrnBtn
-} from '../../../common/Button/Button'
+import { BtnBound, SkyBtn, TGreyBtn, TWhiteBtn, WhiteGrnBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-
 
 import {
 	CustomInput,
@@ -16,9 +12,8 @@ import {
 	FilterHeaderAlert,
 	SubTitle,
 	TableContianer,
-	TCSubContainer
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
-
 
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -85,7 +80,7 @@ const Single = ({}) => {
 
 	const [customerData, setCustomerData] = useState()
 	const [propsUid, setPropsUid] = useState(null)
-	const [destiObject, setDestiObject] = useState()
+	const [destiObject, setDestiObject] = useState() //
 
 	const productListInner = {
 		biddingPrice: null,
@@ -147,6 +142,8 @@ const Single = ({}) => {
 		biddingPrice: null,
 		customerDestinationUid: null,
 	})
+
+	console.log('finalInput', finalInput)
 
 	// biddingList에 들어갈 3총사를 다 넣어줌.
 	useEffect(() => {

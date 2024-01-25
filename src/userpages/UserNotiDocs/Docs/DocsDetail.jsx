@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 import { styled } from 'styled-components'
 
+import moment from 'moment'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useNoticeDetailsQuery } from '../../../api/operate/notice'
 import { BtnBound, WhiteBtn } from '../../../common/Button/Button'
 import { Bar, CenterRectangleWrap } from '../../../common/OnePage/OnePage.Styled'
-import { useNavigate, useParams } from 'react-router-dom'
-import Header from '../../../components/Header/Header'
-import UserSideBar from '../../../components/Left/UserSideBar'
 import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
+import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
-import { useNoticeDetailsQuery } from '../../../api/operate/notice'
-import moment from 'moment'
+import UserSideBar from '../../../components/Left/UserSideBar'
 // 클레임 등록
 const DocsDetail = () => {
 	const { uid } = useParams()
