@@ -60,7 +60,6 @@ const ClaimProductHeader = ({ search, setSearch, refetch }) => {
 			{exFilterToggle && (
 				<FilterWrap>
 					{/* 글로벌  */}
-
 					<GlobalProductSearch
 						param={search}
 						isToggleSeparate={true}

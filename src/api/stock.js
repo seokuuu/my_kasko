@@ -19,7 +19,7 @@ export async function deleteIncomeProduct(data) {
   try{
     return await client.delete(`${urls.incoming}/${data}`)
   }catch(e){
-    alert(e?.data?.message)
+    throw new Error('선택된 제품이 없습니다.');
   }
 }
 export async function incomingConfirm(data){
@@ -27,7 +27,7 @@ export async function incomingConfirm(data){
     const response = await client.post(`${urls.incoming}/confirm/${data}`);
     return response;
   }catch(e){
-    alert(e?.data?.message)
+    throw new Error('선택된 제품이 없습니다.');
   }
 }
 

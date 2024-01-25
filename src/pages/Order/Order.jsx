@@ -1,39 +1,17 @@
 import { useEffect, useState } from 'react'
 import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn } from '../../common/Button/Button'
-import { MainSelect } from '../../common/Option/Main'
-import DateGrid from '../../components/DateGrid/DateGrid'
 import Excel from '../../components/TableInner/Excel'
 import HeaderToggle from '../../components/Toggle/HeaderToggle'
 import { invenCustomer, invenCustomerData, pageSort, toggleAtom } from '../../store/Layout/Layout'
 import { selectedRowsAtom } from '../../store/Layout/Layout'
 
-import {
-	DoubleWrap,
-	ExCheckWrap,
-	FilterContianer,
-	FilterFooter,
-	FilterHeader,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
-	GridWrap,
-	Input,
-	PartWrap,
-	PWRight,
-	ResetImg,
-	RowWrap,
-	TableContianer,
-	TCSubContainer,
-	Tilde,
-} from '../../modal/External/ExternalFilter'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../modal/External/ExternalFilter'
 
 import { useAtom, useAtomValue } from 'jotai'
 import Hidden from '../../components/TableInner/Hidden'
 import PageDropdown from '../../components/TableInner/PageDropdown'
 import useReactQuery from '../../hooks/useReactQuery'
 import { add_element_field } from '../../lib/tableHelpers'
-import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
-import { CheckBox } from '../../common/Check/Checkbox'
 import axios from 'axios'
 import InventoryFind from '../../modal/Multi/InventoryFind'
 import { getCustomerFind } from '../../service/admin/Auction'
@@ -41,12 +19,15 @@ import { getSPartList } from '../../api/search'
 import Table from '../Table/Table'
 import { orderFieldData, OrderManageFieldsCols } from '../../constants/admin/OrderManage'
 import { KilogramSum } from '../../utils/KilogramSum'
-import { getOrderList } from '../../api/orderList'
+import { cancelAllOrderList, depositCancleAllOrderList, getOrderList } from '../../api/orderList'
 import GlobalProductSearch from '../../components/GlobalProductSearch/GlobalProductSearch'
 import OrderSearchFields from './OrderSearchFields'
 import { isEqual } from 'lodash'
+import useAlert from '../../store/Alert/useAlert'
+import useMutationQuery from '../../hooks/useMutationQuery'
 
 const Order = ({}) => {
+	const { simpleConfirm, simpleAlert } = useAlert()
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const paramData = {
 		pageNum: 1,
@@ -145,6 +126,8 @@ const Order = ({}) => {
 	const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
 
 	const makeRequest = (selectedRows) => {
+		if (!selectedRows) return [];
+
 		return selectedRows.map((row) => ({
 			auctionNumber: row['경매 번호'],
 			customerCode: row['고객 코드'],
@@ -154,37 +137,48 @@ const Order = ({}) => {
 			sendDate: row['확정 전송일'],
 		}))
 	}
-	// 주문 취소 버튼 클릭 핸들러
+	/**
+	 * @description 주문 취소 핸들러
+	 */
+	const { mutate: cancelAllOrder } = useMutationQuery('cancelAllOrderList', cancelAllOrderList)
 	const handleOrderCancel = () => {
-		const requestList = makeRequest(checkBoxSelect)
-		console.log('요청List', requestList)
-		axios
-			.post(`${process.env.REACT_APP_API_URL}/admin/order/cancel-all`, requestList,{})
-			.then((response) => {
-				console.log('Order cancelled successfully:', response.data)
-				refetch()
-			})
-			.catch((error) => {
-				console.error('Error cancelling order:', error)
-			})
-	}
+		const requestList = makeRequest(checkBoxSelect); // checkBoxSelect를 makeRequest 함수에 전달하여 데이터 가공
 
-	// 입금 취소 버튼 클릭 핸들러
+		if (requestList.length === 0) {
+			simpleAlert('선택된 항목이 없습니다.');
+			return; // 함수 실행 중단
+		}
+		simpleConfirm('주문 취소하시겠습니까?', () => {
+			cancelAllOrder(requestList, { // 가공된 데이터를 cancelAllOrder 함수에 전달
+				onSuccess: () => {
+					refetch(); // 성공 시 데이터 새로고침
+				},
+			});
+		});
+	};
+
+	/**
+	 * @description 입금 취소 핸들러
+	 */
+	const { mutate: depositCancelAllOrder } = useMutationQuery('depositCancleAllOrderList', depositCancleAllOrderList)
 	const handleDepositCancel = () => {
 		const requestList = makeRequest(checkBoxSelect)
-		axios
-			.post(`${process.env.REACT_APP_API_URL}/admin/order/deposit-all`, requestList, {})
-			.then((response) => {
-				console.log('Deposit cancelled successfully:', response.data)
-				refetch()
-			})
-			.catch((error) => {
-				console.error('Error cancelling deposit:', error)
-			})
+
+		if (requestList.length === 0) {
+			simpleAlert('선택된 항목이 없습니다.');
+			return; // 함수 실행 중단
+		}
+		simpleConfirm('입금 취소하시겠습니까?', () => {
+			depositCancelAllOrder(requestList, { // 가공된 데이터를 cancelAllOrder 함수에 전달
+				onSuccess: () => {
+					refetch(); // 성공 시 데이터 새로고침
+				},
+			});
+		});
 	}
 
 	/**
-	 * 검색하는 부분
+	 * @description 검색하는 부분
 	 */
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
@@ -199,8 +193,6 @@ const Order = ({}) => {
 		})
 	}
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
 		setParam(paramData)
 	}
 	return (

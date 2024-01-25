@@ -43,62 +43,9 @@ const OrderSearchFields = ({
 	return (
 		<>
 			<FilterLeft>
-				<RowWrap>
-					{/* 창고 구분 */}
-					<PartWrap>
-						<h6>창고 구분</h6>
-						<PWRight>
-							<MainSelect
-								options={storageList}
-								// defaultValue={storageList[0]}
-								value={search.storage}
-								name="storage"
-								onChange={(e) => commonDropdownButtonHandler(e, 'storage')}
-							/>
-						</PWRight>
-					</PartWrap>
-					{/* 고객사 명 */}
-					<PartWrap>
-						<CustomerSearch search={search} setSearch={setSearch} />
-					</PartWrap>
-				</RowWrap>
-				{/* 2행 */}
-				<RowWrap>
-					{/* 구분 */}
-					<PartWrap>
-						<h6>구분</h6>
-						{/* 제품군 */}
-						<PWRight>
-							<MainSelect
-								options={spartList}
-								defaultValue={spartList[0]}
-								value={search.spart}
-								name="spart"
-								onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
-							/>
-						</PWRight>
-					</PartWrap>
-				</RowWrap>
-				<RowWrap>
-					<DateSearchSelect
-						title={'경매 일자'}
-						startInitDate={search.auctionStartDate}
-						endInitDate={search.auctionEndDate}
-						startDateChange={(value) => onChange('auctionStartDate', value)}
-						endDateChange={(value) => onChange('auctionEndDate', value)}
-					/>
-					<DateSearchSelect
-						title={'확정 전송 일자'}
-						startInitDate={search.startSendDate}
-						endInitDate={search.endSendDate}
-						startDateChange={(value) => onChange('startSendDate', value)}
-						endDateChange={(value) => onChange('endSendDate', value)}
-					/>
-				</RowWrap>
-				{/* 6 행 */}
 				<RowWrap none>
 					<DateSearchSelect
-						title={'상시 판매 주문 일자'}
+						title={'주문 일자'}
 						startInitDate={search.startDate}
 						endInitDate={search.endDate}
 						startDateChange={(value) => onChange('startDate', value)}

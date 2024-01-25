@@ -84,7 +84,6 @@ const Incoming = ({}) => {
 	const totalWeight = inComingData?.data.pagination.totalWeight
 	const formattedTotalWeight = totalWeight && totalWeight.toLocaleString()
 
-
 	/**
 	 * @description 재고 수신
 	 */
@@ -101,12 +100,11 @@ const Incoming = ({}) => {
 	/**
 	 * @description 제품 삭제
 	 */
-	const { mutate: deleteIncome } = useMutationQuery('deleteIncomeProduct', deleteIncomeProduct)
-	const [selectInComeNumber, setSelectInComeNumber] = useState([])
-	useEffect(() => {
-		if (checkBoxSelect?.length === 0) return
-		setSelectInComeNumber(() => checkBoxSelect?.map((i) => i['제품 고유 번호']))
-	}, [checkBoxSelect])
+	const { mutate: deleteIncome } = useMutationQuery('deleteIncomeProduct', deleteIncomeProduct,{
+		onError: (error) => {
+			simpleAlert(error.message);
+		},
+	})
 	const handleDelete = () => {
 		simpleConfirm('정말로 삭제하시겠습니까?', () => {
 			deleteIncome(selectInComeNumber?.join(','), {
@@ -116,6 +114,12 @@ const Incoming = ({}) => {
 			})
 		})
 	}
+	const [selectInComeNumber, setSelectInComeNumber] = useState([])
+	useEffect(() => {
+		if (checkBoxSelect?.length === 0) return
+		setSelectInComeNumber(() => checkBoxSelect?.map((i) => i['제품 고유 번호']))
+	}, [checkBoxSelect])
+
 
 	/**
 	 * @description 제품 등록
@@ -143,7 +147,14 @@ const Incoming = ({}) => {
 		setParam(paramData)
 	}
 
-	const { mutate: incomeConfirm } = useMutationQuery('incomingConfirm', incomingConfirm)
+	/**
+	 * @description 입고 확정 버튼
+	 */
+	const { mutate: incomeConfirm } = useMutationQuery('incomingConfirm', incomingConfirm,{
+		onError: (error) => {
+			simpleAlert(error.message);
+		},
+	})
 	const handleConfirm = async() => {
 		simpleConfirm('입고 확정으로 바꾸시겠습니까?', () => {
 			incomeConfirm(selectInComeNumber?.join(','), {
@@ -153,10 +164,6 @@ const Incoming = ({}) => {
 			})
 		})
 	}
-
-	useEffect(() => {
-		console.log('checkBox값 추적', checkBoxSelect)
-	}, [checkBoxSelect])
 
 	const [singleModfiy, setSingleModify] = useAtom(singleProductModify)
 

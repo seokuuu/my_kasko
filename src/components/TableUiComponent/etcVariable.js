@@ -1,38 +1,5 @@
-import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
-
-var checkboxSelection = function (params) {
-  return params.columnApi.getRowGroupColumns().length === 0
-}
-
-var headerCheckboxSelection = function (params) {
-  return params.columnApi.getRowGroupColumns().length === 0
-}
-
-/* ==============================
-    주문 관리 - 주문 관리 (Order)
-============================== */
-
 export const columnDefs = [
-  {
-    field: '',
-    width: 50,
-    headerClass: 'custom-header-style',
-    checkboxSelection: checkboxSelection,
-    headerCheckboxSelection: headerCheckboxSelection,
-    cellStyle: { borderRight: '1px solid #c8c8c8' },
-  },
-  {
-    headerName: '수정',
-    field: '수정',
-    width: 100,
-    headerClass: 'custom-header-style',
-    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-    cellRenderer: BtnCellRenderer,
-    cellRendererParams: {
-      uidFieldName: '경매 번호',
-      editType: 'productModify',
-    },
-  },
+
   {
     headerName: '순번',
     field: '',
