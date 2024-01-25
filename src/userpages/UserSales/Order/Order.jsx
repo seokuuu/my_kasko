@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useUserOrderCancelMutaion, useUserOrderListQuery } from '../../../api/user'
+import { USER_URL, useUserOrderCancelMutaion, useUserOrderListQuery } from '../../../api/user'
 import { WhiteRedBtn } from '../../../common/Button/Button'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
@@ -24,6 +24,7 @@ import { toggleAtom } from '../../../store/Layout/Layout'
 import { getValidParams } from '../../../utils/parameters'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 import OrderSearchFields from './OrderSearchFields'
+import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 
 /**
  * @constant 기본 페이지 검색 값
@@ -49,7 +50,7 @@ const Order = ({}) => {
 	const { data: orderData, isLoading } = useUserOrderListQuery(searchParams) // 주문확인 목록 조회 쿼리
 	const { mutate: requestCancel, loading: isCancelLoading } = useUserOrderCancelMutaion() // 주문취소 뮤테이션
 	// 테이블 데이터, 페이지 데이터, 총 중량
-	const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: userOrderListField,
 		serverData: orderData,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
@@ -175,7 +176,11 @@ const Order = ({}) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handlePageSizeChange} />
-						<Excel getRow={tableRowData} />
+						<TableV2ExcelDownloader
+							requestUrl={USER_URL.orderList} 
+							requestCount={totalCount}
+							field={userOrderListField} 
+						/>
 					</div>
 				</TCSubContainer>
 				{/* 선택항목 중량 | 주문 취소 */}
