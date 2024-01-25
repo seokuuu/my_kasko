@@ -24,7 +24,7 @@ const ClientSearchFields = ({ search, setSearch }) => {
 	const onChange = (key, value) => {
 		setSearch((p) => ({ ...p, [key]: value }))
 	}
-
+	const roleList = ['창고', '운송사', '현대제철', '카스코철강', '고객사']
 	const customerStatusList = ['일반', '장기 미접속', '장기 미낙찰', '폐업', '정지']
 	const agreeStatusList = ['승인', '미승인', '대기']
 
@@ -41,6 +41,18 @@ const ClientSearchFields = ({ search, setSearch }) => {
 			<FilterLeft>
 				<RowWrap>
 					<PartWrap>
+						<h6>사용자 구분</h6>
+						<CustomCheckBox
+							initOptions={generateCheckOptions(roleList)}
+							setState={setSearch}
+							stateKey={'roles'}
+							isExistEntireValue={true}
+							stateType="object"
+						/>
+					</PartWrap>
+				</RowWrap>
+				<RowWrap>
+					<PartWrap first>
 						<h6>회원 상태</h6>
 						<CustomCheckBox
 							initOptions={generateCheckOptions(customerStatusList)}
@@ -50,7 +62,7 @@ const ClientSearchFields = ({ search, setSearch }) => {
 							stateType="object"
 						/>
 					</PartWrap>
-					<PartWrap first>
+					<PartWrap>
 						<h6>고객사 유형</h6>
 						<PWRight>
 							<MainSelect

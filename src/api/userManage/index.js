@@ -80,6 +80,11 @@ export function postClient(input, fileForms) {
 	})
 }
 
+// 회원 수정(formData)
+export function updateClient(data) {
+	return client.patch(urls.customer, data)
+}
+
 /* ==============================
     사용자관리 - 고객사 목적지 관리
 ============================== */
