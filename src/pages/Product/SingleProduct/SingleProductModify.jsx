@@ -120,7 +120,7 @@ function SingleProductModify({ title }) {
 			saleCategory: p['판매 구분'],
 		})
 	}
-	
+
 	const { mutate } = useMutationQuery('modifyProduct', updateSingleProduct)
 	const handleSubmit = () => {
 		mutate(values, {
@@ -152,7 +152,7 @@ function SingleProductModify({ title }) {
 						<h6>수정 대상 제품</h6>
 						<p>{modifyObj.number}</p>
 					</FilterTCTop>
-					<Table getRow={getRow} getCol={getCol} changeFn={onCellValueChanged} />
+					<Table hei={100} hei2={200} getRow={getRow} getCol={getCol} changeFn={onCellValueChanged} />
 					<TableBottomWrap>
 						<BlackBtn width={15} height={40} onClick={handleSubmit}>
 							저장

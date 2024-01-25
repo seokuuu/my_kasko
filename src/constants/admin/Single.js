@@ -5,7 +5,8 @@ import BtnCellRenderer from '../../pages/Table/BtnCellRenderer.jsx'
 import InputCellRenderer from "../../pages/Table/InputCellRenderer.jsx"
 import { FieldsSettings } from '../../utils/fieldsSetting.js'
 
-
+const commonStyles = {headerClass:'custom-header-style',flex:1,
+    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' }}
 
 var checkboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
@@ -94,23 +95,25 @@ export const SingleDispatchFieldsCols= [
 ]
 
 export const SingleSalesDispatchFieldsCols= [
-  { field: '',   headerClass:'custom-header-style',flex:1,
-  cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-  minWidth: 50, checkboxSelection, headerCheckboxSelection },
-  { field: '수정',   headerClass:'custom-header-style',flex:1,
-  cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-  minWidth: 100,  cellRenderer: BtnCellRenderer,
-  cellRendererParams: {
-    uidFieldName: '경매 번호',
-    editType: 'productModify',
-  }},
+  { field: '',  ...commonStyles, minWidth: 50, checkboxSelection, headerCheckboxSelection },
+  { ...commonStyles,
+    minWidth: 100,  
+    cellRenderer: BtnCellRenderer,
+    cellRendererParams: {
+      uidFieldName: '경매 번호',
+      editType: 'productModify',
+    }
+  },
     ...Object.keys(singleDispatchFields).map((item) => ({
-    headerClass:'custom-header-style',flex:1,
-    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+    ...commonStyles,
     field: item,
     editable:(item === '메모' || item === '비고' )? true:false,
-    minWidth: 100,
+    minWidth: (item === '메모' || item === '비고' )? 200 : 150,
     cellRenderer:(params) => {
+      if(item === '메모' || item === '비고'){
+        return <input style={{height:'40px',border:'1px solid '}} value={params.value}/>
+      }
+      
       if(typeof params.value === 'boolean'){
         return params.value ? 'Y' : 'N';
       }else{
@@ -186,13 +189,11 @@ export const SingleModifyDispatchFieldsCols= [
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
      minWidth: 50, checkboxSelection, headerCheckboxSelection },
   ...Object.entries(SingleModifyFields).map(([k,v]) => {
-
     if(k !=='재고 상태' && k !== '판매 구분' && k !== '매입처' && k !=='제조사' ){
       return {
-        headerClass:'custom-header-style',flex:1,
-        cellStyle: { borderRight: '1px solid #c8c8c8',width:'100px',padding:'0'},
+        ...commonStyles,
         field: k,
-        minWidth: 100,
+        minWidth: 150,
         editable:true,
         cellRenderer: InputCellRenderer,
         cellRendererParams:{
@@ -204,10 +205,9 @@ export const SingleModifyDispatchFieldsCols= [
       }
     }else{
       return {
-        headerClass:'custom-header-style',flex:1,
-        cellStyle: { borderRight: '1px solid #c8c8c8',width:'100px',padding:'0'},
+        ...commonStyles,
         field: k,
-        minWidth: 100,
+        minWidth: 150,
         editable:true,
         cellEditor:'agSelectCellEditor',
         cellRenderer:InputCellRenderer,

@@ -74,7 +74,7 @@ const SalesProduct = () => {
 	const [isMultiModal, setIsMultiModal] = useAtom(hyunDaiMultiModal)
 	const [parameter, setParameter] = useAtom(changeCategoryAtom)
 	const [parameter2, setParameter2] = useAtom(changeSaleTypeAtom)
-	const { simpleConfirm, showAlert } = useAlert()
+	const { simpleConfirm, showAlert, simpleAlert } = useAlert()
 	// 판매유형 변경
 
 	const [isSaleType, setIsSaleType] = useState(false)
@@ -159,18 +159,6 @@ const SalesProduct = () => {
 		])
 	}
 
-	const openFirstModal = (num, callback) => {
-		setPopup(true)
-		const firstPopup = popupDummy.find((popup) => {
-			if (popup.num === num) {
-				return (popup.func = callback)
-			}
-
-			console.log(popup)
-		})
-		// console.log(firstPopup)
-		setNowPopup(firstPopup)
-	}
 	const createMemoAndNote = () => {
 		memoAndNote(memo, {
 			onSuccess: (d) => {
@@ -381,9 +369,9 @@ const SalesProduct = () => {
 							<BtnBound />
 							<WhiteBlackBtn
 								onClick={() => {
-									if (checkBoxSelect == null) alert('제품을 선택해 주세요.')
+									if (checkBoxSelect?.length > 0) setIsMultiModal(true)
 									else {
-										setIsMultiModal(true)
+										simpleAlert('제품을 선택해 주세요.')
 									}
 								}}
 							>
@@ -392,7 +380,11 @@ const SalesProduct = () => {
 							<BtnBound />
 							<WhiteBlackBtn
 								onClick={() => {
-									setIsSaleType(true)
+									if (checkBoxSelect.length > 0) {
+										setIsSaleType(true)
+									} else {
+										simpleAlert('1개 이상의 품목을 선택해주세요')
+									}
 								}}
 							>
 								판매 유형 변경

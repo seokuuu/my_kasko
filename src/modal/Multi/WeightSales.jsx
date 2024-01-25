@@ -223,12 +223,8 @@ const WeightSales = ({}) => {
 				}),
 			}
 		})
-		console.log('Where', postRequest)
 	}
 	const handleCheck = (id, data) => {
-		// const convert = data.map((li)=> {
-
-		// })
 		if (Array.isArray(checkedRows) && checkedRows?.includes(id)) {
 			setCheckedRows(...checkedRows.filter((rowId) => rowId !== id))
 		} else {
@@ -275,12 +271,6 @@ const WeightSales = ({}) => {
 		})
 	}
 
-	// console.log(selectedRowData)
-	// console.log('ADD', add)
-	// console.log('DELETE', deleted)
-	// console.log('보내는 값', postRequest)
-	// console.log('체크로우', checkedRows)
-
 	return (
 		<>
 			<FadeOverlay />
@@ -300,7 +290,7 @@ const WeightSales = ({}) => {
 								<p>{selectObj['제품 번호']}</p>
 							</FilterTCTop>
 							{/* <Test3 hei2={330} hei={100} /> */}
-							<Table hei2={330} hei={100} getRow={tableRowData} getCol={getCol} />
+							<Table hei2={330} hei={100} getRow={tableRowData} getCol={getCol} isLoading={isLoading} />
 						</TableContianer>
 					</FilterContianer>
 					<FilterContianer style={{ color: '#B02525', paddingLeft: '20px', paddingTop: '5px' }}>

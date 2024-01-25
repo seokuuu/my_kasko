@@ -1,5 +1,6 @@
 import { client } from '.'
 import qs from 'qs'
+import useAlert from '../store/Alert/useAlert'
 
 const urls = {
   single: '/single-product',
@@ -53,6 +54,7 @@ export async function deleteProduct(data) {
   }
 } 
 export async function updateSingleProduct(data){
+  // const {simpleAlert} = useAlert()
   try{
     const response = await client.patch(`${urls.single}`,data)
     return response
