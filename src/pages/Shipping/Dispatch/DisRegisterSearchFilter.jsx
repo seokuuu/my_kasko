@@ -1,16 +1,16 @@
+import React from 'react'
+import { MainSelect } from '../../../common/Option/Main'
+import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
+import { CustomerSearch, DateSearchSelect, DestinationSearch, RadioSearchButton } from '../../../components/Search'
+import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
 	FilterLeft,
 	FilterRight,
-	PartWrap,
 	PWRight,
+	PartWrap,
 	RowWrap,
 	SearchContainer,
 } from '../../../modal/External/ExternalFilter'
-import { CustomerSearch, DateSearchSelect, DestinationSearch, RadioSearchButton } from '../../../components/Search'
-import React from 'react'
-import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import { MainSelect } from '../../../common/Option/Main'
-import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 
 const DisRegisterSearchFilter = ({ search, setSearch }) => {
 	const { storageList, spartList } = useGlobalProductSearchFieldData()
@@ -33,12 +33,7 @@ const DisRegisterSearchFilter = ({ search, setSearch }) => {
 							/>
 						</PWRight>
 					</PartWrap>
-					<CustomerSearch
-						name={search.customerName}
-						code={search.customerCode}
-						setName={(value) => onChange('customerName', value)}
-						setCode={(value) => onChange('customerCode', value)}
-					/>
+					<CustomerSearch search={search} setSearch={setSearch} />
 				</RowWrap>
 				<RowWrap>
 					<DestinationSearch

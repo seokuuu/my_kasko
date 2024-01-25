@@ -1,12 +1,9 @@
-import { MainSelect } from '../../../common/Option/Main'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import { FilterLeft, FilterRight, PWRight, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
+import { ExInputsWrap, FilterLeft, FilterRight, Input, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
 
 import { useState } from 'react'
-import { CustomerSearch, DateSearchSelect, InputSearch, RadioSearchButton } from '../../../components/Search'
-import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
-import DateGrid from '../../../components/DateGrid/DateGrid'
+import { DateSearchSelect, RadioSearchButton } from '../../../components/Search'
 
 const RoundSearchFields = ({
 	// prettier-ignore
@@ -27,14 +24,22 @@ const RoundSearchFields = ({
 		preferThicknessList,
 	} = useGlobalProductSearchFieldData()
 
+	/**
+	 * @description
+	 * 경매 일자 auctionStartDate, auctionEndDate
+	 * 경매 회차 번호 auctionEndDate
+	 * 진행 상태 ?
+	 * 제품 번호 auctionEndDate
+	 */
+
 	const init = {
-		customerCode: '',
-		customerName: '',
-		destinationCode: '',
-		destinationName: '',
+		pageNum: 1,
+		pageSize: 50,
 	}
 
-	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
+	const onChange = (key, value) => {
+		setSearch((p) => ({ ...p, [key]: value }))
+	}
 
 	const [param, setParam] = useState(init)
 
@@ -52,21 +57,30 @@ const RoundSearchFields = ({
 							endDateChange={(value) => commonDropdownButtonHandler(value, 'auctionEndDate')}
 						/>
 					</PartWrap>
-					<InputSearch title={'경매 회차 번호'} value={''} onChange={(value) => onChange('', value)} />
+					<PartWrap>
+						{/* minFailCount 수정하기 !! */}
+						<h6>경매 회차 번호</h6>
+						<ExInputsWrap>
+							{/* minFailCount 변경해야 함. */}
+							<Input name="minFailCount" value={search.minFailCount} onChange={commonNumInputHandler} />
+						</ExInputsWrap>
+					</PartWrap>
 					{/* 규격약호 */}
 				</RowWrap>
 				<RowWrap>
-					{/* 제목 수정하기 !! */}
-					<RadioSearchButton
-						title={'진행 상태 '}
-						options={[
-							{ label: '전체', value: '' },
-							{ label: 'Y', value: true },
-							{ label: 'N', value: false },
-						]}
-						value={param.dockStatus}
-						onChange={(value) => onChange('dockStatus', value)}
-					/>
+					{/* driverStatus 수정하기 !! */}
+					<PartWrap first>
+						<h6>진행 상태</h6>
+						<RadioSearchButton
+							options={[
+								{ label: '전체', value: '' },
+								{ label: 'Y', value: true },
+								{ label: 'N', value: false },
+							]}
+							value={search.driverStatus}
+							onChange={(value) => onChange('driverStatus', value)}
+						/>
+					</PartWrap>
 				</RowWrap>
 			</FilterLeft>
 			<FilterRight>

@@ -3,9 +3,11 @@
 ============================== */
 
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { useSetAtom } from 'jotai'
 import { useNavigate } from 'react-router-dom'
 import { client } from '..'
 import useAlert from '../../store/Alert/useAlert'
+import { selectedRowsAtom } from '../../store/Layout/Layout'
 import { queryClient } from '../query'
 
 // API ENDPOINT
@@ -92,6 +94,8 @@ export function useNoticeBoardUpdateMutation() {
 // 전광판 삭제
 export function useNoticeBoardRemoveMutation() {
 	const { simpleAlert } = useAlert()
+	const setSelected = useSetAtom(selectedRowsAtom)
+
 	return useMutation({
 		mutationKey: NOTICE_BOARD_KEYS.removeNoticeBoard,
 		mutationFn: async function (id) {
@@ -102,6 +106,7 @@ export function useNoticeBoardRemoveMutation() {
 			queryClient.invalidateQueries({
 				queryKey: NOTICE_BOARD_KEYS.getNoticeBoardList,
 			})
+			setSelected([])
 		},
 		onError() {
 			simpleAlert('삭제에 실패하였습니다.')

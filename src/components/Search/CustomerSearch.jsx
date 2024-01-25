@@ -1,42 +1,46 @@
-import React, { useEffect } from 'react'
-import { Input, PartWrap } from '../../modal/External/ExternalFilter'
-import { GreyBtn } from '../../common/Button/Button'
 import { useAtom } from 'jotai'
-import { invenCustomer, invenCustomerData } from '../../store/Layout/Layout'
-import InventoryFind from '../../modal/Multi/InventoryFind'
+import React from 'react'
+import { GreyBtn } from '../../common/Button/Button'
 import useReactQuery from '../../hooks/useReactQuery'
+import { Input, PartWrap } from '../../modal/External/ExternalFilter'
+import InventoryFind from '../../modal/Multi/InventoryFind'
 import { getCustomerFind } from '../../service/admin/Auction'
-
+import { customerModalAtom } from '../../store/Layout/GlobalProductSearch'
 /**
- * TODO 고객사 검색 components
- * @param name 고객사 이름
- * @param code 고객사 코드
- * @param setName 고객사 이름 set 이벤트
- * @param setCode 고객사 코드 set 이벤트
+ * @description
+ * @param search
+ * @param setSearch
  */
-const CustomerSearch = ({ name, code, setName, setCode }) => {
-  const [customerPopUp, setCustomerPopUp] = useAtom(invenCustomer)
-  const [customerData, _] = useAtom(invenCustomerData)
-  const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
+const CustomerSearch = ({ search, setSearch }) => {
+	// 고객사 목록입니다.
+	const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
 
-  const modalOpen = () => setCustomerPopUp(true)
-
-  useEffect(() => {
-    setName(customerData.name)
-    setCode(customerData.code)
-  }, [customerData.code, customerData.name])
-
-  return (
-    <PartWrap>
-      <h6>고객사 명/고객사 코드</h6>
-      <Input name="customerName" value={name} readOnly />
-      <Input name="customerCode" value={code} readOnly />
-      <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17} onClick={modalOpen}>
-        찾기
-      </GreyBtn>
-      {customerPopUp && <InventoryFind title={'고객사 찾기'} setSwitch={setCustomerPopUp} data={inventoryCustomer} />}
-    </PartWrap>
-  )
+	// 고객사 코드 및 이름을 setState에 할당해줍니다.
+	const handleInventoryFindButtonOnClick = (data) => {
+		// data가 없거나 && data에 code 필드가 없거나 && data에 name 필드가 없으면 함수를 종료합니다.
+		if (!data && !Object.hasOwn(data ?? {}, 'code') && !Object.hasOwn(data ?? {}, 'name')) return
+		setSearch((p) => ({ ...p, customerCode: data?.code ?? '', customerName: data?.name ?? '' }))
+	}
+	// 고객사 모달값잆니다.
+	const [modal, setModal] = useAtom(customerModalAtom)
+	return (
+		<PartWrap>
+			<h6>고객사 명/고객사 코드</h6>
+			<Input name="customerName" value={search.customerName} readOnly />
+			<Input name="customerCode" value={search.customerCode} readOnly />
+			<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17} onClick={() => setModal(true)}>
+				찾기
+			</GreyBtn>
+			{modal && (
+				<InventoryFind
+					title={'고객사 찾기'}
+					handleButtonOnClick={handleInventoryFindButtonOnClick}
+					setSwitch={setModal}
+					data={inventoryCustomer}
+				/>
+			)}
+		</PartWrap>
+	)
 }
 
 export default CustomerSearch

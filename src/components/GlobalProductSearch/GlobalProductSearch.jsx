@@ -121,6 +121,8 @@ const GlobalProductSearch = ({
 	const initialParamRef = useRef(initialSearchParams)
 	const [userSearchParam, setUserSearchParam] = useState({ ...initialSearchParams })
 
+	console.log('userSearchParam !!!', userSearchParam)
+
 	const getUpdatedProperties = () => {
 		let updatedProperties = {}
 		for (let key in userSearchParam) {
@@ -166,7 +168,7 @@ const GlobalProductSearch = ({
 			)}
 			{toggle && (
 				<FilterWrap style={{ marginTop: '25px', marginBottom: '25px ' }}>
-					<FilterSubcontianer>
+					<FilterSubcontianer modal style={{ height: '100%' }}>
 						<ProductSearchFields
 							// prettier-ignore
 							search={userSearchParam}

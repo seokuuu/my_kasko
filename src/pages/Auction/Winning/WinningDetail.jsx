@@ -61,6 +61,10 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../Table/Table'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import { getDestinationFind } from '../../../api/search'
+import WinningCreateSearchFields from './WinningCreateSearchFields'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
+import { isEqual } from 'lodash'
+import WinningDetailFields from './WinningDetailFields'
 
 // 경매 낙찰 상세
 const WinningDetail = ({ detailRow }) => {
@@ -136,29 +140,25 @@ const WinningDetail = ({ detailRow }) => {
 		}, {}),
 	)
 
-	// Test 후 주석 해제 필
-	const [detailParams, setDetailParams] = useState({
-		// pageNum: 1,
-		// pageSize: 50,
-		// auctionNumber: '',
-		// storage: '',
-		// customerDestinationUid: '',
-		// biddingStatus: '',
+	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
 		auctionNumber: '2024010211',
 		storage: '우성',
 		customerDestinationUid: '165',
 		biddingStatus: '낙찰 취소',
-	})
+	}
 
-	console.log('detailParams', detailParams)
+	// Test 후 주석 해제 필
+	const [param, setParam] = useState(paramData)
+
+	console.log('param', param)
 
 	// Test 후 주석 해제 필
 	// useEffect(() => {
 	//   window.scrollTo(0, 0)
 
-	//   setDetailParams((p) => ({
+	//   setParam((p) => ({
 	//     ...p,
 	//     auctionNumber: detailRow?.['경매 번호'],
 	//     storage: detailRow?.['고객사명'],
@@ -167,12 +167,12 @@ const WinningDetail = ({ detailRow }) => {
 	//   }))
 	// }, [])
 
-	console.log('detailParams', detailParams)
+	console.log('detailParams', param)
 
 	const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
 
 	console.log('inventoryDestination', inventoryDestination?.data?.data)
-	const { isLoading, isError, data, isSuccess } = useReactQuery(detailParams, 'getWinningDetail', getWinningDetail)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getWinningDetail', getWinningDetail)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
@@ -207,17 +207,20 @@ const WinningDetail = ({ detailRow }) => {
 	}, [checkedArray])
 
 	// 목적지 적용 버튼
+	// 테스트 시 수정하기
 	const handleSetCustomerDestinationUid = () => {
-		const updatedWinningList = input.updateList?.map((item) => ({
-			...item,
-			requestCustomerDestinationUid: destinationData.uid,
-		}))
+		if (checkedArray) {
+			const updatedWinningList = input.updateList?.map((item) => ({
+				...item,
+				requestCustomerDestinationUid: destinationData.uid,
+			}))
 
-		// setBiddingList(updatedBiddingList)
-		setInput((prevInput) => ({
-			...prevInput,
-			updateList: [...updatedWinningList],
-		}))
+			// setBiddingList(updatedBiddingList)
+			setInput((prevInput) => ({
+				...prevInput,
+				updateList: [...updatedWinningList],
+			}))
+		}
 	}
 
 	console.log('input', input)
@@ -265,7 +268,7 @@ const WinningDetail = ({ detailRow }) => {
 	}
 
 	const onPageChange = (value) => {
-		setDetailParams((prevParam) => ({
+		setParam((prevParam) => ({
 			...prevParam,
 			pageNum: Number(value),
 		}))
@@ -308,6 +311,28 @@ const WinningDetail = ({ detailRow }) => {
 	const publishDepositOnClickHandler = () => {
 		publishDepositMutation.mutate(extractedArrayDeposit)
 	}
+
+	const globalProductResetOnClick = () => {
+		// if resetting the search field shouldn't rerender table
+		// then we need to create paramData object to reset the search fields.
+		setParam(paramData)
+	}
+	// import
+	const globalProductSearchOnClick = (userSearchParam) => {
+		setParam((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				refetch()
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+			}
+		})
+	}
+
+
+
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -337,7 +362,7 @@ const WinningDetail = ({ detailRow }) => {
 			</ClaimTable>
 			{exFilterToggle && (
 				<>
-					<FilterSubcontianer>
+					{/* <FilterSubcontianer>
 						<FilterLeft>
 							<RowWrap>
 								<PartWrap>
@@ -385,7 +410,14 @@ const WinningDetail = ({ detailRow }) => {
 								검색
 							</BlackBtn>
 						</div>
-					</FilterFooter>
+					</FilterFooter> */}
+					<GlobalProductSearch
+						param={param}
+						isToggleSeparate={true}
+						renderCustomSearchFields={(props) => <WinningDetailFields {...props} />}
+						globalProductSearchOnClick={globalProductSearchOnClick}
+						globalProductResetOnClick={globalProductResetOnClick}
+					/>
 				</>
 			)}
 			<TableContianer>
@@ -441,7 +473,12 @@ const WinningDetail = ({ detailRow }) => {
 				{addModal && <DefaultBlueBar setAddModal={setAddModal} />}
 			</TableContianer>
 			{destinationPopUp && (
-				<InventoryFind title={'목적지 찾기'} setSwitch={setDestinationPopUp} data={inventoryDestination} />
+				<InventoryFind
+					title={'목적지 찾기'}
+					setSwitch={setDestinationPopUp}
+					data={inventoryDestination}
+					handleButtonOnClick={() => {}}
+				/>
 			)}
 		</FilterContianer>
 	)

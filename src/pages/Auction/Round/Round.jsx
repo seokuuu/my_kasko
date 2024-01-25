@@ -1,53 +1,40 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { BlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import DateGrid from '../../../components/DateGrid/DateGrid'
+import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom2, toggleAtom } from '../../../store/Layout/Layout'
 
 import Table from '../../Table/Table'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import {
-	DoubleWrap,
-	ExRadioWrap,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
-	GridWrap,
-	Input,
-	PartWrap,
-	ResetImg,
-	RowWrap,
 	StyledHeading,
 	StyledSubHeading,
 	SubTitle,
 	TCSubContainer,
 	TableContianer,
-	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isArray, isEqual } from 'lodash'
 import { deleteAuction, getAuction } from '../../../api/auction/round'
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { AuctionRoundFields, AuctionRoundFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import AuctionRound from '../../../modal/Multi/AuctionRound'
 import { auctionRoundEditPageAtom, btnCellUidAtom, roundPostModalAtom } from '../../../store/Layout/Layout'
 import RoundAucListEdit from './RoundAucListEdit'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import RoundSearchFields from './RoundSearchFields'
+import useAlert from '../../../store/Alert/useAlert'
 
 const Round = ({}) => {
+	const { simpleConfirm, simpleAlert } = useAlert()
 	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
 	const [roundModal, setRoundModal] = useAtom(roundPostModalAtom)
 	const [editPage, setEditPage] = useAtom(auctionRoundEditPageAtom)
@@ -153,19 +140,22 @@ const Round = ({}) => {
 	const mutation = useMutation(deleteAuction, {
 		onSuccess: () => {
 			queryClient.invalidateQueries('auction')
+			simpleAlert('삭제 되었습니다.', () => {
+				refetch()
+			})
+		},
+		onError: () => {
+			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
 
 	const handleRemoveBtn = useCallback(() => {
-		if (isArray(checkedArray) && checkedArray.length > 0) {
-			if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
-				checkedArray.forEach((item) => {
-					mutation.mutate(item['고유 번호']) //mutation.mutate로 api 인자 전해줌
-				})
-			}
-		} else {
-			alert('선택해주세요!')
-		}
+		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
+		simpleConfirm('선택한 항목을 삭제하시겠습니까?', () =>
+			checkedArray.forEach((item) => {
+				mutation.mutate(item['고유 번호']) //mutation.mutate로 api 인자 전해줌
+			}),
+		)
 	}, [checkedArray])
 
 	useEffect(() => {
@@ -331,7 +321,7 @@ const Round = ({}) => {
 							onPageChange={onPageChange}
 							loading={isLoading}
 						/>
-						{roundModal && <AuctionRound setRoundModal={setRoundModal} types={types} />}
+						{roundModal && <AuctionRound setRoundModal={setRoundModal} types={types} refetch={refetch} />}
 					</TableContianer>
 				</FilterContianer>
 			)}

@@ -50,7 +50,7 @@ const Storage = () => {
 	// 모달
 	const [modal, setModal] = useAtom(operateAddAtom)
 	// 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
-	const { simpleConfirm } = useAlert()
+	const { simpleConfirm, simpleAlert } = useAlert()
 
 	/**
 	 * @constant
@@ -86,7 +86,7 @@ const Storage = () => {
 	}
 	// 삭제 핸들러
 	function removeEventHandler() {
-		if (!selectedCount && selectedCount === 0) return alert('삭제할 목록을 선택해주세요.')
+		if (!selectedCount && selectedCount === 0) return simpleAlert('삭제할 목록을 선택해주세요.')
 
 		simpleConfirm('삭제하시겠습니까?', () => remove(selectedData.map((s) => s['고유값'])))
 	}

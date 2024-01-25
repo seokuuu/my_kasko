@@ -29,13 +29,14 @@ const Popup = ({}) => {
 	const [detailRow, setDetailsRow] = useAtom(doubleClickedRowAtom)
 	// 테이블에서 선택된 값,선택된 데이터 갯수
 	const { selectedData, selectedCount } = useTableSelection()
+	console.log('selectedData :', selectedData)
 	// 목록 리스트
 	const [rows, setRows] = useState([])
 	// 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
-	const { simpleConfirm } = useAlert()
+	const { simpleConfirm, simpleAlert } = useAlert()
 
 	// 팝업 목록 API
-	const { data, refetch, isLoading } = usePopupListQuery(search)
+	const { data, isLoading } = usePopupListQuery(search)
 
 	// 팝업 삭제 API
 	const { mutate } = usePopupRemoveMutation()
@@ -70,7 +71,7 @@ const Popup = ({}) => {
 
 	// 삭제 핸들러
 	function removeEventHandler() {
-		if (!selectedCount && selectedCount === 0) return alert('삭제할 목록을 선택해주세요.')
+		if (!selectedCount && selectedCount === 0) return simpleAlert('삭제할 목록을 선택해주세요.')
 
 		simpleConfirm('삭제하시겠습니까?', () => mutate(selectedData.map((s) => s['고유값'])))
 	}

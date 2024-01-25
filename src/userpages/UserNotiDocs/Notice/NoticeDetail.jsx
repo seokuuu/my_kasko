@@ -4,24 +4,53 @@ import { styled } from 'styled-components'
 import { BtnBound, WhiteBtn } from '../../../common/Button/Button'
 import { Bar, CenterRectangleWrap } from '../../../common/OnePage/OnePage.Styled'
 
-import UserSideBar from '../../../components/Left/UserSideBar'
-import Header from '../../../components/Header/Header'
-import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
-import SubHeader from '../../../components/Header/SubHeader'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { useNoticeDetailsQuery } from '../../../api/operate/notice'
 import moment from 'moment'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useNoticeDetailsQuery } from '../../../api/operate/notice'
+import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
+import Header from '../../../components/Header/Header'
+import SubHeader from '../../../components/Header/SubHeader'
+import UserSideBar from '../../../components/Left/UserSideBar'
+
+const NcloudStorage = 'https://kr.object.ncloudstorage.com/kasko-bucket'
+
 const NoticeDetail = () => {
 	const { uid } = useParams()
 	const [expanded, setExpanded] = useState('공지 & 자료실')
 	const [depth2Color, setDepth2Color] = useState('공지사항')
 
 	const { data: noticeDetails } = useNoticeDetailsQuery(uid)
+
+	console.log('noticeDetails :', noticeDetails)
 	const navigate = useNavigate()
 
 	function createMarkup(content) {
 		return { __html: content }
 	}
+
+	function getDataUri(url) {
+		return fetch(url)
+			.then((response) => {
+				return response.blob()
+			})
+			.then((blob) => {
+				return URL.createObjectURL(blob)
+			})
+	}
+
+	// 파일 다운로드
+	async function fileDownload(url, fileName) {
+		const entireUrl = `${NcloudStorage}${url}`
+
+		const a = document.createElement('a')
+		a.href = await getDataUri(entireUrl)
+		a.download = fileName ?? 'download'
+
+		document.body.appendChild(a)
+		a.click()
+		document.body.removeChild(a)
+	}
+
 	return (
 		<>
 			<Header />
@@ -48,20 +77,24 @@ const NoticeDetail = () => {
 									style={{ height: '50%' }}
 									dangerouslySetInnerHTML={createMarkup(noticeDetails?.content)}
 								></BottomWrap>{' '}
-								{noticeDetails?.fileList.length ? (
-									<div style={{ height: '50px' }}>
-										<Bar />
-										<div style={{ display: 'flex', alignItems: 'center' }}>
-											<div style={{ width: '100px' }}>첨부 파일</div>
-											<FileUploadWrap>
-												<div>파일명.pdf</div>
-												<img src="/svg/Upload.svg" alt="파일" />
-											</FileUploadWrap>
-										</div>
+								<div style={{ height: '50px' }}>
+									<Bar />
+									<div style={{ display: 'flex', alignItems: 'center' }}>
+										<div style={{ width: '100px' }}>첨부 파일</div>
+										{noticeDetails &&
+											noticeDetails?.fileList.map((notice, i) => (
+												<FileUploadWrap key={i}>
+													<div>{notice.originalName}</div>
+													<button onClick={() => fileDownload(notice.fileUrl, notice.originalName)}>
+														<img src="/svg/Upload.svg" alt="파일" />
+													</button>
+													{/* <a href={`${notice.fileUrl}`} download target="_blank" rel="noopener noreferrer">
+														다운로드
+													</a> */}
+												</FileUploadWrap>
+											))}
 									</div>
-								) : (
-									<div></div>
-								)}
+								</div>
 								<FileUploadSub style={{ bottom: '-80px' }}>
 									<WhiteBtn
 										width={40}
