@@ -53,6 +53,7 @@ const Order = ({}) => {
 		tableField: userOrderListField,
 		serverData: orderData,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		best: { display: true }
 	})
 	// 선택 항목
 	const { selectedData, selectedWeightStr, selectedCountStr, hasSelected } = useTableSelection({ weightKey: '총 중량' })

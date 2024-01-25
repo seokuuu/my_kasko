@@ -58,6 +58,7 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 		tableField: userPackageDetailsField,
 		serverData: packageData,
 		wish: { display: true, key: ['packageNumber'] },
+		best: { display: true }
 	})
 	// 장바구니, 주문하기 데이터
 	const cartOrderDatas = useMemo(() => {

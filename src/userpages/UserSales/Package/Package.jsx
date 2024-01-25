@@ -51,6 +51,7 @@ const Package = ({}) => {
 		tableField: userPackageProductField,
 		serverData: packageData,
 		wish: { display: true },
+		best: { display: true }
 	})
 	// 선택 항목
 	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
