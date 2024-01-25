@@ -218,14 +218,14 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 
 	// // input의 addAuctionProductList 값 채우기
 	// 수정 부분의 "추가" 바인딩
-	// useEffect(() => {
-	// 	const uniqueNumbers = selectedData?.map((item) => ({
-	// 		productUid: item['고유 번호'],
-	// 		auctionStartPrice: realStartPrice,
-	// 	}))
+	useEffect(() => {
+		const uniqueNumbers = outAddData?.map((item) => ({
+			productUid: item['uid'],
+			auctionStartPrice: realStartPrice,
+		}))
 
-	// 	setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
-	// }, [newResData, checkedArray, realStartPrice])
+		setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
+	}, [newResData, outAddData, realStartPrice])
 
 	// 목록 제거
 	const onListRemove = () => {
@@ -248,14 +248,15 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	console.log('outAddData', outAddData)
 
 	// 추가 가져온 애 테스트임. 이거 필요없음. 기존에 있던 list 가 잘되는지 체크 하기
-	useEffect(() => {
-		const uniqueNumbers = list?.map((item) => ({
-			productUid: item['uid'],
-			auctionStartPrice: realStartPrice,
-		}))
+	//
+	// useEffect(() => {
+	// 	const uniqueNumbers = list?.map((item) => ({
+	// 		productUid: item['uid'],
+	// 		auctionStartPrice: realStartPrice,
+	// 	}))
 
-		setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
-	}, [list, realStartPrice])
+	// 	setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
+	// }, [list, realStartPrice])
 
 	console.log('nesRES', newResData)
 	console.log('editData @@@ ', editData)
