@@ -34,7 +34,7 @@ import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../..
 import Table from '../Table/Table'
 import { AdminOrderManageFieldsCols, DetailOrderFieldsManage } from '../../constants/admin/AdminOrderDetail'
 import useReactQuery from '../../hooks/useReactQuery'
-import { getDetailOrderList, getOrderList } from '../../api/orderList'
+import { cancelAllOrderList, depositCancleAllOrderList, getDetailOrderList, getOrderList } from '../../api/orderList'
 import { useLocation } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAtom, useAtomValue } from 'jotai/index'
@@ -42,11 +42,21 @@ import ProNoPage from './ProNoPage'
 import axios from 'axios'
 import { add_element_field } from '../../lib/tableHelpers'
 import { orderFieldData } from '../../constants/admin/OrderManage'
+import { KilogramSum } from '../../utils/KilogramSum'
+import useMutationQuery from '../../hooks/useMutationQuery'
+import useAlert from '../../store/Alert/useAlert'
+import { cancelOrderList, depositCancleOrderList } from '../../api/detailOrderList'
+import GlobalProductSearch from '../../components/GlobalProductSearch/GlobalProductSearch'
+import OrderSearchFields from './OrderSearchFields'
+import { isEqual } from 'lodash'
+import OrderDetailSearchFields from './OrderDetailSearchFields'
 const useQuery = () => {
 	return new URLSearchParams(useLocation().search)
 }
 const AdminOrderDetail = ({}) => {
 	const query = useQuery()
+	const { simpleConfirm, simpleAlert } = useAlert()
+	const [getRow, setGetRow] = useState('')
 
 	// 쿼리 스트링에서 값 추출
 	const auctionNumber = query.get('auctionNumber')
@@ -88,7 +98,7 @@ const AdminOrderDetail = ({}) => {
 	const formatTableRowData = (orderDetail) => {
 		return add_element_field(orderDetail, DetailOrderFieldsManage)
 	}
-	const { data: detailRes, isSuccess } = useReactQuery(param, 'getDetailOrderList', getDetailOrderList)
+	const { data: detailRes, isSuccess, refetch } = useReactQuery(param, 'getDetailOrderList', getDetailOrderList)
 	useEffect(() => {
 		if (detailRes && detailRes.data && detailRes.data.list) {
 			setDetailOrderListData(formatTableRowData(detailRes.data.list))
@@ -147,18 +157,11 @@ const AdminOrderDetail = ({}) => {
 		'',
 	]
 
-	const queryClient = useQueryClient()
-	const { data: getOrderRes } = useReactQuery(param, 'getOrderList', getOrderList, {
-		initialData: () => {
-			// React Query 캐시에서 초기 데이터를 가져옵니다.
-			return queryClient.getQueryData('getOrderList')
-		},
-	})
 
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 
 	/**
-	 * 모달 테이블 테스트
+	 * @description 모달 테이블 테스트
 	 */
 	const [isTableModal, setIsTableModal] = useAtom(onClickCheckAtom)
 	const [selectedCellData, setSelectedCellData] = useState(null)
@@ -167,29 +170,71 @@ const AdminOrderDetail = ({}) => {
 		setSelectedCellData(proNoNumber)
 	}
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+
+
+	/**
+	 * @description 부분 주문 취소
+	 */
 	const makeRequest = (selectedRows) => {
+		if(!selectedRows) return [];
 		return selectedRows.map((row) => ({
 			orderUid: row['주문 고유 번호'],
 			saleType: row['판매 유형'],
 		}))
 	}
+	const { mutate: cancelOrder } = useMutationQuery('cancelOrderList', cancelOrderList)
 	const handleOrderCancel = () => {
-		const requestList = makeRequest(checkBoxSelect)
-		console.log('요청List', requestList)
-		const token =
-			'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjYwIiwiYXV0aCI6Iuy5tOyKpOy9lOyyoOqwlSzsnqzqs6DqtIDrpqws6rK966ek6rSA66asLOyDgeyLnO2MkOunpOq0gOumrCzso7zrrLjqtIDrpqws7YyQ66ek7KCc7ZKI6rSA66asLOy2nOqzoOq0gOumrCzquLDspIDqtIDrpqws7Jq07JiB6rSA66asIiwiZXhwIjoxNzA1NDc0OTk2fQ.rkc-ubRirtSAWnbHk-GR2rEVM7Mv2Zd9nUyn8Vl23GY5_nG8zaUf-SrCDg3ZGHKUTMqq-xosGuBEaCb4bhy6Tg'
-		axios
-			.post(`${process.env.REACT_APP_API_URL}/admin/order/cancel-all`, requestList, {
-				headers: {
-					Authorization: `Bearer ${token}`,
+		const requestList = makeRequest(checkBoxSelect); // checkBoxSelect를 makeRequest 함수에 전달하여 데이터 가공
+
+		if (requestList.length === 0) {
+			simpleAlert('선택된 항목이 없습니다.');
+			return; // 함수 실행 중단
+		}
+		simpleConfirm('부분 주문 취소하시겠습니까?', () => {
+			cancelOrder(requestList, { // 가공된 데이터를 cancelAllOrder 함수에 전달
+				onSuccess: () => {
+					refetch(); // 성공 시 데이터 새로고침
 				},
-			})
-			.then((response) => {
-				console.log('Order cancelled successfully:', response.data)
-			})
-			.catch((error) => {
-				console.error('Error cancelling order:', error)
-			})
+			});
+		});
+	};
+
+	/**
+	 * @description 부분 입금 취소
+	 */
+	const { mutate: depositCancelOrder } = useMutationQuery('depositCancleOrderList', depositCancleOrderList)
+	const handleDepositCancel = () => {
+		const requestList = makeRequest(checkBoxSelect)
+
+		if (requestList.length === 0) {
+			simpleAlert('선택된 항목이 없습니다.');
+			return; // 함수 실행 중단
+		}
+		simpleConfirm('부분 입금 취소하시겠습니까?', () => {
+			depositCancelOrder(requestList, { // 가공된 데이터를 cancelAllOrder 함수에 전달
+				onSuccess: () => {
+					refetch(); // 성공 시 데이터 새로고침
+				},
+			});
+		});
+	}
+	/**
+	 * @description 검색하는 부분
+	 */
+	const globalProductSearchOnClick = (userSearchParam) => {
+		setParam((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				refetch()
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+			}
+		})
+	}
+	const globalProductResetOnClick = () => {
+		setParam(paramData)
 	}
 	return (
 		<>
@@ -221,93 +266,33 @@ const AdminOrderDetail = ({}) => {
 
 				{exFilterToggle && (
 					<>
-						<FilterSubcontianer>
-							<FilterLeft>
-								<RowWrap>
-									<PartWrap>
-										<h6>주문 일자</h6>
-										<GridWrap>
-											<DateGrid
-												bgColor={'white'}
-												fontSize={13}
-												startDate={checkOrderStart}
-												setStartDate={setCheckOrderStart}
-											/>
-											<Tilde>~</Tilde>
-											<DateGrid
-												bgColor={'white'}
-												fontSize={13}
-												startDate={checkOrderEnd}
-												setStartDate={setCheckOrderEnd}
-											/>
-										</GridWrap>
-									</PartWrap>
-									<PartWrap>
-										<h6>주문 상태</h6>
-										<ExCheckWrap>
-											{checkSales.map((x, index) => (
-												<ExCheckDiv>
-													<StyledCheckSubSquDiv
-														onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
-														isChecked={check1[index]}
-													>
-														<CheckImg2 src="/svg/check.svg" isChecked={check1[index]} />
-													</StyledCheckSubSquDiv>
-													<p>{x}</p>
-												</ExCheckDiv>
-											))}
-										</ExCheckWrap>
-									</PartWrap>
-								</RowWrap>
-								<RowWrap style={{ borderBottom: '0px' }}>
-									<PartWrap />
-									<PartWrap />
-								</RowWrap>
-							</FilterLeft>
-							<FilterRight>
-								<DoubleWrap>
-									<h6>제품 번호 </h6>
-									<textarea
-										placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-									/>
-								</DoubleWrap>
-							</FilterRight>
-						</FilterSubcontianer>
-						<FilterFooter>
-							<div style={{ display: 'flex' }}>
-								<p>초기화</p>
-								<ResetImg
-									src="/img/reset.png"
-									style={{ marginLeft: '10px', marginRight: '20px' }}
-									onClick={handleImageClick}
-									className={isRotated ? 'rotate' : ''}
-								/>
-							</div>
-							<div style={{ width: '180px' }}>
-								<BlackBtn width={100} height={40}>
-									검색
-								</BlackBtn>
-							</div>
-						</FilterFooter>
+						<GlobalProductSearch
+							param={param}
+							isToggleSeparate={true}
+							renderCustomSearchFields={(props) => <OrderDetailSearchFields {...props} />}
+							globalProductSearchOnClick={globalProductSearchOnClick}
+							globalProductResetOnClick={globalProductResetOnClick}
+						/>
 					</>
 				)}
 				<TableContianer>
 					<TCSubContainer bor>
 						<div>
-							조회 목록 (선택 <span>2</span> / 50개 )
+							조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /
+							{detailOrderPagination?.listCount}개 )
 							<Hidden />
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
 							<PageDropdown />
-							<Excel />
+							<Excel getRow={getRow}/>
 						</div>
 					</TCSubContainer>
 					<TCSubContainer>
 						<div>
-							선택 중량<span> 2 </span>kg / 총 중량 kg
+							선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 {}kg
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
-							<WhiteRedBtn>부분 주문 취소</WhiteRedBtn>
+							<WhiteRedBtn onClick={handleOrderCancel}>부분 주문 취소</WhiteRedBtn>
 							<SkyBtn>부분 확정 전송</SkyBtn>
 						</div>
 					</TCSubContainer>
@@ -320,7 +305,7 @@ const AdminOrderDetail = ({}) => {
 					/>
 					<TCSubContainer style={{ display: 'flex', justifyContent: 'flex-end' }}>
 						<div>
-							<WhiteRedBtn>부분 입금 취소</WhiteRedBtn>
+							<WhiteRedBtn onClick={handleDepositCancel}>부분 입금 취소</WhiteRedBtn>
 						</div>
 					</TCSubContainer>
 				</TableContianer>

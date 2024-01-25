@@ -231,7 +231,6 @@ const WinningDetail = ({ detailRow }) => {
 
 
 						{/*<Excel getRow={getRow} />*/}
-
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>

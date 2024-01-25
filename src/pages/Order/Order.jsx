@@ -1,39 +1,17 @@
 import { useEffect, useState } from 'react'
 import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn } from '../../common/Button/Button'
-import { MainSelect } from '../../common/Option/Main'
-import DateGrid from '../../components/DateGrid/DateGrid'
 import Excel from '../../components/TableInner/Excel'
 import HeaderToggle from '../../components/Toggle/HeaderToggle'
 import { invenCustomer, invenCustomerData, pageSort, toggleAtom } from '../../store/Layout/Layout'
 import { selectedRowsAtom } from '../../store/Layout/Layout'
 
-import {
-	DoubleWrap,
-	ExCheckWrap,
-	FilterContianer,
-	FilterFooter,
-	FilterHeader,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
-	GridWrap,
-	Input,
-	PartWrap,
-	PWRight,
-	ResetImg,
-	RowWrap,
-	TableContianer,
-	TCSubContainer,
-	Tilde,
-} from '../../modal/External/ExternalFilter'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../modal/External/ExternalFilter'
 
 import { useAtom, useAtomValue } from 'jotai'
 import Hidden from '../../components/TableInner/Hidden'
 import PageDropdown from '../../components/TableInner/PageDropdown'
 import useReactQuery from '../../hooks/useReactQuery'
 import { add_element_field } from '../../lib/tableHelpers'
-import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
-import { CheckBox } from '../../common/Check/Checkbox'
 import axios from 'axios'
 import InventoryFind from '../../modal/Multi/InventoryFind'
 import { getCustomerFind } from '../../service/admin/Auction'
@@ -41,9 +19,15 @@ import { getSPartList } from '../../api/search'
 import Table from '../Table/Table'
 import { orderFieldData, OrderManageFieldsCols } from '../../constants/admin/OrderManage'
 import { KilogramSum } from '../../utils/KilogramSum'
-import { getOrderList } from '../../api/orderList'
+import { cancelAllOrderList, depositCancleAllOrderList, getOrderList } from '../../api/orderList'
+import GlobalProductSearch from '../../components/GlobalProductSearch/GlobalProductSearch'
+import OrderSearchFields from './OrderSearchFields'
+import { isEqual } from 'lodash'
+import useAlert from '../../store/Alert/useAlert'
+import useMutationQuery from '../../hooks/useMutationQuery'
 
 const Order = ({}) => {
+	const { simpleConfirm, simpleAlert } = useAlert()
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const paramData = {
 		pageNum: 1,
@@ -85,7 +69,6 @@ const Order = ({}) => {
 		// });
 	}, [check1])
 
-
 	const [isRotated, setIsRotated] = useState(false)
 
 	// Function to handle image click and toggle rotation
@@ -124,7 +107,7 @@ const Order = ({}) => {
 	const formatTableRowData = (orderRes) => {
 		return add_element_field(orderRes, orderFieldData)
 	}
-	const { data: getOrderRes, isSuccess } = useReactQuery(param, 'getOrderList', getOrderList)
+	const { data: getOrderRes, isSuccess, refetch } = useReactQuery(param, 'getOrderList', getOrderList)
 	useEffect(() => {
 		if (getOrderRes && getOrderRes.data && getOrderRes.data.list) {
 			setOrderListData(formatTableRowData(getOrderRes.data.list))
@@ -143,6 +126,8 @@ const Order = ({}) => {
 	const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
 
 	const makeRequest = (selectedRows) => {
+		if (!selectedRows) return [];
+
 		return selectedRows.map((row) => ({
 			auctionNumber: row['경매 번호'],
 			customerCode: row['고객 코드'],
@@ -152,24 +137,63 @@ const Order = ({}) => {
 			sendDate: row['확정 전송일'],
 		}))
 	}
-	// 주문 취소 버튼 클릭 핸들러
+	/**
+	 * @description 주문 취소 핸들러
+	 */
+	const { mutate: cancelAllOrder } = useMutationQuery('cancelAllOrderList', cancelAllOrderList)
 	const handleOrderCancel = () => {
-		const requestList = makeRequest(checkBoxSelect)
-		console.log('요청List', requestList)
-		const token =
-			'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjYwIiwiYXV0aCI6Iuy5tOyKpOy9lOyyoOqwlSzsnqzqs6DqtIDrpqws6rK966ek6rSA66asLOyDgeyLnO2MkOunpOq0gOumrCzso7zrrLjqtIDrpqws7YyQ66ek7KCc7ZKI6rSA66asLOy2nOqzoOq0gOumrCzquLDspIDqtIDrpqws7Jq07JiB6rSA66asIiwiZXhwIjoxNzA1NDc0OTk2fQ.rkc-ubRirtSAWnbHk-GR2rEVM7Mv2Zd9nUyn8Vl23GY5_nG8zaUf-SrCDg3ZGHKUTMqq-xosGuBEaCb4bhy6Tg'
-		axios
-			.post(`${process.env.REACT_APP_API_URL}/admin/order/cancel-all`, requestList, {
-				headers: {
-					Authorization: `Bearer ${token}`,
+		const requestList = makeRequest(checkBoxSelect); // checkBoxSelect를 makeRequest 함수에 전달하여 데이터 가공
+
+		if (requestList.length === 0) {
+			simpleAlert('선택된 항목이 없습니다.');
+			return; // 함수 실행 중단
+		}
+		simpleConfirm('주문 취소하시겠습니까?', () => {
+			cancelAllOrder(requestList, { // 가공된 데이터를 cancelAllOrder 함수에 전달
+				onSuccess: () => {
+					refetch(); // 성공 시 데이터 새로고침
 				},
-			})
-			.then((response) => {
-				console.log('Order cancelled successfully:', response.data)
-			})
-			.catch((error) => {
-				console.error('Error cancelling order:', error)
-			})
+			});
+		});
+	};
+
+	/**
+	 * @description 입금 취소 핸들러
+	 */
+	const { mutate: depositCancelAllOrder } = useMutationQuery('depositCancleAllOrderList', depositCancleAllOrderList)
+	const handleDepositCancel = () => {
+		const requestList = makeRequest(checkBoxSelect)
+
+		if (requestList.length === 0) {
+			simpleAlert('선택된 항목이 없습니다.');
+			return; // 함수 실행 중단
+		}
+		simpleConfirm('입금 취소하시겠습니까?', () => {
+			depositCancelAllOrder(requestList, { // 가공된 데이터를 cancelAllOrder 함수에 전달
+				onSuccess: () => {
+					refetch(); // 성공 시 데이터 새로고침
+				},
+			});
+		});
+	}
+
+	/**
+	 * @description 검색하는 부분
+	 */
+	const globalProductSearchOnClick = (userSearchParam) => {
+		setParam((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				refetch()
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+			}
+		})
+	}
+	const globalProductResetOnClick = () => {
+		setParam(paramData)
 	}
 	return (
 		<FilterContianer>
@@ -183,155 +207,13 @@ const Order = ({}) => {
 
 			{exFilterToggle && (
 				<>
-					<FilterSubcontianer>
-						<FilterLeft>
-							<RowWrap none>
-								<PartWrap first>
-									<h6>창고 구분</h6>
-									<PWRight>
-										<MainSelect />
-									</PWRight>
-								</PartWrap>
-
-								<PartWrap>
-									<h6>고객사 명/고객사코드</h6>
-									<Input value={customerData.name} readOnly name="customerName" />
-									<Input value={customerData.code} readOnly name="customerCode" />
-									<GreyBtn
-										style={{ width: '70px' }}
-										height={35}
-										margin={10}
-										fontSize={17}
-										onClick={() => setCustomerPopUp(true)}
-									>
-										찾기
-									</GreyBtn>
-								</PartWrap>
-							</RowWrap>
-							<RowWrap>
-								<PartWrap first>
-									<h6>구분</h6>
-									<PWRight>
-										<MainSelect
-											options={spartList}
-											defaultValue={''}
-											name="sPart"
-											onChange={(e) =>
-												setSelected((p) => ({
-													...p,
-													sPart: e.label,
-												}))
-											}
-										/>
-									</PWRight>
-								</PartWrap>
-							</RowWrap>
-							<RowWrap>
-								<PartWrap first>
-									<h6>경매 일자</h6>
-									<GridWrap>
-										<DateGrid
-											width={130}
-											bgColor={'white'}
-											fontSize={13}
-											startDate={checkSalesStart}
-											setStartDate={setCheckSalesStart}
-										/>
-										<Tilde>~</Tilde>
-										<DateGrid
-											width={130}
-											bgColor={'white'}
-											fontSize={13}
-											startDate={checkSalesEnd}
-											setStartDate={setCheckSalesEnd}
-										/>
-									</GridWrap>
-								</PartWrap>
-								<PartWrap>
-									<h6>확정 전송 일자</h6>
-									<GridWrap>
-										<DateGrid
-											width={130}
-											bgColor={'white'}
-											fontSize={13}
-											startDate={checkConfirmStart}
-											setStartDate={setCheckConfirmStart}
-										/>
-										<Tilde>~</Tilde>
-										<DateGrid
-											width={130}
-											bgColor={'white'}
-											fontSize={13}
-											startDate={checkConfirmEnd}
-											setStartDate={setCheckConfirmEnd}
-										/>
-									</GridWrap>
-								</PartWrap>
-							</RowWrap>
-							<RowWrap none>
-								<PartWrap>
-									<h6>상시 판매 주문 일자</h6>
-									<GridWrap>
-										<DateGrid
-											width={130}
-											bgColor={'white'}
-											fontSize={13}
-											startDate={checkAllTimeStart}
-											setStartDate={setCheckAllTimeStart}
-										/>
-										<Tilde>~</Tilde>
-										<DateGrid
-											width={130}
-											bgColor={'white'}
-											fontSize={13}
-											startDate={checkAllTimeEnd}
-											setStartDate={setCheckAllTimeEnd}
-										/>
-									</GridWrap>
-								</PartWrap>
-								<PartWrap>
-									<h6>주문 상태</h6>
-									<ExCheckWrap>
-										{checkSales.map((x, index) => (
-											<ExCheckWrap style={{ marginRight: '15px' }}>
-												<StyledCheckSubSquDiv
-													onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
-													isChecked={check1[index]}
-												>
-													<CheckImg2 src="/svg/check.svg" isChecked={check1[index]} />
-												</StyledCheckSubSquDiv>
-												<p>{x}</p>
-											</ExCheckWrap>
-										))}
-									</ExCheckWrap>
-								</PartWrap>
-							</RowWrap>
-						</FilterLeft>
-						<FilterRight>
-							<DoubleWrap>
-								<h6>제품 번호 </h6>
-								<textarea
-									placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-								/>
-							</DoubleWrap>
-						</FilterRight>
-					</FilterSubcontianer>
-					<FilterFooter>
-						<div style={{ display: 'flex' }}>
-							<p>초기화</p>
-							<ResetImg
-								src="/img/reset.png"
-								style={{ marginLeft: '10px', marginRight: '20px' }}
-								onClick={handleImageClick}
-								className={isRotated ? 'rotate' : ''}
-							/>
-						</div>
-						<div style={{ width: '180px' }}>
-							<BlackBtn width={100} height={40}>
-								검색
-							</BlackBtn>
-						</div>
-					</FilterFooter>
+					<GlobalProductSearch
+						param={param}
+						isToggleSeparate={true}
+						renderCustomSearchFields={(props) => <OrderSearchFields {...props} />}
+						globalProductSearchOnClick={globalProductSearchOnClick}
+						globalProductResetOnClick={globalProductResetOnClick}
+					/>
 				</>
 			)}
 			<TableContianer>
@@ -364,7 +246,9 @@ const Order = ({}) => {
 				/>
 				<TCSubContainer style={{ display: 'flex', justifyContent: 'flex-end' }}>
 					<div>
-						<WhiteRedBtn>입금 취소</WhiteRedBtn>
+						<WhiteRedBtn type="button" onClick={handleDepositCancel}>
+							입금 취소
+						</WhiteRedBtn>
 					</div>
 				</TCSubContainer>
 			</TableContianer>
