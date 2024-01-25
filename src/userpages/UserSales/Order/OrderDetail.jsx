@@ -4,7 +4,6 @@ import { useUserDestinationUpdateRequestMutation, useUserOrderDetailsQuery } fro
 import { BtnBound, TGreyBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
 import Excel from '../../../components/TableInner/Excel'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { userOrderDetailsField, userOrderDetailsFieldsCols } from '../../../constants/user/orderTable'
 import useTableData from '../../../hooks/useTableData'
@@ -19,7 +18,8 @@ import {
 	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import DestinationChange from '../../../modal/Multi/DestinationChange'
-import Table from '../../../pages/Table/Table'
+import TableV2 from '../../../pages/Table/TableV2'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import useAlert from '../../../store/Alert/useAlert'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 
@@ -82,6 +82,7 @@ const OrderDetail = ({ salesNumber }) => {
 		tableField: userOrderDetailsField,
 		serverData: orderData,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		best: { display: true }
 	})
 	// 인포테이블 데이터
 	const infoData = useMemo(() => getInfoRows(orderData?.list || [], salesNumber), [orderData, salesNumber])
@@ -97,24 +98,20 @@ const OrderDetail = ({ salesNumber }) => {
 	// 목적지 변경항목 반영 테이블 데이터
 	const tableRowDataWithNewDestination = useMemo(() => {
 		const destinationItemUids = destinationUpdateItems.map((v) => v[UID_KEY])
-		const newTableRowData = tableRowData.map((v) => {
-			if (destinationItemUids.includes(v[UID_KEY])) {
-				return {
-					...v,
-					'변경요청 목적지명': destination.name,
-					'변경요청 목적지코드': destination.code,
-					'변경요청 목적지 주소': destination.address,
-					'변경요청 목적지 연락처': destination.phone,
-				}
+		for(const row of tableRowData) {
+			if (destinationItemUids.includes(row[UID_KEY])) {
+				row['변경요청 목적지명'] = destination.name;
+				row['변경요청 목적지코드'] = destination.code;
+				row['변경요청 목적지 주소'] = destination.address;
+				row['변경요청 목적지 연락처'] = destination.phone;
 			}
-			return v
-		})
-		return newTableRowData
+		}
+		return tableRowData;
 	}, [destinationUpdateItems, tableRowData])
 	// ALERT
 	const { simpleAlert } = useAlert()
 	// 패키지 상세보기
-	const { setPackageReadOnlyViewer } = useContext(PackageViewerDispatchContext)
+	const { setPackageReadOnlyViewer } = useContext(PackageViewerDispatchContext);
 
 	/**
 	 * 목적지 적용 핸들러
@@ -189,9 +186,9 @@ const OrderDetail = ({ salesNumber }) => {
 			<TableContianer>
 				{/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
 				<TCSubContainer bor>
-					<div>
+					<div style={{flex: 1}}>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handlePageSizeChange} />
@@ -220,7 +217,7 @@ const OrderDetail = ({ salesNumber }) => {
 					</div>
 				</TCSubContainer>
 				{/* 테이블 */}
-				<Table
+				<TableV2
 					getRow={tableRowDataWithNewDestination}
 					getCol={userOrderDetailsFieldsCols(setPackageReadOnlyViewer)}
 					loading={isLoading}

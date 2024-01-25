@@ -13,7 +13,7 @@ var checkboxSelection = function (params) {
   return params.columnApi.getRowGroupColumns().length === 0
 }
 
-var headerCheckboxSelection = function (params) {
+var headerCheckboxSelection = function(params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0
 }
@@ -122,70 +122,70 @@ export const SingleSalesDispatchFieldsCols= [
     }
   })), 
 ]
-var optionFn = function (key){
-  
-  let options= [];
-  
-  switch (key){
+var optionFn = function(key) {
+
+  let options = []
+
+  switch (key) {
     case '재고 상태':
-    options =['자사 재고','타사 재고'];
-    break;
+      options = ['자사 재고', '타사 재고']
+      break
     case '제조사':
-    options =['현대제철','동은스틸'];
-    break;
+      options = ['현대제철', '동은스틸']
+      break
     case '판매 구분':
-    options= ['판매재','판매 제외재','판매 완료재'];
-    break;
+      options = ['판매재', '판매 제외재', '판매 완료재']
+      break
     case '매입처':
-    options= ['현대제철','카스코 철강'];
-    break;
+      options = ['현대제철', '카스코 철강']
+      break
     default:
       break
   }
 
-return options
+  return options
 }
 /// 제품 수정 창에 데려올 필드와 설정하는 컬럼
 
 export const SingleModifyFields = {
-  "제품 번호": "number",
-  "저장 위치": "storage",
-  "저장 위치명": "storageName",
-  "규격 약호": "spec",
-  "제품 사양": "wdh",
-  "두께": "thickness",
-  "폭": "width",
-  "길이": "length",
-  "중량": "weight",
-  "등급": "grade",
-  "용도 코드": "usageCode",
-  "용도명": "usageCodeName",
-  "C%": "c",
-  "Si": "si",
-  "Mn": "mn",
-  "P": "p",
-  "S": "s",
-  "TS": "ts",
-  "YP": "yp",
-  "EL": "el",
-  "제품군 코드": "spartCode",
-  "제품군명": "spart",
-  "매입처": "supplier",
-  "제조사": "maker",
-  "품명": "name",
-  매입가:'price',
-  "정척 여부": "preferThickness",
-  "여재 원인 코드": "causeCode",
-  "여재 원인명": "causeCodeName",
-  "입고일": "receiptDate",
-  "재고 상태": "stockStatus",
-  "판매 구분":'saleCategory'
-};
+  '제품 번호': 'number',
+  '저장 위치': 'storage',
+  '저장 위치명': 'storageName',
+  '규격 약호': 'spec',
+  '제품 사양': 'wdh',
+  '두께': 'thickness',
+  '폭': 'width',
+  '길이': 'length',
+  '중량': 'weight',
+  '등급': 'grade',
+  '용도 코드': 'usageCode',
+  '용도명': 'usageCodeName',
+  'C%': 'c',
+  'Si': 'si',
+  'Mn': 'mn',
+  'P': 'p',
+  'S': 's',
+  'TS': 'ts',
+  'YP': 'yp',
+  'EL': 'el',
+  '제품군 코드': 'spartCode',
+  '제품군명': 'spart',
+  '매입처': 'supplier',
+  '제조사': 'maker',
+  '품명': 'name',
+  매입가: 'price',
+  '정척 여부': 'preferThickness',
+  '여재 원인 코드': 'causeCode',
+  '여재 원인명': 'causeCodeName',
+  '입고일': 'receiptDate',
+  '재고 상태': 'stockStatus',
+  '판매 구분': 'saleCategory',
+}
 
 
-
-export const SingleModifyDispatchFieldsCols= [
-  { field: '',   headerClass:'custom-header-style',flex:1,
+export const SingleModifyDispatchFieldsCols = [
+  {
+    field: '', headerClass: 'custom-header-style', flex: 1,
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
      minWidth: 50, checkboxSelection, headerCheckboxSelection },
   ...Object.entries(SingleModifyFields).map(([k,v]) => {
@@ -203,7 +203,7 @@ export const SingleModifyDispatchFieldsCols= [
         
         }
       }
-    }else{
+    } else {
       return {
         ...commonStyles,
         field: k,
@@ -217,7 +217,7 @@ export const SingleModifyDispatchFieldsCols= [
           type:'select'
         },
         cellEditorParams: {
-          values:optionFn(k), // 셀렉트 박스에 표시할 옵션들
+          values: optionFn(k), // 셀렉트 박스에 표시할 옵션들
         },
       }
     }

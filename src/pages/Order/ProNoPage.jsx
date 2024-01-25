@@ -16,6 +16,8 @@ import useReactQuery from '../../hooks/useReactQuery'
 import { getProNoList } from '../../api/orderList'
 import { KilogramSum } from '../../utils/KilogramSum'
 import { useAtomValue } from 'jotai/index'
+import SelectedRowsTable from '../Table/SelectTable'
+import { StockIncomingFields } from '../../constants/admin/StockIncoming'
 
 export const Container = styled.div`
     max-width: 80%;
@@ -74,6 +76,7 @@ function ProNoPage({ title, proNoNumber }) {
     }
   }, [])
 
+  const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
   return (<OutSide>
     <Container>
       <BlueBarHeader>
@@ -118,6 +121,7 @@ function ProNoPage({ title, proNoNumber }) {
             tablePagination={proNoPagination}
             onPageChange={onPageChange} />
         </div>
+        {checkBoxSelect?.length > 0 && <SelectedRowsTable selectedRows={selectedRows} columns={proNoFieldCols} />}
       </TableContianer>
     </Container>
   </OutSide>)

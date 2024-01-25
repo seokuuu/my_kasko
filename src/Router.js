@@ -312,7 +312,7 @@ const Router = () => {
 				{/* 상시 판매 */}
 				<Route path="/userpage/salessingle" element={<USalesSingle />}></Route>
 				<Route path="/userpage/salespackage" element={<USalesPackage />}></Route>
-				<Route path="/userpage/salescart" element={<USalesCart />}></Route>
+				<Route path="/userpage/salescart/:product?" element={<USalesCart />}></Route>
 				<Route path="/userpage/salesorder/:salesNumber?" element={<USalesOrder />}></Route>
 
 				{/* 출고 실적 조회 */}
