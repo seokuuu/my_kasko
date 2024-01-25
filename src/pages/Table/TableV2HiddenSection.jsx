@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai';
-import React, { useLayoutEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { styled } from 'styled-components';
 import { TABLE_TYPE, tableHiddenColumnAtom, tableShowColumnAtom } from '../../store/Table/Table';
 
@@ -16,7 +16,6 @@ const SHiddenSection = {
     display: flex;
     gap: 2px;
     width: max-content;
-    color: ${(props) => props.theme.colors.TxtAlter};
     background-color: transparent;
     
     &:disabled {
@@ -25,6 +24,15 @@ const SHiddenSection = {
     
     img {
       transform: rotate(${({$on}) => $on? 180 : 0}deg);
+    }
+    
+    span {
+      color: #6B6B6B;
+      
+      em {
+        font-size: 14px;
+        font-style: normal;
+      }
     }
   `,
   HiddenBox: styled.div`
@@ -47,6 +55,12 @@ const SHiddenSection = {
           background: #dbe2f0;
           border-radius: 15px;
           white-space: nowrap;
+          font-size: 15px;
+
+          svg {
+            width: 14px;
+            height: 14px;
+          }
         }
       }
     }
@@ -55,24 +69,36 @@ const SHiddenSection = {
 
 /**
  * 숨긴 항목 섹션
+ * @param {boolean} props.popupTable 팝업 테이블 여부 
+ * @description
+ * - TableV2HiddenSection과 함께 사용됩니다.
+ * - 팝업 테이블의 경우, TableV2와 TableV2HiddenSection에 popupTable 속성을 추가해야 합니다.
  */
 const TableV2HiddenSection = ({ popupTable = false }) => {
-  	// TABLE TYPE
+  // TABLE TYPE
 	const tableType = useMemo(() => popupTable? TABLE_TYPE.popupTable : TABLE_TYPE.pageTable, [popupTable]);
+  // STORE
   const hiddenColumns = useAtomValue(tableHiddenColumnAtom);
+  const targetHiddenColumns = useMemo(() => hiddenColumns[tableType], [tableType, hiddenColumns]);
   const setShowColumn = useSetAtom(tableShowColumnAtom);
-  // 섹션 숨김 처리
+  // UI
   const [hiddenSectionShow, setHiddenSectionShow] = useState(false);
+
+  useEffect(() => {
+    if(targetHiddenColumns.length < 1) {
+      setHiddenSectionShow(false)
+    }
+  }, [targetHiddenColumns])
 
   return (
     <SHiddenSection.Section>
       <SHiddenSection.Button 
         $on={hiddenSectionShow}
-        disabled={hiddenColumns.length < 1}
+        disabled={targetHiddenColumns.length < 1}
         onClick={() => { setHiddenSectionShow(show => !show) }}
       >
         <span>
-          숨긴 항목 ({hiddenColumns[tableType].length})
+          숨긴 항목  { targetHiddenColumns.length > 0 &&  <em>({targetHiddenColumns.length})</em>}
         </span>
         <img src="/img/arrow_B.png" />
       </SHiddenSection.Button>
@@ -81,7 +107,7 @@ const TableV2HiddenSection = ({ popupTable = false }) => {
         <SHiddenSection.HiddenBox>
           <ul>
             {
-              hiddenColumns[tableType].map((v, idx) => (
+              targetHiddenColumns.map((v, idx) => (
                 <li key={v + (idx + '')}>
                   <button onClick={() => { setShowColumn({ type: tableType, value: v }) }}>
                     {v}

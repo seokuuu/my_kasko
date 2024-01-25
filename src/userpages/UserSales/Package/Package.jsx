@@ -20,6 +20,7 @@ import {
 	TableContianer
 } from '../../../modal/External/ExternalFilter'
 import TableV2 from '../../../pages/Table/TableV2'
+import Table from '../../../pages/Table/Table'
 import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import { toggleAtom } from '../../../store/Layout/Layout'
 import { getValidParams } from '../../../utils/parameters'

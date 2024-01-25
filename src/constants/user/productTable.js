@@ -178,11 +178,11 @@ export const getUserPackageProductFieldsCols = (numberClickHandler=undefined) =>
   { field: "메모" },
 ])
 
-export const userPackageDetailsFieldsCols = getNormalTableRows([
+export const userPackageDetailsFieldsCols = () => getNormalTableRows([
   { field: "", maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
   { field: PROD_COL_NAME.packageUid },
   { field: "패키지 명" },
-  { field: PROD_COL_NAME.packageNumber, cellRenderer: WishCellRenderer,  },
+  { field: PROD_COL_NAME.packageNumber, cellRenderer: WishCellRenderer  },
   { field: "수량" },
   { field: "총 중량" },
   { field: "제품 고유 번호" },

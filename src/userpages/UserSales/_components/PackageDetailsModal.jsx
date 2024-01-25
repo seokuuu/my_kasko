@@ -1,9 +1,9 @@
-import React, { Fragment, useLayoutEffect, useMemo } from 'react'
+import { useSetAtom } from 'jotai'
+import React, { Fragment, useEffect, useLayoutEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { useUserPackageProductDetailsListQuery } from '../../../api/user'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import Excel from '../../../components/TableInner/Excel'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKey'
 import {
@@ -27,13 +27,12 @@ import {
 	TCSubContainer,
 	TableContianer
 } from '../../../modal/External/ExternalFilter'
+import TableV2 from '../../../pages/Table/TableV2'
 import Table from '../../../pages/Table/Table'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
+import { selectedRows2Switch } from '../../../store/Layout/Layout'
 import AddCartButton, { CART_BUTTON_TYPE } from './AddCartButton'
 import AddOrderButton, { ORDER_BUTTON_TYPE } from './AddOrderButton'
-import { selectedRows2Switch } from '../../../store/Layout/Layout'
-import { useSetAtom } from 'jotai'
-import TableV2 from '../../../pages/Table/TableV2'
-import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 
 /**
  * @constant 기본 검색 값
@@ -66,7 +65,6 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 			return [];
 		}
 		const targetData = tableRowData[0];
-		console.log(targetData);
 		return [{
 			[PROD_COL_NAME.packageUid]: targetData[PROD_COL_NAME.packageUid],
 			[PROD_COL_NAME.packageNumber]: packageNumber,
@@ -88,7 +86,7 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 	// 팝업 테이블 처리 스토어
   const setRowAtomSwitch = useSetAtom(selectedRows2Switch)
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		setRowAtomSwitch(false);
 
 		return(() => {
@@ -147,7 +145,7 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 							{/* 테이블 */}
 							<TableV2
 								getRow={tableRowData}
-								getCol={userPackageDetailsFieldsCols}
+								getCol={userPackageDetailsFieldsCols()}
 								loading={isLoading}
 								tablePagination={paginationData}
 								onPageChange={(p) => {

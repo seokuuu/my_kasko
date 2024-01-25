@@ -4,7 +4,7 @@ import 'ag-grid-enterprise'
 import { AgGridReact } from 'ag-grid-react'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import PropTypes from 'prop-types'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { styled } from 'styled-components'
 import { BlackBtn, GreyBtn } from '../../common/Button/Button'
@@ -26,13 +26,13 @@ import {
 	selectedRowsAtom,
 	selectedRowsAtom2,
 } from '../../store/Layout/Layout'
-import { tableRestoreColumnAtom, tableHiddenColumnAtom, tableShowColumnAtom, tableResetColumnAtom, TABLE_TYPE } from '../../store/Table/Table'
+import { TABLE_TYPE, tableHiddenColumnAtom, tableResetColumnAtom, tableRestoreColumnAtom, tableShowColumnAtom } from '../../store/Table/Table'
 import './TableUi.css'
 
 /**
- * @constant 테이블 함수
+ * AG-GRID settings 함수
  */
-const TABLE_FUNC = {
+var GRID_FUNC = {
 	checkboxSelection: function (params) {
 		// we put checkbox on the name if we are not doing grouping
 		return params.columnApi.getRowGroupColumns().length === 0
@@ -40,66 +40,68 @@ const TABLE_FUNC = {
 	headerCheckboxSelection: function (params) {
 		// we put checkbox on the name if we are not doing grouping
 		return params.columnApi.getRowGroupColumns().length === 0
+	},
+	containerStyle: function(hei2) {
+		if (hei2) {
+			return { width: '100%', height: `${hei2}px` }
+		} else {
+			return { width: '100%', height: '500px' }
+		}
 	}
 };
 
 /**
- * @constant 테이블 옵션
+ * AG-GRID settings 상수
  */
-const TABLE_OPTION = {
-	defaultDataColumnDefs: [
+var GRID_SETTIGS = {
+	initialColumnDefs: [
 		{
 			field: '고객 코드',
 			width: 45,
-			checkboxSelection: TABLE_FUNC.checkboxSelection,
-			headerCheckboxSelection: TABLE_FUNC.headerCheckboxSelection,
+			checkboxSelection: GRID_FUNC.checkboxSelection,
+			headerCheckboxSelection: GRID_FUNC.headerCheckboxSelection
 		},
 		{
 			field: '고객 코드',
 			width: 45,
-			checkboxSelection: TABLE_FUNC.checkboxSelection,
-			headerCheckboxSelection: TABLE_FUNC.headerCheckboxSelection,
+			checkboxSelection: GRID_FUNC.checkboxSelection,
+			headerCheckboxSelection: GRID_FUNC.headerCheckboxSelection
 		},
-		{ field: '대표', maxWidth: 80 },
-		{ field: '목적지 코드' },
-		{ field: '목적지 명', maxWidth: 90 },
-		{ field: '담당자 연락처' },
-		{ field: '하차지 명' },
-		{ field: '도착지 연락처' },
-		{ field: '상세 주소' },
-		{ field: '비고란' },
-	], 
-	defaultColDef: {
+	],
+	autoGroupColumnDef:  {
+		headerName: 'Group',
+		minWidth: 170,
+		field: 'athlete',
+		valueGetter: (params) => {
+			if (params.node.group) {
+				return params.node.key
+			} else {
+				return params.data[params.colDef.field]
+			}
+		},
+		headerCheckboxSelection: true,
+		cellRenderer: 'agGroupCellRenderer',
+		cellRendererParams: {
+			checkbox: true,
+		},
+	},
+	defaultColDef:{
 		editable: false,
-		enableRowGroup: false,
+		enableRowGroup: true,
 		enablePivot: true,
 		enableValue: true,
 		sortable: true,
 		resizable: true,
 		filter: true,
 	},
-	defaultGridOptions: {
+	defaultGridOption: {
 		headerHeight: 30,
-		rowDragManaged: true, // Enable row dragging
 		animateRows: true, // Enable row animations
 		cacheBlockSize: 100, // 캐시에 보관할 블록 사이즈
 		maxBlocksInCache: 10, // 캐시에 최대로 보관할 블록 수
 	}
 }
 
-/**
- * @constant 프로퍼티 계산 함수
- */
-const PROPS_FUNC = {
-	getContainerStyle: function(hei2) {
-		return({ width: '100%', height: `${hei2 === null? 500 : hei2 }px` })
-	}
-}
-
-/**
- * 기본 테이블
- * @description 숨긴 항목 기능 추가 테이블
- */
 const TableV2 = ({
 	hei,
 	hei2,
@@ -116,59 +118,67 @@ const TableV2 = ({
 	loading = false, // 로딩 여부
 	dragAndDrop = false,
 	changeFn,
-	popupTable = undefined // 팝업 테이블 여부
+	popupTable = false, // 팝업 테이블 여부
 }) => {
-	// AG-GRID TABLE
+	// GRID
 	const gridRef = useRef()
 	const [gridApi, setGridApi] = useState(null)
-	// FILTER
-	const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
-	// ROW DATA(TABLE-HEAD)
-	const [rowData, setRowData] = useState() // 로우데이터 정의
-	// COLUMN DATA(TABLE-BODY)
-	const [columnDefs, setColumnDefs] = useState(TABLE_OPTION.defaultDataColumnDefs); // 컬럼정의
-	// TABLE FILTER
-	const [sortNum] = useAtom(pageSort) // 페이지 사이즈
-	// STYLE
-	const containerStyle = PROPS_FUNC.getContainerStyle(hei2); // 컨테이너 스타일
-	const pinnedTopRowData = useMemo(() => topData, [topData]) // 핀고정 데이터
-	// ROUTER
-	const location = useLocation();
+	// DATA
+	const [columnDefs, setColumnDefs] = useState(GRID_SETTIGS.initialColumnDefs); // 테이블 칼럼 데이터
+	const [rowData, setRowData] = useState() // 테이블 데이터
+	const pinnedTopRowData = useMemo(() => topData, [topData]) // 핀 고정 데이터
+	// OPTIONS
+	const [filterText, setFilterText] = useState('') // 필터 텍스트 저장
+	const [sortNum] = useAtom(pageSort) // 페이지 정렬
 	// TABLE TYPE
-	const tableType = useMemo(() => popupTable? TABLE_TYPE.popupTable : TABLE_TYPE.pageTable, [popupTable]);
-	// COMMON STORES
-	const rowAtomSwitch = useAtomValue(selectedRows2Switch) // 2th 테이블 체크박스 여부
-	const setSelectedRows = useSetAtom(selectedRowsAtom) // 테이블 선택 체크박스 처리
-	const setSelectedRows2 = useSetAtom(selectedRowsAtom2) // 2th 테이블 체크박스 처리
-	const setDetailRow = useSetAtom(doubleClickedRowAtom) // 상세넘어가기 처리
+	const tableType = useMemo(() => popupTable? TABLE_TYPE.popupTable : TABLE_TYPE.pageTable, [popupTable]); // 팝업 테이블 여부
+	// 규격 약호 찾기 모달
+	const [isModal, setIsModal] = useAtom(blueModalAtom)
+	const location = useLocation()
+	// UI
+	const containerStyle = GRID_FUNC.containerStyle(hei2);
+	// DRAG
+	const { onRowDragEnd } = useDragginRow({ setRowData, rowData })
+	// STORES
+	const rowAtomSwitch = useAtomValue(selectedRows2Switch) // 이중테이블 여부
+	const setSelectedRows = useSetAtom(selectedRowsAtom) // 테이블1 선택데이터
+	const setSelectedRows2 = useSetAtom(selectedRowsAtom2) // 테이블2 선택데이터
+	const setDetailRow= useSetAtom(doubleClickedRowAtom) // 상세데이터 정보
 	const setHiddenColumn = useSetAtom(tableHiddenColumnAtom); // 테이블 칼럼 숨기기 처리
 	const showColumnId = useAtomValue(tableShowColumnAtom); // 테이블 노출 칼럼
 	const setShowColumnClear = useSetAtom(tableRestoreColumnAtom); // 테이블 노출 칼럼 처리
 	const setResetHiddenColumn = useSetAtom(tableResetColumnAtom); // 테이블 숨김항목 초기화 처리
-	// DRAG&DROP
-	const { onRowDragEnd } = useDragginRow({ setRowData, rowData }) // 컬럼데이터 드래그앤드랍
-	//
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
 
 	/**
-	 * 체크박스 선택 처리 핸들러
-	 * @description 체크했을때 jotai 전역상태값 설정
+	 * 그리드 옵션
+	 * 주의: GridOptios은 컴포넌트 내에서 선언해 주세요.
 	 */
-	const onSelectionChanged = () => {
-		if (gridApi) {
-			const selectedNodes = gridApi.getSelectedNodes()
-			const selectedData = selectedNodes.map((node) => node.data)
-			setSelectedRows(selectedData)
-
-			// 이중으로 check 사용시 (한 화면에 두 개의 테이블 렌더링 시 처리)
-			if (rowAtomSwitch) {
-				setSelectedRows2(selectedData)
-			}
-		}
+	const gridOptions = {
+		...GRID_SETTIGS.defaultGridOption,
+		serverSideDatasource: {
+			getRows: async function (params) {},
+		},
 	}
 
 	/**
-	 * 로우 더블클릭 처리 핸들러
+	 * @todo 현재 사용하고 있는지 확인
+	 */
+	const onFindButtonClick = () => {
+		const newCountryFilter = filterText.trim()
+		const gridApi = gridRef.current.api
+
+		// 입력한 국가명으로 grid의 Country 필터를 작동
+		gridApi.setFilterModel({
+			country: {
+				type: 'set',
+				values: [newCountryFilter],
+			},
+		})
+		gridApi.onFilterChanged()
+	}
+
+	/**
+	 * row double click 핸들러
 	 * @description 일단 router 이동 등록
 	 */
 	const onRowDoubleClicked = (event) => {
@@ -177,21 +187,37 @@ const TableV2 = ({
 	}
 
 	/**
+	 * 셀렉트 핸들러
+	 * @description 체크했을때 jotai 전역상태값 설정
+	 */
+	const onSelectionChanged = () => {
+		if (gridApi) {
+			const selectedNodes = gridApi.getSelectedNodes()
+			const selectedData = selectedNodes.map((node) => node.data)
+			setSelectedRows(selectedData)
+
+			// 이중으로 check 사용 시
+			if (rowAtomSwitch) {
+				setSelectedRows2(selectedData)
+			}
+		}
+	}
+
+	/**
 	 * 칼럼 숨기기 처리 핸들러
 	 */
-	const onColumnVisibleChange = (event) => {
-		const isHidden = event.visible === false;
-		
-		if(!isHidden) {
-			return;
-		}
-
-		const columnId = event.column.colId;
-		setHiddenColumn({ 
-			type: tableType, 
-			value: columnId 
-		});
-	}
+		const onColumnVisibleChange = useCallback((event) => {
+			const isHidden = event.visible === false;
+			if(!isHidden) {
+				return;
+			}
+	
+			const columnId = event.column.colId;
+			setHiddenColumn({ 
+				type: tableType,
+				value: columnId 
+			});
+		}, [tableType]);
 
 	/**
 	 * 칼럼 노출 핸들러
@@ -210,64 +236,14 @@ const TableV2 = ({
 
 		api.applyColumnState({ state: applyState});
 		setShowColumnClear({ type: tableType });
-	}
-
-	/* ==================== OTHERS start ==================== */
-	/**
-	 * @todo 현재 사용하는 함수인지 확인 필요
-	 */
-	const onFindButtonClick = () => {
-		const newCountryFilter = filterText.trim()
-		const gridApi = gridRef.current.api
-
-		// 입력한 국가명으로 grid의 Country 필터를 작동
-		gridApi.setFilterModel({
-			country: {
-				type: 'set',
-				values: [newCountryFilter],
-			},
-		})
-		gridApi.onFilterChanged()
-	}
-	/* ==================== OTHERS end ==================== */
-
-	/* ==================== STATES start ==================== */
-	// 로딩 상태 변경
-	useEffect(() => {
-		/**
-		 * @description
-		 * 로딩 중일때와 데이터가 길이가 0일 때를 구분하여 상황에 맞는 UI를 보여줍니다.
-		 */
-			if (gridRef.current.api) {
-				if (!loading && Array.isArray(getRow) && getRow.length === 0) {
-					gridRef.current.api.showNoRowsOverlay()
-				} else if (loading) {
-					gridRef.current.api.showLoadingOverlay()
-				}
-			}
-		}, [loading, getRow])
-
-	// 페이지사이즈 변경
-	useEffect(() => {
-		if (gridRef?.current?.api?.paginationSetPageSize) {
-			gridRef.current.api.paginationSetPageSize(Number(sortNum))
-		}
-	}, [sortNum])
-
-	// 노출칼럼 변경
-	useEffect(() => {
-		const showId = showColumnId[tableType];
-		onColumnShow(showId);
-	}, [showColumnId])
-	/* ==================== STATES start ==================== */
+	};
 
 	/* ==================== INITIALIZE start ==================== */
-	// 테이블로우, 테이블데이터 초기화
+	// 테이블 칼럼, 로우 데이터 초기화
 	useEffect(() => {
 		if (getCol) {
 			setColumnDefs(getCol)
 		}
-
 		if (getRow && getRow.length > 0) {
 			setRowData(getRow)
 		} else {
@@ -275,47 +251,70 @@ const TableV2 = ({
 		}
 	}, [getRow, getCol])
 
+	// 페이지 이동시에 테이블 선택이 겹칠 수 있으므로 초기화
+	useEffect(() => {
+		setSelectedRows(null)
+	}, [location])
+
 	// 테이블 선택, 숨김항목 초기화
 	useEffect(() => {
-		setSelectedRows(null);
-		setResetHiddenColumn({ type: tableType});
+		setResetHiddenColumn({ type: tableType });
 	}, [location, tableType])
 	/* ==================== INITIALIZE end ==================== */
+
+	/* ==================== STATE start ==================== */
+	// 페이지네이션 변경
+	useEffect(() => {
+		if (gridRef?.current?.api?.paginationSetPageSize) {
+			gridRef.current.api.paginationSetPageSize(Number(sortNum))
+		}
+	}, [sortNum])
+
+	// 로딩 중일때와 데이터가 길이가 0일 때를 구분하여 상황에 맞는 UI를 보여줍니다.
+	useEffect(() => {
+		if (gridRef.current.api) {
+			if (!loading && Array.isArray(getRow) && getRow.length === 0) {
+				gridRef.current.api.showNoRowsOverlay()
+			} else if (loading) {
+				gridRef.current.api.showLoadingOverlay()
+			}
+		}
+	}, [loading, getRow])
+
+	// 노출칼럼 변경
+	useEffect(() => {
+		const showId = showColumnId[tableType];
+		onColumnShow(showId);
+	}, [showColumnId])
+	/* ==================== STATE end ==================== */
 
 	return (
 		<div style={containerStyle}>
 			<TestContainer hei={hei}>
-				<div 
-					style={{ height: '100%', width: '100%' }} 
-					className="ag-theme-alpine"
-				>
+				<div style={{ height: '100%', width: '100%' }} className="ag-theme-alpine">
 					<AgGridReact
-						ref={gridRef}
-						// col&row options
-						defaultColDef={TABLE_OPTION.defaultColDef}
+						onGridReady={params => { setGridApi(params.api) }}
 						columnDefs={columnDefs}
 						rowData={rowData}
-						pinnedTopRowData={pinnedTopRowData}
-						// tableOptoins
-						gridOptions={TABLE_OPTION.defaultGridOptions}
-						rowSelection={'multiple'}
-						rowGroupPanelShow={'never'}
-						pivotPanelShow={'always'}
+						defaultColDef={GRID_SETTIGS.defaultColDef}
+						gridOptions={gridOptions}
+						ref={gridRef}
+						onRowDoubleClicked={onRowDoubleClicked}
+						autoGroupColumnDef={GRID_SETTIGS.autoGroupColumnDef}
 						animateRows={true}
 						suppressRowClickSelection={true}
 						groupSelectsChildren={true}
-						// pagination options
+						rowSelection={'multiple'}
+						rowGroupPanelShow={'never'}
+						pivotPanelShow={'always'}
 						pagination={true}
 						paginationPageSize={size}
 						isExternalFilterPresent={false}
-						// message options
+						onSelectionChanged={onSelectionChanged}
+						pinnedTopRowData={pinnedTopRowData}
 						overlayNoRowsTemplate={noRowsMessage}
 						overlayLoadingTemplate="데이터를 불러오는 중..."
-						// handler options
 						onCellValueChanged={changeFn}
-						onSelectionChanged={onSelectionChanged}
-						onRowDoubleClicked={onRowDoubleClicked}
-						onGridReady={(params) => { setGridApi(params.api) }}
 						onColumnVisible={onColumnVisibleChange}
 						{...dragAndDrop && { onRowDragEnd: onRowDragEnd }}
 						{...isRowClickable && { getRowStyle: () => ({ cursor: 'pointer' }) }}
@@ -331,7 +330,7 @@ const TableV2 = ({
 						<BlueBarHeader>
 							<div>규격 약호 찾기</div>
 							<div>
-								<WhiteCloseBtn onClick={() => { setIsModal(false) }} src="/svg/white_btn_close.svg" />
+								<WhiteCloseBtn onClick={() => {setIsModal(false)}} src="/svg/white_btn_close.svg" />
 							</div>
 						</BlueBarHeader>
 						<BlueSubContainer>
@@ -344,6 +343,13 @@ const TableV2 = ({
 									</GreyBtn>
 								</FSTitle>
 								<FSResult>
+									{/* {filteredCountries.map((x, index) => {
+                    return (
+                      <ResultBlock key={index} onClick={() => handleResultBlockClick(x)}>
+                        {x}
+                      </ResultBlock>
+                    )
+                  })} */}
 								</FSResult>
 							</FindSpec>
 						</BlueSubContainer>
@@ -355,7 +361,6 @@ const TableV2 = ({
 					</ModalContainer>
 				</>
 			)}
-
 			{tablePagination && <CustomPagination pagination={tablePagination} onPageChange={onPageChange} />}
 		</div>
 	)
@@ -376,6 +381,7 @@ TableV2.propTypes = {
 	onPageChange: PropTypes.func,
 	noRowsMessage: PropTypes.string,
 	loading: PropTypes.bool,
+	popupTable: PropTypes.bool
 }
 
 // Default props (optional but recommended for optional props):
@@ -393,6 +399,7 @@ TableV2.defaultProps = {
 	onPageChange: () => {}, // Default to a no-op function
 	noRowsMessage: '데이터가 존재하지 않습니다.', // Default message
 	loading: false, // Default to false
+	popupTable: false
 }
 
 export default TableV2

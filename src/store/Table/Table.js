@@ -134,7 +134,7 @@ export const tableResetColumnAtom = atom(
     set(
       talbeHiddenAtom, 
       update && update.type
-      ? { ...get(talbeHiddenAtom), [update.type]: { hiddenIds: [], showId: '' } }
+      ? { ...get(talbeHiddenAtom), [update.type]: { hiddenIds: [], showId: ''} }
       : JSON.parse(JSON.stringify(initialHiddenState))
       )
   }

@@ -14,7 +14,7 @@ import { getHasEditAuth } from './utils';
 
 /**
  * 주의사항
- * @param {string} param.category 카테고리(CAUTION_CATEGORY)
+ * @param {string} props.category 카테고리(CAUTION_CATEGORY)
  */
 const CautionBox = ({category}) => {
   const [editForm, setEditForm] = useState(EditorState.createEmpty());
