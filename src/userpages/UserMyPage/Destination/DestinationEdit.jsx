@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
 import {
-  Alert,
-  HalfWrap,
-  Left,
-  MainTitle,
-  OnePageContainer,
-  OnePageSubContainer,
-  Part,
-  Right,
-  Title,
+	Alert,
+	HalfWrap,
+	Left,
+	MainTitle,
+	OnePageContainer,
+	OnePageSubContainer,
+	Part,
+	Right,
+	Title,
 } from '../../../common/OnePage/OnePage.Styled'
 
 import { CustomInput } from '../../../common/Input/Input'
@@ -16,214 +16,222 @@ import { CustomInput } from '../../../common/Input/Input'
 import { styled } from 'styled-components'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
-
-import { useAtom } from 'jotai'
-import { useNavigate } from 'react-router-dom'
-import { getDetailDestination, patchDestination } from '../../../api/myPage'
+import { destinationQueryKey, getDetailDestination, patchDestination } from '../../../api/myPage'
+import { queryClient } from '../../../api/query'
 import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
+import AddressFinder from '../../../components/DaumPost/Address'
 import useMutationQuery from '../../../hooks/useMutationQuery'
-import { isEmptyObj } from '../../../lib'
-import { doubleClickedRowAtom } from '../../../store/Layout/Layout'
 import useReactQuery from '../../../hooks/useReactQuery'
+import { isEmptyObj } from '../../../lib'
+import useAlert from '../../../store/Alert/useAlert'
 
+/**
+ * @description
+ * 목적지 수정 페이지입니다.
+ */
 const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
-  const navigate = useNavigate()
-  const radioDummy = ['지정', '미지정'] // 더미 데이터
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
+	const { simpleAlert, showAlert } = useAlert()
 
-  const [savedRadioValue, setSavedRadioValue] = useState('')
-  const mutation = useMutationQuery('', patchDestination)
+	// 대표 주소 지정 옵션
+	const representOptions = [
+		{
+			text: '지정',
+			value: 1,
+		},
+		{
+			text: '미지정',
+			value: 0,
+		},
+	]
 
-  const backComponent = () => {
-    setSwtichDestiEdit(false)
-  }
+	const { mutate: update, isError } = useMutationQuery('', patchDestination)
 
-  const init = {
-    uid: '',
-    represent: '',
-    destinationUid: '',
-    address: '',
-    name: '',
-    phone: '',
-    managerTitle: '',
-    managerName: '',
-    managerPhone: '',
-    memo: '',
-  }
+	const backComponent = () => {
+		setSwtichDestiEdit(false)
+	}
 
-  const { isLoading, isError, data, isSuccess } = useReactQuery(uidAtom, 'getDetailDestination', getDetailDestination)
+	const init = {
+		represent: 1, // 대표 주소 지정 여부
+		// destinationUid: '',
+		address: '', // 주소
+		addressDetail: '', // 상세주소
+		name: '', // 하차지명
+		phone: '', // 하차지 연락처
+		managerTitle: '', // 담당자 직함
+		managerName: '', // 담당자 이름
+		managerPhone: '', // 담당자 번호
+		memo: '', // 비고
+	}
 
-  const detailData = data?.data?.data
-  console.log('detailData', detailData)
+	const { data } = useReactQuery(uidAtom, 'getDetailDestination', getDetailDestination)
 
-  const [input, setInput] = useState(init)
+	const detailData = data?.data?.data
+	console.log('detailData', detailData)
 
-  // 라디오 useEffect
-  useEffect(() => {
-    const checkedIndex = detailData?.represent === 0 ? 1 : 0
-    const newCheckRadio = Array.from({ length: radioDummy.length }, (_, index) => index === checkedIndex)
+	const [input, setInput] = useState(init)
+	// 라디오 헨들러
+	function onRepresentHandler(value) {
+		setInput((p) => ({ ...p, represent: value }))
+	}
 
-    setCheckRadio(newCheckRadio)
-    setInput({
-      ...input,
-      ...detailData,
-      represent: checkedIndex,
-    })
-  }, [detailData])
+	// 목적지 주소 핸들러
+	function onAddressHandler(address, addressDetail) {
+		setInput((p) => ({ ...p, address, addressDetail }))
+	}
 
-  useEffect(() => {
-    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
+	const handleChange = (e) => {
+		const { name, value } = e.target
+		setInput({ ...input, [name]: value })
+	}
+	const submit = async () => {
+		if (!isEmptyObj(input)) simpleAlert('빈값을 채워주세요.')
+		update({ uid: uidAtom, ...input })
 
-    if (checkedIndex !== -1) {
-      const selectedValue = radioDummy[checkedIndex]
-      setSavedRadioValue(selectedValue)
-      if (selectedValue === '지정') setInput({ ...input, represent: 1 })
-      if (selectedValue === '미지정') setInput({ ...input, represent: 0 })
-    }
-  }, [checkRadio])
+		if (!isError) {
+			showAlert({
+				title: '저장되었습니다.',
+				content: '',
+				func() {
+					setSwtichDestiEdit(false)
+					queryClient.invalidateQueries({ queryKey: destinationQueryKey.list })
+				},
+			})
+		} else {
+			simpleAlert('저장에 실패하였습니다.')
+		}
+	}
+	useEffect(() => {
+		if (detailData) {
+			setInput({
+				represent: detailData.represent,
+				name: detailData.name,
+				memo: detailData.memo,
+				managerTitle: detailData.managerTitle,
+				managerName: detailData.managerName,
+				managerPhone: detailData.managerPhone,
+				phone: detailData.phone,
+				address: 'dfdfdfdfdfd', // 주소 필드
+				addressDetail: 'dfdfdfdfdfdfd', // 상세 주소 필드
+			})
+		}
+	}, [detailData])
+	return (
+		<OnePageContainer>
+			<MainTitle>목적지 수정</MainTitle>
+			<OnePageSubContainer>
+				<HalfWrap>
+					<Left>
+						<Part>
+							<Title>
+								<h4>대표 주소 지정</h4>
+								<p></p>
+							</Title>
+							<RadioContainer>
+								{representOptions.map((option, index) => (
+									<RadioMainDiv key={index}>
+										<RadioCircleDiv
+											isChecked={option.value === input.represent}
+											onClick={() => onRepresentHandler(option.value)}
+										>
+											<RadioInnerCircleDiv isChecked={option.value === input.represent} />
+										</RadioCircleDiv>
+										<div style={{ display: 'flex', marginLeft: '5px' }}>{option.text}</div>
+									</RadioMainDiv>
+								))}
+							</RadioContainer>
+						</Part>
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setInput({ ...input, [name]: value })
-  }
-  const submit = async () => {
-    if (!isEmptyObj(input)) return alert('빈값을 채워주세요!')
-    mutation.mutate(input)
-  }
-  return (
-    <OnePageContainer>
-      <MainTitle>목적지 수정</MainTitle>
-      <OnePageSubContainer>
-        <HalfWrap>
-          <Left>
-            <Part>
-              <Title>
-                <h4>대표 주소 지정</h4>
-                <p></p>
-              </Title>
-              <RadioContainer>
-                {radioDummy.map((text, index) => (
-                  <RadioMainDiv key={index}>
-                    <RadioCircleDiv
-                      isChecked={checkRadio[index]}
-                      onClick={() => {
-                        setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-                      }}
-                    >
-                      <RadioInnerCircleDiv isChecked={checkRadio[index]} />
-                    </RadioCircleDiv>
-                    <div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
-                  </RadioMainDiv>
-                ))}
-              </RadioContainer>
-            </Part>
+						<Part>
+							<Title>
+								<h4>목적지</h4>
+								<p></p>
+							</Title>
+							<AddressFinder
+								onAddressChange={onAddressHandler}
+								prevAddress={input.address}
+								prevAddressDetail={input.addressDetail}
+							/>
+						</Part>
 
-            <Part>
-              <Title>
-                <h4>목적지</h4>
-                <p></p>
-              </Title>
-              <CustomInput width={120} name="destinationUid" onChange={handleChange} />
-              <span style={{ margin: 'auto 5px' }}>-</span>
-              <CustomInput width={120} />
-              <BlackBtn width={20} height={40} style={{ marginLeft: '10px' }}>
-                조회
-              </BlackBtn>
-            </Part>
-            <Part style={{ marginTop: '35px' }}>
-              <Title>
-                <h4>전체 주소</h4>
-                <p></p>
-              </Title>
-              <CustomInput
-                placeholder="전체 주소 입력"
-                width={340}
-                name="address"
-                onChange={handleChange}
-                defaultValue={detailData?.address}
-              />
-            </Part>
-          </Left>
-          <Right>
-            <Part>
-              <Title>
-                <h4>하차지 명</h4>
-                <p></p>
-              </Title>
-              <CustomInput defaultValue={detailData?.name} width={340} name="name" onChange={handleChange} />
-            </Part>
-            <Part>
-              <Title>
-                <h4>하차지 담당자 정보</h4>
-                <p></p>
-              </Title>
-              <CustomInput
-                placeholder="직함 입력"
-                width={135}
-                name="managerTitle"
-                defaultValue={detailData?.managerTitle}
-                onChange={handleChange}
-              />
-              <CustomInput
-                defaultValue={detailData?.managerName}
-                placeholder="담당자 성함 입력"
-                width={200}
-                style={{ marginLeft: '5px' }}
-                name="managerName"
-                onChange={handleChange}
-              />
-              <CustomInput
-                placeholder="담당자 휴대폰 번호 입력 ('-' 제외)"
-                width={340}
-                style={{ marginTop: '5px' }}
-                name="managerPhone"
-                onChange={handleChange}
-                defaultValue={detailData?.managerPhone}
-              />
+						<Part>
+							<Title>
+								<h4>비고</h4>
+								<p></p>
+							</Title>
+							<CustomInput placeholder="비고 작성" width={340} name="memo" value={input.memo} onChange={handleChange} />
+						</Part>
+					</Left>
+					<Right>
+						<Part>
+							<Title>
+								<h4>하차지 명</h4>
+								<p></p>
+							</Title>
+							<CustomInput
+								placeholder="상세 주소 입력"
+								width={340}
+								name="name"
+								value={input.name}
+								onChange={handleChange}
+							/>
+						</Part>
+						<Part>
+							<Title>
+								<h4>하차지 담당자 정보</h4>
+								<p></p>
+							</Title>
+							<CustomInput
+								placeholder="직함 입력"
+								width={130}
+								name="managerTitle"
+								value={input.managerTitle}
+								onChange={handleChange}
+							/>
+							<CustomInput
+								placeholder="담당자 성함 입력"
+								value={input.managerName}
+								width={195}
+								style={{ marginLeft: '5px' }}
+								name="managerName"
+								onChange={handleChange}
+							/>
+							<CustomInput
+								placeholder="담당자 휴대폰 번호 입력 ('-' 제외)"
+								value={input.managerPhone}
+								width={340}
+								style={{ marginTop: '5px' }}
+								name="managerPhone"
+								onChange={handleChange}
+							/>
 
-              <Alert style={{ margin: '5px auto' }}>*하차지 연락처 미입력 시 토요일 하차 불가</Alert>
-              <CustomInput
-                placeholder="하차지 연락처 입력 ('-' 제외)"
-                width={340}
-                name="phone"
-                onChange={handleChange}
-                defaultValue={detailData?.phone}
-              />
-            </Part>
-
-            <Part>
-              <Title>
-                <h4>비고</h4>
-                <p></p>
-              </Title>
-              <CustomInput
-                placeholder="비고 작성"
-                width={340}
-                name="memo"
-                onChange={handleChange}
-                defaultValue={detailData?.memo}
-              />
-            </Part>
-          </Right>
-        </HalfWrap>
-      </OnePageSubContainer>
-      <BtnWrap bottom={-200}>
-        <WhiteBtn width={40} height={40} onClick={backComponent}>
-          돌아가기
-        </WhiteBtn>
-        <BlackBtn width={40} height={40} onClick={submit}>
-          저장
-        </BlackBtn>
-      </BtnWrap>
-    </OnePageContainer>
-  )
+							<Alert style={{ margin: '5px auto' }}>*하차지 연락처 미입력 시 토요일 하차 불가</Alert>
+							<CustomInput
+								placeholder="하차지 연락처 입력 ('-' 제외)"
+								width={340}
+								name="phone"
+								value={input.phone}
+								onChange={handleChange}
+							/>
+						</Part>
+					</Right>
+				</HalfWrap>
+				<BtnWrap bottom={-270}>
+					<WhiteBtn width={40} height={40} onClick={backComponent}>
+						돌아가기
+					</WhiteBtn>
+					<BlackBtn width={40} height={40} onClick={submit}>
+						저장
+					</BlackBtn>
+				</BtnWrap>
+			</OnePageSubContainer>
+		</OnePageContainer>
+	)
 }
 
 export default DestinationEdit
 
 const RadioContainer = styled.div`
-  display: flex;
-  width: 250px;
-  justify-content: space-between;
+	display: flex;
+	width: 250px;
+	justify-content: space-between;
 `

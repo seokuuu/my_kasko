@@ -6,6 +6,12 @@ const urls = {
 	favorite: '/member/favorite',
 }
 
+// 쿼리키
+export const destinationQueryKey = {
+	// 목록 API
+	list: 'getDestination',
+}
+
 /* ==============================
     마이페이지 - 목적지 관리 - 목적지 등록
 ============================== */
