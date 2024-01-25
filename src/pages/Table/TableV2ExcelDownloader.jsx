@@ -87,7 +87,6 @@ export const TableV2ExcelDownloader = ({
     e.preventDefault();
 
     const rawData = await getData();
-    console.log(rawData);
     const sortedData = field? add_element_field(rawData, field) : rawData;
     downloadData(sortedData);
   }
