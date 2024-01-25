@@ -11,6 +11,7 @@ import { BlueBarBtnWrap } from '../../../modal/Common/Common.Styled'
 import { useNavigate, useParams } from 'react-router-dom'
 import StausDetailHeader from './StausDetailHeader'
 import useAlert from '../../../store/Alert/useAlert'
+import Excel from '../../../components/TableInner/Excel'
 
 const DisRegisterDetail = () => {
 	const { id } = useParams()
@@ -41,9 +42,12 @@ const DisRegisterDetail = () => {
 			<StausDetailHeader data={list} />
 			<TableContianer>
 				<TCSubContainer bor>
-					<div>
+					<div style={{ display: 'flex' }}>
 						조회 목록 (<span>{data?.length}개</span>)
 						<Hidden />
+					</div>
+					<div style={{ display: 'flex', gap: '10px' }}>
+						<Excel getRow={getRow} sheetName="출고 현황 상세 리스트" />
 					</div>
 				</TCSubContainer>
 				<Table getCol={ShippingDispatchDetailsFieldsCols} getRow={getRow} loading={isLoading} />

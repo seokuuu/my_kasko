@@ -57,13 +57,13 @@ const DisRegister = () => {
 			return simpleAlert('배차 취소할 제품을 선택해주세요.')
 		}
 		const selectItem = selectedRows[0]
-		const driverStatus = Boolean(selectItem.driverStatus)
+		const driverStatus = Boolean(selectItem['배차 여부'])
+
 		if (!driverStatus) {
 			return simpleAlert('취소하기 전 배차를 등록해주세요.')
 		}
 		simpleConfirm('배차 취소를 하시겠습니까?', () => removeDispatch(selectItem['출고 고유번호']))
 	}
-
 	const onSetDispatch = () => {
 		if (!selectedRows || selectedRows?.length === 0) {
 			return simpleAlert('배차 등록할 제품을 선택해주세요.')
@@ -75,7 +75,6 @@ const DisRegister = () => {
 		setId(selectItem['출고 고유번호'])
 		setIsPostModal(true)
 	}
-
 	// 출고 등록
 	const onRegister = () => {
 		if (!selectedRows || selectedRows?.length === 0) {
@@ -159,8 +158,7 @@ const DisRegister = () => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{selectedRows?.length > 0 ? selectedRows?.length : '0'}</span> /{' '}
-						{pagination?.listCount}개 )
+						조회 목록 (선택 <span>{selectedRows?.length > 0 ? selectedRows?.length : '0'}</span> / )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -171,7 +169,7 @@ const DisRegister = () => {
 				<TCSubContainer>
 					<div>
 						선택 중량
-						<span> {formatWeight(KilogramSum(selectedRows))} </span>
+						<span> {formatWeight(KilogramSum(selectedRows, '제품 총 중량'))} </span>
 						kg / 총 중량 {formatWeight(pagination?.totalWeight)} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>

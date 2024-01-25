@@ -1,5 +1,6 @@
 import { client } from '.'
 import qs from 'qs'
+import useAlert from '../store/Alert/useAlert'
 
 const urls = {
   single: '/single-product',
@@ -11,6 +12,7 @@ const urls = {
   packageProducts:"/package-product/products",
   recommend:'/single-product/best-order',
   beRecommend:'/single-product/best',
+  pkgSaleCategory :'/package-product/sale-category',
   pkgrecommend:'/package-product/best-order',
   pkgbeRecommend:'/package-product/best',
 
@@ -52,6 +54,7 @@ export async function deleteProduct(data) {
   }
 } 
 export async function updateSingleProduct(data){
+  // const {simpleAlert} = useAlert()
   try{
     const response = await client.patch(`${urls.single}`,data)
     return response
@@ -118,6 +121,10 @@ export async function getPackageProductsList(params) {
 	})
 	console.log('RES', r)
 	return { pagination, r }
+}
+
+export async function patchPkgSaleCategory(data) {
+	return await client.patch(`${urls.pkgSaleCategory}`, data)
 }
 
 export async function postCreatePackage(data) {
