@@ -32,6 +32,10 @@ import InventoryFind from '../../../modal/Multi/InventoryFind'
 import Table from '../../../pages/Table/Table'
 import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
 import UserBiddingSearchFields from './UserBiddingSearchFields'
+import useTableSelection from '../../../hooks/useTableSelection'
+import useTableData from '../../../hooks/useTableData'
+import AddWishButton from '../../UserSales/_components/AddWishButton'
+import { PROD_COL_NAME } from '../../../constants/user/constantKey'
 
 const Single = ({}) => {
 	const radioDummy = ['전체', '미응찰', '관심제품', '응찰']
@@ -204,6 +208,22 @@ const Single = ({}) => {
 
 	console.log('winningCreateData <33', winningCreateData)
 
+	/* ==================== 관심상품 등록 start ==================== */
+	// 선택상품(checked product) - 선택상품 정보를 조회합니다.
+	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	});
+	// 테이블 데이터, 페이지 데이터, 총 중량
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
+		tableField: AuctionBiddingFields,
+		serverData: data?.data?.data,
+		wish: { display: true },
+		best: { display: true }
+	});
+	
+	
+	/* ==================== 관심상품 등록 end ==================== */
+
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -357,12 +377,16 @@ const Single = ({}) => {
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleTablePageSize={handleTablePageSize} />
 						<Excel getRow={getRow} />
-						<WhiteGrnBtn>
+						<AddWishButton 
+							products={selectedData} 
+							productNumberKey={PROD_COL_NAME.productNumber} 
+						/>
+						{/* <WhiteGrnBtn>
 							<div>
 								<img src="/img/grnstar.png" />
 							</div>
 							관심상품 등록
-						</WhiteGrnBtn>
+						</WhiteGrnBtn> */}
 					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>
