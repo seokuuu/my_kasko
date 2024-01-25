@@ -217,10 +217,9 @@ const Single = ({}) => {
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: AuctionBiddingFields,
 		serverData: data?.data?.data,
-		wish: { display: true },
+		wish: { display: true, key: ['productNumber', 'packageNumber'] },
 		best: { display: true }
 	});
-	
 	
 	/* ==================== 관심상품 등록 end ==================== */
 
@@ -371,7 +370,7 @@ const Single = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>2</span> / 50개 )
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -381,17 +380,11 @@ const Single = ({}) => {
 							products={selectedData} 
 							productNumberKey={PROD_COL_NAME.productNumber} 
 						/>
-						{/* <WhiteGrnBtn>
-							<div>
-								<img src="/img/grnstar.png" />
-							</div>
-							관심상품 등록
-						</WhiteGrnBtn> */}
 					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>
 					<div>
-						선택 중량<span> 2 </span>kg / 총 중량 kg
+						선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 					</div>
 					<div
 						style={{
@@ -457,7 +450,7 @@ const Single = ({}) => {
 						</SkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
+				<Table getCol={getCol} getRow={tableRowData} tablePagination={tablePagination} onPageChange={onPageChange} />
 			</TableContianer>
 			{destinationPopUp && (
 				<InventoryFind
