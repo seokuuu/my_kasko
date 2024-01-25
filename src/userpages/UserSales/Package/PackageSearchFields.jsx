@@ -25,45 +25,16 @@ const PackageSearchFields = ({
 	commonNumInputHandler,
 	onSpecHandler,
 }) => {
-	const {
-		// prettier-ignore
-		storageList,
-		supplierList,
-	} = useGlobalProductSearchFieldData()
+	const { gradeList } = useGlobalProductSearchFieldData()
 
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
 
 	return (
-		<>
-			<FilterLeft>
+		<div style={{display: 'flex', justifyContent: 'space-between', gap: 20, width: '100%'}}>
+			<FilterLeft style={{flex: 1, justifyContent: 'center'}}>
 				<RowWrap>
-					<PartWrap first>
-						<h6>창고 구분</h6>
-						<PWRight>
-							<MainSelect
-								options={storageList}
-								// defaultValue={storageList[0]}
-								value={search.storage}
-								name="storage"
-								onChange={(e) => commonDropdownButtonHandler(e, 'storage')}
-							/>
-						</PWRight>
-					</PartWrap>
-					{/* 매입처 */}
-					<PartWrap>
-						<h6>매입처</h6>
-						<PWRight>
-							<MainSelect
-								options={supplierList}
-								defaultValue={supplierList[0]}
-								value={search.supplier}
-								name="supplier"
-								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
-							/>
-						</PWRight>
-					</PartWrap>
 					{/* 규격약호 찾기 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>규격 약호</h6>
 						<Input readOnly={true} value={search.spec} />
 						<GreyBtn
@@ -75,6 +46,18 @@ const PackageSearchFields = ({
 						>
 							찾기
 						</GreyBtn>
+					</PartWrap>
+					<PartWrap first>
+						<h6>구분</h6>
+						<PWRight>
+							<MainSelect
+								options={gradeList}
+								// defaultValue={storageList[0]}
+								value={search.grade}
+								name="grade"
+								onChange={(e) => commonDropdownButtonHandler(e, 'grade')}
+							/>
+						</PWRight>
 					</PartWrap>
 				</RowWrap>
 				{/* 두께 |  폭 | 길이 */}
@@ -100,8 +83,6 @@ const PackageSearchFields = ({
 							/>
 						</ExInputsWrap>
 					</PartWrap>
-				</RowWrap>
-				<RowWrap none>
 					{/* 폭 */}
 					<PartWrap>
 						<h6>폭(MM)</h6>
@@ -147,7 +128,7 @@ const PackageSearchFields = ({
 				</RowWrap>
 			</FilterLeft>
 			{/* 제품 번호 */}
-			<FilterRight>
+			<FilterRight style={{flex: 'inherit'}}>
 				<div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 					<ProductNumber
 						initialValue={search.productNumberList}
@@ -166,7 +147,7 @@ const PackageSearchFields = ({
 			</FilterRight>
 			{/* 규격 약호 */}
 			{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
-		</>
+		</div>
 	)
 }
 

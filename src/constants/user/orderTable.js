@@ -1,4 +1,4 @@
-import WishCellRenderer from "../../pages/Table/WishCellRenderer";
+import MarkerCellRenderer from "../../pages/Table/MarkerCellRenderer";
 import { checkboxSelection, headerCheckboxSelection } from "../../pages/Table/util";
 import { getNormalTableRows } from "../../utils/table";
 import { PROD_COL_NAME } from "./constantKey";
@@ -152,12 +152,12 @@ export const userOrderListFieldsCols = (numberClickHandler=undefined) => getNorm
   { 
     field: PROD_COL_NAME.packageNumber, 
     minWidth: 100, 
-    cellRenderer: WishCellRenderer, 
+    cellRenderer: MarkerCellRenderer, 
     valueGetter: (v) => ({...v.data[v.column.colId], clickHandler: numberClickHandler }) 
   },
   { field: "고객사명" },
   { field: "고객코드" },
-  { field: "제품번호",  cellRenderer: WishCellRenderer },
+  { field: "제품번호",  cellRenderer: MarkerCellRenderer },
   { field: "프로넘(ProNo.)" },
   { field: "창고" },
   { field: "상시판매 상태", minWidth: 140 },
@@ -211,12 +211,12 @@ export const userOrderDetailsFieldsCols = (numberClickHandler=undefined) => getN
   { field: "패키지명" },
   { 
     field: PROD_COL_NAME.packageNumber,    
-    cellRenderer: WishCellRenderer, 
+    cellRenderer: MarkerCellRenderer, 
     valueGetter: (v) => ({...v.data[v.column.colId], clickHandler: numberClickHandler })
   },
   { field: "고객사명" },
   { field: "고객코드" },
-  { field: PROD_COL_NAME.productNumber, minWidth: 250,  cellRenderer: WishCellRenderer },
+  { field: PROD_COL_NAME.productNumber, minWidth: 250,  cellRenderer: MarkerCellRenderer },
   { field: "프로넘(ProNo.)" },
   { field: "창고" },
   { field: "상시판매 상태" },

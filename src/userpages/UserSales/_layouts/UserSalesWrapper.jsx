@@ -61,12 +61,10 @@ const UserSalesWrapper = ({ children }) => {
 	return (
 
 		<PackageViewerDispatchContext.Provider value={packageViewerDispatcher}>
-			<PackageViewerOnContext.Provider value={Boolean(packageViewer.packageNumber)}>
-				{children}
-				{packageViewer.packageNumber && (
-					<PackageDetailsModal {...packageViewer} onClose={packageViewerDispatcher.clearViewer} />
-				)}
-			</PackageViewerOnContext.Provider>
+			{children}
+			{packageViewer.packageNumber && (
+				<PackageDetailsModal {...packageViewer} onClose={packageViewerDispatcher.clearViewer} />
+			)}
 		</PackageViewerDispatchContext.Provider>
 	)
 }

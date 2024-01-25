@@ -17,7 +17,7 @@ const MAX_WISH_COUNT = 10;
 /**
  * 위시리스트 스토리지 저장 키 반환 함수
  * @param {string} userId 
- * @returns {string} 
+ * @returns {string} 스토리지 키
  */
 const USER_WISH_STORAGE_KEY = (userId) => `${WISH_STORAGE_KEY}_${userId}`; 
 
@@ -45,14 +45,14 @@ export default function useWishList() {
     const addProdNums = products.map(v => getProductNumber(v[prodNumKey])).filter(v => v.length > 0);
     const mergedProdNums = getMergedProdNums(wishProdNums, addProdNums);
 
-    setWishProdNums(mergedProdNums);
     saveWishList(mergedProdNums, userId);
+    setWishProdNums(mergedProdNums);
     alert('관심상품으로 등록하였습니다.');
   }
 
   // 로그인유저 관심상품목록 설정
   useEffect(() => {
-    const token = sessionStorage.getItem(TOKEN_STORAGE_KEY);
+    const token = localStorage.getItem(TOKEN_STORAGE_KEY);
 
     if(token) {
       const userId = jwtDecode(token)?.sub || '';

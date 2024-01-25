@@ -1,4 +1,5 @@
-import { useContext, useMemo } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useUserCartListQuery } from '../../../api/user'
 import Excel from '../../../components/TableInner/Excel'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -28,17 +29,24 @@ import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
  * @constant 기본 검색 값
  */
 const initialSearchParams = {
-  category: PROD_CATEGORY.single,
   pageNum: 1,
   pageSize: 50,
 }
 
 /**
+ * @constant 사용자 카트 URL
+ */
+const USER_CART_URL = '/userpage/salescart';
+
+/**
  * (사용자)사용자 장바구니 페이지
  */
 const Cart = ({}) => {
+  // PATH 파라미터
+  const { product: productType } = useParams();
   // API 파라미터
-  const { searchParams, handleParamsChange, handlePageSizeChange } = useTableSearchParams(initialSearchParams)
+  const initialParams = useMemo(() => ({...initialSearchParams, category: productType || PROD_CATEGORY.single }), [productType]);
+  const { searchParams, handleParamsChange, handlePageSizeChange } = useTableSearchParams(initialParams)
   // API
   const { data: cartData, isLoading, isError } = useUserCartListQuery(searchParams) // 카트 목록 조회 쿼리
   // 카테고리 (단일| 패키지)
@@ -47,7 +55,8 @@ const Cart = ({}) => {
   const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
     tableField: isSingleCategory ? userCartListSingleField : userCartListPackageField,
     serverData: cartData,
-    wish: { display: true, key: ['number', 'packageNumber']}
+    wish: { display: true, key: ['number', 'packageNumber']},
+    best: { display: true }
   })
   // 선택 항목
   const { selectedData, selectedWeight, selectedWeightStr, selectedCountStr, selectedCount } = useTableSelection({
@@ -55,6 +64,16 @@ const Cart = ({}) => {
   });
   // 패키지 상세보기
   const { setPackageReadOnlyViewer } = useContext(PackageViewerDispatchContext);
+  // navigate
+  const navigate =useNavigate();
+
+  useEffect(() => {
+    if(!productType || !Object.values(PROD_CATEGORY).includes(productType)) {
+      navigate(`${USER_CART_URL}/${PROD_CATEGORY.single}`);
+    } else {
+      handleParamsChange({...initialParams, category: productType })
+    }
+  }, [productType])
 
   // ERROR SECTION
   if (isError) {
@@ -73,15 +92,13 @@ const Cart = ({}) => {
                 { text: '단일', value: PROD_CATEGORY.single },
                 { text: '패키지', value: PROD_CATEGORY.package },
               ].map((v) => (
-                <a
+                <Link
                   role="button"
                   style={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    handleParamsChange({ category: v.value })
-                  }}
+                  to={`${USER_CART_URL}/${v.value}`}
                 >
                   {v.value === searchParams.category ? <h5>{v.text}</h5> : <h6>{v.text}</h6>}
-                </a>
+                </Link>
               ))}
             </SubTitle>
           </div>
@@ -108,6 +125,7 @@ const Cart = ({}) => {
           getCol={isSingleCategory ? userCartListSingleFieldsCols : userCartListPackageFieldCols(setPackageReadOnlyViewer)}
           getRow={tableRowData}
           tablePagination={paginationData}
+          loading={isLoading}
           onPageChange={(p) => {
             handleParamsChange({ page: p })
           }}

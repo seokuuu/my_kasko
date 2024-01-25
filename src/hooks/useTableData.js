@@ -9,11 +9,19 @@ import useWishList, { getProductNumber } from "./useWishList";
 const PROD_NUM_KEY = 'number';
 
 /**
+ * 추천상품여부 기본키
+ * @description serverData의 추천상품여부 키는 bestStatus입니다.
+ */
+const BEST_KEY = 'bestStatus';
+
+/**
  * 테이블 데이터 HOOK
  * @param {object} param.tableField 테이블 필드 - add_element_field의 두번째 인자로 넘기는 값
  * @param {object} param.serverData 서버 데이터 - { pagination, list } 형식의 데이터
  * @param {string} param.wish.display 관심상품 노출 여부
  * @param {string[]} param.wish.key 관심상품 아이콘과 맵핑할 테이블 CELL, 고유번호 키
+ * @param {string} param.best.display 추천상품 노출 여부
+ * @param {string[]} param.best.key 추천상품 아이콘과 맵핑할 테이블 CELL, 고유번호 키
  * @returns tableRowData 테이블 데이터
  * @returns paginationData 페이지네이션 데이터
  * @returns totalWeight 총 중량
@@ -22,11 +30,13 @@ const PROD_NUM_KEY = 'number';
  * @returns totalCountStr 총 데이터 갯수 (localeString)
  */
 export default function useTableData({ tableField, serverData, wish }) {
-    // 관심상품목록 노출 PROPS
-    const wishDisplay = Boolean(wish?.display);
-    const wishKey = wish?.key || [PROD_NUM_KEY];
-    // 관심상품목록 HOOK
-    const { wishProdNums } = useWishList();
+    // 관심상품목록
+    const { wishProdNums } = useWishList(); // 관심상품 목록 데이터 조회 hook
+    const wishDisplay = Boolean(wish?.display); // 관심상품 노출 여부
+    const wishKey = wish?.key || [PROD_NUM_KEY]; // 관심상품 아이콘 표시할 컬럼 키
+    // 추천상품목록
+    const bestDisplay = Boolean(wish?.display); // 추천상품 노출 여부
+    const bestKey = wish?.key || [PROD_NUM_KEY]; // 추천상품 아이콘 표시할 컬럼 키
 
     /**
      * 테이블 데이터
@@ -36,11 +46,11 @@ export default function useTableData({ tableField, serverData, wish }) {
       if(!serverData || !serverData.list) {
         return [];
       }
-      const rowData = wishDisplay
-                    ? getRowDataWishWish({ 
+      const rowData = (wishDisplay || bestDisplay)
+                    ? getDataWithMarkerData({ 
                       data: serverData.list, 
-                      wishProdNums: wishProdNums, 
-                      wishKey: wishKey
+                      ...bestDisplay && { bestKey: bestKey },
+                      ...wishDisplay && { wishProdNums: wishProdNums,  wishKey: wishKey, }
                     })
                     : serverData.list;
       const displayData = add_element_field(rowData.map((v, idx) => ({...v, index: idx + 1})), tableField);
@@ -76,21 +86,39 @@ export default function useTableData({ tableField, serverData, wish }) {
 /**
  * 관심상품 속성을 가진 테이블목록 데이터 반환
  */
-function getRowDataWishWish({ data=[], wishProdNums=[], wishKey=[]}) {
-  if(!wishKey) {
-    return data;
-  }
-
+function getDataWithMarkerData({ data=[], wishProdNums=[], wishKey=[], bestKey=[]}) {
   const dataWithWish = data.reduce((acc, d) => {
-    const wd = {...d};
-    wishKey.forEach(key => {
-      wd[key] = {
-        value: wd[key],
-        wish: wishProdNums.includes(getProductNumber(wd[key]))
-      }
-    })
-    return [...acc, wd];
+    const targetData = {...d};
+
+    if(bestKey) {
+      bestKey.forEach(key => {
+        targetData[key] = getObjData(targetData[key],{ best: targetData[BEST_KEY] })
+      })
+    }
+
+    if(wishKey) {
+      wishKey.forEach(key => {
+        targetData[key] = getObjData( targetData[key], { wish: wishProdNums.includes(getProductNumber(targetData[key]))})
+      })
+    }
+
+    return [...acc, targetData];
   }, []).sort((a, b) => b[wishKey[0]].wish - a[wishKey[0]].wish);
 
   return dataWithWish;
+}
+
+/**
+ * Object 형식 데이터 반환
+ * @param {string|object} originData 기존 데이터
+ * @param {object} addProps 추가할 object 형식 데이터
+ * @returns Object 형식 데이터 { value: "apple", ... }
+ */
+function getObjData(originData, addProps) {
+  return typeof originData === 'object'
+  ? ({...originData, ...addProps})
+  :({
+      value: originData,
+      ...addProps
+    })
 }
