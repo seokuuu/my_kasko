@@ -110,7 +110,7 @@ const Inventory = () => {
 						<PageDropdown
 							handleDropdown={(e) => setParam((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))}
 						/>
-						<Excel getRow={getRow} />
+						<Excel getRow={getRow} sheetName="재고 수불 관리" />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>

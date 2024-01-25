@@ -43,6 +43,9 @@ import UserPost from './UserPost'
 import { UsermanageUserManageEditModal } from '../../../store/Layout/Layout'
 import UserEdit from './UserEdit'
 import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
+import UserManangeSearchFields from './UserManangeSearchFields'
+import { isEqual } from 'lodash'
 const UserManage = ({ setChoiceComponent }) => {
 	const [editModal, setEditModal] = useAtom(UsermanageUserManageEditModal)
 	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
@@ -91,7 +94,7 @@ const UserManage = ({ setChoiceComponent }) => {
 		pageSize: 50,
 		type: types,
 	}
-	const { isLoading, isError, data, isSuccess } = useReactQuery(paramData, 'userManage', get_userManage)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(paramData, 'userManage', get_userManage)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
@@ -129,6 +132,25 @@ const UserManage = ({ setChoiceComponent }) => {
 		checkedArray = []
 	}, [types])
 
+	const globalProductResetOnClick = () => {
+		// if resetting the search field shouldn't rerender table
+		// then we need to create paramData object to reset the search fields.
+		setParam(paramData)
+	}
+	// import
+	const globalProductSearchOnClick = (userSearchParam) => {
+		setParam((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				refetch()
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+			}
+		})
+	}
+
 	return (
 		<FilterContianer>
 			<div>
@@ -155,7 +177,7 @@ const UserManage = ({ setChoiceComponent }) => {
 				</FilterHeader>
 				{exFilterToggle && (
 					<FilterWrap>
-						<FilterSubcontianer>
+						{/* <FilterSubcontianer>
 							<FilterLeft>
 								<RowWrap>
 									<PartWrap>
@@ -166,12 +188,6 @@ const UserManage = ({ setChoiceComponent }) => {
 											찾기
 										</GreyBtn>
 									</PartWrap>
-
-									<PartWrap />
-									<PartWrap />
-									<PartWrap />
-									<PartWrap />
-									<PartWrap />
 								</RowWrap>
 							</FilterLeft>
 						</FilterSubcontianer>
@@ -190,7 +206,14 @@ const UserManage = ({ setChoiceComponent }) => {
 									검색
 								</BlackBtn>
 							</div>
-						</FilterFooter>
+						</FilterFooter> */}
+						<GlobalProductSearch
+							param={param}
+							isToggleSeparate={true}
+							renderCustomSearchFields={(props) => <UserManangeSearchFields {...props} />} // 
+							globalProductSearchOnClick={globalProductSearchOnClick}  
+							globalProductResetOnClick={globalProductResetOnClick} 
+						/>
 					</FilterWrap>
 				)}
 			</div>
