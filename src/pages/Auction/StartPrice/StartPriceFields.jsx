@@ -1,5 +1,4 @@
 import { MainSelect } from '../../../common/Option/Main'
-import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
 	ExInputsWrap,
@@ -12,10 +11,7 @@ import {
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import { useState } from 'react'
-import { CustomerSearch, DateSearchSelect, InputSearch, RadioSearchButton } from '../../../components/Search'
-import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
-import DateGrid from '../../../components/DateGrid/DateGrid'
+import { DateSearchSelect } from '../../../components/Search'
 
 const StartPriceFields = ({
 	// prettier-ignore
@@ -27,11 +23,9 @@ const StartPriceFields = ({
 }) => {
 	const {
 		// prettier-ignore
-		storageList,
-		supplierList,
+
 		spartList,
-		makerList,
-		stockStatusList,
+
 		gradeList,
 		preferThicknessList,
 	} = useGlobalProductSearchFieldData()
@@ -43,17 +37,6 @@ const StartPriceFields = ({
 	 * 진행 상태 ?
 	 * 제품 번호 auctionEndDate
 	 */
-
-	const init = {
-		pageNum: 1,
-		pageSize: 50,
-	}
-
-	const onChange = (key, value) => {
-		setSearch((p) => ({ ...p, [key]: value }))
-	}
-
-	const [param, setParam] = useState(init)
 
 	return (
 		<>

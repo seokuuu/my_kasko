@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { BlackBtn, NewBottomBtnWrap, TGreyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { TGreyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
@@ -11,30 +9,18 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import {
 	CustomInput,
-	DoubleWrap,
-	ExInputsWrap,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
-	GridWrap,
-	Input,
-	PartWrap,
-	PWRight,
-	ResetImg,
-	RowWrap,
 	TableContianer,
 	TCSubContainer,
-	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
-import { isArray, isEqual } from 'lodash'
+import { isEqual } from 'lodash'
 import moment from 'moment'
 import { deleteStartPrice, getStartPrice, patchEditPrice, unitPricePost } from '../../../api/auction/startprice'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Hidden from '../../../components/TableInner/Hidden'
 import {
 	AuctionStartPriceFields,
@@ -44,18 +30,20 @@ import {
 	AuctionUnitPricePostDropOptions2,
 	AuctionUnitPricePostDropOptions3,
 } from '../../../constants/admin/Auction'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
+import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Upload from '../../../modal/Upload/Upload'
+import useAlert from '../../../store/Alert/useAlert'
 import { AuctionUnitPriceAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
-import useMutationQuery from '../../../hooks/useMutationQuery'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import StartPriceFields from './StartPriceFields'
-import UploadV2 from '../../../modal/Upload/UploadV2'
-import { postExcelSubmitProduct } from '../../../api/SellProduct'
 
 const StartPrice = ({}) => {
+	const { simpleConfirm, simpleAlert } = useAlert()
+
+	const { selectedCount, selectedData } = useTableSelection()
 	const [uploadModal, setUploadModal] = useState(false)
 	const [excelToJson, setExcelToJson] = useState([])
 
@@ -111,12 +99,6 @@ const StartPrice = ({}) => {
 			[name]: selectedOption.label,
 		}))
 	}
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
 
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -146,7 +128,6 @@ const StartPrice = ({}) => {
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getStartPrice', getStartPrice)
 	const resData = data?.data?.data?.list
 
-	console.log('resData', resData)
 	const resPagination = data?.data?.data?.pagination
 	useEffect(() => {
 		let getData = resData
@@ -158,14 +139,7 @@ const StartPrice = ({}) => {
 		}
 	}, [isSuccess, resData])
 
-	const handleTablePageSize = (event) => {
-		setParam((prevParam) => ({
-			...prevParam,
-			pageSize: Number(event.target.value),
-			pageNum: 1,
-		}))
-	}
-
+	// 페이지 핸들러
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
 			...prevParam,
@@ -191,23 +165,20 @@ const StartPrice = ({}) => {
 	}, [checkedArray])
 
 	// 삭제 mutate
-	const mutation = useMutation(deleteStartPrice, {
+	const { mutate: remove } = useMutation(deleteStartPrice, {
 		onSuccess: () => {
 			queryClient.invalidateQueries('auction')
 		},
 	})
+
 	// 삭제 onClick
 	const handleRemoveBtn = useCallback(() => {
-		if (isArray(checkedArray) && checkedArray.length > 0) {
-			if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
-				checkedArray.forEach((item) => {
-					mutation.mutate(item['고유 번호']) //mutation.mutate로 api 인자 전해줌
-				})
-			}
+		if (selectedCount > 0) {
+			simpleConfirm('선택한 항목을 삭제하시겠습니까?', () => remove(selectedData.map((c) => c['고유 번호'])))
 		} else {
-			alert('선택해주세요!')
+			simpleAlert('항목을 선택해주세요.')
 		}
-	}, [checkedArray])
+	}, [selectedData])
 
 	const editInit = {
 		failCount: '',
@@ -256,12 +227,14 @@ const StartPrice = ({}) => {
 		setInsertList([{ ...editInput }])
 	}, [editInput])
 
+	// 초기화
 	const globalProductResetOnClick = () => {
 		// if resetting the search field shouldn't rerender table
 		// then we need to create paramData object to reset the search fields.
 		setParam(paramData)
 	}
-	// import
+
+	// 검색
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
@@ -275,9 +248,24 @@ const StartPrice = ({}) => {
 		})
 	}
 
-	const editPriceMutation = useMutationQuery('', patchEditPrice)
+	// 일괄 단가 적용 API
+	const { mutate: priceUpodate } = useMutation(patchEditPrice, {
+		onSuccess: () => {
+			simpleAlert('적용되었습니다.')
+			queryClient.invalidateQueries('auction')
+		},
+		onError() {
+			simpleAlert('적용 실패하였습니다.')
+		},
+	})
+
+	// 일괄 단가 적용 버튼 핸들러
 	const editPriceOnClickHandler = () => {
-		editPriceMutation.mutate(initObject)
+		if (selectedCount === 0) return simpleAlert('항목을 선택해주세요.')
+		if (!Boolean(effectPrice)) return simpleAlert('응찰가를 입력해주세요.')
+		if (!Boolean(applyDate)) return simpleAlert('적용일자를 선택해주세요.')
+
+		priceUpodate(initObject)
 	}
 
 	return (
@@ -348,6 +336,7 @@ const StartPrice = ({}) => {
                 검색
               </BlackBtn>
             </div>
+						sdfdf
           </FilterFooter> */}
 					<GlobalProductSearch
 						param={param}
@@ -361,18 +350,18 @@ const StartPrice = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>2</span> / 50개 )
+						조회 목록 (선택 <span>{selectedCount}</span> / {param.pageSize}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown />
-						<Excel getRow={getRow} />
+						<PageDropdown handleDropdown={(e) => setParam((p) => ({ ...p, pageSize: e.target.value }))} />
+						<Excel getRow={getRow} sheetName="경매 시작 단가 관리" />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>
-					<div>
+					{/* <div>
 						선택 중량<span> 2 </span>kg / 총 중량 kg
-					</div>
+					</div> */}
 					<div
 						style={{
 							display: 'flex',
@@ -386,6 +375,7 @@ const StartPrice = ({}) => {
 							placeholder="응찰가 입력"
 							width={120}
 							height={32}
+							value={effectPrice}
 							onChange={(e) => {
 								setEffectPrice(parseInt(e.target.value))
 							}}
@@ -404,7 +394,13 @@ const StartPrice = ({}) => {
 						</TGreyBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
+				<Table
+					getCol={getCol}
+					getRow={getRow}
+					tablePagination={tablePagination}
+					onPageChange={onPageChange}
+					loading={isLoading}
+				/>
 				<TCSubContainer>
 					<div></div>
 					<div>
