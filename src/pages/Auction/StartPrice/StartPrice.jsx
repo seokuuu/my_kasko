@@ -426,7 +426,7 @@ const StartPrice = ({}) => {
 					</BlackBtn>
 				</NewBottomBtnWrap> */}
 			</TableContianer>
-			{/* {modalSwitch && (
+			{modalSwitch && (
 				<Upload
 					modalSwitch={modalSwitch}
 					setModalSwitch={setModalSwitch}
@@ -444,8 +444,8 @@ const StartPrice = ({}) => {
 					dropInput={dropInput}
 					setDropInput={setDropInput}
 				/>
-			)} */}
-			{modalSwitch && (
+			)}
+			{/* {modalSwitch && (
 				<UploadV2
 					originEngRowField={AuctionStartPriceFields}
 					setModalSwitch={setUploadModal}
@@ -453,7 +453,7 @@ const StartPrice = ({}) => {
 					setExcelToJson={setExcelToJson}
 					excelToJson={excelToJson}
 				/>
-			)}
+			)} */}
 		</FilterContianer>
 	)
 }
