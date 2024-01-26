@@ -36,6 +36,7 @@ import useTableSelection from '../../../hooks/useTableSelection'
 import useTableData from '../../../hooks/useTableData'
 import AddWishButton from '../../UserSales/_components/AddWishButton'
 import { PROD_COL_NAME } from '../../../constants/user/constantKey'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 
 const Single = ({}) => {
 	const radioDummy = ['전체', '미응찰', '관심제품', '응찰']
@@ -209,6 +210,11 @@ const Single = ({}) => {
 	console.log('winningCreateData <33', winningCreateData)
 
 	/* ==================== 관심상품 등록 start ==================== */
+	/**
+	 * @todo 
+	 * [1] 테이블 데이터를 아래 hook의 tableRowData로 사용하므로 다른 기능에 충돌이 있는지 확인이 필요합니다.
+	 * [2] 선택 데이터, 총 중량 등 아래 hook에서 제공하는 변수와 겹치는 항목이 있다면 정리가 필요합니다.
+	 */
 	// 선택상품(checked product) - 선택상품 정보를 조회합니다.
 	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
 		weightKey: '중량',
@@ -220,7 +226,6 @@ const Single = ({}) => {
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
 		best: { display: true }
 	});
-	
 	/* ==================== 관심상품 등록 end ==================== */
 
 	return (
@@ -238,28 +243,8 @@ const Single = ({}) => {
 				{/* 토글 쓰기 */}
 				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 			</FilterHeader>
-			<FilterHeaderAlert>
-				<div style={{ display: 'flex' }}>
-					<div style={{ marginRight: '20px' }}>
-						<img src="/img/notice.png" />
-					</div>
-					<div style={{ marginTop: '6px' }}>
-						<div>
-							· 경매 남은 시간은 본 화면에서 발생되는 메시지 창에 따라 다소 지연될 수 있습니다. 경매 남은 시간을
-							최신으로 갱신하려면 다시 조회해 주세요.
-						</div>
-						<div style={{ marginTop: '6px' }}>
-							· 처음 경매 참여하신 고객은 왼쪽 메뉴 경매 관리 {'>'} 고객 목적지 등록 화면에서 배송 목적지를 반드시
-							등록한 후 응찰에 참여해 주시길 부탁드립니다.
-						</div>
-					</div>
-				</div>
-
-				<div>
-					수정
-					<img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-				</div>
-			</FilterHeaderAlert>
+			{/* 주의사항 */}
+			<CautionBox category={CAUTION_CATEGORY.singleProduct} />
 			{exFilterToggle && (
 				<>
 					{/* <FilterSubcontianer>
