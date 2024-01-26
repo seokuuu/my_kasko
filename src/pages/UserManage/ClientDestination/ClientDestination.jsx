@@ -33,7 +33,7 @@ import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageC
 import Table from '../../Table/Table'
 import ClientDestinationSearchFields from './ClientDestinationSearchFields'
 import DestinationEdit from './DestinationEdit'
-
+import useAlert from '../../../store/Alert/useAlert'
 const ClientDestination = ({ setChoiceComponent }) => {
 	const [findModal, setFindModal] = useAtom(UsermanageFindModal)
 	const [editModal, setEditModal] = useAtom(adminPageDestiEditModal)
@@ -65,7 +65,7 @@ const ClientDestination = ({ setChoiceComponent }) => {
 	}
 
 	const [noticeEdit, setnoticeEdit] = useState(false)
-
+	const { simpleConfirm, redAlert, showAlert } = useAlert()
 	const noticeEditOnClickHandler = () => {
 		setnoticeEdit((prev) => !prev)
 	}
@@ -107,17 +107,25 @@ const ClientDestination = ({ setChoiceComponent }) => {
 
 	const handleRemoveBtn = useCallback(() => {
 		if (isArray(checkedArray) && checkedArray.length > 0) {
-			if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
-				checkedArray.forEach((item) => {
-					mutation.mutate(item['목적지 고유 번호'], {
-						onSuccess: () => {
+			checkedArray.forEach((item) => {
+				mutation.mutate(item['목적지 고유 번호'], {
+					onSuccess: () => {
+						showAlert({
+							title: '삭제 되었습니다',
+							func: () => {
+								window.location.reload()
+							},
+						})
+					},
+					onError: (e) => {
+						redAlert('삭제에 실패했습니다. 다시 시도 해주세요', () => {
 							window.location.reload()
-						},
-					}) //mutation.mutate로 api 인자 전해줌
-				})
-			}
+						})
+					},
+				}) //mutation.mutate로 api 인자 전해줌
+			})
 		} else {
-			alert('선택해주세요!')
+			redAlert('삭제에 실패했습니다. 다시 시도 해주세요')
 		}
 	}, [checkedArray])
 
@@ -251,7 +259,13 @@ const ClientDestination = ({ setChoiceComponent }) => {
 								선택<span> {checkedArray ? checkedArray.length : '0'} </span>(개)
 							</div>
 							<div style={{ display: 'flex', gap: '10px' }}>
-								<WhiteRedBtn onClick={handleRemoveBtn}>목적지 삭제</WhiteRedBtn>
+								<WhiteRedBtn
+									onClick={() => {
+										redAlert('선택한 목적지를 삭제하시겠습니까', handleRemoveBtn)
+									}}
+								>
+									목적지 삭제
+								</WhiteRedBtn>
 								<SkyBtn onClick={setPostPage}>목적지 등록</SkyBtn>
 							</div>
 						</TCSubContainer>

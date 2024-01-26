@@ -71,12 +71,13 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	const [detailAddress, setDetailAddress] = useState('')
 	const [isDaumPostOpen, setIsDaumPostOpen] = useState(false)
 	const [submitData, setSubmitData] = useState(init)
-	const { showAlert } = useAlert()
+	const { showAlert, simpleAlert } = useAlert()
 	console.log('submitData', submitData)
 
 	// 목적지 주소 핸들러
-	function onAddressHandler(address, addressDetail) {
-		setSubmitData((p) => ({ ...p, address, addressDetail }))
+	function onAddressHandler(address, addressDetail, sido, sigungu, bname) {
+		const destination = `${sido} ${sigungu} ${bname}`
+		setSubmitData((p) => ({ ...p, address, addressDetail, destination }))
 	}
 
 	console.log('찐 =>', address, detailAddress)
@@ -136,17 +137,26 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	}
 
 	const submitHandle = (e) => {
+		if (!isEmptyObj(submitData)) {
+			return simpleAlert('빈값을 채워주세요.')
+		}
 		if (isEmptyObj(submitData)) {
-			setChoiceComponent('리스트')
 			mutation.mutate(submitData, {
 				onSuccess: (d) => {
+					console.log('테스트 ')
 					if (d?.data?.status === 200) {
 						showAlert({
 							title: '저징되었습니다.',
 							func: () => {
+								setChoiceComponent('리스트')
 								window.location.reload()
 							},
 						})
+					}
+				},
+				onError: (e) => {
+					if (e?.data?.status === 400) {
+						simpleAlert(e.data?.message, setChoiceComponent('등록'))
 					}
 				},
 			})

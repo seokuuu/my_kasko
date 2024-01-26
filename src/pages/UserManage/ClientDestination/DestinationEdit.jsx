@@ -114,7 +114,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 		}
 
 		fetchData()
-	}, [postAddress, get_addressFind])
+	}, [address, detailAddress, get_addressFind])
 
 	const directCheck = () => {
 		setPostFind(true)
@@ -174,8 +174,9 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 	const queryClient = useQueryClient()
 	const mutation = useMutationQuery('', patch_clientDestination)
 
-	function onAddressHandler(address, addressDetail) {
-		setSubmitData((p) => ({ ...p, address, addressDetail }))
+	function onAddressHandler(address, addressDetail, sido, sigungu, bname) {
+		const destination = `${sido} ${sigungu} ${bname}`
+		setSubmitData((p) => ({ ...p, address, addressDetail, destination }))
 	}
 	useEffect(() => {
 		const uid = matchingData?.uid
@@ -245,7 +246,6 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 			setEditModal(false)
 		}
 	}, [])
-
 	return (
 		<OnePageContainer style={{ minHeight: '88vh' }}>
 			<MainTitle>고객사 목적지 수정 </MainTitle>
@@ -300,7 +300,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 							<AddressFinder
 								onAddressChange={onAddressHandler}
 								prevAddress={address}
-								prevAddressDetail={detailAddress}
+								prevAddressDetail={destiCode?.detailAddress}
 							/>
 						</Part>
 
@@ -412,7 +412,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 					setCustomerNameInput={setCustomerNameInput}
 				/>
 			)}
-			{postcodeModal && (
+			{/* {postcodeModal && (
 				<SignUpPost
 					postCheck={postCheck}
 					directCheck={directCheck}
@@ -428,7 +428,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 					daumPosthandleClose={daumPosthandleClose}
 					daumPostHandleComplete={daumPostHandleComplete}
 				/>
-			)}
+			)} */}
 		</OnePageContainer>
 	)
 }
