@@ -295,8 +295,8 @@ const Hyundai = ({}) => {
 						<div>
 							선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총{' '}
 							{pagiNation
-								? pagiNation?.totalWeight.toLocaleString('ko-kr')
-								: hyunDaiPage?.totalWeight.toLocaleString('ko-kr')}{' '}
+								? pagiNation?.totalWeight?.toLocaleString('ko-kr')
+								: hyunDaiPage?.totalWeight?.toLocaleString('ko-kr')}{' '}
 							중량 kg
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>

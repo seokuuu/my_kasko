@@ -153,8 +153,8 @@ const SalesProduct = () => {
 			...p,
 			{
 				number: data['제품 번호'],
-				memo: data['비고'] || '',
-				note: data['메모'] || '',
+				memo: data['메모'] || '',
+				note: data['비고'] || '',
 			},
 		])
 	}

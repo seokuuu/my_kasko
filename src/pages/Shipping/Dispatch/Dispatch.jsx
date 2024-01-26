@@ -1,31 +1,31 @@
-import React, { useEffect, useState } from 'react'
-import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import {
-	btnCellUidAtom,
-	selectedRowsAtom,
-	StandardDispatchEditAtom,
-	StandardDispatchPostAtom,
-	toggleAtom,
-} from '../../../store/Layout/Layout'
 import { useAtom, useAtomValue } from 'jotai'
-import Hidden from '../../../components/TableInner/Hidden'
-import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
-import { DispatchFields, DispatchFieldsCols } from '../../../constants/admin/Shipping'
-import DispatchPost from '../../../modal/Multi/DispatchPost'
-import Table from '../../Table/Table'
-import Excel from '../../../components/TableInner/Excel'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { add_element_field } from '../../../lib/tableHelpers'
+import { isEqual } from 'lodash'
+import React, { useEffect, useState } from 'react'
 import { useDriverListQuery, useDriverRemoveMutation } from '../../../api/driver'
+import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { GlobalFilterHeader } from '../../../components/Filter'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import { isEqual } from 'lodash'
-import DispatchSearchFilter from './DispatchSearchFilter'
+import Excel from '../../../components/TableInner/Excel'
+import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import { DispatchFields, DispatchFieldsCols } from '../../../constants/admin/Shipping'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { FilterContianer, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
+import DispatchPost from '../../../modal/Multi/DispatchPost'
 import useAlert from '../../../store/Alert/useAlert'
+import {
+	StandardDispatchEditAtom,
+	StandardDispatchPostAtom,
+	btnCellUidAtom,
+	selectedRowsAtom,
+	toggleAtom,
+} from '../../../store/Layout/Layout'
+import Table from '../../Table/Table'
+import DispatchSearchFilter from './DispatchSearchFilter'
 
 const initData = {
 	pageNum: 1,
-	pageSize: 3,
+	pageSize: 50,
 }
 
 const Dispatch = () => {
