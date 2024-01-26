@@ -153,11 +153,12 @@ import DisRegisterDetailPage from './pages/Shipping/Dispatch/DisRegisterDetailPa
 // RoundAucProAdd
 import RoundAucProAdd from './pages/Auction/Round/RoundAucProAdd'
 import CarrierManage from './pages/UserManage/CarrierManage/CarrierManage'
+import SalesPackage from './modal/Multi/SalesPackage'
 const Router = () => {
 	return (
 		<Routes>
 			{/* 테스트 URL */}
-			<Route path="/ppapp" element={<CarrierManage />} />
+			<Route path="/ppapp" element={<SalesPackage />} />
 			<Route path="/ppap" element={<DefaultBlueBar />} />
 			<Route path="/TableTest" element={<TableTest />} />
 			<Route path="/test" element={<Test />} />

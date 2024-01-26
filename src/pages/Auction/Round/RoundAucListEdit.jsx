@@ -169,18 +169,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 		}
 	}, [resData])
 
-	// // input의 addAuctionProductList 값 채우기
-	// useEffect(() => {
-	// 	const uniqueNumbers = newResData?.map((item) => ({
-	// 		productUid: item['고유 번호'],
-	// 		auctionStartPrice: realStartPrice,
-	// 	}))
-
-	// 	setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
-	// }, [newResData, checkedArray, realStartPrice])
-
-	// // TODO : 경매 회차 관리 resData 쪽 object 눈속임으로 없애기 ..`
-	// // input의 deleteAuctionProductList 값 채우기
+	// TODO : 경매 회차 관리 resData 쪽 object 눈속임으로 없애기 ..`
+	// input의 deleteAuctionProductList 값 채우기
 	// const handleRemoveBtn = useCallback(() => {
 	// 	if (isArray(checkedArray) && checkedArray.length > 0) {
 	// 		if (window.confirm('선택한 항목을 삭제 목록에 추가하시겠습니까?')) {
@@ -211,20 +201,34 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	// }, [checkedArray, editData, setEditData, newResData, setNewResData])
 
 	// 목록 추가
+	// selectedData가 newResData
+	// list가 updatedData
 
+	const [outAddData, setOutAddData] = useState()
+	const [delData, setDelData] = useState()
 	const onListAdd = (selectedData) => {
 		try {
 			const newList = [...new Set([...selectedData, ...list])]
-			const destinations = [...new Set(newList.map((item) => item.destinationName))]
-			if (destinations.length > 3) {
-				throw new Error('목적지가 3개 이상입니다.')
-			}
 			setList(newList) // 선별 목록 데이터 등록
 			setSelectedRows([]) // 테이블 체크 목록 초기화
+			setOutAddData(selectedData.map((x) => x.uid))
 		} catch (error) {
 			simpleAlert(error.message)
 		}
 	}
+
+	// // input의 addAuctionProductList 값 채우기
+	// 수정 부분의 "추가" 바인딩
+	useEffect(() => {
+		const uniqueNumbers = outAddData?.map((item) => ({
+			productUid: item['uid'],
+			auctionStartPrice: realStartPrice,
+		}))
+
+		setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
+	}, [newResData, outAddData, realStartPrice])
+
+	console.log('selectedRows', selectedRows)
 
 	// 목록 제거
 	const onListRemove = () => {
@@ -232,11 +236,37 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 			return simpleAlert('제품을 선택해주세요.')
 		}
 		const key = '제품 고유 번호'
+		const newKey = '고유 번호'
 		const deleteKeys = selectedRows.map((item) => item[key])
 		const newSelectors = list.filter((item) => !deleteKeys.includes(item?.productUid))
+
+		if (outAddData) {
+			const updatedOutAddData = outAddData.filter((item) => !selectedRows.map((row) => row[newKey]).includes(item)) // add된 것들 처리
+			setOutAddData(updatedOutAddData)
+		}
+
+		// deleteAuctionProductList에 기존 list 바인딩 !! TODO
+		const resultRemove = selectedRows
+			.filter((item) => item && item['경매 제품 고유 번호'] !== undefined && item['경매 제품 고유 번호'] !== null)
+			.map((item) => item['경매 제품 고유 번호'])
+
+		setEditData({ ...editData, deleteAuctionProductList: resultRemove })
 		setList(newSelectors)
 		setSelectedRows([]) // 테이블 체크 목록 초기화
+		setDelData(resultRemove)
 	}
+	console.log('outAddData', outAddData)
+
+	// 추가 가져온 애 테스트임. 이거 필요없음. 기존에 있던 list 가 잘되는지 체크 하기
+	//
+	// useEffect(() => {
+	// 	const uniqueNumbers = list?.map((item) => ({
+	// 		productUid: item['uid'],
+	// 		auctionStartPrice: realStartPrice,
+	// 	}))
+
+	// 	setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
+	// }, [list, realStartPrice])
 
 	console.log('nesRES', newResData)
 	console.log('editData @@@ ', editData)
@@ -439,6 +469,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 						// propsResData={resData}
 						list={list}
 						onListAdd={onListAdd}
+						outAddData={outAddData}
+						setOutAddData={setOutAddData}
 					/>
 				)}
 				<NewBottomBtnWrap bottom={-5}>
