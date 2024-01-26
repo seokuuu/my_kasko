@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { USER_URL, useUserSingleProductListQuery } from '../../../api/user'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import Excel from '../../../components/TableInner/Excel'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKey'
@@ -17,6 +16,7 @@ import {
 	TableContianer
 } from '../../../modal/External/ExternalFilter'
 import TableV2 from '../../../pages/Table/TableV2'
+import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import { toggleAtom } from '../../../store/Layout/Layout'
 import { getValidParams } from '../../../utils/parameters'
@@ -24,7 +24,6 @@ import AddCartButton from '../_components/AddCartButton'
 import AddOrderButton from '../_components/AddOrderButton'
 import AddWishButton from '../_components/AddWishButton'
 import SingleSearchFields from './SingleSearchFields'
-import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 
 /**
  * @constant 기본 페이지 검색 값
@@ -117,7 +116,7 @@ const Single = () => {
 				{/* 검색필터 ON|OFF */}
 				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 			</FilterHeader>
-			{/* 공지사항 */}
+			{/* 주의사항 */}
 			<CautionBox category={CAUTION_CATEGORY.singleProduct} />
 			{/* 검색 필터 */}
 			{exFilterToggle && (
