@@ -195,7 +195,7 @@ export const SingleModifyDispatchFieldsCols = [
         // editable:true,
         cellRenderer: InputCellRenderer,
         cellRendererParams:{
-          uidFieldName:k,
+          // uidFieldName:k,
           valueName:v,
           type:'input'
         }
@@ -205,7 +205,7 @@ export const SingleModifyDispatchFieldsCols = [
         ...commonStyles,
         field: k,
         minWidth: 150,
-        editable:true,
+        // editable:true,
         cellEditor:'agSelectCellEditor',
         cellRenderer:InputCellRenderer,
         cellRendererParams:{
@@ -213,9 +213,7 @@ export const SingleModifyDispatchFieldsCols = [
           valueName:v,
           type:'select'
         },
-        cellEditorParams: {
-          values: optionFn(k), // 셀렉트 박스에 표시할 옵션들
-        },
+        
       }
     }
   }),
