@@ -813,25 +813,6 @@ export const AuctionStartPriceFields = {
 }
 
 export const AuctionStartPriceFieldsCols = [
-<<<<<<< HEAD
-	{
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-
-		field: '',
-		maxWidth: 50,
-		checkboxSelection: checkboxSelection,
-		headerCheckboxSelection: headerCheckboxSelection,
-	},
-	{ ...commonStyles, field: '고유 번호', minWidth: 150 },
-	{ ...commonStyles, field: '제품군', minWidth: 120 },
-	{ ...commonStyles, field: '정척 여부', minWidth: 120 },
-	{ ...commonStyles, field: '유찰 횟수', minWidth: 120 },
-	{ ...commonStyles, field: '등급', minWidth: 100 },
-	{ ...commonStyles, field: '적용일', minWidth: 120 },
-	{ ...commonStyles, field: '적용전 단가', minWidth: 150 },
-	{ ...commonStyles, field: '적용 단가', minWidth: 150 },
-=======
 	{ field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
 	{ field: '고유 번호', minWidth: 150 },
 	{ field: '제품군', minWidth: 120 },
@@ -841,7 +822,6 @@ export const AuctionStartPriceFieldsCols = [
 	{ field: '적용일', minWidth: 120 },
 	{ field: '적용전 단가', minWidth: 150 },
 	{ field: '적용 단가', minWidth: 150 },
->>>>>>> master
 ]
 
 const uniqueKeys = new Set([...Object.keys(AuctionRoundExtraProductFields), ...Object.keys(AuctionRoundDetailFields)])
