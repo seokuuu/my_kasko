@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { isEqual } from 'lodash'
 import { useEffect, useState } from 'react'
 import { getSingleProducts } from '../../../api/SellProduct'
@@ -9,7 +9,7 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { responseToTableRowMap, singleProductListFieldCols } from '../../../constants/admin/singleProduct'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { add_element_field } from '../../../lib/tableHelpers'
+import { add_element_field, formatBooleanFields } from '../../../lib/tableHelpers'
 import {
 	EditGear,
 	FilterContianer,
@@ -21,15 +21,22 @@ import {
 	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import Table from '../../../pages/Table/Table'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { blueModalAtom, salesPackageModal, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { formatWeight } from '../../../utils/utils'
 import SingleProductSearchFields from './SingleProductSearchFields'
 import TableV2ExcelDownloader from '../../Table/TableV2ExcelDownloader'
 import { CautionBox, CAUTION_CATEGORY } from '../../../components/CautionBox'
+import SalesPackage from '../../../modal/Multi/SalesPackage'
+import useAlert from '../../../store/Alert/useAlert'
 
 const Single = () => {
+	const { simpleAlert } = useAlert()
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+
+	// 노출 상태 변경 모달
+	const [isEditStatusModal, setIsEditStatusModal] = useAtom(salesPackageModal)
+
 	const [singleProductListData, setSingleProductListData] = useState(null)
 	const [singleProductPagination, setSingleProductPagination] = useState([])
 	const paramData = {
@@ -45,21 +52,22 @@ const Single = () => {
 		refetch,
 	} = useReactQuery(param, 'getSingleProducts', getSingleProducts)
 
-	// TODO: Check why the response object changed to pagination and r.
 	useEffect(() => {
 		console.log('getSingleProductsRes--', getSingleProductsRes)
 		if (getSingleProductsRes) {
 			setSingleProductListData(formatTableRowData(getSingleProductsRes.r))
 			setSingleProductPagination(getSingleProductsRes.pagination)
+			console.log('formatTableRowData---', formatTableRowData(getSingleProductsRes.r))
 		}
-		// if (getSingleProductsRes && getSingleProductsRes.data && getSingleProductsRes.data.data) {
-		//   setSingleProductListData(formatTableRowData(getSingleProductsRes.data.data.list))
-		//   setSingleProductPagination(getSingleProductsRes.data.data.pagination)
-		// }
-	}, [isSuccess, getSingleProductsRes])
+
+		if (isError) {
+			simpleAlert('요청중 오류가 발생했습니다.\n다시 시도해 주세요.')
+		}
+	}, [isSuccess, getSingleProductsRes, isError])
 
 	const formatTableRowData = (singleProductListData) => {
-		return add_element_field(singleProductListData, responseToTableRowMap)
+		const processedData = add_element_field(singleProductListData, responseToTableRowMap)
+		return formatBooleanFields(processedData, [{ fieldName: '노출상태', trueValue: '노출', falseValue: '비노출' }])
 	}
 
 	// 토글 쓰기
@@ -114,6 +122,16 @@ const Single = () => {
 		})
 	}
 
+	// 노출 상태 변경 버튼
+	const editStatusButtonOnClickHandler = () => {
+		setIsEditStatusModal(true)
+	}
+
+	// 노출 상태 변경 모달 확인 버튼
+	const editStatusModalConfirmButtonOnClickHandler = () => {
+		console.log('checkBoxSelect---', checkBoxSelect)
+	}
+
 	return (
 		<FilterContianer>
 			<div>
@@ -157,7 +175,7 @@ const Single = () => {
 						kg / 총 중량 {formatWeight(singleProductPagination.totalWeight)} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteBlackBtn>노출 상태 변경</WhiteBlackBtn>
+						<WhiteBlackBtn onClick={editStatusButtonOnClickHandler}>노출 상태 변경</WhiteBlackBtn>
 					</div>
 				</TCSubContainer>
 				<Table
@@ -173,6 +191,7 @@ const Single = () => {
 					</BlackBtn>
 				</TableBottomWrap>
 			</TableContianer>
+			{isEditStatusModal && <SalesPackage onClick={editStatusModalConfirmButtonOnClickHandler} />}
 		</FilterContianer>
 	)
 }

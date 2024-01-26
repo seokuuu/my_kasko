@@ -61,6 +61,7 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 		managerName: '', // 담당자 이름
 		managerPhone: '', // 담당자 번호
 		memo: '', // 비고
+		destination: '', // 서버로 요청할 값
 	}
 
 	const { data } = useReactQuery(uidAtom, 'getDetailDestination', getDetailDestination)
@@ -75,8 +76,11 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 	}
 
 	// 목적지 주소 핸들러
-	function onAddressHandler(address, addressDetail) {
-		setInput((p) => ({ ...p, address, addressDetail }))
+	function onAddressHandler(address, addressDetail, sido, sigungu, bname) {
+		// 서버로 보낼 주소
+		const destination = `${sido} ${sigungu} ${bname}`
+
+		setInput((p) => ({ ...p, address, addressDetail, destination }))
 	}
 
 	const handleChange = (e) => {
@@ -110,7 +114,7 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 				managerName: detailData.managerName,
 				managerPhone: detailData.managerPhone,
 				phone: detailData.phone,
-				address: 'dfdfdfdfdfd', // 주소 필드
+				address: detailData.address, // 주소 필드
 				addressDetail: 'dfdfdfdfdfdfd', // 상세 주소 필드
 			})
 		}

@@ -29,6 +29,10 @@ import { find } from 'lodash'
 import ClientDestiCustomerFind from './ClientDestiCustomerFind'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
 import useReactQuery from '../../../hooks/useReactQuery'
+import useAlert from '../../../store/Alert/useAlert'
+import DaumPostcode from 'react-daum-postcode'
+import { FadeOverlay } from '../../../modal/Common/Common.Styled'
+import AddressFinder from '../../../components/DaumPost/Address'
 
 const init = {
 	represent: '', // (0: 미지정 / 1: 지정)
@@ -66,6 +70,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	const [detailAddress, setDetailAddress] = useState('')
 	const [isDaumPostOpen, setIsDaumPostOpen] = useState(false)
 	const [submitData, setSubmitData] = useState(init)
+
 
 	console.log('submitData', submitData)
 
@@ -119,6 +124,15 @@ const DestinationPost = ({ setChoiceComponent }) => {
 		setPostAdress(mergedAddress)
 		console.log('mergedAddress =>', mergedAddress)
 		setIsDaumPostOpen(false)
+
+	const { showAlert, simpleAlert } = useAlert()
+	console.log('submitData', submitData)
+
+	// 목적지 주소 핸들러
+	function onAddressHandler(address, addressDetail, sido, sigungu, bname) {
+		const destination = `${sido} ${sigungu} ${bname}`
+		setSubmitData((p) => ({ ...p, address, addressDetail, destination }))
+
 	}
 
 	console.log('찐 =>', address, detailAddress)
@@ -178,9 +192,31 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	}
 
 	const submitHandle = (e) => {
+
+		if (!isEmptyObj(submitData)) {
+			return simpleAlert('빈값을 채워주세요.')
+		}
 		if (isEmptyObj(submitData)) {
-			setChoiceComponent('리스트')
-			mutation.mutate(submitData)
+			mutation.mutate(submitData, {
+				onSuccess: (d) => {
+					console.log('테스트 ')
+					if (d?.data?.status === 200) {
+						showAlert({
+							title: '저징되었습니다.',
+							func: () => {
+								setChoiceComponent('리스트')
+								window.location.reload()
+							},
+						})
+					}
+				},
+				onError: (e) => {
+					if (e?.data?.status === 400) {
+						simpleAlert(e.data?.message, setChoiceComponent('등록'))
+					}
+				},
+			})
+
 		} else {
 			alert('내용을 모두 기입해주세요.')
 		}
@@ -240,6 +276,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								<h4>목적지</h4>
 								<p></p>
 							</Title>
+
 							<CustomInput width={260} onChange={eventHandle} name="address" value={address} />
 							<BlackBtn
 								width={20}
@@ -258,6 +295,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								value={detailAddress}
 								onChange={eventHandle}
 								style={{ marginTop: '5px' }}
+
 							/>
 						</Part>
 						<Part>
@@ -337,6 +375,8 @@ const DestinationPost = ({ setChoiceComponent }) => {
 				<ClientDestiCustomerFind setFindModal={setFindModal} setCustomerFindResult={setCustomerFindResult} />
 			)}
 
+
+
 			{postcodeModal && (
 				<SignUpPost
 					postCheck={postCheck}
@@ -352,9 +392,11 @@ const DestinationPost = ({ setChoiceComponent }) => {
 					isDaumPostOpen={isDaumPostOpen}
 					daumPosthandleClose={daumPosthandleClose}
 					daumPostHandleComplete={daumPostHandleComplete}
+
 					noDirect={true}
 				/>
 			)}
+
 		</OnePageContainer>
 	)
 }
@@ -365,4 +407,5 @@ const RadioContainer = styled.div`
 	display: flex;
 	width: 250px;
 	justify-content: space-between;
+
 `

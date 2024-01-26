@@ -347,3 +347,6 @@ export const weightObj = atom({})
 
 // 사용자 - 경매(단일) - 목적지 찾기
 export const userPageSingleDestiFindAtom = atom(false)
+
+// 상시 판매 관리 > 노출 상태 변경 모달
+export const salesPackageModal = atom(false)

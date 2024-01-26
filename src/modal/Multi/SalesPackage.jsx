@@ -12,7 +12,7 @@ import {
 	BlueBlackBtn,
 } from '../Common/Common.Styled'
 
-import { blueModalAtom } from '../../store/Layout/Layout'
+import { blueModalAtom, salesPackageModal } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
 import { ExRadioWrap } from '../External/ExternalFilter'
@@ -21,8 +21,8 @@ import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/
 
 import { CheckBox } from '../../common/Check/Checkbox'
 
-const SalesPackage = () => {
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
+const SalesPackage = ({ onClick }) => {
+	const [isModal, setIsModal] = useAtom(salesPackageModal)
 
 	const modalClose = () => {
 		setIsModal(false)
@@ -69,7 +69,7 @@ const SalesPackage = () => {
 						</BlueMainDiv>
 					</div>
 					<BlueBtnWrap>
-						<BlueBlackBtn>확인</BlueBlackBtn>
+						<BlueBlackBtn onClick={onClick}>확인</BlueBlackBtn>
 					</BlueBtnWrap>
 				</BlueSubContainer>
 			</ModalContainer>
