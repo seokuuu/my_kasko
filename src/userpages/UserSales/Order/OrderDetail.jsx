@@ -3,7 +3,6 @@ import { styled } from 'styled-components'
 import { USER_URL, useUserDestinationUpdateRequestMutation, useUserOrderDetailsQuery } from '../../../api/user'
 import { BtnBound, TGreyBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
-import Excel from '../../../components/TableInner/Excel'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { userOrderDetailsField, userOrderDetailsFieldsCols } from '../../../constants/user/orderTable'
 import useTableData from '../../../hooks/useTableData'
@@ -19,10 +18,10 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import DestinationChange from '../../../modal/Multi/DestinationChange'
 import TableV2 from '../../../pages/Table/TableV2'
+import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import useAlert from '../../../store/Alert/useAlert'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
-import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 
 /**
  * @constant 기본 검색 값
@@ -194,9 +193,11 @@ const OrderDetail = ({ salesNumber }) => {
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handlePageSizeChange} />
 						<TableV2ExcelDownloader
-							requestUrl={USER_URL.OrderDetail} 
+							requestUrl={USER_URL.orderList} 
+							requestParam={{auctionNumber: salesNumber}}
 							requestCount={totalCount}
 							field={userOrderDetailsField} 
+							sheetName={`주문확인상세(${salesNumber})`}
 						/>
 					</div>
 				</TCSubContainer>

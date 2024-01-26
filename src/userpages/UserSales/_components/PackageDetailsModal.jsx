@@ -1,9 +1,8 @@
 import { useSetAtom } from 'jotai'
-import React, { Fragment, useEffect, useLayoutEffect, useMemo } from 'react'
+import React, { Fragment, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { USER_URL, useUserPackageProductDetailsListQuery } from '../../../api/user'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
-import Excel from '../../../components/TableInner/Excel'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKey'
 import {
@@ -28,12 +27,11 @@ import {
 	TableContianer
 } from '../../../modal/External/ExternalFilter'
 import TableV2 from '../../../pages/Table/TableV2'
-import Table from '../../../pages/Table/Table'
+import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import { selectedRows2Switch } from '../../../store/Layout/Layout'
 import AddCartButton, { CART_BUTTON_TYPE } from './AddCartButton'
 import AddOrderButton, { ORDER_BUTTON_TYPE } from './AddOrderButton'
-import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 
 /**
  * @constant 기본 검색 값
