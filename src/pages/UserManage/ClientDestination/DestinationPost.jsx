@@ -18,21 +18,16 @@ import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../comm
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 
-import { get_addressFind, post_clientDestination } from '../../../api/userManage'
-import { BlackBtn, BtnWrap, WhiteBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import { isEmptyObj } from '../../../lib'
-import useMutationQuery from '../../../hooks/useMutationQuery'
 import { useQueryClient } from '@tanstack/react-query'
-import { UsermanageFindModal } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { find } from 'lodash'
-import ClientDestiCustomerFind from './ClientDestiCustomerFind'
+import { get_addressFind, post_clientDestination } from '../../../api/userManage'
+import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import { isEmptyObj } from '../../../lib'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
-import useReactQuery from '../../../hooks/useReactQuery'
 import useAlert from '../../../store/Alert/useAlert'
-import DaumPostcode from 'react-daum-postcode'
-import { FadeOverlay } from '../../../modal/Common/Common.Styled'
-import AddressFinder from '../../../components/DaumPost/Address'
+import { UsermanageFindModal } from '../../../store/Layout/Layout'
+import ClientDestiCustomerFind from './ClientDestiCustomerFind'
 
 const init = {
 	represent: '', // (0: 미지정 / 1: 지정)
@@ -124,7 +119,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 		setPostAdress(mergedAddress)
 		console.log('mergedAddress =>', mergedAddress)
 		setIsDaumPostOpen(false)
-
+	}
 	const { showAlert, simpleAlert } = useAlert()
 	console.log('submitData', submitData)
 
@@ -401,11 +396,10 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	)
 }
 
-export default DestinationPost
+export default DestinationPost;
 
 const RadioContainer = styled.div`
 	display: flex;
 	width: 250px;
 	justify-content: space-between;
-
 `

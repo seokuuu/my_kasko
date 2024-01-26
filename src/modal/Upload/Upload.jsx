@@ -51,14 +51,19 @@ const Upload = ({
 	handleSelectChange,
 	dropInput,
 	setDropInput,
+	excelUpload, // 엑셀 업로드 핸들러입니다.(저장 버튼을 누를시 실행되는 함수입니다.)
 }) => {
 	// 등록 타입
 	const [registerType, setRegisterType] = useState('multi')
 	const { simpleConfirm } = useAlert()
 
+	const [file, setFile] = useState(null)
+	// console.log('files :', file)
+
 	// 저장 핸들러
 	const submit = () => {
-		simpleConfirm('저장하시겠습니까?', propsHandler)
+		if (registerType === 'multi') excelUpload(file)
+		else if (registerType === 'single') simpleConfirm('저장하시겠습니까?', propsHandler)
 	}
 
 	// 변경 모달
@@ -69,19 +74,6 @@ const Upload = ({
 		if (registerType === 'single') simpleConfirm(message, () => setModalSwitch(false))
 		else setModalSwitch(false)
 	}
-
-	// 변경사항 저장 알럿
-	// useEffect(() => {
-	// 	const handleBeforeUnload = (event) => {
-	// 		const message = '현재 작업 중인 내용이 저장되지 않았습니다. 페이지를 나가시겠습니까?'
-	// 		event.returnValue = message // Standard for most browsers
-	// 		return message // For some older browsers
-	// 	}
-	// 	window.addEventListener('beforeunload', handleBeforeUnload)
-	// 	return () => {
-	// 		window.removeEventListener('beforeunload', handleBeforeUnload)
-	// 	}
-	// }, [])
 
 	return (
 		// 재고 관리 - 판매 구분 변경
@@ -111,7 +103,7 @@ const Upload = ({
 							</BlueSubDiv>
 						</BlueMainDiv>
 						{/* 대량 등록 */}
-						{registerType === 'multi' && <MultiUploader />}
+						{registerType === 'multi' && <MultiUploader file={file} setFile={setFile} />}
 						{/* 단일 등록 */}
 						{registerType === 'single' && (
 							<SingleUploader
@@ -123,7 +115,7 @@ const Upload = ({
 						)}
 					</div>
 					<BlueBtnWrap>
-						<BlueBlackBtn onClick={submit}>저장</BlueBlackBtn>
+						<BlueBlackBtn onClick={submit}> {registerType === 'multi' ? '등록' : '저장'}</BlueBlackBtn>
 					</BlueBtnWrap>
 				</BlueSubContainer>
 			</ModalContainer>
