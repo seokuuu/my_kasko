@@ -204,13 +204,14 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	// selectedData가 newResData
 	// list가 updatedData
 
-	const [outAddData, SetOutAddData] = useState()
+	const [outAddData, setOutAddData] = useState()
+	const [delData, setDelData] = useState()
 	const onListAdd = (selectedData) => {
 		try {
 			const newList = [...new Set([...selectedData, ...list])]
 			setList(newList) // 선별 목록 데이터 등록
 			setSelectedRows([]) // 테이블 체크 목록 초기화
-			SetOutAddData(selectedData)
+			setOutAddData(selectedData.map((x) => x.uid))
 		} catch (error) {
 			simpleAlert(error.message)
 		}
@@ -227,14 +228,22 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 		setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
 	}, [newResData, outAddData, realStartPrice])
 
+	console.log('selectedRows', selectedRows)
+
 	// 목록 제거
 	const onListRemove = () => {
 		if (!selectedRows || selectedRows.length === 0) {
 			return simpleAlert('제품을 선택해주세요.')
 		}
 		const key = '제품 고유 번호'
+		const newKey = '고유 번호'
 		const deleteKeys = selectedRows.map((item) => item[key])
 		const newSelectors = list.filter((item) => !deleteKeys.includes(item?.productUid))
+
+		if (outAddData) {
+			const updatedOutAddData = outAddData.filter((item) => !selectedRows.map((row) => row[newKey]).includes(item)) // add된 것들 처리
+			setOutAddData(updatedOutAddData)
+		}
 
 		// deleteAuctionProductList에 기존 list 바인딩 !! TODO
 		const resultRemove = selectedRows
@@ -244,6 +253,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 		setEditData({ ...editData, deleteAuctionProductList: resultRemove })
 		setList(newSelectors)
 		setSelectedRows([]) // 테이블 체크 목록 초기화
+		setDelData(resultRemove)
 	}
 	console.log('outAddData', outAddData)
 
@@ -460,7 +470,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 						list={list}
 						onListAdd={onListAdd}
 						outAddData={outAddData}
-						SetOutAddData={SetOutAddData}
+						setOutAddData={setOutAddData}
 					/>
 				)}
 				<NewBottomBtnWrap bottom={-5}>
