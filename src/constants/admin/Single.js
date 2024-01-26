@@ -4,9 +4,7 @@ import RecommendCellRenderer2 from '../../pages/Table/RecommendCellRenderer2'
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer.jsx'
 import InputCellRenderer from "../../pages/Table/InputCellRenderer.jsx"
 import { FieldsSettings } from '../../utils/fieldsSetting.js'
-
-const commonStyles = {headerClass:'custom-header-style',flex:1,
-    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' }}
+import { commonStyles } from '../commonCellStyle.js'
 
 var checkboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
@@ -111,7 +109,7 @@ export const SingleSalesDispatchFieldsCols= [
     minWidth: (item === '메모' || item === '비고' )? 200 : 150,
     cellRenderer:(params) => {
       if(item === '메모' || item === '비고'){
-        return <input style={{height:'40px',border:'1px solid '}} value={params.value}/>
+        return params.value
       }
       
       if(typeof params.value === 'boolean'){
@@ -194,13 +192,12 @@ export const SingleModifyDispatchFieldsCols = [
         ...commonStyles,
         field: k,
         minWidth: 150,
-        editable:true,
+        // editable:true,
         cellRenderer: InputCellRenderer,
         cellRendererParams:{
           uidFieldName:k,
           valueName:v,
           type:'input'
-        
         }
       }
     } else {
