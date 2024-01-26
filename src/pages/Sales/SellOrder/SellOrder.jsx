@@ -29,6 +29,7 @@ import { useNavigate } from 'react-router-dom'
 import useAlert from '../../../store/Alert/useAlert'
 import { useUserOrderCancelMutaion } from '../../../api/user'
 import DepositRequestForm from '../../../modal/Docs/DepositRequestForm'
+import PrintDepositRequestButton from '../../../userpages/UserSales/_components/PrintDepositRequestButton'
 
 const SellOrder = () => {
 	const { mutate: mutateDepositOrderCancel, loading: loadingDepositOrderCancel } = useUserOrderCancelMutaion()
@@ -221,29 +222,13 @@ const SellOrder = () => {
 				/>
 				<TCSubContainer>
 					<div></div>
-					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteSkyBtn
-							onClick={() => {
-								setReceiptPrint(true)
-							}}
-						>
-							입금 요청서 발행
-						</WhiteSkyBtn>{' '}
-						<SkyBtn>입금 확인</SkyBtn>
-					</div>
+					{/* 입금 확인 요청서 */}
+					<PrintDepositRequestButton
+						auctionNumber={Array.isArray(checkBoxSelect)? checkBoxSelect.map(v => v.uid) : checkBoxSelect? checkBoxSelect.uid : []}
+						salesDeposit
+					/>
 				</TCSubContainer>
 			</TableContianer>
-			{/* 입금 요청서 모달 */}
-			{receiptPrint && (
-				<DepositRequestForm
-					title="상시판매 입금요청서"
-					auctionNumber={''}
-					salesDeposit
-					onClose={() => {
-						setReceiptPrint(false)
-					}}
-				/>
-			)}
 		</FilterContianer>
 	)
 }

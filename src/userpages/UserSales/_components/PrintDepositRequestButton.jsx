@@ -11,6 +11,7 @@ import {
 	WhiteCloseBtn
 } from '../../../modal/Common/Common.Styled'
 import { FilterContianer, FilterHeaderAlert, TableContianer } from '../../../modal/External/ExternalFilter'
+import useAlert from '../../../store/Alert/useAlert'
 
 /**
  * @constant 입금요청서 요청 URL
@@ -77,6 +78,8 @@ export const PrintDepositRequestButton = ({
   customerDestinationUid="", 
   biddingStatus="",
 }) => {
+	// 경매|상시판매 번호
+	const [oneAuctionNumber, setOneAuctionNumber] = useState('');
   // 입금요청서 발행 모드
 	const [receiptPrint, setReceiptPrint] = useState(false);
 	// 데이터
@@ -85,9 +88,9 @@ export const PrintDepositRequestButton = ({
 		queryFn: async () => {
 			const requestUrl = salesDeposit? REQUEST_DEPOSIT_URL.salesDeposit : REQUEST_DEPOSIT_URL.aution;
 			const { data } = salesDeposit
-			? await client.get(`${requestUrl}/${auctionNumber}`)
+			? await client.get(`${requestUrl}/${oneAuctionNumber}`)
 			: await client.post(requestUrl, {
-				auctionNumber: auctionNumber,
+				auctionNumber: oneAuctionNumber,
 				storage: storage,
 				customerDestinationUid: customerDestinationUid,
 				biddingStatus: biddingStatus
@@ -100,24 +103,54 @@ export const PrintDepositRequestButton = ({
 	const totalData = useMemo(() => getTotalData(infoData), [infoData])
 	// 일자 데이터
 	const authDate = useMemo(() => !infoData || !infoData.auctionDate? null : moment(infoData.auctionDate).format('YYYY.MM.DD'), [infoData]);
+	// ALERT
+	const { simpleAlert } = useAlert();
 
-	// 데이터 요청
-	useEffect(() => {
-		if(receiptPrint && !isSuccess) {
-			requestData();
+	// 버튼 클릭 핸들러
+	function handlePrintClick(e) {
+
+		if(receiptPrint) {
+			setReceiptPrint(false);
+			return;
 		}
-	}, [receiptPrint, isSuccess])
+
+		let num = auctionNumber;
+
+		if(Array.isArray(auctionNumber)) {
+			if(auctionNumber.length < 1) {
+				return simpleAlert('입금요청서를 발행할 주문건을 선택해 주세요.');
+			}
+			else if(auctionNumber.length > 1) {
+				return simpleAlert('입금요청서를 발행할 주문건을 1개만 선택헤 주세요.');
+			}
+			else {
+				num = auctionNumber[0];
+			}
+		}
+
+		if(typeof num !== 'string' || num.length < 1) {
+			return simpleAlert('입금요청서를 발행할 수 없습니다.');
+		}
+
+		console.log(num);
+
+		// setOneAuctionNumber(num);
+		// requestData();
+		// setReceiptPrint(true);
+	}
+
+	useEffect(() => {
+		console.log(isLoading, 'isLoading')
+	}, [isLoading])
 
   return (
     <>
       <WhiteSkyBtn
-				onClick={() => {
-					setReceiptPrint(true)
-				}}
+				onClick={handlePrintClick}
 			>
 				입금 요청서 발행
 			</WhiteSkyBtn>
-      {receiptPrint && (
+      {receiptPrint && isSuccess && (
 				<>
 				<FadeOverlay />
 				<ModalContainer style={{ width: '75%', maxHeight: '90vh', minHeight: 740, background: '#eef3fb', flexDirection: 'column', alignItems: 'flex-end' }}>
