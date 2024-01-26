@@ -65,6 +65,7 @@ import WinningCreateSearchFields from './WinningCreateSearchFields'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { isEqual } from 'lodash'
 import WinningDetailFields from './WinningDetailFields'
+import PrintDepositRequestButton from '../../../userpages/UserSales/_components/PrintDepositRequestButton'
 
 // 경매 낙찰 상세
 const WinningDetail = ({ detailRow }) => {
@@ -464,7 +465,13 @@ const WinningDetail = ({ detailRow }) => {
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteSkyBtn onClick={publishDepositOnClickHandler}>입금 요청서 발행</WhiteSkyBtn>
+						{/* 입금 확인 요청서 */}
+						<PrintDepositRequestButton
+							auctionNumber={"2023112201"}
+							storage={"우성"}
+							customerDestinationUid={"120"}
+							biddingStatus={"낙찰 확정"}
+						/>
 						<BtnBound style={{ margin: '0px' }} />
 						<WhiteRedBtn onClick={deleteOnClickHandler}>부분 낙찰 취소 </WhiteRedBtn>
 						<SkyBtn onClick={partDepostiHandler}>부분 입금 확인</SkyBtn>

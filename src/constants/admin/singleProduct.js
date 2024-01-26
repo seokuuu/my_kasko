@@ -19,6 +19,7 @@ export const singleProductListFieldCols = [
 		cellStyle: { textAlign: 'center' },
 	},
 	{ field: '순번', minWidth: 100, cellStyle: { textAlign: 'center' } },
+	{ field: '노출상태', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '경매번호', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '상시판매 번호', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '상시판매 주문 일자', minWidth: 100, cellStyle: { textAlign: 'center' } },

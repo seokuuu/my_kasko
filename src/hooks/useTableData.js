@@ -84,7 +84,7 @@ export default function useTableData({ tableField, serverData, wish }) {
 }
 
 /**
- * 관심상품|추천상품 속성을 가진 테이블목록 데이터 반환
+ * 관심상품 속성을 가진 테이블목록 데이터 반환
  */
 function getDataWithMarkerData({ data=[], wishProdNums=[], wishKey=[], bestKey=[]}) {
   const dataWithWish = data.reduce((acc, d) => {
@@ -103,9 +103,20 @@ function getDataWithMarkerData({ data=[], wishProdNums=[], wishKey=[], bestKey=[
     }
 
     return [...acc, targetData];
-  }, []).sort((a, b) => b[wishKey[0]].wish - a[wishKey[0]].wish);
+  }, []).sort((a, b) => wishSorting(a, b, wishKey));
 
   return dataWithWish;
+}
+
+/**
+ * 관심상품 정렬 함수
+ */
+function wishSorting(a,b, wishKey) {
+  let result = 0;
+  for(const key of wishKey) {
+    result += b[key].wish - a[key].wish
+  }
+  return result;
 }
 
 /**

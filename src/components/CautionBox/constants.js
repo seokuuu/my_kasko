@@ -10,7 +10,8 @@ export const CAUTION_CATEGORY = Object.freeze({
   auction: 'auction',
   singleProduct: 'product',
   packageProduct: 'package',
-  order: 'order'
+  order: 'order',
+  bid: 'bid'
 });
 
 /**
@@ -21,6 +22,7 @@ export const CAUTION_EDIT_AUTH = Object.freeze({
   [CAUTION_CATEGORY.singleProduct]: ['상시판매관리'],
   [CAUTION_CATEGORY.packageProduct]: ['상시판매관리'],
   [CAUTION_CATEGORY.order]: ['주문관리'],
+  [CAUTION_CATEGORY.bid]: ['경매관리']
 })
 
 /**

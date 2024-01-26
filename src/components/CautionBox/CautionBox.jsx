@@ -17,9 +17,9 @@ import { getHasEditAuth } from './utils';
  * @param {string} props.category 카테고리(CAUTION_CATEGORY)
  */
 const CautionBox = ({category}) => {
-  const [editForm, setEditForm] = useState(EditorState.createEmpty());
-  const [editMode, setEditMode] = useState(false);
-  const editable = getHasEditAuth(category);
+  const [editForm, setEditForm] = useState(EditorState.createEmpty()); // 편집폼
+  const [editMode, setEditMode] = useState(false); // 편집모드
+  const editable = getHasEditAuth(category); // 편집가능여부
   const readOnly = useMemo(() => !editable || !editMode, [editMode]);
   const { data: cautionData, refetch: requestData  } = useQuery({
     queryKey: [CAUTION_QUERY_KEY, category],
