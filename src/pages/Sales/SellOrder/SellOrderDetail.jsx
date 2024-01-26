@@ -133,7 +133,7 @@ const SellOrderDetail = () => {
 		}
 
 		if (isError) {
-			simpleAlert(isError)
+			simpleAlert('요청중 오류가 발생했습니다.\n다시 시도해 주세요.')
 		}
 	}, [getSaleProductDetailResponse, isError])
 

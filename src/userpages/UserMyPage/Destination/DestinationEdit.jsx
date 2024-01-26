@@ -25,6 +25,23 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { isEmptyObj } from '../../../lib'
 import useAlert from '../../../store/Alert/useAlert'
 
+const sidoMapping = {
+	서울: '서울특별시',
+	부산: '부산광역시',
+	대구: '대구광역시',
+	인천: '인천광역시',
+	광주: '광주광역시',
+	대전: '대전광역시',
+	울산: '울산광역시',
+	경기: '경기도',
+	충북: '충청북도',
+	충남: '충청남도',
+	전북: '전라북도',
+	전남: '전라남도',
+	경북: '경상북도',
+	경남: '경상남도',
+}
+
 /**
  * @description
  * 목적지 수정 페이지입니다.
@@ -61,7 +78,6 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 		managerName: '', // 담당자 이름
 		managerPhone: '', // 담당자 번호
 		memo: '', // 비고
-		destination: '', // 서버로 요청할 값
 	}
 
 	const { data } = useReactQuery(uidAtom, 'getDetailDestination', getDetailDestination)
@@ -76,11 +92,15 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 	}
 
 	// 목적지 주소 핸들러
-	function onAddressHandler(address, addressDetail, sido, sigungu, bname) {
-		// 서버로 보낼 주소
-		const destination = `${sido} ${sigungu} ${bname}`
+	function onAddressHandler(address, addressDetail, sido, sigungu, dongLee, eubMyeon) {
+		const translateSido = sidoMapping[sido] ?? sido
 
-		setInput((p) => ({ ...p, address, addressDetail, destination }))
+		// 서버로 보낼 주소
+		const destination = eubMyeon
+			? `${translateSido} ${sigungu} ${eubMyeon} ${dongLee}`
+			: `${translateSido} ${sigungu} ${dongLee}`
+
+		setInput((p) => ({ ...p, address: destination, addressDetail }))
 	}
 
 	const handleChange = (e) => {

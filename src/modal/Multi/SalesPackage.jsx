@@ -12,7 +12,7 @@ import {
 	BlueBlackBtn,
 } from '../Common/Common.Styled'
 
-import { blueModalAtom } from '../../store/Layout/Layout'
+import { blueModalAtom, salesPackageModal } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
 import { ExRadioWrap } from '../External/ExternalFilter'
@@ -21,8 +21,8 @@ import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/
 
 import { CheckBox } from '../../common/Check/Checkbox'
 
-const SalesPackage = () => {
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
+const SalesPackage = ({ onClick }) => {
+	const [isModal, setIsModal] = useAtom(salesPackageModal)
 
 	const modalClose = () => {
 		setIsModal(false)
@@ -33,6 +33,10 @@ const SalesPackage = () => {
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
 	console.log('checkRadio =>', checkRadio)
+
+	const confirmButtonOnClick = () => {
+		onClick(checkRadio)
+	}
 
 	return (
 		// 재고 관리 - 판매 구분 변경
@@ -69,7 +73,7 @@ const SalesPackage = () => {
 						</BlueMainDiv>
 					</div>
 					<BlueBtnWrap>
-						<BlueBlackBtn>확인</BlueBlackBtn>
+						<BlueBlackBtn onClick={confirmButtonOnClick}>확인</BlueBlackBtn>
 					</BlueBtnWrap>
 				</BlueSubContainer>
 			</ModalContainer>

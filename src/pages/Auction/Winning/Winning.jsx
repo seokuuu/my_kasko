@@ -52,6 +52,7 @@ import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalP
 import SingleProductSearchFields from '../../Sales/Single/SingleProductSearchFields'
 import { isEqual } from 'lodash'
 import WinningSearchFields from './WinningSearchFields'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 
 // src\pages\Sales\Single\Single.jsx 참고해서 작업 !!!
 const Winning = ({ detailRow }) => {
@@ -214,33 +215,8 @@ const Winning = ({ detailRow }) => {
 				{/* 토글 쓰기 */}
 				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 			</FilterHeader>
-			<FilterHeaderAlert>
-				<div style={{ display: 'flex' }}>
-					<div style={{ marginRight: '20px' }}>
-						<img src="/img/notice.png" />
-					</div>
-					<div style={{ marginTop: '6px' }}>
-						<div>
-							· 입금계좌번호 : 우리은행 1005-301-817070, 신한은행 140-013-498612, 기업은행 070-8889-3456, 예금주 :
-							카스코철강
-						</div>
-						<div style={{ marginTop: '6px' }}>· 경매일 익일 12:00시 내 입금 필수 (낙찰 확정)</div>
-						<div style={{ marginTop: '6px' }}>
-							· 낙찰 후 지정 입금 요청일까지 미 입금 시 2주간 경매 참여가 제한되며, 경매 제한 3회 발생 시 당사 경매가
-							참여가 불가하오니 주의하시기 바랍니다.
-						</div>
-						<div style={{ marginTop: '6px' }}>
-							· 낙찰금액은 제품대공급가, 제품대부가세를 합한 금액입니다. (상세화면 참조)
-						</div>
-						<div style={{ marginTop: '6px' }}>· 운반금액은 운반비공급가, 운반비부가세를 합한 금액입니다.</div>
-					</div>
-				</div>
-
-				<div style={{ marginTop: '-100px' }}>
-					수정
-					<img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-				</div>
-			</FilterHeaderAlert>
+			{/* 주의사항 */}
+			<CautionBox category={CAUTION_CATEGORY.bid} />
 			{exFilterToggle && (
 				<>
 					<GlobalProductSearch

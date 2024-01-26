@@ -6,23 +6,30 @@ import { BlueMainDiv, BlueSubDiv } from '../../Common/Common.Styled'
 /**
  * @description
  * 대량 등록 컴포넌트입니다.
+ *
  */
-const MultiUploader = () => {
-	const fileInputRef = useRef(null)
-	const [selectedFile, setSelectedFile] = useState(null)
+const MultiUploader = ({ file, setFile }) => {
 	const [uploadProgress, setUploadProgress] = useState(0)
+	// 대량 등록 관련 값들입니다.
+	const fileInputRef = useRef(null)
 
-	const handleCancel = () => {
-		setSelectedFile(null)
-		setUploadProgress(0)
+	function onFileChange(e) {
+		const file = e.target.files[0]
 
-		if (fileInputRef.current) {
-			fileInputRef.current.value = null
-		}
+		console.log('file :', file)
+		setInterval(() => {
+			if (uploadProgress < 100) {
+				let i = Math.floor(Math.random() * 101)
+				setUploadProgress((p) => p + i)
+			}
+		}, 100)
+
+		setFile(file)
 	}
+
 	return (
 		<BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px', display: 'flex' }}>
-			{!selectedFile && (
+			{!file && (
 				<BlueSubDiv style={{ display: 'block' }}>
 					<UldWrap>
 						<UldText>
@@ -33,12 +40,12 @@ const MultiUploader = () => {
 							accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
 							ref={fileInputRef}
 							style={{ display: 'none' }}
-							// onChange={handleFileExcel}
+							onChange={onFileChange}
 						/>
 						<UldWrap>
-							{selectedFile && (
+							{file && (
 								<div>
-									<div>{selectedFile?.name}</div>
+									<div>{file?.name}</div>
 									<div>
 										<progress value={uploadProgress} max="100" />
 									</div>
@@ -46,14 +53,21 @@ const MultiUploader = () => {
 							)}
 						</UldWrap>
 					</UldWrap>
+
 					<UldWrap>
-						<UldBtn onClick={() => fileInputRef.current.click()}> 업로드</UldBtn>
+						<UldBtn
+							onClick={() => {
+								fileInputRef.current.click()
+							}}
+						>
+							업로드
+						</UldBtn>
 					</UldWrap>
 				</BlueSubDiv>
 			)}
-			{selectedFile && (
+			{file && (
 				<UldAfterWrap>
-					<div style={{ fontSize: '16px' }}>{selectedFile.name}</div>
+					<div style={{ fontSize: '16px' }}>{file.name}</div>
 					<div style={{ display: 'flex', alignItems: 'center' }}>
 						<progress value={uploadProgress} max="100" />
 						<div>x</div>

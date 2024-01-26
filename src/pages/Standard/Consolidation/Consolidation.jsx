@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useAtom } from 'jotai'
 import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
@@ -9,7 +9,7 @@ import { StandardConsoliateEdit, blueModalAtom, toggleAtom } from '../../../stor
 import { StandardConsolidationFields, StandardConsolidationFieldsCols } from '../../../constants/admin/Standard'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { isArray } from 'lodash'
+import { isArray, isEqual } from 'lodash'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import ConsolidationModal from '../../../modal/Multi/Consolidation'
@@ -33,6 +33,8 @@ import useMutationQuery from '../../../hooks/useMutationQuery'
 import { popupDummy } from '../../../modal/Alert/PopupDummy'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
+import useBlockRoute from '../../../hooks/useBlockRoute'
+import { useParams } from 'react-router-dom'
 
 const Consolidation = ({}) => {
 	const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
@@ -41,6 +43,10 @@ const Consolidation = ({}) => {
 	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
 	const [btnCellModal, setBtnCellModal] = useAtom(StandardConsoliateEdit)
 	const [modalMode, setModalMode] = useAtom(consolEditModalAtom)
+	const initForm = { title: '', status: true }
+	const [observeClick, setObserveClick] = useState(false)
+	const [form, setForm] = useState(initForm)
+	const { id } = useParams()
 
 	console.log('uidAtom', uidAtom)
 	console.log('btnCellModal', btnCellModal)
@@ -220,6 +226,9 @@ const Consolidation = ({}) => {
 			pageNum: Number(value),
 		}))
 	}
+
+	const blockCondition = useMemo(() => !isEqual(initForm, form) && !Boolean(id) && !observeClick, [form, observeClick])
+	useBlockRoute(blockCondition)
 
 	return (
 		<FilterContianer>
