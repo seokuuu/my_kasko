@@ -10,7 +10,6 @@ export const FadeOverlay = styled.div`
 	background-color: rgba(0, 0, 0, 0.5);
 
 	z-index: ${(props) => props.zindex || 9998};
-
 `
 // 모달 오버레이 (배경 Non - fade)
 export const NonFadeOverlay = styled.div`
@@ -34,7 +33,6 @@ export const ModalContainer = styled.div`
 	height: max-content;
 
 	z-index: ${(props) => props.zindex || 9999};
-
 `
 
 export const ModalSubContainer = styled.div`
