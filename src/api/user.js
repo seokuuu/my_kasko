@@ -13,6 +13,7 @@ export const USER_URL = {
 	cartRequest: '/sale-product/cart', // POST
 	orderRequest: '/sale-product/order', // POST
 	orderList: '/sale-product/order', // GET
+	orderDetail: '/sale-product/order/details', // GET
 	orderCancel: '/admin/order/cancel',
 	destinationList: '/auction/destination',
 	destinationUpdate: '/auction/successfulBid/request',
@@ -108,7 +109,7 @@ export const useUserOrderDetailsQuery = (param) =>
 	useQuery({
 		queryKey: ['user', 'order', 'details', param],
 		queryFn: async () => {
-			const { data } = await client.get(getUrlWithSearchParam(USER_URL.orderList, param))
+			const { data } = await client.get(getUrlWithSearchParam(USER_URL.orderDetail, param))
 			return data.data
 		},
 	})
@@ -126,7 +127,7 @@ export const useUserAddCartMutaion = () => {
 			await client.post(USER_URL.cartRequest, cartParam)
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['user','cart'] })
+			queryClient.invalidateQueries({ queryKey: ['user', 'cart'] })
 			simpleAlert('장바구니에 추가하였습니다.')
 		},
 		onError: (error) => {
@@ -148,7 +149,7 @@ export const useUserDelCartMutaion = () => {
 			await client.delete(`${USER_URL.cartRequest}/${cartParam}`)
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['user','cart'] })
+			queryClient.invalidateQueries({ queryKey: ['user', 'cart'] })
 			simpleAlert('장바구니에서 삭제하였습니다.')
 		},
 		onError: (error) => {
@@ -170,7 +171,7 @@ export const useUserOrderMutaion = () => {
 			await client.post(USER_URL.orderRequest, orderParam)
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey:['user','cart'] })
+			queryClient.invalidateQueries({ queryKey: ['user', 'cart'] })
 			return simpleAlert('주문을 완료하였습니다.')
 		},
 		onError: (error) => {
