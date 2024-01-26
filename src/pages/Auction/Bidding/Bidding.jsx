@@ -54,10 +54,7 @@ import BiddingSearchFields from './BiddingSearchFields'
 import { isEqual } from 'lodash'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { getAuctionDestination } from '../../../api/auction/winning'
-import useTableSelection from '../../../hooks/useTableSelection'
-import useTableData from '../../../hooks/useTableData'
-import { PROD_COL_NAME } from '../../../constants/user/constantKey'
-import AddWishButton from '../../../userpages/UserSales/_components/AddWishButton'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 
 const Bidding = ({}) => {
 	const [destinationPopUp, setDestinationPopUp] = useAtom(userPageSingleDestiFindAtom)
@@ -232,21 +229,6 @@ const Bidding = ({}) => {
 
 	console.log('winningCreateData <33', winningCreateData)
 
-	/* ==================== 관심상품 등록 start ==================== */
-	// 선택상품(checked product) - 선택상품 정보를 조회합니다.
-	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
-		weightKey: '중량',
-	});
-	// 테이블 데이터, 페이지 데이터, 총 중량
-	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
-		tableField: AuctionBiddingFields,
-		serverData: data?.data?.data,
-		wish: { display: true, key: ['productNumber', 'packageNumber'] },
-		best: { display: true }
-	});
-	
-	/* ==================== 관심상품 등록 end ==================== */
-
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -264,28 +246,8 @@ const Bidding = ({}) => {
 				{/* 토글 쓰기 */}
 				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 			</FilterHeader>
-			<FilterHeaderAlert>
-				<div style={{ display: 'flex' }}>
-					<div style={{ marginRight: '20px' }}>
-						<img src="/img/notice.png" />
-					</div>
-					<div style={{ marginTop: '6px' }}>
-						<div>
-							· 경매 남은 시간은 본 화면에서 발생되는 메시지 창에 따라 다소 지연될 수 있습니다. 경매 남은 시간을
-							최신으로 갱신하려면 다시 조회해 주세요.
-						</div>
-						<div style={{ marginTop: '6px' }}>
-							· 처음 경매 참여하신 고객은 왼쪽 메뉴 경매 관리 {'>'} 고객 목적지 등록 화면에서 배송 목적지를 반드시
-							등록한 후 응찰에 참여해 주시길 부탁드립니다.
-						</div>
-					</div>
-				</div>
-
-				<div>
-					수정
-					<img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-				</div>
-			</FilterHeaderAlert>
+			{/* 주의사항 */}
+			<CautionBox category={CAUTION_CATEGORY.auction} />
 			{exFilterToggle && (
 				<>
 					{/* <FilterSubcontianer>
@@ -375,21 +337,17 @@ const Bidding = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
+						조회 목록 (선택 <span>2</span> / 50개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
 						<Excel getRow={getRow} />
-						<AddWishButton
-							products={selectedData} 
-							productNumberKey={types === '단일'? PROD_COL_NAME.productNumber : PROD_COL_NAME.packageNumber} 
-						/>
 					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>
 					<div>
-						선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
+						선택 중량<span> 2 </span>kg / 총 중량 kg
 					</div>
 					<div
 						style={{
@@ -454,7 +412,7 @@ const Bidding = ({}) => {
 						</SkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={getCol} getRow={tableRowData} tablePagination={tablePagination} onPageChange={onPageChange} />
+				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
 			</TableContianer>
 			{destinationPopUp && (
 				<InventoryFind

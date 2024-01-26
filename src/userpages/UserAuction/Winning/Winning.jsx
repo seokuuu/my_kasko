@@ -173,7 +173,7 @@ const Winning = ({}) => {
 				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 			</FilterHeader>
 			{/* 주의사항 */}
-			<CautionBox category={CAUTION_CATEGORY.order} />
+			<CautionBox category={CAUTION_CATEGORY.bid} />
 			{exFilterToggle && (
 				<>
 					{/* <FilterSubcontianer>
