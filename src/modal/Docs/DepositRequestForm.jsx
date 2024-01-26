@@ -47,9 +47,16 @@ const TOTAL_DATA = {
  * @param {func} onClose 모달 닫기 핸들러 
  * @returns 
  */
-const DepositRequestForm = ({ title= '경매 입금 요청서', auctionNumber, salesDeposit, storage, customerDestinationUid, biddingStatus, onClose }) => {
+const DepositRequestForm = ({ 
+  title= '경매 입금 요청서', 
+  auctionNumber, 
+  salesDeposit, 
+  storage="", 
+  customerDestinationUid="", 
+  biddingStatus="", 
+  onClose }) => {
   // 데이터
-  const { data: infoData, isSuccess } = useQuery({
+  const { data: infoData, isLoading} = useQuery({
     queryKey: 'deposit-request',
     queryFn: async () => {
       const requestUrl = salesDeposit? REQUEST_DEPOSIT_URL.salesDeposit : REQUEST_DEPOSIT_URL.aution;
@@ -58,8 +65,8 @@ const DepositRequestForm = ({ title= '경매 입금 요청서', auctionNumber, s
       : await client.post(requestUrl, {
         auctionNumber: auctionNumber,
         storage: storage,
-        biddingStatus: biddingStatus,
-        customerDestinationUid: customerDestinationUid
+        customerDestinationUid: customerDestinationUid,
+        biddingStatus: biddingStatus
       })
       return data.data;
     }
@@ -67,7 +74,7 @@ const DepositRequestForm = ({ title= '경매 입금 요청서', auctionNumber, s
   // 총계 데이터
   const totalData = useMemo(() => {
     const data = {...TOTAL_DATA};
-    if(infoData && infoData.list) {
+    if(infoData && Array.isArray(infoData.list)) {
       for(const v of infoData.list) {
         data.price += Number(v.totalPrice);
         data.weight += Number(v.weight);
@@ -85,18 +92,18 @@ const DepositRequestForm = ({ title= '경매 입금 요청서', auctionNumber, s
     }
     return data;
   }, [infoData])
-
+  
   return (
     <>
       <FadeOverlay />
-      <ModalContainer style={{ width: '75%', height: '90vh', background: '#eef3fb' }}>
+      <ModalContainer style={{ width: '75%', maxHeight: '90vh', background: '#eef3fb', flexDirection: 'column', alignItems: 'flex-end' }}>
         <BlueBarHeader style={{ height: '20px' }}>
           <div></div>
           <div>
             <WhiteCloseBtn onClick={e => { onClose(); }} src="/svg/white_btn_close.svg" />
           </div>
         </BlueBarHeader>
-        <BlueSubContainer style={{ padding: '0px 30px' }}>
+        <BlueSubContainer style={{ width: '100%', padding: '0px 30px' }}>
           <FilterContianer>
             {/* 요청서 제목 | 일자 */}
             <FormTitle>
@@ -133,10 +140,15 @@ const DepositRequestForm = ({ title= '경매 입금 요청서', auctionNumber, s
                 </b>
               </div>
             </Text>
+
             {
-              infoData &&
-              <TableContianer>
-                <ClaimTable style={{ margin: '20px 0px' }}>
+              (!infoData || !infoData.auctionDate)
+              ? 
+                <p style={{ width: '100%', height: 140,padding: '60px 20px', background: 'white', textAlign: 'center' }}>
+                  {isLoading? '입금요청서 데이터를 불러오고 있습니다.' : '현재 입금요청서 데이터를 불러올 수 없습니다.' }
+                </p>
+              : <TableContianer>
+                  <ClaimTable style={{ margin: '20px 0px' }}>
                   <ClaimRow>
                     <ClaimTitle>경매일자</ClaimTitle>
                     <ClaimContent>{infoData.auctionDate}</ClaimContent>
@@ -173,6 +185,7 @@ const DepositRequestForm = ({ title= '경매 입금 요청서', auctionNumber, s
                     <tbody>
                       {/* 테이블 내용 추가 */}
                       {
+                        infoData?.list && 
                         infoData.list.map(v => (
                           <tr key={v.uid}>
                             <Td>{v.productNumber}</Td>
