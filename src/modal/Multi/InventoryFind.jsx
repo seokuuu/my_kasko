@@ -23,7 +23,7 @@ import styled from 'styled-components'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 
 // 고객사 찾기
-const InventoryFind = ({ title, setSwitch, data, type, setPropsUid, handleButtonOnClick }) => {
+const InventoryFind = ({ title, setSwitch, data, type, setPropsUid, handleButtonOnClick, defaultValue }) => {
 	const matchData = { name: '고객명', code: '고객사 코드', businessNumber: '사업자번호' }
 	const destinationData = { name: '목적지', code: '목적지 코드' }
 

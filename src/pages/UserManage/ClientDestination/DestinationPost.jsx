@@ -71,7 +71,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	const [detailAddress, setDetailAddress] = useState('')
 	const [isDaumPostOpen, setIsDaumPostOpen] = useState(false)
 	const [submitData, setSubmitData] = useState(init)
-	const { showAlert, simpleAlert } = useAlert()
+	const { showAlert, simpleAlert, simpleConfirm } = useAlert()
 	console.log('submitData', submitData)
 
 	// 목적지 주소 핸들러
@@ -291,7 +291,15 @@ const DestinationPost = ({ setChoiceComponent }) => {
 				</HalfWrap>
 			</OnePageSubContainer>
 			<BtnWrap bottom={-250}>
-				<WhiteBtn width={40} height={40} onClick={goBack}>
+				<WhiteBtn
+					width={40}
+					height={40}
+					onClick={() => {
+						simpleConfirm('현재 작업 중인 내용이 저장되지 않았습니다.\n 페이지를 나가겠습니까?', () => {
+							goBack()
+						})
+					}}
+				>
 					돌아가기
 				</WhiteBtn>
 				<BlackBtn width={40} height={40} onClick={submitHandle}>

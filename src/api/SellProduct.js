@@ -31,8 +31,8 @@ export async function getSingleProducts(data) {
 	})
 	return { pagination, r }
 }
-export async function postExcelSubmitProduct(data) {
 
+export async function postExcelSubmitProduct(data) {
   try{
     return await client.post(`${urls.single}`,data,{
       headers:{

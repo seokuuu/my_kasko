@@ -27,6 +27,7 @@ import {
 import './TableUi.css'
 import PropTypes from 'prop-types'
 import useDragginRow from '../../hooks/useDragginRow'
+import InputCellRenderer from './InputCellRenderer'
 // import TableStyle from './Table.module.css'
 
 // import { get } from 'lodash'
@@ -452,7 +453,7 @@ const Table = ({
 						overlayLoadingTemplate="데이터를 불러오는 중..."
 						// sideBar={{ toolPanels: ['columns', 'filters'] }}
 						onRowDragEnd={dragAndDrop ? onRowDragEnd : () => {}}
-						onCellValueChanged={changeFn}
+						// onCellValueChanged={changeFn}
 					/>
 				</div>
 			</TestContainer>
