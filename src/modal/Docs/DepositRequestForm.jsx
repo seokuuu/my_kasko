@@ -40,7 +40,7 @@ const TOTAL_DATA = {
  * [**] 입금 요청서 모달
  * @param {string} title 입금요청서 제목
  * @param {boolean} salesDeposit 상시판매 여부
- * @param {string} auctionNumber 경매번호|상시판매 번호 (경매|상시판매)
+ * @param {string} auctionNumber 경매번호|상시판매 번호 (경매|상시판매) 
  * @param {string} storage 창고 (경메)
  * @param {string} customerDestinationUid 고객사 목적지 고유번호 (경매)
  * @param {string} biddingStatus 낙찰상태 (경매)

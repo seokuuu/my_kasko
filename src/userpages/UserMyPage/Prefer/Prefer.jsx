@@ -1,169 +1,135 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
-import { useAtom } from 'jotai'
-import { isArray } from 'lodash'
-import useMutationQuery from '../../../hooks/useMutationQuery'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { deleteCustomerfavorite, getCustomerfavorite, getDetailCustomerfavorite } from '../../../api/myPage'
-import { UserPageUserPreferFields, UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
-import { add_element_field } from '../../../lib/tableHelpers'
-import Table from '../../../pages/Table/Table'
-import {
-  userpageUserPreferEditObject,
-  userpageUserPreferEdit,
-  btnCellUidAtom,
-  selectedRowsAtom,
-  toggleAtom,
-} from '../../../store/Layout/Layout'
+import { useMutation } from '@tanstack/react-query'
+import { useAtom, useAtomValue } from 'jotai'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { deleteCustomerfavorite, getCustomerfavorite, preferQueryKey } from '../../../api/myPage'
+import { queryClient } from '../../../api/query'
 import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
-import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
-import PreferEdit from './PreferEdit'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
+import { UserPageUserPreferFields, UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
+import useReactQuery from '../../../hooks/useReactQuery'
+import useTableSelection from '../../../hooks/useTableSelection'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
+import Table from '../../../pages/Table/Table'
+import useAlert from '../../../store/Alert/useAlert'
+import { btnCellUidAtom, selectedRowsAtom, userpageUserPreferEdit } from '../../../store/Layout/Layout'
+import PreferEdit from './PreferEdit'
 
 const Prefer = ({ setChoiceComponent }) => {
-  const [switchEdit, setSwtichEdit] = useAtom(userpageUserPreferEdit)
-  const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-  const [filterData, setFilterData] = useAtom(userpageUserPreferEditObject)
-  const radioDummy = ['전체', '미진행', '진행중', '종료']
-  const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, () => false))
-  const [savedRadioValue, setSavedRadioValue] = useState('')
-  useEffect(() => {
-    const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
+	// 선택된 항목
+	const { selectedCount, selectedData } = useTableSelection()
+	console.log('selectedData :', selectedData)
 
-    // 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-    // if (checkedIndex !== -1) {
-    //   const selectedValue = radioDummy[checkedIndex];
-    //   setSavedRadioValue(selectedValue); //내 state에 반환
-    //   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-    // }
-  }, [checkRadio])
+	const { simpleAlert, simpleConfirm } = useAlert()
 
-  const handleSelectChange = (selectedOption, name) => {
-    // setInput(prevState => ({
-    //   ...prevState,
-    //   [name]: selectedOption.label,
-    // }));
-  }
-  const [isRotated, setIsRotated] = useState(false)
+	const [switchEdit, setSwtichEdit] = useAtom(userpageUserPreferEdit)
+	const uidAtom = useAtomValue(btnCellUidAtom)
+	// const [filterData, setFilterData] = useAtom(userpageUserPreferEditObject)
+	// const radioDummy = ['전체', '미진행', '진행중', '종료']
 
-  // Function to handle image click and toggle rotation
-  const handleImageClick = () => {
-    setIsRotated((prevIsRotated) => !prevIsRotated)
-  }
+	// ====================================================================================
+	const [getRow, setGetRow] = useState('')
+	const tableField = useRef(UserPageUserPreferFieldsCols)
+	const getCol = tableField.current
+	const checkedArray = useAtom(selectedRowsAtom)[0]
 
-  // 토글 쓰기
-  const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-  const [toggleMsg, setToggleMsg] = useState('On')
-  const toggleBtnClick = () => {
-    setExfilterToggle((prev) => !prev)
-    if (exFilterToggle === true) {
-      setToggleMsg('Off')
-    } else {
-      setToggleMsg('On')
-    }
-  }
+	const paramData = {
+		pageNum: 1,
+		pageSize: 50,
+	}
+	const [param, setParam] = useState(paramData)
+	const { isLoading, isError, data, isSuccess } = useReactQuery(param, preferQueryKey.list, getCustomerfavorite)
+	const resData = data?.data?.data?.list
+	const resPagination = data?.data?.data?.pagination
+	const [tablePagination, setTablePagination] = useState([])
+	const detailData = data?.data?.data?.list
 
-  // ====================================================================================
-  const [getRow, setGetRow] = useState('')
-  const tableField = useRef(UserPageUserPreferFieldsCols)
-  const getCol = tableField.current
-  const checkedArray = useAtom(selectedRowsAtom)[0]
+	if (isError) console.log('데이터 request ERROR')
 
-  const paramData = {
-    pageNum: 1,
-    pageSize: 50,
-  }
-  const [param, setParam] = useState(paramData)
-  const { isLoading, isError, data, isSuccess } = useReactQuery(param, 'getCustomerfavorite', getCustomerfavorite)
-  const resData = data?.data?.data?.list
-  const resPagination = data?.data?.data?.pagination
-  const [tablePagination, setTablePagination] = useState([])
-  const detailData = data?.data?.data?.list
+	useEffect(() => {
+		let getData = resData
+		if (!isSuccess && !resData) return
+		if (Array.isArray(getData)) {
+			setGetRow(add_element_field(getData, UserPageUserPreferFields))
+			setTablePagination(resPagination)
+		}
+	}, [isSuccess, data])
+	// 삭제
+	const { mutate: remove } = useMutation(deleteCustomerfavorite, {
+		onSuccess() {
+			queryClient.invalidateQueries('getCustomerfavorite')
+		},
+		onError() {
+			simpleAlert('삭제에 실패하였습니다.')
+		},
+	})
+	const handleRemoveBtn = useCallback(() => {
+		if (selectedCount === 0) return simpleAlert('항목을 선택해주세요.')
+		simpleConfirm('선택한 항목을 삭제하시겠습니까?', () => remove(selectedData.map((select) => select['uid'])))
+	}, [checkedArray])
 
-  if (isError) console.log('데이터 request ERROR')
+	const goPostPage = () => {
+		setChoiceComponent('등록')
+	}
 
-  useEffect(() => {
-    let getData = resData
-    if (!isSuccess && !resData) return
-    if (Array.isArray(getData)) {
-      setGetRow(add_element_field(getData, UserPageUserPreferFields))
-      setTablePagination(resPagination)
-    }
-  }, [isSuccess, data])
-  // 삭제
-  const mutation = useMutationQuery('userManage', deleteCustomerfavorite)
-  const handleRemoveBtn = useCallback(() => {
-    if (!isArray(checkedArray) || checkedArray.length === 0) return alert('선택해주세요!')
+	const onPageChange = (value) => {
+		setParam((prevParam) => ({
+			...prevParam,
+			pageNum: Number(value),
+		}))
+	}
 
-    if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
-      checkedArray.forEach((item) => {
-        mutation.mutate(item['uid']) //mutation.mutate로 api 인자 전해줌
-      })
-    }
-  }, [checkedArray])
+	useEffect(() => {
+		// 컴포넌트가 언마운트될 때 switchEdit을 재설정하는 정리 함수
+		return () => {
+			setSwtichEdit(false)
+		}
+	}, [])
 
-  const goPostPage = () => {
-    setChoiceComponent('등록')
-  }
+	return (
+		<>
+			{switchEdit ? (
+				<PreferEdit detailData={detailData} setSwtichEdit={setSwtichEdit} uidAtom={uidAtom} />
+			) : (
+				<FilterContianer>
+					<FilterHeader>
+						<div style={{ display: 'flex' }}>
+							<h1>선호제품 관리</h1>
+						</div>
+						{/* 토글 쓰기 */}
+					</FilterHeader>
 
-  const onPageChange = (value) => {
-    setParam((prevParam) => ({
-      ...prevParam,
-      pageNum: Number(value),
-    }))
-  }
-
-  useEffect(() => {
-    // 컴포넌트가 언마운트될 때 switchEdit을 재설정하는 정리 함수
-    return () => {
-      setSwtichEdit(false)
-    }
-  }, [])
-
-  return (
-    <>
-      {' '}
-      {switchEdit ? (
-        <PreferEdit detailData={detailData} setSwtichEdit={setSwtichEdit} uidAtom={uidAtom} />
-      ) : (
-        <FilterContianer>
-          <FilterHeader>
-            <div style={{ display: 'flex' }}>
-              <h1>선호제품 관리</h1>
-            </div>
-            {/* 토글 쓰기 */}
-          </FilterHeader>
-
-          <TableContianer>
-            <TCSubContainer bor>
-              <div></div>
-              <div
-                style={{
-                  display: 'flex',
-                  gap: '10px',
-                  alignItems: 'center',
-                }}
-              >
-                <PageDropdown
-                  handleDropdown={(e) =>
-                    setParam((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))
-                  }
-                />
-                <WhiteRedBtn onClick={handleRemoveBtn}>선택 삭제</WhiteRedBtn>
-                <SkyBtn onClick={goPostPage}>등록</SkyBtn>
-              </div>
-            </TCSubContainer>
-            <Table
-              getCol={getCol}
-              getRow={getRow}
-              setChoiceComponent={setChoiceComponent}
-              tablePagination={tablePagination}
-              onPageChange={onPageChange}
-            />
-          </TableContianer>
-        </FilterContianer>
-      )}
-    </>
-  )
+					<TableContianer>
+						<TCSubContainer bor>
+							<div></div>
+							<div
+								style={{
+									display: 'flex',
+									gap: '10px',
+									alignItems: 'center',
+								}}
+							>
+								<PageDropdown
+									handleDropdown={(e) =>
+										setParam((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))
+									}
+								/>
+								<WhiteRedBtn onClick={handleRemoveBtn}>선택 삭제</WhiteRedBtn>
+								<SkyBtn onClick={goPostPage}>등록</SkyBtn>
+							</div>
+						</TCSubContainer>
+						<Table
+							getCol={getCol}
+							getRow={getRow}
+							setChoiceComponent={setChoiceComponent}
+							tablePagination={tablePagination}
+							onPageChange={onPageChange}
+						/>
+					</TableContianer>
+				</FilterContianer>
+			)}
+		</>
+	)
 }
 
 export default Prefer

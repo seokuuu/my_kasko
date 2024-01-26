@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react'
-import { useUserPackageProductListQuery } from '../../../api/user'
+import { USER_URL, useUserPackageProductListQuery } from '../../../api/user'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
@@ -29,6 +29,7 @@ import AddOrderButton from '../_components/AddOrderButton'
 import AddWishButton from '../_components/AddWishButton'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 import PackageSearchFields from './PackageSearchFields'
+import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 
 /**
  * @constant 기본 페이지 검색 값
@@ -47,7 +48,7 @@ const Package = ({}) => {
 	// API
 	const { data: packageData, isLoading } = useUserPackageProductListQuery(searchParams) // 상시판매 패키지 목록 조회 쿼리
 	// 테이블 데이터, 페이지 데이터, 총 중량
-	const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: userPackageProductField,
 		serverData: packageData,
 		wish: { display: true },
@@ -145,7 +146,11 @@ const Package = ({}) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handlePageSizeChange} />
-						<Excel getRow={tableRowData} />
+						<TableV2ExcelDownloader 
+							requestUrl={USER_URL.packageProductList} 
+							requestCount={totalCount}
+							field={userPackageProductField} 
+						/>
 					</div>
 				</TCSubContainer>
 				{/* 선택항목 중량 | 관심상품 등록 */}

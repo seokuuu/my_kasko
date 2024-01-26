@@ -57,20 +57,6 @@ const SellOrderSearchFields = ({
 				{/* 2행 */}
 				<RowWrap>
 					<CustomerSearch search={search} setSearch={setSearch} />
-					{/* <PartWrap first>
-						<h6>고객사 명</h6>
-						<Input value={search.customerName} readOnly name="customerName" />
-						<Input value={search.customerCode} readOnly name="customerCode" />
-						<GreyBtn
-							style={{ width: '70px' }}
-							height={35}
-							margin={10}
-							fontSize={17}
-							onClick={() => modalButtonClickHandler('customer')}
-						>
-							찾기
-						</GreyBtn>
-					</PartWrap> */}
 				</RowWrap>
 				<RowWrap>
 					{/* 구분 */}
@@ -97,17 +83,18 @@ const SellOrderSearchFields = ({
 						initOptions={[
 							{
 								checked: false,
-								text: '판매재',
-								value: '판매재',
+								text: '확정 전송',
+								value: '확정 전송',
 							},
 							{
 								checked: false,
-								text: '판매제외제',
-								value: '판매제외제',
+								text: '확정전송 대기',
+								value: '확정 전송 대기',
 							},
 						]}
 						setState={setSearch}
 						stateKey="orderStatusList"
+						isExistEntireValue={true}
 					/>
 				</PartWrap>
 			</FilterLeft>
@@ -119,14 +106,6 @@ const SellOrderSearchFields = ({
 					height="100%"
 				/>
 			</FilterRight>
-			{/* {useAtomValue(customerModalAtom) === true && (
-				<InventoryFind
-					title={'고객사 찾기'}
-					handleButtonOnClick={handleInventoryFindButtonOnClick}
-					setSwitch={setCustomerModalAtom}
-					data={inventoryCustomer}
-				/>
-			)} */}
 		</>
 	)
 }

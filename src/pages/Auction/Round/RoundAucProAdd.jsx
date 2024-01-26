@@ -29,7 +29,7 @@ import {
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
@@ -53,38 +53,21 @@ import useAlert from '../../../store/Alert/useAlert'
 
 // 경매 제품 추가(단일) 메인 컴포넌트
 // 경매 제품 추가 (패키지), 경매 목록 상세(종료된 경매)와 호환 가능
-const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, types, newResData, propsResData }) => {
+const RoundAucProAdd = ({
+	setAddModal,
+	setAddModalnewResData,
+	setNewResData,
+	types,
+	newResData,
+	propsResData,
+	list,
+	onListAdd,
+}) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const { simpleConfirm, simpleAlert } = useAlert()
 	//checkSales
-	const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
-
-	//checkShips
-	const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
-
-	useEffect(() => {
-		// true에 해당되면, value를, false면 빈값을 반환
-		const updatedCheck = checkSales.map((value, index) => {
-			return check1[index] ? value : ''
-		})
-		// 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-		const filteredCheck = updatedCheck.filter((item) => item !== '')
-		setCheckData1(filteredCheck)
-
-		// 전송용 input에 담을 때
-		// setInput({
-		//   ...input,
-		//   businessType: updatedCheck.filter(item => item !== ''),
-		// });
-	}, [check1])
-
-	const handleSelectChange = (selectedOption, name) => {
-		// setInput(prevState => ({
-		//   ...prevState,
-		//   [name]: selectedOption.label,
-		// }));
-	}
+	const selectedRows = useAtomValue(selectedRowsAtom)
 	const [isRotated, setIsRotated] = useState(false)
 
 	// Function to handle image click and toggle rotation
@@ -136,30 +119,43 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
 	console.log('resData', resData)
 
 	useEffect(() => {
-		let getData = resData
-		//타입, 리액트쿼리, 데이터 확인 후 실행
-		if (!isSuccess && !resData) return
-		if (Array.isArray(getData)) {
+		// 이미 추가된 데이터 중복 제거
+		const getData = resData?.filter((obj) => !list?.some((item) => obj.uid === item.uid))
+		if (getData && Array.isArray(getData)) {
 			setGetRow(add_element_field(getData, AuctionRoundExtraProductFields))
-			setTablePagination(resPagination)
+			setTablePagination(data?.pagination)
 		}
-	}, [isSuccess, resData])
+	}, [resData])
 
-	const resetNewResData = () => {
-		setNewResData([])
-	}
+	// const resetNewResData = () => {
+	// 	setNewResData([])
+	// }
 
-	const handleAddBtn = () => {
-		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
-		else {
-			simpleConfirm('선택한 항목을 추가하시겠습니까?', () =>
-				checkedArray.forEach((item) => {
-					console.log('item =>', item)
-					setNewResData((prevData) => [...prevData, item])
-					setAddModal(false)
-				}),
-			)
+	// const handleAddBtn = () => {
+	// 	if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
+	// 	else {
+	// 		simpleConfirm('선택한 항목을 추가하시겠습니까?', () =>
+	// 			checkedArray.forEach((item) => {
+	// 				console.log('item =>', item)
+	// 				setNewResData((prevData) => [...prevData, item])
+	// 				setAddModal(false)
+	// 			}),
+	// 		)
+	// 	}
+	// }
+
+	// 제품 추가
+	const onAdd = () => {
+		if (!selectedRows || selectedRows.length === 0) {
+			return
 		}
+		const key = '고유 번호'
+		const findKey = selectedRows.map((item) => item[key])
+		console.log('findKey', findKey)
+		const addData = resData?.filter((item) => findKey.includes(item.uid))
+
+		onListAdd(addData)
+		setAddModal(false)
 	}
 
 	const handleTablePageSize = (event) => {
@@ -182,7 +178,7 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
 		// then we need to create paramData object to reset the search fields.
 		setParam(paramData)
 	}
-	// import
+
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
@@ -341,15 +337,16 @@ const RoundAucProAdd = ({ setAddModal, setAddModalnewResData, setNewResData, typ
 								<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}></div>
 							</TCSubContainer>
 							<Table
-								getCol={getCol}
+								hei2={250}
+								hei={100}
+								getCol={AuctionRoundExtraProductFieldsCols}
 								getRow={getRow}
-								tablePagination={tablePagination}
+								isLoading={isLoading}
 								onPageChange={onPageChange}
-								hei2={280}
 							/>
 							<TCSubContainer style={{ marginTop: '25px' }}>
 								<div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-									<BlackBtn width={13} height={40} onClick={handleAddBtn}>
+									<BlackBtn width={13} height={40} onClick={onAdd}>
 										제품 추가
 									</BlackBtn>
 								</div>

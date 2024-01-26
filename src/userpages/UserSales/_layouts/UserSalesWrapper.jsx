@@ -6,7 +6,6 @@ import PackageDetailsModal from '../_components/PackageDetailsModal'
  * @description 패키지 상세 모달 활성화 여부를 공유하는 컨텍스트
  */
 export const PackageViewerDispatchContext = createContext()
-export const PackageViewerOnContext = createContext()
 
 /**
  * @constant 패키지 액션 상수

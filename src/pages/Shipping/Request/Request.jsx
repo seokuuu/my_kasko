@@ -1,26 +1,26 @@
+import { useAtomValue } from 'jotai'
+import { useAtom } from 'jotai/index'
+import { isEqual } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
-import Hidden from '../../../components/TableInner/Hidden'
-import Excel from '../../../components/TableInner/Excel'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { GlobalFilterHeader } from '../../../components/Filter'
 import { useShipmentListQuery, useShipmentStatusUpdateMutation } from '../../../api/shipment'
+import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { GlobalFilterHeader } from '../../../components/Filter'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
+import Excel from '../../../components/TableInner/Excel'
+import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { ShippingRegisterFields, ShippingRegisterFieldsCols } from '../../../constants/admin/Shipping'
-import { useAtom } from 'jotai/index'
 import { add_element_field } from '../../../lib/tableHelpers'
+import { FilterContianer, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
+import useAlert from '../../../store/Alert/useAlert'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { KilogramSum } from '../../../utils/KilogramSum'
+import { formatWeight } from '../../../utils/utils'
 import Table from '../../Table/Table'
+import RequestSearchFilter from './RequestSearchFilter'
 import RequestSelector from './RequestSelector'
 import { getAddNewDestination } from './utils'
-import useAlert from '../../../store/Alert/useAlert'
-import { useAtomValue } from 'jotai'
-import { isEqual } from 'lodash'
-import { formatWeight } from '../../../utils/utils'
-import { KilogramSum } from '../../../utils/KilogramSum'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import RequestSearchFilter from './RequestSearchFilter'
 
 const initData = {
 	pageNum: 1,
@@ -130,7 +130,6 @@ const Request = ({ setChoiceComponent }) => {
 				title={'출고 요청'}
 				subTitle={<Subtitle2 onClick={() => setChoiceComponent('requestRecom')}>선별 추천</Subtitle2>}
 			/>
-
 			{exFilterToggle && (
 				<GlobalProductSearch
 					param={param}
@@ -140,7 +139,6 @@ const Request = ({ setChoiceComponent }) => {
 					renderCustomSearchFields={(props) => <RequestSearchFilter {...props} />}
 				/>
 			)}
-
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>

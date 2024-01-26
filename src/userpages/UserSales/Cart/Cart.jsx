@@ -1,7 +1,6 @@
 import { useContext, useEffect, useMemo } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useUserCartListQuery } from '../../../api/user'
-import Excel from '../../../components/TableInner/Excel'
+import { USER_URL, useUserCartListQuery } from '../../../api/user'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import {
   userCartListPackageField,
@@ -21,9 +20,11 @@ import {
   TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import TableV2 from '../../../pages/Table/TableV2'
+import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import AddOrderButton from '../_components/AddOrderButton'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
+import DelCartButton from '../_components/DelCartButton'
 
 /**
  * @constant 기본 검색 값
@@ -59,7 +60,7 @@ const Cart = ({}) => {
     best: { display: true }
   })
   // 선택 항목
-  const { selectedData, selectedWeight, selectedWeightStr, selectedCountStr, selectedCount } = useTableSelection({
+  const { selectedData, selectedWeight, selectedWeightStr, selectedCountStr } = useTableSelection({
     weightKey: isSingleCategory ? '중량' : '패키지 상품 총 중량',
   });
   // 패키지 상세보기
@@ -113,7 +114,11 @@ const Cart = ({}) => {
           </div>
           <div>
             <PageDropdown handleDropdown={handlePageSizeChange} />
-            <Excel getRow={tableRowData} />
+            <TableV2ExcelDownloader 
+              requestUrl={`${USER_URL.cartList}/${productType}`} 
+              requestCount={totalCount} 
+              field={isSingleCategory? userCartListSingleField : userCartListPackageField} 
+            />
           </div>
         </TCSubContainer>
         {/* 선택항목 중량 */}
@@ -131,7 +136,8 @@ const Cart = ({}) => {
           }}
         />
         {/* 테이블 액션 */}
-        <TCSubContainer style={{ width: '100%', justifyContent: 'flex-end' }}>
+        <TCSubContainer style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end',width: '100%' }}>
+          <DelCartButton category={searchParams.category} products={selectedData} />
           <AddOrderButton category={searchParams.category} totalWeight={selectedWeight} products={selectedData} />
         </TCSubContainer>
       </TableContianer>

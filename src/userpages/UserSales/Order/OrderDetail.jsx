@@ -1,15 +1,13 @@
 import React, { Fragment, useContext, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
-import { useUserDestinationUpdateRequestMutation, useUserOrderDetailsQuery } from '../../../api/user'
-import { BtnBound, TGreyBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { USER_URL, useUserDestinationUpdateRequestMutation, useUserOrderDetailsQuery } from '../../../api/user'
+import { BtnBound, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
-import Excel from '../../../components/TableInner/Excel'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { userOrderDetailsField, userOrderDetailsFieldsCols } from '../../../constants/user/orderTable'
 import useTableData from '../../../hooks/useTableData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'
-import DepositRequestForm from '../../../modal/Docs/DepositRequestForm'
 import {
 	FilterContianer,
 	FilterHeader,
@@ -19,8 +17,10 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import DestinationChange from '../../../modal/Multi/DestinationChange'
 import TableV2 from '../../../pages/Table/TableV2'
+import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import useAlert from '../../../store/Alert/useAlert'
+import PrintDepositRequestButton from '../_components/PrintDepositRequestButton'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 
 /**
@@ -78,7 +78,7 @@ const OrderDetail = ({ salesNumber }) => {
 	// API
 	const { data: orderData, isError, isLoading } = useUserOrderDetailsQuery(searchParams)
 	// 테이블 데이터, 페이지 데이터, 총 중량
-	const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: userOrderDetailsField,
 		serverData: orderData,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
@@ -93,8 +93,6 @@ const OrderDetail = ({ salesNumber }) => {
 	const [destinationUpdateItems, setDestinationUpdateItems] = useState([])
 	// 목적지 변경 API
 	const { mutate: requestDestinationUpdate, isLoaidng: isRequstLoading } = useUserDestinationUpdateRequestMutation()
-	// 입금요청서 발행 모드
-	const [receiptPrint, setReceiptPrint] = useState(false)
 	// 목적지 변경항목 반영 테이블 데이터
 	const tableRowDataWithNewDestination = useMemo(() => {
 		const destinationItemUids = destinationUpdateItems.map((v) => v[UID_KEY])
@@ -136,17 +134,24 @@ const OrderDetail = ({ salesNumber }) => {
 		if (!destination) {
 			return simpleAlert('적용할 목적지를 선택해 주세요.')
 		}
+		
 		if (destinationUpdateItems.length < 1) {
-			return simpleAlert('목적지를 적용할 상품을 선택해 주세요.')
+			return simpleAlert('변경할 목적지를 적용한 상품이 없습니다.');
 		}
 
-		requestDestinationUpdate({
-			updateList: destinationUpdateItems.map((v) => ({
-				uid: v[UID_KEY],
-				requestCustomerDestinationUid: destination.uid,
-			})),
-		})
+		const selectedUids = selectedData.map(v => v[UID_KEY]);
+		const selectedUpdateList = destinationUpdateItems
+															.filter(v => selectedUids.includes(v[UID_KEY]))
+															.map((v) => ({
+																uid: v[UID_KEY],
+																requestCustomerDestinationUid: destination.uid,
+															}));
 
+		if(selectedUpdateList.length < 1) {
+			return simpleAlert('목적지 승인 요청할 상품을 선택해 주세요.');
+		}
+
+		requestDestinationUpdate({ updateList: selectedUpdateList})
 		setDestinationUpdateItems([])
 		setDestination(null)
 	}
@@ -192,7 +197,13 @@ const OrderDetail = ({ salesNumber }) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handlePageSizeChange} />
-						<Excel getRow={tableRowData} />
+						<TableV2ExcelDownloader
+							requestUrl={USER_URL.orderList} 
+							requestParam={{auctionNumber: salesNumber}}
+							requestCount={totalCount}
+							field={userOrderDetailsField} 
+							sheetName={`주문확인상세(${salesNumber})`}
+						/>
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
@@ -229,27 +240,14 @@ const OrderDetail = ({ salesNumber }) => {
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteSkyBtn
-							onClick={() => {
-								setReceiptPrint(true)
-							}}
-						>
-							입금 요청서 발행
-						</WhiteSkyBtn>
+						<PrintDepositRequestButton
+							auctionNumber={salesNumber}
+							title="상시판매 입금 요청서"
+							salesDeposit
+						/>
 					</div>
 				</TCSubContainer>
 			</TableContianer>
-			{/* 입금 요청서 모달 */}
-			{receiptPrint && (
-				<DepositRequestForm
-					title="상시판매 입금요청서"
-					auctionNumber={salesNumber}
-					salesDeposit
-					onClose={() => {
-						setReceiptPrint(false)
-					}}
-				/>
-			)}
 		</FilterContianer>
 	)
 }

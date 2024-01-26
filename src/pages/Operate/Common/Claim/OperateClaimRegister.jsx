@@ -285,7 +285,7 @@ const OperateClaimRegister = ({ pageType }) => {
 								<DateTitle style={{ width: '150px' }}>클레임 진행 상태</DateTitle>
 								<MainSelect
 									options={claimOngoingStatus}
-									defaultValue={claimOngoingStatus[0]}
+									// defaultValue={claimOngoingStatus[0]}
 									value={form.claimStatus}
 									onChange={(e) => setForm((p) => ({ ...p, claimStatus: e }))}
 								/>

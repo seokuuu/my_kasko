@@ -51,6 +51,10 @@ import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import UserBiddingSearchFields from '../Single/UserBiddingSearchFields'
 import { isEqual } from 'lodash'
+import useTableSelection from '../../../hooks/useTableSelection'
+import useTableData from '../../../hooks/useTableData'
+import { PROD_COL_NAME } from '../../../constants/user/constantKey'
+import AddWishButton from '../../UserSales/_components/AddWishButton'
 
 const Single = ({}) => {
 	const radioDummy = ['전체', '미응찰', '관심제품', '응찰']
@@ -221,6 +225,21 @@ const Single = ({}) => {
 
 	console.log('winningCreateData', winningCreateData)
 
+	/* ==================== 관심상품 등록 start ==================== */
+	// 선택상품(checked product) - 선택상품 정보를 조회합니다.
+	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	});
+	// 테이블 데이터, 페이지 데이터, 총 중량
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
+		tableField: AuctionBiddingFields,
+		serverData: data?.data?.data,
+		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		best: { display: true }
+	});
+	
+	/* ==================== 관심상품 등록 end ==================== */
+
 	return (
 		<>
 			{' '}
@@ -370,23 +389,21 @@ const Single = ({}) => {
 				<TableContianer>
 					<TCSubContainer bor>
 						<div>
-							조회 목록 (선택 <span>2</span> / 50개 )
+							조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 							<Hidden />
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
 							<PageDropdown handleDropdown={handleTablePageSize} />
 							<Excel getRow={getRow} />
-							<WhiteGrnBtn>
-								<div>
-									<img src="/img/grnstar.png" />
-								</div>
-								관심상품 등록
-							</WhiteGrnBtn>
+							<AddWishButton
+								products={selectedData} 
+								productNumberKey={PROD_COL_NAME.packageNumber} 
+							/>
 						</div>
 					</TCSubContainer>
 					<TCSubContainer bor>
 						<div>
-							선택 중량<span> 2 </span>kg / 총 중량 kg
+							선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 						</div>
 						<div
 							style={{
@@ -451,7 +468,7 @@ const Single = ({}) => {
 							</SkyBtn>
 						</div>
 					</TCSubContainer>
-					<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
+					<Table getCol={getCol} getRow={tableRowData} tablePagination={tablePagination} onPageChange={onPageChange} />
 				</TableContianer>
 				{destinationPopUp && (
 					<InventoryFind

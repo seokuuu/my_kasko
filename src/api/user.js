@@ -4,7 +4,7 @@ import { queryClient } from './query'
 import useAlert from '../store/Alert/useAlert'
 import { getUrlWithSearchParam } from '../utils/parameters'
 
-const urls = {
+export const USER_URL = {
 	get: '/user/signup',
 	singleProductList: '/single-product',
 	packageProductList: '/package-product',
@@ -22,7 +22,7 @@ const urls = {
     회원 정보
 ============================== */
 export function getUser() {
-	return client.get(urls.get)
+	return client.get(USER_URL.get)
 }
 
 /**
@@ -34,7 +34,7 @@ export const useUserSingleProductListQuery = (param) =>
 	useQuery({
 		queryKey: ['user', 'single', param],
 		queryFn: async () => {
-			const { data } = await client.get(getUrlWithSearchParam(urls.singleProductList, param))
+			const { data } = await client.get(getUrlWithSearchParam(USER_URL.singleProductList, param))
 			return data.data
 		},
 	})
@@ -48,7 +48,7 @@ export const useUserPackageProductListQuery = (param) =>
 	useQuery({
 		queryKey: ['user', 'package', param],
 		queryFn: async () => {
-			const { data } = await client.get(getUrlWithSearchParam(urls.packageProductList, param))
+			const { data } = await client.get(getUrlWithSearchParam(USER_URL.packageProductList, param))
 			return data.data
 		},
 	})
@@ -62,7 +62,7 @@ export const useUserPackageProductDetailsListQuery = (param) =>
 	useQuery({
 		queryKey: ['user', 'package', 'details', param],
 		queryFn: async () => {
-			const { data } = await client.get(getUrlWithSearchParam(urls.packageProductDetailsList, param))
+			const { data } = await client.get(getUrlWithSearchParam(USER_URL.packageProductDetailsList, param))
 			return data.data
 		},
 	})
@@ -78,7 +78,7 @@ export const useUserCartListQuery = (param) =>
 		queryKey: ['user', 'cart', param],
 		queryFn: async () => {
 			const { data } = await client.get(
-				`${urls.cartList}/${param.category}?pageNum=${param.pageNum || 1}&pageSize=${param.pageSize || 50}`,
+				`${USER_URL.cartList}/${param.category}?pageNum=${param.pageNum || 1}&pageSize=${param.pageSize || 50}`,
 			)
 			return data.data
 		},
@@ -93,7 +93,7 @@ export const useUserOrderListQuery = (param) =>
 	useQuery({
 		queryKey: ['user', 'order', param],
 		queryFn: async () => {
-			const { data } = await client.get(getUrlWithSearchParam(urls.orderList, param))
+			const { data } = await client.get(getUrlWithSearchParam(USER_URL.orderList, param))
 			return data.data
 		},
 	})
@@ -108,7 +108,7 @@ export const useUserOrderDetailsQuery = (param) =>
 	useQuery({
 		queryKey: ['user', 'order', 'details', param],
 		queryFn: async () => {
-			const { data } = await client.get(getUrlWithSearchParam(urls.orderList, param))
+			const { data } = await client.get(getUrlWithSearchParam(USER_URL.orderList, param))
 			return data.data
 		},
 	})
@@ -123,14 +123,36 @@ export const useUserAddCartMutaion = () => {
 
 	return useMutation({
 		mutationFn: async (cartParam) => {
-			await client.post(urls.cartRequest, cartParam)
+			await client.post(USER_URL.cartRequest, cartParam)
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: 'cart' })
+			queryClient.invalidateQueries({ queryKey: ['user','cart'] })
 			simpleAlert('장바구니에 추가하였습니다.')
 		},
 		onError: (error) => {
 			simpleAlert(error?.data?.message || '장바구니 추가에 실패하였습니다.')
+		},
+	})
+}
+
+/**
+ * 장바구니 삭제하기 API 뮤테이션
+ * @param {*} cartParam
+ * @description 장바구니 삭제하기 API
+ */
+export const useUserDelCartMutaion = () => {
+	const { simpleAlert } = useAlert()
+
+	return useMutation({
+		mutationFn: async (cartParam) => {
+			await client.delete(`${USER_URL.cartRequest}/${cartParam}`)
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['user','cart'] })
+			simpleAlert('장바구니에서 삭제하였습니다.')
+		},
+		onError: (error) => {
+			simpleAlert(error?.data?.message || '장바구니 삭제에 실패하였습니다.')
 		},
 	})
 }
@@ -145,10 +167,10 @@ export const useUserOrderMutaion = () => {
 
 	return useMutation({
 		mutationFn: async (orderParam) => {
-			await client.post(urls.orderRequest, orderParam)
+			await client.post(USER_URL.orderRequest, orderParam)
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: 'cart' })
+			queryClient.invalidateQueries({ queryKey:['user','cart'] })
 			return simpleAlert('주문을 완료하였습니다.')
 		},
 		onError: (error) => {
@@ -167,7 +189,7 @@ export const useUserOrderCancelMutaion = () => {
 
 	return useMutation({
 		mutationFn: async (cancelParam) => {
-			await client.post(urls.orderCancel, cancelParam)
+			await client.post(USER_URL.orderCancel, cancelParam)
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: 'order' })
@@ -186,17 +208,20 @@ export const useUserDestinationQuery = (param) =>
 	useQuery({
 		queryKey: ['user', 'destination', 'list', param],
 		queryFn: async () => {
-			const { data } = await client.get(urls.destinationList)
+			const { data } = await client.get(USER_URL.destinationList)
 			return data.data
 		},
 	})
 
+/**
+ * 목적지 변경 승인 요청 API 뮤테이션
+ */
 export const useUserDestinationUpdateRequestMutation = () => {
 	const { simpleAlert } = useAlert()
 
 	return useMutation({
 		mutationFn: async (param) => {
-			await client.post(urls.destinationUpdate, param)
+			await client.post(USER_URL.destinationUpdate, param)
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: 'order' })
