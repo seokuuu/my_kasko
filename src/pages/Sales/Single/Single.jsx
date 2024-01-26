@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { getSingleProducts } from '../../../api/SellProduct'
 import { BlackBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
@@ -26,6 +25,8 @@ import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { formatWeight } from '../../../utils/utils'
 import SingleProductSearchFields from './SingleProductSearchFields'
+import TableV2ExcelDownloader from '../../Table/TableV2ExcelDownloader'
+import { CautionBox, CAUTION_CATEGORY } from '../../../components/CautionBox'
 
 const Single = () => {
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
@@ -120,39 +121,8 @@ const Single = () => {
 					<h1>상시 판매 단일</h1>
 					<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 				</FilterHeader>
-				<FilterHeaderAlert>
-					<div style={{ display: 'flex' }}>
-						<div style={{ marginRight: '20px' }}>
-							<img src="/img/notice.png" />
-						</div>
-						{noticeEdit ? (
-							<div style={{ marginTop: '6px' }}>
-								<div>
-									<input style={{ border: '1px solid' }} />
-								</div>
-								<div>
-									<input style={{ marginTop: '6px', border: '1px solid' }} />
-								</div>
-							</div>
-						) : (
-							<div style={{ marginTop: '6px' }}>
-								<div>· 주의사항 영역</div>
-								<div style={{ marginTop: '6px' }}>· 주의사항 영역</div>
-							</div>
-						)}
-					</div>
-					{noticeEdit ? (
-						<EditGear onClick={noticeEditOnClickHandler}>
-							완료
-							<img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-						</EditGear>
-					) : (
-						<EditGear onClick={noticeEditOnClickHandler}>
-							수정
-							<img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-						</EditGear>
-					)}
-				</FilterHeaderAlert>
+				{/* 공지사항 */}
+				<CautionBox category={CAUTION_CATEGORY.singleProduct} />
 				{exFilterToggle && (
 					<GlobalProductSearch
 						// prettier-ignore
@@ -173,7 +143,11 @@ const Single = () => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						<Excel getRow={singleProductListData} />
+						<TableV2ExcelDownloader
+							requestUrl={'/single-product'}
+							requestCount={singleProductPagination?.listCount}
+							field={responseToTableRowMap}
+						/>
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>

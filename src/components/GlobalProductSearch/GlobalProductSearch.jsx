@@ -115,9 +115,10 @@ const GlobalProductSearch = ({
 			orderType: '', // 주문 타입 (Order type)
 			orderNumber: '', // 주문 번호 (Order number)
 			carType: '', // 차량종류
-			receiptDate:'',
-			createDate:'',
-			updateDate:'',
+			receiptDate: '',
+			createDate: '',
+			updateDate: '',
+			roles: [], // 사용자 구분 (창고 / 운송사 / 카스코철강 / 현대제철 / 고객사)
 		}
 	}, [storageList, supplierList, spartList, makerList, stockStatusList, gradeList, preferThicknessList])
 

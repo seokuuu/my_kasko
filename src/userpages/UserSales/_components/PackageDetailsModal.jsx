@@ -1,9 +1,8 @@
 import { useSetAtom } from 'jotai'
-import React, { Fragment, useEffect, useLayoutEffect, useMemo } from 'react'
+import React, { Fragment, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { USER_URL, useUserPackageProductDetailsListQuery } from '../../../api/user'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
-import Excel from '../../../components/TableInner/Excel'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKey'
 import {
@@ -28,12 +27,11 @@ import {
 	TableContianer
 } from '../../../modal/External/ExternalFilter'
 import TableV2 from '../../../pages/Table/TableV2'
-import Table from '../../../pages/Table/Table'
+import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import { selectedRows2Switch } from '../../../store/Layout/Layout'
 import AddCartButton, { CART_BUTTON_TYPE } from './AddCartButton'
 import AddOrderButton, { ORDER_BUTTON_TYPE } from './AddOrderButton'
-import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 
 /**
  * @constant 기본 검색 값
@@ -43,7 +41,42 @@ const initialSearchParams = {
 	pageSize: 50, // 페이지 갯수
 }
 
+/**
+ * @constant 요약정보 데이터 칼럼
+ */
 const TITLE_DATA = ['패키지 명', '수량', '시작가']
+
+/**
+ * 요약정보 반환 함수
+ * @param {object[]} productList 테이블 상품 데이터
+ * @param {string} totalCount 전체 갯수
+ * @returns {string[]} 요약정보
+ */
+function getInfoData(productList, totalCount) {
+	if (productList.length < 1) {
+		return ['-', '-', '-']
+	}
+	const targetData = productList[0]
+	return [targetData['패키지 명'], totalCount, targetData['상시판매 시작가']]
+}
+
+/**
+ * 장바구니 데이터 반환 함수
+ * @param {object[]} productList 테이블 상품 데이터
+ * @param {string} packageNumber 패키지 넘버
+ * @returns {object} 장바구니 데이터
+ */
+function getCartOrderData(productList, packageNumber) {
+	if (productList.length < 1) {
+		return [];
+	}
+	const targetData = productList[0];
+	return [{
+		[PROD_COL_NAME.packageUid]: targetData[PROD_COL_NAME.packageUid],
+		[PROD_COL_NAME.packageNumber]: packageNumber,
+		[PROD_COL_NAME.salePrice]: targetData[PROD_COL_NAME.salePrice],
+	}];
+}
 
 // 패키지 상세보기 (경매)
 const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
@@ -62,25 +95,9 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 		best: { display: true }
 	})
 	// 장바구니, 주문하기 데이터
-	const cartOrderDatas = useMemo(() => {
-		if (tableRowData.length < 1) {
-			return [];
-		}
-		const targetData = tableRowData[0];
-		return [{
-			[PROD_COL_NAME.packageUid]: targetData[PROD_COL_NAME.packageUid],
-			[PROD_COL_NAME.packageNumber]: packageNumber,
-			[PROD_COL_NAME.salePrice]: targetData[PROD_COL_NAME.salePrice],
-		}];
-	})
+	const cartOrderDatas = useMemo(() => getCartOrderData(tableRowData, packageNumber), [tableRowData, packageNumber]);
 	// 요약정보 데이터
-	const infoData = useMemo(() => {
-		if (tableRowData.length < 1) {
-			return ['-', '-', '-']
-		}
-		const targetData = tableRowData[0]
-		return [targetData['패키지 명'], totalCountStr, targetData['상시판매 시작가']]
-	}, [tableRowData, totalCountStr])
+	const infoData = useMemo(() => getInfoData(tableRowData, totalCountStr), [tableRowData, totalCountStr])
 	// 선택 항목
 	const { selectedWeightStr, selectedCountStr } = useTableSelection({
 		weightKey: '총 중량',
@@ -98,8 +115,8 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 
 	return (
 		<>
-			<FadeOverlay />
-			<ModalContainer style={{ width: '75%', maxHeight: '98vh' }}>
+			<FadeOverlay style={{zIndex: 98}}/>
+			<ModalContainer style={{ width: '75%', maxHeight: '98vh', zIndex: 99 }}>
 				<BlueBarHeader style={{ height: '60px' }}>
 					<div>패키지 상세 보기</div>
 					<div>

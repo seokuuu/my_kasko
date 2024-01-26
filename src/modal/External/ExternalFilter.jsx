@@ -191,6 +191,7 @@ export const DoubleWrap = styled.div`
 	> h6 {
 		padding: 5px;
 		width: 120px;
+		white-space: nowrap;
 		font-size: 18px;
 	}
 

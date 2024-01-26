@@ -78,7 +78,7 @@ export const saleProductListResponseToTableRowMap = {
 	하차지명: 'customerDestinationName',
 	주문상태: 'orderStatus',
 	'확정전송 일자': 'updateDate',
-	주문번호: 'auctionBidUid',
+	주문번호: 'orderUid',
 	비고: 'productMemo',
 	매입운반비: 'freightCost',
 	매출운반비: 'totalFreightCost',
