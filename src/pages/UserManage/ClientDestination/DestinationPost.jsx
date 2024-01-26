@@ -66,7 +66,6 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	const [isDaumPostOpen, setIsDaumPostOpen] = useState(false)
 	const [submitData, setSubmitData] = useState(init)
 
-
 	console.log('submitData', submitData)
 
 	const postCheck = () => {
@@ -120,14 +119,13 @@ const DestinationPost = ({ setChoiceComponent }) => {
 		console.log('mergedAddress =>', mergedAddress)
 		setIsDaumPostOpen(false)
 	}
-	const { showAlert, simpleAlert } = useAlert()
+	const { simpleConfirm, showAlert, simpleAlert } = useAlert()
 	console.log('submitData', submitData)
 
 	// 목적지 주소 핸들러
 	function onAddressHandler(address, addressDetail, sido, sigungu, bname) {
 		const destination = `${sido} ${sigungu} ${bname}`
 		setSubmitData((p) => ({ ...p, address, addressDetail, destination }))
-
 	}
 
 	console.log('찐 =>', address, detailAddress)
@@ -187,7 +185,6 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	}
 
 	const submitHandle = (e) => {
-
 		if (!isEmptyObj(submitData)) {
 			return simpleAlert('빈값을 채워주세요.')
 		}
@@ -211,7 +208,6 @@ const DestinationPost = ({ setChoiceComponent }) => {
 					}
 				},
 			})
-
 		} else {
 			alert('내용을 모두 기입해주세요.')
 		}
@@ -290,7 +286,6 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								value={detailAddress}
 								onChange={eventHandle}
 								style={{ marginTop: '5px' }}
-
 							/>
 						</Part>
 						<Part>
@@ -359,7 +354,15 @@ const DestinationPost = ({ setChoiceComponent }) => {
 				</HalfWrap>
 			</OnePageSubContainer>
 			<BtnWrap bottom={-250}>
-				<WhiteBtn width={40} height={40} onClick={goBack}>
+				<WhiteBtn
+					width={40}
+					height={40}
+					onClick={() => {
+						simpleConfirm('현재 작업 중인 내용이 저장되지 않았습니다.\n 페이지를 나가겠습니까?', () => {
+							goBack()
+						})
+					}}
+				>
 					돌아가기
 				</WhiteBtn>
 				<BlackBtn width={40} height={40} onClick={submitHandle}>
@@ -369,8 +372,6 @@ const DestinationPost = ({ setChoiceComponent }) => {
 			{findModal && (
 				<ClientDestiCustomerFind setFindModal={setFindModal} setCustomerFindResult={setCustomerFindResult} />
 			)}
-
-
 
 			{postcodeModal && (
 				<SignUpPost
@@ -387,16 +388,14 @@ const DestinationPost = ({ setChoiceComponent }) => {
 					isDaumPostOpen={isDaumPostOpen}
 					daumPosthandleClose={daumPosthandleClose}
 					daumPostHandleComplete={daumPostHandleComplete}
-
 					noDirect={true}
 				/>
 			)}
-
 		</OnePageContainer>
 	)
 }
 
-export default DestinationPost;
+export default DestinationPost
 
 const RadioContainer = styled.div`
 	display: flex;
