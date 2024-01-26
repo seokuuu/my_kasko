@@ -31,7 +31,7 @@ const PackageSearchFields = ({
 
 	return (
 		<div style={{display: 'flex', justifyContent: 'space-between', gap: 20, width: '100%'}}>
-			<FilterLeft style={{flex: 1, justifyContent: 'center'}}>
+			<FilterLeft style={{justifyContent: 'center', flex: 1}}>
 				<RowWrap>
 					{/* 규격약호 찾기 */}
 					<PartWrap first>
@@ -134,14 +134,14 @@ const PackageSearchFields = ({
 						initialValue={search.productNumberList}
 						setState={setSearch}
 						valueName={'productNumberList'}
-						height="100%"
+						height="80px"
 					/>
 					<ProductNumber
 						title="패키지 번호"
 						initialValue={search.packageNumberList || []}
 						setState={setSearch}
 						valueName={'packageNumberList'}
-						height="100%"
+						height="80px"
 					/>
 				</div>
 			</FilterRight>

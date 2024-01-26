@@ -80,11 +80,16 @@ export function postClient(input, fileForms) {
 	})
 }
 
+// 회원 수정(formData)
+export function updateClient(data) {
+	return client.patch(urls.customer, data)
+}
+
 /* ==============================
     사용자관리 - 고객사 목적지 관리
 ============================== */
 export function get_clientDestination(data) {
-	return client.get(`${urls.clientDestination}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
+  return client.get(`${urls.clientDestination}`,{params:data})
 }
 
 export async function get_detailClientDestination(data) {

@@ -22,7 +22,6 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import useAlert from '../../../store/Alert/useAlert'
 import Table from '../../Table/Table'
-import ClientEditModal from './ClientEditModal'
 import ClientPostModal from './ClientPostModal'
 import ClientSearchFields from './ClientSearchFields'
 import { GlobalFilterHeader } from '../../../components/Filter'
@@ -156,7 +155,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
 	return (
 		<>
 			<FilterContianer>
-				<GlobalFilterHeader title={'고객사 관리'} />
+				<GlobalFilterHeader title={'사용자 관리'} />
 				{exFilterToggle && (
 					<GlobalProductSearch
 						param={param}
@@ -207,7 +206,6 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
 				/>
 			)}
 			{editModal && <ClientPostModal setEditModal={setEditModal} id={uidAtom} />}
-			{/*{editModal && <ClientEditModal setEditModal={setEditModal} uidAtom={uidAtom} />}*/}
 			{postModal && <ClientPostModal setEditModal={setPostModal} id={null} />}
 		</>
 	)

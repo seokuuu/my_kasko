@@ -6,10 +6,16 @@ const urls = {
 	favorite: '/member/favorite',
 }
 
-// 쿼리키
+// 목적지 쿼리키
 export const destinationQueryKey = {
 	// 목록 API
 	list: 'getDestination',
+}
+
+// 선호제품 쿼리키
+export const preferQueryKey = {
+	// 목록 API
+	list: 'getCustomerfavorite',
 }
 
 /* ==============================

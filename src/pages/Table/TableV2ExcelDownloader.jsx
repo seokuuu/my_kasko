@@ -1,25 +1,27 @@
 import React from 'react';
-import useAlert from '../../store/Alert/useAlert';
+import * as XLSX from 'xlsx';
 import { client } from '../../api';
 import { ExcelBtn } from '../../common/Button/Button';
-import { getUrlWithSearchParam } from '../../utils/parameters';
 import { add_element_field } from '../../lib/tableHelpers';
-import * as XLSX from 'xlsx'
-import { read } from 'xlsx';
+import useAlert from '../../store/Alert/useAlert';
+import { getUrlWithSearchParam } from '../../utils/parameters';
 
 /**
  * 엑셀 다운로더
  * @param {string} props.requestUrl 요청 URL
  * @param {string} props.requestMethod 요청 메서드
  * @param {number} props.requestCount 요청 갯수(전체 항목 갯수)
+ * @param {number} props.field 시트칼럼
+ * @param {number} props.sheetName 시트명
  * @returns 
  */
 export const TableV2ExcelDownloader = ({
-  requestUrl = '',  
+  requestUrl = '',
+  requestParam = {},
   requenstMethod = '',
   requestCount = 0,
-  field=[],
-  sheetName=""
+  field,
+  sheetName="kasko"
 }) => {
   // ALERT
   const { simpleAlert } = useAlert();
@@ -32,6 +34,7 @@ export const TableV2ExcelDownloader = ({
      const res = await client({
         method: requenstMethod,
         url: getUrlWithSearchParam(requestUrl, {
+          ...requestParam,
           pageSize: requestCount || 1000,
           pageNum: 1
         }),
@@ -87,7 +90,8 @@ export const TableV2ExcelDownloader = ({
     e.preventDefault();
 
     const rawData = await getData();
-    const sortedData = field? add_element_field(rawData, field) : rawData;
+    const excelField = field || Object.keys(rawData[0]).reduce((acc, v, idx) =>({...acc, [`column_${idx+1}`]: v }) , {});
+    const sortedData = add_element_field(rawData, excelField);
     downloadData(sortedData);
   }
 
