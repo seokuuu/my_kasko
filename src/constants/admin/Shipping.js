@@ -1,3 +1,4 @@
+import Note from '../../pages/Shipping/Request/Note'
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
 
 var checkboxSelection = function (params) {
@@ -10,9 +11,11 @@ var headerCheckboxSelection = function (params) {
 	return params.columnApi.getRowGroupColumns().length === 0
 }
 
-const commonStyles = {headerClass:'custom-header-style',flex:1,
-    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' }}
-
+export const commonStyles = {
+	headerClass: 'custom-header-style',
+	flex: 1,
+	cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+}
 
 export const DispatchFields = {
 	'고유 번호': 'uid',
@@ -24,7 +27,7 @@ export const DispatchFields = {
 }
 
 export const DispatchFieldsCols = [
-	{ ...commonStyles,field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{
 		...commonStyles,
 		field: '수정',
@@ -40,11 +43,11 @@ export const DispatchFieldsCols = [
 		field: '고유 번호',
 		minWidth: 100,
 	},
-	{ ...commonStyles,field: '이름', minWidth: 100 },
-	{ ...commonStyles,field: '차량 번호', minWidth: 100 },
-	{ ...commonStyles,field: '연락처', minWidth: 100 },
-	{ ...commonStyles,field: '차량 종류', minWidth: 100 },
-	{ ...commonStyles,field: '비고', minWidth: 100 },
+	{ ...commonStyles, field: '이름', minWidth: 100 },
+	{ ...commonStyles, field: '차량 번호', minWidth: 100 },
+	{ ...commonStyles, field: '연락처', minWidth: 100 },
+	{ ...commonStyles, field: '차량 종류', minWidth: 100 },
+	{ ...commonStyles, field: '비고', minWidth: 100 },
 ]
 
 /**
@@ -137,12 +140,22 @@ export const ShippingRegisterFields = {
 }
 
 export const ShippingRegisterFieldsCols = [
-	{ field: '',...commonStyles, minWidth: 50, checkboxSelection, headerCheckboxSelection },
-	...Object.keys(ShippingRegisterFields).map((item) => ({
-		...commonStyles,
-		field: item,
-		minWidth: 200,
-	})),
+	{ field: '', ...commonStyles, minWidth: 50, checkboxSelection, headerCheckboxSelection },
+
+	...Object.keys(ShippingRegisterFields).map((item) =>
+		item !== '비고'
+			? {
+					...commonStyles,
+					field: item,
+					minWidth: 200,
+			  }
+			: {
+					field: '비고',
+					...commonStyles,
+					minWidth: 300,
+					cellRenderer: Note,
+			  },
+	),
 ]
 
 // 배차/출고 등록 페이지 목록 필드
@@ -245,7 +258,7 @@ export const ShippingDispatchDetailsFields = {
 
 // 배차/출고 등록 페이지 상세 필드
 export const ShippingDispatchDetailsFieldsCols = [
-	{ ...commonStyles,field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
 	...Object.keys(ShippingDispatchDetailsFields).map((item) => ({
 		...commonStyles,
 		field: item,

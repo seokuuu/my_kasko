@@ -19,8 +19,8 @@ var headerCheckboxSelection = function (params) {
       headerClass:'custom-header-style',flex:1,
       cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
       field: item,
-      editable:(item === '메모' || item === '비고' )? true:false,
-      minWidth: 100,
+      editable:false,
+      minWidth: 150,
       cellRenderer:(params) => {
         console.log('불리언타입유무',typeof params.value)
         if(typeof params.value === 'boolean'){
