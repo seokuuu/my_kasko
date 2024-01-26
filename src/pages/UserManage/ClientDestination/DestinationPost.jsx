@@ -18,21 +18,16 @@ import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../comm
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 
-import { get_addressFind, post_clientDestination } from '../../../api/userManage'
-import { BlackBtn, BtnWrap, WhiteBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import { isEmptyObj } from '../../../lib'
-import useMutationQuery from '../../../hooks/useMutationQuery'
 import { useQueryClient } from '@tanstack/react-query'
-import { UsermanageFindModal } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import { find } from 'lodash'
-import ClientDestiCustomerFind from './ClientDestiCustomerFind'
+import { get_addressFind, post_clientDestination } from '../../../api/userManage'
+import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import { isEmptyObj } from '../../../lib'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
-import useReactQuery from '../../../hooks/useReactQuery'
 import useAlert from '../../../store/Alert/useAlert'
-import DaumPostcode from 'react-daum-postcode'
-import { FadeOverlay } from '../../../modal/Common/Common.Styled'
-import AddressFinder from '../../../components/DaumPost/Address'
+import { UsermanageFindModal } from '../../../store/Layout/Layout'
+import ClientDestiCustomerFind from './ClientDestiCustomerFind'
 
 const init = {
 	represent: '', // (0: 미지정 / 1: 지정)
@@ -70,7 +65,6 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	const [detailAddress, setDetailAddress] = useState('')
 	const [isDaumPostOpen, setIsDaumPostOpen] = useState(false)
 	const [submitData, setSubmitData] = useState(init)
-
 
 	console.log('submitData', submitData)
 
@@ -124,15 +118,14 @@ const DestinationPost = ({ setChoiceComponent }) => {
 		setPostAdress(mergedAddress)
 		console.log('mergedAddress =>', mergedAddress)
 		setIsDaumPostOpen(false)
-
-	const { showAlert, simpleAlert } = useAlert()
+	}
+	const { simpleConfirm, showAlert, simpleAlert } = useAlert()
 	console.log('submitData', submitData)
 
 	// 목적지 주소 핸들러
 	function onAddressHandler(address, addressDetail, sido, sigungu, bname) {
 		const destination = `${sido} ${sigungu} ${bname}`
 		setSubmitData((p) => ({ ...p, address, addressDetail, destination }))
-
 	}
 
 	console.log('찐 =>', address, detailAddress)
@@ -192,7 +185,6 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	}
 
 	const submitHandle = (e) => {
-
 		if (!isEmptyObj(submitData)) {
 			return simpleAlert('빈값을 채워주세요.')
 		}
@@ -216,7 +208,6 @@ const DestinationPost = ({ setChoiceComponent }) => {
 					}
 				},
 			})
-
 		} else {
 			alert('내용을 모두 기입해주세요.')
 		}
@@ -295,7 +286,6 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								value={detailAddress}
 								onChange={eventHandle}
 								style={{ marginTop: '5px' }}
-
 							/>
 						</Part>
 						<Part>
@@ -364,7 +354,15 @@ const DestinationPost = ({ setChoiceComponent }) => {
 				</HalfWrap>
 			</OnePageSubContainer>
 			<BtnWrap bottom={-250}>
-				<WhiteBtn width={40} height={40} onClick={goBack}>
+				<WhiteBtn
+					width={40}
+					height={40}
+					onClick={() => {
+						simpleConfirm('현재 작업 중인 내용이 저장되지 않았습니다.\n 페이지를 나가겠습니까?', () => {
+							goBack()
+						})
+					}}
+				>
 					돌아가기
 				</WhiteBtn>
 				<BlackBtn width={40} height={40} onClick={submitHandle}>
@@ -374,8 +372,6 @@ const DestinationPost = ({ setChoiceComponent }) => {
 			{findModal && (
 				<ClientDestiCustomerFind setFindModal={setFindModal} setCustomerFindResult={setCustomerFindResult} />
 			)}
-
-
 
 			{postcodeModal && (
 				<SignUpPost
@@ -392,11 +388,9 @@ const DestinationPost = ({ setChoiceComponent }) => {
 					isDaumPostOpen={isDaumPostOpen}
 					daumPosthandleClose={daumPosthandleClose}
 					daumPostHandleComplete={daumPostHandleComplete}
-
 					noDirect={true}
 				/>
 			)}
-
 		</OnePageContainer>
 	)
 }
@@ -407,5 +401,4 @@ const RadioContainer = styled.div`
 	display: flex;
 	width: 250px;
 	justify-content: space-between;
-
 `

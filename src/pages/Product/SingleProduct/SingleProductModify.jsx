@@ -21,7 +21,7 @@ function SingleProductModify({ title }) {
 	const getCol = tableRef.current
 	const [singleModfiy, setSingleModify] = useAtom(singleProductModify)
 
-	const [modifyObj, setModifyObj] = useAtom(singleModifyObj)
+	const [modifyObj, setModifyObj] = useAtom(requestSingleModify)
 	//====================== 라디오체크 (오전이냐 오후냐 선택하는 부분) ======================
 	const { simpleConfirm, showAlert } = useAlert()
 	useEffect(() => {
@@ -58,6 +58,7 @@ function SingleProductModify({ title }) {
 				causeCodeName: p['여재 원인명'],
 				receiptDate: p['입고일'],
 				stockStatus: p['재고 상태'],
+				saleCategory: p['판매 구분'],
 			}
 		})
 	}, [])
@@ -68,7 +69,7 @@ function SingleProductModify({ title }) {
 			setGetRow(add_element_field([modifyObj], SingleModifyFields))
 		}
 		//타입, 리액트쿼리, 데이터 확인 후 실행
-	}, [modifyObj])
+	}, [])
 	const modalClose = () => {
 		setSingleModify(false)
 	}
@@ -80,50 +81,11 @@ function SingleProductModify({ title }) {
 			document.body.style.overflow = 'auto'
 		}
 	}, [])
-	const [values, setValues] = useState({})
-
-	const onCellValueChanged = (params) => {
-		const p = params.data
-		console.log(p)
-		setValues({
-			number: p['제품 번호'],
-			storage: p['저장 위치'],
-			storageName: p['저장 위치명'],
-			spec: p['규격 약호'],
-			wdh: p['제품 사양'],
-			thickness: p['두께'],
-			width: p['폭'],
-			length: p['길이'],
-			weight: p['중량'],
-			grade: p['등급'],
-			usageCode: p['용도 코드'],
-			usageCodeName: p['용도명'],
-			c: p['C%'],
-			si: p['Si'],
-			mn: p['Mn'],
-			p: p['P'],
-			s: p['S'],
-			ts: p['TS'],
-			yp: p['YP'],
-			el: p['EL'],
-			spartCode: p['제품군 코드'],
-			spart: p['제품군명'],
-			supplier: p['매입처'],
-			maker: p['제조사'],
-			name: p['품명'],
-			price: Number(p['매입가']),
-			preferThickness: p['정척 여부'],
-			causeCode: p['여재 원인 코드'],
-			causeCodeName: p['여재 원인명'],
-			receiptDate: p['입고일'],
-			stockStatus: p['재고 상태'],
-			saleCategory: p['판매 구분'],
-		})
-	}
 
 	const { mutate } = useMutationQuery('modifyProduct', updateSingleProduct)
 	const handleSubmit = () => {
-		mutate(values, {
+		console.log(modifyObj)
+		mutate(modifyObj, {
 			onSuccess: (d) => {
 				if (d?.data?.status === 200) {
 					showAlert({
@@ -137,6 +99,7 @@ function SingleProductModify({ title }) {
 			},
 		})
 	}
+
 	return (
 		<OutSide>
 			<Container>
@@ -152,7 +115,13 @@ function SingleProductModify({ title }) {
 						<h6>수정 대상 제품</h6>
 						<p>{modifyObj.number}</p>
 					</FilterTCTop>
-					<Table hei={100} hei2={200} getRow={getRow} getCol={getCol} changeFn={onCellValueChanged} />
+					<Table
+						hei={100}
+						hei2={200}
+						getRow={getRow}
+						getCol={getCol}
+						// changeFn={onCellValueChanged}
+					/>
 					<TableBottomWrap>
 						<BlackBtn width={15} height={40} onClick={handleSubmit}>
 							저장
