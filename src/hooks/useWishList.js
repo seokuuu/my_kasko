@@ -25,7 +25,7 @@ const USER_WISH_STORAGE_KEY = (userId) => `${WISH_STORAGE_KEY}_${userId}`;
 /**
  * 비로그인 회원 처리 함수
  */
-function handleGuest() {
+function thorwGuest() {
   alert('로그인 후 이용해 주세요.');
   window.location.href = '/';
   throw new Error('not logged in');
@@ -46,7 +46,7 @@ export default function useWishList() {
    */
   function addWishList(products=[], prodNumKey='number') {
     if(!userId) {
-      handleGuest();
+      thorwGuest();
     }
 
     if(products.length < 1) {
@@ -69,7 +69,7 @@ export default function useWishList() {
       setUserId(userId);
       setWishProdNums(getWishList(userId));
     } else {
-      handleGuest();
+      thorwGuest();
     }
   }, []);
 
