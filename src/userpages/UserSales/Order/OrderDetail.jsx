@@ -1,14 +1,13 @@
 import React, { Fragment, useContext, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { USER_URL, useUserDestinationUpdateRequestMutation, useUserOrderDetailsQuery } from '../../../api/user'
-import { BtnBound, TGreyBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { BtnBound, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { userOrderDetailsField, userOrderDetailsFieldsCols } from '../../../constants/user/orderTable'
 import useTableData from '../../../hooks/useTableData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'
-import DepositRequestForm from '../../../modal/Docs/DepositRequestForm'
 import {
 	FilterContianer,
 	FilterHeader,
@@ -21,8 +20,8 @@ import TableV2 from '../../../pages/Table/TableV2'
 import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import useAlert from '../../../store/Alert/useAlert'
-import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 import PrintDepositRequestButton from '../_components/PrintDepositRequestButton'
+import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 
 /**
  * @constant 기본 검색 값
@@ -94,8 +93,6 @@ const OrderDetail = ({ salesNumber }) => {
 	const [destinationUpdateItems, setDestinationUpdateItems] = useState([])
 	// 목적지 변경 API
 	const { mutate: requestDestinationUpdate, isLoaidng: isRequstLoading } = useUserDestinationUpdateRequestMutation()
-	// 입금요청서 발행 모드
-	const [receiptPrint, setReceiptPrint] = useState(false)
 	// 목적지 변경항목 반영 테이블 데이터
 	const tableRowDataWithNewDestination = useMemo(() => {
 		const destinationItemUids = destinationUpdateItems.map((v) => v[UID_KEY])
@@ -137,17 +134,24 @@ const OrderDetail = ({ salesNumber }) => {
 		if (!destination) {
 			return simpleAlert('적용할 목적지를 선택해 주세요.')
 		}
+		
 		if (destinationUpdateItems.length < 1) {
-			return simpleAlert('목적지를 적용할 상품을 선택해 주세요.')
+			return simpleAlert('변경할 목적지를 적용한 상품이 없습니다.');
 		}
 
-		requestDestinationUpdate({
-			updateList: destinationUpdateItems.map((v) => ({
-				uid: v[UID_KEY],
-				requestCustomerDestinationUid: destination.uid,
-			})),
-		})
+		const selectedUids = selectedData.map(v => v[UID_KEY]);
+		const selectedUpdateList = destinationUpdateItems
+															.filter(v => selectedUids.includes(v[UID_KEY]))
+															.map((v) => ({
+																uid: v[UID_KEY],
+																requestCustomerDestinationUid: destination.uid,
+															}));
 
+		if(selectedUpdateList.length < 1) {
+			return simpleAlert('목적지 승인 요청할 상품을 선택해 주세요.');
+		}
+
+		requestDestinationUpdate({ updateList: selectedUpdateList})
 		setDestinationUpdateItems([])
 		setDestination(null)
 	}
