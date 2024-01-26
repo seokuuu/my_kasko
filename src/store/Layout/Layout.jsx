@@ -134,6 +134,9 @@ export const WinningProductAddAtom = atom(false)
 // 경매 시작 단가 관리 - 단가 등록 Modal
 export const AuctionUnitPriceAtom = atom(false)
 
+// 경매 타입
+export const auctionTypeAtom = atom('단일')
+
 /* ==============================
     기준 관리 (Standard)
 ============================== */

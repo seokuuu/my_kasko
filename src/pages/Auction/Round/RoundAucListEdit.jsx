@@ -1,58 +1,43 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
 	BlackBtn,
 	BtnBound,
-	GreyBtn,
 	NewBottomBtnWrap,
 	SkyBtn,
 	TGreyBtn,
 	WhiteBtn,
 	WhiteRedBtn,
 } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
-import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import {
 	CustomInput,
-	DoubleWrap,
-	ExInputsWrap,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
 	FilterTCTop,
 	FilterTopContainer,
-	Input,
-	MiniInput,
-	PWRight,
-	PartWrap,
-	ResetImg,
-	RowWrap,
 	TCSubContainer,
 	TableContianer,
-	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
 import { useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
-import { getDetailAuction } from '../../../api/auction/round'
+import { isEqual } from 'lodash'
+import { editAuction, getDetailAuction } from '../../../api/auction/round'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { AuctionRoundDetailFields, AuctionRoundDetailFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
+import useAlert from '../../../store/Alert/useAlert'
 import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
-import RoundAucProAdd from './RoundAucProAdd'
-import { isArray, isEqual } from 'lodash'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import RoundAucListEditFields from './RoundAucListEditFields'
-import useAlert from '../../../store/Alert/useAlert'
+import RoundAucProAdd from './RoundAucProAdd'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
 //경매 목록 수정(단일)
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
@@ -221,7 +206,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	// 수정 부분의 "추가" 바인딩
 	useEffect(() => {
 		const uniqueNumbers = outAddData?.map((item) => ({
-			productUid: item['uid'],
+			productUid: item,
 			auctionStartPrice: realStartPrice,
 		}))
 
@@ -236,19 +221,27 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 			return simpleAlert('제품을 선택해주세요.')
 		}
 		const key = '제품 고유 번호'
+		const key2 = '경매 제품 고유 번호'
 		const newKey = '고유 번호'
 		const deleteKeys = selectedRows.map((item) => item[key])
 		const newSelectors = list.filter((item) => !deleteKeys.includes(item?.productUid))
 
+		// 제품 추가된 항목 삭제 처리
 		if (outAddData) {
 			const updatedOutAddData = outAddData.filter((item) => !selectedRows.map((row) => row[newKey]).includes(item)) // add된 것들 처리
 			setOutAddData(updatedOutAddData)
 		}
 
 		// deleteAuctionProductList에 기존 list 바인딩 !! TODO
+		// const resultRemove = selectedRows
+		// 	.filter((item) => item && item['경매 제품 고유 번호'] !== undefined && item['경매 제품 고유 번호'] !== null)
+		// 	.map((item) => item['경매 제품 고유 번호'])
 		const resultRemove = selectedRows
 			.filter((item) => item && item['경매 제품 고유 번호'] !== undefined && item['경매 제품 고유 번호'] !== null)
-			.map((item) => item['경매 제품 고유 번호'])
+			.map((item) => ({
+				auctionProductUid: item['경매 제품 고유 번호'],
+				productUid: item['제품 고유 번호'],
+			}))
 
 		setEditData({ ...editData, deleteAuctionProductList: resultRemove })
 		setList(newSelectors)
@@ -288,6 +281,12 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 				...userSearchParam,
 			}
 		})
+	}
+
+	// 수정 PATCH
+	const auctionEdit = useMutationQuery('', editAuction)
+	const auctionEditHandler = () => {
+		auctionEdit.mutate(editData)
 	}
 
 	return (
@@ -474,10 +473,16 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 					/>
 				)}
 				<NewBottomBtnWrap bottom={-5}>
-					<WhiteBtn width={13} height={40}>
+					<WhiteBtn
+						width={13}
+						height={40}
+						onClick={() => {
+							setEditPage(false)
+						}}
+					>
 						돌아가기
 					</WhiteBtn>
-					<BlackBtn width={13} height={40}>
+					<BlackBtn width={13} height={40} onClick={auctionEditHandler}>
 						완료
 					</BlackBtn>
 				</NewBottomBtnWrap>

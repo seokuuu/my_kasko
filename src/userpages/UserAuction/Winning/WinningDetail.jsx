@@ -34,6 +34,7 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import Table from '../../../pages/Table/Table'
 import useMutationQuery from '../../../hooks/useMutationQuery'
+import PrintDepositRequestButton from '../../UserSales/_components/PrintDepositRequestButton'
 
 const WinningDetail = ({ detailRow }) => {
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
@@ -269,9 +270,13 @@ const WinningDetail = ({ detailRow }) => {
 				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
 				<TCSubContainer>
 					<div></div>
-					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteSkyBtn>입금 요청서 발행</WhiteSkyBtn>
-					</div>
+					{/* 입금 확인 요청서 */}
+					<PrintDepositRequestButton
+						auctionNumber={"2023112201"}
+						storage={"우성"}
+						customerDestinationUid={"120"}
+						biddingStatus={"낙찰 확정"}
+					/>
 				</TCSubContainer>
 			</TableContianer>
 			{destinationPopUp && (
