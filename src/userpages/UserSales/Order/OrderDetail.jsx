@@ -22,6 +22,7 @@ import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import useAlert from '../../../store/Alert/useAlert'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
+import PrintDepositRequestButton from '../_components/PrintDepositRequestButton'
 
 /**
  * @constant 기본 검색 값
@@ -235,27 +236,14 @@ const OrderDetail = ({ salesNumber }) => {
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteSkyBtn
-							onClick={() => {
-								setReceiptPrint(true)
-							}}
-						>
-							입금 요청서 발행
-						</WhiteSkyBtn>
+						<PrintDepositRequestButton
+							auctionNumber={salesNumber}
+							title="상시판매 입금 요청서"
+							salesDeposit
+						/>
 					</div>
 				</TCSubContainer>
 			</TableContianer>
-			{/* 입금 요청서 모달 */}
-			{receiptPrint && (
-				<DepositRequestForm
-					title="상시판매 입금요청서"
-					auctionNumber={salesNumber}
-					salesDeposit
-					onClose={() => {
-						setReceiptPrint(false)
-					}}
-				/>
-			)}
 		</FilterContianer>
 	)
 }
