@@ -1,4 +1,6 @@
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
+import MarkerCellRenderer from '../../pages/Table/MarkerCellRenderer'
+import { PROD_COL_NAME } from '../user/constantKey'
 
 var checkboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
@@ -290,9 +292,9 @@ export const AuctionBiddingFields = {
   제품군: 'spart',
   '판매 유형': 'saleType',
   '경매 번호': 'auctionNumber',
-  '제품 번호': 'productNumber',
+  [PROD_COL_NAME.productNumber]: "productNumber",
   '프로넘 번호': 'productNoNumber',
-  '패키지 번호': 'packageNumber',
+  [PROD_COL_NAME.packageNumber]: 'packageNumber',
   시작가: 'auctionStartPrice',
   응찰가: 'biddingPrice',
   '규격 약호': 'spec',
@@ -333,7 +335,6 @@ export const AuctionBiddingFields = {
 
 export const AuctionBiddingFieldsCols = [
   { field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
-
   { field: '경매 제품 고유 번호', minWidth: 100 },
   { field: '경매 고유 번호', minWidth: 100 },
   { field: '제품 고유 번호', minWidth: 100 },
@@ -341,9 +342,9 @@ export const AuctionBiddingFieldsCols = [
   { field: '제품군', minWidth: 100 },
   { field: '판매 유형', minWidth: 100 },
   { field: '경매 번호', minWidth: 100 },
-  { field: '제품 번호', minWidth: 100 },
+  { field: PROD_COL_NAME.productNumber, minWidth: 250, cellRenderer: MarkerCellRenderer },
   { field: '프로넘 번호', minWidth: 100 },
-  { field: '패키지 번호', minWidth: 100 },
+  { field: PROD_COL_NAME.packageNumber, minWidth: 100, cellRenderer: MarkerCellRenderer },
   { field: '시작가', minWidth: 100 },
   { field: '응찰가', minWidth: 100 },
   { field: '규격 약호', minWidth: 100 },

@@ -1,6 +1,6 @@
 import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
 
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { useState } from 'react'
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
@@ -9,9 +9,9 @@ import { clientEditModalAtom, clientPostModalAtom } from '../../../store/Layout/
 import Client from './Client'
 
 const ClientPage = () => {
-	const depth2Color = '고객사 관리'
+	const depth2Color = '사용자 관리'
 	const [expanded, setExpanded] = useState('사용자 관리')
-	const [modal, setModal] = useAtom(clientEditModalAtom) // 수정 모달
+	const setModal = useSetAtom(clientEditModalAtom) // 수정 모달
 	const [postModal, setPostModal] = useAtom(clientPostModalAtom)
 
 	return (
