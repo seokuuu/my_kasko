@@ -46,10 +46,10 @@ const OrderSearchFields = ({
 				<RowWrap none>
 					<DateSearchSelect
 						title={'주문 일자'}
-						startInitDate={search.startDate}
-						endInitDate={search.endDate}
-						startDateChange={(value) => onChange('startDate', value)}
-						endDateChange={(value) => onChange('endDate', value)}
+						startInitDate={search.orderStartDate}
+						endInitDate={search.orderEndDate}
+						startDateChange={(value) => onChange('orderStartDate', value)}
+						endDateChange={(value) => onChange('orderEndDate', value)}
 					/>
 					<PartWrap>
 						<h6>주문 상태</h6>
