@@ -58,7 +58,6 @@ const sidoMapping = {
 	경기: '경기도',
 	충북: '충청북도',
 	충남: '충청남도',
-	전북: '전라북도',
 	전남: '전라남도',
 	경북: '경상북도',
 	경남: '경상남도',
@@ -71,6 +70,61 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	const [detailAddress, setDetailAddress] = useState('')
 	const [isDaumPostOpen, setIsDaumPostOpen] = useState(false)
 	const [submitData, setSubmitData] = useState(init)
+
+
+	console.log('submitData', submitData)
+
+	const postCheck = () => {
+		setPostFind(false)
+	}
+
+	const directCheck = () => {
+		setPostFind(true)
+		setAddress('')
+		setDetailAddress('')
+		setSubmitData({ ...submitData, address: '', addressDetail: '' })
+	}
+
+	const daumPostHandleBtn = () => {
+		setIsDaumPostOpen(true)
+	}
+
+	const detailAddressHandler = (e) => {
+		const value = e.target.value
+		setDetailAddress(value)
+	}
+
+	const comfirmPost = () => {
+		setPostcodeModal(false)
+		setSubmitData({ ...submitData, address: address, addressDetail: detailAddress })
+	}
+
+	const closeModal = () => {
+		setPostcodeModal(false)
+		setAddress('')
+		setDetailAddress('')
+		setSubmitData({ ...submitData, address: '', addressDetail: '' })
+	}
+
+	const daumPosthandleClose = () => {
+		setIsDaumPostOpen(false)
+	}
+
+	const daumPostHandleComplete = (data) => {
+		console.log('daum post data', data)
+		const { address } = data
+
+		// 지번 주소 전달
+		const mappedSido = sidoMapping[data?.sido] || data?.sido
+		const mergedAddress = [mappedSido, data?.sigungu, data?.bname1, data?.bname2]
+			.filter((value) => value !== '')
+			.join(' ')
+		setAddress(mergedAddress)
+		setDetailAddress(data?.jibunAddressEnglish?.split(' ')[0])
+		setPostAdress(mergedAddress)
+		console.log('mergedAddress =>', mergedAddress)
+		setIsDaumPostOpen(false)
+
 	const { showAlert, simpleAlert } = useAlert()
 	console.log('submitData', submitData)
 
@@ -78,6 +132,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	function onAddressHandler(address, addressDetail, sido, sigungu, bname) {
 		const destination = `${sido} ${sigungu} ${bname}`
 		setSubmitData((p) => ({ ...p, address, addressDetail, destination }))
+
 	}
 
 	console.log('찐 =>', address, detailAddress)
@@ -137,6 +192,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	}
 
 	const submitHandle = (e) => {
+
 		if (!isEmptyObj(submitData)) {
 			return simpleAlert('빈값을 채워주세요.')
 		}
@@ -160,6 +216,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 					}
 				},
 			})
+
 		} else {
 			alert('내용을 모두 기입해주세요.')
 		}
@@ -219,10 +276,26 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								<h4>목적지</h4>
 								<p></p>
 							</Title>
-							<AddressFinder
-								onAddressChange={onAddressHandler}
-								prevAddress={address}
-								prevAddressDetail={detailAddress}
+
+							<CustomInput width={260} onChange={eventHandle} name="address" value={address} />
+							<BlackBtn
+								width={20}
+								height={40}
+								style={{ marginLeft: '10px' }}
+								onClick={() => {
+									setPostcodeModal(true)
+								}}
+							>
+								조회
+							</BlackBtn>
+							<CustomInput
+								placeholder="상세 주소 입력"
+								width={340}
+								name="detailAddress"
+								value={detailAddress}
+								onChange={eventHandle}
+								style={{ marginTop: '5px' }}
+
 							/>
 						</Part>
 						<Part>
@@ -301,7 +374,9 @@ const DestinationPost = ({ setChoiceComponent }) => {
 			{findModal && (
 				<ClientDestiCustomerFind setFindModal={setFindModal} setCustomerFindResult={setCustomerFindResult} />
 			)}
-			{/* 
+
+
+
 			{postcodeModal && (
 				<SignUpPost
 					postCheck={postCheck}
@@ -317,20 +392,11 @@ const DestinationPost = ({ setChoiceComponent }) => {
 					isDaumPostOpen={isDaumPostOpen}
 					daumPosthandleClose={daumPosthandleClose}
 					daumPostHandleComplete={daumPostHandleComplete}
+
+					noDirect={true}
 				/>
-			)}   
-       */}
-			{/* {isDaumPostOpen && (
-				<>
-					<FadeOverlay />
-					<PostContainer>
-						<PostModalCloseBtn onClick={daumPosthandleClose} src="/svg/btn_close.svg" />
-						<PostWrap>
-							<DaumPostcode onComplete={daumPostHandleComplete} autoClose />
-						</PostWrap>
-					</PostContainer>
-				</>
-			)} */}
+			)}
+
 		</OnePageContainer>
 	)
 }
@@ -341,24 +407,5 @@ const RadioContainer = styled.div`
 	display: flex;
 	width: 250px;
 	justify-content: space-between;
-`
-export const PostWrap = styled.div`
-	position: relative;
-	top: -150px;
-`
 
-export const PostModalCloseBtn = styled.img`
-	width: 6%;
-	position: relative;
-	top: -300px;
-	left: 510px;
-	bottom: 30px;
-	cursor: pointer;
-`
-const PostContainer = styled.div`
-	position: absolute;
-	width: 500px;
-	top: 50%;
-	left: 28%;
-	z-index: 9999;
 `
