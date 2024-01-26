@@ -2,6 +2,7 @@ import { useAtom } from 'jotai'
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { wishProductNumbersAtom } from '../store/Product';
+import useAlert from '../store/Alert/useAlert';
 
 /**
  * @constant 스토리지 키
@@ -22,11 +23,21 @@ const MAX_WISH_COUNT = 10;
 const USER_WISH_STORAGE_KEY = (userId) => `${WISH_STORAGE_KEY}_${userId}`; 
 
 /**
+ * 비로그인 회원 처리 함수
+ */
+function thorwGuest() {
+  alert('로그인 후 이용해 주세요.');
+  window.location.href = '/';
+  throw new Error('not logged in');
+}
+
+/**
  * 관심상품 HOOK
  */
 export default function useWishList() {
   const [wishProdNums, setWishProdNums] = useAtom(wishProductNumbersAtom);
   const [userId, setUserId] = useState('');
+  const { simpleAlert } = useAlert();
   
   /**
    * 위시리스트에 상품 추가 함수
@@ -35,11 +46,11 @@ export default function useWishList() {
    */
   function addWishList(products=[], prodNumKey='number') {
     if(!userId) {
-      return alert('로그인 후 이용해 주세요.');
+      thorwGuest();
     }
 
     if(products.length < 1) {
-      return;
+      return simpleAlert('관심상품으로 등록할 상품을 선택해 주세요.');
     }
 
     const addProdNums = products.map(v => getProductNumber(v[prodNumKey])).filter(v => v.length > 0);
@@ -47,17 +58,18 @@ export default function useWishList() {
 
     saveWishList(mergedProdNums, userId);
     setWishProdNums(mergedProdNums);
-    alert('관심상품으로 등록하였습니다.');
+    simpleAlert('관심상품으로 등록하였습니다.');
   }
 
   // 로그인유저 관심상품목록 설정
   useEffect(() => {
     const token = localStorage.getItem(TOKEN_STORAGE_KEY);
-
     if(token) {
       const userId = jwtDecode(token)?.sub || '';
       setUserId(userId);
       setWishProdNums(getWishList(userId));
+    } else {
+      thorwGuest();
     }
   }, []);
 

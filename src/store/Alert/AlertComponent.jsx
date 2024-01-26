@@ -1,10 +1,11 @@
 import React from 'react'
 import { useAtomValue } from 'jotai'
 import { alertAtom } from './alertAtom'
-import { FadeOverlay, ModalContainer, ModalSubContainer, ModalText, ModalTitle } from '../../modal/Common/Common.Styled'
+import { FadeOverlay, ModalSubContainer, ModalText, ModalTitle } from '../../modal/Common/Common.Styled'
 import { ModalPart } from '../../pages/User/SignUp/SignUp.Styled'
 import { BlackBtn, RedBtn, WhiteBtn } from '../../common/Button/Button'
 import useAlert from './useAlert'
+import { styled } from 'styled-components'
 
 const AlertComponent = () => {
 	const { isOpen, isConfirm, isRed, title, content, func } = useAtomValue(alertAtom)
@@ -20,7 +21,7 @@ const AlertComponent = () => {
 	return (
 		<>
 			<FadeOverlay />
-			<ModalContainer width={400}>
+			<Container>
 				{!isConfirm && (
 					<ModalSubContainer>
 						<ModalPart>
@@ -53,9 +54,22 @@ const AlertComponent = () => {
 						</WhiteBtn>
 					</ModalSubContainer>
 				)}
-			</ModalContainer>
+			</Container>
 		</>
 	)
 }
+
+const Container = styled.div`
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	width: 400px;
+	height: max-content;
+	z-index: 9999;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	border-radius: 8px;
+`
 
 export default AlertComponent

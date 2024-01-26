@@ -55,8 +55,8 @@ const OrderSearchFields = ({
 	/* ============================== COMMON end ============================== */
 
 	return (
-		<>
-			<FilterLeft>
+		<div style={{display: 'flex', justifyContent: 'space-between', gap: 20, width: '100%'}}>
+			<FilterLeft style={{flex: 1}}>
 				<RowWrap>
 					<PartWrap first>
 						<h6>창고 구분</h6>
@@ -103,7 +103,7 @@ const OrderSearchFields = ({
 					<CustomerSearch search={search} setSearch={setSearch} />
 				</RowWrap>
 				{/* 구분 */}
-				<RowWrap>
+				<RowWrap style={{width: '100%', flexWrap: 'wrap'}}>
 					<PartWrap first>
 						<h6>구분</h6>
 						{/* 제품군 */}
@@ -242,7 +242,7 @@ const OrderSearchFields = ({
 				</RowWrap>
 			</FilterLeft>
 			{/* 제품 번호 */}
-			<FilterRight>
+			<FilterRight style={{flex: 'inherit'}}>
 				<ProductNumber
 					initialValue={search.productNumberList}
 					setState={setSearch}
@@ -252,7 +252,7 @@ const OrderSearchFields = ({
 			</FilterRight>
 			{/* 규격 약호 */}
 			{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
-		</>
+		</div>
 	)
 }
 

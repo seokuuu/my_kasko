@@ -28,8 +28,9 @@ import { isEqual } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import useAlert from '../../../store/Alert/useAlert'
 import { useUserOrderCancelMutaion } from '../../../api/user'
+import DepositRequestForm from '../../../modal/Docs/DepositRequestForm'
 
-const SellOrder = ({ setChoiceComponent }) => {
+const SellOrder = () => {
 	const { mutate: mutateDepositOrderCancel, loading: loadingDepositOrderCancel } = useUserOrderCancelMutaion()
 	const paramData = {
 		pageNum: 1,
@@ -37,6 +38,8 @@ const SellOrder = ({ setChoiceComponent }) => {
 	}
 	const [param, setParam] = useState(paramData)
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+	// 입금요청서 발행 모드
+	const [receiptPrint, setReceiptPrint] = useState(false)
 	const navigate = useNavigate()
 	const checkSales = ['전체', '확정 전송', '확정전송 대기']
 	const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
@@ -51,6 +54,7 @@ const SellOrder = ({ setChoiceComponent }) => {
 
 	const [saleProductListData, setSaleProductListData] = useState(null)
 	const [saleProductPagination, setSaleProductPagination] = useState([])
+
 	useEffect(() => {
 		if (getSaleProductListRes && getSaleProductListRes.data && getSaleProductListRes.data.data) {
 			setSaleProductListData(formatTableRowData(getSaleProductListRes.data.data.list))
@@ -126,7 +130,8 @@ const SellOrder = ({ setChoiceComponent }) => {
 
 	const { simpleAlert } = useAlert()
 
-	const handleOrderCancelButtonOnClick = () => {
+	const orderCancelButtonOnClickHandler = () => {
+		console.log('checkBoxSelect =>', checkBoxSelect)
 		if (checkBoxSelect.length === 0) {
 			return simpleAlert('주문 취소할 제품을 선택해 주세요.')
 		}
@@ -203,7 +208,7 @@ const SellOrder = ({ setChoiceComponent }) => {
 						kg / 총 중량 {formatWeight(saleProductPagination.totalWeight)} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteRedBtn onClick={handleOrderCancelButtonOnClick}>주문 취소</WhiteRedBtn>
+						<WhiteRedBtn onClick={orderCancelButtonOnClickHandler}>주문 취소</WhiteRedBtn>
 					</div>
 				</TCSubContainer>
 				<Table
@@ -217,11 +222,28 @@ const SellOrder = ({ setChoiceComponent }) => {
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteSkyBtn>입금 요청서 발행</WhiteSkyBtn>
+						<WhiteSkyBtn
+							onClick={() => {
+								setReceiptPrint(true)
+							}}
+						>
+							입금 요청서 발행
+						</WhiteSkyBtn>{' '}
 						<SkyBtn>입금 확인</SkyBtn>
 					</div>
 				</TCSubContainer>
 			</TableContianer>
+			{/* 입금 요청서 모달 */}
+			{receiptPrint && (
+				<DepositRequestForm
+					title="상시판매 입금요청서"
+					auctionNumber={''}
+					salesDeposit
+					onClose={() => {
+						setReceiptPrint(false)
+					}}
+				/>
+			)}
 		</FilterContianer>
 	)
 }

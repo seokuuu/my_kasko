@@ -84,7 +84,7 @@ export default function useTableData({ tableField, serverData, wish }) {
 }
 
 /**
- * 관심상품 속성을 가진 테이블목록 데이터 반환
+ * 관심상품|추천상품 속성을 가진 테이블목록 데이터 반환
  */
 function getDataWithMarkerData({ data=[], wishProdNums=[], wishKey=[], bestKey=[]}) {
   const dataWithWish = data.reduce((acc, d) => {
