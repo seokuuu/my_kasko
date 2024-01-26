@@ -120,9 +120,8 @@ const Order = ({}) => {
 	 */
 	function handleTableRowClick(row) {
 		const uid = row?.data['상시판매 번호']
-		const packageNumClick = false;
-		console.log(row.event.target, 'row');
-		if (uid) {
+		const isBtnClicked = row?.event?.originalTarget?.tagName === 'BUTTON';
+		if (uid && !isBtnClicked) {
 			navigate(`/userpage/salesorder/${uid}`)
 		}
 	}

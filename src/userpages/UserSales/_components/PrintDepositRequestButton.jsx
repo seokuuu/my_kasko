@@ -63,9 +63,7 @@ function getTotalData(serverData) {
 }
 
 /**
- * 상시판매 입금 요청서 버튼 + 모달
- * @param {string} param.title 입금요청서 제목
- * @param {string} param.buttonTitle 버튼 텍스트
+ * 상시판매|경매 입금 요청서 버튼 + 모달
  * @param {string} param.salesDeposit 상시판매 여부
  * @param {string} param.auctionNumber 경매번호|상시판매 번호 (경매|상시판매) 
  * @param {string} param.storage 창고 (경메)
@@ -73,8 +71,6 @@ function getTotalData(serverData) {
  * @param {string} param.biddingStatus 낙찰상태 (경매)
  */
 export const PrintDepositRequestButton = ({
-  title="입금 요청서",
-  buttonTitle,
   salesDeposit=false,
   auctionNumber,
 	storage="", 
@@ -119,12 +115,12 @@ export const PrintDepositRequestButton = ({
 					setReceiptPrint(true)
 				}}
 			>
-				{buttonTitle||'입금 요청서'} 발행
+				입금 요청서 발행
 			</WhiteSkyBtn>
       {receiptPrint && (
 				<>
 				<FadeOverlay />
-				<ModalContainer style={{ width: '75%', maxHeight: '90vh', background: '#eef3fb', flexDirection: 'column', alignItems: 'flex-end' }}>
+				<ModalContainer style={{ width: '75%', maxHeight: '90vh', minHeight: 740, background: '#eef3fb', flexDirection: 'column', alignItems: 'flex-end' }}>
 					<BlueBarHeader style={{ height: '20px' }}>
 						<div></div>
 						<div>
@@ -135,7 +131,7 @@ export const PrintDepositRequestButton = ({
 						<FilterContianer>
 							{/* 요청서 제목 | 일자 */}
 							<FormTitle>
-								<b>{title} ({ authDate || '-'}일자</b>)
+								<b>{salesDeposit? '상시 판매' : '경매'} 입금 요청서 ({ authDate || '-'} 일자</b>)
 							</FormTitle>
 							{/* 입금 정보 공지 */}
 							<FilterHeaderAlert>
@@ -172,7 +168,7 @@ export const PrintDepositRequestButton = ({
 							{
 								(!infoData || !infoData.auctionDate)
 								? 
-									<p style={{ width: '100%', height: 140,padding: '60px 20px', background: 'white', textAlign: 'center' }}>
+									<p style={{ width: '100%', height: 280,padding: '230px 20px', background: 'white', textAlign: 'center' }}>
 										{isLoading? '입금요청서 데이터를 불러오고 있습니다.' : '현재 입금요청서 데이터를 불러올 수 없습니다.' }
 									</p>
 								: <TableContianer>

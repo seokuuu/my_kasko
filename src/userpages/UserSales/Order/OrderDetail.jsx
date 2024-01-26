@@ -239,9 +239,9 @@ const OrderDetail = ({ salesNumber }) => {
 				/>
 				<TCSubContainer>
 					<div></div>
+					{/* 입금 확인 요청서 */}
 					<PrintDepositRequestButton
 						auctionNumber={salesNumber}
-						title="상시판매 입금 요청서"
 						salesDeposit
 					/>
 				</TCSubContainer>

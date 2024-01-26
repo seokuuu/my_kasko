@@ -270,13 +270,12 @@ const WinningDetail = ({ detailRow }) => {
 				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
 				<TCSubContainer>
 					<div></div>
-					{/* 입금확인 요청서 */}
+					{/* 입금 확인 요청서 */}
 					<PrintDepositRequestButton
 						auctionNumber={"2023112201"}
 						storage={"우성"}
 						customerDestinationUid={"120"}
 						biddingStatus={"낙찰 확정"}
-						title="경매 입금요청서"
 					/>
 				</TCSubContainer>
 			</TableContianer>
