@@ -4,7 +4,7 @@ import useAlert from '../store/Alert/useAlert'
 import { useMutation } from '@tanstack/react-query'
 import { queryClient } from './query'
 
-const urls = {
+export const urls = {
 	single: '/single-product',
 	saleCategory: '/single-product/sale-category',
 	original: '/single-product/original',

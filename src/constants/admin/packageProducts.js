@@ -13,6 +13,7 @@ var headerCheckboxSelection = function (params) {
 export const packageFieldsCols = [
 	{ field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
 	{ field: '순번', minWidth: 100, cellStyle: { 'text-align': 'center' } },
+	{ field: '노출상태', minWidth: 100, cellStyle: { 'text-align': 'center' } },
 	{ field: '패키지명', minWidth: 100, cellStyle: { 'text-align': 'center' } },
 	{ field: '패키지번호', minWidth: 100, cellStyle: { 'text-align': 'center' } },
 	{ field: '상시판매 번호', minWidth: 100, cellStyle: { 'text-align': 'center' } },
@@ -53,6 +54,7 @@ export const packageFieldsCols = [
 export const packageResponseToTableRowMap = {
 	순번: 'uid', // Correct mapping to 'uid'
 	패키지명: 'name', // Correct mapping to 'name'
+	노출상태: 'viewStatus', // 노출 상태
 	패키지번호: 'number', // Correct mapping to 'number'
 	'상시판매 번호': 'orderNumber', // Unclear: not in the response structure
 	상시판매가: 'price', // Correct mapping to 'price'
