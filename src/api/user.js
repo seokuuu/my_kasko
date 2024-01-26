@@ -213,6 +213,9 @@ export const useUserDestinationQuery = (param) =>
 		},
 	})
 
+/**
+ * 목적지 변경 승인 요청 API 뮤테이션
+ */
 export const useUserDestinationUpdateRequestMutation = () => {
 	const { simpleAlert } = useAlert()
 
