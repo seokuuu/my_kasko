@@ -26,11 +26,9 @@ import {
 	AuctionStartPriceFields,
 	AuctionStartPriceFieldsCols,
 	AuctionUnitPricePost,
-	AuctionUnitPricePostDropOptions,
 	AuctionUnitPricePostDropOptions2,
-	AuctionUnitPricePostDropOptions3,
 } from '../../../constants/admin/Auction'
-import useMutationQuery from '../../../hooks/useMutationQuery'
+import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import useReactQuery from '../../../hooks/useReactQuery'
 import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -41,7 +39,7 @@ import Table from '../../Table/Table'
 import StartPriceFields from './StartPriceFields'
 
 const StartPrice = ({}) => {
-	const { simpleConfirm, simpleAlert } = useAlert()
+	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
 
 	const { selectedCount, selectedData } = useTableSelection()
 	const [uploadModal, setUploadModal] = useState(false)
@@ -171,7 +169,7 @@ const StartPrice = ({}) => {
 		},
 	})
 
-	// 삭제 onClick
+	// 삭제 핸들러
 	const handleRemoveBtn = useCallback(() => {
 		if (selectedCount > 0) {
 			simpleConfirm('선택한 항목을 삭제하시겠습니까?', () => remove(selectedData.map((c) => c['고유 번호'])))
@@ -197,12 +195,26 @@ const StartPrice = ({}) => {
 		'적용 단가': 'effectPrice',
 	}
 
-	// 단가 등록 post 함수
-	const postMutation = useMutationQuery('', unitPricePost)
+	// 단가 등록 API
+	const { mutate: unitPriceRegister } = useMutation(unitPricePost, {
+		onSuccess() {
+			showAlert({
+				title: '저장이 완료되었습니다.',
+				content: '',
+				func: () => {
+					setModalSwitch(false)
+					queryClient.invalidateQueries('auction')
+				},
+			})
+		},
+	})
+
+	// 단가 등록
 	const propsPost = () => {
-		postMutation.mutate({ insertList })
+		unitPriceRegister({ insertList })
 	}
 
+	// 단가 등록 폼 핸들러
 	const onEditHandler = useCallback((e) => {
 		console.log('Edit input event:', e)
 		const { name, value } = e.target
@@ -216,10 +228,13 @@ const StartPrice = ({}) => {
 		}))
 	}, [])
 
+	// 단가 등록 셀렉트 리스트
+	const { spartList, gradeList } = useGlobalProductSearchFieldData()
+
 	const dropdownProps = [
-		{ options: AuctionUnitPricePostDropOptions, defaultValue: AuctionUnitPricePostDropOptions[0] },
+		{ options: spartList, defaultValue: spartList[0] },
 		{ options: AuctionUnitPricePostDropOptions2, defaultValue: AuctionUnitPricePostDropOptions2[0] },
-		{ options: AuctionUnitPricePostDropOptions3, defaultValue: AuctionUnitPricePostDropOptions3[0] },
+		{ options: gradeList, defaultValue: gradeList[0] },
 	]
 
 	useEffect(() => {

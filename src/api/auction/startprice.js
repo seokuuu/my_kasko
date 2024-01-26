@@ -29,6 +29,11 @@ export const unitPricePost = (data) => {
 	return client.post(`${urls.startprice}`, data)
 }
 
+// 대량 등록
+export const uploadMultiPrice = (data) => {
+	return client.post(`${urls.startprice}/excel`)
+}
+
 // const postMutation = useMutationQuery('', postBidding)
 
 // // 응찰 버튼 POST

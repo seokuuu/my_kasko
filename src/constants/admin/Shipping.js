@@ -11,7 +11,7 @@ var headerCheckboxSelection = function (params) {
 	return params.columnApi.getRowGroupColumns().length === 0
 }
 
-const commonStyles = {
+export const commonStyles = {
 	headerClass: 'custom-header-style',
 	flex: 1,
 	cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
