@@ -136,7 +136,7 @@ export const AuctionRoundDetailFields = {
 	'판매 제외 사유': 'excludeSaleReason',
 	등록일: 'createDate',
 	매입가: 'price',
-	'고유 번호': '고유 번호',
+	'고유 번호': 'uid',
 }
 
 /* ===================================================================
@@ -285,6 +285,7 @@ export const AuctionRoundDetailFieldsCols = [
 ================================= */
 
 export const AuctionBiddingFields = {
+
   '경매 제품 고유 번호': 'uid',
   '경매 고유 번호': 'auctionUid',
   '제품 고유 번호': 'productUid',
@@ -381,6 +382,7 @@ export const AuctionBiddingFieldsCols = [
   { field: 'si', minWidth: 100 },
   { field: 'el', minWidth: 100 },
   { field: 'mn', minWidth: 100 },
+
 ]
 
 /* ==============================
@@ -811,6 +813,7 @@ export const AuctionStartPriceFields = {
 }
 
 export const AuctionStartPriceFieldsCols = [
+<<<<<<< HEAD
 	{
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
@@ -828,6 +831,17 @@ export const AuctionStartPriceFieldsCols = [
 	{ ...commonStyles, field: '적용일', minWidth: 120 },
 	{ ...commonStyles, field: '적용전 단가', minWidth: 150 },
 	{ ...commonStyles, field: '적용 단가', minWidth: 150 },
+=======
+	{ field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+	{ field: '고유 번호', minWidth: 150 },
+	{ field: '제품군', minWidth: 120 },
+	{ field: '정척 여부', minWidth: 120 },
+	{ field: '유찰 횟수', minWidth: 120 },
+	{ field: '등급', minWidth: 100 },
+	{ field: '적용일', minWidth: 120 },
+	{ field: '적용전 단가', minWidth: 150 },
+	{ field: '적용 단가', minWidth: 150 },
+>>>>>>> master
 ]
 
 const uniqueKeys = new Set([...Object.keys(AuctionRoundExtraProductFields), ...Object.keys(AuctionRoundDetailFields)])
