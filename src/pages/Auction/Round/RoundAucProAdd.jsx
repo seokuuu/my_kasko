@@ -153,7 +153,6 @@ const RoundAucProAdd = ({
 		const findKey = selectedRows.map((item) => item[key])
 		console.log('findKey', findKey)
 		const addData = resData?.filter((item) => findKey.includes(item.uid))
-
 		onListAdd(addData)
 		setAddModal(false)
 	}
