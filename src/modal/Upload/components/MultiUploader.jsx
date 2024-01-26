@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import { BlueMainDiv, BlueSubDiv } from '../../Common/Common.Styled'
 // import { UldAfterWrap, UldBtn, UldText, UldWrap } from '../../Table/TableModal'
@@ -12,11 +12,21 @@ const MultiUploader = ({ file, setFile }) => {
 	const [uploadProgress, setUploadProgress] = useState(0)
 	// 대량 등록 관련 값들입니다.
 	const fileInputRef = useRef(null)
-	console.log('file :', Boolean(file))
 
-	useEffect(() => {
-		if (file) setUploadProgress(100)
-	}, [file])
+	function onFileChange(e) {
+		const file = e.target.files[0]
+
+		console.log('file :', file)
+		setInterval(() => {
+			if (uploadProgress < 100) {
+				let i = Math.floor(Math.random() * 101)
+				setUploadProgress((p) => p + i)
+			}
+		}, 100)
+
+		setFile(file)
+	}
+
 	return (
 		<BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px', display: 'flex' }}>
 			{!file && (
@@ -30,11 +40,7 @@ const MultiUploader = ({ file, setFile }) => {
 							accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
 							ref={fileInputRef}
 							style={{ display: 'none' }}
-							onChange={(e) => {
-								const file = e.target.files[0]
-
-								setFile(file)
-							}}
+							onChange={onFileChange}
 						/>
 						<UldWrap>
 							{file && (
