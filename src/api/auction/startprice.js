@@ -1,4 +1,4 @@
-import { client } from '..'
+import { client, formHeaders } from '..'
 
 /* ==============================
     경매 시작 단가 관리 (startprice)
@@ -31,7 +31,15 @@ export const unitPricePost = (data) => {
 
 // 대량 등록
 export const uploadMultiPrice = (data) => {
-	return client.post(`${urls.startprice}/excel`)
+	const form = new FormData()
+	form.append('excel', data)
+
+	return client.post(`${urls.startprice}/excel`, form, {
+		headers: formHeaders,
+		// onUploadProgress: (e) => {
+		// 	console.log('progreess event L', e)
+		// },
+	})
 }
 
 // const postMutation = useMutationQuery('', postBidding)
