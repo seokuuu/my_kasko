@@ -89,10 +89,10 @@ export const UsermanageUserManageEditModal = atom(false)
 ============================== */
 
 export const OrderCellAtom = atom({
-  auctionNumber: '',
-  customerCode: '',
-  storage: '',
-  customerDestinationUid: '',
+	auctionNumber: '',
+	customerCode: '',
+	storage: '',
+	customerDestinationUid: '',
 })
 
 /* ==============================
@@ -188,18 +188,18 @@ export const achievementAddedAtom = atom(false)
 export const popupTypeAtom = atom('')
 
 export const popupObject = atom({
-  num: '', // num 값에 따라 초기 팝업 설정
-  title: '',
-  content: '',
-  type: '', // type 값에 따라 버튼 구조 설정
-  next: '',
-  onClick: () => {},
-  func: () => {},
-  func2: () => {},
+	num: '', // num 값에 따라 초기 팝업 설정
+	title: '',
+	content: '',
+	type: '', // type 값에 따라 버튼 구조 설정
+	next: '',
+	onClick: () => {},
+	func: () => {},
+	func2: () => {},
 })
 
 export const modalObject = atom({
-  func: () => {},
+	func: () => {},
 })
 
 export const engRowTitle = atom('')
@@ -246,28 +246,28 @@ export const invenDestination = atom(false)
 export const invenCustomer = atom(false)
 // 고객사 데이터
 export const invenCustomerData = atom({
-  businessNumber: '',
-  code: '',
-  name: '',
-  uid: 0,
+	businessNumber: '',
+	code: '',
+	name: '',
+	uid: 0,
 })
 
 export const invenDestinationData = atom({
-  code: '',
-  name: '',
-  uid: 0,
+	code: '',
+	name: '',
+	uid: 0,
 })
 
 export const winningDestiData = atom({
-  uid: null,
-  code: '',
-  represent: 0,
-  destinationCode: null,
-  destinationName: null,
-  name: '',
-  managerPhone: '',
-  phone: '',
-  address: '',
+	uid: null,
+	code: '',
+	represent: 0,
+	destinationCode: null,
+	destinationName: null,
+	name: '',
+	managerPhone: '',
+	phone: '',
+	address: '',
 })
 
 // =======================================
@@ -284,9 +284,9 @@ export const StockMultiModal = atom(false)
 
 export const packageCreateAtom = atom(false)
 export const packageCreateObjAtom = atom({
-  packageNumber: '',
-  sellType: '경매',
-  packageName: '',
+	packageNumber: '',
+	sellType: '경매',
+	packageName: '',
 })
 export const packageModeAtom = atom('')
 export const selectPackageAtom = atom({})
@@ -295,36 +295,36 @@ export const singleAllProductModal = atom(false)
 export const packageDetailModal = atom(false)
 export const singleProductModify = atom(false)
 export const requestSingleModify = atom({
-  storage: '',
-  storageName: '',
-  spec: '',
-  wdh: '',
-  thickness: '',
-  width: '',
-  length: '',
-  weight: '',
-  grade: '',
-  usageCode: '',
-  usageCodeName: '',
-  c: '',
-  si: '',
-  mn: '',
-  p: '',
-  s: '',
-  ts: '',
-  yp: '',
-  el: '',
-  spartCode: '',
-  spart: '',
-  supplier: '',
-  maker: '',
-  name: '',
-  preferThickness: '',
-  causeCode: '',
-  causeCodeName: '',
-  receiptDate: '',
-  stockStatus: '',
-  saleCategory: '',
+	storage: '',
+	storageName: '',
+	spec: '',
+	wdh: '',
+	thickness: '',
+	width: '',
+	length: '',
+	weight: '',
+	grade: '',
+	usageCode: '',
+	usageCodeName: '',
+	c: '',
+	si: '',
+	mn: '',
+	p: '',
+	s: '',
+	ts: '',
+	yp: '',
+	el: '',
+	spartCode: '',
+	spart: '',
+	supplier: '',
+	maker: '',
+	name: '',
+	preferThickness: '',
+	causeCode: '',
+	causeCodeName: '',
+	receiptDate: '',
+	stockStatus: '',
+	saleCategory: '',
 })
 
 // 목적지 에딧 모달
@@ -344,3 +344,6 @@ export const weightObj = atom({})
 
 // 사용자 - 경매(단일) - 목적지 찾기
 export const userPageSingleDestiFindAtom = atom(false)
+
+// 상시 판매 관리 > 노출 상태 변경 모달
+export const salesPackageModal = atom(false)
