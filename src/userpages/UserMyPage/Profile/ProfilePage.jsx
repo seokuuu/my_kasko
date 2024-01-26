@@ -1,11 +1,11 @@
 import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
 
-import UserSideBar from '../../../components/Left/UserSideBar'
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
-import Profile from './Profile'
+import UserSideBar from '../../../components/Left/UserSideBar'
 
 import { useState } from 'react'
+import ProfileCopy from './ProfileCopy'
 
 const ProfilePage = () => {
 	const depth2Color = '개인정보수정'
@@ -18,7 +18,10 @@ const ProfilePage = () => {
 				<OverAllSub>
 					<SubHeader />
 					<OverAllTable>
-						<Profile />
+						{/* <Profile /> */}
+						<ProfileCopy />
+
+						{/* <ProfileCopy /> */}
 					</OverAllTable>
 				</OverAllSub>
 			</OverAllMain>
