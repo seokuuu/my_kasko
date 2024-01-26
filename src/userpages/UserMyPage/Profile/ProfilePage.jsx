@@ -5,7 +5,7 @@ import SubHeader from '../../../components/Header/SubHeader'
 import UserSideBar from '../../../components/Left/UserSideBar'
 
 import { useState } from 'react'
-import ProfileCopy from './ProfileCopy'
+import ProfileEdit from './Profile'
 
 const ProfilePage = () => {
 	const depth2Color = '개인정보수정'
@@ -18,8 +18,8 @@ const ProfilePage = () => {
 				<OverAllSub>
 					<SubHeader />
 					<OverAllTable>
-						{/* <Profile /> */}
-						<ProfileCopy />
+						<ProfileEdit />
+						{/* <ProfileCopy /> */}
 
 						{/* <ProfileCopy /> */}
 					</OverAllTable>
