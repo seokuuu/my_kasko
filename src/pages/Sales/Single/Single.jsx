@@ -1,49 +1,51 @@
+import { useEffect, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import { isEqual } from 'lodash'
-import { useEffect, useState } from 'react'
-import { getSingleProducts } from '../../../api/SellProduct'
-import { BlackBtn, WhiteBlackBtn } from '../../../common/Button/Button'
+import { getSingleProducts, useSingleProductViewStatusUpdate } from '../../../api/SellProduct'
+import useReactQuery from '../../../hooks/useReactQuery'
+import useAlert from '../../../store/Alert/useAlert'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { responseToTableRowMap, singleProductListFieldCols } from '../../../constants/admin/singleProduct'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { add_element_field, formatBooleanFields } from '../../../lib/tableHelpers'
-import {
-	EditGear,
-	FilterContianer,
-	FilterHeader,
-	FilterHeaderAlert,
-	FilterWrap,
-	TCSubContainer,
-	TableBottomWrap,
-	TableContianer,
-} from '../../../modal/External/ExternalFilter'
-import Table from '../../../pages/Table/Table'
-import { blueModalAtom, salesPackageModal, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-import { KilogramSum } from '../../../utils/KilogramSum'
-import { formatWeight } from '../../../utils/utils'
 import SingleProductSearchFields from './SingleProductSearchFields'
 import TableV2ExcelDownloader from '../../Table/TableV2ExcelDownloader'
 import { CautionBox, CAUTION_CATEGORY } from '../../../components/CautionBox'
 import SalesPackage from '../../../modal/Multi/SalesPackage'
-import useAlert from '../../../store/Alert/useAlert'
+import Table from '../../../pages/Table/Table'
+import { BlackBtn, WhiteBlackBtn } from '../../../common/Button/Button'
+import { responseToTableRowMap, singleProductListFieldCols } from '../../../constants/admin/singleProduct'
+import { add_element_field, formatBooleanFields } from '../../../lib/tableHelpers'
+import { KilogramSum } from '../../../utils/KilogramSum'
+import { formatWeight } from '../../../utils/utils'
+import { salesPackageModal, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import {
+	FilterContianer,
+	FilterHeader,
+	TCSubContainer,
+	TableBottomWrap,
+	TableContianer,
+} from '../../../modal/External/ExternalFilter'
 
 const Single = () => {
 	const { simpleAlert } = useAlert()
-	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 
-	// 노출 상태 변경 모달
-	const [isEditStatusModal, setIsEditStatusModal] = useAtom(salesPackageModal)
-
-	const [singleProductListData, setSingleProductListData] = useState(null)
-	const [singleProductPagination, setSingleProductPagination] = useState([])
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
 	}
+
+	// 노출 상태 변경 모달
+	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+	const [isEditStatusModal, setIsEditStatusModal] = useAtom(salesPackageModal)
+
+	const [checkRadio, setCheckRadio] = useState(null)
+	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 	const [param, setParam] = useState(paramData)
+	const [singleProductListData, setSingleProductListData] = useState(null)
+	const [singleProductPagination, setSingleProductPagination] = useState([])
+	const [toggleMsg, setToggleMsg] = useState('On')
+
 	const {
 		isLoading,
 		isError,
@@ -52,12 +54,16 @@ const Single = () => {
 		refetch,
 	} = useReactQuery(param, 'getSingleProducts', getSingleProducts)
 
+	const {
+		// prettier-ignore
+		mutate: mutateSingleProductViewStatusUpdate,
+		isSuccess: isSuccessSingleProductViewStatusUpdate,
+	} = useSingleProductViewStatusUpdate()
+
 	useEffect(() => {
-		console.log('getSingleProductsRes--', getSingleProductsRes)
 		if (getSingleProductsRes) {
 			setSingleProductListData(formatTableRowData(getSingleProductsRes.r))
 			setSingleProductPagination(getSingleProductsRes.pagination)
-			console.log('formatTableRowData---', formatTableRowData(getSingleProductsRes.r))
 		}
 
 		if (isError) {
@@ -65,27 +71,19 @@ const Single = () => {
 		}
 	}, [isSuccess, getSingleProductsRes, isError])
 
+	useEffect(() => {
+		refetch()
+	}, [isSuccessSingleProductViewStatusUpdate])
+
 	const formatTableRowData = (singleProductListData) => {
 		const processedData = add_element_field(singleProductListData, responseToTableRowMap)
 		return formatBooleanFields(processedData, [{ fieldName: '노출상태', trueValue: '노출', falseValue: '비노출' }])
 	}
 
 	// 토글 쓰기
-	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-	const [toggleMsg, setToggleMsg] = useState('On')
 	const toggleBtnClick = () => {
 		setExfilterToggle((prev) => !prev)
-		if (exFilterToggle === true) {
-			setToggleMsg('Off')
-		} else {
-			setToggleMsg('On')
-		}
-	}
-
-	const [noticeEdit, setnoticeEdit] = useState(false)
-
-	const noticeEditOnClickHandler = () => {
-		setnoticeEdit((prev) => !prev)
+		setToggleMsg(exFilterToggle ? 'Off' : 'On')
 	}
 
 	const handleTablePageSize = (event) => {
@@ -101,6 +99,17 @@ const Single = () => {
 			...prevParam,
 			pageNum: Number(value),
 		}))
+	}
+
+	// 노출 상태 변경 버튼
+	const editStatusButtonOnClickHandler = () => {
+		setIsEditStatusModal(true)
+	}
+
+	// 노출 상태 변경 모달 > 확인 버튼
+	const editStatusModalConfirmButtonOnClickHandler = (checkRadio) => {
+		setCheckRadio(checkRadio[0])
+		setIsEditStatusModal(false)
 	}
 
 	const globalProductResetOnClick = () => {
@@ -122,14 +131,22 @@ const Single = () => {
 		})
 	}
 
-	// 노출 상태 변경 버튼
-	const editStatusButtonOnClickHandler = () => {
-		setIsEditStatusModal(true)
-	}
+	// 노출 저장 버튼
+	const saveButtonOnClickHandler = () => {
+		if (checkBoxSelect === null || checkBoxSelect.length === 0) {
+			return simpleAlert('노출상태를 변경할 제품을 선택해 주세요.')
+		}
 
-	// 노출 상태 변경 모달 확인 버튼
-	const editStatusModalConfirmButtonOnClickHandler = () => {
-		console.log('checkBoxSelect---', checkBoxSelect)
+		const productNumbers = checkBoxSelect.map((item) => item['제품번호'])
+
+		const viewStatusData = {
+			status: checkRadio,
+			numbers: productNumbers,
+		}
+
+		const { status, numbers } = viewStatusData
+
+		mutateSingleProductViewStatusUpdate({ status, numbers })
 	}
 
 	return (
@@ -175,7 +192,9 @@ const Single = () => {
 						kg / 총 중량 {formatWeight(singleProductPagination.totalWeight)} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteBlackBtn onClick={editStatusButtonOnClickHandler}>노출 상태 변경</WhiteBlackBtn>
+						<WhiteBlackBtn onClick={(checkRadio) => editStatusButtonOnClickHandler(checkRadio)}>
+							노출 상태 변경
+						</WhiteBlackBtn>
 					</div>
 				</TCSubContainer>
 				<Table
@@ -186,7 +205,7 @@ const Single = () => {
 					onPageChange={onPageChange}
 				/>
 				<TableBottomWrap>
-					<BlackBtn width={13} height={40} fontSize={17}>
+					<BlackBtn onClick={saveButtonOnClickHandler} width={13} height={40} fontSize={17}>
 						저장
 					</BlackBtn>
 				</TableBottomWrap>

@@ -187,8 +187,8 @@ export const useProductViewStatusUpdate = (url) => {
 	const { simpleAlert } = useAlert()
 
 	return useMutation({
-		mutationFn: async (data) => {
-			await client.post(url, data)
+		mutationFn: async (viewStatusData) => {
+			await client.patch(url, viewStatusData)
 		},
 		onSuccess: () => {
 			return simpleAlert('노출 상태 변경 완료하였습니다.')
