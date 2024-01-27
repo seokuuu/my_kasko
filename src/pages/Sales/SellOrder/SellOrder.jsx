@@ -222,9 +222,14 @@ const SellOrder = () => {
 				/>
 				<TCSubContainer>
 					<div></div>
-					{/* 입금 확인 요청서 */}
+					{/* 입금 확인 요청서 - uid 배열 전달*/}
 					<PrintDepositRequestButton
-						auctionNumber={Array.isArray(checkBoxSelect)? checkBoxSelect.map(v => v.uid) : checkBoxSelect? checkBoxSelect.uid : []}
+						auctionNumber={
+							Array.isArray(checkBoxSelect)
+							? checkBoxSelect.map(v => v.uid) 
+							: checkBoxSelect
+							? checkBoxSelect.uid 
+							: []}
 						salesDeposit
 					/>
 				</TCSubContainer>
