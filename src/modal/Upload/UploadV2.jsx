@@ -1,4 +1,3 @@
-import './style.css'
 import moment from 'moment'
 import React, { useState } from 'react'
 import {
@@ -12,14 +11,11 @@ import {
 	ModalContainer,
 	WhiteCloseBtn,
 } from '../Common/Common.Styled'
+import './style.css'
 
 import { useAtom } from 'jotai'
 
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
-import { ExRadioWrap } from '../External/ExternalFilter'
-
 import { useEffect } from 'react'
-import { CheckBox } from '../../common/Check/Checkbox'
 import { popupAtom } from '../../store/Layout/Layout'
 import AlertPopup from '../Alert/AlertPopup'
 
@@ -166,6 +162,12 @@ const UploadV2 = ({ setModalSwitch, title, originEngRowField, setExcelToJson, wi
 				</BlueBarHeader>
 				<BlueSubContainer>
 					<div>
+						<input
+							type="text"
+							onChange={(e) => {
+								console.log('input event :', e)
+							}}
+						/>
 						<BlueMainDiv style={{ margin: '8px auto', height: '200px' }}>
 							{!selectedFile && (
 								<BlueSubDiv style={{ display: 'block', margin: '7% auto' }}>

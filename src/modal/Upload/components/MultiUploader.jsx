@@ -6,23 +6,34 @@ import { BlueMainDiv, BlueSubDiv } from '../../Common/Common.Styled'
 /**
  * @description
  * 대량 등록 컴포넌트입니다.
+ *
  */
-const MultiUploader = () => {
-	const fileInputRef = useRef(null)
-	const [selectedFile, setSelectedFile] = useState(null)
+const MultiUploader = ({ file, setFile, isExcelUploadOnly }) => {
 	const [uploadProgress, setUploadProgress] = useState(0)
+	// 대량 등록 관련 값들입니다.
+	const fileInputRef = useRef(null)
 
-	const handleCancel = () => {
-		setSelectedFile(null)
-		setUploadProgress(0)
+	// 파일 핸들러
+	function onFileChange(e) {
+		const file = e.target.files[0]
 
-		if (fileInputRef.current) {
-			fileInputRef.current.value = null
-		}
+		setInterval(() => {
+			if (uploadProgress < 100) {
+				let i = Math.floor(Math.random() * 101)
+				setUploadProgress((p) => p + i)
+			}
+		}, 100)
+
+		setFile(file)
 	}
+	// 파일 초기화
+	function initFileHandler() {
+		setFile(null)
+	}
+
 	return (
-		<BlueMainDiv style={{ margin: '0px auto', borderTop: 'none', height: '200px', display: 'flex' }}>
-			{!selectedFile && (
+		<BlueMainDiv style={{ margin: '0px auto', height: '200px', display: 'flex' }}>
+			{!file && (
 				<BlueSubDiv style={{ display: 'block' }}>
 					<UldWrap>
 						<UldText>
@@ -33,30 +44,38 @@ const MultiUploader = () => {
 							accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
 							ref={fileInputRef}
 							style={{ display: 'none' }}
-							// onChange={handleFileExcel}
+							onChange={onFileChange}
 						/>
 						<UldWrap>
-							{selectedFile && (
-								<div>
-									<div>{selectedFile?.name}</div>
-									<div>
-										<progress value={uploadProgress} max="100" />
+							{/* {file && (
+								<UldAfterWrap>
+									<div style={{ fontSize: '16px' }}>{file?.name}</div>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+										<Progressbar value={uploadProgress} max="100" />
+										<div>x</div>
 									</div>
-								</div>
-							)}
+								</UldAfterWrap>
+							)} */}
 						</UldWrap>
 					</UldWrap>
+
 					<UldWrap>
-						<UldBtn onClick={() => fileInputRef.current.click()}> 업로드</UldBtn>
+						<UldBtn
+							onClick={() => {
+								fileInputRef.current.click()
+							}}
+						>
+							업로드
+						</UldBtn>
 					</UldWrap>
 				</BlueSubDiv>
 			)}
-			{selectedFile && (
+			{file && (
 				<UldAfterWrap>
-					<div style={{ fontSize: '16px' }}>{selectedFile.name}</div>
-					<div style={{ display: 'flex', alignItems: 'center' }}>
-						<progress value={uploadProgress} max="100" />
-						<div>x</div>
+					<div style={{ fontSize: '16px' }}>{file.name}</div>
+					<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+						<Progressbar value={uploadProgress} max="100" />
+						<button onClick={initFileHandler}>x</button>
 					</div>
 				</UldAfterWrap>
 			)}
@@ -93,9 +112,20 @@ const UldBtn = styled.button`
 const UldAfterWrap = styled.div`
 	width: 100%;
 	margin: 10px;
-	border: 1px solid;
+	/* border: 1px solid; */
 	display: flex;
+	padding: 8px;
+	background: #f1f1f1;
+	/* gap:4px; */
 	justify-content: space-between;
 	align-items: center;
 `
-const Dropdown = styled.div``
+const Progressbar = styled.progress`
+	background-color: blue;
+	::-webkit-progress-bar {
+		background-color: gray;
+	}
+	::-webkit-progress-value {
+		background-color: #4c83d6;
+	}
+`

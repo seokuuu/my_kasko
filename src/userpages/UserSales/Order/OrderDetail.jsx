@@ -82,7 +82,7 @@ const OrderDetail = ({ salesNumber }) => {
 		tableField: userOrderDetailsField,
 		serverData: orderData,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
-		best: { display: true }
+		best: { display: true },
 	})
 	// 인포테이블 데이터
 	const infoData = useMemo(() => getInfoRows(orderData?.list || [], salesNumber), [orderData, salesNumber])
@@ -96,20 +96,20 @@ const OrderDetail = ({ salesNumber }) => {
 	// 목적지 변경항목 반영 테이블 데이터
 	const tableRowDataWithNewDestination = useMemo(() => {
 		const destinationItemUids = destinationUpdateItems.map((v) => v[UID_KEY])
-		for(const row of tableRowData) {
+		for (const row of tableRowData) {
 			if (destinationItemUids.includes(row[UID_KEY])) {
-				row['변경요청 목적지명'] = destination.name;
-				row['변경요청 목적지코드'] = destination.code;
-				row['변경요청 목적지 주소'] = destination.address;
-				row['변경요청 목적지 연락처'] = destination.phone;
+				row['변경요청 목적지명'] = destination.name
+				row['변경요청 목적지코드'] = destination.code
+				row['변경요청 목적지 주소'] = destination.address
+				row['변경요청 목적지 연락처'] = destination.phone
 			}
 		}
-		return tableRowData;
+		return tableRowData
 	}, [destinationUpdateItems, tableRowData])
 	// ALERT
 	const { simpleAlert } = useAlert()
 	// 패키지 상세보기
-	const { setPackageReadOnlyViewer } = useContext(PackageViewerDispatchContext);
+	const { setPackageReadOnlyViewer } = useContext(PackageViewerDispatchContext)
 
 	/**
 	 * 목적지 적용 핸들러
@@ -134,24 +134,24 @@ const OrderDetail = ({ salesNumber }) => {
 		if (!destination) {
 			return simpleAlert('적용할 목적지를 선택해 주세요.')
 		}
-		
+
 		if (destinationUpdateItems.length < 1) {
-			return simpleAlert('변경할 목적지를 적용한 상품이 없습니다.');
+			return simpleAlert('변경할 목적지를 적용한 상품이 없습니다.')
 		}
 
-		const selectedUids = selectedData.map(v => v[UID_KEY]);
+		const selectedUids = selectedData.map((v) => v[UID_KEY])
 		const selectedUpdateList = destinationUpdateItems
-															.filter(v => selectedUids.includes(v[UID_KEY]))
-															.map((v) => ({
-																uid: v[UID_KEY],
-																requestCustomerDestinationUid: destination.uid,
-															}));
+			.filter((v) => selectedUids.includes(v[UID_KEY]))
+			.map((v) => ({
+				uid: v[UID_KEY],
+				requestCustomerDestinationUid: destination.uid,
+			}))
 
-		if(selectedUpdateList.length < 1) {
-			return simpleAlert('목적지 승인 요청할 상품을 선택해 주세요.');
+		if (selectedUpdateList.length < 1) {
+			return simpleAlert('목적지 승인 요청할 상품을 선택해 주세요.')
 		}
 
-		requestDestinationUpdate({ updateList: selectedUpdateList})
+		requestDestinationUpdate({ updateList: selectedUpdateList })
 		setDestinationUpdateItems([])
 		setDestination(null)
 	}
@@ -191,17 +191,17 @@ const OrderDetail = ({ salesNumber }) => {
 			<TableContianer>
 				{/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
 				<TCSubContainer bor>
-					<div style={{flex: 1}}>
+					<div style={{ flex: 1 }}>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handlePageSizeChange} />
 						<TableV2ExcelDownloader
-							requestUrl={USER_URL.orderList} 
-							requestParam={{auctionNumber: salesNumber}}
+							requestUrl={USER_URL.orderDetail}
+							requestParam={{ auctionNumber: salesNumber }}
 							requestCount={totalCount}
-							field={userOrderDetailsField} 
+							field={userOrderDetailsField}
 							sheetName={`주문확인상세(${salesNumber})`}
 						/>
 					</div>
@@ -239,13 +239,8 @@ const OrderDetail = ({ salesNumber }) => {
 				/>
 				<TCSubContainer>
 					<div></div>
-					<div style={{ display: 'flex', gap: '10px' }}>
-						<PrintDepositRequestButton
-							auctionNumber={salesNumber}
-							title="상시판매 입금 요청서"
-							salesDeposit
-						/>
-					</div>
+					{/* 입금 확인 요청서 */}
+					<PrintDepositRequestButton auctionNumber={salesNumber} salesDeposit />
 				</TCSubContainer>
 			</TableContianer>
 		</FilterContianer>
