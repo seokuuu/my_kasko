@@ -280,7 +280,6 @@ const SellOrderDetail = () => {
 						<TGreyBtn onClick={updateCustomerDestinationButtonOnClick}>적용</TGreyBtn>
 						<BtnBound style={{ margin: '0px' }} />
 						<WhiteBlackBtn onClick={destinationRequestButtonOnClickHandler}>목적지 승인 요청</WhiteBlackBtn>
-
 						<BtnBound style={{ margin: '0px' }} />
 						<WhiteRedBtn onClick={destinationChangeRejectButtonOnClickHandler}>목적지 변경 반려</WhiteRedBtn>
 						<WhiteSkyBtn str onClick={destinationChangeApproveButtonOnClickHandler}>

@@ -29,6 +29,8 @@ import useAlert from '../../../store/Alert/useAlert.js'
 import { usePackageProductViewStatusUpdate } from '../../../api/SellProduct.js'
 import SalesPackage from '../../../modal/Multi/SalesPackage.jsx'
 import TableV2ExcelDownloader from '../../Table/TableV2ExcelDownloader.jsx'
+import CautionBox from '../../../components/CautionBox/CautionBox.jsx'
+import { CAUTION_CATEGORY } from '../../../components/CautionBox/constants.js'
 
 const Package = () => {
 	const { simpleAlert } = useAlert()
@@ -161,21 +163,8 @@ const Package = () => {
 					{/* 토글 쓰기 */}
 					<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 				</FilterHeader>
-				<FilterHeaderAlert>
-					<div style={{ display: 'flex' }}>
-						<div style={{ marginRight: '20px' }}>
-							<img src="/img/notice.png" />
-						</div>
-						<div style={{ marginTop: '6px' }}>
-							<div>· 주의사항 영역</div>
-							<div style={{ marginTop: '6px' }}>· 주의사항 영역</div>
-						</div>
-					</div>
-					<div>
-						수정
-						<img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-					</div>
-				</FilterHeaderAlert>
+				{/* 공지사항 */}
+				<CautionBox category={CAUTION_CATEGORY.packageProduct} />
 				{exFilterToggle && (
 					<FilterWrap>
 						<GlobalProductSearch

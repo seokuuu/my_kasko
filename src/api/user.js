@@ -185,7 +185,7 @@ export const useUserOrderMutaion = () => {
  * @param {*} cancelParam
  * @description 주문확인 > 선택항목 주문취소하기
  */
-export const useUserOrderCancelMutaion = () => {
+export const useUserOrderCancelMutation = () => {
 	const { simpleAlert } = useAlert()
 
 	return useMutation({
