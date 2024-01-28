@@ -126,7 +126,7 @@ export const useUserAddCartMutaion = () => {
 			await client.post(USER_URL.cartRequest, cartParam)
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['user','cart'] })
+			queryClient.invalidateQueries({ queryKey: ['user', 'cart'] })
 			simpleAlert('장바구니에 추가하였습니다.')
 		},
 		onError: (error) => {
@@ -148,7 +148,7 @@ export const useUserDelCartMutaion = () => {
 			await client.delete(`${USER_URL.cartRequest}/${cartParam}`)
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['user','cart'] })
+			queryClient.invalidateQueries({ queryKey: ['user', 'cart'] })
 			simpleAlert('장바구니에서 삭제하였습니다.')
 		},
 		onError: (error) => {
@@ -170,7 +170,7 @@ export const useUserOrderMutaion = () => {
 			await client.post(USER_URL.orderRequest, orderParam)
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey:['user','cart'] })
+			queryClient.invalidateQueries({ queryKey: ['user', 'cart'] })
 			return simpleAlert('주문을 완료하였습니다.')
 		},
 		onError: (error) => {
@@ -184,7 +184,7 @@ export const useUserOrderMutaion = () => {
  * @param {*} cancelParam
  * @description 주문확인 > 선택항목 주문취소하기
  */
-export const useUserOrderCancelMutaion = () => {
+export const useUserOrderCancelMutation = () => {
 	const { simpleAlert } = useAlert()
 
 	return useMutation({

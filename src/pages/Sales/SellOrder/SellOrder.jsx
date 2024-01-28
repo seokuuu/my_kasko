@@ -27,11 +27,11 @@ import SellOrderSearchFields from './SellOrderSearchFields'
 import { isEqual } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import useAlert from '../../../store/Alert/useAlert'
-import { useUserOrderCancelMutaion } from '../../../api/user'
+import { useUserOrderCancelMutation } from '../../../api/user'
 import DepositRequestForm from '../../../modal/Docs/DepositRequestForm'
 
 const SellOrder = () => {
-	const { mutate: mutateDepositOrderCancel, loading: loadingDepositOrderCancel } = useUserOrderCancelMutaion()
+	const { mutate: mutateDepositOrderCancel, loading: loadingDepositOrderCancel } = useUserOrderCancelMutation()
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
