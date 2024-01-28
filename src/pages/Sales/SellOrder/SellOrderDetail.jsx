@@ -2,7 +2,7 @@ import { useState, Fragment, useEffect } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import { useParams } from 'react-router-dom'
 import { styled } from 'styled-components'
-import { getSaleProductDetail } from '../../../api/saleProduct'
+import { getSaleProductDetail, usePostSaleProductOrderPartConfirm } from '../../../api/saleProduct'
 import { getDestinationFind } from '../../../api/search'
 import { useDepositOrderCancel } from '../../../api/orderList'
 import { usePostSaleProductOrderConfirm } from '../../../api/saleProduct'
@@ -101,7 +101,7 @@ const SellOrderDetail = () => {
 	const {
 		// prettier-ignore
 		mutate: mutateDepositOrderConfirm,
-	} = usePostSaleProductOrderConfirm() // 부분 입금 확인
+	} = usePostSaleProductOrderPartConfirm() // 부분 입금 확인
 
 	useEffect(() => {
 		if (getSaleProductDetailResponse?.data?.data) {
@@ -179,7 +179,7 @@ const SellOrderDetail = () => {
 	const depositOrderConfirmButtonOnClickHandler = () => {
 		handleButtonClick(
 			'입금 확인할 제품을 선택해 주세요.',
-			(value) => ({ auctionNumbers: value['경매번호'] }),
+			(value) => ({ uid: value['주문번호'] }),
 			mutateDepositOrderConfirm,
 		)
 	}

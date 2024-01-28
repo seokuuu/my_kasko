@@ -13,6 +13,7 @@ export const USER_URL = {
 	cartRequest: '/sale-product/cart', // POST
 	orderRequest: '/sale-product/order', // POST
 	orderList: '/sale-product/order', // GET
+	orderDetail: '/sale-product/order/details', // GET
 	orderCancel: '/admin/order/cancel',
 	destinationList: '/auction/destination',
 	destinationUpdate: '/auction/successfulBid/request',
@@ -108,7 +109,7 @@ export const useUserOrderDetailsQuery = (param) =>
 	useQuery({
 		queryKey: ['user', 'order', 'details', param],
 		queryFn: async () => {
-			const { data } = await client.get(getUrlWithSearchParam(USER_URL.orderList, param))
+			const { data } = await client.get(getUrlWithSearchParam(USER_URL.orderDetail, param))
 			return data.data
 		},
 	})

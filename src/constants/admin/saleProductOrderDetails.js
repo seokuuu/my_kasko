@@ -19,7 +19,7 @@ export const saleProductOrderDetailsCols = [
 		cellStyle: { textAlign: 'center' },
 	},
 	{ field: '순번', minWidth: 100, cellStyle: { textAlign: 'center' } },
-	{ field: '경매번호', minWidth: 100, cellStyle: { textAlign: 'center' } },
+	// { field: '경매번호', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '상시판매 번호', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '상시판매 주문일자', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '고객사명', minWidth: 100, cellStyle: { textAlign: 'center' } },
@@ -90,16 +90,15 @@ export const saleProductOrderDetailsCols = [
 	{ field: '매입운반비', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '매출운반비', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '재고상태', minWidth: 100, cellStyle: { textAlign: 'center' } },
-	{ field: '카스코 낙찰가', minWidth: 100, cellStyle: { textAlign: 'center' } },
+	// { field: '카스코 낙찰가', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '최종수정자', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '최종수정일시', minWidth: 100, cellStyle: { textAlign: 'center' } },
 ]
 
 export const saleProductOrderDetailsTableRowMap = {
 	순번: '', // Not directly available in the response
-	경매번호: 'auctionNumber', // Maps to auctionNumber
-	'상시판매 번호': '', // Not directly available in the response
-	'상시판매 주문일자': '', // Not directly available in the response
+	'상시판매 번호': 'auctionNumber', // Not directly available in the response
+	'상시판매 주문일자': 'auctionCreateDate', // Not directly available in the response
 	고객사명: 'customerName', // Maps to customerName
 	고객코드: 'customerCode', // Maps to customerCode
 	제품번호: 'productNumber', // Maps to productNumber
@@ -113,7 +112,7 @@ export const saleProductOrderDetailsTableRowMap = {
 	'목적지 주소': 'customerDestinationAddress', // Maps to customerDestinationAddress
 	'목적지 연락처(사무실)': 'customerDestinationPhone', // Maps to customerDestinationPhone
 	'목적지담당자 연락처 (휴대폰)': 'customerDestinationManagerPhone', // Maps to customerDestinationManagerPhone
-	하차지명: '', // Not directly available in the response
+	하차지명: 'customerDestinationName', // Not directly available in the response
 	'변경요청 목적지명': 'requestDestinationName', // Maps to requestDestinationName
 	'변경요청 목적지 주소': 'requestCustomerDestinationAddress', // Maps to requestCustomerDestinationAddress
 	'변경요청 목적지 연락처': 'requestCustomerDestinationPhone', // Maps to requestCustomerDestinationPhone
@@ -122,21 +121,21 @@ export const saleProductOrderDetailsTableRowMap = {
 	판매가유형: 'salePriceType', // Maps to salePriceType
 	제품군: 'spart', // Maps to spart
 	제품등급: 'grade', // Maps to grade
-	정척여부: '', // Not directly available in the response
-	유찰횟수: '', // Not directly available in the response
+	정척여부: 'preferThickness', // Not directly available in the response
+	유찰횟수: 'failCount', // Not directly available in the response
 	'제품 낙찰단가(원/톤)': 'productBiddingPrice', // Maps to productBiddingPrice
 	'낙찰총단가(원/톤)': 'totalBiddingPrice', // Maps to totalBiddingPrice
 	'제품공급가(원/톤)': 'orderPrice', // Maps to orderPrice
 	'제품부가세(원/톤)': 'orderPriceVat', // Maps to orderPriceVat
-	'제품금액 (VAT포함)': '', // Not directly available in the response
+	'제품금액 (VAT포함)': 'totalOrderPrice', // Not directly available in the response
 	'기본 운임단가(원/톤)': 'freightFee', // Maps to freightFee
 	'할증 운임단가(원/톤)': 'extraUnitPrice', // Maps to extraUnitPrice
-	'운임 총단가 운반비공급가(원/톤)': 'freightCost', // Maps to freightCost
+	'운반비공급가(원/톤)': 'freightCost', // Maps to freightCost
 	'운반비부가세(원/톤)': 'freightCostVat', // Maps to freightCostVat
-	'운반비 금액 (VAT포함)': '', // Not directly available in the response
-	'총공급가(원/톤)': '', // Not directly available in the response
-	'총부가세(원/톤)': '', // Not directly available in the response
-	'합계금액(원/톤)': '', // Not directly available in the response
+	'운반비 금액 (VAT포함)': 'freightCostVat', // Not directly available in the response
+	'총공급가(원/톤)': 'totalSupplyPrice', // Not directly available in the response
+	'총부가세(원/톤)': 'totalVat', // Not directly available in the response
+	'합계금액(원/톤)': 'totalPrice', // Not directly available in the response
 	두께: 'thickness', // Maps to thickness
 	폭: 'width', // Maps to width
 	길이: 'length', // Maps to length
@@ -156,9 +155,9 @@ export const saleProductOrderDetailsTableRowMap = {
 	용도명: 'usageCodeName', // Maps to usageCodeName
 	메모: 'productMemo', // Maps to productMemo
 	주문상태: 'orderStatus', // Maps to orderStatus
-	'확정전송 일자': '', // Not directly available in the response
+	'확정전송 일자': 'sendDate', // Not directly available in the response
 	주문번호: 'orderUid', // Maps to orderUid
-	비고: '', // Not directly available in the response
+	비고: 'note', // Not directly available in the response
 	'매입 기본운임단가(원/톤)': '', // Not directly available in the response
 	'매입 할증운임단가(원/톤)': '', // Not directly available in the response
 	'매입 운임총단가': '', // Not directly available in the response
@@ -168,7 +167,7 @@ export const saleProductOrderDetailsTableRowMap = {
 	매입운반비: '', // Not directly available in the response
 	매출운반비: '', // Not directly available in the response
 	재고상태: '', // Not directly available in the response
-	'카스코 낙찰가': '', // Not directly available in the response
+	// '카스코 낙찰가': '', // Not directly available in the response
 	최종수정자: 'updateMemberName', // Maps to updateMemberName
 	최종수정일시: 'updateDate', // Maps to updateDate
 }
