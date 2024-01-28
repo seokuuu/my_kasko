@@ -12,7 +12,6 @@ import Hidden from '../../components/TableInner/Hidden'
 import PageDropdown from '../../components/TableInner/PageDropdown'
 import useReactQuery from '../../hooks/useReactQuery'
 import { add_element_field } from '../../lib/tableHelpers'
-import axios from 'axios'
 import InventoryFind from '../../modal/Multi/InventoryFind'
 import { getCustomerFind } from '../../service/admin/Auction'
 import { getSPartList } from '../../api/search'
@@ -126,7 +125,7 @@ const Order = ({}) => {
 	const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
 
 	const makeRequest = (selectedRows) => {
-		if (!selectedRows) return [];
+		if (!selectedRows) return []
 
 		return selectedRows.map((row) => ({
 			auctionNumber: row['경매 번호'],
@@ -142,20 +141,21 @@ const Order = ({}) => {
 	 */
 	const { mutate: cancelAllOrder } = useMutationQuery('cancelAllOrderList', cancelAllOrderList)
 	const handleOrderCancel = () => {
-		const requestList = makeRequest(checkBoxSelect); // checkBoxSelect를 makeRequest 함수에 전달하여 데이터 가공
+		const requestList = makeRequest(checkBoxSelect) // checkBoxSelect를 makeRequest 함수에 전달하여 데이터 가공
 
 		if (requestList.length === 0) {
-			simpleAlert('선택된 항목이 없습니다.');
-			return; // 함수 실행 중단
+			simpleAlert('선택된 항목이 없습니다.')
+			return // 함수 실행 중단
 		}
 		simpleConfirm('주문 취소하시겠습니까?', () => {
-			cancelAllOrder(requestList, { // 가공된 데이터를 cancelAllOrder 함수에 전달
+			cancelAllOrder(requestList, {
+				// 가공된 데이터를 cancelAllOrder 함수에 전달
 				onSuccess: () => {
-					refetch(); // 성공 시 데이터 새로고침
+					refetch() // 성공 시 데이터 새로고침
 				},
-			});
-		});
-	};
+			})
+		})
+	}
 
 	/**
 	 * @description 입금 취소 핸들러
@@ -165,16 +165,17 @@ const Order = ({}) => {
 		const requestList = makeRequest(checkBoxSelect)
 
 		if (requestList.length === 0) {
-			simpleAlert('선택된 항목이 없습니다.');
-			return; // 함수 실행 중단
+			simpleAlert('선택된 항목이 없습니다.')
+			return // 함수 실행 중단
 		}
 		simpleConfirm('입금 취소하시겠습니까?', () => {
-			depositCancelAllOrder(requestList, { // 가공된 데이터를 cancelAllOrder 함수에 전달
+			depositCancelAllOrder(requestList, {
+				// 가공된 데이터를 cancelAllOrder 함수에 전달
 				onSuccess: () => {
-					refetch(); // 성공 시 데이터 새로고침
+					refetch() // 성공 시 데이터 새로고침
 				},
-			});
-		});
+			})
+		})
 	}
 
 	/**
