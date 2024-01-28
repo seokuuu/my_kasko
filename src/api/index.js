@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { logout } from '../store/auth'
 
 const API_PATH = process.env.REACT_APP_API_URL
 
@@ -32,13 +31,13 @@ client.interceptors.response.use(
 	/** 실패시 */
 	(error) => {
 		try {
-			const { response, config } = error
+			const { response } = error
 			/** 토큰으로 인한 오류일 시 리플레쉬 토큰 조회 후 리패치 */
 			if (response?.status === 401) {
-				// return refreshAccessToken().then(() => client(config))
-				localStorage.removeItem('accessToken')
-				alert('로그인 후 이용해 주세요.')
-				window.location.href = '/'
+				window.location.href = '/not-auth'
+			}
+			if (response?.status === 403) {
+				window.location.href = '/forbidden'
 			}
 			return Promise.reject(response)
 		} catch (e) {
