@@ -141,6 +141,13 @@ export const auctionTypeAtom = atom('단일')
     기준 관리 (Standard)
 ============================== */
 
+export const destiPostDataAtom = atom({
+	name: '',
+	code: '',
+})
+
+export const destPostModalAtom = atom(false)
+
 //목적지 관리 - 목적지 등록 Modal
 export const modalAtom = atom(false)
 

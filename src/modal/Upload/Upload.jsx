@@ -51,6 +51,8 @@ const Upload = ({
 	handleSelectChange,
 	dropInput,
 	setDropInput,
+	address,
+	setAddress,
 }) => {
 	// 등록 타입
 	const [registerType, setRegisterType] = useState('multi')
@@ -119,6 +121,8 @@ const Upload = ({
 								convertKey={convertKey}
 								onEditHandler={onEditHandler}
 								dropdownProps={dropdownProps}
+								address={address}
+								setAddress={setAddress}
 							/>
 						)}
 					</div>
