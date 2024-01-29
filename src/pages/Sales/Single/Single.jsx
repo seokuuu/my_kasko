@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import { isEqual } from 'lodash'
-import { getSingleProducts, useSingleProductViewStatusUpdate } from '../../../api/SellProduct'
+import { urls, getSingleProducts, useSingleProductViewStatusUpdate } from '../../../api/SellProduct'
 import useReactQuery from '../../../hooks/useReactQuery'
 import useAlert from '../../../store/Alert/useAlert'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
@@ -30,18 +30,17 @@ import {
 const Single = () => {
 	const { simpleAlert } = useAlert()
 
-	const paramData = {
+	const initialParamState = {
 		pageNum: 1,
 		pageSize: 50,
 	}
 
-	// 노출 상태 변경 모달
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const [isEditStatusModal, setIsEditStatusModal] = useAtom(salesPackageModal)
 
 	const [checkRadio, setCheckRadio] = useState(null)
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-	const [param, setParam] = useState(paramData)
+	const [param, setParam] = useState(initialParamState)
 	const [singleProductListData, setSingleProductListData] = useState(null)
 	const [singleProductPagination, setSingleProductPagination] = useState([])
 	const [toggleMsg, setToggleMsg] = useState('On')
@@ -72,7 +71,9 @@ const Single = () => {
 	}, [isSuccess, getSingleProductsRes, isError])
 
 	useEffect(() => {
-		refetch()
+		if (isSuccessSingleProductViewStatusUpdate) {
+			refetch()
+		}
 	}, [isSuccessSingleProductViewStatusUpdate])
 
 	const formatTableRowData = (singleProductListData) => {
@@ -115,7 +116,7 @@ const Single = () => {
 	const globalProductResetOnClick = () => {
 		// if resetting the search field shouldn't rerender table
 		// then we need to create paramData object to reset the search fields.
-		setParam(paramData)
+		setParam(initialParamState)
 	}
 
 	const globalProductSearchOnClick = (userSearchParam) => {
@@ -179,7 +180,7 @@ const Single = () => {
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
 						<TableV2ExcelDownloader
-							requestUrl={'/single-product'}
+							requestUrl={urls.single}
 							requestCount={singleProductPagination?.listCount}
 							field={responseToTableRowMap}
 						/>

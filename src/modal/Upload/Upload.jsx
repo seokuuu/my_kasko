@@ -24,6 +24,17 @@ import SingleUploader from './components/SingleUploader'
  * 등록 버튼을 누를시, 실행될 함수를 전달해주시면 됩니다.
  */
 const Upload = ({
+	modalSwitch,
+	originEngRowField,
+	excelToJson,
+	setExcelToJson,
+	getRow,
+	uidAtom,
+	handleSelectChange,
+	dropInput,
+	setDropInput,
+	address,
+	setAddress,
 	excelUpload, // 대량 등록(엑셀 업로드) 핸들러입니다.(저장 버튼을 누를시 실행되는 함수입니다.)
 	isExcelUploadOnly = false, // 대량 등록만 있으면 true 아니면 false 값을 할당해주시면 됩니다.
 	setModalSwitch, // 모달창 여닫기 setState
@@ -93,6 +104,8 @@ const Upload = ({
 							convertKey={convertKey}
 							onEditHandler={onEditHandler}
 							dropdownProps={dropdownProps}
+							address={address}
+							setAddress={setAddress}
 						/>
 					)}
 					<BlueBtnWrap>
