@@ -33,8 +33,8 @@ const CLAIM_KEYS = {
 function createFormData(params, type) {
 	const form = new FormData()
 
-	// 파일이 아닌 데이터(등록)
-	const registerNoneFileData = {
+	// 등록
+	const commonParams = {
 		productUid: params.productUid,
 		content: params.content,
 		requestDate: params.requestDate,
@@ -44,21 +44,14 @@ function createFormData(params, type) {
 		hsReturnDate: params.hsReturnDate,
 		endDate: params.endDate,
 		claimStatus: params.claimStatus,
+		auctionNumber: params.auctionNumber,
 	}
 
-	// 파일이 아닌 데이터(수정)
+	// 수정
 	const updateNoneFileData = {
+		...commonParams,
 		uid: params.uid,
-		productUid: params.productUid,
-		content: params.content,
-		requestDate: params.requestDate,
-		registrationDate: params.registrationDate,
-		processor: params.processor,
-		kaskoReturnDate: params.kaskoReturnDate,
-		hsReturnDate: params.hsReturnDate,
-		endDate: params.endDate,
 		deleteFileList: params.deleteFileList,
-		claimStatus: params.claimStatus,
 	}
 	// 파일 데이터
 	const fileData = params.fileList
@@ -66,7 +59,7 @@ function createFormData(params, type) {
 	// 폼 데이터에 파일이 아닌 데이터 추가
 	form.append(
 		'request',
-		new Blob([JSON.stringify(type === 'register' ? registerNoneFileData : updateNoneFileData)], {
+		new Blob([JSON.stringify(type === 'register' ? commonParams : updateNoneFileData)], {
 			type: 'application/json',
 		}),
 	)

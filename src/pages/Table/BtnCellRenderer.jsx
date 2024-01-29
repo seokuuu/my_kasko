@@ -1,5 +1,5 @@
 import { useAtom, useSetAtom } from 'jotai'
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { SkyBtn } from '../../common/Button/Button'
 import {
@@ -13,7 +13,6 @@ import {
 	consolEditModalAtom,
 	operateAddAtom,
 	requestSingleModify,
-	singleModifyObj,
 	singleProductModify,
 	surEditModalAtom,
 	userPageDestiEditModal,
@@ -54,6 +53,7 @@ const BtnCellRenderer = ({ data, uidFieldName, editType, moveUrl }) => {
 	const [weight, setWeight] = useAtom(weightAtom)
 	// 관리자 > 운영 관리 > 제품군 관리,창고 관리 > 등록,수정 모달 관련 값
 	const setProductRangeEditModal = useSetAtom(operateAddAtom)
+
 	const btnClickedHandler = () => {
 		switch (editType) {
 			case 'table':
@@ -94,10 +94,7 @@ const BtnCellRenderer = ({ data, uidFieldName, editType, moveUrl }) => {
 				setUidAtom(uid)
 				setAdminPageDestiEdit(true)
 				break
-			// 클레임 관리 목록 수정 버튼 => 클레임 수정 페이지로 이동
-			case 'claimUpdate':
-				navigate(`/operate/common/product/${uid}`)
-				break
+
 			case 'usermanagemanage':
 				setUidAtom(uid)
 				setUserManageEditModal(true)

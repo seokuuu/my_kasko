@@ -64,8 +64,9 @@ const PreferEdit = ({ setChoiceComponent, setSwtichEdit, uidAtom }) => {
 				},
 			})
 		},
-		onError() {
-			simpleAlert('저장에 실패하였습니다.')
+		onError(error) {
+
+			simpleAlert(error.status === 400 ? error.data.message : '저장에 실패하였습니다.')
 		},
 	})
 
@@ -95,7 +96,7 @@ const PreferEdit = ({ setChoiceComponent, setSwtichEdit, uidAtom }) => {
 
 				spec: {
 					text: detailData.spec,
-					uid: 0,
+					uid: detailData.specUid,
 				},
 				uid: detailData.uid,
 			})
@@ -114,8 +115,12 @@ const PreferEdit = ({ setChoiceComponent, setSwtichEdit, uidAtom }) => {
 		const requestParams = {
 			...submitData,
 			specUid: submitData.spec.uid,
+			cMin: submitData.cmin,
+			cMax: submitData.cmax,
 		}
 
+		delete requestParams.cmin
+		delete requestParams.cmax
 		delete requestParams.spec
 		if (isEmptyObj(submitData)) {
 			update(requestParams)
