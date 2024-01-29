@@ -34,7 +34,8 @@ export const Container = styled.div`
 	transform: translate(-50%, -50%);
 `
 
-function ProNoPage({ title, proNoNumber }) {
+function ProNoPage({ title, proNoNumber, orderId }) {
+	console.log('넘어오는 값 확인 체크', proNoNumber)
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const [onClickCheck, setOnClickCheck] = useAtom(onClickCheckAtom)
 	const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
@@ -143,7 +144,7 @@ function ProNoPage({ title, proNoNumber }) {
 							onSelectionChanged={handleRowSelectionChange}
 						/>
 					</div>
-					{checkBoxSelect?.length > 0 && <SelectedRowsTable selectedRows={selectedRows} columns={proNoFieldCols} />}
+					{checkBoxSelect?.length > 0 && <SelectedRowsTable selectedRows={selectedRows} orderId={orderId} />}
 				</TableContianer>
 			</Container>
 		</OutSide>

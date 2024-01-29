@@ -166,10 +166,13 @@ const AdminOrderDetail = ({}) => {
 	 * @description 모달 테이블 테스트
 	 */
 	const [isTableModal, setIsTableModal] = useAtom(onClickCheckAtom)
-	const [selectedCellData, setSelectedCellData] = useState(null)
-	const toggleModal = (proNoNumber) => {
+	const [selectedCellData, setSelectedCellData] = useState([])
+	const [orderId, setOrderId] = useState(0)
+	const toggleModal = (data) => {
+		console.log('data값-----------',data)
 		setIsTableModal((prev) => !prev)
-		setSelectedCellData(proNoNumber)
+		setSelectedCellData(data.data['Pro.No 번호'])
+		setOrderId(data.data['주문 고유 번호'])
 	}
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 
@@ -313,7 +316,7 @@ const AdminOrderDetail = ({}) => {
 					</TCSubContainer>
 				</TableContianer>
 			</FilterContianer>
-			{isTableModal && <ProNoPage title={'Pro.No 제품 선택'} proNoNumber={selectedCellData} />}
+			{isTableModal && <ProNoPage title={'Pro.No 제품 선택'} proNoNumber={selectedCellData} orderId={orderId}/>}
 		</>
 	)
 }
