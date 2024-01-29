@@ -122,7 +122,7 @@ const PackageCreate = () => {
 		['packageProducts', requestParams],
 		() => getPackageProductsList(requestParams),
 		{
-			enabled: mode !== 'post',
+			enabled: !!requestParams?.packageNumber,
 		},
 	)
 
@@ -179,7 +179,6 @@ const PackageCreate = () => {
 		}
 	}
 
-	console.log(select)
 	const { pagination, onPageChanage } = useTablePaginationPageChange(prevData ? data : select, setRequestParams)
 	useEffect(() => {
 		if (!select) return null
@@ -199,9 +198,10 @@ const PackageCreate = () => {
 		setCreateRequest({
 			name: packageName,
 			saleType: savedRadioValue,
+			price: price,
 			productUids: selectUid,
 		})
-	}, [packageName, savedRadioValue, selectUid])
+	}, [packageName, savedRadioValue, price, selectUid])
 
 	useEffect(() => {
 		setUpdateRequest(
@@ -214,18 +214,19 @@ const PackageCreate = () => {
 			},
 		)
 	}, [packageName, savedRadioValue, selectUid, price, curUid])
-	const { simpleConfirm, showAlert } = useAlert()
+	const { simpleConfirm, showAlert, simpleAlert } = useAlert()
 	const { mutate: create } = useMutationQuery(['query'], postCreatePackage)
 	const { mutate: update } = useMutationQuery(['query'], postUpdatePackage)
+
+	/** TODO 등록 / 수정은 되나 얼렛이 작동하지 않음 */
 	const handleSubmit = () => {
-		// console.log('어디서 3번이 찍히는걸까 ')
-		simpleConfirm(
-			'저장하시겠습니까?',
+		simpleConfirm('저장하시겠습니까?', () => {
 			create(createRequest, {
 				onSuccess: (d) => {
 					if (d?.data?.status === 200) {
 						showAlert({
 							title: '저장되었습니다.',
+							content: '',
 							func: () => {
 								navigate(-1)
 								window.location.reload()
@@ -236,26 +237,29 @@ const PackageCreate = () => {
 				},
 				onError: (e) => {
 					showAlert({
-						title: `${e?.data?.message}`,
+						title: `${e?.data?.message ?? '패키지 생성을 실패하였습니다'}`,
+						content: '',
 						func: () => {
 							navigate(-1)
 							window.location.reload()
 						},
 					})
 				},
-			}),
-		)
+			})
+		})
 	}
 
+	/** TODO 등록 / 수정은 되나 얼렛이 작동하지 않음 */
 	const handleUpdate = () => {
 		simpleConfirm('수정하시겠습니까?', () => {
 			update(updateRequest, {
 				onSuccess: () => {
-					navigate('/product/package')
+					simpleAlert('수정되었습니다', () => navigate('/product/package'))
 				},
 				onError: (e) => {
 					showAlert({
 						title: `${e?.data?.message}`,
+						content: '',
 						func: () => {
 							// navigate(-1)
 							window.location.reload()

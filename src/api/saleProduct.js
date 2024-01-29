@@ -26,12 +26,13 @@ export const usePostSaleProductOrderConfirm = () => {
 	const { simpleAlert } = useAlert()
 
 	return useMutation({
-		mutationFn: async (orderParam) => {
-			await client.post(saleProductOrderConfirmEndpoint, orderParam)
+		mutationFn: async (request) => {
+			await client.post(saleProductOrderConfirmEndpoint, request)
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: 'cart' })
-			return simpleAlert('부분 입금을 완료하였습니다.')
+			queryClient.invalidateQueries({ queryKey: 'getSaleProductList' })
+			return simpleAlert('입금 완료하였습니다.')
 		},
 		onError: (error) => {
 			return simpleAlert(error?.data?.message || '요청중 오류가 발생했습니다.\n다시 시도해 주세요.')
