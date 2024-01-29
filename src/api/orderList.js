@@ -1,7 +1,7 @@
 import { client } from '.'
 import qs from 'qs'
 import useAlert from '../store/Alert/useAlert'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { queryClient } from './query'
 
 const urls = {
@@ -24,7 +24,7 @@ export const useDepositOrderCancel = () => {
 
 	return useMutation({
 		mutationFn: async (cancelParam) => {
-			await client.post(urls.orderCancel, cancelParam)
+			await client.post(urls.orderCancel, { requestList: cancelParam.updateList })
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: 'order' })
