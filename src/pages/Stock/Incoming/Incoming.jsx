@@ -2,30 +2,28 @@ import { useAtom, useAtomValue } from 'jotai'
 import React, { useEffect, useState } from 'react'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
+import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
 import { blueModalAtom, selectedRowsAtom, singleProductModify, toggleAtom } from '../../../store/Layout/Layout'
 
+import axios from 'axios'
+import { isEqual } from 'lodash'
+import { deleteIncomeProduct, getInComingList, incomingConfirm, postExcelSubmitProduct } from '../../../api/stock'
+import { SwitchBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import Table from '../../Table/Table'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { deleteIncomeProduct, getInComingList, incomingConfirm, postExcelSubmitProduct } from '../../../api/stock'
 import { StockIncomingFields, stockFields } from '../../../constants/admin/StockIncoming'
-import { KilogramSum } from '../../../utils/KilogramSum'
-import { add_element_field } from '../../../lib/tableHelpers'
-import axios from 'axios'
 import useMutationQuery from '../../../hooks/useMutationQuery'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
+import Upload from '../../../modal/Upload/Upload'
 import useAlert from '../../../store/Alert/useAlert'
-import UploadV2 from '../../../modal/Upload/UploadV2'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import IncomingSearchFields from './IncomingSearchFields'
-import { SwitchBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import { isEqual } from 'lodash'
-import SingleProductModify from '../../Product/SingleProduct/SingleProductModify'
+import { KilogramSum } from '../../../utils/KilogramSum'
+import Table from '../../Table/Table'
 import IncomingModify from './IncomingModify'
-import SelectedRowsTable from '../../Table/SelectTable'
+import IncomingSearchFields from './IncomingSearchFields'
 const Incoming = ({}) => {
-	const { simpleConfirm, simpleAlert } = useAlert()
+	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
 
 	const [isRotated, setIsRotated] = useState(false)
 
@@ -100,9 +98,9 @@ const Incoming = ({}) => {
 	/**
 	 * @description 제품 삭제
 	 */
-	const { mutate: deleteIncome } = useMutationQuery('deleteIncomeProduct', deleteIncomeProduct,{
+	const { mutate: deleteIncome } = useMutationQuery('deleteIncomeProduct', deleteIncomeProduct, {
 		onError: (error) => {
-			simpleAlert(error.message);
+			simpleAlert(error.message)
 		},
 	})
 	const handleDelete = () => {
@@ -119,7 +117,6 @@ const Incoming = ({}) => {
 		if (checkBoxSelect?.length === 0) return
 		setSelectInComeNumber(() => checkBoxSelect?.map((i) => i['제품 고유 번호']))
 	}, [checkBoxSelect])
-
 
 	/**
 	 * @description 제품 등록
@@ -150,12 +147,12 @@ const Incoming = ({}) => {
 	/**
 	 * @description 입고 확정 버튼
 	 */
-	const { mutate: incomeConfirm } = useMutationQuery('incomingConfirm', incomingConfirm,{
+	const { mutate: incomeConfirm } = useMutationQuery('incomingConfirm', incomingConfirm, {
 		onError: (error) => {
-			simpleAlert(error.message);
+			simpleAlert(error.message)
 		},
 	})
-	const handleConfirm = async() => {
+	const handleConfirm = async () => {
 		simpleConfirm('입고 확정으로 바꾸시겠습니까?', () => {
 			incomeConfirm(selectInComeNumber?.join(','), {
 				onSuccess: () => {
@@ -165,11 +162,13 @@ const Incoming = ({}) => {
 		})
 	}
 
+	// 엑셀 대량 등록
+
 	const [singleModfiy, setSingleModify] = useAtom(singleProductModify)
 
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 	useEffect(() => {
-		console.log('체크박스체크박스',checkBoxSelect)
+		console.log('체크박스체크박스', checkBoxSelect)
 	}, [checkBoxSelect])
 	return (
 		<>
@@ -202,9 +201,7 @@ const Incoming = ({}) => {
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
 							<PageDropdown />
-							<Excel
-								getRow={getRow}
-							/>
+							<Excel getRow={getRow} />
 						</div>
 					</TCSubContainer>
 					<TCSubContainer>
@@ -231,16 +228,15 @@ const Incoming = ({}) => {
 						</div>
 					</TCSubContainer>
 				</TableContianer>
-
 			</FilterContianer>
 			{singleModfiy && <IncomingModify title={'제품 수정'} />}
 			{uploadModal && (
-				<UploadV2
-					originEngRowField={stockFields}
+				<Upload
+					isExcelUploadOnly={true}
 					setModalSwitch={setUploadModal}
-					postApi={postExcelSubmitProduct}
-					setExcelToJson={setExcelToJson}
-					excelToJson={excelToJson}
+					title={'제품 대량 등록'}
+					excelUploadAPI={postExcelSubmitProduct}
+					refreshQueryKey={'getInComingList'}
 				/>
 			)}
 		</>

@@ -289,16 +289,6 @@ const StartPrice = ({}) => {
 		priceUpodate(initObject)
 	}
 
-	// 단가 등록(대량 등록 핸들러)
-	const { mutate: upload } = useMutation(uploadMultiPrice, {
-		onSuccess() {
-			showAlert({ title: '등록되었습니다.', content: '', func: () => setModalSwitch(false) })
-		},
-		onError() {
-			simpleAlert('등록에 실패하였습니다.')
-		},
-	})
-
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -470,7 +460,8 @@ const StartPrice = ({}) => {
 					handleSelectChange={handleSelectChange}
 					dropInput={dropInput}
 					setDropInput={setDropInput}
-					excelUpload={upload}
+					excelUploadAPI={uploadMultiPrice}
+					refreshQueryKey={'auction'}
 				/>
 			)}
 			{/* {modalSwitch && (

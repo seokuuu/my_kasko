@@ -13,6 +13,8 @@ import {
 
 import { ExRadioWrap } from '../External/ExternalFilter'
 
+import { useMutation } from '@tanstack/react-query'
+import { queryClient } from '../../api/query'
 import { RadioSearchButton } from '../../components/Search'
 import useAlert from '../../store/Alert/useAlert'
 import MultiUploader from './components/MultiUploader'
@@ -35,7 +37,8 @@ const Upload = ({
 	setDropInput,
 	address,
 	setAddress,
-	excelUpload, // 대량 등록(엑셀 업로드) 핸들러입니다.(저장 버튼을 누를시 실행되는 함수입니다.)
+	excelUploadAPI, // 대량 등록(엑셀 업로드)API입니다.(저장 버튼을 누를시 실행되는 함수입니다.)
+	refreshQueryKey, // 대량 등록 후, 재요청할 API에 대한 쿼리키값입니다.
 	isExcelUploadOnly = false, // 대량 등록만 있으면 true 아니면 false 값을 할당해주시면 됩니다.
 	setModalSwitch, // 모달창 여닫기 setState
 	title, // 모달 제목
@@ -48,9 +51,26 @@ const Upload = ({
 }) => {
 	// 등록 타입
 	const [registerType, setRegisterType] = useState('multi')
-	const { simpleConfirm } = useAlert()
+	const { simpleConfirm, showAlert, simpleAlert } = useAlert()
 
 	const [file, setFile] = useState(null)
+
+	// 대량 등록 API
+	const { mutate: excelUpload } = useMutation(excelUploadAPI, {
+		onSuccess() {
+			showAlert({
+				title: '등록되었습니다',
+				content: '',
+				func: () => {
+					setModalSwitch(false)
+					queryClient.invalidateQueries(refreshQueryKey)
+				},
+			})
+		},
+		onError() {
+			simpleAlert('등록에 실패하였습니다.')
+		},
+	})
 
 	// 저장 핸들러
 	const submit = () => {
