@@ -1,4 +1,4 @@
-import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
+import ClaimCellRender from '../../pages/Operate/Common/Claim/components/ClaimCellRender'
 import { checkboxSelection, headerCheckboxSelection } from '../../pages/Table/util'
 /* ==============================
     운영 관리 - 클레임 관리
@@ -11,11 +11,7 @@ export const ClaimListFieldCols = [
 	{
 		field: '수정',
 		maxWidth: 90,
-		cellRenderer: BtnCellRenderer,
-		cellRendererParams: {
-			uidFieldName: '고유값',
-			editType: 'claimUpdate',
-		},
+		cellRenderer: ClaimCellRender,
 		headerClass: 'custom-header-style',
 	},
 	{
