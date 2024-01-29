@@ -25,6 +25,8 @@ import { getValidParams } from '../../../utils/parameters'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 import OrderSearchFields from './OrderSearchFields'
 import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
+import { cancelAllOrderList } from '../../../api/orderList'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
 /**
  * @constant 기본 페이지 검색 값
@@ -38,6 +40,7 @@ const initialPageParams = {
  * @constant 주문 고유번호 키
  */
 const UID_KEY = '주문 고유 번호'
+const NUMBER_KEY = '상시판매 번호'
 
 /**
  * (사용자)상시판매 주문확인 목록
@@ -57,7 +60,7 @@ const Order = ({}) => {
 		tableField: userOrderListField,
 		serverData: orderData,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
-		best: { display: true }
+		best: { display: true },
 	})
 	// 선택 항목
 	const { selectedData, selectedWeightStr, selectedCountStr, hasSelected } = useTableSelection({ weightKey: '총 중량' })
