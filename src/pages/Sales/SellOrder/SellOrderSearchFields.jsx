@@ -6,24 +6,12 @@ import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSear
 import { FilterLeft, FilterRight, PWRight, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
 import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
 
-const SellOrderSearchFields = ({
-	search,
-	setSearch,
-	commonDropdownButtonHandler,
-	modalButtonClickHandler,
-	setCustomerModalAtom,
-}) => {
+const SellOrderSearchFields = ({ search, setSearch, commonDropdownButtonHandler }) => {
 	const {
 		// prettier-ignore
 		storageList,
 		spartList,
-		// inventoryCustomer,
 	} = useGlobalProductSearchFieldData()
-
-	// const handleInventoryFindButtonOnClick = (data) => {
-	// 	commonDropdownButtonHandler(data.code, 'customerCode')
-	// 	commonDropdownButtonHandler(data.name, 'customerName')
-	// }
 
 	return (
 		<>

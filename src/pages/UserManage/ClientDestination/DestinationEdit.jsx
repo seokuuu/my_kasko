@@ -80,7 +80,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 	const [findModal, setFindModal] = useAtom(UsermanageFindModal)
 	const [customerFindResult, setCustomerFindResult] = useState()
 	const [customerNameInput, setCustomerNameInput] = useState({})
-	const { showAlert } = useAlert()
+	const { showAlert, simpleConfirm } = useAlert()
 	useEffect(() => {
 		setAddress(matchingData?.address)
 		setDetailAddress(matchingData?.addressDetail)
@@ -397,7 +397,15 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 				</HalfWrap>
 			</OnePageSubContainer>
 			<BtnWrap bottom={-250}>
-				<WhiteBtn width={40} height={40} onClick={() => setEditModal(false)}>
+				<WhiteBtn
+					width={40}
+					height={40}
+					onClick={() =>
+						simpleConfirm('현재 작업 중인 내용이 저장되지 않았습니다.\n 페이지를 나가겠습니까?', () => {
+							setEditModal(false)
+						})
+					}
+				>
 					돌아가기
 				</WhiteBtn>
 				<BlackBtn width={40} height={40} onClick={submitHandle}>

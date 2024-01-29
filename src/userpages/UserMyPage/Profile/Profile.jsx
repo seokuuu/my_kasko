@@ -11,7 +11,7 @@ import {
 	OnePageFlexSubContainer,
 	Right,
 } from '../../../common/OnePage/OnePage.Styled'
-import { accountOptions, AccountSelect } from '../../../common/Option/SignUp'
+import { AccountSelect } from '../../../common/Option/SignUp'
 
 import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
 import { CheckBtn, TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
@@ -23,11 +23,11 @@ import { CheckBox } from '../../../common/Check/Checkbox'
 import styled from 'styled-components'
 import { checkBusinessNumber, getCustomerPrivacy, updateCustomer } from '../../../api/myPage'
 import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+import { getBankNames } from '../../../constants/banks'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
-import useMutationQuery from '../../../hooks/useMutationQuery'
 import useAlert from '../../../store/Alert/useAlert'
-import { getBankNames } from '../../../constants/banks'
 
 //비밀번호 / 비밀번호 확인 제한
 // 담당자 추가 정책 X

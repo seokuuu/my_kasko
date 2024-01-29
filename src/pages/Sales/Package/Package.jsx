@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import Excel from '../../../components/TableInner/Excel'
 import { BlackBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom, selectedRowsAtom } from '../../../store/Layout/Layout'
+import { toggleAtom, selectedRowsAtom, salesPackageModal } from '../../../store/Layout/Layout'
 import { FilterWrap } from '../../../modal/External/ExternalFilter'
 import {
 	FilterContianer,
@@ -16,25 +16,40 @@ import {
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Hidden from '../../../components/TableInner/Hidden'
 import Table from '../../../pages/Table/Table'
-import { add_element_field } from '../../../lib/tableHelpers'
+import { add_element_field, formatBooleanFields } from '../../../lib/tableHelpers'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { getPackageProductList } from '../../../api/packageProduct.js'
+import { packageProductEndpoint, getPackageProductList } from '../../../api/packageProduct.js'
 import { packageFieldsCols, packageResponseToTableRowMap } from '../../../constants/admin/packageProducts.js'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { formatWeight } from '../../../utils/utils'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import PackageProductSearchFields from './PackageProductSearchFields'
 import { isEqual } from 'lodash'
+import useAlert from '../../../store/Alert/useAlert.js'
+import { usePackageProductViewStatusUpdate } from '../../../api/SellProduct.js'
+import SalesPackage from '../../../modal/Multi/SalesPackage.jsx'
+import TableV2ExcelDownloader from '../../Table/TableV2ExcelDownloader.jsx'
+import CautionBox from '../../../components/CautionBox/CautionBox.jsx'
+import { CAUTION_CATEGORY } from '../../../components/CautionBox/constants.js'
 
 const Package = () => {
-	const paramData = {
+	const { simpleAlert } = useAlert()
+
+	const initialParamState = {
 		pageNum: 1,
 		pageSize: 50,
 	}
-	const [param, setParam] = useState(paramData)
+
+	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+	const [isEditStatusModal, setIsEditStatusModal] = useAtom(salesPackageModal)
+
+	const [checkRadio, setCheckRadio] = useState(null)
+	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+	const [param, setParam] = useState(initialParamState)
 	const [packageProductListData, setPackageProductListData] = useState(null)
 	const [packageProductPagination, setPackageProductPagination] = useState([])
-	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+	const [toggleMsg, setToggleMsg] = useState('On')
+
 	const {
 		isLoading,
 		isError,
@@ -43,27 +58,38 @@ const Package = () => {
 		refetch,
 	} = useReactQuery(param, 'getPackageProductList', getPackageProductList)
 
+	const {
+		// prettier-ignore
+		mutate: mutatePackageProductViewStatusUpdate,
+		isSuccess: isSuccessPackageProductViewStatusUpdate,
+	} = usePackageProductViewStatusUpdate()
+
 	useEffect(() => {
-		if (getPackageProductListRes && getPackageProductListRes.data && getPackageProductListRes.data.data) {
+		if (getPackageProductListRes?.data?.data) {
 			setPackageProductListData(formatTableRowData(getPackageProductListRes.data.data.list))
 			setPackageProductPagination(getPackageProductListRes.data.data.pagination)
 		}
-	}, [isSuccess, getPackageProductListRes])
+
+		if (isError) {
+			simpleAlert('요청중 오류가 발생했습니다.\n다시 시도해 주세요.')
+		}
+	}, [isSuccess, getPackageProductListRes, isError])
+
+	useEffect(() => {
+		if (isSuccessPackageProductViewStatusUpdate) {
+			refetch()
+		}
+	}, [isSuccessPackageProductViewStatusUpdate])
 
 	const formatTableRowData = (packageProductListData) => {
-		return add_element_field(packageProductListData, packageResponseToTableRowMap)
+		const processedData = add_element_field(packageProductListData, packageResponseToTableRowMap)
+		return formatBooleanFields(processedData, [{ fieldName: '노출상태', trueValue: '노출', falseValue: '비노출' }])
 	}
 
 	// 토글 쓰기
-	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-	const [toggleMsg, setToggleMsg] = useState('On')
 	const toggleBtnClick = () => {
 		setExfilterToggle((prev) => !prev)
-		if (exFilterToggle === true) {
-			setToggleMsg('Off')
-		} else {
-			setToggleMsg('On')
-		}
+		setToggleMsg(exFilterToggle ? 'Off' : 'On')
 	}
 
 	const handleTablePageSize = (event) => {
@@ -81,10 +107,21 @@ const Package = () => {
 		}))
 	}
 
+	// 노출 상태 변경 버튼
+	const editStatusButtonOnClickHandler = () => {
+		setIsEditStatusModal(true)
+	}
+
+	// 노출 상태 변경 모달 > 확인 버튼
+	const editStatusModalConfirmButtonOnClickHandler = (checkRadio) => {
+		setCheckRadio(checkRadio[0])
+		setIsEditStatusModal(false)
+	}
+
 	const globalProductResetOnClick = () => {
 		// if resetting the search field shouldn't rerender table
 		// then we need to create paramData object to reset the search field
-		setParam(paramData)
+		setParam(initialParamState)
 	}
 
 	const globalProductSearchOnClick = (userSearchParam) => {
@@ -100,6 +137,24 @@ const Package = () => {
 		})
 	}
 
+	// 노출 저장 버튼
+	const saveButtonOnClickHandler = () => {
+		if (checkBoxSelect === null || checkBoxSelect.length === 0) {
+			return simpleAlert('노출상태를 변경할 제품을 선택해 주세요.')
+		}
+
+		const productNumbers = checkBoxSelect.map((item) => item['순번'])
+
+		const viewStatusData = {
+			status: checkRadio,
+			uids: productNumbers,
+		}
+
+		const { status, uids } = viewStatusData
+
+		mutatePackageProductViewStatusUpdate({ status, uids })
+	}
+
 	return (
 		<FilterContianer>
 			<div>
@@ -108,21 +163,8 @@ const Package = () => {
 					{/* 토글 쓰기 */}
 					<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 				</FilterHeader>
-				<FilterHeaderAlert>
-					<div style={{ display: 'flex' }}>
-						<div style={{ marginRight: '20px' }}>
-							<img src="/img/notice.png" />
-						</div>
-						<div style={{ marginTop: '6px' }}>
-							<div>· 주의사항 영역</div>
-							<div style={{ marginTop: '6px' }}>· 주의사항 영역</div>
-						</div>
-					</div>
-					<div>
-						수정
-						<img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-					</div>
-				</FilterHeaderAlert>
+				{/* 공지사항 */}
+				<CautionBox category={CAUTION_CATEGORY.packageProduct} />
 				{exFilterToggle && (
 					<FilterWrap>
 						<GlobalProductSearch
@@ -145,7 +187,11 @@ const Package = () => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						<Excel getRow={packageProductListData} />
+						<TableV2ExcelDownloader
+							requestUrl={packageProductEndpoint}
+							requestCount={packageProductPagination?.listCount}
+							field={packageResponseToTableRowMap}
+						/>
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
@@ -155,21 +201,25 @@ const Package = () => {
 						kg / 총 중량 {formatWeight(packageProductPagination.totalWeight)} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteBlackBtn>노출 상태 변경</WhiteBlackBtn>
+						<WhiteBlackBtn onClick={(checkRadio) => editStatusButtonOnClickHandler(checkRadio)}>
+							노출 상태 변경
+						</WhiteBlackBtn>
 					</div>
 				</TCSubContainer>
 				<Table
 					getCol={packageFieldsCols}
 					getRow={packageProductListData}
+					loading={isLoading}
 					tablePagination={packageProductPagination}
 					onPageChange={onPageChange}
 				/>
 				<TableBottomWrap>
-					<BlackBtn width={15} height={40}>
-						등록
+					<BlackBtn width={15} height={40} onClick={saveButtonOnClickHandler}>
+						저장
 					</BlackBtn>
 				</TableBottomWrap>
 			</TableContianer>
+			{isEditStatusModal && <SalesPackage onClick={editStatusModalConfirmButtonOnClickHandler} />}
 		</FilterContianer>
 	)
 }
