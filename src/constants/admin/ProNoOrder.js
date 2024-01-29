@@ -135,7 +135,7 @@ export const proNoFieldCols = [
     headerName: '판매 유형',
     field: ['판매 유형'],
     headerClass: 'custom-header-style',
-    cellStyle: { textAlign: 'center' },
+    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 150,
     cellRenderer: LinkRenderer,
   },

@@ -158,6 +158,7 @@ const Consolidation = ({}) => {
 		'getAdminConsolidation',
 		getAdminConsolidation,
 	)
+
 	const resData = data?.data?.data?.list
 	const [tablePagination, setTablePagination] = useState([])
 
@@ -180,7 +181,6 @@ const Consolidation = ({}) => {
 	}, [isSuccess, resData])
 
 	console.log('getRow =>', getRow)
-
 	// DELETE
 	const mutation = useMutation(deleteAdminConsolidation, {
 		onSuccess: () => {
@@ -242,14 +242,14 @@ const Consolidation = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / 50개 )
+						조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / {data?.data?.data?.pagination?.listCount}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}></div>
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량<span> 2 </span>kg / 총 중량 kg
+						선택 <span>{checkedArray?.length || 0}</span>(개)
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />

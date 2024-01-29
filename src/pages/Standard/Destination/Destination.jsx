@@ -31,7 +31,7 @@ import {
 	StandardDestinaionFields,
 	StandardDestinaionFieldsCols,
 	StandardDestinationEdit,
-	StandardDestinationPost,
+	StandardDestinationPost, StandardTransportationEdit, StandardTransportationFields,
 } from '../../../constants/admin/Standard'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -178,7 +178,9 @@ const Destination = ({}) => {
 			},
 		})
 	}
-
+	useEffect(() => {
+		if (postMutation.isSuccess) refetch();
+	}, [postMutation.isSuccess]);
 	const openModal = () => {
 		setModalSwitch(true)
 		setNowPopup((prev) => ({
@@ -332,7 +334,7 @@ const Destination = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / 50개 )
+						조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / {data?.data?.data?.pagination?.listCount}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -341,7 +343,7 @@ const Destination = ({}) => {
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량<span> 2 </span>kg / 총 중량 kg
+						선택 <span>{checkedArray?.length || 0}</span>(개)
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteRedBtn
@@ -366,7 +368,7 @@ const Destination = ({}) => {
 					<TableModal
 						btnCellModal={btnCellModal} // Modal Atom Switch
 						setBtnCellModal={setBtnCellModal} // 수정 버튼에 대한 ag-grid event
-						modalInTable={StandardDestinationEdit} // Modal 안에 들어갈 Table 매칭 디렉토리 ex)
+						modalInTable={StandardTransportationEdit} // Modal 안에 들어갈 Table 매칭 디렉토리 ex)
 						title={'목적지 수정'}
 						getRow={getRow} // 해당 컴포넌트 Table 자체 Object (한글)
 						uidAtom={uidAtom} // 수정버튼 누른 해당 object의 고유 id (btnCellRender에서 추출된 uid)
