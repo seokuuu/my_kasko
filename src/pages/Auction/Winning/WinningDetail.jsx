@@ -431,8 +431,8 @@ const WinningDetail = ({ detailRow }) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
 						<p>목적지</p>
-						<CustomInput placeholder="h50" width={60} height={32} defaultValue={destinationData?.code} />
-						<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destinationData?.name} />
+						<CustomInput placeholder="h50" width={60} height={32} defaultValue={destinationData?.code} readOnly />
+						<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destinationData?.name} readOnly />
 						{/* <CustomInput placeholder="도착지 연락처" width={120} height={32} /> */}
 						<TWhiteBtn
 							style={{ width: '50px' }}
