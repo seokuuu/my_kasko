@@ -144,7 +144,7 @@ export const AdminOrderManageFieldsCols = (toggleModal) => [
 		cellStyle: { textAlign: 'center' },
 		width: 150,
 		cellRenderer: LinkRenderer,
-		onCellClicked: (params) => toggleModal(params.value),
+		onCellClicked: (params) => toggleModal(params),
 	},
 ]
 

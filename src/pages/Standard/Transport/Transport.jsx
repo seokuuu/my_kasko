@@ -437,7 +437,7 @@ const Transport = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / 50개 )
+						조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / {data?.data?.data?.pagination?.listCount}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -448,7 +448,7 @@ const Transport = ({}) => {
 				<TCSubContainer>
 					<TCSubDiv>
 						<div>
-							선택 <span>0</span>(개)
+							선택 <span>{checkedArray?.length || 0}</span>(개)
 						</div>
 					</TCSubDiv>
 					<div style={{ display: 'flex', gap: '10px' }}>

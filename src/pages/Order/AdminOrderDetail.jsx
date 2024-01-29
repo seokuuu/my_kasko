@@ -105,6 +105,8 @@ const AdminOrderDetail = ({}) => {
 			setDetailOrderPagination(detailRes.data.pagination)
 		}
 	}, [isSuccess, detailRes])
+	const totalWeight = detailRes?.data.pagination.totalWeight
+	const formattedTotalWeight = totalWeight && totalWeight.toLocaleString()
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
 			...prevParam,
@@ -164,10 +166,13 @@ const AdminOrderDetail = ({}) => {
 	 * @description 모달 테이블 테스트
 	 */
 	const [isTableModal, setIsTableModal] = useAtom(onClickCheckAtom)
-	const [selectedCellData, setSelectedCellData] = useState(null)
-	const toggleModal = (proNoNumber) => {
+	const [selectedCellData, setSelectedCellData] = useState([])
+	const [orderId, setOrderId] = useState(0)
+	const toggleModal = (data) => {
+		console.log('data값-----------',data)
 		setIsTableModal((prev) => !prev)
-		setSelectedCellData(proNoNumber)
+		setSelectedCellData(data.data['Pro.No 번호'])
+		setOrderId(data.data['주문 고유 번호'])
 	}
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 
@@ -236,6 +241,7 @@ const AdminOrderDetail = ({}) => {
 	const globalProductResetOnClick = () => {
 		setParam(paramData)
 	}
+
 	return (
 		<>
 			<FilterContianer>
@@ -289,7 +295,7 @@ const AdminOrderDetail = ({}) => {
 					</TCSubContainer>
 					<TCSubContainer>
 						<div>
-							선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 {}kg
+							선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 {formattedTotalWeight}kg
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
 							<WhiteRedBtn onClick={handleOrderCancel}>부분 주문 취소</WhiteRedBtn>
@@ -310,7 +316,7 @@ const AdminOrderDetail = ({}) => {
 					</TCSubContainer>
 				</TableContianer>
 			</FilterContianer>
-			{isTableModal && <ProNoPage title={'Pro.No 제품 선택'} proNoNumber={selectedCellData} />}
+			{isTableModal && <ProNoPage title={'Pro.No 제품 선택'} proNoNumber={selectedCellData} orderId={orderId}/>}
 		</>
 	)
 }
