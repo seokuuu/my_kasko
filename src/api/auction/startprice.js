@@ -32,7 +32,7 @@ export const unitPricePost = (data) => {
 // 대량 등록
 export const uploadMultiPrice = (data) => {
 	const form = new FormData()
-	form.append('excel', data)
+	form.append('excel', data.file)
 
 	return client.post(`${urls.startprice}/excel`, form, {
 		headers: formHeaders,

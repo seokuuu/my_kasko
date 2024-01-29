@@ -34,7 +34,7 @@ export async function incomingConfirm(data) {
 // 엑셀 대량 등록
 export async function postExcelSubmitProduct(data) {
 	const form = new FormData()
-	form.append('excel', data)
+	form.append('excel', data.file)
 
 	try {
 		return await client.post(`${urls.incoming}`, form, {

@@ -1,21 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { BlackBtn, GreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 
 import { useAtom } from 'jotai'
 import Hidden from '../../../components/TableInner/Hidden'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
-	FilterLeft,
-	FilterSubcontianer,
 	FilterWrap,
-	Input,
-	PartWrap,
-	ResetImg,
-	RowWrap,
 	TableContianer,
 	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
@@ -43,6 +36,8 @@ import {
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isArray, isEqual } from 'lodash'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -56,9 +51,8 @@ import {
 	getAdminDestination,
 	getAdminDestinationSearch,
 	postAdminDestination,
+	postExcelAdminDestination,
 } from '../../../service/admin/Standard'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import DestinationSearchFilter from './DestinationSearchFilter'
 
 const Destination = ({}) => {
@@ -400,6 +394,8 @@ const Destination = ({}) => {
 					onEditHandler={onEditHandler}
 					address={address}
 					setAddress={setAddress}
+					excelUploadAPI={postExcelAdminDestination}
+					refreshQueryKey={'getAdminDestination'}
 				/>
 			)}
 		</FilterContianer>

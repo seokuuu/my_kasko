@@ -13,12 +13,11 @@ import {
 
 import { ExRadioWrap } from '../External/ExternalFilter'
 
-import { useMutation } from '@tanstack/react-query'
-import { queryClient } from '../../api/query'
 import { RadioSearchButton } from '../../components/Search'
 import useAlert from '../../store/Alert/useAlert'
 import MultiUploader from './components/MultiUploader'
 import SingleUploader from './components/SingleUploader'
+import useExcelUpload from './useExcelUpload'
 
 /**
  * @description
@@ -39,6 +38,7 @@ const Upload = ({
 	setAddress,
 	excelUploadAPI, // 대량 등록(엑셀 업로드)API입니다.(저장 버튼을 누를시 실행되는 함수입니다.)
 	refreshQueryKey, // 대량 등록 후, 재요청할 API에 대한 쿼리키값입니다.
+	restParams = {}, // 대량 요청시, 파일을 제외한 나머지 요청 변수(파일이외의 추가 변수가 있다면 여기에 할당해주시면 됩니다.)
 	isExcelUploadOnly = false, // 대량 등록만 있으면 true 아니면 false 값을 할당해주시면 됩니다.
 	setModalSwitch, // 모달창 여닫기 setState
 	title, // 모달 제목
@@ -49,43 +49,33 @@ const Upload = ({
 	width = 850, // 모달 너비값입니다.(필수값 X)
 	convertKey, // 단일 등록 폼 관련 값입니다.(필수값 X)
 }) => {
-	// 등록 타입
+	console.log('restParams ;', restParams)
+	// 등록 타입(multi => 대량 등록,sinle => 단일 등록)
 	const [registerType, setRegisterType] = useState('multi')
-	const { simpleConfirm, showAlert, simpleAlert } = useAlert()
+	const { simpleConfirm } = useAlert()
 
+	// 엑셀 파일을 담을 상태값
 	const [file, setFile] = useState(null)
 
 	// 대량 등록 API
-	const { mutate: excelUpload } = useMutation(excelUploadAPI, {
-		onSuccess() {
-			showAlert({
-				title: '등록되었습니다',
-				content: '',
-				func: () => {
-					setModalSwitch(false)
-					queryClient.invalidateQueries(refreshQueryKey)
-				},
-			})
-		},
-		onError() {
-			simpleAlert('등록에 실패하였습니다.')
-		},
+	const { excelUpload } = useExcelUpload({
+		excelUploadAPI,
+		refreshQueryKey,
+		setModalSwitch,
 	})
 
-	// 저장 핸들러
-	const submit = () => {
-		if (registerType === 'multi') excelUpload(file) // 대량 등록시
-		else if (registerType === 'single') simpleConfirm('저장하시겠습니까?', propsHandler) // 단일 등록시
-	}
+	// 저장 핸들러(multi => 대량 등록,sinle => 단일 등록)
+	const submit =
+		registerType === 'multi'
+			? () => excelUpload({ file, ...restParams })
+			: () => simpleConfirm('저장하시겠습니까?', propsHandler)
 
 	// 변경 알럿 메시지
 	const message = '현재 작업 중인 내용이 저장되지 않았습니다. 페이지를 나가시겠습니까?'
 
 	// 모달 닫기
-	const modalClose = () => {
-		if (registerType === 'single') simpleConfirm(message, () => setModalSwitch(false))
-		else setModalSwitch(false)
-	}
+	const modalClose =
+		registerType === 'single' ? () => simpleConfirm(message, () => setModalSwitch(false)) : () => setModalSwitch(false)
 
 	return (
 		// 재고 관리 - 판매 구분 변경
