@@ -1,4 +1,4 @@
-import { Route, Routes, createBrowserRouter, useBlocker } from 'react-router-dom'
+import { Route, Routes, createBrowserRouter, useBlocker, Outlet, Navigate } from 'react-router-dom'
 
 import CalendarModal from './modal/Calender/Calendar'
 import Test from './pages/Test/Test'
@@ -154,7 +154,15 @@ import DisRegisterDetailPage from './pages/Shipping/Dispatch/DisRegisterDetailPa
 import RoundAucProAdd from './pages/Auction/Round/RoundAucProAdd'
 import CarrierManage from './pages/UserManage/CarrierManage/CarrierManage'
 import SalesPackage from './modal/Multi/SalesPackage'
+import { useAtomValue } from 'jotai'
+import { authAtom } from './store/Auth/auth'
+import Forbidden from './pages/Forbidden'
+import NotAuth from './pages/NotAuth'
+import useAuth from './store/Auth/useAuth'
+
 const Router = () => {
+	const auth = useAtomValue(authAtom)
+	console.log('로그인 정보 : ', auth)
 	return (
 		<Routes>
 			{/* 테스트 URL */}
@@ -169,6 +177,8 @@ const Router = () => {
 			<Route path="/popup" element={<TestPopup />} />
 			<Route path="/excel" element={<TestExcel />} />
 			<Route path="/*" element={<NotFound />} />
+			<Route path="/forbidden" element={<Forbidden />} />
+			<Route path="/not-auth" element={<NotAuth />} />
 			{/* 로그인, 회원가입, 아이디 찾기, 비밀번호 재발급, 캘린더, 메인 */}
 			<Route path="/" element={<Login />} />
 			<Route path="/signup" element={<SignUp />} />
@@ -294,11 +304,11 @@ const Router = () => {
 				<Route path="/operate/faq/faqpost" element={<FAQPostPage />}></Route>
 				<Route path="/operate/faq/:id" element={<FAQPostPage />}></Route>
 			</Route>
+
 			{/* 사용자 페이지 */}
-			{/* 사용자 페이지는 관리자 페이지와 다르게 /userpage/* 로 단일 구성된다 */}
-			<Route path="/userpage/main" element={<UserMainPage />}></Route>
 			{/* 공지 & 자료실 */}
 			<Route path="/userpage">
+				<Route path="/userpage/main" element={<UserMainPage />}></Route>
 				<Route path="/userpage/notice" element={<UNotice />}></Route>
 				<Route path="/userpage/docs" element={<UDocs />}></Route>
 				<Route path="/userpage/docs/:uid" element={<UDocsDetail />}></Route>

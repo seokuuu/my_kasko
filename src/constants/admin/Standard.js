@@ -27,9 +27,12 @@ export const StandardDestinaionFields = {
 
 // 기준관리 - 목적지관리 Modal post
 export const StandardDestinationPost = {
-	'목적지 명': 'input',
-	작성자: 'auto',
-	작성일: 'auto',
+	'목적지 선택': 'destipostbutton',
+	'목적지 코드': 'destipostcode',
+	'목적지 명': 'destipostname',
+	등록자: 'auto',
+	등록일자: 'auto',
+	비고: 'note',
 }
 
 // 기준관리 - 목적지관리 Modal Edit
@@ -102,11 +105,11 @@ export const StandardTransportationFields = {
 
 // 기준 관리 - 운반비 관리 post
 export const StandardTransportationPost = {
-	출발지: 'input',
-	'목적지 코드': 'input',
+	출발지: 'auto',
+	'목적지 코드': 'auto',
 	'목적지 명': 'input',
-	'제품 구분': 'input',
-	'단가 적용 일자': 'date',
+	'제품 구분': 'auto',
+	'단가 적용 일자': 'auto',
 	'적용 단가': 'input',
 }
 
@@ -122,17 +125,8 @@ export const StandardTransportationEdit = {
 
 // 기준관리 - 운반비 관리 fieldsCols
 export const StandardTransportationFieldsCols = [
+	{ field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
 	{
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		field: '',
-		maxWidth: 50,
-		checkboxSelection: checkboxSelection,
-		headerCheckboxSelection: headerCheckboxSelection,
-	},
-	{
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		field: '수정',
 		maxWidth: 90,
 		cellRenderer: BtnCellRenderer,
@@ -142,53 +136,22 @@ export const StandardTransportationFieldsCols = [
 		},
 	},
 	{
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		field: '운반비 고유 번호',
 		minWidth: 160,
 	},
+	{ field: '창고', minWidth: 100 },
+	{ field: '목적지 코드', minWidth: 100 },
+	{ field: '목적지명', minWidth: 100 },
 	{
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		field: '창고',
-		minWidth: 100,
-	},
-	{
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		field: '목적지 코드',
-		minWidth: 100,
-	},
-	{
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		field: '목적지명',
-		minWidth: 100,
-	},
-	{
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		field: '제품군',
 		minWidth: 100,
 	},
 	{
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		field: '적용일',
 		minWidth: 100,
 	},
-	{
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		field: '이전단가',
-		minWidth: 100,
-	},
-	{
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		field: '적용단가',
-		minWidth: 100,
-	},
+	{ field: '이전단가', minWidth: 100 },
+	{ field: '적용단가', minWidth: 100 },
 ]
 
 /* ==============================

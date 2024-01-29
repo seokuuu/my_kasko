@@ -63,7 +63,7 @@ import DestinationSearchFilter from './DestinationSearchFilter'
 
 const Destination = ({}) => {
 	const [modalSwitch, setModalSwitch] = useAtom(modalAtom)
-
+	const [address, setAddress] = useState('')
 	const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
 	const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
 	const [nowModal, setNowModal] = useAtom(modalObject) // 모달 객체
@@ -174,8 +174,15 @@ const Destination = ({}) => {
 
 	// POST
 	const postMutation = useMutationQuery('', postAdminDestination)
+	// propsPost 함수
 	const propsPost = () => {
-		postMutation.mutate(excelToJson)
+		postMutation.mutate(editInput, {
+			onSuccess: () => {
+				// 성공 시 실행할 코드 작성
+				setModalSwitch(false)
+				// 추가로 필요한 작업 수행
+			},
+		})
 	}
 	useEffect(() => {
 		if (postMutation.isSuccess) refetch();
@@ -217,23 +224,37 @@ const Destination = ({}) => {
 	}
 
 	const editInit = {
-		uid: '',
-		name: '',
+		name: address,
+		note: '',
 	}
 
 	const [editInput, setEditInput] = useState(editInit)
 
+	console.log('editInput', editInput)
+
+	// 여기에 목적지 관련한 것도 추가로 넣기
 	const onEditHandler = useCallback(
 		(e) => {
 			const { name, value } = e.target
-			setEditInput({ ...editInput, uid: uidAtom, [name]: value })
+			setEditInput({
+				...editInput,
+				// uid: uidAtom,
+				[name]: value,
+			})
 		},
 		[editInput],
 	)
 
 	const convertKey = {
 		'목적지 명': 'name',
+		비고: 'note',
 	}
+
+	useEffect(() => {
+		setEditInput({
+			name: address,
+		})
+	}, [address])
 
 	console.log('editInput @@', editInput)
 	console.log('uidAtom @@', uidAtom)
@@ -379,6 +400,8 @@ const Destination = ({}) => {
 					getRow={getRow}
 					uidAtom={uidAtom}
 					onEditHandler={onEditHandler}
+					address={address}
+					setAddress={setAddress}
 				/>
 			)}
 		</FilterContianer>
