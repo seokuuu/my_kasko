@@ -52,22 +52,28 @@ const Upload = ({
 	console.log('restParams ;', restParams)
 	// 등록 타입(multi => 대량 등록,sinle => 단일 등록)
 	const [registerType, setRegisterType] = useState('multi')
-	const { simpleConfirm } = useAlert()
+	const { simpleConfirm, simpleAlert } = useAlert()
 
 	// 엑셀 파일을 담을 상태값
 	const [file, setFile] = useState(null)
+
+	console.log('upload File :', file)
 
 	// 대량 등록 API
 	const { excelUpload } = useExcelUpload({
 		excelUploadAPI,
 		refreshQueryKey,
 		setModalSwitch,
+		file,
 	})
 
 	// 저장 핸들러(multi => 대량 등록,sinle => 단일 등록)
 	const submit =
 		registerType === 'multi'
-			? () => excelUpload({ file, ...restParams })
+			? () => {
+					if (!file) return simpleAlert('파일을 업로드해주세요.')
+					excelUpload({ file, ...restParams })
+			  }
 			: () => simpleConfirm('저장하시겠습니까?', propsHandler)
 
 	// 변경 알럿 메시지

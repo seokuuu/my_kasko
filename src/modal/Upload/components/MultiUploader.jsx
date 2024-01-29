@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
+import useAlert from '../../../store/Alert/useAlert'
 import { BlueMainDiv, BlueSubDiv } from '../../Common/Common.Styled'
 // import { UldAfterWrap, UldBtn, UldText, UldWrap } from '../../Table/TableModal'
 
@@ -10,13 +11,21 @@ import { BlueMainDiv, BlueSubDiv } from '../../Common/Common.Styled'
  */
 const MultiUploader = ({ file, setFile, isExcelUploadOnly }) => {
 	const [uploadProgress, setUploadProgress] = useState(0)
+
+	const { simpleAlert } = useAlert()
 	// 대량 등록 관련 값들입니다.
+
 	const fileInputRef = useRef(null)
+	// 엑셀 파일이 10 MB이상이면 예외처리를 해줍니다.
+	const KB = 1024
+	const MB = KB ** 2
+	const MAX_CAPACITY = 10 * MB
 
 	// 파일 핸들러
 	function onFileChange(e) {
 		const file = e.target.files[0]
 
+		// 프로그레스바
 		setInterval(() => {
 			if (uploadProgress < 100) {
 				let i = Math.floor(Math.random() * 101)
@@ -24,6 +33,10 @@ const MultiUploader = ({ file, setFile, isExcelUploadOnly }) => {
 			}
 		}, 100)
 
+		// 파일 용량 체크
+		if (file.size > MAX_CAPACITY) return simpleAlert('업로드 최대 용량은 10MB 입니다.')
+
+		// 파일 할당
 		setFile(file)
 	}
 	// 파일 초기화
@@ -46,19 +59,7 @@ const MultiUploader = ({ file, setFile, isExcelUploadOnly }) => {
 							style={{ display: 'none' }}
 							onChange={onFileChange}
 						/>
-						<UldWrap>
-							{/* {file && (
-								<UldAfterWrap>
-									<div style={{ fontSize: '16px' }}>{file?.name}</div>
-									<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-										<Progressbar value={uploadProgress} max="100" />
-										<div>x</div>
-									</div>
-								</UldAfterWrap>
-							)} */}
-						</UldWrap>
 					</UldWrap>
-
 					<UldWrap>
 						<UldBtn
 							onClick={() => {
@@ -74,8 +75,9 @@ const MultiUploader = ({ file, setFile, isExcelUploadOnly }) => {
 				<UldAfterWrap>
 					<div style={{ fontSize: '16px' }}>{file.name}</div>
 					<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-						<Progressbar value={uploadProgress} max="100" />
-						<button onClick={initFileHandler}>x</button>
+						{uploadProgress >= 100 && <UploadCompleteText>업로드 완료</UploadCompleteText>}
+						<Progressbar value={uploadProgress} max={100} />
+						<FileRemoveButton onClick={initFileHandler}>x</FileRemoveButton>
 					</div>
 				</UldAfterWrap>
 			)}
@@ -128,4 +130,20 @@ const Progressbar = styled.progress`
 	::-webkit-progress-value {
 		background-color: #4c83d6;
 	}
+`
+
+const FileRemoveButton = styled.button`
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: #666666;
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-bottom: 4px;
+`
+const UploadCompleteText = styled.span`
+	color: #4c83d6;
+	font-size: 12px;
 `
