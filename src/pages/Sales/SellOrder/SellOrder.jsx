@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
-import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
-import { selectedRowsAtom } from '../../../store/Layout/Layout'
+import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { getSaleProductList } from '../../../api/saleProduct'
 import { saleProductListFieldsCols, saleProductListResponseToTableRowMap } from '../../../constants/admin/saleProduct'
@@ -18,8 +17,8 @@ import {
 	FilterContianer,
 	FilterHeader,
 	FilterHeaderAlert,
-	TCSubContainer,
 	TableContianer,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 import { UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
@@ -27,11 +26,13 @@ import SellOrderSearchFields from './SellOrderSearchFields'
 import { isEqual } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import useAlert from '../../../store/Alert/useAlert'
-import { useUserOrderCancelMutaion } from '../../../api/user'
 import DepositRequestForm from '../../../modal/Docs/DepositRequestForm'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import { cancelAllOrderList } from '../../../api/orderList'
 
 const SellOrder = () => {
-	const { mutate: mutateDepositOrderCancel, loading: loadingDepositOrderCancel } = useUserOrderCancelMutaion()
+	const { simpleConfirm, simpleAlert } = useAlert()
+	const { mutate: cancelAllOrder } = useMutationQuery('cancelAllOrderList', cancelAllOrderList)
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
@@ -128,18 +129,28 @@ const SellOrder = () => {
 		navigate(`/sales/order/${uid}`)
 	}
 
-	const { simpleAlert } = useAlert()
-
 	const orderCancelButtonOnClickHandler = () => {
-		console.log('checkBoxSelect =>', checkBoxSelect)
 		if (checkBoxSelect.length === 0) {
 			return simpleAlert('주문 취소할 제품을 선택해 주세요.')
 		}
 
 		// 주문 번호 , orderUid is null from server response.
-		const cancelData = checkBoxSelect.map((value) => ({ uid: value['주문번호'], saleType: '상시판매 대상재' }))
+		const requestList = checkBoxSelect.map((value) => ({
+			auctionNumber: value['상시판매 번호'],
+			saleType: '상시판매 대상재',
+		}))
 
-		mutateDepositOrderCancel({ requestList: cancelData })
+		simpleConfirm('주문 취소하시겠습니까?', () => {
+			cancelAllOrder(requestList, {
+				onSuccess: () => {
+					simpleAlert('주문 취소 성공하였습니다.')
+					refetch() // 성공 시 데이터 새로고침
+				},
+				onError: () => {
+					simpleAlert('주문 취소 중 오류가 발생했습니다.')
+				},
+			})
+		})
 	}
 
 	return (

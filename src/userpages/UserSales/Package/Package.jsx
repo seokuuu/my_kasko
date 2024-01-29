@@ -6,10 +6,7 @@ import Excel from '../../../components/TableInner/Excel'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKey'
-import {
-	getUserPackageProductFieldsCols,
-	userPackageProductField,
-} from '../../../constants/user/productTable'
+import { getUserPackageProductFieldsCols, userPackageProductField } from '../../../constants/user/productTable'
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
 import {
@@ -17,7 +14,7 @@ import {
 	FilterHeader,
 	FilterWrap,
 	TCSubContainer,
-	TableContianer
+	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import TableV2 from '../../../pages/Table/TableV2'
 import Table from '../../../pages/Table/Table'
@@ -37,6 +34,7 @@ import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
 const initialPageParams = {
 	pageNum: 1, // 페이지 번호
 	pageSize: 50, // 페이지 갯수
+	saleType: '상시판매 대상재',
 }
 
 /**
@@ -52,7 +50,7 @@ const Package = ({}) => {
 		tableField: userPackageProductField,
 		serverData: packageData,
 		wish: { display: true },
-		best: { display: true }
+		best: { display: true },
 	})
 	// 선택 항목
 	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
@@ -140,16 +138,16 @@ const Package = ({}) => {
 			<TableContianer>
 				{/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
 				<TCSubContainer bor>
-					<div style={{flex: 1}}>
+					<div style={{ flex: 1 }}>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handlePageSizeChange} />
-						<TableV2ExcelDownloader 
-							requestUrl={USER_URL.packageProductList} 
+						<TableV2ExcelDownloader
+							requestUrl={USER_URL.packageProductList}
 							requestCount={totalCount}
-							field={userPackageProductField} 
+							field={userPackageProductField}
 						/>
 					</div>
 				</TCSubContainer>
