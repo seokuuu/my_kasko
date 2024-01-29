@@ -24,12 +24,10 @@ import SingleUploader from './components/SingleUploader'
  * 등록 버튼을 누를시, 실행될 함수를 전달해주시면 됩니다.
  */
 const Upload = ({
-
 	modalSwitch,
 	originEngRowField,
 	excelToJson,
 	setExcelToJson,
-	modalInTable,
 	getRow,
 	uidAtom,
 	handleSelectChange,
@@ -106,8 +104,8 @@ const Upload = ({
 							convertKey={convertKey}
 							onEditHandler={onEditHandler}
 							dropdownProps={dropdownProps}
-              address={address}
-              setAddress={setAddress}
+							address={address}
+							setAddress={setAddress}
 						/>
 					)}
 					<BlueBtnWrap>
