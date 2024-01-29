@@ -95,7 +95,7 @@ const PreferEdit = ({ setChoiceComponent, setSwtichEdit, uidAtom }) => {
 
 				spec: {
 					text: detailData.spec,
-					uid: 0,
+					uid: detailData.specUid,
 				},
 				uid: detailData.uid,
 			})
@@ -114,8 +114,12 @@ const PreferEdit = ({ setChoiceComponent, setSwtichEdit, uidAtom }) => {
 		const requestParams = {
 			...submitData,
 			specUid: submitData.spec.uid,
+			cMin: submitData.cmin,
+			cMax: submitData.cmax,
 		}
 
+		delete requestParams.cmin
+		delete requestParams.cmax
 		delete requestParams.spec
 		if (isEmptyObj(submitData)) {
 			update(requestParams)
