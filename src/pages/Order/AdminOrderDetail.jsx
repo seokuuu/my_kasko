@@ -105,6 +105,8 @@ const AdminOrderDetail = ({}) => {
 			setDetailOrderPagination(detailRes.data.pagination)
 		}
 	}, [isSuccess, detailRes])
+	const totalWeight = detailRes?.data.pagination.totalWeight
+	const formattedTotalWeight = totalWeight && totalWeight.toLocaleString()
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
 			...prevParam,
@@ -236,6 +238,7 @@ const AdminOrderDetail = ({}) => {
 	const globalProductResetOnClick = () => {
 		setParam(paramData)
 	}
+
 	return (
 		<>
 			<FilterContianer>
@@ -289,7 +292,7 @@ const AdminOrderDetail = ({}) => {
 					</TCSubContainer>
 					<TCSubContainer>
 						<div>
-							선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 {}kg
+							선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 {formattedTotalWeight}kg
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
 							<WhiteRedBtn onClick={handleOrderCancel}>부분 주문 취소</WhiteRedBtn>
