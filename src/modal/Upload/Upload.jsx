@@ -17,77 +17,71 @@ import { RadioSearchButton } from '../../components/Search'
 import useAlert from '../../store/Alert/useAlert'
 import MultiUploader from './components/MultiUploader'
 import SingleUploader from './components/SingleUploader'
+import useExcelUpload from './useExcelUpload'
 
-// 1. Upload를 사용하는 컴포넌트에서 originEngRowField props를 받는다
-// ex) Destination.jsx에서 StandardDestinaionFields를 받음.
-// 2. excelToJson, setExcelToJson을 Props로 내려받아, handleFileExcel에 처리된 mappedData를 set으로 받는다
-
-// 예시 )
-// export const StandardTransportationPost = {
-//   출발지: 'auto',
-//   '목적지 코드': 'auto',
-//   '목적지 명': 'input',
-//   '제품 구분': 'auto',
-//   '단가 적용 일자': 'auto',
-//   '적용 단가': 'input',
-// }
-
-// 목적지 등록 기획 오류로 인한 보류 !!!
+/**
+ * @description
+ * 엑셀 대량 등록 모달입니다.
+ * 등록 버튼을 누를시, 실행될 함수를 전달해주시면 됩니다.
+ */
 const Upload = ({
 	modalSwitch,
-	setModalSwitch,
-	title,
 	originEngRowField,
 	excelToJson,
 	setExcelToJson,
-	propsHandler,
-	modalInTable,
 	getRow,
 	uidAtom,
-	onEditHandler,
-	dropdownProps,
-	width,
-	convertKey,
 	handleSelectChange,
 	dropInput,
 	setDropInput,
+	address,
+	setAddress,
+	excelUploadAPI, // 대량 등록(엑셀 업로드)API입니다.(저장 버튼을 누를시 실행되는 함수입니다.)
+	refreshQueryKey, // 대량 등록 후, 재요청할 API에 대한 쿼리키값입니다.
+	restParams = {}, // 대량 요청시, 파일을 제외한 나머지 요청 변수(파일이외의 추가 변수가 있다면 여기에 할당해주시면 됩니다.)
+	isExcelUploadOnly = false, // 대량 등록만 있으면 true 아니면 false 값을 할당해주시면 됩니다.
+	setModalSwitch, // 모달창 여닫기 setState
+	title, // 모달 제목
+	propsHandler, // 단일 등록 버튼 핸들러입니다.(필수값 X)
+	modalInTable, // 단일 등록 폼 관련 값입니다.(필수값 X)
+	onEditHandler, // 단일 등록 폼 핸들러입니다.(필수값 X)
+	dropdownProps, // 단일 등록 폼 관련 값입니다.
+	width = 850, // 모달 너비값입니다.(필수값 X)
+	convertKey, // 단일 등록 폼 관련 값입니다.(필수값 X)
 }) => {
-	// 등록 타입
+	console.log('restParams ;', restParams)
+	// 등록 타입(multi => 대량 등록,sinle => 단일 등록)
 	const [registerType, setRegisterType] = useState('multi')
 	const { simpleConfirm } = useAlert()
 
-	// 저장 핸들러
-	const submit = () => {
-		simpleConfirm('저장하시겠습니까?', propsHandler)
-	}
+	// 엑셀 파일을 담을 상태값
+	const [file, setFile] = useState(null)
 
-	// 변경 모달
+	// 대량 등록 API
+	const { excelUpload } = useExcelUpload({
+		excelUploadAPI,
+		refreshQueryKey,
+		setModalSwitch,
+	})
+
+	// 저장 핸들러(multi => 대량 등록,sinle => 단일 등록)
+	const submit =
+		registerType === 'multi'
+			? () => excelUpload({ file, ...restParams })
+			: () => simpleConfirm('저장하시겠습니까?', propsHandler)
+
+	// 변경 알럿 메시지
 	const message = '현재 작업 중인 내용이 저장되지 않았습니다. 페이지를 나가시겠습니까?'
 
 	// 모달 닫기
-	const modalClose = () => {
-		if (registerType === 'single') simpleConfirm(message, () => setModalSwitch(false))
-		else setModalSwitch(false)
-	}
-
-	// 변경사항 저장 알럿
-	// useEffect(() => {
-	// 	const handleBeforeUnload = (event) => {
-	// 		const message = '현재 작업 중인 내용이 저장되지 않았습니다. 페이지를 나가시겠습니까?'
-	// 		event.returnValue = message // Standard for most browsers
-	// 		return message // For some older browsers
-	// 	}
-	// 	window.addEventListener('beforeunload', handleBeforeUnload)
-	// 	return () => {
-	// 		window.removeEventListener('beforeunload', handleBeforeUnload)
-	// 	}
-	// }, [])
+	const modalClose =
+		registerType === 'single' ? () => simpleConfirm(message, () => setModalSwitch(false)) : () => setModalSwitch(false)
 
 	return (
 		// 재고 관리 - 판매 구분 변경
 		<>
 			<FadeOverlay zindex={899} />
-			<ModalContainer width={width ?? 850} zindex={900}>
+			<ModalContainer width={width} zindex={900}>
 				<BlueBarHeader>
 					<div>{title}</div>
 					<div>
@@ -95,7 +89,7 @@ const Upload = ({
 					</div>
 				</BlueBarHeader>
 				<BlueSubContainer>
-					<div>
+					{!isExcelUploadOnly && (
 						<BlueMainDiv style={{ margin: '0px auto' }}>
 							<BlueSubDiv>
 								<ExRadioWrap>
@@ -110,20 +104,22 @@ const Upload = ({
 								</ExRadioWrap>
 							</BlueSubDiv>
 						</BlueMainDiv>
-						{/* 대량 등록 */}
-						{registerType === 'multi' && <MultiUploader />}
-						{/* 단일 등록 */}
-						{registerType === 'single' && (
-							<SingleUploader
-								modalInTable={modalInTable}
-								convertKey={convertKey}
-								onEditHandler={onEditHandler}
-								dropdownProps={dropdownProps}
-							/>
-						)}
-					</div>
+					)}
+					{/* 대량 등록 */}
+					{registerType === 'multi' && <MultiUploader file={file} setFile={setFile} />}
+					{/* 단일 등록 */}
+					{registerType === 'single' && (
+						<SingleUploader
+							modalInTable={modalInTable}
+							convertKey={convertKey}
+							onEditHandler={onEditHandler}
+							dropdownProps={dropdownProps}
+							address={address}
+							setAddress={setAddress}
+						/>
+					)}
 					<BlueBtnWrap>
-						<BlueBlackBtn onClick={submit}>저장</BlueBlackBtn>
+						<BlueBlackBtn onClick={submit}> {registerType === 'multi' ? '등록' : '저장'}</BlueBlackBtn>
 					</BlueBtnWrap>
 				</BlueSubContainer>
 			</ModalContainer>

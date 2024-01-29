@@ -7,6 +7,7 @@ import { queryClient } from './query'
 const saleProductEndpoint = '/sale-product/order'
 const saleProductDetailsEndpoint = '/sale-product/order/details'
 const saleProductOrderConfirmEndpoint = '/sale-product/order/confirm'
+const saleProductOrderPartConfirmEndpoint = '/sale-product/order/confirm-part'
 
 export const getSaleProductList = async (data) => {
 	return client.get(saleProductEndpoint, {
@@ -25,8 +26,27 @@ export const usePostSaleProductOrderConfirm = () => {
 	const { simpleAlert } = useAlert()
 
 	return useMutation({
+		mutationFn: async (request) => {
+			await client.post(saleProductOrderConfirmEndpoint, request)
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: 'cart' })
+			queryClient.invalidateQueries({ queryKey: 'getSaleProductList' })
+			return simpleAlert('입금 완료하였습니다.')
+		},
+		onError: (error) => {
+			return simpleAlert(error?.data?.message || '요청중 오류가 발생했습니다.\n다시 시도해 주세요.')
+		},
+	})
+}
+
+export const usePostSaleProductOrderPartConfirm = () => {
+	const { simpleAlert } = useAlert()
+
+	return useMutation({
 		mutationFn: async (orderParam) => {
-			await client.post(saleProductOrderConfirmEndpoint, orderParam)
+			const orderUids = orderParam.updateList.map((item) => item.uid)
+			await client.post(saleProductOrderPartConfirmEndpoint, { orderUids })
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: 'cart' })

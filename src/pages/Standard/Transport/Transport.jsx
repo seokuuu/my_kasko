@@ -1,8 +1,7 @@
 import { useAtom } from 'jotai'
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import { BlackBtn, GreyBtn, TGreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
+import { BlackBtn, TGreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
@@ -10,16 +9,8 @@ import AlertPopup from '../../../modal/Alert/AlertPopup'
 import {
 	CustomInput,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
-	FilterLeft,
-	FilterSubcontianer,
 	FilterWrap,
-	GridWrap,
-	Input,
-	PartWrap,
-	ResetImg,
-	RowWrap,
 	StyledHeading,
 	StyledSubHeading,
 	SubTitle,
@@ -27,7 +18,6 @@ import {
 	TableBottomWrap,
 	TableContianer,
 	TableTitle,
-	Tilde,
 } from '../../../modal/External/ExternalFilter'
 import Upload from '../../../modal/Upload/Upload'
 import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
@@ -52,7 +42,6 @@ import {
 } from '../../../constants/admin/Standard'
 
 import {
-	AuctionUnitPricePost,
 	AuctionUnitPricePostDropOptions,
 	AuctionUnitPricePostDropOptions2,
 	AuctionUnitPricePostDropOptions3,
@@ -61,6 +50,7 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isArray, isEqual } from 'lodash'
 import moment from 'moment'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -68,8 +58,9 @@ import TableModal from '../../../modal/Table/TableModal'
 import {
 	deleteAdminTransportation,
 	editAdminTransportation,
-	getAdminTransportation,
 	editAdminUnitCost,
+	getAdminTransportation,
+	postExcelAdminTransportation,
 } from '../../../service/admin/Standard'
 import {
 	btnCellRenderAtom,
@@ -79,7 +70,6 @@ import {
 	popupObject,
 	selectedRowsAtom,
 } from '../../../store/Layout/Layout'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import TransportSearchFilter from './TransportSearchFilter'
 
 const Transport = ({}) => {
@@ -133,7 +123,6 @@ const Transport = ({}) => {
 	const checkedArray = useAtom(selectedRowsAtom)[0]
 	const uids = checkedArray?.map((item) => item['운반비 고유 번호'])
 	const [types, setTypes] = useState(0) // 매입 매출 구분 (0: 매입 / 1: 매출)
-
 	// 단가 일괄 수정 Patch
 	const [unitPriceEdit, setUnitPriceEdit] = useState() // 단가 일괄 수정 input 값
 	const [realUnitPriceEdit, setRealUnitPriceEdit] = useState([])
@@ -437,7 +426,7 @@ const Transport = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / 50개 )
+						조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / {data?.data?.data?.pagination?.listCount}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -448,7 +437,7 @@ const Transport = ({}) => {
 				<TCSubContainer>
 					<TCSubDiv>
 						<div>
-							선택 <span>0</span>(개)
+							선택 <span>{checkedArray?.length || 0}</span>(개)
 						</div>
 					</TCSubDiv>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -550,6 +539,10 @@ const Transport = ({}) => {
 					uidAtom={uidAtom}
 					onEditHandler={onEditHandler}
 					dropdownProps={dropdownProps}
+					isExcelUploadOnly={false}
+					excelUploadAPI={postExcelAdminTransportation}
+					restParams={{ type: types }}
+					refreshQueryKey={'getAdminTransportation'}
 				/>
 			)}
 		</FilterContianer>

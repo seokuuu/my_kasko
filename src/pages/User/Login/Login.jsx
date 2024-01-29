@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-
+import { Link } from 'react-router-dom'
 import { CheckImg, StyledCheckMainDiv, StyledCheckSubDiv } from '../../../common/Check/CheckImg'
-
 import {
 	Container,
 	IbwLeft,
@@ -25,20 +23,16 @@ import {
 } from './Login.Styled'
 import { accordionAtom, headerAtom, subHeaderAtom } from '../../../store/Layout/Layout'
 import { login } from '../../../api/auth'
-import { authoritiesAtom, useAuth, useUpdateAuth } from '../../../store/auth'
 import { useSetAtom } from 'jotai/index'
 import useAlert from '../../../store/Alert/useAlert'
-import { useAtom } from 'jotai'
+import useAuth from '../../../store/Auth/useAuth'
 
 const Login = () => {
+	const { setLogin } = useAuth()
 	const { simpleAlert, showAlert } = useAlert()
-	const navigate = useNavigate()
 	const setShowHeader = useSetAtom(headerAtom)
 	const setShowAccordion = useSetAtom(accordionAtom)
 	const setShowSubHeader = useSetAtom(subHeaderAtom)
-	const auth = useAuth()
-	const updateAuth = useUpdateAuth()
-	const [authorities, setAuthorities] = useAtom(authoritiesAtom)
 
 	setShowHeader(false)
 	setShowAccordion(false)
@@ -87,19 +81,85 @@ const Login = () => {
 		return localStorage.getItem('savedId')
 	}
 
-	useEffect(() => {
-		const savedId = getSavedIdFromLocalStorage()
-		setId(savedId)
-		setCheck(true)
-	}, [])
-
 	const handleSaveId = () => {
 		setCheck((prev) => !prev)
+	}
 
-		if (!check) {
-			saveIdToLocalStorage(id)
-		} else {
-			removeSavedIdFromLocalStorage()
+	const handleIdFocus = useCallback(
+		(e) => {
+			if (id === '') {
+				setIdPlaceholderColor('#d92f2f')
+				setIdPlaceholder('아이디를 입력해 주세요')
+			}
+		},
+		[id],
+	)
+
+	const handleIdBlur = useCallback((e) => {
+		setIdPlaceholderColor('#d92f2f')
+		setIdPlaceholder('아이디')
+	}, [])
+
+	const handlePwFocus = useCallback(() => {
+		if (pw === '') {
+			setPwPlaceholderColor('#d92f2f')
+			// setPwPlaceholder('영문, 숫자 조합 8~12자리로 입력해 주세요');
+		}
+	}, [pw])
+
+	const handlePwBlur = useCallback(() => {
+		setPwPlaceholderColor('black')
+		setPwPlaceholder('비밀번호')
+	}, [])
+
+	/** 로그인 */
+	const handleSubmit = async () => {
+		const requestData = {
+			id: id,
+			password: pw,
+		}
+		try {
+			const { data: res } = await login(requestData)
+			const user = res.data
+
+			if (check) {
+				saveIdToLocalStorage(id)
+			} else {
+				removeSavedIdFromLocalStorage()
+			}
+
+			setLogin(user)
+		} catch (e) {
+			loginError(e?.data)
+		}
+	}
+
+	const loginError = (error) => {
+		if (error?.message === '관리자가 승인 대기중 입니다.') {
+			showAlert({
+				title: '회원가입 승인 중',
+				content: '관리자가 승인 대기중 입니다.\n' + '관리자 승인 후 이용하실 수 있습니다.',
+			})
+			return
+		}
+		if (error?.message === '장기 미 로그인 회원입니다.') {
+			showAlert({
+				title: '안내',
+				content: `장기 미 로그인(90일)으로 인해 로그인이 제한되었습니다.\n카스코 철강으로 문의주세요.`,
+			})
+			return
+		}
+		if (error?.message === '탈퇴한 회원입니다.') {
+			simpleAlert('탈퇴 처리된 회원입니다.')
+			return
+		}
+		simpleAlert('아이디 또는 비밀번호가 틀렸습니다')
+	}
+
+	const handleKeyPress = (e) => {
+		if (e.key === 'Enter') {
+			e.preventDefault()
+			handleSubmit(e)
 		}
 	}
 
@@ -141,114 +201,11 @@ const Login = () => {
 		}
 	}, [pw])
 
-	const handleIdFocus = useCallback(
-		(e) => {
-			if (id === '') {
-				setIdPlaceholderColor('#d92f2f')
-				setIdPlaceholder('아이디를 입력해 주세요')
-			}
-		},
-		[id],
-	)
-
-	const handleIdBlur = useCallback((e) => {
-		setIdPlaceholderColor('#d92f2f')
-		setIdPlaceholder('아이디')
-	}, [])
-
-	const handlePwFocus = useCallback(() => {
-		if (pw === '') {
-			setPwPlaceholderColor('#d92f2f')
-			// setPwPlaceholder('영문, 숫자 조합 8~12자리로 입력해 주세요');
-		}
-	}, [pw])
-
-	const handlePwBlur = useCallback(() => {
-		setPwPlaceholderColor('black')
-		setPwPlaceholder('비밀번호')
-	}, [])
-
-	/** 로그인 */
-	const handleSubmit = useCallback(
-		async (e) => {
-			e.preventDefault()
-			const requestData = {
-				id: id,
-				password: pw,
-			}
-			try {
-				const { data: res } = await login(requestData)
-				const user = res.data
-				const name = user.name
-				const authorities = user.roles.authorities
-				const role = user.roles.role
-
-				localStorage.setItem('accessToken', user?.accessToken)
-				localStorage.setItem('refreshToken', user?.refreshToken)
-				setAuthorities({ name, role, authorities })
-				await updateAuth()
-
-				if (user?.useTempPassword) {
-					return showAlert({
-						title: '비밀번호를 변경해 주세요.',
-						content: `임시 비밀번호를 사용하고 있습니다.\n비밀번호를 변경해 주세요.`,
-						func: () => loginCheck(),
-					})
-				}
-
-				if (check) {
-					saveIdToLocalStorage(id)
-				}
-			} catch (e) {
-				loginError(e?.data)
-			}
-		},
-		[id, pw],
-	)
-
-	const loginError = (error) => {
-		if (error?.message === '관리자가 승인 대기중 입니다.') {
-			showAlert({
-				title: '회원가입 승인 중',
-				content: '관리자가 승인 대기중 입니다.\n' + '관리자 승인 후 이용하실 수 있습니다.',
-			})
-			return
-		}
-		if (error?.message === '장기 미 로그인 회원입니다.') {
-			showAlert({
-				title: '안내',
-				content: `장기 미 로그인(90일)으로 인해 로그인이 제한되었습니다.\n카스코 철강으로 문의주세요.`,
-			})
-			return
-		}
-		if (error?.message === '탈퇴한 회원입니다.') {
-			simpleAlert('탈퇴 처리된 회원입니다.')
-			return
-		}
-		simpleAlert('아이디 또는 비밀번호가 틀렸습니다')
-	}
-
-	const handleKeyPress = (e) => {
-		if (e.key == 'Enter') {
-			e.preventDefault()
-			handleSubmit(e)
-		}
-	}
-
-	const loginCheck = async () => {
-		if (auth && authorities?.role) {
-			if (localStorage.getItem('accessToken') == null) {
-				setAuthorities({ name: '', role: '', authorities: [] })
-				await updateAuth()
-				return
-			}
-			navigate(authorities.role === '고객사' ? '/userpage/main' : 'main')
-		}
-	}
-
 	useEffect(() => {
-		loginCheck()
-	}, [auth, authorities])
+		const savedId = getSavedIdFromLocalStorage()
+		setId(savedId ?? '')
+		setCheck(!!savedId)
+	}, [])
 
 	return (
 		<Container>
@@ -314,11 +271,9 @@ const Login = () => {
 							</IbwWrap>
 
 							<LoginBtnWrap>
-								{buttonDisabled ? (
-									<LoginBtn disabled>로그인</LoginBtn>
-								) : (
-									<LoginBtn onClick={handleSubmit}>로그인</LoginBtn>
-								)}
+								<LoginBtn type="button" onClick={handleSubmit} disabled={buttonDisabled}>
+									로그인
+								</LoginBtn>
 							</LoginBtnWrap>
 							<IbwTxt>
 								아직 회원이 아니세요?

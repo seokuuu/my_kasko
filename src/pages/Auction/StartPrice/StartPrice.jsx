@@ -19,7 +19,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isEqual } from 'lodash'
 import moment from 'moment'
-import { deleteStartPrice, getStartPrice, patchEditPrice, unitPricePost } from '../../../api/auction/startprice'
+import {
+	deleteStartPrice,
+	getStartPrice,
+	patchEditPrice,
+	unitPricePost,
+	uploadMultiPrice,
+} from '../../../api/auction/startprice'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Hidden from '../../../components/TableInner/Hidden'
 import {
@@ -454,6 +460,8 @@ const StartPrice = ({}) => {
 					handleSelectChange={handleSelectChange}
 					dropInput={dropInput}
 					setDropInput={setDropInput}
+					excelUploadAPI={uploadMultiPrice}
+					refreshQueryKey={'auction'}
 				/>
 			)}
 			{/* {modalSwitch && (

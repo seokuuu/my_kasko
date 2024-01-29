@@ -1,11 +1,10 @@
 import { useState, Fragment, useEffect } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { styled } from 'styled-components'
-import { getSaleProductDetail } from '../../../api/saleProduct'
+import { getSaleProductDetail, usePostSaleProductOrderPartConfirm } from '../../../api/saleProduct'
 import { getDestinationFind } from '../../../api/search'
-import { useDepositOrderCancel } from '../../../api/orderList'
-import { usePostSaleProductOrderConfirm } from '../../../api/saleProduct'
+import { cancelAllOrderList, useDepositOrderCancel } from '../../../api/orderList'
 import {
 	useAuctionSuccessfulBidApprove,
 	useAuctionSuccessfulBidReject,
@@ -45,9 +44,12 @@ import {
 import { add_element_field } from '../../../lib/tableHelpers'
 import { formatWeight } from '../../../utils/utils'
 import { KilogramSum } from '../../../utils/KilogramSum'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import { queryClient } from '../../../api/query'
 
 const SellOrderDetail = () => {
-	const { simpleAlert } = useAlert()
+	const { simpleAlert, simpleConfirm } = useAlert()
+	const navigate = useNavigate()
 	const { id } = useParams()
 
 	const paramDataInit = {
@@ -67,6 +69,7 @@ const SellOrderDetail = () => {
 	const [param, setParam] = useState(paramDataInit)
 	const [saleProductDetailData, setSaleProductDetailData] = useState([])
 	const [saleProductDetailPagination, setSaleProductDetailPagination] = useState([])
+	const [isPackage, setIsPackage] = useState(false)
 
 	const {
 		// prettier-ignore
@@ -96,12 +99,19 @@ const SellOrderDetail = () => {
 	const {
 		// prettier-ignore
 		mutate: mutateDepositOrderCancel,
+		loading: orderPartCancelLoading,
 	} = useDepositOrderCancel() // 부분 주문 취소
+
+	const { mutate: cancelAllOrder, loading: loadingOrderCancel } = useMutationQuery(
+		'cancelAllOrderList',
+		cancelAllOrderList,
+	) // 패키지 주문 취소
 
 	const {
 		// prettier-ignore
 		mutate: mutateDepositOrderConfirm,
-	} = usePostSaleProductOrderConfirm() // 부분 입금 확인
+		loading: orderConfirmLoading,
+	} = usePostSaleProductOrderPartConfirm() // 부분 입금 확인
 
 	useEffect(() => {
 		if (getSaleProductDetailResponse?.data?.data) {
@@ -129,6 +139,7 @@ const SellOrderDetail = () => {
 					parseFloat(totalWeight).toLocaleString(undefined, { minimumFractionDigits: 2 }),
 					depositRequestAmount,
 				])
+				setIsPackage(!!list[0].packageNumber)
 			}
 		}
 
@@ -175,11 +186,29 @@ const SellOrderDetail = () => {
 		)
 	}
 
+	const packageOrderCancelHandler = () => {
+		const requestList = [{ auctionNumber: id, saleType: '상시판매 대상재' }]
+
+		simpleConfirm('주문 취소하시겠습니까?', () => {
+			cancelAllOrder(requestList, {
+				onSuccess: () => {
+					simpleAlert('주문 취소 성공하였습니다.', () => {
+						queryClient.invalidateQueries({ queryKey: 'getSaleProductList' })
+						navigate(-1, { replace: true })
+					})
+				},
+				onError: () => {
+					simpleAlert('주문 취소 중 오류가 발생했습니다.')
+				},
+			})
+		})
+	}
+
 	// 부분 입금 확인 버튼
 	const depositOrderConfirmButtonOnClickHandler = () => {
 		handleButtonClick(
 			'입금 확인할 제품을 선택해 주세요.',
-			(value) => ({ auctionNumbers: value['경매번호'] }),
+			(value) => ({ uid: value['주문번호'] }),
 			mutateDepositOrderConfirm,
 		)
 	}
@@ -280,7 +309,6 @@ const SellOrderDetail = () => {
 						<TGreyBtn onClick={updateCustomerDestinationButtonOnClick}>적용</TGreyBtn>
 						<BtnBound style={{ margin: '0px' }} />
 						<WhiteBlackBtn onClick={destinationRequestButtonOnClickHandler}>목적지 승인 요청</WhiteBlackBtn>
-
 						<BtnBound style={{ margin: '0px' }} />
 						<WhiteRedBtn onClick={destinationChangeRejectButtonOnClickHandler}>목적지 변경 반려</WhiteRedBtn>
 						<WhiteSkyBtn str onClick={destinationChangeApproveButtonOnClickHandler}>
@@ -299,8 +327,18 @@ const SellOrderDetail = () => {
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteRedBtn onClick={depositOrderCancelButtonOnClickHandler}>부분 주문 취소</WhiteRedBtn>
-						<SkyBtn onClick={depositOrderConfirmButtonOnClickHandler}>부분 입금 확인</SkyBtn>
+						{isPackage ? (
+							<WhiteRedBtn onClick={packageOrderCancelHandler} disabled={loadingOrderCancel}>
+								주문 취소
+							</WhiteRedBtn>
+						) : (
+							<WhiteRedBtn onClick={depositOrderCancelButtonOnClickHandler} disabled={orderPartCancelLoading}>
+								부분 주문 취소
+							</WhiteRedBtn>
+						)}
+						<SkyBtn onClick={depositOrderConfirmButtonOnClickHandler} disabled={orderConfirmLoading}>
+							부분 입금 확인
+						</SkyBtn>
 					</div>
 				</TCSubContainer>
 			</TableContianer>

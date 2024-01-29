@@ -6,7 +6,8 @@ const AddressFinder = forwardRef(({ onAddressChange, prevAddress, prevAddressDet
 	const [detailAddress, setDetailAddress] = useState('') // 상세 주소를 위한 state도 추가합니다.
 	const [sido, setSido] = useState('') // 시,도
 	const [sigungu, setSigungu] = useState('') // 군,구
-	const [bname, setBname] = useState('') // 동
+	const [dongLee, setDongLee] = useState('') // 동,리
+	const [eubMyeon, setEubMyeon] = useState('') // 읍,면
 
 	const scriptUrl = `//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js`
 	const open = useDaumPostcodePopup(scriptUrl)
@@ -30,15 +31,16 @@ const AddressFinder = forwardRef(({ onAddressChange, prevAddress, prevAddressDet
 		setAddress(fullAddress) // 주소 상태를 업데이트합니다.
 		setSido(data.sido)
 		setSigungu(data.sigungu)
-		setBname(data.bname)
-		onAddressChange(fullAddress, detailAddress, data.sido, data.sigungu, data.bname)
+		setDongLee(data.bname)
+		setEubMyeon(data.bname1)
+		onAddressChange(fullAddress, detailAddress, data.sido, data.sigungu, data.bname, data.bname1)
 	}
 
 	const handleDetailAddressChange = (e) => {
 		// 상세 주소 input의 변경 사항을 처리합니다.
 		const newDetailAddress = e.currentTarget.value
 		setDetailAddress(newDetailAddress) // 상태를 업데이트하고
-		onAddressChange(address, newDetailAddress, sido, sigungu, bname)
+		onAddressChange(address, newDetailAddress, sido, sigungu, dongLee, eubMyeon)
 	}
 
 	const handleClick = () => {

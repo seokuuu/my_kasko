@@ -127,7 +127,7 @@ export const columnDefs = [
     headerName: '폭(MM)',
     field: '폭',
     headerClass: 'custom-header-style',
-    cellStyle: { textAlign: 'center' },
+    cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
     width: 100,
     cellRenderer: function (params) {
       if (params.value !== null && params.value !== undefined) {

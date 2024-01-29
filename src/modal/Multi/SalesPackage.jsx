@@ -34,6 +34,10 @@ const SalesPackage = ({ onClick }) => {
 
 	console.log('checkRadio =>', checkRadio)
 
+	const confirmButtonOnClick = () => {
+		onClick(checkRadio)
+	}
+
 	return (
 		// 재고 관리 - 판매 구분 변경
 		<>
@@ -69,7 +73,7 @@ const SalesPackage = ({ onClick }) => {
 						</BlueMainDiv>
 					</div>
 					<BlueBtnWrap>
-						<BlueBlackBtn onClick={onClick}>확인</BlueBlackBtn>
+						<BlueBlackBtn onClick={confirmButtonOnClick}>확인</BlueBlackBtn>
 					</BlueBtnWrap>
 				</BlueSubContainer>
 			</ModalContainer>

@@ -13,7 +13,7 @@ import {
 	FilterHeader,
 	FilterWrap,
 	TCSubContainer,
-	TableContianer
+	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import TableV2 from '../../../pages/Table/TableV2'
 import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
@@ -31,6 +31,7 @@ import SingleSearchFields from './SingleSearchFields'
 const initialPageParams = {
 	pageNum: 1, // 페이지 번호
 	pageSize: 50, // 페이지 갯수
+	saleType: '상시판매 대상재',
 }
 
 /**
@@ -47,7 +48,7 @@ const Single = () => {
 		tableField: userSingleProductField,
 		serverData: singleData,
 		wish: { display: true },
-		best: { display: true }
+		best: { display: true },
 	})
 	// 선택 항목
 	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
@@ -133,16 +134,16 @@ const Single = () => {
 			<TableContianer>
 				{/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
 				<TCSubContainer bor>
-					<div style={{flex: 1}}>
+					<div style={{ flex: 1 }}>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handlePageSizeChange} />
-						<TableV2ExcelDownloader 
-							requestUrl={USER_URL.singleProductList} 
+						<TableV2ExcelDownloader
+							requestUrl={USER_URL.singleProductList}
 							requestCount={totalCount}
-							field={userSingleProductField} 
+							field={userSingleProductField}
 						/>
 					</div>
 				</TCSubContainer>

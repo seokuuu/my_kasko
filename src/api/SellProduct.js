@@ -4,7 +4,7 @@ import useAlert from '../store/Alert/useAlert'
 import { useMutation } from '@tanstack/react-query'
 import { queryClient } from './query'
 
-const urls = {
+export const urls = {
 	single: '/single-product',
 	saleCategory: '/single-product/sale-category',
 	original: '/single-product/original',
@@ -187,8 +187,8 @@ export const useProductViewStatusUpdate = (url) => {
 	const { simpleAlert } = useAlert()
 
 	return useMutation({
-		mutationFn: async (data) => {
-			await client.post(url, data)
+		mutationFn: async (viewStatusData) => {
+			await client.patch(url, viewStatusData)
 		},
 		onSuccess: () => {
 			return simpleAlert('노출 상태 변경 완료하였습니다.')

@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { USER_URL, useUserOrderCancelMutaion, useUserOrderListQuery } from '../../../api/user'
+import { USER_URL, useUserOrderCancelMutation, useUserOrderListQuery } from '../../../api/user'
 import { WhiteRedBtn } from '../../../common/Button/Button'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
@@ -15,7 +15,7 @@ import {
 	FilterHeader,
 	FilterWrap,
 	TCSubContainer,
-	TableContianer
+	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import TableV2 from '../../../pages/Table/TableV2'
 import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
@@ -25,6 +25,8 @@ import { getValidParams } from '../../../utils/parameters'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 import OrderSearchFields from './OrderSearchFields'
 import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
+import { cancelAllOrderList } from '../../../api/orderList'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
 /**
  * @constant 기본 페이지 검색 값
@@ -38,6 +40,7 @@ const initialPageParams = {
  * @constant 주문 고유번호 키
  */
 const UID_KEY = '주문 고유 번호'
+const NUMBER_KEY = '상시판매 번호'
 
 /**
  * (사용자)상시판매 주문확인 목록
@@ -47,14 +50,17 @@ const UID_KEY = '주문 고유 번호'
 const Order = ({}) => {
 	const [searchParams, setSearchParams] = useState({ ...initialPageParams })
 	const [pageParams, setPageParams] = useState({ ...initialPageParams })
-	const { data: orderData, isLoading } = useUserOrderListQuery(searchParams) // 주문확인 목록 조회 쿼리
-	const { mutate: requestCancel, loading: isCancelLoading } = useUserOrderCancelMutaion() // 주문취소 뮤테이션
+	const { data: orderData, isLoading, refetch } = useUserOrderListQuery(searchParams) // 주문확인 목록 조회 쿼리
+	const { mutate: cancelAllOrder, isLoading: isCancelLoading } = useMutationQuery(
+		'cancelAllOrderList',
+		cancelAllOrderList,
+	) // 주문 취소
 	// 테이블 데이터, 페이지 데이터, 총 중량
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: userOrderListField,
 		serverData: orderData,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
-		best: { display: true }
+		best: { display: true },
 	})
 	// 선택 항목
 	const { selectedData, selectedWeightStr, selectedCountStr, hasSelected } = useTableSelection({ weightKey: '총 중량' })
@@ -63,7 +69,7 @@ const Order = ({}) => {
 	// NAVIGATION
 	const navigate = useNavigate()
 	// ALERT
-	const { simpleAlert } = useAlert()
+	const { simpleAlert, simpleConfirm } = useAlert()
 
 	/**
 	 * 필터 검색 핸들러
@@ -103,16 +109,24 @@ const Order = ({}) => {
 	/**
 	 * 선택 항목 주문 취소 핸들러
 	 */
-	function handleOrderCancel(e) {
-		e.preventDefault()
-
+	function handleOrderCancel() {
 		if (!hasSelected) {
 			return simpleAlert('주문 취소할 제품을 선택해 주세요.')
 		}
 
-		const cancelData = selectedData.map((v) => ({ uid: v[UID_KEY], saleType: '상시 판매 대상재' }))
+		const requestList = selectedData.map((v) => ({ auctionNumber: v[NUMBER_KEY], saleType: '상시판매 대상재' }))
 
-		requestCancel({ requestList: cancelData })
+		simpleConfirm('주문 취소하시겠습니까?', () => {
+			cancelAllOrder(requestList, {
+				onSuccess: () => {
+					simpleAlert('주문 취소 성공하였습니다.')
+					refetch() // 성공 시 데이터 새로고침
+				},
+				onError: () => {
+					simpleAlert('주문 취소 중 오류가 발생했습니다.')
+				},
+			})
+		})
 	}
 
 	/**
@@ -120,7 +134,7 @@ const Order = ({}) => {
 	 */
 	function handleTableRowClick(row) {
 		const uid = row?.data['상시판매 번호']
-		const isBtnClicked = row?.event?.originalTarget?.tagName === 'BUTTON';
+		const isBtnClicked = row?.event?.originalTarget?.tagName === 'BUTTON'
 		if (uid && !isBtnClicked) {
 			navigate(`/userpage/salesorder/${uid}`)
 		}
@@ -171,16 +185,16 @@ const Order = ({}) => {
 			<TableContianer>
 				{/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
 				<TCSubContainer bor>
-					<div style={{flex: 1}}>
+					<div style={{ flex: 1 }}>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handlePageSizeChange} />
 						<TableV2ExcelDownloader
-							requestUrl={USER_URL.orderList} 
+							requestUrl={USER_URL.orderList}
 							requestCount={totalCount}
-							field={userOrderListField} 
+							field={userOrderListField}
 						/>
 					</div>
 				</TCSubContainer>

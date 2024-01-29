@@ -1,38 +1,37 @@
-import { useEffect, useRef, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
-import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
-import { selectedRowsAtom } from '../../../store/Layout/Layout'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { getSaleProductList } from '../../../api/saleProduct'
-import { saleProductListFieldsCols, saleProductListResponseToTableRowMap } from '../../../constants/admin/saleProduct'
-import { add_element_field } from '../../../lib/tableHelpers'
-import { KilogramSum } from '../../../utils/KilogramSum'
-import { formatWeight } from '../../../utils/utils'
-import { SkyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { isEqual } from 'lodash'
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { cancelAllOrderList } from '../../../api/orderList'
+import { getSaleProductList, usePostSaleProductOrderConfirm } from '../../../api/saleProduct'
+import { WhiteRedBtn } from '../../../common/Button/Button'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
+import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import Hidden from '../../../components/TableInner/Hidden'
-import Table from '../../Table/Table'
-import {
-	FilterContianer,
-	FilterHeader,
-	FilterHeaderAlert,
-	TCSubContainer,
-	TableContianer,
-} from '../../../modal/External/ExternalFilter'
 import { UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import SellOrderSearchFields from './SellOrderSearchFields'
-import { isEqual } from 'lodash'
-import { useNavigate } from 'react-router-dom'
+import { saleProductListFieldsCols, saleProductListResponseToTableRowMap } from '../../../constants/admin/saleProduct'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
 import useAlert from '../../../store/Alert/useAlert'
-import { useUserOrderCancelMutaion } from '../../../api/user'
-import DepositRequestForm from '../../../modal/Docs/DepositRequestForm'
+import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import PrintDepositRequestButton from '../../../userpages/UserSales/_components/PrintDepositRequestButton'
+import { KilogramSum } from '../../../utils/KilogramSum'
+import { formatWeight } from '../../../utils/utils'
+import Table from '../../Table/Table'
+import SellOrderSearchFields from './SellOrderSearchFields'
 
 const SellOrder = () => {
-	const { mutate: mutateDepositOrderCancel, loading: loadingDepositOrderCancel } = useUserOrderCancelMutaion()
+	const { simpleConfirm, simpleAlert } = useAlert()
+	const { mutate: cancelAllOrder, loading: loadingOrderCancel } = useMutationQuery(
+		'cancelAllOrderList',
+		cancelAllOrderList,
+	)
+	const { mutate: mutateDepositOrderConfirm, loading: loadingOrderConfirm } = usePostSaleProductOrderConfirm()
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
@@ -57,7 +56,7 @@ const SellOrder = () => {
 	const [saleProductPagination, setSaleProductPagination] = useState([])
 
 	useEffect(() => {
-		if (getSaleProductListRes && getSaleProductListRes.data && getSaleProductListRes.data.data) {
+		if (getSaleProductListRes?.data?.data) {
 			setSaleProductListData(formatTableRowData(getSaleProductListRes.data.data.list))
 			setSaleProductPagination(getSaleProductListRes.data.data.pagination)
 		}
@@ -129,18 +128,40 @@ const SellOrder = () => {
 		navigate(`/sales/order/${uid}`)
 	}
 
-	const { simpleAlert } = useAlert()
-
 	const orderCancelButtonOnClickHandler = () => {
-		console.log('checkBoxSelect =>', checkBoxSelect)
 		if (checkBoxSelect.length === 0) {
 			return simpleAlert('주문 취소할 제품을 선택해 주세요.')
 		}
 
 		// 주문 번호 , orderUid is null from server response.
-		const cancelData = checkBoxSelect.map((value) => ({ uid: value['주문번호'], saleType: '상시판매 대상재' }))
+		const requestList = checkBoxSelect.map((value) => ({
+			auctionNumber: value['상시판매 번호'],
+			saleType: '상시판매 대상재',
+		}))
 
-		mutateDepositOrderCancel({ requestList: cancelData })
+		simpleConfirm('주문 취소하시겠습니까?', () => {
+			cancelAllOrder(requestList, {
+				onSuccess: () => {
+					simpleAlert('주문 취소 성공하였습니다.')
+					refetch() // 성공 시 데이터 새로고침
+				},
+				onError: () => {
+					simpleAlert('주문 취소 중 오류가 발생했습니다.')
+				},
+			})
+		})
+	}
+
+	const orderCompletionHandler = () => {
+		if (checkBoxSelect.length === 0) {
+			return simpleAlert('주문 취소할 제품을 선택해 주세요.')
+		}
+
+		const auctionNumbers = checkBoxSelect.map((value) => value['상시판매 번호'])
+
+		simpleConfirm('입금확인 하시겠습니까?', () => {
+			mutateDepositOrderConfirm({ auctionNumbers })
+		})
 	}
 
 	return (
@@ -151,33 +172,7 @@ const SellOrder = () => {
 					{/* 토글 쓰기 */}
 					<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 				</FilterHeader>
-				<FilterHeaderAlert>
-					<div style={{ display: 'flex' }}>
-						<div style={{ marginRight: '20px' }}>
-							<img src="/img/notice.png" />
-						</div>
-						<div style={{ marginTop: '8px' }}>
-							<div>
-								· <b style={{ color: '#4c83d6' }}>입금계좌번호</b> : 우리은행 1005-301-817070, 신한은행 140-013-498612,
-								기업은행 070-8889-3456, 예금주 : 카스코철강
-							</div>
-							<div style={{ marginTop: '8px' }}>· 경매일 익일 12:00시 내 입금 필수 (낙찰 확정)</div>
-							<div style={{ marginTop: '8px' }}>
-								· 낙찰 후 지정 입금 요청일까지 미 입금 시 2주간 경매 참여가 제한되며, 경매 제한 3회 발생 시 당사 경매가
-								참여가 불가하오니 주의하시기 바랍니다.
-							</div>
-							<div style={{ marginTop: '8px' }}>
-								· 낙찰금액은 제품대공급가, 제품대부가세를 합한 금액입니다. (상세화면 참조)
-							</div>
-							<div style={{ marginTop: '8px' }}>· 운반금액은 운반비공급가, 운반비부가세를 합한 금액입니다.</div>
-						</div>
-					</div>
-
-					<div style={{ marginTop: '-100px' }}>
-						수정
-						<img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-					</div>
-				</FilterHeaderAlert>
+				<CautionBox category={CAUTION_CATEGORY.order} />
 				{exFilterToggle && (
 					// <FilterSubcontianer>
 					<GlobalProductSearch
@@ -209,7 +204,9 @@ const SellOrder = () => {
 						kg / 총 중량 {formatWeight(saleProductPagination.totalWeight)} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteRedBtn onClick={orderCancelButtonOnClickHandler}>주문 취소</WhiteRedBtn>
+						<WhiteRedBtn onClick={orderCancelButtonOnClickHandler} disabled={loadingOrderCancel}>
+							주문 취소
+						</WhiteRedBtn>
 					</div>
 				</TCSubContainer>
 				<Table
