@@ -5,7 +5,6 @@ import { styled } from 'styled-components'
 import { getSaleProductDetail, usePostSaleProductOrderPartConfirm } from '../../../api/saleProduct'
 import { getDestinationFind } from '../../../api/search'
 import { useDepositOrderCancel } from '../../../api/orderList'
-import { usePostSaleProductOrderConfirm } from '../../../api/saleProduct'
 import {
 	useAuctionSuccessfulBidApprove,
 	useAuctionSuccessfulBidReject,
