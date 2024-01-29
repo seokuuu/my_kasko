@@ -146,4 +146,5 @@ const FileRemoveButton = styled.button`
 const UploadCompleteText = styled.span`
 	color: #4c83d6;
 	font-size: 12px;
+	font-weight: bold;
 `

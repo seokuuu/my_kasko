@@ -78,6 +78,9 @@ export function useStorageUpdateMutation() {
 			queryClient.invalidateQueries({
 				queryKey: STORAGE_KEYS.getStorageList,
 			})
+			queryClient.invalidateQueries({
+				queryKey: STORAGE_KEYS.getStorage,
+			})
 		},
 		onError() {
 			simpleAlert('수정에 실패하였습니다.')
