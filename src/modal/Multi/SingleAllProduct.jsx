@@ -4,7 +4,13 @@ import styled from 'styled-components'
 import { BlackBtn, GreyBtn, YellBtn } from '../../common/Button/Button'
 
 import Excel from '../../components/TableInner/Excel'
-import { SingleProductSpecAtom, toggleAtom, selectedRowsAtom, singleAllProductModal } from '../../store/Layout/Layout'
+import {
+	SingleProductSpecAtom,
+	toggleAtom,
+	selectedRowsAtom,
+	singleAllProductModal,
+	packageCreateObjAtom,
+} from '../../store/Layout/Layout'
 
 import PageDropdown from '../../components/TableInner/PageDropdown'
 import { useAtom, useAtomValue } from 'jotai'
@@ -36,7 +42,8 @@ import { isEqual } from 'lodash'
 import PackageProductSearchModalFields from '../../pages/Product/PackageManage/PackageProductSearchModalFields'
 
 const SingleAllProduct = ({ setSelectPr, selectPr }) => {
-	const [getRow, setGetRow] = useState('')
+	const packageObj = useAtomValue(packageCreateObjAtom)
+	const [getRow, setGetRow] = useState([])
 
 	const tableField = useRef(SingleDispatchFieldsCols)
 	const getCol = tableField.current
@@ -51,7 +58,11 @@ const SingleAllProduct = ({ setSelectPr, selectPr }) => {
 		pageSize: 50,
 		type: '일반',
 		category: '전체',
+		saleType: packageObj.sellType === '경매' ? '경매 대상재' : '상시판매 대상재',
+		packageStatus: 1,
+		productStatus: packageObj.sellType === '경매' ? '등록 대기' : '판매중',
 	}
+
 	const [param, setParam] = useState(paramData)
 	//✅ request, Data패칭
 
