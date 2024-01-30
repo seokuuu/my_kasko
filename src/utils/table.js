@@ -14,11 +14,6 @@ export function getNormalTableRows(tableRows = []) {
     ...v, 
     ...!v.cellRenderer && {
       cellRenderer: (params) => params?.value || '-',
-      // cellRenderer: CustomTableHeader,
-      // valueGetter: v => {
-      //   console.log(v.value);
-      //   return v;
-      // }
     }, 
     ...!v.cellStyle && {cellStyle: { textAlign: 'center' }},
     ...!v.minWidth && { minWidth: 100 },

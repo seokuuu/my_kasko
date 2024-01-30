@@ -91,6 +91,7 @@ var GRID_SETTIGS = {
 		enableRowGroup: true,
 		enablePivot: true,
 		enableValue: true,
+		enableMenu: true,
 		sortable: true,
 		resizable: true,
 		filter: true,
@@ -298,9 +299,19 @@ const TableV2 = ({
 					<AgGridReact
 						onGridReady={params => { setGridApi(params.api) }}
 						columnDefs={columnDefs}
-						// columnDefs={columnDefs.map(v => )}
+						components={{
+							agColumnHeader: CustomTableHeader
+						}}
 						rowData={rowData}
-						defaultColDef={GRID_SETTIGS.defaultColDef}
+						defaultColDef={{
+							...GRID_SETTIGS.defaultColDef, 
+						// 	headerComponentParams: {
+						// 		pin: true,
+						// 		onPinClickListener: (e) => {
+						// 			console.log(e)
+						// 		}
+						// }
+					}}
 						gridOptions={gridOptions}
 						ref={gridRef}
 						onRowDoubleClicked={onRowDoubleClicked}
