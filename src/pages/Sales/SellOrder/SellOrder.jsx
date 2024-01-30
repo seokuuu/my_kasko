@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
-import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
-import { selectedRowsAtom } from '../../../store/Layout/Layout'
+import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { getSaleProductList } from '../../../api/saleProduct'
+import { getSaleProductList, usePostSaleProductOrderConfirm } from '../../../api/saleProduct'
 import { saleProductListFieldsCols, saleProductListResponseToTableRowMap } from '../../../constants/admin/saleProduct'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { KilogramSum } from '../../../utils/KilogramSum'
@@ -14,25 +13,25 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import Hidden from '../../../components/TableInner/Hidden'
 import Table from '../../Table/Table'
-import {
-	FilterContianer,
-	FilterHeader,
-	FilterHeaderAlert,
-	TCSubContainer,
-	TableContianer,
-} from '../../../modal/External/ExternalFilter'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import { UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import SellOrderSearchFields from './SellOrderSearchFields'
 import { isEqual } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import useAlert from '../../../store/Alert/useAlert'
-import { useUserOrderCancelMutation } from '../../../api/user'
 import DepositRequestForm from '../../../modal/Docs/DepositRequestForm'
-import { CautionBox, CAUTION_CATEGORY } from '../../../components/CautionBox'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import { cancelAllOrderList } from '../../../api/orderList'
 
 const SellOrder = () => {
-	const { mutate: mutateDepositOrderCancel, loading: loadingDepositOrderCancel } = useUserOrderCancelMutation()
+	const { simpleConfirm, simpleAlert } = useAlert()
+	const { mutate: cancelAllOrder, loading: loadingOrderCancel } = useMutationQuery(
+		'cancelAllOrderList',
+		cancelAllOrderList,
+	)
+	const { mutate: mutateDepositOrderConfirm, loading: loadingOrderConfirm } = usePostSaleProductOrderConfirm()
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
@@ -129,18 +128,40 @@ const SellOrder = () => {
 		navigate(`/sales/order/${uid}`)
 	}
 
-	const { simpleAlert } = useAlert()
-
 	const orderCancelButtonOnClickHandler = () => {
-		console.log('checkBoxSelect =>', checkBoxSelect)
 		if (checkBoxSelect.length === 0) {
 			return simpleAlert('주문 취소할 제품을 선택해 주세요.')
 		}
 
 		// 주문 번호 , orderUid is null from server response.
-		const cancelData = checkBoxSelect.map((value) => ({ uid: value['주문번호'], saleType: '상시판매 대상재' }))
+		const requestList = checkBoxSelect.map((value) => ({
+			auctionNumber: value['상시판매 번호'],
+			saleType: '상시판매 대상재',
+		}))
 
-		mutateDepositOrderCancel({ requestList: cancelData })
+		simpleConfirm('주문 취소하시겠습니까?', () => {
+			cancelAllOrder(requestList, {
+				onSuccess: () => {
+					simpleAlert('주문 취소 성공하였습니다.')
+					refetch() // 성공 시 데이터 새로고침
+				},
+				onError: () => {
+					simpleAlert('주문 취소 중 오류가 발생했습니다.')
+				},
+			})
+		})
+	}
+
+	const orderCompletionHandler = () => {
+		if (checkBoxSelect.length === 0) {
+			return simpleAlert('주문 취소할 제품을 선택해 주세요.')
+		}
+
+		const auctionNumbers = checkBoxSelect.map((value) => value['상시판매 번호'])
+
+		simpleConfirm('입금확인 하시겠습니까?', () => {
+			mutateDepositOrderConfirm({ auctionNumbers })
+		})
 	}
 
 	return (
@@ -183,7 +204,9 @@ const SellOrder = () => {
 						kg / 총 중량 {formatWeight(saleProductPagination.totalWeight)} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteRedBtn onClick={orderCancelButtonOnClickHandler}>주문 취소</WhiteRedBtn>
+						<WhiteRedBtn onClick={orderCancelButtonOnClickHandler} disabled={loadingOrderCancel}>
+							주문 취소
+						</WhiteRedBtn>
 					</div>
 				</TCSubContainer>
 				<Table
@@ -204,7 +227,9 @@ const SellOrder = () => {
 						>
 							입금 요청서 발행
 						</WhiteSkyBtn>{' '}
-						<SkyBtn>입금 확인</SkyBtn>
+						<SkyBtn onClick={orderCompletionHandler} disabled={loadingOrderConfirm}>
+							입금 확인
+						</SkyBtn>
 					</div>
 				</TCSubContainer>
 			</TableContianer>

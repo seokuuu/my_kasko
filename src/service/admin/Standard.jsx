@@ -1,14 +1,14 @@
-import { client } from '../../api'
+import { client, formHeaders } from '../../api'
 
 const headers = { 'Content-Type': 'multipart/form-data' }
 
 const URL = {
-  Destination: '/admin/destination', // 목적지 관리
-  DestiSearch: '/search/destination', // 목적지 권역 목록 (등록 - 목적지 코드 Dropdown)
-  Surcharge: '/admin/extracharge', //할증 관리
-  Consolidation: '/admin/mergecost', //합짐비 관리
-  Transportation: '/admin/freight', // 운반비 관리
-  UnitCost: '/admin/freight/cost', //운반비 관리 - 단가 일괄 수정
+	Destination: '/admin/destination', // 목적지 관리
+	DestiSearch: '/search/destination', // 목적지 권역 목록 (등록 - 목적지 코드 Dropdown)
+	Surcharge: '/admin/extracharge', //할증 관리
+	Consolidation: '/admin/mergecost', //합짐비 관리
+	Transportation: '/admin/freight', // 운반비 관리
+	UnitCost: '/admin/freight/cost', //운반비 관리 - 단가 일괄 수정
 }
 
 /* ==============================
@@ -17,13 +17,13 @@ const URL = {
 
 // 목적지 관리 - 목록 "GET"
 export const getAdminDestination = (data) => {
-  return client.get(URL.Destination, { params: data })
+	return client.get(URL.Destination, { params: data })
 }
 
 // 목적지 관리 - 목적지 권역 목록 (목적지 코드 Dropdown) "Get"
 export const getAdminDestinationSearch = async () => {
-  console.log('!!!!', client.get(URL.DestiSearch))
-  return client.get(URL.DestiSearch)
+	console.log('!!!!', client.get(URL.DestiSearch))
+	return client.get(URL.DestiSearch)
 }
 
 // 목적지 관리 - 등록 "POST"
@@ -34,7 +34,14 @@ export const editAdminDestination = (params) => client.patch(URL.UnitCost, param
 
 // 목적지 관리 - 삭제 "DELETE"
 export function deleteAdminDestination(id) {
-  return client.delete(`${URL.Destination}/${id}`)
+	return client.delete(`${URL.Destination}/${id}`)
+}
+
+// 목적지 관리 - 대량 등록 "POST"
+export const postExcelAdminDestination = async (params) => {
+	const form = new FormData()
+	form.append('excel', params.file)
+	return await client.post(`${URL.Destination}/excel`, form, { headers: formHeaders })
 }
 
 /* ==============================
@@ -43,7 +50,7 @@ export function deleteAdminDestination(id) {
 
 // 운반비 관리 - 목록 "GET"
 export const getAdminTransportation = (data) => {
-  return client.get(URL.Transportation, { params: data })
+	return client.get(URL.Transportation, { params: data })
 }
 
 // 운반비 관리 - 등록 "POST"
@@ -54,12 +61,20 @@ export const editAdminTransportation = (params) => client.patch(URL.Transportati
 
 // 운반비 관리 - 삭제 "DELETE"
 export function deleteAdminTransportation(id) {
-  return client.delete(`${URL.Transportation}/${id}`)
+	return client.delete(`${URL.Transportation}/${id}`)
 }
 // 운반비 관리 - 단가 일괄 수정 'PATCH"
 export const editAdminUnitCost = (params) => {
-  console.log('params', params)
-  client.patch(URL.UnitCost, params)
+	console.log('params', params)
+	client.patch(URL.UnitCost, params)
+}
+
+// 운반비 관리 - 대량 등록 "POST"
+export const postExcelAdminTransportation = async (params) => {
+	const form = new FormData()
+	form.append('excel', params.file)
+	form.append('type', params.type)
+	return await client.post(`${URL.Transportation}/excel`, form, { headers: formHeaders })
 }
 
 /* ==============================
@@ -68,7 +83,7 @@ export const editAdminUnitCost = (params) => {
 
 // 할증 관리 - 목록 "GET"
 export const getAdminSurcharge = (data) => {
-  return client.get(URL.Surcharge, { params: data })
+	return client.get(URL.Surcharge, { params: data })
 }
 
 // 운반비 관리 - 수정 'PATCH"
@@ -79,7 +94,7 @@ export const postAdminSurcharge = (params) => client.post(URL.Surcharge, params)
 
 // 할증 관리 - 삭제 "DELETE"
 export function deleteAdminSurcharge(id) {
-  return client.delete(`${URL.Surcharge}/${id}`)
+	return client.delete(`${URL.Surcharge}/${id}`)
 }
 
 /* ==============================
@@ -88,7 +103,7 @@ export function deleteAdminSurcharge(id) {
 
 // 합짐비 관리 - 목록 "GET"
 export const getAdminConsolidation = (data) => {
-  return client.get(URL.Consolidation, { params: data })
+	return client.get(URL.Consolidation, { params: data })
 }
 
 // 합짐비 관리 - 등록 "POST"
@@ -99,5 +114,5 @@ export const editAdminConsolidation = (params) => client.patch(URL.Consolidation
 
 // 합짐비 관리 - 삭제 "DELETE"
 export function deleteAdminConsolidation(id) {
-  return client.delete(`${URL.Consolidation}/${id}`)
+	return client.delete(`${URL.Consolidation}/${id}`)
 }

@@ -58,11 +58,24 @@ const ClaimProduct = () => {
 				: [],
 		[data],
 	)
-
 	function claimRegister() {
 		if (!selectedData || selectedData.length === 0) return simpleAlert('등록할 제품을 선택해주세요.')
 
-		navigate('/operate/common/product/register')
+		navigate(`/operate/common/product/register`, {
+			state: {
+				productUid: selectedData[0]['제품 고유 번호'],
+				auctionNumber: selectedData[0]['경매 번호'],
+				productNumber: selectedData[0]['제품 번호'],
+				registerDate: selectedData[0]['등록일자'],
+				updateDate: selectedData[0]['수정일'],
+				thickness: selectedData[0]['두께'],
+				width: selectedData[0]['폭'],
+				length: selectedData[0]['길이'],
+				spec: selectedData[0]['규격 약호'],
+				weight: selectedData[0]['중량'],
+				maker: selectedData[0]['매입처'],
+			},
+		})
 	}
 
 	useEffect(() => {

@@ -66,8 +66,8 @@ const PreferPost = ({ setChoiceComponent }) => {
 				},
 			})
 		},
-		onError() {
-			simpleAlert('저장에 실패하였습니다.')
+		onError(error) {
+			simpleAlert(error.status === 400 ? error.data.message : '저장에 실패하였습니다.')
 		},
 	})
 

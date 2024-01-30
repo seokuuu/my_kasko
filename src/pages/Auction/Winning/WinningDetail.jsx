@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 import {
-	BlackBtn,
 	BtnBound,
 	SkyBtn,
 	TGreyBtn,
@@ -15,26 +14,13 @@ import { invenDestination, invenDestinationData, selectedRowsAtom, toggleAtom } 
 
 import {
 	CustomInput,
-	ExCheckDiv,
-	ExCheckWrap,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
-	FilterLeft,
-	FilterSubcontianer,
 	FilterTCTop,
 	FilterTopContainer,
-	GridWrap,
-	PartWrap,
-	ResetImg,
-	RowWrap,
 	TCSubContainer,
 	TableContianer,
-	Tilde,
 } from '../../../modal/External/ExternalFilter'
-
-import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
-import { CheckBox } from '../../../common/Check/Checkbox'
 
 import { useAtom } from 'jotai'
 import Hidden from '../../../components/TableInner/Hidden'
@@ -43,6 +29,7 @@ import DefaultBlueBar from '../../../modal/Multi/DefaultBlueBar'
 import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 
 import { useQueryClient } from '@tanstack/react-query'
+import { isEqual } from 'lodash'
 import {
 	destiApproveReq,
 	destiChangeApprove,
@@ -52,20 +39,17 @@ import {
 	partDepositConfirm,
 	publishDepositForm,
 } from '../../../api/auction/winning'
-import DateGrid from '../../../components/DateGrid/DateGrid'
+import { getDestinationFind } from '../../../api/search'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import { AuctionWinningDetailFields, AuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
-import Table from '../../Table/Table'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
-import { getDestinationFind } from '../../../api/search'
-import WinningCreateSearchFields from './WinningCreateSearchFields'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import { isEqual } from 'lodash'
-import WinningDetailFields from './WinningDetailFields'
 import PrintDepositRequestButton from '../../../userpages/UserSales/_components/PrintDepositRequestButton'
+import Table from '../../Table/Table'
+import WinningDetailFields from './WinningDetailFields'
 
 // 경매 낙찰 상세
 const WinningDetail = ({ detailRow }) => {
@@ -83,6 +67,30 @@ const WinningDetail = ({ detailRow }) => {
 		detailRow?.['중량'],
 		new Intl.NumberFormat('en-US').format(detailRow?.['입금 요청액']) + '원',
 	]
+
+	const matchingData = {
+		'경매 번호': 'auctionNumber',
+		창고: 'storage',
+		'고객사 목적지 고유 번호': 'customerDestinationUid',
+		'낙찰 상태': 'biddingStatus',
+	}
+
+	// 상세 GET 및 param
+	function matchDetailRowWithMatchingData(detailRow, matchingData) {
+		const matchedData = {}
+
+		Object.keys(matchingData).forEach((key) => {
+			const detailKey = matchingData[key]
+			if (detailRow.hasOwnProperty(key)) {
+				matchedData[detailKey] = detailRow[key]
+			}
+		})
+
+		return matchedData
+	}
+	// 상세 GET 및 param
+	const matchedResult = matchDetailRowWithMatchingData(detailRow, matchingData)
+
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
 	//checkSales
@@ -112,6 +120,7 @@ const WinningDetail = ({ detailRow }) => {
 		'주문 고유 번호': 'orderUid',
 	}
 
+	// 부분 낙찰 취소
 	const extractedArray = checkedArray?.reduce((result, item) => {
 		const orderUid = item[keysToExtract[0]]
 
@@ -144,16 +153,12 @@ const WinningDetail = ({ detailRow }) => {
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
-		auctionNumber: '2024010211',
-		storage: '우성',
-		customerDestinationUid: '165',
-		biddingStatus: '낙찰 취소',
+		...matchedResult,
 	}
 
 	// Test 후 주석 해제 필
 	const [param, setParam] = useState(paramData)
-
-	console.log('param', param)
+	console.log('param !@#', param)
 
 	// Test 후 주석 해제 필
 	// useEffect(() => {
@@ -168,16 +173,27 @@ const WinningDetail = ({ detailRow }) => {
 	//   }))
 	// }, [])
 
-	console.log('detailParams', param)
-
 	const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
 
 	console.log('inventoryDestination', inventoryDestination?.data?.data)
+
+	const [winningCreateData, setWinningCreateData] = useState({})
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getWinningDetail', getWinningDetail)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
 	console.log('resData !@#', resData)
+	console.log('resData !@#', resData)
+
+	useEffect(() => {
+		let getData = resData
+		//타입, 리액트쿼리, 데이터 확인 후 실행
+		if (!isSuccess && !resData) return
+		if (Array.isArray(getData)) {
+			setGetRow(add_element_field(getData, AuctionWinningDetailFields))
+			setTablePagination(resPagination)
+		}
+	}, [isSuccess, resData])
 
 	useEffect(() => {
 		let getData = resData
@@ -207,54 +223,33 @@ const WinningDetail = ({ detailRow }) => {
 		// setBiddingList(updatedBiddingList)
 	}, [checkedArray])
 
-	// 목적지 적용 버튼
-	// 테스트 시 수정하기
-	const handleSetCustomerDestinationUid = () => {
-		if (checkedArray) {
-			const updatedWinningList = input.updateList?.map((item) => ({
-				...item,
-				requestCustomerDestinationUid: destinationData.uid,
-			}))
+	console.log('updateList', input.updateList?.length)
+	const [destiObject, setDestiObject] = useState()
+	const [finalInput, setFinalInput] = useState({
+		requestCustomerDestinationUid: null,
+	})
 
-			// setBiddingList(updatedBiddingList)
-			setInput((prevInput) => ({
-				...prevInput,
-				updateList: [...updatedWinningList],
-			}))
-		}
-	}
-
-	console.log('input', input)
+	console.log('destiObject ###', destiObject)
+	console.log('finalInput ###', finalInput)
+	useEffect(() => {
+		setDestiObject(destinationData)
+	}, [destinationData])
 
 	useEffect(() => {
-		// true에 해당되면, value를, false면 빈값을 반환
-		const updatedCheck = checkSales.map((value, index) => {
-			return check1[index] ? value : ''
-		})
-		// 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-		const filteredCheck = updatedCheck.filter((item) => item !== '')
-		setCheckData1(filteredCheck)
+		const updatedProductList = checkedArray?.map((item) => ({
+			uid: item['주문 고유 번호'],
+			requestCustomerDestinationUid: finalInput?.requestCustomerDestinationUid,
+			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
+		}))
 
-		// 전송용 input에 담을 때
-		// setInput({
-		//   ...input,
-		//   businessType: updatedCheck.filter(item => item !== ''),
-		// });
-	}, [check1])
+		// winningCreateData를 업데이트하여 productList를 갱신
+		setWinningCreateData((prevData) => ({
+			...prevData,
+			updateList: updatedProductList,
+		}))
+	}, [checkedArray, finalInput])
 
-	const handleSelectChange = (selectedOption, name) => {
-		// setInput(prevState => ({
-		//   ...prevState,F
-		//   [name]: selectedOption.label,
-		// }));
-	}
-
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
+	console.log('winningCreateData', winningCreateData)
 
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -294,18 +289,18 @@ const WinningDetail = ({ detailRow }) => {
 	// 목적지 승인 요청 POST
 	const destiApproveMutation = useMutationQuery('', destiApproveReq)
 	const destiApproveOnClickHandler = () => {
-		destiApproveMutation.mutate(input)
+		destiApproveMutation.mutate(winningCreateData)
 	}
 
 	// 목적지 변경 반려 POST
 	const destiChangeRejMutation = useMutationQuery('', destiChangeReject)
 	const destiChangeRejOnClickHandler = () => {
-		destiChangeRejMutation.mutate(input)
+		destiChangeRejMutation.mutate(winningCreateData)
 	}
 	// 목적지 변경 승인 POST
 	const destiChangeApproveMutation = useMutationQuery('', destiChangeApprove)
 	const destiChangeApprovOnClickHandler = () => {
-		destiChangeApproveMutation.mutate(input)
+		destiChangeApproveMutation.mutate(winningCreateData)
 	}
 
 	const publishDepositMutation = useMutationQuery('', publishDepositForm)
@@ -331,8 +326,6 @@ const WinningDetail = ({ detailRow }) => {
 			}
 		})
 	}
-
-
 
 	return (
 		<FilterContianer>
@@ -450,7 +443,16 @@ const WinningDetail = ({ detailRow }) => {
 						>
 							찾기
 						</TWhiteBtn>
-						<TGreyBtn onClick={handleSetCustomerDestinationUid}>적용</TGreyBtn>
+						<TGreyBtn
+							onClick={() => {
+								setFinalInput((prevFinalInput) => ({
+									...prevFinalInput,
+									requestCustomerDestinationUid: destiObject && destiObject.uid,
+								}))
+							}}
+						>
+							적용
+						</TGreyBtn>
 						<BtnBound style={{ margin: '0px' }} />
 						<WhiteBlackBtn onClick={destiApproveOnClickHandler}>목적지 승인 요청</WhiteBlackBtn>
 
@@ -467,10 +469,10 @@ const WinningDetail = ({ detailRow }) => {
 					<div style={{ display: 'flex', gap: '10px' }}>
 						{/* 입금 확인 요청서 */}
 						<PrintDepositRequestButton
-							auctionNumber={"2023112201"}
-							storage={"우성"}
-							customerDestinationUid={"120"}
-							biddingStatus={"낙찰 확정"}
+							auctionNumber={param?.auctionNumber}
+							storage={param?.storage}
+							customerDestinationUid={param?.customerDestinationUid}
+							biddingStatus={param?.biddingStatus}
 						/>
 						<BtnBound style={{ margin: '0px' }} />
 						<WhiteRedBtn onClick={deleteOnClickHandler}>부분 낙찰 취소 </WhiteRedBtn>
