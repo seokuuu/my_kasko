@@ -1,3 +1,5 @@
+import CustomTableHeader from "../pages/Table/CustomTableHeader";
+
 /**
  * 테이블 로우 반환 함수
  * @param {object[]} tableRows 
@@ -10,9 +12,16 @@
 export function getNormalTableRows(tableRows = []) {
   return tableRows.map(v => ({
     ...v, 
-    ...!v.cellRenderer && {cellRenderer: (params) => params?.value || '-'}, 
+    ...!v.cellRenderer && {
+      cellRenderer: (params) => params?.value || '-',
+      // cellRenderer: CustomTableHeader,
+      // valueGetter: v => {
+      //   console.log(v.value);
+      //   return v;
+      // }
+    }, 
     ...!v.cellStyle && {cellStyle: { textAlign: 'center' }},
     ...!v.minWidth && { minWidth: 100 },
-    ...v.checkboxSelection && { initialPinned: true }
+    ...v.checkboxSelection && { initialPinned: true },
   }));
 }

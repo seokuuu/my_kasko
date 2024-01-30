@@ -28,6 +28,7 @@ import {
 } from '../../store/Layout/Layout'
 import { TABLE_TYPE, tableHiddenColumnAtom, tableResetColumnAtom, tableRestoreColumnAtom, tableShowColumnAtom } from '../../store/Table/Table'
 import './TableUi.css'
+import CustomTableHeader from './CustomTableHeader'
 
 /**
  * AG-GRID settings 함수
@@ -228,13 +229,9 @@ const TableV2 = ({
 	/**
 	 * 칼럼 우 클릭 핸들러
 	 */
-	function handleColumnMenuClick() {
-		const api = gridRef.current.columnApi;
-		api.addRenderedRowListener('click', 1, (e) => {
-			console.log(e)
-		})
+	const columnMenuRenderer = () => {
+		
 	}
-
 	/**
 	 * 핀 고정 핸들러
 	 * @description 좌측 고정 핸들러
