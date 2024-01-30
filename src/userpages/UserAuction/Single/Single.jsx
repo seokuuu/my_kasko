@@ -185,7 +185,9 @@ const Single = ({}) => {
 
 	// 응찰 버튼 POST
 	const confirmOnClickHandler = () => {
-		postMutation.mutate(winningCreateData)
+		postMutation.mutate(winningCreateData, {
+			onSuccess: refetch(), // onSuccess에 처리할 함수 전달
+		})
 	}
 
 	const globalProductResetOnClick = () => {
@@ -206,6 +208,30 @@ const Single = ({}) => {
 			}
 		})
 	}
+
+	const [values, setValues] = useState({})
+	const [valueDesti, setValueDesti] = useState()
+
+	const onCellValueChanged = (params) => {
+		const p = params.data
+		console.log('바뀌는 값 확인', p['제품 고유 번호'])
+		setValues((prevValues) => ({
+			...prevValues,
+			biddingPrice: p['응찰가'],
+			productUid: p['제품 고유 번호'],
+		}))
+		setValueDesti(p['경매 번호'])
+	}
+
+	useEffect(() => {
+		setWinningCreateData((prev) => ({
+			...prev,
+			biddingList: [{ ...values }],
+			auctionNumber: valueDesti,
+		}))
+	}, [values])
+
+	console.log('values <33', values)
 
 	console.log('winningCreateData <33', winningCreateData)
 
@@ -407,6 +433,11 @@ const Single = ({}) => {
 									...prevFinalInput,
 									customerDestinationUid: destiObject && destiObject.uid,
 								}))
+
+								setValues((p) => ({
+									...p,
+									customerDestinationUid: destiObject && destiObject.uid,
+								}))
 							}}
 						>
 							적용
@@ -444,7 +475,13 @@ const Single = ({}) => {
 						</SkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={getCol} getRow={tableRowData} tablePagination={tablePagination} onPageChange={onPageChange} />
+				<Table
+					getCol={getCol}
+					getRow={tableRowData}
+					tablePagination={tablePagination}
+					onPageChange={onPageChange}
+					changeFn={onCellValueChanged}
+				/>
 			</TableContianer>
 			{destinationPopUp && (
 				<InventoryFind
