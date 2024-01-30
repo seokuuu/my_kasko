@@ -21,8 +21,6 @@ const SORT_STATUS = {
 
 const cssClassName = (name) => `.${name}`;
 
-const isActivated = (targetEl) => targetEl.classList.contains(BTN.activeClass);
-
 /**
  * @todo 구현
  * 2. acitve 클래스를 가진 메뉴는 기본 노출된다.

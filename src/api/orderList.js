@@ -12,6 +12,10 @@ const urls = {
 	orderDeposit: '/admin/order/deposit', // 상시 판매 관리 > 주문 확인 상세 > 부분 입금 취소
 	cancleAllOrderList: '/admin/order/cancel-all',
 	depositCancleAllOrderList: '/admin/order/deposit-all',
+	// successfulOrder: '/sendSuccessBid',
+	successfulOrder: '/dev-sendSuccessBid',
+	// successfulOrderAll: '/sendSuccessBidList',
+	successfulOrderAll: '/dev-sendSuccessBidList',
 }
 
 export async function useOrderCancel(data) {
@@ -80,5 +84,23 @@ export async function depositCancleAllOrderList(data) {
 		return response.data
 	} catch (e) {
 		throw new Error('입금 취소 중 오류가 발생했습니다.')
+	}
+}
+
+export async function successfulOrderPost(data) {
+	try {
+		const response = await client.post(`${urls.successfulOrder}`, data)
+		return response.data
+	} catch (e) {
+		throw new Error('확정 전송 중 오류가 발생했습니다.')
+	}
+}
+
+export async function successfulOrderListPost(data) {
+	try {
+		const response = await client.post(`${urls.successfulOrderAll}`, data)
+		return response.data
+	} catch (e) {
+		throw new Error(e?.data)
 	}
 }

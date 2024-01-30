@@ -227,20 +227,6 @@ const TableV2 = ({
 		setShowColumnClear({ type: tableType });
 	};
 
-	/**
-	 * 칼럼 우 클릭 핸들러
-	 */
-	const columnMenuRenderer = () => {
-		
-	}
-	/**
-	 * 핀 고정 핸들러
-	 * @description 좌측 고정 핸들러
-	 */
-	function handleColumnPinned(column = '', pinned = false) {
-		console.log('pinned: ', pinned, column)
-	}
-
 	/* ==================== STATE start ==================== */
 	// 페이지네이션 변경
 	useEffect(() => {
