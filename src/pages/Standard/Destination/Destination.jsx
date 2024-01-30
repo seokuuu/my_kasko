@@ -55,7 +55,7 @@ import {
 	editAdminDestination,
 	getAdminDestination,
 	getAdminDestinationSearch,
-	postAdminDestination,
+	postAdminDestination, postAdminTransportation,
 } from '../../../service/admin/Standard'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
@@ -174,6 +174,7 @@ const Destination = ({}) => {
 
 	// POST
 	const postMutation = useMutationQuery('', postAdminDestination)
+
 	// propsPost 함수
 	const propsPost = () => {
 		postMutation.mutate(editInput, {

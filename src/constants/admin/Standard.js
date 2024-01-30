@@ -95,32 +95,38 @@ export const StandardDestinaionFieldsCols = [
 export const StandardTransportationFields = {
 	'운반비 고유 번호': 'uid',
 	창고: 'storage',
+	출발지:'storage',
 	'목적지 코드': 'destinationCode',
 	목적지명: 'destinationName',
 	제품군: 'spart',
+	제품구분:'spart',
 	적용일: 'effectDate',
+	'단가 적용일': 'effectDate',
 	이전단가: 'previousCost',
 	적용단가: 'effectCost',
+	수정자: 'updateMember',
 }
 
 // 기준 관리 - 운반비 관리 post
 export const StandardTransportationPost = {
-	출발지: 'auto',
-	'목적지 코드': 'auto',
+	출발지: 'input',
+	'목적지 코드': 'input',
 	'목적지 명': 'input',
-	'제품 구분': 'auto',
-	'단가 적용 일자': 'auto',
+	'제품 구분': 'input',
+	'단가 적용 일자': 'input',
 	'적용 단가': 'input',
 }
 
 // 기준 관리 - 운반비 관리 Edit
 export const StandardTransportationEdit = {
-	창고: 'auto',
+	출발지: 'auto',
 	'목적지 코드': 'auto',
 	목적지명: 'auto',
-	제품군: 'auto',
-	적용일: 'date',
-	적용단가: 'input',
+	제품구분: 'auto',
+	이전단가: 'auto',
+	'단가 적용일': 'date',
+	적용단가: 'auto',
+	수정자:'auto',
 }
 
 // 기준관리 - 운반비 관리 fieldsCols
