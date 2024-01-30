@@ -28,7 +28,7 @@ const NoticeDetail = () => {
 		return { __html: content }
 	}
 
-	function getDataUri(url) {
+	async function getDataUri(url) {
 		return fetch(url)
 			.then((response) => {
 				return response.blob()

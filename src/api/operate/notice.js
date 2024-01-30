@@ -149,6 +149,9 @@ export function useNoticeUpdateMutation(type) {
 			queryClient.invalidateQueries({
 				queryKey: NOTICE_KEYS.getNoticeList,
 			})
+			queryClient.invalidateQueries({
+				queryKey: NOTICE_KEYS.getNotice,
+			})
 		},
 		onError(error) {
 			if (error.data.status === 400) {

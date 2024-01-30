@@ -1,18 +1,18 @@
-import { useCallback, useEffect, useState } from 'react'
-import { styled } from 'styled-components'
-import { Container, IbwTxt, LoginContainer, LoginSubContainer, SubContainer, Title } from '../Login/Login.Styled'
-import { FindContainer, FindMsg, FindTitleMsg } from '../FindId/FindId'
-import { BlueBtn } from '../../../common/Button/Button'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Select from 'react-select'
-import { emailOptions } from '../../../common/Option/SignUp'
+import { styled } from 'styled-components'
+import { BlueBtn } from '../../../common/Button/Button'
 import { SInput } from '../../../common/Input/Input'
+import { emailOptionsIncludingDirect } from '../../../common/Option/SignUp'
+import { FindContainer, FindMsg, FindTitleMsg } from '../FindId/FindId'
+import { Container, IbwTxt, LoginContainer, LoginSubContainer, SubContainer, Title } from '../Login/Login.Styled'
 
-import { accordionAtom, headerAtom, subHeaderAtom } from '../../../store/Layout/Layout'
-import { busIdRegex } from '../../../common/Regex/Regex'
-import { resetPw } from '../../../api/auth'
 import { useSetAtom } from 'jotai/index'
+import { resetPw } from '../../../api/auth'
+import { busIdRegex } from '../../../common/Regex/Regex'
 import useAlert from '../../../store/Alert/useAlert'
+import { accordionAtom, headerAtom, subHeaderAtom } from '../../../store/Layout/Layout'
 
 const init = {
 	id: '',
@@ -34,7 +34,8 @@ const ReissuePw = () => {
 	const [input, setInput] = useState(init)
 	const [validErrorMassage, setValidErrorMessage] = useState(init)
 	const [emailFirst, setEmailFirst] = useState('')
-	const [emailDomain, setEmailDomain] = useState('')
+	const [emailDomain, setEmailDomain] = useState({ selectModeValue: '', inputModeValue: '' })
+	console.log('emailDomain :', emailDomain)
 	const [isActive, setIsActive] = useState(false)
 
 	const reissueHandler = useCallback((e) => {
@@ -85,13 +86,19 @@ const ReissuePw = () => {
 		setIsActive(true)
 	}
 
+	// 이메일 도메인의 값에 따라 셀렉트 모드,인풋 모드 값을 할당해줍니다.
+	const chooseEmailDomain = useMemo(
+		() => (emailDomain.selectModeValue === '직접 입력' ? emailDomain.inputModeValue : emailDomain.selectModeValue),
+		[emailDomain],
+	)
+
 	const validErrorMessageHandler = (name) => {
 		setValidErrorMessage({ ...init, [name]: true })
 	}
 
 	useEffect(() => {
 		if (emailFirst && emailDomain) {
-			setInput({ ...input, email: emailFirst + '@' + emailDomain })
+			setInput({ ...input, email: emailFirst + '@' + chooseEmailDomain })
 		}
 	}, [emailFirst, emailDomain])
 
@@ -142,13 +149,23 @@ const ReissuePw = () => {
 							>
 								<SInput style={{ width: '180px' }} onChange={emailHandler} />
 								<p style={{ margin: '0 5px' }}>@</p>
-								<EmailSelect
-									options={emailOptions}
-									defaultValue={emailOptions[0]}
-									onChange={(selectedOption) => {
-										setEmailDomain(selectedOption.label)
-									}}
-								/>
+								{emailDomain.selectModeValue === '직접 입력' ? (
+									<SInput
+										value={emailDomain.inputModeValue}
+										onChange={(e) => setEmailDomain((p) => ({ ...p, inputModeValue: e.target.value }))}
+										style={{
+											width: '200px',
+										}}
+									/>
+								) : (
+									<EmailSelect
+										options={emailOptionsIncludingDirect}
+										defaultValue={emailOptionsIncludingDirect[0]}
+										onChange={(selectedOption) => {
+											setEmailDomain((p) => ({ ...p, selectModeValue: selectedOption.label }))
+										}}
+									/>
+								)}
 							</div>
 						</EmailContainer>
 					</LoginSubContainer>

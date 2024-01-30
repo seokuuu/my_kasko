@@ -21,20 +21,21 @@ import {
 	Top,
 } from './SignUp.Styled'
 
-import { AccountSelect, emailOptions, EmailSelect } from '../../../common/Option/SignUp'
+import { AccountSelect, emailOptions } from '../../../common/Option/SignUp'
 
-import { checkBusinessId, checkDuplicateId, signup } from '../../../api/auth'
-import { Controller, useForm } from 'react-hook-form'
-import { CheckWrap, ErrorMsg, RadioContainer } from './style'
-import DropField from '../../../components/DropField/DropField'
-import { getBankNames } from '../../../constants/banks'
-import AddressFinder from '../../../components/DaumPost/Address'
-import AlertPopup from '../../../modal/Alert/AlertPopup'
 import { useAtom } from 'jotai'
-import { popupAtom } from '../../../store/Layout/Layout'
-import useAlert from '../../../store/Alert/useAlert'
+import { Controller, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+import { checkBusinessId, checkDuplicateId, signup } from '../../../api/auth'
+import AddressFinder from '../../../components/DaumPost/Address'
+import DropField from '../../../components/DropField/DropField'
 import PolicyModal from '../../../components/PolicyModal'
+import { getBankNames } from '../../../constants/banks'
+import AlertPopup from '../../../modal/Alert/AlertPopup'
+import useAlert from '../../../store/Alert/useAlert'
+import { popupAtom } from '../../../store/Layout/Layout'
+import EmailDomain from './EmailDomain'
+import { CheckWrap, ErrorMsg, RadioContainer } from './style'
 
 const SignUp = () => {
 	const navigate = useNavigate()
@@ -50,6 +51,9 @@ const SignUp = () => {
 		control,
 		formState: { errors, isValid },
 	} = useForm({ mode: 'onBlur' })
+
+	// 이메일 도메인 값
+	const emailDomain = watch('emailDomain')
 
 	const auctionInfoSameForDeposit = watch('auctionInfoSameForDeposit')
 	const auctionInfoSameForRelease = watch('auctionInfoSameForRelease')
@@ -192,6 +196,10 @@ const SignUp = () => {
 		const selectedRadioValue = radioDummy[selectedRadioIndex]
 		const selectedBusinessTypes = checkDummy.filter((_, index) => check[index])
 
+		// 이메일 도메인값을 셀렉트 박스 모드와 직접입력 모드에 따라 선택적으로 값을 할당해줍니다.
+		const chooseEmailDomain =
+			emailDomain && emailDomain.value === 'directWrite' ? data.emailDomainInputMode : data.emailDomain.label
+
 		const request = {
 			id: data.id,
 			name: data.name,
@@ -202,7 +210,7 @@ const SignUp = () => {
 			depositManagerTitle: data.depositManagerTitle,
 			depositManagerPhone: data.depositManagerPhone,
 			memberName: data.memberName,
-			memberEmail: `${data.emailDomain.value}@${data.emailDomain.label}`,
+			memberEmail: `${data.emailDomain.value}@${chooseEmailDomain}`,
 			memberTitle: data.memberTitle,
 			memberPhone: data.memberPhone,
 			businessNumber: data.businessNumber,
@@ -273,6 +281,9 @@ const SignUp = () => {
 	}, [isValid, watchAllFields, privacyChecked, termsChecked, idDupleCheck, busIdDupleCheck])
 
 	const [policyType, setPolicyType] = useState(null)
+
+	// 이메일 옵션(직접 입력 필드 추가)
+	const extendEmailOptions = [...emailOptions, { value: 'directWrite', label: '직접 입력' }]
 
 	return (
 		<Container>
@@ -581,21 +592,9 @@ const SignUp = () => {
 											name="memberEmail"
 											isError={!!errors.memberEmail || !!errors.emailDomain}
 											{...register('memberEmail', { required: '내용을 입력해 주세요.' })}
-										/>{' '}
-										<p style={{ margin: '0 5px' }}>@</p>
-										<Controller
-											name="emailDomain"
-											control={control}
-											rules={{ required: '도메인을 선택해 주세요.' }}
-											render={({ field }) => (
-												<EmailSelect
-													{...field}
-													options={emailOptions}
-													defaultValue={emailOptions[0]}
-													onChange={(selectedOption) => field.onChange(selectedOption)}
-												/>
-											)}
 										/>
+										<p style={{ margin: '0 5px' }}>@</p>
+										<EmailDomain watch={watch} control={control} register={register} />
 									</div>
 								</Part>
 								<Part>
