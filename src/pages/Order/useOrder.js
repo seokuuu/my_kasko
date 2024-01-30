@@ -3,10 +3,8 @@ import { cancelOrderPost, cancelOrderList, depositCancelOrder, depositCancelOrde
 import useAlert from '../../store/Alert/useAlert'
 import { queryClient } from '../../api/query'
 import { successfulOrderPost, successfulOrderListPost } from '../../api/orderList'
-import { useNavigate } from 'react-router-dom'
 
 const useOrder = () => {
-	const navigate = useNavigate()
 	const { simpleConfirm, simpleAlert } = useAlert()
 	// prettier-ignore
 	const { mutate: cancelOrder, isLoading: cancelOrderLoading } = useMutationQuery('cancelOrder', cancelOrderPost)
@@ -22,7 +20,7 @@ const useOrder = () => {
 	const { mutate: successfulOrderAll, isLoading: successfulOrderAllLoading } = useMutationQuery('successfulOrderListPost', successfulOrderListPost);
 
 	/** 주문 전체 취소 */
-	const postCancelOrderAll = (data, updateKey, isBack = false) => {
+	const postCancelOrderAll = (data, updateKey) => {
 		if (cancelOrderAllLoading) {
 			return
 		}
@@ -31,7 +29,6 @@ const useOrder = () => {
 				onSuccess: () => {
 					simpleAlert('주문 취소 성공하였습니다.', () => {
 						queryClient.invalidateQueries(updateKey)
-						if (isBack) navigate(-1, { replace: true })
 					})
 				},
 				onError: () => {
@@ -64,7 +61,7 @@ const useOrder = () => {
 	}
 
 	/** 입금 전체 취소 */
-	const postDepositCancelOrderAll = (data, updateKey, isBack = false) => {
+	const postDepositCancelOrderAll = (data, updateKey) => {
 		if (depositCancelAllLoading) {
 			return
 		}
@@ -73,7 +70,6 @@ const useOrder = () => {
 				onSuccess: () => {
 					simpleAlert('입금 취소 성공하였습니다.', () => {
 						queryClient.invalidateQueries(updateKey)
-						if (isBack) navigate(-1, { replace: true })
 					})
 				},
 				onError: () => {
