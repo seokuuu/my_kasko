@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { cancelAllOrderList } from '../../../api/orderList'
 import { getSaleProductList, usePostSaleProductOrderConfirm } from '../../../api/saleProduct'
-import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { WhiteRedBtn } from '../../../common/Button/Button'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
@@ -220,21 +220,15 @@ const SellOrder = () => {
 				<TCSubContainer>
 					<div></div>
 					{/* 입금 확인 요청서 - uid 배열 전달*/}
-					<div style={{ display: 'flex', gap: '8px' }}>
-						<PrintDepositRequestButton
-							auctionNumber={
-								Array.isArray(checkBoxSelect)
-									? checkBoxSelect.map((v) => v.uid)
-									: checkBoxSelect
-									? checkBoxSelect.uid
-									: []
-							}
-							salesDeposit
-						/>
-						<SkyBtn onClick={orderCompletionHandler} disabled={loadingOrderConfirm}>
-							입금 확인
-						</SkyBtn>
-					</div>
+					<PrintDepositRequestButton
+						auctionNumber={
+							Array.isArray(checkBoxSelect)
+							? checkBoxSelect.map(v => v.uid) 
+							: checkBoxSelect
+							? checkBoxSelect.uid 
+							: []}
+						salesDeposit
+					/>
 				</TCSubContainer>
 			</TableContianer>
 		</FilterContianer>
