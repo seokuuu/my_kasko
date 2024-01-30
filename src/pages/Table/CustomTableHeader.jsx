@@ -25,10 +25,7 @@ const isActivated = (targetEl) => targetEl.classList.contains(BTN.activeClass);
 
 /**
  * @todo 구현
- * 1. 컬럼에 hover를 하였을 때 메뉴가 노출된다.
  * 2. acitve 클래스를 가진 메뉴는 기본 노출된다.
- * 3. 소팅은 up, down 만 있다.
- * 4. 소팅 기능이 동작한다.
  * 5. 핀 기능이 동작한다.
  */
 class CustomTableHeader {
@@ -63,6 +60,7 @@ class CustomTableHeader {
   // RENDER
   renderElement(agParams) {
     this.agParams = agParams;
+    this.agApi = agParams.api;
     this.eGui = document.createElement('div');
     this.eGui.innerHTML = `
         <div class="customHeaderWrapper">
@@ -123,7 +121,7 @@ class CustomTableHeader {
   // ADD PIN FUNC
   togglePinFunction(agParams) {
     this.onPinClickListener = (e) => {
-      console.log(this, e, agParams);
+      console.log(this.agApi);
     }
     this.ePinButton.addEventListener('click', this.onPinClickListener);
   }

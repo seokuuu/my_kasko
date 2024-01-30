@@ -299,19 +299,8 @@ const TableV2 = ({
 					<AgGridReact
 						onGridReady={params => { setGridApi(params.api) }}
 						columnDefs={columnDefs}
-						// components={{
-						// 	agColumnHeader: CustomTableHeader
-						// }}
 						rowData={rowData}
-						defaultColDef={{
-							...GRID_SETTIGS.defaultColDef, 
-							// headerComponentParams: {
-							// 	pin: true,
-							// 	onPinClickListener: (e) => {
-							// 		console.log(e)
-							// 	}
-						// }
-					}}
+						defaultColDef={GRID_SETTIGS.defaultColDef}
 						gridOptions={gridOptions}
 						ref={gridRef}
 						onRowDoubleClicked={onRowDoubleClicked}

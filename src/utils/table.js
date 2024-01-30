@@ -1,5 +1,3 @@
-import CustomTableHeader from "../pages/Table/CustomTableHeader";
-
 /**
  * 테이블 로우 반환 함수
  * @param {object[]} tableRows 
@@ -17,6 +15,6 @@ export function getNormalTableRows(tableRows = []) {
     }, 
     ...!v.cellStyle && {cellStyle: { textAlign: 'center' }},
     ...!v.minWidth && { minWidth: 100 },
-    ...v.checkboxSelection && { initialPinned: true },
+    ...v.checkboxSelection && { initialPinned: true, lockPinned: true, pinned: 'left' },
   }));
 }

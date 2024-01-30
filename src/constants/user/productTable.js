@@ -159,7 +159,12 @@ export const userSingleProductFieldsCols = getNormalTableRows([
  * @description 사용자 주문확인 > 패키지 테이블에서 사용합니다.
  */
 export const getUserPackageProductFieldsCols = (numberClickHandler=undefined) => getNormalTableRows([
-  { field: "", maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+  { 
+    field: "", 
+    maxWidth: 50, 
+    checkboxSelection: checkboxSelection, 
+    headerCheckboxSelection: headerCheckboxSelection 
+  },
   { field: PROD_COL_NAME.packageUid },
   { field: "상시판매 번호" },
   { field: "상시판매 주문일자" },
