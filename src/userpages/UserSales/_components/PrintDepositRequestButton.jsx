@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import moment from 'moment/moment'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { client } from '../../../api'
 import { WhiteSkyBtn } from '../../../common/Button/Button'
@@ -11,6 +11,7 @@ import {
 	WhiteCloseBtn
 } from '../../../modal/Common/Common.Styled'
 import { FilterContianer, FilterHeaderAlert, TableContianer } from '../../../modal/External/ExternalFilter'
+import useAlert from '../../../store/Alert/useAlert'
 
 /**
  * @constant 입금요청서 요청 URL
@@ -77,43 +78,71 @@ export const PrintDepositRequestButton = ({
   customerDestinationUid="", 
   biddingStatus="",
 }) => {
+	// 경매|상시판매 번호
+	const oneAuctionNumber = useRef('');
   // 입금요청서 발행 모드
 	const [receiptPrint, setReceiptPrint] = useState(false);
 	// 데이터
-	const { data: infoData, refetch: requestData, isLoading, isSuccess} = useQuery({
-		queryKey: 'deposit-request',
+	const { data: infoData, refetch: requestData, isLoading, isSuccess, error} = useQuery({
+		queryKey: ['deposit-request', oneAuctionNumber.current],
 		queryFn: async () => {
 			const requestUrl = salesDeposit? REQUEST_DEPOSIT_URL.salesDeposit : REQUEST_DEPOSIT_URL.aution;
 			const { data } = salesDeposit
-			? await client.get(`${requestUrl}/${auctionNumber}`)
+			? await client.get(`${requestUrl}/${oneAuctionNumber.current}`)
 			: await client.post(requestUrl, {
-				auctionNumber: auctionNumber,
+				auctionNumber: oneAuctionNumber.current,
 				storage: storage,
 				customerDestinationUid: customerDestinationUid,
 				biddingStatus: biddingStatus
 			})
 			return data.data;
 		},
-		enabled: false
+		enabled: Boolean(oneAuctionNumber.current),
+		retry: false
 	});
 	// 총계 데이터
 	const totalData = useMemo(() => getTotalData(infoData), [infoData])
 	// 일자 데이터
-	const authDate = useMemo(() => !infoData || !infoData.auctionDate? null : moment(infoData.auctionDate).format('YYYY.MM.DD'), [infoData]);
+	const auctionDate = useMemo(() => !infoData || !infoData.auctionDate? null : moment(infoData.auctionDate).format('YYYY.MM.DD'), [infoData]);
+	// ALERT
+	const { simpleAlert } = useAlert();
 
-	// 데이터 요청
-	useEffect(() => {
-		if(receiptPrint && !isSuccess) {
-			requestData();
+	// 요청서 열기
+	function handlePrint(num) {
+		oneAuctionNumber.current = num;
+		requestData();
+		setReceiptPrint(true);
+	}
+
+	// 버튼 클릭 핸들러
+	function handlePrintClick(e) {
+
+		if(receiptPrint) {
+			setReceiptPrint(false);
+			return;
 		}
-	}, [receiptPrint, isSuccess])
+
+		let num = auctionNumber;
+		
+		if(Array.isArray(auctionNumber)) {
+			if(auctionNumber.length === 1) {
+				num = auctionNumber[0];
+			}
+			else {
+				return simpleAlert('입금요청서를 발행할 주문건을 1개 선택헤 주세요.');
+			}
+		}
+		else if(typeof num !== 'string' || num.length < 1) {
+			return simpleAlert('입금요청서를 발행할 수 없습니다.');
+		}
+
+		handlePrint(num);
+	}
 
   return (
     <>
       <WhiteSkyBtn
-				onClick={() => {
-					setReceiptPrint(true)
-				}}
+				onClick={handlePrintClick}
 			>
 				입금 요청서 발행
 			</WhiteSkyBtn>
@@ -131,7 +160,7 @@ export const PrintDepositRequestButton = ({
 						<FilterContianer>
 							{/* 요청서 제목 | 일자 */}
 							<FormTitle>
-								<b>{salesDeposit? '상시 판매' : '경매'} 입금 요청서 ({ authDate || '-'} 일자</b>)
+								<b>{salesDeposit? '상시 판매' : '경매'} 입금 요청서 ({ auctionDate || '-'} 일자</b>)
 							</FormTitle>
 							{/* 입금 정보 공지 */}
 							<FilterHeaderAlert>
@@ -166,18 +195,21 @@ export const PrintDepositRequestButton = ({
 							</Text>
 
 							{
-								(!infoData || !infoData.auctionDate)
+								!isSuccess
 								? 
-									<p style={{ width: '100%', height: 280,padding: '230px 20px', background: 'white', textAlign: 'center' }}>
-										{isLoading? '입금요청서 데이터를 불러오고 있습니다.' : '현재 입금요청서 데이터를 불러올 수 없습니다.' }
+									<p style={{ width: '100%', height: 280,padding: '230px 20px', background: 'white', textAlign: 'center', wordBreak:'keep-all' }}>
+										{
+											isLoading
+											? '입금요청서 데이터를 불러오고 있습니다.' 
+											: '입금요청서 데이터를 불러올 수 없습니다.' + (error?.data?.message ? `\n(${error.data.message})` : '') }
 									</p>
 								: <TableContianer>
 										<ClaimTable style={{ margin: '20px 0px' }}>
 										<ClaimRow>
 											<ClaimTitle>경매일자</ClaimTitle>
-											<ClaimContent>{infoData.auctionDate}</ClaimContent>
+											<ClaimContent>{infoData?.auctionDate}</ClaimContent>
 											<ClaimTitle>고객명</ClaimTitle>
-											<ClaimContent>{infoData.customerName}</ClaimContent>
+											<ClaimContent>{infoData?.customerName}</ClaimContent>
 											<ClaimTitle>낙찰 중량</ClaimTitle>
 											<ClaimContent bold>{totalData.weight}</ClaimContent>
 											<ClaimTitle>낙찰 금액</ClaimTitle>
