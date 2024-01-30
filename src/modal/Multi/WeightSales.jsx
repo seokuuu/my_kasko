@@ -27,6 +27,7 @@ import {
 import useMutationQuery from '../../hooks/useMutationQuery'
 import useAlert from '../../store/Alert/useAlert'
 import { update } from 'lodash'
+import { OutSide } from './PackageDetailModal'
 // 중량 판매 등록
 const WeightSales = ({}) => {
 	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
@@ -132,14 +133,15 @@ const WeightSales = ({}) => {
 	// 각각값
 
 	useEffect(() => {
+		let newNumber = 1
 		setSelect(() =>
 			selectedRowData?.map((i, idx) => ({
 				'중량 제품 번호': i['중량 제품 번호'] || '',
 				'제품 고유 번호': i['제품 고유 번호'] || '',
 				'제품 번호':
-					rows?.length == 0
-						? selectObj['제품 번호'] + '-' + (selectedRowData.length - idx)
-						: selectObj['제품 번호'] + '-' + (rows.length + (idx + 1)),
+					rows?.length === 0
+						? selectObj['제품 번호'] + '-' + (selectedRowData.length - newNumber++)
+						: selectObj['제품 번호'] + '-' + newNumber++,
 				중량: i['중량'],
 				폭: i['폭'],
 				길이: i['길이'],
@@ -155,12 +157,21 @@ const WeightSales = ({}) => {
 	}, [selectedRowData])
 
 	useEffect(() => {
+		let newNumber = 1
+		console.log(
+			'제품',
+			select?.map((item) => item['제품 번호'].split('-')[1]),
+		)
+		console.log(
+			'기존',
+			rows?.map((item) => item['제품 번호'].split('-')[1]),
+		)
 		setAdd(() =>
 			selectedRowData?.map((i, idx) => ({
 				productNumber:
 					rows?.length == 0
 						? selectObj['제품 번호'] + '-' + (selectedRowData.length - idx)
-						: selectObj['제품 번호'] + '-' + (rows.length + (idx + 1)),
+						: selectObj['제품 번호'] + '-' + newNumber++,
 				thickness: quantity['두께'] ? quantity['두께'] : i['두께'],
 				width: quantity['폭'] ? quantity['폭'] : i['폭'],
 				length: quantity['길이'] ? quantity['길이'] : i['길이'],
@@ -263,7 +274,6 @@ const WeightSales = ({}) => {
 		window.location.reload()
 	}
 	const handleSubmit = () => {
-		console.log('===========리퀘스트 파라미터===============', postRequest)
 		mutate(postRequest, {
 			onSuccess: (d) => {
 				showAlert({ title: '저장되었습니다.', func: reload })
@@ -272,9 +282,9 @@ const WeightSales = ({}) => {
 	}
 
 	return (
-		<>
-			<FadeOverlay />
-			<ModalContainer style={{ width: '50%', height: '90%' }}>
+		<OutSideArea>
+			{/* <FadeOverlay /> */}
+			<ModalContainer style={{ width: '50%', height: '90%', zIndex: 1 }}>
 				<BlueBarHeader style={{ height: '60px' }}>
 					{/* <div>{title}</div> */}
 					<div>중량 판매 등록</div>
@@ -383,7 +393,7 @@ const WeightSales = ({}) => {
 					</BlackBtn>
 				</div>
 			</ModalContainer>
-		</>
+		</OutSideArea>
 	)
 }
 
@@ -455,4 +465,13 @@ const Checkbox = styled.input`
 const DeleteButton = styled.button`
 	padding: 10px;
 	margin-top: 10px;
+`
+const OutSideArea = styled.div`
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+	background-color: rgba(0, 0, 0, 0.4);
 `
