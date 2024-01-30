@@ -1,8 +1,9 @@
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom, useAtomValue } from 'jotai'
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { wishProductNumbersAtom } from '../store/Product';
 import useAlert from '../store/Alert/useAlert';
+import { selectedRows2Switch, selectedRowsAtom, selectedRowsAtom2 } from '../store/Layout/Layout';
 
 /**
  * @constant 스토리지 키
@@ -38,6 +39,21 @@ export default function useWishList() {
   const [wishProdNums, setWishProdNums] = useAtom(wishProductNumbersAtom);
   const [userId, setUserId] = useState('');
   const { simpleAlert } = useAlert();
+  const rowAtomSwitch = useAtomValue(selectedRows2Switch) // 이중테이블 여부
+  const setSelectedRows = useSetAtom(selectedRowsAtom) // 테이블1 선택데이터
+	const setSelectedRows2 = useSetAtom(selectedRowsAtom2) // 테이블2 선택데이터
+
+  /**
+   * 선택 데이터 초기화
+   */
+  function resetSelect() {
+    setSelectedRows([])
+
+		// 이중으로 check 사용 시
+		if (rowAtomSwitch) {
+			setSelectedRows2([])
+		}
+  }
   
   /**
    * 위시리스트에 상품 추가 함수
@@ -59,6 +75,7 @@ export default function useWishList() {
     saveWishList(mergedProdNums, userId);
     setWishProdNums(mergedProdNums);
     simpleAlert('관심상품으로 등록하였습니다.');
+    resetSelect();
   }
 
   // 로그인유저 관심상품목록 설정
