@@ -79,7 +79,7 @@ const Single = () => {
 
 	const formatTableRowData = (singleProductListData) => {
 		const processedData = add_element_field(singleProductListData, responseToTableRowMap)
-		return formatBooleanFields(processedData, [{ fieldName: '노출상태', trueValue: '노출', falseValue: '비노출' }])
+		return formatBooleanFields(processedData, [{ fieldName: '노출여부', trueValue: '노출', falseValue: '비노출' }])
 	}
 
 	// 토글 쓰기
