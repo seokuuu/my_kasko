@@ -240,7 +240,7 @@ const OrderSearchFields = ({
 			{/* 제품 번호 */}
 			<FilterRight style={{flex: 'inherit'}}>
 				<ProductNumber
-					initialValue={search.productNumberList}
+					initialValue={search.productNumberList}	
 					setState={setSearch}
 					valueName={'productNumberList'}
 					height="100%"
