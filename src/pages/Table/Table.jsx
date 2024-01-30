@@ -60,6 +60,9 @@ const asDate = (dateAsString) => {
 }
 
 const Table = ({
+	gridOptions: parentGridOptions,
+	onSelectionChanged: parentOnSelectionChanged,
+	onGridReady: parentOngridReady,
 	hei,
 	hei2,
 	getRow,
@@ -420,17 +423,20 @@ const Table = ({
 		console.log(gridRef, 'grid ref')
 	}, [gridRef])
 
+	const effectiveGridOptions = parentGridOptions || gridOptions;
+	const effectiveOnSelectionChanged = parentOnSelectionChanged || onSelectionChanged;
+	const effectGridReady = parentOngridReady || onGridReady;
 	return (
 		<div style={containerStyle}>
 			<TestContainer hei={hei}>
 				<div style={gridStyle} className="ag-theme-alpine">
 					<AgGridReact
 						// {...gridOptions}
-						onGridReady={onGridReady}
+						onGridReady={effectGridReady}
 						columnDefs={columnDefs}
 						rowData={rowData}
 						defaultColDef={defaultColDef}
-						gridOptions={gridOptions}
+						gridOptions={effectiveGridOptions}
 						ref={gridRef}
 						onRowDoubleClicked={onRowDoubleClicked}
 						autoGroupColumnDef={autoGroupColumnDef}
@@ -440,11 +446,11 @@ const Table = ({
 						rowSelection={'multiple'}
 						rowGroupPanelShow={'always'}
 						pivotPanelShow={'always'}
-						pagination={true}
-						paginationPageSize={size}
+						// pagination={true}
+						// paginationPageSize={size}
 						isExternalFilterPresent={isExternalFilterPresent}
 						// doesExternalFilterPass={doesExternalFilterPass}
-						onSelectionChanged={onSelectionChanged}
+						onSelectionChanged={effectiveOnSelectionChanged}
 						pinnedTopRowData={pinnedTopRowData}
 						onRowClicked={onRowClicked}
 						getRowStyle={getRowStyle}
@@ -542,6 +548,7 @@ const TestContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	height: ${({ hei }) => (hei ? `${hei}%` : '100%')};
+
 	.ag-paging-panel {
 		justify-content: center !important;
 	}

@@ -169,7 +169,7 @@ const OrderDetail = ({ salesNumber }) => {
 					<h1>주문 확인 상세</h1>
 				</FilterHeader>
 				<FilterTCTop>
-					<h6>경매 번호</h6>
+					<h6>상시판매 번호</h6>
 					<p>{salesNumber}</p>
 				</FilterTCTop>
 				{/* 경매 정보 */}

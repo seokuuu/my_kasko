@@ -263,7 +263,7 @@ const Single = ({}) => {
 					<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 				</FilterHeader>
 				{/* 공지사항 */}
-				<CautionBox category={CAUTION_CATEGORY.packageProduct} />
+				<CautionBox category={CAUTION_CATEGORY.auction} />
 				{exFilterToggle && (
 					<>
 						{/* <FilterSubcontianer>

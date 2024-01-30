@@ -1,8 +1,7 @@
 import { useAtom } from 'jotai'
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import { BlackBtn, GreyBtn, TGreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
+import { BlackBtn, TGreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
@@ -10,16 +9,8 @@ import AlertPopup from '../../../modal/Alert/AlertPopup'
 import {
 	CustomInput,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
-	FilterLeft,
-	FilterSubcontianer,
 	FilterWrap,
-	GridWrap,
-	Input,
-	PartWrap,
-	ResetImg,
-	RowWrap,
 	StyledHeading,
 	StyledSubHeading,
 	SubTitle,
@@ -27,7 +18,6 @@ import {
 	TableBottomWrap,
 	TableContianer,
 	TableTitle,
-	Tilde,
 } from '../../../modal/External/ExternalFilter'
 import Upload from '../../../modal/Upload/Upload'
 import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
@@ -52,7 +42,6 @@ import {
 } from '../../../constants/admin/Standard'
 
 import {
-	AuctionUnitPricePost,
 	AuctionUnitPricePostDropOptions,
 	AuctionUnitPricePostDropOptions2,
 	AuctionUnitPricePostDropOptions3,
@@ -69,7 +58,7 @@ import {
 	deleteAdminTransportation,
 	editAdminTransportation,
 	getAdminTransportation,
-	editAdminUnitCost,
+	editAdminUnitCost, postAdminTransportation,
 } from '../../../service/admin/Standard'
 import {
 	btnCellRenderAtom,
@@ -89,6 +78,7 @@ const Transport = ({}) => {
 	const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
 	const [startDate, setStartDate] = useState(new Date()) // 수정 버튼 Date
 	const [startDate2, setStartDate2] = useState(new Date()) // 하단 적용일자 Date
+	const [address, setAddress] = useState('')
 
 	const radioDummy = ['증가', '감소']
 	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
@@ -263,8 +253,25 @@ const Transport = ({}) => {
 		},
 		[checkedArray],
 	)
-
-	const propsPost = () => {}
+	const [postInput, setPostInput] = useState({
+		type: 0,
+		storage: "창고2",
+		destinationCode: "A",
+		destinationName: "인천",
+		spart: "후판",
+		effectDate: "2023-06-21 15:30:00",
+		effectCost: 200000
+	})
+	const postMutation = useMutationQuery('', postAdminTransportation)
+	const propsPost = () => {
+		postMutation.mutate(editInput, {
+			onSuccess: () => {
+				// 성공 시 실행할 코드 작성
+				setModalSwitch(false)
+				// 추가로 필요한 작업 수행
+			},
+		})
+	}
 
 	// POST
 	const openModal = () => {
@@ -287,16 +294,22 @@ const Transport = ({}) => {
 	}
 
 	const [editInput, setEditInput] = useState({
-		uid: '',
-		effectDate: '',
-		effectCost: '',
+		// uid: '',
+		// effectDate: '',
+		// effectCost: '',
+		type: 0,
+		storage: "부산창고2",
+		destinationCode: "A",
+		destinationName: "부산",
+		spart: "후판",
+		effectDate: "2023-06-21 15:30:00",
+		effectCost: 200000,
 	})
 
 	useEffect(() => {
 		setEditInput({ ...editInput, effectDate: moment(startDate).format('YYYY-MM-DD hh:mm:ss'), uid: uidAtom })
 	}, [startDate, uidAtom])
 
-	console.log('editInput', editInput)
 	const onEditHandler = useCallback(
 		(e) => {
 			console.log('Edit input event:', e)
@@ -437,7 +450,7 @@ const Transport = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / 50개 )
+						조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / {data?.data?.data?.pagination?.listCount}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -448,7 +461,7 @@ const Transport = ({}) => {
 				<TCSubContainer>
 					<TCSubDiv>
 						<div>
-							선택 <span>0</span>(개)
+							선택 <span>{checkedArray?.length || 0}</span>(개)
 						</div>
 					</TCSubDiv>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -550,6 +563,8 @@ const Transport = ({}) => {
 					uidAtom={uidAtom}
 					onEditHandler={onEditHandler}
 					dropdownProps={dropdownProps}
+					address={address}
+					setAddress={setAddress}
 				/>
 			)}
 		</FilterContianer>
