@@ -7,10 +7,9 @@ import Storage from './components/Storage'
 
 const Operation = () => {
 	// 쿼리 스트링 조회
-	const [searchParams, setSearchParams] = useSearchParams()
+	const [searchParams] = useSearchParams()
 
 	const category = searchParams.get('category')
-	console.log('searchParams :', searchParams.get('category'))
 	/**
 	 * @description
 	 * 카테고리에 따른 컴포넌트 맵핑
