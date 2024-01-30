@@ -115,7 +115,6 @@ const TableV2 = ({
 	getRow,
 	getCol,
 	setChoiceComponent,
-	size,
 	topData,
 	isRowClickable,
 	handleOnRowClicked,
