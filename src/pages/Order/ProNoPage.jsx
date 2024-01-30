@@ -12,8 +12,8 @@ import {
 	btnCellRenderAtom,
 	btnCellUidAtom,
 	onClickCheckAtom,
-	pageSort,
-	selectedRowsAtom,
+	pageSort, selectedRows2Switch,
+	selectedRowsAtom, selectedRowsAtom2,
 } from '../../store/Layout/Layout'
 import { proNoFieldCols, proNoFieldManage } from '../../constants/admin/ProNoOrder'
 import useReactQuery from '../../hooks/useReactQuery'
@@ -22,6 +22,7 @@ import { KilogramSum } from '../../utils/KilogramSum'
 import { useAtomValue } from 'jotai/index'
 import SelectedRowsTable from '../Table/SelectTable'
 import { StockIncomingFields } from '../../constants/admin/StockIncoming'
+import useAlert from '../../store/Alert/useAlert'
 
 export const Container = styled.div`
 	max-width: 80%;
@@ -35,7 +36,8 @@ export const Container = styled.div`
 `
 
 function ProNoPage({ title, proNoNumber, orderId }) {
-	console.log('넘어오는 값 확인 체크', proNoNumber)
+	const [gridApi, setGridApi] = useState(null)
+	const { simpleAlert } = useAlert()
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const [onClickCheck, setOnClickCheck] = useAtom(onClickCheckAtom)
 	const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
@@ -43,6 +45,9 @@ function ProNoPage({ title, proNoNumber, orderId }) {
 		pageNum: 1,
 		pageSize: 5,
 		productNoNumber: proNoNumber,
+	}
+	const onGridReady = (params) => {
+		setGridApi(params.api)
 	}
 	const [param, setParam] = useState(paramData)
 	const [proNoPagination, setProNoPagination] = useState([])
@@ -84,13 +89,37 @@ function ProNoPage({ title, proNoNumber, orderId }) {
 		}
 	}, [])
 
-	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
-	const handleRowSelectionChange = (rowId, isSelected) => {
-		setSelectedRows((prevSelectedRows) => {
-			if (isSelected) return [...prevSelectedRows, rowId]
-			else return prevSelectedRows.filter((id) => id !== rowId)
+	const onRowSelected = (event) => {
+		const selectedNode = event.node
+		if (!selectedNode.isSelected()) return
+		event.api.forEachNode((node) => {
+			if (node !== selectedNode && node.isSelected()) {
+				node.setSelected(false)
+			}
 		})
 	}
+	const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
+	const [selectedRows2, setSelectedRows2] = useAtom(selectedRowsAtom2)
+	const onSelectionChanged = (event) => {
+		if (gridApi) {
+			const selectedNodes = gridApi.getSelectedNodes()
+			const selectedData = selectedNodes.map((node) => node.data)
+			setSelectedRows(selectedData)
+
+			// 이중으로 check 사용 시
+			if (rowAtomSwitch) {
+				setSelectedRows2(selectedData)
+			}
+		}
+		const selectedNodes = event.api.getSelectedNodes()
+		if (selectedNodes.length > 1) selectedNodes.slice(0, -1).forEach((node) => node.setSelected(false))
+	}
+	const gridOptions = {
+		onRowSelected: onRowSelected,
+		onSelectionChanged:onSelectionChanged,
+	}
+	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
+	useEffect(()=>{console.log('체크길이',checkBoxSelect?.length)},[checkBoxSelect])
 	return (
 		<OutSide>
 			<Container>
@@ -141,7 +170,9 @@ function ProNoPage({ title, proNoNumber, orderId }) {
 							getRow={proNoListData}
 							tablePagination={proNoPagination}
 							onPageChange={onPageChange}
-							onSelectionChanged={handleRowSelectionChange}
+							gridOptions={gridOptions}
+							onSelectionChanged={onSelectionChanged}
+							onGridReady={onGridReady}
 						/>
 					</div>
 					{checkBoxSelect?.length > 0 && <SelectedRowsTable selectedRows={selectedRows} orderId={orderId} />}

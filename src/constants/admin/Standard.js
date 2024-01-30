@@ -109,17 +109,17 @@ export const StandardTransportationFields = {
 
 // 기준 관리 - 운반비 관리 post
 export const StandardTransportationPost = {
-	출발지: 'input',
-	'목적지 코드': 'input',
+	출발지: 'test',
+	'목적지 코드': 'auto',
 	'목적지 명': 'input',
 	'제품 구분': 'input',
-	'단가 적용 일자': 'input',
+	'단가 적용일': 'date',
 	'적용 단가': 'input',
 }
 
 // 기준 관리 - 운반비 관리 Edit
 export const StandardTransportationEdit = {
-	출발지: 'auto',
+	출발지: 'test',
 	'목적지 코드': 'auto',
 	목적지명: 'auto',
 	제품구분: 'auto',

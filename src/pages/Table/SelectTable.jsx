@@ -4,12 +4,10 @@ import React, { useEffect, useState } from 'react'
 import TableUi from '../../components/TableUiComponent/TableUi'
 import { columnDefs } from '../../components/TableUiComponent/etcVariable'
 import useAlert from '../../store/Alert/useAlert'
-import axios from 'axios'
+import { client } from '../../api'
 
-const API_PATH = process.env.REACT_APP_API_URL
 
 const SelectedRowsTable = ({ selectedRows, orderId }) => {
-	console.log('Selected OrderId: ',orderId)
 	const { simpleConfirm, simpleAlert } = useAlert()
 	// 만약 선택된 행이 없으면 아무것도 렌더링하지 않습니다.
 	if (!selectedRows.length) {
@@ -25,18 +23,21 @@ const SelectedRowsTable = ({ selectedRows, orderId }) => {
 	}
 
 	const makeRequest = (selectedRows) => {
-		if (!selectedRows) return []
-		return selectedRows.map((row) => ({
+		if (!selectedRows || selectedRows.length === 0) return {};
+
+		const firstRow = selectedRows[0];
+		return {
 			orderUid: orderId,
-			changeProductUid: row['제품 고유 번호'],
-		}))
-	}
+			changeProductUid: firstRow['제품 고유 번호'],
+		};
+	};
+
 	const handleProno = () => {
 		const requestData = makeRequest(selectedRows)
 
 		simpleConfirm('이 작업을 수행하시겠습니까?', () => {
-			axios
-				.post(`${API_PATH}/admin/order/product`, requestData)
+			client
+				.post(`/admin/order/product`, requestData)
 				.then((response) => {
 					console.log('작업 성공:', response.data)
 				})
