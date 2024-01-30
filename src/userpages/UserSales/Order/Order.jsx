@@ -25,6 +25,8 @@ import { getValidParams } from '../../../utils/parameters'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 import OrderSearchFields from './OrderSearchFields'
 import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
+import { cancelAllOrderList } from '../../../api/orderList'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 
 /**
  * @constant 기본 페이지 검색 값
@@ -38,6 +40,7 @@ const initialPageParams = {
  * @constant 주문 고유번호 키
  */
 const UID_KEY = '주문 고유 번호'
+const NUMBER_KEY = '상시판매 번호'
 
 /**
  * (사용자)상시판매 주문확인 목록
@@ -47,8 +50,11 @@ const UID_KEY = '주문 고유 번호'
 const Order = ({}) => {
 	const [searchParams, setSearchParams] = useState({ ...initialPageParams })
 	const [pageParams, setPageParams] = useState({ ...initialPageParams })
-	const { data: orderData, isLoading } = useUserOrderListQuery(searchParams) // 주문확인 목록 조회 쿼리
-	const { mutate: requestCancel, loading: isCancelLoading } = useUserOrderCancelMutation() // 주문취소 뮤테이션
+	const { data: orderData, isLoading, refetch } = useUserOrderListQuery(searchParams) // 주문확인 목록 조회 쿼리
+	const { mutate: cancelAllOrder, isLoading: isCancelLoading } = useMutationQuery(
+		'cancelAllOrderList',
+		cancelAllOrderList,
+	) // 주문 취소
 	// 테이블 데이터, 페이지 데이터, 총 중량
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: userOrderListField,
@@ -63,7 +69,7 @@ const Order = ({}) => {
 	// NAVIGATION
 	const navigate = useNavigate()
 	// ALERT
-	const { simpleAlert } = useAlert()
+	const { simpleAlert, simpleConfirm } = useAlert()
 
 	/**
 	 * 필터 검색 핸들러
@@ -103,16 +109,24 @@ const Order = ({}) => {
 	/**
 	 * 선택 항목 주문 취소 핸들러
 	 */
-	function handleOrderCancel(e) {
-		e.preventDefault()
-
+	function handleOrderCancel() {
 		if (!hasSelected) {
 			return simpleAlert('주문 취소할 제품을 선택해 주세요.')
 		}
 
-		const cancelData = selectedData.map((v) => ({ uid: v[UID_KEY], saleType: '상시 판매 대상재' }))
+		const requestList = selectedData.map((v) => ({ auctionNumber: v[NUMBER_KEY], saleType: '상시판매 대상재' }))
 
-		requestCancel({ requestList: cancelData })
+		simpleConfirm('주문 취소하시겠습니까?', () => {
+			cancelAllOrder(requestList, {
+				onSuccess: () => {
+					simpleAlert('주문 취소 성공하였습니다.')
+					refetch() // 성공 시 데이터 새로고침
+				},
+				onError: () => {
+					simpleAlert('주문 취소 중 오류가 발생했습니다.')
+				},
+			})
+		})
 	}
 
 	/**

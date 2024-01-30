@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { isEqual } from 'lodash'
 import moment from 'moment/moment'
 import { Fragment, useEffect, useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { useClaimDetailsQuery, useClaimRegisterMutation, useClaimUpdateMutaion } from '../../../../api/operate/claim'
 import { BlackBtn, WhiteBtn } from '../../../../common/Button/Button'
@@ -25,9 +25,22 @@ import AttachedFile from '../Notice/components/AttachedFile'
 const OperateClaimRegister = ({ pageType }) => {
 	const { id } = useParams()
 
-	console.log('id :', id)
-	console.log('pageType :', pageType)
 	const navigate = useNavigate()
+	const location = useLocation()
+
+	const {
+		productUid,
+		auctionNumber,
+		productNumber,
+		registerDate,
+		updateDate,
+		thickness,
+		width,
+		length,
+		spec,
+		weight,
+		maker,
+	} = location.state ?? {}
 	const titleData = [
 		'제품 번호',
 		'클레임 등록 일자',
@@ -50,10 +63,9 @@ const OperateClaimRegister = ({ pageType }) => {
 	// 제품 목록에서 등록을 위해 선택된 값
 	const selected = useAtomValue(selectedRowsAtom)
 
-	// 제품 목록에서 선택한 productUid 추출
-	const registableProductUid = pageType === 'register' && selected.length > 0 ? selected[0]['제품 고유 번호'] : 0
+	console.log('목록에서 선택된 데이터 :', selected)
+	// 제품 목록에서 선택한 productUid(제품 고유 번호) & auctionNumber(경매번호)
 
-	console.log('registableProductUid :', registableProductUid)
 	// 확인 모달 관련 값들
 	const { simpleConfirm } = useAlert()
 
@@ -97,15 +109,16 @@ const OperateClaimRegister = ({ pageType }) => {
 		endDate: moment(form.endDate).format('YYYY-MM-DD hh:mm:ss'),
 		fileList: form.file,
 		claimStatus: form.claimStatus.label.trim(),
+		auctionNumber,
 	}
 	// 상세 API
 	const { data: detailsData } = useClaimDetailsQuery(id)
 
-	console.log('details Data :', detailsData)
 	// 등록 요청 PARAMETER
 	const requestParams = {
 		...commonParams,
-		productUid: registableProductUid,
+		productUid,
+		auctionNumber,
 	}
 	// 수정 API
 	const { mutate: update } = useClaimUpdateMutaion()
@@ -153,22 +166,10 @@ const OperateClaimRegister = ({ pageType }) => {
 	// selected 값이 있다면 상단 내용 데이터 바인딩(등록 & 수정)
 	useEffect(() => {
 		// 등록시 데이터 바인딩
-		if (pageType === 'register' && selected && selected.length > 0) {
-			const data = selected[0]
+		if (pageType === 'register') {
+			const newContentsData = [productNumber, registerDate, updateDate, thickness, width, length, spec, weight, maker]
 
-			const newContentsData = [
-				data['제품 번호'],
-				data['등록일자'],
-				data['수정일'],
-				data['두께'],
-				data['폭'],
-				data['길이'],
-				data['규격 약호'],
-				data['중량'],
-				data['매입처'],
-			]
-
-			setContents({ title: data['매입처'], content: newContentsData })
+			setContents({ title: maker, content: newContentsData })
 		}
 
 		// 수정시 상세 데이터 바인딩

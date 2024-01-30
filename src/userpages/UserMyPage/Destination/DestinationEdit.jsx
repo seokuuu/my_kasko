@@ -135,7 +135,7 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 				managerPhone: detailData.managerPhone,
 				phone: detailData.phone,
 				address: detailData.address, // 주소 필드
-				addressDetail: 'dfdfdfdfdfdfd', // 상세 주소 필드
+				addressDetail: detailData.addressDetail, // 상세 주소 필드
 			})
 		}
 	}, [detailData])

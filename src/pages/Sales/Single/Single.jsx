@@ -33,6 +33,7 @@ const Single = () => {
 	const initialParamState = {
 		pageNum: 1,
 		pageSize: 50,
+		saleType: '상시판매 대상재',
 	}
 
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
