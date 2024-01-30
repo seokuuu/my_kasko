@@ -238,8 +238,8 @@ const WinningDetail = ({ detailRow }) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<P>목적지</P>
-						<CustomInput placeholder="h50" width={60} height={32} defaultValue={destinationData?.code} />
-						<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destinationData?.name} />
+						<CustomInput placeholder="h50" width={60} height={32} defaultValue={destinationData?.code} readOnly />
+						<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destinationData?.name} readOnly />
 						<WhiteBlackBtn
 							onClick={() => {
 								setDestinationPopUp(true)
@@ -272,10 +272,10 @@ const WinningDetail = ({ detailRow }) => {
 					<div></div>
 					{/* 입금 확인 요청서 */}
 					<PrintDepositRequestButton
-						auctionNumber={"2023112201"}
-						storage={"우성"}
-						customerDestinationUid={"120"}
-						biddingStatus={"낙찰 확정"}
+						auctionNumber={'2023112201'}
+						storage={'우성'}
+						customerDestinationUid={'120'}
+						biddingStatus={'낙찰 확정'}
 					/>
 				</TCSubContainer>
 			</TableContianer>
