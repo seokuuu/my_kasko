@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 
 var checkboxSelection = function(params) {
   return params.columnApi.getRowGroupColumns().length === 0
@@ -9,8 +8,10 @@ var headerCheckboxSelection = function(params) {
 }
 
 const onCellClicked = (params) => {
-  console.log('클릭 발생')
-}
+
+};
+
+
 
 const LinkRenderer = ({ value }) => {
   return value ? (
@@ -40,7 +41,6 @@ export const proNoFieldCols = [
     width: 100,
     headerClass: 'custom-header-style',
     cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-    onCellClicked: onCellClicked,
     cellRenderer: (params) => params.value || 'N',
   },
   {
