@@ -31,7 +31,6 @@ const useQuery = () => {
 	return new URLSearchParams(useLocation().search)
 }
 const AdminOrderDetail = () => {
-	const navigate = useNavigate()
 	const query = useQuery()
 	const { simpleAlert } = useAlert()
 	const {
@@ -180,8 +179,7 @@ const AdminOrderDetail = () => {
 	 */
 	const handleOrderAllCancel = async () => {
 		const requestList = [{ auctionNumber, saleType, customerCode, storage, customerDestinationUid }]
-		await postCancelOrderAll(requestList, 'getOrderList')
-		navigate(-1, { replace: true })
+		await postCancelOrderAll(requestList, 'getOrderList', true)
 	}
 
 	/**
@@ -204,8 +202,7 @@ const AdminOrderDetail = () => {
 	 */
 	const handleDepositAllCancel = async () => {
 		const requestList = [{ auctionNumber, saleType, customerCode, storage, customerDestinationUid }]
-		await postDepositCancelOrderAll(requestList, 'getOrderList')
-		navigate(-1, { replace: true })
+		await postDepositCancelOrderAll(requestList, 'getOrderList', true)
 	}
 
 	/**

@@ -27,7 +27,7 @@ import useMutationQuery from '../../hooks/useMutationQuery'
 import useOrder from './useOrder'
 
 const Order = ({}) => {
-	const { simpleConfirm, simpleAlert } = useAlert()
+	const { simpleAlert } = useAlert()
 	const { postCancelOrderAll, postDepositCancelOrderAll, postSuccessfulOrderAll } = useOrder()
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const paramData = {
@@ -148,7 +148,6 @@ const Order = ({}) => {
 			simpleAlert('선택된 항목이 없습니다.')
 			return // 함수 실행 중단
 		}
-		console.log(requestList)
 		postCancelOrderAll(requestList, 'getOrderList')
 	}
 
@@ -174,7 +173,6 @@ const Order = ({}) => {
 			simpleAlert('선택된 항목이 없습니다.')
 			return // 함수 실행 중단
 		}
-		console.log('requestList : ', requestList)
 		postSuccessfulOrderAll(requestList, 'getOrderList')
 	}
 
