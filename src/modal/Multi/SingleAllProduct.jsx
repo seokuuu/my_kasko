@@ -10,6 +10,7 @@ import {
 	selectedRowsAtom,
 	singleAllProductModal,
 	packageCreateObjAtom,
+	packageUpdateObjAtom,
 } from '../../store/Layout/Layout'
 
 import PageDropdown from '../../components/TableInner/PageDropdown'
@@ -41,8 +42,8 @@ import GlobalProductSearch from '../../components/GlobalProductSearch/GlobalProd
 import { isEqual } from 'lodash'
 import PackageProductSearchModalFields from '../../pages/Product/PackageManage/PackageProductSearchModalFields'
 
-const SingleAllProduct = ({ setSelectPr, selectPr }) => {
-	const packageObj = useAtomValue(packageCreateObjAtom)
+const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
+	const packageObj = useAtomValue(isUpdate ? packageUpdateObjAtom : packageCreateObjAtom)
 	const [getRow, setGetRow] = useState([])
 
 	const tableField = useRef(SingleDispatchFieldsCols)
@@ -58,11 +59,12 @@ const SingleAllProduct = ({ setSelectPr, selectPr }) => {
 		pageSize: 50,
 		type: '일반',
 		category: '전체',
-		saleType: packageObj.sellType === '경매' ? '경매 대상재' : '상시판매 대상재',
+		saleType: packageObj?.sellType === '경매' ? '경매 대상재' : '상시판매 대상재',
 		packageStatus: 1,
-		productStatus: packageObj.sellType === '경매' ? '등록 대기' : '판매중',
+		productStatus: packageObj?.sellType === '경매' ? '등록 대기' : '판매중',
 	}
 
+	console.log('PKG ', packageObj)
 	const [param, setParam] = useState(paramData)
 	//✅ request, Data패칭
 
@@ -117,7 +119,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr }) => {
 					'제품 창고': item['창고'],
 					'제품 매입처': item['매입처'],
 					'제품 제조사': item['제조사'],
-					'제품 경매 번호': item['경매 번호'],
+					'제품 경매 번호': item['제품 경매 번호'],
 					'제품 판매 유형': item['판매 유형'],
 					'제품 판매 구분': item['판매 구분'],
 					'제품 판매가 유형': item['판매가 유형'],
@@ -127,11 +129,15 @@ const SingleAllProduct = ({ setSelectPr, selectPr }) => {
 					부가세: item['운반비 부가세'],
 					'경매 시작가': item['경매 시장 단가'],
 					'최종 수정자': item['최종 수정자'],
+					메모: item['메모'],
+					비고: item['비고'],
 				}
 			}),
 		)
 		modalClose()
 	}
+
+	console.log(selectPr)
 	const globalProductResetOnClick = () => {
 		// if resetting the search field shouldn't rerender table
 		// then we need to create paramData object to reset the search fields.

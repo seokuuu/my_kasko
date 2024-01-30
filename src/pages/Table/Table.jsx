@@ -453,7 +453,7 @@ const Table = ({
 						overlayLoadingTemplate="데이터를 불러오는 중..."
 						// sideBar={{ toolPanels: ['columns', 'filters'] }}
 						onRowDragEnd={dragAndDrop ? onRowDragEnd : () => {}}
-						// onCellValueChanged={changeFn}
+						onCellValueChanged={changeFn}
 					/>
 				</div>
 			</TestContainer>

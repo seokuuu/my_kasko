@@ -76,7 +76,7 @@ export const packageDispatchFieldsCols = [
     },
   },
 
-  ...Object.keys(packageDispatchFields).map((item) => ({
+  ...Object.keys(packageDispatchFields).slice(1).map((item) => ({
     ...commonStyles,
     field: item,
     editable:(item === '메모' || item === '비고' )? true:false,
