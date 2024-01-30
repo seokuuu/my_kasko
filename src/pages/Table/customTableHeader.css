@@ -1,3 +1,37 @@
+.customHeaderWrapper {
+  position: relative;
+  width: max-content;
+  min-width: 100px;
+  height: max-content;
+  min-height: 20px;
+  padding:  0 50px;
+  cursor: pointer;
+}
+
+/* .customHeaderWrapper > div {
+  width: 20px;
+  height: 20px;
+} */
+
+.customHeaderWrapper div:not(.active):not(.customHeaderLabel):not(:hover) {
+  visibility: hidden;
+  display: none;
+}
+
+.customHeaderWrapper:hover *,
+.customHeaderWrapper *:hover,
+.customHeaderWrapper *:focus,
+.customHeaderWrapper .active,
+.ag-menu {
+  visibility: visible !important;
+  display: block !important;
+} 
+
+
+.customHeaderLabel {
+  
+}
+
 .customHeaderMenuButton {
   float: left;
   margin: 0 0 0 3px;

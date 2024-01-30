@@ -112,7 +112,13 @@ export const userSingleProductFieldsCols = getNormalTableRows([
   { field: PROD_COL_NAME.productUid },
   { field: "상시판매 번호" },
   { field: "상시판매 주문일자" },
-  { field: PROD_COL_NAME.productNumber, minWidth: 250, cellRenderer: MarkerCellRenderer },
+  { 
+    field: PROD_COL_NAME.productNumber, 
+    minWidth: 250, 
+    cellRenderer: MarkerCellRenderer, 
+    cellRendererParams: params => params.data[params.column.colId],
+    valueGetter: (v) => v.data[v.column.colId].value,
+  },
   { field: "프로넘(ProNo.)" },
   { field: "창고" },
   { field: "상시판매 상태" },
@@ -162,7 +168,8 @@ export const getUserPackageProductFieldsCols = (numberClickHandler=undefined) =>
     field: PROD_COL_NAME.packageNumber, 
     minWidth: 100, 
     cellRenderer: MarkerCellRenderer, 
-    valueGetter: (v) => ({...v.data[v.column.colId], clickHandler: numberClickHandler }) 
+    cellRendererParams: params => ({...params.data[params.column.colId], clickHandler: numberClickHandler }),
+    valueGetter: (v) => v.data[v.column.colId]?.value || '',
   },
   { field: "상시판매 상태" },
   { field: "판매유형" },
@@ -184,7 +191,9 @@ export const userPackageDetailsFieldsCols = () => getNormalTableRows([
   { field: "패키지 명" },
   { 
     field: PROD_COL_NAME.packageNumber, 
-    cellRenderer: MarkerCellRenderer  
+    cellRenderer: MarkerCellRenderer,
+    cellRendererParams: params => params.data[params.column.colId],
+    valueGetter: (v) => v.data[v.column.colId].value,
   },
   { field: "수량" },
   { field: "총 중량" },
