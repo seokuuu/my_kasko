@@ -1,7 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { BlackBtn, GreyBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
-import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
@@ -9,34 +6,17 @@ import Table from '../../Table/Table'
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
-import Hidden from '../../../components/TableInner/Hidden'
-import {
-	DoubleWrap,
-	FilterContianer,
-	FilterFooter,
-	FilterHeader,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
-	Input,
-	MiniInput,
-	PartWrap,
-	PWRight,
-	ResetImg,
-	RowWrap,
-	TableContianer,
-	TCSubContainer,
-	Tilde,
-} from '../../../modal/External/ExternalFilter'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { getProgess } from '../../../api/auction/progress'
-import { add_element_field } from '../../../lib/tableHelpers'
-import { AuctionProgressFields, AuctionProgressFieldsCols } from '../../../constants/admin/Auction'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import ProgressSearchFields from './ProgressSearchFields'
 import { isEqual } from 'lodash'
+import { getProgess } from '../../../api/auction/progress'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
+import Hidden from '../../../components/TableInner/Hidden'
+import { AuctionProgressFields, AuctionProgressFieldsCols } from '../../../constants/admin/Auction'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
+import ProgressSearchFields from './ProgressSearchFields'
 
 const Progress = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
@@ -91,7 +71,7 @@ const Progress = ({}) => {
 		pageSize: 50,
 	}
 	const [param, setParam] = useState(paramData)
-
+	console.log('param !@#', param)
 	// GET
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getProgess', getProgess)
 	const resData = data?.data?.data?.list
@@ -108,6 +88,10 @@ const Progress = ({}) => {
 	}, [isSuccess, resData])
 
 	console.log('getRow =>', getRow)
+
+	useEffect(() => {
+		if (isSuccess) refetch()
+	}, [isSuccess])
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({

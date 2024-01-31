@@ -112,8 +112,7 @@ const Bidding = ({}) => {
 	console.log('paramData', paramData)
 
 	const [param, setParam] = useState(paramData)
-
-	console.log('param', param)
+	console.log('param !@#', param)
 
 	const productListInner = {
 		biddingPrice: null,

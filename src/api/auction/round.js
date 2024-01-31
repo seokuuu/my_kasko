@@ -17,9 +17,13 @@ const keys = {
 
 // 목록 GET
 export function getAuction(data) {
-	console.log('data', data)
-	return client.get(`${urls.getAuction}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&type=${data.type}`)
+	console.log('data @@!!@@', data)
+	return client.get(urls.getAuction, { params: data })
 }
+// export function getAuction(data) {
+// 	console.log('data', data)
+// 	return client.get(`${urls.getAuction}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&type=${data.type}`)
+// }
 
 // 상세 GET
 export function getDetailAuction(data) {

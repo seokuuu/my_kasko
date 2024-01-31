@@ -73,7 +73,7 @@ const StartPriceFields = ({
 					{/* 창고 구분 */}
 					<PartWrap first>
 						<DateSearchSelect
-							title={'경매 일자'}
+							title={'적용 일자'}
 							startInitDate={search.auctionStartDate}
 							endInitDate={search.auctionEndDate}
 							startDateChange={(value) => commonDropdownButtonHandler(value, 'auctionStartDate')}
