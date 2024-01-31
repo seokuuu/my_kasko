@@ -26,16 +26,24 @@ export function getAuction(data) {
 // }
 
 // 상세 GET
+
 export function getDetailAuction(data) {
-	return client.get(`${urls.getAuction}/${data.auctionNumber}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
+	return client.get(urls.getAuction, { params: data })
 }
+// export function getDetailAuction(data) {
+// 	return client.get(`${urls.getAuction}/${data.auctionNumber}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
+// }
 
 // 추가 제품 목록 GET
+
 export function getExtraProductList(data) {
-	return client.get(
-		`${urls.getExtraProduct}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&saleType=${data.saleType}&registrationStatus=${data.registrationStatus}&type=${data.pageSize}`,
-	)
+	return client.get(urls.getExtraProduct, { params: data })
 }
+// export function getExtraProductList(data) {
+// 	return client.get(
+// 		`${urls.getExtraProduct}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&saleType=${data.saleType}&registrationStatus=${data.registrationStatus}&type=${data.pageSize}`,
+// 	)
+// }
 
 // 등록 POST
 export function postAuction(data) {
