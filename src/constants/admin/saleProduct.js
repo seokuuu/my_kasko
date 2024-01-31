@@ -51,8 +51,9 @@ export const saleProductListFieldsCols = [
 ]
 
 export const saleProductListResponseToTableRowMap = {
+	uid: 'auctionNumber',
 	순번: 'orderUid',
-	'상시판매 번호': 'orderNumber',
+	'상시판매 번호': 'auctionNumber',
 	'상시판매 주문일자': 'auctionCreateDate',
 	고객사명: 'customerName',
 	고객코드: 'customerCode',
