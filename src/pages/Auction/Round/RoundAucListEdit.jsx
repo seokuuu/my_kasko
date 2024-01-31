@@ -30,6 +30,7 @@ import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalP
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { AuctionRoundDetailFields, AuctionRoundDetailFieldsCols } from '../../../constants/admin/Auction'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import useAlert from '../../../store/Alert/useAlert'
@@ -37,7 +38,6 @@ import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import RoundAucListEditFields from './RoundAucListEditFields'
 import RoundAucProAdd from './RoundAucProAdd'
-import useMutationQuery from '../../../hooks/useMutationQuery'
 
 //경매 목록 수정(단일)
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
@@ -81,6 +81,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
+	console.log('selectedRows :', selectedRows)
 	// const checkedArray = useAtom(selectedRowsAtom)[0]
 
 	const paramData = {
@@ -412,11 +413,11 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>2</span> / 50개 )
+						조회 목록 (선택 <span>{selectedRows ? selectedRows.length : 0}</span> / {param.pageSize}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown />
+						<PageDropdown handleDropdown={(e) => setParam((p) => ({ ...p, pageSize: e.target.value }))} />
 						<Excel getRow={getRow} />
 					</div>
 				</TCSubContainer>

@@ -15,16 +15,18 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import { GlobalFilterHeader } from '../../../components/Filter'
 import Table from '../../Table/Table'
 import DisRegisterDetailHeader from './DisRegisterDetailHeader'
-import { useAtom } from 'jotai/index'
+import { useAtom, useAtomValue } from 'jotai/index'
 import RequestAddModal from '../Request/RequestAddModal'
 import { BlueBarBtnWrap } from '../../../modal/Common/Common.Styled'
 import DispatchDetail from '../../../modal/Multi/DispatchDetail'
 import { useNavigate } from 'react-router-dom'
 import useAlert from '../../../store/Alert/useAlert'
+import { authAtom } from '../../../store/Auth/auth'
 
 const DisRegisterDetail = ({ id }) => {
 	const navigate = useNavigate()
 	const { simpleAlert, simpleConfirm } = useAlert()
+	const auth = useAtomValue(authAtom)
 	const [isPostModal, setIsPostModal] = useAtom(StandardDispatchDetailAtom)
 	const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
@@ -173,15 +175,23 @@ const DisRegisterDetail = ({ id }) => {
 				</TCSubContainer>
 				<TCSubContainer>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						{/*<WhiteSkyBtn onClick={onRequest}>선별 변경 요청</WhiteSkyBtn>*/}
-						<WhiteRedBtn onClick={onRequestReject}>선별 변경 요청 승인 반려</WhiteRedBtn>
-						<WhiteSkyBtn onClick={onRequestApproval}>선별 변경 요청 승인</WhiteSkyBtn>
+						{auth.role === '카스코철강' && (
+							<>
+								{/*<WhiteSkyBtn onClick={onRequest}>선별 변경 요청</WhiteSkyBtn>*/}
+								<WhiteRedBtn onClick={onRequestReject}>선별 변경 요청 승인 반려</WhiteRedBtn>
+								<WhiteSkyBtn onClick={onRequestApproval}>선별 변경 요청 승인</WhiteSkyBtn>
+							</>
+						)}
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteRedBtn onClick={onListRemove}>목록 제거</WhiteRedBtn>
 						<WhiteSkyBtn onClick={addListModalOpen}>추가 등록</WhiteSkyBtn>
-						<WhiteRedBtn onClick={onRemoveDispatch}>배차 취소</WhiteRedBtn>
-						<WhiteSkyBtn onClick={onSetDispatch}>배차 등록</WhiteSkyBtn>
+						{auth.role === '카스코철강' && (
+							<>
+								<WhiteRedBtn onClick={onRemoveDispatch}>배차 취소</WhiteRedBtn>
+								<WhiteSkyBtn onClick={onSetDispatch}>배차 등록</WhiteSkyBtn>
+							</>
+						)}
 					</div>
 				</TCSubContainer>
 				<Table getCol={ShippingDispatchDetailsFieldsCols} getRow={rows} loading={isLoading} />
@@ -196,7 +206,7 @@ const DisRegisterDetail = ({ id }) => {
 						돌아가기
 					</WhiteBtn>
 					<BlackBtn fontSize={17} width={10} height={35} onClick={onUpdateMerge}>
-						저장
+						{auth.role === '카스코철강' ? '저장' : '승인요청'}
 					</BlackBtn>
 				</BlueBarBtnWrap>
 			</TableContianer>

@@ -150,10 +150,12 @@ const Round = ({}) => {
 		},
 	})
 
-	console.log('checkedArray :', checkedArray)
-
 	const handleRemoveBtn = useCallback(() => {
 		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
+
+		// 삭제할 수 없는 데이터들입니다.
+		const cannotRemoveOptions = checkedArray.some((data) => data['경매 상태'] === ('진행중' || '종료'))
+		if (cannotRemoveOptions) return simpleAlert('진행중이거나 종료인 경매 상태는 삭제할 수 없습니다.')
 		simpleConfirm('선택한 항목을 삭제하시겠습니까?', () =>
 			checkedArray.forEach((item) => {
 				mutation.mutate(item['고유 번호']) //mutation.mutate로 api 인자 전해줌

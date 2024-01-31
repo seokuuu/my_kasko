@@ -23,13 +23,12 @@ import { BlueRadioWrap } from '../Common/Common.Styled'
 import { CheckBox } from '../../common/Check/Checkbox'
 import DateGrid from '../../components/DateGrid/DateGrid'
 
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import moment from 'moment'
 import { postAuction } from '../../api/auction/round'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
-import useMutationQuery from '../../hooks/useMutationQuery'
-import { ExCheckDiv, ExCheckWrap } from '../External/ExternalFilter'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useAlert from '../../store/Alert/useAlert'
+import { ExCheckDiv, ExCheckWrap } from '../External/ExternalFilter'
 
 const AuctionRound = ({ setRoundModal, types, refetch }) => {
 	const [isModal, setIsModal] = useAtom(blueModalAtom)
@@ -170,19 +169,71 @@ const AuctionRound = ({ setRoundModal, types, refetch }) => {
 		},
 	})
 
-	const submitHandle = (e) => {
+	console.log('exception startDate:', input.insertStartDate)
+
+	const regularException = [
+		// 반복 기간 시작일과 종료일 중 하나라도 선택하지 않으면 예외처리를 해줍니다.
+		{
+			condition: !Boolean(input.insertStartDate) && !Boolean(input.insertEndDate),
+			message: '반복 기간을 설정해주세요.',
+		},
+		// 시간대를 선택하지 않으면 예외처리를 해줍니다.
+		{
+			condition: input.timeList.length === 0,
+			message: '시간대를 선택해주세요.',
+		},
+		// 시작일이 오늘날짜 이전이면 예외처리를 해줍니다.
+		// {
+		// 	condition: new Date(input.insertStartDate).getTime() < new Date().getTime(),
+		// 	message: '시작일은 오늘 날짜부터 선택가능합니다.',
+		// },
+		// // 종료일은 시작일과 같거나 이전이면 예외처리를 해줍니다.
+		// {
+		// 	condition: new Date(input.insertStartDate).getDate() + 1 > new Date(input.insertEndDate).getDate(),
+		// 	message: '종료일은 시작일 이후여야합니다.',
+		// },
+	]
+
+	const addException = [
+		{
+			condition: !Boolean(dates.addedDate),
+			message: '일자를 선택해주세요.',
+		},
+		{
+			condition:
+				!Boolean(times.startHour) &&
+				!Boolean(times.endHour) &&
+				!Boolean(times.startMinute) &&
+				!Boolean(times.endMinute),
+			message: '시,분을 입력해주세요.',
+		},
+	]
+
+	function onSubmit() {
 		if (checkRadio[0]) {
-			mutation.mutate(input)
+			for (let i = 0; i < regularException.length; i++) {
+				if (regularException[i].condition) {
+					simpleAlert(regularException[i].message)
+					return
+				}
+			}
 		} else {
-			mutation.mutate(inputB)
+			for (let i = 0; i < addException.length; i++) {
+				if (addException[i].condition) {
+					simpleAlert(addException[i].message)
+					return
+				}
+			}
 		}
+
+		simpleConfirm('등록하시겠습니까?', () => mutation.mutate(checkRadio[0] ? input : inputB))
 	}
 
 	return (
 		// 재고 관리 - 판매 구분 변경
 		<>
-			<FadeOverlay />
-			<ModalContainer width={850}>
+			<FadeOverlay zindex={899} />
+			<ModalContainer width={850} zindex={900}>
 				<BlueBarHeader>
 					<div>경매 회차 등록</div>
 					<div>
@@ -281,7 +332,7 @@ const AuctionRound = ({ setRoundModal, types, refetch }) => {
 							</BlueSubDiv> */}
 						</BlueMainDiv>
 						<BlueBtnWrap>
-							<BlueBlackBtn onClick={submitHandle}>등록</BlueBlackBtn>
+							<BlueBlackBtn onClick={onSubmit}>등록</BlueBlackBtn>
 						</BlueBtnWrap>
 					</div>
 				</BlueSubContainer>
