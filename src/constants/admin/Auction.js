@@ -345,9 +345,13 @@ export const AuctionBiddingFieldsCols = [
 		field: '현재 최고 가격',
 		headerClass: 'custom-header-style',
 		cellStyle: function (params) {
-			let lost = params.data['상태'] === '패찰'
-			let win = params.data['상태'] === '응찰' || params.data['상태'] === null
+			let lost = params.data['응찰 상태'] === '패찰'
+			let win = params.data['응찰 상태'] === '응찰' || params.data['응찰 상태'] === null
 			// let defaultData = params.data['나의 최고 응찰 가격'] === 0 || null
+			if (params.data['응찰가'] === 0) {
+				return { color: 'black', fontWeight: 'bolder', textAlign: 'center' }
+			}
+
 			if (lost) {
 				return { color: 'red', fontWeight: 'bolder', textAlign: 'center' } // red
 			} else if (win) {
