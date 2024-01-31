@@ -1,62 +1,46 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { BlackBtn, SkyBtn, WhiteRedBtn } from '../../common/Button/Button'
-import DateGrid from '../../components/DateGrid/DateGrid'
+import { SkyBtn, WhiteRedBtn } from '../../common/Button/Button'
 import Excel from '../../components/TableInner/Excel'
 import { onClickCheckAtom, selectedRowsAtom, toggleAtom } from '../../store/Layout/Layout'
-
-import { CheckBox } from '../../common/Check/Checkbox'
-import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
-
 import {
-	DoubleWrap,
-	ExCheckDiv,
-	ExCheckWrap,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
 	FilterTCTop,
-	GridWrap,
-	PartWrap,
-	ResetImg,
-	RowWrap,
 	TableContianer,
 	TCSubContainer,
-	Tilde,
 } from '../../modal/External/ExternalFilter'
-
 import Hidden from '../../components/TableInner/Hidden'
 import PageDropdown from '../../components/TableInner/PageDropdown'
-
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../components/MapTable/MapTable'
 import Table from '../Table/Table'
 import { AdminOrderManageFieldsCols, DetailOrderFieldsManage } from '../../constants/admin/AdminOrderDetail'
 import useReactQuery from '../../hooks/useReactQuery'
-import { cancelAllOrderList, depositCancleAllOrderList, getDetailOrderList, getOrderList } from '../../api/orderList'
-import { useLocation } from 'react-router-dom'
-import { useQueryClient } from '@tanstack/react-query'
+import { getDetailOrderList } from '../../api/orderList'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useAtom, useAtomValue } from 'jotai/index'
 import ProNoPage from './ProNoPage'
-import axios from 'axios'
 import { add_element_field } from '../../lib/tableHelpers'
-import { orderFieldData } from '../../constants/admin/OrderManage'
 import { KilogramSum } from '../../utils/KilogramSum'
-import useMutationQuery from '../../hooks/useMutationQuery'
 import useAlert from '../../store/Alert/useAlert'
-import { cancelOrderList, depositCancleOrderList } from '../../api/detailOrderList'
 import GlobalProductSearch from '../../components/GlobalProductSearch/GlobalProductSearch'
-import OrderSearchFields from './OrderSearchFields'
 import { isEqual } from 'lodash'
 import OrderDetailSearchFields from './OrderDetailSearchFields'
+import useOrder from './useOrder'
+
 const useQuery = () => {
 	return new URLSearchParams(useLocation().search)
 }
-const AdminOrderDetail = ({}) => {
+const AdminOrderDetail = () => {
 	const query = useQuery()
-	const { simpleConfirm, simpleAlert } = useAlert()
-	const [getRow, setGetRow] = useState('')
+	const { simpleAlert } = useAlert()
+	const {
+		postCancelOrder,
+		postCancelOrderAll,
+		postDepositCancelOrder,
+		postDepositCancelOrderAll,
+		postSuccessfulOrder,
+	} = useOrder()
+	const [getRow, setGetRow] = useState([])
 
 	// 쿼리 스트링에서 값 추출
 	const auctionNumber = query.get('auctionNumber')
@@ -75,7 +59,7 @@ const AdminOrderDetail = ({}) => {
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const paramData = {
 		pageNum: 1,
-		pageSize: 3,
+		pageSize: 50,
 		auctionNumber: auctionNumber,
 		customerCode: customerCode,
 		storage: storage,
@@ -90,11 +74,10 @@ const AdminOrderDetail = ({}) => {
 		customerDestinationPhone: customerDestinationPhone,
 		totalPrice: totalPrice,
 	}
+	const [isPackage, setIsPackage] = useState(false)
 	const [param, setParam] = useState(paramData)
 	const [detailOrderPagination, setDetailOrderPagination] = useState([])
 	const [detailOrderListData, setDetailOrderListData] = useState(null)
-	const [checkOrderStart, setCheckOrderStart] = useState('') // 경매일자 시작
-	const [checkOrderEnd, setCheckOrderEnd] = useState('') // 경매일자 끝
 	const formatTableRowData = (orderDetail) => {
 		return add_element_field(orderDetail, DetailOrderFieldsManage)
 	}
@@ -103,6 +86,8 @@ const AdminOrderDetail = ({}) => {
 		if (detailRes && detailRes.data && detailRes.data.list) {
 			setDetailOrderListData(formatTableRowData(detailRes.data.list))
 			setDetailOrderPagination(detailRes.data.pagination)
+			// 패키지 여부 체크
+			setIsPackage(!!detailRes.data.list[0].packageNumber)
 		}
 	}, [isSuccess, detailRes])
 	const totalWeight = detailRes?.data.pagination.totalWeight
@@ -159,7 +144,6 @@ const AdminOrderDetail = ({}) => {
 		'',
 	]
 
-
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 
 	/**
@@ -169,63 +153,72 @@ const AdminOrderDetail = ({}) => {
 	const [selectedCellData, setSelectedCellData] = useState([])
 	const [orderId, setOrderId] = useState(0)
 	const toggleModal = (data) => {
-		console.log('data값-----------',data)
 		setIsTableModal((prev) => !prev)
 		setSelectedCellData(data.data['Pro.No 번호'])
 		setOrderId(data.data['주문 고유 번호'])
 	}
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 
-
 	/**
 	 * @description 부분 주문 취소
 	 */
-	const makeRequest = (selectedRows) => {
-		if(!selectedRows) return [];
-		return selectedRows.map((row) => ({
-			orderUid: row['주문 고유 번호'],
+	const handleOrderCancel = () => {
+		if (!checkBoxSelect || checkBoxSelect.length === 0) {
+			simpleAlert('선택된 항목이 없습니다.')
+			return
+		}
+		const requestList = checkBoxSelect.map((row) => ({
+			uid: row['주문 고유 번호'],
 			saleType: row['판매 유형'],
 		}))
+		postCancelOrder(requestList, 'getDetailOrderList')
 	}
-	const { mutate: cancelOrder } = useMutationQuery('cancelOrderList', cancelOrderList)
-	const handleOrderCancel = () => {
-		const requestList = makeRequest(checkBoxSelect); // checkBoxSelect를 makeRequest 함수에 전달하여 데이터 가공
 
-		if (requestList.length === 0) {
-			simpleAlert('선택된 항목이 없습니다.');
-			return; // 함수 실행 중단
-		}
-		simpleConfirm('부분 주문 취소하시겠습니까?', () => {
-			cancelOrder(requestList, { // 가공된 데이터를 cancelAllOrder 함수에 전달
-				onSuccess: () => {
-					refetch(); // 성공 시 데이터 새로고침
-				},
-			});
-		});
-	};
+	/**
+	 * @description 전체 주문 취소
+	 */
+	const handleOrderAllCancel = async () => {
+		const requestList = [{ auctionNumber, saleType, customerCode, storage, customerDestinationUid }]
+		await postCancelOrderAll(requestList, 'getOrderList', true)
+	}
 
 	/**
 	 * @description 부분 입금 취소
 	 */
-	const { mutate: depositCancelOrder } = useMutationQuery('depositCancleOrderList', depositCancleOrderList)
 	const handleDepositCancel = () => {
-		const requestList = makeRequest(checkBoxSelect)
-
-		if (requestList.length === 0) {
-			simpleAlert('선택된 항목이 없습니다.');
-			return; // 함수 실행 중단
+		if (!checkBoxSelect || checkBoxSelect.length === 0) {
+			simpleAlert('선택된 항목이 없습니다.')
+			return
 		}
-		simpleConfirm('부분 입금 취소하시겠습니까?', () => {
-			depositCancelOrder(requestList, { // 가공된 데이터를 cancelAllOrder 함수에 전달
-				onSuccess: () => {
-					refetch(); // 성공 시 데이터 새로고침
-				},
-			});
-		});
+		const requestList = checkBoxSelect.map((row) => ({
+			uid: row['주문 고유 번호'],
+			saleType: row['판매 유형'],
+		}))
+		postDepositCancelOrder(requestList, 'getDetailOrderList')
 	}
+
 	/**
-	 * @description 검색하는 부분
+	 * @description 전체 입금 취소
 	 */
+	const handleDepositAllCancel = async () => {
+		const requestList = [{ auctionNumber, saleType, customerCode, storage, customerDestinationUid }]
+		await postDepositCancelOrderAll(requestList, 'getOrderList', true)
+	}
+
+	/**
+	 * @description 부분 확정 전송
+	 */
+	const handleSuccessfulOrder = () => {
+		if (!checkBoxSelect || checkBoxSelect.length === 0) {
+			simpleAlert('선택된 항목이 없습니다.')
+			return
+		}
+		const requestList = checkBoxSelect.map((row) => ({
+			orderUids: row['주문 고유 번호'],
+		}))
+		postSuccessfulOrder(requestList, 'getOrderList')
+	}
+
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
@@ -290,7 +283,7 @@ const AdminOrderDetail = ({}) => {
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
 							<PageDropdown />
-							<Excel getRow={getRow}/>
+							<Excel getRow={getRow} />
 						</div>
 					</TCSubContainer>
 					<TCSubContainer>
@@ -298,8 +291,12 @@ const AdminOrderDetail = ({}) => {
 							선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 {formattedTotalWeight}kg
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
-							<WhiteRedBtn onClick={handleOrderCancel}>부분 주문 취소</WhiteRedBtn>
-							<SkyBtn>부분 확정 전송</SkyBtn>
+							{isPackage ? (
+								<WhiteRedBtn onClick={handleOrderAllCancel}>주문 취소</WhiteRedBtn>
+							) : (
+								<WhiteRedBtn onClick={handleOrderCancel}>부분 주문 취소</WhiteRedBtn>
+							)}
+							<SkyBtn onClick={handleSuccessfulOrder}>부분 확정 전송</SkyBtn>
 						</div>
 					</TCSubContainer>
 
@@ -311,12 +308,16 @@ const AdminOrderDetail = ({}) => {
 					/>
 					<TCSubContainer style={{ display: 'flex', justifyContent: 'flex-end' }}>
 						<div>
-							<WhiteRedBtn onClick={handleDepositCancel}>부분 입금 취소</WhiteRedBtn>
+							{isPackage ? (
+								<WhiteRedBtn onClick={handleDepositAllCancel}>입금 취소</WhiteRedBtn>
+							) : (
+								<WhiteRedBtn onClick={handleDepositCancel}>부분 입금 취소</WhiteRedBtn>
+							)}
 						</div>
 					</TCSubContainer>
 				</TableContianer>
 			</FilterContianer>
-			{isTableModal && <ProNoPage title={'Pro.No 제품 선택'} proNoNumber={selectedCellData} orderId={orderId}/>}
+			{isTableModal && <ProNoPage title={'Pro.No 제품 선택'} proNoNumber={selectedCellData} orderId={orderId} />}
 		</>
 	)
 }

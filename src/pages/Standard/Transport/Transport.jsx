@@ -50,7 +50,6 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isArray, isEqual } from 'lodash'
 import moment from 'moment'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -58,9 +57,8 @@ import TableModal from '../../../modal/Table/TableModal'
 import {
 	deleteAdminTransportation,
 	editAdminTransportation,
-	editAdminUnitCost,
 	getAdminTransportation,
-	postExcelAdminTransportation,
+	editAdminUnitCost, postAdminTransportation,
 } from '../../../service/admin/Standard'
 import {
 	btnCellRenderAtom,
@@ -70,6 +68,7 @@ import {
 	popupObject,
 	selectedRowsAtom,
 } from '../../../store/Layout/Layout'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import TransportSearchFilter from './TransportSearchFilter'
 
 const Transport = ({}) => {
@@ -79,6 +78,7 @@ const Transport = ({}) => {
 	const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
 	const [startDate, setStartDate] = useState(new Date()) // 수정 버튼 Date
 	const [startDate2, setStartDate2] = useState(new Date()) // 하단 적용일자 Date
+	const [address, setAddress] = useState('')
 
 	const radioDummy = ['증가', '감소']
 	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
@@ -123,6 +123,7 @@ const Transport = ({}) => {
 	const checkedArray = useAtom(selectedRowsAtom)[0]
 	const uids = checkedArray?.map((item) => item['운반비 고유 번호'])
 	const [types, setTypes] = useState(0) // 매입 매출 구분 (0: 매입 / 1: 매출)
+
 	// 단가 일괄 수정 Patch
 	const [unitPriceEdit, setUnitPriceEdit] = useState() // 단가 일괄 수정 input 값
 	const [realUnitPriceEdit, setRealUnitPriceEdit] = useState([])
@@ -252,8 +253,25 @@ const Transport = ({}) => {
 		},
 		[checkedArray],
 	)
-
-	const propsPost = () => {}
+	const [postInput, setPostInput] = useState({
+		type: 0,
+		storage: "창고2",
+		destinationCode: "A",
+		destinationName: "인천",
+		spart: "후판",
+		effectDate: "2023-06-21 15:30:00",
+		effectCost: 200000
+	})
+	const postMutation = useMutationQuery('', postAdminTransportation)
+	const propsPost = () => {
+		postMutation.mutate(editInput, {
+			onSuccess: () => {
+				// 성공 시 실행할 코드 작성
+				setModalSwitch(false)
+				// 추가로 필요한 작업 수행
+			},
+		})
+	}
 
 	// POST
 	const openModal = () => {
@@ -276,16 +294,22 @@ const Transport = ({}) => {
 	}
 
 	const [editInput, setEditInput] = useState({
-		uid: '',
-		effectDate: '',
-		effectCost: '',
+		// uid: '',
+		// effectDate: '',
+		// effectCost: '',
+		type: 0,
+		storage: "부산창고2",
+		destinationCode: "A",
+		destinationName: "부산",
+		spart: "후판",
+		effectDate: "2023-06-21 15:30:00",
+		effectCost: 200000,
 	})
 
 	useEffect(() => {
 		setEditInput({ ...editInput, effectDate: moment(startDate).format('YYYY-MM-DD hh:mm:ss'), uid: uidAtom })
 	}, [startDate, uidAtom])
 
-	console.log('editInput', editInput)
 	const onEditHandler = useCallback(
 		(e) => {
 			console.log('Edit input event:', e)
@@ -539,10 +563,8 @@ const Transport = ({}) => {
 					uidAtom={uidAtom}
 					onEditHandler={onEditHandler}
 					dropdownProps={dropdownProps}
-					isExcelUploadOnly={false}
-					excelUploadAPI={postExcelAdminTransportation}
-					restParams={{ type: types }}
-					refreshQueryKey={'getAdminTransportation'}
+					address={address}
+					setAddress={setAddress}
 				/>
 			)}
 		</FilterContianer>
