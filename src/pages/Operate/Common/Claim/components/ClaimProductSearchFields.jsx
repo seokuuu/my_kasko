@@ -172,7 +172,7 @@ const ClaimProductSearchFields = ({
 								},
 							]}
 							setState={setSearch}
-							stateKey="saleType"
+							stateKey="saleTypeList"
 						/>
 					</PartWrap>
 				</RowWrap>
@@ -195,7 +195,7 @@ const ClaimProductSearchFields = ({
 								},
 							]}
 							setState={setSearch}
-							stateKey="salePriceType"
+							stateKey="salePriceTypeList"
 						/>
 					</PartWrap>
 				</RowWrap>
@@ -280,8 +280,8 @@ const ClaimProductSearchFields = ({
 							<Tilde>~</Tilde>
 							<Input
 								type="number"
-								name="minFailCount"
-								value={search.minFailCount}
+								name="maxFailCount"
+								value={search.maxFailCount}
 								onChange={commonNumInputHandler}
 								min={0}
 							/>

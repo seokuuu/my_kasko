@@ -77,6 +77,9 @@ export function useProductRangeUpdateMutation() {
 			queryClient.invalidateQueries({
 				queryKey: PRODUCT_RANGE_KEYS.getProductRangeList,
 			})
+			queryClient.invalidateQueries({
+				queryKey: PRODUCT_RANGE_KEYS.getProductRange,
+			})
 		},
 		onError() {
 			simpleAlert('수정에 실패하였습니다.')
