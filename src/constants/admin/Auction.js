@@ -1,6 +1,7 @@
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
 import MarkerCellRenderer from '../../pages/Table/MarkerCellRenderer'
 import { PROD_COL_NAME } from '../user/constantKey'
+import axios from 'axios'
 
 var checkboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping

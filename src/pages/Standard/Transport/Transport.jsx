@@ -44,7 +44,7 @@ import {
 import {
 	AuctionUnitPricePostDropOptions,
 	AuctionUnitPricePostDropOptions2,
-	AuctionUnitPricePostDropOptions3,
+	AuctionUnitPricePostDropOptions3, AuctionUnitPricePostDropOptions4,
 } from '../../../constants/admin/Auction'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -70,8 +70,15 @@ import {
 } from '../../../store/Layout/Layout'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import TransportSearchFilter from './TransportSearchFilter'
+import axios from 'axios'
+import { client } from '../../../api'
+import { getOrderList } from '../../../api/orderList'
+import { getSpartList, getStorageList } from '../../../api/transPortDrop'
+import { getSPartList } from '../../../api/search'
 
+const API_PATH = process.env.REACT_APP_API_URL
 const Transport = ({}) => {
+
 	const [modalSwitch, setModalSwitch] = useAtom(destiPostModalAtom)
 	const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
 	const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom) // 팝업 스위치
@@ -264,11 +271,9 @@ const Transport = ({}) => {
 	})
 	const postMutation = useMutationQuery('', postAdminTransportation)
 	const propsPost = () => {
-		postMutation.mutate(editInput, {
+		postMutation.mutate(postInput, {
 			onSuccess: () => {
-				// 성공 시 실행할 코드 작성
 				setModalSwitch(false)
-				// 추가로 필요한 작업 수행
 			},
 		})
 	}
@@ -297,13 +302,6 @@ const Transport = ({}) => {
 		// uid: '',
 		// effectDate: '',
 		// effectCost: '',
-		type: 0,
-		storage: "부산창고2",
-		destinationCode: "A",
-		destinationName: "부산",
-		spart: "후판",
-		effectDate: "2023-06-21 15:30:00",
-		effectCost: 200000,
 	})
 
 	useEffect(() => {
@@ -323,11 +321,13 @@ const Transport = ({}) => {
 	const convertKey = {
 		적용단가: 'effectCost',
 	}
-
+	const { data: testStorage } = useReactQuery(param, 'getStorageList', getStorageList)
+	const { data: testSpart } = useReactQuery(param, 'getSPartList', getSpartList)
 	const dropdownProps = [
-		{ options: AuctionUnitPricePostDropOptions, defaultValue: AuctionUnitPricePostDropOptions[0] },
+		{ options: testSpart, defaultValue: testSpart && testSpart[0] },
 		{ options: AuctionUnitPricePostDropOptions2, defaultValue: AuctionUnitPricePostDropOptions2[0] },
 		{ options: AuctionUnitPricePostDropOptions3, defaultValue: AuctionUnitPricePostDropOptions3[0] },
+		{ options: testStorage, defaultValue: testStorage && testStorage[0] },
 	]
 
 	console.log('editInput', editInput)
@@ -521,7 +521,7 @@ const Transport = ({}) => {
 							width={140}
 							height={30}
 						/>
-						<TGreyBtn onClick={unitPriceEditOnClick}>적용</TGreyBtn>
+						<TGreyBtn onClick={unitPriceEditOnClick}>적용(날짜+% 한번에)</TGreyBtn>
 					</TCGreyDiv>
 					<div style={{ display: 'flex', gap: '10px' }}></div>
 				</TCSubContainer>
@@ -565,6 +565,8 @@ const Transport = ({}) => {
 					dropdownProps={dropdownProps}
 					address={address}
 					setAddress={setAddress}
+					startDate={startDate}
+					setStartDate={setStartDate}
 				/>
 			)}
 		</FilterContianer>

@@ -53,6 +53,7 @@ import OrderDetailSearchFields from './OrderDetailSearchFields'
 const useQuery = () => {
 	return new URLSearchParams(useLocation().search)
 }
+
 const AdminOrderDetail = ({}) => {
 	const query = useQuery()
 	const { simpleConfirm, simpleAlert } = useAlert()
