@@ -51,7 +51,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 
 	const [isModal, setIsModal] = useAtom(singleAllProductModal)
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
-
+	console.log('패키지 오브제', packageObj)
 	const [pagiNation, setPagination] = useState({})
 
 	const paramData = {
@@ -62,6 +62,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 		saleType: packageObj?.sellType === '경매' ? '경매 대상재' : '상시판매 대상재',
 		packageStatus: 1,
 		productStatus: packageObj?.sellType === '경매' ? '등록 대기' : '판매중',
+		stockStatus: packageObj?.sellType === '상시' ? '자사재고' : '',
 	}
 
 	console.log('PKG ', packageObj)
