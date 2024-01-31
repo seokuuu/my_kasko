@@ -15,20 +15,20 @@ import Excel from '../../../components/TableInner/Excel'
 import { calculateTotal } from '../Request/utils'
 import { isEqual } from 'lodash'
 import useAlert from '../../../store/Alert/useAlert'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import RegisterSearchFilter from './RegisterSearchFilter'
 
 const initData = {
 	pageNum: 1,
-	pageSize: 10,
+	pageSize: 50,
 	shipmentStatus: '출하 대기',
 }
 
 const Register = () => {
 	const { simpleAlert, simpleConfirm } = useAlert()
-	const selectedRows = useAtomValue(selectedRowsAtom)
+	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 	const exFilterToggle = useAtomValue(toggleAtom)
 
 	const [param, setParam] = useState(initData)
@@ -45,7 +45,10 @@ const Register = () => {
 		}
 		const uids = selectedRows.map((item) => item['주문 고유 번호'])
 		const shipmentStatus = '출하 지시'
-		simpleConfirm('출하 지시 등록하시겠습니까?', () => shipmentStatusUpdate({ shipmentStatus, uids }))
+		simpleConfirm('출하 지시 등록하시겠습니까?', () => {
+			shipmentStatusUpdate({ shipmentStatus, uids })
+			setSelectedRows([])
+		})
 	}
 
 	const handleTablePageSize = (event) => {
