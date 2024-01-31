@@ -116,7 +116,8 @@ const SellOrderDetail = () => {
 	useEffect(() => {
 		if (getSaleProductDetailResponse?.data?.data) {
 			const { list, pagination } = getSaleProductDetailResponse.data.data
-
+			console.log('list---', list)
+			console.log('pagination---', pagination)
 			if (list && list.length > 0) {
 				const [firstItem] = list
 				const {
@@ -124,10 +125,13 @@ const SellOrderDetail = () => {
 					auctionNumber,
 					customerName,
 					customerCode,
-					totalQuantity,
-					totalWeight,
 					depositRequestAmount,
 				} = firstItem
+				const {
+					// prettier-ignore
+					listCount,
+					totalWeight,
+				} = pagination
 
 				setSaleProductDetailData(formatTableRowData(list))
 				setSaleProductDetailPagination(pagination)
@@ -135,7 +139,7 @@ const SellOrderDetail = () => {
 					auctionNumber,
 					customerName,
 					customerCode,
-					totalQuantity,
+					listCount,
 					parseFloat(totalWeight).toLocaleString(undefined, { minimumFractionDigits: 2 }),
 					depositRequestAmount,
 				])
