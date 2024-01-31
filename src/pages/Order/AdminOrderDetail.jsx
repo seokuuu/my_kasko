@@ -213,9 +213,7 @@ const AdminOrderDetail = () => {
 			simpleAlert('선택된 항목이 없습니다.')
 			return
 		}
-		const requestList = checkBoxSelect.map((row) => ({
-			orderUids: row['주문 고유 번호'],
-		}))
+		const requestList = checkBoxSelect.map((row) => row['주문 고유 번호'])
 		postSuccessfulOrder(requestList, 'getOrderList')
 	}
 
