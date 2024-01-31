@@ -16,11 +16,11 @@ import { CustomInput } from '../../../common/Input/Input'
 import { styled } from 'styled-components'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
+import { useMutation } from '@tanstack/react-query'
 import { destinationQueryKey, getDetailDestination, patchDestination } from '../../../api/myPage'
 import { queryClient } from '../../../api/query'
 import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
 import AddressFinder from '../../../components/DaumPost/Address'
-import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { isEmptyObj } from '../../../lib'
 import useAlert from '../../../store/Alert/useAlert'
@@ -61,7 +61,24 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 		},
 	]
 
-	const { mutate: update, isError } = useMutationQuery('', patchDestination)
+	const { mutate: update } = useMutation(patchDestination, {
+		onSuccess() {
+			showAlert({
+				title: '저장되었습니다.',
+				content: '',
+				func() {
+					setSwtichDestiEdit(false)
+					queryClient.invalidateQueries({ queryKey: destinationQueryKey.list })
+				},
+			})
+		},
+
+		onError(error) {
+			if (error) {
+				simpleAlert(error.data.message)
+			}
+		},
+	})
 
 	const backComponent = () => {
 		setSwtichDestiEdit(false)
@@ -110,19 +127,6 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 	const submit = async () => {
 		if (!isEmptyObj(input)) simpleAlert('빈값을 채워주세요.')
 		update({ uid: uidAtom, ...input })
-
-		if (!isError) {
-			showAlert({
-				title: '저장되었습니다.',
-				content: '',
-				func() {
-					setSwtichDestiEdit(false)
-					queryClient.invalidateQueries({ queryKey: destinationQueryKey.list })
-				},
-			})
-		} else {
-			simpleAlert('저장에 실패하였습니다.')
-		}
 	}
 	useEffect(() => {
 		if (detailData) {
