@@ -21,27 +21,12 @@ const ClaimHeader = ({ search, setSearch, refetch }) => {
 		}
 	}
 
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-		refetch()
-	}
-
-	// 검색 필터 날짜 핸들러
-	function dateHandler(date, name) {
-		setSearch((p) => ({ ...p, [name]: date }))
-	}
-
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
 	}
 
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
 		setSearch(paramData)
 	}
 

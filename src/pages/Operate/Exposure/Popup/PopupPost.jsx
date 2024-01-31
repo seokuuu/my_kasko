@@ -8,8 +8,6 @@ import TextEditor from '../../../../components/Editor/TextEditor'
 
 import { StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../../common/Check/CheckImg'
 
-import { CheckBox } from '../../../../common/Check/Checkbox'
-
 import { CheckImg2 } from '../../../../common/Check/CheckImg'
 
 import { isEqual } from 'lodash'
@@ -47,9 +45,7 @@ const PopupPost = ({ isRegister }) => {
 		position: mainPopupSelectOptions[0],
 	}
 
-	// console.log('initForm :', initForm)
 	// 등록/수정 폼
-	// const [form, setForm] = useState(initForm)
 
 	const [form, setForm] = useState(initForm)
 	console.log('form :', form)
@@ -79,7 +75,7 @@ const PopupPost = ({ isRegister }) => {
 		if (id && data) {
 			update({
 				...form,
-				status: form.status,
+				status: Number(form.status),
 				position: form.position.value,
 				popupTitle: '',
 				startDate: moment(form.startDate ? form.startDate : new Date()).format('YYYY-MM-DD hh:mm:ss'),
@@ -89,7 +85,7 @@ const PopupPost = ({ isRegister }) => {
 		} else {
 			register({
 				...form,
-				status: form.status,
+				status: Number(form.status),
 				position: form.position.value,
 				popupTitle: '',
 				startDate: moment(form.startDate ? form.startDate : new Date()).format('YYYY-MM-DD hh:mm:ss'),
@@ -113,10 +109,6 @@ const PopupPost = ({ isRegister }) => {
 
 		simpleConfirm('저장하시겠습니까?', onSubmit)
 	}
-	const checkDummy = ['노출 안함']
-
-	const [check, setCheck] = useState(Array.from({ length: checkDummy.length }, () => false))
-	const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
 
 	// 등록하는 도중, 페이지가 나가게 될때에 대한 조건입니다.
 	// 기존 initForm 값과 변경된 form값을 비교하여 변경된 것이 있다면 true 로 변경해줍니다.
@@ -125,21 +117,6 @@ const PopupPost = ({ isRegister }) => {
 
 	useBlockRoute(blockCondition)
 
-	useEffect(() => {
-		const updatedCheck = checkDummy.map((value, index) => {
-			return check[index] ? value : ''
-		})
-		// 그냥 배열에 담을 때
-		const filteredCheck = updatedCheck.filter((item) => item !== '')
-		setCheckData(filteredCheck)
-
-		// 전송용 input에 담을 때
-		// setInput({
-		//   ...input,
-		//   businessType: updatedCheck.filter(item => item !== ''),
-		// });
-	}, [check])
-
 	/**
 	 * @description
 	 * 상세 데이터 존재시 데이터 바인딩
@@ -147,15 +124,12 @@ const PopupPost = ({ isRegister }) => {
 
 	useEffect(() => {
 		if (data && id) {
-			// console.log('startDate :', data.startDate)
-			setCheck([Boolean(data.status)])
 			setForm((p) => ({
 				...p,
 				title: data.title,
 				content: data.content,
 				link: data.link,
-				status: data.status,
-				// startDate: new Date(data.startDate).toLocaleDateString(),
+				status: Boolean(data.status),
 				startDate: moment(data.startDate).toDate(),
 				endDate: moment(data.endDate).toDate(),
 			}))
@@ -182,20 +156,17 @@ const PopupPost = ({ isRegister }) => {
 							<div>노출 기간</div>
 							<div>
 								<ExCheckWrap>
-									{checkDummy.map((x, index) => (
-										<StyledCheckMainDiv>
-											<StyledCheckSubSquDiv
-												onClick={() => {
-													setCheck(CheckBox(check, check.length, index, true))
-													setForm((p) => ({ ...p, status: Number(check[0]) }))
-												}}
-												isChecked={check[index]}
-											>
-												<CheckImg2 src="/svg/check.svg" isChecked={check[index]} />
-											</StyledCheckSubSquDiv>
-											<p style={{ fontSize: '16px' }}>{x}</p>
-										</StyledCheckMainDiv>
-									))}
+									<StyledCheckMainDiv>
+										<StyledCheckSubSquDiv
+											onClick={() => {
+												setForm((p) => ({ ...p, status: !p.status }))
+											}}
+											isChecked={Boolean(!form.status)}
+										>
+											<CheckImg2 src="/svg/check.svg" isChecked={Boolean(!form.status)} />
+										</StyledCheckSubSquDiv>
+										<p style={{ fontSize: '16px' }}>노출 안함</p>
+									</StyledCheckMainDiv>
 								</ExCheckWrap>
 							</div>
 						</BottomOne>

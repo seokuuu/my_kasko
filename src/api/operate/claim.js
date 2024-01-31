@@ -151,7 +151,13 @@ export function useClaimUpdateMutaion() {
 			return client.patch(urls.claim, createFormData(params, 'update'), { headers: formHeaders })
 		},
 		onSuccess() {
-			showAlert({ title: '수정이 완료되었습니다.', content: '', func: () => navigate('/operate/common/product') })
+			queryClient.invalidateQueries({
+				queryKey: CLAIM_KEYS.getClaimList,
+			})
+			queryClient.invalidateQueries({
+				queryKey: CLAIM_KEYS.getClaim,
+			})
+			showAlert({ title: '수정이 완료되었습니다.', content: '', func: () => navigate('/operate/common') })
 		},
 		onError() {
 			simpleAlert('수정에 실패하였습니다.')

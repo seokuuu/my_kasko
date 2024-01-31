@@ -36,7 +36,7 @@ export function useFaqListQuery(params) {
 // 상세
 export function useFaqDetailsQuery(id) {
 	return useQuery({
-		queryKey: FAQ_KEYS.getDetails,
+		queryKey: [...FAQ_KEYS.getDetails, id],
 		queryFn: async function () {
 			const response = await client.get(`${urls}/${id}`)
 			return response.data.data
@@ -81,6 +81,9 @@ export function useFaqUpdateMutation() {
 			showAlert({ title: '저장이 완료되었습니다.', func: () => navigate('/operate/faq') })
 			queryClient.invalidateQueries({
 				queryKey: FAQ_KEYS.getList,
+			})
+			queryClient.invalidateQueries({
+				queryKey: FAQ_KEYS.getDetails,
 			})
 		},
 		onError() {

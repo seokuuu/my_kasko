@@ -298,6 +298,11 @@ export const packageCreateObjAtom = atom({
 	sellType: '경매',
 	packageName: '',
 })
+export const packageUpdateObjAtom = atom({
+	packageNumber: '',
+	sellType: '경매',
+	packageName: '',
+})
 export const packageModeAtom = atom('')
 export const selectPackageAtom = atom({})
 export const singleModifyObj = atom({})
