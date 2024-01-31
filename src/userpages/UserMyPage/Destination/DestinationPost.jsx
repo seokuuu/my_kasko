@@ -183,7 +183,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								<p></p>
 							</Title>
 							<CustomInput
-								placeholder="상세 주소 입력"
+								placeholder="제 1창고,제 2창고 등."
 								width={340}
 								name="name"
 								value={input.name}
