@@ -398,6 +398,7 @@ const StartPrice = ({}) => {
 							height={32}
 							value={effectPrice}
 							onChange={(e) => {
+								console.log(e.target.value)
 								setEffectPrice(parseInt(e.target.value))
 							}}
 						/>
