@@ -47,6 +47,8 @@ const TableModal = ({
   const [popupSwitch, setPopupSwitch] = useAtom(adminDestnationPopup) // 팝업 스위치
   const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업
+  const targetObject = getRow.find(obj => obj['운반비 고유 번호'] === uidAtom);
+
 
   // 처음 팝업 띄우는 컴포넌트의 onClickHandler
   const firstPopupClick = (num) => {
@@ -92,7 +94,6 @@ const TableModal = ({
   }, {})
 
   console.log('filteredRow ###', filteredRow)
-
   return (
     // 재고 관리 - 판매 구분 변경
     <>
@@ -120,16 +121,13 @@ const TableModal = ({
                     {Object.entries(filteredRow)?.map(([key, value], index) => (
                       <Td key={index}>
                         {modalInTable[key] === 'input' ? (
-                          <Input type="text" name={convertKey[key]} onChange={onEditHandler} />
+                          <Input type="text" name={convertKey[key]} onChange={onEditHandler} defaultValue={targetObject['적용단가']}/>
                         ) : modalInTable[key] === 'date' ? (
                           <DateGrid width={145} startDate={startDate} setStartDate={setStartDate} />
                         ) : modalInTable[key] === 'formatDate' ? (
                           moment(matchingRow[key]).format('YYYY.MM.DD')
-                        ) : modalInTable[key] === 'test' ? (
-                          <select name={convertKey[key]} onChange={onEditHandler}>
-                            <option value="option1">삼우</option>
-                            <option value="option2">우성</option>
-                          </select>
+                        ) : modalInTable[key] === 'spartList' ? (
+                          <div>{targetObject['제품구분']}</div>
                         ) : (
                           matchingRow[key]
                         )}

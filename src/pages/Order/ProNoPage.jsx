@@ -35,7 +35,10 @@ export const Container = styled.div`
 	transform: translate(-50%, -50%);
 `
 
-function ProNoPage({ title, proNoNumber, orderId }) {
+function ProNoPage({ productNumberOut, title, proNoNumber, orderId,  }) {
+	useEffect(() => {
+		console.log('아웃될 번호들', productNumberOut)
+	}, [])
 	const [gridApi, setGridApi] = useState(null)
 	const { simpleAlert } = useAlert()
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
@@ -57,8 +60,9 @@ function ProNoPage({ title, proNoNumber, orderId }) {
 	}
 	const { data: proNoRes, isSuccess } = useReactQuery(param, 'getProNoList', getProNoList)
 	useEffect(() => {
-		if (proNoRes && proNoRes.data && proNoRes.data.list) {
-			setProNoListData(formatTableRowData(proNoRes.data.list))
+		if (proNoRes && proNoRes.data && proNoRes.data.list) { // 테스트-FC54130305
+			const filteredData = proNoRes.data.list.filter(item => !productNumberOut.includes(item['number']));
+			setProNoListData(formatTableRowData(filteredData))
 			setProNoPagination(proNoRes.data.pagination)
 		}
 	}, [proNoRes, isSuccess])
