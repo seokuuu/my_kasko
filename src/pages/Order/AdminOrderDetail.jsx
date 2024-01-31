@@ -42,7 +42,7 @@ import { add_element_field } from '../../lib/tableHelpers'
 import { KilogramSum } from '../../utils/KilogramSum'
 import useMutationQuery from '../../hooks/useMutationQuery'
 import useAlert from '../../store/Alert/useAlert'
-import { cancelOrderList, depositCancleOrderList } from '../../api/detailOrderList'
+import { cancelOrderList, depositCancelOrderList } from '../../api/detailOrderList'
 import GlobalProductSearch from '../../components/GlobalProductSearch/GlobalProductSearch'
 import { isEqual } from 'lodash'
 import OrderDetailSearchFields from './OrderDetailSearchFields'
@@ -202,7 +202,7 @@ const AdminOrderDetail = ({}) => {
 	/**
 	 * @description 부분 입금 취소
 	 */
-	const { mutate: depositCancelOrder } = useMutationQuery('depositCancleOrderList', depositCancleOrderList)
+	const { mutate: depositCancelOrder } = useMutationQuery('depositCancleOrderList', depositCancelOrderList)
 	const handleDepositCancel = () => {
 		const requestList = makeRequest(checkBoxSelect)
 
