@@ -38,6 +38,7 @@ import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import RoundAucListEditFields from './RoundAucListEditFields'
 import RoundAucProAdd from './RoundAucProAdd'
+import useBlockRoute from '../../../hooks/useBlockRoute'
 
 //경매 목록 수정(단일)
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
@@ -286,10 +287,26 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	}
 
 	// 수정 PATCH
-	const auctionEdit = useMutationQuery('', editAuction)
+	const auctionEdit = useMutationQuery('', editAuction, {
+		onSuccess: () => {
+			simpleAlert('수정 되었습니다.', () => {
+				setEditPage(false)
+				refetch()
+			})
+		},
+		onError: () => {
+			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		},
+	})
+
 	const auctionEditHandler = () => {
 		auctionEdit.mutate(editData)
 	}
+
+	// !! 상세 페이지 URL로 바꾼 뒤 설정 예정 TODO
+	// const blockExitHandler = () => {
+	// 	useBlockRoute(blockCondition)
+	// }
 
 	return (
 		<FilterContianer>
