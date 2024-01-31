@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
-import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn } from '../../common/Button/Button'
+import { SkyBtn, WhiteRedBtn } from '../../common/Button/Button'
 import Excel from '../../components/TableInner/Excel'
 import HeaderToggle from '../../components/Toggle/HeaderToggle'
-import { invenCustomer, invenCustomerData, pageSort, toggleAtom } from '../../store/Layout/Layout'
-import { selectedRowsAtom } from '../../store/Layout/Layout'
+import { invenCustomer, invenCustomerData, pageSort, selectedRowsAtom, toggleAtom } from '../../store/Layout/Layout'
 
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../modal/External/ExternalFilter'
 
@@ -18,17 +17,16 @@ import { getSPartList } from '../../api/search'
 import Table from '../Table/Table'
 import { orderFieldData, OrderManageFieldsCols } from '../../constants/admin/OrderManage'
 import { KilogramSum } from '../../utils/KilogramSum'
-import { cancelAllOrderList, depositCancleAllOrderList, getOrderList } from '../../api/orderList'
+import { getOrderList } from '../../api/orderList'
 import GlobalProductSearch from '../../components/GlobalProductSearch/GlobalProductSearch'
 import OrderSearchFields from './OrderSearchFields'
 import { isEqual } from 'lodash'
 import useAlert from '../../store/Alert/useAlert'
-import useMutationQuery from '../../hooks/useMutationQuery'
 import useOrder from './useOrder'
 import { Description } from '@mui/icons-material'
 
-const Order = ({}) => {
-	const { simpleConfirm, simpleAlert } = useAlert()
+const Order = () => {
+	const { simpleAlert } = useAlert()
 	const { postCancelOrderAll, postDepositCancelOrderAll, postSuccessfulOrderAll } = useOrder()
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const paramData = {
@@ -198,6 +196,7 @@ const Order = ({}) => {
 	const globalProductResetOnClick = () => {
 		setParam(paramData)
 	}
+
 	return (
 		<FilterContianer>
 			<FilterHeader>

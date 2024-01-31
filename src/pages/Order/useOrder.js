@@ -3,8 +3,11 @@ import { cancelOrderPost, cancelOrderList, depositCancelOrder, depositCancelOrde
 import useAlert from '../../store/Alert/useAlert'
 import { queryClient } from '../../api/query'
 import { successfulOrderPost, successfulOrderListPost } from '../../api/orderList'
+import { useNavigate } from 'react-router-dom'
+import { useLoading } from '../../store/Loading/loadingAtom'
 
 const useOrder = () => {
+	const navigate = useNavigate()
 	const { simpleConfirm, simpleAlert } = useAlert()
 	// prettier-ignore
 	const { mutate: cancelOrder, isLoading: cancelOrderLoading } = useMutationQuery('cancelOrder', cancelOrderPost)
@@ -20,15 +23,13 @@ const useOrder = () => {
 	const { mutate: successfulOrderAll, isLoading: successfulOrderAllLoading } = useMutationQuery('successfulOrderListPost', successfulOrderListPost);
 
 	/** 주문 전체 취소 */
-	const postCancelOrderAll = (data, updateKey) => {
-		if (cancelOrderAllLoading) {
-			return
-		}
+	const postCancelOrderAll = (data, updateKey, isBack = false) => {
 		simpleConfirm('전체 주문 취소하시겠습니까?', () => {
 			cancelOrderAll(data, {
 				onSuccess: () => {
 					simpleAlert('주문 취소 성공하였습니다.', () => {
 						queryClient.invalidateQueries(updateKey)
+						if (isBack) navigate(-1)
 					})
 				},
 				onError: () => {
@@ -40,9 +41,6 @@ const useOrder = () => {
 
 	/** 주문 부분 취소 */
 	const postCancelOrder = (data, updateKey) => {
-		if (cancelOrderLoading) {
-			return
-		}
 		simpleConfirm('부분 주문 취소하시겠습니까?', () => {
 			cancelOrder(
 				{ requestList: data },
@@ -61,15 +59,13 @@ const useOrder = () => {
 	}
 
 	/** 입금 전체 취소 */
-	const postDepositCancelOrderAll = (data, updateKey) => {
-		if (depositCancelAllLoading) {
-			return
-		}
+	const postDepositCancelOrderAll = (data, updateKey, isBack) => {
 		simpleConfirm('전체 입금 취소하시겠습니까?', () => {
 			depositCancelAll(data, {
 				onSuccess: () => {
 					simpleAlert('입금 취소 성공하였습니다.', () => {
 						queryClient.invalidateQueries(updateKey)
+						if (isBack) navigate(-1)
 					})
 				},
 				onError: () => {
@@ -81,9 +77,6 @@ const useOrder = () => {
 
 	/** 입금 부분 취소 */
 	const postDepositCancelOrder = (data, updateKey) => {
-		if (depositCancelLoading) {
-			return
-		}
 		simpleConfirm('부분 입금 취소하시겠습니까?', () => {
 			depositCancel(
 				{ requestList: data },
@@ -103,13 +96,9 @@ const useOrder = () => {
 
 	/** 부분 확정 전송 */
 	const postSuccessfulOrder = (data, updateKey) => {
-		if (successfulOrderLoading) {
-			return
-		}
-		console.log(data)
 		simpleConfirm('부분 확정 전송을 진행하시겠습니까?', () => {
 			successfulOrder(
-				{ request: data },
+				{ orderUids: data },
 				{
 					onSuccess: () => {
 						simpleAlert('확정 전송 성공하였습니다.', () => {
@@ -126,9 +115,6 @@ const useOrder = () => {
 
 	/** 전체 확정 전송 */
 	const postSuccessfulOrderAll = (data, updateKey) => {
-		if (successfulOrderAllLoading) {
-			return
-		}
 		simpleConfirm('전체 확정 전송을 진행하시겠습니까?', () => {
 			successfulOrderAll(data, {
 				onSuccess: () => {
@@ -142,6 +128,16 @@ const useOrder = () => {
 			})
 		})
 	}
+
+	// 로딩
+	useLoading(
+		cancelOrderLoading ||
+			cancelOrderAllLoading ||
+			depositCancelLoading ||
+			depositCancelAllLoading ||
+			successfulOrderLoading ||
+			successfulOrderAllLoading,
+	)
 
 	return {
 		postCancelOrderAll,

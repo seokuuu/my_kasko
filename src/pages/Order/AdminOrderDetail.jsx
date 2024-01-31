@@ -31,7 +31,6 @@ const useQuery = () => {
 	return new URLSearchParams(useLocation().search)
 }
 const AdminOrderDetail = () => {
-	const navigate = useNavigate()
 	const query = useQuery()
 	const { simpleAlert } = useAlert()
 	const {
@@ -42,6 +41,7 @@ const AdminOrderDetail = () => {
 		postSuccessfulOrder,
 	} = useOrder()
 	const [getRow, setGetRow] = useState([])
+	const [productNumberOut, setProductNumberOut] = useState([])
 
 	// 쿼리 스트링에서 값 추출
 	const auctionNumber = query.get('auctionNumber')
@@ -180,8 +180,7 @@ const AdminOrderDetail = () => {
 	 */
 	const handleOrderAllCancel = async () => {
 		const requestList = [{ auctionNumber, saleType, customerCode, storage, customerDestinationUid }]
-		await postCancelOrderAll(requestList, 'getOrderList')
-		navigate(-1, { replace: true })
+		await postCancelOrderAll(requestList, 'getOrderList', true)
 	}
 
 	/**
@@ -204,8 +203,7 @@ const AdminOrderDetail = () => {
 	 */
 	const handleDepositAllCancel = async () => {
 		const requestList = [{ auctionNumber, saleType, customerCode, storage, customerDestinationUid }]
-		await postDepositCancelOrderAll(requestList, 'getOrderList')
-		navigate(-1, { replace: true })
+		await postDepositCancelOrderAll(requestList, 'getOrderList', true)
 	}
 
 	/**
@@ -216,9 +214,7 @@ const AdminOrderDetail = () => {
 			simpleAlert('선택된 항목이 없습니다.')
 			return
 		}
-		const requestList = checkBoxSelect.map((row) => ({
-			orderUids: row['주문 고유 번호'],
-		}))
+		const requestList = checkBoxSelect.map((row) => row['주문 고유 번호'])
 		postSuccessfulOrder(requestList, 'getOrderList')
 	}
 
@@ -237,6 +233,15 @@ const AdminOrderDetail = () => {
 	const globalProductResetOnClick = () => {
 		setParam(paramData)
 	}
+
+	/**
+	 * @description
+	 * : 현재 테이블의 제품 번호 다 가져가기 detailOrderListData['제품 번호']
+	 */
+	useEffect(() => {
+		const productNumbers = detailOrderListData?.map((item) => item['제품 번호'])
+		setProductNumberOut(productNumbers)
+	}, [detailOrderListData])
 
 	return (
 		<>
@@ -320,7 +325,14 @@ const AdminOrderDetail = () => {
 					</TCSubContainer>
 				</TableContianer>
 			</FilterContianer>
-			{isTableModal && <ProNoPage title={'Pro.No 제품 선택'} proNoNumber={selectedCellData} orderId={orderId} />}
+			{isTableModal && (
+				<ProNoPage
+					title={'Pro.No 제품 선택'}
+					proNoNumber={selectedCellData}
+					orderId={orderId}
+					productNumberOut={productNumberOut}
+				/>
+			)}
 		</>
 	)
 }

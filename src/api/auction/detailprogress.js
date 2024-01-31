@@ -1,7 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
 import { client } from '..'
-import { queryClient } from '../query'
 
 const urls = {
 	detailprogress: 'progress-detail',
@@ -15,5 +12,7 @@ const urls = {
 // }
 
 export function getDetailProgress(data) {
+
 	return client.get(urls.detailprogress, { params: data })
+
 }

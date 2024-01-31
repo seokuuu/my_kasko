@@ -5,6 +5,7 @@ import BtnCellRenderer from '../../pages/Table/BtnCellRenderer.jsx'
 import InputCellRenderer from "../../pages/Table/InputCellRenderer.jsx"
 import { FieldsSettings } from '../../utils/fieldsSetting.js'
 import { commonStyles } from '../commonCellStyle.js'
+import { recommendCell } from '../../pages/Product/SingleProduct/cellRender/RecommendCellRender.jsx'
 
 var checkboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
@@ -89,7 +90,46 @@ export const singleDispatchFields= {
   
 
 export const SingleDispatchFieldsCols= [
-    ...FieldsSettings(singleDispatchFields).FieldsCols
+  { field: '',  ...commonStyles, minWidth: 50, checkboxSelection, headerCheckboxSelection },
+  { ...commonStyles,
+    minWidth: 100,  
+    cellRenderer: BtnCellRenderer,
+    cellRendererParams: {
+      uidFieldName: '경매 번호',
+      editType: 'productModify',
+    }
+  },
+  { ...commonStyles,
+    field:'순번',
+    minWidth: 100,  
+  },
+  { ...commonStyles,
+    field:'고유 번호',
+    minWidth: 100,  
+  },
+
+  { ...commonStyles,
+    field:'제품 번호',
+    minWidth: 200,  
+    cellRenderer:recommendCell,
+   
+  },
+    ...Object.keys(singleDispatchFields).slice(3).map((item) => ({
+    ...commonStyles,
+    field: item,
+    editable:(item === '메모' || item === '비고' )? true:false,
+    minWidth: (item === '메모' || item === '비고' )? 200 : 150,
+    cellRenderer:(params) => {
+      if(item === '메모' || item === '비고'){
+        return params.value
+      }
+      if(typeof params.value === 'boolean'){
+        return params.value ? 'Y' : 'N';
+      }else{
+        return params.value
+      }
+    },
+  })), 
 ]
 
 export const SingleSalesDispatchFieldsCols= [
@@ -102,7 +142,22 @@ export const SingleSalesDispatchFieldsCols= [
       editType: 'productModify',
     }
   },
-    ...Object.keys(singleDispatchFields).map((item) => ({
+  { ...commonStyles,
+    field:'순번',
+    minWidth: 100,  
+  },
+  { ...commonStyles,
+    field:'고유 번호',
+    minWidth: 100,  
+  },
+
+  { ...commonStyles,
+    field:'제품 번호',
+    minWidth: 200,  
+    cellRenderer:recommendCell,
+   
+  },
+    ...Object.keys(singleDispatchFields).slice(3).map((item) => ({
     ...commonStyles,
     field: item,
     editable:(item === '메모' || item === '비고' )? true:false,
@@ -111,13 +166,12 @@ export const SingleSalesDispatchFieldsCols= [
       if(item === '메모' || item === '비고'){
         return params.value
       }
-      
       if(typeof params.value === 'boolean'){
         return params.value ? 'Y' : 'N';
       }else{
         return params.value
       }
-    }
+    },
   })), 
 ]
 var optionFn = function(key) {
@@ -192,10 +246,10 @@ export const SingleModifyDispatchFieldsCols = [
         ...commonStyles,
         field: k,
         minWidth: 150,
-        // editable:true,
+        editable:true,
         cellRenderer: InputCellRenderer,
         cellRendererParams:{
-          // uidFieldName:k,
+          uidFieldName:k,
           valueName:v,
           type:'input'
         }
@@ -205,7 +259,7 @@ export const SingleModifyDispatchFieldsCols = [
         ...commonStyles,
         field: k,
         minWidth: 150,
-        // editable:true,
+        editable:true,
         cellEditor:'agSelectCellEditor',
         cellRenderer:InputCellRenderer,
         cellRendererParams:{
@@ -213,7 +267,9 @@ export const SingleModifyDispatchFieldsCols = [
           valueName:v,
           type:'select'
         },
-        
+        cellEditorParams: {
+          values: optionFn(k), // 셀렉트 박스에 표시할 옵션들
+        },
       }
     }
   }),

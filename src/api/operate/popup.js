@@ -36,7 +36,7 @@ export function usePopupListQuery(params) {
 // 팝업 상세 조회
 export function usePopupDetailsQuery(id) {
 	return useQuery({
-		queryKey: POPUP_KEYS.getPopup,
+		queryKey: [...POPUP_KEYS.getPopup, id],
 		queryFn: async function () {
 			const response = await client.get(`${urls}/${id}`)
 
@@ -60,6 +60,9 @@ export function usePopupRegisterMutation() {
 			queryClient.invalidateQueries({
 				queryKey: POPUP_KEYS.getPopupList,
 			})
+			queryClient.invalidateQueries({
+				queryKey: POPUP_KEYS.getPopup,
+			})
 		},
 		onError() {
 			simpleAlert('등록에 실패하였습니다.')
@@ -82,6 +85,9 @@ export function usePopupUpdateMutation() {
 
 			queryClient.invalidateQueries({
 				queryKey: POPUP_KEYS.getPopupList,
+			})
+			queryClient.invalidateQueries({
+				queryKey: POPUP_KEYS.getPopup,
 			})
 		},
 		onError() {

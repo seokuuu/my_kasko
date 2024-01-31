@@ -9,6 +9,7 @@ import { WhiteBlackBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
 	packageModeAtom,
+	packageUpdateObjAtom,
 	selectedRowsAtom,
 	selectedRowsAtom2,
 	singleAllProductModal,
@@ -59,8 +60,8 @@ const PackageCreate = () => {
 	const radioDummy = ['경매', '상시']
 	const prevData = useLocation().state?.data
 	const navigate = useNavigate()
-
 	const [packageObj, setPackageObj] = useAtom(packageCreateObjAtom)
+	const [updateObj, setUpdateObj] = useAtom(packageUpdateObjAtom)
 	const [packageName, setPackageName] = useState(prevData ? prevData['패키지 이름'] : packageObj?.packageName)
 	const [price, setPrice] = useState(prevData ? prevData['패키지 경매&판매 시작가'] : packageObj?.price)
 
@@ -75,6 +76,27 @@ const PackageCreate = () => {
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const checkBoxSelect2 = useAtomValue(selectedRowsAtom2)
 	// 경매,상시 선택시 선택한 내용의 라디오가 선택되게끔 하는
+
+	useEffect(() => {
+		setUpdateObj(() => ({
+			packageNumber: prevData && prevData['패키지 번호'],
+			sellType:
+				prevData === savedRadioValue
+					? prevData['판매 유형'] === '상시판매 대상재'
+						? '상시'
+						: '경매'
+					: savedRadioValue === '경매 대상재'
+					? '경매'
+					: '상시',
+			packageName: packageName ? packageName : prevData['패키지 이름'],
+		}))
+
+		setPackageObj(() => ({
+			packageNumber: '',
+			sellType: savedRadioValue === '상시판매 대상재' ? '상시' : '경매',
+			packageName: packageName,
+		}))
+	}, [prevData, savedRadioValue, packageName])
 	useEffect(() => {
 		setCheckRadio(
 			Array.from({ length: radioDummy.length }, (_, index) => {
@@ -96,7 +118,6 @@ const PackageCreate = () => {
 
 	useEffect(() => {
 		const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
-
 		const updateValue = radioDummy[checkedIndex]
 		setSavedRadioValue(() => {
 			if (updateValue === '경매') {
@@ -108,6 +129,7 @@ const PackageCreate = () => {
 	}, [checkRadio])
 	//checkSales
 
+	console.log('SAVEDRADIO', savedRadioValue)
 	const tableField = useRef(packageProductsDispatchFieldsCols)
 	const getCol = tableField.current
 	const [requestParams, setRequestParams] = useState(
@@ -220,32 +242,17 @@ const PackageCreate = () => {
 
 	/** TODO 등록 / 수정은 되나 얼렛이 작동하지 않음 */
 	const handleSubmit = () => {
-		simpleConfirm('저장하시겠습니까?', () => {
-			create(createRequest, {
-				onSuccess: (d) => {
-					if (d?.data?.status === 200) {
-						showAlert({
-							title: '저장되었습니다.',
-							content: '',
-							func: () => {
-								navigate(-1)
-								window.location.reload()
-							},
-						})
-					}
-					// console.log('성공')
-				},
-				onError: (e) => {
-					showAlert({
-						title: `${e?.data?.message ?? '패키지 생성을 실패하였습니다'}`,
-						content: '',
-						func: () => {
-							navigate(-1)
-							window.location.reload()
-						},
-					})
-				},
-			})
+		create(createRequest, {
+			onSuccess: (d) => {
+				simpleAlert('저장되었습니다.', () => {
+					navigate('/product/package')
+				})
+
+				if (d?.data?.status === 400) {
+					simpleAlert(price === undefined || price === '0' ? '판매가를 입력하세요' : `${d?.data?.message}`)
+				}
+				// console.log('성공')
+			},
 		})
 	}
 
@@ -253,18 +260,21 @@ const PackageCreate = () => {
 	const handleUpdate = () => {
 		simpleConfirm('수정하시겠습니까?', () => {
 			update(updateRequest, {
-				onSuccess: () => {
-					simpleAlert('수정되었습니다', () => navigate('/product/package'))
+				onSuccess: (d) => {
+					if (d?.data?.status === 200) {
+						simpleAlert('수정되었습니다', () => navigate('/product/package'))
+					}
 				},
 				onError: (e) => {
-					showAlert({
-						title: `${e?.data?.message}`,
-						content: '',
-						func: () => {
-							// navigate(-1)
-							window.location.reload()
-						},
-					})
+					if (e.data?.status === 400)
+						showAlert({
+							title: `${e?.data?.message}`,
+							content: '',
+							func: () => {
+								// navigate(-1)
+								window.location.reload()
+							},
+						})
 				},
 			})
 		})
@@ -401,7 +411,15 @@ const PackageCreate = () => {
 								돌아가기
 							</WhiteBtn>
 							{!prevData ? (
-								<BlackBtn width={90} height={50} onClick={handleSubmit}>
+								<BlackBtn
+									width={90}
+									height={50}
+									onClick={() => {
+										simpleConfirm('저장하시겠습니까?', () => {
+											handleSubmit()
+										})
+									}}
+								>
 									등록
 								</BlackBtn>
 							) : (
@@ -413,7 +431,7 @@ const PackageCreate = () => {
 					</CRWSub>
 				</CRWMainBottom>
 			</TableContianer>
-			{isModal && <SingleAllProduct selectPr={select} setSelectPr={setSelect} />}
+			{isModal && <SingleAllProduct selectPr={select} setSelectPr={setSelect} isUpdate={prevData ? true : false} />}
 		</FilterContianer>
 	)
 }

@@ -36,7 +36,7 @@ export function useNoticeBoardListQuery(params) {
 // 전광판 상세 조회
 export function useNoticeBoardDetailsQuery(id) {
 	return useQuery({
-		queryKey: NOTICE_BOARD_KEYS.getNoticeBoard,
+		queryKey: [...NOTICE_BOARD_KEYS.getNoticeBoard, id],
 		queryFn: async function () {
 			const response = await client.get(`${urls}/${id}`)
 
@@ -83,6 +83,9 @@ export function useNoticeBoardUpdateMutation() {
 
 			queryClient.invalidateQueries({
 				queryKey: NOTICE_BOARD_KEYS.getNoticeBoardList,
+			})
+			queryClient.invalidateQueries({
+				queryKey: NOTICE_BOARD_KEYS.getNoticeBoard,
 			})
 		},
 		onError() {

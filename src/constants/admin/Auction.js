@@ -1,6 +1,7 @@
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
 import MarkerCellRenderer from '../../pages/Table/MarkerCellRenderer'
 import { PROD_COL_NAME } from '../user/constantKey'
+import axios from 'axios'
 
 var checkboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping
@@ -303,7 +304,7 @@ export const AuctionBiddingFields = {
 	'프로넘 번호': 'productNoNumber',
 	[PROD_COL_NAME.packageNumber]: 'packageNumber',
 	시작가: 'auctionStartPrice',
-	응찰가: 'biddingPrice',
+	'현재 최고 가격': 'biddingPrice',
 	'규격 약호': 'spec',
 	'여재 원인 코드': 'causeCode',
 	'여재 원인명': 'causeCodeName',
@@ -320,11 +321,13 @@ export const AuctionBiddingFields = {
 	매입가: 'price',
 	'재고 상태': 'stockStatus',
 	'판매 제외 사유': 'excludeSaleReason',
-	수정일일: 'updateDate',
+	수정일: 'updateDate',
 	메모: 'memo',
 	비고: 'note',
+	'응찰 상태': 'biddingStatus',
+	'나의 현재 응찰 가격': 'bestBiddingPrice',
 	'나의 최고 응찰 가격': 'memberBestBiddingPrice',
-	'현재 최고 가격': 'bestBiddingPrice',
+	응찰가: 'memberBiddingPrice',
 	등급: 'grade',
 	중량: 'weight',
 	두께: 'thickness',
@@ -342,29 +345,36 @@ export const AuctionBiddingFields = {
 }
 
 export const AuctionBiddingFieldsCols = [
+
 	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{ ...commonStyles, field: '경매 번호', minWidth: 100 },
 	{ ...commonStyles, field: '제품 고유 번호', minWidth: 100 },
 	{ ...commonStyles, field: '상태', minWidth: 100 },
+
 	{
 		...commonStyles,
 		headerName: '현재 최고 가격',
 		field: '현재 최고 가격',
 		headerClass: 'custom-header-style',
 		cellStyle: function (params) {
-			console.log('params ㅋㅋㅋㅋ', params.data['상태'])
-			let lost = params.data['상태'] === '패찰'
-			let win = params.data['상태'] === '응찰' || params.data['상태'] === null
+			let lost = params.data['응찰 상태'] === '패찰'
+			let win = params.data['응찰 상태'] === '응찰' || params.data['응찰 상태'] === null
 			// let defaultData = params.data['나의 최고 응찰 가격'] === 0 || null
+			if (params.data['응찰가'] === 0) {
+				return { color: 'black', fontWeight: 'bolder', textAlign: 'center' }
+			}
+
 			if (lost) {
 				return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' } // red
 			} else if (win) {
+
 				if (params.data['나의 최고 응찰 가격'] < params.data['응찰가']) {
 					return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' } // red
 				} else if (params.data['나의 최고 응찰 가격'] > params.data['응찰가']) {
 					return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' } // dodgerblue
 				} else if ((params.data['나의 최고 응찰 가격'] = params.data['응찰가'])) {
 					return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' } // dodgerblue
+
 				} else {
 					return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' }
 				}
@@ -373,6 +383,7 @@ export const AuctionBiddingFieldsCols = [
 		minWidth: 150,
 		cellRenderer: (params) => params.value,
 	},
+
 	// { field: '현재 최고 가격', minWidth: 70 },
 
 	{ ...commonStyles, field: '나의 최고 응찰 가격', minWidth: 150 },
@@ -420,6 +431,7 @@ export const AuctionBiddingFieldsCols = [
 	{ ...commonStyles, field: 'si', minWidth: 100 },
 	{ ...commonStyles, field: 'el', minWidth: 100 },
 	{ ...commonStyles, field: 'mn', minWidth: 100 },
+
 ]
 
 /* ==============================
@@ -851,6 +863,7 @@ export const AuctionStartPriceFields = {
 }
 
 export const AuctionStartPriceFieldsCols = [
+
 	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{ ...commonStyles, field: '고유 번호', minWidth: 100 },
 	{ ...commonStyles, field: '제품군', minWidth: 100 },
@@ -860,6 +873,7 @@ export const AuctionStartPriceFieldsCols = [
 	{ ...commonStyles, field: '적용일', minWidth: 100 },
 	{ ...commonStyles, field: '적용전 단가', minWidth: 100 },
 	{ ...commonStyles, field: '적용 단가', minWidth: 100 },
+
 ]
 
 const uniqueKeys = new Set([...Object.keys(AuctionRoundExtraProductFields), ...Object.keys(AuctionRoundDetailFields)])

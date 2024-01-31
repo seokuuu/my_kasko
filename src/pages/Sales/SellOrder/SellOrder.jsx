@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { cancelAllOrderList } from '../../../api/orderList'
 import { getSaleProductList, usePostSaleProductOrderConfirm } from '../../../api/saleProduct'
-import { WhiteRedBtn } from '../../../common/Button/Button'
+import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
@@ -24,6 +24,7 @@ import { KilogramSum } from '../../../utils/KilogramSum'
 import { formatWeight } from '../../../utils/utils'
 import Table from '../../Table/Table'
 import SellOrderSearchFields from './SellOrderSearchFields'
+import { useLoading } from '../../../store/Loading/loadingAtom'
 
 const SellOrder = () => {
 	const { simpleConfirm, simpleAlert } = useAlert()
@@ -129,7 +130,7 @@ const SellOrder = () => {
 	}
 
 	const orderCancelButtonOnClickHandler = () => {
-		if (checkBoxSelect.length === 0) {
+		if (!checkBoxSelect || checkBoxSelect?.length === 0) {
 			return simpleAlert('주문 취소할 제품을 선택해 주세요.')
 		}
 
@@ -153,8 +154,8 @@ const SellOrder = () => {
 	}
 
 	const orderCompletionHandler = () => {
-		if (checkBoxSelect.length === 0) {
-			return simpleAlert('주문 취소할 제품을 선택해 주세요.')
+		if (!checkBoxSelect || checkBoxSelect?.length === 0) {
+			return simpleAlert('입금 확인할 제품을 선택해 주세요.')
 		}
 
 		const auctionNumbers = checkBoxSelect.map((value) => value['상시판매 번호'])
@@ -220,15 +221,21 @@ const SellOrder = () => {
 				<TCSubContainer>
 					<div></div>
 					{/* 입금 확인 요청서 - uid 배열 전달*/}
-					<PrintDepositRequestButton
-						auctionNumber={
-							Array.isArray(checkBoxSelect)
-							? checkBoxSelect.map(v => v.uid) 
-							: checkBoxSelect
-							? checkBoxSelect.uid 
-							: []}
-						salesDeposit
-					/>
+					<div style={{ display: 'flex', gap: '8px' }}>
+						<PrintDepositRequestButton
+							auctionNumber={
+								Array.isArray(checkBoxSelect)
+									? checkBoxSelect.map((v) => v.uid)
+									: checkBoxSelect
+									? checkBoxSelect.uid
+									: []
+							}
+							salesDeposit
+						/>
+						<SkyBtn onClick={orderCompletionHandler} disabled={loadingOrderConfirm}>
+							입금 확인
+						</SkyBtn>
+					</div>
 				</TCSubContainer>
 			</TableContianer>
 		</FilterContianer>

@@ -28,6 +28,7 @@ import {
 } from '../../store/Layout/Layout'
 import { TABLE_TYPE, tableHiddenColumnAtom, tableResetColumnAtom, tableRestoreColumnAtom, tableShowColumnAtom } from '../../store/Table/Table'
 import './TableUi.css'
+import CustomTableHeader from './CustomTableHeader'
 
 /**
  * AG-GRID settings 함수
@@ -90,6 +91,7 @@ var GRID_SETTIGS = {
 		enableRowGroup: true,
 		enablePivot: true,
 		enableValue: true,
+		enableMenu: true,
 		sortable: true,
 		resizable: true,
 		filter: true,
@@ -225,24 +227,6 @@ const TableV2 = ({
 		setShowColumnClear({ type: tableType });
 	};
 
-	/**
-	 * 칼럼 우 클릭 핸들러
-	 */
-	function handleColumnMenuClick() {
-		const api = gridRef.current.columnApi;
-		api.addRenderedRowListener('click', 1, (e) => {
-			console.log(e)
-		})
-	}
-
-	/**
-	 * 핀 고정 핸들러
-	 * @description 좌측 고정 핸들러
-	 */
-	function handleColumnPinned(column = '', pinned = false) {
-		console.log('pinned: ', pinned, column)
-	}
-
 	/* ==================== STATE start ==================== */
 	// 페이지네이션 변경
 	useEffect(() => {
@@ -301,7 +285,6 @@ const TableV2 = ({
 					<AgGridReact
 						onGridReady={params => { setGridApi(params.api) }}
 						columnDefs={columnDefs}
-						// columnDefs={columnDefs.map(v => )}
 						rowData={rowData}
 						defaultColDef={GRID_SETTIGS.defaultColDef}
 						gridOptions={gridOptions}

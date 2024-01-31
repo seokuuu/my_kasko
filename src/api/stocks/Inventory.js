@@ -36,11 +36,7 @@ export const getInventoryStocks = async (data) => {
 }
 
 export async function postStocks(data){
-  try{
-    return await client.post(`${urls.createWeightStocks}`,data)
-  }catch(e){
-    alert(e.data?.message)
-  }
+    return await client.post(`${urls.createWeightStocks}`,data)  
 }
 
 export async function postCancelInStock(data){

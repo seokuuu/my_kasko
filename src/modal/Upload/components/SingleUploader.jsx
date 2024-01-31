@@ -8,12 +8,22 @@ import { BlueMainDiv } from '../../Common/Common.Styled'
 import SignUpPost from '../../SignUp/SignUpPost'
 import { Input, Table, Td, Th } from '../../Table/TableModal'
 import { get_addressFind } from '../../../api/userManage'
+import DateGrid from '../../../components/DateGrid/DateGrid'
 
 /**
  * @description
  * 단일 등록 업로드입니다.
  */
-const SingleUploader = ({ modalInTable, convertKey, onEditHandler, dropdownProps, address, setAddress }) => {
+const SingleUploader = ({
+	modalInTable,
+	convertKey,
+	onEditHandler,
+	dropdownProps,
+	address,
+	setAddress,
+	startDate,
+	setStartDate,
+}) => {
 	// 오늘 날짜(단일 등록 적용일자에 사용됩니다.)
 
 	const init = {
@@ -190,6 +200,17 @@ const SingleUploader = ({ modalInTable, convertKey, onEditHandler, dropdownProps
 											onEditHandler({ target: { name: 'grade', value: selectedValue.value } })
 										}
 									/>
+								) : // 여기에 새로운 분기를 추가합니다.
+								value === 'dropdown4' ? (
+									<CustomSelect
+										options={dropdownProps[3]?.options} // 'dropdown4'에 해당하는 옵션
+										defaultValue={dropdownProps[3]?.defaultValue} // 'dropdown4'의 기본값
+										onChange={
+											(selectedValue) => onEditHandler({ target: { name: 'storageName', value: selectedValue.value } }) // 적절한 필드 이름으로 대체
+										}
+									/>
+								) : value === 'date' ? (
+									<DateGrid width={145} startDate={startDate} setStartDate={setStartDate} />
 								) : key === '적용일자' ? (
 									<>{date}</>
 								) : key === '목적지 명' ? (

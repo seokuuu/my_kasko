@@ -198,14 +198,9 @@ const SalesProduct = () => {
 			},
 			onError: (e) => {
 				setErrorMsg(e.data.message)
-				setNowPopup({
-					num: '1-12',
-					title: '',
-					content: `${e.data.message}`,
-					func: () => {
-						console.log('hi')
-						setIsMultiModal(false)
-					},
+				simpleAlert(e.data.message, () => {
+					setIsMultiModal(false)
+					window.location.reload()
 				})
 			},
 		})
@@ -214,26 +209,21 @@ const SalesProduct = () => {
 	}
 	// 판매 유형
 	const handlechangeSaleType = () => {
-		const res = changeSaleType(parameter2, {
+		changeSaleType(parameter2, {
 			onSuccess: () => {
-				setIsMultiModal(false)
-				window.location.reload()
+				simpleAlert('변경되었습니다.', () => {
+					setIsMultiModal(false)
+					window.location.reload()
+				})
 			},
 			onError: (e) => {
 				setErrorMsg(e.data.message)
-				setNowPopup({
-					num: '1-12',
-					title: '',
-					content: `${e.data.message}`,
-					func: () => {
-						console.log('hi')
-						setIsMultiModal(false)
-					},
+				simpleAlert(e.data.message, () => {
+					setIsMultiModal(false)
+					window.location.reload()
 				})
 			},
 		})
-
-		return res
 	}
 
 	/// 아울렛 가격 일괄 설정 파트
@@ -380,7 +370,7 @@ const SalesProduct = () => {
 							<BtnBound />
 							<WhiteBlackBtn
 								onClick={() => {
-									if (checkBoxSelect.length > 0) {
+									if (checkBoxSelect?.length > 0) {
 										setIsSaleType(true)
 									} else {
 										simpleAlert('1개 이상의 품목을 선택해주세요')

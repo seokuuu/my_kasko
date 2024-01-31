@@ -10,9 +10,11 @@
 export function getNormalTableRows(tableRows = []) {
   return tableRows.map(v => ({
     ...v, 
-    ...!v.cellRenderer && {cellRenderer: (params) => params?.value || '-'}, 
+    ...!v.cellRenderer && {
+      cellRenderer: (params) => params?.value || '-',
+    }, 
     ...!v.cellStyle && {cellStyle: { textAlign: 'center' }},
     ...!v.minWidth && { minWidth: 100 },
-    ...v.checkboxSelection && { initialPinned: true }
+    ...v.checkboxSelection && { initialPinned: true, lockPinned: true, pinned: 'left' },
   }));
 }
