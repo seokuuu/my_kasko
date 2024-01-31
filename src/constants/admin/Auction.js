@@ -347,16 +347,18 @@ export const AuctionBiddingFieldsCols = [
 			console.log('params ㅋㅋㅋㅋ', params.data['상태'])
 			let lost = params.data['상태'] === '패찰'
 			let win = params.data['상태'] === '응찰' || params.data['상태'] === null
-			let defaultData = params.data['나의 최고 응찰 가격'] === 0 || null
+			// let defaultData = params.data['나의 최고 응찰 가격'] === 0 || null
 			if (lost) {
 				return { color: 'red', fontWeight: 'bolder', textAlign: 'center' } // red
 			} else if (win) {
 				if (params.data['나의 최고 응찰 가격'] < params.data['응찰가']) {
-					return { color: 'orange', fontWeight: 'bolder', textAlign: 'center' } // red
+					return { color: 'red', fontWeight: 'bolder', textAlign: 'center' } // red
 				} else if (params.data['나의 최고 응찰 가격'] > params.data['응찰가']) {
-					return { color: 'blue', fontWeight: 'bolder', textAlign: 'center' } // dodgerblue
+					return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center' } // dodgerblue
+				} else if ((params.data['나의 최고 응찰 가격'] = params.data['응찰가'])) {
+					return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center' } // dodgerblue
 				} else {
-					return { color: 'magenta', fontWeight: 'bolder', textAlign: 'center' } // dodgerblue
+					return { color: 'black', fontWeight: 'bolder', textAlign: 'center' }
 				}
 			}
 		},
