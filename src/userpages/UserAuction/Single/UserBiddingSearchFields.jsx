@@ -110,9 +110,9 @@ const UserBiddingSearchFields = ({
 						<RadioSearchButton
 							options={[
 								{ label: '전체', value: '' },
-								{ label: '미응찰', value: false },
-								{ label: '관심제품', value: true },
-								{ label: '응찰', value: true },
+								{ label: '미응찰', value: '미응찰' },
+								{ label: '관심제품', value: '관심제품' },
+								{ label: '응찰', value: '응찰' },
 							]}
 							value={search.driverStatus}
 							onChange={(value) => onChangeRadio('driverStatus', value)}

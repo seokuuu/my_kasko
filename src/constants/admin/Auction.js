@@ -831,6 +831,7 @@ export const AuctionWinningCreateFieldsCols = [
 	...Object.keys(AuctionWinningCreateFields).map((item) => ({
 		field: item,
 		maxWidth: 200,
+		
 	})),
 ]
 
@@ -850,7 +851,7 @@ export const AuctionStartPriceFields = {
 }
 
 export const AuctionStartPriceFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{ ...commonStyles, field: '고유 번호', minWidth: 100 },
 	{ ...commonStyles, field: '제품군', minWidth: 100 },
 	{ ...commonStyles, field: '정척 여부', minWidth: 100 },
