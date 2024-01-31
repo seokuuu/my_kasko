@@ -4,6 +4,7 @@ import { SkyBtn } from '../../../common/Button/Button'
 import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKey'
 import { getProductNumber } from '../../../hooks/useWishList'
 import useAlert from '../../../store/Alert/useAlert'
+import { useLoading } from '../../../store/Loading/loadingAtom'
 
 /**
  * @constant 최소 주문 중량(25톤/단위kg)
@@ -28,9 +29,9 @@ export const ORDER_BUTTON_TYPE = {
  */
 const AddOrderButton = ({ category, totalWeight, products = [], buttonType }) => {
 	// API
-	const { mutate: requestOrder, loading: isOrderLoading } = useUserOrderMutaion() // 주문하기 뮤테이션
+	const { mutate: requestOrder, isLoading } = useUserOrderMutaion() // 주문하기 뮤테이션
 	// ALERT
-	const { simpleAlert } = useAlert()
+	const { simpleConfirm, simpleAlert } = useAlert()
 
 	/**
 	 * 선택 항목 주문 핸들러
@@ -47,26 +48,31 @@ const AddOrderButton = ({ category, totalWeight, products = [], buttonType }) =>
 			return simpleAlert('25톤 이상 부터 주문이 가능합니다.\n확인하시고 다시 시도해 주세요.')
 		}
 
-		requestOrder({
-			type: category === PROD_CATEGORY.single ? 'normal' : 'package',
-			orderList: products.map((v) =>
-				category === PROD_CATEGORY.single
-					? {
-							productUid: v[PROD_COL_NAME.productUid] || '',
-							salePrice: v[PROD_COL_NAME.salePrice] || 0,
-					  }
-					: {
-							packageNumber: getProductNumber(v[PROD_COL_NAME.packageNumber]) || 0,
-							salePrice: v[PROD_COL_NAME.salePrice] || 0,
-					  },
-			),
+		simpleConfirm('선택하신 상품을 주문하시겠습니까?', () => {
+			requestOrder({
+				type: category === PROD_CATEGORY.single ? 'normal' : 'package',
+				orderList: products.map((v) =>
+					category === PROD_CATEGORY.single
+						? {
+								productUid: v[PROD_COL_NAME.productUid] || '',
+								salePrice: v[PROD_COL_NAME.salePrice] || 0,
+						  }
+						: {
+								packageNumber: getProductNumber(v[PROD_COL_NAME.packageNumber]) || 0,
+								salePrice: v[PROD_COL_NAME.salePrice] || 0,
+						  },
+				),
+			})
 		})
 	}
+
+	// 로딩
+	useLoading(isLoading)
 
 	return (
 		<>
 			{(buttonType === ORDER_BUTTON_TYPE.default || buttonType === undefined) && (
-				<SkyBtn disabled={isOrderLoading} onClick={handleSelectOrder}>
+				<SkyBtn disabled={isLoading} onClick={handleSelectOrder}>
 					선택 제품 주문
 				</SkyBtn>
 			)}

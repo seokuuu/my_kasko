@@ -92,8 +92,7 @@ export function useShipmentMergeMutation() {
 			return client.post(SHIPMENT_MERGE_URL, params)
 		},
 		onSuccess() {
-			simpleAlert('선별 등록 완료되었습니다.')
-			window.location.reload()
+			simpleAlert('선별 등록 완료되었습니다.', () => window.location.reload())
 			queryClient.invalidateQueries({
 				queryKey: QUERY_KEY.list,
 			})
@@ -113,8 +112,7 @@ export function useShipmentMergeUpdateMutation() {
 			return client.put(SHIPMENT_MERGE_URL, params)
 		},
 		onSuccess() {
-			simpleAlert('변경 완료되었습니다.')
-			window.location.reload()
+			simpleAlert('변경 완료되었습니다.', () => window.location.reload())
 			queryClient.invalidateQueries(QUERY_KEY.dispatchList)
 			queryClient.invalidateQueries(QUERY_KEY.dispatchDetails)
 		},
@@ -133,8 +131,7 @@ export function useShipmentMergeDeleteMutation() {
 			return client.delete(`${SHIPMENT_MERGE_URL}/${id}`)
 		},
 		onSuccess() {
-			simpleAlert('해제 완료되었습니다.')
-			window.location.reload()
+			simpleAlert('해제 완료되었습니다.', () => window.location.reload())
 			queryClient.invalidateQueries(QUERY_KEY.dispatchList)
 			queryClient.invalidateQueries(QUERY_KEY.dispatchDetails)
 		},
@@ -153,8 +150,7 @@ export function useShipmentMergeStatusUpdateMutation() {
 			return client.patch(SHIPMENT_MERGE_URL, params)
 		},
 		onSuccess() {
-			simpleAlert('승인 상태 변경 완료되었습니다.')
-			window.location.reload()
+			simpleAlert('승인 상태 변경 완료되었습니다.', () => window.location.reload())
 			queryClient.invalidateQueries(QUERY_KEY.dispatchList)
 			queryClient.invalidateQueries(QUERY_KEY.dispatchDetails)
 		},
@@ -177,7 +173,7 @@ export function useShipmentDispatchListQuery(params) {
 // 배차/출고 등록 상세 페이지
 export function useShipmentDispatchDetailsQuery(id) {
 	return useQuery({
-		queryKey: [...QUERY_KEY.dispatchDetails,id],
+		queryKey: [...QUERY_KEY.dispatchDetails, id],
 		queryFn: async function () {
 			const response = await client.get(`${SHIPMENT_OUT_URL}/${id}`)
 			return response.data.data
@@ -232,8 +228,7 @@ export function useShipmentAddExtraCostMutation() {
 			return client.post(SHIPMENT_EXTRA_COST_URL, param)
 		},
 		onSuccess() {
-			simpleAlert('완료되었습니다.')
-			window.location.reload()
+			simpleAlert('완료되었습니다.', () => window.location.reload())
 			queryClient.invalidateQueries(QUERY_KEY.list)
 		},
 		onError(error) {

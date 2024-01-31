@@ -1127,15 +1127,15 @@ const ClientPostModal = ({ setEditModal, id }) => {
 							</FlexPart>
 						</Right>
 					</MainContainer>
-					<BtnWrap>
-						<WhiteBtn type={'button'} width={40} height={40} onClick={closeModal}>
-							돌아가기
-						</WhiteBtn>
-						<BlackBtn width={40} height={40} type="submit">
-							저장
-						</BlackBtn>
-					</BtnWrap>
 				</ModalContainerSubC>
+				<BtnWrap style={{ position: 'relative', top: '250px' }}>
+					<WhiteBtn type={'button'} width={40} height={40} onClick={closeModal}>
+						돌아가기
+					</WhiteBtn>
+					<BlackBtn width={40} height={40} type="submit">
+						저장
+					</BlackBtn>
+				</BtnWrap>
 			</ModalContainerC>
 		</>
 	)

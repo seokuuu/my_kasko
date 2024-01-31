@@ -112,8 +112,7 @@ const Bidding = ({}) => {
 	console.log('paramData', paramData)
 
 	const [param, setParam] = useState(paramData)
-
-	console.log('param', param)
+	console.log('param !@#', param)
 
 	const productListInner = {
 		biddingPrice: null,
@@ -121,9 +120,9 @@ const Bidding = ({}) => {
 	}
 
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
-
+	const [liveStatus, setLiveStatus] = useState('LIVEgetBidding')
 	// 전체 GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getBidding', getBidding)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 

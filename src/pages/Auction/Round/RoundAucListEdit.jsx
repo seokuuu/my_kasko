@@ -263,6 +263,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 
 	console.log('nesRES', newResData)
 	console.log('editData @@@ ', editData)
+	console.log('ALL LIST <333', list)
 
 	const globalProductResetOnClick = () => {
 		// if resetting the search field shouldn't rerender table
