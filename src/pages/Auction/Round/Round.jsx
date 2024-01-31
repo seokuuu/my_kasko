@@ -28,10 +28,10 @@ import { AuctionRoundFields, AuctionRoundFieldsCols } from '../../../constants/a
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import AuctionRound from '../../../modal/Multi/AuctionRound'
+import useAlert from '../../../store/Alert/useAlert'
 import { auctionRoundEditPageAtom, btnCellUidAtom, roundPostModalAtom } from '../../../store/Layout/Layout'
 import RoundAucListEdit from './RoundAucListEdit'
 import RoundSearchFields from './RoundSearchFields'
-import useAlert from '../../../store/Alert/useAlert'
 
 const Round = ({}) => {
 	const { simpleConfirm, simpleAlert } = useAlert()
@@ -149,6 +149,8 @@ const Round = ({}) => {
 			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
+
+	console.log('checkedArray :', checkedArray)
 
 	const handleRemoveBtn = useCallback(() => {
 		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
@@ -293,7 +295,7 @@ const Round = ({}) => {
 					<TableContianer>
 						<TCSubContainer bor>
 							<div>
-								조회 목록 (선택 <span>2</span> / 50개 )
+								조회 목록 (선택 <span>{checkedArray.length}</span> / {param.pageSize}개 )
 								<Hidden />
 							</div>
 							<div style={{ display: 'flex', gap: '10px' }}>

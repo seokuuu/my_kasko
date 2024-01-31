@@ -201,7 +201,7 @@ const AdminOrderDetail = ({}) => {
 	/**
 	 * @description 부분 입금 취소
 	 */
-	const { mutate: depositCancelOrder } = useMutationQuery('depositCancleOrderList', depositCancleOrderList)
+	const { mutate: depositCancelOrder } = useMutationQuery('depositCancleOrderList', depositCancelOrderList)
 	const handleDepositCancel = () => {
 		const requestList = makeRequest(checkBoxSelect)
 
