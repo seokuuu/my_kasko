@@ -342,6 +342,10 @@ export const AuctionBiddingFields = {
 	el: 'el',
 	mn: 'mn',
 	상태: 'biddingStatus',
+	'목적지 코드': 'destinationCode',
+	'목적지 명': 'customerDestinationName',
+	'목적지 주소': 'customerDestinationAddress',
+	'목적지 연락처': 'customerDestinationPhone'
 }
 
 export const AuctionBiddingFieldsCols = [
@@ -391,6 +395,11 @@ export const AuctionBiddingFieldsCols = [
 	{ ...commonStyles, field: '응찰가', minWidth: 150, editable: true },
 	{ ...commonStyles, field: '경매 제품 고유 번호', minWidth: 100 },
 	{ ...commonStyles, field: '경매 고유 번호', minWidth: 100 },
+
+	{ ...commonStyles, field: '목적지 코드', minWidth: 100 },
+	{ ...commonStyles, field: '목적지 명', minWidth: 100 },
+	{ ...commonStyles, field: '목적지 주소', minWidth: 100 },
+	{ ...commonStyles, field: '목적지 연락처', minWidth: 100 },
 
 	{ ...commonStyles, field: '창고', minWidth: 100 },
 	{ ...commonStyles, field: '제품군', minWidth: 100 },
