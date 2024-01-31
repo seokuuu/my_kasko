@@ -171,20 +171,22 @@ const SellOrderDetail = () => {
 		}))
 	}
 
-	const handleButtonClick = (alertMessage, mapFunction, mutationFunction) => {
+	const handleButtonClick = (alertMessage, confirmMessage, mapFunction, mutationFunction) => {
 		if (checkBoxSelect === null || checkBoxSelect.length === 0) {
 			return simpleAlert(alertMessage)
 		}
 
-		const data = checkBoxSelect.map(mapFunction)
-
-		mutationFunction({ updateList: data })
+		simpleConfirm(confirmMessage, () => {
+			const data = checkBoxSelect.map(mapFunction)
+			mutationFunction({ updateList: data })
+		})
 	}
 
 	// 부분 주문 취소 버튼
 	const depositOrderCancelButtonOnClickHandler = () => {
 		handleButtonClick(
 			'주문 취소할 제품을 선택해 주세요.',
+			'선택한 주문을 취소하시겠습니까?',
 			(value) => ({ uid: value['주문번호'], saleType: '상시판매 대상재' }),
 			mutateDepositOrderCancel,
 		)
@@ -212,6 +214,7 @@ const SellOrderDetail = () => {
 	const depositOrderConfirmButtonOnClickHandler = () => {
 		handleButtonClick(
 			'입금 확인할 제품을 선택해 주세요.',
+			'선택한 주문에 대한 입금을 확인하시겠습니까?',
 			(value) => ({ uid: value['주문번호'] }),
 			mutateDepositOrderConfirm,
 		)
@@ -221,6 +224,7 @@ const SellOrderDetail = () => {
 	const destinationRequestButtonOnClickHandler = () => {
 		handleButtonClick(
 			'목적지를 적용할 제품을 선택해 주세요.',
+			'선택한 제품의 목적지 승인 요청하시겠습니까?',
 			(value) => ({ uid: value['주문번호'], requestCustomerDestinationUid: destinationData.uid }),
 			mutateAuctionSuccessfulBidRequest,
 		)
@@ -230,6 +234,7 @@ const SellOrderDetail = () => {
 	const destinationChangeApproveButtonOnClickHandler = () => {
 		handleButtonClick(
 			'목적지 변경 승일할 제품을 선택해 주세요.',
+			'선택한 제품의 목적지 변경을 승인하시겠습니까?',
 			(value) => ({ uid: value['주문번호'], requestCustomerDestinationUid: destinationData.uid }),
 			mutateAuctionSuccessfulBidApprove,
 		)
@@ -239,6 +244,7 @@ const SellOrderDetail = () => {
 	const destinationChangeRejectButtonOnClickHandler = () => {
 		handleButtonClick(
 			'목적지 변경 반려할 제품을 선택해 주세요.',
+			'선택한 제품의 목적지 변경을 반려하시겠습니까?',
 			(value) => ({ uid: value['주문번호'], requestCustomerDestinationUid: destinationData.uid }),
 			mutateAuctionSuccessfulBidReject,
 		)
@@ -248,6 +254,7 @@ const SellOrderDetail = () => {
 	const updateCustomerDestinationButtonOnClick = () => {
 		handleButtonClick(
 			'목적지를 적용할 제품을 선택해 주세요.',
+			'선택한 제품에 목적지를 적용하시겠습니까?',
 			(value) => ({ uid: value['주문번호'], requestCustomerDestinationUid: destinationData.uid }),
 			mutateAuctionSuccessfulBidRequest,
 		)
