@@ -48,6 +48,8 @@ const Upload = ({
 	dropdownProps, // 단일 등록 폼 관련 값입니다.
 	width = 850, // 모달 너비값입니다.(필수값 X)
 	convertKey, // 단일 등록 폼 관련 값입니다.(필수값 X)
+	startDate,
+	setStartDate,
 }) => {
 	console.log('restParams ;', restParams)
 	// 등록 타입(multi => 대량 등록,sinle => 단일 등록)
@@ -122,6 +124,8 @@ const Upload = ({
 							dropdownProps={dropdownProps}
 							address={address}
 							setAddress={setAddress}
+							startDate={startDate}
+							setStartDate={setStartDate}
 						/>
 					)}
 					<BlueBtnWrap>
