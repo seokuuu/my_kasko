@@ -34,7 +34,7 @@ import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../..
 import Table from '../Table/Table'
 import { AdminOrderManageFieldsCols, DetailOrderFieldsManage } from '../../constants/admin/AdminOrderDetail'
 import useReactQuery from '../../hooks/useReactQuery'
-import {getDetailOrderList } from '../../api/orderList'
+import { getDetailOrderList } from '../../api/orderList'
 import { useLocation } from 'react-router-dom'
 import { useAtom, useAtomValue } from 'jotai/index'
 import ProNoPage from './ProNoPage'
@@ -42,7 +42,7 @@ import { add_element_field } from '../../lib/tableHelpers'
 import { KilogramSum } from '../../utils/KilogramSum'
 import useMutationQuery from '../../hooks/useMutationQuery'
 import useAlert from '../../store/Alert/useAlert'
-import { cancelOrderList, depositCancleOrderList } from '../../api/detailOrderList'
+import { cancelOrderList } from '../../api/detailOrderList'
 import GlobalProductSearch from '../../components/GlobalProductSearch/GlobalProductSearch'
 import { isEqual } from 'lodash'
 import OrderDetailSearchFields from './OrderDetailSearchFields'
@@ -90,7 +90,7 @@ const AdminOrderDetail = ({}) => {
 	const [param, setParam] = useState(paramData)
 	const [detailOrderPagination, setDetailOrderPagination] = useState([])
 	const [detailOrderListData, setDetailOrderListData] = useState(null)
-	const [productNumberOut, setProductNumberOut] = useState([]);
+	const [productNumberOut, setProductNumberOut] = useState([])
 	const formatTableRowData = (orderDetail) => {
 		return add_element_field(orderDetail, DetailOrderFieldsManage)
 	}
@@ -155,7 +155,6 @@ const AdminOrderDetail = ({}) => {
 		'',
 	]
 
-
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 
 	/**
@@ -171,12 +170,11 @@ const AdminOrderDetail = ({}) => {
 	}
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 
-
 	/**
 	 * @description 부분 주문 취소
 	 */
 	const makeRequest = (selectedRows) => {
-		if(!selectedRows) return [];
+		if (!selectedRows) return []
 		return selectedRows.map((row) => ({
 			orderUid: row['주문 고유 번호'],
 			saleType: row['판매 유형'],
@@ -184,20 +182,21 @@ const AdminOrderDetail = ({}) => {
 	}
 	const { mutate: cancelOrder } = useMutationQuery('cancelOrderList', cancelOrderList)
 	const handleOrderCancel = () => {
-		const requestList = makeRequest(checkBoxSelect); // checkBoxSelect를 makeRequest 함수에 전달하여 데이터 가공
+		const requestList = makeRequest(checkBoxSelect) // checkBoxSelect를 makeRequest 함수에 전달하여 데이터 가공
 
 		if (requestList.length === 0) {
-			simpleAlert('선택된 항목이 없습니다.');
-			return; // 함수 실행 중단
+			simpleAlert('선택된 항목이 없습니다.')
+			return // 함수 실행 중단
 		}
 		simpleConfirm('부분 주문 취소하시겠습니까?', () => {
-			cancelOrder(requestList, { // 가공된 데이터를 cancelAllOrder 함수에 전달
+			cancelOrder(requestList, {
+				// 가공된 데이터를 cancelAllOrder 함수에 전달
 				onSuccess: () => {
-					refetch(); // 성공 시 데이터 새로고침
+					refetch() // 성공 시 데이터 새로고침
 				},
-			});
-		});
-	};
+			})
+		})
+	}
 
 	/**
 	 * @description 부분 입금 취소
@@ -207,16 +206,17 @@ const AdminOrderDetail = ({}) => {
 		const requestList = makeRequest(checkBoxSelect)
 
 		if (requestList.length === 0) {
-			simpleAlert('선택된 항목이 없습니다.');
-			return; // 함수 실행 중단
+			simpleAlert('선택된 항목이 없습니다.')
+			return // 함수 실행 중단
 		}
 		simpleConfirm('부분 입금 취소하시겠습니까?', () => {
-			depositCancelOrder(requestList, { // 가공된 데이터를 cancelAllOrder 함수에 전달
+			depositCancelOrder(requestList, {
+				// 가공된 데이터를 cancelAllOrder 함수에 전달
 				onSuccess: () => {
-					refetch(); // 성공 시 데이터 새로고침
+					refetch() // 성공 시 데이터 새로고침
 				},
-			});
-		});
+			})
+		})
 	}
 	/**
 	 * @description 검색하는 부분
@@ -242,9 +242,9 @@ const AdminOrderDetail = ({}) => {
 	 * : 현재 테이블의 제품 번호 다 가져가기 detailOrderListData['제품 번호']
 	 */
 	useEffect(() => {
-		const productNumbers = detailOrderListData?.map(item => item['제품 번호']);
-		setProductNumberOut(productNumbers);
-	}, [detailOrderListData]);
+		const productNumbers = detailOrderListData?.map((item) => item['제품 번호'])
+		setProductNumberOut(productNumbers)
+	}, [detailOrderListData])
 	return (
 		<>
 			<FilterContianer>
@@ -293,7 +293,7 @@ const AdminOrderDetail = ({}) => {
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
 							<PageDropdown />
-							<Excel getRow={getRow}/>
+							<Excel getRow={getRow} />
 						</div>
 					</TCSubContainer>
 					<TCSubContainer>
@@ -319,7 +319,14 @@ const AdminOrderDetail = ({}) => {
 					</TCSubContainer>
 				</TableContianer>
 			</FilterContianer>
-			{isTableModal && <ProNoPage title={'Pro.No 제품 선택'} proNoNumber={selectedCellData} orderId={orderId} productNumberOut={productNumberOut}/>}
+			{isTableModal && (
+				<ProNoPage
+					title={'Pro.No 제품 선택'}
+					proNoNumber={selectedCellData}
+					orderId={orderId}
+					productNumberOut={productNumberOut}
+				/>
+			)}
 		</>
 	)
 }
