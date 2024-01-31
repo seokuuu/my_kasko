@@ -34,20 +34,16 @@ import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../..
 import Table from '../Table/Table'
 import { AdminOrderManageFieldsCols, DetailOrderFieldsManage } from '../../constants/admin/AdminOrderDetail'
 import useReactQuery from '../../hooks/useReactQuery'
-import { cancelAllOrderList, depositCancleAllOrderList, getDetailOrderList, getOrderList } from '../../api/orderList'
+import {getDetailOrderList } from '../../api/orderList'
 import { useLocation } from 'react-router-dom'
-import { useQueryClient } from '@tanstack/react-query'
 import { useAtom, useAtomValue } from 'jotai/index'
 import ProNoPage from './ProNoPage'
-import axios from 'axios'
 import { add_element_field } from '../../lib/tableHelpers'
-import { orderFieldData } from '../../constants/admin/OrderManage'
 import { KilogramSum } from '../../utils/KilogramSum'
 import useMutationQuery from '../../hooks/useMutationQuery'
 import useAlert from '../../store/Alert/useAlert'
 import { cancelOrderList, depositCancleOrderList } from '../../api/detailOrderList'
 import GlobalProductSearch from '../../components/GlobalProductSearch/GlobalProductSearch'
-import OrderSearchFields from './OrderSearchFields'
 import { isEqual } from 'lodash'
 import OrderDetailSearchFields from './OrderDetailSearchFields'
 const useQuery = () => {
@@ -94,8 +90,7 @@ const AdminOrderDetail = ({}) => {
 	const [param, setParam] = useState(paramData)
 	const [detailOrderPagination, setDetailOrderPagination] = useState([])
 	const [detailOrderListData, setDetailOrderListData] = useState(null)
-	const [checkOrderStart, setCheckOrderStart] = useState('') // 경매일자 시작
-	const [checkOrderEnd, setCheckOrderEnd] = useState('') // 경매일자 끝
+	const [productNumberOut, setProductNumberOut] = useState([]);
 	const formatTableRowData = (orderDetail) => {
 		return add_element_field(orderDetail, DetailOrderFieldsManage)
 	}
@@ -170,7 +165,6 @@ const AdminOrderDetail = ({}) => {
 	const [selectedCellData, setSelectedCellData] = useState([])
 	const [orderId, setOrderId] = useState(0)
 	const toggleModal = (data) => {
-		console.log('data값-----------',data)
 		setIsTableModal((prev) => !prev)
 		setSelectedCellData(data.data['Pro.No 번호'])
 		setOrderId(data.data['주문 고유 번호'])
@@ -243,6 +237,14 @@ const AdminOrderDetail = ({}) => {
 		setParam(paramData)
 	}
 
+	/**
+	 * @description
+	 * : 현재 테이블의 제품 번호 다 가져가기 detailOrderListData['제품 번호']
+	 */
+	useEffect(() => {
+		const productNumbers = detailOrderListData?.map(item => item['제품 번호']);
+		setProductNumberOut(productNumbers);
+	}, [detailOrderListData]);
 	return (
 		<>
 			<FilterContianer>
@@ -317,7 +319,7 @@ const AdminOrderDetail = ({}) => {
 					</TCSubContainer>
 				</TableContianer>
 			</FilterContianer>
-			{isTableModal && <ProNoPage title={'Pro.No 제품 선택'} proNoNumber={selectedCellData} orderId={orderId}/>}
+			{isTableModal && <ProNoPage title={'Pro.No 제품 선택'} proNoNumber={selectedCellData} orderId={orderId} productNumberOut={productNumberOut}/>}
 		</>
 	)
 }
