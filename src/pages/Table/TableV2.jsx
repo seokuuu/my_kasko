@@ -28,6 +28,7 @@ import {
 } from '../../store/Layout/Layout'
 import { TABLE_TYPE, tableHiddenColumnAtom, tableResetColumnAtom, tableRestoreColumnAtom, tableShowColumnAtom } from '../../store/Table/Table'
 import './TableUi.css'
+import CustomTableHeader from './CustomTableHeader'
 
 /**
  * AG-GRID settings 함수
@@ -90,6 +91,7 @@ var GRID_SETTIGS = {
 		enableRowGroup: true,
 		enablePivot: true,
 		enableValue: true,
+		enableMenu: true,
 		sortable: true,
 		resizable: true,
 		filter: true,
@@ -115,7 +117,6 @@ const TableV2 = ({
 	getRow,
 	getCol,
 	setChoiceComponent,
-	size,
 	topData,
 	isRowClickable,
 	handleOnRowClicked,
@@ -135,12 +136,10 @@ const TableV2 = ({
 	const [rowData, setRowData] = useState() // 테이블 데이터
 	const pinnedTopRowData = useMemo(() => topData, [topData]) // 핀 고정 데이터
 	// OPTIONS
-	const [filterText, setFilterText] = useState('') // 필터 텍스트 저장
 	const [sortNum] = useAtom(pageSort) // 페이지 정렬
 	// TABLE TYPE
 	const tableType = useMemo(() => popupTable? TABLE_TYPE.popupTable : TABLE_TYPE.pageTable, [popupTable]); // 팝업 테이블 여부
 	// 규격 약호 찾기 모달
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
 	const location = useLocation()
 	// UI
 	const containerStyle = GRID_FUNC.containerStyle(hei2);
@@ -165,23 +164,6 @@ const TableV2 = ({
 		serverSideDatasource: {
 			getRows: async function (params) {},
 		},
-	}
-
-	/**
-	 * @todo 현재 사용하고 있는지 확인
-	 */
-	const onFindButtonClick = () => {
-		const newCountryFilter = filterText.trim()
-		const gridApi = gridRef.current.api
-
-		// 입력한 국가명으로 grid의 Country 필터를 작동
-		gridApi.setFilterModel({
-			country: {
-				type: 'set',
-				values: [newCountryFilter],
-			},
-		})
-		gridApi.onFilterChanged()
 	}
 
 	/**
@@ -329,45 +311,6 @@ const TableV2 = ({
 					/>
 				</div>
 			</TestContainer>
-
-			{isModal && (
-				<>
-					<NonFadeOverlay />
-					<ModalContainer width={550}>
-						<BlueBarHeader>
-							<div>규격 약호 찾기</div>
-							<div>
-								<WhiteCloseBtn onClick={() => {setIsModal(false)}} src="/svg/white_btn_close.svg" />
-							</div>
-						</BlueBarHeader>
-						<BlueSubContainer>
-							<FindSpec>
-								<FSTitle>
-									<div>검색</div>
-									<RBInput placeholder="회사 명" value={filterText} onChange={(e) => setFilterText(e.target.value)} />
-									<GreyBtn width={15} height={30} fontSize={16} onClick={onFindButtonClick}>
-										찾기
-									</GreyBtn>
-								</FSTitle>
-								<FSResult>
-									{/* {filteredCountries.map((x, index) => {
-                    return (
-                      <ResultBlock key={index} onClick={() => handleResultBlockClick(x)}>
-                        {x}
-                      </ResultBlock>
-                    )
-                  })} */}
-								</FSResult>
-							</FindSpec>
-						</BlueSubContainer>
-						<BlueBarBtnWrap>
-							<BlackBtn onClick={() => { setIsModal(false) }} width={30} height={40}>
-								확인
-							</BlackBtn>
-						</BlueBarBtnWrap>
-					</ModalContainer>
-				</>
-			)}
 			{tablePagination && <CustomPagination pagination={tablePagination} onPageChange={onPageChange} />}
 		</div>
 	)

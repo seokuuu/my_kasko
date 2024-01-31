@@ -185,7 +185,9 @@ const Single = ({}) => {
 
 	// 응찰 버튼 POST
 	const confirmOnClickHandler = () => {
-		postMutation.mutate(winningCreateData)
+		postMutation.mutate(winningCreateData, {
+			onSuccess: refetch(), // onSuccess에 처리할 함수 전달
+		})
 	}
 
 	const globalProductResetOnClick = () => {
@@ -207,25 +209,49 @@ const Single = ({}) => {
 		})
 	}
 
+	const [values, setValues] = useState({})
+	const [valueDesti, setValueDesti] = useState()
+
+	const onCellValueChanged = (params) => {
+		const p = params.data
+		console.log('바뀌는 값 확인', p['제품 고유 번호'])
+		setValues((prevValues) => ({
+			...prevValues,
+			biddingPrice: p['응찰가'],
+			productUid: p['제품 고유 번호'],
+		}))
+		setValueDesti(p['경매 번호'])
+	}
+
+	useEffect(() => {
+		setWinningCreateData((prev) => ({
+			...prev,
+			biddingList: [{ ...values }],
+			auctionNumber: valueDesti,
+		}))
+	}, [values])
+
+	console.log('values <33', values)
+
 	console.log('winningCreateData <33', winningCreateData)
 
 	/* ==================== 관심상품 등록 start ==================== */
 	/**
-	 * @todo 
+	 * @todo
 	 * [1] 테이블 데이터를 아래 hook의 tableRowData로 사용하므로 다른 기능에 충돌이 있는지 확인이 필요합니다.
 	 * [2] 선택 데이터, 총 중량 등 아래 hook에서 제공하는 변수와 겹치는 항목이 있다면 정리가 필요합니다.
 	 */
 	// 선택상품(checked product) - 선택상품 정보를 조회합니다.
 	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
 		weightKey: '중량',
-	});
+	})
 	// 테이블 데이터, 페이지 데이터, 총 중량
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: AuctionBiddingFields,
 		serverData: data?.data?.data,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
-		best: { display: true }
-	});
+		best: { display: true },
+	})
 	/* ==================== 관심상품 등록 end ==================== */
 
 	return (
@@ -244,7 +270,7 @@ const Single = ({}) => {
 				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 			</FilterHeader>
 			{/* 주의사항 */}
-			<CautionBox category={CAUTION_CATEGORY.singleProduct} />
+			<CautionBox category={CAUTION_CATEGORY.auction} />
 			{exFilterToggle && (
 				<>
 					{/* <FilterSubcontianer>
@@ -361,10 +387,7 @@ const Single = ({}) => {
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleTablePageSize={handleTablePageSize} />
 						<Excel getRow={getRow} />
-						<AddWishButton 
-							products={selectedData} 
-							productNumberKey={PROD_COL_NAME.productNumber} 
-						/>
+						<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>
@@ -380,9 +403,21 @@ const Single = ({}) => {
 						}}
 					>
 						<p>목적지</p>
-						<CustomInput placeholder="h50" width={60} height={32} defaultValue={destiObject?.code} />
-						<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destiObject?.destinationName} />
-						<CustomInput placeholder="도착지 연락처" width={120} height={32} defaultValue={destiObject?.name} />
+						<CustomInput placeholder="h50" width={60} height={32} defaultValue={destiObject?.code} readOnly />
+						<CustomInput
+							placeholder="목적지명"
+							width={120}
+							height={32}
+							defaultValue={destiObject?.destinationName}
+							readOnly
+						/>
+						<CustomInput
+							placeholder="도착지 연락처"
+							width={120}
+							height={32}
+							defaultValue={destiObject?.name}
+							readOnly
+						/>
 						<TWhiteBtn
 							style={{ width: '50px' }}
 							height={30}
@@ -396,6 +431,11 @@ const Single = ({}) => {
 							onClick={() => {
 								setFinalInput((prevFinalInput) => ({
 									...prevFinalInput,
+									customerDestinationUid: destiObject && destiObject.uid,
+								}))
+
+								setValues((p) => ({
+									...p,
 									customerDestinationUid: destiObject && destiObject.uid,
 								}))
 							}}
@@ -435,7 +475,13 @@ const Single = ({}) => {
 						</SkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={getCol} getRow={tableRowData} tablePagination={tablePagination} onPageChange={onPageChange} />
+				<Table
+					getCol={getCol}
+					getRow={tableRowData}
+					tablePagination={tablePagination}
+					onPageChange={onPageChange}
+					changeFn={onCellValueChanged}
+				/>
 			</TableContianer>
 			{destinationPopUp && (
 				<InventoryFind

@@ -1,29 +1,29 @@
-import { useEffect, useRef, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
-import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-import useReactQuery from '../../../hooks/useReactQuery'
+import { isEqual } from 'lodash'
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { cancelAllOrderList } from '../../../api/orderList'
 import { getSaleProductList, usePostSaleProductOrderConfirm } from '../../../api/saleProduct'
-import { saleProductListFieldsCols, saleProductListResponseToTableRowMap } from '../../../constants/admin/saleProduct'
-import { add_element_field } from '../../../lib/tableHelpers'
-import { KilogramSum } from '../../../utils/KilogramSum'
-import { formatWeight } from '../../../utils/utils'
-import { SkyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
+import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import Hidden from '../../../components/TableInner/Hidden'
-import Table from '../../Table/Table'
-import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import { UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import SellOrderSearchFields from './SellOrderSearchFields'
-import { isEqual } from 'lodash'
-import { useNavigate } from 'react-router-dom'
-import useAlert from '../../../store/Alert/useAlert'
-import DepositRequestForm from '../../../modal/Docs/DepositRequestForm'
-import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
+import { saleProductListFieldsCols, saleProductListResponseToTableRowMap } from '../../../constants/admin/saleProduct'
 import useMutationQuery from '../../../hooks/useMutationQuery'
-import { cancelAllOrderList } from '../../../api/orderList'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
+import useAlert from '../../../store/Alert/useAlert'
+import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import PrintDepositRequestButton from '../../../userpages/UserSales/_components/PrintDepositRequestButton'
+import { KilogramSum } from '../../../utils/KilogramSum'
+import { formatWeight } from '../../../utils/utils'
+import Table from '../../Table/Table'
+import SellOrderSearchFields from './SellOrderSearchFields'
 
 const SellOrder = () => {
 	const { simpleConfirm, simpleAlert } = useAlert()
@@ -219,31 +219,24 @@ const SellOrder = () => {
 				/>
 				<TCSubContainer>
 					<div></div>
-					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteSkyBtn
-							onClick={() => {
-								setReceiptPrint(true)
-							}}
-						>
-							입금 요청서 발행
-						</WhiteSkyBtn>{' '}
+					{/* 입금 확인 요청서 - uid 배열 전달*/}
+					<div style={{ display: 'flex', gap: '8px' }}>
+						<PrintDepositRequestButton
+							auctionNumber={
+								Array.isArray(checkBoxSelect)
+									? checkBoxSelect.map((v) => v.uid)
+									: checkBoxSelect
+									? checkBoxSelect.uid
+									: []
+							}
+							salesDeposit
+						/>
 						<SkyBtn onClick={orderCompletionHandler} disabled={loadingOrderConfirm}>
 							입금 확인
 						</SkyBtn>
 					</div>
 				</TCSubContainer>
 			</TableContianer>
-			{/* 입금 요청서 모달 */}
-			{receiptPrint && (
-				<DepositRequestForm
-					title="상시판매 입금요청서"
-					auctionNumber={''}
-					salesDeposit
-					onClose={() => {
-						setReceiptPrint(false)
-					}}
-				/>
-			)}
 		</FilterContianer>
 	)
 }

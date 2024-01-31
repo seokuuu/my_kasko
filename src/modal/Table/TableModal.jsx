@@ -124,9 +124,14 @@ const TableModal = ({
                         ) : modalInTable[key] === 'date' ? (
                           <DateGrid width={145} startDate={startDate} setStartDate={setStartDate} />
                         ) : modalInTable[key] === 'formatDate' ? (
-                            moment(matchingRow[key]).format('YYYY.MM.DD')
+                          moment(matchingRow[key]).format('YYYY.MM.DD')
+                        ) : modalInTable[key] === 'test' ? (
+                          <select name={convertKey[key]} onChange={onEditHandler}>
+                            <option value="option1">삼우</option>
+                            <option value="option2">우성</option>
+                          </select>
                         ) : (
-                            matchingRow[key]
+                          matchingRow[key]
                         )}
                       </Td>
                     ))}

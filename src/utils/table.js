@@ -5,12 +5,16 @@
  * - 빈 값이 '-'로 대체된 object 배열
  * - 셀 스타일 중앙으로 지정
  * - 셀 최소너비 100으로 지정
+ * - 체크박스의 경우 핀 고정으로 지정
  */
 export function getNormalTableRows(tableRows = []) {
   return tableRows.map(v => ({
     ...v, 
-    ...!v.cellRenderer && {cellRenderer: (params) => params?.value || '-'}, 
+    ...!v.cellRenderer && {
+      cellRenderer: (params) => params?.value || '-',
+    }, 
     ...!v.cellStyle && {cellStyle: { textAlign: 'center' }},
-    ...!v.minWidth && { minWidth: 100 }
+    ...!v.minWidth && { minWidth: 100 },
+    ...v.checkboxSelection && { initialPinned: true, lockPinned: true, pinned: 'left' },
   }));
 }
