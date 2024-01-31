@@ -28,10 +28,10 @@ import { AuctionRoundFields, AuctionRoundFieldsCols } from '../../../constants/a
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import AuctionRound from '../../../modal/Multi/AuctionRound'
+import useAlert from '../../../store/Alert/useAlert'
 import { auctionRoundEditPageAtom, btnCellUidAtom, roundPostModalAtom } from '../../../store/Layout/Layout'
 import RoundAucListEdit from './RoundAucListEdit'
 import RoundSearchFields from './RoundSearchFields'
-import useAlert from '../../../store/Alert/useAlert'
 
 const Round = ({}) => {
 	const { simpleConfirm, simpleAlert } = useAlert()
@@ -152,6 +152,10 @@ const Round = ({}) => {
 
 	const handleRemoveBtn = useCallback(() => {
 		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
+
+		// 삭제할 수 없는 데이터들입니다.
+		const cannotRemoveOptions = checkedArray.some((data) => data['경매 상태'] === ('진행중' || '종료'))
+		if (cannotRemoveOptions) return simpleAlert('진행중이거나 종료인 경매 상태는 삭제할 수 없습니다.')
 		simpleConfirm('선택한 항목을 삭제하시겠습니까?', () =>
 			checkedArray.forEach((item) => {
 				mutation.mutate(item['고유 번호']) //mutation.mutate로 api 인자 전해줌
@@ -293,7 +297,7 @@ const Round = ({}) => {
 					<TableContianer>
 						<TCSubContainer bor>
 							<div>
-								조회 목록 (선택 <span>2</span> / 50개 )
+								조회 목록 (선택 <span>{checkedArray.length}</span> / {param.pageSize}개 )
 								<Hidden />
 							</div>
 							<div style={{ display: 'flex', gap: '10px' }}>
