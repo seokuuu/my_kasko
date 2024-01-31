@@ -210,7 +210,7 @@ const SignUp = () => {
 			depositManagerTitle: data.depositManagerTitle,
 			depositManagerPhone: data.depositManagerPhone,
 			memberName: data.memberName,
-			memberEmail: `${data.emailDomain.value}@${chooseEmailDomain}`,
+			memberEmail: `${data.memberEmail}@${chooseEmailDomain}`,
 			memberTitle: data.memberTitle,
 			memberPhone: data.memberPhone,
 			businessNumber: data.businessNumber,
