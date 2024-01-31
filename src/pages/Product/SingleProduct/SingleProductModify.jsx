@@ -133,6 +133,12 @@ function SingleProductModify({ title }) {
 					})
 				}
 			},
+			onError: (e) => {
+				simpleAlert(`${e.data?.message}`, () => {
+					setSingleModify(false)
+					window.location.reload()
+				})
+			},
 		})
 	}
 
