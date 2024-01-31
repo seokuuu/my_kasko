@@ -101,25 +101,13 @@ const WeightSales = ({}) => {
 			bottomTableRowData.map((i) => {
 				return {
 					...i,
-					두꼐: i['두께'] || quantity['두께'],
-					중량: i['중량'] || quantity['중량'],
-					길이: i['길이'] || quantity['길이'],
+					두께: i['두께'],
+					중량: i['중량'],
+					길이: i['길이'],
 				}
 			}),
 		)
 	}, [TableData, quantity])
-
-	useEffect(() => {
-		setUpdateState(
-			rows.map((i) => {
-				return {
-					thickness: i['두께'],
-					width: i['폭'],
-					length: i['길이'],
-				}
-			}),
-		)
-	}, [rows])
 
 	console.log('UPDATE', updateState)
 	const tableTitle = StockInventoryDetailFieldCols
@@ -134,6 +122,10 @@ const WeightSales = ({}) => {
 
 	useEffect(() => {
 		let newNumber = 1
+		// 현존하는 중량 제품 번호에서 가장 큰 번호 다음으로 추가 되는걸로
+		const usedNumber = rows.map((item) => Number(item['제품 번호'].split('-')[1]))
+		let maxNumber = Math.max(...usedNumber) + 1
+
 		setSelect(() =>
 			selectedRowData?.map((i, idx) => ({
 				'중량 제품 번호': i['중량 제품 번호'] || '',
@@ -141,7 +133,7 @@ const WeightSales = ({}) => {
 				'제품 번호':
 					rows?.length === 0
 						? selectObj['제품 번호'] + '-' + (selectedRowData.length - newNumber++)
-						: selectObj['제품 번호'] + '-' + newNumber++,
+						: selectObj['제품 번호'] + '-' + maxNumber++,
 				중량: i['중량'],
 				폭: i['폭'],
 				길이: i['길이'],
@@ -157,28 +149,22 @@ const WeightSales = ({}) => {
 	}, [selectedRowData])
 
 	useEffect(() => {
-		let newNumber = 1
-		console.log(
-			'제품',
-			select?.map((item) => item['제품 번호'].split('-')[1]),
-		)
-		console.log(
-			'기존',
-			rows?.map((item) => item['제품 번호'].split('-')[1]),
-		)
+		const usedNumber = rows.map((item) => Number(item['제품 번호'].split('-')[1]))
+		let maxNumber = Math.max(...usedNumber) + 1
+		console.log('ADD', add)
 		setAdd(() =>
 			selectedRowData?.map((i, idx) => ({
 				productNumber:
-					rows?.length == 0
+					rows?.length === 0
 						? selectObj['제품 번호'] + '-' + (selectedRowData.length - idx)
-						: selectObj['제품 번호'] + '-' + newNumber++,
-				thickness: quantity['두께'] ? quantity['두께'] : i['두께'],
+						: selectObj['제품 번호'] + '-' + maxNumber++,
+				thickness: i['두께'],
 				width: quantity['폭'] ? quantity['폭'] : i['폭'],
 				length: quantity['길이'] ? quantity['길이'] : i['길이'],
 			})),
 		)
-	}, [select, quantity])
-
+	}, [select, quantity.thickness, quantity.width, quantity.length])
+	console.log('셀렉트', select)
 	// select => 테이블에서 추가
 	// Rows가 기존
 	const handleImageClick = () => {
@@ -186,25 +172,28 @@ const WeightSales = ({}) => {
 			simpleAlert('4개 이하로만 추가 가능합니다.', () => {
 				return null
 			})
-		} else if (select?.length > 0) {
+		}
+		if (select?.length > 0) {
 			if (rows.length === 0) {
 				setRows(() => [...select])
 				setPostRequest((p) => ({ ...p, addProductList: [...add] }))
 				setSelectedRowData([])
 			} else if (rows.length < 4) {
 				setRows((p) => [...p, ...select])
+				setPostRequest((p) => ({ ...p, addProductList: [...add] }))
+				setSelectedRowData([])
 				if (rows.length + select.length > 4) {
 					showAlert({
 						title: '4개 이하로만 추가 가능합니다.',
 						func: () => {
-							return null
+							window.location.reload()
 						},
 					})
 				} else {
 					return null
 				}
-				setPostRequest((p) => ({ ...p, addProductList: [...add] }))
-				setSelectedRowData([])
+				console.log(add)
+				console.log('포스트', postRequest)
 			}
 			if (rows.length >= 4) {
 				simpleAlert('4개 이하로만 추가 가능합니다.')
@@ -254,15 +243,6 @@ const WeightSales = ({}) => {
 
 	// 수치값을 변형시켠 값을 업데이트해서 보내주는걸로
 
-	useEffect(() => {
-		setAdd((p) => ({
-			...p,
-			thickness: quantity['두께'],
-			width: quantity['폭'],
-			length: quantity['길이'],
-		}))
-	}, [quantity['두께'], quantity['폭'], quantity['길이']])
-
 	useState(() => {
 		setPostRequest((p) => ({
 			...p,
@@ -274,13 +254,31 @@ const WeightSales = ({}) => {
 		window.location.reload()
 	}
 	const handleSubmit = () => {
+		console.log(postRequest)
 		mutate(postRequest, {
 			onSuccess: (d) => {
 				showAlert({ title: '저장되었습니다.', func: reload })
 			},
+			onError: (e) => {
+				showAlert({ title: e.data.message, func: reload })
+			},
 		})
 	}
+	useEffect(() => {
+		console.log('UPDATE ROWS:', rows)
+		setUpdateState(
+			rows.map((i) => {
+				return {
+					thickness: i['두께'],
+					width: i['폭'],
+					length: i['길이'],
+				}
+			}),
+		)
+		console.log('UPDATE ROWS2:', updateState)
+	}, [rows])
 
+	console.log(rows)
 	return (
 		<OutSideArea>
 			{/* <FadeOverlay /> */}
