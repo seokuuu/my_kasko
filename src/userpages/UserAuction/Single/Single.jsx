@@ -109,8 +109,17 @@ const Single = ({}) => {
 	}
 	const [param, setParam] = useState(paramData)
 
+	const [liveStatus, setLiveStatus] = useState('LIVEgetBidding')
+
+	// 체크박스 클릭시 재렌더 이슈
+	// useEffect(() => {
+	// 	if (checkedArray && checkedArray?.length > 0) {
+	// 		setLiveStatus('')
+	// 	}
+	// }, [checkedArray])
+
 	// 전체 GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getBidding', getBidding)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 

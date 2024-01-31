@@ -80,7 +80,7 @@ const Round = ({}) => {
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom2)[0]
 
-	const paramData = {
+	const initialParamState = {
 		pageNum: 1,
 		pageSize: 50,
 		type: types,
@@ -88,7 +88,8 @@ const Round = ({}) => {
 
 	const [originalRow, setOriginalRow] = useState([]) //원본 row를 저장해서 radio check에러 막기
 
-	const [param, setParam] = useState(paramData)
+	const [param, setParam] = useState(initialParamState)
+	console.log('param !@#', param)
 	const [tablePagination, setTablePagination] = useState([])
 
 	useEffect(() => {
@@ -98,13 +99,13 @@ const Round = ({}) => {
 		}))
 	}, [types])
 
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(paramData, 'auction', getAuction)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'auction', getAuction)
 
 	console.log('isLoading', isLoading)
 
-	useEffect(() => {
-		refetch()
-	}, [param])
+	// useEffect(() => {
+	// 	if (isSuccess) refetch()
+	// }, [isSuccess])
 
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
@@ -175,17 +176,16 @@ const Round = ({}) => {
 	}
 
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
-		setParam(paramData)
+		setParam(initialParamState)
 	}
-	// import
+
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
 				refetch()
 				return prevParam
 			}
+
 			return {
 				...prevParam,
 				...userSearchParam,

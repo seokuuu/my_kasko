@@ -121,6 +121,7 @@ const Single = () => {
 	}
 
 	const globalProductSearchOnClick = (userSearchParam) => {
+		console.log('SingleUserSearchParam---', userSearchParam)
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
 				refetch()

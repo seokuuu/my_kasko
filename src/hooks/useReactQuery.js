@@ -8,10 +8,11 @@ export default function useReactQuery(obj, key, api) {
 	useEffect(() => {
 		setIsEnable(true)
 	}, [obj])
+
 	const { isLoading, isError, data, isSuccess, refetch } = useQuery([key, obj], () => api(obj), {
-		// Disable retries by setting retry to false
-		retry: () => setIsEnable(false),
+		retry: false,
 		enabled: isEnable,
+		...(key.includes('LIVE') ? { refetchInterval: 3000 } : {}), // 조건에 따라 refetchInterval 추가
 	})
 	return { isLoading, isError, data, isSuccess, refetch }
 }
