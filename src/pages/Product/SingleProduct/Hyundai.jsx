@@ -313,7 +313,7 @@ const Hyundai = ({}) => {
 							<BtnBound />
 							<WhiteBlackBtn
 								onClick={() => {
-									if (checkBoxSelect == null) alert('제품을 선택해 주세요.')
+									if (checkBoxSelect == null) simpleAlert('제품을 선택해 주세요.')
 									else {
 										setIsMultiModal(true)
 									}

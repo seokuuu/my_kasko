@@ -28,6 +28,7 @@ import {
 	singleRecommendDispatchFieldsCols,
 } from '../../../constants/admin/Remcommed'
 import { KilogramSum } from '../../../utils/KilogramSum'
+import useAlert from '../../../store/Alert/useAlert'
 
 const Recommend = ({}) => {
 	const handleSelectChange = (selectedOption, name) => {
@@ -89,10 +90,10 @@ const Recommend = ({}) => {
 	const [uids, setUids] = useAtom(packageUidsAtom)
 	const [selectUid, setSelectUid] = useState([])
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
-	console.log('체크셀렉트', checkBoxSelect)
+
 	const { mutate } = useMutationQuery('patchBest', patchChangeBestRecommend)
 	const { mutate: beTheRecommend } = useMutationQuery('patchBeRecommend', patchBeBestRecommend)
-
+	const { simpleConfirm, simpleAlert } = useAlert()
 	useEffect(() => {
 		if (checkBoxSelect) return setSelectUid(() => checkBoxSelect.map((i) => i['제품 번호']))
 	}, [checkBoxSelect])
@@ -101,11 +102,14 @@ const Recommend = ({}) => {
 			{ numbers: uids },
 			{
 				onSuccess: () => {
-					alert('순서변경 완료')
-					window.location.reload()
+					simpleAlert('순서변경이 완료되었습니다.', () => {
+						window.location.reload()
+					})
 				},
-				onError: () => {
-					alert('순서변경 실패')
+				onError: (e) => {
+					simpleAlert(`${e?.data.message}`, () => {
+						window.location.reload()
+					})
 				},
 			},
 		)
@@ -115,8 +119,9 @@ const Recommend = ({}) => {
 			{ status: false, numbers: selectUid },
 			{
 				onSuccess: () => {
-					alert('해제완료')
-					window.location.reload()
+					simpleAlert('해제하였습니다.', () => {
+						window.location.reload()
+					})
 				},
 			},
 		)
@@ -160,7 +165,15 @@ const Recommend = ({}) => {
 				<Table getRow={getRow} getCol={getCol} loading={isLoading} dragAndDrop={true} />
 
 				<TableBottomWrap>
-					<BlackBtn width={15} height={40} onClick={handleChangeBest}>
+					<BlackBtn
+						width={15}
+						height={40}
+						onClick={() => {
+							simpleConfirm('저장하시겠습니까', () => {
+								handleChangeBest()
+							})
+						}}
+					>
 						저장
 					</BlackBtn>
 				</TableBottomWrap>
