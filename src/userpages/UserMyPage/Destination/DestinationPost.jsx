@@ -173,7 +173,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								<h4>비고</h4>
 								<p></p>
 							</Title>
-							<CustomInput placeholder="비고 작성" width={340} name="memo" value={input.memo} onChange={handleChange} />
+							<CustomInput placeholder="하차지 특이사항" width={340} name="memo" value={input.memo} onChange={handleChange} />
 						</Part>
 					</Left>
 					<Right>
