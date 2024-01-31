@@ -28,7 +28,7 @@ export function getAuction(data) {
 // 상세 GET
 
 export function getDetailAuction(data) {
-	return client.get(urls.getAuction, { params: data })
+	return client.get(`${urls.getAuction}/${data.auctionNumber}`, { params: data })
 }
 // export function getDetailAuction(data) {
 // 	return client.get(`${urls.getAuction}/${data.auctionNumber}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)

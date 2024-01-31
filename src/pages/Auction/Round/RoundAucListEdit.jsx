@@ -472,6 +472,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 						onListAdd={onListAdd}
 						outAddData={outAddData}
 						setOutAddData={setOutAddData}
+						auctionNumber={auctionNum}
 					/>
 				)}
 				<NewBottomBtnWrap bottom={-5}>
