@@ -1,43 +1,23 @@
 import { useEffect, useRef, useState } from 'react'
-import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 
-import { BlackBtn, GreyBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
-import {
-	DoubleWrap,
-	FilterContianer,
-	FilterFooter,
-	FilterHeader,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
-	Input,
-	MiniInput,
-	PWRight,
-	PartWrap,
-	ResetImg,
-	RowWrap,
-	TCSubContainer,
-	TableContianer,
-	Tilde,
-} from '../../../modal/External/ExternalFilter'
-import Table from '../../Table/Table'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
+import { isEqual } from 'lodash'
+import { getDetailProgress } from '../../../api/auction/detailprogress'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { AuctionDetailProgressFields, AuctionDetailProgressFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { getDetailProgress } from '../../../api/auction/detailprogress'
 import { add_element_field } from '../../../lib/tableHelpers'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
+import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
+import Table from '../../Table/Table'
 import ProgressSearchFields from '../Progress/ProgressSearchFields'
-import { isEqual } from 'lodash'
 
 const DetailProgress = ({}) => {
 	const radioDummy = ['전체', '미진행', '진행중', '종료']

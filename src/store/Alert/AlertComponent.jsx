@@ -20,7 +20,7 @@ const AlertComponent = () => {
 
 	return (
 		<>
-			<FadeOverlay style={{ zIndex: '9999' }} />
+			<FadeOverlay style={{ zIndex: '9000' }} />
 			<Container>
 				{!isConfirm && (
 					<ModalSubContainer>
@@ -67,7 +67,7 @@ const Container = styled.div`
 	background-color: white;
 	width: 400px;
 	height: max-content;
-	z-index: 9999;
+	z-index: 99999;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 	border-radius: 8px;
 `

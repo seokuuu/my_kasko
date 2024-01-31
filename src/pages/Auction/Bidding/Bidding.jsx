@@ -1,14 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { storageOptions } from '../../../common/Option/SignUp'
 
-import { BlackBtn, BtnBound, GreyBtn, SkyBtn, TGreyBtn, TWhiteBtn, WhiteGrnBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
+import { BtnBound, SkyBtn, TGreyBtn, TWhiteBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
-	invenDestination,
+	invenDestinationData,
 	selectedRowsAtom,
 	toggleAtom,
-	invenDestinationData,
 	userPageSingleDestiFindAtom,
 } from '../../../store/Layout/Layout'
 
@@ -17,44 +14,30 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import {
 	CustomInput,
-	DoubleWrap,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
-	FilterHeaderAlert,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
-	Input,
-	MiniInput,
-	PWRight,
-	PartWrap,
-	ResetImg,
-	RowWrap,
 	StyledHeading,
 	StyledSubHeading,
 	SubTitle,
 	TCSubContainer,
 	TableContianer,
-	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
 import { useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
+import { isEqual } from 'lodash'
 import { getBidding, postBidding } from '../../../api/auction/bidding'
+import { getAuctionDestination } from '../../../api/auction/winning'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
 import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constants/admin/Auction'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import Table from '../../Table/Table'
-import { getDestinationFind } from '../../../api/search'
-import useMutationQuery from '../../../hooks/useMutationQuery'
 import BiddingSearchFields from './BiddingSearchFields'
-import { isEqual } from 'lodash'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import { getAuctionDestination } from '../../../api/auction/winning'
-import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 
 const Bidding = ({}) => {
 	const [destinationPopUp, setDestinationPopUp] = useAtom(userPageSingleDestiFindAtom)
@@ -112,8 +95,7 @@ const Bidding = ({}) => {
 	console.log('paramData', paramData)
 
 	const [param, setParam] = useState(paramData)
-
-	console.log('param', param)
+	console.log('param !@#', param)
 
 	const productListInner = {
 		biddingPrice: null,
@@ -121,9 +103,9 @@ const Bidding = ({}) => {
 	}
 
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
-
+	const [liveStatus, setLiveStatus] = useState('LIVEgetBidding')
 	// 전체 GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getBidding', getBidding)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
@@ -226,6 +208,30 @@ const Bidding = ({}) => {
 			}
 		})
 	}
+
+	const [values, setValues] = useState({})
+	const [valueDesti, setValueDesti] = useState()
+
+	console.log('values', values)
+
+	const onCellValueChanged = (params) => {
+		const p = params.data
+		console.log('바뀌는 값 확인', p['제품 고유 번호'])
+		setValues((prevValues) => ({
+			...prevValues,
+			biddingPrice: p['응찰가'],
+			productUid: p['제품 고유 번호'],
+		}))
+		setValueDesti(p['경매 번호'])
+	}
+
+	useEffect(() => {
+		setWinningCreateData((prev) => ({
+			...prev,
+			biddingList: [{ ...values }],
+			auctionNumber: valueDesti,
+		}))
+	}, [values])
 
 	console.log('winningCreateData <33', winningCreateData)
 
@@ -418,7 +424,13 @@ const Bidding = ({}) => {
 						</SkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
+				<Table
+					getCol={getCol}
+					getRow={getRow}
+					tablePagination={tablePagination}
+					onPageChange={onPageChange}
+					changeFn={onCellValueChanged}
+				/>
 			</TableContianer>
 			{destinationPopUp && (
 				<InventoryFind

@@ -55,13 +55,8 @@ export async function deleteProduct(data) {
 	}
 }
 export async function updateSingleProduct(data) {
-
-	try {
 		const response = await client.patch(`${urls.single}`, data)
 		return response
-	} catch (e) {
-    return e
-	}
 }
 
 export async function postingMemoAndNote(data) {

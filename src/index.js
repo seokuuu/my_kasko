@@ -18,9 +18,9 @@ root.render(
 		<GlobalStyle />
 		<ThemeProvider theme={KaskoTheme}>
 			<QueryClientProvider client={queryClient}>
-				<AlertComponent />
 				<LoadingSpinner />
 				<RouterProvider router={router} />
+				<AlertComponent />
 				<ReactQueryDevtools position="top-right" initialIsOpen={false} />
 			</QueryClientProvider>
 		</ThemeProvider>

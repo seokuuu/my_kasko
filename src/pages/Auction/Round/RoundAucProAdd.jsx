@@ -62,6 +62,7 @@ const RoundAucProAdd = ({
 	propsResData,
 	list,
 	onListAdd,
+	auctionNumber
 }) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -102,11 +103,11 @@ const RoundAucProAdd = ({
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
-		saleType: '경매 대상재',
-		registrationStatus: '경매 등록 대기',
-		type: types,
+		auctionNumber: auctionNumber
 	}
 	const [param, setParam] = useState(paramData)
+
+	console.log('auctionNumber', auctionNumber)
 
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(
 		param,
@@ -149,12 +150,14 @@ const RoundAucProAdd = ({
 		if (!selectedRows || selectedRows.length === 0) {
 			return
 		}
-		const key = '고유 번호'
-		const findKey = selectedRows.map((item) => item[key])
-		console.log('findKey', findKey)
-		const addData = resData?.filter((item) => findKey.includes(item.uid))
-		onListAdd(addData)
-		setAddModal(false)
+		simpleConfirm('제품을 추가하시겠습니까?', () => {
+			const key = '고유 번호'
+			const findKey = selectedRows.map((item) => item[key])
+			console.log('findKey', findKey)
+			const addData = resData?.filter((item) => findKey.includes(item.uid))
+			onListAdd(addData)
+			setAddModal(false)
+		})
 	}
 
 	const handleTablePageSize = (event) => {
@@ -191,6 +194,12 @@ const RoundAucProAdd = ({
 		})
 	}
 
+	const blockModalExitHandler = () => {
+		simpleConfirm('현재 작업 중인 내용이 저장되지 않았습니다. \n페이지를 나가시겠습니까?', () => {
+			setAddModal(false)
+		})
+	}
+
 	return (
 		<>
 			<FadeOverlay />
@@ -199,7 +208,7 @@ const RoundAucProAdd = ({
 					{/* <div>{title}</div> */}
 					<div>경매 제품 추가({types})</div>
 					<div>
-						<WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
+						<WhiteCloseBtn onClick={blockModalExitHandler} src="/svg/white_btn_close.svg" />
 					</div>
 				</BlueBarHeader>
 				<BlueSubContainer style={{ padding: '0px 25px' }}>

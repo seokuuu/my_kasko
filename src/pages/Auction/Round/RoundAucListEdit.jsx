@@ -30,6 +30,7 @@ import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalP
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { AuctionRoundDetailFields, AuctionRoundDetailFieldsCols } from '../../../constants/admin/Auction'
+import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import useAlert from '../../../store/Alert/useAlert'
@@ -37,7 +38,7 @@ import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import RoundAucListEditFields from './RoundAucListEditFields'
 import RoundAucProAdd from './RoundAucProAdd'
-import useMutationQuery from '../../../hooks/useMutationQuery'
+import useBlockRoute from '../../../hooks/useBlockRoute'
 
 //경매 목록 수정(단일)
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
@@ -81,6 +82,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
+	console.log('selectedRows :', selectedRows)
 	// const checkedArray = useAtom(selectedRowsAtom)[0]
 
 	const paramData = {
@@ -263,6 +265,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 
 	console.log('nesRES', newResData)
 	console.log('editData @@@ ', editData)
+	console.log('ALL LIST <333', list)
 
 	const globalProductResetOnClick = () => {
 		// if resetting the search field shouldn't rerender table
@@ -284,10 +287,26 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	}
 
 	// 수정 PATCH
-	const auctionEdit = useMutationQuery('', editAuction)
+	const auctionEdit = useMutationQuery('', editAuction, {
+		onSuccess: () => {
+			simpleAlert('수정 되었습니다.', () => {
+				setEditPage(false)
+				refetch()
+			})
+		},
+		onError: () => {
+			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		},
+	})
+
 	const auctionEditHandler = () => {
 		auctionEdit.mutate(editData)
 	}
+
+	// !! 상세 페이지 URL로 바꾼 뒤 설정 예정 TODO
+	// const blockExitHandler = () => {
+	// 	useBlockRoute(blockCondition)
+	// }
 
 	return (
 		<FilterContianer>
@@ -411,11 +430,11 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>2</span> / 50개 )
+						조회 목록 (선택 <span>{selectedRows ? selectedRows.length : 0}</span> / {param.pageSize}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown />
+						<PageDropdown handleDropdown={(e) => setParam((p) => ({ ...p, pageSize: e.target.value }))} />
 						<Excel getRow={getRow} />
 					</div>
 				</TCSubContainer>
@@ -470,6 +489,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 						onListAdd={onListAdd}
 						outAddData={outAddData}
 						setOutAddData={setOutAddData}
+						auctionNumber={auctionNum}
 					/>
 				)}
 				<NewBottomBtnWrap bottom={-5}>

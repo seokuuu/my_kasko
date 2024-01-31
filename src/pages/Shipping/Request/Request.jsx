@@ -24,7 +24,7 @@ import { getAddNewDestination } from './utils'
 
 const initData = {
 	pageNum: 1,
-	pageSize: 10,
+	pageSize: 50,
 	shipmentStatus: '출하 지시',
 }
 
