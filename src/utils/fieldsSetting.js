@@ -22,7 +22,6 @@ var headerCheckboxSelection = function (params) {
       editable:false,
       minWidth: 150,
       cellRenderer:(params) => {
-        console.log('불리언타입유무',typeof params.value)
         if(typeof params.value === 'boolean'){
           return params.value ? 'Y' : 'No';
         }else{

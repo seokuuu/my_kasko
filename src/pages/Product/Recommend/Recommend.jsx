@@ -157,14 +157,7 @@ const Recommend = ({}) => {
 					</div>
 				</TCSubContainer>
 
-				<Table
-					getRow={getRow}
-					getCol={getCol}
-					loading={isLoading}
-					dragAndDrop={true}
-					// tablePagination={pages}
-					// onPageChange={onPageChange}
-				/>
+				<Table getRow={getRow} getCol={getCol} loading={isLoading} dragAndDrop={true} />
 
 				<TableBottomWrap>
 					<BlackBtn width={15} height={40} onClick={handleChangeBest}>

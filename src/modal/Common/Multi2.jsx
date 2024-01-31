@@ -12,6 +12,7 @@ import {
 	BlueBlackBtn,
 	FadeOverlay,
 } from '../Common/Common.Styled'
+import styled from 'styled-components'
 
 import { blueModalAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
@@ -69,8 +70,7 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
 	const [checkData1, setCheckData1] = useState(Array.from({ length: radioDummy.length }, () => ''))
 	const [checkData2, setCheckData2] = useState(Array.from({ length: radioDummy.length }, () => ''))
 	const { simpleConfirm } = useAlert()
-	// console.log('', (popupMessages[1].find((message) => message.num === '4') || {}).title)
-	console.log(productNumbers)
+
 	useEffect(() => {
 		// true에 해당되면, value를, false면 빈값을 반환
 		const updatedCheck = radioDummy.map((value, index) => {
@@ -112,8 +112,8 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
 
 	return (
 		// 재고 관리 - 판매 구분 변경
-		<>
-			<FadeOverlay />
+		<OutSideArea>
+			{/* <FadeOverlay /> */}
 			<ModalContainer width={530}>
 				<BlueBarHeader>
 					<div>판매 구분 변경</div>
@@ -179,8 +179,17 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
 					</BlueBtnWrap>
 				</BlueSubContainer>
 			</ModalContainer>
-		</>
+		</OutSideArea>
 	)
 }
 
 export default Multi2
+const OutSideArea = styled.div`
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+	background-color: rgba(0, 0, 0, 0.4);
+`
