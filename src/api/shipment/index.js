@@ -9,7 +9,6 @@ const SHIPMENT_MERGE_URL = `${SHIPMENT_URL}/merge`
 const SHIPMENT_OUT_URL = `${SHIPMENT_URL}/out`
 const SHIPMENT_DRIVER_URL = `${SHIPMENT_URL}/driver`
 const SHIPMENT_ORDER_INVOICE_URL = `${SHIPMENT_URL}/invoice`
-const SHIPMENT_ORDER_STATEMENT_URL = `${SHIPMENT_URL}/order-statement`
 const SHIPMENT_EXTRA_COST_URL = `${SHIPMENT_URL}/extra-cost`
 
 export const QUERY_KEY = {
@@ -28,6 +27,7 @@ export const QUERY_KEY = {
 	addExtraCost: ['shipment', 'extra', 'add'],
 	removeExtraCost: ['shipment', 'extra', 'remove'],
 	invoice: ['shipment', 'invoice'],
+	invoiceAll: ['shipment', 'invoiceAll'],
 }
 
 // 합짐비 목록 조회
@@ -265,4 +265,10 @@ export function useShipmentInvoiceListQuery(params) {
 		},
 		enabled: !!params,
 	})
+}
+
+// 출고 거래명세서 출력
+export async function shipmentInvoiceAllListQuery(param) {
+	const response = await client.get(`${SHIPMENT_ORDER_INVOICE_URL}/${param}`)
+	return response.data.data
 }
