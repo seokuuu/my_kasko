@@ -345,7 +345,6 @@ export const AuctionBiddingFields = {
 }
 
 export const AuctionBiddingFieldsCols = [
-
 	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{ ...commonStyles, field: '경매 번호', minWidth: 100 },
 	{ ...commonStyles, field: '제품 고유 번호', minWidth: 100 },
@@ -367,14 +366,12 @@ export const AuctionBiddingFieldsCols = [
 			if (lost) {
 				return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' } // red
 			} else if (win) {
-
 				if (params.data['나의 최고 응찰 가격'] < params.data['응찰가']) {
 					return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' } // red
 				} else if (params.data['나의 최고 응찰 가격'] > params.data['응찰가']) {
 					return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' } // dodgerblue
 				} else if ((params.data['나의 최고 응찰 가격'] = params.data['응찰가'])) {
 					return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' } // dodgerblue
-
 				} else {
 					return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' }
 				}
@@ -431,7 +428,6 @@ export const AuctionBiddingFieldsCols = [
 	{ ...commonStyles, field: 'si', minWidth: 100 },
 	{ ...commonStyles, field: 'el', minWidth: 100 },
 	{ ...commonStyles, field: 'mn', minWidth: 100 },
-
 ]
 
 /* ==============================
@@ -592,16 +588,16 @@ export const AuctionDetailProgressFields = {
 
 export const AuctionDetailProgressFieldsCols = [
 	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
-	{
-		...commonStyles,
-		field: '수정',
-		minWidth: 90,
-		cellRenderer: BtnCellRenderer,
-		cellRendererParams: {
-			uidFieldName: '응찰 고유 번호',
-			editType: 'auctiondetailprogress',
-		},
-	},
+	// {
+	// 	...commonStyles,
+	// 	field: '수정',
+	// 	minWidth: 90,
+	// 	cellRenderer: BtnCellRenderer,
+	// 	cellRendererParams: {
+	// 		uidFieldName: '응찰 고유 번호',
+	// 		editType: 'auctiondetailprogress',
+	// 	},
+	// },
 	{ ...commonStyles, field: '응찰 고유 번호', minWidth: 150 },
 	{ ...commonStyles, field: '경매 상태', minWidth: 120 },
 	{ ...commonStyles, field: '고객 코드', minWidth: 100 },
@@ -843,7 +839,6 @@ export const AuctionWinningCreateFieldsCols = [
 	...Object.keys(AuctionWinningCreateFields).map((item) => ({
 		field: item,
 		maxWidth: 200,
-		
 	})),
 ]
 
@@ -863,7 +858,6 @@ export const AuctionStartPriceFields = {
 }
 
 export const AuctionStartPriceFieldsCols = [
-
 	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{ ...commonStyles, field: '고유 번호', minWidth: 100 },
 	{ ...commonStyles, field: '제품군', minWidth: 100 },
@@ -873,7 +867,6 @@ export const AuctionStartPriceFieldsCols = [
 	{ ...commonStyles, field: '적용일', minWidth: 100 },
 	{ ...commonStyles, field: '적용전 단가', minWidth: 100 },
 	{ ...commonStyles, field: '적용 단가', minWidth: 100 },
-
 ]
 
 const uniqueKeys = new Set([...Object.keys(AuctionRoundExtraProductFields), ...Object.keys(AuctionRoundDetailFields)])
