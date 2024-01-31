@@ -59,11 +59,19 @@ class MarkerCellRenderer {
   eGui;
   eButton;
   cellValue;
+  cellWish;
+  cellBest;
+  clickHandler;
   clickEventListener;
 
   init(params) {
     this.cellValue = params.value;
+    this.cellWish = Boolean(params?.wish);
+    this.cellBest = Boolean(params?.best);
+    this.clickHandler = params?.clickHandler;
     this.eGui = document.createElement('div');
+
+    console.log(params);
 
     this.renderCell();
   }
@@ -90,24 +98,21 @@ class MarkerCellRenderer {
 
   // 셀 렌더링
   renderCell() {
-    const textValue = this.cellValue?.value || '-'; // 셀 텍스트
-    const wishValue = Boolean(this.cellValue?.wish); // 관심상품 여부
-    const bestValue = Boolean(this.cellValue?.best); // 추천상품 여부
-    const clickHandler = this.cellValue?.clickHandler; // 링크기능
+    const textValue = this.cellValue || '-'; // 셀 텍스트
 
     this.eGui.innerHTML = `
           <div style="display:flex;align-items:center;justify-content:center;gap:4px;height:34px;">
-            ${bestValue? bestIcon : ''}
-            ${wishValue? wishIcon : ''}
-            ${textTag(Boolean(this.cellValue?.value && clickHandler), textValue)}
+            ${this.best? bestIcon : ''}
+            ${this.cellWish? wishIcon : ''}
+            ${textTag(Boolean(this.cellValue && this.clickHandler), textValue)}
           </div>
     `;
 
     this.destroy();
 
-    if(clickHandler) {
+    if(this.clickHandler) {
       this.eButton = this.eGui.querySelector('.text');
-      this.clickEventListener = () => { clickHandler(textValue); }
+      this.clickEventListener = () => { this.clickHandler(textValue); }
       this.eButton.addEventListener('click', this.clickEventListener);
     }
   }

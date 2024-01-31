@@ -297,7 +297,7 @@ export const AuctionBiddingFields = {
 	'프로넘 번호': 'productNoNumber',
 	[PROD_COL_NAME.packageNumber]: 'packageNumber',
 	시작가: 'auctionStartPrice',
-	응찰가: 'biddingPrice',
+	'현재 최고 가격': 'biddingPrice',
 	'규격 약호': 'spec',
 	'여재 원인 코드': 'causeCode',
 	'여재 원인명': 'causeCodeName',
@@ -314,11 +314,13 @@ export const AuctionBiddingFields = {
 	매입가: 'price',
 	'재고 상태': 'stockStatus',
 	'판매 제외 사유': 'excludeSaleReason',
-	수정일일: 'updateDate',
+	수정일: 'updateDate',
 	메모: 'memo',
 	비고: 'note',
+	'응찰 상태': 'biddingStatus',
+	'나의 현재 응찰 가격': 'bestBiddingPrice',
 	'나의 최고 응찰 가격': 'memberBestBiddingPrice',
-	'현재 최고 가격': 'bestBiddingPrice',
+	응찰가: 'memberBiddingPrice',
 	등급: 'grade',
 	중량: 'weight',
 	두께: 'thickness',
@@ -332,22 +334,62 @@ export const AuctionBiddingFields = {
 	si: 'si',
 	el: 'el',
 	mn: 'mn',
+	상태: 'biddingStatus',
 }
 
 export const AuctionBiddingFieldsCols = [
 	{ field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
-	{ field: '경매 제품 고유 번호', minWidth: 100 },
-	{ field: '경매 고유 번호', minWidth: 100 },
-	{ field: '제품 고유 번호', minWidth: 100 },
+	{ field: '제품 번호', minWidth: 50 },
+	{ field: '시작가', minWidth: 100 },
+	{
+		headerName: '현재 최고 가격',
+		field: '현재 최고 가격',
+		headerClass: 'custom-header-style',
+		cellStyle: function (params) {
+			let lost = params.data['상태'] === '패찰'
+			let win = params.data['상태'] === '응찰' || params.data['상태'] === null
+			// let defaultData = params.data['나의 최고 응찰 가격'] === 0 || null
+			if (lost) {
+				return { color: 'red', fontWeight: 'bolder', textAlign: 'center' } // red
+			} else if (win) {
+				if (params.data['나의 최고 응찰 가격'] < params.data['현재 최고 가격']) {
+					return { color: 'red', fontWeight: 'bolder', textAlign: 'center' } // red
+				} else if (params.data['나의 최고 응찰 가격'] > params.data['현재 최고 가격']) {
+					return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center' } // dodgerblue
+				} else if ((params.data['나의 최고 응찰 가격'] = params.data['현재 최고 가격'])) {
+					return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center' } // dodgerblue
+				} else {
+					return { color: 'black', fontWeight: 'bolder', textAlign: 'center' }
+				}
+			}
+		},
+		width: 110,
+		cellRenderer: (params) => params.value,
+	},
+	{ field: '나의 현재 응찰 가격', minWidth: 50 },
+	{ field: '나의 최고 응찰 가격', minWidth: 50 },
+	{ field: '응찰가', minWidth: 50, editable: true },
+
 	{ field: '창고', minWidth: 100 },
 	{ field: '제품군', minWidth: 100 },
 	{ field: '판매 유형', minWidth: 100 },
 	{ field: '경매 번호', minWidth: 100 },
-	{ field: PROD_COL_NAME.productNumber, minWidth: 250, cellRenderer: MarkerCellRenderer },
+	{
+		field: PROD_COL_NAME.productNumber,
+		minWidth: 250,
+		cellRenderer: MarkerCellRenderer,
+		cellRendererParams: (params) => params.data[params.column.colId],
+		valueGetter: (v) => v.data[v.column.colId]?.value || '',
+	},
+	// { field: PROD_COL_NAME.productNumber, minWidth: 250, cellRenderer: MarkerCellRenderer },
 	{ field: '프로넘 번호', minWidth: 100 },
-	{ field: PROD_COL_NAME.packageNumber, minWidth: 100, cellRenderer: MarkerCellRenderer },
-	{ field: '시작가', minWidth: 100 },
-	{ field: '응찰가', minWidth: 100 },
+	{
+		field: PROD_COL_NAME.packageNumber,
+		minWidth: 100,
+		cellRenderer: MarkerCellRenderer,
+		cellRendererParams: (params) => params.data[params.column.colId],
+		valueGetter: (v) => v.data[v.column.colId]?.value || '',
+	},
 	{ field: '규격 약호', minWidth: 100 },
 	{ field: '여재 원인 코드', minWidth: 100 },
 	{ field: '여재 원인명', minWidth: 100 },
@@ -364,11 +406,9 @@ export const AuctionBiddingFieldsCols = [
 	{ field: '매입가', minWidth: 100 },
 	{ field: '재고 상태', minWidth: 100 },
 	{ field: '판매 제외 사유', minWidth: 100 },
-	{ field: '수정일일', minWidth: 100 },
+	{ field: '수정일', minWidth: 100 },
 	{ field: '메모', minWidth: 100 },
 	{ field: '비고', minWidth: 100 },
-	{ field: '나의 최고 응찰 가격', minWidth: 100 },
-	{ field: '현재 최고 가격', minWidth: 100 },
 	{ field: '등급', minWidth: 100 },
 	{ field: '중량', minWidth: 100 },
 	{ field: '두께', minWidth: 100 },
@@ -813,12 +853,11 @@ export const AuctionStartPriceFields = {
 
 export const AuctionStartPriceFieldsCols = [
 	{ field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
-	{ field: '고유 번호', minWidth: 150 },
 	{ field: '제품군', minWidth: 120 },
 	{ field: '정척 여부', minWidth: 120 },
 	{ field: '유찰 횟수', minWidth: 120 },
-	{ field: '등급', minWidth: 100 },
-	{ field: '적용일', minWidth: 120 },
+	{ field: '등급', minWidth: 70 },
+	{ field: '적용일', flex: 1 },
 	{ field: '적용전 단가', minWidth: 150 },
 	{ field: '적용 단가', minWidth: 150 },
 ]

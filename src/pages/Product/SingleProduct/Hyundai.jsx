@@ -147,23 +147,20 @@ const Hyundai = ({}) => {
 	// 상태구분 변경
 
 	const { mutate, isError } = useMutationQuery('change-category', patchSaleCategory)
-
+	const { simpleAlert } = useAlert()
 	const changeSaleCategory = () => {
 		const res = mutate(parameter, {
-			onSuccess: () => {
-				setIsMultiModal(false)
-				window.location.reload()
+			onSuccess: (d) => {
+				simpleAlert('저장되었습니다.', () => {
+					setIsMultiModal(false)
+					window.location.reload()
+				})
 			},
 			onError: (e) => {
 				setErrorMsg(e.data.message)
-				setNowPopup({
-					num: '1-12',
-					title: '',
-					content: `${e.data.message}`,
-					func: () => {
-						console.log('hi')
-						setIsMultiModal(false)
-					},
+				simpleAlert(e.data.message, () => {
+					setIsMultiModal(false)
+					window.location.reload()
 				})
 			},
 		})

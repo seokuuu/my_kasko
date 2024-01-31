@@ -72,7 +72,13 @@ export const userCartListPackageField = {
  */
 export const userCartListSingleFieldsCols = getNormalTableRows([
 	{ field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
-	{ field: PROD_COL_NAME.productNumber, minWidth: 250, cellRenderer: MarkerCellRenderer },
+  { 
+    field: PROD_COL_NAME.productNumber, 
+    minWidth: 250, 
+    cellRenderer: MarkerCellRenderer, 
+    cellRendererParams: params => params.data[params.column.colId],
+    valueGetter: (v) => v.data[v.column.colId]?.value || '',
+  },
 	{ field: '규격 약호' },
 	{ field: '창고' },
 	{ field: '창고명' },
@@ -125,7 +131,8 @@ export const userCartListPackageFieldCols = (numberClickHandler = undefined) =>
 			field: PROD_COL_NAME.packageNumber,
 			minWidth: 100,
 			cellRenderer: MarkerCellRenderer,
-			valueGetter: (v) => ({ ...v.data[v.column.colId], clickHandler: numberClickHandler }),
+			cellRendererParams: params => ({...params.data[params.column.colId], clickHandler: numberClickHandler }),
+			valueGetter: (v) => v.data[v.column.colId]?.value || '',
 		},
 		{ field: '패지키 판매 유형', minWidth: 130 },
 		{ field: '패키지 판매 구분', minWidth: 130 },

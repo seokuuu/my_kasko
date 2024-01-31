@@ -54,21 +54,26 @@ const Destination = ({ setChoiceComponent }) => {
 	// 리스트 API
 	const { isLoading, isError, data, isSuccess } = useReactQuery(request, destinationQueryKey.list, getDestination)
 	const [pages, setPages] = useState([])
-	const resData = data?.data?.data?.list
+	const resData = data?.data?.data?.list?.map((item) => ({
+		...item,
+		represent: Boolean(item.represent) ? '대표' : '-',
+	}))
 	const pagination = data?.data?.data?.pagination
 
+	// console.log('resData :', resData)
 	const onPageChange = (value) => {
 		setRequest((p) => ({ ...p, pageNum: Number(value) }))
 	}
 
+	console.log('data :', data)
+
 	useEffect(() => {
-		let getData = resData
 		if (!isSuccess && !resData) return
-		if (Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, UserManageCustomerDestinationManageFields))
+		if (Array.isArray(resData)) {
+			setGetRow(add_element_field(resData, UserManageCustomerDestinationManageFields))
 			setPages(pagination)
 		}
-	}, [isSuccess, resData])
+	}, [data])
 
 	const openPost = () => {
 		setChoiceComponent('등록')

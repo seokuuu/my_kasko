@@ -8,7 +8,7 @@ import useAlert from '../../store/Alert/useAlert'
  * 업로드 API를 반환합니다.
  * @returns
  */
-const useExcelUpload = ({ excelUploadAPI, refreshQueryKey, setModalSwitch }) => {
+const useExcelUpload = ({ excelUploadAPI, refreshQueryKey, setModalSwitch, file }) => {
 	const { showAlert, simpleAlert } = useAlert()
 	const { mutate: excelUpload } = useMutation(excelUploadAPI, {
 		onSuccess() {
@@ -25,6 +25,7 @@ const useExcelUpload = ({ excelUploadAPI, refreshQueryKey, setModalSwitch }) => 
 			simpleAlert('등록에 실패하였습니다.')
 		},
 	})
+
 	return { excelUpload }
 }
 

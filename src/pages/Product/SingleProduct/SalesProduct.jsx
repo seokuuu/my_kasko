@@ -198,14 +198,9 @@ const SalesProduct = () => {
 			},
 			onError: (e) => {
 				setErrorMsg(e.data.message)
-				setNowPopup({
-					num: '1-12',
-					title: '',
-					content: `${e.data.message}`,
-					func: () => {
-						console.log('hi')
-						setIsMultiModal(false)
-					},
+				simpleAlert(e.data.message, () => {
+					setIsMultiModal(false)
+					window.location.reload()
 				})
 			},
 		})

@@ -98,6 +98,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 		console.log('serverParams :', serverParams)
 		try {
 			const { data: res } = await postDestination(input)
+			console.log('res :', res)
 			if (res.status === 200) {
 				showAlert({
 					title: '저장되었습니다.',
@@ -107,11 +108,13 @@ const DestinationPost = ({ setChoiceComponent }) => {
 						queryClient.invalidateQueries({ queryKey: destinationQueryKey.list })
 					},
 				})
-			} else {
-				simpleAlert('저장에 실패하였습니다.')
 			}
 		} catch (err) {
 			console.log(err)
+
+			if (err) {
+				simpleAlert(err.data.message)
+			}
 		}
 	}
 
@@ -124,6 +127,8 @@ const DestinationPost = ({ setChoiceComponent }) => {
 			simpleConfirm('현재 작업 중인 내용이 저장되지 않았습니다. \n페이지를 나가시겠습니까?', () =>
 				setChoiceComponent('리스트'),
 			)
+		} else {
+			setChoiceComponent('리스트')
 		}
 	}
 
@@ -173,7 +178,13 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								<h4>비고</h4>
 								<p></p>
 							</Title>
-							<CustomInput placeholder="비고 작성" width={340} name="memo" value={input.memo} onChange={handleChange} />
+							<CustomInput
+								placeholder="하차지 특이사항"
+								width={340}
+								name="memo"
+								value={input.memo}
+								onChange={handleChange}
+							/>
 						</Part>
 					</Left>
 					<Right>
@@ -183,7 +194,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								<p></p>
 							</Title>
 							<CustomInput
-								placeholder="상세 주소 입력"
+								placeholder="제 1창고,제 2창고 등."
 								width={340}
 								name="name"
 								value={input.name}
@@ -219,7 +230,11 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								onChange={handleChange}
 							/>
 
-							<Alert style={{ margin: '5px auto' }}>*하차지 연락처 미입력 시 토요일 하차 불가</Alert>
+							<Alert style={{ margin: '5px auto' }}>
+								*하차지 연락처 미입력 시 토요일 하차 불가
+								<br />
+								*토요일 출고시 목적지 하차관련 문제 발생, 통화불가할 경우 회차비용 발생할수 있음.
+							</Alert>
 							<CustomInput
 								placeholder="하차지 연락처 입력 ('-' 제외)"
 								width={340}

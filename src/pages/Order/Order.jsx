@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
-import { BlackBtn, GreyBtn, SkyBtn, WhiteRedBtn } from '../../common/Button/Button'
+import { SkyBtn, WhiteRedBtn } from '../../common/Button/Button'
 import Excel from '../../components/TableInner/Excel'
 import HeaderToggle from '../../components/Toggle/HeaderToggle'
-import { invenCustomer, invenCustomerData, pageSort, toggleAtom } from '../../store/Layout/Layout'
-import { selectedRowsAtom } from '../../store/Layout/Layout'
+import { invenCustomer, invenCustomerData, pageSort, selectedRowsAtom, toggleAtom } from '../../store/Layout/Layout'
 
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../modal/External/ExternalFilter'
 
@@ -18,19 +17,20 @@ import { getSPartList } from '../../api/search'
 import Table from '../Table/Table'
 import { orderFieldData, OrderManageFieldsCols } from '../../constants/admin/OrderManage'
 import { KilogramSum } from '../../utils/KilogramSum'
-import { cancelAllOrderList, depositCancleAllOrderList, getOrderList } from '../../api/orderList'
+import { getOrderList } from '../../api/orderList'
 import GlobalProductSearch from '../../components/GlobalProductSearch/GlobalProductSearch'
 import OrderSearchFields from './OrderSearchFields'
 import { isEqual } from 'lodash'
 import useAlert from '../../store/Alert/useAlert'
-import useMutationQuery from '../../hooks/useMutationQuery'
+import useOrder from './useOrder'
 
-const Order = ({}) => {
-	const { simpleConfirm, simpleAlert } = useAlert()
+const Order = () => {
+	const { simpleAlert } = useAlert()
+	const { postCancelOrderAll, postDepositCancelOrderAll, postSuccessfulOrderAll } = useOrder()
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const paramData = {
 		pageNum: 1,
-		pageSize: 3,
+		pageSize: 50,
 	}
 	const [param, setParam] = useState(paramData)
 	const [orderPagination, setOrderPagination] = useState([])
@@ -139,7 +139,6 @@ const Order = ({}) => {
 	/**
 	 * @description 주문 취소 핸들러
 	 */
-	const { mutate: cancelAllOrder } = useMutationQuery('cancelAllOrderList', cancelAllOrderList)
 	const handleOrderCancel = () => {
 		const requestList = makeRequest(checkBoxSelect) // checkBoxSelect를 makeRequest 함수에 전달하여 데이터 가공
 
@@ -147,20 +146,13 @@ const Order = ({}) => {
 			simpleAlert('선택된 항목이 없습니다.')
 			return // 함수 실행 중단
 		}
-		simpleConfirm('주문 취소하시겠습니까?', () => {
-			cancelAllOrder(requestList, {
-				// 가공된 데이터를 cancelAllOrder 함수에 전달
-				onSuccess: () => {
-					refetch() // 성공 시 데이터 새로고침
-				},
-			})
-		})
+		console.log(requestList)
+		postCancelOrderAll(requestList, 'getOrderList')
 	}
 
 	/**
 	 * @description 입금 취소 핸들러
 	 */
-	const { mutate: depositCancelAllOrder } = useMutationQuery('depositCancleAllOrderList', depositCancleAllOrderList)
 	const handleDepositCancel = () => {
 		const requestList = makeRequest(checkBoxSelect)
 
@@ -168,14 +160,20 @@ const Order = ({}) => {
 			simpleAlert('선택된 항목이 없습니다.')
 			return // 함수 실행 중단
 		}
-		simpleConfirm('입금 취소하시겠습니까?', () => {
-			depositCancelAllOrder(requestList, {
-				// 가공된 데이터를 cancelAllOrder 함수에 전달
-				onSuccess: () => {
-					refetch() // 성공 시 데이터 새로고침
-				},
-			})
-		})
+		postDepositCancelOrderAll(requestList, 'getOrderList')
+	}
+
+	/**
+	 * @description 전체 확정 전송
+	 */
+	const handleSuccessfulOrder = () => {
+		const requestList = makeRequest(checkBoxSelect)
+		if (requestList.length === 0) {
+			simpleAlert('선택된 항목이 없습니다.')
+			return // 함수 실행 중단
+		}
+		console.log('requestList : ', requestList)
+		postSuccessfulOrderAll(requestList, 'getOrderList')
 	}
 
 	/**
@@ -196,6 +194,7 @@ const Order = ({}) => {
 	const globalProductResetOnClick = () => {
 		setParam(paramData)
 	}
+
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -236,7 +235,9 @@ const Order = ({}) => {
 						<WhiteRedBtn type="button" onClick={handleOrderCancel}>
 							주문 취소
 						</WhiteRedBtn>
-						<SkyBtn>확정 전송</SkyBtn>
+						<SkyBtn type="button" onClick={handleSuccessfulOrder}>
+							확정 전송
+						</SkyBtn>
 					</div>
 				</TCSubContainer>
 				<Table

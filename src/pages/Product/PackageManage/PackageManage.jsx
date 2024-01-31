@@ -39,6 +39,7 @@ import Multi2 from '../../../modal/Common/Multi2.jsx'
 import { changeCategoryAtom, changePkgSaleTypeAtom } from '../../../store/Layout/Popup.jsx'
 import useAlert from '../../../store/Alert/useAlert.js'
 import { KilogramSum } from '../../../utils/KilogramSum.js'
+import useTableData from '../../../hooks/useTableData.js'
 
 const PackageManage = ({}) => {
 	const [isCreate, setIsCreate] = useState(false)
@@ -60,7 +61,7 @@ const PackageManage = ({}) => {
 		pageSize: 50,
 		saleType: '',
 	}
-
+	const { simpleAlert, redAlert } = useAlert()
 	const [param, setParam] = useState(paramData)
 	const { data, isSuccess, refetch } = useReactQuery(param, 'package-list', getPackageList)
 	const packageList = data?.r
@@ -101,28 +102,37 @@ const PackageManage = ({}) => {
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const { mutate: beRecommend } = useMutationQuery('beRecommend', patchBeBestPackageRecommend)
 	const { mutate: deletePkg } = useMutationQuery('deletePkg', deletePackage)
-
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
+		tableField: packageDispatchFields,
+		serverData: data,
+		wish: { display: false },
+		best: { display: true },
+	})
 	useEffect(() => {
 		if (checkBoxSelect) {
 			setSelectProductNumber(() => [...checkBoxSelect.map((i) => i['패키지 번호'])])
 			setSelectUid(() => [...checkBoxSelect.map((i) => i['고유 번호'])])
 		}
 	}, [checkBoxSelect])
-	console.log(selectProductNumber)
+
 	const patchRecommend = () => {
+		if (selectUids?.length === 0) simpleAlert('제품을 선택해주세요')
 		beRecommend(
 			{
 				status: true,
 				uids: selectUids,
 			},
 			{
-				onSuccess: () => {
-					alert('추가 완료했습니다.')
+				onSuccess: (d) => {
+					if (d.data.status === 200) {
+						simpleAlert('추가 완료했습니다.', () => {
+							window.location.reload()
+						})
+					}
+					if (d.data.status === 400) {
+						simpleAlert(d.data?.message)
+					}
 					setSelectUid([])
-				},
-				onError: (e) => {
-					console.log(e)
-					alert(e.data?.message)
 				},
 			},
 		)
@@ -153,7 +163,7 @@ const PackageManage = ({}) => {
 	const [popUp, setPopup] = useAtom(popupAtom)
 	const [request, setRequest] = useAtom(changePkgSaleTypeAtom)
 	const { mutate: changeCT } = useMutationQuery('change-Pkg-category', patchPkgSaleCategory)
-	const { simpleAlert, redAlert } = useAlert()
+
 	const handleOpenSaleType = () => {
 		changeCT(request, {
 			onSuccess: () => {

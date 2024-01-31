@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { client } from '.'
 import qs from 'qs'
 import useAlert from '../store/Alert/useAlert'
@@ -54,12 +55,12 @@ export async function deleteProduct(data) {
 	}
 }
 export async function updateSingleProduct(data) {
-	// const {simpleAlert} = useAlert()
+
 	try {
 		const response = await client.patch(`${urls.single}`, data)
 		return response
 	} catch (e) {
-		alert(e?.data?.message)
+    return e
 	}
 }
 
@@ -126,30 +127,24 @@ export async function patchPkgSaleCategory(data) {
 }
 
 export async function postCreatePackage(data) {
+
 	try {
 		const response = await client.post(`${urls.package}`, data)
 		return response.data
 	} catch (e) {
-		console.log(e)
+    return e 
 	}
 }
 
 export async function postUpdatePackage(data) {
-	try {
 		const response = await client.patch(`${urls.package}`, data)
 		return response.data
-	} catch (e) {
-		alert(e?.data.message)
-	}
+	 
 }
 
 export async function patchChangeBestRecommend(data) {
-	try {
 		const response = await client.patch(`${urls.recommend}`, data)
 		return response.data
-	} catch (e) {
-		console.log(e)
-	}
 }
 export async function patchBeBestRecommend(data) {
 	try {
@@ -168,12 +163,9 @@ export async function patchChangeBestPackageRecommend(data) {
 	}
 }
 export async function patchBeBestPackageRecommend(data) {
-	try {
 		const response = await client.patch(`${urls.pkgbeRecommend}`, data)
 		return response.data
-	} catch (e) {
-		alert(e.data?.message)
-	}
+	
 }
 export async function deletePackage(data) {
 	try {
