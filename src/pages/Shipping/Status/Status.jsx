@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import { doubleClickedRowAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
@@ -22,6 +22,7 @@ import { KilogramSum } from '../../../utils/KilogramSum'
 import Excel from '../../../components/TableInner/Excel'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import StatusSearchFilter from './StatusSearchFilter'
+import ReceiptExcel from './ReceiptExcel'
 
 const initData = {
 	pageNum: 1,
@@ -157,7 +158,7 @@ const Status = () => {
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteBlackBtn onClick={onShipmentCompletion}>운송 완료</WhiteBlackBtn>
-						<WhiteSkyBtn>수취서 출력</WhiteSkyBtn>
+						<ReceiptExcel />
 					</div>
 				</TCSubContainer>
 			</TableContianer>

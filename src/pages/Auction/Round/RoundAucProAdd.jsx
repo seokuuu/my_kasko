@@ -62,6 +62,7 @@ const RoundAucProAdd = ({
 	propsResData,
 	list,
 	onListAdd,
+	auctionNumber
 }) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -102,11 +103,11 @@ const RoundAucProAdd = ({
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
-		saleType: '경매 대상재',
-		registrationStatus: '경매 등록 대기',
-		type: types,
+		auctionNumber: auctionNumber
 	}
 	const [param, setParam] = useState(paramData)
+
+	console.log('auctionNumber', auctionNumber)
 
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(
 		param,
