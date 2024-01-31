@@ -24,6 +24,7 @@ import { KilogramSum } from '../../../utils/KilogramSum'
 import { formatWeight } from '../../../utils/utils'
 import Table from '../../Table/Table'
 import SellOrderSearchFields from './SellOrderSearchFields'
+import { useLoading } from '../../../store/Loading/loadingAtom'
 
 const SellOrder = () => {
 	const { simpleConfirm, simpleAlert } = useAlert()
@@ -129,7 +130,7 @@ const SellOrder = () => {
 	}
 
 	const orderCancelButtonOnClickHandler = () => {
-		if (checkBoxSelect.length === 0) {
+		if (!checkBoxSelect || checkBoxSelect?.length === 0) {
 			return simpleAlert('주문 취소할 제품을 선택해 주세요.')
 		}
 
@@ -153,8 +154,8 @@ const SellOrder = () => {
 	}
 
 	const orderCompletionHandler = () => {
-		if (checkBoxSelect.length === 0) {
-			return simpleAlert('주문 취소할 제품을 선택해 주세요.')
+		if (!checkBoxSelect || checkBoxSelect?.length === 0) {
+			return simpleAlert('입금 확인할 제품을 선택해 주세요.')
 		}
 
 		const auctionNumbers = checkBoxSelect.map((value) => value['상시판매 번호'])
