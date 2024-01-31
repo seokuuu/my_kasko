@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import Excel from '../../../components/TableInner/Excel'
 import { BlackBtn, WhiteBlackBtn } from '../../../common/Button/Button'
@@ -31,6 +31,7 @@ import SalesPackage from '../../../modal/Multi/SalesPackage.jsx'
 import TableV2ExcelDownloader from '../../Table/TableV2ExcelDownloader.jsx'
 import CautionBox from '../../../components/CautionBox/CautionBox.jsx'
 import { CAUTION_CATEGORY } from '../../../components/CautionBox/constants.js'
+import { PackageViewerDispatchContext } from '../../../userpages/UserSales/_layouts/UserSalesWrapper'
 
 const Package = () => {
 	const { simpleAlert } = useAlert()
@@ -43,6 +44,8 @@ const Package = () => {
 
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const [isEditStatusModal, setIsEditStatusModal] = useAtom(salesPackageModal)
+
+	const { setPackageReadOnlyViewer } = useContext(PackageViewerDispatchContext)
 
 	const [checkRadio, setCheckRadio] = useState(null)
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -84,7 +87,7 @@ const Package = () => {
 
 	const formatTableRowData = (packageProductListData) => {
 		const processedData = add_element_field(packageProductListData, packageResponseToTableRowMap)
-		return formatBooleanFields(processedData, [{ fieldName: '노출상태', trueValue: '노출', falseValue: '비노출' }])
+		return formatBooleanFields(processedData, [{ fieldName: '노출 여부', trueValue: '노출', falseValue: '비노출' }])
 	}
 
 	// 토글 쓰기
@@ -208,7 +211,7 @@ const Package = () => {
 					</div>
 				</TCSubContainer>
 				<Table
-					getCol={packageFieldsCols}
+					getCol={packageFieldsCols(setPackageReadOnlyViewer)}
 					getRow={packageProductListData}
 					loading={isLoading}
 					tablePagination={packageProductPagination}
