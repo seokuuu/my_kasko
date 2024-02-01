@@ -75,6 +75,7 @@ import { client } from '../../../api'
 import { getOrderList } from '../../../api/orderList'
 import { getSpartList, getStorageList } from '../../../api/transPortDrop'
 import { getSPartList } from '../../../api/search'
+import useAlert from '../../../store/Alert/useAlert'
 
 const API_PATH = process.env.REACT_APP_API_URL
 const Transport = ({}) => {
@@ -90,6 +91,8 @@ const Transport = ({}) => {
 	const radioDummy = ['증가', '감소']
 	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+
+	const { simpleAlert } = useAlert();
 
 	const handleSelectChange = (selectedOption, name) => {
 		// setInput(prevState => ({
@@ -255,7 +258,7 @@ const Transport = ({}) => {
 					func: propsRemove,
 				}))
 			} else {
-				alert('선택해주세요!')
+				simpleAlert('삭제할 항목을 선택해주세요.')
 			}
 		},
 		[checkedArray],

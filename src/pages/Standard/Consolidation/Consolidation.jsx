@@ -35,6 +35,7 @@ import AlertPopup from '../../../modal/Alert/AlertPopup'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import useBlockRoute from '../../../hooks/useBlockRoute'
 import { useParams } from 'react-router-dom'
+import useAlert from '../../../store/Alert/useAlert'
 
 const Consolidation = ({}) => {
 	const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
@@ -47,6 +48,7 @@ const Consolidation = ({}) => {
 	const [observeClick, setObserveClick] = useState(false)
 	const [form, setForm] = useState(initForm)
 	const { id } = useParams()
+	const { simpleAlert } = useAlert();
 
 	console.log('uidAtom', uidAtom)
 	console.log('btnCellModal', btnCellModal)
@@ -206,7 +208,7 @@ const Consolidation = ({}) => {
 					func: propsRemove,
 				}))
 			} else {
-				alert('선택해주세요!')
+				simpleAlert('삭제할 항목을 선택해 주세요.')
 			}
 		},
 		[checkedArray],
