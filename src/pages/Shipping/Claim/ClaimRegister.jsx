@@ -7,17 +7,15 @@ import { claimOngoingStatus } from '../../../common/Option/ClaimPost'
 import DateGrid from '../../../components/DateGrid/DateGrid'
 import TextEditor from '../../../components/Editor/TextEditor'
 
-import { StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 
-import { CheckImg2 } from '../../../common/Check/CheckImg'
-
-import moment from 'moment'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { useClaimRegisterMutation } from '../../../api/operate/claim'
 import { MainSelect } from '../../../common/Option/Main'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, DateTitle } from '../../../components/MapTable/MapTable'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useShipmentClaimRegisterMutation } from '../../../api/operate/claim'
+import moment from 'moment'
 
 const checkDummy = ['카스코', '현대제철']
 
@@ -29,12 +27,13 @@ const checkDummy = ['카스코', '현대제철']
 const ClaimRegister = () => {
 	const { state: data } = useLocation()
 	const navigate = useNavigate()
-	const { mutate: createClaim } = useClaimRegisterMutation()
+	const { mutate: createClaim } = useShipmentClaimRegisterMutation()
 
 	const [check, setCheck] = useState(Array.from({ length: 2 }, () => false))
 	const [form, setForm] = useState({
 		content: '',
 		productUid: data.productUid,
+		auctionNumber: data.orderNumber,
 		claimStatus: '진행중',
 		requestDate: '',
 		registrationDate: '',
