@@ -88,9 +88,9 @@ const UserWinningSearchFields = ({
 						<RadioSearchButton
 							options={[
 								{ label: '전체', value: '' },
-								{ label: '낙찰', value: false },
-								{ label: '낙찰 취소', value: false },
-								{ label: '낙찰 확정', value: false },
+								{ label: '낙찰', value: '낙찰' },
+								{ label: '낙찰 취소', value: '낙찰 취소' },
+								{ label: '낙찰 확정', value: '낙찰 확정' },
 							]}
 							value={search.driverStatus}
 							onChange={(value) => onChange('driverStatus', value)}

@@ -4,10 +4,15 @@ import { client } from '..'
 import { queryClient } from '../query'
 
 const urls = {
-  progress: 'auction/progress',
+	progress: 'auction/progress',
 }
 
+// export function getProgess(data) {
+// 	console.log('data', data)
+// 	return client.get(`${urls.progress}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
+// }
+
+// productNumberList[] 오류가 남
 export function getProgess(data) {
-  console.log('data', data)
-  return client.get(`${urls.progress}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
+	return client.get(urls.progress, { params: data })
 }

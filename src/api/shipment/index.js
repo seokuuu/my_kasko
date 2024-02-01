@@ -9,7 +9,6 @@ const SHIPMENT_MERGE_URL = `${SHIPMENT_URL}/merge`
 const SHIPMENT_OUT_URL = `${SHIPMENT_URL}/out`
 const SHIPMENT_DRIVER_URL = `${SHIPMENT_URL}/driver`
 const SHIPMENT_ORDER_INVOICE_URL = `${SHIPMENT_URL}/invoice`
-const SHIPMENT_ORDER_STATEMENT_URL = `${SHIPMENT_URL}/order-statement`
 const SHIPMENT_EXTRA_COST_URL = `${SHIPMENT_URL}/extra-cost`
 
 export const QUERY_KEY = {
@@ -28,6 +27,7 @@ export const QUERY_KEY = {
 	addExtraCost: ['shipment', 'extra', 'add'],
 	removeExtraCost: ['shipment', 'extra', 'remove'],
 	invoice: ['shipment', 'invoice'],
+	invoiceAll: ['shipment', 'invoiceAll'],
 }
 
 // 합짐비 목록 조회
@@ -92,8 +92,7 @@ export function useShipmentMergeMutation() {
 			return client.post(SHIPMENT_MERGE_URL, params)
 		},
 		onSuccess() {
-			simpleAlert('선별 등록 완료되었습니다.')
-			window.location.reload()
+			simpleAlert('선별 등록 완료되었습니다.', () => window.location.reload())
 			queryClient.invalidateQueries({
 				queryKey: QUERY_KEY.list,
 			})
@@ -113,8 +112,7 @@ export function useShipmentMergeUpdateMutation() {
 			return client.put(SHIPMENT_MERGE_URL, params)
 		},
 		onSuccess() {
-			simpleAlert('변경 완료되었습니다.')
-			window.location.reload()
+			simpleAlert('변경 완료되었습니다.', () => window.location.reload())
 			queryClient.invalidateQueries(QUERY_KEY.dispatchList)
 			queryClient.invalidateQueries(QUERY_KEY.dispatchDetails)
 		},
@@ -133,8 +131,7 @@ export function useShipmentMergeDeleteMutation() {
 			return client.delete(`${SHIPMENT_MERGE_URL}/${id}`)
 		},
 		onSuccess() {
-			simpleAlert('해제 완료되었습니다.')
-			window.location.reload()
+			simpleAlert('해제 완료되었습니다.', () => window.location.reload())
 			queryClient.invalidateQueries(QUERY_KEY.dispatchList)
 			queryClient.invalidateQueries(QUERY_KEY.dispatchDetails)
 		},
@@ -153,8 +150,7 @@ export function useShipmentMergeStatusUpdateMutation() {
 			return client.patch(SHIPMENT_MERGE_URL, params)
 		},
 		onSuccess() {
-			simpleAlert('승인 상태 변경 완료되었습니다.')
-			window.location.reload()
+			simpleAlert('승인 상태 변경 완료되었습니다.', () => window.location.reload())
 			queryClient.invalidateQueries(QUERY_KEY.dispatchList)
 			queryClient.invalidateQueries(QUERY_KEY.dispatchDetails)
 		},
@@ -177,7 +173,7 @@ export function useShipmentDispatchListQuery(params) {
 // 배차/출고 등록 상세 페이지
 export function useShipmentDispatchDetailsQuery(id) {
 	return useQuery({
-		queryKey: [...QUERY_KEY.dispatchDetails,id],
+		queryKey: [...QUERY_KEY.dispatchDetails, id],
 		queryFn: async function () {
 			const response = await client.get(`${SHIPMENT_OUT_URL}/${id}`)
 			return response.data.data
@@ -232,8 +228,7 @@ export function useShipmentAddExtraCostMutation() {
 			return client.post(SHIPMENT_EXTRA_COST_URL, param)
 		},
 		onSuccess() {
-			simpleAlert('완료되었습니다.')
-			window.location.reload()
+			simpleAlert('완료되었습니다.', () => window.location.reload())
 			queryClient.invalidateQueries(QUERY_KEY.list)
 		},
 		onError(error) {
@@ -270,4 +265,10 @@ export function useShipmentInvoiceListQuery(params) {
 		},
 		enabled: !!params,
 	})
+}
+
+// 출고 거래명세서 출력
+export async function shipmentInvoiceAllListQuery(param) {
+	const response = await client.get(`${SHIPMENT_ORDER_INVOICE_URL}/${param}`)
+	return response.data.data
 }

@@ -1,12 +1,10 @@
 // 상시 판매 관리 > 주문 확인
 
 var checkboxSelection = function (params) {
-	// we put checkbox on the name if we are not doing grouping
 	return params.columnApi.getRowGroupColumns().length === 0
 }
 
 var headerCheckboxSelection = function (params) {
-	// we put checkbox on the name if we are not doing grouping
 	return params.columnApi.getRowGroupColumns().length === 0
 }
 
@@ -54,12 +52,13 @@ export const saleProductListFieldsCols = [
 
 export const saleProductListResponseToTableRowMap = {
 	uid: 'auctionNumber',
+	순번: 'orderUid',
 	'상시판매 번호': 'auctionNumber',
 	'상시판매 주문일자': 'auctionCreateDate',
 	고객사명: 'customerName',
 	고객코드: 'customerCode',
 	창고: 'storageName',
-	'상시판매 상태': 'auctionStatus',
+	'상시판매 상태': 'saleStatus',
 	승인상태: 'approvalStatus',
 	판매구분: 'saleCategory',
 	판매유형: 'saleType',

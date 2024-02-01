@@ -63,7 +63,7 @@ const Inventory = ({}) => {
 	const [pagenations, setPaginations] = useState([])
 	const [weight, setWeight] = useAtom(weightAtom)
 	const [isMulti, setIsMulti] = useAtom(StockMultiModal)
-	const [selectObj, setSelectObj] = useAtom(weightObj)
+	// const [selectObj, setSelectObj] = useAtom(weightObj)
 	const [selectProductNumber, setSelectProductNumber] = useState([])
 
 	const tableRowData = useMemo(() => {
@@ -88,7 +88,7 @@ const Inventory = ({}) => {
 		}
 	}
 	const [parameter, setParameter] = useAtom(changeCategoryAtom)
-	const [nowPopup, setNowPopup] = useAtom(popupObject)
+	// const [nowPopup, setNowPopup] = useAtom(popupObject)
 	const [modalSwitch, setModalSwitch] = useAtom(modalAtom)
 	const [errorMsg, setErrorMsg] = useState('')
 	const openModal = () => {

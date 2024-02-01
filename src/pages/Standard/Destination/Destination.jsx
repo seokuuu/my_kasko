@@ -30,8 +30,8 @@ import Table from '../../Table/Table'
 import {
 	StandardDestinaionFields,
 	StandardDestinaionFieldsCols,
-	StandardDestinationEdit,
-	StandardDestinationPost, StandardTransportationEdit, StandardTransportationFields,
+	StandardDestinationPost,
+	StandardTransportationEdit,
 } from '../../../constants/admin/Standard'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -179,8 +179,8 @@ const Destination = ({}) => {
 		})
 	}
 	useEffect(() => {
-		if (postMutation.isSuccess) refetch();
-	}, [postMutation.isSuccess]);
+		if (postMutation.isSuccess) refetch()
+	}, [postMutation.isSuccess])
 	const openModal = () => {
 		setModalSwitch(true)
 		setNowPopup((prev) => ({

@@ -10,6 +10,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { RouterProvider } from 'react-router-dom'
 import { queryClient } from './api/query'
 import AlertComponent from './store/Alert/AlertComponent'
+import LoadingSpinner from './store/Loading/LoadingSpinner'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
@@ -17,8 +18,9 @@ root.render(
 		<GlobalStyle />
 		<ThemeProvider theme={KaskoTheme}>
 			<QueryClientProvider client={queryClient}>
-				<AlertComponent />
+				<LoadingSpinner />
 				<RouterProvider router={router} />
+				<AlertComponent />
 				<ReactQueryDevtools position="top-right" initialIsOpen={false} />
 			</QueryClientProvider>
 		</ThemeProvider>

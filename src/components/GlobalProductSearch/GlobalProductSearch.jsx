@@ -191,7 +191,7 @@ const GlobalProductSearch = ({
 							/>
 						</div>
 						<div style={{ width: '180px' }}>
-							<BlackBtn width={100} height={40} onClick={searchButtonOnClickHandler}>
+							<BlackBtn type="button" width={100} height={40} onClick={searchButtonOnClickHandler}>
 								검색
 							</BlackBtn>
 						</div>

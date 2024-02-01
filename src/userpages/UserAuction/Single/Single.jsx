@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { BtnBound, SkyBtn, TGreyBtn, TWhiteBtn, WhiteGrnBtn } from '../../../common/Button/Button'
+import { BtnBound, SkyBtn, TGreyBtn, TWhiteBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
@@ -9,7 +9,6 @@ import {
 	CustomInput,
 	FilterContianer,
 	FilterHeader,
-	FilterHeaderAlert,
 	SubTitle,
 	TableContianer,
 	TCSubContainer,
@@ -23,20 +22,20 @@ import { useAtom } from 'jotai'
 import { isEqual } from 'lodash'
 import { getBidding, postBidding } from '../../../api/auction/bidding'
 import { getAuctionDestination } from '../../../api/auction/winning'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constants/admin/Auction'
+import { PROD_COL_NAME } from '../../../constants/user/constantKey'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import Table from '../../../pages/Table/Table'
 import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
-import UserBiddingSearchFields from './UserBiddingSearchFields'
-import useTableSelection from '../../../hooks/useTableSelection'
-import useTableData from '../../../hooks/useTableData'
 import AddWishButton from '../../UserSales/_components/AddWishButton'
-import { PROD_COL_NAME } from '../../../constants/user/constantKey'
-import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
+import UserBiddingSearchFields from './UserBiddingSearchFields'
 
 const Single = ({}) => {
 	const radioDummy = ['전체', '미응찰', '관심제품', '응찰']
@@ -110,8 +109,17 @@ const Single = ({}) => {
 	}
 	const [param, setParam] = useState(paramData)
 
+	const [liveStatus, setLiveStatus] = useState('LIVEgetBidding')
+
+	// 체크박스 클릭시 재렌더 이슈
+	// useEffect(() => {
+	// 	if (checkedArray && checkedArray?.length > 0) {
+	// 		setLiveStatus('')
+	// 	}
+	// }, [checkedArray])
+
 	// 전체 GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getBidding', getBidding)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 

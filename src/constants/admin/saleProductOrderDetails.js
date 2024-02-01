@@ -1,12 +1,10 @@
 // 상시 판매 관리 > 주문 확인 상세
 
 var checkboxSelection = function (params) {
-	// we put checkbox on the name if we are not doing grouping
 	return params.columnApi.getRowGroupColumns().length === 0
 }
 
 var headerCheckboxSelection = function (params) {
-	// we put checkbox on the name if we are not doing grouping
 	return params.columnApi.getRowGroupColumns().length === 0
 }
 
@@ -19,7 +17,7 @@ export const saleProductOrderDetailsCols = [
 		cellStyle: { textAlign: 'center' },
 	},
 	{ field: '순번', minWidth: 100, cellStyle: { textAlign: 'center' } },
-	// { field: '경매번호', minWidth: 100, cellStyle: { textAlign: 'center' } },
+	{ field: '경매번호', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '상시판매 번호', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '상시판매 주문일자', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '고객사명', minWidth: 100, cellStyle: { textAlign: 'center' } },
@@ -96,78 +94,79 @@ export const saleProductOrderDetailsCols = [
 ]
 
 export const saleProductOrderDetailsTableRowMap = {
-	순번: '', // Not directly available in the response
-	'상시판매 번호': 'auctionNumber', // Not directly available in the response
-	'상시판매 주문일자': 'auctionCreateDate', // Not directly available in the response
-	고객사명: 'customerName', // Maps to customerName
-	고객코드: 'customerCode', // Maps to customerCode
-	제품번호: 'productNumber', // Maps to productNumber
-	'프로넘 (ProNo.)': 'productProNumber', // Maps to productProNumber, if null, field might be absent
-	창고: 'storageName', // Maps to storageName
-	'상시판매 상태': 'saleStatus', // Maps to saleStatus
-	상시판매가: 'salePrice', // Maps to salePrice
-	승인상태: 'approvalStatus', // Maps to approvalStatus
-	'목적지 코드': 'destinationCode', // Maps to destinationCode
-	'목적지 명': 'destinationName', // Maps to destinationName
-	'목적지 주소': 'customerDestinationAddress', // Maps to customerDestinationAddress
-	'목적지 연락처(사무실)': 'customerDestinationPhone', // Maps to customerDestinationPhone
-	'목적지담당자 연락처 (휴대폰)': 'customerDestinationManagerPhone', // Maps to customerDestinationManagerPhone
-	하차지명: 'customerDestinationName', // Not directly available in the response
-	'변경요청 목적지명': 'requestDestinationName', // Maps to requestDestinationName
-	'변경요청 목적지 주소': 'requestCustomerDestinationAddress', // Maps to requestCustomerDestinationAddress
-	'변경요청 목적지 연락처': 'requestCustomerDestinationPhone', // Maps to requestCustomerDestinationPhone
-	판매구분: 'saleCategory', // Maps to saleCategory
-	판매유형: 'saleType', // Maps to saleType
-	판매가유형: 'salePriceType', // Maps to salePriceType
-	제품군: 'spart', // Maps to spart
-	제품등급: 'grade', // Maps to grade
-	정척여부: 'preferThickness', // Not directly available in the response
-	유찰횟수: 'failCount', // Not directly available in the response
-	'제품 낙찰단가(원/톤)': 'productBiddingPrice', // Maps to productBiddingPrice
-	'낙찰총단가(원/톤)': 'totalBiddingPrice', // Maps to totalBiddingPrice
-	'제품공급가(원/톤)': 'orderPrice', // Maps to orderPrice
-	'제품부가세(원/톤)': 'orderPriceVat', // Maps to orderPriceVat
-	'제품금액 (VAT포함)': 'totalOrderPrice', // Not directly available in the response
-	'기본 운임단가(원/톤)': 'freightFee', // Maps to freightFee
-	'할증 운임단가(원/톤)': 'extraUnitPrice', // Maps to extraUnitPrice
-	'운반비공급가(원/톤)': 'freightCost', // Maps to freightCost
-	'운반비부가세(원/톤)': 'freightCostVat', // Maps to freightCostVat
-	'운반비 금액 (VAT포함)': 'freightCostVat', // Not directly available in the response
-	'총공급가(원/톤)': 'totalSupplyPrice', // Not directly available in the response
-	'총부가세(원/톤)': 'totalVat', // Not directly available in the response
-	'합계금액(원/톤)': 'totalPrice', // Not directly available in the response
-	두께: 'thickness', // Maps to thickness
-	폭: 'width', // Maps to width
-	길이: 'length', // Maps to length
-	중량: 'totalWeight', // Maps to totalWeight
-	규격약호: 'spec', // Maps to spec
-	TS: 'ts', // Maps to ts
-	YP: 'yp', // Maps to yp
-	'C%': 'c', // Maps to c
-	EL: 'el', // Maps to el
-	SI: 'si', // Maps to si
-	MN: 'mn', // Maps to mn
-	P: 'p', // Maps to p
-	S: 's', // Maps to s
-	여재원인: 'causeCode', // Maps to causeCode
-	여제원인명1: 'causeCodeName', // Maps to causeCodeName
-	용도코드: 'usageCode', // Maps to usageCode
-	용도명: 'usageCodeName', // Maps to usageCodeName
-	메모: 'productMemo', // Maps to productMemo
-	주문상태: 'orderStatus', // Maps to orderStatus
-	'확정전송 일자': 'sendDate', // Not directly available in the response
-	주문번호: 'orderUid', // Maps to orderUid
-	비고: 'note', // Not directly available in the response
-	'매입 기본운임단가(원/톤)': '', // Not directly available in the response
-	'매입 할증운임단가(원/톤)': '', // Not directly available in the response
-	'매입 운임총단가': '', // Not directly available in the response
-	'매입 운반비공급가(원/톤)': '', // Not directly available in the response
-	'매입 운반비부가세(원/톤)': '', // Not directly available in the response
-	'매입 운반비 금액 (VAT포함)': '', // Not directly available in the response
-	매입운반비: '', // Not directly available in the response
-	매출운반비: '', // Not directly available in the response
-	재고상태: '', // Not directly available in the response
-	// '카스코 낙찰가': '', // Not directly available in the response
-	최종수정자: 'updateMemberName', // Maps to updateMemberName
-	최종수정일시: 'updateDate', // Maps to updateDate
+	순번: '',
+	'상시판매 번호': 'orderNumber',
+	경매번호: 'auctionNumber',
+	'상시판매 주문일자': 'auctionCreateDate',
+	고객사명: 'customerName',
+	고객코드: 'customerCode',
+	제품번호: 'productNumber',
+	'프로넘 (ProNo.)': 'productProNumber',
+	창고: 'storageName',
+	'상시판매 상태': 'saleStatus',
+	상시판매가: 'salePrice',
+	승인상태: 'approvalStatus',
+	'목적지 코드': 'destinationCode',
+	'목적지 명': 'destinationName',
+	'목적지 주소': 'customerDestinationAddress',
+	'목적지 연락처(사무실)': 'customerDestinationPhone',
+	'목적지담당자 연락처 (휴대폰)': 'customerDestinationManagerPhone',
+	하차지명: 'customerDestinationName',
+	'변경요청 목적지명': 'requestDestinationName',
+	'변경요청 목적지 주소': 'requestCustomerDestinationAddress',
+	'변경요청 목적지 연락처': 'requestCustomerDestinationPhone',
+	판매구분: 'saleCategory',
+	판매유형: 'saleType',
+	판매가유형: 'salePriceType',
+	제품군: 'spart',
+	제품등급: 'grade',
+	정척여부: 'preferThickness',
+	유찰횟수: 'failCount',
+	'제품 낙찰단가(원/톤)': 'productBiddingPrice',
+	'낙찰총단가(원/톤)': 'totalBiddingPrice',
+	'제품공급가(원/톤)': 'orderPrice',
+	'제품부가세(원/톤)': 'orderPriceVat',
+	'제품금액 (VAT포함)': 'totalOrderPrice',
+	'기본 운임단가(원/톤)': 'freightFee',
+	'할증 운임단가(원/톤)': 'extraUnitPrice',
+	'운반비공급가(원/톤)': 'freightCost',
+	'운반비부가세(원/톤)': 'freightCostVat',
+	'운반비 금액 (VAT포함)': 'totalFreightCost',
+	'총공급가(원/톤)': 'totalSupplyPrice',
+	'총부가세(원/톤)': 'totalVat',
+	'합계금액(원/톤)': 'totalPrice',
+	두께: 'thickness',
+	폭: 'width',
+	길이: 'length',
+	중량: 'totalWeight',
+	규격약호: 'spec',
+	TS: 'ts',
+	YP: 'yp',
+	'C%': 'c',
+	EL: 'el',
+	SI: 'si',
+	MN: 'mn',
+	P: 'p',
+	S: 's',
+	여재원인: 'causeCode',
+	여제원인명1: 'causeCodeName',
+	용도코드: 'usageCode',
+	용도명: 'usageCodeName',
+	메모: 'productMemo',
+	주문상태: 'orderStatus',
+	'확정전송 일자': 'sendDate',
+	주문번호: 'orderUid',
+	비고: 'note',
+	'매입 기본운임단가(원/톤)': 'inboundFreightFee',
+	'매입 할증운임단가(원/톤)': 'inboundExtraUnitPrice',
+	'매입 운임총단가': 'inboundFreightCost',
+	'매입 운반비공급가(원/톤)': 'inboundFreightTotalCost',
+	'매입 운반비부가세(원/톤)': 'inboundFreightCostVat',
+	'매입 운반비 금액 (VAT포함)': 'inboundFreightAmount',
+	매입운반비: 'freightCost',
+	매출운반비: 'totalFreightCost',
+	재고상태: 'stockStatus',
+	'카스코 낙찰가': 'confirmPrice',
+	최종수정자: 'updateMemberName',
+	최종수정일시: 'updateDate',
 }

@@ -172,6 +172,7 @@ export const useUserOrderMutaion = () => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['user', 'cart'] })
+			queryClient.invalidateQueries({ queryKey: ['user', 'single'] })
 			return simpleAlert('주문을 완료하였습니다.')
 		},
 		onError: (error) => {
@@ -194,6 +195,7 @@ export const useUserOrderCancelMutation = () => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: 'order' })
+			queryClient.invalidateQueries({ queryKey: 'getOrderList' })
 			return simpleAlert('주문을 취소하였습니다.')
 		},
 		onError: (error) => {

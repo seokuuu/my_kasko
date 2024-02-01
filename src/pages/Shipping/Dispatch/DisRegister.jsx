@@ -52,6 +52,7 @@ const DisRegister = () => {
 	const { mutate: removeDispatch } = useRemoveDispatchMutation() // 배차 취소
 	const { mutate: shipmentStatusUpdate } = useShipmentStatusUpdateMutation() // 출고 상태 변경
 
+	// 배차기사 취소
 	const onRemoveDispatch = () => {
 		if (!selectedRows || selectedRows?.length === 0) {
 			return simpleAlert('배차 취소할 제품을 선택해주세요.')
@@ -64,6 +65,8 @@ const DisRegister = () => {
 		}
 		simpleConfirm('배차 취소를 하시겠습니까?', () => removeDispatch(selectItem['출고 고유번호']))
 	}
+
+	// 배차기사 등록
 	const onSetDispatch = () => {
 		if (!selectedRows || selectedRows?.length === 0) {
 			return simpleAlert('배차 등록할 제품을 선택해주세요.')
@@ -75,6 +78,7 @@ const DisRegister = () => {
 		setId(selectItem['출고 고유번호'])
 		setIsPostModal(true)
 	}
+
 	// 출고 등록
 	const onRegister = () => {
 		if (!selectedRows || selectedRows?.length === 0) {
@@ -187,7 +191,8 @@ const DisRegister = () => {
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteBlackBtn>수취서 출력</WhiteBlackBtn>
+						{/*<WhiteBlackBtn onClick={getInvoicesHandler}>수취서 출력</WhiteBlackBtn>*/}
+						{/*<ReceiptExcel />*/}
 						<WhiteBlackBtn onClick={onRegister}>출고 등록</WhiteBlackBtn>
 					</div>
 				</TCSubContainer>

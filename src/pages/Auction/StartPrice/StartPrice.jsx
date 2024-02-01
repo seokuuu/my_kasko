@@ -156,7 +156,7 @@ const StartPrice = ({}) => {
 	useEffect(() => {
 		const updatedProductList = checkedArray?.map((item) => ({
 			uid: item['고유 번호'],
-			effectDate: effectDate,
+			effectDate: applyDate,
 			effectPrice: effectPrice,
 			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
 		}))
@@ -362,9 +362,9 @@ const StartPrice = ({}) => {
 					<GlobalProductSearch
 						param={param}
 						isToggleSeparate={true}
-						renderCustomSearchFields={(props) => <StartPriceFields {...props} />} // 만들어야함 -> WinningSearchFields
-						globalProductSearchOnClick={globalProductSearchOnClick} // import
-						globalProductResetOnClick={globalProductResetOnClick} // import
+						renderCustomSearchFields={(props) => <StartPriceFields {...props} />}
+						globalProductSearchOnClick={globalProductSearchOnClick}
+						globalProductResetOnClick={globalProductResetOnClick}
 					/>
 				</>
 			)}
@@ -383,6 +383,7 @@ const StartPrice = ({}) => {
 					{/* <div>
 						선택 중량<span> 2 </span>kg / 총 중량 kg
 					</div> */}
+					<div></div>
 					<div
 						style={{
 							display: 'flex',
@@ -393,11 +394,12 @@ const StartPrice = ({}) => {
 					>
 						<p>일괄 단가 적용</p>
 						<CustomInput
-							placeholder="응찰가 입력"
+							placeholder="단가 입력"
 							width={120}
 							height={32}
 							value={effectPrice}
 							onChange={(e) => {
+								console.log(e.target.value)
 								setEffectPrice(parseInt(e.target.value))
 							}}
 						/>
