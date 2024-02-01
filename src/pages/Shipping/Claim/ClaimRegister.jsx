@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 
 import { BlackBtn, WhiteBtn } from '../../../common/Button/Button'
@@ -101,7 +101,7 @@ const ClaimRegister = () => {
 						</ClaimRow>
 					</ClaimTable>
 					<h4>내용</h4>
-					<TextEditor name="content" setState={setForm} value={form.content} />
+					<TextEditor name="content" setState={setForm} />
 					<CRWMainBottom>
 						<CMBLeft>
 							<div>
