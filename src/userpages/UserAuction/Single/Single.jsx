@@ -485,7 +485,7 @@ const Single = ({}) => {
 				</TCSubContainer>
 				<Table
 					getCol={getCol}
-					getRow={tableRowData}
+					getRow={getRow}
 					tablePagination={tablePagination}
 					onPageChange={onPageChange}
 					changeFn={onCellValueChanged}
