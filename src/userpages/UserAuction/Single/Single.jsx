@@ -17,7 +17,7 @@ import {
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
-import { useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isEqual } from 'lodash'
 import { getBidding, postBidding } from '../../../api/auction/bidding'
@@ -36,8 +36,10 @@ import Table from '../../../pages/Table/Table'
 import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
 import AddWishButton from '../../UserSales/_components/AddWishButton'
 import UserBiddingSearchFields from './UserBiddingSearchFields'
+import useAlert from '../../../store/Alert/useAlert'
 
 const Single = ({}) => {
+	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const radioDummy = ['전체', '미응찰', '관심제품', '응찰']
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 	const [destinationPopUp, setDestinationPopUp] = useAtom(userPageSingleDestiFindAtom)
@@ -189,13 +191,25 @@ const Single = ({}) => {
 		}))
 	}
 
-	const postMutation = useMutationQuery('', postBidding)
+	const { mutate: postMutation } = useMutation(postBidding, {
+		onSuccess() {
+			showAlert({
+				title: '응찰이 완료되었습니다.',
+				content: '',
+				func: () => {
+					refetch()
+					queryClient.invalidateQueries('auction')
+				},
+			})
+		},
+		onError: () => {
+			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		},
+	})
 
 	// 응찰 버튼 POST
 	const confirmOnClickHandler = () => {
-		postMutation.mutate(winningCreateData, {
-			onSuccess: refetch(), // onSuccess에 처리할 함수 전달
-		})
+		postMutation(winningCreateData)
 	}
 
 	const globalProductResetOnClick = () => {

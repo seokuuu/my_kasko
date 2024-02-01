@@ -8,7 +8,12 @@ const urls = {
 	bid: 'auction/bid',
 }
 
+// TODO
 // 로그인 후 이용해주세요 오류 남. 필터 기능 없이 일단 진행
+// pageNum=1&pageSize=50&type=%EB%8B%A8%EC%9D%BC
+// pageNum: 1
+// pageSize: 50
+// type: 단일
 // export function getBidding(data) {
 // 	return client.get(urls.bidding, { params: data })
 // }

@@ -29,34 +29,61 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { getDestinationFind } from '../../../api/search'
 import { destiApproveReq, getWinningDetail } from '../../../api/auction/winning'
 import { AuctionWinningDetailFields, AuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
-import { useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import Table from '../../../pages/Table/Table'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import PrintDepositRequestButton from '../../UserSales/_components/PrintDepositRequestButton'
+import useAlert from '../../../store/Alert/useAlert'
 
 const WinningDetail = ({ detailRow }) => {
+	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 
-	const NewDummy = {
-		'고객사 명': '(주) 아이덴잇',
-		'고객 코드': 'K00-0012',
-		'': '',
-		'총 수량': '30',
-		'총 중량(KG)': '4,612,157',
-		'입금 요청 금액 (원)': '45,237,876',
-		'제품금액(VAT 포함)': '000',
-		'운임비(VAT 포함)': '000',
-		ㅤ: 'ㅤ',
-	}
+	// const NewDummy = {
+	// 	'고객사 명': '(주) 아이덴잇',
+	// 	'고객 코드': 'K00-0012',
+	// 	'': '',
+	// 	'총 수량': '30',
+	// 	'총 중량(KG)': '4,612,157',
+	// 	'입금 요청 금액 (원)': '45,237,876',
+	// 	'제품금액(VAT 포함)': '000',
+	// 	'운임비(VAT 포함)': '000',
+	// 	ㅤ: 'ㅤ',
+	// }
 
-	const entries = Object.entries(NewDummy)
-	const chunkedEntries = []
+	// const entries = Object.entries(NewDummy)
+	// const chunkedEntries = []
 
-	for (let i = 0; i < entries.length; i += 3) {
-		chunkedEntries.push(entries.slice(i, i + 3))
-	}
+	// for (let i = 0; i < entries.length; i += 3) {
+	// 	chunkedEntries.push(entries.slice(i, i + 3))
+	// }
+
+	console.log('detailRow', detailRow)
+
+	const titleData = [
+		'고객사 명',
+		'고객 코드',
+		'',
+		'총 수량',
+		'총 중량',
+		'입금 요청 금액',
+		'제품 금액 (VAT 포함)',
+		'운반비 (VAT 포함)',
+		'',
+	]
+	const contentData = [
+		detailRow?.['고객사명'],
+		detailRow?.['고객 코드'],
+		'',
+		detailRow?.['수량'],
+		detailRow?.['중량'],
+		new Intl.NumberFormat('en-US').format(detailRow?.['입금 요청액']) + '원',
+		new Intl.NumberFormat('en-US').format(detailRow?.['제품 금액 (VAT 포함)']) + '원',
+		new Intl.NumberFormat('en-US').format(detailRow?.['운반비 (VAT 포함)']) + '원',
+		'',
+	]
 
 	const handleSelectChange = (selectedOption, name) => {
 		// setInput(prevState => ({
@@ -115,7 +142,11 @@ const WinningDetail = ({ detailRow }) => {
 	const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
 
 	console.log('inventoryDestination', inventoryDestination?.data?.data)
-	const { isLoading, isError, data, isSuccess } = useReactQuery(detailParams, 'getWinningDetail', getWinningDetail)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(
+		detailParams,
+		'getWinningDetail',
+		getWinningDetail,
+	)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 	const [winningCreateData, setWinningCreateData] = useState({})
@@ -186,9 +217,24 @@ const WinningDetail = ({ detailRow }) => {
 	}
 
 	// 목적지 승인 요청 POST
-	const destiApproveMutation = useMutationQuery('', destiApproveReq)
+	const { mutate: destiApproveMutation } = useMutation(destiApproveReq, {
+		onSuccess() {
+			showAlert({
+				title: '목적지 승인이 완료되었습니다.',
+				content: '',
+				func: () => {
+					refetch()
+					queryClient.invalidateQueries('destiApprove')
+					setWinningCreateData({})
+				},
+			})
+		},
+		onError: () => {
+			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		},
+	})
 	const destiApproveOnClickHandler = () => {
-		destiApproveMutation.mutate(winningCreateData)
+		destiApproveMutation(winningCreateData)
 	}
 
 	return (
@@ -202,7 +248,7 @@ const WinningDetail = ({ detailRow }) => {
 					<p>{detailRow && detailRow['경매 번호']}</p>
 				</FilterTCTop>
 
-				<TableWrap style={{ marginTop: '5px' }}>
+				{/* <TableWrap style={{ marginTop: '5px' }}>
 					<ClaimTable>
 						{chunkedEntries.map((chunk, i) => (
 							<ClaimRow key={i}>
@@ -215,7 +261,19 @@ const WinningDetail = ({ detailRow }) => {
 							</ClaimRow>
 						))}
 					</ClaimTable>
-				</TableWrap>
+				</TableWrap> */}
+				<ClaimTable style={{ marginBottom: '30px' }}>
+					{[0, 1, 2].map((index) => (
+						<ClaimRow key={index}>
+							{titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
+								<Fragment agmentkey={title}>
+									<ClaimTitle>{title}</ClaimTitle>
+									<ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
+								</Fragment>
+							))}
+						</ClaimRow>
+					))}
+				</ClaimTable>
 			</div>
 			<TableContianer>
 				<TCSubContainer bor>
