@@ -36,11 +36,7 @@ export async function postExcelSubmitProduct(data) {
 	const form = new FormData()
 	form.append('excel', data.file)
 
-	try {
-		return await client.post(`${urls.incoming}`, form, {
-			headers: formHeaders,
-		})
-	} catch (e) {
-		alert(e?.data?.message)
-	}
+	return await client.post(`${urls.incoming}`, form, {
+		headers: formHeaders,
+	})
 }
