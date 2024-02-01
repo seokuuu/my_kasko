@@ -146,7 +146,7 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData })
 	// }
 
 	const handleAddBtn = () => {
-		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
+		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('추가할 항목을 선택해주세요.')
 		else {
 			simpleConfirm('선택한 항목을 추가하시겠습니까?', () =>
 				checkedArray.forEach((item) => {
