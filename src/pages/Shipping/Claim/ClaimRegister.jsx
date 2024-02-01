@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 
 import { BlackBtn, WhiteBtn } from '../../../common/Button/Button'
@@ -13,12 +13,11 @@ import { CheckBox } from '../../../common/Check/Checkbox'
 
 import { CheckImg2 } from '../../../common/Check/CheckImg'
 
+import moment from 'moment'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useClaimRegisterMutation } from '../../../api/operate/claim'
 import { MainSelect } from '../../../common/Option/Main'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, DateTitle } from '../../../components/MapTable/MapTable'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { RadioSearchButton } from '../../../components/Search'
-import { useClaimRegisterMutation } from '../../../api/operate/claim'
-import moment from 'moment'
 
 const checkDummy = ['카스코', '현대제철']
 
@@ -103,7 +102,7 @@ const ClaimRegister = () => {
 						</ClaimRow>
 					</ClaimTable>
 					<h4>내용</h4>
-					<TextEditor name="content" setState={setForm} value={form.content} />
+					<TextEditor name="content" setState={setForm} />
 					<CRWMainBottom>
 						<CMBLeft>
 							<div>
