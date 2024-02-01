@@ -21,8 +21,8 @@ const useExcelUpload = ({ excelUploadAPI, refreshQueryKey, setModalSwitch, file 
 				},
 			})
 		},
-		onError() {
-			simpleAlert('등록에 실패하였습니다.')
+		onError(error) {
+			simpleAlert(error ? error.data.message : '등록에 실패하였습니다.')
 		},
 	})
 

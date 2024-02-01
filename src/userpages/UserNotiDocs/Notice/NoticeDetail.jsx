@@ -85,7 +85,11 @@ const NoticeDetail = () => {
 											noticeDetails?.fileList.map((notice, i) => (
 												<FileUploadWrap key={i}>
 													<div>{notice.originalName}</div>
-													<button onClick={() => fileDownload(notice.fileUrl, notice.originalName)}>
+													<button
+														onClick={() => {
+															// fileDownload(notice.fileUrl, notice.originalName)
+														}}
+													>
 														<img src="/svg/Upload.svg" alt="파일" />
 													</button>
 													{/* <a href={`${notice.fileUrl}`} download target="_blank" rel="noopener noreferrer">
