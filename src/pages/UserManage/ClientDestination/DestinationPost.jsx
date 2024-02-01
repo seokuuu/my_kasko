@@ -194,7 +194,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 					console.log('테스트 ')
 					if (d?.data?.status === 200) {
 						showAlert({
-							title: '저징되었습니다.',
+							title: '저장되었습니다.',
 							func: () => {
 								setChoiceComponent('리스트')
 								window.location.reload()
