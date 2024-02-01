@@ -27,7 +27,7 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { InputContainer, NoOutInput, Unit } from '../../../common/Input/Input'
 
-import { useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isArray, isEqual } from 'lodash'
 import { getAuctionDestination, getAuctionNumber, successfulBid } from '../../../api/auction/winning'
@@ -44,7 +44,7 @@ import WinningProductAdd from './WinningProductAdd'
 import useAlert from '../../../store/Alert/useAlert'
 
 const WinningCreate = ({}) => {
-	const { simpleConfirm, simpleAlert } = useAlert()
+	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [destinationData, setDestinationData] = useAtom(winningDestiData)
 	console.log('destinationData', destinationData)
@@ -133,7 +133,7 @@ const WinningCreate = ({}) => {
 
 	console.log('auctionNowNum', auctionNowNum?.data?.data)
 
-	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
+	const { data: auctionDestination, refetch } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
 
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState()
@@ -248,10 +248,25 @@ const WinningCreate = ({}) => {
 		}))
 	}
 
-	const successfulBidMutation = useMutationQuery('', successfulBid)
+	// 응찰 Mutate
+	const { mutate: successfulBidMutation } = useMutation(successfulBid, {
+		onSuccess() {
+			showAlert({
+				title: '낙찰이 생성되었습니다.',
+				content: '',
+				func: () => {
+					refetch()
+					queryClient.invalidateQueries('winningcreate')
+				},
+			})
+		},
+		onError: () => {
+			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		},
+	})
 
 	const successfulBidOnClick = () => {
-		successfulBidMutation.mutate(winningCreateData)
+		successfulBidMutation(winningCreateData)
 	}
 
 	const globalProductResetOnClick = () => {
