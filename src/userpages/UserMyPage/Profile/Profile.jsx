@@ -79,7 +79,7 @@ const ProfileEdit = () => {
 	const [checkData, setCheckData] = useState(Array.from({ length: checkDummy.length }, () => ''))
 
 	// TODO : 중복체크 response 없음
-	const { isError, isSuccess, data } = useReactQuery('getCustomerPrivacy', {}, getCustomerPrivacy)
+	const { isError, isSuccess, data } = useReactQuery('getCustomerPrivacy', '', getCustomerPrivacy)
 	const {
 		isError: isBusinessNumberError,
 		isSuccess: isBusinessNumberSuccess,
@@ -179,7 +179,7 @@ const ProfileEdit = () => {
 		const updatedInput = { ...input }
 
 		formData.forEach((value, key) => {
-			if (input.hasOwnProperty(key) && value && !checkboxType.includes(key) && !fileType.includes(key)) {
+			if (input.hasOwnProperty(key) && value && !checkboxType?.includes(key) && !fileType?.includes(key)) {
 				updatedInput[key] = value
 			}
 		})

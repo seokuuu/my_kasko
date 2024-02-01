@@ -64,11 +64,13 @@ const OrderSearchFields = ({
 									checked: false,
 									text: '확정 전송 대기',
 									value: '확정 전송 대기',
-								},								{
+								},
+								{
 									checked: false,
 									text: '주문 취소',
 									value: '주문 취소',
-								},								{
+								},
+								{
 									checked: false,
 									text: '주문 확정',
 									value: '주문 확정',
