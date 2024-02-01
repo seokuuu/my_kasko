@@ -131,6 +131,9 @@ const Destination = ({}) => {
 				setModalSwitch(false)
 				// 추가로 필요한 작업 수행
 			},
+			onError: (error) => {
+				simpleAlert(error?.data?.message || '목적지 등록에 실패하였습니다. 다시 시도해 주세요.')
+			}
 		})
 	}
 

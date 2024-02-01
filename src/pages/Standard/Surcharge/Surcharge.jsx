@@ -126,6 +126,9 @@ const Transport = ({}) => {
     onSuccess: () => {
       queryClient.invalidateQueries('surcharge')
     },
+    onError: (error) => {
+			simpleAlert(error?.data?.message || '삭제에 실패했습니다. 다시 시도해 주세요.')
+		}
   })
 
   const propsRemove = () => {

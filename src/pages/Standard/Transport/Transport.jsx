@@ -42,14 +42,15 @@ import {
 } from '../../../constants/admin/Standard'
 
 import {
-	AuctionUnitPricePostDropOptions,
 	AuctionUnitPricePostDropOptions2,
-	AuctionUnitPricePostDropOptions3, AuctionUnitPricePostDropOptions4,
+	AuctionUnitPricePostDropOptions3
 } from '../../../constants/admin/Auction'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isArray, isEqual } from 'lodash'
 import moment from 'moment'
+import { getSpartList, getStorageList } from '../../../api/transPortDrop'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -57,9 +58,11 @@ import TableModal from '../../../modal/Table/TableModal'
 import {
 	deleteAdminTransportation,
 	editAdminTransportation,
+	editAdminUnitCost,
 	getAdminTransportation,
-	editAdminUnitCost, postAdminTransportation,
+	postAdminTransportation,
 } from '../../../service/admin/Standard'
+import useAlert from '../../../store/Alert/useAlert'
 import {
 	btnCellRenderAtom,
 	btnCellUidAtom,
@@ -68,16 +71,11 @@ import {
 	popupObject,
 	selectedRowsAtom,
 } from '../../../store/Layout/Layout'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import TransportSearchFilter from './TransportSearchFilter'
-import axios from 'axios'
-import { client } from '../../../api'
-import { getOrderList } from '../../../api/orderList'
-import { getSpartList, getStorageList } from '../../../api/transPortDrop'
-import { getSPartList } from '../../../api/search'
-import useAlert from '../../../store/Alert/useAlert'
 
-const API_PATH = process.env.REACT_APP_API_URL
+
+
+
 const Transport = ({}) => {
 
 	const [modalSwitch, setModalSwitch] = useAtom(destiPostModalAtom)
@@ -94,12 +92,6 @@ const Transport = ({}) => {
 
 	const { simpleAlert } = useAlert();
 
-	const handleSelectChange = (selectedOption, name) => {
-		// setInput(prevState => ({
-		//   ...prevState,
-		//   [name]: selectedOption.label,
-		// }));
-	}
 	const [isRotated, setIsRotated] = useState(false)
 
 	// Function to handle image click and toggle rotation
@@ -206,7 +198,7 @@ const Transport = ({}) => {
 
 	const paramData = {
 		pageNum: 1,
-		pageSize: 5,
+		pageSize: 50,
 		type: types, // (0: 매입 / 1: 매출)
 	}
 	// GET
@@ -237,6 +229,9 @@ const Transport = ({}) => {
 		onSuccess: () => {
 			queryClient.invalidateQueries('transportation')
 		},
+		onError: (error) => {
+			simpleAlert(error?.data?.message || '운반비 삭제에 실패했습니다. 다시 시도해 주세요.')
+		}
 	})
 
 	// 선택한 것 삭제 요청 (해당 함수 func 인자로 전달)
@@ -278,6 +273,9 @@ const Transport = ({}) => {
 			onSuccess: () => {
 				setModalSwitch(false)
 			},
+			onError: (error) => {
+				simpleAlert(error?.data?.message || '등록에 실패했습니다. 다시 시도해 주세요.')
+			}
 		})
 	}
 
