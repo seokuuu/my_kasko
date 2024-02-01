@@ -281,7 +281,6 @@ const WinningDetail = ({ detailRow }) => {
 				func: () => {
 					refetch()
 					queryClient.invalidateQueries('partDelete')
-					setWinningCreateData({})
 				},
 			})
 		},
@@ -302,7 +301,6 @@ const WinningDetail = ({ detailRow }) => {
 				func: () => {
 					refetch()
 					queryClient.invalidateQueries('partDelete')
-					setWinningCreateData({})
 				},
 			})
 		},
