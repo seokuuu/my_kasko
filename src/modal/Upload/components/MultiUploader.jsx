@@ -132,7 +132,7 @@ const Progressbar = styled.progress`
 	}
 `
 
-const FileRemoveButton = styled.button`
+export const FileRemoveButton = styled.button`
 	width: 16px;
 	height: 16px;
 	border-radius: 50%;
@@ -143,7 +143,7 @@ const FileRemoveButton = styled.button`
 	justify-content: center;
 	padding-bottom: 4px;
 `
-const UploadCompleteText = styled.span`
+export const UploadCompleteText = styled.span`
 	color: #4c83d6;
 	font-size: 12px;
 	font-weight: bold;

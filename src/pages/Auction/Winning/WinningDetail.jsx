@@ -28,7 +28,7 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import DefaultBlueBar from '../../../modal/Multi/DefaultBlueBar'
 import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 
-import { useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isEqual } from 'lodash'
 import {
 	destiApproveReq,
@@ -50,9 +50,11 @@ import InventoryFind from '../../../modal/Multi/InventoryFind'
 import PrintDepositRequestButton from '../../../userpages/UserSales/_components/PrintDepositRequestButton'
 import Table from '../../Table/Table'
 import WinningDetailFields from './WinningDetailFields'
+import useAlert from '../../../store/Alert/useAlert'
 
 // 경매 낙찰 상세
 const WinningDetail = ({ detailRow }) => {
+	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [tablePagination, setTablePagination] = useState([])
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
@@ -195,15 +197,15 @@ const WinningDetail = ({ detailRow }) => {
 		}
 	}, [isSuccess, resData])
 
-	useEffect(() => {
-		let getData = resData
-		//타입, 리액트쿼리, 데이터 확인 후 실행
-		if (!isSuccess && !resData) return
-		if (Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, AuctionWinningDetailFields))
-			setTablePagination(resPagination)
-		}
-	}, [isSuccess, resData])
+	// useEffect(() => {
+	// 	let getData = resData
+	// 	//타입, 리액트쿼리, 데이터 확인 후 실행
+	// 	if (!isSuccess && !resData) return
+	// 	if (Array.isArray(getData)) {
+	// 		setGetRow(add_element_field(getData, AuctionWinningDetailFields))
+	// 		setTablePagination(resPagination)
+	// 	}
+	// }, [isSuccess, resData])
 
 	useEffect(() => {
 		const productNumbers = checkedArray?.map((item) => item['주문 고유 번호'])
@@ -270,39 +272,111 @@ const WinningDetail = ({ detailRow }) => {
 		}))
 	}
 
-	// 부분 낙찰 취소 POST
-	const deleteMutation = useMutationQuery('', partDeleteBidding)
-
 	// 부분 낙찰 취소 버튼 Handler
+	const { mutate: deleteMutation } = useMutation(partDeleteBidding, {
+		onSuccess() {
+			showAlert({
+				title: '부분 낙찰 취소되었습니다.',
+				content: '',
+				func: () => {
+					refetch()
+					queryClient.invalidateQueries('partDelete')
+				},
+			})
+		},
+		onError: () => {
+			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		},
+	})
 	const deleteOnClickHandler = () => {
-		deleteMutation.mutate(extractedArray)
+		deleteMutation(extractedArray)
 	}
 
 	// 부분 입금 확인 POST
-	const depositMuation = useMutationQuery('', partDepositConfirm)
-
+	const { mutate: depositMuation } = useMutation(partDepositConfirm, {
+		onSuccess() {
+			showAlert({
+				title: '부분 입금 확인되었습니다.',
+				content: '',
+				func: () => {
+					refetch()
+					queryClient.invalidateQueries('partDelete')
+				},
+			})
+		},
+		onError: () => {
+			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		},
+	})
 	// 부분 입금 확인 버튼 Handler
 	const partDepostiHandler = () => {
-		depositMuation.mutate(extractedArray)
+		depositMuation(extractedArray)
 	}
 
 	// 목적지 승인 요청 POST
-	const destiApproveMutation = useMutationQuery('', destiApproveReq)
+	const { mutate: destiApproveMutation } = useMutation(destiApproveReq, {
+		onSuccess() {
+			showAlert({
+				title: '목적지 승인이 완료되었습니다.',
+				content: '',
+				func: () => {
+					refetch()
+					queryClient.invalidateQueries('destiApprove')
+					setWinningCreateData({})
+				},
+			})
+		},
+		onError: () => {
+			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		},
+	})
 	const destiApproveOnClickHandler = () => {
-		destiApproveMutation.mutate(winningCreateData)
+		destiApproveMutation(winningCreateData)
 	}
 
 	// 목적지 변경 반려 POST
-	const destiChangeRejMutation = useMutationQuery('', destiChangeReject)
+	const { mutate: destiChangeRejMutation } = useMutation(destiChangeReject, {
+		onSuccess() {
+			showAlert({
+				title: '목적지 변경이 반려되었습니다.',
+				content: '',
+				func: () => {
+					refetch()
+					queryClient.invalidateQueries('destiReject')
+					setWinningCreateData({})
+				},
+			})
+		},
+		onError: () => {
+			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		},
+	})
 	const destiChangeRejOnClickHandler = () => {
-		destiChangeRejMutation.mutate(winningCreateData)
-	}
-	// 목적지 변경 승인 POST
-	const destiChangeApproveMutation = useMutationQuery('', destiChangeApprove)
-	const destiChangeApprovOnClickHandler = () => {
-		destiChangeApproveMutation.mutate(winningCreateData)
+		destiChangeRejMutation(winningCreateData)
 	}
 
+	// 목적지 변경 승인 POST
+	const { mutate: destiChangeApproveMutation } = useMutation(destiChangeReject, {
+		onSuccess() {
+			showAlert({
+				title: '목적지 변경이 승인되었습니다.',
+				content: '',
+				func: () => {
+					refetch()
+					queryClient.invalidateQueries('destiChangeApprove')
+					setWinningCreateData({})
+				},
+			})
+		},
+		onError: () => {
+			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		},
+	})
+	const destiChangeApprovOnClickHandler = () => {
+		destiChangeApproveMutation(winningCreateData)
+	}
+
+	// 입금 요청서 발행
 	const publishDepositMutation = useMutationQuery('', publishDepositForm)
 	const publishDepositOnClickHandler = () => {
 		publishDepositMutation.mutate(extractedArrayDeposit)

@@ -42,7 +42,7 @@ import { winningAtom } from '../../../store/Layout/Layout'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { AuctionWinningFields, AuctionWinningFieldsCols } from '../../../constants/admin/Auction'
-import { useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { getWinning, deleteBidding, depositConfirm } from '../../../api/auction/winning'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -53,9 +53,11 @@ import SingleProductSearchFields from '../../Sales/Single/SingleProductSearchFie
 import { isEqual } from 'lodash'
 import WinningSearchFields from './WinningSearchFields'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
+import useAlert from '../../../store/Alert/useAlert'
 
 // src\pages\Sales\Single\Single.jsx 참고해서 작업 !!!
 const Winning = ({ detailRow }) => {
+	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const [tablePagination, setTablePagination] = useState([])
 	const [winningCreate, setWinningCreate] = useAtom(winningAtom)
@@ -133,19 +135,45 @@ const Winning = ({ detailRow }) => {
 
 	console.log('extractedArray', extractedArray)
 
-	// 낙찰 취소 POST
-	const deleteMutation = useMutationQuery('', deleteBidding)
-
 	// 낙찰 취소 버튼 Handler
+	const { mutate: deleteMutation } = useMutation(deleteBidding, {
+		onSuccess() {
+			showAlert({
+				title: '낙찰 취소되었습니다.',
+				content: '',
+				func: () => {
+					refetch()
+					queryClient.invalidateQueries('alldelete')
+				},
+			})
+		},
+		onError: () => {
+			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		},
+	})
 	const deleteOnClickHandler = () => {
-		deleteMutation.mutate(extractedArray)
+		deleteMutation(extractedArray)
 	}
 
-	// 입금
-	const depositMutation = useMutationQuery('', depositConfirm)
-
+	// 부분 입금 확인 POST
+	const { mutate: depositMuation } = useMutation(depositConfirm, {
+		onSuccess() {
+			showAlert({
+				title: '입금 확인되었습니다.',
+				content: '',
+				func: () => {
+					refetch()
+					queryClient.invalidateQueries('alldeposit')
+				},
+			})
+		},
+		onError: () => {
+			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		},
+	})
+	// 부분 입금 확인 버튼 Handler
 	const depositOnClickHandler = () => {
-		depositMutation.mutate(extractedArray)
+		depositMuation(extractedArray)
 	}
 
 	const paramData = {

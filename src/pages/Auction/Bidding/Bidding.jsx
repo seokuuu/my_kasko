@@ -23,7 +23,7 @@ import {
 	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 
-import { useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isEqual } from 'lodash'
 import { getBidding, postBidding } from '../../../api/auction/bidding'
@@ -38,8 +38,10 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import Table from '../../Table/Table'
 import BiddingSearchFields from './BiddingSearchFields'
+import useAlert from '../../../store/Alert/useAlert'
 
 const Bidding = ({}) => {
+	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(userPageSingleDestiFindAtom)
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
 	// 고객사 팝업 상태,객체
@@ -79,6 +81,7 @@ const Bidding = ({}) => {
 	const [getRow, setGetRow] = useState('')
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
+	console.log('destiObject', destiObject)
 	const tableField = useRef(AuctionBiddingFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
@@ -183,11 +186,38 @@ const Bidding = ({}) => {
 		}))
 	}
 
-	const postMutation = useMutationQuery('', postBidding)
+	// const postMutation = useMutationQuery('', postBidding, {
+	// 	onSuccess: () => {
+	// 		// simpleAlert('응찰 되었습니다.', () => {
+	// 		// 	refetch()
+	// 		// })
+	// 		console.log('응찰 성공 @@@@@@@@@@@@@@@@@')
+	// 	},
+	// 	onError: () => {
+	// 		simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+	// 	},
+	// })
+
+	// 응찰 Mutate
+	const { mutate: postMutation } = useMutation(postBidding, {
+		onSuccess() {
+			showAlert({
+				title: '응찰이 완료되었습니다.',
+				content: '',
+				func: () => {
+					refetch()
+					queryClient.invalidateQueries('auction')
+				},
+			})
+		},
+		onError: () => {
+			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		},
+	})
 
 	// 응찰 버튼 POST
 	const confirmOnClickHandler = () => {
-		postMutation.mutate(winningCreateData)
+		postMutation(winningCreateData)
 	}
 
 	const globalProductResetOnClick = () => {
@@ -366,13 +396,13 @@ const Bidding = ({}) => {
 						<p>목적지</p>
 						<CustomInput placeholder="h50" width={60} height={32} defaultValue={destiObject?.code} readOnly />
 						<CustomInput
-							placeholder="목적지명"
+							placeholder="목적지 명"
 							width={120}
 							height={32}
 							defaultValue={destiObject?.destinationName}
 							readOnly
 						/>
-						{/* <CustomInput placeholder="도착지 연락처" width={120} height={32} /> */}
+						<CustomInput placeholder="도착지 연락처" defaultValue={destiObject?.phone} width={120} height={32} />
 						<TWhiteBtn
 							style={{ width: '50px' }}
 							height={30}
@@ -411,7 +441,6 @@ const Bidding = ({}) => {
 							onClick={() => {
 								setFinalInput((p) => ({
 									...p,
-
 									biddingPrice: winningCreateInput?.biddingPrice,
 								}))
 							}}

@@ -74,8 +74,10 @@ const DetailProgress = ({}) => {
 	}
 	const [param, setParam] = useState(paramData)
 
+	const [liveStatus, setLiveStatus] = useState('LIVEgetDetailProgress')
+
 	// GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getDetailProgress', getDetailProgress)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getDetailProgress)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 

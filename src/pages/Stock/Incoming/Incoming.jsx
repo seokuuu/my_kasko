@@ -5,8 +5,8 @@ import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
 import { blueModalAtom, selectedRowsAtom, singleProductModify, toggleAtom } from '../../../store/Layout/Layout'
 
-import axios from 'axios'
 import { isEqual } from 'lodash'
+import { client } from '../../../api'
 import { deleteIncomeProduct, getInComingList, incomingConfirm, postExcelSubmitProduct } from '../../../api/stock'
 import { SwitchBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
@@ -57,14 +57,15 @@ const Incoming = ({}) => {
 	// 데이터 가져오기
 	const paramData = {
 		pageNum: 1,
-		pageSize: 5,
+		pageSize: 50,
 		orderStatus: '확정 전송',
-		// receiptStatusList: '입고 요청',
+		receiptStatusList: ['입고 대기', '입고 확정 취소'],
 	}
 	const [param, setParam] = useState(paramData)
 	const [inComingPagination, setInComingPagination] = useState([])
 	const [inComingListData, setInComingListData] = useState(null)
 	const { data: inComingData, isSuccess, refetch } = useReactQuery(param, 'getInComingList', getInComingList)
+	console.log('inComingData :', inComingData)
 	useEffect(() => {
 		if (inComingData && inComingData.data && inComingData.data.list) {
 			setInComingListData(formatTableRowData(inComingData.data.list))
@@ -87,10 +88,11 @@ const Incoming = ({}) => {
 	 */
 	const stockReceive = async () => {
 		try {
-			await axios.post(`${process.env.REACT_APP_API_URL}/admin/store/receipt`, {})
+			await client.post(`/admin/store/receipt`, {})
 			await refetch()
 			simpleAlert('재고수신이 완료되었습니다.')
 		} catch (error) {
+			simpleAlert('재고 수신에 실패하였습니다.')
 			console.log('재고수신 에러발생', error)
 		}
 	}
@@ -108,6 +110,9 @@ const Incoming = ({}) => {
 			deleteIncome(selectInComeNumber?.join(','), {
 				onSuccess: () => {
 					refetch()
+				},
+				onError() {
+					simpleAlert('삭제에 실패하였습니다.')
 				},
 			})
 		})
@@ -196,11 +201,11 @@ const Incoming = ({}) => {
 				<TableContianer>
 					<TCSubContainer bor>
 						<div>
-							조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /
-							{inComingPagination?.listCount}개 )<Hidden />
+							조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{param.pageSize}
+							개 )<Hidden />
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
-							<PageDropdown />
+							<PageDropdown handleDropdown={(e) => setParam((p) => ({ ...p, pageSize: e.target.value }))} />
 							<Excel getRow={getRow} />
 						</div>
 					</TCSubContainer>
