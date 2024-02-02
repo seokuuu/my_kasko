@@ -5,7 +5,7 @@ import { CheckBox } from '../../../common/Check/Checkbox'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import { MainSelect } from '../../../common/Option/Main'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
-import { CustomerSearch } from '../../../components/Search'
+import { CustomerSearch, RadioSearchButton } from '../../../components/Search'
 import DateSearchSelect from '../../../components/Search/DateSearchSelect'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
@@ -26,7 +26,12 @@ import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 /**
  * @constant 주문 상태
  */
-const ORDER_STATUS_LIST = ['전체', '주문 요청', '주문 취소', '주문 확정']
+const ORDER_STATUS_LIST = [
+	{ label: '전체', value: ''}, 
+	{ label: '주문 요청', value: '주문 요청'}, 
+	{ label: '주문 취소', value: '주문 취소'}, 
+	{ label: '주문 확정', value: '주문 확정'}
+]
 
 const OrderSearchFields = ({
 	// prettier-ignore
@@ -223,20 +228,11 @@ const OrderSearchFields = ({
 					<PartWrap first>
 						<h6>진행 상태</h6>
 						<ExRadioWrap>
-							{ORDER_STATUS_LIST.map((text, index) => (
-								<RadioMainDiv key={index}>
-									<RadioCircleDiv
-										isChecked={checkRadio[index]}
-										onClick={() => {
-											setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-											setSearch((prev) => ({ ...prev, orderStatusList: text === '전체' ? '' : text }))
-										}}
-									>
-										<RadioInnerCircleDiv isChecked={checkRadio[index]} />
-									</RadioCircleDiv>
-									<div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
-								</RadioMainDiv>
-							))}
+						<RadioSearchButton
+							options={ORDER_STATUS_LIST}
+							value={Array.isArray(search.orderStatusList)? search.orderStatusList[0] || '' :  search.orderStatusList}
+							onChange={(value) => setSearch((prev) => ({ ...prev, orderStatusList: value === '전체' ? '' : value }))}
+						/>
 						</ExRadioWrap>
 					</PartWrap>
 				</RowWrap>
@@ -244,7 +240,7 @@ const OrderSearchFields = ({
 			{/* 제품 번호 */}
 			<FilterRight style={{flex: 'inherit'}}>
 				<ProductNumber
-					initialValue={search.productNumberList}
+					initialValue={search.productNumberList}	
 					setState={setSearch}
 					valueName={'productNumberList'}
 					height="100%"

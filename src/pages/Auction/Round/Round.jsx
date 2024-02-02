@@ -151,7 +151,7 @@ const Round = ({}) => {
 	})
 
 	const handleRemoveBtn = useCallback(() => {
-		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
+		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('삭제할 항목을 선택해주세요.')
 
 		// 삭제할 수 없는 데이터들입니다.
 		const cannotRemoveOptions = checkedArray.some((data) => data['경매 상태'] === ('진행중' || '종료'))

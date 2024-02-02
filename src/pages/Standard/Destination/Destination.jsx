@@ -1,39 +1,32 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-
-import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-
 import { useAtom } from 'jotai'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import Hidden from '../../../components/TableInner/Hidden'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
 	FilterContianer,
 	FilterHeader,
 	FilterWrap,
-	TableContianer,
 	TCSubContainer,
+	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import {
-	blueModalAtom,
 	btnCellRenderAtom,
 	btnCellUidAtom,
 	excelToJsonAtom,
 	modalAtom,
-	modalObject,
 	popupAtom,
 	popupObject,
-	popupTypeAtom,
 	selectedRowsAtom,
-	toggleAtom,
+	toggleAtom
 } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
-
 import {
 	StandardDestinaionFields,
 	StandardDestinaionFieldsCols,
 	StandardDestinationPost,
 	StandardTransportationEdit,
 } from '../../../constants/admin/Standard'
-
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isArray, isEqual } from 'lodash'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
@@ -49,98 +42,127 @@ import {
 	deleteAdminDestination,
 	editAdminDestination,
 	getAdminDestination,
-	getAdminDestinationSearch,
 	postAdminDestination,
-	postExcelAdminDestination,
+	postExcelAdminDestination
 } from '../../../service/admin/Standard'
+import useAlert from '../../../store/Alert/useAlert'
 import DestinationSearchFilter from './DestinationSearchFilter'
 
+// INITIAL PARAM
+const initialParamData = {
+	pageNum: 1,
+	pageSize: 50,
+}
+
+// convert key
+const convertKey = {
+	'목적지 명': 'name',
+	비고: 'note',
+}
+
+// match object
+const DESTINATION_MATCH = {
+	"목적지 코드" : "code",
+	"목적지 명" : "destination-input",
+	"작성자" : "createMember",
+	"작성일" : "createDate",
+	"수정자" : "updateMember",
+	"수정일" : "updateDate",
+	"비고" : "destination-input",
+}
+
 const Destination = ({}) => {
+	// MODAL
 	const [modalSwitch, setModalSwitch] = useAtom(modalAtom)
-	const [address, setAddress] = useState('')
+	const { simpleAlert } = useAlert();
 	const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
 	const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
-	const [nowModal, setNowModal] = useAtom(modalObject) // 모달 객체
-	const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
+	// adress
+	const [address, setAddress] = useState('')
 	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-	const [originRowTitle, setOriginRowTitle] = useState('') // Excel row to Origin row
-
 	const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
-	const [isRotated, setIsRotated] = useState(false)
-
 	const [excelToJson, setExcelToJson] = useAtom(excelToJsonAtom)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
-
-	// 토글 쓰기
-	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-	const [toggleMsg, setToggleMsg] = useState('On')
-	const toggleBtnClick = () => {
-		setExfilterToggle((prev) => !prev)
-		if (exFilterToggle === true) {
-			setToggleMsg('Off')
-		} else {
-			setToggleMsg('On')
-		}
-	}
-
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
-
-	console.log('isModal =>', isModal)
-
-	const modalOpen = () => {
-		setIsModal(true)
-	}
-
-	console.log('excelToJson', excelToJson)
-
+	// TABLE
 	const [getRow, setGetRow] = useState('')
 	const tableField = useRef(StandardDestinaionFieldsCols)
 	const originEngRowField = StandardDestinaionFields
 	const getCol = tableField.current
-	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
-
-	const paramData = {
-		pageNum: 1,
-		pageSize: 10,
-	}
-	const [param, setParam] = useState(paramData)
+	// API
+	const [param, setParam] = useState(initialParamData )
 	const [pagination, setPagination] = useState([])
-
-	// param
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(
+	const queryClient = useQueryClient()
+	// GET LIST
+	const { isLoading, data, isSuccess, refetch } = useReactQuery(
 		param,
 		'getAdminDestination',
 		getAdminDestination,
 	)
-
-	const resData = data?.data?.data?.list
-
-	// Get 목적지 코드 Dropdown
-
-	const { data: data2, isSuccess2 } = useReactQuery('', 'getAdminDestinationSearch', getAdminDestinationSearch)
-
-	useEffect(() => {
-		let getData = resData
-		//타입, 리액트쿼리, 데이터 확인 후 실행
-		if (!isSuccess && !resData) return
-		if (Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, StandardDestinaionFields))
-			setPagination(data?.data?.data?.pagination)
-		}
-	}, [isSuccess, resData])
-
+	// POST NEW DESTINATION
+	const postMutation = useMutationQuery('', postAdminDestination)
 	// DELETE
 	const mutation = useMutation(deleteAdminDestination, {
 		onSuccess: () => {
 			queryClient.invalidateQueries('destination')
 		},
 	})
+	// Edit
+	const editMutation = useMutationQuery('', editAdminDestination)
+	const [editInput, setEditInput] = useState({ name: address, note: '' })
+	// DATA
+	const resData = data?.data?.data?.list;
 
+	
+	const openModal = () => {
+		setModalSwitch(true)
+		setNowPopup((prev) => ({
+			...prev,
+			func: propsPost,
+		}))
+	}
+	
+	/* ==================== UPDATE HANDLER start ==================== */
+	// propsPost 함수
+	const propsPost = () => {
+		// console.log(editInput);
+		postMutation.mutate(editInput, {
+			onSuccess: () => {
+				// 성공 시 실행할 코드 작성
+				setModalSwitch(false)
+				// 추가로 필요한 작업 수행
+			},
+			onError: (error) => {
+				simpleAlert(error?.data?.message || '목적지 등록에 실패하였습니다. 다시 시도해 주세요.')
+			}
+		})
+	}
+
+	const propsEdit = () => {
+		alert('기능 삭제 | 최종 수정 예정');
+		// const editParams = {...editInput};
+		// if(!editParams.name) delete editParams.name;
+		// if(!editParams.note) delete editParams.note;
+
+		// if(editParams.name || editParams.note) {
+		// 	editMutation.mutate(editParams);
+		// }
+	}
+
+	// 여기에 목적지 관련한 것도 추가로 넣기
+	const onEditHandler = useCallback(
+		(e) => {
+			const { name, value } = e.target
+			setEditInput({
+				...editInput,
+				uid: uidAtom,
+				[name]: value,
+			})
+		},
+		[editInput],
+	)
+	/* ==================== UPDATE HANDLER end ==================== */
+
+	/* ==================== DELETE HANDLER start ==================== */
 	// 선택한 것 삭제 요청 (해당 함수 func 인자로 전달)
 	const propsRemove = () => {
 		checkedArray.forEach((item) => {
@@ -160,101 +182,14 @@ const Destination = ({}) => {
 					func: propsRemove,
 				}))
 			} else {
-				alert('선택해주세요!')
+				simpleAlert('삭제할 목적지를 선택해 주세요.')
 			}
 		},
 		[checkedArray],
 	)
+	/* ==================== DELETE HANDLER end ==================== */
 
-	// POST
-	const postMutation = useMutationQuery('', postAdminDestination)
-	// propsPost 함수
-	const propsPost = () => {
-		postMutation.mutate(editInput, {
-			onSuccess: () => {
-				// 성공 시 실행할 코드 작성
-				setModalSwitch(false)
-				// 추가로 필요한 작업 수행
-			},
-		})
-	}
-	useEffect(() => {
-		if (postMutation.isSuccess) refetch()
-	}, [postMutation.isSuccess])
-	const openModal = () => {
-		setModalSwitch(true)
-		setNowPopup((prev) => ({
-			...prev,
-			func: propsPost,
-		}))
-	}
-
-	// const firstPopupClick = (num) => {
-	//       if (isArray(checkedArray) && checkedArray.length > 0) {
-	//         setPopupSwitch(true)
-	//         const firstPopup = popupDummy.find((popup) => popup.num === num)
-	//         setNowPopup(firstPopup)
-	//       } else {
-	//         alert('선택해주세요!')
-	//       }
-	// }
-
-	// const handleRemoveBtn = useCallback(() => {
-	//   if (isArray(checkedArray) && checkedArray.length > 0) {
-	//     if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
-	//       checkedArray.forEach((item) => {
-	//         mutation.mutate(item['목적지 고유 번호']) //mutation.mutate로 api 인자 전해줌
-	//       })
-	//     }
-	//   } else {
-	//     alert('선택해주세요!')
-	//   }
-	// }, [checkedArray])
-
-	// Edit
-	const editMutation = useMutationQuery('', editAdminDestination)
-	const propsEdit = () => {
-		editMutation.mutate(editInput)
-	}
-
-	const editInit = {
-		name: address,
-		note: '',
-	}
-
-	const [editInput, setEditInput] = useState(editInit)
-
-	console.log('editInput', editInput)
-
-	// 여기에 목적지 관련한 것도 추가로 넣기
-	const onEditHandler = useCallback(
-		(e) => {
-			const { name, value } = e.target
-			setEditInput({
-				...editInput,
-				// uid: uidAtom,
-				[name]: value,
-			})
-		},
-		[editInput],
-	)
-
-	const convertKey = {
-		'목적지 명': 'name',
-		비고: 'note',
-	}
-
-	useEffect(() => {
-		setEditInput({
-			name: address,
-		})
-	}, [address])
-
-	console.log('editInput @@', editInput)
-	console.log('uidAtom @@', uidAtom)
-
-	console.log('resData', resData)
-
+	/* ==================== SEARCH HANDLER start ==================== */
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
 			...prevParam,
@@ -262,12 +197,20 @@ const Destination = ({}) => {
 		}))
 	}
 
+	const onPageSizeChange = (e) => {
+		const newSize = e.target.value;
+
+		setParam((prevParam) => ({
+			...prevParam,
+			pageNum: 1,
+			pageSize: newSize
+		}))
+	} 
+
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
-		setParam(paramData)
+		setParam(initialParamData )
 	}
-	// import
+
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
@@ -280,6 +223,45 @@ const Destination = ({}) => {
 			}
 		})
 	}
+	/* ==================== SEARCH HANDLER end ==================== */
+
+	/* ==================== COMMON UI start ==================== */
+	// 토글 쓰기
+	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+	const [toggleMsg, setToggleMsg] = useState('On')
+	const toggleBtnClick = () => {
+		setExfilterToggle((prev) => !prev)
+		if (exFilterToggle === true) {
+			setToggleMsg('Off')
+		} else {
+			setToggleMsg('On')
+		}
+	}
+	/* ==================== COMMON UI end ==================== */
+
+	/* ==================== STATE start ==================== */
+	// 테이블 데이터 세팅
+	useEffect(() => {
+		let getData = resData
+		//타입, 리액트쿼리, 데이터 확인 후 실행
+		if (!isSuccess && !resData) return
+		if (Array.isArray(getData)) {
+			setGetRow(add_element_field(getData, StandardDestinaionFields))
+			setPagination(data?.data?.data?.pagination)
+		}
+	}, [isSuccess, resData]);
+
+	// 테이블 데이터 초기화
+	useEffect(() => {
+		if (postMutation.isSuccess) refetch()
+	}, [postMutation.isSuccess])
+
+	useEffect(() => {
+		setEditInput({
+			name: address,
+		})
+	}, [address])
+	/* ==================== STATE end ==================== */
 
 	return (
 		<FilterContianer>
@@ -291,35 +273,6 @@ const Destination = ({}) => {
 				</FilterHeader>
 				{exFilterToggle && (
 					<FilterWrap>
-						{/* <FilterSubcontianer>
-							<FilterLeft>
-								<RowWrap>
-									<PartWrap>
-										<h6>목적지</h6>
-										<Input />
-										<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-											찾기
-										</GreyBtn>
-									</PartWrap>
-								</RowWrap>
-							</FilterLeft>
-						</FilterSubcontianer> */}
-						{/* <FilterFooter>
-							<div style={{ display: 'flex' }}>
-								<p>초기화</p>
-								<ResetImg
-									src="/img/reset.png"
-									style={{ marginLeft: '10px', marginRight: '20px' }}
-									onClick={handleImageClick}
-									className={isRotated ? 'rotate' : ''}
-								/>
-							</div>
-							<div style={{ width: '180px' }}>
-								<BlackBtn width={100} height={40}>
-									검색
-								</BlackBtn>
-							</div>
-						</FilterFooter> */}
 						<GlobalProductSearch
 							param={param}
 							isToggleSeparate={true}
@@ -330,7 +283,6 @@ const Destination = ({}) => {
 					</FilterWrap>
 				)}
 			</div>
-
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
@@ -338,7 +290,7 @@ const Destination = ({}) => {
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown />
+						<PageDropdown handleDropdown={onPageSizeChange}  />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
@@ -362,13 +314,14 @@ const Destination = ({}) => {
 						</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={getCol} getRow={getRow} tablePagination={pagination} onPageChange={onPageChange} />
+				<Table getCol={getCol} getRow={getRow} tablePagination={pagination} onPageChange={onPageChange} loading={isLoading} />
 				{btnCellModal && (
 					// Edit
 					<TableModal
 						btnCellModal={btnCellModal} // Modal Atom Switch
 						setBtnCellModal={setBtnCellModal} // 수정 버튼에 대한 ag-grid event
-						modalInTable={StandardTransportationEdit} // Modal 안에 들어갈 Table 매칭 디렉토리 ex)
+						// modalInTable={StandardTransportationEdit} // Modal 안에 들어갈 Table 매칭 디렉토리 ex)
+						modalInTable={DESTINATION_MATCH} // Modal 안에 들어갈 Table 매칭 디렉토리 ex)
 						title={'목적지 수정'}
 						getRow={getRow} // 해당 컴포넌트 Table 자체 Object (한글)
 						uidAtom={uidAtom} // 수정버튼 누른 해당 object의 고유 id (btnCellRender에서 추출된 uid)

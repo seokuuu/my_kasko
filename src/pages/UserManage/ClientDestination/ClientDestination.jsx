@@ -34,6 +34,7 @@ import Table from '../../Table/Table'
 import ClientDestinationSearchFields from './ClientDestinationSearchFields'
 import DestinationEdit from './DestinationEdit'
 import useAlert from '../../../store/Alert/useAlert'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 const ClientDestination = ({ setChoiceComponent }) => {
 	const [findModal, setFindModal] = useAtom(UsermanageFindModal)
 	const [editModal, setEditModal] = useAtom(adminPageDestiEditModal)
@@ -164,39 +165,8 @@ const ClientDestination = ({ setChoiceComponent }) => {
 							{/* 토글 쓰기 */}
 							<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 						</FilterHeader>
-						<FilterHeaderAlert>
-							<div style={{ display: 'flex' }}>
-								<div style={{ marginRight: '20px' }}>
-									<img src="/img/notice.png" />
-								</div>
-								{noticeEdit ? (
-									<div style={{ marginTop: '6px' }}>
-										<div>
-											<input style={{ border: '1px solid' }} />
-										</div>
-										<div>
-											<input style={{ marginTop: '6px', border: '1px solid' }} />
-										</div>
-									</div>
-								) : (
-									<div style={{ display: 'flex', alignItems: 'center' }}>
-										<div>· 하차지 연락처에 핸드폰번호 미입력시 토요일 하차 불가합니다.</div>
-									</div>
-								)}
-							</div>
-
-							{noticeEdit ? (
-								<EditGear onClick={noticeEditOnClickHandler}>
-									완료
-									<img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-								</EditGear>
-							) : (
-								<EditGear onClick={noticeEditOnClickHandler}>
-									수정
-									<img style={{ marginLeft: '10px' }} src="/img/setting.png" />
-								</EditGear>
-							)}
-						</FilterHeaderAlert>
+						{/* 주의 사항 */}
+						<CautionBox category={CAUTION_CATEGORY.order} />
 						{exFilterToggle && (
 							<FilterWrap>
 								{/* <FilterSubcontianer>
