@@ -121,6 +121,27 @@ export function useClaimDetailsQuery(id) {
 	})
 }
 
+// 출고 실적 클레임 등록
+export function useShipmentClaimRegisterMutation() {
+	const navigate = useNavigate()
+	const { simpleAlert } = useAlert()
+
+	return useMutation({
+		mutationKey: CLAIM_KEYS.registerClaim,
+		mutationFn: async function (params) {
+			return client.post(urls.claim, createFormData(params, 'register'), { headers: formHeaders })
+		},
+		onSuccess() {
+			simpleAlert('등록이 완료되었습니다.', () => {
+				navigate(-1, { replace: true })
+			})
+		},
+		onError() {
+			simpleAlert('등록에 실패하였습니다.')
+		},
+	})
+}
+
 // 등록
 export function useClaimRegisterMutation() {
 	const navigate = useNavigate()

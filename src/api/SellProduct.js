@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { client } from '.'
-import qs from 'qs'
-import useAlert from '../store/Alert/useAlert'
 import { useMutation } from '@tanstack/react-query'
-import { queryClient } from './query'
+import qs from 'qs'
+import { client } from '.'
+import useAlert from '../store/Alert/useAlert'
 
 export const urls = {
 	single: '/single-product',
@@ -36,15 +35,11 @@ export async function getSingleProducts(data) {
 	return { pagination, r }
 }
 export async function postExcelSubmitProduct(data) {
-	try {
-		return await client.post(`${urls.single}`, data, {
-			headers: {
-				'Content-Type': 'multipart/form-data',
-			},
-		})
-	} catch (e) {
-		alert(e?.data?.message)
-	}
+	return await client.post(`${urls.single}`, data, {
+		headers: {
+			'Content-Type': 'multipart/form-data',
+		},
+	})
 }
 
 export async function deleteProduct(data) {
@@ -55,8 +50,8 @@ export async function deleteProduct(data) {
 	}
 }
 export async function updateSingleProduct(data) {
-		const response = await client.patch(`${urls.single}`, data)
-		return response
+	const response = await client.patch(`${urls.single}`, data)
+	return response
 }
 
 export async function postingMemoAndNote(data) {
@@ -122,24 +117,22 @@ export async function patchPkgSaleCategory(data) {
 }
 
 export async function postCreatePackage(data) {
-
 	try {
 		const response = await client.post(`${urls.package}`, data)
 		return response.data
 	} catch (e) {
-    return e 
+		return e
 	}
 }
 
 export async function postUpdatePackage(data) {
-		const response = await client.patch(`${urls.package}`, data)
-		return response.data
-	 
+	const response = await client.patch(`${urls.package}`, data)
+	return response.data
 }
 
 export async function patchChangeBestRecommend(data) {
-		const response = await client.patch(`${urls.recommend}`, data)
-		return response.data
+	const response = await client.patch(`${urls.recommend}`, data)
+	return response.data
 }
 export async function patchBeBestRecommend(data) {
 	try {
@@ -158,9 +151,8 @@ export async function patchChangeBestPackageRecommend(data) {
 	}
 }
 export async function patchBeBestPackageRecommend(data) {
-		const response = await client.patch(`${urls.pkgbeRecommend}`, data)
-		return response.data
-	
+	const response = await client.patch(`${urls.pkgbeRecommend}`, data)
+	return response.data
 }
 export async function deletePackage(data) {
 	try {

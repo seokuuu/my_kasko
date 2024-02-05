@@ -1,4 +1,3 @@
-import moment from 'moment'
 import React, { useState } from 'react'
 import {
 	BlueBarHeader,
@@ -19,15 +18,14 @@ import { useEffect } from 'react'
 import { popupAtom } from '../../store/Layout/Layout'
 import AlertPopup from '../Alert/AlertPopup'
 
-import { popupObject, popupTypeAtom } from '../../store/Layout/Layout'
-import { popupDummy } from '../Alert/PopupDummy'
-
 import { useRef } from 'react'
 import styled from 'styled-components'
 import { KrFiledtoEng } from '../../lib/tableHelpers'
 import { readExcelFile } from '../../utils/ReadExcelFile'
 
 import useMutationQuery from '../../hooks/useMutationQuery'
+import useAlert from '../../store/Alert/useAlert'
+import { FileRemoveButton, UploadCompleteText } from './components/MultiUploader'
 
 // 1. Upload를 사용하는 컴포넌트에서 originEngRowField props를 받는다
 // ex) Destination.jsx에서 StandardDestinaionFields를 받음.
@@ -45,16 +43,19 @@ import useMutationQuery from '../../hooks/useMutationQuery'
 
 // 목적지 등록 기획 오류로 인한 보류 !!!
 const UploadV2 = ({ setModalSwitch, title, originEngRowField, setExcelToJson, width, postApi }) => {
+	const { simpleAlert, simpleConfirm } = useAlert()
 	const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
-	const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
-	const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입 (1,2,3)
 
 	const fileInputRef = useRef(null)
 	const [selectedFile, setSelectedFile] = useState(null)
 	const [uploadProgress, setUploadProgress] = useState(0)
 
-	const { mutate, isError } = useMutationQuery('upload', postApi)
-
+	const { mutate } = useMutationQuery('upload', postApi, {
+		onError(error) {
+			simpleAlert(error?.data?.message && '둥록에 실패하였습니다.')
+		},
+	})
+	// console.log('excel upload error ;', error)
 	const handlerFileUpload = (e) => {
 		const formData = new FormData()
 		Array.from(selectedFile).forEach((el) => {
@@ -63,21 +64,9 @@ const UploadV2 = ({ setModalSwitch, title, originEngRowField, setExcelToJson, wi
 		mutate(formData)
 	}
 	// 처음 팝업 띄우는 컴포넌트의 onClickHandler
-	const firstPopupClick = (num) => {
-		setPopupSwitch(true)
-		const firstPopup = popupDummy.find((popup) => popup.num === num)
-		setNowPopup((prevNowPopup) => ({
-			...prevNowPopup,
-			...firstPopup,
-			func: handlerFileUpload,
-		}))
+	const firstPopupClick = () => {
+		simpleConfirm('저장하시겠습니까?', handlerFileUpload)
 	}
-
-	// 팝업 타입 최신화
-	useEffect(() => {
-		const firstType = nowPopup.num.split('-')[0]
-		setNowPopupType(firstType)
-	}, [nowPopup, nowPopupType])
 
 	const handleFileExcel = async (event) => {
 		const selectedFile = event.target.files
@@ -91,7 +80,7 @@ const UploadV2 = ({ setModalSwitch, title, originEngRowField, setExcelToJson, wi
 					setUploadProgress((p) => p + i)
 				}
 				// setUploadProgress(10)
-			}, 1300)
+			}, 100)
 			try {
 				// 단일이 아닌 대량으로 엑셀을 여러개 넣거나 엑셀에 들어가는 내용들이 여러개이기에
 				// Promise.all로 배열의 요소마다 readExcelFile을 적용할수 있게 했습니다.
@@ -109,25 +98,18 @@ const UploadV2 = ({ setModalSwitch, title, originEngRowField, setExcelToJson, wi
 		}
 	}
 
+	// 모달 닫기
 	const modalClose = () => {
 		setModalSwitch(false)
 	}
 
+	// 파일 취소
 	const handleCancel = () => {
 		setSelectedFile(null)
 		setUploadProgress(0)
-
-		if (fileInputRef.current) {
-			fileInputRef.current.value = null
-		}
 	}
 
-	const radioDummy = ['대량 등록', '단일 등록']
-
-	const date = moment().format('YYYY-MM-DD')
-
-	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-
+	// 저장된 내용 알럿
 	useEffect(() => {
 		const handleBeforeUnload = (event) => {
 			const message = '현재 작업 중인 내용이 저장되지 않았습니다. 페이지를 나가시겠습니까?'
@@ -140,20 +122,10 @@ const UploadV2 = ({ setModalSwitch, title, originEngRowField, setExcelToJson, wi
 		}
 	}, [])
 
-	// console.log('모멘트', moment().format('YYYY-MM-DD'))
-	// console.log('파일들', selectedFile)
-	const propsWidth = () => {
-		if (width) {
-			return width
-		} else {
-			return 850
-		}
-	}
 	return (
-		// 재고 관리 - 판매 구분 변경
 		<>
 			<FadeOverlay />
-			<ModalContainer width={propsWidth}>
+			<ModalContainer width={width ?? 850}>
 				<BlueBarHeader>
 					<div>{title}</div>
 					<div>
@@ -205,8 +177,10 @@ const UploadV2 = ({ setModalSwitch, title, originEngRowField, setExcelToJson, wi
 										<UldAfterWrap>
 											<div style={{ fontSize: '16px' }}>{v.name}</div>
 											<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+												{uploadProgress >= 100 && <UploadCompleteText>업로드 완료</UploadCompleteText>}
+
 												<Progressbar style={{ background: 'blue' }} value={uploadProgress} max="100" id="progress" />
-												<div>x</div>
+												<FileRemoveButton onClick={handleCancel}>x</FileRemoveButton>
 											</div>
 										</UldAfterWrap>
 									))}
@@ -216,10 +190,11 @@ const UploadV2 = ({ setModalSwitch, title, originEngRowField, setExcelToJson, wi
 					<BlueBtnWrap>
 						<BlueBlackBtn
 							onClick={() => {
+								if (!selectedFile) return simpleAlert('파일을 업로드해주세요.')
 								if (uploadProgress > 100) {
 									firstPopupClick('2-3')
 								} else if (uploadProgress < 100) {
-									alert('업로드중입니다.')
+									simpleAlert('업로드중입니다.')
 								}
 							}}
 						>

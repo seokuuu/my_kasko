@@ -16,7 +16,7 @@ const FAQSearchFields = ({ search, setSearch, commonDropdownButtonHandler, searc
 						<MainSelect
 							options={searchOptions}
 							defaultValue={searchOptions[0]}
-							value={search.category}
+							value={searchOptions[0]}
 							onChange={(e) => {
 								commonDropdownButtonHandler(e, 'category')
 							}}
