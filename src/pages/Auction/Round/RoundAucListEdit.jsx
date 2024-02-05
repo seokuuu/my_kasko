@@ -22,7 +22,7 @@ import {
 	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 
-import { useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isArray, isEqual } from 'lodash'
 import { editAuction, getDetailAuction } from '../../../api/auction/round'
@@ -248,7 +248,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 			return simpleAlert('제품을 선택해주세요.')
 		}
 
-		simpleConfirm('선택한 항목을 삭제 목록에 추가하시겠습니까?', () => {
+		simpleConfirm('선택한 항목을 목록에 제외시키겠습니까?', () => {
 			const filteredArray = newResData.filter(
 				(item) => !selectedRows.some((checkedItem) => checkedItem['고유 번호'] === item['고유 번호']),
 			)
@@ -326,7 +326,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	}
 
 	// 수정 PATCH
-	const auctionEdit = useMutationQuery('', editAuction, {
+	const { mutate: auctionEdit } = useMutation(editAuction, {
 		onSuccess: () => {
 			simpleAlert('수정 되었습니다.', () => {
 				setEditPage(false)
@@ -339,7 +339,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	})
 
 	const auctionEditHandler = () => {
-		auctionEdit.mutate(editData)
+		auctionEdit(editData)
 	}
 
 	// !! 상세 페이지 URL로 바꾼 뒤 설정 예정 TODO
