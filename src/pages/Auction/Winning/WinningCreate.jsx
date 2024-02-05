@@ -156,6 +156,7 @@ const WinningCreate = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
 
 	const [getRow, setGetRow] = useState('')
+	console.log('getRow @@@@', getRow)
 	const tableField = useRef(AuctionWinningCreateFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()

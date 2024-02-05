@@ -45,6 +45,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
 	const [auctionModal, setAuctionModal] = useAtom(AuctionRestrictionModal)
 
 	const [getRow, setGetRow] = useState([])
+	console.log('getRow @@@@', getRow)
 	const [tablePagination, setPagination] = useState([])
 
 	const { isLoading, data, isSuccess, refetch } = useReactQuery(param, 'getClient', getCustomer)
@@ -143,6 +144,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
 	useEffect(() => {
 		if (!isSuccess && !responseData) return
 		if (Array.isArray(responseData)) {
+			console.log('responseData ㅋㅋ!!', responseData)
 			setGetRow(add_element_field(responseData, UserManageCustomerManageFields))
 			setPagination(data.data.pagination)
 		}

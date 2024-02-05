@@ -22,9 +22,9 @@ import {
 	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 
-import { useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
-import { isEqual } from 'lodash'
+import { isArray, isEqual } from 'lodash'
 import { editAuction, getDetailAuction } from '../../../api/auction/round'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Hidden from '../../../components/TableInner/Hidden'
@@ -61,8 +61,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 
 	console.log('newResData auc prod add => ', newResData)
 
-	const [rows, setRows] = useState('')
-	const [list, setList] = useState([])
+	// const [rows, setRows] = useState('')
+	// const [list, setList] = useState([])
 	const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
 	const [pagination, setPagination] = useState(null)
 	// 토글 쓰기
@@ -144,17 +144,39 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	// 		setGetRow(combinedData)
 	// 	}
 	// }, [isSuccess, resData2, newResData])
-	useEffect(() => {
-		if (list && Array.isArray(list)) {
-			setRows(add_element_field(list, AuctionRoundDetailFields))
-		}
-	}, [list])
+	// useEffect(() => {
+	// 	if (list && Array.isArray(list)) {
+	// 		setRows(add_element_field(list, AuctionRoundDetailFields))
+	// 	}
+	// }, [list])
+
+	const [initRow, setInitRow] = useState([])
+
+	console.log('initRow')
+
+	// useEffect(() => {
+	// 	if (resData && Array.isArray(resData)) {
+	// 		// const combinedData = [...newResData, ...resData]
+	// 		// console.log('combinedData ㅋㅋ!!', combinedData)
+	// 		// setList(combinedData)
+	// 		setInitRow([...add_element_field(resData, AuctionRoundDetailFields)])
+	// 		setGetRow([...newResData, ...initRow])
+	// 	}
+	// }, [newResData, resData])
 
 	useEffect(() => {
-		if (resData && Array.isArray(resData)) {
-			setList(resData)
+		const fetchData = async () => {
+			if (resData && Array.isArray(resData)) {
+				const newInitRow = await add_element_field(resData, AuctionRoundDetailFields)
+				setInitRow(newInitRow)
+				setGetRow([...newResData, ...newInitRow])
+			}
 		}
-	}, [resData])
+
+		fetchData() // 비동기 함수를 호출
+	}, [newResData, resData])
+
+	console.log('getRow @@@@', getRow)
 
 	// TODO : 경매 회차 관리 resData 쪽 object 눈속임으로 없애기 ..`
 	// input의 deleteAuctionProductList 값 채우기
@@ -195,10 +217,10 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	const [delData, setDelData] = useState()
 	const onListAdd = (selectedData) => {
 		try {
-			const newList = [...new Set([...selectedData, ...list])]
-			setList(newList) // 선별 목록 데이터 등록
+			// const newList = [...new Set([...selectedData, ...list])]
+			// setList(newList) // 선별 목록 데이터 등록
 			setSelectedRows([]) // 테이블 체크 목록 초기화
-			setOutAddData(selectedData.map((x) => x.uid))
+			setOutAddData(selectedData.map((x) => x['uid']))
 		} catch (error) {
 			simpleAlert(error.message)
 		}
@@ -212,43 +234,61 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 			auctionStartPrice: realStartPrice,
 		}))
 
+		console.log('개씨발 ==>', uniqueNumbers)
+
 		setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
 	}, [newResData, outAddData, realStartPrice])
 
-	console.log('selectedRows', selectedRows)
+	console.log('selectedRows ㅋㅋㅋ', selectedRows)
 
 	// 목록 제거
 	const onListRemove = () => {
+		// 제품 추가를 통해 띄워진 목록 "경매 목록 수정 TABLE에서 삭제(단순 목록에서 삭제)"
 		if (!selectedRows || selectedRows.length === 0) {
 			return simpleAlert('제품을 선택해주세요.')
 		}
-		const key = '제품 고유 번호'
-		const key2 = '경매 제품 고유 번호'
-		const newKey = '고유 번호'
-		const deleteKeys = selectedRows.map((item) => item[key])
-		const newSelectors = list.filter((item) => !deleteKeys.includes(item?.productUid))
 
+		simpleConfirm('선택한 항목을 목록에 제외시키겠습니까?', () => {
+			const filteredArray = newResData.filter(
+				(item) => !selectedRows.some((checkedItem) => checkedItem['고유 번호'] === item['고유 번호']),
+			)
+			console.log('filteredArray', filteredArray)
+			// setNewResData(filteredArray)
+
+			const resultRemove = selectedRows
+				.filter((item) => item && item['경매 제품 고유 번호'] !== undefined && item['경매 제품 고유 번호'] !== null)
+				.map((item) => ({
+					auctionProductUid: item['경매 제품 고유 번호'],
+					productUid: item['제품 고유 번호'],
+				}))
+			setEditData({ ...editData, deleteAuctionProductList: resultRemove })
+
+			const filteredArray2 = getRow.filter(
+				(item) =>
+					!selectedRows.some((checkedItem) => checkedItem['경매 제품 고유 번호'] === item['경매 제품 고유 번호']),
+			)
+
+			setGetRow([...filteredArray, ...filteredArray2])
+
+			setSelectedRows([]) // 테이블 체크 목록 초기화
+			setDelData(resultRemove)
+		})
+
+		// const key = '제품 고유 번호'
+		// const key2 = '경매 제품 고유 번호'
+		const newKey = '고유 번호'
+		// const deleteKeys = selectedRows.map((item) => item[key])
+		// const newSelectors = getRow.filter((item) => !deleteKeys.includes(item?.['경매 제품 번호']))
 		// 제품 추가된 항목 삭제 처리
 		if (outAddData) {
 			const updatedOutAddData = outAddData.filter((item) => !selectedRows.map((row) => row[newKey]).includes(item)) // add된 것들 처리
+			console.log('updatedOutAddData', updatedOutAddData)
 			setOutAddData(updatedOutAddData)
 		}
-
 		// deleteAuctionProductList에 기존 list 바인딩 !! TODO
 		// const resultRemove = selectedRows
 		// 	.filter((item) => item && item['경매 제품 고유 번호'] !== undefined && item['경매 제품 고유 번호'] !== null)
 		// 	.map((item) => item['경매 제품 고유 번호'])
-		const resultRemove = selectedRows
-			.filter((item) => item && item['경매 제품 고유 번호'] !== undefined && item['경매 제품 고유 번호'] !== null)
-			.map((item) => ({
-				auctionProductUid: item['경매 제품 고유 번호'],
-				productUid: item['제품 고유 번호'],
-			}))
-
-		setEditData({ ...editData, deleteAuctionProductList: resultRemove })
-		setList(newSelectors)
-		setSelectedRows([]) // 테이블 체크 목록 초기화
-		setDelData(resultRemove)
 	}
 	console.log('outAddData', outAddData)
 
@@ -265,7 +305,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 
 	console.log('nesRES', newResData)
 	console.log('editData @@@ ', editData)
-	console.log('ALL LIST <333', list)
 
 	const globalProductResetOnClick = () => {
 		// if resetting the search field shouldn't rerender table
@@ -287,7 +326,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	}
 
 	// 수정 PATCH
-	const auctionEdit = useMutationQuery('', editAuction, {
+	const { mutate: auctionEdit } = useMutation(editAuction, {
 		onSuccess: () => {
 			simpleAlert('수정 되었습니다.', () => {
 				setEditPage(false)
@@ -300,7 +339,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	})
 
 	const auctionEditHandler = () => {
-		auctionEdit.mutate(editData)
+		auctionEdit(editData)
 	}
 
 	// !! 상세 페이지 URL로 바꾼 뒤 설정 예정 TODO
@@ -471,7 +510,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 						</SkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={AuctionRoundDetailFieldsCols} getRow={rows} loading={isLoading} />
+				<Table getCol={AuctionRoundDetailFieldsCols} getRow={getRow} loading={isLoading} />
 				<TCSubContainer>
 					<div style={{ display: 'flex', gap: '10px' }}></div>
 					<div>
@@ -481,11 +520,11 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 				{addModal && (
 					<RoundAucProAdd
 						setAddModal={setAddModal}
-						// newResData={newResData}
-						// setNewResData={setNewResData}
+						newResData={newResData}
+						setNewResData={setNewResData}
 						types={types}
 						// propsResData={resData}
-						list={list}
+						// list={list}
 						onListAdd={onListAdd}
 						outAddData={outAddData}
 						setOutAddData={setOutAddData}

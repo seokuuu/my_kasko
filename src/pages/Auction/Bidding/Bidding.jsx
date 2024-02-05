@@ -32,13 +32,12 @@ import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
 import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constants/admin/Auction'
-import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
+import useAlert from '../../../store/Alert/useAlert'
 import Table from '../../Table/Table'
 import BiddingSearchFields from './BiddingSearchFields'
-import useAlert from '../../../store/Alert/useAlert'
 
 const Bidding = ({}) => {
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
@@ -264,6 +263,13 @@ const Bidding = ({}) => {
 	}, [values])
 
 	console.log('winningCreateData <33', winningCreateData)
+
+	// 	TODO : 목적지 항목 추가하기
+	// 	찾기 누르면
+	// 목적지 코드 destiCode ,
+	// 목적지 명 destiName ,
+	// 목적지 주소 address,
+	// 목적지 연락처 phone
 
 	return (
 		<FilterContianer>
