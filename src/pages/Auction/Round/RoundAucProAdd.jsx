@@ -165,6 +165,10 @@ const RoundAucProAdd = ({
 	// }
 
 	const onAdd = () => {
+		const key = '고유 번호'
+		const findKey = selectedRows.map((item) => item[key])
+		const addData = resData?.filter((item) => findKey.includes(item?.uid))
+		console.log('addData', addData)
 		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
 		else {
 			simpleConfirm('선택한 항목을 추가하시겠습니까?', () =>
@@ -172,6 +176,7 @@ const RoundAucProAdd = ({
 					console.log('item =>', item)
 					setNewResData((prevData) => [...prevData, item])
 					setAddModal(false)
+					onListAdd(addData)
 				}),
 			)
 		}

@@ -24,7 +24,7 @@ import {
 
 import { useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
-import { isEqual } from 'lodash'
+import { isArray, isEqual } from 'lodash'
 import { editAuction, getDetailAuction } from '../../../api/auction/round'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Hidden from '../../../components/TableInner/Hidden'
@@ -150,16 +150,30 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	// 	}
 	// }, [list])
 
-	const [subRow, setSubRow] = useState([])
+	const [initRow, setInitRow] = useState([])
+
+	console.log('initRow')
+
+	// useEffect(() => {
+	// 	if (resData && Array.isArray(resData)) {
+	// 		// const combinedData = [...newResData, ...resData]
+	// 		// console.log('combinedData ㅋㅋ!!', combinedData)
+	// 		// setList(combinedData)
+	// 		setInitRow([...add_element_field(resData, AuctionRoundDetailFields)])
+	// 		setGetRow([...newResData, ...initRow])
+	// 	}
+	// }, [newResData, resData])
 
 	useEffect(() => {
-		if (resData && Array.isArray(resData)) {
-			const combinedData = [...newResData, ...resData]
-			console.log('combinedData ㅋㅋ!!', combinedData)
-			// setList(combinedData)
-			setGetRow([...newResData, ...add_element_field(resData, AuctionRoundDetailFields)])
-			console.log('combinedData', combinedData)
+		const fetchData = async () => {
+			if (resData && Array.isArray(resData)) {
+				const newInitRow = await add_element_field(resData, AuctionRoundDetailFields)
+				setInitRow(newInitRow)
+				setGetRow([...newResData, ...newInitRow])
+			}
 		}
+
+		fetchData() // 비동기 함수를 호출
 	}, [newResData, resData])
 
 	console.log('getRow @@@@', getRow)
@@ -206,9 +220,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 			// const newList = [...new Set([...selectedData, ...list])]
 			// setList(newList) // 선별 목록 데이터 등록
 			setSelectedRows([]) // 테이블 체크 목록 초기화
-			setOutAddData(selectedData.map((x) => x.uid))
-			console.log('selectedData <###', selectedData)
-			console.log('newResData <###', newResData)
+			setOutAddData(selectedData.map((x) => x['uid']))
 		} catch (error) {
 			simpleAlert(error.message)
 		}
@@ -222,41 +234,61 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 			auctionStartPrice: realStartPrice,
 		}))
 
+		console.log('개씨발 ==>', uniqueNumbers)
+
 		setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
 	}, [newResData, outAddData, realStartPrice])
 
-	console.log('selectedRows', selectedRows)
+	console.log('selectedRows ㅋㅋㅋ', selectedRows)
 
 	// 목록 제거
 	const onListRemove = () => {
-		// if (!selectedRows || selectedRows.length === 0) {
-		// 	return simpleAlert('제품을 선택해주세요.')
-		// }
+		// 제품 추가를 통해 띄워진 목록 "경매 목록 수정 TABLE에서 삭제(단순 목록에서 삭제)"
+		if (!selectedRows || selectedRows.length === 0) {
+			return simpleAlert('제품을 선택해주세요.')
+		}
+
+		simpleConfirm('선택한 항목을 삭제 목록에 추가하시겠습니까?', () => {
+			const filteredArray = newResData.filter(
+				(item) => !selectedRows.some((checkedItem) => checkedItem['고유 번호'] === item['고유 번호']),
+			)
+			console.log('filteredArray', filteredArray)
+			// setNewResData(filteredArray)
+
+			const resultRemove = selectedRows
+				.filter((item) => item && item['경매 제품 고유 번호'] !== undefined && item['경매 제품 고유 번호'] !== null)
+				.map((item) => ({
+					auctionProductUid: item['경매 제품 고유 번호'],
+					productUid: item['제품 고유 번호'],
+				}))
+			setEditData({ ...editData, deleteAuctionProductList: resultRemove })
+
+			const filteredArray2 = getRow.filter(
+				(item) =>
+					!selectedRows.some((checkedItem) => checkedItem['경매 제품 고유 번호'] === item['경매 제품 고유 번호']),
+			)
+
+			setGetRow([...filteredArray, ...filteredArray2])
+
+			setSelectedRows([]) // 테이블 체크 목록 초기화
+			setDelData(resultRemove)
+		})
+
 		// const key = '제품 고유 번호'
 		// const key2 = '경매 제품 고유 번호'
-		// const newKey = '고유 번호'
+		const newKey = '고유 번호'
 		// const deleteKeys = selectedRows.map((item) => item[key])
-		// const newSelectors = list.filter((item) => !deleteKeys.includes(item?.productUid))
-		// // 제품 추가된 항목 삭제 처리
-		// if (outAddData) {
-		// 	const updatedOutAddData = outAddData.filter((item) => !selectedRows.map((row) => row[newKey]).includes(item)) // add된 것들 처리
-		// 	console.log('updatedOutAddData', updatedOutAddData)
-		// 	setOutAddData(updatedOutAddData)
-		// }
-		// // deleteAuctionProductList에 기존 list 바인딩 !! TODO
-		// // const resultRemove = selectedRows
-		// // 	.filter((item) => item && item['경매 제품 고유 번호'] !== undefined && item['경매 제품 고유 번호'] !== null)
-		// // 	.map((item) => item['경매 제품 고유 번호'])
+		// const newSelectors = getRow.filter((item) => !deleteKeys.includes(item?.['경매 제품 번호']))
+		// 제품 추가된 항목 삭제 처리
+		if (outAddData) {
+			const updatedOutAddData = outAddData.filter((item) => !selectedRows.map((row) => row[newKey]).includes(item)) // add된 것들 처리
+			console.log('updatedOutAddData', updatedOutAddData)
+			setOutAddData(updatedOutAddData)
+		}
+		// deleteAuctionProductList에 기존 list 바인딩 !! TODO
 		// const resultRemove = selectedRows
 		// 	.filter((item) => item && item['경매 제품 고유 번호'] !== undefined && item['경매 제품 고유 번호'] !== null)
-		// 	.map((item) => ({
-		// 		auctionProductUid: item['경매 제품 고유 번호'],
-		// 		productUid: item['제품 고유 번호'],
-		// 	}))
-		// setEditData({ ...editData, deleteAuctionProductList: resultRemove })
-		// setList(newSelectors)
-		// setSelectedRows([]) // 테이블 체크 목록 초기화
-		// setDelData(resultRemove)
+		// 	.map((item) => item['경매 제품 고유 번호'])
 	}
 	console.log('outAddData', outAddData)
 
