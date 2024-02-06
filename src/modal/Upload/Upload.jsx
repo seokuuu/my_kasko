@@ -18,6 +18,7 @@ import useAlert from '../../store/Alert/useAlert'
 import MultiUploader from './components/MultiUploader'
 import SingleUploader from './components/SingleUploader'
 import useExcelUpload from './useExcelUpload'
+import SingleRegiUploader from './components/SingleRegiUploader'
 
 /**
  * @description
@@ -50,6 +51,8 @@ const Upload = ({
 	convertKey, // 단일 등록 폼 관련 값입니다.(필수값 X)
 	startDate,
 	setStartDate,
+	category,
+	setFinal,
 }) => {
 	console.log('restParams ;', restParams)
 	// 등록 타입(multi => 대량 등록,sinle => 단일 등록)
@@ -116,18 +119,23 @@ const Upload = ({
 					{/* 대량 등록 */}
 					{registerType === 'multi' && <MultiUploader file={file} setFile={setFile} />}
 					{/* 단일 등록 */}
-					{registerType === 'single' && (
-						<SingleUploader
-							modalInTable={modalInTable}
-							convertKey={convertKey}
-							onEditHandler={onEditHandler}
-							dropdownProps={dropdownProps}
-							address={address}
-							setAddress={setAddress}
-							startDate={startDate}
-							setStartDate={setStartDate}
-						/>
-					)}
+					{registerType === 'single' &&
+						(category === '단가 등록' ? (
+							<>
+								<SingleRegiUploader setFinal={setFinal} />
+							</>
+						) : (
+							<SingleUploader
+								modalInTable={modalInTable}
+								convertKey={convertKey}
+								onEditHandler={onEditHandler}
+								dropdownProps={dropdownProps}
+								address={address}
+								setAddress={setAddress}
+								startDate={startDate}
+								setStartDate={setStartDate}
+							/>
+						))}
 					<BlueBtnWrap>
 						<BlueBlackBtn onClick={submit}> {registerType === 'multi' ? '등록' : '저장'}</BlueBlackBtn>
 					</BlueBtnWrap>
