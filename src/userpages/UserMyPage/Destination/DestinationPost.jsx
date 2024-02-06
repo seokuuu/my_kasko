@@ -175,7 +175,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 
 						<Part>
 							<Title>
-								<h4>비고</h4>
+								<h4>하차지 특이사항</h4>
 								<p></p>
 							</Title>
 							<CustomInput
@@ -206,21 +206,22 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								<h4>하차지 담당자 정보</h4>
 								<p></p>
 							</Title>
-							<CustomInput
-								placeholder="직함 입력"
-								width={130}
-								name="managerTitle"
-								value={input.managerTitle}
-								onChange={handleChange}
-							/>
-							<CustomInput
-								placeholder="담당자 성함 입력"
-								value={input.managerName}
-								width={195}
-								style={{ marginLeft: '5px' }}
-								name="managerName"
-								onChange={handleChange}
-							/>
+							<div style={{ display: 'flex', gap: '5px' }}>
+								<CustomInput
+									placeholder="담당자 성함 입력"
+									value={input.managerName}
+									width={200}
+									name="managerName"
+									onChange={handleChange}
+								/>
+								<CustomInput
+									placeholder="직함 입력"
+									width={135}
+									name="managerTitle"
+									value={input.managerTitle}
+									onChange={handleChange}
+								/>
+							</div>
 							<CustomInput
 								placeholder="담당자 휴대폰 번호 입력 ('-' 제외)"
 								value={input.managerPhone}

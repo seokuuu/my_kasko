@@ -153,10 +153,10 @@ const SignUp = () => {
 	/**  사업자 번호 중복 체크 */
 	const handleBusIdDupleCheck = async () => {
 		const businessNumber = watch('businessNumber')
-		const idRegex = /^[0-9]{3}[0-9]{2}[0-9]{5}$/
-		if (!businessNumber || !idRegex.test(businessNumber)) {
-			return simpleAlert('올바른 사업자 등록 번호가 아닙니다.')
-		}
+		// const idRegex = /^[0-9]{3}[0-9]{2}[0-9]{5}$/
+		// if (!businessNumber || !idRegex.test(businessNumber)) {
+		// 	return simpleAlert('올바른 사업자 등록 번호가 아닙니다.')
+		// }
 		try {
 			await checkBusinessId(businessNumber)
 			simpleAlert('사용 가능한 사업자 번호입니다.')
