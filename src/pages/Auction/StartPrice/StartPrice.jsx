@@ -50,6 +50,9 @@ const StartPrice = ({}) => {
 	const { selectedCount, selectedData } = useTableSelection()
 	const [uploadModal, setUploadModal] = useState(false)
 	const [excelToJson, setExcelToJson] = useState([])
+	const [final, setFinal] = useState()
+
+	console.log('final!!! ', final)
 
 	const [insertList, setInsertList] = useState({ insertList: [] })
 	console.log('insertList', insertList)
@@ -217,7 +220,7 @@ const StartPrice = ({}) => {
 
 	// 단가 등록
 	const propsPost = () => {
-		unitPriceRegister({ insertList })
+		unitPriceRegister({ insertList: final })
 	}
 
 	// 단가 등록 폼 핸들러
@@ -464,6 +467,8 @@ const StartPrice = ({}) => {
 					setDropInput={setDropInput}
 					excelUploadAPI={uploadMultiPrice}
 					refreshQueryKey={'auction'}
+					category={'단가 등록'}
+					setFinal={setFinal}
 				/>
 			)}
 			{/* {modalSwitch && (

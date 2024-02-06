@@ -159,6 +159,8 @@ import { authAtom } from './store/Auth/auth'
 import Forbidden from './pages/Forbidden'
 import NotAuth from './pages/NotAuth'
 import useAuth from './store/Auth/useAuth'
+import PlusBtnUploader from './modal/Upload/components/PlusBtnUploader'
+import SingleRegiUploader from './modal/Upload/components/SingleRegiUploader'
 
 const Router = () => {
 	const auth = useAtomValue(authAtom)
@@ -166,8 +168,8 @@ const Router = () => {
 	return (
 		<Routes>
 			{/* 테스트 URL */}
-			<Route path="/ppapp" element={<SalesPackage />} />
-			<Route path="/ppap" element={<DefaultBlueBar />} />
+			<Route path="/ppapp" element={<PlusBtnUploader />} />
+			<Route path="/ppap" element={<SingleRegiUploader />} />
 			<Route path="/TableTest" element={<TableTest />} />
 			<Route path="/test" element={<Test />} />
 			<Route path="/test2" element={<Test2 />} />
