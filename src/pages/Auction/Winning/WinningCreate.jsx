@@ -37,11 +37,11 @@ import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import CustomerFind from '../../../modal/Multi/CustomerFind'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
+import useAlert from '../../../store/Alert/useAlert'
 import { WinningCreateFindAtom, WinningProductAddAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import BiddingSearchFields from '../Bidding/BiddingSearchFields'
 import WinningProductAdd from './WinningProductAdd'
-import useAlert from '../../../store/Alert/useAlert'
 
 const WinningCreate = ({}) => {
 	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
@@ -156,6 +156,7 @@ const WinningCreate = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
 
 	const [getRow, setGetRow] = useState('')
+	console.log('getRow @@@@', getRow)
 	const tableField = useRef(AuctionWinningCreateFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
@@ -221,7 +222,7 @@ const WinningCreate = ({}) => {
 	// }, [checkedArray2, newResData])
 
 	const handleRemoveBtn = useCallback(() => {
-		if (!isArray(checkedArray2) || !checkedArray2.length > 0) return simpleAlert('선택해주세요!')
+		if (!isArray(checkedArray2) || !checkedArray2.length > 0) return simpleAlert('추가할 항목을 선택해주세요.')
 
 		simpleConfirm('선택한 항목을 삭제 목록에 추가하시겠습니까?', () => {
 			const filteredArray = newResData.filter(

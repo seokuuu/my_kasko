@@ -62,7 +62,7 @@ const RoundAucProAdd = ({
 	propsResData,
 	list,
 	onListAdd,
-	auctionNumber
+	auctionNumber,
 }) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -103,7 +103,7 @@ const RoundAucProAdd = ({
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
-		auctionNumber: auctionNumber
+		auctionNumber: auctionNumber,
 	}
 	const [param, setParam] = useState(paramData)
 
@@ -146,18 +146,40 @@ const RoundAucProAdd = ({
 	// }
 
 	// 제품 추가
+	// const onAdd = () => {
+	// 	if (!selectedRows || selectedRows.length === 0) {
+	// 		return
+	// 	}
+
+	// 	simpleConfirm('제품을 추가하시겠습니까?', () => {
+	// 		const key = '고유 번호'
+	// 		const findKey = selectedRows.map((item) => item[key])
+	// 		console.log('findKey', findKey)
+	// 		const addData = resData?.filter((item) => findKey.includes(item.uid))
+
+	// 		console.log('addData <###', addData)
+	// 		setNewResData(addData)
+	// 		onListAdd(addData)
+	// 		setAddModal(false)
+	// 	})
+	// }
+
 	const onAdd = () => {
-		if (!selectedRows || selectedRows.length === 0) {
-			return
+		const key = '고유 번호'
+		const findKey = selectedRows.map((item) => item[key])
+		const addData = resData?.filter((item) => findKey.includes(item?.uid))
+		console.log('addData', addData)
+		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
+		else {
+			simpleConfirm('선택한 항목을 추가하시겠습니까?', () =>
+				checkedArray.forEach((item) => {
+					console.log('item =>', item)
+					setNewResData((prevData) => [...prevData, item])
+					setAddModal(false)
+					onListAdd(addData)
+				}),
+			)
 		}
-		simpleConfirm('제품을 추가하시겠습니까?', () => {
-			const key = '고유 번호'
-			const findKey = selectedRows.map((item) => item[key])
-			console.log('findKey', findKey)
-			const addData = resData?.filter((item) => findKey.includes(item.uid))
-			onListAdd(addData)
-			setAddModal(false)
-		})
 	}
 
 	const handleTablePageSize = (event) => {

@@ -1,47 +1,14 @@
-import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
-import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import { ExInputsWrap, FilterLeft, FilterRight, Input, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
-
-import { useState } from 'react'
-import { DateSearchSelect, DestinationSearch, RadioSearchButton } from '../../../components/Search'
+import { FilterLeft, FilterRight, RowWrap } from '../../../modal/External/ExternalFilter'
+import { DestinationSearch } from '../../../components/Search'
 
 const DestinationSearchFilter = ({
 	// prettier-ignore
 	search,
 	setSearch,
-	commonDropdownButtonHandler,
-	commonNumInputHandler,
-	onSpecHandler,
 }) => {
-	const {
-		// prettier-ignore
-		storageList,
-		supplierList,
-		spartList,
-		makerList,
-		stockStatusList,
-		gradeList,
-		preferThicknessList,
-	} = useGlobalProductSearchFieldData()
-
-	/**
-	 * @description
-	 * 경매 일자 auctionStartDate, auctionEndDate
-	 * 경매 회차 번호 auctionEndDate
-	 * 진행 상태 ?
-	 * 제품 번호 auctionEndDate
-	 */
-
-	const init = {
-		pageNum: 1,
-		pageSize: 50,
-	}
-
 	const onChange = (key, value) => {
 		setSearch((p) => ({ ...p, [key]: value }))
 	}
-
-	const [param, setParam] = useState(init)
 
 	return (
 		<>

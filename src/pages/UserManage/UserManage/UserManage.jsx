@@ -46,10 +46,11 @@ import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageC
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import UserManangeSearchFields from './UserManangeSearchFields'
 import { isEqual } from 'lodash'
+import useAlert from '../../../store/Alert/useAlert'
 const UserManage = ({ setChoiceComponent }) => {
 	const [editModal, setEditModal] = useAtom(UsermanageUserManageEditModal)
 	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-	console.log('uidAtom', uidAtom)
+	const { simpleAlert } = useAlert();
 	const [postModal, setPostModal] = useAtom(UsermanageUserPostModal)
 	const [types, setTypes] = useState('카스코철강') //카스코철강, 현대제철 , 운송, 창고
 	const handleSelectChange = (selectedOption, name) => {
@@ -115,7 +116,7 @@ const UserManage = ({ setChoiceComponent }) => {
 	// // 삭제
 	const mutation = useMutationQuery('userManage', delete_userManage)
 	const handleRemoveBtn = useCallback(() => {
-		if (!isArray(checkedArray) || checkedArray.length === 0) return alert('선택해주세요!')
+		if (!isArray(checkedArray) || checkedArray.length === 0) return simpleAlert('삭제할 항목을 선택해주세요.')
 
 		if (window.confirm('선택한 항목을 삭제하시겠습니까?')) {
 			checkedArray.forEach((item) => {

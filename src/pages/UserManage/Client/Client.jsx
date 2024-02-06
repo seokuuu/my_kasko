@@ -45,6 +45,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
 	const [auctionModal, setAuctionModal] = useAtom(AuctionRestrictionModal)
 
 	const [getRow, setGetRow] = useState([])
+	console.log('getRow @@@@', getRow)
 	const [tablePagination, setPagination] = useState([])
 
 	const { isLoading, data, isSuccess, refetch } = useReactQuery(param, 'getClient', getCustomer)
@@ -76,7 +77,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
 
 	// 회원 제한 수정
 	const handleRemoveBtn = useCallback(() => {
-		if (!isArray(checkedArray) || checkedArray.length === 0) return simpleAlert('선택해주세요!')
+		if (!isArray(checkedArray) || checkedArray.length === 0) return simpleAlert('삭제할 항목을 선택해주세요.')
 
 		redAlert('사용자를 삭제하면 해당 사용자의 \n 데이터가 삭제 됩니다. 삭제 하시겠습니까?', () => {
 			const memberUids = checkedArray.map((item) => item['고객 구분'])
@@ -143,6 +144,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
 	useEffect(() => {
 		if (!isSuccess && !responseData) return
 		if (Array.isArray(responseData)) {
+			console.log('responseData ㅋㅋ!!', responseData)
 			setGetRow(add_element_field(responseData, UserManageCustomerManageFields))
 			setPagination(data.data.pagination)
 		}
