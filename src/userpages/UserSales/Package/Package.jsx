@@ -85,7 +85,6 @@ const Package = ({}) => {
 	/**
 	 * 페이지사이즈 핸들러
 	 */
-
 	function handlePageSizeChange(e) {
 		const num = e.target.value
 		const newPageParams = { pageSize: num, pageNum: 1 }

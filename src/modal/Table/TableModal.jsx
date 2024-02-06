@@ -49,7 +49,6 @@ const TableModal = ({
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업
   const targetObject = getRow.find(obj => obj['운반비 고유 번호'] === uidAtom);
 
-
   // 처음 팝업 띄우는 컴포넌트의 onClickHandler
   const firstPopupClick = (num) => {
     setPopupSwitch(true)
@@ -101,7 +100,7 @@ const TableModal = ({
       <ModalContainer style={{ zIndex: '9999' }} width={850}>
         <BlueBarHeader>
           <div>{title}</div>
-          <div>
+          <div> 
             <WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
           </div>
         </BlueBarHeader>
@@ -128,6 +127,8 @@ const TableModal = ({
                           moment(matchingRow[key]).format('YYYY.MM.DD')
                         ) : modalInTable[key] === 'spartList' ? (
                           <div>{targetObject['제품구분']}</div>
+                        ) : modalInTable[key] === 'destination-input'? (
+                          <Input type="text" name={convertKey[key]} onChange={onEditHandler} defaultValue={matchingRow[key]}/>
                         ) : (
                           matchingRow[key]
                         )}

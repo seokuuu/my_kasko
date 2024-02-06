@@ -43,6 +43,7 @@ import { popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Lay
 
 import { popupDummy } from '../../../modal/Alert/PopupDummy'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
+import useAlert from '../../../store/Alert/useAlert'
 
 const Transport = ({}) => {
   const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
@@ -60,6 +61,7 @@ const Transport = ({}) => {
     // }));
   }
   const [isRotated, setIsRotated] = useState(false)
+  const { simpleAlert } = useAlert();
 
   console.log('uidAtom', uidAtom)
 
@@ -124,6 +126,9 @@ const Transport = ({}) => {
     onSuccess: () => {
       queryClient.invalidateQueries('surcharge')
     },
+    onError: (error) => {
+			simpleAlert(error?.data?.message || '삭제에 실패했습니다. 다시 시도해 주세요.')
+		}
   })
 
   const propsRemove = () => {
@@ -143,7 +148,7 @@ const Transport = ({}) => {
           func: propsRemove,
         }))
       } else {
-        alert('선택해주세요!')
+        simpleAlert('삭제할 항목을 선택해주세요.')
       }
     },
     [checkedArray],
