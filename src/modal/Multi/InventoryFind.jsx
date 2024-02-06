@@ -1,6 +1,5 @@
-import { useAtom } from 'jotai'
 import { useState } from 'react'
-import { blueModalAtom, invenCustomerData, invenDestinationData, winningDestiData } from '../../store/Layout/Layout'
+import { invenCustomerData, invenDestinationData, winningDestiData } from '../../store/Layout/Layout'
 import {
 	BlueBarHeader,
 	BlueBlackBtn,
@@ -26,26 +25,12 @@ import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/
 const InventoryFind = ({ title, setSwitch, data, type, setPropsUid, handleButtonOnClick, defaultValue }) => {
 	const matchData = { name: '고객명', code: '고객사 코드', businessNumber: '사업자번호' }
 	const destinationData = { name: '목적지', code: '목적지 코드' }
-
-	// const { isLoading, isError, data, isSuccess } = useReactQuery('', 'getCustomerFind', getCustomerFind)
-
 	const customerGetData = data?.data?.data
 
-	console.log('customerGetData', customerGetData)
-
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
 	const [searchTerm, setSearchTerm] = useState('')
 	const [result, setResult] = useState([])
 	const [clickedResult, setClickedResult] = useState()
 	const [selectedUid, setSelectedUid] = useState(null)
-	const [selectedUids, setSelectedUids] = useState([])
-
-	console.log('selectedUid', selectedUid)
-
-	console.log('clickedResult', clickedResult)
-
-	console.log('searchTerm !!!', searchTerm)
-	console.log('result !!!', result)
 
 	const modalClose = () => {
 		setSwitch(false)
@@ -101,7 +86,7 @@ const InventoryFind = ({ title, setSwitch, data, type, setPropsUid, handleButton
 	return (
 		<>
 			<FadeOverlay />
-			<ModalContainer style={{ width: '30%', height: '70vh' }}>
+			<ModalContainer style={{ width: '700px', height: '720px' }}>
 				<BlueBarHeader style={{ height: '60px' }}>
 					<div>{title}</div>
 					<div>
@@ -114,7 +99,7 @@ const InventoryFind = ({ title, setSwitch, data, type, setPropsUid, handleButton
 							<div style={{ display: 'flex', alignItems: 'center' }}>
 								<BMDTitle style={{ width: '90px' }}>검색</BMDTitle>
 								<TxtInput
-									placeholder="고객사 코드 : K00000, 대소문자에 유의"
+									placeholder={title === '고객사 찾기' ? '고객사 코드 : K00000, 대소문자에 유의' : '목적지 명 입력...'}
 									textarea="회사명"
 									value={searchTerm}
 									onChange={(e) => setSearchTerm(e.target.value)}
@@ -133,17 +118,17 @@ const InventoryFind = ({ title, setSwitch, data, type, setPropsUid, handleButton
 							<ResultContainer>
 								<ResultHead>
 									<ResultCell wid={50}>선택</ResultCell>
-									{title == '고객사 찾기' && (
+									{title === '고객사 찾기' && (
 										<>
 											<ResultCell>{matchData.name}</ResultCell>
 											<ResultCell>{matchData.code}</ResultCell>
 											<ResultCell wid={130}>{matchData.businessNumber}</ResultCell>
 										</>
 									)}
-									{title == '목적지 찾기' && (
+									{title === '목적지 찾기' && (
 										<>
-											<ResultCell>{destinationData.name}</ResultCell>
-											<ResultCell>{destinationData.code}</ResultCell>
+											<ResultCell style={{ width: '60%' }}>{destinationData.name}</ResultCell>
+											<ResultCell style={{ width: '20%' }}>{destinationData.code}</ResultCell>
 											{/* <ResultCell wid={130}>{matchData.businessNumber}</ResultCell> */}
 										</>
 									)}
@@ -189,7 +174,7 @@ const InventoryFind = ({ title, setSwitch, data, type, setPropsUid, handleButton
 													</RadioCircleDiv>
 												</RadioMainDiv>
 											</ResultCell>
-											<ResultCell>{item.name}</ResultCell>
+											<ResultCell wid={title === '목적지 찾기' ? 300 : 100}>{item.name}</ResultCell>
 											<ResultCell>{item.code}</ResultCell>
 											{title == '고객사 찾기' && (
 												<>
