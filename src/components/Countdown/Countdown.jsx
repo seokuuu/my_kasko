@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react'
+import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill'
+
+const EventSource = EventSourcePolyfill || NativeEventSource
 
 const Countdown = () => {
 	const [data, setData] = useState({ count: '', type: '' })
 
 	useEffect(() => {
-		let eventSource = null // EventSource 객체를 저장하기 위한 변수
+		let eventSource = null
 
 		const connect = () => {
-			eventSource = new EventSource(process.env.REACT_APP_SSE_URL + '/connect')
+			eventSource = new EventSource(process.env.REACT_APP_SSE_URL + '/connect', {
+				headers: {
+					Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+				},
+				retryTimeout: 3000,
+			})
 
 			eventSource.onopen = (e) => {
 				console.log('Connection to server opened.')
