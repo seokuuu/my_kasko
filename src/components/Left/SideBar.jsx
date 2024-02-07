@@ -7,12 +7,12 @@ import CalendarModal from '../../modal/Calender/Calendar'
 import { calendarAtom } from '../../store/Layout/Layout'
 
 import {
-	ACTopRight,
+	AccordionWrap,
+	AccSwitch,
 	AcTop,
 	AcTopCal,
 	AcTopLeft,
-	AccSwitch,
-	AccordionWrap,
+	ACTopRight,
 	Depth2,
 	SideBarWrap,
 	StyledAccordion,
@@ -24,25 +24,23 @@ import {
 
 const data = [
 	{
-		//Stock
 		depth1: '재고 관리',
 		depth2: [
 			{ title: '입고 관리', link: 'stock/incoming' },
 			{ title: '재고 관리', link: 'stock/inventory' },
 		],
+		auth: '재고관리',
 	},
 	{
-		//Product
 		depth1: '판매 제품 관리',
 		depth2: [
 			{ title: '단일 관리', link: 'product/single' },
 			{ title: '패키지 관리', link: 'product/package' },
 			{ title: '추천 제품 관리', link: 'product/recommend' },
-			// { title: 'Pro.no 관리', link: 'product/prono' },
 		],
+		auth: '판매제품관리',
 	},
 	{
-		//Auction
 		depth1: '경매 관리',
 		depth2: [
 			{ title: '경매 회차 관리', link: 'auction/round' },
@@ -52,23 +50,23 @@ const data = [
 			{ title: '경매 낙찰 관리', link: 'auction/winning' },
 			{ title: '경매 시작 단가 관리', link: 'auction/startprice' },
 		],
+		auth: '경매관리',
 	},
 	{
-		//Sales
 		depth1: '상시 판매 관리',
 		depth2: [
 			{ title: '단일', link: 'sales/single' },
 			{ title: '패키지', link: 'sales/package' },
 			{ title: '주문 확인', link: 'sales/order' },
 		],
+		auth: '상시판매관리',
 	},
 	{
-		//Order
 		depth1: '주문 관리',
 		depth2: [{ title: '주문 관리', link: 'order' }],
+		auth: '주문관리',
 	},
 	{
-		//Shipping
 		depth1: '출고 관리',
 		depth2: [
 			{ title: '출하 지시 등록', link: 'shipping/register' },
@@ -78,28 +76,27 @@ const data = [
 			{ title: '출고 현황', link: 'shipping/status' },
 			{ title: '출고 실적', link: 'shipping/achievement' },
 		],
+		auth: '출고관리',
 	},
 	{
-		//Standard
 		depth1: '기준 관리',
 		depth2: [
 			{ title: '목적지 관리', link: 'standard/destination' },
 			{ title: '운반비 관리', link: 'standard/transportation' },
 			{ title: '합짐비 관리', link: 'standard/consolidation' },
 		],
+		auth: '기준관리',
 	},
 	{
-		//UserManage
 		depth1: '사용자 관리',
 		depth2: [
 			{ title: '사용자 관리', link: 'usermanage/client' },
 			{ title: '고객사 목적지 관리', link: 'usermanage/clientdestination' },
-			// { title: '사용자 관리', link: 'usermanage/usermanage' },
 			{ title: '개인정보 수정', link: 'usermanage/profileedit' },
 		],
+		auth: '사용자관리',
 	},
 	{
-		//Operate
 		depth1: '운영 관리',
 		depth2: [
 			{ title: '운영 관리', link: 'operate/operation?category=product' },
@@ -108,11 +105,12 @@ const data = [
 			{ title: '이용 약관', link: 'operate/terms' },
 			{ title: '푸터 관리', link: 'operate/footer' },
 		],
+		auth: '운영관리',
 	},
 	{
-		//Operate
 		depth1: '재고수불 관리',
 		depth2: [{ title: '재고수불 관리', link: 'operate/inventory' }],
+		auth: '재고수불관리',
 	},
 ]
 
@@ -130,6 +128,14 @@ const SideBar = ({ expanded, setExpanded, depth2Color }) => {
 	const handleChange = (panel) => (event, isExpanded) => {
 		setExpanded(isExpanded ? panel : false)
 	}
+
+	const filteredData = data.filter((item) => {
+		const itemAuth = item.auth || []
+		const authData = JSON.parse(localStorage.getItem('auth'))
+		const userAuth = authData.authorities
+		return userAuth.some((auth) => itemAuth.includes(auth))
+	})
+
 	return (
 		<SideBarWrap>
 			{calModal && (
@@ -154,7 +160,7 @@ const SideBar = ({ expanded, setExpanded, depth2Color }) => {
 					</AcTopCal>
 				</AcTop>
 
-				{data.map((item, index) => (
+				{filteredData.map((item, index) => (
 					<StyledAccordion
 						style={{ margin: '1px' }}
 						key={index}
