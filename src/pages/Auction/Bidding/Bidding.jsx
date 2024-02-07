@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { BtnBound, SkyBtn, TGreyBtn, TWhiteBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
@@ -38,8 +38,11 @@ import InventoryFind from '../../../modal/Multi/InventoryFind'
 import useAlert from '../../../store/Alert/useAlert'
 import Table from '../../Table/Table'
 import BiddingSearchFields from './BiddingSearchFields'
-
+import { auctionPackDetailNumAtom, auctionPackDetailModal } from '../../../store/Layout/Layout'
 const Bidding = ({}) => {
+	const [aucDetail, setAucDetail] = useAtom(auctionPackDetailNumAtom) // 해당 row 값 저장
+
+	const [aucDetailModal, setAucDetailModal] = useAtom(auctionPackDetailModal) // 패키지 모달
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(userPageSingleDestiFindAtom)
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
@@ -81,8 +84,8 @@ const Bidding = ({}) => {
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
 	console.log('destiObject', destiObject)
-	const tableField = useRef(AuctionBiddingFieldsCols)
-	const getCol = tableField.current
+	// const tableField = useRef(AuctionBiddingFieldsCols)
+	// const getCol = tableField.current
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
 	// const productNumbers = checkedArray?.map((item) => item['제품 고유 번호'])
@@ -91,13 +94,14 @@ const Bidding = ({}) => {
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
-		type: types,
+		type: '단일',
 	}
 
 	console.log('paramData', paramData)
 
 	const [param, setParam] = useState(paramData)
-	console.log('param !@#', param)
+
+	useEffect(() => {}, [types])
 
 	const productListInner = {
 		biddingPrice: null,
@@ -277,10 +281,13 @@ const Bidding = ({}) => {
 				<div style={{ display: 'flex' }}>
 					<h1>경매 응찰</h1>
 					<SubTitle>
-						<StyledHeading isActive={types === '단일'} onClick={() => setTypes('단일')}>
+						<StyledHeading isActive={param?.type === '단일'} onClick={() => setParam({ ...param, type: '단일' })}>
 							단일
 						</StyledHeading>
-						<StyledSubHeading isActive={types === '패키지'} onClick={() => setTypes('패키지')}>
+						<StyledSubHeading
+							isActive={param?.type === '패키지'}
+							onClick={() => setParam({ ...param, type: '패키지' })}
+						>
 							패키지
 						</StyledSubHeading>
 					</SubTitle>
@@ -460,7 +467,7 @@ const Bidding = ({}) => {
 					</div>
 				</TCSubContainer>
 				<Table
-					getCol={getCol}
+					getCol={AuctionBiddingFieldsCols}
 					getRow={getRow}
 					tablePagination={tablePagination}
 					onPageChange={onPageChange}
