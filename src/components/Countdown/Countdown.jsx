@@ -37,7 +37,7 @@ const Countdown = ({ setNotice }) => {
 		setNotice({
 			type: responseData.type,
 			round: responseData.round,
-			date: moment(responseData.date).format('HH:mm'),
+			date: moment(responseData.startDate).format('HH:mm'),
 		})
 	}
 
