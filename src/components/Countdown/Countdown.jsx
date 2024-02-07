@@ -4,7 +4,7 @@ import moment from 'moment'
 import FlipClockCountdown from '@leenguyen/react-flip-clock-countdown'
 import '@leenguyen/react-flip-clock-countdown/dist/index.css'
 
-const Countdown = ({ setNotice }) => {
+const Countdown = () => {
 	const [data, setData] = useState(null)
 
 	const getCountdownData = async () => {
@@ -20,7 +20,6 @@ const Countdown = ({ setNotice }) => {
 		try {
 			const responseData = await getCountdownData()
 			setCountdownData(responseData)
-			setNoticeData(responseData)
 		} catch (e) {
 			console.log(e)
 		}
@@ -33,20 +32,11 @@ const Countdown = ({ setNotice }) => {
 		})
 	}
 
-	const setNoticeData = (responseData) => {
-		setNotice({
-			type: responseData.type,
-			round: responseData.round,
-			date: moment(responseData.startDate).format('HH:mm'),
-		})
-	}
-
 	const onTimeUp = () => {
 		setTimeout(() => {
 			getCountdown()
 				.then((response) => response?.data?.data)
 				.then((responseData) => setCountdownData(responseData))
-				.then((responseData) => setNoticeData(responseData))
 				.catch((e) => console.log(e))
 		}, 3000)
 	}
