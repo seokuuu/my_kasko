@@ -137,6 +137,12 @@ export const AuctionUnitPriceAtom = atom(false)
 // 경매 타입
 export const auctionTypeAtom = atom('단일')
 
+//패키지 번호 전역 값
+export const auctionPackDetailNumAtom = atom('')
+
+//패키지 상세보기 모달
+export const auctionPackDetailModal = atom(false)
+
 /* ==============================
     기준 관리 (Standard)
 ============================== */

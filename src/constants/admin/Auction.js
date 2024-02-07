@@ -1,7 +1,9 @@
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
 import MarkerCellRenderer from '../../pages/Table/MarkerCellRenderer'
 import { PROD_COL_NAME } from '../user/constantKey'
+import { auctionPackDetailNumAtom, auctionPackDetailModal } from '../../store/Layout/Layout'
 import axios from 'axios'
+import { useAtom } from 'jotai'
 
 var checkboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping
@@ -17,6 +19,29 @@ export const commonStyles = {
 	headerClass: 'custom-header-style',
 	flex: 1,
 	cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+}
+
+const LinkRenderer = (props) => {
+	const { data } = props
+	const [aucDetail, setAucDetail] = useAtom(auctionPackDetailNumAtom) // 해당 row 값 저장
+
+	const [aucDetailModal, setAucDetailModal] = useAtom(auctionPackDetailModal)
+
+	console.log('aucDetail', aucDetail)
+
+	setAucDetail(data)
+
+	return (
+		<a
+			onClick={() => {
+				setAucDetailModal(true)
+			}}
+			style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}
+			rel="noreferrer"
+		>
+			{props.value || ''}
+		</a>
+	)
 }
 
 // 경매 관리 - 단가 등록
@@ -89,6 +114,7 @@ export const AuctionRoundFieldsCols = [
 			editType: 'auctionroundedit',
 		},
 	},
+
 	{ ...commonStyles, field: '판매 구분', minWidth: 100 },
 	{ ...commonStyles, field: '경매 번호', minWidth: 100 },
 	{ ...commonStyles, field: '시작일', minWidth: 100 },
@@ -256,7 +282,23 @@ export const AuctionRoundDetailFieldsCols = [
 	{ ...commonStyles, field: '재고 상태', minWidth: 100 },
 	{ ...commonStyles, field: '매입처', minWidth: 100 },
 	{ ...commonStyles, field: '제조사', minWidth: 100 },
-	{ ...commonStyles, field: '판매 구분', minWidth: 100 },
+	// {
+	// 	field: '판매 구분',
+	// 	headerClass: 'custom-header-style',
+	// 	cellStyle: {
+	// 		borderRight: '1px solid #c8c8c8',
+	// 		textAlign: 'center',
+	// 		maxWidth: 100,
+	// 		color: 'blue',
+	// 		fontWeight: 'bolder',
+	// 	},
+	// },
+	{
+		...commonStyles,
+		field: '판매 구분',
+		minWidth: 100,
+		cellStyle: { color: 'dodgerblue', borderRight: '1px solid #c8c8c8', textAlign: 'center', fontWeight: 'bolder' },
+	},
 	{ ...commonStyles, field: '판매 유형', minWidth: 100 },
 	{ ...commonStyles, field: '판매가 유형', minWidth: 100 },
 	{ ...commonStyles, field: '경매 번호', minWidth: 100 },
@@ -293,10 +335,10 @@ export const AuctionRoundDetailFieldsCols = [
 ================================= */
 
 export const AuctionBiddingFields = {
-	'목적지 코드': 'destinationCode',
-	'목적지 명': 'customerDestinationName',
-	'목적지 주소': 'customerDestinationAddress',
-	'목적지 연락처': 'customerDestinationPhone',
+	// '목적지 코드': 'destinationCode',
+	// '목적지 명': 'customerDestinationName',
+	// '목적지 주소': 'customerDestinationAddress',
+	// '목적지 연락처': 'customerDestinationPhone',
 	'경매 제품 고유 번호': 'uid',
 	'경매 고유 번호': 'auctionUid',
 	'제품 고유 번호': 'productUid',
@@ -346,10 +388,10 @@ export const AuctionBiddingFields = {
 	el: 'el',
 	mn: 'mn',
 	상태: 'biddingStatus',
-	'목적지 코드': 'destinationCode',
-	'목적지 명': 'customerDestinationName',
-	'목적지 주소': 'customerDestinationAddress',
-	'목적지 연락처': 'customerDestinationPhone',
+	// '목적지 코드': 'destinationCode',
+	// '목적지 명': 'customerDestinationName',
+	// '목적지 주소': 'customerDestinationAddress',
+	// '목적지 연락처': 'customerDestinationPhone',
 }
 
 export const AuctionBiddingFieldsCols = [
@@ -358,6 +400,14 @@ export const AuctionBiddingFieldsCols = [
 	{ ...commonStyles, field: '경매 번호', minWidth: 100 },
 	{ ...commonStyles, field: '제품 고유 번호', minWidth: 100 },
 	{ ...commonStyles, field: '상태', minWidth: 100 },
+	{
+		headerName: '패키지 번호',
+		field: '패키지 번호',
+		headerClass: 'custom-header-style',
+		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+		width: 150,
+		cellRenderer: LinkRenderer,
+	},
 
 	{
 		...commonStyles,
@@ -405,7 +455,7 @@ export const AuctionBiddingFieldsCols = [
 	{ ...commonStyles, field: '판매 유형', minWidth: 100 },
 	{ ...commonStyles, field: PROD_COL_NAME.productNumber, minWidth: 250, cellRenderer: MarkerCellRenderer },
 	{ ...commonStyles, field: '프로넘 번호', minWidth: 100 },
-	{ ...commonStyles, field: PROD_COL_NAME.packageNumber, minWidth: 100, cellRenderer: MarkerCellRenderer },
+
 	{ ...commonStyles, field: '시작가', minWidth: 100 },
 	{ ...commonStyles, field: '규격 약호', minWidth: 100 },
 	{ ...commonStyles, field: '여재 원인 코드', minWidth: 100 },
@@ -439,10 +489,10 @@ export const AuctionBiddingFieldsCols = [
 	{ ...commonStyles, field: 'si', minWidth: 100 },
 	{ ...commonStyles, field: 'el', minWidth: 100 },
 	{ ...commonStyles, field: 'mn', minWidth: 100 },
-	{ ...commonStyles, field: '목적지 코드', minWidth: 100 },
-	{ ...commonStyles, field: '목적지 명', minWidth: 100 },
-	{ ...commonStyles, field: '목적지 주소', minWidth: 100 },
-	{ ...commonStyles, field: '목적지 연락처', minWidth: 100 },
+	// { ...commonStyles, field: '목적지 코드', minWidth: 100 },
+	// { ...commonStyles, field: '목적지 명', minWidth: 100 },
+	// { ...commonStyles, field: '목적지 주소', minWidth: 100 },
+	// { ...commonStyles, field: '목적지 연락처', minWidth: 100 },
 ]
 
 /* ==============================
@@ -464,7 +514,7 @@ export const AuctionProgressFields = {
 	'정척 여부': 'preferThickness', //  (Y / N)
 	'유찰 횟수': 'failCount',
 	시작가: 'auctionStartPrice',
-	응찰가가: 'biddingPrice',
+	응찰가: 'biddingPrice',
 	두께: 'thickness',
 	폭: 'width',
 	길이: 'length',
@@ -553,6 +603,7 @@ export const AuctionProgressFieldsCols = [
 export const AuctionDetailProgressFields = {
 	'응찰 고유 번호': 'auctionBidUid',
 	'경매 상태': 'auctionStatus',
+	'경매 상태': 'auctionStatus',
 	'고객 코드': 'code',
 	회사명: 'customerName',
 	'회원 이름': 'memberName',
@@ -617,7 +668,7 @@ export const AuctionDetailProgressFieldsCols = [
 	{ ...commonStyles, field: '경매 상태', minWidth: 120 },
 	{ ...commonStyles, field: '고객 코드', minWidth: 100 },
 	{ ...commonStyles, field: '회사명', minWidth: 150 },
-	{ ...commonStyles, ...commonStyles, field: '회원 이름', minWidth: 120 },
+	{ ...commonStyles, field: '회원 이름', minWidth: 120 },
 	{ ...commonStyles, field: '창고', minWidth: 100 },
 	{ ...commonStyles, field: '제품군', minWidth: 100 },
 	{ ...commonStyles, field: '판매 유형', minWidth: 120 },
