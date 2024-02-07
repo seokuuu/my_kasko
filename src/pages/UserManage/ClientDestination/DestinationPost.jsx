@@ -28,6 +28,7 @@ import SignUpPost from '../../../modal/SignUp/SignUpPost'
 import useAlert from '../../../store/Alert/useAlert'
 import { UsermanageFindModal } from '../../../store/Layout/Layout'
 import ClientDestiCustomerFind from './ClientDestiCustomerFind'
+import AddressFinder from '../../../components/DaumPost/Address'
 
 const init = {
 	represent: '', // (0: 미지정 / 1: 지정)
@@ -65,8 +66,6 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	const [detailAddress, setDetailAddress] = useState('')
 	const [isDaumPostOpen, setIsDaumPostOpen] = useState(false)
 	const [submitData, setSubmitData] = useState(init)
-
-	console.log('submitData', submitData)
 
 	const postCheck = () => {
 		setPostFind(false)
@@ -191,13 +190,12 @@ const DestinationPost = ({ setChoiceComponent }) => {
 		if (isEmptyObj(submitData)) {
 			mutation.mutate(submitData, {
 				onSuccess: (d) => {
-					console.log('테스트 ')
 					if (d?.data?.status === 200) {
 						showAlert({
 							title: '저장되었습니다.',
 							func: () => {
 								setChoiceComponent('리스트')
-								window.location.reload()
+								queryClient.invalidateQueries('clientDestination')
 							},
 						})
 					}
@@ -209,7 +207,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 				},
 			})
 		} else {
-			alert('내용을 모두 기입해주세요.')
+			simpleAlert('내용을 모두 기입해주세요.')
 		}
 	}
 
@@ -248,9 +246,9 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								<h4>고객사 명</h4>
 								<p></p>
 							</Title>
-							<CustomInput width={120} defaultValue={customerFindResult?.name} />
+							<CustomInput width={112} defaultValue={customerFindResult?.name} />
 							<span style={{ margin: 'auto 5px' }}>-</span>
-							<CustomInput width={120} defaultValue={customerFindResult?.code} />
+							<CustomInput width={112} defaultValue={customerFindResult?.code} />
 							<BlackBtn
 								width={20}
 								height={40}
@@ -267,43 +265,24 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								<h4>목적지</h4>
 								<p></p>
 							</Title>
-
-							<CustomInput width={260} onChange={eventHandle} name="address" value={address} />
-							<BlackBtn
-								width={20}
-								height={40}
-								style={{ marginLeft: '10px' }}
-								onClick={() => {
-									setPostcodeModal(true)
-								}}
-							>
-								조회
-							</BlackBtn>
-							<CustomInput
-								placeholder="제 1창고, 제 2창고 등."
-								width={340}
-								name="detailAddress"
-								value={detailAddress}
-								onChange={eventHandle}
-								style={{ marginTop: '5px' }}
-							/>
+							<AddressFinder onAddressChange={onAddressHandler} />
 						</Part>
-						<Part>
-							<Title>
-								<h4>목적지 코드</h4>
-								<p></p>
-							</Title>
-							<div
-								style={{
-									display: 'flex',
-									width: '345px',
-								}}
-							>
-								<div>
-									<CustomInput width={340} disabled value={destiCode} />
-								</div>
-							</div>
-						</Part>
+						{/*<Part>*/}
+						{/*	<Title>*/}
+						{/*		<h4>목적지 코드</h4>*/}
+						{/*		<p></p>*/}
+						{/*	</Title>*/}
+						{/*	<div*/}
+						{/*		style={{*/}
+						{/*			display: 'flex',*/}
+						{/*			width: '345px',*/}
+						{/*		}}*/}
+						{/*	>*/}
+						{/*		<div>*/}
+						{/*			<CustomInput width={340} disabled value={destiCode} />*/}
+						{/*		</div>*/}
+						{/*	</div>*/}
+						{/*</Part>*/}
 					</Left>
 					<Right style={{ width: '50%' }}>
 						<Part>
@@ -311,20 +290,20 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								<h4>하차지 명</h4>
 								<p></p>
 							</Title>
-							<CustomInput placeholder="상세 주소 입력" width={340} name="name" onChange={eventHandle} />
+							<CustomInput placeholder="제 1창고,제 2창고 등." width={340} name="name" onChange={eventHandle} />
 						</Part>
 						<Part>
 							<Title>
 								<h4>하차지 담당자 정보</h4>
 								<p></p>
 							</Title>
-							<CustomInput placeholder="직함 입력" width={135} name="managerTitle" onChange={eventHandle} />
+							<CustomInput placeholder="담당자 성함 입력" width={200} name="managerName" onChange={eventHandle} />
 							<CustomInput
-								placeholder="담당자 성함 입력"
-								width={200}
-								style={{ marginLeft: '5px' }}
-								name="managerName"
+								placeholder="직함 입력"
+								width={135}
+								name="managerTitle"
 								onChange={eventHandle}
+								style={{ marginLeft: '5px' }}
 							/>
 							<CustomInput
 								placeholder="담당자 휴대폰 번호 입력 ('-' 제외)"
@@ -345,7 +324,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 
 						<Part>
 							<Title>
-								<h4>비고</h4>
+								<h4>하차지 특이사항(비고)</h4>
 								<p></p>
 							</Title>
 							<CustomInput placeholder="하차지 특이사항" width={340} name="memo" onChange={eventHandle} />
