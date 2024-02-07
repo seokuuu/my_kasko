@@ -144,8 +144,6 @@ const SingleUploader = ({
 					<tr>
 						{Object.entries(modalInTable)?.map(([key, value], index) => (
 							<Td key={index}>
-								{console.log('key ==>', key)}
-								{console.log('value ==>', value)}
 								{value === 'input' ? (
 									value === '작성일' ? (
 										<div>{date}</div>

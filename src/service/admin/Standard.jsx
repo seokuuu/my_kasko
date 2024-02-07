@@ -22,7 +22,6 @@ export const getAdminDestination = (data) => {
 
 // 목적지 관리 - 목적지 권역 목록 (목적지 코드 Dropdown) "Get"
 export const getAdminDestinationSearch = async () => {
-	console.log('!!!!', client.get(URL.DestiSearch))
 	return client.get(URL.DestiSearch)
 }
 
@@ -30,7 +29,7 @@ export const getAdminDestinationSearch = async () => {
 export const postAdminDestination = (params) => client.post(URL.Destination, params)
 
 // 목적지 관리 - 수정 'PATCH"
-export const editAdminDestination = (params) => client.patch(URL.UnitCost, params)
+export const editAdminDestination = (params) => client.patch(URL.Destination, params)
 
 // 목적지 관리 - 삭제 "DELETE"
 export function deleteAdminDestination(id) {

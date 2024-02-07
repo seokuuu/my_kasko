@@ -161,6 +161,7 @@ import NotAuth from './pages/NotAuth'
 import useAuth from './store/Auth/useAuth'
 import PlusBtnUploader from './modal/Upload/components/PlusBtnUploader'
 import SingleRegiUploader from './modal/Upload/components/SingleRegiUploader'
+import PackageDetailModal from './modal/Multi/PackageDetailModal'
 
 const Router = () => {
 	const auth = useAtomValue(authAtom)
@@ -168,7 +169,7 @@ const Router = () => {
 	return (
 		<Routes>
 			{/* 테스트 URL */}
-			<Route path="/ppapp" element={<PlusBtnUploader />} />
+			<Route path="/ppapp" element={<PackageDetailModal />} />
 			<Route path="/ppap" element={<SingleRegiUploader />} />
 			<Route path="/TableTest" element={<TableTest />} />
 			<Route path="/test" element={<Test />} />
