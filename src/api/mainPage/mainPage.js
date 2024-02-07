@@ -21,3 +21,7 @@ export function useCustomerMainPageQuery() {
 export const getCountdown = async () => {
 	return await client.get(`/main/count`)
 }
+
+export const getBanner = async () => {
+	return await client.get(`/main/banner`)
+}
