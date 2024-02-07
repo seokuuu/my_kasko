@@ -1,6 +1,22 @@
 import { forwardRef, useState } from 'react' // useState를 import 합니다.
 import { useDaumPostcodePopup } from 'react-daum-postcode'
 
+const sidoMapping = {
+	서울: '서울특별시',
+	부산: '부산광역시',
+	대구: '대구광역시',
+	인천: '인천광역시',
+	광주: '광주광역시',
+	대전: '대전광역시',
+	울산: '울산광역시',
+	경기: '경기도',
+	충북: '충청북도',
+	충남: '충청남도',
+	전남: '전라남도',
+	경북: '경상북도',
+	경남: '경상남도',
+}
+
 const AddressFinder = forwardRef(({ onAddressChange, prevAddress, prevAddressDetail }) => {
 	const [address, setAddress] = useState('') // 주소 상태를 관리하는 state를 추가합니다.
 	const [detailAddress, setDetailAddress] = useState('') // 상세 주소를 위한 state도 추가합니다.
@@ -13,20 +29,24 @@ const AddressFinder = forwardRef(({ onAddressChange, prevAddress, prevAddressDet
 	const open = useDaumPostcodePopup(scriptUrl)
 
 	const handleComplete = (data) => {
-		let fullAddress = data.address
-		let extraAddress = ''
+		console.log(data)
+		const jibunAddress = data.jibunAddress || data.autoJibunAddress
+		const sido = jibunAddress.split(' ')[0]
+		let fullAddress = jibunAddress.replace(sido, sidoMapping[sido])
+		console.log('fullAddress : ', fullAddress)
+		// let extraAddress = ''
 
 		// setAddress(fullAddress);
 
-		if (data.addressType === 'R') {
-			if (data.bname !== '') {
-				extraAddress += data.bname
-			}
-			if (data.buildingName !== '') {
-				extraAddress += extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName
-			}
-			fullAddress += extraAddress !== '' ? ` (${extraAddress})` : ''
-		}
+		// if (data.addressType === 'R') {
+		// 	if (data.bname !== '') {
+		// 		extraAddress += data.bname
+		// 	}
+		// 	if (data.buildingName !== '') {
+		// 		extraAddress += extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName
+		// 	}
+		// 	fullAddress += extraAddress !== '' ? ` (${extraAddress})` : ''
+		// }
 
 		setAddress(fullAddress) // 주소 상태를 업데이트합니다.
 		setSido(data.sido)

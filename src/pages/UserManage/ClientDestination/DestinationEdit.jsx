@@ -18,20 +18,14 @@ import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../comm
 
 import { CheckBox } from '../../../common/Check/Checkbox'
 
-import {
-	get_addressFind,
-	get_detailClientDestination,
-	patch_clientDestination,
-	post_clientDestination,
-} from '../../../api/userManage'
+import { get_addressFind, get_detailClientDestination, patch_clientDestination } from '../../../api/userManage'
 import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
 import { isEmptyObj } from '../../../lib'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { useQueryClient } from '@tanstack/react-query'
-import { UsermanageFindModal, doubleClickedRowAtom, selectedRowsAtom } from '../../../store/Layout/Layout'
+import { UsermanageFindModal } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 import ClientDestiCustomerFind from './ClientDestiCustomerFind'
-import SignUpPost from '../../../modal/SignUp/SignUpPost'
 import useReactQuery from '../../../hooks/useReactQuery'
 import useAlert from '../../../store/Alert/useAlert'
 import AddressFinder from '../../../components/DaumPost/Address'
@@ -68,7 +62,7 @@ const sidoMapping = {
 	경남: '경상남도',
 }
 const DestinationEdit = ({ uidAtom, setEditModal }) => {
-	const { data, isSuccess } = useReactQuery(uidAtom, 'detailclientDestination', get_detailClientDestination)
+	const { data } = useReactQuery(uidAtom, 'detailclientDestination', get_detailClientDestination)
 	const matchingData = data?.data?.data
 
 	const [postcodeModal, setPostcodeModal] = useState(false)
@@ -80,7 +74,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 	const [findModal, setFindModal] = useAtom(UsermanageFindModal)
 	const [customerFindResult, setCustomerFindResult] = useState()
 	const [customerNameInput, setCustomerNameInput] = useState({})
-	const { showAlert, simpleConfirm } = useAlert()
+	const { showAlert, simpleConfirm, simpleAlert } = useAlert()
 	useEffect(() => {
 		setAddress(matchingData?.address)
 		setDetailAddress(matchingData?.addressDetail)
@@ -89,10 +83,6 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 			customerCode: matchingData?.customerCode,
 		})
 	}, [uidAtom, matchingData])
-
-	const postCheck = () => {
-		setPostFind(false)
-	}
 
 	const [destiCode, setDestiCode] = useState()
 
@@ -159,7 +149,6 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 		setAddress(mergedAddress)
 		setDetailAddress(data?.jibunAddressEnglish?.split(' ')[0])
 		setPostAdress(mergedAddress)
-		console.log('mergedAddress =>', mergedAddress)
 		setIsDaumPostOpen(false)
 	}
 
@@ -236,7 +225,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 				},
 			})
 		} else {
-			alert('내용을 모두 기입해주세요.')
+			simpleAlert('내용을 모두 기입해주세요.')
 		}
 	}
 
@@ -334,7 +323,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 								<p></p>
 							</Title>
 							<CustomInput
-								placeholder="상세 주소 입력"
+								placeholder="제 1창고,제 2창고 등."
 								width={340}
 								name="name"
 								onChange={eventHandle}
@@ -347,19 +336,19 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 								<p></p>
 							</Title>
 							<CustomInput
-								placeholder="직함 입력"
-								width={135}
-								name="managerTitle"
-								onChange={eventHandle}
-								defaultValue={matchingData?.managerTitle}
-							/>
-							<CustomInput
 								placeholder="담당자 성함 입력"
 								width={200}
-								style={{ marginLeft: '5px' }}
 								name="managerName"
 								onChange={eventHandle}
 								defaultValue={matchingData?.managerName}
+							/>
+							<CustomInput
+								placeholder="직함 입력"
+								width={135}
+								style={{ marginLeft: '5px' }}
+								name="managerTitle"
+								onChange={eventHandle}
+								defaultValue={matchingData?.managerTitle}
 							/>
 							<CustomInput
 								placeholder="담당자 휴대폰 번호 입력 ('-' 제외)"
@@ -382,11 +371,11 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 
 						<Part>
 							<Title>
-								<h4>비고</h4>
+								<h4>하차지 특이사항(비고)</h4>
 								<p></p>
 							</Title>
 							<CustomInput
-								placeholder="비고 작성"
+								placeholder="하차지 특이사항 작성"
 								width={340}
 								name="memo"
 								onChange={eventHandle}

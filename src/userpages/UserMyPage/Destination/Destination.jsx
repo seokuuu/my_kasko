@@ -41,7 +41,7 @@ const Destination = ({ setChoiceComponent }) => {
 		}
 	}, [])
 
-	const [getRow, setGetRow] = useState('')
+	const [getRow, setGetRow] = useState([])
 	const tableField = useRef(UserManageCustomerDestinationManageFieldsCols)
 	const getCol = tableField.current
 
@@ -64,8 +64,6 @@ const Destination = ({ setChoiceComponent }) => {
 	const onPageChange = (value) => {
 		setRequest((p) => ({ ...p, pageNum: Number(value) }))
 	}
-
-	console.log('data :', data)
 
 	useEffect(() => {
 		if (!isSuccess && !resData) return

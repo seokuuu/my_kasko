@@ -123,15 +123,19 @@ export const UserManageCustomerManageFieldsCols = [
 // 사용자 목적지 관리 fields
 export const UserManageCustomerDestinationManageFields = {
 	'목적지 고유 번호': 'uid',
-	'고객 코드': 'code',
-	대표: 'represent',
-	'목적지 코드': 'destinationCode',
+	대표여부: 'represent',
+	고객명: 'customerName',
+	'고객 코드': 'customerCode',
 	'목적지 명': 'destinationName',
-	'담당자 연락처': 'managerPhone',
-	'도착지 연락처': 'phone',
-	'하차지 명': 'name',
+	'목적지 코드': 'destinationCode',
+	주소: 'address',
 	'상세 주소': 'addressDetail',
-	비고란: 'memo',
+	'하차지 명': 'name',
+	'하자치 특이사항 (비고)': 'memo',
+	'하차지 연락처': 'phone',
+	하차지담당자: 'managerName',
+	'하차지담당자 연락처': 'managerPhone',
+	승인여부: 'status',
 }
 
 // 사용자 목적지 관리 Cols
@@ -145,7 +149,6 @@ export const UserManageCustomerDestinationManageFieldsCols = [
 	},
 	{
 		headerClass: 'custom-header-style',
-
 		field: '수정',
 		maxWidth: 90,
 		cellRenderer: BtnCellRenderer,
@@ -154,39 +157,49 @@ export const UserManageCustomerDestinationManageFieldsCols = [
 			editType: 'userPageDestination',
 		},
 	},
+	{ headerClass: 'custom-header-style', field: '대표여부', minWidth: 100 }, //숫자
+	{
+		headerClass: 'custom-header-style',
+		field: '고객명',
+		minWidth: 150,
+	},
 	{
 		headerClass: 'custom-header-style',
 		field: '고객 코드',
 		minWidth: 150,
 	},
-	{ headerClass: 'custom-header-style', field: '대표', minWidth: 100 }, //숫자
-	{ headerClass: 'custom-header-style', field: '목적지 코드', minWidth: 100 },
 	{ headerClass: 'custom-header-style', field: '목적지 명', minWidth: 200 },
+	{ headerClass: 'custom-header-style', field: '목적지 코드', minWidth: 100 },
+	{ headerClass: 'custom-header-style', field: '주소', minWidth: 100 },
+	{ headerClass: 'custom-header-style', field: '상세 주소', minWidth: 100 },
+	{ headerClass: 'custom-header-style', field: '하차지 명', minWidth: 100 },
+	{ headerClass: 'custom-header-style', field: '하자치 특이사항 (비고)' },
 	{
 		headerClass: 'custom-header-style',
-		field: '담당자 연락처',
+		field: '하차지 연락처',
 		minWidth: 200,
 	},
 	{
 		headerClass: 'custom-header-style',
-		field: '도착지 연락처',
+		field: '하차지담당자',
 		minWidth: 100,
 	},
-	{ headerClass: 'custom-header-style', field: '하차지 명', minWidth: 100 },
-	{ headerClass: 'custom-header-style', field: '상세 주소', minWidth: 100 },
-	{ headerClass: 'custom-header-style', field: '비고란' },
+	{
+		headerClass: 'custom-header-style',
+		field: '하차지담당자 연락처',
+		minWidth: 100,
+	},
 ]
 export const adminCustomerDestinationManageFieldsCols = [
 	{
 		field: '',
-		flex:1,
 		maxWidth: 50,
 		headerClass: 'custom-header-style',
 		checkboxSelection: checkboxSelection,
 		headerCheckboxSelection: headerCheckboxSelection,
 	},
 	{
-		field: '수정',flex:1,
+		field: '수정',
 		maxWidth: 90,
 		headerClass: 'custom-header-style',
 		cellRenderer: BtnCellRenderer,
@@ -195,49 +208,39 @@ export const adminCustomerDestinationManageFieldsCols = [
 			editType: 'adminPageDestination',
 		},
 	},
+
+	{ headerClass: 'custom-header-style', field: '승인여부', minWidth: 100 }, //숫자
+	{ headerClass: 'custom-header-style', field: '대표여부', minWidth: 100 }, //숫자
 	{
-		field: '고객 코드',flex:1,
-		minWidth: 100,
 		headerClass: 'custom-header-style',
+		field: '고객명',
+		minWidth: 150,
 	},
 	{
-		field: '대표',flex:1,
-		minWidth: 100,
 		headerClass: 'custom-header-style',
-	}, //숫자
-	{
-		field: '목적지 코드',flex:1,
-		minWidth: 100,
-		headerClass: 'custom-header-style',
+		field: '고객 코드',
+		minWidth: 150,
 	},
+	{ headerClass: 'custom-header-style', field: '목적지 명', minWidth: 200 },
+	{ headerClass: 'custom-header-style', field: '목적지 코드', minWidth: 100 },
+	{ headerClass: 'custom-header-style', field: '주소', minWidth: 100 },
+	{ headerClass: 'custom-header-style', field: '상세 주소', minWidth: 100 },
+	{ headerClass: 'custom-header-style', field: '하차지 명', minWidth: 100 },
+	{ headerClass: 'custom-header-style', field: '하자치 특이사항 (비고)' },
 	{
-		field: '목적지 명',flex:1,
-		minWidth: 100,
 		headerClass: 'custom-header-style',
-	},
-	{
-		field: '담당자 연락처',flex:1,
+		field: '하차지 연락처',
 		minWidth: 200,
-		headerClass: 'custom-header-style',
 	},
 	{
-		field: '도착지 연락처',flex:1,
+		headerClass: 'custom-header-style',
+		field: '하차지담당자',
 		minWidth: 100,
-		headerClass: 'custom-header-style',
 	},
 	{
-		field: '하차지 명',flex:1,
+		headerClass: 'custom-header-style',
+		field: '하차지담당자 연락처',
 		minWidth: 100,
-		headerClass: 'custom-header-style',
-	},
-	{
-		field: '상세 주소',flex:1,
-		minWidth: 100,
-		headerClass: 'custom-header-style',
-	},
-	{
-		field: '비고란',flex:1,
-		headerClass: 'custom-header-style',
 	},
 ]
 export const UserManageFields = {
