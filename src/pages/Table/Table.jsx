@@ -2,7 +2,7 @@ import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
 import 'ag-grid-enterprise'
 import { AgGridReact } from 'ag-grid-react'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { styled } from 'styled-components'
@@ -80,7 +80,7 @@ const Table = ({
 	changeFn,
 }) => {
 	const [selectedCountry, setSelectedCountry] = useState(null)
-	const [packageUids, setPackageUids] = useState([])
+	// const [packageUids, setPackageUids] = useState([])
 	const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
 	const gridRef = useRef()
 	const containerStyle = useMemo(() => {
@@ -93,10 +93,7 @@ const Table = ({
 
 	const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
 	const [rowData, setRowData] = useState()
-	const [selectedRowData, setSelectedRowData] = useState(null)
-	const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
-
-	console.log('rowAtomSwitch', rowAtomSwitch)
+	const rowAtomSwitch = useAtomValue(selectedRows2Switch)
 
 	var checkboxSelection = function (params) {
 		// we put checkbox on the name if we are not doing grouping
@@ -312,7 +309,6 @@ const Table = ({
 
 	const onPageSizeChanged = useCallback(
 		(sortNum) => {
-			console.log(sortNum)
 			gridRef.current.api.paginationSetPageSize(Number(sortNum))
 		},
 		[sortNum],
@@ -419,13 +415,11 @@ const Table = ({
 		gridApi.refreshCells({ force: true })
 	}
 
-	useEffect(() => {
-		console.log(gridRef, 'grid ref')
-	}, [gridRef])
+	useEffect(() => {}, [gridRef])
 
-	const effectiveGridOptions = parentGridOptions || gridOptions;
-	const effectiveOnSelectionChanged = parentOnSelectionChanged || onSelectionChanged;
-	const effectGridReady = parentOngridReady || onGridReady;
+	const effectiveGridOptions = parentGridOptions || gridOptions
+	const effectiveOnSelectionChanged = parentOnSelectionChanged || onSelectionChanged
+	const effectGridReady = parentOngridReady || onGridReady
 	return (
 		<div style={containerStyle}>
 			<TestContainer hei={hei}>

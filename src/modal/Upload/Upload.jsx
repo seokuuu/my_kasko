@@ -54,15 +54,12 @@ const Upload = ({
 	category,
 	setFinal,
 }) => {
-	console.log('restParams ;', restParams)
 	// 등록 타입(multi => 대량 등록,sinle => 단일 등록)
 	const [registerType, setRegisterType] = useState('multi')
 	const { simpleConfirm, simpleAlert } = useAlert()
 
 	// 엑셀 파일을 담을 상태값
 	const [file, setFile] = useState(null)
-
-	console.log('upload File :', file)
 
 	// 대량 등록 API
 	const { excelUpload } = useExcelUpload({

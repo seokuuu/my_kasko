@@ -947,5 +947,3 @@ uniqueKeys.forEach((key) => {
 		uniqueObject[key] = AuctionRoundDetailFields[key]
 	}
 })
-
-console.log('uniqueObject', uniqueObject)

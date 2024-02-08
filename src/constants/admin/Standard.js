@@ -110,7 +110,7 @@ export const StandardTransportationPost = {
 	'목적지 명': 'destipostname',
 	'제품 구분': 'dropdown',
 	'단가 적용일': 'date',
-	'적용 단가': 'input',
+	'적용 단가': 'effectCost',
 }
 
 // 기준 관리 - 운반비 관리 Edit

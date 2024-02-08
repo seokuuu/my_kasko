@@ -33,7 +33,6 @@ const SingleUploader = ({
 	}
 	const date = moment().format('YYYY-MM-DD')
 	const [postcodeModal, setPostcodeModal] = useAtom(destPostModalAtom)
-	console.log('postcodeModal', postcodeModal)
 
 	const [postAddress, setPostAdress] = useState('')
 	const [postFind, setPostFind] = useState(false)
@@ -104,7 +103,6 @@ const SingleUploader = ({
 		setAddress(mergedAddress)
 		setDetailAddress(data?.jibunAddressEnglish?.split(' ')[0])
 		setPostAdress(mergedAddress)
-		console.log('mergedAddress =>', mergedAddress)
 		setIsDaumPostOpen(false)
 	}
 
@@ -117,6 +115,7 @@ const SingleUploader = ({
 					const response = await get_addressFind(postAddress)
 					const resData = response?.data?.data
 					if (resData) {
+						onEditHandler({ target: { name: 'destinationCode', value: resData } })
 						setDestiCode(resData)
 					} else {
 						setDestiCode('미등록 또는 대기 중인 코드입니다.')
@@ -160,6 +159,14 @@ const SingleUploader = ({
 									<Input
 										type="text"
 										name="note"
+										onChange={(e) => {
+											onEditHandler(e)
+										}}
+									/>
+								) : value === 'effectCost' && key === '적용 단가' ? (
+									<Input
+										type="text"
+										name="effectCost"
 										onChange={(e) => {
 											onEditHandler(e)
 										}}
