@@ -114,7 +114,7 @@ const ReceiptExcel = () => {
 			]
 
 			const headerData02 = [
-				['(주)카스코 철강', '', '인수확인', moment(new Date()).format('YYYY-MM-DD'), '(인)'],
+				['(주)카스코철강', '', '인수확인', moment(new Date()).format('YYYY-MM-DD'), '(인)'],
 				['', '', '', '도착제품이 이상 없음을 확인합니다.'],
 				[''],
 				['거래명세서', '', '정문회수용'],
@@ -124,7 +124,7 @@ const ReceiptExcel = () => {
 			]
 
 			const headerData03 = [
-				['(주)카스코 철강', '', '인수확인', moment(new Date()).format('YYYY-MM-DD'), '(인)'],
+				['(주)카스코철강', '', '인수확인', moment(new Date()).format('YYYY-MM-DD'), '(인)'],
 				['', '', '', '도착제품이 이상 없음을 확인합니다.'],
 				[''],
 				['거래명세서', '', '공급받는자용'],
@@ -134,7 +134,7 @@ const ReceiptExcel = () => {
 			]
 
 			const headerData04 = [
-				['(주)카스코 철강', '', '인수확인', moment(new Date()).format('YYYY-MM-DD'), '(인)'],
+				['(주)카스코철강', '', '인수확인', moment(new Date()).format('YYYY-MM-DD'), '(인)'],
 				['', '', '', '도착제품이 이상 없음을 확인합니다.'],
 				[''],
 				['거래명세서', '', '회수용'],

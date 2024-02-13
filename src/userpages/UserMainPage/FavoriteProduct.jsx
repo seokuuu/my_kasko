@@ -18,7 +18,7 @@ const FavoriteProduct = ({ list = null }) => {
 	useEffect(() => {
 		if (list && Array.isArray(list)) {
 			const checkedTab = tabList.find((item) => item.isCheck)
-			const products = list.filter((item) => item.favoriteName === checkedTab.name).flatMap((item) => item.products)
+			const products = list.filter((item) => item.favoriteName === checkedTab?.name).flatMap((item) => item.products)
 			setRows(add_element_field(products, MainProductFields))
 		}
 	}, [tabList])
