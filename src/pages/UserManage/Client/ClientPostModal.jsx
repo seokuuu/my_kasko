@@ -514,7 +514,7 @@ const ClientPostModal = ({ setEditModal, id }) => {
 												/>
 												현대제철
 											</RadioLabel>
-											<RadioLabel>
+											{/*<RadioLabel>
 												<input
 													type="radio"
 													value="카스코철강"
@@ -522,7 +522,7 @@ const ClientPostModal = ({ setEditModal, id }) => {
 													checked={watch('memberType') === '카스코철강'}
 												/>
 												카스코철강
-											</RadioLabel>
+											</RadioLabel>*/}
 											<RadioLabel>
 												<input
 													type="radio"
