@@ -1,61 +1,70 @@
-// // src/CountdownTimer.js
-// import React, { useState, useEffect } from 'react'
-// import moment from 'moment-timezone'
-// import styled from 'styled-components'
-// function Countdown() {
-//   const [timeLeft, setTimeLeft] = useState(null)
-
-//   useEffect(() => {
-//     // Target future date/24 hour time/Timezone
-//     const targetDate = moment.tz('2023-10-30 23:59', 'Australia/Sydney')
-
-//     const intervalId = setInterval(() => {
-//       const currentDate = moment()
-//       const diff = targetDate.diff(currentDate)
-
-//       if (diff <= 0) {
-//         clearInterval(intervalId)
-//         setTimeLeft(0)
-//         console.log('Date has already passed!')
-//       } else {
-//         setTimeLeft(diff)
-//       }
-//     }, 1000)
-
-//     return () => {
-//       clearInterval(intervalId)
-//     }
-//   }, [])
-
-//   const formatTime = (milliseconds) => {
-//     const duration = moment.duration(milliseconds)
-//     return `${duration.days()} days ${duration.hours()} hours ${duration.minutes()} minutes ${duration.seconds()} seconds`
-//   }
-
-//   return (
-//     <ClockContainer>
-//       {/* styled-components로 정의한 스타일 적용 */}
-//       {timeLeft !== null && (
-//         <div>{timeLeft > 0 ? <p>Countdown Timer: {formatTime(timeLeft)}</p> : <p>Timer has ended!</p>}</div>
-//       )}
-//     </ClockContainer>
-//   )
-// }
-
-// export default Countdown
-
-// const ClockContainer = styled.div`
-//   width: 650px;
-//   position: absolute;
-//   top: 50%;
-//   left: 50%;
-//   transform: translateX(-50%) translateY(-50%);
-// `
-
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { getCountdown } from '../../api/mainPage/mainPage'
+import moment from 'moment'
+import FlipClockCountdown from '@leenguyen/react-flip-clock-countdown'
+import '@leenguyen/react-flip-clock-countdown/dist/index.css'
 
 const Countdown = () => {
-  return <div>Countdown</div>
+	const [data, setData] = useState(null)
+
+	const getCountdownData = async () => {
+		try {
+			const response = await getCountdown()
+			return response?.data?.data
+		} catch (e) {
+			console.log(e)
+		}
+	}
+
+	const countdown = async () => {
+		try {
+			const responseData = await getCountdownData()
+			setCountdownData(responseData)
+		} catch (e) {
+			console.log(e)
+		}
+	}
+
+	const setCountdownData = (responseData) => {
+		setData({
+			type: responseData.type,
+			date: moment(responseData.date).toDate().getTime(),
+		})
+	}
+
+	const onTimeUp = () => {
+		setTimeout(() => {
+			getCountdown()
+				.then((response) => response?.data?.data)
+				.then((responseData) => setCountdownData(responseData))
+				.catch((e) => console.log(e))
+		}, 3000)
+	}
+
+	useEffect(() => {
+		countdown()
+	}, [])
+
+	return (
+		<>
+			{data && (
+				<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+					{data?.type === 'START' && <span>경매 시작까지 남은 시간 </span>}
+					{data?.type === 'END' && <span>경매 종료까지 남은 시간 </span>}
+					<FlipClockCountdown
+						to={data?.date}
+						renderMap={[false, true, true, true]}
+						showLabels={false}
+						digitBlockStyle={{ width: 20, height: 28, fontSize: 18 }}
+						separatorStyle={{ color: 'black', size: '4px' }}
+						duration={0.5}
+						hideOnComplete={false}
+						onComplete={onTimeUp}
+					/>
+				</div>
+			)}
+		</>
+	)
 }
 
-export default Countdown
+export default React.memo(Countdown)

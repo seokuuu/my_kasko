@@ -1,5 +1,5 @@
-import { useAtom } from 'jotai'
-import { useCallback, useEffect, useState } from 'react'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { BlackBtn, TGreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import DateGrid from '../../../components/DateGrid/DateGrid'
@@ -14,13 +14,21 @@ import {
 	StyledHeading,
 	StyledSubHeading,
 	SubTitle,
-	TCSubContainer,
 	TableBottomWrap,
 	TableContianer,
 	TableTitle,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 import Upload from '../../../modal/Upload/Upload'
-import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
+import {
+	btnCellRenderAtom,
+	btnCellUidAtom,
+	destiDelPopupAtom,
+	destiPostModalAtom,
+	popupObject,
+	selectedRowsAtom,
+	toggleAtom,
+} from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 
 import { popupDummy } from '../../../modal/Alert/PopupDummy'
@@ -32,8 +40,6 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { CheckBox } from '../../../common/Check/Checkbox'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
-import { useRef } from 'react'
-
 import {
 	StandardTransportationEdit,
 	StandardTransportationFields,
@@ -41,10 +47,7 @@ import {
 	StandardTransportationPost,
 } from '../../../constants/admin/Standard'
 
-import {
-	AuctionUnitPricePostDropOptions2,
-	AuctionUnitPricePostDropOptions3
-} from '../../../constants/admin/Auction'
+import { AuctionUnitPricePostDropOptions2, AuctionUnitPricePostDropOptions3 } from '../../../constants/admin/Auction'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isArray, isEqual } from 'lodash'
@@ -63,61 +66,36 @@ import {
 	postAdminTransportation,
 } from '../../../service/admin/Standard'
 import useAlert from '../../../store/Alert/useAlert'
-import {
-	btnCellRenderAtom,
-	btnCellUidAtom,
-	destiDelPopupAtom,
-	destiPostModalAtom,
-	popupObject,
-	selectedRowsAtom,
-} from '../../../store/Layout/Layout'
 import TransportSearchFilter from './TransportSearchFilter'
 
-
-
-
-const Transport = ({}) => {
-
+const Transport = () => {
 	const [modalSwitch, setModalSwitch] = useAtom(destiPostModalAtom)
 	const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
 	const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom) // 팝업 스위치
-	const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
+	const setNowPopup = useSetAtom(popupObject) // 팝업 객체
 	const [startDate, setStartDate] = useState(new Date()) // 수정 버튼 Date
 	const [startDate2, setStartDate2] = useState(new Date()) // 하단 적용일자 Date
 	const [address, setAddress] = useState('')
 
 	const radioDummy = ['증가', '감소']
-	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
+	const uidAtom = useAtomValue(btnCellUidAtom)
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
-	const { simpleAlert } = useAlert();
-
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
+	const { simpleAlert, simpleConfirm } = useAlert()
 
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 	const [toggleMsg, setToggleMsg] = useState('On')
 	const toggleBtnClick = () => {
 		setExfilterToggle((prev) => !prev)
-		if (exFilterToggle === true) {
+		if (!!exFilterToggle) {
 			setToggleMsg('Off')
 		} else {
 			setToggleMsg('On')
 		}
 	}
 
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
-
-	const modalOpen = () => {
-		setIsModal(true)
-	}
-
-	const [getRow, setGetRow] = useState('')
+	const [getRow, setGetRow] = useState([])
 	const tableField = useRef(StandardTransportationFieldsCols)
 	const originEngRowField = StandardTransportationFields
 	const getCol = tableField.current
@@ -139,6 +117,10 @@ const Transport = ({}) => {
 	const unitPriceEditDate = moment(startDate2).format('YYYY-MM-DD')
 	const unitPriceEditOnClick = () => {
 		// resData 배열을 순회하며 조건에 맞는 객체를 찾고 수정
+		if (!unitPriceEdit) {
+			simpleAlert('적용할 퍼센트를 입력해주세요.')
+			return
+		}
 		const updatedResData = resData.map((item) => {
 			if (item.effectDate === unitPriceEditDate) {
 				// unitPriceEdit.percent에 따라 증가 또는 감소
@@ -148,7 +130,6 @@ const Transport = ({}) => {
 					checkRadio[0] === true
 						? item.effectCost + item?.effectCost * percentage
 						: item.effectCost - item?.effectCost * percentage
-				console.log('updatedEffectCost', updatedEffectCost)
 				// 변경된 값이 있는 경우에만 realUnitPriceEdit에 추가
 				if (item.effectCost !== updatedEffectCost) {
 					setRealUnitPriceEdit((prev) => [
@@ -171,8 +152,6 @@ const Transport = ({}) => {
 		setGetRow(add_element_field(updatedResData, StandardTransportationFields))
 	}
 
-	console.log('realUnitPriceEdit', realUnitPriceEdit)
-
 	const updateList = realUnitPriceEdit.map((item) => ({
 		uid: item.uid,
 		effectDate: item.effectDate,
@@ -189,28 +168,35 @@ const Transport = ({}) => {
 		}),
 	}
 
-	console.log('finalResult', finalResult)
-
 	const editCostMutation = useMutation(editAdminUnitCost)
 	const costEdit = () => {
-		editCostMutation.mutate(finalResult)
+		if (finalResult.updateList.length === 0) {
+			simpleAlert('일괄 수정할 단가를 적용해주세요.')
+			return
+		}
+		simpleConfirm('일괄 단가 수정하시겠습니까?', () => {
+			editCostMutation.mutate(finalResult, {
+				onSuccess: () => {
+					simpleAlert('수정되었습니다.')
+					queryClient.invalidateQueries('transportation')
+				},
+				onError: (error) => {
+					simpleAlert(error?.data?.message || '일괄 단가 수정을 실패했습니다. 다시 시도해 주세요.')
+				},
+			})
+		})
 	}
 
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
-		type: types, // (0: 매입 / 1: 매출)
+		type: 0, // (0: 매입 / 1: 매출)
 	}
 	// GET
 	const [param, setParam] = useState(paramData)
 	const [tablePagination, setTablePagination] = useState([])
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(
-		param,
-		'getAdminTransportation',
-		getAdminTransportation,
-	)
+	const { isLoading, data, isSuccess, refetch } = useReactQuery(param, 'getAdminTransportation', getAdminTransportation)
 	const resData = data?.data?.data?.list
-	console.log('resData => ', resData)
 
 	useEffect(() => {
 		let getData = resData
@@ -222,8 +208,6 @@ const Transport = ({}) => {
 		}
 	}, [isSuccess, resData])
 
-	console.log('getRow =>', getRow)
-
 	// DELETE
 	const mutation = useMutation(deleteAdminTransportation, {
 		onSuccess: () => {
@@ -231,7 +215,7 @@ const Transport = ({}) => {
 		},
 		onError: (error) => {
 			simpleAlert(error?.data?.message || '운반비 삭제에 실패했습니다. 다시 시도해 주세요.')
-		}
+		},
 	})
 
 	// 선택한 것 삭제 요청 (해당 함수 func 인자로 전달)
@@ -260,22 +244,42 @@ const Transport = ({}) => {
 	)
 	const [postInput, setPostInput] = useState({
 		type: 0,
-		storage: "창고2",
-		destinationCode: "A",
-		destinationName: "인천",
-		spart: "후판",
-		effectDate: "2023-06-21 15:30:00",
-		effectCost: 200000
+		storage: '',
+		destinationCode: '',
+		destinationName: '',
+		spart: '',
+		effectDate: '',
+		effectCost: 0,
 	})
+
+	const onPostHandler = useCallback(
+		(e) => {
+			const { name, value } = e.target
+			setPostInput((prev) => ({ ...prev, [name]: value }))
+		},
+		[postInput],
+	)
+
 	const postMutation = useMutationQuery('', postAdminTransportation)
+
 	const propsPost = () => {
-		postMutation.mutate(postInput, {
+		const postData = {
+			...postInput,
+			destinationName: address,
+			type: types,
+			storage: postInput.storageName,
+			effectDate: moment(startDate).format('YYYY-MM-DD'),
+		}
+
+		postMutation.mutate(postData, {
 			onSuccess: () => {
 				setModalSwitch(false)
+				queryClient.invalidateQueries('transportation')
+				simpleAlert('등록되었습니다.')
 			},
 			onError: (error) => {
 				simpleAlert(error?.data?.message || '등록에 실패했습니다. 다시 시도해 주세요.')
-			}
+			},
 		})
 	}
 
@@ -288,22 +292,7 @@ const Transport = ({}) => {
 		}))
 	}
 
-	console.log('btnCellModal', btnCellModal)
-
-	console.log('getCol', getCol)
-	console.log('getRow', getRow)
-
-	// Edit
-	const editMutation = useMutationQuery('', editAdminTransportation)
-	const propsEdit = () => {
-		editMutation.mutate(editInput)
-	}
-
-	const [editInput, setEditInput] = useState({
-		// uid: '',
-		// effectDate: '',
-		// effectCost: '',
-	})
+	const [editInput, setEditInput] = useState()
 
 	useEffect(() => {
 		setEditInput({ ...editInput, effectDate: moment(startDate).format('YYYY-MM-DD hh:mm:ss'), uid: uidAtom })
@@ -311,12 +300,24 @@ const Transport = ({}) => {
 
 	const onEditHandler = useCallback(
 		(e) => {
-			console.log('Edit input event:', e)
 			const { name, value } = e.target
 			setEditInput({ ...editInput, [name]: value })
 		},
 		[editInput],
 	)
+
+	// Edit
+	const editMutation = useMutationQuery('', editAdminTransportation)
+	const propsEdit = () => {
+		editMutation.mutate(editInput, {
+			onSuccess: () => {
+				queryClient.invalidateQueries('transportation')
+			},
+			onError: (error) => {
+				simpleAlert(error?.data?.message || '수정 실패했습니다. 다시 시도해 주세요.')
+			},
+		})
+	}
 
 	// API에 맞게 한글 -> 영문으로 key 변경 (수정 Modal Input의 key를 변경시킨다)
 	const convertKey = {
@@ -330,8 +331,6 @@ const Transport = ({}) => {
 		{ options: AuctionUnitPricePostDropOptions3, defaultValue: AuctionUnitPricePostDropOptions3[0] },
 		{ options: testStorage, defaultValue: testStorage && testStorage[0] },
 	]
-
-	console.log('editInput', editInput)
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -349,15 +348,12 @@ const Transport = ({}) => {
 	}
 
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
-		setParam(paramData)
+		setParam({ ...paramData, type: types })
 	}
-	// import
+
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				refetch()
 				return prevParam
 			}
 			return {
@@ -366,6 +362,14 @@ const Transport = ({}) => {
 			}
 		})
 	}
+
+	useEffect(() => {
+		document.getElementById('resetBtn').click()
+	}, [types])
+
+	useEffect(() => {
+		refetch()
+	}, [param])
 
 	return (
 		<FilterContianer>
@@ -384,57 +388,12 @@ const Transport = ({}) => {
 				</FilterHeader>
 				{exFilterToggle && (
 					<FilterWrap>
-						{/* <FilterSubcontianer>
-							<FilterLeft>
-								<RowWrap>
-									<PartWrap>
-										<h6>출발지</h6>
-										<MainSelect />
-									</PartWrap>
-									<PartWrap>
-										<h6>목적지</h6>
-										<Input />
-										<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17} onClick={modalOpen}>
-											찾기
-										</GreyBtn>
-									</PartWrap>
-									<PartWrap>
-										<h6>적용일자</h6>
-										<GridWrap>
-											<DateGrid bgColor={'white'} fontSize={17} />
-											<Tilde>~</Tilde>
-											<DateGrid bgColor={'white'} fontSize={17} />
-										</GridWrap>
-									</PartWrap>
-									<PartWrap>
-										<h6>제품구분</h6>
-										<MainSelect />
-									</PartWrap>
-								</RowWrap>
-							</FilterLeft>
-						</FilterSubcontianer> */}
-						{/* <FilterFooter>
-              <div style={{ display: 'flex' }}>
-                <p>초기화</p>
-                <ResetImg
-                  src="/img/reset.png"
-                  style={{ marginLeft: '10px', marginRight: '20px' }}
-                  onClick={handleImageClick}
-                  className={isRotated ? 'rotate' : ''}
-                />
-              </div>
-              <div style={{ width: '180px' }}>
-                <BlackBtn width={100} height={40}>
-                  검색
-                </BlackBtn>
-              </div>
-            </FilterFooter> */}
 						<GlobalProductSearch
 							param={param}
 							isToggleSeparate={true}
-							renderCustomSearchFields={(props) => <TransportSearchFilter {...props} />} // 만들어야함 -> WinningSearchFields
-							globalProductSearchOnClick={globalProductSearchOnClick} // import
-							globalProductResetOnClick={globalProductResetOnClick} // import
+							renderCustomSearchFields={(props) => <TransportSearchFilter {...props} />}
+							globalProductSearchOnClick={globalProductSearchOnClick}
+							globalProductResetOnClick={globalProductResetOnClick}
 						/>
 					</FilterWrap>
 				)}
@@ -456,7 +415,7 @@ const Transport = ({}) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						<Excel getRow={getRow} />
+						<Excel getRow={getRow} sheetName={types === 0 ? '매입 운반비' : '매출 운반비'} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
@@ -527,9 +486,15 @@ const Transport = ({}) => {
 					<div style={{ display: 'flex', gap: '10px' }}></div>
 				</TCSubContainer>
 
-				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
+				<Table
+					getCol={getCol}
+					getRow={getRow}
+					tablePagination={tablePagination}
+					onPageChange={onPageChange}
+					loading={isLoading}
+				/>
 				<TableBottomWrap>
-					<BlackBtn width={15} height={40} onClick={() => costEdit()}>
+					<BlackBtn width={15} height={40} onClick={costEdit}>
 						저장
 					</BlackBtn>
 				</TableBottomWrap>
@@ -537,10 +502,10 @@ const Transport = ({}) => {
 			{btnCellModal && (
 				// Edit
 				<TableModal
+					title={'운반비 수정'}
 					btnCellModal={btnCellModal} // Modal Atom Switch
 					setBtnCellModal={setBtnCellModal} // 수정 버튼에 대한 ag-grid event
 					modalInTable={StandardTransportationEdit} // Modal 안에 들어갈 Table 매칭 디렉토리 ex)
-					title={'운반비 수정'}
 					getRow={getRow} // 해당 컴포넌트 Table 자체 Object (한글)
 					uidAtom={uidAtom} // 수정버튼 누른 해당 object의 고유 id (btnCellRender에서 추출된 uid)
 					onEditHandler={onEditHandler} // edit 버튼의 함수를 스프레드 func를 전달
@@ -555,17 +520,18 @@ const Transport = ({}) => {
 			{modalSwitch && (
 				// Post
 				<Upload
+					title={'운반비 등록'}
 					modalSwitch={modalSwitch}
 					setModalSwitch={setModalSwitch}
-					title={'운반비 등록'}
 					propsHandler={propsPost}
 					modalInTable={StandardTransportationPost}
 					getRow={getRow}
 					uidAtom={uidAtom}
-					onEditHandler={onEditHandler}
+					onEditHandler={onPostHandler}
 					dropdownProps={dropdownProps}
 					address={address}
 					setAddress={setAddress}
+					convertKey={convertKey}
 					startDate={startDate}
 					setStartDate={setStartDate}
 				/>

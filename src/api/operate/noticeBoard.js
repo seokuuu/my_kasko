@@ -62,8 +62,8 @@ export function useNoticeBoardRegisterMutation() {
 				queryKey: NOTICE_BOARD_KEYS.getNoticeBoardList,
 			})
 		},
-		onError() {
-			simpleAlert('등록에 실패하였습니다.')
+		onError: (error) => {
+			return simpleAlert(error?.data?.message || '등록에 실패하였습니다.')
 		},
 	})
 }
@@ -88,8 +88,8 @@ export function useNoticeBoardUpdateMutation() {
 				queryKey: NOTICE_BOARD_KEYS.getNoticeBoard,
 			})
 		},
-		onError() {
-			simpleAlert('수정에 실패하였습니다.')
+		onError: (error) => {
+			return simpleAlert(error?.data?.message || '등록에 실패하였습니다.')
 		},
 	})
 }

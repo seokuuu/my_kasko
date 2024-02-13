@@ -10,7 +10,7 @@ import {
 	RowWrap,
 } from '../../../modal/External/ExternalFilter'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { DateSearchSelect, DestinationSearch, RadioSearchButton } from '../../../components/Search'
 import { MainSelect } from '../../../common/Option/Main'
 
@@ -19,52 +19,29 @@ const TransportSearchFilter = ({
 	search,
 	setSearch,
 	commonDropdownButtonHandler,
-	commonNumInputHandler,
-	onSpecHandler,
 }) => {
 	const {
 		// prettier-ignore
 		storageList,
-		supplierList,
 		spartList,
-		makerList,
-		stockStatusList,
-		gradeList,
-		preferThicknessList,
 	} = useGlobalProductSearchFieldData()
-
-	/**
-	 * @description
-	 * 경매 일자 auctionStartDate, auctionEndDate
-	 * 경매 회차 번호 auctionEndDate
-	 * 진행 상태 ?
-	 * 제품 번호 auctionEndDate
-	 */
-
-	const init = {
-		pageNum: 1,
-		pageSize: 50,
-	}
 
 	const onChange = (key, value) => {
 		setSearch((p) => ({ ...p, [key]: value }))
 	}
-
-	const [param, setParam] = useState(init)
 
 	return (
 		<>
 			<FilterLeft>
 				<RowWrap style={{ gap: '20px' }}>
 					<PartWrap>
-						{/* !!! 수정 */}
 						<h6>출발지</h6>
 						<MainSelect
-							options={supplierList}
-							defaultValue={supplierList[0]}
-							value={search.supplier}
-							name="supplier"
-							onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
+							options={storageList}
+							// defaultValue={storageList[0]}
+							value={search.storage}
+							name="storage"
+							onChange={(e) => onChange('storage', e)}
 						/>
 					</PartWrap>
 					<DestinationSearch
@@ -76,22 +53,21 @@ const TransportSearchFilter = ({
 					/>
 					<PartWrap>
 						<DateSearchSelect
-							title={'경매 일자'}
-							startInitDate={search.auctionStartDate}
-							endInitDate={search.auctionEndDate}
-							startDateChange={(value) => commonDropdownButtonHandler(value, 'auctionStartDate')}
-							endDateChange={(value) => commonDropdownButtonHandler(value, 'auctionEndDate')}
+							title={'적용 일자'}
+							startInitDate={search.startDate}
+							endInitDate={search.endDate}
+							startDateChange={(value) => commonDropdownButtonHandler(value, 'startDate')}
+							endDateChange={(value) => commonDropdownButtonHandler(value, 'endDate')}
 						/>
 					</PartWrap>
-					{/* !!! 수정 */}
 					<PartWrap>
 						<h6>제품구분</h6>
 						<MainSelect
-							options={supplierList}
-							defaultValue={supplierList[0]}
-							value={search.supplier}
-							name="supplier"
-							onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
+							options={spartList}
+							defaultValue={spartList[0]}
+							value={search.spart}
+							name="spart"
+							onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
 						/>
 					</PartWrap>
 				</RowWrap>

@@ -125,8 +125,6 @@ const GlobalProductSearch = ({
 	const initialParamRef = useRef(initialSearchParams)
 	const [userSearchParam, setUserSearchParam] = useState({ ...initialSearchParams })
 
-	console.log('userSearchParam !!!', userSearchParam)
-
 	const getUpdatedProperties = () => {
 		let updatedProperties = {}
 		for (let key in userSearchParam) {
@@ -184,6 +182,7 @@ const GlobalProductSearch = ({
 						<div style={{ display: 'flex' }}>
 							<p>초기화</p>
 							<ResetImg
+								id="resetBtn"
 								src="/img/reset.png"
 								style={{ marginLeft: '10px', marginRight: '20px' }}
 								onClick={searchResetButtonOnClickHandler}

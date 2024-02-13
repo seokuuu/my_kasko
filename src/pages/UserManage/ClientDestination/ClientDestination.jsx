@@ -1,33 +1,34 @@
 import { useAtom } from 'jotai'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
-	EditGear,
 	FilterContianer,
 	FilterHeader,
-	FilterHeaderAlert,
 	FilterWrap,
-	TCSubContainer,
 	TableContianer,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
-import { adminPageDestiEditModal, blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-
+import {
+	adminPageDestiEditModal,
+	blueModalAtom,
+	btnCellUidAtom,
+	selectedRowsAtom,
+	toggleAtom,
+	UsermanageFindModal,
+} from '../../../store/Layout/Layout'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isArray, isEqual } from 'lodash'
-import { useEffect, useRef } from 'react'
 import { delete_clientDestination, get_clientDestination } from '../../../api/userManage'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import {
-	UserManageCustomerDestinationManageFields,
 	adminCustomerDestinationManageFieldsCols,
+	UserManageCustomerDestinationManageFields,
 } from '../../../constants/admin/UserManage'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
-import { UsermanageFindModal, btnCellUidAtom } from '../../../store/Layout/Layout'
-
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 import Table from '../../Table/Table'
@@ -35,20 +36,12 @@ import ClientDestinationSearchFields from './ClientDestinationSearchFields'
 import DestinationEdit from './DestinationEdit'
 import useAlert from '../../../store/Alert/useAlert'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
+
 const ClientDestination = ({ setChoiceComponent }) => {
 	const [findModal, setFindModal] = useAtom(UsermanageFindModal)
 	const [editModal, setEditModal] = useAtom(adminPageDestiEditModal)
 	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-	// const handleSelectChange = (selectedOption, name) => {
-	//   // setInput(prevState => ({
-	//   //   ...prevState,
-	//   //   [name]: selectedOption.label,
-	//   // }));
-	// }
-	const [isRotated, setIsRotated] = useState(false)
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
+
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 	const [toggleMsg, setToggleMsg] = useState('On')
@@ -60,23 +53,16 @@ const ClientDestination = ({ setChoiceComponent }) => {
 			setToggleMsg('On')
 		}
 	}
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
-	const modalOpen = () => {
-		setIsModal(true)
-	}
 
-	const [noticeEdit, setnoticeEdit] = useState(false)
-	const { simpleConfirm, redAlert, showAlert } = useAlert()
-	const noticeEditOnClickHandler = () => {
-		setnoticeEdit((prev) => !prev)
-	}
+	const { redAlert, showAlert } = useAlert()
+
 	// ---------------------------------------------------------------------------------------------
 	const [getRow, setGetRow] = useState('')
 	const tableField = useRef(adminCustomerDestinationManageFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
-	console.log('checkedArray', checkedArray)
+
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
@@ -84,7 +70,7 @@ const ClientDestination = ({ setChoiceComponent }) => {
 
 	const [param, setParam] = useState(paramData)
 
-	const { data, isSuccess, refetch } = useReactQuery(param, 'clientDestination', get_clientDestination)
+	const { data, isSuccess, refetch, isLoading } = useReactQuery(param, 'clientDestination', get_clientDestination)
 	const resData = data?.data?.data?.list
 	const pagination = data?.data?.data?.pagination
 
@@ -245,6 +231,8 @@ const ClientDestination = ({ setChoiceComponent }) => {
 							setChoiceComponent={setChoiceComponent}
 							tablePagination={pagination}
 							onPageChange={onPageChanage}
+							isRowClickable={true}
+							loading={isLoading}
 						/>
 					</TableContianer>
 				</FilterContianer>

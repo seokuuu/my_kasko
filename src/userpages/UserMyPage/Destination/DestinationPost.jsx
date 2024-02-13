@@ -25,22 +25,6 @@ const init = {
 	memo: '', // 비고
 }
 
-const sidoMapping = {
-	서울: '서울특별시',
-	부산: '부산광역시',
-	대구: '대구광역시',
-	인천: '인천광역시',
-	광주: '광주광역시',
-	대전: '대전광역시',
-	울산: '울산광역시',
-	경기: '경기도',
-	충북: '충청북도',
-	충남: '충청남도',
-	전남: '전라남도',
-	경북: '경상북도',
-	경남: '경상남도',
-}
-
 /**
  * @description
  * 목적지 등록 페이지입니다.
@@ -50,7 +34,6 @@ const DestinationPost = ({ setChoiceComponent }) => {
 
 	// 폼
 	const [input, setInput] = useState(init) //summit input 데이터
-	console.log('input :', input)
 
 	// 대표 주소 지정 옵션
 	const representOptions = [
@@ -77,28 +60,15 @@ const DestinationPost = ({ setChoiceComponent }) => {
 
 	// 목적지 주소 핸들러
 	function onAddressHandler(address, addressDetail, sido, sigungu, dongLee, eubMyeon) {
-		const translateSido = sidoMapping[sido] ?? sido
-
-		// 서버로 보낼 주소
-		const destination = eubMyeon
-			? `${translateSido} ${sigungu} ${eubMyeon} ${dongLee}`
-			: `${translateSido} ${sigungu} ${dongLee}`
-
-		setInput((p) => ({ ...p, address: destination, addressDetail }))
+		setInput((p) => ({ ...p, address, addressDetail }))
 	}
 
 	// 저장 핸들러
 	const submit = async () => {
 		if (!isEmptyObj(input)) return simpleAlert('빈값을 채워주세요.')
 
-		const serverParams = {
-			...input,
-		}
-
-		console.log('serverParams :', serverParams)
 		try {
 			const { data: res } = await postDestination(input)
-			console.log('res :', res)
 			if (res.status === 200) {
 				showAlert({
 					title: '저장되었습니다.',
@@ -108,6 +78,8 @@ const DestinationPost = ({ setChoiceComponent }) => {
 						queryClient.invalidateQueries({ queryKey: destinationQueryKey.list })
 					},
 				})
+			} else {
+				simpleAlert('등록실파하였습니다.')
 			}
 		} catch (err) {
 			console.log(err)
@@ -131,11 +103,6 @@ const DestinationPost = ({ setChoiceComponent }) => {
 			setChoiceComponent('리스트')
 		}
 	}
-
-	/**
-	 * @description
-	 * 처음 폼과 변경된 폼을 비교하여 변경된 사항이 있으면 모달을 띄워줍니다.
-	 */
 
 	useBlockRoute(blockCondition)
 
@@ -175,7 +142,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 
 						<Part>
 							<Title>
-								<h4>비고</h4>
+								<h4>하차지 특이사항</h4>
 								<p></p>
 							</Title>
 							<CustomInput
@@ -206,21 +173,22 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								<h4>하차지 담당자 정보</h4>
 								<p></p>
 							</Title>
-							<CustomInput
-								placeholder="직함 입력"
-								width={130}
-								name="managerTitle"
-								value={input.managerTitle}
-								onChange={handleChange}
-							/>
-							<CustomInput
-								placeholder="담당자 성함 입력"
-								value={input.managerName}
-								width={195}
-								style={{ marginLeft: '5px' }}
-								name="managerName"
-								onChange={handleChange}
-							/>
+							<div style={{ display: 'flex', gap: '5px' }}>
+								<CustomInput
+									placeholder="담당자 성함 입력"
+									value={input.managerName}
+									width={200}
+									name="managerName"
+									onChange={handleChange}
+								/>
+								<CustomInput
+									placeholder="직함 입력"
+									width={135}
+									name="managerTitle"
+									value={input.managerTitle}
+									onChange={handleChange}
+								/>
+							</div>
 							<CustomInput
 								placeholder="담당자 휴대폰 번호 입력 ('-' 제외)"
 								value={input.managerPhone}

@@ -8,21 +8,7 @@ export const depositOptions = [
 	{ value: 'ask3', label: '3' },
 	{ value: 'ask4', label: '4' },
 ]
-export const auctionOptions = [
-	{ value: 'ask0', label: '직함 선택 ' },
-	{ value: 'ask1', label: '1' },
-	{ value: 'ask2', label: '2' },
-	{ value: 'ask3', label: '3' },
-	{ value: 'ask4', label: '4' },
-]
 
-export const releaseOptions = [
-	{ value: 'ask0', label: '직함 선택 ' },
-	{ value: 'ask1', label: '1' },
-	{ value: 'ask2', label: '2' },
-	{ value: 'ask3', label: '3' },
-	{ value: 'ask4', label: '4' },
-]
 export const accountOptions = [
 	{ value: 'ask0', label: '은행 선택 ' },
 	{ value: 'ask1', label: '1' },
@@ -46,17 +32,6 @@ export const emailOptionsIncludingDirect = [
 	},
 ]
 
-export const supplierOptions = [
-	{ value: '', label: '전체' },
-	{ value: '현대제철', label: '현대제철' },
-	{ value: '카스코 철강', label: '카스코 철강' },
-]
-export const makerOptions = [
-	{ value: '', label: '전체' },
-	{ value: '현대제철', label: '현대제철' },
-	{ value: '동은스틸', label: '동은스틸' },
-]
-
 // 창고 구분
 export const storageOptions = [
 	{ value: 'ask0', label: '창고' },
@@ -78,13 +53,6 @@ export const faqOptions = [
 ]
 
 export const DefaultSelect = styled(Select)`
-	width: 120px;
-	text-align: center;
-	line-height: 26px;
-	margin-right: 5px;
-`
-
-export const DepositSelect = styled(Select)`
 	width: 120px;
 	text-align: center;
 	line-height: 26px;

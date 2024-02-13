@@ -204,7 +204,7 @@ export const AuctionRoundExtraProductFields = {
 	'여재 원인명': 'causeCodeName',
 	'유찰 횟수': 'failCount',
 	'경매 등록 상태': 'registrationStatus', // (경매 등록 / 경매 등록 대기)
-	매입처: 'supplier', // (현대제철 / 카스코 철강)
+	매입처: 'supplier', // (현대제철 / 카스코철강)
 	제조사: 'maker', // (현대제철 / 동은스틸)
 	'판매 구분': 'saleCategory', // (판매재 / 판매 제외재 / 판매 완료재)
 	'판매 제외 사유': 'excludeSaleReason',
@@ -947,5 +947,3 @@ uniqueKeys.forEach((key) => {
 		uniqueObject[key] = AuctionRoundDetailFields[key]
 	}
 })
-
-console.log('uniqueObject', uniqueObject)

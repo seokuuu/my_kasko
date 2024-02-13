@@ -6,6 +6,7 @@ import useReactQuery from '../../hooks/useReactQuery'
 import { CustomInput, PartWrap } from '../../modal/External/ExternalFilter'
 import InventoryFind from '../../modal/Multi/InventoryFind'
 import { invenDestination } from '../../store/Layout/Layout'
+import DestinationFind from '../../modal/Multi/DestinationFind'
 
 /**
  * TODO 목적지 검색 components
@@ -17,18 +18,14 @@ import { invenDestination } from '../../store/Layout/Layout'
  */
 const DestinationSearch = ({ name, code, setName, setCode, short }) => {
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
-	const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
 
 	const modalOpen = () => setDestinationPopUp(true)
 
-	const handleInventoryFindButtonOnClick = (data) => {
-		// data가 없거나 && data에 code 필드가 없거나 && data에 name 필드가 없으면 함수를 종료합니다.
+	const handleFindButtonOnClick = (data) => {
 		if (!data && !Object.hasOwn(data ?? {}, 'code') && !Object.hasOwn(data ?? {}, 'name')) return
 		setName(data.name)
 		setCode(data.code)
 	}
-
-	console.log('short', short)
 
 	return (
 		<PartWrap first>
@@ -38,12 +35,7 @@ const DestinationSearch = ({ name, code, setName, setCode, short }) => {
 				찾기
 			</GreyBtn>
 			{destinationPopUp && (
-				<InventoryFind
-					title={'목적지 찾기'}
-					handleButtonOnClick={handleInventoryFindButtonOnClick}
-					setSwitch={setDestinationPopUp}
-					data={inventoryDestination}
-				/>
+				<DestinationFind handleButtonOnClick={handleFindButtonOnClick} setSwitch={setDestinationPopUp} />
 			)}
 		</PartWrap>
 	)
