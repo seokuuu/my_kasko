@@ -23,6 +23,7 @@ const SingleUploader = ({
 	setAddress,
 	startDate,
 	setStartDate,
+	title,
 }) => {
 	// 오늘 날짜(단일 등록 적용일자에 사용됩니다.)
 
@@ -111,10 +112,10 @@ const SingleUploader = ({
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				if (postAddress) {
+				if (postAddress && title !== '목적지 등록') {
 					const response = await get_addressFind(postAddress)
 					const resData = response?.data?.data
-					if (resData) {
+					if (resData && postAddress) {
 						onEditHandler({ target: { name: 'destinationCode', value: resData } })
 						setDestiCode(resData)
 					} else {

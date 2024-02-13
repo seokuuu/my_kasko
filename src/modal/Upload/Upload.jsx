@@ -131,6 +131,7 @@ const Upload = ({
 								setAddress={setAddress}
 								startDate={startDate}
 								setStartDate={setStartDate}
+								title={title}
 							/>
 						))}
 					<BlueBtnWrap>
