@@ -115,7 +115,7 @@ const ClaimRegister = () => {
 								/>
 							</div>
 							<div>
-								<DateTitle>현대 재철 클레임 등록 일자</DateTitle>
+								<DateTitle>현대 제철 클레임 요청 일자</DateTitle>
 								<DateGrid
 									width={130}
 									left={-30}
