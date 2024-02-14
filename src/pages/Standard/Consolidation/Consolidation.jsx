@@ -3,8 +3,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAtom } from 'jotai'
 import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import Hidden from '../../../components/TableInner/Hidden'
-import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
-import { StandardConsoliateEdit, blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
+import {
+	btnCellUidAtom,
+	consolEditModalAtom,
+	popupAtom,
+	popupObject,
+	popupTypeAtom,
+	selectedRowsAtom,
+	StandardConsoliateEdit,
+} from '../../../store/Layout/Layout'
 
 import { StandardConsolidationFields, StandardConsolidationFieldsCols } from '../../../constants/admin/Standard'
 
@@ -15,19 +23,10 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import ConsolidationModal from '../../../modal/Multi/Consolidation'
 import {
 	deleteAdminConsolidation,
+	editAdminConsolidation,
 	getAdminConsolidation,
 	postAdminConsolidation,
-	editAdminConsolidation,
 } from '../../../service/admin/Standard'
-import {
-	btnCellRenderAtom,
-	btnCellUidAtom,
-	popupAtom,
-	popupObject,
-	popupTypeAtom,
-	selectedRowsAtom,
-	consolEditModalAtom,
-} from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { popupDummy } from '../../../modal/Alert/PopupDummy'
@@ -48,10 +47,7 @@ const Consolidation = ({}) => {
 	const [observeClick, setObserveClick] = useState(false)
 	const [form, setForm] = useState(initForm)
 	const { id } = useParams()
-	const { simpleAlert } = useAlert();
-
-	console.log('uidAtom', uidAtom)
-	console.log('btnCellModal', btnCellModal)
+	const { simpleAlert } = useAlert()
 
 	const [inputValues, setInputValues] = useState({
 		dropValue: '2착',
@@ -78,23 +74,36 @@ const Consolidation = ({}) => {
 	// 합짐비 등록 및 수정 변환 Data (찐)
 	const transformedValues = transformInputValues(inputValues)
 
-	console.log('transformedValues', transformedValues)
-
 	// Post
-	const postMutation = useMutationQuery('', postAdminConsolidation)
+	const postMutation = useMutation(postAdminConsolidation, {
+		onSuccess: () => {
+			setBtnCellModal(false)
+			queryClient.invalidateQueries('destination')
+			queryClient.invalidateQueries('getAdminConsolidation')
+		},
+		onError: (error) => {
+			simpleAlert(error?.data?.message || '합짐비 등록 중 오류가 발생했습니다.')
+		},
+	})
+
 	const propsPost = () => {
 		postMutation.mutate(transformedValues)
-		setBtnCellModal(false);
-		refetch()
 	}
 
 	// Edit
-	const editMutation = useMutationQuery('', editAdminConsolidation, {
+	const editMutation = useMutation(editAdminConsolidation, {
+		onSuccess: () => {
+			setBtnCellModal(false)
+			queryClient.invalidateQueries('destination')
+			queryClient.invalidateQueries('getAdminConsolidation')
+		},
+		onError: (error) => {
+			simpleAlert(error?.data?.message || '합짐비 수정 중 오류가 발생했습니다.')
+		},
 	})
+
 	const propsEdit = () => {
 		editMutation.mutate(transformedValues)
-		setBtnCellModal(false);
-		refetch()
 	}
 
 	const onChangeHandler = useCallback(
@@ -113,33 +122,6 @@ const Consolidation = ({}) => {
 			...prevValues,
 			dropValue: newValue.value,
 		}))
-	}
-
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
-
-	// 토글 쓰기
-	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-	const [toggleMsg, setToggleMsg] = useState('On')
-	const toggleBtnClick = () => {
-		setExfilterToggle((prev) => !prev)
-		if (exFilterToggle === true) {
-			setToggleMsg('Off')
-		} else {
-			setToggleMsg('On')
-		}
-	}
-
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
-
-	console.log('isModal =>', isModal)
-
-	const modalOpen = () => {
-		setIsModal(true)
 	}
 
 	const [getRow, setGetRow] = useState('')
@@ -164,13 +146,8 @@ const Consolidation = ({}) => {
 	const resData = data?.data?.data?.list
 	const [tablePagination, setTablePagination] = useState([])
 
-	console.log('resData => ', resData)
-
 	const matchingData = resData?.find((data) => data.uid === uidAtom)
-	console.log('matchingData', matchingData)
 	const landValue = matchingData ? matchingData.land : null
-
-	console.log('landValue', landValue)
 
 	useEffect(() => {
 		let getData = resData
@@ -182,7 +159,6 @@ const Consolidation = ({}) => {
 		}
 	}, [isSuccess, resData])
 
-	console.log('getRow =>', getRow)
 	// DELETE
 	const mutation = useMutation(deleteAdminConsolidation, {
 		onSuccess: () => {
@@ -191,7 +167,7 @@ const Consolidation = ({}) => {
 		},
 		onError: (error) => {
 			simpleAlert(error?.data?.message || '삭제에 실패했습니다. 다시 시도해 주세요.')
-		}
+		},
 	})
 
 	const propsRemove = () => {
