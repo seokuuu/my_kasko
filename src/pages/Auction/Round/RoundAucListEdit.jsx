@@ -41,7 +41,7 @@ import RoundAucProAdd from './RoundAucProAdd'
 import useBlockRoute from '../../../hooks/useBlockRoute'
 
 //경매 목록 수정(단일)
-const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
+const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStatus }) => {
 	const [newResData, setNewResData] = useState([])
 	const [addAuction, setAddAuction] = useState({
 		productUid: null,
@@ -91,6 +91,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 		auctionNumber: auctionNum,
 	}
 	const [param, setParam] = useState(paramData)
+
+	console.log('param 정몽규', param)
 
 	useEffect(() => {
 		setParam((prevParams) => ({
@@ -347,6 +349,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 	// 	useBlockRoute(blockCondition)
 	// }
 
+	console.log('auctionStatus sub ', auctionStatus)
+
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -500,14 +504,19 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum }) => {
 						>
 							적용
 						</TGreyBtn>
-						<BtnBound />
-						<SkyBtn
-							onClick={() => {
-								setAddModal(true)
-							}}
-						>
-							제품 추가
-						</SkyBtn>
+
+						{auctionStatus !== '종료' && (
+							<>
+								<BtnBound />
+								<SkyBtn
+									onClick={() => {
+										setAddModal(true)
+									}}
+								>
+									제품 추가
+								</SkyBtn>
+							</>
+						)}
 					</div>
 				</TCSubContainer>
 				<Table getCol={AuctionRoundDetailFieldsCols} getRow={getRow} loading={isLoading} />

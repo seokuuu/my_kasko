@@ -95,6 +95,8 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
 		setAuctionModal(true)
 	}
 
+	console.log('selectedValue', selectedValue)
+
 	// 회원 제안 수정
 	const clientRestrict = async () => {
 		if (!selectedValue) {

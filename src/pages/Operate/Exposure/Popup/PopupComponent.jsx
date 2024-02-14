@@ -2,45 +2,6 @@ import React, { useEffect } from 'react'
 import useReactQuery from '../../../../hooks/useReactQuery'
 import { getPopupList } from '../../../../api/popup/popup'
 const PopupComponent = ({}) => {
-	// const data = [
-	// 	{
-	// 		uid: 42,
-	// 		title: '333',
-	// 		status: 1,
-	// 		startDate: '2024-02-13 04:20:51',
-	// 		endDate: '2024-02-13 04:20:51',
-	// 		popupTitle: '',
-	// 		position: 3,
-	// 		content:
-	// 			'<p></p>\n<img src="https://kr.object.ncloudstorage.com/kasko-bucket/editor/59f18dd6-d21b-4f80-b71e-a20ada19ea3e.jpg" alt="undefined" style="height: 200px;width: 400px"/>\n<p>33333</p>\n',
-	// 		link: 'www.korea.com',
-	// 	},
-	// 	{
-	// 		uid: 42,
-	// 		title: '222',
-	// 		status: 1,
-	// 		startDate: '2024-02-13 04:20:51',
-	// 		endDate: '2024-02-13 04:20:51',
-	// 		popupTitle: '',
-	// 		position: 2,
-	// 		content:
-	// 			'<p></p>\n<img src="https://kr.object.ncloudstorage.com/kasko-bucket/editor/59f18dd6-d21b-4f80-b71e-a20ada19ea3e.jpg" alt="undefined" style="height: 200px;width: 400px"/>\n<p>33333</p>\n',
-	// 		link: 'www.korea.com',
-	// 	},
-	// 	{
-	// 		uid: 42,
-	// 		title: '111',
-	// 		status: 1,
-	// 		startDate: '2024-02-13 04:20:51',
-	// 		endDate: '2024-02-13 04:20:51',
-	// 		popupTitle: '',
-	// 		position: 1,
-	// 		content:
-	// 			'<p></p>\n<img src="https://kr.object.ncloudstorage.com/kasko-bucket/editor/59f18dd6-d21b-4f80-b71e-a20ada19ea3e.jpg" alt="undefined" style="height: 200px;width: 400px"/>\n<p>33333</p>\n',
-	// 		link: 'www.korea.com',
-	// 	},
-	// ]
-
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery('', 'popup', getPopupList)
 
 	const resData = data?.data?.data
