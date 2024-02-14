@@ -147,8 +147,13 @@ const ClaimProductSearchFields = ({
 								},
 								{
 									checked: false,
-									text: '판매제외제',
-									value: '판매제외제',
+									text: '판매제외재',
+									value: '판매제외재',
+								},
+								{
+									checked: false,
+									text: '판매완료재',
+									value: '판매완료재',
 								},
 							]}
 							setState={setSearch}
