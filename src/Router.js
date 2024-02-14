@@ -170,7 +170,7 @@ const Router = () => {
 	return (
 		<Routes>
 			{/* 테스트 URL */}
-			<Route path="/ppapp" element={<PopupComponent />} />
+			<Route path="/popup2" element={<PopupComponent />} />
 			<Route path="/ppap" element={<SingleRegiUploader />} />
 			<Route path="/TableTest" element={<TableTest />} />
 			<Route path="/test" element={<Test />} />
