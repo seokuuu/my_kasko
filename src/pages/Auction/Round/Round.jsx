@@ -80,6 +80,8 @@ const Round = ({}) => {
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom2)[0]
 
+	console.log('checkedArray', checkedArray)
+
 	const initialParamState = {
 		pageNum: 1,
 		pageSize: 50,
@@ -108,6 +110,7 @@ const Round = ({}) => {
 	// }, [isSuccess])
 
 	const resData = data?.data?.data?.list
+
 	const resPagination = data?.data?.data?.pagination
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
@@ -128,7 +131,8 @@ const Round = ({}) => {
 
 	const matchingData = resData?.find((data) => data.uid === uidAtom)
 	const auctionNum = matchingData?.number
-	console.log('matchingData', matchingData?.number)
+	const auctionStatus = matchingData?.status
+	console.log('auctionStatus', auctionStatus)
 
 	// const 임의의UID = 22 //임의의 uid값 * 현재 에러나옴
 	// const mutation = useMutationQuery('auction', () => deleteAuction(임의의UID))
@@ -201,7 +205,13 @@ const Round = ({}) => {
 	return (
 		<>
 			{editPage ? (
-				<RoundAucListEdit setEditPage={setEditPage} types={types} uidAtom={uidAtom} auctionNum={auctionNum} />
+				<RoundAucListEdit
+					setEditPage={setEditPage}
+					types={types}
+					uidAtom={uidAtom}
+					auctionNum={auctionNum}
+					auctionStatus={auctionStatus}
+				/>
 			) : (
 				<FilterContianer>
 					<FilterHeader>

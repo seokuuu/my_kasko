@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import {
 	At,
@@ -12,9 +12,9 @@ import {
 	Title,
 } from '../../../common/OnePage/OnePage.Styled'
 
-import { CustomInput } from '../../../common/Input/Input'
+import { CustomInput, SInput } from '../../../common/Input/Input'
 import { CustomSelect } from '../../../common/Option/Main'
-import { emailOptions } from '../../../common/Option/SignUp'
+import { emailOptions, emailOptionsIncludingDirect } from '../../../common/Option/SignUp'
 
 import { useFooterMutation, useFooterQuery } from '../../../api/operate'
 import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
@@ -39,7 +39,14 @@ const FooterManage = () => {
 	const [form, setForm] = useState({ address: '', email: '', fax: '', name: '', number: '', phone: '' })
 
 	// 이메일 도메인(셀렉트 옵션)
-	const [emailDomain, setEmailDomain] = useState(emailOptions[0])
+	const [emailDomain, setEmailDomain] = useState({ selectModeValue: '', inputModeValue: '' })
+
+	const chooseEmailDomain = useMemo(
+		() => (emailDomain.selectModeValue === '직접 입력' ? emailDomain.inputModeValue : emailDomain.selectModeValue),
+		[emailDomain],
+	)
+
+	console.log('chooseEmailDomain', chooseEmailDomain)
 
 	/**
 	 * @description
@@ -58,7 +65,7 @@ const FooterManage = () => {
 
 	function submitHandler() {
 		// uid 값이 없으면 null 값으로 전송
-		mutate({ ...form, email: form.email + '@' + emailDomain.label, uid: data?.uid ?? null })
+		mutate({ ...form, email: form.email + '@' + chooseEmailDomain, uid: data?.uid ?? null })
 	}
 
 	/**
@@ -157,14 +164,24 @@ const FooterManage = () => {
 									onChange={commonChangeHandler}
 								/>
 								<At>@</At>
-								<CustomSelect
-									isCreatable
-									width={200}
-									options={emailOptions}
-									defaultValue={emailDomain[0]}
-									value={emailDomain}
-									onChange={setEmailDomain}
-								/>
+								{emailDomain.selectModeValue === '직접 입력' ? (
+									<SInput
+										value={emailDomain.inputModeValue}
+										onChange={(e) => setEmailDomain((p) => ({ ...p, inputModeValue: e.target.value }))}
+										style={{
+											width: '190px',
+										}}
+									/>
+								) : (
+									<CustomSelect
+										width={190}
+										options={emailOptionsIncludingDirect}
+										defaultValue={emailOptionsIncludingDirect[0]}
+										onChange={(selectedOption) => {
+											setEmailDomain((p) => ({ ...p, selectModeValue: selectedOption.label }))
+										}}
+									/>
+								)}
 							</div>
 						</Part>
 					</Left>

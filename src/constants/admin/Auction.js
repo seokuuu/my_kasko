@@ -29,7 +29,7 @@ const LinkRenderer = (props) => {
 
 	console.log('aucDetail', aucDetail)
 
-	setAucDetail(data)
+	// setAucDetail(data)
 
 	return (
 		<a

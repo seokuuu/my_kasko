@@ -374,7 +374,7 @@ export const TCSubContainer = styled.div`
 `
 
 export const MiniInput = styled.input`
-	width: 64px;
+	width: 75px;
 	height: 37px;
 	border: 1px solid #c8c8c8;
 	font-size: 18px;
