@@ -61,7 +61,7 @@ export const StandardDestinationEdit = {
 // 기준관리 - 목적지관리 fieldsCols
 //  주석 처리 : cell 내 버튼 기능
 export const StandardDestinaionFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	// {
 	// 	...commonStyles,
 	// 	field: '수정',
@@ -202,7 +202,7 @@ export const StandardSurchargeFields = {
 }
 
 export const StandardSurchargeFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{
 		...commonStyles,
 		field: '수정',
@@ -255,7 +255,7 @@ export const StandardConsolidationFields = {
 }
 
 export const StandardConsolidationFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{
 		...commonStyles,
 		field: '수정',

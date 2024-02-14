@@ -276,6 +276,7 @@ const Transport = () => {
 				setModalSwitch(false)
 				queryClient.invalidateQueries('transportation')
 				simpleAlert('등록되었습니다.')
+				refetch()
 			},
 			onError: (error) => {
 				simpleAlert(error?.data?.message || '등록에 실패했습니다. 다시 시도해 주세요.')
@@ -312,6 +313,7 @@ const Transport = () => {
 		editMutation.mutate(editInput, {
 			onSuccess: () => {
 				queryClient.invalidateQueries('transportation')
+				refetch()
 			},
 			onError: (error) => {
 				simpleAlert(error?.data?.message || '수정 실패했습니다. 다시 시도해 주세요.')

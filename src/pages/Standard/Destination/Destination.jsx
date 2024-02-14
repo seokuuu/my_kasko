@@ -102,6 +102,9 @@ const Destination = ({}) => {
 	})
 
 	const [editInput, setEditInput] = useState({ name: address, note: '' })
+
+	console.log('editInput', editInput)
+
 	// DATA
 	const resData = data?.data?.data?.list
 
@@ -119,8 +122,10 @@ const Destination = ({}) => {
 		// console.log(editInput);
 		postMutation.mutate(editInput, {
 			onSuccess: () => {
-				// 성공 시 실행할 코드 작성
+				simpleAlert('저장 되었습니다.')
 				setModalSwitch(false)
+				setEditInput('')
+
 				// 추가로 필요한 작업 수행
 			},
 			onError: (error) => {
@@ -135,7 +140,7 @@ const Destination = ({}) => {
 			const { name, value } = e.target
 			setEditInput({
 				...editInput,
-				uid: uidAtom,
+				// uid: uidAtom,
 				[name]: value,
 			})
 		},
@@ -307,7 +312,7 @@ const Destination = ({}) => {
 			{modalSwitch && (
 				// Post
 				<Upload
-					width={'1400'}
+					width={'900'}
 					modalSwitch={modalSwitch}
 					setModalSwitch={setModalSwitch}
 					title={'목적지 등록'}

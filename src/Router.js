@@ -162,6 +162,7 @@ import useAuth from './store/Auth/useAuth'
 import PlusBtnUploader from './modal/Upload/components/PlusBtnUploader'
 import SingleRegiUploader from './modal/Upload/components/SingleRegiUploader'
 import PackageDetailModal from './modal/Multi/PackageDetailModal'
+import PopupComponent from './pages/Operate/Exposure/Popup/PopupComponent'
 
 const Router = () => {
 	const auth = useAtomValue(authAtom)
@@ -169,7 +170,7 @@ const Router = () => {
 	return (
 		<Routes>
 			{/* 테스트 URL */}
-			<Route path="/ppapp" element={<PackageDetailModal />} />
+			<Route path="/ppapp" element={<PopupComponent />} />
 			<Route path="/ppap" element={<SingleRegiUploader />} />
 			<Route path="/TableTest" element={<TableTest />} />
 			<Route path="/test" element={<Test />} />
@@ -305,6 +306,10 @@ const Router = () => {
 
 				<Route path="/operate/faq/faqpost" element={<FAQPostPage />}></Route>
 				<Route path="/operate/faq/:id" element={<FAQPostPage />}></Route>
+			</Route>
+
+			<Route path="/window">
+				<Route path="/window/windowpopup/:id" element={<PopupComponent />} />
 			</Route>
 
 			{/* 사용자 페이지 */}
