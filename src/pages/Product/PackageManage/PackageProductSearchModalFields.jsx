@@ -74,8 +74,15 @@ const PackageProductSearchModalFields = ({
 						<PartWrap>
 							<h6>유찰 횟수</h6>
 							<ExInputsWrap>
-								<Input /> <Tilde>~</Tilde>
-								<Input />
+								<Input
+									value={search.minFailCount ?? ''}
+									onChange={(e) => commonDropdownButtonHandler(e.target.value, 'minFailCount')}
+								/>{' '}
+								<Tilde>~</Tilde>
+								<Input
+									value={search.maxFailCount ?? ''}
+									onChange={(e) => commonDropdownButtonHandler(e.target.value, 'maxFailCount')}
+								/>
 							</ExInputsWrap>
 						</PartWrap>
 					</RowWrap>
