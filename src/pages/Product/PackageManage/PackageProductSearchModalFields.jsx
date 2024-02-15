@@ -74,8 +74,15 @@ const PackageProductSearchModalFields = ({
 						<PartWrap>
 							<h6>유찰 횟수</h6>
 							<ExInputsWrap>
-								<Input /> <Tilde>~</Tilde>
-								<Input />
+								<Input
+									value={search.minFailCount ?? ''}
+									onChange={(e) => commonDropdownButtonHandler(e.target.value, 'minFailCount')}
+								/>{' '}
+								<Tilde>~</Tilde>
+								<Input
+									value={search.maxFailCount ?? ''}
+									onChange={(e) => commonDropdownButtonHandler(e.target.value, 'maxFailCount')}
+								/>
 							</ExInputsWrap>
 						</PartWrap>
 					</RowWrap>
@@ -147,13 +154,13 @@ const PackageProductSearchModalFields = ({
 									},
 									{
 										checked: false,
-										text: '판매제외제',
-										value: '판매제외제',
+										text: '판매제외재',
+										value: '판매제외재',
 									},
 									{
 										checked: false,
-										text: '판매완료제',
-										value: '판매완료제',
+										text: '판매완료재',
+										value: '판매완료재',
 									},
 								]}
 								setState={setSearch}

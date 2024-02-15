@@ -11,16 +11,18 @@ import {
 	FilterContianer,
 	FilterHeader,
 	SubTitle,
-	TCSubContainer,
 	TableBottomWrap,
 	TableContianer,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 import {
 	blueModalAtom,
+	hyunDaiMultiModal,
 	popupAtom,
 	popupObject,
 	selectedRowsAtom,
 	singleProductModify,
+	specAtom,
 	toggleAtom,
 } from '../../../store/Layout/Layout'
 import { isEqual } from 'lodash'
@@ -36,30 +38,21 @@ import {
 	postingMemoAndNote,
 } from '../../../api/SellProduct'
 import Excel from '../../../components/TableInner/Excel'
-import {
-	SingleDispatchFieldsCols,
-	SingleSalesDispatchFieldsCols,
-	singleDispatchFields,
-} from '../../../constants/admin/Single'
+import { singleDispatchFields, SingleSalesDispatchFieldsCols } from '../../../constants/admin/Single'
 import SingleSellProductSearchFields from './SingleProductSearchFields/SingleSellProductSearchFileds'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
-import StandardFind from '../../../modal/Multi/StandardFind'
-import { specAtom } from '../../../store/Layout/Layout'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 import { onSizeChange } from '../../Operate/utils'
 import Table from '../../Table/Table'
-import { hyunDaiMultiModal } from '../../../store/Layout/Layout'
 import useMutationQuery from '../../../hooks/useMutationQuery'
-import { changeCategoryAtom } from '../../../store/Layout/Popup'
+import { changeCategoryAtom, changeSaleTypeAtom } from '../../../store/Layout/Popup'
 import SalseType from '../../../modal/Multi/SaleType'
-import { changeSaleTypeAtom } from '../../../store/Layout/Popup'
 import UploadV2 from '../../../modal/Upload/UploadV2'
 import SingleProductModify from './SingleProductModify'
-import { popupDummy } from '../../../modal/Alert/PopupDummy'
-import AlertPopup from '../../../modal/Alert/AlertPopup'
 import useAlert from '../../../store/Alert/useAlert'
+
 const SalesProduct = () => {
 	const [popup, setPopup] = useAtom(popupAtom)
 	// const checkSales = ['전체', '미응찰', '관심제품', '응찰']
@@ -298,7 +291,6 @@ const SalesProduct = () => {
 	const { pagination: customPagination, onPageChanage } = useTablePaginationPageChange(data, setParam)
 	return (
 		<>
-			{' '}
 			<FilterContianer>
 				<FilterHeader>
 					<div style={{ display: 'flex' }}>

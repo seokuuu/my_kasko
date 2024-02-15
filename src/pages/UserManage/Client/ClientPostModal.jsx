@@ -514,7 +514,7 @@ const ClientPostModal = ({ setEditModal, id }) => {
 												/>
 												현대제철
 											</RadioLabel>
-											<RadioLabel>
+											{/*<RadioLabel>
 												<input
 													type="radio"
 													value="카스코철강"
@@ -522,7 +522,7 @@ const ClientPostModal = ({ setEditModal, id }) => {
 													checked={watch('memberType') === '카스코철강'}
 												/>
 												카스코철강
-											</RadioLabel>
+											</RadioLabel>*/}
 											<RadioLabel>
 												<input
 													type="radio"
@@ -1107,7 +1107,7 @@ const ClientPostModal = ({ setEditModal, id }) => {
 									<AccountSelect
 										name="bank"
 										options={bankList}
-										defaultValue={bankList[bankList.findIndex((item) => item.label === watch('bank')) ?? 0]}
+										defaultValue={bankList[0]}
 										value={bankList[bankList.findIndex((item) => item.label === watch('bank')) ?? 0]}
 										onChange={(selectedOption) => setBank(selectedOption.label)}
 									/>

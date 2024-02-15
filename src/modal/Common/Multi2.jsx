@@ -63,7 +63,7 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
 		setModalSwitch(false)
 	}
 
-	const radioDummy = length == 3 ? ['판매재', '판매제외재', '판매완료재'] : ['판매제', '판매제외제']
+	const radioDummy = length == 3 ? ['판매재', '판매제외재', '판매완료재'] : ['판매제', '판매제외재']
 	const radioDummy2 = ['불량', '제외 요청', '기타 사유']
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 	const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, (_, index) => index === 0))

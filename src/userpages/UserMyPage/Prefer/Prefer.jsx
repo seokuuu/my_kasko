@@ -94,7 +94,7 @@ const Prefer = ({ setChoiceComponent }) => {
 				<FilterContianer>
 					<FilterHeader>
 						<div style={{ display: 'flex' }}>
-							<h1>선호제품 관리</h1>
+							<h1>선호 제품 관리</h1>
 						</div>
 						{/* 토글 쓰기 */}
 					</FilterHeader>

@@ -17,7 +17,7 @@ const InventorySearchFields = ({ search, setSearch, commonDropdownButtonHandler 
 	const receiptStatusList = ['미 입고', '입고 대기', '입고 확정', '입고 확정 취소']
 
 	// 판매구분 체크박스 목록
-	const saleCategoryList = ['판매재', '판매제외제']
+	const saleCategoryList = ['판매재', '판매제외재', '판매완료재']
 	// 주문 상태 체크박스 목록
 	const orderStatusList = ['확정 전송', '확정 전송 대기']
 	// 출하 상태 체크박스 목록

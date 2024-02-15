@@ -1,7 +1,5 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { client } from '..'
-import { queryClient } from '../query'
 
 const urls = {
 	getAuction: 'admin/auction',
@@ -20,30 +18,20 @@ export function getAuction(data) {
 	console.log('data @@!!@@', data)
 	return client.get(urls.getAuction, { params: data })
 }
-// export function getAuction(data) {
-// 	console.log('data', data)
-// 	return client.get(`${urls.getAuction}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&type=${data.type}`)
-// }
+
+export function getAuctionTime() {
+	return client.get(urls.getAuction + '/time')
+}
 
 // 상세 GET
-
 export function getDetailAuction(data) {
 	return client.get(`${urls.getAuction}/${data.auctionNumber}`, { params: data })
 }
-// export function getDetailAuction(data) {
-// 	return client.get(`${urls.getAuction}/${data.auctionNumber}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
-// }
 
 // 추가 제품 목록 GET
-
 export function getExtraProductList(data) {
 	return client.get(urls.getExtraProduct, { params: data })
 }
-// export function getExtraProductList(data) {
-// 	return client.get(
-// 		`${urls.getExtraProduct}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&saleType=${data.saleType}&registrationStatus=${data.registrationStatus}&type=${data.pageSize}`,
-// 	)
-// }
 
 // 등록 POST
 export function postAuction(data) {

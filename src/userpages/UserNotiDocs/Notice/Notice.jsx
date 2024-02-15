@@ -55,8 +55,6 @@ const Notice = () => {
 	const navigate = useNavigate()
 	const tableField = useRef(UserNoticeListFieldCols)
 	const getCol = tableField.current
-	const [topData2, setTopData2] = useState([])
-	const [result, setResult] = useState([])
 	const [fixed, setFixed] = useState([])
 	const fixedItem = notices && notices?.list.filter((i) => i.status !== 0)
 
@@ -66,32 +64,14 @@ const Notice = () => {
 		}
 	}, [notices])
 
-	useEffect(() => {
-		topData2.map((item, index) =>
-			setResult((p) => [
-				...p,
-				{
-					작성일자: item.createDate ? moment(item.createDate).format('YYYY-MM-DD') : '-',
-					작성자: item.name,
-					순번: item.status ? '고정' : index,
-					고유값: item.uid,
-					제목: item.getFile ? `${item.title} 📎` : `${item.title} `,
-					조회수: item.count,
-					타입: '공지사항',
-				},
-			]),
-		)
-	}, [topData2])
-
 	const mappingData2 = useMemo(
 		() =>
 			notices
 				? notices.list.filter((d, index) => {
-						// console.log('DD', moment(d.createDate).format('YYYY-MM-DD'))
 						if (!d.status) {
 							return {
 								...d,
-								작성일자: moment(d.createDate).format('YYYY-MM-DD'),
+								작성일자: d.createDate ? moment(d.createDate).format('YYYY-MM-DD HH:mm:ss') : '-',
 								// id: Notice.length, // 순번 내림차순
 								uid: d.uid,
 								title: d.title,
@@ -106,10 +86,9 @@ const Notice = () => {
 
 	function createData(data) {
 		var result = []
-		console.log(data)
 		for (var i = 0; i < data?.length; i++) {
 			result.push({
-				작성일자: data[i].createDate ? moment(data[i].createDate).format('YYYY-MM-DD') : '-',
+				작성일자: data[i].createDate ? moment(data[i].createDate).format('YYYY-MM-DD HH:mm:ss') : '-',
 				작성자: data[i].name,
 				순번: '고정',
 				고유값: data[i].uid,

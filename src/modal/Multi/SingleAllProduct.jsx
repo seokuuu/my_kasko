@@ -1,43 +1,27 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-
-import { BlackBtn, GreyBtn, YellBtn } from '../../common/Button/Button'
-
+import { BlackBtn, BtnWrap } from '../../common/Button/Button'
 import Excel from '../../components/TableInner/Excel'
 import {
-	SingleProductSpecAtom,
-	toggleAtom,
-	selectedRowsAtom,
-	singleAllProductModal,
 	packageCreateObjAtom,
 	packageUpdateObjAtom,
+	selectedRowsAtom,
+	singleAllProductModal,
+	toggleAtom,
 } from '../../store/Layout/Layout'
-
 import PageDropdown from '../../components/TableInner/PageDropdown'
 import { useAtom, useAtomValue } from 'jotai'
-import {
-	FilterContianer,
-	FilterHeader,
-	TableContianer,
-	TCSubContainer,
-	Tilde,
-} from '../../modal/External/ExternalFilter'
-
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../modal/External/ExternalFilter'
 import useReactQuery from '../../hooks/useReactQuery'
 import Hidden from '../../components/TableInner/Hidden'
 import { getSingleProducts } from '../../api/SellProduct'
-import { SingleDispatchFieldsCols, singleDispatchFields } from '../../constants/admin/Single'
+import { singleDispatchFields, SingleDispatchFieldsCols } from '../../constants/admin/Single'
 import { add_element_field } from '../../lib/tableHelpers'
 import Table from '../../pages/Table/Table'
-
 import { KilogramSum } from '../../utils/KilogramSum'
-import { BlueBarHeader, BlueInput, BlueSubDiv } from '../Common/Common.Styled'
-import { WhiteCloseBtn } from '../Common/Common.Styled'
+import { BlueBarHeader, WhiteCloseBtn } from '../Common/Common.Styled'
 import HeaderToggle from '../../components/Toggle/HeaderToggle'
-import { CRWMainBottom } from '../../pages/Operate/Common/Datasheet/DatasheetEdit'
-import { CRWSub } from '../../pages/Operate/Common/Datasheet/DatasheetEdit'
-import { BtnWrap } from '../../common/Button/Button'
-
+import { CRWMainBottom, CRWSub } from '../../pages/Operate/Common/Datasheet/DatasheetEdit'
 import GlobalProductSearch from '../../components/GlobalProductSearch/GlobalProductSearch'
 import { isEqual } from 'lodash'
 import PackageProductSearchModalFields from '../../pages/Product/PackageManage/PackageProductSearchModalFields'
@@ -51,7 +35,6 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 
 	const [isModal, setIsModal] = useAtom(singleAllProductModal)
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
-	console.log('패키지 오브제', packageObj)
 	const [pagiNation, setPagination] = useState({})
 
 	const paramData = {
@@ -65,7 +48,6 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 		stockStatus: packageObj?.sellType === '상시' ? '자사재고' : '',
 	}
 
-	console.log('PKG ', packageObj)
 	const [param, setParam] = useState(paramData)
 	//✅ request, Data패칭
 
@@ -107,9 +89,11 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 			document.body.style.overflow = 'auto'
 		}
 	}, [])
+
 	const onPageChange = (value) => {
 		setParam((p) => ({ ...p, pageNum: Number(value) }))
 	}
+
 	const handleSelectProduct = () => {
 		setSelectPr(() =>
 			checkBoxSelect.map((item) => {
@@ -138,7 +122,6 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 		modalClose()
 	}
 
-	console.log(selectPr)
 	const globalProductResetOnClick = () => {
 		// if resetting the search field shouldn't rerender table
 		// then we need to create paramData object to reset the search fields.
@@ -157,7 +140,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 			}
 		})
 	}
-	// console.log(checkBoxSelect)
+
 	return (
 		<OutSide>
 			<Container>
