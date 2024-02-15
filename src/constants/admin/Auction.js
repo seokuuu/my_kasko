@@ -24,23 +24,25 @@ export const commonStyles = {
 const LinkRenderer = (props) => {
 	const { data } = props
 	const [aucDetail, setAucDetail] = useAtom(auctionPackDetailNumAtom) // 해당 row 값 저장
-
-	const [aucDetailModal, setAucDetailModal] = useAtom(auctionPackDetailModal)
-
-	console.log('aucDetail', aucDetail)
-
-	// setAucDetail(data)
+	const [aucDetailModal, setAucDetailModal] = useAtom(auctionPackDetailModal) // 패키지 모달
 
 	return (
-		<a
-			onClick={() => {
-				setAucDetailModal(true)
-			}}
-			style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}
-			rel="noreferrer"
-		>
-			{props.value || ''}
-		</a>
+		<>
+			{aucDetailModal ? (
+				<>{props.value || ''}</>
+			) : (
+				<a
+					onClick={() => {
+						setAucDetailModal(true)
+						setAucDetail(data)
+					}}
+					style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer', fontWeight: 'bolder' }}
+					rel="noreferrer"
+				>
+					{props.value || ''}
+				</a>
+			)}
+		</>
 	)
 }
 

@@ -42,6 +42,7 @@ import useBlockRoute from '../../../hooks/useBlockRoute'
 
 //경매 목록 수정(단일)
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStatus }) => {
+	console.log('auctionNum zzzzzzz', auctionNum)
 	const [newResData, setNewResData] = useState([])
 	const [addAuction, setAddAuction] = useState({
 		productUid: null,
@@ -109,62 +110,14 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 
 	const resData = data?.data?.data?.list
 
-	// const [resData2, setResData2] = useState(null)
-
-	// useEffect(() => {
-	// 	if (isSuccess) {
-	// 		setResData2(resData)
-	// 	}
-	// }, [isSuccess, data]) // `data`를 의존성 배열에 추가했습니다.
-
-	// console.log('resData2', resData2)
-
 	const [startPrice, setStartPrice] = useState(null)
 	const [realStartPrice, realSetStartPrice] = useState(null)
 
 	console.log('realStartPrice', realStartPrice)
 
-	// Todo
-	// useEffect(() => {
-	// 	// let getData = resData
-	// 	// //타입, 리액트쿼리, 데이터 확인 후 실행
-	// 	// if (!isSuccess && !resData) return
-	// 	// if (Array.isArray(getData)) {
-	// 	//   setGetRow(add_element_field(getData, AuctionRoundDetailFields))
-	// 	// }
-	// 	// let getData = resData
-
-	// 	//타입, 리액트쿼리, 데이터 확인 후 실행
-
-	// 	// newResData : 추가한 애들
-	// 	// updatedData : 원래 resData
-	// 	// 둘다 상태관리를 해야하며,
-	// 	if (!isSuccess && !resData2) return
-	// 	if (Array.isArray(resData2, newResData)) {
-	// 		const updatedData = add_element_field(resData2, AuctionRoundDetailFields)
-	// 		const combinedData = [...newResData, ...updatedData]
-	// 		setGetRow(combinedData)
-	// 	}
-	// }, [isSuccess, resData2, newResData])
-	// useEffect(() => {
-	// 	if (list && Array.isArray(list)) {
-	// 		setRows(add_element_field(list, AuctionRoundDetailFields))
-	// 	}
-	// }, [list])
-
 	const [initRow, setInitRow] = useState([])
 
 	console.log('initRow')
-
-	// useEffect(() => {
-	// 	if (resData && Array.isArray(resData)) {
-	// 		// const combinedData = [...newResData, ...resData]
-	// 		// console.log('combinedData ㅋㅋ!!', combinedData)
-	// 		// setList(combinedData)
-	// 		setInitRow([...add_element_field(resData, AuctionRoundDetailFields)])
-	// 		setGetRow([...newResData, ...initRow])
-	// 	}
-	// }, [newResData, resData])
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -177,43 +130,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 
 		fetchData() // 비동기 함수를 호출
 	}, [newResData, resData])
-
-	console.log('getRow @@@@', getRow)
-
-	// TODO : 경매 회차 관리 resData 쪽 object 눈속임으로 없애기 ..`
-	// input의 deleteAuctionProductList 값 채우기
-	// const handleRemoveBtn = useCallback(() => {
-	// 	if (isArray(checkedArray) && checkedArray.length > 0) {
-	// 		if (window.confirm('선택한 항목을 삭제 목록에 추가하시겠습니까?')) {
-	// 			const resultRemove = checkedArray
-	// 				.filter((item) => item && item['경매 제품 고유 번호'] !== undefined && item['경매 제품 고유 번호'] !== null)
-	// 				.map((item) => item['경매 제품 고유 번호'])
-
-	// 			setEditData({ ...editData, deleteAuctionProductList: resultRemove })
-
-	// 			// '원래 DATA' 관련 object array 삭제
-	// 			const filteredArray2 = resData2.filter(
-	// 				(item) =>
-	// 					!checkedArray.some((checkedItem) => checkedItem['경매 제품 고유 번호'] === item['경매 제품 고유 번호']),
-	// 			)
-	// 			console.log('filteredArray2', filteredArray2)
-	// 			setResData2(filteredArray2)
-
-	// 			// '추가한 DATA' 관련 array
-	// 			const filteredArray = newResData.filter(
-	// 				(item) =>
-	// 					!checkedArray.some((checkedItem) => checkedItem['경매 제품 고유 번호'] === item['경매 제품 고유 번호']),
-	// 			)
-	// 			setNewResData(filteredArray)
-	// 		}
-	// 	} else {
-	// 		alert('선택해주세요!')
-	// 	}
-	// }, [checkedArray, editData, setEditData, newResData, setNewResData])
-
-	// 목록 추가
-	// selectedData가 newResData
-	// list가 updatedData
 
 	const [outAddData, setOutAddData] = useState()
 	const [delData, setDelData] = useState()
@@ -235,8 +151,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			productUid: item,
 			auctionStartPrice: realStartPrice,
 		}))
-
-		console.log('개씨발 ==>', uniqueNumbers)
 
 		setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
 	}, [newResData, outAddData, realStartPrice])
@@ -276,41 +190,21 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			setDelData(resultRemove)
 		})
 
-		// const key = '제품 고유 번호'
-		// const key2 = '경매 제품 고유 번호'
 		const newKey = '고유 번호'
-		// const deleteKeys = selectedRows.map((item) => item[key])
-		// const newSelectors = getRow.filter((item) => !deleteKeys.includes(item?.['경매 제품 번호']))
+
 		// 제품 추가된 항목 삭제 처리
 		if (outAddData) {
 			const updatedOutAddData = outAddData.filter((item) => !selectedRows.map((row) => row[newKey]).includes(item)) // add된 것들 처리
 			console.log('updatedOutAddData', updatedOutAddData)
 			setOutAddData(updatedOutAddData)
 		}
-		// deleteAuctionProductList에 기존 list 바인딩 !! TODO
-		// const resultRemove = selectedRows
-		// 	.filter((item) => item && item['경매 제품 고유 번호'] !== undefined && item['경매 제품 고유 번호'] !== null)
-		// 	.map((item) => item['경매 제품 고유 번호'])
 	}
 	console.log('outAddData', outAddData)
-
-	// 추가 가져온 애 테스트임. 이거 필요없음. 기존에 있던 list 가 잘되는지 체크 하기
-	//
-	// useEffect(() => {
-	// 	const uniqueNumbers = list?.map((item) => ({
-	// 		productUid: item['uid'],
-	// 		auctionStartPrice: realStartPrice,
-	// 	}))
-
-	// 	setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
-	// }, [list, realStartPrice])
 
 	console.log('nesRES', newResData)
 	console.log('editData @@@ ', editData)
 
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
 		setParam(paramData)
 	}
 	// import
@@ -344,10 +238,17 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 		auctionEdit(editData)
 	}
 
-	// !! 상세 페이지 URL로 바꾼 뒤 설정 예정 TODO
-	// const blockExitHandler = () => {
-	// 	useBlockRoute(blockCondition)
-	// }
+	const [incomingCheckState, setIncomingCheckState] = useState(false)
+	const incomingCheck = selectedRows?.map((x) => x['매입처'])
+
+	// useEffect(() => {
+
+	// }, [selectedRows])
+
+	console.log(
+		'selectedRows 이강인',
+		incomingCheck?.some((item) => item === '현대제철'),
+	)
 
 	console.log('auctionStatus sub ', auctionStatus)
 
@@ -368,99 +269,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			</FilterTopContainer>
 			{exFilterToggle && (
 				<>
-					{/* <FilterSubcontianer>
-						<FilterLeft>
-							<RowWrap>
-								<PartWrap first>
-									<h6>창고 구분</h6>
-									<PWRight>
-										<MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-									</PWRight>
-								</PartWrap>
-
-								<PartWrap>
-									<h6>매입처 </h6>
-									<PWRight>
-										<MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-									</PWRight>
-								</PartWrap>
-
-								<PartWrap>
-									<h6>규격 약호</h6>
-									<Input />
-									<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-										찾기
-									</GreyBtn>
-								</PartWrap>
-							</RowWrap>
-							<RowWrap style={{ borderBottom: '0px' }}>
-								<PartWrap first>
-									<h6>구분</h6>
-									<MainSelect />
-									<MainSelect />
-									<MainSelect />
-									<MainSelect />
-									<MainSelect />
-								</PartWrap>
-							</RowWrap>
-							<RowWrap style={{ borderBottom: '0px' }}>
-								<PartWrap first>
-									<h6>두께(MM)</h6>
-									<ExInputsWrap>
-										<MiniInput /> <Tilde>~</Tilde>
-										<MiniInput />
-									</ExInputsWrap>
-								</PartWrap>
-								<PartWrap>
-									<h6>폭(MM)</h6>
-									<ExInputsWrap>
-										<MiniInput /> <Tilde>~</Tilde>
-										<MiniInput />
-									</ExInputsWrap>
-								</PartWrap>
-								<PartWrap>
-									<h6>길이(MM)</h6>
-									<ExInputsWrap>
-										<MiniInput /> <Tilde>~</Tilde>
-										<MiniInput />
-									</ExInputsWrap>
-								</PartWrap>
-							</RowWrap>
-							<RowWrap>
-								<PartWrap first>
-									<h6>유찰 횟수</h6>
-									<ExInputsWrap>
-										<Input /> <Tilde>~</Tilde>
-										<Input />
-									</ExInputsWrap>
-								</PartWrap>
-							</RowWrap>
-						</FilterLeft>
-						<FilterRight>
-							<DoubleWrap>
-								<h6>제품 번호 </h6>
-								<textarea
-									placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-								/>
-							</DoubleWrap>
-						</FilterRight>
-					</FilterSubcontianer> */}
-					{/* <FilterFooter>
-						<div style={{ display: 'flex' }}>
-							<p>초기화</p>
-							<ResetImg
-								src="/img/reset.png"
-								style={{ marginLeft: '10px', marginRight: '20px' }}
-								onClick={handleImageClick}
-								className={isRotated ? 'rotate' : ''}
-							/>
-						</div>
-						<div style={{ width: '180px' }}>
-							<BlackBtn width={100} height={40}>
-								검색
-							</BlackBtn>
-						</div>
-					</FilterFooter> */}
 					<GlobalProductSearch
 						param={param}
 						isToggleSeparate={true}

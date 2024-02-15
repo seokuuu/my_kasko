@@ -145,7 +145,7 @@ export const auctionPackDetailModal = atom(false)
 
 /* ==============================
     기준 관리 (Standard)
-============================== */
+================================= */
 
 export const destiPostDataAtom = atom({
 	name: '',
