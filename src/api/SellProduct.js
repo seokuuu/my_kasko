@@ -155,11 +155,7 @@ export async function patchBeBestPackageRecommend(data) {
 	return response.data
 }
 export async function deletePackage(data) {
-	try {
-		return await client.delete(`${urls.package}/${data}`)
-	} catch (e) {
-		alert(e?.data?.message)
-	}
+	return await client.delete(`${urls.package}/${data}`)
 }
 
 export const useProductViewStatusUpdate = (url) => {

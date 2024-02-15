@@ -12,8 +12,8 @@ const AlertComponent = () => {
 	const { closeAlert } = useAlert()
 
 	const handleEvent = () => {
-		if (func) func()
 		closeAlert()
+		if (func) func()
 	}
 
 	if (!isOpen) return null

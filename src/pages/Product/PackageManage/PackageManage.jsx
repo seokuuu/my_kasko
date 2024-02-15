@@ -1,23 +1,18 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
-
 import Excel from '../../../components/TableInner/Excel'
-
-import { BlackBtn, BtnWrap, YellBtn, BtnBound, WhiteRedBtn } from '../../../common/Button/Button'
-
-import { WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { BtnBound, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn, YellBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
 	packageCreateAtom,
-	packageModeAtom,
-	toggleAtom,
 	packageDetailModal,
-	selectedRowsAtom,
+	packageModeAtom,
 	popupAtom,
+	selectedRowsAtom,
+	toggleAtom,
 } from '../../../store/Layout/Layout'
 import { add_element_field } from '../../../lib/tableHelpers'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
 import {
@@ -36,12 +31,12 @@ import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalP
 import PackageProductSearchFields from './PackageProductSearchFields.jsx'
 import { isEqual } from 'lodash'
 import Multi2 from '../../../modal/Common/Multi2.jsx'
-import { changeCategoryAtom, changePkgSaleTypeAtom } from '../../../store/Layout/Popup.jsx'
+import { changePkgSaleTypeAtom } from '../../../store/Layout/Popup.jsx'
 import useAlert from '../../../store/Alert/useAlert.js'
 import { KilogramSum } from '../../../utils/KilogramSum.js'
 import useTableData from '../../../hooks/useTableData.js'
 
-const PackageManage = ({}) => {
+const PackageManage = () => {
 	const [isCreate, setIsCreate] = useState(false)
 	const [packBtn, setPackBtn] = useAtom(packageModeAtom)
 	const [isModal, setIsModal] = useAtom(packageCreateAtom)
@@ -61,7 +56,7 @@ const PackageManage = ({}) => {
 		pageSize: 50,
 		saleType: '',
 	}
-	const { simpleAlert, redAlert } = useAlert()
+	const { simpleAlert } = useAlert()
 	const [param, setParam] = useState(paramData)
 	const { data, isSuccess, refetch } = useReactQuery(param, 'package-list', getPackageList)
 	const packageList = data?.r
@@ -116,21 +111,24 @@ const PackageManage = ({}) => {
 	}, [checkBoxSelect])
 
 	const patchRecommend = () => {
-		if (selectUids?.length === 0) simpleAlert('제품을 선택해주세요')
+		if (selectUids?.length === 0) {
+			simpleAlert('제품을 선택해주세요')
+			return
+		}
 		beRecommend(
 			{
 				status: true,
 				uids: selectUids,
 			},
 			{
-				onSuccess: (d) => {
-					if (d.data.status === 200) {
-						simpleAlert('추가 완료했습니다.', () => {
+				onSuccess: (data) => {
+					if (data.status === 200) {
+						simpleAlert('완료했습니다.', () => {
 							window.location.reload()
 						})
 					}
-					if (d.data.status === 400) {
-						simpleAlert(d.data?.message)
+					if (data.status === 400) {
+						simpleAlert(data?.message)
 					}
 					setSelectUid([])
 				},
@@ -138,8 +136,19 @@ const PackageManage = ({}) => {
 		)
 	}
 	const handleDeletePkg = () => {
-		console.log(selectUids)
-		deletePkg(selectUids)
+		if (selectUids?.length === 0) {
+			simpleAlert('제품을 선택해주세요')
+			return
+		}
+		deletePkg(selectUids, {
+			onSuccess: () => {
+				simpleAlert('해제되었습니다.')
+				window.location.reload()
+			},
+			onError: (e) => {
+				simpleAlert(e?.data?.message ?? '해제 실패하였습니다.')
+			},
+		})
 	}
 	const globalProductResetOnClick = () => {
 		// if resetting the search field shouldn't rerender table
@@ -171,11 +180,11 @@ const PackageManage = ({}) => {
 				window.location.reload()
 			},
 			onError: (e) => {
-				redAlert(e?.data?.message)
+				simpleAlert(e?.data?.message)
 			},
 		})
 	}
-	console.log(selectProductNumber)
+
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -252,7 +261,6 @@ const PackageManage = ({}) => {
 				<Multi2
 					closeFn={(e, text) => {
 						const { tagName } = e.target
-						// console.log('TARGET :', e.target.tagName)
 						if (tagName === 'IMG') {
 							setIsPopup(false)
 						}
