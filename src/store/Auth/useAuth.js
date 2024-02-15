@@ -37,6 +37,10 @@ const useAuth = () => {
 		navigate(role === '고객사' ? '/userpage/main' : 'main', { replace: true })
 	}
 
+	const getName = () => {
+		return auth ? auth.name : null
+	}
+
 	// 로그아웃
 	const logout = () => {
 		setAuth(initAuth)
@@ -47,6 +51,7 @@ const useAuth = () => {
 	return {
 		authRouter,
 		setLogin,
+		getName,
 		logout,
 	}
 }
