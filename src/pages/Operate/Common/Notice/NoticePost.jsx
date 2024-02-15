@@ -81,11 +81,24 @@ const NoticePost = ({ title, isRegister }) => {
 	}
 
 	function onSubmit() {
-		if (id && data) {
-			update(updateParams)
-		} else {
-			register(registerParams)
+		const isUpdate = id && data
+		let totalSize = 0
+
+		isUpdate
+			? updateParams.fileList.forEach((file) => {
+					totalSize += file.size
+			  })
+			: registerParams.fileList.forEach((file) => {
+					totalSize += file.size
+			  })
+
+		totalSize = totalSize / (1024 * 1024)
+		if (totalSize > 10) {
+			return simpleAlert('업로드 최대 용량은 10MB 입니다.')
 		}
+
+		isUpdate ? update(updateParams) : register(registerParams)
+
 		setObserveClick(true)
 	}
 
