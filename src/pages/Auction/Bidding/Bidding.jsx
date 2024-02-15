@@ -39,10 +39,12 @@ import useAlert from '../../../store/Alert/useAlert'
 import Table from '../../Table/Table'
 import BiddingSearchFields from './BiddingSearchFields'
 import { auctionPackDetailNumAtom, auctionPackDetailModal } from '../../../store/Layout/Layout'
+import PackDetail from './PackDetail'
 const Bidding = ({}) => {
 	const [aucDetail, setAucDetail] = useAtom(auctionPackDetailNumAtom) // 해당 row 값 저장
-
 	const [aucDetailModal, setAucDetailModal] = useAtom(auctionPackDetailModal) // 패키지 모달
+
+	console.log('aucDetail', aucDetail)
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(userPageSingleDestiFindAtom)
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
@@ -109,10 +111,11 @@ const Bidding = ({}) => {
 	}
 
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
-	const [liveStatus, setLiveStatus] = useState('LIVEgetBidding')
+	const [liveStatus, setLiveStatus] = useState('getBidding') // TODO : 수정해놓기
 	// 전체 GET
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list
+	console.log('resData 사륜안', resData)
 	const resPagination = data?.data?.data?.pagination
 
 	useEffect(() => {
@@ -136,6 +139,8 @@ const Bidding = ({}) => {
 
 	const [winningCreateData, setWinningCreateData] = useState(init)
 
+	console.log('winningCreateData ㅆㅂ', winningCreateData)
+
 	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
 
 	console.log('auctionDestination', auctionDestination?.data?.data)
@@ -147,9 +152,9 @@ const Bidding = ({}) => {
 		setWinningCreateData((p) => ({
 			...p,
 			auctionNumber: auctionNumber,
-			type: types,
+			type: param?.type,
 		}))
-	}, [propsUid, auctionNumber, types])
+	}, [propsUid, auctionNumber, param])
 
 	const [finalInput, setFinalInput] = useState({
 		biddingPrice: null,
@@ -159,20 +164,45 @@ const Bidding = ({}) => {
 	console.log('finalInput', finalInput)
 
 	// biddingList에 들어갈 3총사를 다 넣어줌.
-	useEffect(() => {
-		const updatedProductList = checkedArray?.map((item) => ({
-			productUid: item['제품 고유 번호'],
-			biddingPrice: finalInput?.biddingPrice,
-			customerDestinationUid: finalInput?.customerDestinationUid,
-			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
-		}))
+	// useEffect(() => {
+	// 	const updatedProductList = checkedArray?.map((item) => ({
+	// 		productUid: item['제품 고유 번호'],
+	// 		packageNumber: item['패키지 번호'],
+	// 		biddingPrice: finalInput?.biddingPrice,
+	// 		customerDestinationUid: finalInput?.customerDestinationUid,
+	// 		// 여기에 다른 필요한 속성을 추가할 수 있습니다.
+	// 	}))
 
-		// winningCreateData를 업데이트하여 productList를 갱신
+	// 	// winningCreateData를 업데이트하여 productList를 갱신
+	// 	setWinningCreateData((prevData) => ({
+	// 		...prevData,
+	// 		biddingList: updatedProductList,
+	// 	}))
+	// }, [checkedArray, finalInput, types])
+
+	useEffect(() => {
+		const updatedProductList = checkedArray?.map((item) => {
+			if (param?.type === '단일') {
+				return {
+					productUid: item['제품 고유 번호'],
+					biddingPrice: finalInput?.biddingPrice,
+					customerDestinationUid: finalInput?.customerDestinationUid,
+				}
+			} else if (param?.type === '패키지') {
+				return {
+					packageNumber: item['패키지 번호'],
+					biddingPrice: finalInput?.biddingPrice,
+					customerDestinationUid: finalInput?.customerDestinationUid,
+				}
+			}
+		})
+
+		// winningCreateData를 업데이트하여 productList를 갱신합니다.
 		setWinningCreateData((prevData) => ({
 			...prevData,
 			biddingList: updatedProductList,
 		}))
-	}, [checkedArray, finalInput, types])
+	}, [checkedArray, finalInput, param])
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -299,81 +329,6 @@ const Bidding = ({}) => {
 			<CautionBox category={CAUTION_CATEGORY.auction} />
 			{exFilterToggle && (
 				<>
-					{/* <FilterSubcontianer>
-						<FilterLeft>
-							<RowWrap>
-								<PartWrap first>
-									<h6>창고 구분</h6>
-									<PWRight>
-										<MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-									</PWRight>
-								</PartWrap>
-
-								<PartWrap>
-									<h6>매입처</h6>
-									<PWRight>
-										<MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-									</PWRight>
-								</PartWrap>
-
-								<PartWrap>
-									<h6>규격 약호</h6>
-									<Input />
-									<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-										찾기
-									</GreyBtn>
-								</PartWrap>
-							</RowWrap>
-							<RowWrap none>
-								<PartWrap first>
-									<h6>구분</h6>
-									<MainSelect />
-									<MainSelect />
-								</PartWrap>
-							</RowWrap>
-							<RowWrap none>
-								<PartWrap first>
-									<h6>두께(MM)</h6>
-									<MiniInput /> <Tilde>~</Tilde>
-									<MiniInput />
-								</PartWrap>
-								<PartWrap>
-									<h6>폭(MM)</h6>
-									<MiniInput /> <Tilde>~</Tilde>
-									<MiniInput />
-								</PartWrap>
-								<PartWrap>
-									<h6>길이(MM)</h6>
-									<MiniInput /> <Tilde>~</Tilde>
-									<MiniInput />
-								</PartWrap>
-							</RowWrap>
-						</FilterLeft>
-						<FilterRight>
-							<DoubleWrap>
-								<h6>제품 번호 </h6>
-								<textarea
-									placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-								/>
-							</DoubleWrap>
-						</FilterRight>
-					</FilterSubcontianer> */}
-					{/* <FilterFooter>
-            <div style={{ display: 'flex' }}>
-              <p>초기화</p>
-              <ResetImg
-                src="/img/reset.png"
-                style={{ marginLeft: '10px', marginRight: '20px' }}
-                onClick={handleImageClick}
-                className={isRotated ? 'rotate' : ''}
-              />
-            </div>
-            <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40}>
-                검색
-              </BlackBtn>
-            </div>
-          </FilterFooter> */}
 					<GlobalProductSearch
 						param={param}
 						isToggleSeparate={true}
@@ -482,6 +437,9 @@ const Bidding = ({}) => {
 					data={auctionDestination}
 					setPropsUid={setPropsUid}
 				/>
+			)}
+			{aucDetailModal && (
+				<PackDetail aucDetail={aucDetail} packNum={aucDetail['패키지 번호']} setAucDetailModal={setAucDetailModal} />
 			)}
 		</FilterContianer>
 	)

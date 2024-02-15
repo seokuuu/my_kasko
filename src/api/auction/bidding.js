@@ -19,8 +19,13 @@ const urls = {
 // }
 
 export function getBidding(data) {
-	console.log('data', data)
 	return client.get(`${urls.bidding}/list?pageNum=${data.pageNum}&pageSize=${data.pageSize}&type=${data.type}`)
+}
+
+export function getBiddingPackDetail(data) {
+	return client.get(
+		`${urls.bidding}/list?pageNum=${data.pageNum}&pageSize=${data.pageSize}&type=${data.type}&packageNumber=${data.packageNumber}`,
+	)
 }
 
 export function postBidding(data) {
