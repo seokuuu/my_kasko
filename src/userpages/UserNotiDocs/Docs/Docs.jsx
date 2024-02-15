@@ -37,20 +37,18 @@ const Docs = () => {
 
 	const { onPageChanage } = useTablePaginationPageChange(Docs, setParam)
 
-	const [isRotated, setIsRotated] = useState(false)
 	const [getRow, setGetRow] = useState('')
 	const navigate = useNavigate()
 	const tableField = useRef(UserNoticeListFieldCols)
 	const getCol = tableField.current
 	const [fixed, setFixed] = useState([])
 	const fixedItem = Docs && Docs?.list.filter((i) => i.status !== 0)
+
 	useEffect(() => {
 		if (!title && fixedItem) {
 			setFixed(fixedItem)
 		}
-	}, [Docs, isSuccess])
-
-	const [topData, setTopData] = useState([])
+	}, [Docs])
 
 	const mappingData2 = useMemo(
 		() =>
@@ -60,7 +58,7 @@ const Docs = () => {
 						if (!d.status) {
 							return {
 								...d,
-								createDate: moment(d.createDate).format('YYYY-MM-DD'),
+								작성일자: moment(d.createDate).format('YYYY-MM-DD'),
 								// id: Docs.length, // 순번 내림차순
 								uid: d.uid,
 								title: d.title,
@@ -73,33 +71,11 @@ const Docs = () => {
 		[Docs],
 	)
 
-	useEffect(() => {
-		if (Docs) {
-			const newTopData = Docs.list.filter((d, index) => {
-				if (d.status) {
-					return {
-						...d,
-						createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
-						작성자: d.name,
-						순번: '고정',
-						고유값: d.uid,
-						제목: d.getFile ? `${d.title} 📎` : `${d.title} `,
-						조회수: d.count,
-						타입: '자료실',
-					}
-				} else {
-					return null
-				}
-			})
-			setTopData(newTopData)
-		}
-	}, [Docs])
-
 	function createData(data) {
 		var result = []
 		for (var i = 0; i < data.length; i++) {
 			result.push({
-				createDate: data[i].createDate ? moment(data[i].createDate).format('YYYY-MM-DD') : '-',
+				작성일자: data[i].createDate ? moment(data[i].createDate).format('YYYY-MM-DD HH:mm:ss') : '-',
 				작성자: data[i].name,
 				순번: '고정',
 				고유값: data[i].uid,
@@ -123,7 +99,7 @@ const Docs = () => {
 	useEffect(() => {
 		gettingRow()
 		//타입, 리액트쿼리, 데이터 확인 후 실행
-	}, [isSuccess, mappingData2])
+	}, [isSuccess, Docs])
 
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)

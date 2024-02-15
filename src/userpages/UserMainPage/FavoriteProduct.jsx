@@ -35,7 +35,7 @@ const FavoriteProduct = ({ list = null }) => {
 
 	return (
 		<>
-			<h1>선호하는 제품</h1>
+			<h1>선호 제품 관리</h1>
 			<RightSub>
 				{tabList && (
 					<MainTabs>
