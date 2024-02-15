@@ -5,6 +5,7 @@ import {
 	BlueBtnWrap,
 	BlueDateDiv,
 	BlueMainDiv,
+	BlueRadioWrap,
 	BlueSubContainer,
 	BlueSubDiv,
 	FadeOverlay,
@@ -18,17 +19,18 @@ import { useAtom } from 'jotai'
 import { blueModalAtom } from '../../store/Layout/Layout'
 
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
-import { BlueRadioWrap } from '../Common/Common.Styled'
 
 import { CheckBox } from '../../common/Check/Checkbox'
 import DateGrid from '../../components/DateGrid/DateGrid'
 
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import moment from 'moment'
-import { postAuction } from '../../api/auction/round'
+import { getAuctionTime, postAuction } from '../../api/auction/round'
 import { CheckImg2, StyledCheckSubSquDiv } from '../../common/Check/CheckImg'
 import useAlert from '../../store/Alert/useAlert'
 import { ExCheckDiv, ExCheckWrap } from '../External/ExternalFilter'
+import useReactQuery from '../../hooks/useReactQuery'
+import { client } from '../../api'
 
 const AuctionRound = ({ setRoundModal, types, refetch }) => {
 	const [isModal, setIsModal] = useAtom(blueModalAtom)
@@ -58,10 +60,6 @@ const AuctionRound = ({ setRoundModal, types, refetch }) => {
 	const [input, setInput] = useState(init)
 	const [inputB, setInputB] = useState(initB)
 
-	console.log('input <3 !!!', input)
-
-	console.log('inputBBBB <3 !!!', inputB)
-
 	const [dates, setDates] = useState({
 		insertStartDate: '',
 		insertEndDate: '',
@@ -75,8 +73,6 @@ const AuctionRound = ({ setRoundModal, types, refetch }) => {
 		endMinute: '',
 	})
 
-	console.log('times', times)
-
 	const dateHandler = (date, name) => {
 		setDates((p) => ({ ...p, [name]: date }))
 	}
@@ -85,10 +81,31 @@ const AuctionRound = ({ setRoundModal, types, refetch }) => {
 	const radioDummy = ['정기 경매', '추가 경매']
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
-	console.log('checkRadio', checkRadio)
+	const { data } = useQuery({
+		queryKey: ['getAuctionTime'],
+		queryFn: getAuctionTime,
+		cacheTime: 0,
+	})
+
+	const responseTimeData = data?.data?.data
+
+	const getFormattedTime = (startTime, endTime) => {
+		if (!startTime || !endTime) return ''
+
+		const start = moment(`${startTime}`, 'HH:mm:ss').format('HH:mm')
+		const end = moment(`${endTime}`, 'HH:mm:ss').format('HH:mm')
+		return `${start} - ${end}`
+	}
+
+	const am = getFormattedTime(responseTimeData?.amStartTime, responseTimeData?.amEndTime)
+	const pm = getFormattedTime(responseTimeData?.pmStartTime, responseTimeData?.pmEndTime)
+
+	const getText = (type, time) => (time ? `${type} 경매 (${time})` : `${type} 경매`)
+	const amText = getText('오전', am)
+	const pmText = getText('오후', pm)
 
 	//체크
-	const checkDummy = ['오전 경매', '오후 경매']
+	const checkDummy = [amText, pmText]
 	const [check1, setCheck1] = useState(Array.from({ length: checkDummy.length }, () => false))
 
 	//체크 useEffect
@@ -168,8 +185,6 @@ const AuctionRound = ({ setRoundModal, types, refetch }) => {
 			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
-
-	console.log('exception startDate:', input.insertStartDate)
 
 	const regularException = [
 		// 반복 기간 시작일과 종료일 중 하나라도 선택하지 않으면 예외처리를 해줍니다.
