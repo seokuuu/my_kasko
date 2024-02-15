@@ -74,11 +74,12 @@ const RoundSearchFields = ({
 						<RadioSearchButton
 							options={[
 								{ label: '전체', value: '' },
-								{ label: 'Y', value: true },
-								{ label: 'N', value: false },
+								{ label: '대기', value: '대기' },
+								{ label: '진행중', value: '진행중' },
+								{ label: '종료', value: '종료' },
 							]}
-							value={search.driverStatus}
-							onChange={(value) => onChange('driverStatus', value)}
+							value={search.status}
+							onChange={(value) => onChange('status', value)}
 						/>
 					</PartWrap>
 				</RowWrap>

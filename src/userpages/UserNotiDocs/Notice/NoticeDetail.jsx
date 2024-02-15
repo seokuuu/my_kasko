@@ -76,29 +76,30 @@ const NoticeDetail = () => {
 								<BottomWrap
 									style={{ height: '50%' }}
 									dangerouslySetInnerHTML={createMarkup(noticeDetails?.content)}
-								></BottomWrap>{' '}
-								<div style={{ height: '50px' }}>
-									<Bar />
-									<div style={{ display: 'flex', alignItems: 'center' }}>
-										<div style={{ width: '100px' }}>첨부 파일</div>
-										{noticeDetails &&
-											noticeDetails?.fileList.map((notice, i) => (
-												<FileUploadWrap key={i}>
-													<div>{notice.originalName}</div>
-													<button
-														onClick={() => {
-															// fileDownload(notice.fileUrl, notice.originalName)
-														}}
-													>
-														<img src="/svg/Upload.svg" alt="파일" />
-													</button>
-													{/* <a href={`${notice.fileUrl}`} download target="_blank" rel="noopener noreferrer">
-														다운로드
-													</a> */}
-												</FileUploadWrap>
-											))}
+								></BottomWrap>
+								{noticeDetails?.fileList.length ? (
+									<div style={{ height: '50px' }}>
+										<Bar />
+										<div style={{ display: 'flex', alignItems: 'center' }}>
+											<div style={{ width: '100px' }}>첨부 파일</div>
+											{noticeDetails &&
+												noticeDetails?.fileList.map((notice, i) => (
+													<FileUploadWrap key={i}>
+														<div>{notice.originalName}</div>
+														<button
+															onClick={() => {
+																fileDownload(notice.fileUrl, notice.originalName)
+															}}
+														>
+															<img src="/svg/Download.svg" alt="파일" />
+														</button>
+													</FileUploadWrap>
+												))}
+										</div>
 									</div>
-								</div>
+								) : (
+									<div></div>
+								)}
 								<FileUploadSub style={{ bottom: '-80px' }}>
 									<WhiteBtn
 										width={40}

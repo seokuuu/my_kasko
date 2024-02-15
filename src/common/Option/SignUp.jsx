@@ -10,7 +10,7 @@ export const depositOptions = [
 ]
 
 export const accountOptions = [
-	{ value: 'ask0', label: '은행 선택 ' },
+	{ value: 'ask0', label: '은행 선택' },
 	{ value: 'ask1', label: '1' },
 	{ value: 'ask2', label: '2' },
 	{ value: 'ask3', label: '3' },

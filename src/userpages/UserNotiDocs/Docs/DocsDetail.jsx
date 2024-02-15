@@ -10,6 +10,9 @@ import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/O
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
 import UserSideBar from '../../../components/Left/UserSideBar'
+
+const NcloudStorage = 'https://kr.object.ncloudstorage.com/kasko-bucket'
+
 // 클레임 등록
 const DocsDetail = () => {
 	const { uid } = useParams()
@@ -22,6 +25,30 @@ const DocsDetail = () => {
 	function createMarkup(content) {
 		return { __html: content }
 	}
+
+	async function getDataUri(url) {
+		return fetch(url)
+			.then((response) => {
+				return response.blob()
+			})
+			.then((blob) => {
+				return URL.createObjectURL(blob)
+			})
+	}
+
+	// 파일 다운로드
+	async function fileDownload(url, fileName) {
+		const entireUrl = `${NcloudStorage}${url}`
+
+		const a = document.createElement('a')
+		a.href = await getDataUri(entireUrl)
+		a.download = fileName ?? 'download'
+
+		document.body.appendChild(a)
+		a.click()
+		document.body.removeChild(a)
+	}
+
 	return (
 		<>
 			<Header />
@@ -53,10 +80,19 @@ const DocsDetail = () => {
 										<Bar />
 										<div style={{ display: 'flex', alignItems: 'center' }}>
 											<div style={{ width: '100px' }}>첨부 파일</div>
-											<FileUploadWrap>
-												<div>파일명.pdf</div>
-												<img src="/svg/Upload.svg" />
-											</FileUploadWrap>
+											{docsDetails &&
+												docsDetails?.fileList.map((docs, i) => (
+													<FileUploadWrap key={i}>
+														<div>{docs.originalName}</div>
+														<button
+															onClick={() => {
+																fileDownload(docs.fileUrl, docs.originalName)
+															}}
+														>
+															<img src="/svg/Download.svg" alt="파일" />
+														</button>
+													</FileUploadWrap>
+												))}
 										</div>
 									</div>
 								) : (

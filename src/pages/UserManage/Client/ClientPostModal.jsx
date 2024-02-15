@@ -1107,7 +1107,7 @@ const ClientPostModal = ({ setEditModal, id }) => {
 									<AccountSelect
 										name="bank"
 										options={bankList}
-										defaultValue={bankList[bankList.findIndex((item) => item.label === watch('bank')) ?? 0]}
+										defaultValue={bankList[0]}
 										value={bankList[bankList.findIndex((item) => item.label === watch('bank')) ?? 0]}
 										onChange={(selectedOption) => setBank(selectedOption.label)}
 									/>
