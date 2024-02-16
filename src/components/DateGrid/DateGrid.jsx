@@ -10,11 +10,15 @@ registerLocale('ko', ko)
 
 const DateGrid = ({ left, bgColor, fontSize, width, height, startDate, setStartDate, placeholder, isEnd = false }) => {
 	const handleDateChange = (date) => {
-		let newDate = moment(date).startOf('hour').format('YYYY-MM-DD HH:mm:ss')
-		if (isEnd) {
-			newDate = moment(date).endOf('day').format('YYYY-MM-DD HH:mm:ss')
+		if (date) {
+			let newDate = moment(date).startOf('hour').format('YYYY-MM-DD HH:mm:ss')
+			if (isEnd) {
+				newDate = moment(date).endOf('day').format('YYYY-MM-DD HH:mm:ss')
+			}
+			setStartDate(newDate)
+		} else {
+			setStartDate('')
 		}
-		setStartDate(newDate)
 	}
 	return (
 		<>

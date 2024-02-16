@@ -35,6 +35,7 @@ const ClaimRegister = () => {
 		productUid: data.productUid,
 		auctionNumber: data.orderNumber,
 		claimStatus: '진행중',
+
 		requestDate: '',
 		registrationDate: '',
 		processor: '카스코',
@@ -50,11 +51,11 @@ const ClaimRegister = () => {
 	const onSubmit = () => {
 		const param = {
 			...form,
-			requestDate: moment(form.requestDate).format('YYYY-MM-DD HH:mm:ss'),
-			registrationDate: moment(form.registrationDate).format('YYYY-MM-DD HH:mm:ss'),
-			kaskoReturnDate: moment(form.kaskoReturnDate).format('YYYY-MM-DD HH:mm:ss'),
-			hsReturnDate: moment(form.hsReturnDate).format('YYYY-MM-DD HH:mm:ss'),
-			endDate: moment(form.endDate).format('YYYY-MM-DD HH:mm:ss'),
+			requestDate: form.requestDate && moment(form.requestDate).format('YYYY-MM-DD HH:mm:ss'),
+			registrationDate: form.registrationDate && moment(form.registrationDate).format('YYYY-MM-DD HH:mm:ss'),
+			kaskoReturnDate: form.kaskoReturnDate && moment(form.kaskoReturnDate).format('YYYY-MM-DD HH:mm:ss'),
+			hsReturnDate: form.hsReturnDate && moment(form.hsReturnDate).format('YYYY-MM-DD HH:mm:ss'),
+			endDate: form.endDate && moment(form.endDate).format('YYYY-MM-DD HH:mm:ss'),
 		}
 		console.log(param)
 		createClaim(param)
