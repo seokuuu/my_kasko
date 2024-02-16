@@ -143,6 +143,9 @@ export const auctionPackDetailNumAtom = atom('')
 //패키지 상세보기 모달
 export const auctionPackDetailModal = atom(false)
 
+// 입찰 동의서 모달
+export const biddingAgreementModal = atom(true)
+
 /* ==============================
     기준 관리 (Standard)
 ================================= */

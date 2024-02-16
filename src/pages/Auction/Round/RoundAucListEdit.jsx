@@ -24,13 +24,12 @@ import {
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
-import { isArray, isEqual } from 'lodash'
+import { isEqual } from 'lodash'
 import { editAuction, getDetailAuction } from '../../../api/auction/round'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { AuctionRoundDetailFields, AuctionRoundDetailFieldsCols } from '../../../constants/admin/Auction'
-import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import useAlert from '../../../store/Alert/useAlert'
@@ -38,11 +37,9 @@ import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import RoundAucListEditFields from './RoundAucListEditFields'
 import RoundAucProAdd from './RoundAucProAdd'
-import useBlockRoute from '../../../hooks/useBlockRoute'
 
 //경매 목록 수정(단일)
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStatus }) => {
-	console.log('auctionNum zzzzzzz', auctionNum)
 	const [newResData, setNewResData] = useState([])
 	const [addAuction, setAddAuction] = useState({
 		productUid: null,
@@ -59,8 +56,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 		deleteAuctionProductList: [],
 	})
 	const { simpleAlert, simpleConfirm } = useAlert()
-
-	console.log('newResData auc prod add => ', newResData)
 
 	// const [rows, setRows] = useState('')
 	// const [list, setList] = useState([])
@@ -83,7 +78,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
-	console.log('selectedRows :', selectedRows)
+
 	// const checkedArray = useAtom(selectedRowsAtom)[0]
 
 	const paramData = {
@@ -92,8 +87,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 		auctionNumber: auctionNum,
 	}
 	const [param, setParam] = useState(paramData)
-
-	console.log('param 정몽규', param)
 
 	useEffect(() => {
 		setParam((prevParams) => ({
@@ -113,16 +106,14 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const [startPrice, setStartPrice] = useState(null)
 	const [realStartPrice, realSetStartPrice] = useState(null)
 
-	console.log('realStartPrice', realStartPrice)
-
 	const [initRow, setInitRow] = useState([])
-
-	console.log('initRow')
 
 	useEffect(() => {
 		const fetchData = async () => {
 			if (resData && Array.isArray(resData)) {
 				const newInitRow = await add_element_field(resData, AuctionRoundDetailFields)
+				console.log('newInitRow', newInitRow)
+
 				setInitRow(newInitRow)
 				setGetRow([...newResData, ...newInitRow])
 			}
@@ -155,8 +146,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 		setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
 	}, [newResData, outAddData, realStartPrice])
 
-	console.log('selectedRows ㅋㅋㅋ', selectedRows)
-
 	// 목록 제거
 	const onListRemove = () => {
 		// 제품 추가를 통해 띄워진 목록 "경매 목록 수정 TABLE에서 삭제(단순 목록에서 삭제)"
@@ -168,7 +157,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			const filteredArray = newResData.filter(
 				(item) => !selectedRows.some((checkedItem) => checkedItem['고유 번호'] === item['고유 번호']),
 			)
-			console.log('filteredArray', filteredArray)
+
 			// setNewResData(filteredArray)
 
 			const resultRemove = selectedRows
@@ -195,14 +184,10 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 		// 제품 추가된 항목 삭제 처리
 		if (outAddData) {
 			const updatedOutAddData = outAddData.filter((item) => !selectedRows.map((row) => row[newKey]).includes(item)) // add된 것들 처리
-			console.log('updatedOutAddData', updatedOutAddData)
+
 			setOutAddData(updatedOutAddData)
 		}
 	}
-	console.log('outAddData', outAddData)
-
-	console.log('nesRES', newResData)
-	console.log('editData @@@ ', editData)
 
 	const globalProductResetOnClick = () => {
 		setParam(paramData)
@@ -244,13 +229,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	// useEffect(() => {
 
 	// }, [selectedRows])
-
-	console.log(
-		'selectedRows 이강인',
-		incomingCheck?.some((item) => item === '현대제철'),
-	)
-
-	console.log('auctionStatus sub ', auctionStatus)
 
 	return (
 		<FilterContianer>
