@@ -81,32 +81,19 @@ const NoticePost = ({ title, isRegister }) => {
 	}
 
 	function onSubmit() {
-		const isUpdate = id && data
-		let totalSize = 0
-
-		isUpdate
-			? updateParams.fileList.forEach((file) => {
-					totalSize += file.size
-			  })
-			: registerParams.fileList.forEach((file) => {
-					totalSize += file.size
-			  })
-
-		totalSize = totalSize / (1024 * 1024)
-		if (totalSize > 10) {
-			return simpleAlert('업로드 최대 용량은 10MB 입니다.')
+		if (id && data) {
+			update(updateParams)
+		} else {
+			register(registerParams)
 		}
-
-		isUpdate ? update(updateParams) : register(registerParams)
-
 		setObserveClick(true)
 	}
 
 	/**
-   *@description
-   등록 핸들러
-   등록 폼 유효성 검사 및 모달 띄우기
-   */
+	 *@description
+	 등록 핸들러
+	 등록 폼 유효성 검사 및 모달 띄우기
+	 */
 	function submitHandler() {
 		if (!form.title) {
 			return simpleAlert('제목을 입력해주세요.')
@@ -123,9 +110,9 @@ const NoticePost = ({ title, isRegister }) => {
 	useBlockRoute(blockCondtion)
 
 	/**
-   @description
-   * 상세 데이터값이 있다면 form 데이터 바인딩
-   */
+	 @description
+	 * 상세 데이터값이 있다면 form 데이터 바인딩
+	 */
 	useEffect(() => {
 		if (!isRegister && id && data) {
 			setCheckRadio(Boolean(data.status) ? [true, false] : [false, true])
