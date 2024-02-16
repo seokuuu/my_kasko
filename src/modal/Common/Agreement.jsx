@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 
 import {
@@ -12,6 +12,7 @@ import {
 	AgreementMain,
 	AgreementBottom,
 	AgreementTop,
+	FadeOverlay,
 } from '../Common/Common.Styled'
 
 import { blueModalAtom } from '../../store/Layout/Layout'
@@ -23,7 +24,7 @@ import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/
 import { CheckBox } from '../../common/Check/Checkbox'
 import { styled } from 'styled-components'
 
-const Agreement = () => {
+const Agreement = ({ setAgreementModal, setCheckAgreement, agreementOnClickHandler }) => {
 	const [isModal, setIsModal] = useAtom(blueModalAtom)
 
 	const modalClose = () => {
@@ -33,17 +34,25 @@ const Agreement = () => {
 	const radioDummy = ['동의', '동의하지 않음']
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
+	useEffect(() => {
+		let agreementValue = checkRadio[0] ? 'Y' : 'N'
+		setCheckAgreement((prev) => ({
+			...prev,
+			agreement: agreementValue,
+		}))
+	}, [checkRadio])
+
 	return (
 		// 입찰 동의서
 		<div>
-			<NonFadeOverlay />
-			<ModalContainer width={800} style={{ top: '45%' }}>
-				<BlueBarHeader>
-					<div></div>
-					<div>
-						<WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
-					</div>
-				</BlueBarHeader>
+			<FadeOverlay />
+			<ModalContainer width={900} style={{ top: '48%' }}>
+				<BlueBarHeader
+					onClick={() => {
+						setAgreementModal(false)
+					}}
+					style={{ height: '40px' }}
+				></BlueBarHeader>
 				<AgreementMain>
 					<h6>입찰 동의서</h6>
 					<AgreementTop>
@@ -145,13 +154,19 @@ const Agreement = () => {
 						</div>
 					</AgreementBottom>
 					<BottomA>
-						<GreyBtn style={{ width: '180px' }} height={35} margin={15} fontSize={17}>
+						<div></div>
+						<GreyBtn
+							style={{ width: '180px' }}
+							height={35}
+							margin={25}
+							fontSize={17}
+							onClick={agreementOnClickHandler}
+							type="button"
+						>
 							확인
 						</GreyBtn>
-					</BottomA>
-					<BottomB>
 						<img src="/img/logo.png" />
-					</BottomB>
+					</BottomA>
 				</AgreementMain>
 			</ModalContainer>
 		</div>
@@ -162,14 +177,11 @@ export default Agreement
 
 const BottomA = styled.div`
 	display: flex;
-	justify-content: center;
-`
+	justify-content: space-between;
+	align-items: center;
 
-const BottomB = styled.div`
-	width: 90%;
-	margin-left: auto;
-	margin-right: auto;
-	display: flex;
-	justify-content: end;
-	padding-bottom: 20px;
+	img {
+		position: relative;
+		right: 50px;
+	}
 `

@@ -72,6 +72,7 @@ export const BlueBarHeader = styled.div`
 export const AgreementMain = styled.div`
 	background-color: #eef3fb;
 	width: 100%;
+	height: 92vh;
 
 	> h6 {
 		display: flex;
@@ -79,21 +80,21 @@ export const AgreementMain = styled.div`
 		align-items: center;
 		font-size: 24px;
 		font-weight: 600;
-		height: 80px;
+		height: 60px;
 	}
 `
 
 export const AgreementTop = styled.div`
-	padding: 15px;
 	margin-left: auto;
 	margin-right: auto;
+	padding: 10px 15px;
 	width: 90%;
 	background-color: white;
 	font-size: 16px;
 
 	> div {
 		display: flex;
-		margin: 25px;
+		margin: 15px;
 
 		h6 {
 			font-weight: 600;
@@ -130,7 +131,7 @@ export const AgreementBottom = styled.div`
 	width: 90%;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: 40px;
+	margin-top: 15px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;

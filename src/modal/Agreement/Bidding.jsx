@@ -12,6 +12,7 @@ import {
 	Agreement,
 	AgreementBottom,
 	AgreementTop,
+	AgreementMain,
 } from '../Common/Common.Styled'
 
 import { blueModalAtom } from '../../store/Layout/Layout'
@@ -44,7 +45,7 @@ const Bidding = () => {
 						<WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
 					</div>
 				</BlueBarHeader>
-				<Agreement>
+				<AgreementMain>
 					<h6>입찰 동의서</h6>
 					<AgreementTop>
 						<div>
@@ -152,7 +153,7 @@ const Bidding = () => {
 					<BottomB>
 						<img src="/img/logo.png" />
 					</BottomB>
-				</Agreement>
+				</AgreementMain>
 			</ModalContainer>
 		</div>
 	)

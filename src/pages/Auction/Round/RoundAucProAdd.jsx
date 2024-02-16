@@ -1,32 +1,16 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { BlackBtn, GreyBtn, TGreyBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { useEffect, useRef, useState } from 'react'
+import { BlackBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import {
-	CustomInput,
-	DoubleWrap,
-	ExInputsWrap,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
 	FilterTCTop,
 	FilterTopContainer,
-	Input,
-	MiniInput,
-	PWRight,
-	PartWrap,
-	ResetImg,
-	RowWrap,
 	TCSubContainer,
 	TableContianer,
-	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
 import { useAtom, useAtomValue } from 'jotai'
@@ -34,7 +18,9 @@ import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { useQueryClient } from '@tanstack/react-query'
+import { isArray, isEqual } from 'lodash'
 import { getExtraProductList } from '../../../api/auction/round'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { AuctionRoundExtraProductFields, AuctionRoundExtraProductFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -45,11 +31,9 @@ import {
 	ModalContainer,
 	WhiteCloseBtn,
 } from '../../../modal/Common/Common.Styled'
-import Table from '../../Table/Table'
-import { isArray, isEqual } from 'lodash'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import RoundAucListEditFields from './RoundAucListEditFields'
 import useAlert from '../../../store/Alert/useAlert'
+import Table from '../../Table/Table'
+import RoundAucListEditFields from './RoundAucListEditFields'
 
 // 경매 제품 추가(단일) 메인 컴포넌트
 // 경매 제품 추가 (패키지), 경매 목록 상세(종료된 경매)와 호환 가능
@@ -130,42 +114,6 @@ const RoundAucProAdd = ({
 		}
 	}, [resData])
 
-	// const resetNewResData = () => {
-	// 	setNewResData([])
-	// }
-
-	// const handleAddBtn = () => {
-	// 	if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
-	// 	else {
-	// 		simpleConfirm('선택한 항목을 추가하시겠습니까?', () =>
-	// 			checkedArray.forEach((item) => {
-	// 				console.log('item =>', item)
-	// 				setNewResData((prevData) => [...prevData, item])
-	// 				setAddModal(false)
-	// 			}),
-	// 		)
-	// 	}
-	// }
-
-	// 제품 추가
-	// const onAdd = () => {
-	// 	if (!selectedRows || selectedRows.length === 0) {
-	// 		return
-	// 	}
-
-	// 	simpleConfirm('제품을 추가하시겠습니까?', () => {
-	// 		const key = '고유 번호'
-	// 		const findKey = selectedRows.map((item) => item[key])
-	// 		console.log('findKey', findKey)
-	// 		const addData = resData?.filter((item) => findKey.includes(item.uid))
-
-	// 		console.log('addData <###', addData)
-	// 		setNewResData(addData)
-	// 		onListAdd(addData)
-	// 		setAddModal(false)
-	// 	})
-	// }
-
 	const onAdd = () => {
 		const key = '고유 번호'
 		const findKey = selectedRows.map((item) => item[key])
@@ -200,8 +148,6 @@ const RoundAucProAdd = ({
 	}
 
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
 		setParam(paramData)
 	}
 
@@ -250,98 +196,6 @@ const RoundAucProAdd = ({
 						</FilterTopContainer>
 						{exFilterToggle && (
 							<>
-								{/* <FilterSubcontianer modal style={{ height: '100%' }}>
-                  <FilterLeft>
-                    <RowWrap modal>
-                      <PartWrap first>
-                        <h6>창고 구분</h6>
-                        <PWRight>
-                          <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                        </PWRight>
-                      </PartWrap>
-                      <PartWrap>
-                        <h6>매입처 </h6>
-                        <PWRight>
-                          <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                        </PWRight>
-                      </PartWrap>
-
-                      <PartWrap modal>
-                        <h6>규격 약호</h6>
-                        <Input />
-                        <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                          찾기
-                        </GreyBtn>
-                      </PartWrap>
-                    </RowWrap>
-                    <RowWrap modal>
-                      <PartWrap first>
-                        <h6>구분</h6>
-                        <MainSelect />
-                        <MainSelect />
-                        <MainSelect />
-                        <MainSelect />
-                        <MainSelect />
-                      </PartWrap>
-                    </RowWrap>
-                    <RowWrap modal none>
-                      <PartWrap first>
-                        <h6>두께(MM)</h6>
-                        <ExInputsWrap>
-                          <MiniInput /> <Tilde>~</Tilde>
-                          <MiniInput />
-                        </ExInputsWrap>
-                      </PartWrap>
-                      <PartWrap>
-                        <h6>폭(MM)</h6>
-                        <ExInputsWrap>
-                          <MiniInput /> <Tilde>~</Tilde>
-                          <MiniInput />
-                        </ExInputsWrap>
-                      </PartWrap>
-                      <PartWrap>
-                        <h6>길이(MM)</h6>
-                        <ExInputsWrap>
-                          <MiniInput /> <Tilde>~</Tilde>
-                          <MiniInput />
-                        </ExInputsWrap>
-                      </PartWrap>
-                    </RowWrap>
-                    <RowWrap modal none>
-                      <PartWrap first>
-                        <h6>유찰 횟수</h6>
-                        <ExInputsWrap>
-                          <Input /> <Tilde>~</Tilde>
-                          <Input />
-                        </ExInputsWrap>
-                      </PartWrap>
-                    </RowWrap>
-                  </FilterLeft>
-                  <FilterRight>
-                    <DoubleWrap>
-                      <h6>제품 번호 </h6>
-                      <textarea
-                        placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                      />
-                    </DoubleWrap>
-                  </FilterRight>
-                </FilterSubcontianer>
-                <FilterFooter>
-                  <div style={{ display: 'flex' }}>
-                    <p>초기화</p>
-                    <ResetImg
-                      src="/img/reset.png"
-                      style={{ marginLeft: '10px', marginRight: '20px' }}
-                      onClick={handleImageClick}
-                      className={isRotated ? 'rotate' : ''}
-                    />
-                  </div>
-                  <div style={{ width: '180px' }}>
-                    <BlackBtn width={90} height={35}>
-                      검색
-                    </BlackBtn>
-                  </div>
-                </FilterFooter> */}
 								<GlobalProductSearch
 									param={param}
 									isToggleSeparate={true}
