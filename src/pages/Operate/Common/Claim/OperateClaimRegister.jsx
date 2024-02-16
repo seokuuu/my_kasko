@@ -40,6 +40,8 @@ const OperateClaimRegister = ({ pageType }) => {
 		spec,
 		weight,
 		maker,
+		grade,
+		preferThickness,
 	} = location.state ?? {}
 	const titleData = [
 		'제품 번호',
@@ -51,6 +53,9 @@ const OperateClaimRegister = ({ pageType }) => {
 		'규격약호',
 		'중량(kg)',
 		'매입처',
+		'등급',
+		'정척 여부',
+		'',
 	]
 
 	const contentData = ['-', '-', '-', '-', '-', '-', '-', '-', '-']
@@ -101,12 +106,12 @@ const OperateClaimRegister = ({ pageType }) => {
 	// 등록& 수정 공통 요청 PARAMETER
 	const commonParams = {
 		content: form.content,
-		requestDate: moment(form.requestDate).format('YYYY-MM-DD hh:mm:ss'),
-		registrationDate: moment(form.registrationDate).format('YYYY-MM-DD hh:mm:ss'),
+		requestDate: form.requestDate && moment(form.requestDate).format('YYYY-MM-DD hh:mm:ss'),
+		registrationDate: form.registrationDate && moment(form.registrationDate).format('YYYY-MM-DD hh:mm:ss'),
 		processor: form.processor,
-		kaskoReturnDate: moment(form.kaskoReturnDate).format('YYYY-MM-DD hh:mm:ss'),
-		hsReturnDate: moment(form.hsReturnDate).format('YYYY-MM-DD hh:mm:ss'),
-		endDate: moment(form.endDate).format('YYYY-MM-DD hh:mm:ss'),
+		kaskoReturnDate: form.kaskoReturnDate && moment(form.kaskoReturnDate).format('YYYY-MM-DD hh:mm:ss'),
+		hsReturnDate: form.hsReturnDate && moment(form.hsReturnDate).format('YYYY-MM-DD hh:mm:ss'),
+		endDate: form.endDate && moment(form.endDate).format('YYYY-MM-DD hh:mm:ss'),
 		fileList: form.file,
 		claimStatus: form.claimStatus.label.trim(),
 		auctionNumber,
@@ -167,7 +172,19 @@ const OperateClaimRegister = ({ pageType }) => {
 	useEffect(() => {
 		// 등록시 데이터 바인딩
 		if (pageType === 'register') {
-			const newContentsData = [productNumber, registerDate, updateDate, thickness, width, length, spec, weight, maker]
+			const newContentsData = [
+				productNumber,
+				registerDate,
+				updateDate,
+				thickness,
+				width,
+				length,
+				spec,
+				weight,
+				maker,
+				grade,
+				preferThickness,
+			]
 
 			setContents({ title: maker, content: newContentsData })
 		}
@@ -204,11 +221,11 @@ const OperateClaimRegister = ({ pageType }) => {
 			setForm((p) => ({
 				...p,
 				content: detailsData.content,
-				requestDate: moment(detailsData.requestDate).toDate(),
-				registrationDate: moment(detailsData.registrationDate).toDate(),
-				kaskoReturnDate: moment(detailsData.kaskoReturnDate).toDate(),
-				hsReturnDate: moment(detailsData.hsReturnDate).toDate(),
-				endDate: moment(detailsData.endDate).toDate(),
+				requestDate: detailsData.requestDate && moment(detailsData.requestDate).toDate(),
+				registrationDate: detailsData.registrationDate && moment(detailsData.registrationDate).toDate(),
+				kaskoReturnDate: detailsData.kaskoReturnDate && moment(detailsData.kaskoReturnDate).toDate(),
+				hsReturnDate: detailsData.hsReturnDate && moment(detailsData.hsReturnDate).toDate(),
+				endDate: detailsData.endDate && moment(detailsData.endDate).toDate(),
 				existFile,
 				processor,
 				claimStatus,
@@ -230,7 +247,7 @@ const OperateClaimRegister = ({ pageType }) => {
 						<ClaimContent style={{ width: '50%' }}>{contents.title}</ClaimContent>
 					</ClaimRow>
 					<ClaimTable>
-						{[0, 1, 2].map((index) => (
+						{[0, 1, 2, 3].map((index) => (
 							<ClaimRow key={index}>
 								{titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
 									<Fragment agmentkey={title}>
