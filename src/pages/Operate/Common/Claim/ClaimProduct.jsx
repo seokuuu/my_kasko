@@ -74,6 +74,8 @@ const ClaimProduct = () => {
 				spec: selectedData[0]['규격 약호'],
 				weight: selectedData[0]['중량'],
 				maker: selectedData[0]['매입처'],
+				grade: selectedData[0]['제품등급'],
+				preferThickness: selectedData[0]['정척 여부'],
 			},
 		})
 	}
