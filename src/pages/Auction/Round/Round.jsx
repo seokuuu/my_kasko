@@ -40,20 +40,9 @@ const Round = ({}) => {
 	const [editPage, setEditPage] = useAtom(auctionRoundEditPageAtom)
 	const [types, setTypes] = useState('단일')
 
-	console.log('types', types)
 	const radioDummy = ['전체', '미진행', '진행중', '종료']
 	const radioDummy2 = ['불량', '제외 요청', '기타 사유']
-	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-	const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, (_, index) => index === 0))
 
-	const [savedRadioValue, setSavedRadioValue] = useState('')
-
-	const handleSelectChange = (selectedOption, name) => {
-		// setInput(prevState => ({
-		//   ...prevState,
-		//   [name]: selectedOption.label,
-		// }));
-	}
 	const [isRotated, setIsRotated] = useState(false)
 
 	// Function to handle image click and toggle rotation
@@ -80,8 +69,6 @@ const Round = ({}) => {
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom2)[0]
 
-	console.log('checkedArray', checkedArray)
-
 	const initialParamState = {
 		pageNum: 1,
 		pageSize: 50,
@@ -91,7 +78,6 @@ const Round = ({}) => {
 	const [originalRow, setOriginalRow] = useState([]) //원본 row를 저장해서 radio check에러 막기
 
 	const [param, setParam] = useState(initialParamState)
-	console.log('param !@#', param)
 	const [tablePagination, setTablePagination] = useState([])
 
 	useEffect(() => {
@@ -102,8 +88,6 @@ const Round = ({}) => {
 	}, [types])
 
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'auction', getAuction)
-
-	console.log('isLoading', isLoading)
 
 	// useEffect(() => {
 	// 	if (isSuccess) refetch()
@@ -132,7 +116,6 @@ const Round = ({}) => {
 	const matchingData = resData?.find((data) => data.uid === uidAtom)
 	const auctionNum = matchingData?.number
 	const auctionStatus = matchingData?.status
-	console.log('auctionStatus', auctionStatus)
 
 	// const 임의의UID = 22 //임의의 uid값 * 현재 에러나옴
 	// const mutation = useMutationQuery('auction', () => deleteAuction(임의의UID))
@@ -201,7 +184,6 @@ const Round = ({}) => {
 		})
 	}
 
-	console.log('types', types)
 	return (
 		<>
 			{editPage ? (
