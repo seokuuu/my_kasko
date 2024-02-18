@@ -32,12 +32,8 @@ const BiddingSearchFields = ({
 	const {
 		// prettier-ignore
 		storageList,
-		supplierList,
 		spartList,
-		makerList,
-		stockStatusList,
 		gradeList,
-		preferThicknessList,
 	} = useGlobalProductSearchFieldData()
 
 	const init = {
@@ -48,8 +44,6 @@ const BiddingSearchFields = ({
 	}
 	const [param, setParam] = useState(init)
 	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
-
-	console.log('param', param)
 
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
 
@@ -63,22 +57,10 @@ const BiddingSearchFields = ({
 						<PWRight>
 							<MainSelect
 								options={storageList}
-								// defaultValue={storageList[0]}
+								defaultValue={storageList[0]}
 								value={search.storage}
 								name="storage"
 								onChange={(e) => commonDropdownButtonHandler(e, 'storage')}
-							/>
-						</PWRight>
-					</PartWrap>
-					<PartWrap>
-						<h6>매입처</h6>
-						<PWRight>
-							<MainSelect
-								options={supplierList}
-								defaultValue={supplierList[0]}
-								value={search.supplier}
-								name="supplier"
-								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
 							/>
 						</PWRight>
 					</PartWrap>
@@ -105,11 +87,11 @@ const BiddingSearchFields = ({
 						{/* 제품군 */}
 						<PWRight>
 							<MainSelect
-								options={supplierList}
-								defaultValue={supplierList[0]}
-								value={search.supplier}
-								name="supplier"
-								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
+								options={spartList}
+								defaultValue={spartList[0]}
+								value={search.spart}
+								name="spart"
+								onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
 							/>
 							<MainSelect
 								options={gradeList}
