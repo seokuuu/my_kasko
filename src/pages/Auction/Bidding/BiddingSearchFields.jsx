@@ -7,15 +7,13 @@ import {
 	FilterRight,
 	Input,
 	MiniInput,
-	PWRight,
 	PartWrap,
+	PWRight,
 	RowWrap,
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
 import { useState } from 'react'
-import { CustomerSearch, DateSearchSelect } from '../../../components/Search'
-import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
 import { GreyBtn } from '../../../common/Button/Button'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
