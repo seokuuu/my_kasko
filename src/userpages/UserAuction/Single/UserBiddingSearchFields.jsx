@@ -94,8 +94,8 @@ const UserBiddingSearchFields = ({
 								{ label: '응찰', value: '응찰' },
 								{ label: '미응찰', value: '미응찰' },
 							]}
-							value={search.driverStatus}
-							onChange={(value) => onChangeRadio('driverStatus', value)}
+							value={search.biddingStatus}
+							onChange={(value) => onChangeRadio('biddingStatus', value)}
 						/>
 					</PartWrap>
 				</RowWrap>
