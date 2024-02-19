@@ -48,7 +48,6 @@ export const faqOptions = [
 	{ value: 'ask2', label: '상시판매' },
 	{ value: 'ask3', label: '입금' },
 	{ value: 'ask4', label: '출고' },
-	{ value: 'ask4', label: '약관' },
 	{ value: 'ask4', label: '기타' },
 ]
 
