@@ -31,12 +31,8 @@ const UserBiddingSearchFields = ({
 	const {
 		// prettier-ignore
 		storageList,
-		supplierList,
 		spartList,
-		makerList,
-		stockStatusList,
 		gradeList,
-		preferThicknessList,
 	} = useGlobalProductSearchFieldData()
 
 	const init = {
@@ -52,11 +48,7 @@ const UserBiddingSearchFields = ({
 		setSearch((p) => ({ ...p, [key]: value }))
 	}
 
-	console.log('param', param)
-
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
-
-	console.log('search.driverStatus', search.driverStatus)
 
 	return (
 		<>
@@ -68,22 +60,10 @@ const UserBiddingSearchFields = ({
 						<PWRight>
 							<MainSelect
 								options={storageList}
-								// defaultValue={storageList[0]}
+								defaultValue={storageList[0]}
 								value={search.storage}
 								name="storage"
 								onChange={(e) => commonDropdownButtonHandler(e, 'storage')}
-							/>
-						</PWRight>
-					</PartWrap>
-					<PartWrap>
-						<h6>매입처</h6>
-						<PWRight>
-							<MainSelect
-								options={supplierList}
-								defaultValue={supplierList[0]}
-								value={search.supplier}
-								name="supplier"
-								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
 							/>
 						</PWRight>
 					</PartWrap>
@@ -110,9 +90,9 @@ const UserBiddingSearchFields = ({
 						<RadioSearchButton
 							options={[
 								{ label: '전체', value: '' },
-								{ label: '미응찰', value: '미응찰' },
 								{ label: '관심제품', value: '관심제품' },
 								{ label: '응찰', value: '응찰' },
+								{ label: '미응찰', value: '미응찰' },
 							]}
 							value={search.driverStatus}
 							onChange={(value) => onChangeRadio('driverStatus', value)}
@@ -124,14 +104,13 @@ const UserBiddingSearchFields = ({
 					{/* 구분 */}
 					<PartWrap first>
 						<h6>구분</h6>
-						{/* 제품군 */}
 						<PWRight>
 							<MainSelect
-								options={supplierList}
-								defaultValue={supplierList[0]}
-								value={search.supplier}
-								name="supplier"
-								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
+								options={spartList}
+								defaultValue={spartList[0]}
+								value={search.spart}
+								name="spart"
+								onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
 							/>
 							<MainSelect
 								options={gradeList}

@@ -6,6 +6,7 @@ import { queryClient } from '../query'
 const urls = {
 	bidding: 'auction',
 	bid: 'auction/bid',
+	agreement: '/admin/auction/agreement',
 }
 
 // TODO
@@ -14,13 +15,16 @@ const urls = {
 // pageNum: 1
 // pageSize: 50
 // type: 단일
-// export function getBidding(data) {
-// 	return client.get(urls.bidding, { params: data })
-// }
 
+// productNumberList 오류가 남
 export function getBidding(data) {
-	return client.get(`${urls.bidding}/list?pageNum=${data.pageNum}&pageSize=${data.pageSize}&type=${data.type}`)
+	console.log('응찰 목록 data', data)
+	return client.get(`${urls.bidding}/list`, { params: data })
 }
+
+// export function getBidding(data) {
+// 	return client.get(`${urls.bidding}/list?pageNum=${data.pageNum}&pageSize=${data.pageSize}&type=${data.type}`)
+// }
 
 export function getBiddingPackDetail(data) {
 	return client.get(
@@ -28,6 +32,18 @@ export function getBiddingPackDetail(data) {
 	)
 }
 
+// 응찰
 export function postBidding(data) {
 	return client.post(urls.bid, data)
+}
+
+// 입찰 동의 내역 등록
+export function postAgreement(data) {
+	console.log('data 클린스만', data)
+	return client.post(urls.agreement, data)
+}
+
+//입찰 동의 여부 체크
+export function getAgreement(data) {
+	return client.get(`${urls.agreement}/list?auctionNumber=${data.auctionNumber}}`)
 }

@@ -13,8 +13,8 @@ const useGlobalProductSearchFieldData = () => {
 	const storageList = useMemo(
 		() =>
 			storage
-				? [{ label: '전체', value: '', address: null }, ...storage.map((item) => ({ ...item, value: item.label }))]
-				: [{ label: '전체', value: '', address: null }],
+				? [{ label: '창고', value: '', address: null }, ...storage.map((item) => ({ ...item, value: item.label }))]
+				: [{ label: '창고', value: '', address: null }],
 		[storage],
 	)
 
@@ -38,7 +38,7 @@ const useGlobalProductSearchFieldData = () => {
 	// 제조사 목록
 	const makerList = [
 		{
-			label: '제조사',
+			label: '제품군',
 			value: '',
 		},
 		{

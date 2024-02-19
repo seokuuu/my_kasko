@@ -1,49 +1,23 @@
 import { useEffect, useRef, useState } from 'react'
-import { BlackBtn, GreyBtn, SkyBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
-
-import {
-	DoubleWrap,
-	ExRadioWrap,
-	FilterAlterTxt,
-	FilterContianer,
-	FilterFooter,
-	FilterHeader,
-	FilterHeaderAlert,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
-	GridWrap,
-	Input,
-	PartWrap,
-	ResetImg,
-	RowWrap,
-	TableContianer,
-	TCSubContainer,
-	Tilde,
-} from '../../../modal/External/ExternalFilter'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 
 import { useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
+import { isEqual } from 'lodash'
 import { getWinning } from '../../../api/auction/winning'
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
-import DateGrid from '../../../components/DateGrid/DateGrid'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { AuctionWinningFields, AuctionWinningFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../../pages/Table/Table'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import ProgressSearchFields from '../../../pages/Auction/Progress/ProgressSearchFields'
-import { isEqual } from 'lodash'
 import UserWinningSearchFields from './UserWinningSearchFields'
-import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 
 const Winning = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])

@@ -163,7 +163,7 @@ import PlusBtnUploader from './modal/Upload/components/PlusBtnUploader'
 import SingleRegiUploader from './modal/Upload/components/SingleRegiUploader'
 import PackageDetailModal from './modal/Multi/PackageDetailModal'
 import PopupComponent from './pages/Operate/Exposure/Popup/PopupComponent'
-
+import Agreement from './modal/Common/Agreement'
 const Router = () => {
 	const auth = useAtomValue(authAtom)
 	console.log('로그인 정보 : ', auth)
@@ -171,7 +171,7 @@ const Router = () => {
 		<Routes>
 			{/* 테스트 URL */}
 			<Route path="/popup2" element={<PopupComponent />} />
-			<Route path="/ppap" element={<SingleRegiUploader />} />
+			<Route path="/ppap" element={<Agreement />} />
 			<Route path="/TableTest" element={<TableTest />} />
 			<Route path="/test" element={<Test />} />
 			<Route path="/test2" element={<Test2 />} />
