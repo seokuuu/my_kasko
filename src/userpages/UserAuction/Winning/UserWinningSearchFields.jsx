@@ -1,14 +1,6 @@
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import {
-	ExInputsWrap,
-	FilterLeft,
-	FilterRight,
-	Input,
-	PWRight,
-	PartWrap,
-	RowWrap,
-} from '../../../modal/External/ExternalFilter'
+import { FilterLeft, FilterRight, PartWrap, PWRight, RowWrap } from '../../../modal/External/ExternalFilter'
 
 import { useState } from 'react'
 import { CustomerSearch, DateSearchSelect, RadioSearchButton } from '../../../components/Search'
@@ -19,18 +11,10 @@ const UserWinningSearchFields = ({
 	search,
 	setSearch,
 	commonDropdownButtonHandler,
-	commonNumInputHandler,
-	onSpecHandler,
 }) => {
 	const {
 		// prettier-ignore
 		storageList,
-		supplierList,
-		spartList,
-		makerList,
-		stockStatusList,
-		gradeList,
-		preferThicknessList,
 	} = useGlobalProductSearchFieldData()
 
 	/**
@@ -82,7 +66,6 @@ const UserWinningSearchFields = ({
 				</RowWrap>
 				<RowWrap>
 					<CustomerSearch search={search} setSearch={setSearch} />
-					{/* driverStatus 수정하기 !! */}
 					<PartWrap first>
 						<h6>진행 상태</h6>
 						<RadioSearchButton
@@ -92,8 +75,8 @@ const UserWinningSearchFields = ({
 								{ label: '낙찰 취소', value: '낙찰 취소' },
 								{ label: '낙찰 확정', value: '낙찰 확정' },
 							]}
-							value={search.driverStatus}
-							onChange={(value) => onChange('driverStatus', value)}
+							value={search.biddingStatus}
+							onChange={(value) => onChange('biddingStatus', value)}
 						/>
 					</PartWrap>
 				</RowWrap>
