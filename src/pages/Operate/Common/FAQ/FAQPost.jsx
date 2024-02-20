@@ -25,11 +25,10 @@ const FAQPost = ({ detailsId }) => {
 	const initForm = {
 		title: '',
 		content: '',
-		category: '',
+		category: faqOptions[0],
 	}
 	// 등록 폼
 	const [form, setForm] = useState(initForm)
-	console.log('form :', form)
 	// 확인 모달 관련 값들
 	const { simpleConfirm, simpleAlert } = useAlert()
 	// FAQ 등록 API
