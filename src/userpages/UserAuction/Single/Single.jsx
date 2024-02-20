@@ -406,7 +406,7 @@ const Single = ({}) => {
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown handleTablePageSize={handleTablePageSize} />
+						<PageDropdown handleDropdown={handleTablePageSize} />
 						<Excel getRow={getRow} />
 						<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
 					</div>

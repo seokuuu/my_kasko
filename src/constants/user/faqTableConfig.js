@@ -1,4 +1,4 @@
-export const categories = ['경매', '상시판매', '입금', '약관', '출고', '기타']
+export const categories = ['경매', '상시판매', '입금', '출고', '기타']
 
 export const corLabels = [
 	{ headerClass: 'custom-header-style', field: '순번', maxWidth: 100, cellStyle: { textAlign: 'center' } },
