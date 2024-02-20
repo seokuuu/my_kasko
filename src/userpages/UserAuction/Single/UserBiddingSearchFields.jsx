@@ -14,11 +14,11 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { GreyBtn } from '../../../common/Button/Button'
 import StandardFind from '../../../modal/Multi/StandardFind'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
-import { RadioSearchButton } from '../../../components/Search'
+import { ProductNumberListSearch, RadioSearchButton } from '../../../components/Search'
 
 const UserBiddingSearchFields = ({
 	// prettier-ignore
@@ -35,14 +35,7 @@ const UserBiddingSearchFields = ({
 		gradeList,
 	} = useGlobalProductSearchFieldData()
 
-	const init = {
-		customerCode: '',
-		customerName: '',
-		destinationCode: '',
-		destinationName: '',
-	}
-	const [param, setParam] = useState(init)
-	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
+	const onChange = (key, value) => setSearch((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
 
 	const onChangeRadio = (key, value) => {
 		setSearch((p) => ({ ...p, [key]: value }))
@@ -60,7 +53,7 @@ const UserBiddingSearchFields = ({
 						<PWRight>
 							<MainSelect
 								options={storageList}
-								defaultValue={storageList[0]}
+								// defaultValue={storageList[0]}
 								value={search.storage}
 								name="storage"
 								onChange={(e) => commonDropdownButtonHandler(e, 'storage')}
@@ -189,11 +182,15 @@ const UserBiddingSearchFields = ({
 			</FilterLeft>
 			{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
 			<FilterRight>
-				<ProductNumber
-					initialValue={search.productNumberList}
-					setState={setSearch}
-					valueName={'productNumberList'}
-					height="100%"
+				{/*<ProductNumber*/}
+				{/*	initialValue={search.productNumberList}*/}
+				{/*	setState={setSearch}*/}
+				{/*	valueName={'productNumberList'}*/}
+				{/*	height="100%"*/}
+				{/*/>*/}
+				<ProductNumberListSearch
+					value={search.productNumberList}
+					onChange={(e) => onChange('productNumberList', e.target.value)}
 				/>
 			</FilterRight>
 		</>
