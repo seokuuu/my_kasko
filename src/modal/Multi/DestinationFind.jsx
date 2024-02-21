@@ -30,6 +30,8 @@ const DestinationFind = ({ setSwitch, handleButtonOnClick }) => {
 	const [result, setResult] = useState([]) // 목적지 get data
 	const [error, setError] = useState(false) // 목적지 get data
 
+	console.log('AAA 혁님 만든거', result)
+
 	const modalClose = () => {
 		setSwitch(false)
 	}

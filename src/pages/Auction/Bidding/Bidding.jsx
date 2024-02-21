@@ -41,6 +41,7 @@ import { auctionPackDetailModal, auctionPackDetailNumAtom, biddingAgreementModal
 import Table from '../../Table/Table'
 import BiddingSearchFields from './BiddingSearchFields'
 import PackDetail from './PackDetail'
+import { getDestinations } from '../../../api/search'
 const Bidding = ({}) => {
 	const navigate = useNavigate()
 	const [aucDetail, setAucDetail] = useAtom(auctionPackDetailNumAtom) // 해당 row 값 저장
@@ -127,7 +128,9 @@ const Bidding = ({}) => {
 
 	const [winningCreateData, setWinningCreateData] = useState(init)
 
-	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
+	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getDestinations)
+
+	console.log('auctionDestination. bidding 목적지', auctionDestination)
 
 	//
 	useEffect(() => {
@@ -150,13 +153,19 @@ const Bidding = ({}) => {
 			if (param?.type === '단일') {
 				return {
 					productUid: item['제품 고유 번호'],
-					biddingPrice: finalInput?.biddingPrice,
+					biddingPrice:
+						item['응찰가'] === 0
+							? item['시작가'] + finalInput?.biddingPrice
+							: item['응찰가'] + finalInput?.biddingPrice,
 					customerDestinationUid: finalInput?.customerDestinationUid,
 				}
 			} else if (param?.type === '패키지') {
 				return {
 					packageNumber: item['패키지 번호'],
-					biddingPrice: finalInput?.biddingPrice,
+					biddingPrice:
+						item['응찰가'] === 0
+							? item['시작가'] + finalInput?.biddingPrice
+							: item['응찰가'] + finalInput?.biddingPrice,
 					customerDestinationUid: finalInput?.customerDestinationUid,
 				}
 			}
@@ -366,6 +375,10 @@ const Bidding = ({}) => {
 							onClick={() => {
 								setFinalInput((prevFinalInput) => ({
 									...prevFinalInput,
+									customerDestinationUid: destiObject && destiObject.uid,
+								}))
+								setValues((p) => ({
+									...p,
 									customerDestinationUid: destiObject && destiObject.uid,
 								}))
 							}}

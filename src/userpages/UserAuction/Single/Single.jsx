@@ -38,6 +38,7 @@ import AddWishButton from '../../UserSales/_components/AddWishButton'
 import UserBiddingSearchFields from './UserBiddingSearchFields'
 
 const Single = ({}) => {
+	const [checkedBiddingPrice, setCheckedBiddingPrice] = useState(null) // 체크된 응찰가
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const radioDummy = ['전체', '미응찰', '관심제품', '응찰']
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
@@ -81,7 +82,7 @@ const Single = ({}) => {
 
 	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
 
-	console.log('auctionDestination', auctionDestination?.data?.data)
+	console.log('auctionDestination Single 목적지', auctionDestination?.data?.data)
 
 	const [customerData, setCustomerData] = useState()
 	const [propsUid, setPropsUid] = useState(null)
@@ -110,7 +111,7 @@ const Single = ({}) => {
 	}
 	const [param, setParam] = useState(paramData)
 
-	const [liveStatus, setLiveStatus] = useState('LIVEgetBidding')
+	const [liveStatus, setLiveStatus] = useState('getBidding') // LIVE 추가
 
 	// 체크박스 클릭시 재렌더 이슈
 	// useEffect(() => {
@@ -163,7 +164,8 @@ const Single = ({}) => {
 	useEffect(() => {
 		const updatedProductList = checkedArray?.map((item) => ({
 			productUid: item['제품 고유 번호'],
-			biddingPrice: finalInput?.biddingPrice,
+			biddingPrice:
+				item['응찰가'] === 0 ? item['시작가'] + finalInput?.biddingPrice : item['응찰가'] + finalInput?.biddingPrice,
 			customerDestinationUid: finalInput?.customerDestinationUid,
 			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
 		}))
@@ -233,6 +235,7 @@ const Single = ({}) => {
 	const [values, setValues] = useState({})
 	const [valueDesti, setValueDesti] = useState()
 
+	// 응찰가 직접 입력
 	const onCellValueChanged = (params) => {
 		const p = params.data
 		console.log('바뀌는 값 확인', p['제품 고유 번호'])
@@ -253,7 +256,6 @@ const Single = ({}) => {
 	}, [values])
 
 	console.log('values <33', values)
-
 	console.log('winningCreateData <33', winningCreateData)
 
 	/* ==================== 관심상품 등록 start ==================== */
@@ -275,6 +277,31 @@ const Single = ({}) => {
 	})
 	/* ==================== 관심상품 등록 end ==================== */
 
+	// 목적지 적용 버튼 handler
+	const destiOnClickHandler = () => {
+		simpleAlert('적용 되었습니다.', () => {
+			setFinalInput((prevFinalInput) => ({
+				...prevFinalInput,
+				customerDestinationUid: destiObject && destiObject.uid,
+			}))
+			setValues((p) => ({
+				...p,
+				customerDestinationUid: destiObject && destiObject.uid,
+			}))
+		})
+	}
+
+	// 응찰가 Table Cell Input
+	const handleCheckboxChange = (event, rowData) => {
+		if (event.target.checked) {
+			// 체크된 경우 해당 응찰가 값을 상태에 저장
+			setCheckedBiddingPrice(rowData?.biddingPrice || null)
+		} else {
+			// 체크가 해제된 경우 상태 초기화
+			setCheckedBiddingPrice(null)
+		}
+	}
+
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -294,108 +321,12 @@ const Single = ({}) => {
 			<CautionBox category={CAUTION_CATEGORY.auction} />
 			{exFilterToggle && (
 				<>
-					{/* <FilterSubcontianer>
-						<FilterLeft>
-							<RowWrap>
-								<PartWrap first>
-									<h6>창고 구분</h6>
-									<PWRight>
-										<MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-									</PWRight>
-								</PartWrap>
-
-								<PartWrap>
-									<h6>매입처</h6>
-									<PWRight>
-										<MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-									</PWRight>
-								</PartWrap>
-
-								<PartWrap>
-									<h6>규격 약호</h6>
-									<Input />
-									<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-										찾기
-									</GreyBtn>
-								</PartWrap>
-							</RowWrap>
-							<RowWrap>
-								<PartWrap first>
-									<h6>조회 구분</h6>
-									<ExRadioWrap>
-										{radioDummy.map((text, index) => (
-											<RadioMainDiv key={index}>
-												<RadioCircleDiv
-													isChecked={checkRadio[index]}
-													onClick={() => {
-														setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-													}}
-												>
-													<RadioInnerCircleDiv isChecked={checkRadio[index]} />
-												</RadioCircleDiv>
-												<div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
-											</RadioMainDiv>
-										))}
-									</ExRadioWrap>
-								</PartWrap>
-							</RowWrap>
-							<RowWrap style={{ borderBottom: '0px' }}>
-								<PartWrap first>
-									<h6>구분</h6>
-									<MainSelect />
-									<span style={{ margin: '0px -10px 0px 5px' }}>~</span>
-									<MainSelect />
-								</PartWrap>
-							</RowWrap>
-							<RowWrap none>
-								<PartWrap first>
-									<h6>두께(MM)</h6>
-									<MiniInput /> <Tilde>~</Tilde>
-									<MiniInput />
-								</PartWrap>
-								<PartWrap>
-									<h6>폭(MM)</h6>
-									<MiniInput /> <Tilde>~</Tilde>
-									<MiniInput />
-								</PartWrap>
-								<PartWrap>
-									<h6>길이(MM)</h6>
-									<MiniInput /> <Tilde>~</Tilde>
-									<MiniInput />
-								</PartWrap>
-							</RowWrap>
-						</FilterLeft>
-						<FilterRight>
-							<DoubleWrap>
-								<h6>제품 번호 </h6>
-								<textarea
-									placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-								/>
-							</DoubleWrap>
-						</FilterRight>
-					</FilterSubcontianer>
-					<FilterFooter>
-						<div style={{ display: 'flex' }}>
-							<p>초기화</p>
-							<ResetImg
-								src="/img/reset.png"
-								style={{ marginLeft: '10px', marginRight: '20px' }}
-								onClick={handleImageClick}
-								className={isRotated ? 'rotate' : ''}
-							/>
-						</div>
-						<div style={{ width: '180px' }}>
-							<BlackBtn width={100} height={40}>
-								검색
-							</BlackBtn>
-						</div>
-					</FilterFooter> */}
 					<GlobalProductSearch
 						param={param}
 						isToggleSeparate={true}
-						renderCustomSearchFields={(props) => <UserBiddingSearchFields {...props} />} // 만들어야함 -> WinningSearchFields
-						globalProductSearchOnClick={globalProductSearchOnClick} // import
-						globalProductResetOnClick={globalProductResetOnClick} // import
+						renderCustomSearchFields={(props) => <UserBiddingSearchFields {...props} />}
+						globalProductSearchOnClick={globalProductSearchOnClick}
+						globalProductResetOnClick={globalProductResetOnClick}
 					/>
 				</>
 			)}
@@ -449,17 +380,17 @@ const Single = ({}) => {
 							찾기
 						</TWhiteBtn>
 						<TGreyBtn
-							onClick={() => {
-								setFinalInput((prevFinalInput) => ({
-									...prevFinalInput,
-									customerDestinationUid: destiObject && destiObject.uid,
-								}))
-
-								setValues((p) => ({
-									...p,
-									customerDestinationUid: destiObject && destiObject.uid,
-								}))
-							}}
+							// onClick={() => {
+							// 	setFinalInput((prevFinalInput) => ({
+							// 		...prevFinalInput,
+							// 		customerDestinationUid: destiObject && destiObject.uid,
+							// 	}))
+							// 	setValues((p) => ({
+							// 		...p,
+							// 		customerDestinationUid: destiObject && destiObject.uid,
+							// 	}))
+							// }}
+							onClick={destiOnClickHandler}
 						>
 							적용
 						</TGreyBtn>
@@ -483,7 +414,6 @@ const Single = ({}) => {
 							onClick={() => {
 								setFinalInput((p) => ({
 									...p,
-
 									biddingPrice: winningCreateInput?.biddingPrice,
 								}))
 							}}

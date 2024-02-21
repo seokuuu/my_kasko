@@ -62,7 +62,9 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum }) => {
 	useEffect(() => {
 		const updatedProductList = checkedArray?.map((item) => ({
 			packageNumber: item['패키지 번호'],
-			biddingPrice: finalInput?.biddingPrice,
+			// biddingPrice: finalInput?.biddingPrice,
+			biddingPrice:
+				item['응찰가'] === 0 ? item['시작가'] + finalInput?.biddingPrice : item['응찰가'] + finalInput?.biddingPrice,
 			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
 		}))
 
