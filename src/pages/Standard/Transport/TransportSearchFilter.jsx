@@ -1,17 +1,8 @@
-import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import {
-	ExInputsWrap,
-	FilterLeft,
-	FilterRight,
-	Input,
-	PWRight,
-	PartWrap,
-	RowWrap,
-} from '../../../modal/External/ExternalFilter'
+import { FilterLeft, FilterRight, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
 
-import React, { useState } from 'react'
-import { DateSearchSelect, DestinationSearch, RadioSearchButton } from '../../../components/Search'
+import React from 'react'
+import { DateSearchSelect, InputSearch } from '../../../components/Search'
 import { MainSelect } from '../../../common/Option/Main'
 
 const TransportSearchFilter = ({
@@ -21,7 +12,7 @@ const TransportSearchFilter = ({
 	commonDropdownButtonHandler,
 }) => {
 	const {
-		// prettier-ignore
+		// prettier-ignoreø
 		storageList,
 		spartList,
 	} = useGlobalProductSearchFieldData()
@@ -44,13 +35,20 @@ const TransportSearchFilter = ({
 							onChange={(e) => onChange('storage', e)}
 						/>
 					</PartWrap>
-					<DestinationSearch
-						short={true}
-						name={search.destinationName}
-						code={search.destinationCode}
-						setName={(value) => onChange('destinationName', value)}
-						setCode={(value) => onChange('destinationCode', value)}
-					/>
+					<PartWrap>
+						<InputSearch
+							title={'목적지'}
+							value={search.destinationName}
+							onChange={(value) => onChange('destinationName', value)}
+						/>
+					</PartWrap>
+					{/*<DestinationSearch*/}
+					{/*	short={true}*/}
+					{/*	name={search.destinationName}*/}
+					{/*	code={search.destinationCode}*/}
+					{/*	setName={(value) => onChange('destinationName', value)}*/}
+					{/*	setCode={(value) => onChange('destinationCode', value)}*/}
+					{/*/>*/}
 					<PartWrap>
 						<DateSearchSelect
 							title={'적용 일자'}

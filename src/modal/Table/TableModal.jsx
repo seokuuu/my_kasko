@@ -87,7 +87,7 @@ const TableModal = ({
 		// 재고 관리 - 판매 구분 변경
 		<>
 			<FadeOverlay />
-			<ModalContainer style={{ zIndex: '9999' }} width={850}>
+			<ModalContainer style={{ zIndex: '9999' }} width={title === '운반비 수정' ? 1250 : 850}>
 				<BlueBarHeader>
 					<div>{title}</div>
 					<div>
@@ -100,14 +100,14 @@ const TableModal = ({
 							<Table>
 								<thead>
 									<tr>
-										{Object.keys(filteredRow)?.map((key) => (
+										{Object.keys(title === '운반비 수정' ? matchingRow : filteredRow)?.map((key) => (
 											<Th key={key}>{key}</Th>
 										))}
 									</tr>
 								</thead>
 								<tbody>
 									<tr>
-										{Object.entries(filteredRow)?.map(([key, value], index) => (
+										{Object.entries(title === '운반비 수정' ? matchingRow : filteredRow)?.map(([key, value], index) => (
 											<Td key={index}>
 												{modalInTable[key] === 'input' ? (
 													<Input
