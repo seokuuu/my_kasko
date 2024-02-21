@@ -271,6 +271,19 @@ const Transport = () => {
 			effectDate: moment(startDate).format('YYYY-MM-DD'),
 		}
 
+		if (!postData.destinationName) {
+			simpleAlert('목적지를 선택해주세요.')
+			return
+		}
+		if (!postData.storage) {
+			simpleAlert('출발지를 선택해주세요.')
+			return
+		}
+		if (!postData.spart) {
+			simpleAlert('제품군을 선택해주세요.')
+			return
+		}
+
 		postMutation.mutate(postData, {
 			onSuccess: () => {
 				setModalSwitch(false)
