@@ -64,16 +64,14 @@ export function deleteAdminTransportation(id) {
 }
 // 운반비 관리 - 단가 일괄 수정 'PATCH"
 export const editAdminUnitCost = (params) => {
-	console.log('params', params)
-	client.patch(URL.UnitCost, params)
+	return client.patch(URL.UnitCost, params)
 }
 
 // 운반비 관리 - 대량 등록 "POST"
 export const postExcelAdminTransportation = async (params) => {
 	const form = new FormData()
 	form.append('excel', params.file)
-	form.append('type', params.type)
-	return await client.post(`${URL.Transportation}/excel`, form, { headers: formHeaders })
+	return await client.post(`${URL.Transportation}/v2/excel`, form, { headers: formHeaders })
 }
 
 /* ==============================

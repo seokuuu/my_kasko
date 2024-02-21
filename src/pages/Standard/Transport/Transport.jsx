@@ -64,9 +64,11 @@ import {
 	editAdminUnitCost,
 	getAdminTransportation,
 	postAdminTransportation,
+	postExcelAdminTransportation,
 } from '../../../service/admin/Standard'
 import useAlert from '../../../store/Alert/useAlert'
 import TransportSearchFilter from './TransportSearchFilter'
+import { queryClient } from '../../../api/query'
 
 const Transport = () => {
 	const [modalSwitch, setModalSwitch] = useAtom(destiPostModalAtom)
@@ -99,8 +101,7 @@ const Transport = () => {
 	const tableField = useRef(StandardTransportationFieldsCols)
 	const originEngRowField = StandardTransportationFields
 	const getCol = tableField.current
-	const queryClient = useQueryClient()
-	const checkedArray = useAtom(selectedRowsAtom)[0]
+	const [checkedArray, setCheckedArray] = useAtom(selectedRowsAtom)
 	const uids = checkedArray?.map((item) => item['운반비 고유 번호'])
 	const [types, setTypes] = useState(0) // 매입 매출 구분 (0: 매입 / 1: 매출)
 
@@ -114,15 +115,22 @@ const Transport = () => {
 		},
 		[unitPriceEdit],
 	)
+
 	const unitPriceEditDate = moment(startDate2).format('YYYY-MM-DD')
+
 	const unitPriceEditOnClick = () => {
 		// resData 배열을 순회하며 조건에 맞는 객체를 찾고 수정
+		if (!uids || uids?.length === 0) {
+			simpleAlert('적용할 운반비를 선택해주세요.')
+			return
+		}
 		if (!unitPriceEdit) {
 			simpleAlert('적용할 퍼센트를 입력해주세요.')
 			return
 		}
+
 		const updatedResData = resData.map((item) => {
-			if (item.effectDate === unitPriceEditDate) {
+			if (uids.includes(item.uid)) {
 				// unitPriceEdit.percent에 따라 증가 또는 감소
 				const percentage = parseFloat(unitPriceEdit) / 100
 
@@ -130,13 +138,14 @@ const Transport = () => {
 					checkRadio[0] === true
 						? item.effectCost + item?.effectCost * percentage
 						: item.effectCost - item?.effectCost * percentage
+
 				// 변경된 값이 있는 경우에만 realUnitPriceEdit에 추가
 				if (item.effectCost !== updatedEffectCost) {
 					setRealUnitPriceEdit((prev) => [
 						...prev,
 						{
 							uid: item.uid,
-							effectDate: item.effectDate,
+							effectDate: unitPriceEditDate,
 							effectCost: updatedEffectCost,
 						},
 					])
@@ -144,6 +153,7 @@ const Transport = () => {
 
 				// 원본 객체의 effectCost 수정
 				item.effectCost = updatedEffectCost
+				item.effectDate = unitPriceEditDate
 			}
 			return item
 		})
@@ -152,24 +162,20 @@ const Transport = () => {
 		setGetRow(add_element_field(updatedResData, StandardTransportationFields))
 	}
 
-	const updateList = realUnitPriceEdit.map((item) => ({
-		uid: item.uid,
-		effectDate: item.effectDate,
-		effectCost: item.effectCost,
-	}))
-
-	const finalResult = {
-		updateList: realUnitPriceEdit.map((item) => {
-			return {
-				uid: item.uid,
-				effectDate: item.effectDate,
-				effectCost: item.effectCost,
-			}
-		}),
-	}
-
 	const editCostMutation = useMutation(editAdminUnitCost)
+
+	// 적용단가 전체 저장
 	const costEdit = () => {
+		const finalResult = {
+			type: types,
+			updateList: realUnitPriceEdit.map((item) => {
+				return {
+					uid: item.uid,
+					effectDate: item.effectDate,
+					effectCost: item.effectCost,
+				}
+			}),
+		}
 		if (finalResult.updateList.length === 0) {
 			simpleAlert('일괄 수정할 단가를 적용해주세요.')
 			return
@@ -179,6 +185,8 @@ const Transport = () => {
 				onSuccess: () => {
 					simpleAlert('수정되었습니다.')
 					queryClient.invalidateQueries('transportation')
+					setRealUnitPriceEdit([])
+					setCheckedArray([])
 				},
 				onError: (error) => {
 					simpleAlert(error?.data?.message || '일괄 단가 수정을 실패했습니다. 다시 시도해 주세요.')
@@ -549,6 +557,8 @@ const Transport = () => {
 					convertKey={convertKey}
 					startDate={startDate}
 					setStartDate={setStartDate}
+					excelUploadAPI={postExcelAdminTransportation}
+					refreshQueryKey={'transportation'}
 				/>
 			)}
 		</FilterContianer>
