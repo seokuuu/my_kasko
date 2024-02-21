@@ -41,7 +41,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { getBidding, postBidding } from '../../../api/auction/bidding'
 import { getAuctionDestination } from '../../../api/auction/winning'
-import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constants/admin/Auction'
+import {
+	AuctionBiddingFields,
+	AuctionBiddingFieldsCols,
+	AuctionPackageBiddingFieldsCols,
+} from '../../../constants/admin/Auction'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -140,7 +144,7 @@ const Single = ({}) => {
 		let getData = resData
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, AuctionBiddingFields))
+			setGetRow(add_element_field(getData, AuctionPackageBiddingFieldsCols))
 			setTablePagination(resPagination)
 		}
 	}, [isSuccess, resData])
