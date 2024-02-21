@@ -172,6 +172,14 @@ const SingleUploader = ({
 											onEditHandler(e)
 										}}
 									/>
+								) : value === 'destinationName' && key === '목적지' ? (
+									<Input
+										type="text"
+										name="destinationName"
+										onChange={(e) => {
+											setAddress(e.target.value)
+										}}
+									/>
 								) : value === 'destipostbutton' ? (
 									<>
 										<WhiteSkyBtn
