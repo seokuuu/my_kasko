@@ -103,8 +103,6 @@ const Destination = ({}) => {
 
 	const [editInput, setEditInput] = useState({ name: address, note: '' })
 
-	console.log('editInput', editInput)
-
 	// DATA
 	const resData = data?.data?.data?.list
 
