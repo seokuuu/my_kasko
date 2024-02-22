@@ -31,11 +31,11 @@ const paramData = {
 	pageSize: 50,
 }
 
-const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
+const Client = ({ postModal, setPostModal }) => {
 	const { simpleAlert, redAlert } = useAlert()
 	const queryClient = useQueryClient()
 	const exFilterToggle = useAtomValue(toggleAtom)
-	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
+	const uidAtom = useAtomValue(btnCellUidAtom)
 	const [editModal, setEditModal] = useAtom(usermanageClientEdit)
 	const [selectedValue, setSelectedValue] = useState('') // 경매 제한 상태
 	const checkedArray = useAtom(selectedRowsAtom)[0]
@@ -45,7 +45,7 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
 	const [auctionModal, setAuctionModal] = useAtom(AuctionRestrictionModal)
 
 	const [getRow, setGetRow] = useState([])
-	console.log('getRow @@@@', getRow)
+
 	const [tablePagination, setPagination] = useState([])
 
 	const { isLoading, data, isSuccess, refetch } = useReactQuery(param, 'getClient', getCustomer)
@@ -94,8 +94,6 @@ const Client = ({ setChoiceComponent, setModal, postModal, setPostModal }) => {
 		setSelectedValue(selected['회원 제한 상태'])
 		setAuctionModal(true)
 	}
-
-	console.log('selectedValue', selectedValue)
 
 	// 회원 제안 수정
 	const clientRestrict = async () => {

@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { authAtom, initAuth } from './auth'
 import { useNavigate } from 'react-router-dom'
 import useAlert from '../Alert/useAlert'
+import { queryClient } from '../../api/query'
 
 const useAuth = () => {
 	const { showAlert } = useAlert()
@@ -46,6 +47,7 @@ const useAuth = () => {
 		setAuth(initAuth)
 		localStorage.removeItem('accessToken')
 		navigate('/', { replace: true })
+		queryClient.resetQueries()
 	}
 
 	return {
