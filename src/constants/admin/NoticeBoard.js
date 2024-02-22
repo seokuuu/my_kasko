@@ -3,15 +3,16 @@
 ============================== */
 
 import { checkboxSelection, headerCheckboxSelection } from '../../pages/Table/util'
+import { commonStyles } from './Auction'
 
 // 전광판 관리 목록 헤더
 export const NoticeBoardListFieldCols = [
-	{ field: '', checkboxSelection, headerCheckboxSelection, maxWidth: 50, headerClass: 'custom-header-style' },
-	{ field: '순번', maxWidth: 100, headerClass: 'custom-header-style' },
-	{ field: '제목', minWidth: 250, headerClass: 'custom-header-style' },
-	{ field: '노출여부', maxWidth: 150, headerClass: 'custom-header-style' },
-	{ field: '작성일자', minWidth: 450, headerClass: 'custom-header-style' },
-	{ field: '작성자', minWidth: 450, headerClass: 'custom-header-style' },
+	{ field: '', checkboxSelection, headerCheckboxSelection, maxWidth: 50, ...commonStyles },
+	{ field: '순번', maxWidth: 100, ...commonStyles },
+	{ field: '제목', minWidth: 300, ...commonStyles },
+	{ field: '노출여부', maxWidth: 150, ...commonStyles },
+	{ field: '작성일자', minWidth: 450, ...commonStyles },
+	{ field: '작성자', minWidth: 200, ...commonStyles },
 ]
 
 // 전광판 관리 목록 키값 맵핑

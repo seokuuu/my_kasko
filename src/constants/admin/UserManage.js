@@ -1,4 +1,5 @@
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
+import { commonStyles } from './Auction'
 
 var checkboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping
@@ -23,24 +24,22 @@ export const UserManageCustomerManageFields = {
 	대표자: 'ceoName',
 	고객사유형: 'businessType',
 	연락처: 'phone',
-	창고: 'storage',
-	'운송사 명': 'transportName',
 	'승인 여부': 'approvalStatus',
 	'회원 제한 상태': 'auctionStatus',
 }
 //고객사 관리 cols
 export const UserManageCustomerManageFieldsCols = [
 	{
+		...commonStyles,
 		field: '',
-		maxWidth: 50,
-		headerClass: 'custom-header-style',
+		minWidth: 50,
 		checkboxSelection: checkboxSelection,
 		headerCheckboxSelection: headerCheckboxSelection,
 	},
 	{
+		...commonStyles,
 		field: '수정',
-		maxWidth: 90,
-		headerClass: 'custom-header-style',
+		minWidth: 90,
 		cellRenderer: BtnCellRenderer,
 		cellRendererParams: {
 			uidFieldName: '고객 구분',
@@ -49,74 +48,64 @@ export const UserManageCustomerManageFieldsCols = [
 	},
 
 	{
+		...commonStyles,
 		field: '순번',
 		minWidth: 100,
-		headerClass: 'custom-header-style',
 	}, //숫자
 	{
+		...commonStyles,
 		field: '사용자 구분',
-		minWidth: 100,
-		headerClass: 'custom-header-style',
+		minWidth: 150,
 	},
 	{
+		...commonStyles,
 		field: '회원 상태',
 		minWidth: 100,
-		headerClass: 'custom-header-style',
 	},
 	{
+		...commonStyles,
 		field: '고객사 아이디',
 		minWidth: 200,
-		headerClass: 'custom-header-style',
 	},
 	{
+		...commonStyles,
 		field: '고객사 명',
 		minWidth: 200,
-		headerClass: 'custom-header-style',
 	},
 	{
+		...commonStyles,
 		field: '고객 코드',
 		minWidth: 100,
-		headerClass: 'custom-header-style',
 	},
 	{
+		...commonStyles,
 		field: '사업자번호',
-		minWidth: 100,
-		headerClass: 'custom-header-style',
+		minWidth: 150,
 	},
 	{
+		...commonStyles,
 		field: '대표자',
 		minWidth: 100,
-		headerClass: 'custom-header-style',
 	},
 	{
+		...commonStyles,
 		field: '고객사유형',
-		minWidth: 100,
-		headerClass: 'custom-header-style',
+		minWidth: 150,
 	},
 	{
+		...commonStyles,
 		field: '연락처',
 		minWidth: 100,
-		headerClass: 'custom-header-style',
 	},
 	{
-		field: '창고',
-		minWidth: 100,
-		headerClass: 'custom-header-style',
-	},
-	{
-		field: '운송사 명',
-		minWidth: 100,
-		headerClass: 'custom-header-style',
-	},
-	{
+		...commonStyles,
 		field: '승인 여부',
 		minWidth: 100,
-		headerClass: 'custom-header-style',
 	},
 	{
+		...commonStyles,
 		field: '회원 제한 상태',
-		minWidth: 100,
-		headerClass: 'custom-header-style',
+		minWidth: 150,
 	},
 ]
 
@@ -131,7 +120,7 @@ export const UserManageCustomerDestinationManageFields = {
 	주소: 'address',
 	'상세 주소': 'addressDetail',
 	'하차지 명': 'name',
-	'하자치 특이사항 (비고)': 'memo',
+	비고: 'memo',
 	'하차지 연락처': 'phone',
 	하차지담당자: 'managerName',
 	'하차지담당자 연락처': 'managerPhone',
@@ -141,67 +130,67 @@ export const UserManageCustomerDestinationManageFields = {
 // 사용자 목적지 관리 Cols
 export const UserManageCustomerDestinationManageFieldsCols = [
 	{
-		headerClass: 'custom-header-style',
+		...commonStyles,
 		field: '',
-		maxWidth: 50,
+		minWidth: 50,
 		checkboxSelection: checkboxSelection,
 		headerCheckboxSelection: headerCheckboxSelection,
 	},
 	{
-		headerClass: 'custom-header-style',
+		...commonStyles,
 		field: '수정',
-		maxWidth: 90,
+		minWidth: 90,
 		cellRenderer: BtnCellRenderer,
 		cellRendererParams: {
 			uidFieldName: '목적지 고유 번호',
 			editType: 'userPageDestination',
 		},
 	},
-	{ headerClass: 'custom-header-style', field: '대표여부', minWidth: 100 }, //숫자
+	{ ...commonStyles, field: '대표여부', minWidth: 100 }, //숫자
 	{
-		headerClass: 'custom-header-style',
+		...commonStyles,
 		field: '고객명',
 		minWidth: 150,
 	},
 	{
-		headerClass: 'custom-header-style',
+		...commonStyles,
 		field: '고객 코드',
 		minWidth: 150,
 	},
-	{ headerClass: 'custom-header-style', field: '목적지 명', minWidth: 200 },
-	{ headerClass: 'custom-header-style', field: '목적지 코드', minWidth: 100 },
-	{ headerClass: 'custom-header-style', field: '주소', minWidth: 100 },
-	{ headerClass: 'custom-header-style', field: '상세 주소', minWidth: 100 },
-	{ headerClass: 'custom-header-style', field: '하차지 명', minWidth: 100 },
-	{ headerClass: 'custom-header-style', field: '하자치 특이사항 (비고)' },
+	{ ...commonStyles, field: '목적지 명', minWidth: 200 },
+	{ ...commonStyles, field: '목적지 코드', minWidth: 100 },
+	{ ...commonStyles, field: '주소', minWidth: 100 },
+	{ ...commonStyles, field: '상세 주소', minWidth: 100 },
+	{ ...commonStyles, field: '하차지 명', minWidth: 100 },
+	{ ...commonStyles, field: '비고', minWidth: 100 },
 	{
-		headerClass: 'custom-header-style',
+		...commonStyles,
 		field: '하차지 연락처',
 		minWidth: 200,
 	},
 	{
-		headerClass: 'custom-header-style',
+		...commonStyles,
 		field: '하차지담당자',
-		minWidth: 100,
+		minWidth: 200,
 	},
 	{
-		headerClass: 'custom-header-style',
+		...commonStyles,
 		field: '하차지담당자 연락처',
-		minWidth: 100,
+		minWidth: 200,
 	},
 ]
 export const adminCustomerDestinationManageFieldsCols = [
 	{
+		...commonStyles,
 		field: '',
-		maxWidth: 50,
-		headerClass: 'custom-header-style',
+		minWidth: 50,
 		checkboxSelection: checkboxSelection,
 		headerCheckboxSelection: headerCheckboxSelection,
 	},
 	{
+		...commonStyles,
 		field: '수정',
-		maxWidth: 90,
-		headerClass: 'custom-header-style',
+		minWidth: 90,
 		cellRenderer: BtnCellRenderer,
 		cellRendererParams: {
 			uidFieldName: '목적지 고유 번호',
@@ -209,38 +198,38 @@ export const adminCustomerDestinationManageFieldsCols = [
 		},
 	},
 
-	{ headerClass: 'custom-header-style', field: '승인여부', minWidth: 100 }, //숫자
-	{ headerClass: 'custom-header-style', field: '대표여부', minWidth: 100 }, //숫자
+	{ ...commonStyles, field: '승인여부', minWidth: 100 }, //숫자
+	{ ...commonStyles, field: '대표여부', minWidth: 100 }, //숫자
 	{
-		headerClass: 'custom-header-style',
+		...commonStyles,
 		field: '고객명',
 		minWidth: 150,
 	},
 	{
-		headerClass: 'custom-header-style',
+		...commonStyles,
 		field: '고객 코드',
 		minWidth: 150,
 	},
-	{ headerClass: 'custom-header-style', field: '목적지 명', minWidth: 200 },
-	{ headerClass: 'custom-header-style', field: '목적지 코드', minWidth: 100 },
-	{ headerClass: 'custom-header-style', field: '주소', minWidth: 100 },
-	{ headerClass: 'custom-header-style', field: '상세 주소', minWidth: 100 },
-	{ headerClass: 'custom-header-style', field: '하차지 명', minWidth: 100 },
-	{ headerClass: 'custom-header-style', field: '하자치 특이사항 (비고)' },
+	{ ...commonStyles, field: '목적지 명', minWidth: 200 },
+	{ ...commonStyles, field: '목적지 코드', minWidth: 100 },
+	{ ...commonStyles, field: '주소', minWidth: 200 },
+	{ ...commonStyles, field: '상세 주소', minWidth: 100 },
+	{ ...commonStyles, field: '하차지 명', minWidth: 100 },
+	{ ...commonStyles, field: '비고', minWidth: 100 },
 	{
-		headerClass: 'custom-header-style',
+		...commonStyles,
 		field: '하차지 연락처',
 		minWidth: 200,
 	},
 	{
-		headerClass: 'custom-header-style',
+		...commonStyles,
 		field: '하차지담당자',
-		minWidth: 100,
+		minWidth: 200,
 	},
 	{
-		headerClass: 'custom-header-style',
+		...commonStyles,
 		field: '하차지담당자 연락처',
-		minWidth: 100,
+		minWidth: 200,
 	},
 ]
 export const UserManageFields = {
@@ -254,14 +243,14 @@ export const UserManageFieldsCols = [
 	{
 		field: '',
 		maxWidth: 50,
-		headerClass: 'custom-header-style',
+		...commonStyles,
 		checkboxSelection: checkboxSelection,
 		headerCheckboxSelection: headerCheckboxSelection,
 	},
 	{
 		field: '수정',
 		maxWidth: 90,
-		headerClass: 'custom-header-style',
+		...commonStyles,
 		cellRenderer: BtnCellRenderer,
 		cellRendererParams: {
 			uidFieldName: '순번',
@@ -271,27 +260,27 @@ export const UserManageFieldsCols = [
 	{
 		field: '순번',
 		maxWidth: 100,
-		headerClass: 'custom-header-style',
+		...commonStyles,
 	},
 	{
 		field: '이름',
 		minWidth: 100,
-		headerClass: 'custom-header-style',
+		...commonStyles,
 	}, //숫자
 	{
 		field: '아이디',
 		minWidth: 100,
-		headerClass: 'custom-header-style',
+		...commonStyles,
 	},
 	{
 		field: '관리자 분류',
 		minWidth: 100,
-		headerClass: 'custom-header-style',
+		...commonStyles,
 	},
 	{
 		field: '가입 일시',
 		minWidth: 200,
-		headerClass: 'custom-header-style',
+		...commonStyles,
 	},
 ]
 
