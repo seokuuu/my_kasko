@@ -8,7 +8,6 @@ var headerCheckboxSelection = function (params) {
 	return params.columnApi.getRowGroupColumns().length === 0
 }
 
-
 export const StockIncomingFields = [
 	{
 		field: '',
@@ -78,30 +77,6 @@ export const StockIncomingFields = [
 		cellRenderer: (params) => params.value || 'N',
 	},
 	{
-		headerName: '매입구분',
-		field: '매입 구분',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 90,
-		cellRenderer: (params) => params.value || 'N',
-	},
-	{
-		headerName: '제품군',
-		field: '제품군',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 107,
-		cellRenderer: (params) => params.value || 'N',
-	},
-	{
-		headerName: '재고상태',
-		field: '재고 상태',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 110,
-		cellRenderer: (params) => params.value || '-',
-	},
-	{
 		headerName: '매입처',
 		field: '매입처',
 		headerClass: 'custom-header-style',
@@ -115,6 +90,14 @@ export const StockIncomingFields = [
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		width: 110,
+		cellRenderer: (params) => params.value || 'N',
+	},
+	{
+		headerName: '제품군',
+		field: '제품군',
+		headerClass: 'custom-header-style',
+		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+		width: 107,
 		cellRenderer: (params) => params.value || 'N',
 	},
 	{

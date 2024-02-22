@@ -32,20 +32,9 @@ const ProgressSearchFields = ({
 	const {
 		// prettier-ignore
 		storageList,
-		supplierList,
 		spartList,
-		makerList,
-		stockStatusList,
 		gradeList,
-		preferThicknessList,
 	} = useGlobalProductSearchFieldData()
-
-	// const init = {
-	// 	customerCode: '',
-	// 	customerName: '',
-	// 	destinationCode: '',
-	// 	destinationName: '',
-	// }
 
 	const init = {
 		pageNum: 1,
@@ -57,8 +46,6 @@ const ProgressSearchFields = ({
 		setSearch((p) => ({ ...p, [key]: value }))
 	}
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
-
-	console.log('param !@# here', param)
 
 	return (
 		<>
@@ -104,11 +91,11 @@ const ProgressSearchFields = ({
 						{/* 제품군 */}
 						<PWRight>
 							<MainSelect
-								options={supplierList}
-								defaultValue={supplierList[0]}
-								value={search.supplier}
-								name="supplier"
-								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
+								options={spartList}
+								defaultValue={spartList[0]}
+								value={search.spart}
+								name="spart"
+								onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
 							/>
 							<MainSelect
 								options={gradeList}

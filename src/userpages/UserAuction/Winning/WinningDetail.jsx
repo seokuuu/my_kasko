@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
-import React, { useState, Fragment, useEffect, useRef } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import { BtnBound, TGreyBtn, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { BtnBound, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -10,30 +10,20 @@ import {
 	FilterContianer,
 	FilterHeader,
 	FilterTCTop,
-	TCSubContainer,
 	TableContianer,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
-import Test3 from '../../../pages/Test/Test3'
-import {
-	blueModalAtom,
-	invenDestination,
-	invenDestinationData,
-	selectedRowsAtom,
-	toggleAtom,
-} from '../../../store/Layout/Layout'
+import { invenDestination, invenDestinationData, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
-
-import { TableWrap } from '../../../components/MapTable/MapTable'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { getDestinationFind } from '../../../api/search'
 import { destiApproveReq, getWinningDetail } from '../../../api/auction/winning'
-import { AuctionWinningDetailFields, AuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
+import { UserAuctionWinningDetailFields, UserAuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import Table from '../../../pages/Table/Table'
-import useMutationQuery from '../../../hooks/useMutationQuery'
 import PrintDepositRequestButton from '../../UserSales/_components/PrintDepositRequestButton'
 import useAlert from '../../../store/Alert/useAlert'
 
@@ -111,7 +101,7 @@ const WinningDetail = ({ detailRow }) => {
 	}
 
 	const [getRow, setGetRow] = useState('')
-	const tableField = useRef(AuctionWinningDetailFieldsCols)
+	const tableField = useRef(UserAuctionWinningDetailFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
@@ -125,19 +115,21 @@ const WinningDetail = ({ detailRow }) => {
 	const [input, setInput] = useState(init)
 
 	const [detailParams, setDetailParams] = useState({
-		// pageNum: 1,
-		// pageSize: 50,
-		// auctionNumber: '',
-		// storage: '',
-		// customerDestinationUid: '',
-		// biddingStatus: '',
 		pageNum: 1,
 		pageSize: 50,
-		auctionNumber: '2024010211',
-		storage: '우성',
-		customerDestinationUid: '165',
-		biddingStatus: '낙찰 취소',
 	})
+
+	useEffect(() => {
+		setDetailParams((prev) => ({
+			...prev,
+			auctionNumber: detailRow['경매 번호'],
+			storage: detailRow['창고'],
+			customerDestinationUid: detailRow['고객사 목적지 고유 번호'],
+			biddingStatus: detailRow['낙찰 상태'],
+		}))
+	}, [detailRow])
+
+	console.log('detailParams', detailParams)
 
 	const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
 
@@ -158,7 +150,7 @@ const WinningDetail = ({ detailRow }) => {
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, AuctionWinningDetailFields))
+			setGetRow(add_element_field(getData, UserAuctionWinningDetailFields))
 			setTablePagination(resPagination)
 		}
 	}, [isSuccess, resData])

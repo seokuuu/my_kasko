@@ -417,6 +417,11 @@ const Table = ({
 
 	useEffect(() => {}, [gridRef])
 
+	const updateSelectedBids = (newValue) => {
+		const updatedRows = selectedRows.map((row) => ({ ...row, 응찰가: newValue }))
+		gridApi.applyTransaction({ update: updatedRows })
+	}
+
 	const effectiveGridOptions = parentGridOptions || gridOptions
 	const effectiveOnSelectionChanged = parentOnSelectionChanged || onSelectionChanged
 	const effectGridReady = parentOngridReady || onGridReady
