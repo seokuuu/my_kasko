@@ -126,7 +126,7 @@ const WinningDetail = ({ detailRow }) => {
 
 	const [detailParams, setDetailParams] = useState({
 		pageNum: 1,
-		pageSize: 50,sd
+		pageSize: 50,
 	})
 
 	useEffect(() => {
