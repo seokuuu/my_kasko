@@ -157,12 +157,12 @@ export const UserManageCustomerDestinationManageFieldsCols = [
 		field: '고객 코드',
 		minWidth: 150,
 	},
-	{ ...commonStyles, field: '목적지 명', minWidth: 200 },
-	{ ...commonStyles, field: '목적지 코드', minWidth: 100 },
-	{ ...commonStyles, field: '주소', minWidth: 100 },
-	{ ...commonStyles, field: '상세 주소', minWidth: 100 },
-	{ ...commonStyles, field: '하차지 명', minWidth: 100 },
-	{ ...commonStyles, field: '비고', minWidth: 100 },
+	{ ...commonStyles, field: '목적지 명', minWidth: 250 },
+	{ ...commonStyles, field: '목적지 코드', minWidth: 150 },
+	{ ...commonStyles, field: '주소', minWidth: 300 },
+	{ ...commonStyles, field: '상세 주소', minWidth: 150 },
+	{ ...commonStyles, field: '하차지 명', minWidth: 150 },
+	{ ...commonStyles, field: '비고', minWidth: 200 },
 	{
 		...commonStyles,
 		field: '하차지 연락처',
@@ -300,8 +300,9 @@ export const UserPageUserPreferFields = {
 	비고: '',
 }
 export const UserPageUserPreferFieldsCols = [
-	{ field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
+	{ field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection, ...commonStyles },
 	{
+		...commonStyles,
 		field: '수정',
 		maxWidth: 90,
 		cellRenderer: BtnCellRenderer,
@@ -310,20 +311,14 @@ export const UserPageUserPreferFieldsCols = [
 			editType: 'userprefer',
 		},
 	},
-	{
-		field: '선호제품 명',
-	},
-	{ field: '두께(mm)', minWidth: 100, cellStyle: { textAlign: 'center' } }, //숫자
-	{ field: '폭(mm)', minWidth: 100 },
-	{ field: '길이(mm)', minWidth: 100 },
-	{ field: '규격약호', minWidth: 100 }, //숫자
-	{ field: 'TS', minWidth: 50 },
-	{ field: 'C%', minWidth: 50 },
-	{ field: 'EL', minWidth: 50 },
-	{ field: 'YP', minWidth: 50 },
-	{
-		field: '비고',
-		minWidth: 300,
-		cellStyle: { textAlign: 'center' },
-	},
+	{ field: '선호제품 명', minWidth: 200, ...commonStyles },
+	{ field: '두께(mm)', minWidth: 100, ...commonStyles }, //숫자
+	{ field: '폭(mm)', minWidth: 100, ...commonStyles },
+	{ field: '길이(mm)', minWidth: 100, ...commonStyles },
+	{ field: '규격약호', minWidth: 150, ...commonStyles }, //숫자
+	{ field: 'TS', minWidth: 50, ...commonStyles },
+	{ field: 'C%', minWidth: 50, ...commonStyles },
+	{ field: 'EL', minWidth: 50, ...commonStyles },
+	{ field: 'YP', minWidth: 50, ...commonStyles },
+	{ field: '비고', minWidth: 300, ...commonStyles },
 ]
