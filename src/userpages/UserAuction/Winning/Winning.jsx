@@ -13,7 +13,7 @@ import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { AuctionWinningFields, AuctionWinningFieldsCols } from '../../../constants/admin/Auction'
+import { AuctionWinningFields, UserAuctionWinningFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../../pages/Table/Table'
@@ -81,7 +81,7 @@ const Winning = ({}) => {
 	const [param, setParam] = useState(paramData)
 
 	const [getRow, setGetRow] = useState('')
-	const tableField = useRef(AuctionWinningFieldsCols)
+	const tableField = useRef(UserAuctionWinningFieldsCols)
 	const getCol = tableField.current
 
 	const queryClient = useQueryClient()
