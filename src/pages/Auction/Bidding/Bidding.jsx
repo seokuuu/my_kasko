@@ -26,7 +26,7 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isEqual } from 'lodash'
-import { getBidding, postAgreement, postBidding } from '../../../api/auction/bidding'
+import { getAgreement, getBidding, postAgreement, postBidding } from '../../../api/auction/bidding'
 import { getAuctionDestination } from '../../../api/auction/winning'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
@@ -53,7 +53,7 @@ const Bidding = ({}) => {
 	const [agreementModal, setAgreementModal] = useAtom(biddingAgreementModal) // 입찰 동의서 모달
 
 	const [checkAgreement, setCheckAgreement] = useState({
-		auctionNumber: '2024021601',
+		auctionNumber: '',
 		agreement: '',
 	})
 
@@ -94,7 +94,8 @@ const Bidding = ({}) => {
 	const [destiObject, setDestiObject] = useState() //
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
-	const uids = checkedArray?.map((item) => item['제품 번호'])
+	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
+	const uids = checkedArrayState?.map((item) => item['제품 번호'])
 	const [tablePagination, setTablePagination] = useState([])
 	const paramData = {
 		pageNum: 1,
@@ -117,14 +118,39 @@ const Bidding = ({}) => {
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list
 	console.log('resData 사륜안', resData)
+
+	// const filteredAucNum = resData && resData.map((x) => x['auctionNumber'])
+	// const checkAgreeAucNum = filteredAucNum && filteredAucNum[0]
+
+	// useEffect(() => {}, [checkAgreeAucNum])
+
+	const [realAucNum, setRealAucNum] = useState(null)
+
+	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
+
+	useEffect(() => {
+		setAgreementModal(!getAgreementData?.data?.data)
+	}, [getAgreementData])
+
+	// 입찰 동의 여부 체크 (true는 확인)
+	const agreementStatus = getAgreementData?.data?.data
+	console.log('agreementStatus', !agreementStatus)
+
 	const resPagination = data?.data?.data?.pagination
 
 	useEffect(() => {
 		let getData = resData
+		const filteredAucNum = resData && resData.map((x) => x['auctionNumber'])
+		const checkAgreeAucNum = filteredAucNum && filteredAucNum[0]
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
 			setGetRow(add_element_field(getData, AuctionBiddingFields))
 			setTablePagination(resPagination)
+			setRealAucNum(checkAgreeAucNum)
+			setCheckAgreement((prev) => ({
+				...prev,
+				auctionNumber: checkAgreeAucNum,
+			}))
 		}
 	}, [isSuccess, resData])
 
@@ -158,35 +184,35 @@ const Bidding = ({}) => {
 		customerDestinationUid: null,
 	})
 
-	// useEffect(() => {
-	// 	const updatedProductList = checkedArray?.map((item) => {
-	// 		if (param?.type === '단일') {
-	// 			return {
-	// 				productUid: item['제품 고유 번호'],
-	// 				biddingPrice:
-	// 					item['응찰가'] === 0
-	// 						? item['시작가'] + finalInput?.biddingPrice
-	// 						: item['응찰가'] + finalInput?.biddingPrice,
-	// 				customerDestinationUid: finalInput?.customerDestinationUid,
-	// 			}
-	// 		} else if (param?.type === '패키지') {
-	// 			return {
-	// 				packageNumber: item['패키지 번호'],
-	// 				biddingPrice:
-	// 					item['응찰가'] === 0
-	// 						? item['시작가'] + finalInput?.biddingPrice
-	// 						: item['응찰가'] + finalInput?.biddingPrice,
-	// 				customerDestinationUid: finalInput?.customerDestinationUid,
-	// 			}
-	// 		}
-	// 	})
+	useEffect(() => {
+		const updatedProductList = checkedArray?.map((item) => {
+			if (param?.type === '단일') {
+				return {
+					productUid: item['제품 고유 번호'],
+					biddingPrice:
+						item['응찰가'] === 0
+							? item['시작가'] + finalInput?.biddingPrice
+							: item['응찰가'] + finalInput?.biddingPrice,
+					customerDestinationUid: finalInput?.customerDestinationUid,
+				}
+			} else if (param?.type === '패키지') {
+				return {
+					packageNumber: item['패키지 번호'],
+					biddingPrice:
+						item['응찰가'] === 0
+							? item['시작가'] + finalInput?.biddingPrice
+							: item['응찰가'] + finalInput?.biddingPrice,
+					customerDestinationUid: finalInput?.customerDestinationUid,
+				}
+			}
+		})
 
-	// 	// winningCreateData를 업데이트하여 productList를 갱신합니다.
-	// 	setWinningCreateData((prevData) => ({
-	// 		...prevData,
-	// 		biddingList: updatedProductList,
-	// 	}))
-	// }, [checkedArray, finalInput, param])
+		// winningCreateData를 업데이트하여 productList를 갱신합니다.
+		setWinningCreateData((prevData) => ({
+			...prevData,
+			biddingList: updatedProductList,
+		}))
+	}, [checkedArray, finalInput, param])
 
 	console.log('checkedArray', checkedArray)
 
@@ -277,6 +303,8 @@ const Bidding = ({}) => {
 		}
 	}
 
+	console.log('checkAgreement', checkAgreement)
+
 	const globalProductResetOnClick = () => {
 		// if resetting the search field shouldn't rerender table
 		// then we need to create paramData object to reset the search fields.
@@ -336,7 +364,7 @@ const Bidding = ({}) => {
 
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.productNumber)) {
-				item.memberBiddingPrice = winningCreateInput?.biddingPrice
+				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item
 		})
@@ -446,7 +474,7 @@ const Bidding = ({}) => {
 						<BtnBound style={{ margin: '0px' }} />
 						<p>일괄 경매 응찰</p>
 						<CustomInput
-							placeholder="응찰가 + 최고가 입력"
+							placeholder="최고가 입력"
 							width={140}
 							height={32}
 							value={winningCreateInput.biddingPrice !== null ? winningCreateInput.biddingPrice : ''}
@@ -499,13 +527,14 @@ const Bidding = ({}) => {
 				<PackDetail aucDetail={aucDetail} packNum={aucDetail['패키지 번호']} setAucDetailModal={setAucDetailModal} />
 			)}
 			{/* 입찰 동의서 모달 */}
-			{agreementModal && (
+			
+			{agreementModal ? (
 				<Agreement
 					setAgreementModal={setAgreementModal}
 					setCheckAgreement={setCheckAgreement}
 					agreementOnClickHandler={agreementOnClickHandler}
 				/>
-			)}
+			) : null}
 		</FilterContianer>
 	)
 }

@@ -6,7 +6,7 @@ import { queryClient } from '../query'
 const urls = {
 	bidding: 'auction',
 	bid: 'auction/bid',
-	agreement: '/admin/auction/agreement',
+	agreement: 'admin/auction/agreement',
 }
 
 // TODO
@@ -39,11 +39,16 @@ export function postBidding(data) {
 
 // 입찰 동의 내역 등록
 export function postAgreement(data) {
-	console.log('data 클린스만', data)
 	return client.post(urls.agreement, data)
 }
 
 //입찰 동의 여부 체크
 export function getAgreement(data) {
-	return client.get(`${urls.agreement}/list?auctionNumber=${data.auctionNumber}}`)
+	console.log('data 루니', data)
+	return client.get(`${urls.agreement}/${data}`)
+}
+
+// 경매 응찰 목적지 찾기
+export function getAuctionDestination() {
+	return client.get(`${urls.bidding}/destination`)
 }
