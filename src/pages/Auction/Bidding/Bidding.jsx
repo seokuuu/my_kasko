@@ -31,7 +31,11 @@ import { getAuctionDestination } from '../../../api/auction/winning'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
-import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constants/admin/Auction'
+import {
+	AuctionBiddingFields,
+	AuctionBiddingFieldsCols,
+	AuctionPackageBiddingFieldsCols,
+} from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Agreement from '../../../modal/Common/Agreement'
@@ -417,7 +421,7 @@ const Bidding = ({}) => {
 					</div>
 				</TCSubContainer>
 				<Table
-					getCol={AuctionBiddingFieldsCols}
+					getCol={param?.type === '단일' ? AuctionBiddingFieldsCols : AuctionPackageBiddingFieldsCols}
 					getRow={getRow}
 					tablePagination={tablePagination}
 					onPageChange={onPageChange}

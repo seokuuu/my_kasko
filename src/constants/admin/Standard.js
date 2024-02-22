@@ -25,6 +25,10 @@ export const StandardDestinaionFields = {
 	수정자: 'updateMember',
 	수정일: 'updateDate',
 	비고: 'note',
+	'매입운반비 목적지': 'inDestinationName',
+	매입운반비: 'inEffectCost',
+	'매출운반비 목적지': 'outDestinationName',
+	매출운반비: 'outEffectCost',
 }
 
 // 기준관리 - 목적지관리 Modal post
@@ -80,6 +84,10 @@ export const StandardDestinaionFieldsCols = [
 	{ ...commonStyles, field: '수정자', minWidth: 100 },
 	{ ...commonStyles, field: '수정일', minWidth: 100 },
 	{ ...commonStyles, field: '비고', minWidth: 200 },
+	{ ...commonStyles, field: '매입운반비 목적지', minWidth: 200 },
+	{ ...commonStyles, field: '매입운반비', minWidth: 200 },
+	{ ...commonStyles, field: '매출운반비 목적지', minWidth: 200 },
+	{ ...commonStyles, field: '매출운반비', minWidth: 200 },
 ]
 
 /* ==============================
@@ -90,12 +98,8 @@ export const StandardDestinaionFieldsCols = [
 export const StandardTransportationFields = {
 	'운반비 고유 번호': 'uid',
 	창고: 'storage',
-	출발지: 'storage',
-	'적용된 목적지': 'effectName',
-	'목적지 코드': 'destinationCode',
 	목적지명: 'destinationName',
 	제품군: 'spart',
-	제품구분: 'spart',
 	적용일: 'effectDate',
 	'단가 적용일': 'effectDate',
 	이전단가: 'previousCost',
@@ -106,9 +110,9 @@ export const StandardTransportationFields = {
 // 기준 관리 - 운반비 관리 post
 export const StandardTransportationPost = {
 	출발지: 'dropdown4',
-	'목적지 찾기': 'destipostbutton',
-	'목적지 코드': 'destipostcode',
-	'목적지 명': 'destipostname',
+	// '목적지 찾기': 'destipostbutton',
+	// '목적지 코드': 'destipostcode',
+	목적지: 'destinationName',
 	'제품 구분': 'dropdown',
 	'단가 적용일': 'date',
 	'적용 단가': 'effectCost',
@@ -147,18 +151,6 @@ export const StandardTransportationFieldsCols = [
 	},
 	{
 		field: '창고',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		minWidth: 100,
-	},
-	{
-		field: '적용된 목적지',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		minWidth: 120,
-	},
-	{
-		field: '목적지 코드',
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		minWidth: 100,
