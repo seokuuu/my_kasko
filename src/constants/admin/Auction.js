@@ -864,6 +864,8 @@ export const AuctionWinningDetailFields = {
 	'목적지 고유 번호': 'destinationUid',
 
 	'경매 번호': 'auctionNumber',
+	'패키지 명': 'packageName',
+	'패키지 번호': 'packageNumber',
 	고객사명: 'customerName',
 	'고객 코드': 'code',
 	'제품 번호': 'productNumber',
@@ -925,6 +927,7 @@ export const AuctionWinningDetailFields = {
 	'주문 상태': 'orderStatus',
 	'확정 전송일': 'sendDate',
 	'주문 번호': 'hsOrderNo',
+	비고: 'note',
 	'재고 상태': 'stockStatus',
 	'카스코 낙찰가': 'confirmPrice',
 	수정일: 'updateDate',
@@ -947,6 +950,8 @@ export const UserAuctionWinningDetailFields = {
 	'목적지 고유 번호': 'destinationUid',
 
 	'경매 번호': 'auctionNumber',
+	'패키지 명': 'packageName',
+	'패키지 번호': 'packageNumber',
 	고객사명: 'customerName',
 	'고객 코드': 'code',
 	'제품 번호': 'productNumber',
