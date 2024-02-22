@@ -1,85 +1,53 @@
 import ClaimCellRender from '../../pages/Operate/Common/Claim/components/ClaimCellRender'
 import { checkboxSelection, headerCheckboxSelection } from '../../pages/Table/util'
+import { commonStyles } from './Auction'
 /* ==============================
     운영 관리 - 클레임 관리
 ============================== */
 
 // 클레임 관리 목록 헤더
 export const ClaimListFieldCols = [
-	{ field: '', checkboxSelection, headerCheckboxSelection, maxWidth: 50, headerClass: 'custom-header-style' },
-	{ field: '순번', headerClass: 'custom-header-style', maxWidth: 90 },
-	{
-		field: '수정',
-		maxWidth: 90,
-		cellRenderer: ClaimCellRender,
-		headerClass: 'custom-header-style',
-	},
-	{
-		field: '경매일자',
-		headerClass: 'custom-header-style',
-	},
-	{
-		field: '입고일자',
-		headerClass: 'custom-header-style',
-	},
-	{
-		field: '매입처',
-		headerClass: 'custom-header-style',
-	},
-	{
-		field: '제조사',
-		headerClass: 'custom-header-style',
-	},
-	{
-		field: '창고',
-		headerClass: 'custom-header-style',
-	},
-	{
-		field: '판매구분',
-		headerClass: 'custom-header-style',
-	},
-	{
-		field: '판매유형',
-		headerClass: 'custom-header-style',
-	},
-	{
-		field: '판매가유형',
-		headerClass: 'custom-header-style',
-	},
-	{
-		field: '확정전송일자',
-		headerClass: 'custom-header-style',
-	},
-	{ field: '경매번호', headerClass: 'custom-header-style' },
-	{ field: '입고일', headerClass: 'custom-header-style' },
-	{ field: '매입처', headerClass: 'custom-header-style' },
-	{ field: '제조사', headerClass: 'custom-header-style' },
-	{ field: '창고', headerClass: 'custom-header-style' },
-	{ field: '판매구분', headerClass: 'custom-header-style' },
-	{ field: '판매유형', headerClass: 'custom-header-style' },
-	{ field: '판매가유형', headerClass: 'custom-header-style' },
-	{ field: '주문상태', headerClass: 'custom-header-style' },
-	{ field: '확정전송일자', headerClass: 'custom-header-style' },
-	{ field: '출하 상태', headerClass: 'custom-header-style' },
-	{ field: '고객사명', headerClass: 'custom-header-style' },
-	{ field: '고객코드', headerClass: 'custom-header-style' },
-	{ field: '제품번호', headerClass: 'custom-header-style' },
-	{ field: '제품군', headerClass: 'custom-header-style' },
-	{ field: '정척여부', headerClass: 'custom-header-style' },
-	{ field: '유찰횟수', headerClass: 'custom-header-style' },
-	{ field: '규격약호', headerClass: 'custom-header-style' },
-	{ field: '여재원인', headerClass: 'custom-header-style' },
-	{ field: '여재원인명', headerClass: 'custom-header-style' },
-	{ field: '용도코드', headerClass: 'custom-header-style' },
-	{ field: '용도명', headerClass: 'custom-header-style' },
-	{ field: '메모', headerClass: 'custom-header-style' },
-	{ field: '재고상태', headerClass: 'custom-header-style' },
-	{ field: '등록일', headerClass: 'custom-header-style' },
-	{ field: '고객사반품일', headerClass: 'custom-header-style' },
-	{ field: '카스코반품일', headerClass: 'custom-header-style' },
-	{ field: '종료일', headerClass: 'custom-header-style' },
-	{ field: '최종수정자', headerClass: 'custom-header-style' },
-	{ field: '최종수정일', headerClass: 'custom-header-style' },
+	{ field: '', checkboxSelection, headerCheckboxSelection, minWidth: 50, ...commonStyles },
+	{ field: '순번', ...commonStyles, minWidth: 100 },
+	{ field: '수정', minWidth: 90, cellRenderer: ClaimCellRender, ...commonStyles },
+	{ field: '경매일자', minWidth: 200, ...commonStyles },
+	{ field: '경매번호', ...commonStyles, minWidth: 150 },
+	{ field: '입고일자', minWidth: 200, ...commonStyles },
+	{ field: '매입처', minWidth: 100, ...commonStyles },
+	{ field: '제조사', minWidth: 100, ...commonStyles },
+	{ field: '창고', minWidth: 100, ...commonStyles },
+	{ field: '판매구분', minWidth: 100, ...commonStyles },
+	{ field: '판매유형', minWidth: 100, ...commonStyles },
+	{ field: '판매가유형', minWidth: 100, ...commonStyles },
+	{ field: '주문상태', ...commonStyles, minWidth: 100 },
+	{ field: '확정전송일자', minWidth: 200, ...commonStyles },
+	{ field: '출하 상태', ...commonStyles, minWidth: 100 },
+	// 출고 일자
+	{ field: '고객사명', ...commonStyles, minWidth: 100 },
+	{ field: '고객코드', ...commonStyles, minWidth: 100 },
+	{ field: '제품번호', ...commonStyles, minWidth: 150 },
+	{ field: '제품군', ...commonStyles, minWidth: 100 },
+	// 제품 등급
+	{ field: '정척여부', ...commonStyles, minWidth: 100 },
+	{ field: '유찰횟수', ...commonStyles, minWidth: 100 },
+	// 두께
+	// 폭
+	// 길이
+	// 중량
+	{ field: '규격약호', ...commonStyles, minWidth: 150 },
+	// ts ...
+	{ field: '여재원인', ...commonStyles, minWidth: 100 },
+	{ field: '여재원인명', ...commonStyles, minWidth: 100 },
+	{ field: '용도코드', ...commonStyles, minWidth: 100 },
+	{ field: '용도명', ...commonStyles, minWidth: 200 },
+	{ field: '메모', ...commonStyles, minWidth: 100 },
+	{ field: '재고상태', ...commonStyles, minWidth: 100 },
+	{ field: '등록일', ...commonStyles, minWidth: 200 },
+	{ field: '고객사반품일', ...commonStyles, minWidth: 200 },
+	{ field: '카스코반품일', ...commonStyles, minWidth: 200 },
+	{ field: '종료일', ...commonStyles, minWidth: 200 },
+	{ field: '최종수정자', ...commonStyles, minWidth: 200 },
+	{ field: '최종수정일', ...commonStyles, minWidth: 200 },
 ]
 
 // 클레임 관리 목록 키값 맵핑
@@ -97,7 +65,6 @@ export const ClaimListFields = {
 	주문상태: 'orderStatus',
 	확정전송일자: 'sendDate',
 	경매번호: 'auctionNumber',
-	입고일: 'receiptDate',
 	출하상태: 'shipmentStatus',
 	고객사명: 'customerName',
 	고객코드: 'customerCode',

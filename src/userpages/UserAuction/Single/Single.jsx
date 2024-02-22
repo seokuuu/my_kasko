@@ -88,6 +88,8 @@ const Single = ({}) => {
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
 
+	console.log('destiObject', destiObject)
+
 	const productListInner = {
 		biddingPrice: null,
 		customerDestinationUid: null,
@@ -125,14 +127,23 @@ const Single = ({}) => {
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
+	// 초기 목적지 GET
+	const { data: destiData } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
+
+	const initDestiData = destiData?.data?.data
+	const filteredDestiData = initDestiData?.filter((item) => item.represent === 1)
+
+	console.log('filteredDestiData', filteredDestiData)
+
 	useEffect(() => {
 		let getData = resData
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
 			setGetRow(add_element_field(getData, AuctionBiddingFields))
 			setTablePagination(resPagination)
+			setDestiObject(filteredDestiData)
 		}
-	}, [isSuccess, resData])
+	}, [isSuccess, resData, initDestiData])
 
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArray?.[0]?.['경매 번호']
@@ -367,7 +378,7 @@ const Single = ({}) => {
 							placeholder="도착지 연락처"
 							width={120}
 							height={32}
-							defaultValue={destiObject?.name}
+							defaultValue={destiObject?.phone}
 							readOnly
 						/>
 						<TWhiteBtn

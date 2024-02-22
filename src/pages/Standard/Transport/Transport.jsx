@@ -133,8 +133,8 @@ const Transport = () => {
 			if (uids.includes(item.uid)) {
 				// unitPriceEdit.percent에 따라 증가 또는 감소
 				const percentage = parseFloat(unitPriceEdit) / 100
-
 				const updatedEffectCost =
+
 					checkRadio[0] === true
 						? item.effectCost + item?.effectCost * percentage
 						: item.effectCost - item?.effectCost * percentage
