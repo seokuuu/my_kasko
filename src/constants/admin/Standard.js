@@ -65,18 +65,7 @@ export const StandardDestinationEdit = {
 // 기준관리 - 목적지관리 fieldsCols
 //  주석 처리 : cell 내 버튼 기능
 export const StandardDestinaionFieldsCols = [
-	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
-	// {
-	// 	...commonStyles,
-	// 	field: '수정',
-	// 	minWidth: 90,
-	// 	cellRenderer: BtnCellRenderer,
-	// 	cellRendererParams: {
-	// 		uidFieldName: '목적지 고유 번호',
-	// 		editType: 'table',
-	// 	},
-	// },
-	{ ...commonStyles, field: '목적지 고유 번호', minWidth: 100 },
+	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{ ...commonStyles, field: '목적지 코드', minWidth: 100 }, //숫자
 	{ ...commonStyles, field: '목적지 명', minWidth: 300 },
 	{ ...commonStyles, field: '작성자', minWidth: 100 },
@@ -132,11 +121,11 @@ export const StandardTransportationEdit = {
 
 // 기준관리 - 운반비 관리 fieldsCols
 export const StandardTransportationFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{
 		...commonStyles,
 		field: '수정',
-		minWidth: 90,
+		maxWidth: 90,
 		cellRenderer: BtnCellRenderer,
 		cellRendererParams: {
 			uidFieldName: '운반비 고유 번호',
@@ -144,45 +133,32 @@ export const StandardTransportationFieldsCols = [
 		},
 	},
 	{
-		field: '운반비 고유 번호',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		minWidth: 160,
-	},
-	{
+		...commonStyles,
 		field: '창고',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		minWidth: 100,
 	},
 	{
+		...commonStyles,
 		field: '목적지명',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		minWidth: 100,
 	},
 	{
+		...commonStyles,
 		field: '제품군',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		minWidth: 100,
 	},
 	{
+		...commonStyles,
 		field: '적용일',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		minWidth: 100,
 	},
 	{
+		...commonStyles,
 		field: '이전단가',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		minWidth: 100,
 	},
 	{
+		...commonStyles,
 		field: '적용단가',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		minWidth: 100,
 	},
 ]

@@ -940,7 +940,7 @@ export const AuctionWinningDetailFieldsCols = [
 		.map((item) => ({
 			...commonStyles,
 			field: item,
-			minWidth: 100,
+			minWidth: 150,
 		})),
 ]
 

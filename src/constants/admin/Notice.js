@@ -3,16 +3,17 @@
 ============================== */
 
 import { checkboxSelection, headerCheckboxSelection } from '../../pages/Table/util'
+import { commonStyles } from './Auction'
 
 // 공지사항 관리 목록 헤더
 export const NoticeListFieldCols = [
-	{ headerClass: 'custom-header-style', field: '', checkboxSelection, headerCheckboxSelection, maxWidth: 50 },
-	{ headerClass: 'custom-header-style', field: '순번', maxWidth: 100 },
-	{ headerClass: 'custom-header-style', field: '제목', minWidth: 350 },
-	{ headerClass: 'custom-header-style', field: '상단노출여부', minWidth: 150 },
-	{ headerClass: 'custom-header-style', field: '작성일자', minWidth: 250 },
-	{ headerClass: 'custom-header-style', field: '작성자', minWidth: 250 },
-	{ headerClass: 'custom-header-style', field: '조회수', minWidth: 250 },
+	{ ...commonStyles, field: '', checkboxSelection, headerCheckboxSelection, maxWidth: 50 },
+	{ ...commonStyles, field: '순번', maxWidth: 100 },
+	{ ...commonStyles, field: '제목', minWidth: 350 },
+	{ ...commonStyles, field: '상단노출여부', maxWidth: 150 },
+	{ ...commonStyles, field: '작성일자', maxWidth: 200 },
+	{ ...commonStyles, field: '작성자', maxWidth: 200 },
+	{ ...commonStyles, field: '조회수', maxWidth: 100 },
 ]
 
 // 공지사항 관리 목록 키값 맵핑
