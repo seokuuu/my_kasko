@@ -61,6 +61,12 @@ export const getAuctionDestination = () => {
 	return client.get(`${urls.winning}/destination`)
 }
 
+// 고객사 목적지 목록 상세 (경매 낙찰 관리)
+export const getAuctionDetailDestination = (data) => {
+	console.log('data', data)
+	return client.get(`${urls.winning}/destination?customerCode=${data}`)
+}
+
 // 응찰 목적지 조회
 export function getDestinations(keyword) {
 	return client.get(`${urls.destination}?keyword=${keyword}`)

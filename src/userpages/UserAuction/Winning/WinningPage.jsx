@@ -6,7 +6,7 @@ import SubHeader from '../../../components/Header/SubHeader'
 import Winning from './Winning'
 import WinningDetail from './WinningDetail'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { doubleClickedRowAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
@@ -14,6 +14,11 @@ const SinglePage = () => {
 	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
 	const [expanded, setExpanded] = useState('경매')
 	const [depth2Color, setDepth2Color] = useState('낙찰 확인')
+
+	useEffect(() => {
+		return setDetailRow(null)
+	}, [])
+
 	return (
 		<>
 			<Header />

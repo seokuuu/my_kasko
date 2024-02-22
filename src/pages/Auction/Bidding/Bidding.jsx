@@ -26,7 +26,7 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isEqual } from 'lodash'
-import { getBidding, postAgreement, postBidding } from '../../../api/auction/bidding'
+import { getAgreement, getBidding, postAgreement, postBidding } from '../../../api/auction/bidding'
 import { getAuctionDestination } from '../../../api/auction/winning'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
@@ -53,7 +53,7 @@ const Bidding = ({}) => {
 	const [agreementModal, setAgreementModal] = useAtom(biddingAgreementModal) // 입찰 동의서 모달
 
 	const [checkAgreement, setCheckAgreement] = useState({
-		auctionNumber: '2024021601',
+		auctionNumber: '',
 		agreement: '',
 	})
 
@@ -63,6 +63,8 @@ const Bidding = ({}) => {
 	// 고객사 팝업 상태,객체
 
 	const [types, setTypes] = useState('단일')
+
+	const [addedInput, setAddedInput] = useState(null)
 
 	const radioDummy = ['전체', '미진행', '진행중', '종료']
 
@@ -85,10 +87,15 @@ const Bidding = ({}) => {
 	}
 
 	const [getRow, setGetRow] = useState('')
+	const getRowFilter = getRow && getRow?.map((x) => x['응찰가'])
+	console.log('getRowFilter', getRowFilter)
+
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
+	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
+	const uids = checkedArrayState?.map((item) => item['제품 번호'])
 	const [tablePagination, setTablePagination] = useState([])
 	const paramData = {
 		pageNum: 1,
@@ -111,14 +118,39 @@ const Bidding = ({}) => {
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list
 	console.log('resData 사륜안', resData)
+
+	// const filteredAucNum = resData && resData.map((x) => x['auctionNumber'])
+	// const checkAgreeAucNum = filteredAucNum && filteredAucNum[0]
+
+	// useEffect(() => {}, [checkAgreeAucNum])
+
+	const [realAucNum, setRealAucNum] = useState(null)
+
+	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
+
+	useEffect(() => {
+		setAgreementModal(!getAgreementData?.data?.data)
+	}, [getAgreementData])
+
+	// 입찰 동의 여부 체크 (true는 확인)
+	const agreementStatus = getAgreementData?.data?.data
+	console.log('agreementStatus', !agreementStatus)
+
 	const resPagination = data?.data?.data?.pagination
 
 	useEffect(() => {
 		let getData = resData
+		const filteredAucNum = resData && resData.map((x) => x['auctionNumber'])
+		const checkAgreeAucNum = filteredAucNum && filteredAucNum[0]
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
 			setGetRow(add_element_field(getData, AuctionBiddingFields))
 			setTablePagination(resPagination)
+			setRealAucNum(checkAgreeAucNum)
+			setCheckAgreement((prev) => ({
+				...prev,
+				auctionNumber: checkAgreeAucNum,
+			}))
 		}
 	}, [isSuccess, resData])
 
@@ -182,6 +214,8 @@ const Bidding = ({}) => {
 		}))
 	}, [checkedArray, finalInput, param])
 
+	console.log('checkedArray', checkedArray)
+
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
 			...prevParam,
@@ -204,13 +238,32 @@ const Bidding = ({}) => {
 				title: '응찰이 완료되었습니다.',
 				content: '',
 				func: () => {
+					setWinningCreateData(init)
+					setwinningCreateInput({
+						biddingPrice: null,
+						customerDestinationUid: null,
+					})
+					setFinalInput({
+						biddingPrice: null,
+						customerDestinationUid: null,
+					})
 					refetch()
 					queryClient.invalidateQueries('auction')
 				},
 			})
 		},
 		onError: () => {
+			setWinningCreateData(init)
+			setwinningCreateInput({
+				biddingPrice: null,
+				customerDestinationUid: null,
+			})
+			setFinalInput({
+				biddingPrice: null,
+				customerDestinationUid: null,
+			})
 			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+			refetch()
 		},
 	})
 
@@ -250,6 +303,8 @@ const Bidding = ({}) => {
 		}
 	}
 
+	console.log('checkAgreement', checkAgreement)
+
 	const globalProductResetOnClick = () => {
 		// if resetting the search field shouldn't rerender table
 		// then we need to create paramData object to reset the search fields.
@@ -272,6 +327,7 @@ const Bidding = ({}) => {
 	const [values, setValues] = useState({})
 	const [valueDesti, setValueDesti] = useState()
 
+	// TODO : 셀 별로 받아서 해야함. 나중에 하자...
 	const onCellValueChanged = (params) => {
 		const p = params.data
 
@@ -291,7 +347,33 @@ const Bidding = ({}) => {
 		}))
 	}, [values])
 
-	console.log('winningCreateData <33', winningCreateData)
+	//일괄 경매 응찰 적용 onClick hanlder
+	const unitPriceBatchOnClick = () => {
+		setFinalInput((p) => ({
+			...p,
+			biddingPrice: winningCreateInput?.biddingPrice,
+		}))
+		if (!uids || uids?.length === 0) {
+			simpleAlert('적용할 경매를 선택해주세요.')
+			return
+		}
+		if (!winningCreateInput?.biddingPrice) {
+			simpleAlert('적용할 금액을 입력해주세요.')
+			return
+		}
+
+		const updatedResData = resData.map((item) => {
+			if (uids.includes(item.productNumber)) {
+				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+			}
+			return item
+		})
+
+		console.log('updatedResData', updatedResData)
+
+		// 변경된 데이터로 state 업데이트
+		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+	}
 
 	// 	TODO : 목적지 항목 추가하기 (후순위)
 	// 	찾기 누르면
@@ -392,25 +474,28 @@ const Bidding = ({}) => {
 						<BtnBound style={{ margin: '0px' }} />
 						<p>일괄 경매 응찰</p>
 						<CustomInput
-							placeholder="응찰가 + 최고가 입력"
+							placeholder="최고가 입력"
 							width={140}
 							height={32}
+							value={winningCreateInput.biddingPrice !== null ? winningCreateInput.biddingPrice : ''}
 							onChange={(e) => {
 								setwinningCreateInput((p) => ({
 									...p,
 									biddingPrice: parseInt(e.target.value) || null,
 								}))
+								setAddedInput(parseInt(e.target.value))
 							}}
 						/>
 						<TGreyBtn
 							height={30}
 							style={{ width: '50px' }}
-							onClick={() => {
-								setFinalInput((p) => ({
-									...p,
-									biddingPrice: winningCreateInput?.biddingPrice,
-								}))
-							}}
+							// onClick={() => {
+							// 	setFinalInput((p) => ({
+							// 		...p,
+							// 		biddingPrice: winningCreateInput?.biddingPrice,
+							// 	}))
+							// }}
+							onClick={unitPriceBatchOnClick}
 						>
 							적용
 						</TGreyBtn>
@@ -442,13 +527,14 @@ const Bidding = ({}) => {
 				<PackDetail aucDetail={aucDetail} packNum={aucDetail['패키지 번호']} setAucDetailModal={setAucDetailModal} />
 			)}
 			{/* 입찰 동의서 모달 */}
-			{agreementModal && (
+			
+			{agreementModal ? (
 				<Agreement
 					setAgreementModal={setAgreementModal}
 					setCheckAgreement={setCheckAgreement}
 					agreementOnClickHandler={agreementOnClickHandler}
 				/>
-			)}
+			) : null}
 		</FilterContianer>
 	)
 }

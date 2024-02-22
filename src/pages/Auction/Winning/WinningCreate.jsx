@@ -30,7 +30,12 @@ import { InputContainer, NoOutInput, Unit } from '../../../common/Input/Input'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isArray, isEqual } from 'lodash'
-import { getAuctionDestination, getAuctionNumber, successfulBid } from '../../../api/auction/winning'
+import {
+	getAuctionDestination,
+	getAuctionDetailDestination,
+	getAuctionNumber,
+	successfulBid,
+} from '../../../api/auction/winning'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { AuctionWinningCreateFieldsCols } from '../../../constants/admin/Auction'
 import useMutationQuery from '../../../hooks/useMutationQuery'
@@ -42,6 +47,7 @@ import { WinningCreateFindAtom, WinningProductAddAtom } from '../../../store/Lay
 import Table from '../../Table/Table'
 import BiddingSearchFields from '../Bidding/BiddingSearchFields'
 import WinningProductAdd from './WinningProductAdd'
+import CustomerCodeFind from '../../../modal/Multi/CustomerCodeFind'
 
 const WinningCreate = ({}) => {
 	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
@@ -129,18 +135,24 @@ const WinningCreate = ({}) => {
 		}
 	}
 
+	// 경매 번호 자동 생성
 	const { data: auctionNowNum } = useReactQuery('', 'getAuctionNumber', getAuctionNumber)
 
-	console.log('auctionNowNum', auctionNowNum?.data?.data)
+	const { data: auctionDestination, refetch } = useReactQuery(
+		customerData?.code,
+		'getAuctionDetailDestination',
+		getAuctionDetailDestination,
+	)
 
-	const { data: auctionDestination, refetch } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
+	console.log('auctionDestination', auctionDestination?.data?.data)
 
-	const [propsUid, setPropsUid] = useState(null)
+	const [propsUid, setPropsUid] = useState(null) // CustomerCodeFind에서 찾아온 uid
 	const [destiObject, setDestiObject] = useState()
 
 	// 목적지 찾기 및 목적지 uid, auctionNumber set //
 	useEffect(() => {
 		const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
+		console.log('selectedObject', selectedObject)
 		setDestiObject(selectedObject)
 		setWinningCreateData((p) => ({
 			...p,
@@ -540,7 +552,7 @@ const WinningCreate = ({}) => {
 				/>
 			)}
 			{destinationPopUp && (
-				<InventoryFind
+				<CustomerCodeFind
 					title={'목적지 찾기'}
 					type={'낙찰 생성'}
 					setSwitch={setDestinationPopUp}
