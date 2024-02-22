@@ -7,6 +7,7 @@ const urls = {
 	winning: 'auction/successfulBid',
 	winningDetail: 'auction/successfulBid/detail',
 	winningCreate: 'auction/successfulBid/product',
+	destination: '/search/destination',
 }
 
 // export function getWinning(data) {
@@ -58,6 +59,11 @@ export function publishDepositForm(data) {
 // 고객사 목적지 목록 (경매 낙찰 관리)
 export const getAuctionDestination = () => {
 	return client.get(`${urls.winning}/destination`)
+}
+
+// 응찰 목적지 조회
+export function getDestinations(keyword) {
+	return client.get(`${urls.destination}?keyword=${keyword}`)
 }
 
 // 낙찰 생성 경매 번호
