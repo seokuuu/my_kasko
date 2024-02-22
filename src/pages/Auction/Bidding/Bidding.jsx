@@ -64,6 +64,8 @@ const Bidding = ({}) => {
 
 	const [types, setTypes] = useState('단일')
 
+	const [addedInput, setAddedInput] = useState(null)
+
 	const radioDummy = ['전체', '미진행', '진행중', '종료']
 
 	const [isRotated, setIsRotated] = useState(false)
@@ -85,10 +87,14 @@ const Bidding = ({}) => {
 	}
 
 	const [getRow, setGetRow] = useState('')
+	const getRowFilter = getRow && getRow?.map((x) => x['응찰가'])
+	console.log('getRowFilter', getRowFilter)
+
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
+	const uids = checkedArray?.map((item) => item['제품 번호'])
 	const [tablePagination, setTablePagination] = useState([])
 	const paramData = {
 		pageNum: 1,
@@ -152,35 +158,37 @@ const Bidding = ({}) => {
 		customerDestinationUid: null,
 	})
 
-	useEffect(() => {
-		const updatedProductList = checkedArray?.map((item) => {
-			if (param?.type === '단일') {
-				return {
-					productUid: item['제품 고유 번호'],
-					biddingPrice:
-						item['응찰가'] === 0
-							? item['시작가'] + finalInput?.biddingPrice
-							: item['응찰가'] + finalInput?.biddingPrice,
-					customerDestinationUid: finalInput?.customerDestinationUid,
-				}
-			} else if (param?.type === '패키지') {
-				return {
-					packageNumber: item['패키지 번호'],
-					biddingPrice:
-						item['응찰가'] === 0
-							? item['시작가'] + finalInput?.biddingPrice
-							: item['응찰가'] + finalInput?.biddingPrice,
-					customerDestinationUid: finalInput?.customerDestinationUid,
-				}
-			}
-		})
+	// useEffect(() => {
+	// 	const updatedProductList = checkedArray?.map((item) => {
+	// 		if (param?.type === '단일') {
+	// 			return {
+	// 				productUid: item['제품 고유 번호'],
+	// 				biddingPrice:
+	// 					item['응찰가'] === 0
+	// 						? item['시작가'] + finalInput?.biddingPrice
+	// 						: item['응찰가'] + finalInput?.biddingPrice,
+	// 				customerDestinationUid: finalInput?.customerDestinationUid,
+	// 			}
+	// 		} else if (param?.type === '패키지') {
+	// 			return {
+	// 				packageNumber: item['패키지 번호'],
+	// 				biddingPrice:
+	// 					item['응찰가'] === 0
+	// 						? item['시작가'] + finalInput?.biddingPrice
+	// 						: item['응찰가'] + finalInput?.biddingPrice,
+	// 				customerDestinationUid: finalInput?.customerDestinationUid,
+	// 			}
+	// 		}
+	// 	})
 
-		// winningCreateData를 업데이트하여 productList를 갱신합니다.
-		setWinningCreateData((prevData) => ({
-			...prevData,
-			biddingList: updatedProductList,
-		}))
-	}, [checkedArray, finalInput, param])
+	// 	// winningCreateData를 업데이트하여 productList를 갱신합니다.
+	// 	setWinningCreateData((prevData) => ({
+	// 		...prevData,
+	// 		biddingList: updatedProductList,
+	// 	}))
+	// }, [checkedArray, finalInput, param])
+
+	console.log('checkedArray', checkedArray)
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -204,13 +212,32 @@ const Bidding = ({}) => {
 				title: '응찰이 완료되었습니다.',
 				content: '',
 				func: () => {
+					setWinningCreateData(init)
+					setwinningCreateInput({
+						biddingPrice: null,
+						customerDestinationUid: null,
+					})
+					setFinalInput({
+						biddingPrice: null,
+						customerDestinationUid: null,
+					})
 					refetch()
 					queryClient.invalidateQueries('auction')
 				},
 			})
 		},
 		onError: () => {
+			setWinningCreateData(init)
+			setwinningCreateInput({
+				biddingPrice: null,
+				customerDestinationUid: null,
+			})
+			setFinalInput({
+				biddingPrice: null,
+				customerDestinationUid: null,
+			})
 			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+			refetch()
 		},
 	})
 
@@ -272,6 +299,7 @@ const Bidding = ({}) => {
 	const [values, setValues] = useState({})
 	const [valueDesti, setValueDesti] = useState()
 
+	// TODO : 셀 별로 받아서 해야함. 나중에 하자...
 	const onCellValueChanged = (params) => {
 		const p = params.data
 
@@ -291,7 +319,33 @@ const Bidding = ({}) => {
 		}))
 	}, [values])
 
-	console.log('winningCreateData <33', winningCreateData)
+	//일괄 경매 응찰 적용 onClick hanlder
+	const unitPriceBatchOnClick = () => {
+		setFinalInput((p) => ({
+			...p,
+			biddingPrice: winningCreateInput?.biddingPrice,
+		}))
+		if (!uids || uids?.length === 0) {
+			simpleAlert('적용할 경매를 선택해주세요.')
+			return
+		}
+		if (!winningCreateInput?.biddingPrice) {
+			simpleAlert('적용할 금액을 입력해주세요.')
+			return
+		}
+
+		const updatedResData = resData.map((item) => {
+			if (uids.includes(item.productNumber)) {
+				item.memberBiddingPrice = winningCreateInput?.biddingPrice
+			}
+			return item
+		})
+
+		console.log('updatedResData', updatedResData)
+
+		// 변경된 데이터로 state 업데이트
+		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+	}
 
 	// 	TODO : 목적지 항목 추가하기 (후순위)
 	// 	찾기 누르면
@@ -395,22 +449,25 @@ const Bidding = ({}) => {
 							placeholder="응찰가 + 최고가 입력"
 							width={140}
 							height={32}
+							value={winningCreateInput.biddingPrice !== null ? winningCreateInput.biddingPrice : ''}
 							onChange={(e) => {
 								setwinningCreateInput((p) => ({
 									...p,
 									biddingPrice: parseInt(e.target.value) || null,
 								}))
+								setAddedInput(parseInt(e.target.value))
 							}}
 						/>
 						<TGreyBtn
 							height={30}
 							style={{ width: '50px' }}
-							onClick={() => {
-								setFinalInput((p) => ({
-									...p,
-									biddingPrice: winningCreateInput?.biddingPrice,
-								}))
-							}}
+							// onClick={() => {
+							// 	setFinalInput((p) => ({
+							// 		...p,
+							// 		biddingPrice: winningCreateInput?.biddingPrice,
+							// 	}))
+							// }}
+							onClick={unitPriceBatchOnClick}
 						>
 							적용
 						</TGreyBtn>

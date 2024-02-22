@@ -224,7 +224,6 @@ export const AuctionRoundExtraProductFields = {
 
 export const AuctionRoundExtraProductFieldsCols = [
 	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
-
 	{ ...commonStyles, field: '고유 번호', minWidth: 150 },
 	{ ...commonStyles, field: '제품 번호', minWidth: 150 },
 	{ ...commonStyles, field: '규격 약호', minWidth: 150 },
@@ -374,10 +373,6 @@ export const AuctionBiddingFields = {
 	el: 'el',
 	mn: 'mn',
 	상태: 'biddingStatus',
-	// '목적지 코드': 'destinationCode',
-	// '목적지 명': 'customerDestinationName',
-	// '목적지 주소': 'customerDestinationAddress',
-	// '목적지 연락처': 'customerDestinationPhone',
 }
 
 export const AuctionBiddingFieldsCols = [
@@ -386,6 +381,7 @@ export const AuctionBiddingFieldsCols = [
 	{ ...commonStyles, field: '목적지 명', minWidth: 100 },
 	{ ...commonStyles, field: '목적지 주소', minWidth: 100 },
 	{ ...commonStyles, field: '목적지 연락처', minWidth: 100 },
+	{ ...commonStyles, field: '응찰가', minWidth: 150, editable: true },
 
 	{ ...commonStyles, field: '상태', minWidth: 100 },
 	{ ...commonStyles, field: '경매 번호', minWidth: 100 },
@@ -435,7 +431,6 @@ export const AuctionBiddingFieldsCols = [
 	// { field: '현재 최고 가격', minWidth: 70 },
 	{ ...commonStyles, field: '나의 최고 응찰 가격', minWidth: 150 },
 	// { ...commonStyles, field: '나의 최고 응찰 한도', minWidth: 100 },
-	{ ...commonStyles, field: '응찰가', minWidth: 150, editable: true },
 
 	{ ...commonStyles, field: '목적지 명', minWidth: 100 },
 	{ ...commonStyles, field: '목적지 코드', minWidth: 100 },

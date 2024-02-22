@@ -1,4 +1,5 @@
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
+import { commonStyles } from './Auction'
 
 var checkboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping
