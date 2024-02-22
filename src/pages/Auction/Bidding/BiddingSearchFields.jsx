@@ -1,5 +1,4 @@
 import { MainSelect } from '../../../common/Option/Main'
-import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
 	ExInputsWrap,
@@ -13,11 +12,12 @@ import {
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useState } from 'react'
 import { GreyBtn } from '../../../common/Button/Button'
-import { useAtomValue, useSetAtom } from 'jotai'
-import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 import StandardFind from '../../../modal/Multi/StandardFind'
+import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
+import { ProductNumberListSearch } from '../../../components/Search'
 
 const BiddingSearchFields = ({
 	// prettier-ignore
@@ -34,14 +34,14 @@ const BiddingSearchFields = ({
 		gradeList,
 	} = useGlobalProductSearchFieldData()
 
-	const init = {
-		customerCode: '',
-		customerName: '',
-		destinationCode: '',
-		destinationName: '',
-	}
-	const [param, setParam] = useState(init)
-	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
+	// const init = {
+	// 	customerCode: '',
+	// 	customerName: '',
+	// 	destinationCode: '',
+	// 	destinationName: '',
+	// }
+	// const [param, setParam] = useState(init)
+	const onChange = (key, value) => setSearch((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
 
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
 
@@ -168,11 +168,15 @@ const BiddingSearchFields = ({
 			</FilterLeft>
 			{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
 			<FilterRight>
-				<ProductNumber
+				{/* <ProductNumber
 					initialValue={search.productNumberList}
 					setState={setSearch}
 					valueName={'productNumberList'}
 					height="100%"
+				/> */}
+				<ProductNumberListSearch
+					value={search.productNumberList}
+					onChange={(e) => onChange('productNumberList', e.target.value)}
 				/>
 			</FilterRight>
 		</>
