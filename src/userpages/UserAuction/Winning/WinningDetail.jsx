@@ -125,19 +125,21 @@ const WinningDetail = ({ detailRow }) => {
 	const [input, setInput] = useState(init)
 
 	const [detailParams, setDetailParams] = useState({
-		// pageNum: 1,
-		// pageSize: 50,
-		// auctionNumber: '',
-		// storage: '',
-		// customerDestinationUid: '',
-		// biddingStatus: '',
 		pageNum: 1,
-		pageSize: 50,
-		auctionNumber: '2024010211',
-		storage: '우성',
-		customerDestinationUid: '165',
-		biddingStatus: '낙찰 취소',
+		pageSize: 50,sd
 	})
+
+	useEffect(() => {
+		setDetailParams((prev) => ({
+			...prev,
+			auctionNumber: detailRow['경매 번호'],
+			storage: detailRow['창고'],
+			customerDestinationUid: detailRow['고객사 목적지 고유 번호'],
+			biddingStatus: detailRow['낙찰 상태'],
+		}))
+	}, [detailRow])
+
+	console.log('detailParams', detailParams)
 
 	const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
 
