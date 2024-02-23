@@ -39,6 +39,7 @@ import Upload from '../../../modal/Upload/Upload'
 import {
 	deleteAdminDestination,
 	getAdminDestination,
+	isSpecialAddressDestinationUpdate,
 	postAdminDestination,
 	postExcelAdminDestination,
 } from '../../../service/admin/Standard'
@@ -63,7 +64,7 @@ const initPostData = {
 const Destination = () => {
 	// MODAL
 	const [modalSwitch, setModalSwitch] = useAtom(modalAtom)
-	const { simpleAlert } = useAlert()
+	const { simpleAlert, simpleConfirm } = useAlert()
 	const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
 	const setNowPopup = useSetAtom(popupObject) // 팝업 객체
 
@@ -202,6 +203,23 @@ const Destination = () => {
 	}
 	/* ==================== COMMON UI end ==================== */
 
+	const isSpecialAddressUpdate = async (isSpecialAddress) => {
+		if (!isArray(checkedArray) && checkedArray.length === 0) {
+			return simpleAlert('항목을 선택해주세요.')
+		}
+		const uid = checkedArray.map((item) => item['목적지 고유 번호'])
+
+		simpleConfirm(`선택하신 항목을 특별목적지로 ${isSpecialAddress ? '등록' : '해제'}하시겠습니까?`, async () => {
+			const response = await isSpecialAddressDestinationUpdate({ uid, isSpecialAddress })
+			if (response.status === 200) {
+				simpleAlert('적용되었습니다.')
+				queryClient.invalidateQueries('getAdminDestination')
+			} else {
+				simpleAlert('실패하였습니다. 다시 한번 시도해주세요.')
+			}
+		})
+	}
+
 	/* ==================== STATE start ==================== */
 	// 테이블 데이터 세팅
 	useEffect(() => {
@@ -257,6 +275,8 @@ const Destination = () => {
 						선택 <span>{checkedArray?.length || 0}</span>(개)
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
+						<WhiteRedBtn onClick={() => isSpecialAddressUpdate(false)}>특별목적지 해제</WhiteRedBtn>
+						<WhiteSkyBtn onClick={() => isSpecialAddressUpdate(true)}>특별목적지 등록</WhiteSkyBtn>
 						<WhiteRedBtn
 							onClick={() => {
 								firstPopupClick('2-2')
