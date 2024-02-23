@@ -49,7 +49,6 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 	const matchingData = data?.data?.data
 
 	const [address, setAddress] = useState()
-	const [savedRadioValue, setSavedRadioValue] = useState('')
 	const [detailAddress, setDetailAddress] = useState()
 	const [postAddress, setPostAdress] = useState('')
 	const [findModal, setFindModal] = useAtom(UsermanageFindModal)
@@ -65,15 +64,6 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 		const response = await getSpecialDestination()
 		setSpecialDestinations(response)
 	}
-
-	useEffect(() => {
-		setAddress(matchingData?.address)
-		setDetailAddress(matchingData?.addressDetail)
-		setCustomerNameInput({
-			customerName: matchingData?.customerName,
-			customerCode: matchingData?.customerCode,
-		})
-	}, [uidAtom, matchingData])
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -107,10 +97,6 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 		setPostAdress(address)
 		setSubmitData((p) => ({ ...p, address, addressDetail, destination }))
 	}
-	useEffect(() => {
-		const uid = matchingData?.uid
-		setSubmitData({ ...submitData, ...matchingData, ...customerNameInput })
-	}, [matchingData, customerNameInput])
 
 	useEffect(() => {
 		const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
@@ -120,17 +106,23 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 		if (checkedIndex === 1) {
 			setSubmitData({ ...submitData, represent: 0 })
 		}
-		if (checkedIndex !== -1) {
-			const selectedValue = radioDummy[checkedIndex]
-			setSavedRadioValue(selectedValue)
-		}
 	}, [checkRadio])
+
+	useEffect(() => {
+		setSubmitData({ ...submitData, ...customerNameInput })
+	}, [customerNameInput])
 
 	useEffect(() => {
 		const checkedIndex = matchingData?.represent === 0 ? 1 : 0
 		const newCheckRadio = Array.from({ length: radioDummy.length }, (_, index) => index === checkedIndex)
 
+		setAddress(matchingData?.address)
+		setDetailAddress(matchingData?.addressDetail)
 		setCheckRadio(newCheckRadio)
+		setCustomerNameInput({
+			customerName: matchingData?.customerName,
+			customerCode: matchingData?.customerCode,
+		})
 		setSubmitData({
 			...submitData,
 			...matchingData,
@@ -144,8 +136,6 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 	}
 
 	const submitHandle = (e) => {
-		if (!isEmptyObj(submitData)) return simpleAlert('빈값을 채워주세요.')
-
 		if (isEmptyObj(submitData)) {
 			if (!!selectedSpecialDestination && !submitData.address.startsWith(selectedSpecialDestination.label)) {
 				simpleAlert('등록된 기본 주소로 다시 검색해주세요.')
@@ -210,19 +200,9 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 								<h4>고객사 명</h4>
 								<p></p>
 							</Title>
-							<CustomInput width={120} value={customerNameInput?.customerName} />
+							<CustomInput width={150} value={customerNameInput?.customerName} />
 							<span style={{ margin: 'auto 5px' }}>-</span>
-							<CustomInput width={120} value={customerNameInput?.customerCode} />
-							<BlackBtn
-								width={20}
-								height={40}
-								style={{ marginLeft: '10px' }}
-								onClick={() => {
-									setFindModal(true)
-								}}
-							>
-								조회
-							</BlackBtn>
+							<CustomInput width={150} value={customerNameInput?.customerCode} />
 						</Part>
 
 						<Part>
@@ -248,7 +228,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 							<AddressFinder
 								onAddressChange={onAddressHandler}
 								prevAddress={selectedSpecialDestination?.label ?? address}
-								prevAddressDetail={destiCode?.detailAddress}
+								prevAddressDetail={detailAddress}
 								defaultQuery={selectedSpecialDestination?.label}
 							/>
 						</Part>
@@ -265,13 +245,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 								}}
 							>
 								<div>
-									<CustomInput
-										width={340}
-										disabled
-										value={destiCode}
-										defaultValue={matchingData?.destinationCode}
-										onChange={eventHandle}
-									/>
+									<CustomInput width={340} disabled value={destiCode} defaultValue={matchingData?.destinationCode} />
 								</div>
 							</div>
 						</Part>
