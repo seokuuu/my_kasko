@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react'
 import { BtnBound, SkyBtn, TGreyBtn, TWhiteBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
+	auctionPackDetailModal,
+	auctionPackDetailNumAtom,
+	biddingAgreementModal,
 	invenDestinationData,
 	selectedRowsAtom,
 	toggleAtom,
@@ -19,8 +22,8 @@ import {
 	StyledHeading,
 	StyledSubHeading,
 	SubTitle,
-	TCSubContainer,
 	TableContianer,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -41,11 +44,12 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import Agreement from '../../../modal/Common/Agreement'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import useAlert from '../../../store/Alert/useAlert'
-import { auctionPackDetailModal, auctionPackDetailNumAtom, biddingAgreementModal } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import BiddingSearchFields from './BiddingSearchFields'
 import PackDetail from './PackDetail'
 import { getDestinations } from '../../../api/search'
+import { onSizeChange } from '../../Operate/utils'
+
 const Bidding = ({}) => {
 	const navigate = useNavigate()
 	const [aucDetail, setAucDetail] = useAtom(auctionPackDetailNumAtom) // 해당 row 값 저장
@@ -215,14 +219,6 @@ const Bidding = ({}) => {
 	}, [checkedArray, finalInput, param])
 
 	console.log('checkedArray', checkedArray)
-
-	const handleTablePageSize = (event) => {
-		setParam((prevParam) => ({
-			...prevParam,
-			pageSize: Number(event.target.value),
-			pageNum: 1,
-		}))
-	}
 
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
@@ -422,7 +418,7 @@ const Bidding = ({}) => {
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown handleDropdown={handleTablePageSize} />
+						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
 						<Excel getRow={getRow} />
 					</div>
 				</TCSubContainer>
@@ -527,7 +523,7 @@ const Bidding = ({}) => {
 				<PackDetail aucDetail={aucDetail} packNum={aucDetail['패키지 번호']} setAucDetailModal={setAucDetailModal} />
 			)}
 			{/* 입찰 동의서 모달 */}
-			
+
 			{agreementModal ? (
 				<Agreement
 					setAgreementModal={setAgreementModal}

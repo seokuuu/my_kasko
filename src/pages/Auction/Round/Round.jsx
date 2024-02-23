@@ -2,7 +2,13 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom2, toggleAtom } from '../../../store/Layout/Layout'
+import {
+	auctionRoundEditPageAtom,
+	btnCellUidAtom,
+	roundPostModalAtom,
+	selectedRowsAtom2,
+	toggleAtom,
+} from '../../../store/Layout/Layout'
 
 import Table from '../../Table/Table'
 
@@ -15,8 +21,8 @@ import {
 	StyledHeading,
 	StyledSubHeading,
 	SubTitle,
-	TCSubContainer,
 	TableContianer,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -29,9 +35,9 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import AuctionRound from '../../../modal/Multi/AuctionRound'
 import useAlert from '../../../store/Alert/useAlert'
-import { auctionRoundEditPageAtom, btnCellUidAtom, roundPostModalAtom } from '../../../store/Layout/Layout'
 import RoundAucListEdit from './RoundAucListEdit'
 import RoundSearchFields from './RoundSearchFields'
+import { onSizeChange } from '../../Operate/utils'
 
 const Round = ({}) => {
 	const { simpleConfirm, simpleAlert } = useAlert()
@@ -157,14 +163,6 @@ const Round = ({}) => {
 			setRoundModal(false)
 		}
 	}, [])
-
-	const handleTablePageSize = (event) => {
-		setParam((prevParam) => ({
-			...prevParam,
-			pageSize: Number(event.target.value),
-			pageNum: 1,
-		}))
-	}
 
 	const globalProductResetOnClick = () => {
 		setParam(initialParamState)
@@ -293,7 +291,7 @@ const Round = ({}) => {
 								<Hidden />
 							</div>
 							<div style={{ display: 'flex', gap: '10px' }}>
-								<PageDropdown handleDropdown={handleTablePageSize} />
+								<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
 								<Excel getRow={getRow} />
 							</div>
 						</TCSubContainer>

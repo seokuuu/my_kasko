@@ -1,3 +1,3 @@
 export function onSizeChange(e, setState) {
-  setState((p) => ({ ...p, pageSize: e.target.value }))
+	setState((p) => ({ ...p, pageNum: 1, pageSize: e.target.value }))
 }

@@ -43,6 +43,7 @@ import useAlert from '../../../store/Alert/useAlert'
 import { AuctionUnitPriceAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import StartPriceFields from './StartPriceFields'
+import { onSizeChange } from '../../Operate/utils'
 
 const StartPrice = ({}) => {
 	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
@@ -378,7 +379,7 @@ const StartPrice = ({}) => {
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown handleDropdown={(e) => setParam((p) => ({ ...p, pageSize: e.target.value }))} />
+						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
 						<Excel getRow={getRow} sheetName="경매 시작 단가 관리" />
 					</div>
 				</TCSubContainer>
