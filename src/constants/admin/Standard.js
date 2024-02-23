@@ -98,6 +98,7 @@ export const StandardDestinaionFieldsCols = [
 export const StandardTransportationFields = {
 	'운반비 고유 번호': 'uid',
 	창고: 'storage',
+	목적지코드: 'destinationCode',
 	목적지명: 'destinationName',
 	제품군: 'spart',
 	적용일: 'effectDate',
@@ -110,8 +111,8 @@ export const StandardTransportationFields = {
 // 기준 관리 - 운반비 관리 post
 export const StandardTransportationPost = {
 	출발지: 'dropdown4',
-	// '목적지 찾기': 'destipostbutton',
-	// '목적지 코드': 'destipostcode',
+	'목적지 찾기': 'destipostbutton',
+	'목적지 코드': 'destipostcode',
 	목적지: 'destinationName',
 	'제품 구분': 'dropdown',
 	'단가 적용일': 'date',
@@ -151,6 +152,12 @@ export const StandardTransportationFieldsCols = [
 	},
 	{
 		field: '창고',
+		headerClass: 'custom-header-style',
+		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+		minWidth: 100,
+	},
+	{
+		field: '목적지코드',
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 		minWidth: 100,

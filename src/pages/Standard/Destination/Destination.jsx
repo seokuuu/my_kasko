@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import Hidden from '../../../components/TableInner/Hidden'
@@ -44,6 +44,9 @@ import {
 } from '../../../service/admin/Standard'
 import useAlert from '../../../store/Alert/useAlert'
 import DestinationSearchFilter from './DestinationSearchFilter'
+import DestinationSinglePost from './DestinationSinglePost'
+import { queryClient } from '../../../api/query'
+import { useLoading } from '../../../store/Loading/loadingAtom'
 
 // INITIAL PARAM
 const initialParamData = {
@@ -51,45 +54,36 @@ const initialParamData = {
 	pageSize: 50,
 }
 
-// convert key
-const convertKey = {
-	'목적지 명': 'name',
-	비고: 'note',
+const initPostData = {
+	isSpecialAddress: false,
+	name: null,
+	note: null,
 }
 
-// match object
-const DESTINATION_MATCH = {
-	'목적지 수정': '찾기',
-	'목적지 코드': 'code',
-	'목적지 명': 'destination',
-	작성자: 'createMember',
-	작성일: 'createDate',
-	수정자: 'updateMember',
-	수정일: 'updateDate',
-	비고: 'destination-input',
-}
-
-const Destination = ({}) => {
+const Destination = () => {
 	// MODAL
 	const [modalSwitch, setModalSwitch] = useAtom(modalAtom)
 	const { simpleAlert } = useAlert()
 	const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
-	const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
-	// adress
-	const [address, setAddress] = useState('')
-	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-	const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
+	const setNowPopup = useSetAtom(popupObject) // 팝업 객체
+
+	const uidAtom = useAtomValue(btnCellUidAtom)
 	const [excelToJson, setExcelToJson] = useAtom(excelToJsonAtom)
+
+	// POST DATA
+	const [postData, setPostData] = useState(initPostData)
+
 	// TABLE
 	const [getRow, setGetRow] = useState([])
 	const tableField = useRef(StandardDestinaionFieldsCols)
 	const originEngRowField = StandardDestinaionFields
 	const getCol = tableField.current
 	const checkedArray = useAtom(selectedRowsAtom)[0]
+
 	// API
 	const [param, setParam] = useState(initialParamData)
 	const [pagination, setPagination] = useState([])
-	const queryClient = useQueryClient()
+
 	// GET LIST
 	const { isLoading, data, isSuccess, refetch } = useReactQuery(param, 'getAdminDestination', getAdminDestination)
 	// POST NEW DESTINATION
@@ -100,8 +94,6 @@ const Destination = ({}) => {
 			queryClient.invalidateQueries('destination')
 		},
 	})
-
-	const [editInput, setEditInput] = useState({ name: address, note: '' })
 
 	// DATA
 	const resData = data?.data?.data?.list
@@ -117,14 +109,13 @@ const Destination = ({}) => {
 	/* ==================== UPDATE HANDLER start ==================== */
 	// propsPost 함수
 	const propsPost = () => {
-		// console.log(editInput);
-		postMutation.mutate(editInput, {
+		console.log('postData : ', postData)
+		postMutation.mutate(postData, {
 			onSuccess: () => {
 				simpleAlert('저장 되었습니다.')
 				setModalSwitch(false)
-				setEditInput('')
-
-				// 추가로 필요한 작업 수행
+				setPostData(initPostData)
+				queryClient.invalidateQueries('destination')
 			},
 			onError: (error) => {
 				simpleAlert(error?.data?.message || '목적지 등록에 실패하였습니다. 다시 시도해 주세요.')
@@ -132,18 +123,6 @@ const Destination = ({}) => {
 		})
 	}
 
-	// 여기에 목적지 관련한 것도 추가로 넣기
-	const onEditHandler = useCallback(
-		(e) => {
-			const { name, value } = e.target
-			setEditInput({
-				...editInput,
-				// uid: uidAtom,
-				[name]: value,
-			})
-		},
-		[editInput],
-	)
 	/* ==================== UPDATE HANDLER end ==================== */
 
 	/* ==================== DELETE HANDLER start ==================== */
@@ -240,11 +219,7 @@ const Destination = ({}) => {
 		if (postMutation.isSuccess) refetch()
 	}, [postMutation.isSuccess])
 
-	useEffect(() => {
-		setEditInput({
-			name: address,
-		})
-	}, [address])
+	useLoading(postMutation?.isLoading)
 	/* ==================== STATE end ==================== */
 
 	return (
@@ -310,10 +285,11 @@ const Destination = ({}) => {
 			{modalSwitch && (
 				// Post
 				<Upload
-					width={'900'}
+					width={'1200'}
 					modalSwitch={modalSwitch}
 					setModalSwitch={setModalSwitch}
 					title={'목적지 등록'}
+					category={'목적지 등록'}
 					originEngRowField={originEngRowField}
 					excelToJson={excelToJson}
 					setExcelToJson={setExcelToJson}
@@ -321,11 +297,10 @@ const Destination = ({}) => {
 					modalInTable={StandardDestinationPost}
 					getRow={getRow}
 					uidAtom={uidAtom}
-					onEditHandler={onEditHandler}
-					address={address}
-					setAddress={setAddress}
 					excelUploadAPI={postExcelAdminDestination}
 					refreshQueryKey={'getAdminDestination'}
+					data={postData}
+					setData={setPostData}
 				/>
 			)}
 		</FilterContianer>

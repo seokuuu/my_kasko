@@ -9,8 +9,8 @@ import DestinationPost from './DestinationPost'
 import { useState } from 'react'
 
 const DestinationPage = () => {
+	const depth2Color = '목적지 관리'
 	const [expanded, setExpanded] = useState('마이페이지')
-	const [depth2Color, setDepth2Color] = useState('목적지 관리')
 	const [choiceComponent, setChoiceComponent] = useState('리스트')
 
 	const renderChoiceComponent = () => {

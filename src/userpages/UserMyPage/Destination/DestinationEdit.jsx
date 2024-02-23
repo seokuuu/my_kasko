@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
 	Alert,
 	HalfWrap,
@@ -19,11 +19,13 @@ import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../comm
 import { useMutation } from '@tanstack/react-query'
 import { destinationQueryKey, getDetailDestination, patchDestination } from '../../../api/myPage'
 import { queryClient } from '../../../api/query'
-import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
+import { BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 import AddressFinder from '../../../components/DaumPost/Address'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { isEmptyObj } from '../../../lib'
 import useAlert from '../../../store/Alert/useAlert'
+import { getSpecialDestination } from '../../../api/search'
+import { MainSelect } from '../../../common/Option/Main'
 
 /**
  * @description
@@ -43,6 +45,15 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 			value: 0,
 		},
 	]
+
+	// 특수목적지 목록
+	const [specialDestinations, setSpecialDestinations] = useState([])
+	const [selectedSpecialDestination, setSelectedSpecialDestination] = useState(null)
+
+	const getSpecials = async () => {
+		const response = await getSpecialDestination()
+		setSpecialDestinations(response)
+	}
 
 	const { mutate: update } = useMutation(patchDestination, {
 		onSuccess() {
@@ -101,6 +112,10 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 	}
 	const submit = async () => {
 		if (!isEmptyObj(input)) simpleAlert('빈값을 채워주세요.')
+		if (!!selectedSpecialDestination && !input.address.startsWith(selectedSpecialDestination.label)) {
+			simpleAlert('등록된 기본 주소로 다시 검색해주세요.')
+			return
+		}
 		update({ uid: uidAtom, ...input })
 	}
 	useEffect(() => {
@@ -118,6 +133,11 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 			})
 		}
 	}, [detailData])
+
+	useEffect(() => {
+		getSpecials()
+	}, [])
+
 	return (
 		<OnePageContainer>
 			<MainTitle>목적지 수정</MainTitle>
@@ -146,13 +166,29 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 
 						<Part>
 							<Title>
+								<h4>특수목적지 선택</h4>
+								<p></p>
+							</Title>
+							<MainSelect
+								width={320}
+								options={specialDestinations}
+								defaultValue={specialDestinations[0]}
+								value={selectedSpecialDestination}
+								name="selectedSpecialDestination"
+								onChange={(e) => setSelectedSpecialDestination(e)}
+							/>
+						</Part>
+
+						<Part>
+							<Title>
 								<h4>목적지</h4>
 								<p></p>
 							</Title>
 							<AddressFinder
 								onAddressChange={onAddressHandler}
-								prevAddress={input.address}
+								prevAddress={selectedSpecialDestination?.label ?? input.address}
 								prevAddressDetail={input.addressDetail}
+								defaultQuery={selectedSpecialDestination?.label}
 							/>
 						</Part>
 
@@ -237,4 +273,13 @@ const RadioContainer = styled.div`
 	display: flex;
 	width: 250px;
 	justify-content: space-between;
+`
+
+const BtnWrap = styled.div`
+	display: flex;
+	width: 400px;
+	height: 50px;
+	justify-content: space-evenly;
+	align-items: center;
+	margin: 60px auto;
 `

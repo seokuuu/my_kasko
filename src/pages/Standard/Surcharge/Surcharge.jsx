@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-
 import { BlackBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
-
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
 	FilterContianer,
@@ -11,22 +9,27 @@ import {
 	StyledHeading,
 	StyledSubHeading,
 	SubTitle,
-	TCSubContainer,
 	TableBottomWrap,
 	TableContianer,
 	TableTitle,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
-import { blueModalAtom, toggleAtom, surEditModalAtom } from '../../../store/Layout/Layout'
+import {
+	btnCellRenderAtom,
+	btnCellUidAtom,
+	popupAtom,
+	popupObject,
+	selectedRowsAtom,
+	surEditModalAtom,
+	toggleAtom,
+} from '../../../store/Layout/Layout'
 import { addPropertyToObject } from '../../../utils/utils'
-
 import { Link } from 'react-router-dom'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { isArray } from 'lodash'
 import { StandardSurchargeFields, StandardSurchargeFieldsCols } from '../../../constants/admin/Standard'
-import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import TransportModal from '../../../modal/Multi/Transport'
@@ -36,39 +39,27 @@ import {
 	getAdminSurcharge,
 	postAdminSurcharge,
 } from '../../../service/admin/Standard'
-import { btnCellRenderAtom, btnCellUidAtom, selectedRowsAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
-
-import { popupAtom, popupObject, popupTypeAtom } from '../../../store/Layout/Layout'
-
 import { popupDummy } from '../../../modal/Alert/PopupDummy'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
 import useAlert from '../../../store/Alert/useAlert'
+import { queryClient } from '../../../api/query'
 
-const Transport = ({}) => {
+const Transport = () => {
+	const { simpleAlert } = useAlert()
+
 	const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
-	const [nowPopup, setNowPopup] = useAtom(popupObject) // 팝업 객체
-	const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
-	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
+	const setNowPopup = useSetAtom(popupObject) // 팝업 객체
+	const uidAtom = useAtomValue(btnCellUidAtom)
 	const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
 	const [types, setTypes] = useState(0) // 매입 매출 구분 (0: 매입 / 1: 매출)
 	const [startDate, setStartDate] = useState(new Date()) // 수정 버튼 Date
 	const [modalMode, setModalMode] = useAtom(surEditModalAtom)
-	const handleSelectChange = (selectedOption, name) => {
-		// setInput(prevState => ({
-		//   ...prevState,
-		//   [name]: selectedOption.label,
-		// }));
-	}
-	const [isRotated, setIsRotated] = useState(false)
-	const { simpleAlert } = useAlert()
 
-	console.log('uidAtom', uidAtom)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
+	const [getRow, setGetRow] = useState([])
+	const tableField = useRef(StandardSurchargeFieldsCols)
+	const getCol = tableField.current
+	const checkedArray = useAtom(selectedRowsAtom)[0]
 
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -82,27 +73,6 @@ const Transport = ({}) => {
 		}
 	}
 
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
-
-	console.log('isModal =>', isModal)
-
-	const modalOpen = () => {
-		setIsModal(true)
-	}
-
-	const [getRow, setGetRow] = useState('')
-	const tableField = useRef(StandardSurchargeFieldsCols)
-	const getCol = tableField.current
-	const queryClient = useQueryClient()
-	const checkedArray = useAtom(selectedRowsAtom)[0]
-
-	useEffect(() => {
-		setParam((prevParams) => ({
-			...prevParams,
-			type: types,
-		}))
-	}, [types])
-
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
@@ -111,23 +81,9 @@ const Transport = ({}) => {
 
 	// GET
 	const [param, setParam] = useState(paramData)
-	console.log('param', param)
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getAdminSurcharge', getAdminSurcharge)
 	const resData = data?.data?.data?.list
 	const [tablePagination, setTablePagination] = useState([])
-	console.log('resData => ', resData)
-
-	useEffect(() => {
-		let getData = resData
-		//타입, 리액트쿼리, 데이터 확인 후 실행
-		if (!isSuccess && !resData) return
-		if (Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, StandardSurchargeFields))
-			setTablePagination(data.data.data.pagination)
-		}
-	}, [isSuccess, resData])
-
-	console.log('getRow =>', getRow)
 
 	// DELETE
 	const mutation = useMutation(deleteAdminSurcharge, {
@@ -256,6 +212,23 @@ const Transport = ({}) => {
 		}))
 	}
 
+	useEffect(() => {
+		let getData = resData
+		//타입, 리액트쿼리, 데이터 확인 후 실행
+		if (!isSuccess && !resData) return
+		if (Array.isArray(getData)) {
+			setGetRow(add_element_field(getData, StandardSurchargeFields))
+			setTablePagination(data.data.data.pagination)
+		}
+	}, [isSuccess, resData])
+
+	useEffect(() => {
+		setParam((prevParams) => ({
+			...prevParams,
+			type: types,
+		}))
+	}, [types])
+
 	return (
 		<FilterContianer>
 			<div>
@@ -289,11 +262,17 @@ const Transport = ({}) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						<Excel getRow={getRow} />
+						<Excel getRow={getRow} sheetName={'할증 관리'} />
 					</div>
 				</TCSubContainer>
 
-				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
+				<Table
+					getCol={getCol}
+					getRow={getRow}
+					loading={isLoading}
+					tablePagination={tablePagination}
+					onPageChange={onPageChange}
+				/>
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
