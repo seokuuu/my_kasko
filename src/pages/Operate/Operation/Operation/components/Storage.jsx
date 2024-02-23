@@ -105,6 +105,11 @@ const Storage = () => {
 		}
 	}, [uid])
 
+	// 진입 시 모달 초기화
+	useEffect(() => {
+		setModal(false)
+	}, [])
+
 	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setSearch)
 	return (
 		<TableContianer>
