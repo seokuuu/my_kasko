@@ -44,6 +44,7 @@ import InventorySearchFields from './InventorySearchFields'
 import { isEqual } from 'lodash'
 import useAlert from '../../../store/Alert/useAlert'
 import { KilogramSum } from '../../../utils/KilogramSum'
+import { onSizeChange } from '../../Operate/utils'
 
 const Inventory = ({}) => {
 	const paramData = { pageNum: 1, pageSize: 50, reciptStatus: '입고 확정' }
@@ -198,11 +199,7 @@ const Inventory = ({}) => {
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown
-							handleDropdown={(e) => {
-								setParam((p) => ({ ...p, pageNum: 1, pageSize: e.target.value }))
-							}}
-						/>
+						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
 						<Excel getRow={TableData} />
 					</div>
 				</TCSubContainer>

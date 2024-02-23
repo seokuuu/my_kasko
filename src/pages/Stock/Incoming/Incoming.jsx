@@ -22,6 +22,7 @@ import { KilogramSum } from '../../../utils/KilogramSum'
 import Table from '../../Table/Table'
 import IncomingModify from './IncomingModify'
 import IncomingSearchFields from './IncomingSearchFields'
+import { onSizeChange } from '../../Operate/utils'
 const Incoming = ({}) => {
 	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
 
@@ -205,7 +206,7 @@ const Incoming = ({}) => {
 							개 )<Hidden />
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
-							<PageDropdown handleDropdown={(e) => setParam((p) => ({ ...p, pageSize: e.target.value }))} />
+							<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
 							<Excel getRow={getRow} />
 						</div>
 					</TCSubContainer>

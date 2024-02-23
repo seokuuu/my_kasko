@@ -1,59 +1,29 @@
-import { useEffect, useRef, useState } from 'react'
-import { BlackBtn, GreyBtn, SkyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
-import { storageOptions } from '../../../common/Option/SignUp'
-import DateGrid from '../../../components/DateGrid/DateGrid'
+import {useEffect, useRef, useState} from 'react'
+import {SkyBtn, WhiteBlackBtn, WhiteRedBtn} from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import {selectedRowsAtom, toggleAtom, winningAtom} from '../../../store/Layout/Layout'
 
 import Table from '../../Table/Table'
 
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { CheckImg2, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+import {FilterContianer, FilterHeader, TableContianer, TCSubContainer,} from '../../../modal/External/ExternalFilter'
 
-import {
-	DoubleWrap,
-	ExCheckDiv,
-	ExCheckWrap,
-	ExInputsWrap,
-	FilterContianer,
-	FilterFooter,
-	FilterHeader,
-	FilterHeaderAlert,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
-	GridWrap,
-	Input,
-	PartWrap,
-	PWRight,
-	ResetImg,
-	RowWrap,
-	TableContianer,
-	TCSubContainer,
-	Tilde,
-} from '../../../modal/External/ExternalFilter'
-
-import { useAtom } from 'jotai'
-import { Link, useNavigate } from 'react-router-dom'
-import { winningAtom } from '../../../store/Layout/Layout'
+import {useAtom} from 'jotai'
+import {Link} from 'react-router-dom'
 
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { AuctionWinningFields, AuctionWinningFieldsCols } from '../../../constants/admin/Auction'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import {AuctionWinningFields, AuctionWinningFieldsCols} from '../../../constants/admin/Auction'
+import {useMutation, useQueryClient} from '@tanstack/react-query'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { getWinning, deleteBidding, depositConfirm } from '../../../api/auction/winning'
-import { add_element_field } from '../../../lib/tableHelpers'
-import { doubleClickedRowAtom } from '../../../store/Layout/Layout'
-import useMutationQuery from '../../../hooks/useMutationQuery'
+import {deleteBidding, depositConfirm, getWinning} from '../../../api/auction/winning'
+import {add_element_field} from '../../../lib/tableHelpers'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import SingleProductSearchFields from '../../Sales/Single/SingleProductSearchFields'
-import { isEqual } from 'lodash'
+import {isEqual} from 'lodash'
 import WinningSearchFields from './WinningSearchFields'
-import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
+import {CAUTION_CATEGORY, CautionBox} from '../../../components/CautionBox'
 import useAlert from '../../../store/Alert/useAlert'
+import {onSizeChange} from "../../Operate/utils";
 
 // src\pages\Sales\Single\Single.jsx 참고해서 작업 !!!
 const Winning = ({ detailRow }) => {
@@ -200,14 +170,6 @@ const Winning = ({ detailRow }) => {
 		}
 	}, [isSuccess, resData])
 
-	const handleTablePageSize = (event) => {
-		setParam((prevParam) => ({
-			...prevParam,
-			pageSize: Number(event.target.value),
-			pageNum: 1,
-		}))
-	}
-
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
 			...prevParam,
@@ -263,7 +225,7 @@ const Winning = ({ detailRow }) => {
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown handleDropdown={handleTablePageSize} />
+						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
 						<Excel getRow={getRow} />
 					</div>
 				</TCSubContainer>

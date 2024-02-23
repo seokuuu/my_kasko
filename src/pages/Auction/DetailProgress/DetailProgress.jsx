@@ -15,9 +15,10 @@ import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalP
 import { AuctionDetailProgressFields, AuctionDetailProgressFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
-import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import Table from '../../Table/Table'
 import ProgressSearchFields from '../Progress/ProgressSearchFields'
+import { onSizeChange } from '../../Operate/utils'
 
 const DetailProgress = ({}) => {
 	const radioDummy = ['전체', '미진행', '진행중', '종료']
@@ -92,14 +93,6 @@ const DetailProgress = ({}) => {
 			setTablePagination(resPagination)
 		}
 	}, [isSuccess, resData])
-
-	const handleTablePageSize = (event) => {
-		setParam((prevParam) => ({
-			...prevParam,
-			pageSize: Number(event.target.value),
-			pageNum: 1,
-		}))
-	}
 
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
@@ -231,7 +224,7 @@ const DetailProgress = ({}) => {
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown handleDropdown={handleTablePageSize} />
+						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
 						<Excel getRow={getRow} />
 					</div>
 				</TCSubContainer>
