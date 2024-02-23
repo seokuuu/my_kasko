@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
 	Alert,
 	HalfWrap,
@@ -10,25 +10,22 @@ import {
 	Right,
 	Title,
 } from '../../../common/OnePage/OnePage.Styled'
-
 import { CustomInput } from '../../../common/Input/Input'
-
 import { styled } from 'styled-components'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
-
 import { CheckBox } from '../../../common/Check/Checkbox'
-
 import { useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { get_addressFind, post_clientDestination } from '../../../api/userManage'
-import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
+import { BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { isEmptyObj } from '../../../lib'
-import SignUpPost from '../../../modal/SignUp/SignUpPost'
 import useAlert from '../../../store/Alert/useAlert'
 import { UsermanageFindModal } from '../../../store/Layout/Layout'
 import ClientDestiCustomerFind from './ClientDestiCustomerFind'
 import AddressFinder from '../../../components/DaumPost/Address'
+import { MainSelect } from '../../../common/Option/Main'
+import { getSpecialDestination } from '../../../api/search'
 
 const init = {
 	represent: '', // (0: 미지정 / 1: 지정)
@@ -59,79 +56,19 @@ const sidoMapping = {
 	경남: '경상남도',
 }
 const DestinationPost = ({ setChoiceComponent }) => {
-	const [postcodeModal, setPostcodeModal] = useState(false)
-	const [postFind, setPostFind] = useState(false)
-	const [address, setAddress] = useState('')
+	const { simpleConfirm, showAlert, simpleAlert } = useAlert()
+
 	const [postAddress, setPostAdress] = useState('')
-	const [detailAddress, setDetailAddress] = useState('')
-	const [isDaumPostOpen, setIsDaumPostOpen] = useState(false)
 	const [submitData, setSubmitData] = useState(init)
 
-	const postCheck = () => {
-		setPostFind(false)
-	}
-
-	const directCheck = () => {
-		setPostFind(true)
-		setAddress('')
-		setDetailAddress('')
-		setSubmitData({ ...submitData, address: '', addressDetail: '' })
-	}
-
-	const daumPostHandleBtn = () => {
-		setIsDaumPostOpen(true)
-	}
-
-	const detailAddressHandler = (e) => {
-		const value = e.target.value
-		setDetailAddress(value)
-	}
-
-	const comfirmPost = () => {
-		setPostcodeModal(false)
-		setSubmitData({ ...submitData, address: address, addressDetail: detailAddress })
-	}
-
-	const closeModal = () => {
-		setPostcodeModal(false)
-		setAddress('')
-		setDetailAddress('')
-		setSubmitData({ ...submitData, address: '', addressDetail: '' })
-	}
-
-	const daumPosthandleClose = () => {
-		setIsDaumPostOpen(false)
-	}
-
-	const daumPostHandleComplete = (data) => {
-		console.log('daum post data', data)
-		const { address } = data
-
-		// 지번 주소 전달
-		const mappedSido = sidoMapping[data?.sido] || data?.sido
-		const mergedAddress = [mappedSido, data?.sigungu, data?.bname1, data?.bname2]
-			.filter((value) => value !== '')
-			.join(' ')
-		setAddress(mergedAddress)
-		setDetailAddress(data?.jibunAddressEnglish?.split(' ')[0])
-		setPostAdress(mergedAddress)
-		console.log('mergedAddress =>', mergedAddress)
-		setIsDaumPostOpen(false)
-	}
-	const { simpleConfirm, showAlert, simpleAlert } = useAlert()
-	console.log('submitData', submitData)
-
 	// 목적지 주소 핸들러
-	function onAddressHandler(address, addressDetail, sido, sigungu, bname) {
-		const destination = `${sido} ${sigungu} ${bname}`
+	function onAddressHandler(address, addressDetail, sido, sigungu, bname, bname1) {
+		const destination = `${sidoMapping[sido]} ${sigungu} ${bname} ${bname1}`
+		setPostAdress(address)
 		setSubmitData((p) => ({ ...p, address, addressDetail, destination }))
 	}
 
-	console.log('찐 =>', address, detailAddress)
-
 	const [destiCode, setDestiCode] = useState()
-
-	console.log('postAddress', postAddress)
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -139,6 +76,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 				if (postAddress) {
 					const response = await get_addressFind(postAddress)
 					const resData = response?.data?.data
+					console.log('resData : ', resData)
 					if (resData) {
 						setDestiCode(resData)
 					} else {
@@ -162,7 +100,9 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	const mutation = useMutationQuery('', post_clientDestination)
 	const [customerFindResult, setCustomerFindResult] = useState()
 
-	console.log('customerFindResult', customerFindResult)
+	// 특수목적지 목록
+	const [specialDestinations, setSpecialDestinations] = useState([])
+	const [selectedSpecialDestination, setSelectedSpecialDestination] = useState(null)
 
 	useEffect(() => {
 		const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
@@ -187,7 +127,13 @@ const DestinationPost = ({ setChoiceComponent }) => {
 		if (!isEmptyObj(submitData)) {
 			return simpleAlert('빈값을 채워주세요.')
 		}
+
 		if (isEmptyObj(submitData)) {
+			if (!!selectedSpecialDestination && !submitData.address.startsWith(selectedSpecialDestination.label)) {
+				simpleAlert('등록된 기본 주소로 다시 검색해주세요.')
+				return
+			}
+
 			mutation.mutate(submitData, {
 				onSuccess: (d) => {
 					if (d?.data?.status === 200) {
@@ -214,6 +160,16 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	const goBack = () => {
 		setChoiceComponent('리스트')
 	}
+
+	const getSpecials = async () => {
+		const response = await getSpecialDestination()
+		setSpecialDestinations(response)
+	}
+
+	useEffect(() => {
+		getSpecials()
+	}, [])
+
 	return (
 		<OnePageContainer style={{ minHeight: '88vh' }}>
 			<MainTitle>고객사 목적지 등록</MainTitle>
@@ -262,27 +218,45 @@ const DestinationPost = ({ setChoiceComponent }) => {
 						</Part>
 						<Part>
 							<Title>
+								<h4>특수목적지 선택</h4>
+								<p></p>
+							</Title>
+							<MainSelect
+								width={320}
+								options={specialDestinations}
+								defaultValue={specialDestinations[0]}
+								value={selectedSpecialDestination}
+								name="selectedSpecialDestination"
+								onChange={(e) => setSelectedSpecialDestination(e)}
+							/>
+						</Part>
+						<Part>
+							<Title>
 								<h4>목적지</h4>
 								<p></p>
 							</Title>
-							<AddressFinder onAddressChange={onAddressHandler} />
+							<AddressFinder
+								onAddressChange={onAddressHandler}
+								defaultQuery={selectedSpecialDestination?.label}
+								prevAddress={selectedSpecialDestination?.label}
+							/>
 						</Part>
-						{/*<Part>*/}
-						{/*	<Title>*/}
-						{/*		<h4>목적지 코드</h4>*/}
-						{/*		<p></p>*/}
-						{/*	</Title>*/}
-						{/*	<div*/}
-						{/*		style={{*/}
-						{/*			display: 'flex',*/}
-						{/*			width: '345px',*/}
-						{/*		}}*/}
-						{/*	>*/}
-						{/*		<div>*/}
-						{/*			<CustomInput width={340} disabled value={destiCode} />*/}
-						{/*		</div>*/}
-						{/*	</div>*/}
-						{/*</Part>*/}
+						<Part>
+							<Title>
+								<h4>목적지 코드</h4>
+								<p></p>
+							</Title>
+							<div
+								style={{
+									display: 'flex',
+									width: '345px',
+								}}
+							>
+								<div>
+									<CustomInput width={340} value={destiCode} disabled />
+								</div>
+							</div>
+						</Part>
 					</Left>
 					<Right style={{ width: '50%' }}>
 						<Part>
@@ -351,25 +325,6 @@ const DestinationPost = ({ setChoiceComponent }) => {
 			{findModal && (
 				<ClientDestiCustomerFind setFindModal={setFindModal} setCustomerFindResult={setCustomerFindResult} />
 			)}
-
-			{postcodeModal && (
-				<SignUpPost
-					postCheck={postCheck}
-					directCheck={directCheck}
-					postFind={postFind}
-					address={address}
-					daumPostHandleBtn={daumPostHandleBtn}
-					detailAddress={detailAddress}
-					setDetailAddress={setDetailAddress}
-					detailAddressHandler={detailAddressHandler}
-					comfirmPost={comfirmPost}
-					closeModal={closeModal}
-					isDaumPostOpen={isDaumPostOpen}
-					daumPosthandleClose={daumPosthandleClose}
-					daumPostHandleComplete={daumPostHandleComplete}
-					noDirect={true}
-				/>
-			)}
 		</OnePageContainer>
 	)
 }
@@ -380,4 +335,12 @@ const RadioContainer = styled.div`
 	display: flex;
 	width: 250px;
 	justify-content: space-between;
+`
+const BtnWrap = styled.div`
+	display: flex;
+	width: 400px;
+	height: 50px;
+	justify-content: space-evenly;
+	align-items: center;
+	margin: 60px auto;
 `

@@ -65,7 +65,18 @@ export const StandardDestinationEdit = {
 // 기준관리 - 목적지관리 fieldsCols
 //  주석 처리 : cell 내 버튼 기능
 export const StandardDestinaionFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	// {
+	// 	...commonStyles,
+	// 	field: '수정',
+	// 	minWidth: 90,
+	// 	cellRenderer: BtnCellRenderer,
+	// 	cellRendererParams: {
+	// 		uidFieldName: '목적지 고유 번호',
+	// 		editType: 'table',
+	// 	},
+	// },
+	{ ...commonStyles, field: '목적지 고유 번호', minWidth: 100 },
 	{ ...commonStyles, field: '목적지 코드', minWidth: 100 }, //숫자
 	{ ...commonStyles, field: '목적지 명', minWidth: 300 },
 	{ ...commonStyles, field: '작성자', minWidth: 100 },
@@ -87,6 +98,7 @@ export const StandardDestinaionFieldsCols = [
 export const StandardTransportationFields = {
 	'운반비 고유 번호': 'uid',
 	창고: 'storage',
+	목적지코드: 'destinationCode',
 	목적지명: 'destinationName',
 	제품군: 'spart',
 	적용일: 'effectDate',
@@ -99,8 +111,8 @@ export const StandardTransportationFields = {
 // 기준 관리 - 운반비 관리 post
 export const StandardTransportationPost = {
 	출발지: 'dropdown4',
-	// '목적지 찾기': 'destipostbutton',
-	// '목적지 코드': 'destipostcode',
+	'목적지 찾기': 'destipostbutton',
+	'목적지 코드': 'destipostcode',
 	목적지: 'destinationName',
 	'제품 구분': 'dropdown',
 	'단가 적용일': 'date',
@@ -133,31 +145,41 @@ export const StandardTransportationFieldsCols = [
 		},
 	},
 	{
-		...commonStyles,
+    ...commonStyles,
+		field: '운반비 고유 번호',
+		minWidth: 160,
+	},
+	{
+    ...commonStyles,
 		field: '창고',
 		minWidth: 100,
 	},
 	{
-		...commonStyles,
+    ...commonStyles,
+		field: '목적지코드',
+		minWidth: 100,
+	},
+	{
+    ...commonStyles,
 		field: '목적지명',
 		minWidth: 100,
 	},
 	{
-		...commonStyles,
+    ...commonStyles,
 		field: '제품군',
 		minWidth: 100,
 	},
 	{
-		...commonStyles,
+    ...commonStyles,
 		field: '적용일',
 	},
 	{
-		...commonStyles,
+    ...commonStyles,
 		field: '이전단가',
 		minWidth: 100,
 	},
 	{
-		...commonStyles,
+    ...commonStyles,
 		field: '적용단가',
 		minWidth: 100,
 	},
