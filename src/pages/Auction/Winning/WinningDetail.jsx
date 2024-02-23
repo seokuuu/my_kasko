@@ -1,10 +1,13 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 import {
+	BlackBtn,
 	BtnBound,
+	NewBottomBtnWrap,
 	SkyBtn,
 	TGreyBtn,
 	TWhiteBtn,
 	WhiteBlackBtn,
+	WhiteBtn,
 	WhiteRedBtn,
 	WhiteSkyBtn,
 } from '../../../common/Button/Button'
@@ -32,7 +35,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isEqual } from 'lodash'
 import {
 	destiApproveReq,
-	destiChangeApprove,
 	destiChangeReject,
 	getWinningDetail,
 	partDeleteBidding,
@@ -47,13 +49,13 @@ import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
+import useAlert from '../../../store/Alert/useAlert'
 import PrintDepositRequestButton from '../../../userpages/UserSales/_components/PrintDepositRequestButton'
 import Table from '../../Table/Table'
 import WinningDetailFields from './WinningDetailFields'
-import useAlert from '../../../store/Alert/useAlert'
 
 // 경매 낙찰 상세
-const WinningDetail = ({ detailRow }) => {
+const WinningDetail = ({ detailRow, setDetailRow }) => {
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [tablePagination, setTablePagination] = useState([])
@@ -553,6 +555,17 @@ const WinningDetail = ({ detailRow }) => {
 						<SkyBtn onClick={partDepostiHandler}>부분 입금 확인</SkyBtn>
 					</div>
 				</TCSubContainer>
+				<NewBottomBtnWrap>
+					<BlackBtn
+						width={13}
+						height={40}
+						onClick={() => {
+							setDetailRow(null)
+						}}
+					>
+						돌아가기
+					</BlackBtn>
+				</NewBottomBtnWrap>
 				{addModal && <DefaultBlueBar setAddModal={setAddModal} />}
 			</TableContianer>
 			{destinationPopUp && (
