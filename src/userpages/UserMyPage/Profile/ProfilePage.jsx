@@ -19,9 +19,6 @@ const ProfilePage = () => {
 					<SubHeader />
 					<OverAllTable>
 						<ProfileEdit />
-						{/* <ProfileCopy /> */}
-
-						{/* <ProfileCopy /> */}
 					</OverAllTable>
 				</OverAllSub>
 			</OverAllMain>
