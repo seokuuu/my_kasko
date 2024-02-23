@@ -17,6 +17,7 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import ProgressSearchFields from './ProgressSearchFields'
+import { onSizeChange } from '../../Operate/utils'
 
 const Progress = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
@@ -94,14 +95,6 @@ const Progress = ({}) => {
 	useEffect(() => {
 		if (isSuccess) refetch()
 	}, [isSuccess])
-
-	const handleTablePageSize = (event) => {
-		setParam((prevParam) => ({
-			...prevParam,
-			pageSize: Number(event.target.value),
-			pageNum: 1,
-		}))
-	}
 
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
@@ -233,7 +226,7 @@ const Progress = ({}) => {
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown handleDropdown={handleTablePageSize} />
+						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
 						<Excel getRow={getRow} />
 					</div>
 				</TCSubContainer>

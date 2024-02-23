@@ -16,8 +16,6 @@ const LinkRenderer = (props) => {
 		auctionNumber: data['경매 번호'],
 		customerCode: data['고객 코드'],
 		storage: data['창고'],
-		customerDestinationUid: data['고객사 목적지 고유 번호'],
-		sendDate: data['확정 전송일'] === null ? '' : data['확정 전송일'],
 
 		saleType: data['판매 유형'],
 		weight: data['중량'],
@@ -27,6 +25,13 @@ const LinkRenderer = (props) => {
 		customerDestinationPhone: data['목적지 연락처'],
 		totalPrice: data['입금요청액'],
 	})
+
+	if (data['고객사 목적지 고유 번호'] !== null && data['고객사 목적지 고유 번호'] !== 'null') {
+		queryParams.append('customerDestinationUid', data['고객사 목적지 고유 번호'])
+	}
+	if (data['확정 전송일'] !== null && data['확정 전송일'] !== 'null') {
+		queryParams.append('sendDate', data['확정 전송일'])
+	}
 
 	const url = `admin/order/detail?${queryParams}`
 

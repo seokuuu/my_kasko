@@ -23,7 +23,7 @@ import OrderSearchFields from './OrderSearchFields'
 import { isEqual } from 'lodash'
 import useAlert from '../../store/Alert/useAlert'
 import useOrder from './useOrder'
-import { Description } from '@mui/icons-material'
+import { onSizeChange } from '../Operate/utils'
 
 const Order = () => {
 	const { simpleAlert } = useAlert()
@@ -89,10 +89,6 @@ const Order = () => {
 	}
 	// const gridRef = useRef()
 	const [sortNum, setSortNum] = useAtom(pageSort)
-
-	const handleDropdown = (e) => {
-		setSortNum(e.target.value)
-	}
 
 	const [getRow, setGetRow] = useState('')
 
@@ -225,7 +221,7 @@ const Order = () => {
 						{orderPagination?.listCount}개 )<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown handleDropdown={handleDropdown} />
+						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
 						<Excel getRow={getRow} />
 					</div>
 				</TCSubContainer>
