@@ -40,6 +40,7 @@ const AdminOrderDetail = () => {
 		postDepositCancelOrderAll,
 		postSuccessfulOrder,
 	} = useOrder()
+	const navigate = useNavigate()
 	const [getRow, setGetRow] = useState([])
 	const [productNumberOut, setProductNumberOut] = useState([])
 
@@ -85,10 +86,14 @@ const AdminOrderDetail = () => {
 	const { data: detailRes, isSuccess, refetch } = useReactQuery(param, 'getDetailOrderList', getDetailOrderList)
 	useEffect(() => {
 		if (detailRes && detailRes.data && detailRes.data.list) {
-			setDetailOrderListData(formatTableRowData(detailRes.data.list))
-			setDetailOrderPagination(detailRes.data.pagination)
-			// 패키지 여부 체크
-			setIsPackage(!!detailRes.data.list[0].packageNumber)
+			if (detailRes.data.list.length === 0) {
+				navigate(-1)
+			} else {
+				setDetailOrderListData(formatTableRowData(detailRes.data.list))
+				setDetailOrderPagination(detailRes.data.pagination)
+				// 패키지 여부 체크
+				setIsPackage(!!detailRes.data.list[0].packageNumber)
+			}
 		}
 	}, [isSuccess, detailRes])
 	const totalWeight = detailRes?.data.pagination.totalWeight

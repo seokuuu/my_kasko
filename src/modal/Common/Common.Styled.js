@@ -72,7 +72,7 @@ export const BlueBarHeader = styled.div`
 export const AgreementMain = styled.div`
 	background-color: #eef3fb;
 	width: 100%;
-	height: 92vh;
+	height: 95%;
 
 	> h6 {
 		display: flex;

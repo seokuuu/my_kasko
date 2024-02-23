@@ -1,23 +1,15 @@
-import React, { startTransition } from 'react'
+import React from 'react'
 import { styled } from 'styled-components'
-import { useNavigate } from 'react-router-dom'
 import useAuth from '../../store/Auth/useAuth'
 
 const Header = () => {
-	const navigate = useNavigate()
 	const { getName, logout } = useAuth()
-
-	const goToHome = () => {
-		startTransition(() => {
-			navigate('/')
-		})
-	}
 
 	return (
 		<HeaderWrap>
 			<div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
 				<div style={{ marginLeft: '20px' }}>
-					<img src="/img/header_logo.png" onClick={goToHome} style={{ cursor: 'pointer' }} />
+					<img src="/img/header_logo.png" style={{ cursor: 'pointer' }} alt="main-logo" />
 				</div>
 				<UserWrap>
 					<div>

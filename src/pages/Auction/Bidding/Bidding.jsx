@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react'
 import { BtnBound, SkyBtn, TGreyBtn, TWhiteBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
+	auctionPackDetailModal,
+	auctionPackDetailNumAtom,
+	biddingAgreementModal,
 	invenDestinationData,
 	selectedRowsAtom,
 	toggleAtom,
@@ -19,8 +22,8 @@ import {
 	StyledHeading,
 	StyledSubHeading,
 	SubTitle,
-	TCSubContainer,
 	TableContianer,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -41,13 +44,16 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import Agreement from '../../../modal/Common/Agreement'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import useAlert from '../../../store/Alert/useAlert'
-import { auctionPackDetailModal, auctionPackDetailNumAtom, biddingAgreementModal } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import BiddingSearchFields from './BiddingSearchFields'
 import PackDetail from './PackDetail'
 import { getDestinations } from '../../../api/search'
+import { onSizeChange } from '../../Operate/utils'
+
 const Bidding = ({}) => {
 	const navigate = useNavigate()
+	const [realAucNum, setRealAucNum] = useState(null) // 진짜 경매 번호
+	const [getAgreeState, setGetAgreeState] = useState(false) // 동의 상태
 	const [aucDetail, setAucDetail] = useAtom(auctionPackDetailNumAtom) // 해당 row 값 저장
 	const [aucDetailModal, setAucDetailModal] = useAtom(auctionPackDetailModal) // 패키지 모달
 	const [agreementModal, setAgreementModal] = useAtom(biddingAgreementModal) // 입찰 동의서 모달
@@ -88,7 +94,6 @@ const Bidding = ({}) => {
 
 	const [getRow, setGetRow] = useState('')
 	const getRowFilter = getRow && getRow?.map((x) => x['응찰가'])
-	console.log('getRowFilter', getRowFilter)
 
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
@@ -113,35 +118,36 @@ const Bidding = ({}) => {
 	}
 
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
-	const [liveStatus, setLiveStatus] = useState('getBidding') // TODO : 수정해놓기
+	const [liveStatus, setLiveStatus] = useState('LIVEgetBidding') // TODO : 수정해놓기
 	// 전체 GET
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list
-	console.log('resData 사륜안', resData)
-
-	// const filteredAucNum = resData && resData.map((x) => x['auctionNumber'])
-	// const checkAgreeAucNum = filteredAucNum && filteredAucNum[0]
-
-	// useEffect(() => {}, [checkAgreeAucNum])
-
-	const [realAucNum, setRealAucNum] = useState(null)
-
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
 
-	useEffect(() => {
-		setAgreementModal(!getAgreementData?.data?.data)
-	}, [getAgreementData])
+	const checkGetAgreement = getAgreementData?.data?.data
 
-	// 입찰 동의 여부 체크 (true는 확인)
-	const agreementStatus = getAgreementData?.data?.data
-	console.log('agreementStatus', !agreementStatus)
+	useEffect(() => {
+		// 경매번호도 잘 들어오고, get 미동의(false)가 들어왔을 때
+		if (realAucNum && !checkGetAgreement) {
+			setAgreementModal(true)
+		} else setAgreementModal(false)
+	}, [realAucNum, checkGetAgreement])
+
+	// status가 false여야지 모달이 보이는거니 !false 형식으로
 
 	const resPagination = data?.data?.data?.pagination
 
+	// 초기 목적지 GET
+	const { data: destiData } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
+
+	const initDestiData = destiData?.data?.data
+	const filteredDestiData = initDestiData?.filter((item) => item.represent === 1)
+	const firstDestiData = filteredDestiData?.[0]
+
 	useEffect(() => {
 		let getData = resData
-		const filteredAucNum = resData && resData.map((x) => x['auctionNumber'])
-		const checkAgreeAucNum = filteredAucNum && filteredAucNum[0]
+		const filteredAucNum = resData && resData.map((x) => x['auctionNumber']) // 경매 번호 get
+		const checkAgreeAucNum = filteredAucNum && filteredAucNum[0] // 경매 번호 1개 추출
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
 			setGetRow(add_element_field(getData, AuctionBiddingFields))
@@ -151,8 +157,9 @@ const Bidding = ({}) => {
 				...prev,
 				auctionNumber: checkAgreeAucNum,
 			}))
+			setDestiObject(firstDestiData)
 		}
-	}, [isSuccess, resData])
+	}, [isSuccess, resData, initDestiData])
 
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArray?.[0]?.['경매 번호']
@@ -165,8 +172,6 @@ const Bidding = ({}) => {
 	const [winningCreateData, setWinningCreateData] = useState(init)
 
 	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getDestinations)
-
-	console.log('auctionDestination. bidding 목적지', auctionDestination)
 
 	//
 	useEffect(() => {
@@ -214,7 +219,6 @@ const Bidding = ({}) => {
 		}))
 	}, [checkedArray, finalInput, param])
 
-	console.log('checkedArray', checkedArray)
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -223,6 +227,7 @@ const Bidding = ({}) => {
 			pageNum: 1,
 		}))
 	}
+
 
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
@@ -290,20 +295,18 @@ const Bidding = ({}) => {
 	const agreementOnClickHandler = () => {
 		if (checkAgreement?.agreement === 'N') {
 			showAlert({
-				title: '해당 회차에 미동의하셨습니다. \n 이전 페이지로 이동합니다.',
+				title: '해당 회차에 미동의하셨습니다. \n 메인 페이지로 이동합니다.',
 				content: '',
 				func: () => {
 					refetch()
 					setAgreementModal(false)
-					navigate(-1)
+					navigate('/main')
 				},
 			})
 		} else {
 			postAgreementMutation(checkAgreement)
 		}
 	}
-
-	console.log('checkAgreement', checkAgreement)
 
 	const globalProductResetOnClick = () => {
 		// if resetting the search field shouldn't rerender table
@@ -369,18 +372,9 @@ const Bidding = ({}) => {
 			return item
 		})
 
-		console.log('updatedResData', updatedResData)
-
 		// 변경된 데이터로 state 업데이트
 		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
-
-	// 	TODO : 목적지 항목 추가하기 (후순위)
-	// 	찾기 누르면
-	// 목적지 코드 destiCode ,
-	// 목적지 명 destiName ,
-	// 목적지 주소 address,
-	// 목적지 연락처 phone
 
 	return (
 		<FilterContianer>
@@ -422,7 +416,7 @@ const Bidding = ({}) => {
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown handleDropdown={handleTablePageSize} />
+						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
 						<Excel getRow={getRow} />
 					</div>
 				</TCSubContainer>
@@ -527,14 +521,11 @@ const Bidding = ({}) => {
 				<PackDetail aucDetail={aucDetail} packNum={aucDetail['패키지 번호']} setAucDetailModal={setAucDetailModal} />
 			)}
 			{/* 입찰 동의서 모달 */}
-			
-			{agreementModal ? (
-				<Agreement
-					setAgreementModal={setAgreementModal}
-					setCheckAgreement={setCheckAgreement}
-					agreementOnClickHandler={agreementOnClickHandler}
-				/>
-			) : null}
+
+			{agreementModal && (
+				<Agreement setCheckAgreement={setCheckAgreement} agreementOnClickHandler={agreementOnClickHandler} />
+			)}
+
 		</FilterContianer>
 	)
 }
