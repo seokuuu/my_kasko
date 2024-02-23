@@ -19,6 +19,8 @@ import MultiUploader from './components/MultiUploader'
 import SingleUploader from './components/SingleUploader'
 import useExcelUpload from './useExcelUpload'
 import SingleRegiUploader from './components/SingleRegiUploader'
+import DestinationSinglePost from '../../pages/Standard/Destination/DestinationSinglePost'
+import TransportSinglePost from '../../pages/Standard/Transport/TransportSinglePost'
 
 /**
  * @description
@@ -53,6 +55,8 @@ const Upload = ({
 	setStartDate,
 	category,
 	setFinal,
+	data,
+	setData,
 }) => {
 	// 등록 타입(multi => 대량 등록,sinle => 단일 등록)
 	const [registerType, setRegisterType] = useState('multi')
@@ -121,6 +125,10 @@ const Upload = ({
 							<>
 								<SingleRegiUploader setFinal={setFinal} />
 							</>
+						) : category === '목적지 등록' ? (
+							<DestinationSinglePost data={data} setData={setData} />
+						) : category === '운반비 등록' ? (
+							<TransportSinglePost data={data} setData={setData} />
 						) : (
 							<SingleUploader
 								modalInTable={modalInTable}

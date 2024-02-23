@@ -71,6 +71,7 @@ import TransportSearchFilter from './TransportSearchFilter'
 import { queryClient } from '../../../api/query'
 
 const Transport = () => {
+	const { simpleAlert, simpleConfirm } = useAlert()
 	const [modalSwitch, setModalSwitch] = useAtom(destiPostModalAtom)
 	const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
 	const [popupSwitch, setPopupSwitch] = useAtom(destiDelPopupAtom) // 팝업 스위치
@@ -82,8 +83,6 @@ const Transport = () => {
 	const radioDummy = ['증가', '감소']
 	const uidAtom = useAtomValue(btnCellUidAtom)
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-
-	const { simpleAlert, simpleConfirm } = useAlert()
 
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -250,36 +249,25 @@ const Transport = () => {
 		},
 		[checkedArray],
 	)
-	const [postInput, setPostInput] = useState({
-		type: 0,
+
+	const initPostInput = {
+		type: types,
 		storage: '',
 		destinationCode: '',
 		destinationName: '',
 		spart: '',
 		effectDate: '',
 		effectCost: 0,
-	})
+	}
 
-	const onPostHandler = useCallback(
-		(e) => {
-			const { name, value } = e.target
-			setPostInput((prev) => ({ ...prev, [name]: value }))
-		},
-		[postInput],
-	)
+	const [postInput, setPostInput] = useState(initPostInput)
 
 	const postMutation = useMutationQuery('', postAdminTransportation)
 
 	const propsPost = () => {
-		const postData = {
-			...postInput,
-			destinationName: address,
-			type: types,
-			storage: postInput.storageName,
-			effectDate: moment(startDate).format('YYYY-MM-DD'),
-		}
+		const postData = { ...postInput, storage: postInput.storage.label, spart: postInput.spart.label }
 
-		if (!postData.destinationName) {
+		if (!postData.destinationName || !postData.destinationCode) {
 			simpleAlert('목적지를 선택해주세요.')
 			return
 		}
@@ -296,6 +284,7 @@ const Transport = () => {
 			onSuccess: () => {
 				setModalSwitch(false)
 				queryClient.invalidateQueries('transportation')
+				setPostInput(initPostInput)
 				simpleAlert('등록되었습니다.')
 				refetch()
 			},
@@ -543,22 +532,21 @@ const Transport = () => {
 			{modalSwitch && (
 				// Post
 				<Upload
+					width={1200}
 					title={'운반비 등록'}
+					category={'운반비 등록'}
 					modalSwitch={modalSwitch}
 					setModalSwitch={setModalSwitch}
 					propsHandler={propsPost}
 					modalInTable={StandardTransportationPost}
 					getRow={getRow}
 					uidAtom={uidAtom}
-					onEditHandler={onPostHandler}
 					dropdownProps={dropdownProps}
-					address={address}
-					setAddress={setAddress}
 					convertKey={convertKey}
-					startDate={startDate}
-					setStartDate={setStartDate}
 					excelUploadAPI={postExcelAdminTransportation}
 					refreshQueryKey={'transportation'}
+					data={postInput}
+					setData={setPostInput}
 				/>
 			)}
 		</FilterContianer>
