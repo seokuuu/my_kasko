@@ -46,12 +46,12 @@ const Agreement = ({ setAgreementModal, setCheckAgreement, agreementOnClickHandl
 		// 입찰 동의서
 		<div>
 			<FadeOverlay />
-			<ModalContainer width={900} style={{ top: '48%' }}>
+			<ModalContainer width={850} style={{ top: '50%' }}>
 				<BlueBarHeader
-					onClick={() => {
-						setAgreementModal(false)
-					}}
-					style={{ height: '40px' }}
+					// onClick={() => {
+					// 	setAgreementModal(false)
+					// }}
+					style={{ height: '0px' }}
 				></BlueBarHeader>
 				<AgreementMain>
 					<h6>입찰 동의서</h6>

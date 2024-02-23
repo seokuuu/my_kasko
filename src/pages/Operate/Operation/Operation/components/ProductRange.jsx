@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ProductRangeFieldCols } from '../../../../../constants/admin/ProductRange'
 import useTableSelection from '../../../../../hooks/useTableSelection'
 import { TableContianer } from '../../../../../modal/External/ExternalFilter'
@@ -31,6 +31,12 @@ const ProductRange = () => {
 
 		simpleConfirm('삭제하시겠습니까?', () => remove(selectedData.map((s) => s['고유값'])))
 	}
+
+	// 진입 시 모달 초기화
+	useEffect(() => {
+		setModal(false)
+	}, [])
+
 	return (
 		<TableContianer>
 			<CommonTableHeader

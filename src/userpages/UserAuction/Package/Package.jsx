@@ -1,90 +1,60 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { BlackBtn, BtnBound, GreyBtn, SkyBtn, TGreyBtn, TWhiteBtn, WhiteGrnBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { Link, useNavigate } from 'react-router-dom'
+import { BtnBound, SkyBtn, TGreyBtn, TWhiteBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-
-import { CheckBox } from '../../../common/Check/Checkbox'
+import { biddingAgreementModal, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import {
 	CustomInput,
-	DoubleWrap,
-	ExRadioWrap,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
-	FilterHeaderAlert,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
-	Input,
-	MiniInput,
-	PartWrap,
-	PWRight,
-	ResetImg,
-	RowWrap,
 	SubTitle,
 	TableContianer,
 	TCSubContainer,
-	Tilde,
 } from '../../../modal/External/ExternalFilter'
-
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
-import { getBidding, postBidding } from '../../../api/auction/bidding'
+import { isEqual } from 'lodash'
+import { getAgreement, getBidding, postAgreement, postBidding } from '../../../api/auction/bidding'
 import { getAuctionDestination } from '../../../api/auction/winning'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import {
 	AuctionBiddingFields,
 	AuctionBiddingFieldsCols,
 	AuctionPackageBiddingFieldsCols,
 } from '../../../constants/admin/Auction'
-import useMutationQuery from '../../../hooks/useMutationQuery'
+import { PROD_COL_NAME } from '../../../constants/user/constantKey'
 import useReactQuery from '../../../hooks/useReactQuery'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import Table from '../../../pages/Table/Table'
-import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import UserBiddingSearchFields from '../Single/UserBiddingSearchFields'
-import { isEqual } from 'lodash'
-import useTableSelection from '../../../hooks/useTableSelection'
-import useTableData from '../../../hooks/useTableData'
-import { PROD_COL_NAME } from '../../../constants/user/constantKey'
-import AddWishButton from '../../UserSales/_components/AddWishButton'
-import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import useAlert from '../../../store/Alert/useAlert'
+import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
+import AddWishButton from '../../UserSales/_components/AddWishButton'
+import UserBiddingSearchFields from '../Single/UserBiddingSearchFields'
+import Agreement from '../../../modal/Common/Agreement'
 
-const Single = ({}) => {
+const Package = ({}) => {
+	const navigate = useNavigate()
+	const [addedInput, setAddedInput] = useState(null) // 일괄 경매 응찰 input state
+	const [checkedBiddingPrice, setCheckedBiddingPrice] = useState(null) // 체크된 응찰가
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const radioDummy = ['전체', '미응찰', '관심제품', '응찰']
-	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 	const [destinationPopUp, setDestinationPopUp] = useAtom(userPageSingleDestiFindAtom)
-	const [savedRadioValue, setSavedRadioValue] = useState('')
-	useEffect(() => {
-		const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
+	const [agreementModal, setAgreementModal] = useAtom(biddingAgreementModal) // 입찰 동의서 모달
+	const [checkAgreement, setCheckAgreement] = useState({
+		auctionNumber: '',
+		agreement: '',
+	})
 
-		// 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-		// if (checkedIndex !== -1) {
-		//   const selectedValue = radioDummy[checkedIndex];
-		//   setSavedRadioValue(selectedValue); //내 state에 반환
-		//   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-		// }
-	}, [checkRadio])
-
-	const handleSelectChange = (selectedOption, name) => {
-		// setInput(prevState => ({
-		//   ...prevState,
-		//   [name]: selectedOption.label,
-		// }));
-	}
 	const [isRotated, setIsRotated] = useState(false)
 
 	// Function to handle image click and toggle rotation
@@ -127,6 +97,8 @@ const Single = ({}) => {
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
 	const [tablePagination, setTablePagination] = useState([])
+	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
+	const uids = checkedArrayState?.map((item) => item['제품 번호'])
 
 	const paramData = {
 		pageNum: 1,
@@ -140,21 +112,38 @@ const Single = ({}) => {
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
+	// 초기 목적지 GET
+	const { data: destiData } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
+
+	const initDestiData = destiData?.data?.data
+	const filteredDestiData = initDestiData?.filter((item) => item.represent === 1)
+	const firstDestiData = filteredDestiData?.[0]
+
+	console.log('firstDestiData', firstDestiData)
+
 	useEffect(() => {
 		let getData = resData
+		const filteredAucNum = resData && resData.map((x) => x['auctionNumber'])
+		const checkAgreeAucNum = filteredAucNum && filteredAucNum[0]
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
 			setGetRow(add_element_field(getData, AuctionPackageBiddingFieldsCols))
 			setTablePagination(resPagination)
+			setDestiObject(firstDestiData)
+			setRealAucNum(checkAgreeAucNum)
+			setCheckAgreement((prev) => ({
+				...prev,
+				auctionNumber: checkAgreeAucNum,
+			}))
 		}
-	}, [isSuccess, resData])
+	}, [isSuccess, resData, initDestiData])
 
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArray?.[0]?.['경매 번호']
 
 	const init = {
 		auctionNumber: null,
-		type: '패키지',
+		type: '단일',
 	}
 	const [winningCreateData, setWinningCreateData] = useState(init)
 
@@ -188,7 +177,7 @@ const Single = ({}) => {
 			...prevData,
 			biddingList: updatedProductList,
 		}))
-	}, [checkedArray, finalInput])
+	}, [checkedArray, finalInput, param])
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -249,6 +238,7 @@ const Single = ({}) => {
 	const [values, setValues] = useState({})
 	const [valueDesti, setValueDesti] = useState()
 
+	// 응찰가 직접 입력
 	const onCellValueChanged = (params) => {
 		const p = params.data
 		console.log('바뀌는 값 확인', p['제품 고유 번호'])
@@ -260,7 +250,40 @@ const Single = ({}) => {
 		setValueDesti(p['경매 번호'])
 	}
 
-	console.log('winningCreateData', winningCreateData)
+	useEffect(() => {
+		setWinningCreateData((prev) => ({
+			...prev,
+			biddingList: [{ ...values }],
+			auctionNumber: valueDesti,
+		}))
+	}, [values])
+
+	const unitPriceBatchOnClick = () => {
+		setFinalInput((p) => ({
+			...p,
+			biddingPrice: winningCreateInput?.biddingPrice,
+		}))
+		if (!uids || uids?.length === 0) {
+			simpleAlert('적용할 경매를 선택해주세요.')
+			return
+		}
+		if (!winningCreateInput?.biddingPrice) {
+			simpleAlert('적용할 금액을 입력해주세요.')
+			return
+		}
+
+		const updatedResData = resData.map((item) => {
+			if (uids.includes(item.productNumber)) {
+				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+			}
+			return item
+		})
+
+		console.log('updatedResData', updatedResData)
+
+		// 변경된 데이터로 state 업데이트
+		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+	}
 
 	/* ==================== 관심상품 등록 start ==================== */
 	/**
@@ -292,6 +315,63 @@ const Single = ({}) => {
 				customerDestinationUid: destiObject && destiObject.uid,
 			}))
 		})
+	}
+
+	// 응찰가 Table Cell Input
+	const handleCheckboxChange = (event, rowData) => {
+		if (event.target.checked) {
+			// 체크된 경우 해당 응찰가 값을 상태에 저장
+			setCheckedBiddingPrice(rowData?.biddingPrice || null)
+		} else {
+			// 체크가 해제된 경우 상태 초기화
+			setCheckedBiddingPrice(null)
+		}
+	}
+
+	const [realAucNum, setRealAucNum] = useState(null)
+	console.log('realAucNum', realAucNum)
+	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
+
+	// status가 false여야지 모달이 보이는거니 !false 형식으로
+	const checkGetAgreement = getAgreementData?.data?.data
+	console.log('checkGetAgreement', checkGetAgreement)
+
+	useEffect(() => {
+		// 경매번호도 잘 들어오고, get 미동의(false)가 들어왔을 때
+		if (realAucNum && !checkGetAgreement) {
+			setAgreementModal(true)
+		} else setAgreementModal(false)
+	}, [realAucNum, checkGetAgreement])
+
+	// 입찰 동의서 Mutate
+	const { mutate: postAgreementMutation } = useMutation(postAgreement, {
+		onSuccess() {
+			showAlert({
+				title: '해당 회차에 동의하셨습니다.',
+				content: '',
+				func: () => {
+					refetch()
+					setAgreementModal(false)
+				},
+			})
+		},
+	})
+
+	// 입찰 동의서 Post
+	const agreementOnClickHandler = () => {
+		if (checkAgreement?.agreement === 'N') {
+			showAlert({
+				title: '해당 회차에 미동의하셨습니다. \n 메인 페이지로 이동합니다.',
+				content: '',
+				func: () => {
+					refetch()
+					setAgreementModal(false)
+					navigate('/userpage/main')
+				},
+			})
+		} else {
+			postAgreementMutation(checkAgreement)
+		}
 	}
 
 	return (
@@ -387,26 +467,28 @@ const Single = ({}) => {
 							<BtnBound style={{ margin: '0px' }} />
 							<p>일괄 경매 응찰</p>
 							<CustomInput
-								placeholder="응찰가 + 최고가 입력"
+								placeholder="최고가 입력"
 								width={140}
 								height={32}
+								value={winningCreateInput.biddingPrice !== null ? winningCreateInput.biddingPrice : ''}
 								onChange={(e) => {
 									setwinningCreateInput((p) => ({
 										...p,
 										biddingPrice: parseInt(e.target.value) || null,
 									}))
+									setAddedInput(parseInt(e.target.value))
 								}}
 							/>
 							<TGreyBtn
 								height={30}
 								style={{ width: '50px' }}
-								onClick={() => {
-									setFinalInput((p) => ({
-										...p,
-
-										biddingPrice: winningCreateInput?.biddingPrice,
-									}))
-								}}
+								// onClick={() => {
+								// 	setFinalInput((p) => ({
+								// 		...p,
+								// 		biddingPrice: winningCreateInput?.biddingPrice,
+								// 	}))
+								// }}
+								onClick={unitPriceBatchOnClick}
 							>
 								적용
 							</TGreyBtn>
@@ -433,9 +515,13 @@ const Single = ({}) => {
 						setPropsUid={setPropsUid}
 					/>
 				)}
+				{/* 입찰 동의서 모달 */}
+				{agreementModal && (
+					<Agreement setCheckAgreement={setCheckAgreement} agreementOnClickHandler={agreementOnClickHandler} />
+				)}
 			</FilterContianer>
 		</>
 	)
 }
 
-export default Single
+export default Package
