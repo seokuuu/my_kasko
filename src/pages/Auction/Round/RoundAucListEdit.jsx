@@ -271,28 +271,27 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 					<div>
 						선택 중량<span> 2 </span>kg / 총 중량 kg
 					</div>
-					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-						<p>시작가 일괄 변경</p>
-						<CustomInput
-							placeholder=""
-							width={120}
-							height={32}
-							onChange={(e) => {
-								setStartPrice(parseInt(e.target.value))
-							}}
-						/>
-						<TGreyBtn
-							height={30}
-							style={{ width: '50px' }}
-							onClick={() => {
-								realSetStartPrice(startPrice)
-							}}
-						>
-							적용
-						</TGreyBtn>
-
-						{auctionStatus !== '종료' && (
-							<>
+					{auctionStatus !== '종료' && (
+						<>
+							<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+								<p>시작가 일괄 변경</p>
+								<CustomInput
+									placeholder=""
+									width={120}
+									height={32}
+									onChange={(e) => {
+										setStartPrice(parseInt(e.target.value))
+									}}
+								/>
+								<TGreyBtn
+									height={30}
+									style={{ width: '50px' }}
+									onClick={() => {
+										realSetStartPrice(startPrice)
+									}}
+								>
+									적용
+								</TGreyBtn>
 								<BtnBound />
 								<SkyBtn
 									onClick={() => {
@@ -301,17 +300,21 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 								>
 									제품 추가
 								</SkyBtn>
-							</>
-						)}
-					</div>
+							</div>
+						</>
+					)}
 				</TCSubContainer>
 				<Table getCol={AuctionRoundDetailFieldsCols} getRow={getRow} loading={isLoading} />
-				<TCSubContainer>
-					<div style={{ display: 'flex', gap: '10px' }}></div>
-					<div>
-						<WhiteRedBtn onClick={onListRemove}>선택 목록 제거</WhiteRedBtn>
-					</div>
-				</TCSubContainer>
+				{auctionStatus !== '종료' && (
+					<>
+						<TCSubContainer>
+							<div style={{ display: 'flex', gap: '10px' }}></div>
+							<div>
+								<WhiteRedBtn onClick={onListRemove}>선택 목록 제거</WhiteRedBtn>
+							</div>
+						</TCSubContainer>
+					</>
+				)}
 				{addModal && (
 					<RoundAucProAdd
 						setAddModal={setAddModal}
@@ -326,7 +329,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 						auctionNumber={auctionNum}
 					/>
 				)}
-				<NewBottomBtnWrap bottom={-5}>
+				<NewBottomBtnWrap bottom={-5} borderTop={'none'}>
 					<WhiteBtn
 						width={13}
 						height={40}
