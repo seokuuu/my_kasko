@@ -44,6 +44,7 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import Agreement from '../../../modal/Common/Agreement'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import useAlert from '../../../store/Alert/useAlert'
+
 import Table from '../../Table/Table'
 import BiddingSearchFields from './BiddingSearchFields'
 import PackDetail from './PackDetail'
