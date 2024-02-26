@@ -254,7 +254,7 @@ const Hyundai = ({}) => {
 			<FilterContianer>
 				<FilterHeader>
 					<div style={{ display: 'flex' }}>
-						<h1>단일 관리</h1>
+						<h1>단일 제품 관리</h1>
 						<SubTitle>
 							<Link to={`/product/single`}>
 								<h6>전체</h6>

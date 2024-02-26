@@ -89,7 +89,7 @@ const SalesProduct = () => {
 	const SaleProductPages = data?.pagination
 
 	const [getRow, setGetRow] = useState('')
-	const tableField = useRef(SingleSalesDispatchFieldsCols)
+	const tableField = useRef(SingleSalesDispatchFieldsCols(true))
 	const getCol = tableField.current
 	const [memo, setMemo] = useState([])
 	// Filter State
@@ -294,7 +294,7 @@ const SalesProduct = () => {
 			<FilterContianer>
 				<FilterHeader>
 					<div style={{ display: 'flex' }}>
-						<h1>단일 관리</h1>
+						<h1>단일 제품 관리</h1>
 						<SubTitle>
 							<Link to={`/product/single`}>
 								<h6>전체</h6>

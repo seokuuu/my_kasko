@@ -7,15 +7,15 @@ import React from 'react'
  * @param value value
  * @param onChange value change event
  */
-const InputSearch = ({ title, value, onChange }) => {
-  return (
-    <PartWrap>
-      <h6>{title}</h6>
-      <PWRight style={{ width: '160px' }}>
-        <Input value={value} onChange={(e) => onChange(e.target.value)} />
-      </PWRight>
-    </PartWrap>
-  )
+const InputSearch = ({ width, title, value, onChange }) => {
+	return (
+		<PartWrap>
+			<h6>{title}</h6>
+			<PWRight style={{ width: width || '160px' }}>
+				<Input value={value} onChange={(e) => onChange(e.target.value)} />
+			</PWRight>
+		</PartWrap>
+	)
 }
 
 export default InputSearch

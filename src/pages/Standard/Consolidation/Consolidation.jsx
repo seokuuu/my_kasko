@@ -154,7 +154,9 @@ const Consolidation = ({}) => {
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, StandardConsolidationFields))
+			const { startRow } = data?.data?.data?.pagination
+			const newData = getData.map((item, index) => ({ index: startRow + index + 1, ...item }))
+			setGetRow(add_element_field(newData, StandardConsolidationFields))
 			setTablePagination(data.data.data.pagination)
 		}
 	}, [isSuccess, resData])

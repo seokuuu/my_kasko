@@ -8,22 +8,22 @@ import SingleProduct from './SingleProduct'
 import { useState } from 'react'
 
 const SingleProductPage = () => {
-  const [expanded, setExpanded] = useState('판매 제품 관리')
-  const [depth2Color, setDepth2Color] = useState('단일 관리')
-  return (
-    <>
-      <Header />
-      <OverAllMain>
-        <SideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
-        <OverAllSub>
-          <SubHeader />
-          <OverAllTable>
-            <SingleProduct />
-          </OverAllTable>
-        </OverAllSub>
-      </OverAllMain>
-    </>
-  )
+	const depth2Color = '단일 제품 관리'
+	const [expanded, setExpanded] = useState('판매 제품 관리')
+	return (
+		<>
+			<Header />
+			<OverAllMain>
+				<SideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
+				<OverAllSub>
+					<SubHeader />
+					<OverAllTable>
+						<SingleProduct />
+					</OverAllTable>
+				</OverAllSub>
+			</OverAllMain>
+		</>
+	)
 }
 
 export default SingleProductPage

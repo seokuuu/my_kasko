@@ -1,12 +1,12 @@
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
 import { commonStyles } from './Auction'
 
-var checkboxSelection = function (params) {
+const checkboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping
 	return params.columnApi.getRowGroupColumns().length === 0
 }
 
-var headerCheckboxSelection = function (params) {
+const headerCheckboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping
 	return params.columnApi.getRowGroupColumns().length === 0
 }
@@ -17,6 +17,7 @@ var headerCheckboxSelection = function (params) {
 
 // 기준관리 - 목적지관리 Modal fields
 export const StandardDestinaionFields = {
+	순번: 'index',
 	'목적지 고유 번호': 'uid',
 	'목적지 코드': 'code',
 	'목적지 명': 'name',
@@ -66,7 +67,8 @@ export const StandardDestinationEdit = {
 // 기준관리 - 목적지관리 fieldsCols
 //  주석 처리 : cell 내 버튼 기능
 export const StandardDestinaionFieldsCols = [
-	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '순번', minWidth: 100 },
 	// {
 	// 	...commonStyles,
 	// 	field: '수정',
@@ -98,6 +100,7 @@ export const StandardDestinaionFieldsCols = [
 
 // 기준관리 - 운반비 관리 fields
 export const StandardTransportationFields = {
+	순번: 'index',
 	'운반비 고유 번호': 'uid',
 	창고: 'storage',
 	목적지코드: 'destinationCode',
@@ -135,7 +138,7 @@ export const StandardTransportationEdit = {
 
 // 기준관리 - 운반비 관리 fieldsCols
 export const StandardTransportationFieldsCols = [
-	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{
 		...commonStyles,
 		field: '수정',
@@ -146,6 +149,7 @@ export const StandardTransportationFieldsCols = [
 			editType: 'table',
 		},
 	},
+	{ ...commonStyles, field: '순번', minWidth: 100 },
 	{
 		...commonStyles,
 		field: '운반비 고유 번호',
@@ -247,6 +251,7 @@ export const StandardSurchargeEdit = {
 ============================== */
 
 export const StandardConsolidationFields = {
+	순번: 'index',
 	'합짐비 고유 번호': 'uid',
 	착: 'land',
 	'동일 시군 가격': 'inAreaPrice',
@@ -254,7 +259,7 @@ export const StandardConsolidationFields = {
 }
 
 export const StandardConsolidationFieldsCols = [
-	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{
 		...commonStyles,
 		field: '수정',
@@ -265,6 +270,7 @@ export const StandardConsolidationFieldsCols = [
 			editType: 'consoli',
 		},
 	},
+	{ ...commonStyles, field: '순번', minWidth: 100 },
 	{
 		...commonStyles,
 		field: '합짐비 고유 번호',
