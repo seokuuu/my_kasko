@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { BtnBound, SkyBtn, TGreyBtn, TWhiteBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
@@ -39,6 +39,8 @@ import UserBiddingSearchFields from './UserBiddingSearchFields'
 import Agreement from '../../../modal/Common/Agreement'
 
 const Single = ({}) => {
+	const [changeResData, setChangeResData] = useState()
+	const [live, setLive] = useState(true) // LIVE get 일시 중단
 	const navigate = useNavigate()
 	const [addedInput, setAddedInput] = useState(null) // 일괄 경매 응찰 input state
 	const [checkedBiddingPrice, setCheckedBiddingPrice] = useState(null) // 체크된 응찰가
@@ -93,7 +95,7 @@ const Single = ({}) => {
 	const tableField = useRef(AuctionBiddingFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
-	const checkedArray = useAtom(selectedRowsAtom)[0]
+	// const checkedArrayState = useAtom(selectedRowsAtom)[0]
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 	const uids = checkedArrayState?.map((item) => item['제품 번호'])
@@ -109,10 +111,10 @@ const Single = ({}) => {
 
 	// 체크박스 클릭시 재렌더 이슈
 	// useEffect(() => {
-	// 	if (checkedArray && checkedArray?.length > 0) {
+	// 	if (checkedArrayState && checkedArrayState?.length > 0) {
 	// 		setLiveStatus('')
 	// 	}
-	// }, [checkedArray])
+	// }, [checkedArrayState])
 
 	const [realAucNum, setRealAucNum] = useState(null)
 	console.log('realAucNum', realAucNum)
@@ -122,6 +124,8 @@ const Single = ({}) => {
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
+
+	console.log('resData', resData)
 
 	// 초기 목적지 GET
 	const { data: destiData } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
@@ -138,9 +142,9 @@ const Single = ({}) => {
 		const checkAgreeAucNum = filteredAucNum && filteredAucNum[0]
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, AuctionBiddingFields))
+			if (live) setGetRow(add_element_field(getData, AuctionBiddingFields))
 			setTablePagination(resPagination)
-			setDestiObject(firstDestiData)
+
 			setRealAucNum(checkAgreeAucNum)
 			setCheckAgreement((prev) => ({
 				...prev,
@@ -150,14 +154,14 @@ const Single = ({}) => {
 	}, [isSuccess, resData, initDestiData])
 
 	// 경매 번호 가져오기
-	const auctionNumber = checkedArray?.[0]?.['경매 번호']
+	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']
 
 	const init = {
 		auctionNumber: null,
 		type: '단일',
 	}
 	const [winningCreateData, setWinningCreateData] = useState(init)
-
+	console.log('winningCreateData', winningCreateData)
 	//
 	useEffect(() => {
 		const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
@@ -175,9 +179,18 @@ const Single = ({}) => {
 
 	console.log('finalInput', finalInput)
 
+	// 첫 렌더시 초기 및 대표 목적지 set
+	useMemo(() => {
+		setDestiObject(firstDestiData)
+		setFinalInput((p) => ({
+			...p,
+			customerDestinationUid: firstDestiData?.uid,
+		}))
+	}, [destiData])
+
 	// biddingList에 들어갈 3총사를 다 넣어줌.
 	useEffect(() => {
-		const updatedProductList = checkedArray?.map((item) => ({
+		const updatedProductList = checkedArrayState?.map((item) => ({
 			productUid: item['제품 고유 번호'],
 			biddingPrice:
 				item['응찰가'] === 0 ? item['시작가'] + finalInput?.biddingPrice : item['응찰가'] + finalInput?.biddingPrice,
@@ -190,7 +203,7 @@ const Single = ({}) => {
 			...prevData,
 			biddingList: updatedProductList,
 		}))
-	}, [checkedArray, finalInput, param])
+	}, [checkedArrayState, finalInput, param])
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -270,7 +283,9 @@ const Single = ({}) => {
 		}))
 	}, [values])
 
+	//  222
 	const unitPriceBatchOnClick = () => {
+		setLive(false) // LIVE get 일시 중단
 		setFinalInput((p) => ({
 			...p,
 			biddingPrice: winningCreateInput?.biddingPrice,
@@ -286,12 +301,16 @@ const Single = ({}) => {
 
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.productNumber)) {
+				item.destinationCode = destiObject?.destinationCode
+				item.name = destiObject?.customerDestinationName
+				item.destinationName = destiObject?.customerDestinationAddress
+				item.phone = destiObject?.customerDestinationPhone
 				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item
 		})
 
-		console.log('updatedResData', updatedResData)
+		console.log('222 뒤', updatedResData)
 
 		// 변경된 데이터로 state 업데이트
 		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
@@ -316,8 +335,10 @@ const Single = ({}) => {
 	})
 	/* ==================== 관심상품 등록 end ==================== */
 
-	// 목적지 적용 버튼 handler
+	console.log('destiObject', destiObject)
+	// 목적지 적용 버튼 handler 111
 	const destiOnClickHandler = () => {
+		setLive(false)
 		simpleAlert('적용 되었습니다.', () => {
 			setFinalInput((prevFinalInput) => ({
 				...prevFinalInput,
@@ -327,8 +348,26 @@ const Single = ({}) => {
 				...p,
 				customerDestinationUid: destiObject && destiObject.uid,
 			}))
+			setDestiObject(destiObject)
 		})
+
+		const updatedResData = resData.map((item) => {
+			if (uids.includes(item.productNumber)) {
+				item.destinationCode = destiObject?.destinationCode
+				item.name = destiObject?.customerDestinationName
+				item.destinationName = destiObject?.customerDestinationAddress
+				item.phone = destiObject?.customerDestinationPhone
+				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+			}
+
+			return item
+		})
+		console.log('111 앞 ', updatedResData)
+		console.log('destiObject', destiObject)
+		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
+
+	console.log('values', values)
 
 	// 응찰가 Table Cell Input
 	const handleCheckboxChange = (event, rowData) => {
@@ -440,14 +479,14 @@ const Single = ({}) => {
 						}}
 					>
 						<p>목적지</p>
-						<CustomInput placeholder="h50" width={60} height={32} defaultValue={destiObject?.code} readOnly />
 						<CustomInput
-							placeholder="목적지명"
-							width={120}
+							placeholder="h50"
+							width={60}
 							height={32}
-							defaultValue={destiObject?.destinationName}
+							defaultValue={destiObject?.destinationCode}
 							readOnly
 						/>
+						<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destiObject?.name} readOnly />
 						<CustomInput
 							placeholder="도착지 연락처"
 							width={120}

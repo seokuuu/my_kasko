@@ -40,6 +40,7 @@ import {
 	AuctionPackageBiddingFieldsCols,
 } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
+import { useLiveReactQuery } from '../../../hooks/queries/useLiveReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Agreement from '../../../modal/Common/Agreement'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
@@ -52,6 +53,7 @@ import { getDestinations } from '../../../api/search'
 import { onSizeChange } from '../../Operate/utils'
 
 const Bidding = ({}) => {
+	const [live, setLive] = useState(true) // LIVE get 일시 중단
 	const navigate = useNavigate()
 	const [realAucNum, setRealAucNum] = useState(null) // 진짜 경매 번호
 	const [getAgreeState, setGetAgreeState] = useState(false) // 동의 상태
@@ -121,7 +123,7 @@ const Bidding = ({}) => {
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
 	const [liveStatus, setLiveStatus] = useState('LIVEgetBidding') // TODO : 수정해놓기
 	// 전체 GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
+	const { isLoading, isError, data, isSuccess, refetch } = useLiveReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
 
@@ -151,7 +153,7 @@ const Bidding = ({}) => {
 		const checkAgreeAucNum = filteredAucNum && filteredAucNum[0] // 경매 번호 1개 추출
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, AuctionBiddingFields))
+			if (live) setGetRow(add_element_field(getData, AuctionBiddingFields))
 			setTablePagination(resPagination)
 			setRealAucNum(checkAgreeAucNum)
 			setCheckAgreement((prev) => ({
@@ -220,7 +222,6 @@ const Bidding = ({}) => {
 		}))
 	}, [checkedArray, finalInput, param])
 
-
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
 			...prevParam,
@@ -228,7 +229,6 @@ const Bidding = ({}) => {
 			pageNum: 1,
 		}))
 	}
-
 
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
@@ -244,6 +244,7 @@ const Bidding = ({}) => {
 				title: '응찰이 완료되었습니다.',
 				content: '',
 				func: () => {
+					setLive(true) // 실시간으로 다시 설정
 					setWinningCreateData(init)
 					setwinningCreateInput({
 						biddingPrice: null,
@@ -353,6 +354,7 @@ const Bidding = ({}) => {
 
 	//일괄 경매 응찰 적용 onClick hanlder
 	const unitPriceBatchOnClick = () => {
+		setLive(false) // LIVE get 일시 중단
 		setFinalInput((p) => ({
 			...p,
 			biddingPrice: winningCreateInput?.biddingPrice,
@@ -526,7 +528,6 @@ const Bidding = ({}) => {
 			{agreementModal && (
 				<Agreement setCheckAgreement={setCheckAgreement} agreementOnClickHandler={agreementOnClickHandler} />
 			)}
-
 		</FilterContianer>
 	)
 }
