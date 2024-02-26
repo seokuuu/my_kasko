@@ -1,9 +1,9 @@
 import { isEqual } from 'lodash'
-import { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { destinationQueryKey, postDestination } from '../../../api/myPage'
 import { queryClient } from '../../../api/query'
-import { BlackBtn, BtnWrap, WhiteBtn } from '../../../common/Button/Button'
+import { BlackBtn, WhiteBtn } from '../../../common/Button/Button'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import { CustomInput } from '../../../common/Input/Input'
 import { Alert, HalfWrap, Left, MainTitle, Part, Right, Title } from '../../../common/OnePage/OnePage.Styled'
@@ -11,6 +11,8 @@ import AddressFinder from '../../../components/DaumPost/Address'
 import useBlockRoute from '../../../hooks/useBlockRoute'
 import { isEmptyObj } from '../../../lib'
 import useAlert from '../../../store/Alert/useAlert'
+import { MainSelect } from '../../../common/Option/Main'
+import { getSpecialDestination } from '../../../api/search'
 
 const init = {
 	represent: 1, // 대표 주소 지정 여부
@@ -34,6 +36,15 @@ const DestinationPost = ({ setChoiceComponent }) => {
 
 	// 폼
 	const [input, setInput] = useState(init) //summit input 데이터
+
+	// 특수목적지 목록
+	const [specialDestinations, setSpecialDestinations] = useState([])
+	const [selectedSpecialDestination, setSelectedSpecialDestination] = useState(null)
+
+	const getSpecials = async () => {
+		const response = await getSpecialDestination()
+		setSpecialDestinations(response)
+	}
 
 	// 대표 주소 지정 옵션
 	const representOptions = [
@@ -67,6 +78,11 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	const submit = async () => {
 		if (!isEmptyObj(input)) return simpleAlert('빈값을 채워주세요.')
 
+		if (!!selectedSpecialDestination && !input.address.startsWith(selectedSpecialDestination.label)) {
+			simpleAlert('등록된 기본 주소로 다시 검색해주세요.')
+			return
+		}
+
 		try {
 			const { data: res } = await postDestination(input)
 			if (res.status === 200) {
@@ -79,14 +95,10 @@ const DestinationPost = ({ setChoiceComponent }) => {
 					},
 				})
 			} else {
-				simpleAlert('등록실파하였습니다.')
+				simpleAlert('등록 실패하였습니다.')
 			}
 		} catch (err) {
-			console.log(err)
-
-			if (err) {
-				simpleAlert(err.data.message)
-			}
+			simpleAlert(err?.data?.message || '등록 실패하였습니다.')
 		}
 	}
 
@@ -103,6 +115,10 @@ const DestinationPost = ({ setChoiceComponent }) => {
 			setChoiceComponent('리스트')
 		}
 	}
+
+	useEffect(() => {
+		getSpecials()
+	}, [])
 
 	useBlockRoute(blockCondition)
 
@@ -134,10 +150,29 @@ const DestinationPost = ({ setChoiceComponent }) => {
 
 						<Part>
 							<Title>
+								<h4>특수목적지 선택</h4>
+								<p></p>
+							</Title>
+							<MainSelect
+								width={320}
+								options={specialDestinations}
+								defaultValue={specialDestinations[0]}
+								value={selectedSpecialDestination}
+								name="selectedSpecialDestination"
+								onChange={(e) => setSelectedSpecialDestination(e)}
+							/>
+						</Part>
+
+						<Part>
+							<Title>
 								<h4>목적지</h4>
 								<p></p>
 							</Title>
-							<AddressFinder onAddressChange={onAddressHandler} />
+							<AddressFinder
+								onAddressChange={onAddressHandler}
+								defaultQuery={selectedSpecialDestination?.label}
+								prevAddress={selectedSpecialDestination?.label}
+							/>
 						</Part>
 
 						<Part>
@@ -213,7 +248,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 						</Part>
 					</Right>
 				</HalfWrap>
-				<BtnWrap bottom={-270}>
+				<BtnWrap bottom={-100}>
 					<WhiteBtn width={40} height={40} onClick={backComponent}>
 						돌아가기
 					</WhiteBtn>
@@ -240,11 +275,18 @@ const OnePageContainer2 = styled.div`
 	margin-left: auto;
 	margin-right: auto;
 	border: 1px solid black;
-	min-height: 88vh;
-	max-height: 100vh;
+	height: 80vh;
 `
 
 const OnePageSubContainer2 = styled.div`
 	width: 100%;
 	padding: 0px 50px;
+`
+const BtnWrap = styled.div`
+	display: flex;
+	width: 400px;
+	height: 50px;
+	justify-content: space-evenly;
+	align-items: center;
+	margin: 60px auto;
 `

@@ -11,7 +11,7 @@ import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { deleteDestination } from '../../../api/myPage/userDestination'
 import useReactQuery from '../../../hooks/useReactQuery'
 
@@ -31,7 +31,7 @@ const Destination = ({ setChoiceComponent }) => {
 	// 선택된 항목
 	const { selectedCount, selectedData } = useTableSelection()
 
-	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
+	const uidAtom = useAtomValue(btnCellUidAtom)
 	const [switchDestiEdit, setSwtichDestiEdit] = useAtom(userPageDestiEditModal)
 
 	useEffect(() => {
@@ -60,7 +60,6 @@ const Destination = ({ setChoiceComponent }) => {
 	}))
 	const pagination = data?.data?.data?.pagination
 
-	// console.log('resData :', resData)
 	const onPageChange = (value) => {
 		setRequest((p) => ({ ...p, pageNum: Number(value) }))
 	}

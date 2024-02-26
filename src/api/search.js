@@ -1,4 +1,5 @@
 import { client } from '.'
+import { useQuery } from '@tanstack/react-query'
 
 const urls = {
 	storage: '/search/storage',
@@ -6,6 +7,7 @@ const urls = {
 	destination: '/search/destination',
 	destinationDiv: '/search/destination-div',
 	spec: '/search/spec',
+	special: '/search/destination-special',
 }
 
 // 창고 리스트
@@ -44,9 +46,18 @@ export function getDestinations(keyword) {
 }
 
 // 규격 약호 리스트
-
 export async function getSpecList() {
 	const response = await client.get(`${urls.spec}`)
-	console.log('RES', response)
 	return response.data.data
+}
+
+// 특수 목적지
+export async function getSpecialDestination() {
+	const response = await client.get(urls.special)
+	return response.data.data.map((item) => {
+		return {
+			label: item,
+			value: item,
+		}
+	})
 }

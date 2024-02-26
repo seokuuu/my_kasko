@@ -36,6 +36,11 @@ export function deleteAdminDestination(id) {
 	return client.delete(`${URL.Destination}/${id}`)
 }
 
+// 목적지 관리 - 특별목적지 여부 변경
+export function isSpecialAddressDestinationUpdate(param) {
+	return client.patch(`${URL.Destination}/isSpecialAddress`, param)
+}
+
 // 목적지 관리 - 대량 등록 "POST"
 export const postExcelAdminDestination = async (params) => {
 	const form = new FormData()

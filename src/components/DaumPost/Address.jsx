@@ -1,5 +1,6 @@
 import { forwardRef, useState } from 'react' // useState를 import 합니다.
 import { useDaumPostcodePopup } from 'react-daum-postcode'
+import useAlert from '../../store/Alert/useAlert'
 
 const sidoMapping = {
 	서울: '서울특별시',
@@ -17,7 +18,8 @@ const sidoMapping = {
 	경남: '경상남도',
 }
 
-const AddressFinder = forwardRef(({ onAddressChange, prevAddress, prevAddressDetail }) => {
+const AddressFinder = forwardRef(({ onAddressChange, prevAddress, prevAddressDetail, defaultQuery = '' }) => {
+	const { simpleAlert } = useAlert()
 	const [address, setAddress] = useState('') // 주소 상태를 관리하는 state를 추가합니다.
 	const [detailAddress, setDetailAddress] = useState('') // 상세 주소를 위한 state도 추가합니다.
 	const [sido, setSido] = useState('') // 시,도
@@ -29,11 +31,9 @@ const AddressFinder = forwardRef(({ onAddressChange, prevAddress, prevAddressDet
 	const open = useDaumPostcodePopup(scriptUrl)
 
 	const handleComplete = (data) => {
-		console.log(data)
 		const jibunAddress = data.jibunAddress || data.autoJibunAddress
 		const sido = jibunAddress.split(' ')[0]
 		let fullAddress = jibunAddress.replace(sido, sidoMapping[sido])
-		console.log('fullAddress : ', fullAddress)
 		// let extraAddress = ''
 
 		// setAddress(fullAddress);
@@ -47,6 +47,11 @@ const AddressFinder = forwardRef(({ onAddressChange, prevAddress, prevAddressDet
 		// 	}
 		// 	fullAddress += extraAddress !== '' ? ` (${extraAddress})` : ''
 		// }
+
+		if (!!defaultQuery && !fullAddress.startsWith(defaultQuery)) {
+			simpleAlert('등록된 기본 주소로 다시 검색해주세요.')
+			return
+		}
 
 		setAddress(fullAddress) // 주소 상태를 업데이트합니다.
 		setSido(data.sido)
@@ -64,7 +69,7 @@ const AddressFinder = forwardRef(({ onAddressChange, prevAddress, prevAddressDet
 	}
 
 	const handleClick = () => {
-		open({ onComplete: handleComplete })
+		open({ onComplete: handleComplete, defaultQuery })
 	}
 
 	return (
