@@ -67,7 +67,7 @@ export const StandardDestinationEdit = {
 // 기준관리 - 목적지관리 fieldsCols
 //  주석 처리 : cell 내 버튼 기능
 export const StandardDestinaionFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', minWidth: 50, maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{ ...commonStyles, field: '순번', minWidth: 100 },
 	// {
 	// 	...commonStyles,
@@ -138,7 +138,7 @@ export const StandardTransportationEdit = {
 
 // 기준관리 - 운반비 관리 fieldsCols
 export const StandardTransportationFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', minWidth: 50, maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{
 		...commonStyles,
 		field: '수정',
@@ -205,7 +205,7 @@ export const StandardSurchargeFields = {
 }
 
 export const StandardSurchargeFieldsCols = [
-	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', minWidth: 50, maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{
 		...commonStyles,
 		field: '수정',
@@ -259,18 +259,19 @@ export const StandardConsolidationFields = {
 }
 
 export const StandardConsolidationFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', minWidth: 50, maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{
 		...commonStyles,
 		field: '수정',
 		minWidth: 90,
+		maxWidth: 90,
 		cellRenderer: BtnCellRenderer,
 		cellRendererParams: {
 			uidFieldName: '합짐비 고유 번호',
 			editType: 'consoli',
 		},
 	},
-	{ ...commonStyles, field: '순번', minWidth: 100 },
+	{ ...commonStyles, field: '순번', minWidth: 100, maxWidth: 100 },
 	{
 		...commonStyles,
 		field: '합짐비 고유 번호',
