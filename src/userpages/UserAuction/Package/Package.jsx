@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { BtnBound, SkyBtn, TGreyBtn, TWhiteBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
@@ -24,25 +24,22 @@ import { getAgreement, getBidding, postAgreement, postBidding } from '../../../a
 import { getAuctionDestination } from '../../../api/auction/winning'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import {
-	AuctionBiddingFields,
-	AuctionBiddingFieldsCols,
-	AuctionPackageBiddingFieldsCols,
-} from '../../../constants/admin/Auction'
+import { AuctionBiddingFields, AuctionPackageBiddingFieldsCols } from '../../../constants/admin/Auction'
 import { PROD_COL_NAME } from '../../../constants/user/constantKey'
 import useReactQuery from '../../../hooks/useReactQuery'
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
+import Agreement from '../../../modal/Common/Agreement'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import Table from '../../../pages/Table/Table'
 import useAlert from '../../../store/Alert/useAlert'
 import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
 import AddWishButton from '../../UserSales/_components/AddWishButton'
 import UserBiddingSearchFields from '../Single/UserBiddingSearchFields'
-import Agreement from '../../../modal/Common/Agreement'
 
 const Package = ({}) => {
+	const [live, setLive] = useState(true) // LIVE get 일시 중단
 	const navigate = useNavigate()
 	const [addedInput, setAddedInput] = useState(null) // 일괄 경매 응찰 input state
 	const [checkedBiddingPrice, setCheckedBiddingPrice] = useState(null) // 체크된 응찰가
@@ -92,7 +89,7 @@ const Package = ({}) => {
 	console.log('winningCreateInput', winningCreateInput)
 
 	const [getRow, setGetRow] = useState('')
-	const tableField = useRef(AuctionBiddingFieldsCols)
+	const tableField = useRef(AuctionPackageBiddingFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
@@ -127,9 +124,8 @@ const Package = ({}) => {
 		const checkAgreeAucNum = filteredAucNum && filteredAucNum[0]
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, AuctionPackageBiddingFieldsCols))
+			if (live) setGetRow(add_element_field(getData, AuctionPackageBiddingFieldsCols))
 			setTablePagination(resPagination)
-			setDestiObject(firstDestiData)
 			setRealAucNum(checkAgreeAucNum)
 			setCheckAgreement((prev) => ({
 				...prev,
@@ -143,7 +139,7 @@ const Package = ({}) => {
 
 	const init = {
 		auctionNumber: null,
-		type: '단일',
+		type: '패키지',
 	}
 	const [winningCreateData, setWinningCreateData] = useState(init)
 
@@ -161,6 +157,15 @@ const Package = ({}) => {
 		biddingPrice: null,
 		customerDestinationUid: null,
 	})
+
+	// 첫 렌더시 초기 및 대표 목적지 set
+	useMemo(() => {
+		setDestiObject(firstDestiData)
+		setFinalInput((p) => ({
+			...p,
+			customerDestinationUid: firstDestiData?.uid,
+		}))
+	}, [destiData])
 
 	// biddingList에 들어갈 3총사를 다 넣어줌.
 	useEffect(() => {
@@ -259,6 +264,7 @@ const Package = ({}) => {
 	}, [values])
 
 	const unitPriceBatchOnClick = () => {
+		setLive(false) // LIVE get 일시 중단
 		setFinalInput((p) => ({
 			...p,
 			biddingPrice: winningCreateInput?.biddingPrice,
@@ -274,12 +280,16 @@ const Package = ({}) => {
 
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.productNumber)) {
+				item.destinationCode = destiObject?.destinationCode
+				item.customerDestinationName = destiObject?.name
+				item.customerDestinationAddress = destiObject?.address
+				item.customerDestinationPhone = destiObject?.phone
 				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item
 		})
 
-		console.log('updatedResData', updatedResData)
+		console.log('222 뒤', updatedResData)
 
 		// 변경된 데이터로 state 업데이트
 		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
@@ -305,6 +315,7 @@ const Package = ({}) => {
 	/* ==================== 관심상품 등록 end ==================== */
 
 	const destiOnClickHandler = () => {
+		setLive(false)
 		simpleAlert('적용 되었습니다.', () => {
 			setFinalInput((prevFinalInput) => ({
 				...prevFinalInput,
@@ -314,7 +325,23 @@ const Package = ({}) => {
 				...p,
 				customerDestinationUid: destiObject && destiObject.uid,
 			}))
+			setDestiObject(destiObject)
 		})
+
+		const updatedResData = resData.map((item) => {
+			if (uids.includes(item.productNumber)) {
+				item.destinationCode = destiObject?.destinationCode
+				item.customerDestinationName = destiObject?.name
+				item.customerDestinationAddress = destiObject?.address
+				item.customerDestinationPhone = destiObject?.phone
+				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+			}
+
+			return item
+		})
+		console.log('111 앞 ', updatedResData)
+		console.log('destiObject', destiObject)
+		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
 
 	// 응찰가 Table Cell Input
@@ -429,19 +456,19 @@ const Package = ({}) => {
 							}}
 						>
 							<p>목적지</p>
-							<CustomInput placeholder="h50" width={60} height={32} defaultValue={destiObject?.code} readOnly />
 							<CustomInput
-								placeholder="목적지명"
-								width={120}
+								placeholder="h50"
+								width={60}
 								height={32}
-								defaultValue={destiObject?.destinationName}
+								defaultValue={destiObject?.destinationCode}
 								readOnly
 							/>
+							<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destiObject?.name} readOnly />
 							<CustomInput
 								placeholder="도착지 연락처"
 								width={120}
 								height={32}
-								defaultValue={destiObject?.name}
+								defaultValue={destiObject?.phone}
 								readOnly
 							/>
 							<TWhiteBtn
@@ -500,7 +527,7 @@ const Package = ({}) => {
 					</TCSubContainer>
 					<Table
 						getCol={getCol}
-						getRow={tableRowData}
+						getRow={getRow}
 						tablePagination={tablePagination}
 						onPageChange={onPageChange}
 						changeFn={onCellValueChanged}

@@ -39,8 +39,8 @@ import UserBiddingSearchFields from './UserBiddingSearchFields'
 import Agreement from '../../../modal/Common/Agreement'
 
 const Single = ({}) => {
-	const [changeResData, setChangeResData] = useState()
 	const [live, setLive] = useState(true) // LIVE get 일시 중단
+	console.log('live', live)
 	const navigate = useNavigate()
 	const [addedInput, setAddedInput] = useState(null) // 일괄 경매 응찰 input state
 	const [checkedBiddingPrice, setCheckedBiddingPrice] = useState(null) // 체크된 응찰가
@@ -144,7 +144,6 @@ const Single = ({}) => {
 		if (Array.isArray(getData)) {
 			if (live) setGetRow(add_element_field(getData, AuctionBiddingFields))
 			setTablePagination(resPagination)
-
 			setRealAucNum(checkAgreeAucNum)
 			setCheckAgreement((prev) => ({
 				...prev,
@@ -302,9 +301,9 @@ const Single = ({}) => {
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.productNumber)) {
 				item.destinationCode = destiObject?.destinationCode
-				item.name = destiObject?.customerDestinationName
-				item.destinationName = destiObject?.customerDestinationAddress
-				item.phone = destiObject?.customerDestinationPhone
+				item.customerDestinationName = destiObject?.name
+				item.customerDestinationAddress = destiObject?.address
+				item.customerDestinationPhone = destiObject?.phone
 				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item
@@ -354,9 +353,9 @@ const Single = ({}) => {
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.productNumber)) {
 				item.destinationCode = destiObject?.destinationCode
-				item.name = destiObject?.customerDestinationName
-				item.destinationName = destiObject?.customerDestinationAddress
-				item.phone = destiObject?.customerDestinationPhone
+				item.customerDestinationName = destiObject?.name
+				item.customerDestinationAddress = destiObject?.address
+				item.customerDestinationPhone = destiObject?.phone
 				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 			}
 
