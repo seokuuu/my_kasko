@@ -33,8 +33,8 @@ const PackageProductSearchFields = ({
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
 
 	return (
-		<>
-			<FilterLeft>
+		<div style={{ display: 'flex', justifyContent: 'space-between', gap: 20, width: '100%' }}>
+			<FilterLeft style={{ justifyContent: 'center', flex: 1 }}>
 				<RowWrap>
 					{/* 규격약호 */}
 					<PartWrap>
@@ -75,7 +75,7 @@ const PackageProductSearchFields = ({
 					</PartWrap>
 				</RowWrap>
 				{/* 2행 */}
-				<RowWrap>
+				<RowWrap none>
 					{/* 두깨 */}
 					<PartWrap>
 						<h6>두께(MM)</h6>
@@ -142,15 +142,24 @@ const PackageProductSearchFields = ({
 				</RowWrap>
 			</FilterLeft>
 			{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
-			<FilterRight>
-				<ProductNumber
-					initialValue={search.productNumberList}
-					setState={setSearch}
-					valueName={'productNumberList'}
-					height="100%"
-				/>
+			<FilterRight style={{ flex: 'inherit' }}>
+				<div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+					<ProductNumber
+						initialValue={search.productNumberList}
+						setState={setSearch}
+						valueName={'productNumberList'}
+						height="80px"
+					/>
+					<ProductNumber
+						title="패키지 번호"
+						initialValue={search.packageNumberList || []}
+						setState={setSearch}
+						valueName={'packageNumberList'}
+						height="80px"
+					/>
+				</div>
 			</FilterRight>
-		</>
+		</div>
 	)
 }
 

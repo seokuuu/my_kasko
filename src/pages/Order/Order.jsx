@@ -222,7 +222,7 @@ const Order = () => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
-						<Excel getRow={getRow} />
+						<Excel getRow={getRow} sheetName={'주문 관리'} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>

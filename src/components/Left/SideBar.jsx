@@ -57,7 +57,7 @@ const data = [
 		depth2: [
 			{ title: '단일', link: 'sales/single' },
 			{ title: '패키지', link: 'sales/package' },
-			{ title: '주문 확인', link: 'sales/order' },
+			{ title: '상시 판매 주문 확인', link: 'sales/order' },
 		],
 		auth: '상시판매관리',
 	},
