@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { client } from '..'
 import { queryClient } from '../query'
-
+import qs from 'qs'
 const urls = {
 	winning: 'auction/successfulBid',
 	winningDetail: 'auction/successfulBid/detail',
@@ -16,7 +16,12 @@ const urls = {
 // }
 
 export function getWinning(data) {
-	return client.get(urls.winning, { params: data })
+	return client.get(urls.winning, {
+		params: data,
+		paramsSerializer: (param) => {
+			return qs.stringify(param)
+		},
+	})
 }
 
 // 낙찰 취소
@@ -90,13 +95,20 @@ export const successfulBid = (data) => {
 // }
 
 export function getWinningDetail(data) {
-	return client.get(urls.winningDetail, { params: data })
+	return client.get(urls.winningDetail, {
+		params: data,
+		paramsSerializer: (param) => {
+			return qs.stringify(param)
+		},
+	})
 }
 
 // 낙찰 생성 (낙찰 생성 제품 목록)
 export function getWinningCreate(data) {
-	console.log('### getWinningCreate ###')
-	return client.get(
-		`${urls.winningCreate}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&saleType=${data.saleType}&registrationStatus=${data.registrationStatus}`,
-	)
+	return client.get(urls.winningCreate, {
+		params: data,
+		paramsSerializer: (param) => {
+			return qs.stringify(param)
+		},
+	})
 }

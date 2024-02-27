@@ -1,8 +1,5 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
 import { client } from '..'
-import { queryClient } from '../query'
-
+import qs from 'qs'
 const urls = {
 	bidding: 'auction',
 	bid: 'auction/bid',
@@ -19,7 +16,12 @@ const urls = {
 // productNumberList 오류가 남
 export function getBidding(data) {
 	console.log('응찰 목록 data', data)
-	return client.get(`${urls.bidding}/list`, { params: data })
+	return client.get(`${urls.bidding}/list`, {
+		params: data,
+		paramsSerializer: (param) => {
+			return qs.stringify(param)
+		},
+	})
 }
 
 // export function getBidding(data) {

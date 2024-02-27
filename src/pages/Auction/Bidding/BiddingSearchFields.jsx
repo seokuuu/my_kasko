@@ -13,11 +13,11 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useState } from 'react'
 import { GreyBtn } from '../../../common/Button/Button'
+
 import StandardFind from '../../../modal/Multi/StandardFind'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
-import { ProductNumberListSearch } from '../../../components/Search'
+import ProductNumber from '../../../components/ProductNumber/ProductNumber'
 
 const BiddingSearchFields = ({
 	// prettier-ignore
@@ -168,16 +168,16 @@ const BiddingSearchFields = ({
 			</FilterLeft>
 			{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
 			<FilterRight>
-				{/* <ProductNumber
+				<ProductNumber
 					initialValue={search.productNumberList}
 					setState={setSearch}
 					valueName={'productNumberList'}
 					height="100%"
-				/> */}
-				<ProductNumberListSearch
+				/>
+				{/* <ProductNumberListSearch
 					value={search.productNumberList}
 					onChange={(e) => onChange('productNumberList', e.target.value)}
-				/>
+				/> */}
 			</FilterRight>
 		</>
 	)

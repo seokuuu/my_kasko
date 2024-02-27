@@ -1,9 +1,9 @@
-import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import { ExInputsWrap, FilterLeft, FilterRight, Input, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
 
 import { useState } from 'react'
 import { DateSearchSelect, RadioSearchButton } from '../../../components/Search'
+import ProductNumber from '../../../components/ProductNumber/ProductNumber'
 
 const RoundSearchFields = ({
 	// prettier-ignore
