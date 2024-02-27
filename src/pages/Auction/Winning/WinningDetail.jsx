@@ -127,6 +127,7 @@ const WinningDetail = ({ detailRow, setDetailRow }) => {
 	// 부분 낙찰 취소
 	const extractedArray = checkedArray?.reduce((result, item) => {
 		const orderUid = item[keysToExtract[0]]
+		console.log('orderUid 추워', orderUid)
 
 		// 중복 체크
 		if (!result.includes(orderUid)) {
