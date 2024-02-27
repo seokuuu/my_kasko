@@ -64,7 +64,7 @@ export const OrderManageFieldsCols = [
 		cellRenderer: (params) => params.value || 'N',
 	},
 	{
-		headerName: '경매 / 상시 판매 번호',
+		headerName: '경매 번호',
 		field: '경매 번호',
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },

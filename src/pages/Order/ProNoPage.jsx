@@ -12,8 +12,10 @@ import {
 	btnCellRenderAtom,
 	btnCellUidAtom,
 	onClickCheckAtom,
-	pageSort, selectedRows2Switch,
-	selectedRowsAtom, selectedRowsAtom2,
+	pageSort,
+	selectedRows2Switch,
+	selectedRowsAtom,
+	selectedRowsAtom2,
 } from '../../store/Layout/Layout'
 import { proNoFieldCols, proNoFieldManage } from '../../constants/admin/ProNoOrder'
 import useReactQuery from '../../hooks/useReactQuery'
@@ -35,7 +37,7 @@ export const Container = styled.div`
 	transform: translate(-50%, -50%);
 `
 
-function ProNoPage({ productNumberOut, title, proNoNumber, orderId,  }) {
+function ProNoPage({ productNumberOut, title, proNoNumber, orderId }) {
 	useEffect(() => {
 		console.log('아웃될 번호들', productNumberOut)
 	}, [])
@@ -60,10 +62,10 @@ function ProNoPage({ productNumberOut, title, proNoNumber, orderId,  }) {
 	}
 	const { data: proNoRes, isSuccess } = useReactQuery(param, 'getProNoList', getProNoList)
 	useEffect(() => {
-		if (proNoRes && proNoRes.data && proNoRes.data.list) { // 테스트-FC54130305
-			const filteredData = proNoRes.data.list.filter(item => !productNumberOut.includes(item['number']));
+		if (proNoRes && proNoRes.data && proNoRes.data.list) {
+			const filteredData = proNoRes.data?.list.filter((item) => !productNumberOut.includes(item['number']))
 			setProNoListData(formatTableRowData(filteredData))
-			setProNoPagination(proNoRes.data.pagination)
+			setProNoPagination(proNoRes.data?.pagination)
 		}
 	}, [proNoRes, isSuccess])
 	const onPageChange = (value) => {
@@ -76,7 +78,7 @@ function ProNoPage({ productNumberOut, title, proNoNumber, orderId,  }) {
 	const handleDropdown = (e) => {
 		setSortNum(e.target.value)
 	}
-	const totalWeight = proNoRes?.data.pagination.totalWeight
+	const totalWeight = proNoRes?.data?.pagination?.totalWeight
 	const formattedTotalWeight = totalWeight && totalWeight.toLocaleString()
 	const modalClose = () => {
 		if (onClickCheck) {
@@ -120,10 +122,10 @@ function ProNoPage({ productNumberOut, title, proNoNumber, orderId,  }) {
 	}
 	const gridOptions = {
 		onRowSelected: onRowSelected,
-		onSelectionChanged:onSelectionChanged,
+		onSelectionChanged: onSelectionChanged,
 	}
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
-	useEffect(()=>{console.log('체크길이',checkBoxSelect?.length)},[checkBoxSelect])
+
 	return (
 		<OutSide>
 			<Container>
