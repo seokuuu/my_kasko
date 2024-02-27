@@ -8,8 +8,8 @@ import SalesProduct from './SalesProduct'
 import { useState } from 'react'
 
 const HyundaiPage = () => {
+	const depth2Color = '단일 제품 관리'
 	const [expanded, setExpanded] = useState('판매 제품 관리')
-	const [depth2Color, setDepth2Color] = useState('단일 관리')
 	return (
 		<>
 			<Header />

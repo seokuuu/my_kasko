@@ -1,8 +1,6 @@
 import styled from 'styled-components'
 
 export function recommendCell({ data }) {
-	console.log('DATA', data['추천 제품 여부'])
-	console.log('DATA', data['제품 번호'])
 	return (
 		<>
 			{data['추천 제품 여부'] ? (

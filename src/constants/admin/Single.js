@@ -88,9 +88,44 @@ export const singleDispatchFields = {
 	'상시 판매가': 'salePrice',
 }
 
-export const SingleDispatchFieldsCols = [
+export const SingleDispatchFieldsCols = () => [
 	{ field: '', ...commonStyles, minWidth: 50, checkboxSelection, headerCheckboxSelection },
-	{
+	// {
+	// 	...commonStyles,
+	// 	minWidth: 100,
+	// 	cellRenderer: BtnCellRenderer,
+	// 	cellRendererParams: {
+	// 		uidFieldName: '경매 번호',
+	// 		editType: 'productModify',
+	// 	},
+	// },
+	{ ...commonStyles, field: '순번', minWidth: 100 },
+	{ ...commonStyles, field: '고유 번호', minWidth: 100 },
+
+	{ ...commonStyles, field: '제품 번호', minWidth: 200, cellRenderer: recommendCell },
+	...Object.keys(singleDispatchFields)
+		.slice(3)
+		.map((item) => ({
+			...commonStyles,
+			field: item,
+			editable: item === '메모' || item === '비고' ? true : false,
+			minWidth: item === '메모' || item === '비고' ? 200 : 150,
+			cellRenderer: (params) => {
+				if (item === '메모' || item === '비고') {
+					return params.value
+				}
+				if (typeof params.value === 'boolean') {
+					return params.value ? 'Y' : 'N'
+				} else {
+					return params.value
+				}
+			},
+		})),
+]
+
+export const SingleSalesDispatchFieldsCols = (isUpdate = false) => [
+	{ field: '', ...commonStyles, minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	isUpdate && {
 		...commonStyles,
 		minWidth: 100,
 		cellRenderer: BtnCellRenderer,
@@ -123,40 +158,6 @@ export const SingleDispatchFieldsCols = [
 		})),
 ]
 
-export const SingleSalesDispatchFieldsCols = [
-	{ field: '', ...commonStyles, minWidth: 50, checkboxSelection, headerCheckboxSelection },
-	{
-		...commonStyles,
-		minWidth: 100,
-		cellRenderer: BtnCellRenderer,
-		cellRendererParams: {
-			uidFieldName: '경매 번호',
-			editType: 'productModify',
-		},
-	},
-	{ ...commonStyles, field: '순번', minWidth: 100 },
-	{ ...commonStyles, field: '고유 번호', minWidth: 100 },
-
-	{ ...commonStyles, field: '제품 번호', minWidth: 200, cellRenderer: recommendCell },
-	...Object.keys(singleDispatchFields)
-		.slice(3)
-		.map((item) => ({
-			...commonStyles,
-			field: item,
-			editable: item === '메모' || item === '비고' ? true : false,
-			minWidth: item === '메모' || item === '비고' ? 200 : 150,
-			cellRenderer: (params) => {
-				if (item === '메모' || item === '비고') {
-					return params.value
-				}
-				if (typeof params.value === 'boolean') {
-					return params.value ? 'Y' : 'N'
-				} else {
-					return params.value
-				}
-			},
-		})),
-]
 var optionFn = function (key) {
 	let options = []
 

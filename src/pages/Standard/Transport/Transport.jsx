@@ -133,7 +133,6 @@ const Transport = () => {
 				// unitPriceEdit.percent에 따라 증가 또는 감소
 				const percentage = parseFloat(unitPriceEdit) / 100
 				const updatedEffectCost =
-
 					checkRadio[0] === true
 						? item.effectCost + item?.effectCost * percentage
 						: item.effectCost - item?.effectCost * percentage
@@ -210,7 +209,9 @@ const Transport = () => {
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, StandardTransportationFields))
+			const { startRow } = data?.data?.data?.pagination
+			const newData = getData.map((item, index) => ({ index: startRow + index + 1, ...item }))
+			setGetRow(add_element_field(newData, StandardTransportationFields))
 			setTablePagination(data.data.data.pagination)
 		}
 	}, [isSuccess, resData])

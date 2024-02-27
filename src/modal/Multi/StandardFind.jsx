@@ -13,8 +13,6 @@ import {
 } from '../../modal/Common/Common.Styled'
 
 export default function StandardFind({ closeFn }) {
-	const array = []
-	// const [isModal, setIsModal] = useAtom(blueModalAtom)
 	const [filterText, setFilterText] = useState('') // 필터 텍스트를 저장하는 상태 변수
 	const [filterUid, setFilterUid] = useState(0)
 	const [selectedCountry, setSelectedCountry] = useState('')
@@ -25,7 +23,6 @@ export default function StandardFind({ closeFn }) {
 	useEffect(() => {
 		const res = list && list.filter((li) => li.spec.includes(filterText))
 
-		console.log('규격약호 목록 :', res)
 		if (filterText && list) {
 			setFilter(res)
 		} else {
@@ -78,7 +75,6 @@ export default function StandardFind({ closeFn }) {
 										<ResultBlock
 											key={index}
 											onClick={() => {
-												console.log('x ;', x)
 												handleResultBlockClick(x.spec)
 												setFilterUid(x.uid)
 											}}

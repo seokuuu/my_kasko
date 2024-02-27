@@ -1,24 +1,25 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { GreyBtn } from '../../../../common/Button/Button'
 import { MainSelect } from '../../../../common/Option/Main'
 import useGlobalProductSearchFieldData from '../../../../hooks/useGlobalProductSearchFieldData'
 import {
+	DoubleWrap,
+	ExCheckWrap,
 	ExInputsWrap,
-	FilterRight,
 	FilterLeft,
+	FilterRight,
 	Input,
 	MiniInput,
-	PWRight,
 	PartWrap,
+	PWRight,
 	RowWrap,
 	Tilde,
 } from '../../../../modal/External/ExternalFilter'
 import StandardFind from '../../../../modal/Multi/StandardFind'
 import ProductNumber from '../../../../components/GlobalProductSearch/SearchFields/ProductNumber'
-import { kyuModalAtom } from '../../../../store/Layout/GlobalProductSearch'
-import { InputSearch } from '../../../../components/Search'
+import { kyuModalAtom, proNoModalAtom } from '../../../../store/Layout/GlobalProductSearch'
 import CustomCheckBox from '../../../Operate/UI/CustomCheckBox/CustomCheckBox'
-import { DoubleWrap, ExCheckWrap } from '../../../../modal/External/ExternalFilter'
+import ProNoFindModal from '../../../../modal/Multi/ProNoFindModal'
 
 const SingleSellProductSearchFields = ({
 	// prettier-ignore
@@ -40,19 +41,24 @@ const SingleSellProductSearchFields = ({
 	} = useGlobalProductSearchFieldData()
 
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
+	const [productModalAtom, setProNoModalAtom] = useAtom(proNoModalAtom)
 
 	return (
 		<>
 			<FilterLeft>
 				<RowWrap none>
 					<PartWrap first>
-						<PartWrap>
-							<InputSearch
-								title={'ProNo.'}
-								value={search.proNo}
-								onChange={(value) => commonDropdownButtonHandler(value, 'proNo')}
-							/>
-						</PartWrap>
+						<h6>ProNo.</h6>
+						<Input readOnly={true} value={search.proNo} />
+						<GreyBtn
+							style={{ width: '70px' }}
+							height={35}
+							margin={10}
+							fontSize={17}
+							onClick={() => setProNoModalAtom(true)}
+						>
+							찾기
+						</GreyBtn>
 					</PartWrap>
 					<PartWrap>
 						<h6>창고 구분</h6>
@@ -81,7 +87,7 @@ const SingleSellProductSearchFields = ({
 					</PartWrap>
 				</RowWrap>
 				<RowWrap>
-					<PartWrap>
+					<PartWrap first>
 						<h6>규격 약호</h6>
 						<Input readOnly={true} value={search.spec} />
 						<GreyBtn
@@ -97,7 +103,7 @@ const SingleSellProductSearchFields = ({
 				</RowWrap>
 				<RowWrap>
 					{/* 구분 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>구분</h6>
 						{/* 제품군 */}
 						<PWRight>
@@ -225,7 +231,7 @@ const SingleSellProductSearchFields = ({
 
 				<RowWrap>
 					{/* 두깨 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>두께(MM)</h6>
 						<ExInputsWrap>
 							<MiniInput
@@ -312,6 +318,7 @@ const SingleSellProductSearchFields = ({
 					</PartWrap>
 				</RowWrap>
 				{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
+				{!!productModalAtom && <ProNoFindModal setData={(value) => commonDropdownButtonHandler(value, 'proNo')} />}
 			</FilterLeft>
 			<FilterRight>
 				<DoubleWrap>

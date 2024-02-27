@@ -1,5 +1,4 @@
 import { client } from '.'
-import { useQuery } from '@tanstack/react-query'
 
 const urls = {
 	storage: '/search/storage',
@@ -8,6 +7,7 @@ const urls = {
 	destinationDiv: '/search/destination-div',
 	spec: '/search/spec',
 	special: '/search/destination-special',
+	prono: '/search/prono',
 }
 
 // 창고 리스트
@@ -60,4 +60,10 @@ export async function getSpecialDestination() {
 			value: item,
 		}
 	})
+}
+
+// 특수 목적지
+export async function getProNoList() {
+	const response = await client.get(urls.prono)
+	return response.data.data
 }
