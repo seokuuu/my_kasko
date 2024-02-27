@@ -40,7 +40,7 @@ import {
 	AuctionPackageBiddingFieldsCols,
 } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { useLiveReactQuery } from '../../../hooks/queries/useLiveReactQuery'
+
 import { add_element_field } from '../../../lib/tableHelpers'
 import Agreement from '../../../modal/Common/Agreement'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
@@ -120,10 +120,40 @@ const Bidding = ({}) => {
 		customerDestinationUid: null,
 	}
 
+	const destiOnClickHandler = () => {
+		setLive(false)
+		simpleAlert('적용 되었습니다.', () => {
+			setFinalInput((prevFinalInput) => ({
+				...prevFinalInput,
+				customerDestinationUid: destiObject && destiObject.uid,
+			}))
+			setValues((p) => ({
+				...p,
+				customerDestinationUid: destiObject && destiObject.uid,
+			}))
+			setDestiObject(destiObject)
+		})
+
+		const updatedResData = resData.map((item) => {
+			if (uids.includes(item.productNumber)) {
+				item.destinationCode = destiObject?.destinationCode
+				item.customerDestinationName = destiObject?.name
+				item.customerDestinationAddress = destiObject?.address
+				item.customerDestinationPhone = destiObject?.phone
+				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+			}
+
+			return item
+		})
+		console.log('111 앞 ', updatedResData)
+		console.log('destiObject', destiObject)
+		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+	}
+
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
 	const [liveStatus, setLiveStatus] = useState('LIVEgetBidding') // TODO : 수정해놓기
 	// 전체 GET
-	const { isLoading, isError, data, isSuccess, refetch } = useLiveReactQuery(param, liveStatus, getBidding)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
 
@@ -370,6 +400,10 @@ const Bidding = ({}) => {
 
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.productNumber)) {
+				item.destinationCode = destiObject?.destinationCode
+				item.customerDestinationName = destiObject?.name
+				item.customerDestinationAddress = destiObject?.address
+				item.customerDestinationPhone = destiObject?.phone
 				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item
@@ -455,16 +489,17 @@ const Bidding = ({}) => {
 							찾기
 						</TWhiteBtn>
 						<TGreyBtn
-							onClick={() => {
-								setFinalInput((prevFinalInput) => ({
-									...prevFinalInput,
-									customerDestinationUid: destiObject && destiObject.uid,
-								}))
-								setValues((p) => ({
-									...p,
-									customerDestinationUid: destiObject && destiObject.uid,
-								}))
-							}}
+							// onClick={() => {
+							// 	setFinalInput((prevFinalInput) => ({
+							// 		...prevFinalInput,
+							// 		customerDestinationUid: destiObject && destiObject.uid,
+							// 	}))
+							// 	setValues((p) => ({
+							// 		...p,
+							// 		customerDestinationUid: destiObject && destiObject.uid,
+							// 	}))
+							// }}
+							onClick={destiOnClickHandler}
 						>
 							적용
 						</TGreyBtn>
