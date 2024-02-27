@@ -13,13 +13,11 @@ import {
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import { useState } from 'react'
-import { CustomerSearch, DateSearchSelect } from '../../../components/Search'
-import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
-import { GreyBtn } from '../../../common/Button/Button'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
+import { useState } from 'react'
+import { GreyBtn } from '../../../common/Button/Button'
 import StandardFind from '../../../modal/Multi/StandardFind'
+import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 
 const WinningCreateSearchFields = ({
 	// prettier-ignore

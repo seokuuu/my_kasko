@@ -30,24 +30,17 @@ import { InputContainer, NoOutInput, Unit } from '../../../common/Input/Input'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isArray, isEqual } from 'lodash'
-import {
-	getAuctionDestination,
-	getAuctionDetailDestination,
-	getAuctionNumber,
-	successfulBid,
-} from '../../../api/auction/winning'
+import { getAuctionDetailDestination, getAuctionNumber, successfulBid } from '../../../api/auction/winning'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { AuctionWinningCreateFieldsCols } from '../../../constants/admin/Auction'
-import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
+import CustomerCodeFind from '../../../modal/Multi/CustomerCodeFind'
 import CustomerFind from '../../../modal/Multi/CustomerFind'
-import InventoryFind from '../../../modal/Multi/InventoryFind'
 import useAlert from '../../../store/Alert/useAlert'
 import { WinningCreateFindAtom, WinningProductAddAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import BiddingSearchFields from '../Bidding/BiddingSearchFields'
 import WinningProductAdd from './WinningProductAdd'
-import CustomerCodeFind from '../../../modal/Multi/CustomerCodeFind'
 
 const WinningCreate = ({}) => {
 	const { simpleConfirm, simpleAlert, showAlert } = useAlert()

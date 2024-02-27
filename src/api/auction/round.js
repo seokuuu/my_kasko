@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { client } from '..'
-
+import qs from 'qs'
 const urls = {
 	getAuction: 'admin/auction',
 	getExtraProduct: 'admin/auction/product',
@@ -15,8 +15,12 @@ const keys = {
 
 // 목록 GET
 export function getAuction(data) {
-	console.log('data @@!!@@', data)
-	return client.get(urls.getAuction, { params: data })
+	return client.get(urls.getAuction, {
+		params: data,
+		paramsSerializer: (param) => {
+			return qs.stringify(param)
+		},
+	})
 }
 
 export function getAuctionTime() {
@@ -25,12 +29,22 @@ export function getAuctionTime() {
 
 // 상세 GET
 export function getDetailAuction(data) {
-	return client.get(`${urls.getAuction}/${data.auctionNumber}`, { params: data })
+	return client.get(`${urls.getAuction}/${data.auctionNumber}`, {
+		params: data,
+		paramsSerializer: (param) => {
+			return qs.stringify(param)
+		},
+	})
 }
 
 // 추가 제품 목록 GET
 export function getExtraProductList(data) {
-	return client.get(urls.getExtraProduct, { params: data })
+	return client.get(urls.getExtraProduct, {
+		params: data,
+		paramsSerializer: (param) => {
+			return qs.stringify(param)
+		},
+	})
 }
 
 // 등록 POST
