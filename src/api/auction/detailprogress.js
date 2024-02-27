@@ -1,5 +1,5 @@
 import { client } from '..'
-
+import qs from 'qs'
 const urls = {
 	detailprogress: 'progress-detail',
 }
@@ -12,7 +12,10 @@ const urls = {
 // }
 
 export function getDetailProgress(data) {
-
-	return client.get(urls.detailprogress, { params: data })
-
+	return client.get(urls.detailprogress, {
+		params: data,
+		paramsSerializer: (param) => {
+			return qs.stringify(param)
+		},
+	})
 }
