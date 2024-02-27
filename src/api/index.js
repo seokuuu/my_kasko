@@ -39,6 +39,10 @@ client.interceptors.response.use(
 			if (response?.status === 403) {
 				window.location.href = '/forbidden'
 			}
+			if (response?.status === 409) {
+				console.log('여기?????')
+				window.location.href = '/duplicate-login'
+			}
 			return Promise.reject(response)
 		} catch (e) {
 			console.error('error', '네트워크 오류가 발생했습니다.', e)
