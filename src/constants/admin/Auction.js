@@ -391,8 +391,8 @@ export const AuctionBiddingFieldsCols = [
 		field: PROD_COL_NAME.productNumber,
 		minWidth: 250,
 		cellRenderer: MarkerCellRenderer,
-		cellRendererParams: (params) => params.data[params.column.colId],
-		valueGetter: (v) => v.data[v.column.colId]?.value || '',
+		// cellRendererParams: (params) => params.data[params.column.colId],
+		// valueGetter: (v) => v.data[v.column.colId]?.value || '',
 	},
 	{ ...commonStyles, field: '프로넘 번호', minWidth: 100 },
 
