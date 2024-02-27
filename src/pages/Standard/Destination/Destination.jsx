@@ -45,9 +45,9 @@ import {
 } from '../../../service/admin/Standard'
 import useAlert from '../../../store/Alert/useAlert'
 import DestinationSearchFilter from './DestinationSearchFilter'
-import DestinationSinglePost from './DestinationSinglePost'
 import { queryClient } from '../../../api/query'
 import { useLoading } from '../../../store/Loading/loadingAtom'
+import Excel from '../../../components/TableInner/Excel'
 
 // INITIAL PARAM
 const initialParamData = {
@@ -110,7 +110,6 @@ const Destination = () => {
 	/* ==================== UPDATE HANDLER start ==================== */
 	// propsPost 함수
 	const propsPost = () => {
-		console.log('postData : ', postData)
 		postMutation.mutate(postData, {
 			onSuccess: () => {
 				simpleAlert('저장 되었습니다.')
@@ -227,7 +226,9 @@ const Destination = () => {
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, StandardDestinaionFields))
+			const { startRow } = data?.data?.data?.pagination
+			const newData = getData.map((item, index) => ({ index: startRow + index + 1, ...item }))
+			setGetRow(add_element_field(newData, StandardDestinaionFields))
 			setPagination(data?.data?.data?.pagination)
 		}
 	}, [isSuccess, resData])
@@ -268,6 +269,7 @@ const Destination = () => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={onPageSizeChange} />
+						<Excel getRow={getRow} sheetName="목적지 관리" />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
@@ -277,20 +279,8 @@ const Destination = () => {
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteRedBtn onClick={() => isSpecialAddressUpdate(false)}>특별목적지 해제</WhiteRedBtn>
 						<WhiteSkyBtn onClick={() => isSpecialAddressUpdate(true)}>특별목적지 등록</WhiteSkyBtn>
-						<WhiteRedBtn
-							onClick={() => {
-								firstPopupClick('2-2')
-							}}
-						>
-							목적지 삭제
-						</WhiteRedBtn>
-						<WhiteSkyBtn
-							onClick={() => {
-								openModal()
-							}}
-						>
-							목적지 등록
-						</WhiteSkyBtn>
+						<WhiteRedBtn onClick={() => firstPopupClick('2-2')}>목적지 삭제</WhiteRedBtn>
+						<WhiteSkyBtn onClick={() => openModal()}>목적지 등록</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
 				<Table

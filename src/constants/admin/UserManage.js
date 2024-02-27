@@ -125,6 +125,8 @@ export const UserManageCustomerDestinationManageFields = {
 	하차지담당자: 'managerName',
 	'하차지담당자 연락처': 'managerPhone',
 	승인여부: 'status',
+	최종수정자: 'updater',
+	최종수정일자: 'updateDate',
 }
 
 // 사용자 목적지 관리 Cols
@@ -178,6 +180,8 @@ export const UserManageCustomerDestinationManageFieldsCols = [
 		field: '하차지담당자 연락처',
 		minWidth: 200,
 	},
+	{ ...commonStyles, field: '최종수정자', minWidth: 150 },
+	{ ...commonStyles, field: '최종수정일자', minWidth: 150 },
 ]
 export const adminCustomerDestinationManageFieldsCols = [
 	{

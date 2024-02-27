@@ -1,4 +1,4 @@
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getSingleProducts, patchBeBestRecommend } from '../../../api/SellProduct'
@@ -8,7 +8,7 @@ import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constants/admin/Single'
+import { singleDispatchFields, SingleDispatchFieldsCols } from '../../../constants/admin/Single'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { isEqual } from 'lodash'
@@ -16,8 +16,8 @@ import {
 	FilterContianer,
 	FilterHeader,
 	SubTitle,
-	TCSubContainer,
 	TableContianer,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import { KilogramSum } from '../../../utils/KilogramSum'
@@ -92,7 +92,6 @@ const SingleProduct = () => {
 
 	useEffect(() => {
 		if (checkBoxSelect) return setSelectUid((p) => [...checkBoxSelect.map((i) => i['제품 번호'])])
-		console.log('왜 3번 연속으로 실릴까', selectUid)
 	}, [checkBoxSelect])
 	// console.log(checkBoxSelect)
 	const patchRecommend = () => {
@@ -124,7 +123,6 @@ const SingleProduct = () => {
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				refetch()
 				return prevParam
 			}
 			return {
@@ -133,12 +131,17 @@ const SingleProduct = () => {
 			}
 		})
 	}
+
+	useEffect(() => {
+		refetch()
+	}, [param])
+
 	return (
 		<>
 			<FilterContianer>
 				<FilterHeader>
 					<div style={{ display: 'flex' }}>
-						<h1>단일 관리</h1>
+						<h1>단일 제품 관리</h1>
 						<SubTitle>
 							<h5>전체</h5>
 							<Link to={`/product/hyundai`}>
