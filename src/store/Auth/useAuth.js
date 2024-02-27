@@ -35,6 +35,7 @@ const useAuth = () => {
 
 		localStorage.setItem('accessToken', token)
 		setAuth({ ...initAuth, isAuth: true, name, role, authorities })
+		queryClient.resetQueries()
 		navigate(role === '고객사' ? '/userpage/main' : 'main', { replace: true })
 	}
 
@@ -47,7 +48,6 @@ const useAuth = () => {
 		setAuth(initAuth)
 		localStorage.removeItem('accessToken')
 		navigate('/', { replace: true })
-		queryClient.resetQueries()
 	}
 
 	return {
