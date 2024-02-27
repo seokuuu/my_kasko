@@ -22,15 +22,16 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import StandardFind from '../../../modal/Multi/StandardFind'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
+import CustomCheckBox from '../../../pages/Operate/UI/CustomCheckBox/CustomCheckBox'
 
 /**
  * @constant 주문 상태
  */
 const ORDER_STATUS_LIST = [
-	{ label: '전체', value: ''}, 
-	{ label: '주문 요청', value: '주문 요청'}, 
-	{ label: '주문 취소', value: '주문 취소'}, 
-	{ label: '주문 확정', value: '주문 확정'}
+	{ label: '전체', value: '' },
+	{ label: '주문 요청', value: '주문 요청' },
+	{ label: '주문 취소', value: '주문 취소' },
+	{ label: '주문 확정', value: '주문 확정' },
 ]
 
 const OrderSearchFields = ({
@@ -60,8 +61,8 @@ const OrderSearchFields = ({
 	/* ============================== COMMON end ============================== */
 
 	return (
-		<div style={{display: 'flex', justifyContent: 'space-between', gap: 20, width: '100%'}}>
-			<FilterLeft style={{flex: 1}}>
+		<div style={{ display: 'flex', justifyContent: 'space-between', gap: 20, width: '100%' }}>
+			<FilterLeft style={{ flex: 1 }}>
 				<RowWrap>
 					<PartWrap first>
 						<h6>창고 구분</h6>
@@ -108,7 +109,7 @@ const OrderSearchFields = ({
 					<CustomerSearch search={search} setSearch={setSearch} />
 				</RowWrap>
 				{/* 구분 */}
-				<RowWrap style={{width: '100%', flexWrap: 'wrap'}}>
+				<RowWrap style={{ width: '100%', flexWrap: 'nowrap' }}>
 					<PartWrap first>
 						<h6>구분</h6>
 						{/* 제품군 */}
@@ -160,7 +161,7 @@ const OrderSearchFields = ({
 				{/* 두께 |  폭 | 길이 */}
 				<RowWrap none>
 					{/* 두깨 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>두께(MM)</h6>
 						<ExInputsWrap>
 							<MiniInput
@@ -201,8 +202,6 @@ const OrderSearchFields = ({
 							/>
 						</ExInputsWrap>
 					</PartWrap>
-				</RowWrap>
-				<RowWrap none>
 					{/* 길이 */}
 					<PartWrap>
 						<h6>길이(MM)</h6>
@@ -224,23 +223,47 @@ const OrderSearchFields = ({
 							/>
 						</ExInputsWrap>
 					</PartWrap>
+				</RowWrap>
+				<RowWrap none>
 					{/* 진행상태 */}
 					<PartWrap first>
-						<h6>진행 상태</h6>
-						<ExRadioWrap>
-						<RadioSearchButton
-							options={ORDER_STATUS_LIST}
-							value={Array.isArray(search.orderStatusList)? search.orderStatusList[0] || '' :  search.orderStatusList}
-							onChange={(value) => setSearch((prev) => ({ ...prev, orderStatusList: value === '전체' ? '' : value }))}
+						<h6>상시판매 상태</h6>
+						<CustomCheckBox
+							initOptions={[
+								{
+									checked: false,
+									text: '주문요청',
+									value: '주문 요청',
+								},
+								{
+									checked: false,
+									text: '주문확정',
+									value: '주문 확정',
+								},
+								{
+									checked: false,
+									text: '주문취소',
+									value: '주문 취소',
+								},
+							]}
+							setState={setSearch}
+							stateKey="orderStatusList"
+							isExistEntireValue={true}
 						/>
-						</ExRadioWrap>
+						{/*<ExRadioWrap>*/}
+						{/*	<RadioSearchButton*/}
+						{/*		options={ORDER_STATUS_LIST}*/}
+						{/*		value={Array.isArray(search.orderStatusList) ? search.orderStatusList[0] || '' : search.orderStatusList}*/}
+						{/*		onChange={(value) => setSearch((prev) => ({ ...prev, orderStatusList: value === '전체' ? '' : value }))}*/}
+						{/*	/>*/}
+						{/*</ExRadioWrap>*/}
 					</PartWrap>
 				</RowWrap>
 			</FilterLeft>
 			{/* 제품 번호 */}
-			<FilterRight style={{flex: 'inherit'}}>
+			<FilterRight style={{ flex: 'inherit' }}>
 				<ProductNumber
-					initialValue={search.productNumberList}	
+					initialValue={search.productNumberList}
 					setState={setSearch}
 					valueName={'productNumberList'}
 					height="100%"

@@ -38,7 +38,7 @@ const useGlobalProductSearchFieldData = () => {
 	// 제조사 목록
 	const makerList = [
 		{
-			label: '제품군',
+			label: '제조사',
 			value: '',
 		},
 		{

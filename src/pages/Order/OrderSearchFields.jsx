@@ -47,7 +47,7 @@ const OrderSearchFields = ({
 			<FilterLeft>
 				<RowWrap>
 					{/* 창고 구분 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>창고 구분</h6>
 						<PWRight>
 							<MainSelect
@@ -67,7 +67,7 @@ const OrderSearchFields = ({
 				{/* 2행 */}
 				<RowWrap>
 					{/* 구분 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>구분</h6>
 						{/* 제품군 */}
 						<PWRight>
@@ -99,14 +99,14 @@ const OrderSearchFields = ({
 				</RowWrap>
 				{/* 6 행 */}
 				<RowWrap none>
-					<DateSearchSelect
-						title={'상시 판매 주문 일자'}
-						startInitDate={search.startDate}
-						endInitDate={search.endDate}
-						startDateChange={(value) => onChange('startDate', value)}
-						endDateChange={(value) => onChange('endDate', value)}
-					/>
-					<PartWrap>
+					{/*<DateSearchSelect*/}
+					{/*	title={'상시 판매 주문 일자'}*/}
+					{/*	startInitDate={search.startDate}*/}
+					{/*	endInitDate={search.endDate}*/}
+					{/*	startDateChange={(value) => onChange('startDate', value)}*/}
+					{/*	endDateChange={(value) => onChange('endDate', value)}*/}
+					{/*/>*/}
+					<PartWrap first>
 						<h6>주문 상태</h6>
 						<CustomCheckBox
 							initOptions={[
@@ -119,11 +119,13 @@ const OrderSearchFields = ({
 									checked: false,
 									text: '확정 전송 대기',
 									value: '확정 전송 대기',
-								},								{
+								},
+								{
 									checked: false,
 									text: '주문 취소',
 									value: '주문 취소',
-								},								{
+								},
+								{
 									checked: false,
 									text: '주문 확정',
 									value: '주문 확정',
