@@ -165,7 +165,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum }) => {
 	return (
 		<>
 			<FadeOverlay />
-			<ModalContainer style={{ width: '75%', height: '90vh' }}>
+			<ModalContainer style={{ width: '75%', height: '95vh' }}>
 				<BlueBarHeader style={{ height: '60px' }}>
 					{/* <div>{title}</div> */}
 					<div>패키지 상세 보기(경매)</div>

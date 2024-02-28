@@ -75,8 +75,6 @@ const Bidding = ({}) => {
 
 	const [addedInput, setAddedInput] = useState(null)
 
-	const radioDummy = ['전체', '미진행', '진행중', '종료']
-
 	const [isRotated, setIsRotated] = useState(false)
 
 	const handleImageClick = () => {
@@ -104,6 +102,7 @@ const Bidding = ({}) => {
 	const checkedArray = useAtom(selectedRowsAtom)[0]
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 	const uids = checkedArrayState?.map((item) => item['제품 번호'])
+	const packUids = checkedArrayState?.map((item) => item['패키지 번호'])
 	const [tablePagination, setTablePagination] = useState([])
 	const paramData = {
 		pageNum: 1,
@@ -134,19 +133,38 @@ const Bidding = ({}) => {
 			setDestiObject(destiObject)
 		})
 
-		const updatedResData = resData.map((item) => {
-			if (uids.includes(item.productNumber)) {
-				item.destinationCode = destiObject?.destinationCode
-				item.customerDestinationName = destiObject?.name
-				item.customerDestinationAddress = destiObject?.address
-				item.customerDestinationPhone = destiObject?.phone
-				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
-			}
+		// const updatedResData = resData.map((item) => {
+		// 	if (uids.includes(item.productNumber )) {
+		// 		item.destinationCode = destiObject?.destinationCode
+		// 		item.customerDestinationName = destiObject?.name
+		// 		item.customerDestinationAddress = destiObject?.address
+		// 		item.customerDestinationPhone = destiObject?.phone
+		// 		item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+		// 	}
 
+		// 	return item
+		// })
+
+		const updatedResData = resData.map((item) => {
+			if (param?.type === '단일')
+				if (uids.includes(item.productNumber)) {
+					item.destinationCode = destiObject?.destinationCode
+					item.customerDestinationName = destiObject?.name
+					item.customerDestinationAddress = destiObject?.address
+					item.customerDestinationPhone = destiObject?.phone
+					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+				}
+			if (param?.type === '패키지')
+				if (packUids.includes(item.packageNumber)) {
+					item.destinationCode = destiObject?.destinationCode
+					item.customerDestinationName = destiObject?.name
+					item.customerDestinationAddress = destiObject?.address
+					item.customerDestinationPhone = destiObject?.phone
+					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+				}
 			return item
 		})
-		console.log('111 앞 ', updatedResData)
-		console.log('destiObject', destiObject)
+
 		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
 
@@ -360,9 +378,8 @@ const Bidding = ({}) => {
 	}
 
 	const [values, setValues] = useState({})
-	const [valueDesti, setValueDesti] = useState()
+	// const [valueDesti, setValueDesti] = useState()
 
-	// TODO : 셀 별로 받아서 해야함. 나중에 하자...
 	const onCellValueChanged = (params) => {
 		const p = params.data
 
@@ -371,14 +388,14 @@ const Bidding = ({}) => {
 			biddingPrice: p['응찰가'],
 			productUid: p['제품 고유 번호'],
 		}))
-		setValueDesti(p['경매 번호'])
+		// setValueDesti(p['경매 번호'])
 	}
 
 	useEffect(() => {
 		setWinningCreateData((prev) => ({
 			...prev,
 			biddingList: [{ ...values }],
-			auctionNumber: valueDesti,
+			auctionNumber: auctionNumber,
 		}))
 	}, [values])
 
@@ -399,13 +416,22 @@ const Bidding = ({}) => {
 		}
 
 		const updatedResData = resData.map((item) => {
-			if (uids.includes(item.productNumber)) {
-				item.destinationCode = destiObject?.destinationCode
-				item.customerDestinationName = destiObject?.name
-				item.customerDestinationAddress = destiObject?.address
-				item.customerDestinationPhone = destiObject?.phone
-				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
-			}
+			if (param?.type === '단일')
+				if (uids.includes(item.productNumber)) {
+					item.destinationCode = destiObject?.destinationCode
+					item.customerDestinationName = destiObject?.name
+					item.customerDestinationAddress = destiObject?.address
+					item.customerDestinationPhone = destiObject?.phone
+					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+				}
+			if (param?.type === '패키지')
+				if (packUids.includes(item.packageNumber)) {
+					item.destinationCode = destiObject?.destinationCode
+					item.customerDestinationName = destiObject?.name
+					item.customerDestinationAddress = destiObject?.address
+					item.customerDestinationPhone = destiObject?.phone
+					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+				}
 			return item
 		})
 
