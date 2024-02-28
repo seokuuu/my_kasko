@@ -1,5 +1,5 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import { BlackBtn, BtnBound, NewBottomBtnWrap, SkyBtn, TGreyBtn, WhiteBtn } from '../../../common/Button/Button'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
+import { BlackBtn, BtnBound, NewBottomBtnWrap, SkyBtn, TGreyBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 
 import {
@@ -16,8 +16,9 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 
-import { isEqual } from 'lodash'
-import { getBidding, getBiddingDetail, getBiddingPackDetail, postBidding } from '../../../api/auction/bidding'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useAtom } from 'jotai'
+import { getBiddingPackDetail, postBidding } from '../../../api/auction/bidding'
 import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -28,14 +29,12 @@ import {
 	ModalContainer,
 	WhiteCloseBtn,
 } from '../../../modal/Common/Common.Styled'
-import Table from '../../Table/Table'
-import { useAtom } from 'jotai'
-import { selectedRowsAtom } from '../../../store/Layout/Layout'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useAlert from '../../../store/Alert/useAlert'
+import { selectedRowsAtom } from '../../../store/Layout/Layout'
+import Table from '../../Table/Table'
 
 // 패키지 상세보기 (경매)
-const PackDetail = ({ aucDetail, setAucDetailModal, packNum }) => {
+const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 	const auctionNum = aucDetail['경매 번호']
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert() // 에러 핸들링
 	const queryClient = useQueryClient()
@@ -44,12 +43,39 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum }) => {
 		biddingPrice: null,
 	}
 
+	const tableField = useRef(AuctionBiddingFieldsCols)
+	const [packDetailInput, setPackDetailInput] = useState(null)
+	const [innerObject, setInnerObject] = useState({})
+
+	// 체크박스 없애기
+	useEffect(() => {
+		const modifiedCols = tableField.current.filter((col) => col.field !== '') // 체크박스 열 제거
+		tableField.current = modifiedCols
+
+		// 상위 컴포넌트 값 받아오기
+		const updatedProductList = [
+			{
+				packageNumber: packNum,
+				customerDestinationUid: destiObject && destiObject?.['uid'],
+				biddingPrice: null, // Initialize biddingPrice to null
+			},
+		]
+
+		setWinningCreateData((prevData) => ({
+			...prevData,
+			biddingList: updatedProductList,
+		}))
+	}, [])
+
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner) // 응찰 상태
 	const [finalInput, setFinalInput] = useState({
 		biddingPrice: null,
 	})
+
+	console.log('finalInput', finalInput)
 	const init = {
 		auctionNumber: auctionNum,
+		type: '패키지',
 	}
 	const [winningCreateData, setWinningCreateData] = useState(init)
 
@@ -59,21 +85,21 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum }) => {
 		setAucDetailModal(false)
 	}
 
-	useEffect(() => {
-		const updatedProductList = checkedArray?.map((item) => ({
-			packageNumber: item['패키지 번호'],
-			// biddingPrice: finalInput?.biddingPrice,
-			biddingPrice:
-				item['응찰가'] === 0 ? item['시작가'] + finalInput?.biddingPrice : item['응찰가'] + finalInput?.biddingPrice,
-			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
-		}))
+	console.log('패키지 모달 바디값 ', winningCreateInput)
+	console.log('getRow', getRow)
 
-		// winningCreateData를 업데이트하여 productList를 갱신
-		setWinningCreateData((prevData) => ({
-			...prevData,
-			biddingList: updatedProductList,
-		}))
-	}, [checkedArray, finalInput])
+	// useEffect(() => {
+	// 	const updatedProductList = {
+	// 		packageNumber: packNum,
+	// 		customerDestinationUid: destiObject && destiObject['uid'],
+	// 		biddingPrice: '',
+	// 	}
+	// 	// winningCreateData를 업데이트하여 productList를 갱신
+	// 	setWinningCreateData((prevData) => ({
+	// 		...prevData,
+	// 		biddingList: updatedProductList,
+	// 	}))
+	// }, [finalInput])
 
 	const paramData = {
 		pageNum: 1,
@@ -102,25 +128,6 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum }) => {
 			setTablePagination(resPagination)
 		}
 	}, [isSuccess, resData])
-
-	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
-		setParam(paramData)
-	}
-	// import
-	const globalProductSearchOnClick = (userSearchParam) => {
-		setParam((prevParam) => {
-			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				refetch()
-				return prevParam
-			}
-			return {
-				...prevParam,
-				...userSearchParam,
-			}
-		})
-	}
 
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
@@ -161,6 +168,35 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum }) => {
 			pageNum: 1,
 		}))
 	}
+
+	// 응찰가 일괄 적용 버튼
+	const handleButtonClick = () => {
+		const firstBiddingEntry = getRow[0]
+		if (firstBiddingEntry) {
+			setWinningCreateData((prevData) => ({
+				...prevData,
+				biddingList: [
+					{
+						packageNumber: packNum,
+						customerDestinationUid: destiObject && destiObject?.['uid'],
+						biddingPrice: firstBiddingEntry.memberBiddingPrice + finalInput?.biddingPrice,
+					},
+				],
+			}))
+		}
+
+		const uids = getRow?.[0]?.['경매 번호']
+		const updatedResData = resData.map((item) => {
+			if (uids.includes(item.auctionNumber)) {
+				item.memberBiddingPrice = item.memberBiddingPrice + finalInput?.biddingPrice
+			}
+			return item
+		})
+		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+	}
+
+	// JSX 내부에서 버튼에 onClick 이벤트 핸들러 추가
+	;<button onClick={handleButtonClick}>클릭</button>
 
 	return (
 		<>
@@ -216,22 +252,13 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum }) => {
 										width={140}
 										height={32}
 										onChange={(e) => {
-											setwinningCreateInput((p) => ({
+											setFinalInput((p) => ({
 												...p,
 												biddingPrice: parseInt(e.target.value) || null,
 											}))
 										}}
 									/>
-									<TGreyBtn
-										height={30}
-										style={{ width: '50px' }}
-										onClick={() => {
-											setFinalInput((p) => ({
-												...p,
-												biddingPrice: winningCreateInput?.biddingPrice,
-											}))
-										}}
-									>
+									<TGreyBtn height={30} style={{ width: '50px' }} onClick={handleButtonClick}>
 										적용
 									</TGreyBtn>
 									<BtnBound />
@@ -243,7 +270,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum }) => {
 							<Table
 								hei2={400}
 								hei={100}
-								getCol={AuctionBiddingFieldsCols}
+								getCol={tableField.current}
 								getRow={getRow}
 								tablePagination={tablePagination}
 								onPageChange={onPageChange}
