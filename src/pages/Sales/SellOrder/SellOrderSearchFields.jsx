@@ -66,18 +66,23 @@ const SellOrderSearchFields = ({ search, setSearch, commonDropdownButtonHandler 
 					</PartWrap>
 				</RowWrap>
 				<PartWrap first>
-					<h6>주문 상태</h6>
+					<h6>상시판매 상태</h6>
 					<CustomCheckBox
 						initOptions={[
 							{
 								checked: false,
-								text: '확정 전송',
-								value: '확정 전송',
+								text: '주문요청',
+								value: '주문 요청',
 							},
 							{
 								checked: false,
-								text: '확정전송 대기',
-								value: '확정 전송 대기',
+								text: '주문확정',
+								value: '주문 확정',
+							},
+							{
+								checked: false,
+								text: '주문취소',
+								value: '주문 취소',
 							},
 						]}
 						setState={setSearch}

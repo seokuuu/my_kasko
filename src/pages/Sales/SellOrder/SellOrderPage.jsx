@@ -9,33 +9,33 @@ import SellOrderDetail from './SellOrderDetail'
 import { useState } from 'react'
 
 const SellOrderPage = () => {
-  const [expanded, setExpanded] = useState('상시 판매 관리')
-  const [depth2Color, setDepth2Color] = useState('주문 확인')
-  const [choiceComponent, setChoiceComponent] = useState('리스트')
+	const depth2Color = '상시 판매 주문 확인'
+	const [expanded, setExpanded] = useState('상시 판매 관리')
+	const [choiceComponent, setChoiceComponent] = useState('리스트')
 
-  const renderChoiceComponent = () => {
-    switch (choiceComponent) {
-      case '리스트':
-        return <SellOrder setChoiceComponent={setChoiceComponent} />
-      case 'cell':
-        return <SellOrderDetail setChoiceComponent={setChoiceComponent} />
-      default:
-        return <SellOrder setChoiceComponent={setChoiceComponent} />
-    }
-  }
+	const renderChoiceComponent = () => {
+		switch (choiceComponent) {
+			case '리스트':
+				return <SellOrder setChoiceComponent={setChoiceComponent} />
+			case 'cell':
+				return <SellOrderDetail setChoiceComponent={setChoiceComponent} />
+			default:
+				return <SellOrder setChoiceComponent={setChoiceComponent} />
+		}
+	}
 
-  return (
-    <>
-      <Header />
-      <OverAllMain>
-        <SideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
-        <OverAllSub>
-          <SubHeader />
-          <OverAllTable>{renderChoiceComponent()}</OverAllTable>
-        </OverAllSub>
-      </OverAllMain>
-    </>
-  )
+	return (
+		<>
+			<Header />
+			<OverAllMain>
+				<SideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
+				<OverAllSub>
+					<SubHeader />
+					<OverAllTable>{renderChoiceComponent()}</OverAllTable>
+				</OverAllSub>
+			</OverAllMain>
+		</>
+	)
 }
 
 export default SellOrderPage
