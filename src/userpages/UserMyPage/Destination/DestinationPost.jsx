@@ -79,7 +79,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 		if (!isEmptyObj(input)) return simpleAlert('빈값을 채워주세요.')
 
 		if (!!selectedSpecialDestination && !input.address.startsWith(selectedSpecialDestination.label)) {
-			simpleAlert('등록된 기본 주소로 다시 검색해주세요.')
+			simpleAlert('선택한 특수목적지로 주소를 다시 검색해주세요.')
 			return
 		}
 
@@ -171,17 +171,17 @@ const DestinationPost = ({ setChoiceComponent }) => {
 							<AddressFinder
 								onAddressChange={onAddressHandler}
 								defaultQuery={selectedSpecialDestination?.label}
-								prevAddress={selectedSpecialDestination?.label}
+								// prevAddress={selectedSpecialDestination?.label}
 							/>
 						</Part>
 
 						<Part>
 							<Title>
-								<h4>하차지 특이사항</h4>
+								<h4>하차지 특이사항(비고)</h4>
 								<p></p>
 							</Title>
 							<CustomInput
-								placeholder="하차지 특이사항"
+								placeholder="하차지 특이사항(비고)"
 								width={340}
 								name="memo"
 								value={input.memo}

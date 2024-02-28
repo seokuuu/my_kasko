@@ -46,7 +46,7 @@ const UserPerformanceFilter = ({ search, setSearch, commonNumInputHandler, onSpe
 					/>
 				</RowWrap>
 				<RowWrap>
-					<PartWrap>
+					<PartWrap first>
 						<h6>창고 구분</h6>
 						<PWRight>
 							<MainSelect
@@ -92,13 +92,14 @@ const UserPerformanceFilter = ({ search, setSearch, commonNumInputHandler, onSpe
 							onChange={(e) => onChange('grade', e)}
 						/>
 					</PartWrap>
-					<PartWrap>
-						<CustomerSearch search={search} setSearch={setSearch} />
-					</PartWrap>
+					{/* 고객사찾기 */}
+					{/*<PartWrap>*/}
+					{/*	<CustomerSearch search={search} setSearch={setSearch} />*/}
+					{/*</PartWrap>*/}
 				</RowWrap>
 				<RowWrap none>
 					{/* 두깨 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>두께(MM)</h6>
 						<ExInputsWrap>
 							<MiniInput
