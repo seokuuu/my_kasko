@@ -102,6 +102,7 @@ const Bidding = ({}) => {
 	const checkedArray = useAtom(selectedRowsAtom)[0]
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 	const uids = checkedArrayState?.map((item) => item['제품 번호'])
+	const packUids = checkedArrayState?.map((item) => item['패키지 번호'])
 	const [tablePagination, setTablePagination] = useState([])
 	const paramData = {
 		pageNum: 1,
@@ -132,17 +133,38 @@ const Bidding = ({}) => {
 			setDestiObject(destiObject)
 		})
 
-		const updatedResData = resData.map((item) => {
-			if (uids.includes(item.productNumber)) {
-				item.destinationCode = destiObject?.destinationCode
-				item.customerDestinationName = destiObject?.name
-				item.customerDestinationAddress = destiObject?.address
-				item.customerDestinationPhone = destiObject?.phone
-				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
-			}
+		// const updatedResData = resData.map((item) => {
+		// 	if (uids.includes(item.productNumber )) {
+		// 		item.destinationCode = destiObject?.destinationCode
+		// 		item.customerDestinationName = destiObject?.name
+		// 		item.customerDestinationAddress = destiObject?.address
+		// 		item.customerDestinationPhone = destiObject?.phone
+		// 		item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+		// 	}
 
+		// 	return item
+		// })
+
+		const updatedResData = resData.map((item) => {
+			if (param?.type === '단일')
+				if (uids.includes(item.productNumber)) {
+					item.destinationCode = destiObject?.destinationCode
+					item.customerDestinationName = destiObject?.name
+					item.customerDestinationAddress = destiObject?.address
+					item.customerDestinationPhone = destiObject?.phone
+					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+				}
+			if (param?.type === '패키지')
+				if (packUids.includes(item.packageNumber)) {
+					item.destinationCode = destiObject?.destinationCode
+					item.customerDestinationName = destiObject?.name
+					item.customerDestinationAddress = destiObject?.address
+					item.customerDestinationPhone = destiObject?.phone
+					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+				}
 			return item
 		})
+
 		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
 
@@ -394,13 +416,22 @@ const Bidding = ({}) => {
 		}
 
 		const updatedResData = resData.map((item) => {
-			if (uids.includes(item.productNumber)) {
-				item.destinationCode = destiObject?.destinationCode
-				item.customerDestinationName = destiObject?.name
-				item.customerDestinationAddress = destiObject?.address
-				item.customerDestinationPhone = destiObject?.phone
-				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
-			}
+			if (param?.type === '단일')
+				if (uids.includes(item.productNumber)) {
+					item.destinationCode = destiObject?.destinationCode
+					item.customerDestinationName = destiObject?.name
+					item.customerDestinationAddress = destiObject?.address
+					item.customerDestinationPhone = destiObject?.phone
+					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+				}
+			if (param?.type === '패키지')
+				if (packUids.includes(item.packageNumber)) {
+					item.destinationCode = destiObject?.destinationCode
+					item.customerDestinationName = destiObject?.name
+					item.customerDestinationAddress = destiObject?.address
+					item.customerDestinationPhone = destiObject?.phone
+					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+				}
 			return item
 		})
 

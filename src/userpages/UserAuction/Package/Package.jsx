@@ -107,7 +107,9 @@ const Package = ({}) => {
 	// const checkedArrayState = useAtom(selectedRowsAtom)[0]
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
-	const uids = checkedArrayState?.map((item) => item['제품 번호'])
+	const uids = checkedArrayState?.map((item) => item['패키지 번호'])
+
+	console.log('uids ', uids)
 
 	const paramData = {
 		pageNum: 1,
@@ -310,7 +312,7 @@ const Package = ({}) => {
 		}
 
 		const updatedResData = resData.map((item) => {
-			if (uids.includes(item.productNumber)) {
+			if (uids.includes(item.packageNumber)) {
 				item.destinationCode = destiObject?.destinationCode
 				item.customerDestinationName = destiObject?.name
 				item.customerDestinationAddress = destiObject?.address
@@ -362,7 +364,7 @@ const Package = ({}) => {
 		})
 
 		const updatedResData = resData.map((item) => {
-			if (uids.includes(item.productNumber)) {
+			if (uids.includes(item.packageNumber)) {
 				item.destinationCode = destiObject?.destinationCode
 				item.customerDestinationName = destiObject?.name
 				item.customerDestinationAddress = destiObject?.address
