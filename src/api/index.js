@@ -39,8 +39,7 @@ client.interceptors.response.use(
 			if (response?.status === 403) {
 				window.location.href = '/forbidden'
 			}
-			if (response?.status === 409) {
-				console.log('여기?????')
+			if (response?.status === 412) {
 				window.location.href = '/duplicate-login'
 			}
 			return Promise.reject(response)

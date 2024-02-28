@@ -21,6 +21,7 @@ const useAuth = () => {
 	// 로그인
 	const setLogin = (user) => {
 		const name = user.name
+		const customerName = user.customerName
 		const role = user.roles.role
 		const authorities = user.roles.authorities
 		const token = user.accessToken
@@ -34,13 +35,13 @@ const useAuth = () => {
 		}
 
 		localStorage.setItem('accessToken', token)
-		setAuth({ ...initAuth, isAuth: true, name, role, authorities })
+		setAuth({ ...initAuth, isAuth: true, name, customerName, role, authorities })
 		queryClient.resetQueries()
 		navigate(role === '고객사' ? '/userpage/main' : 'main', { replace: true })
 	}
 
 	const getName = () => {
-		return auth ? auth.name : null
+		return auth ? { name: auth.name, customerName: auth.customerName } : null
 	}
 
 	// 로그아웃

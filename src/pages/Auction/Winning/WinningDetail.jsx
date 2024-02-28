@@ -41,7 +41,7 @@ import {
 	partDepositConfirm,
 	publishDepositForm,
 } from '../../../api/auction/winning'
-import { getDestinationFind } from '../../../api/search'
+import { getCustomerDestinationByCustomerCode, getDestinationFind } from '../../../api/search'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import { AuctionWinningDetailFields, AuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
@@ -60,8 +60,6 @@ const WinningDetail = ({ detailRow, setDetailRow }) => {
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [tablePagination, setTablePagination] = useState([])
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
-	console.log('destinationData', destinationData)
-	console.log('winning detailRow', detailRow)
 	const titleData = ['고객사 명', '고객 코드', '창고', '총 수량', '총 중량', '입금 요청 금액']
 	const contentData = [
 		detailRow?.['고객사명'],
@@ -178,7 +176,12 @@ const WinningDetail = ({ detailRow, setDetailRow }) => {
 	//   }))
 	// }, [])
 
-	const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
+	const customerCode = detailRow?.['고객 코드']
+	const { data: inventoryDestination } = useReactQuery(
+		customerCode,
+		'getCustomerDestinationByCustomerCode',
+		getCustomerDestinationByCustomerCode,
+	)
 
 	console.log('inventoryDestination', inventoryDestination?.data?.data)
 
