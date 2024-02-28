@@ -11,6 +11,7 @@ import { atomWithStorage } from 'jotai/utils'
 export const initAuth = {
 	isAuth: false,
 	name: '',
+	customerName: '',
 	role: '',
 	authorities: [],
 }

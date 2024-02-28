@@ -5,6 +5,7 @@ const urls = {
 	spart: '/search/spart',
 	destination: '/search/destination',
 	destinationDiv: '/search/destination-div',
+	customerDestination: '/search/customer-destination',
 	spec: '/search/spec',
 	special: '/search/destination-special',
 	prono: '/search/prono',
@@ -39,6 +40,10 @@ export function getDestinationFind() {
 	const response = client.get(`${urls.destination}`)
 
 	return response
+}
+
+export function getCustomerDestinationByCustomerCode(customerCode) {
+	return client.get(`${urls.customerDestination}?customerCode=${customerCode}`)
 }
 
 export function getDestinations(keyword) {

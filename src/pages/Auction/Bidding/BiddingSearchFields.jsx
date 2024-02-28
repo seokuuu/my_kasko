@@ -26,12 +26,14 @@ const BiddingSearchFields = ({
 	commonDropdownButtonHandler,
 	commonNumInputHandler,
 	onSpecHandler,
+	type,
 }) => {
 	const {
 		// prettier-ignore
 		storageList,
 		spartList,
 		gradeList,
+		preferThicknessList,
 	} = useGlobalProductSearchFieldData()
 
 	// const init = {
@@ -100,6 +102,23 @@ const BiddingSearchFields = ({
 							/>
 						</PWRight>
 					</PartWrap>
+					{type === '낙찰 생성' && (
+						<>
+							<PartWrap>
+								<h6>구분</h6>
+								{/* 제품군 */}
+								<PWRight>
+									<MainSelect
+										options={preferThicknessList}
+										defaultValue={preferThicknessList[0]}
+										value={search.preferThickness}
+										name="preferThickness"
+										onChange={(e) => commonDropdownButtonHandler(e, 'preferThickness')}
+									/>
+								</PWRight>
+							</PartWrap>
+						</>
+					)}
 				</RowWrap>
 				<RowWrap>
 					<PartWrap first>
