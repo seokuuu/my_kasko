@@ -22,7 +22,16 @@ import styled from 'styled-components'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 
 // 고객사 찾기
-const InventoryFind = ({ title, setSwitch, data, type, setPropsUid, handleButtonOnClick, defaultValue, destiresult }) => {
+const InventoryFind = ({
+	title,
+	setSwitch,
+	data,
+	type,
+	setPropsUid,
+	handleButtonOnClick,
+	defaultValue,
+	destiresult,
+}) => {
 	const matchData = { name: '고객명', code: '고객사 코드', businessNumber: '사업자번호' }
 	const destinationData = { name: '목적지', code: '목적지 코드' }
 	const customerGetData = data?.data?.data
@@ -58,7 +67,9 @@ const InventoryFind = ({ title, setSwitch, data, type, setPropsUid, handleButton
 		const filteredResult = customerGetData?.filter((item) => {
 			const searchTermsLowerCase = searchTerm
 			return (
-				item.code.includes(searchTermsLowerCase) || item.name.includes(searchTermsLowerCase)
+				item.code?.includes(searchTermsLowerCase) ||
+				item.name?.includes(searchTermsLowerCase) ||
+				item.destinationCode?.includes(searchTermsLowerCase)
 				// item.businessNumber.includes(searchTermsLowerCase)
 			)
 		})
