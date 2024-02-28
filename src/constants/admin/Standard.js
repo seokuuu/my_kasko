@@ -152,11 +152,6 @@ export const StandardTransportationFieldsCols = [
 	{ ...commonStyles, field: '순번', minWidth: 100 },
 	{
 		...commonStyles,
-		field: '운반비 고유 번호',
-		minWidth: 160,
-	},
-	{
-		...commonStyles,
 		field: '창고',
 		minWidth: 100,
 	},
@@ -168,7 +163,7 @@ export const StandardTransportationFieldsCols = [
 	{
 		...commonStyles,
 		field: '목적지명',
-		minWidth: 100,
+		minWidth: 300,
 	},
 	{
 		...commonStyles,
@@ -188,6 +183,11 @@ export const StandardTransportationFieldsCols = [
 		...commonStyles,
 		field: '적용단가',
 		minWidth: 100,
+	},
+	{
+		...commonStyles,
+		field: '운반비 고유 번호',
+		minWidth: 160,
 	},
 ]
 

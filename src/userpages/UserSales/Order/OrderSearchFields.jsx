@@ -105,9 +105,9 @@ const OrderSearchFields = ({
 					</PartWrap>
 				</RowWrap>
 				{/* 고객사 찾기 */}
-				<RowWrap>
-					<CustomerSearch search={search} setSearch={setSearch} />
-				</RowWrap>
+				{/*<RowWrap>*/}
+				{/*	<CustomerSearch search={search} setSearch={setSearch} />*/}
+				{/*</RowWrap>*/}
 				{/* 구분 */}
 				<RowWrap style={{ width: '100%', flexWrap: 'nowrap' }}>
 					<PartWrap first>

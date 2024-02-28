@@ -57,16 +57,11 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 
 	const { mutate: update } = useMutation(patchDestination, {
 		onSuccess() {
-			showAlert({
-				title: '저장되었습니다.',
-				content: '',
-				func() {
-					setSwtichDestiEdit(false)
-					queryClient.invalidateQueries({ queryKey: destinationQueryKey.list })
-				},
+			simpleAlert('저장되었습니다.', () => {
+				setSwtichDestiEdit(false)
+				queryClient.invalidateQueries({ queryKey: destinationQueryKey.list })
 			})
 		},
-
 		onError(error) {
 			if (error) {
 				simpleAlert(error.data.message)
@@ -111,9 +106,12 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 		setInput({ ...input, [name]: value })
 	}
 	const submit = async () => {
-		if (!isEmptyObj(input)) simpleAlert('빈값을 채워주세요.')
+		if (!isEmptyObj(input)) {
+			simpleAlert('빈값을 채워주세요.')
+			return
+		}
 		if (!!selectedSpecialDestination && !input.address.startsWith(selectedSpecialDestination.label)) {
-			simpleAlert('등록된 기본 주소로 다시 검색해주세요.')
+			simpleAlert('선택한 특수목적지로 주소를 다시 검색해주세요.')
 			return
 		}
 		update({ uid: uidAtom, ...input })
@@ -186,7 +184,7 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 							</Title>
 							<AddressFinder
 								onAddressChange={onAddressHandler}
-								prevAddress={selectedSpecialDestination?.label ?? input.address}
+								prevAddress={input.address}
 								prevAddressDetail={input.addressDetail}
 								defaultQuery={selectedSpecialDestination?.label}
 							/>
@@ -194,10 +192,16 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 
 						<Part>
 							<Title>
-								<h4>비고</h4>
+								<h4>하차지 특이사항(비고)</h4>
 								<p></p>
 							</Title>
-							<CustomInput placeholder="비고 작성" width={340} name="memo" value={input.memo} onChange={handleChange} />
+							<CustomInput
+								placeholder="하차지 특이사항(비고)"
+								width={340}
+								name="memo"
+								value={input.memo}
+								onChange={handleChange}
+							/>
 						</Part>
 					</Left>
 					<Right>
@@ -207,7 +211,7 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 								<p></p>
 							</Title>
 							<CustomInput
-								placeholder="상세 주소 입력"
+								placeholder="제 1창고,제 2창고 등."
 								width={340}
 								name="name"
 								value={input.name}
@@ -219,21 +223,22 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 								<h4>하차지 담당자 정보</h4>
 								<p></p>
 							</Title>
-							<CustomInput
-								placeholder="직함 입력"
-								width={130}
-								name="managerTitle"
-								value={input.managerTitle}
-								onChange={handleChange}
-							/>
-							<CustomInput
-								placeholder="담당자 성함 입력"
-								value={input.managerName}
-								width={195}
-								style={{ marginLeft: '5px' }}
-								name="managerName"
-								onChange={handleChange}
-							/>
+							<div style={{ display: 'flex', gap: '5px' }}>
+								<CustomInput
+									placeholder="담당자 성함 입력"
+									value={input.managerName}
+									width={200}
+									name="managerName"
+									onChange={handleChange}
+								/>
+								<CustomInput
+									placeholder="직함 입력"
+									width={135}
+									name="managerTitle"
+									value={input.managerTitle}
+									onChange={handleChange}
+								/>
+							</div>
 							<CustomInput
 								placeholder="담당자 휴대폰 번호 입력 ('-' 제외)"
 								value={input.managerPhone}
@@ -243,7 +248,11 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 								onChange={handleChange}
 							/>
 
-							<Alert style={{ margin: '5px auto' }}>*하차지 연락처 미입력 시 토요일 하차 불가</Alert>
+							<Alert style={{ margin: '5px auto' }}>
+								*하차지 연락처 미입력 시 토요일 하차 불가
+								<br />
+								*토요일 출고시 목적지 하차관련 문제 발생, 통화불가할 경우 회차비용 발생할수 있음.
+							</Alert>
 							<CustomInput
 								placeholder="하차지 연락처 입력 ('-' 제외)"
 								width={340}

@@ -50,6 +50,8 @@ export default function UserPostCommon({ id, isCustomer = false, closeModal = nu
 	// ID 중복체크 여부
 	const [idDupleCheck, setIdDupleCheck] = useState(false)
 
+	const [originalBusinessNumber, setOriginalBusinessNumber] = useState()
+
 	// 사업자 번호 중복체크 여부
 	const [busIdDupleCheck, setBusIdDupleCheck] = useState(!!id)
 
@@ -71,7 +73,7 @@ export default function UserPostCommon({ id, isCustomer = false, closeModal = nu
 			}
 			setValue(key, value)
 		}
-		setBank(customerData.bank)
+		setOriginalBusinessNumber(customerData?.businessNumber)
 		setBank(customerData.bank)
 	}
 
@@ -1029,9 +1031,14 @@ export default function UserPostCommon({ id, isCustomer = false, closeModal = nu
 											{...field}
 											type="text"
 											placeholder="사업자 번호 입력('-' 제외)"
-											onChange={(value) => {
-												field.onChange(value)
-												setBusIdDupleCheck(false)
+											maxLength={10}
+											onChange={(e) => {
+												field.onChange(e)
+												if (originalBusinessNumber && e.target.value === originalBusinessNumber) {
+													setBusIdDupleCheck(true)
+												} else {
+													setBusIdDupleCheck(false)
+												}
 											}}
 										/>
 									)}

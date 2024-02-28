@@ -76,7 +76,6 @@ const DestinationPost = ({ setChoiceComponent }) => {
 				if (postAddress) {
 					const response = await get_addressFind(postAddress)
 					const resData = response?.data?.data
-					console.log('resData : ', resData)
 					if (resData) {
 						setDestiCode(resData)
 					} else {
@@ -130,7 +129,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 
 		if (isEmptyObj(submitData)) {
 			if (!!selectedSpecialDestination && !submitData.address.startsWith(selectedSpecialDestination.label)) {
-				simpleAlert('등록된 기본 주소로 다시 검색해주세요.')
+				simpleAlert('선택한 특수목적지로 주소를 다시 검색해주세요.')
 				return
 			}
 
@@ -238,12 +237,12 @@ const DestinationPost = ({ setChoiceComponent }) => {
 							<AddressFinder
 								onAddressChange={onAddressHandler}
 								defaultQuery={selectedSpecialDestination?.label}
-								prevAddress={selectedSpecialDestination?.label}
+								// prevAddress={selectedSpecialDestination?.label}
 							/>
 						</Part>
 						<Part>
 							<Title>
-								<h4>목적지 코드</h4>
+								<h4>적용 목적지</h4>
 								<p></p>
 							</Title>
 							<div

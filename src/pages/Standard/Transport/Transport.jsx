@@ -378,6 +378,7 @@ const Transport = () => {
 
 	useEffect(() => {
 		document.getElementById('resetBtn').click()
+		setPostInput((prev) => ({ ...prev, type: types }))
 	}, [types])
 
 	useEffect(() => {
@@ -515,7 +516,7 @@ const Transport = () => {
 			{btnCellModal && (
 				// Edit
 				<TableModal
-					title={'운반비 수정'}
+					title={types ? '매출 운반비 수정' : '매입 운반비 수정'}
 					btnCellModal={btnCellModal} // Modal Atom Switch
 					setBtnCellModal={setBtnCellModal} // 수정 버튼에 대한 ag-grid event
 					modalInTable={StandardTransportationEdit} // Modal 안에 들어갈 Table 매칭 디렉토리 ex)
@@ -534,7 +535,7 @@ const Transport = () => {
 				// Post
 				<Upload
 					width={1200}
-					title={'운반비 등록'}
+					title={types ? '매출 운반비 등록' : '매입 운반비 등록'}
 					category={'운반비 등록'}
 					modalSwitch={modalSwitch}
 					setModalSwitch={setModalSwitch}

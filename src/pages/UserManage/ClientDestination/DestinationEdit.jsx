@@ -95,6 +95,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 	function onAddressHandler(address, addressDetail, sido, sigungu, bname) {
 		const destination = `${sido} ${sigungu} ${bname}`
 		setPostAdress(address)
+		setDetailAddress('')
 		setSubmitData((p) => ({ ...p, address, addressDetail, destination }))
 	}
 
@@ -116,6 +117,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 		const checkedIndex = matchingData?.represent === 0 ? 1 : 0
 		const newCheckRadio = Array.from({ length: radioDummy.length }, (_, index) => index === checkedIndex)
 
+		setPostAdress(matchingData?.address)
 		setAddress(matchingData?.address)
 		setDetailAddress(matchingData?.addressDetail)
 		setCheckRadio(newCheckRadio)
@@ -126,7 +128,6 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 		setSubmitData({
 			...submitData,
 			...matchingData,
-			represent: checkedIndex,
 		})
 	}, [matchingData])
 
@@ -138,7 +139,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 	const submitHandle = (e) => {
 		if (isEmptyObj(submitData)) {
 			if (!!selectedSpecialDestination && !submitData.address.startsWith(selectedSpecialDestination.label)) {
-				simpleAlert('등록된 기본 주소로 다시 검색해주세요.')
+				simpleAlert('선택한 특수목적지로 주소를 다시 검색해주세요.')
 				return
 			}
 
@@ -150,6 +151,11 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 							window.location.reload()
 						},
 					})
+				},
+				onError: (e) => {
+					if (e?.data?.status === 400) {
+						simpleAlert(e.data?.message)
+					}
 				},
 			})
 		} else {
@@ -235,7 +241,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 
 						<Part>
 							<Title>
-								<h4>목적지 코드</h4>
+								<h4>적용 목적지</h4>
 								<p></p>
 							</Title>
 							<div
@@ -245,7 +251,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 								}}
 							>
 								<div>
-									<CustomInput width={340} disabled value={destiCode} defaultValue={matchingData?.destinationCode} />
+									<CustomInput width={340} value={destiCode} disabled />
 								</div>
 							</div>
 						</Part>
