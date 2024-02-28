@@ -75,8 +75,6 @@ const Bidding = ({}) => {
 
 	const [addedInput, setAddedInput] = useState(null)
 
-	const radioDummy = ['전체', '미진행', '진행중', '종료']
-
 	const [isRotated, setIsRotated] = useState(false)
 
 	const handleImageClick = () => {
@@ -145,8 +143,6 @@ const Bidding = ({}) => {
 
 			return item
 		})
-		console.log('111 앞 ', updatedResData)
-		console.log('destiObject', destiObject)
 		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
 
@@ -360,9 +356,8 @@ const Bidding = ({}) => {
 	}
 
 	const [values, setValues] = useState({})
-	const [valueDesti, setValueDesti] = useState()
+	// const [valueDesti, setValueDesti] = useState()
 
-	// TODO : 셀 별로 받아서 해야함. 나중에 하자...
 	const onCellValueChanged = (params) => {
 		const p = params.data
 
@@ -371,14 +366,14 @@ const Bidding = ({}) => {
 			biddingPrice: p['응찰가'],
 			productUid: p['제품 고유 번호'],
 		}))
-		setValueDesti(p['경매 번호'])
+		// setValueDesti(p['경매 번호'])
 	}
 
 	useEffect(() => {
 		setWinningCreateData((prev) => ({
 			...prev,
 			biddingList: [{ ...values }],
-			auctionNumber: valueDesti,
+			auctionNumber: auctionNumber,
 		}))
 	}, [values])
 

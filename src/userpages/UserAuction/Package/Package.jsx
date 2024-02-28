@@ -3,7 +3,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import { BtnBound, SkyBtn, TGreyBtn, TWhiteBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { biddingAgreementModal, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import {
+	auctionPackDetailModal,
+	auctionPackDetailNumAtom,
+	biddingAgreementModal,
+	selectedRowsAtom,
+	toggleAtom,
+} from '../../../store/Layout/Layout'
 
 import {
 	CustomInput,
@@ -37,16 +43,20 @@ import useAlert from '../../../store/Alert/useAlert'
 import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
 import AddWishButton from '../../UserSales/_components/AddWishButton'
 import UserBiddingSearchFields from '../Single/UserBiddingSearchFields'
+import PackDetail from '../../../pages/Auction/Bidding/PackDetail'
 
 const Package = ({}) => {
+	const [aucDetailModal, setAucDetailModal] = useAtom(auctionPackDetailModal) // 패키지 모달
+	const [aucDetail, setAucDetail] = useAtom(auctionPackDetailNumAtom) // 해당 row 값 저장
 	const [live, setLive] = useState(true) // LIVE get 일시 중단
+	console.log('live', live)
 	const navigate = useNavigate()
 	const [addedInput, setAddedInput] = useState(null) // 일괄 경매 응찰 input state
 	const [checkedBiddingPrice, setCheckedBiddingPrice] = useState(null) // 체크된 응찰가
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
-	const radioDummy = ['전체', '미응찰', '관심제품', '응찰']
 	const [destinationPopUp, setDestinationPopUp] = useAtom(userPageSingleDestiFindAtom)
 	const [agreementModal, setAgreementModal] = useAtom(biddingAgreementModal) // 입찰 동의서 모달
+
 	const [checkAgreement, setCheckAgreement] = useState({
 		auctionNumber: '',
 		agreement: '',
@@ -73,11 +83,13 @@ const Package = ({}) => {
 
 	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
 
-	console.log('auctionDestination', auctionDestination?.data?.data)
+	console.log('auctionDestination Single 목적지', auctionDestination?.data?.data)
 
 	const [customerData, setCustomerData] = useState()
 	const [propsUid, setPropsUid] = useState(null)
-	const [destiObject, setDestiObject] = useState()
+	const [destiObject, setDestiObject] = useState() //
+
+	console.log('destiObject', destiObject)
 
 	const productListInner = {
 		biddingPrice: null,
@@ -92,7 +104,7 @@ const Package = ({}) => {
 	const tableField = useRef(AuctionPackageBiddingFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
-	const checkedArray = useAtom(selectedRowsAtom)[0]
+	// const checkedArrayState = useAtom(selectedRowsAtom)[0]
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 	const uids = checkedArrayState?.map((item) => item['제품 번호'])
@@ -103,11 +115,26 @@ const Package = ({}) => {
 		type: '패키지',
 	}
 	const [param, setParam] = useState(paramData)
-	const [liveStatus, setLiveStatus] = useState('LIVEgetBidding')
+
+	const [liveStatus, setLiveStatus] = useState('LIVEgetBidding') // LIVE 추가
+
+	// 체크박스 클릭시 재렌더 이슈
+	// useEffect(() => {
+	// 	if (checkedArrayState && checkedArrayState?.length > 0) {
+	// 		setLiveStatus('')
+	// 	}
+	// }, [checkedArrayState])
+
+	const [realAucNum, setRealAucNum] = useState(null)
+	console.log('realAucNum', realAucNum)
+	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
+
 	// 전체 GET
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
+
+	console.log('resData', resData)
 
 	// 초기 목적지 GET
 	const { data: destiData } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
@@ -124,7 +151,7 @@ const Package = ({}) => {
 		const checkAgreeAucNum = filteredAucNum && filteredAucNum[0]
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
-			if (live) setGetRow(add_element_field(getData, AuctionPackageBiddingFieldsCols))
+			if (live) setGetRow(add_element_field(getData, AuctionBiddingFields))
 			setTablePagination(resPagination)
 			setRealAucNum(checkAgreeAucNum)
 			setCheckAgreement((prev) => ({
@@ -135,14 +162,16 @@ const Package = ({}) => {
 	}, [isSuccess, resData, initDestiData])
 
 	// 경매 번호 가져오기
-	const auctionNumber = checkedArray?.[0]?.['경매 번호']
+	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']
+
+	console.log('auctionNumber', auctionNumber)
 
 	const init = {
 		auctionNumber: null,
 		type: '패키지',
 	}
 	const [winningCreateData, setWinningCreateData] = useState(init)
-
+	console.log('winningCreateData', winningCreateData)
 	//
 	useEffect(() => {
 		const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
@@ -151,12 +180,14 @@ const Package = ({}) => {
 			...p,
 			auctionNumber: auctionNumber,
 		}))
-	}, [propsUid, auctionNumber])
+	}, [propsUid, auctionNumber, param])
 
 	const [finalInput, setFinalInput] = useState({
 		biddingPrice: null,
 		customerDestinationUid: null,
 	})
+
+	console.log('finalInput', finalInput)
 
 	// 첫 렌더시 초기 및 대표 목적지 set
 	useMemo(() => {
@@ -169,8 +200,8 @@ const Package = ({}) => {
 
 	// biddingList에 들어갈 3총사를 다 넣어줌.
 	useEffect(() => {
-		const updatedProductList = checkedArray?.map((item) => ({
-			productUid: item['제품 고유 번호'],
+		const updatedProductList = checkedArrayState?.map((item) => ({
+			packageNumber: item['패키지 번호'],
 			biddingPrice:
 				item['응찰가'] === 0 ? item['시작가'] + finalInput?.biddingPrice : item['응찰가'] + finalInput?.biddingPrice,
 			customerDestinationUid: finalInput?.customerDestinationUid,
@@ -182,7 +213,7 @@ const Package = ({}) => {
 			...prevData,
 			biddingList: updatedProductList,
 		}))
-	}, [checkedArray, finalInput, param])
+	}, [checkedArrayState, finalInput, param])
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -199,7 +230,6 @@ const Package = ({}) => {
 		}))
 	}
 
-	// 응찰 Mutate
 	const { mutate: postMutation } = useMutation(postBidding, {
 		onSuccess() {
 			showAlert({
@@ -241,28 +271,29 @@ const Package = ({}) => {
 	}
 
 	const [values, setValues] = useState({})
-	const [valueDesti, setValueDesti] = useState()
+	// const [valueDesti, setValueDesti] = useState()
 
 	// 응찰가 직접 입력
 	const onCellValueChanged = (params) => {
 		const p = params.data
-		console.log('바뀌는 값 확인', p['제품 고유 번호'])
+		console.log('바뀌는 값 확인', p['패키지 번호'])
 		setValues((prevValues) => ({
 			...prevValues,
 			biddingPrice: p['응찰가'],
-			productUid: p['제품 고유 번호'],
+			packageNumber: p['패키지 번호'],
 		}))
-		setValueDesti(p['경매 번호'])
+		// setValueDesti(p['경매 번호'])
 	}
 
 	useEffect(() => {
 		setWinningCreateData((prev) => ({
 			...prev,
 			biddingList: [{ ...values }],
-			auctionNumber: valueDesti,
+			auctionNumber: auctionNumber,
 		}))
 	}, [values])
 
+	//  222
 	const unitPriceBatchOnClick = () => {
 		setLive(false) // LIVE get 일시 중단
 		setFinalInput((p) => ({
@@ -314,16 +345,18 @@ const Package = ({}) => {
 	})
 	/* ==================== 관심상품 등록 end ==================== */
 
+	console.log('destiObject', destiObject)
+	// 목적지 적용 버튼 handler 111
 	const destiOnClickHandler = () => {
 		setLive(false)
 		simpleAlert('적용 되었습니다.', () => {
 			setFinalInput((prevFinalInput) => ({
 				...prevFinalInput,
-				customerDestinationUid: destiObject && destiObject.uid,
+				customerDestinationUid: destiObject.uid,
 			}))
 			setValues((p) => ({
 				...p,
-				customerDestinationUid: destiObject && destiObject.uid,
+				customerDestinationUid: destiObject.uid,
 			}))
 			setDestiObject(destiObject)
 		})
@@ -344,6 +377,8 @@ const Package = ({}) => {
 		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
 
+	console.log('values', values)
+
 	// 응찰가 Table Cell Input
 	const handleCheckboxChange = (event, rowData) => {
 		if (event.target.checked) {
@@ -355,20 +390,9 @@ const Package = ({}) => {
 		}
 	}
 
-	const [realAucNum, setRealAucNum] = useState(null)
-	console.log('realAucNum', realAucNum)
-	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
-
 	// status가 false여야지 모달이 보이는거니 !false 형식으로
 	const checkGetAgreement = getAgreementData?.data?.data
 	console.log('checkGetAgreement', checkGetAgreement)
-
-	useEffect(() => {
-		// 경매번호도 잘 들어오고, get 미동의(false)가 들어왔을 때
-		if (realAucNum && !checkGetAgreement) {
-			setAgreementModal(true)
-		} else setAgreementModal(false)
-	}, [realAucNum, checkGetAgreement])
 
 	// 입찰 동의서 Mutate
 	const { mutate: postAgreementMutation } = useMutation(postAgreement, {
@@ -401,153 +425,171 @@ const Package = ({}) => {
 		}
 	}
 
+	const [getAgreeState, setGetAgreeState] = useState(false) // 동의 상태
+
+	useEffect(() => {
+		// 경매번호도 잘 들어오고, get 미동의(false)가 들어왔을 때
+		if (realAucNum && !checkGetAgreement) {
+			setAgreementModal(true)
+		} else setAgreementModal(false)
+	}, [realAucNum, checkGetAgreement])
+
+	console.log('agreementModal', agreementModal)
+	console.log('winningCreateData', winningCreateData)
+
 	return (
-		<>
-			{' '}
-			<FilterContianer>
-				<FilterHeader>
-					<div style={{ display: 'flex' }}>
-						<h1>경매 응찰</h1>
-						<SubTitle>
-							<Link to={`/userpage/auctionsingle`}>
-								<h6>단일</h6>
-							</Link>
-							<h5>패키지</h5>
-						</SubTitle>
+		<FilterContianer>
+			<FilterHeader>
+				<div style={{ display: 'flex' }}>
+					<h1>경매 응찰</h1>
+					<SubTitle>
+						<Link to={`/userpage/auctionsingle`}>
+							<h6>단일</h6>
+						</Link>
+						<h5>패키지</h5>
+					</SubTitle>
+				</div>
+				{/* 토글 쓰기 */}
+				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
+			</FilterHeader>
+			{/* 주의사항 */}
+			<CautionBox category={CAUTION_CATEGORY.auction} />
+			{exFilterToggle && (
+				<>
+					<GlobalProductSearch
+						param={param}
+						isToggleSeparate={true}
+						renderCustomSearchFields={(props) => <UserBiddingSearchFields {...props} />}
+						globalProductSearchOnClick={globalProductSearchOnClick}
+						globalProductResetOnClick={globalProductResetOnClick}
+					/>
+				</>
+			)}
+			<TableContianer>
+				<TCSubContainer bor>
+					<div>
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
+						<Hidden />
 					</div>
-					{/* 토글 쓰기 */}
-					<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
-				</FilterHeader>
-				{/* 공지사항 */}
-				<CautionBox category={CAUTION_CATEGORY.auction} />
-				{exFilterToggle && (
-					<>
-						<GlobalProductSearch
-							param={param}
-							isToggleSeparate={true}
-							renderCustomSearchFields={(props) => <UserBiddingSearchFields {...props} />} // 만들어야함 -> WinningSearchFields
-							globalProductSearchOnClick={globalProductSearchOnClick} // import
-							globalProductResetOnClick={globalProductResetOnClick} // import
+					<div style={{ display: 'flex', gap: '10px' }}>
+						<PageDropdown handleDropdown={handleTablePageSize} />
+						<Excel getRow={getRow} />
+						<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
+					</div>
+				</TCSubContainer>
+				<TCSubContainer bor>
+					<div>
+						선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
+					</div>
+					<div
+						style={{
+							display: 'flex',
+							gap: '10px',
+							alignItems: 'center',
+							justifyContent: 'center',
+						}}
+					>
+						<p>목적지</p>
+						<CustomInput
+							placeholder="h50"
+							width={60}
+							height={32}
+							defaultValue={destiObject?.destinationCode}
+							readOnly
 						/>
-					</>
-				)}
-				<TableContianer>
-					<TCSubContainer bor>
-						<div>
-							조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-							<Hidden />
-						</div>
-						<div style={{ display: 'flex', gap: '10px' }}>
-							<PageDropdown handleDropdown={handleTablePageSize} />
-							<Excel getRow={getRow} />
-							<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.packageNumber} />
-						</div>
-					</TCSubContainer>
-					<TCSubContainer bor>
-						<div>
-							선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
-						</div>
-						<div
-							style={{
-								display: 'flex',
-								gap: '10px',
-								alignItems: 'center',
-								justifyContent: 'center',
+						<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destiObject?.name} readOnly />
+						<CustomInput
+							placeholder="도착지 연락처"
+							width={120}
+							height={32}
+							defaultValue={destiObject?.phone}
+							readOnly
+						/>
+						<TWhiteBtn
+							style={{ width: '50px' }}
+							height={30}
+							onClick={() => {
+								setDestinationPopUp(true)
 							}}
 						>
-							<p>목적지</p>
-							<CustomInput
-								placeholder="h50"
-								width={60}
-								height={32}
-								defaultValue={destiObject?.destinationCode}
-								readOnly
-							/>
-							<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destiObject?.name} readOnly />
-							<CustomInput
-								placeholder="도착지 연락처"
-								width={120}
-								height={32}
-								defaultValue={destiObject?.phone}
-								readOnly
-							/>
-							<TWhiteBtn
-								style={{ width: '50px' }}
-								height={30}
-								onClick={() => {
-									setDestinationPopUp(true)
-								}}
-							>
-								찾기
-							</TWhiteBtn>
-							<TGreyBtn
-								// onClick={() => {
-								// 	setFinalInput((prevFinalInput) => ({
-								// 		...prevFinalInput,
-								// 		customerDestinationUid: destiObject && destiObject.uid,
-								// 	}))
-								// }}
-								onClick={destiOnClickHandler}
-							>
-								적용
-							</TGreyBtn>
-							<BtnBound style={{ margin: '0px' }} />
-							<p>일괄 경매 응찰</p>
-							<CustomInput
-								placeholder="최고가 입력"
-								width={140}
-								height={32}
-								value={winningCreateInput.biddingPrice !== null ? winningCreateInput.biddingPrice : ''}
-								onChange={(e) => {
-									setwinningCreateInput((p) => ({
-										...p,
-										biddingPrice: parseInt(e.target.value) || null,
-									}))
-									setAddedInput(parseInt(e.target.value))
-								}}
-							/>
-							<TGreyBtn
-								height={30}
-								style={{ width: '50px' }}
-								// onClick={() => {
-								// 	setFinalInput((p) => ({
-								// 		...p,
-								// 		biddingPrice: winningCreateInput?.biddingPrice,
-								// 	}))
-								// }}
-								onClick={unitPriceBatchOnClick}
-							>
-								적용
-							</TGreyBtn>
-							<BtnBound style={{ margin: '0px' }} />
-							<SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50} onClick={confirmOnClickHandler}>
-								응찰
-							</SkyBtn>
-						</div>
-					</TCSubContainer>
-					<Table
-						getCol={getCol}
-						getRow={getRow}
-						tablePagination={tablePagination}
-						onPageChange={onPageChange}
-						changeFn={onCellValueChanged}
-					/>
-				</TableContianer>
-				{destinationPopUp && (
-					<InventoryFind
-						title={'목적지 찾기'}
-						type={'낙찰 생성'}
-						setSwitch={setDestinationPopUp}
-						data={auctionDestination}
-						setPropsUid={setPropsUid}
-					/>
-				)}
-				{/* 입찰 동의서 모달 */}
-				{agreementModal && (
-					<Agreement setCheckAgreement={setCheckAgreement} agreementOnClickHandler={agreementOnClickHandler} />
-				)}
-			</FilterContianer>
-		</>
+							찾기
+						</TWhiteBtn>
+						<TGreyBtn
+							// onClick={() => {
+							// 	setFinalInput((prevFinalInput) => ({
+							// 		...prevFinalInput,
+							// 		customerDestinationUid: destiObject && destiObject.uid,
+							// 	}))
+							// 	setValues((p) => ({
+							// 		...p,
+							// 		customerDestinationUid: destiObject && destiObject.uid,
+							// 	}))
+							// }}
+							onClick={destiOnClickHandler}
+						>
+							적용
+						</TGreyBtn>
+
+						<BtnBound style={{ margin: '0px' }} />
+						<p>일괄 경매 응찰</p>
+						<CustomInput
+							placeholder="최고가 입력"
+							width={140}
+							height={32}
+							value={winningCreateInput.biddingPrice !== null ? winningCreateInput.biddingPrice : ''}
+							onChange={(e) => {
+								setwinningCreateInput((p) => ({
+									...p,
+									biddingPrice: parseInt(e.target.value) || null,
+								}))
+								setAddedInput(parseInt(e.target.value))
+							}}
+						/>
+						<TGreyBtn
+							height={30}
+							style={{ width: '50px' }}
+							// onClick={() => {
+							// 	setFinalInput((p) => ({
+							// 		...p,
+							// 		biddingPrice: winningCreateInput?.biddingPrice,
+							// 	}))
+							// }}
+							onClick={unitPriceBatchOnClick}
+						>
+							적용
+						</TGreyBtn>
+						<BtnBound style={{ margin: '0px' }} />
+						<SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50} onClick={confirmOnClickHandler}>
+							응찰
+						</SkyBtn>
+					</div>
+				</TCSubContainer>
+				<Table
+					getCol={getCol}
+					getRow={getRow}
+					tablePagination={tablePagination}
+					onPageChange={onPageChange}
+					changeFn={onCellValueChanged}
+				/>
+			</TableContianer>
+			{destinationPopUp && (
+				<InventoryFind
+					title={'목적지 찾기'}
+					type={'낙찰 생성'}
+					setSwitch={setDestinationPopUp}
+					data={auctionDestination}
+					setPropsUid={setPropsUid}
+				/>
+			)}
+			{/* 패키지 상세보기 모달 */}
+			{aucDetailModal && (
+				<PackDetail aucDetail={aucDetail} packNum={aucDetail['패키지 번호']} setAucDetailModal={setAucDetailModal} />
+			)}
+			{/* 입찰 동의서 모달 */}
+			{agreementModal && (
+				<Agreement setCheckAgreement={setCheckAgreement} agreementOnClickHandler={agreementOnClickHandler} />
+			)}
+		</FilterContianer>
 	)
 }
 

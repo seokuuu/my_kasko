@@ -169,7 +169,7 @@ const Single = ({}) => {
 			...p,
 			auctionNumber: auctionNumber,
 		}))
-	}, [propsUid, auctionNumber])
+	}, [propsUid, auctionNumber, param])
 
 	const [finalInput, setFinalInput] = useState({
 		biddingPrice: null,
@@ -259,8 +259,8 @@ const Single = ({}) => {
 		})
 	}
 
-	const [values, setValues] = useState({})
-	const [valueDesti, setValueDesti] = useState()
+	const [values, setValues] = useState({}) // cell input 직접 입력 값
+	// const [valueDesti, setValueDesti] = useState()
 
 	// 응찰가 직접 입력
 	const onCellValueChanged = (params) => {
@@ -271,14 +271,14 @@ const Single = ({}) => {
 			biddingPrice: p['응찰가'],
 			productUid: p['제품 고유 번호'],
 		}))
-		setValueDesti(p['경매 번호'])
+		// setValueDesti(p['경매 번호'])
 	}
 
 	useEffect(() => {
 		setWinningCreateData((prev) => ({
 			...prev,
 			biddingList: [{ ...values }],
-			auctionNumber: valueDesti,
+			auctionNumber: auctionNumber,
 		}))
 	}, [values])
 
