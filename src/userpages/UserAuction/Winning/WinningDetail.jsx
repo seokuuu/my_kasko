@@ -17,7 +17,7 @@ import { invenDestination, invenDestinationData, selectedRowsAtom, toggleAtom } 
 
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { getDestinationFind } from '../../../api/search'
+import { getCustomerDestinationByCustomerCode, getDestinationFind } from '../../../api/search'
 import { destiApproveReq, getWinningDetail } from '../../../api/auction/winning'
 import { UserAuctionWinningDetailFields, UserAuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -129,11 +129,13 @@ const WinningDetail = ({ detailRow }) => {
 		}))
 	}, [detailRow])
 
-	console.log('detailParams', detailParams)
+	const customerCode = detailRow?.['고객 코드']
+	const { data: inventoryDestination } = useReactQuery(
+		customerCode,
+		'getCustomerDestinationByCustomerCode',
+		getCustomerDestinationByCustomerCode,
+	)
 
-	const { data: inventoryDestination } = useReactQuery('', 'getDestinationFind', getDestinationFind)
-
-	console.log('inventoryDestination', inventoryDestination?.data?.data)
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(
 		detailParams,
 		'getWinningDetail',
@@ -142,8 +144,6 @@ const WinningDetail = ({ detailRow }) => {
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 	const [winningCreateData, setWinningCreateData] = useState({})
-
-	console.log('resData !@#', resData)
 
 	useEffect(() => {
 		let getData = resData

@@ -4,6 +4,8 @@ import useAuth from '../../store/Auth/useAuth'
 
 const Header = () => {
 	const { getName, logout } = useAuth()
+	const name = getName().name
+	const customerName = getName().customerName
 
 	return (
 		<HeaderWrap>
@@ -13,7 +15,10 @@ const Header = () => {
 				</div>
 				<UserWrap>
 					<div>
-						<strong>{getName()}</strong> 님
+						<strong>
+							{customerName} / {name}
+						</strong>{' '}
+						님
 					</div>
 					<div>
 						<Logout onClick={logout}>[로그아웃]</Logout>
