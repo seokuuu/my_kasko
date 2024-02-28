@@ -363,6 +363,7 @@ const Hyundai = ({}) => {
 
 			{isMultiModal === true && (
 				<Multi2
+					length={3}
 					closeFn={(e, text) => {
 						const { tagName } = e.target
 						// console.log('TARGET :', e.target.tagName)
