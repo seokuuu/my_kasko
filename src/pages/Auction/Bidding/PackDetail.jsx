@@ -171,7 +171,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 
 	// 응찰가 일괄 적용 버튼
 	const handleButtonClick = () => {
-		const firstBiddingEntry = getRow[0] // Take the first entry from getRow
+		const firstBiddingEntry = getRow[0]
 		if (firstBiddingEntry) {
 			setWinningCreateData((prevData) => ({
 				...prevData,
@@ -179,7 +179,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 					{
 						packageNumber: packNum,
 						customerDestinationUid: destiObject && destiObject?.['uid'],
-						biddingPrice: finalInput?.biddingPrice,
+						biddingPrice: firstBiddingEntry.memberBiddingPrice + finalInput?.biddingPrice,
 					},
 				],
 			}))
