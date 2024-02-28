@@ -118,7 +118,7 @@ const Package = ({}) => {
 	}
 	const [param, setParam] = useState(paramData)
 
-	const [liveStatus, setLiveStatus] = useState('LIVEgetBidding') // LIVE 추가
+	const [liveStatus, setLiveStatus] = useState('getBidding') // LIVE 추가
 
 	// 체크박스 클릭시 재렌더 이슈
 	// useEffect(() => {
@@ -585,7 +585,12 @@ const Package = ({}) => {
 			)}
 			{/* 패키지 상세보기 모달 */}
 			{aucDetailModal && (
-				<PackDetail aucDetail={aucDetail} packNum={aucDetail['패키지 번호']} setAucDetailModal={setAucDetailModal} />
+				<PackDetail
+					aucDetail={aucDetail}
+					packNum={aucDetail['패키지 번호']}
+					setAucDetailModal={setAucDetailModal}
+					destiObject={destiObject}
+				/>
 			)}
 			{/* 입찰 동의서 모달 */}
 			{agreementModal && (
