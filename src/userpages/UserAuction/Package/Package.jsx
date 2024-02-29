@@ -177,7 +177,7 @@ const Package = ({}) => {
 	//
 	useEffect(() => {
 		const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
-		setDestiObject(selectedObject)
+		if (propsUid) setDestiObject(selectedObject)
 		setWinningCreateData((p) => ({
 			...p,
 			auctionNumber: auctionNumber,
@@ -206,7 +206,7 @@ const Package = ({}) => {
 			packageNumber: item['패키지 번호'],
 			biddingPrice:
 				item['응찰가'] === 0 ? item['시작가'] + finalInput?.biddingPrice : item['응찰가'] + finalInput?.biddingPrice,
-			customerDestinationUid: finalInput?.customerDestinationUid,
+			customerDestinationUid: finalInput?.customerDestinationUid ?? item['목적지 코드'],
 			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
 		}))
 
@@ -239,12 +239,33 @@ const Package = ({}) => {
 				content: '',
 				func: () => {
 					refetch()
+					setLive(true)
+					setWinningCreateData(init)
+					setwinningCreateInput({
+						biddingPrice: null,
+						customerDestinationUid: null,
+					})
+					setFinalInput({
+						biddingPrice: null,
+						customerDestinationUid: null,
+					})
 					queryClient.invalidateQueries('auction')
 				},
 			})
 		},
 		onError: () => {
+			setLive(true)
+			setWinningCreateData(init)
+			setwinningCreateInput({
+				biddingPrice: null,
+				customerDestinationUid: null,
+			})
+			setFinalInput({
+				biddingPrice: null,
+				customerDestinationUid: null,
+			})
 			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+			refetch()
 		},
 	})
 
@@ -313,10 +334,10 @@ const Package = ({}) => {
 
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.packageNumber)) {
-				item.destinationCode = destiObject?.destinationCode
-				item.customerDestinationName = destiObject?.name
-				item.customerDestinationAddress = destiObject?.address
-				item.customerDestinationPhone = destiObject?.phone
+				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
+				item.customerDestinationName = destiObject?.name ?? item.customerDestinationName
+				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
+				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item
@@ -365,10 +386,10 @@ const Package = ({}) => {
 
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.packageNumber)) {
-				item.destinationCode = destiObject?.destinationCode
-				item.customerDestinationName = destiObject?.name
-				item.customerDestinationAddress = destiObject?.address
-				item.customerDestinationPhone = destiObject?.phone
+				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
+				item.customerDestinationName = destiObject?.name ?? item.customerDestinationName
+				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
+				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 			}
 
@@ -429,12 +450,28 @@ const Package = ({}) => {
 
 	const [getAgreeState, setGetAgreeState] = useState(false) // 동의 상태
 
+	// 입찰 동의서 렌더
 	useEffect(() => {
 		// 경매번호도 잘 들어오고, get 미동의(false)가 들어왔을 때
-		if (realAucNum && !checkGetAgreement) {
+		if (realAucNum && checkGetAgreement === false) {
 			setAgreementModal(true)
 		} else setAgreementModal(false)
 	}, [realAucNum, checkGetAgreement])
+
+	// 목적지, 입찰 동의서 & 모달 여부
+	useEffect(() => {
+		if (initDestiData === undefined) return
+		if (agreementModal === false && initDestiData.length === 0) {
+			simpleAlert('목적지를 등록하지 않으면 \n 경매에 참여하실 수 없습니다. \n 목적지를 등록하시겠습니까?', () => {
+				navigate('/userpage/userdestination')
+			})
+		}
+		if (initDestiData.length > 0 && firstDestiData?.represent !== 1) {
+			simpleAlert('대표 목적지를 등록하지 않으셨습니다.  \n 목적지를 등록하시겠습니까?', () => {
+				navigate('/userpage/userdestination')
+			})
+		}
+	}, [agreementModal, firstDestiData, initDestiData])
 
 	console.log('agreementModal', agreementModal)
 	console.log('winningCreateData', winningCreateData)

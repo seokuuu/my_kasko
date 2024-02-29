@@ -133,33 +133,21 @@ const Bidding = ({}) => {
 			setDestiObject(destiObject)
 		})
 
-		// const updatedResData = resData.map((item) => {
-		// 	if (uids.includes(item.productNumber )) {
-		// 		item.destinationCode = destiObject?.destinationCode
-		// 		item.customerDestinationName = destiObject?.name
-		// 		item.customerDestinationAddress = destiObject?.address
-		// 		item.customerDestinationPhone = destiObject?.phone
-		// 		item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
-		// 	}
-
-		// 	return item
-		// })
-
 		const updatedResData = resData.map((item) => {
 			if (param?.type === '단일')
 				if (uids.includes(item.productNumber)) {
-					item.destinationCode = destiObject?.destinationCode
-					item.customerDestinationName = destiObject?.name
-					item.customerDestinationAddress = destiObject?.address
-					item.customerDestinationPhone = destiObject?.phone
+					item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
+					item.customerDestinationName = destiObject?.name ?? item.customerDestinationName
+					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
+					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 				}
 			if (param?.type === '패키지')
 				if (packUids.includes(item.packageNumber)) {
-					item.destinationCode = destiObject?.destinationCode
-					item.customerDestinationName = destiObject?.name
-					item.customerDestinationAddress = destiObject?.address
-					item.customerDestinationPhone = destiObject?.phone
+					item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
+					item.customerDestinationName = destiObject?.name ?? item.customerDestinationName
+					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
+					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 				}
 			return item
@@ -176,13 +164,6 @@ const Bidding = ({}) => {
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
 
 	const checkGetAgreement = getAgreementData?.data?.data
-
-	useEffect(() => {
-		// 경매번호도 잘 들어오고, get 미동의(false)가 들어왔을 때
-		if (realAucNum && !checkGetAgreement) {
-			setAgreementModal(true)
-		} else setAgreementModal(false)
-	}, [realAucNum, checkGetAgreement])
 
 	// status가 false여야지 모달이 보이는거니 !false 형식으로
 
@@ -227,7 +208,7 @@ const Bidding = ({}) => {
 	//
 	useEffect(() => {
 		const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
-		setDestiObject(selectedObject)
+		if (propsUid) setDestiObject(selectedObject)
 		setWinningCreateData((p) => ({
 			...p,
 			auctionNumber: auctionNumber,
@@ -249,7 +230,7 @@ const Bidding = ({}) => {
 						item['응찰가'] === 0
 							? item['시작가'] + finalInput?.biddingPrice
 							: item['응찰가'] + finalInput?.biddingPrice,
-					customerDestinationUid: finalInput?.customerDestinationUid,
+					customerDestinationUid: finalInput?.customerDestinationUid ?? item['목적지 코드'],
 				}
 			} else if (param?.type === '패키지') {
 				return {
@@ -258,7 +239,7 @@ const Bidding = ({}) => {
 						item['응찰가'] === 0
 							? item['시작가'] + finalInput?.biddingPrice
 							: item['응찰가'] + finalInput?.biddingPrice,
-					customerDestinationUid: finalInput?.customerDestinationUid,
+					customerDestinationUid: finalInput?.customerDestinationUid ?? item['목적지 코드'],
 				}
 			}
 		})
@@ -308,6 +289,7 @@ const Bidding = ({}) => {
 			})
 		},
 		onError: () => {
+			setLive(true)
 			setWinningCreateData(init)
 			setwinningCreateInput({
 				biddingPrice: null,
@@ -438,6 +420,28 @@ const Bidding = ({}) => {
 		// 변경된 데이터로 state 업데이트
 		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
+
+	useEffect(() => {
+		// 경매번호도 잘 들어오고, get 미동의(false)가 들어왔을 때
+		if (realAucNum && checkGetAgreement === false) {
+			setAgreementModal(true)
+		} else setAgreementModal(false)
+	}, [realAucNum, checkGetAgreement])
+
+	// 목적지, 입찰 동의서 & 모달 여부
+	useEffect(() => {
+		if (initDestiData === undefined) return
+		if (agreementModal === false && initDestiData.length === 0) {
+			simpleAlert('목적지를 등록하지 않으면 \n 경매에 참여하실 수 없습니다. \n 목적지를 등록하시겠습니까?', () => {
+				navigate('/usermanage/clientdestination')
+			})
+		}
+		if (initDestiData.length > 0 && firstDestiData?.represent !== 1) {
+			simpleAlert('대표 목적지를 등록하지 않으셨습니다.  \n 목적지를 등록하시겠습니까?', () => {
+				navigate('/usermanage/clientdestination')
+			})
+		}
+	}, [agreementModal, firstDestiData, initDestiData])
 
 	return (
 		<FilterContianer>
