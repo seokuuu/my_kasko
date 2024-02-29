@@ -335,9 +335,11 @@ const Package = ({}) => {
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.packageNumber)) {
 				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
-				item.customerDestinationName = destiObject?.name ?? item.customerDestinationName
+				item.destinationName = destiObject?.destinationName ?? item.destinationName
+				item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
 				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
+
 				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item
@@ -387,9 +389,11 @@ const Package = ({}) => {
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.packageNumber)) {
 				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
-				item.customerDestinationName = destiObject?.name ?? item.customerDestinationName
+				item.destinationName = destiObject?.destinationName ?? item.destinationName
+				item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
 				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
+
 				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 			}
 

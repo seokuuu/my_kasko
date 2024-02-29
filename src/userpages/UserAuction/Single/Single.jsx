@@ -320,9 +320,11 @@ const Single = ({}) => {
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.productNumber)) {
 				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
-				item.customerDestinationName = destiObject?.name ?? item.customerDestinationName
+				item.destinationName = destiObject?.destinationName ?? item.destinationName
+				item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
 				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
+
 				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item
@@ -369,17 +371,21 @@ const Single = ({}) => {
 		})
 
 		const updatedResData = resData.map((item) => {
+			console.log('item => ', item, ' destiObject =>', destiObject)
 			if (uids.includes(item.productNumber)) {
 				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
-				item.customerDestinationName = destiObject?.name ?? item.customerDestinationName
+				item.destinationName = destiObject?.destinationName ?? item.destinationName
+				item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
 				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
+
 				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 			}
 
 			return item
 		})
 		console.log('111 앞 ', updatedResData)
+
 		console.log('destiObject', destiObject)
 		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}

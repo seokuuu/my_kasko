@@ -137,17 +137,21 @@ const Bidding = ({}) => {
 			if (param?.type === '단일')
 				if (uids.includes(item.productNumber)) {
 					item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
-					item.customerDestinationName = destiObject?.name ?? item.customerDestinationName
+					item.destinationName = destiObject?.destinationName ?? item.destinationName
+					item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
 					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
+
 					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 				}
 			if (param?.type === '패키지')
 				if (packUids.includes(item.packageNumber)) {
 					item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
-					item.customerDestinationName = destiObject?.name ?? item.customerDestinationName
+					item.destinationName = destiObject?.destinationName ?? item.destinationName
+					item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
 					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
+
 					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 				}
 			return item
@@ -400,18 +404,22 @@ const Bidding = ({}) => {
 		const updatedResData = resData.map((item) => {
 			if (param?.type === '단일')
 				if (uids.includes(item.productNumber)) {
-					item.destinationCode = destiObject?.destinationCode
-					item.customerDestinationName = destiObject?.name
-					item.customerDestinationAddress = destiObject?.address
-					item.customerDestinationPhone = destiObject?.phone
+					item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
+					item.destinationName = destiObject?.destinationName ?? item.destinationName
+					item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
+					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
+					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
+
 					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 				}
 			if (param?.type === '패키지')
 				if (packUids.includes(item.packageNumber)) {
-					item.destinationCode = destiObject?.destinationCode
-					item.customerDestinationName = destiObject?.name
-					item.customerDestinationAddress = destiObject?.address
-					item.customerDestinationPhone = destiObject?.phone
+					item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
+					item.destinationName = destiObject?.destinationName ?? item.destinationName
+					item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
+					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
+					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
+
 					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 				}
 			return item
