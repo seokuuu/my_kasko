@@ -332,6 +332,7 @@ const Package = ({}) => {
 			return
 		}
 
+		simpleAlert('적용 되었습니다')
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.packageNumber)) {
 				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
@@ -374,6 +375,10 @@ const Package = ({}) => {
 	// 목적지 적용 버튼 handler 111
 	const destiOnClickHandler = () => {
 		setLive(false)
+		if (!uids || uids?.length === 0) {
+			simpleAlert('적용할 경매를 선택해주세요.')
+			return
+		}
 		simpleAlert('적용 되었습니다.', () => {
 			setFinalInput((prevFinalInput) => ({
 				...prevFinalInput,
