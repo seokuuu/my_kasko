@@ -203,11 +203,12 @@ const Order = ({}) => {
 					<div>
 						선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 					</div>
-					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteRedBtn onClick={handleOrderCancel} disabled={isCancelLoading}>
-							주문 취소
-						</WhiteRedBtn>
-					</div>
+					{/* 2/28 주문 취소 히든 */}
+					{/*<div style={{ display: 'flex', gap: '10px' }}>*/}
+					{/*	<WhiteRedBtn onClick={handleOrderCancel} disabled={isCancelLoading}>*/}
+					{/*		주문 취소*/}
+					{/*	</WhiteRedBtn>*/}
+					{/*</div>*/}
 				</TCSubContainer>
 				{/* 테이블 */}
 				<TableV2

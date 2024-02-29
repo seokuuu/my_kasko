@@ -8,6 +8,7 @@ const urls = {
 	userManage: 'admin/member',
 	profileEdit: 'admin/privacy',
 	addressFind: 'search/code',
+	addressFindV2: 'search/name-code',
 }
 /* ==============================
     사용자관리 - 고객사 관리
@@ -89,7 +90,7 @@ export function updateClient(data) {
     사용자관리 - 고객사 목적지 관리
 ============================== */
 export function get_clientDestination(data) {
-  return client.get(`${urls.clientDestination}`,{params:data})
+	return client.get(`${urls.clientDestination}`, { params: data })
 }
 
 export async function get_detailClientDestination(data) {
@@ -109,7 +110,8 @@ export function patch_clientDestination(data) {
 }
 
 export function get_addressFind(data) {
-	return client.get(`${urls.addressFind}?name=${data}`)
+	// return client.get(`${urls.addressFind}?name=${data}`)
+	return client.get(`${urls.addressFindV2}?name=${data}`)
 }
 
 /* ==============================

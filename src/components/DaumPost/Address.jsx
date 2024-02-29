@@ -31,22 +31,9 @@ const AddressFinder = forwardRef(({ onAddressChange, prevAddress, prevAddressDet
 	const open = useDaumPostcodePopup(scriptUrl)
 
 	const handleComplete = (data) => {
-		const jibunAddress = data.jibunAddress || data.autoJibunAddress
+		const jibunAddress = data.roadAddress || data.autoRoadAddress
 		const sido = jibunAddress.split(' ')[0]
 		let fullAddress = jibunAddress.replace(sido, sidoMapping[sido])
-		// let extraAddress = ''
-
-		// setAddress(fullAddress);
-
-		// if (data.addressType === 'R') {
-		// 	if (data.bname !== '') {
-		// 		extraAddress += data.bname
-		// 	}
-		// 	if (data.buildingName !== '') {
-		// 		extraAddress += extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName
-		// 	}
-		// 	fullAddress += extraAddress !== '' ? ` (${extraAddress})` : ''
-		// }
 
 		if (!!defaultQuery && !fullAddress.startsWith(defaultQuery)) {
 			simpleAlert('등록된 기본 주소로 다시 검색해주세요.')
@@ -56,9 +43,9 @@ const AddressFinder = forwardRef(({ onAddressChange, prevAddress, prevAddressDet
 		setAddress(fullAddress) // 주소 상태를 업데이트합니다.
 		setSido(data.sido)
 		setSigungu(data.sigungu)
-		setDongLee(data.bname)
-		setEubMyeon(data.bname1)
-		onAddressChange(fullAddress, detailAddress, data.sido, data.sigungu, data.bname, data.bname1)
+		setDongLee(data.roadname)
+		setEubMyeon(data.roadname)
+		onAddressChange(fullAddress, detailAddress, data.sido, data.sigungu, data.roadname, data.roadname)
 	}
 
 	const handleDetailAddressChange = (e) => {

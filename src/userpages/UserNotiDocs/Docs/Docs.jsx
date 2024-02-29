@@ -58,7 +58,7 @@ const Docs = () => {
 						if (!d.status) {
 							return {
 								...d,
-								작성일자: moment(d.createDate).format('YYYY-MM-DD'),
+								작성일자: moment(d.createDate).format('YYYY-MM-DD HH:mm:ss'),
 								// id: Docs.length, // 순번 내림차순
 								uid: d.uid,
 								title: d.title,

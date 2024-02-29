@@ -38,21 +38,12 @@ const ClientDestiCustomerFind = ({
 
 	const customerGetData = data?.data?.data
 
-	console.log('customerGetData', customerGetData)
-
-	console.log('data', customerGetData)
-
 	const [isModal, setIsModal] = useAtom(blueModalAtom)
 	const [searchTerm, setSearchTerm] = useState('')
 	const [result, setResult] = useState([])
 	const [clickedResult, setClickedResult] = useState()
 	const [selectedUid, setSelectedUid] = useState(null)
 	const [selectedUids, setSelectedUids] = useState([])
-
-	console.log('clickedResult', clickedResult)
-
-	console.log('searchTerm !!!', searchTerm)
-	console.log('result !!!', result)
 
 	const modalClose = () => {
 		setFindModal(false)
@@ -100,7 +91,7 @@ const ClientDestiCustomerFind = ({
 	return (
 		<>
 			<FadeOverlay />
-			<ModalContainer style={{ width: '30%', height: '70vh' }}>
+			<ModalContainer style={{ width: '600px', height: '70vh' }}>
 				<BlueBarHeader style={{ height: '60px' }}>
 					<div>고객사 찾기</div>
 					<div>
