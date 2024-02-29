@@ -602,7 +602,6 @@ const Bidding = ({}) => {
 				<PackDetail aucDetail={aucDetail} packNum={aucDetail['패키지 번호']} setAucDetailModal={setAucDetailModal} />
 			)}
 			{/* 입찰 동의서 모달 */}
-
 			{agreementModal && (
 				<Agreement setCheckAgreement={setCheckAgreement} agreementOnClickHandler={agreementOnClickHandler} />
 			)}

@@ -379,7 +379,6 @@ const Single = ({}) => {
 				item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
 				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
-
 				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 			}
 
