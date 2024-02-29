@@ -46,12 +46,12 @@ const Agreement = ({ setAgreementModal, setCheckAgreement, agreementOnClickHandl
 		// 입찰 동의서
 		<div>
 			<FadeOverlay />
-			<ModalContainer width={850} style={{ top: '50%' }}>
+			<ModalContainer width={850}>
 				<BlueBarHeader
 					// onClick={() => {
 					// 	setAgreementModal(false)
 					// }}
-					style={{ height: '0px' }}
+					style={{ height: '10px', padding: '15px' }}
 				></BlueBarHeader>
 				<AgreementMain>
 					<h6>입찰 동의서</h6>
@@ -135,7 +135,6 @@ const Agreement = ({ setAgreementModal, setCheckAgreement, agreementOnClickHandl
 							<br /> 주식회사 카스코철강 貴中
 						</div>
 						<div>
-							{' '}
 							<ExRadioWrap>
 								{radioDummy.map((text, index) => (
 									<RadioMainDiv key={index}>
@@ -158,7 +157,7 @@ const Agreement = ({ setAgreementModal, setCheckAgreement, agreementOnClickHandl
 						<GreyBtn
 							style={{ width: '180px' }}
 							height={35}
-							margin={25}
+							margin={13}
 							fontSize={17}
 							onClick={agreementOnClickHandler}
 							type="button"
