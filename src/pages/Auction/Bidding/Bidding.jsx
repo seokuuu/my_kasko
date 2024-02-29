@@ -121,6 +121,10 @@ const Bidding = ({}) => {
 
 	const destiOnClickHandler = () => {
 		setLive(false)
+		if (!uids || uids?.length === 0) {
+			simpleAlert('적용할 경매를 선택해주세요.')
+			return
+		}
 		simpleAlert('적용 되었습니다.', () => {
 			setFinalInput((prevFinalInput) => ({
 				...prevFinalInput,
@@ -137,17 +141,21 @@ const Bidding = ({}) => {
 			if (param?.type === '단일')
 				if (uids.includes(item.productNumber)) {
 					item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
-					item.customerDestinationName = destiObject?.name ?? item.customerDestinationName
+					item.destinationName = destiObject?.destinationName ?? item.destinationName
+					item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
 					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
+
 					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 				}
 			if (param?.type === '패키지')
 				if (packUids.includes(item.packageNumber)) {
 					item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
-					item.customerDestinationName = destiObject?.name ?? item.customerDestinationName
+					item.destinationName = destiObject?.destinationName ?? item.destinationName
+					item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
 					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
+
 					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 				}
 			return item
@@ -397,21 +405,26 @@ const Bidding = ({}) => {
 			return
 		}
 
+		simpleAlert('적용 되었습니다')
 		const updatedResData = resData.map((item) => {
 			if (param?.type === '단일')
 				if (uids.includes(item.productNumber)) {
-					item.destinationCode = destiObject?.destinationCode
-					item.customerDestinationName = destiObject?.name
-					item.customerDestinationAddress = destiObject?.address
-					item.customerDestinationPhone = destiObject?.phone
+					item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
+					item.destinationName = destiObject?.destinationName ?? item.destinationName
+					item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
+					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
+					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
+
 					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 				}
 			if (param?.type === '패키지')
 				if (packUids.includes(item.packageNumber)) {
-					item.destinationCode = destiObject?.destinationCode
-					item.customerDestinationName = destiObject?.name
-					item.customerDestinationAddress = destiObject?.address
-					item.customerDestinationPhone = destiObject?.phone
+					item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
+					item.destinationName = destiObject?.destinationName ?? item.destinationName
+					item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
+					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
+					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
+
 					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 				}
 			return item
