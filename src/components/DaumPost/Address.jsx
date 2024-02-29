@@ -32,8 +32,8 @@ const AddressFinder = forwardRef(({ onAddressChange, prevAddress, prevAddressDet
 
 	const handleComplete = (data) => {
 		const jibunAddress = data.roadAddress || data.autoRoadAddress
-		const sido = jibunAddress.split(' ')[0]
-		let fullAddress = jibunAddress.replace(sido, sidoMapping[sido])
+		const sido = jibunAddress?.split(' ')[0]
+		let fullAddress = sidoMapping[sido] ? jibunAddress.replace(sido, sidoMapping[sido]) : jibunAddress
 
 		if (!!defaultQuery && !fullAddress.startsWith(defaultQuery)) {
 			simpleAlert('등록된 기본 주소로 다시 검색해주세요.')

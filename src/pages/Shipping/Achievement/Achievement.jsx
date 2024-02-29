@@ -82,7 +82,7 @@ const Achievement = () => {
 		if (findNumbers.length > 1) {
 			return simpleAlert('거래명세서는 하나의 출고번호와 고객사으로 확인할 수 있습니다.')
 		}
-		const findData = findNumbers[0].split('/')
+		const findData = findNumbers[0]?.split('/')
 		const customerCode = findData[0]
 		const outNumber = findData[1]
 		navigate(`/shipping/achievement/invoice?customerCode=${customerCode}&outNumber=${outNumber}`)
