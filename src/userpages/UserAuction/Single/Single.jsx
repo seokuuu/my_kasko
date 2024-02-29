@@ -80,8 +80,6 @@ const Single = ({}) => {
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
 
-	console.log('destiObject', destiObject?.code)
-
 	const productListInner = {
 		biddingPrice: null,
 		customerDestinationUid: null,
@@ -163,8 +161,9 @@ const Single = ({}) => {
 	console.log('winningCreateData', winningCreateData)
 	//
 	useEffect(() => {
+		// TODO : 수정하기
 		const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
-		setDestiObject(selectedObject)
+		if (propsUid) setDestiObject(selectedObject)
 		setWinningCreateData((p) => ({
 			...p,
 			auctionNumber: auctionNumber,
@@ -193,7 +192,7 @@ const Single = ({}) => {
 			productUid: item['제품 고유 번호'],
 			biddingPrice:
 				item['응찰가'] === 0 ? item['시작가'] + finalInput?.biddingPrice : item['응찰가'] + finalInput?.biddingPrice,
-			customerDestinationUid: finalInput?.customerDestinationUid,
+			customerDestinationUid: finalInput?.customerDestinationUid ?? item['목적지 코드'],
 			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
 		}))
 
@@ -226,11 +225,31 @@ const Single = ({}) => {
 				content: '',
 				func: () => {
 					refetch()
+					setLive(true)
+					setWinningCreateData(init)
+					setwinningCreateInput({
+						biddingPrice: null,
+						customerDestinationUid: null,
+					})
+					setFinalInput({
+						biddingPrice: null,
+						customerDestinationUid: null,
+					})
 					queryClient.invalidateQueries('auction')
 				},
 			})
 		},
 		onError: () => {
+			setLive(true)
+			setWinningCreateData(init)
+			setwinningCreateInput({
+				biddingPrice: null,
+				customerDestinationUid: null,
+			})
+			setFinalInput({
+				biddingPrice: null,
+				customerDestinationUid: null,
+			})
 			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
@@ -298,19 +317,19 @@ const Single = ({}) => {
 			return
 		}
 
+		simpleAlert('적용 되었습니다')
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.productNumber)) {
-				item.destinationCode = destiObject?.destinationCode
-				item.customerDestinationName = destiObject?.name
-				item.customerDestinationAddress = destiObject?.address
-				item.customerDestinationPhone = destiObject?.phone
+				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
+				item.destinationName = destiObject?.destinationName ?? item.destinationName
+				item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
+				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
+				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
+
 				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item
 		})
-
-		console.log('222 뒤', updatedResData)
-
 		// 변경된 데이터로 state 업데이트
 		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
@@ -333,36 +352,39 @@ const Single = ({}) => {
 		best: { display: true },
 	})
 	/* ==================== 관심상품 등록 end ==================== */
-
 	console.log('destiObject', destiObject)
 	// 목적지 적용 버튼 handler 111
 	const destiOnClickHandler = () => {
 		setLive(false)
+		if (!uids || uids?.length === 0) {
+			simpleAlert('적용할 경매를 선택해주세요.')
+			return
+		}
 		simpleAlert('적용 되었습니다.', () => {
 			setFinalInput((prevFinalInput) => ({
 				...prevFinalInput,
-				customerDestinationUid: destiObject && destiObject.uid,
+				customerDestinationUid: destiObject.uid,
 			}))
 			setValues((p) => ({
 				...p,
-				customerDestinationUid: destiObject && destiObject.uid,
+				customerDestinationUid: destiObject.uid,
 			}))
 			setDestiObject(destiObject)
 		})
-
 		const updatedResData = resData.map((item) => {
+			console.log('item => ', item, ' destiObject =>', destiObject)
 			if (uids.includes(item.productNumber)) {
-				item.destinationCode = destiObject?.destinationCode
-				item.customerDestinationName = destiObject?.name
-				item.customerDestinationAddress = destiObject?.address
-				item.customerDestinationPhone = destiObject?.phone
+				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
+				item.destinationName = destiObject?.destinationName ?? item.destinationName
+				item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
+				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
+				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
+
 				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
 			}
 
 			return item
 		})
-		console.log('111 앞 ', updatedResData)
-		console.log('destiObject', destiObject)
 		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
 
@@ -418,12 +440,25 @@ const Single = ({}) => {
 
 	useEffect(() => {
 		// 경매번호도 잘 들어오고, get 미동의(false)가 들어왔을 때
-		if (realAucNum && !checkGetAgreement) {
+		if (realAucNum && checkGetAgreement === false) {
 			setAgreementModal(true)
 		} else setAgreementModal(false)
 	}, [realAucNum, checkGetAgreement])
 
-	console.log('agreementModal', agreementModal)
+	// 목적지, 입찰 동의서 & 모달 여부
+	useEffect(() => {
+		if (initDestiData === undefined) return
+		if (agreementModal === false && initDestiData.length === 0) {
+			simpleAlert('목적지를 등록하지 않으면 \n 경매에 참여하실 수 없습니다. \n 목적지를 등록하시겠습니까?', () => {
+				navigate('/userpage/userdestination')
+			})
+		}
+		if (initDestiData.length > 0 && firstDestiData?.represent !== 1) {
+			simpleAlert('대표 목적지를 등록하지 않으셨습니다.  \n 목적지를 등록하시겠습니까?', () => {
+				navigate('/userpage/userdestination')
+			})
+		}
+	}, [agreementModal, firstDestiData, initDestiData])
 
 	return (
 		<FilterContianer>
