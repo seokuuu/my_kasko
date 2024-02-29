@@ -14,7 +14,7 @@ import {
 } from '../../../modal/Common/Common.Styled'
 import { FilterContianer, FilterHeaderAlert, TableContianer } from '../../../modal/External/ExternalFilter'
 import useAlert from '../../../store/Alert/useAlert'
-
+import html2pdf from 'html2pdf.js'
 /**
  * @constant 입금요청서 요청 URL
  * @description auction:경매, salesDeposit:상시판매
@@ -80,6 +80,17 @@ export const PrintDepositRequestButton = ({
 	customerDestinationUid = '',
 	biddingStatus = '',
 }) => {
+	const [isExtracted, setIsExtracted] = useState(false)
+	const containerRef = useRef(null)
+	const handleExtract = () => {
+		const element = containerRef.current
+		html2pdf()
+			.from(element)
+			.set({ html2canvas: { scale: 2 } })
+			.save()
+
+		setIsExtracted(true)
+	}
 	// 경매|상시판매 번호
 	const oneAuctionNumber = useRef('')
 	// 입금요청서 발행 모드
@@ -174,7 +185,7 @@ export const PrintDepositRequestButton = ({
 								/>
 							</div>
 						</BlueBarHeader>
-						<BlueSubContainer style={{ width: '100%', padding: '0px 30px' }}>
+						<BlueSubContainer ref={containerRef} style={{ width: '100%', padding: '0px 30px' }}>
 							<FilterContianer>
 								{/* 요청서 제목 | 일자 */}
 								<FormTitle>
@@ -309,7 +320,7 @@ export const PrintDepositRequestButton = ({
 							</FilterContianer>
 						</BlueSubContainer>
 						<div style={{ float: 'right', padding: '20px 30px' }}>
-							<img src="/img/logo.png" />
+							<img src="/img/logo.png" onClick={handleExtract} style={{ cursor: 'pointer' }} />
 						</div>
 					</ModalContainer>
 				</>

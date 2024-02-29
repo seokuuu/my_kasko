@@ -206,7 +206,7 @@ const Package = ({}) => {
 			packageNumber: item['패키지 번호'],
 			biddingPrice:
 				item['응찰가'] === 0 ? item['시작가'] + finalInput?.biddingPrice : item['응찰가'] + finalInput?.biddingPrice,
-			customerDestinationUid: finalInput?.customerDestinationUid ?? item['목적지 코드'],
+			customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
 		}))
 
@@ -239,7 +239,7 @@ const Package = ({}) => {
 				content: '',
 				func: () => {
 					refetch()
-					setLive(true)
+
 					setWinningCreateData(init)
 					setwinningCreateInput({
 						biddingPrice: null,
@@ -254,7 +254,6 @@ const Package = ({}) => {
 			})
 		},
 		onError: () => {
-			setLive(true)
 			setWinningCreateData(init)
 			setwinningCreateInput({
 				biddingPrice: null,
@@ -271,6 +270,7 @@ const Package = ({}) => {
 
 	// 응찰 버튼 POST
 	const confirmOnClickHandler = () => {
+		setLive(true) // 실시간으로 다시 설정
 		postMutation(winningCreateData)
 	}
 
@@ -332,7 +332,7 @@ const Package = ({}) => {
 			return
 		}
 
-		simpleAlert('적용 되었습니다')
+		simpleAlert('적용 되었습니다.')
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.packageNumber)) {
 				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
@@ -579,9 +579,9 @@ const Package = ({}) => {
 						</TGreyBtn>
 
 						<BtnBound style={{ margin: '0px' }} />
-						<p>일괄 경매 응찰</p>
+						<p>일괄 경매 응찰 최고가 +</p>
 						<CustomInput
-							placeholder="최고가 입력"
+							placeholder=""
 							width={140}
 							height={32}
 							value={winningCreateInput.biddingPrice !== null ? winningCreateInput.biddingPrice : ''}

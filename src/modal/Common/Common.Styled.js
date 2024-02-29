@@ -31,7 +31,6 @@ export const ModalContainer = styled.div`
 	width: ${(props) => props.width}px;
 	/* height: ${(props) => props.height}px; */
 	height: max-content;
-
 	z-index: ${(props) => props.zindex || 9999};
 `
 
