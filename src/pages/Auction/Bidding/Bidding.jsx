@@ -541,7 +541,7 @@ const Bidding = ({}) => {
 						</TWhiteBtn>
 						<TGreyBtn onClick={destiOnClickHandler}>적용</TGreyBtn>
 						<BtnBound style={{ margin: '0px' }} />
-						<p>일괄 경매 응찰 최고가 +</p>
+						<p>일괄 경매 응찰 | 최고가 +</p>
 						<CustomInput
 							placeholder=""
 							width={140}

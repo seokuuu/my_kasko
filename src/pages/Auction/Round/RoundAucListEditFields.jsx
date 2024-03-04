@@ -106,9 +106,9 @@ const RoundAucListEditFields = ({
 						{/* 제품군 */}
 						<PWRight>
 							<MainSelect
-								options={supplierList}
-								defaultValue={supplierList[0]}
-								value={search.supplier}
+								options={spartList}
+								defaultValue={spartList[0]}
+								value={search.spart}
 								name="supplier"
 								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
 							/>
