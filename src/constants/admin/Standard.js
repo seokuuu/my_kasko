@@ -143,6 +143,7 @@ export const StandardTransportationFieldsCols = [
 		...commonStyles,
 		field: '수정',
 		maxWidth: 90,
+		minWidth: 90,
 		cellRenderer: BtnCellRenderer,
 		cellRendererParams: {
 			uidFieldName: '운반비 고유 번호',

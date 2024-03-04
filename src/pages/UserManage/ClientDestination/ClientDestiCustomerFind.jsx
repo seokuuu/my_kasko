@@ -1,4 +1,3 @@
-import { useAtom } from 'jotai'
 import { useState } from 'react'
 import {
 	BlueBarHeader,
@@ -14,7 +13,6 @@ import {
 	ResultRow,
 	WhiteCloseBtn,
 } from '../../../modal/Common/Common.Styled'
-import { blueModalAtom } from '../../../store/Layout/Layout'
 
 import { GreyBtn } from '../../../common/Button/Button'
 import { TxtInput } from '../../../common/Input/Input'
@@ -34,16 +32,14 @@ const ClientDestiCustomerFind = ({
 }) => {
 	const matchData = { name: '고객명', code: '고객사 코드', businessNumber: '사업자번호', ceoName: '대표자' }
 
-	const { isLoading, isError, data, isSuccess } = useReactQuery('', 'getCustomerFind', getCustomerFind)
+	const { data } = useReactQuery('', 'getCustomerFind', getCustomerFind)
 
 	const customerGetData = data?.data?.data
 
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
 	const [searchTerm, setSearchTerm] = useState('')
 	const [result, setResult] = useState([])
 	const [clickedResult, setClickedResult] = useState()
 	const [selectedUid, setSelectedUid] = useState(null)
-	const [selectedUids, setSelectedUids] = useState([])
 
 	const modalClose = () => {
 		setFindModal(false)
@@ -62,7 +58,7 @@ const ClientDestiCustomerFind = ({
 
 		// 검색어가 없을 때는 모든 데이터를 보여줌
 		if (!searchTerm) {
-			setResult('')
+			setResult(customerGetData || [])
 		} else {
 			// 검색 로직을 수행하고 결과를 상태에 업데이트
 			setResult(filteredResult || [])
@@ -70,7 +66,6 @@ const ClientDestiCustomerFind = ({
 	}
 
 	const handleCellClick = (uid, name, code, businessNumber, ceoName) => {
-		console.log('클릭한 셀 데이터:', { uid, name, code, businessNumber })
 		setClickedResult({ uid, name, code, businessNumber })
 		setSelectedUid(uid) // 클릭한 셀의 uid를 저장
 		setCustomerFindResult({

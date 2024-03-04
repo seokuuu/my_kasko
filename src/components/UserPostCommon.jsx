@@ -190,6 +190,10 @@ export default function UserPostCommon({ id, isCustomer = false, closeModal = nu
 			if (name === 'id') {
 				setIdDupleCheck(false)
 			}
+			if (name === 'memberType') {
+				const isKasko = value['memberType'] === '카스코철강'
+				setBusIdDupleCheck(isKasko)
+			}
 		})
 		return () => subscription.unsubscribe()
 	}, [watch])
@@ -571,15 +575,15 @@ export default function UserPostCommon({ id, isCustomer = false, closeModal = nu
 											/>
 											현대제철
 										</RadioLabel>
-										{/*<RadioLabel>
-												<input
-													type="radio"
-													value="카스코철강"
-													{...register('memberType', { required: true })}
-													checked={watch('memberType') === '카스코철강'}
-												/>
-												카스코철강
-											</RadioLabel>*/}
+										<RadioLabel>
+											<input
+												type="radio"
+												value="카스코철강"
+												{...register('memberType', { required: true })}
+												checked={watch('memberType') === '카스코철강'}
+											/>
+											카스코철강
+										</RadioLabel>
 										<RadioLabel>
 											<input
 												type="radio"
@@ -608,7 +612,7 @@ export default function UserPostCommon({ id, isCustomer = false, closeModal = nu
 								</FlexContent>
 							</FlexPart>
 						)}
-						{watch('memberType') === '창고' && (
+						{(watch('memberType') === '창고' || watch('memberType') === '운송사') && (
 							<FlexPart>
 								<FlexTitle>
 									창고 구분<span>*</span>
@@ -627,112 +631,112 @@ export default function UserPostCommon({ id, isCustomer = false, closeModal = nu
 								</FlexContent>
 							</FlexPart>
 						)}
-						{watch('memberType') === '카스코철강' && (
-							<FlexPart style={{ alignItems: 'start', flexDirection: 'column', gap: '20px' }}>
-								<FlexTitle>권한 설정</FlexTitle>
-								<FlexContent style={{ width: '100%', flexWrap: 'wrap', gap: '20px' }}>
-									<RadioLabel>
-										<input
-											type="checkbox"
-											value="재고관리"
-											name="managerRoleList"
-											{...register('managerRoleList')}
-											// checked={watch('managerRoleList') === '재고관리'}
-										/>
-										재고관리
-									</RadioLabel>
-									<RadioLabel>
-										<input
-											type="checkbox"
-											value="경매관리"
-											{...register('managerRoleList')}
-											// checked={watch('managerRoleList') === '경매관리'}
-										/>
-										경매관리
-									</RadioLabel>
-									<RadioLabel>
-										<input
-											type="checkbox"
-											value="상시판매"
-											name="managerRoleList"
-											{...register('managerRoleList')}
-											// checked={watch('managerRoleList') === '상시판매'}
-										/>
-										상시판매
-									</RadioLabel>
-									<RadioLabel>
-										<input
-											type="checkbox"
-											value="판매제품 관리"
-											name="managerRoleList"
-											{...register('managerRoleList')}
-											// checked={watch('managerRoleList') === '판매제품 관리'}
-										/>
-										판매제품 관리
-									</RadioLabel>
-									<RadioLabel>
-										<input
-											type="checkbox"
-											value="주문관리"
-											name="managerRoleList"
-											{...register('managerRoleList')}
-											// checked={watch('managerRoleList') === '주문관리'}
-										/>
-										주문관리
-									</RadioLabel>
-									<RadioLabel>
-										<input
-											type="checkbox"
-											value="출고관리"
-											name="managerRoleList"
-											{...register('managerRoleList')}
-											// checked={watch('managerRoleList') === '출고관리'}
-										/>
-										출고관리
-									</RadioLabel>
-									<RadioLabel>
-										<input
-											type="checkbox"
-											value="기준관리"
-											name="managerRoleList"
-											{...register('managerRoleList')}
-											// checked={watch('managerRoleList') === '기준관리'}
-										/>
-										기준관리
-									</RadioLabel>
-									<RadioLabel>
-										<input
-											type="checkbox"
-											value="사용자관리"
-											name="managerRoleList"
-											{...register('managerRoleList')}
-											// checked={watch('managerRoleList') === '사용자관리'}
-										/>
-										사용자관리
-									</RadioLabel>
-									<RadioLabel>
-										<input
-											type="checkbox"
-											value="운영관리"
-											name="managerRoleList"
-											{...register('managerRoleList')}
-											// checked={watch('managerRoleList') === '운영관리'}
-										/>
-										운영관리
-									</RadioLabel>
-									<RadioLabel>
-										<input
-											type="checkbox"
-											value="재고수불관리"
-											name="managerRoleList"
-											{...register('managerRoleList')}
-											// checked={watch('managerRoleList') === '재고수불관리'}
-										/>
-										재고수불관리
-									</RadioLabel>
-								</FlexContent>
-							</FlexPart>
-						)}
+						{/*{watch('memberType') === '카스코철강' && (*/}
+						{/*	<FlexPart style={{ alignItems: 'start', flexDirection: 'column', gap: '20px' }}>*/}
+						{/*		<FlexTitle>권한 설정</FlexTitle>*/}
+						{/*		<FlexContent style={{ width: '100%', flexWrap: 'wrap', gap: '20px' }}>*/}
+						{/*			<RadioLabel>*/}
+						{/*				<input*/}
+						{/*					type="checkbox"*/}
+						{/*					value="재고관리"*/}
+						{/*					name="managerRoleList"*/}
+						{/*					{...register('managerRoleList')}*/}
+						{/*					// checked={watch('managerRoleList') === '재고관리'}*/}
+						{/*				/>*/}
+						{/*				재고관리*/}
+						{/*			</RadioLabel>*/}
+						{/*			<RadioLabel>*/}
+						{/*				<input*/}
+						{/*					type="checkbox"*/}
+						{/*					value="경매관리"*/}
+						{/*					{...register('managerRoleList')}*/}
+						{/*					// checked={watch('managerRoleList') === '경매관리'}*/}
+						{/*				/>*/}
+						{/*				경매관리*/}
+						{/*			</RadioLabel>*/}
+						{/*			<RadioLabel>*/}
+						{/*				<input*/}
+						{/*					type="checkbox"*/}
+						{/*					value="상시판매"*/}
+						{/*					name="managerRoleList"*/}
+						{/*					{...register('managerRoleList')}*/}
+						{/*					// checked={watch('managerRoleList') === '상시판매'}*/}
+						{/*				/>*/}
+						{/*				상시판매*/}
+						{/*			</RadioLabel>*/}
+						{/*			<RadioLabel>*/}
+						{/*				<input*/}
+						{/*					type="checkbox"*/}
+						{/*					value="판매제품 관리"*/}
+						{/*					name="managerRoleList"*/}
+						{/*					{...register('managerRoleList')}*/}
+						{/*					// checked={watch('managerRoleList') === '판매제품 관리'}*/}
+						{/*				/>*/}
+						{/*				판매제품 관리*/}
+						{/*			</RadioLabel>*/}
+						{/*			<RadioLabel>*/}
+						{/*				<input*/}
+						{/*					type="checkbox"*/}
+						{/*					value="주문관리"*/}
+						{/*					name="managerRoleList"*/}
+						{/*					{...register('managerRoleList')}*/}
+						{/*					// checked={watch('managerRoleList') === '주문관리'}*/}
+						{/*				/>*/}
+						{/*				주문관리*/}
+						{/*			</RadioLabel>*/}
+						{/*			<RadioLabel>*/}
+						{/*				<input*/}
+						{/*					type="checkbox"*/}
+						{/*					value="출고관리"*/}
+						{/*					name="managerRoleList"*/}
+						{/*					{...register('managerRoleList')}*/}
+						{/*					// checked={watch('managerRoleList') === '출고관리'}*/}
+						{/*				/>*/}
+						{/*				출고관리*/}
+						{/*			</RadioLabel>*/}
+						{/*			<RadioLabel>*/}
+						{/*				<input*/}
+						{/*					type="checkbox"*/}
+						{/*					value="기준관리"*/}
+						{/*					name="managerRoleList"*/}
+						{/*					{...register('managerRoleList')}*/}
+						{/*					// checked={watch('managerRoleList') === '기준관리'}*/}
+						{/*				/>*/}
+						{/*				기준관리*/}
+						{/*			</RadioLabel>*/}
+						{/*			<RadioLabel>*/}
+						{/*				<input*/}
+						{/*					type="checkbox"*/}
+						{/*					value="사용자관리"*/}
+						{/*					name="managerRoleList"*/}
+						{/*					{...register('managerRoleList')}*/}
+						{/*					// checked={watch('managerRoleList') === '사용자관리'}*/}
+						{/*				/>*/}
+						{/*				사용자관리*/}
+						{/*			</RadioLabel>*/}
+						{/*			<RadioLabel>*/}
+						{/*				<input*/}
+						{/*					type="checkbox"*/}
+						{/*					value="운영관리"*/}
+						{/*					name="managerRoleList"*/}
+						{/*					{...register('managerRoleList')}*/}
+						{/*					// checked={watch('managerRoleList') === '운영관리'}*/}
+						{/*				/>*/}
+						{/*				운영관리*/}
+						{/*			</RadioLabel>*/}
+						{/*			<RadioLabel>*/}
+						{/*				<input*/}
+						{/*					type="checkbox"*/}
+						{/*					value="재고수불관리"*/}
+						{/*					name="managerRoleList"*/}
+						{/*					{...register('managerRoleList')}*/}
+						{/*					// checked={watch('managerRoleList') === '재고수불관리'}*/}
+						{/*				/>*/}
+						{/*				재고수불관리*/}
+						{/*			</RadioLabel>*/}
+						{/*		</FlexContent>*/}
+						{/*	</FlexPart>*/}
+						{/*)}*/}
 
 						<Bar />
 
@@ -1034,23 +1038,27 @@ export default function UserPostCommon({ id, isCustomer = false, closeModal = nu
 											maxLength={10}
 											onChange={(e) => {
 												field.onChange(e)
-												if (originalBusinessNumber && e.target.value === originalBusinessNumber) {
-													setBusIdDupleCheck(true)
-												} else {
-													setBusIdDupleCheck(false)
+												if (watch('memberType') === '카스코철강') {
+													return setBusIdDupleCheck(true)
 												}
+												if (originalBusinessNumber && e.target.value === originalBusinessNumber) {
+													return setBusIdDupleCheck(true)
+												}
+												setBusIdDupleCheck(false)
 											}}
 										/>
 									)}
 								/>
-								<CheckBtn
-									onClick={handleBusIdDupleCheck}
-									type="button"
-									disabled={busIdDupleCheck}
-									style={{ fontSize: 14 }}
-								>
-									중복 확인
-								</CheckBtn>
+								{watch('memberType') !== '카스코철강' && (
+									<CheckBtn
+										onClick={handleBusIdDupleCheck}
+										type="button"
+										disabled={busIdDupleCheck}
+										style={{ fontSize: 14 }}
+									>
+										중복 확인
+									</CheckBtn>
+								)}
 							</FlexContent>
 						</FlexPart>
 

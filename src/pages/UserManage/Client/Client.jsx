@@ -144,7 +144,6 @@ const Client = ({ postModal, setPostModal }) => {
 	useEffect(() => {
 		if (!isSuccess && !responseData) return
 		if (Array.isArray(responseData)) {
-			console.log('responseData ㅋㅋ!!', responseData)
 			setGetRow(add_element_field(responseData, UserManageCustomerManageFields))
 			setPagination(data.data.pagination)
 		}

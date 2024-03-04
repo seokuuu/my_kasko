@@ -66,7 +66,7 @@ const Transport = () => {
 	const [toggleMsg, setToggleMsg] = useState('On')
 	const toggleBtnClick = () => {
 		setExfilterToggle((prev) => !prev)
-		if (exFilterToggle === true) {
+		if (!!exFilterToggle) {
 			setToggleMsg('Off')
 		} else {
 			setToggleMsg('On')
