@@ -20,11 +20,11 @@ const useAuth = () => {
 
 	// 로그인
 	const setLogin = (user) => {
-		const name = user.name
-		const customerName = user.customerName
-		const role = user.roles.role
-		const authorities = user.roles.authorities
-		const token = user.accessToken
+		const name = user?.name
+		const customerName = user?.customerName
+		const role = user.roles?.role
+		const authorities = user.roles?.authorities
+		const token = user?.accessToken
 		const isTempPassword = user?.useTempPassword
 
 		if (isTempPassword) {

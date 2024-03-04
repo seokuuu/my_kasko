@@ -78,7 +78,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 	const submit = async () => {
 		if (!isEmptyObj(input)) return simpleAlert('빈값을 채워주세요.')
 
-		if (!!selectedSpecialDestination && !input.address.startsWith(selectedSpecialDestination.label)) {
+		if (!!selectedSpecialDestination && !input.address.startsWith(selectedSpecialDestination.value)) {
 			simpleAlert('선택한 특수목적지로 주소를 다시 검색해주세요.')
 			return
 		}
@@ -157,7 +157,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								width={320}
 								options={specialDestinations}
 								defaultValue={specialDestinations[0]}
-								value={selectedSpecialDestination}
+								value={selectedSpecialDestination || specialDestinations[0]}
 								name="selectedSpecialDestination"
 								onChange={(e) => setSelectedSpecialDestination(e)}
 							/>
@@ -170,8 +170,8 @@ const DestinationPost = ({ setChoiceComponent }) => {
 							</Title>
 							<AddressFinder
 								onAddressChange={onAddressHandler}
-								defaultQuery={selectedSpecialDestination?.label}
-								// prevAddress={selectedSpecialDestination?.label}
+								defaultQuery={selectedSpecialDestination?.value}
+								// prevAddress={selectedSpecialDestination?.value}
 							/>
 						</Part>
 

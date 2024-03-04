@@ -26,6 +26,8 @@ import ClientDestiCustomerFind from './ClientDestiCustomerFind'
 import AddressFinder from '../../../components/DaumPost/Address'
 import { MainSelect } from '../../../common/Option/Main'
 import { getSpecialDestination } from '../../../api/search'
+import { CustomerSearch } from '../../../components/Search'
+import { AccountSelect } from '../../../common/Option/SignUp'
 
 const init = {
 	represent: '', // (0: 미지정 / 1: 지정)
@@ -128,7 +130,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 		}
 
 		if (isEmptyObj(submitData)) {
-			if (!!selectedSpecialDestination && !submitData.address.startsWith(selectedSpecialDestination.label)) {
+			if (!!selectedSpecialDestination && !submitData.address.startsWith(selectedSpecialDestination.value)) {
 				simpleAlert('선택한 특수목적지로 주소를 다시 검색해주세요.')
 				return
 			}
@@ -222,10 +224,10 @@ const DestinationPost = ({ setChoiceComponent }) => {
 							</Title>
 							<MainSelect
 								width={320}
+								name="selectedSpecialDestination"
 								options={specialDestinations}
 								defaultValue={specialDestinations[0]}
-								value={selectedSpecialDestination}
-								name="selectedSpecialDestination"
+								value={selectedSpecialDestination || specialDestinations[0]}
 								onChange={(e) => setSelectedSpecialDestination(e)}
 							/>
 						</Part>
@@ -236,8 +238,8 @@ const DestinationPost = ({ setChoiceComponent }) => {
 							</Title>
 							<AddressFinder
 								onAddressChange={onAddressHandler}
-								defaultQuery={selectedSpecialDestination?.label}
-								// prevAddress={selectedSpecialDestination?.label}
+								defaultQuery={selectedSpecialDestination?.value}
+								// prevAddress={selectedSpecialDestination?.value}
 							/>
 						</Part>
 						<Part>
