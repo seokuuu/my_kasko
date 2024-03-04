@@ -65,7 +65,6 @@ const UserWinningSearchFields = ({
 					{/* 규격약호 */}
 				</RowWrap>
 				<RowWrap>
-					<CustomerSearch search={search} setSearch={setSearch} />
 					<PartWrap first>
 						<h6>진행 상태</h6>
 						<RadioSearchButton

@@ -107,7 +107,7 @@ const Single = ({}) => {
 	}
 	const [param, setParam] = useState(paramData)
 
-	const [liveStatus, setLiveStatus] = useState('getBidding') // LIVE 추가
+	const [liveStatus, setLiveStatus] = useState('LIVEgetBidding') // LIVE 추가
 
 	const [realAucNum, setRealAucNum] = useState(null)
 	console.log('realAucNum', realAucNum)
