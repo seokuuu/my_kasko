@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import React, { useMemo } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { client } from '../../api'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../components/MapTable/MapTable'
@@ -11,6 +11,7 @@ import {
 	WhiteCloseBtn,
 } from '../../modal/Common/Common.Styled'
 import { FilterContianer, FilterHeaderAlert, TableContianer } from '../../modal/External/ExternalFilter'
+import html2pdf from 'html2pdf.js'
 
 /**
  * @constant 입금요청서 요청 URL
@@ -57,6 +58,13 @@ const DepositRequestForm = ({
 	onClose,
 }) => {
 	// 데이터
+	const [isExtracted, setIsExtracted] = useState(false)
+	const containerRef = useRef(null)
+	const handleExtract = () => {
+		const element = containerRef.current
+		html2pdf().from(element).save()
+		setIsExtracted(true)
+	}
 	const { data: infoData, isLoading } = useQuery({
 		queryKey: 'deposit-request',
 		queryFn: async () => {
@@ -117,7 +125,7 @@ const DepositRequestForm = ({
 						/>
 					</div>
 				</BlueBarHeader>
-				<BlueSubContainer style={{ width: '100%', padding: '0px 30px' }}>
+				<BlueSubContainer ref={containerRef} style={{ width: '100%', padding: '0px 30px' }}>
 					<FilterContianer>
 						{/* 요청서 제목 | 일자 */}
 						<FormTitle>
@@ -237,10 +245,10 @@ const DepositRequestForm = ({
 							</TableContianer>
 						)}
 					</FilterContianer>
+					<div style={{ float: 'right', padding: '20px 30px' }}>
+						<img src="/img/logo.png" onClick={handleExtract} style={{ cursor: 'pointer' }} />
+					</div>
 				</BlueSubContainer>
-				<div style={{ float: 'right', padding: '20px 30px' }}>
-					<img src="/img/logo.png" />
-				</div>
 			</ModalContainer>
 		</>
 	)

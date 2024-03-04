@@ -9,11 +9,11 @@ import React, { useEffect, useState } from 'react'
 const ProductNumberListSearch = ({ value, onChange }) => {
 	const [newValue, setNewValue] = useState(value)
 
-	useEffect(() => {
-		// Split the value by newline and join with commas
-		const modifiedValue = String(value).split('\n').join(', ')
-		setNewValue(modifiedValue)
-	}, [value])
+	// useEffect(() => {
+	// 	// Split the value by newline and join with commas
+	// 	const modifiedValue = String(value).split('\n').join(', ')
+	// 	setNewValue(modifiedValue)
+	// }, [value])
 
 	return (
 		<DoubleWrap>

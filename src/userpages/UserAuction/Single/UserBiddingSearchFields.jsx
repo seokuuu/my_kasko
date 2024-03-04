@@ -1,5 +1,4 @@
 import { MainSelect } from '../../../common/Option/Main'
-import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
 	ExInputsWrap,
@@ -14,11 +13,12 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import { useAtomValue, useSetAtom } from 'jotai'
-import React, { useState } from 'react'
+import React from 'react'
 import { GreyBtn } from '../../../common/Button/Button'
+import { RadioSearchButton } from '../../../components/Search'
 import StandardFind from '../../../modal/Multi/StandardFind'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
-import { ProductNumberListSearch, RadioSearchButton } from '../../../components/Search'
+import ProductNumber from '../../../components/ProductNumber/ProductNumber'
 
 const UserBiddingSearchFields = ({
 	// prettier-ignore
@@ -182,16 +182,17 @@ const UserBiddingSearchFields = ({
 			</FilterLeft>
 			{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
 			<FilterRight>
-				{/*<ProductNumber*/}
-				{/*	initialValue={search.productNumberList}*/}
-				{/*	setState={setSearch}*/}
-				{/*	valueName={'productNumberList'}*/}
-				{/*	height="100%"*/}
-				{/*/>*/}
-				<ProductNumberListSearch
+				<ProductNumber
+					initialValue={search.productNumberList}
+					setState={setSearch}
+					valueName={'productNumberList'}
+					height="100%"
+				/>
+
+				{/* <ProductNumberListSearch
 					value={search.productNumberList}
 					onChange={(e) => onChange('productNumberList', e.target.value)}
-				/>
+				/> */}
 			</FilterRight>
 		</>
 	)

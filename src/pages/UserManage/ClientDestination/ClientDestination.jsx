@@ -72,6 +72,7 @@ const ClientDestination = ({ setChoiceComponent }) => {
 
 	const { data, isSuccess, refetch, isLoading } = useReactQuery(param, 'clientDestination', get_clientDestination)
 	const resData = data?.data?.data?.list
+	console.log('resData', resData)
 	const pagination = data?.data?.data?.pagination
 
 	const { onPageChanage } = useTablePaginationPageChange(data, setParam)

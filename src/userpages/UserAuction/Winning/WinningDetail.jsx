@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import { BtnBound, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
+import { BlackBtn, BtnBound, NewBottomBtnWrap, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -27,28 +27,9 @@ import Table from '../../../pages/Table/Table'
 import PrintDepositRequestButton from '../../UserSales/_components/PrintDepositRequestButton'
 import useAlert from '../../../store/Alert/useAlert'
 
-const WinningDetail = ({ detailRow }) => {
+const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
-
-	// const NewDummy = {
-	// 	'고객사 명': '(주) 아이덴잇',
-	// 	'고객 코드': 'K00-0012',
-	// 	'': '',
-	// 	'총 수량': '30',
-	// 	'총 중량(KG)': '4,612,157',
-	// 	'입금 요청 금액 (원)': '45,237,876',
-	// 	'제품금액(VAT 포함)': '000',
-	// 	'운임비(VAT 포함)': '000',
-	// 	ㅤ: 'ㅤ',
-	// }
-
-	// const entries = Object.entries(NewDummy)
-	// const chunkedEntries = []
-
-	// for (let i = 0; i < entries.length; i += 3) {
-	// 	chunkedEntries.push(entries.slice(i, i + 3))
-	// }
 
 	console.log('detailRow', detailRow)
 
@@ -74,6 +55,38 @@ const WinningDetail = ({ detailRow }) => {
 		new Intl.NumberFormat('en-US').format(detailRow?.['운반비 (VAT 포함)']) + '원',
 		'',
 	]
+
+	const matchingData = {
+		'경매 번호': 'auctionNumber',
+		창고: 'storage',
+		'고객사 목적지 고유 번호': 'customerDestinationUid',
+		'낙찰 상태': 'biddingStatus',
+	}
+
+	// 상세 GET 및 param
+	function matchDetailRowWithMatchingData(detailRow, matchingData) {
+		const matchedData = {}
+
+		Object.keys(matchingData).forEach((key) => {
+			const detailKey = matchingData[key]
+			if (detailRow.hasOwnProperty(key)) {
+				matchedData[detailKey] = detailRow[key]
+			}
+		})
+
+		return matchedData
+	}
+	// 상세 GET 및 param
+	const matchedResult = matchDetailRowWithMatchingData(detailRow, matchingData)
+
+	const paramData = {
+		pageNum: 1,
+		pageSize: 50,
+		...matchedResult,
+	}
+
+	// Test 후 주석 해제 필
+	const [param, setParam] = useState(paramData)
 
 	const handleSelectChange = (selectedOption, name) => {
 		// setInput(prevState => ({
@@ -240,20 +253,6 @@ const WinningDetail = ({ detailRow }) => {
 					<p>{detailRow && detailRow['경매 번호']}</p>
 				</FilterTCTop>
 
-				{/* <TableWrap style={{ marginTop: '5px' }}>
-					<ClaimTable>
-						{chunkedEntries.map((chunk, i) => (
-							<ClaimRow key={i}>
-								{chunk.map(([title, content], j) => (
-									<Fragment key={j}>
-										<ClaimTitle>{title}</ClaimTitle>
-										<ClaimContent>{content}</ClaimContent>
-									</Fragment>
-								))}
-							</ClaimRow>
-						))}
-					</ClaimTable>
-				</TableWrap> */}
 				<ClaimTable style={{ marginBottom: '30px' }}>
 					{[0, 1, 2].map((index) => (
 						<ClaimRow key={index}>
@@ -322,12 +321,24 @@ const WinningDetail = ({ detailRow }) => {
 					<div></div>
 					{/* 입금 확인 요청서 */}
 					<PrintDepositRequestButton
-						auctionNumber={'2023112201'}
-						storage={'우성'}
-						customerDestinationUid={'120'}
-						biddingStatus={'낙찰 확정'}
+						auctionNumber={param?.auctionNumber}
+						storage={param?.storage}
+						customerDestinationUid={param?.customerDestinationUid}
+						biddingStatus={param?.biddingStatus}
 					/>
 				</TCSubContainer>
+				<NewBottomBtnWrap>
+					<BlackBtn
+						width={13}
+						height={40}
+						onClick={() => {
+							setDetailRow(false)
+							setAucDetail('')
+						}}
+					>
+						돌아가기
+					</BlackBtn>
+				</NewBottomBtnWrap>
 			</TableContianer>
 			{destinationPopUp && (
 				<InventoryFind title={'목적지 찾기'} setSwitch={setDestinationPopUp} data={inventoryDestination} />

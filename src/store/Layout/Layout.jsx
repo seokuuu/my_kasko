@@ -143,6 +143,12 @@ export const auctionPackDetailNumAtom = atom('')
 //패키지 상세보기 모달
 export const auctionPackDetailModal = atom(false)
 
+// 경매 번호 전역 값
+export const winningDetailAucNumAtom = atom('')
+
+// 경매 낙찰 관리 상세 모달
+export const winningDetailModal = atom(false)
+
 // 입찰 동의서 모달
 export const biddingAgreementModal = atom(false)
 

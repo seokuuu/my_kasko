@@ -40,7 +40,6 @@ import Agreement from '../../../modal/Common/Agreement'
 
 const Single = ({}) => {
 	const [live, setLive] = useState(true) // LIVE get 일시 중단
-	console.log('live', live)
 	const navigate = useNavigate()
 	const [addedInput, setAddedInput] = useState(null) // 일괄 경매 응찰 input state
 	const [checkedBiddingPrice, setCheckedBiddingPrice] = useState(null) // 체크된 응찰가
@@ -80,6 +79,8 @@ const Single = ({}) => {
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
 
+	console.log('destiObject', destiObject)
+
 	const productListInner = {
 		biddingPrice: null,
 		customerDestinationUid: null,
@@ -96,6 +97,7 @@ const Single = ({}) => {
 	// const checkedArrayState = useAtom(selectedRowsAtom)[0]
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
+
 	const uids = checkedArrayState?.map((item) => item['제품 번호'])
 
 	const paramData = {
@@ -105,14 +107,7 @@ const Single = ({}) => {
 	}
 	const [param, setParam] = useState(paramData)
 
-	const [liveStatus, setLiveStatus] = useState('LIVEgetBidding') // LIVE 추가
-
-	// 체크박스 클릭시 재렌더 이슈
-	// useEffect(() => {
-	// 	if (checkedArrayState && checkedArrayState?.length > 0) {
-	// 		setLiveStatus('')
-	// 	}
-	// }, [checkedArrayState])
+	const [liveStatus, setLiveStatus] = useState('getBidding') // LIVE 추가
 
 	const [realAucNum, setRealAucNum] = useState(null)
 	console.log('realAucNum', realAucNum)
@@ -192,7 +187,7 @@ const Single = ({}) => {
 			productUid: item['제품 고유 번호'],
 			biddingPrice:
 				item['응찰가'] === 0 ? item['시작가'] + finalInput?.biddingPrice : item['응찰가'] + finalInput?.biddingPrice,
-			customerDestinationUid: finalInput?.customerDestinationUid ?? item['목적지 코드'],
+			customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
 		}))
 
@@ -225,8 +220,10 @@ const Single = ({}) => {
 				content: '',
 				func: () => {
 					refetch()
-					setLive(true)
-					setWinningCreateData(init)
+					setWinningCreateData({
+						...init,
+						auctionNumber: auctionNumber,
+					})
 					setwinningCreateInput({
 						biddingPrice: null,
 						customerDestinationUid: null,
@@ -240,7 +237,6 @@ const Single = ({}) => {
 			})
 		},
 		onError: () => {
-			setLive(true)
 			setWinningCreateData(init)
 			setwinningCreateInput({
 				biddingPrice: null,
@@ -256,6 +252,7 @@ const Single = ({}) => {
 
 	// 응찰 버튼 POST
 	const confirmOnClickHandler = () => {
+		setLive(true) // 실시간으로 다시 설정
 		postMutation(winningCreateData)
 	}
 
@@ -317,7 +314,7 @@ const Single = ({}) => {
 			return
 		}
 
-		simpleAlert('적용 되었습니다')
+		simpleAlert('적용 되었습니다.')
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.productNumber)) {
 				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
@@ -553,9 +550,9 @@ const Single = ({}) => {
 						</TGreyBtn>
 
 						<BtnBound style={{ margin: '0px' }} />
-						<p>일괄 경매 응찰</p>
+						<p>일괄 경매 응찰 최고가 +</p>
 						<CustomInput
-							placeholder="최고가 입력"
+							placeholder=""
 							width={140}
 							height={32}
 							value={winningCreateInput.biddingPrice !== null ? winningCreateInput.biddingPrice : ''}
