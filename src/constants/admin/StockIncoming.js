@@ -17,18 +17,18 @@ export const StockIncomingFields = [
 		headerCheckboxSelection: headerCheckboxSelection,
 		cellStyle: { borderRight: '1px solid #c8c8c8' },
 	},
-	{
-		headerName: '수정',
-		field: '수정',
-		width: 100,
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		cellRenderer: BtnCellRenderer,
-		cellRendererParams: {
-			uidFieldName: '경매 번호',
-			editType: 'productModify',
-		},
-	},
+	// {
+	// 	headerName: '수정',
+	// 	field: '수정',
+	// 	width: 100,
+	// 	headerClass: 'custom-header-style',
+	// 	cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+	// 	cellRenderer: BtnCellRenderer,
+	// 	cellRendererParams: {
+	// 		uidFieldName: '경매 번호',
+	// 		editType: 'productModify',
+	// 	},
+	// },
 	{
 		headerName: '순번',
 		field: '',

@@ -45,7 +45,7 @@ const PackageProductSearchFields = ({
 		<>
 			<FilterLeft>
 				<RowWrap>
-					<PartWrap>
+					<PartWrap first>
 						<h6>창고 구분</h6>
 						<PWRight>
 							<MainSelect
@@ -87,7 +87,7 @@ const PackageProductSearchFields = ({
 				</RowWrap>
 				<RowWrap>
 					{/* 구분 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>구분</h6>
 						{/* 제품군 */}
 						<PWRight>

@@ -2,8 +2,8 @@ import { useAtom, useAtomValue } from 'jotai'
 import React, { useEffect, useState } from 'react'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
-import { blueModalAtom, selectedRowsAtom, singleProductModify, toggleAtom } from '../../../store/Layout/Layout'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
+import { selectedRowsAtom, singleProductModify, toggleAtom } from '../../../store/Layout/Layout'
 
 import { isEqual } from 'lodash'
 import { client } from '../../../api'
@@ -12,7 +12,7 @@ import { SwitchBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../com
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { StockIncomingFields, stockFields } from '../../../constants/admin/StockIncoming'
+import { stockFields, StockIncomingFields } from '../../../constants/admin/StockIncoming'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -23,15 +23,9 @@ import Table from '../../Table/Table'
 import IncomingModify from './IncomingModify'
 import IncomingSearchFields from './IncomingSearchFields'
 import { onSizeChange } from '../../Operate/utils'
+
 const Incoming = ({}) => {
-	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
-
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
+	const { simpleConfirm, simpleAlert } = useAlert()
 
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -43,12 +37,6 @@ const Incoming = ({}) => {
 		} else {
 			setToggleMsg('On')
 		}
-	}
-
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
-
-	const modalOpen = () => {
-		setIsModal(true)
 	}
 
 	const formatTableRowData = (inComingData) => {
@@ -66,13 +54,14 @@ const Incoming = ({}) => {
 	const [inComingPagination, setInComingPagination] = useState([])
 	const [inComingListData, setInComingListData] = useState(null)
 	const { data: inComingData, isSuccess, refetch } = useReactQuery(param, 'getInComingList', getInComingList)
-	console.log('inComingData :', inComingData)
+
 	useEffect(() => {
 		if (inComingData && inComingData.data && inComingData.data.list) {
 			setInComingListData(formatTableRowData(inComingData.data.list))
 			setInComingPagination(inComingData.data.pagination)
 		}
 	}, [inComingData, isSuccess])
+
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
 			...prevParam,
@@ -106,6 +95,7 @@ const Incoming = ({}) => {
 			simpleAlert(error.message)
 		},
 	})
+
 	const handleDelete = () => {
 		simpleConfirm('정말로 삭제하시겠습니까?', () => {
 			deleteIncome(selectInComeNumber?.join(','), {
@@ -118,7 +108,9 @@ const Incoming = ({}) => {
 			})
 		})
 	}
+
 	const [selectInComeNumber, setSelectInComeNumber] = useState([])
+
 	useEffect(() => {
 		if (checkBoxSelect?.length === 0) return
 		setSelectInComeNumber(() => checkBoxSelect?.map((i) => i['제품 고유 번호']))
@@ -158,6 +150,7 @@ const Incoming = ({}) => {
 			simpleAlert(error.message)
 		},
 	})
+
 	const handleConfirm = async () => {
 		simpleConfirm('입고 확정으로 바꾸시겠습니까?', () => {
 			incomeConfirm(selectInComeNumber?.join(','), {
@@ -169,13 +162,8 @@ const Incoming = ({}) => {
 	}
 
 	// 엑셀 대량 등록
-
 	const [singleModfiy, setSingleModify] = useAtom(singleProductModify)
 
-	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
-	useEffect(() => {
-		console.log('체크박스체크박스', checkBoxSelect)
-	}, [checkBoxSelect])
 	return (
 		<>
 			<FilterContianer>

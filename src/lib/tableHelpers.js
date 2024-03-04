@@ -6,7 +6,7 @@ export function add_element_field(array, elemFields) {
 		const newItem = {}
 
 		for (const [key, value] of Object.entries(elemFields)) {
-			newItem[key] = item[value]
+			newItem[key] = item[value] ?? '-'
 		}
 
 		return newItem
