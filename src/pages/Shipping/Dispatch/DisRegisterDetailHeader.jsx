@@ -20,7 +20,7 @@ const DisRegisterDetailHeader = ({ data, dockStatus, setDockStatus }) => {
 		]
 
 		const newCustomerDestination = customerDestinationDuplicate.map((item) => {
-			const data = item.split('/')
+			const data = item?.split('/')
 			return { customerName: data[0], customerCode: data[1], destination: data[2] }
 		})
 
@@ -50,7 +50,7 @@ const DisRegisterDetailHeader = ({ data, dockStatus, setDockStatus }) => {
 		// destinations 배열에서 타사 시군 개수 구하기
 		const sameCountArray = []
 		destinations.forEach((destination) => {
-			const address = destination.split(' ')
+			const address = destination?.split(' ')
 			const key = `${address[0]} ${address[1]}` // 시군구와 동을 조합한 키 생성
 			if (!sameCountArray.includes(key)) {
 				sameCountArray.push(key)

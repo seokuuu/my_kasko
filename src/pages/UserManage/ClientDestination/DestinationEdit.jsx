@@ -138,7 +138,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 
 	const submitHandle = (e) => {
 		if (isEmptyObj(submitData)) {
-			if (!!selectedSpecialDestination && !submitData.address.startsWith(selectedSpecialDestination.label)) {
+			if (!!selectedSpecialDestination && !submitData.address.startsWith(selectedSpecialDestination.value)) {
 				simpleAlert('선택한 특수목적지로 주소를 다시 검색해주세요.')
 				return
 			}
@@ -220,7 +220,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 								width={320}
 								options={specialDestinations}
 								defaultValue={specialDestinations[0]}
-								value={selectedSpecialDestination}
+								value={selectedSpecialDestination || specialDestinations[0]}
 								name="selectedSpecialDestination"
 								onChange={(e) => setSelectedSpecialDestination(e)}
 							/>
@@ -233,9 +233,9 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 							</Title>
 							<AddressFinder
 								onAddressChange={onAddressHandler}
-								prevAddress={selectedSpecialDestination?.label ?? address}
+								prevAddress={selectedSpecialDestination?.value ?? address}
 								prevAddressDetail={detailAddress}
-								defaultQuery={selectedSpecialDestination?.label}
+								defaultQuery={selectedSpecialDestination?.value}
 							/>
 						</Part>
 

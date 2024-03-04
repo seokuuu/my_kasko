@@ -47,9 +47,13 @@ const Request = ({ setChoiceComponent }) => {
 	const addSelectorList = () => {
 		try {
 			const newDestination = getAddNewDestination(selectedRows)
+			const newSelectList = [...new Set([...selectorList, ...selectedRows])]
+			const newRows = rows?.filter((item) => !newSelectList.includes(item))
+
 			setDestinations(newDestination) // 목적지 등록
-			setSelectorList((prev) => [...new Set([...prev, ...selectedRows])]) // 선별 목록 데이터 등록
+			setSelectorList(newSelectList) // 선별 목록 데이터 등록
 			setSelectedRows([]) // 테이블 체크 목록 초기화
+			setRows(newRows)
 			window.scrollTo({
 				top: document.documentElement.scrollHeight,
 				behavior: 'smooth',
@@ -67,8 +71,11 @@ const Request = ({ setChoiceComponent }) => {
 		const key = '주문 고유 번호'
 		const deleteKeys = selectedRows.map((item) => item[key])
 		const newSelectors = selectorList.filter((item) => !deleteKeys.includes(item[key]))
+		const newRows = [...rows, ...selectedRows]
+
 		setSelectorList(newSelectors)
 		setSelectedRows([]) // 테이블 체크 목록 초기화
+		setRows(newRows) // 제거된 항목 테이블항목에 다시 등록
 	}
 
 	// 출하 취소
