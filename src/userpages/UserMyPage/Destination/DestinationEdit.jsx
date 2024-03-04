@@ -110,7 +110,7 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 			simpleAlert('빈값을 채워주세요.')
 			return
 		}
-		if (!!selectedSpecialDestination && !input.address.startsWith(selectedSpecialDestination.label)) {
+		if (!!selectedSpecialDestination && !input.address.startsWith(selectedSpecialDestination.value)) {
 			simpleAlert('선택한 특수목적지로 주소를 다시 검색해주세요.')
 			return
 		}
@@ -171,7 +171,7 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 								width={320}
 								options={specialDestinations}
 								defaultValue={specialDestinations[0]}
-								value={selectedSpecialDestination}
+								value={selectedSpecialDestination || specialDestinations[0]}
 								name="selectedSpecialDestination"
 								onChange={(e) => setSelectedSpecialDestination(e)}
 							/>
@@ -186,7 +186,7 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 								onAddressChange={onAddressHandler}
 								prevAddress={input.address}
 								prevAddressDetail={input.addressDetail}
-								defaultQuery={selectedSpecialDestination?.label}
+								defaultQuery={selectedSpecialDestination?.value}
 							/>
 						</Part>
 

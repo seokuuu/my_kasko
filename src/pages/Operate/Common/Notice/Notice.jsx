@@ -56,7 +56,7 @@ const Notice = ({ title, detailsUrl }) => {
 			data
 				? data.list.map((d, index) => ({
 						...d,
-						createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD') : '-',
+						createDate: d.createDate ? moment(d.createDate).format('YYYY-MM-DD HH:mm:ss') : '-',
 						id: data.pagination.listCount - (index + (search.pageNum - 1) * search.pageSize), // 순번 내림차순
 						uid: d.uid,
 						status: d.status ? 'Y' : 'N',

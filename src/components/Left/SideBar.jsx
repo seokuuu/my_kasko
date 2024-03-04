@@ -132,7 +132,7 @@ const SideBar = ({ expanded, setExpanded, depth2Color }) => {
 	const filteredData = data.filter((item) => {
 		const itemAuth = item.auth || []
 		const authData = JSON.parse(localStorage.getItem('auth'))
-		const userAuth = authData.authorities
+		const userAuth = authData?.authorities
 		return userAuth.some((auth) => itemAuth.includes(auth))
 	})
 

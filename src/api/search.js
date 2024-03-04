@@ -58,13 +58,15 @@ export async function getSpecList() {
 
 // 특수 목적지
 export async function getSpecialDestination() {
+	const defaultOption = { label: '선택', value: '' }
 	const response = await client.get(urls.special)
-	return response.data.data.map((item) => {
+	const selectBoxData = response.data.data.map((item) => {
 		return {
 			label: item,
 			value: item,
 		}
 	})
+	return [defaultOption, ...selectBoxData]
 }
 
 // 특수 목적지
