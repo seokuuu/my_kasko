@@ -58,7 +58,7 @@ const Bidding = ({}) => {
 	const navigate = useNavigate()
 	const [realAucNum, setRealAucNum] = useState(null) // 진짜 경매 번호
 	const [getAgreeState, setGetAgreeState] = useState(false) // 동의 상태
-	const [aucDetail, setAucDetail] = useAtom(auctionPackDetailNumAtom) // 해당 row 값 저장
+	const [aucDetail, setAucDetail] = useAtom(auctionPackDetailNumAtom) // 패키지 해당 row 값 저장
 	const [aucDetailModal, setAucDetailModal] = useAtom(auctionPackDetailModal) // 패키지 모달
 	const [agreementModal, setAgreementModal] = useAtom(biddingAgreementModal) // 입찰 동의서 모달
 
@@ -284,7 +284,10 @@ const Bidding = ({}) => {
 				title: '응찰이 완료되었습니다.',
 				content: '',
 				func: () => {
-					setWinningCreateData(init)
+					setWinningCreateData({
+						...init,
+						auctionNumber: auctionNumber,
+					})
 					setwinningCreateInput({
 						biddingPrice: null,
 						customerDestinationUid: null,
@@ -299,7 +302,10 @@ const Bidding = ({}) => {
 			})
 		},
 		onError: () => {
-			setWinningCreateData(init)
+			setWinningCreateData({
+				...init,
+				auctionNumber: auctionNumber,
+			})
 			setwinningCreateInput({
 				biddingPrice: null,
 				customerDestinationUid: null,
@@ -590,7 +596,6 @@ const Bidding = ({}) => {
 				<PackDetail aucDetail={aucDetail} packNum={aucDetail['패키지 번호']} setAucDetailModal={setAucDetailModal} />
 			)}
 			{/* 입찰 동의서 모달 */}
-
 			{agreementModal && (
 				<Agreement setCheckAgreement={setCheckAgreement} agreementOnClickHandler={agreementOnClickHandler} />
 			)}

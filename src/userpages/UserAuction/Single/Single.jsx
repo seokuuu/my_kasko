@@ -40,7 +40,6 @@ import Agreement from '../../../modal/Common/Agreement'
 
 const Single = ({}) => {
 	const [live, setLive] = useState(true) // LIVE get 일시 중단
-	console.log('live', live)
 	const navigate = useNavigate()
 	const [addedInput, setAddedInput] = useState(null) // 일괄 경매 응찰 input state
 	const [checkedBiddingPrice, setCheckedBiddingPrice] = useState(null) // 체크된 응찰가
@@ -80,6 +79,8 @@ const Single = ({}) => {
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
 
+	console.log('destiObject', destiObject)
+
 	const productListInner = {
 		biddingPrice: null,
 		customerDestinationUid: null,
@@ -96,6 +97,7 @@ const Single = ({}) => {
 	// const checkedArrayState = useAtom(selectedRowsAtom)[0]
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
+
 	const uids = checkedArrayState?.map((item) => item['제품 번호'])
 
 	const paramData = {
@@ -105,14 +107,7 @@ const Single = ({}) => {
 	}
 	const [param, setParam] = useState(paramData)
 
-	const [liveStatus, setLiveStatus] = useState('LIVEgetBidding') // LIVE 추가
-
-	// 체크박스 클릭시 재렌더 이슈
-	// useEffect(() => {
-	// 	if (checkedArrayState && checkedArrayState?.length > 0) {
-	// 		setLiveStatus('')
-	// 	}
-	// }, [checkedArrayState])
+	const [liveStatus, setLiveStatus] = useState('getBidding') // LIVE 추가
 
 	const [realAucNum, setRealAucNum] = useState(null)
 	console.log('realAucNum', realAucNum)
@@ -225,8 +220,10 @@ const Single = ({}) => {
 				content: '',
 				func: () => {
 					refetch()
-
-					setWinningCreateData(init)
+					setWinningCreateData({
+						...init,
+						auctionNumber: auctionNumber,
+					})
 					setwinningCreateInput({
 						biddingPrice: null,
 						customerDestinationUid: null,

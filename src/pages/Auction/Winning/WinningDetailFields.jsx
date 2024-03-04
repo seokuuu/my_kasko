@@ -1,25 +1,16 @@
-import { MainSelect } from '../../../common/Option/Main'
-import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
-	ExInputsWrap,
 	FilterLeft,
 	FilterRight,
-	Input,
-	MiniInput,
-	PWRight,
 	PartWrap,
-	RowWrap,
-	Tilde,
+	RowWrap
 } from '../../../modal/External/ExternalFilter'
 
+import { useSetAtom } from 'jotai'
 import { useState } from 'react'
-import { CustomerSearch, DateSearchSelect, InputSearch } from '../../../components/Search'
-import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
-import { GreyBtn } from '../../../common/Button/Button'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { DateSearchSelect } from '../../../components/Search'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
-import StandardFind from '../../../modal/Multi/StandardFind'
+import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
 
 const WinningDetailFields = ({
 	// prettier-ignore

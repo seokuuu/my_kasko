@@ -3,7 +3,7 @@ import moment from 'moment/moment'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { client } from '../../../api'
-import { WhiteSkyBtn } from '../../../common/Button/Button'
+import { BlackBtn, NewBottomBtnWrap, WhiteSkyBtn } from '../../../common/Button/Button'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import {
 	BlueBarHeader,
@@ -82,15 +82,22 @@ export const PrintDepositRequestButton = ({
 }) => {
 	const [isExtracted, setIsExtracted] = useState(false)
 	const containerRef = useRef(null)
+	// pdf 추출
 	const handleExtract = () => {
 		const element = containerRef.current
-		html2pdf()
-			.from(element)
-			.set({ html2canvas: { scale: 2 } })
-			.save()
-
-		setIsExtracted(true)
+		html2pdf(element, {
+			filename: `입금요청서_${auctionDate}.pdf`, // default : file.pdf
+			html2canvas: { scale: 3 }, // 캡처한 이미지의 크기를 조절, 값이 클수록 더 선명하다.
+			jsPDF: {
+				format: 'a2', // 종이 크기 형식
+				orientation: 'portrait', // or landscape : 가로
+			},
+			callback: () => {
+				console.log('PDF 다운로드 완료')
+			},
+		})
 	}
+
 	// 경매|상시판매 번호
 	const oneAuctionNumber = useRef('')
 	// 입금요청서 발행 모드
@@ -270,14 +277,14 @@ export const PrintDepositRequestButton = ({
 														<Th colSpan="3">VAT</Th>
 														<Th rowSpan="2">총계</Th>
 													</tr>
-													<SubheaderRow>
+													<tr>
 														<Th>제품대</Th>
 														<Th>운송비</Th>
 														<Th>총합</Th>
 														<Th>제품대</Th>
 														<Th>운송비</Th>
 														<Th>총합</Th>
-													</SubheaderRow>
+													</tr>
 												</thead>
 												<tbody>
 													{/* 테이블 내용 추가 */}
@@ -319,9 +326,13 @@ export const PrintDepositRequestButton = ({
 								)}
 							</FilterContianer>
 						</BlueSubContainer>
-						<div style={{ float: 'right', padding: '20px 30px' }}>
-							<img src="/img/logo.png" onClick={handleExtract} style={{ cursor: 'pointer' }} />
-						</div>
+						<DepositRequestBottom>
+							<div></div>
+							<BlackBtn width={12} height={45} onClick={handleExtract} style={{ cursor: 'pointer' }}>
+								출력하기
+							</BlackBtn>
+							<img src="/img/logo.png" />
+						</DepositRequestBottom>
 					</ModalContainer>
 				</>
 			)}
@@ -385,4 +396,11 @@ const Td = styled.td`
 
 const SubheaderRow = styled.tr`
 	background-color: #d9d9d9;
+`
+const DepositRequestBottom = styled.div`
+	display: flex;
+	justify-content: space-between;
+	z-index: 9999;
+	width: 100%;
+	padding: 15px 30px;
 `

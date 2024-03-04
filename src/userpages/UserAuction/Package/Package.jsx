@@ -239,8 +239,10 @@ const Package = ({}) => {
 				content: '',
 				func: () => {
 					refetch()
-
-					setWinningCreateData(init)
+					setWinningCreateData({
+						...init,
+						auctionNumber: auctionNumber,
+					})
 					setwinningCreateInput({
 						biddingPrice: null,
 						customerDestinationUid: null,

@@ -55,7 +55,7 @@ import Table from '../../Table/Table'
 import WinningDetailFields from './WinningDetailFields'
 
 // 경매 낙찰 상세
-const WinningDetail = ({ detailRow, setDetailRow }) => {
+const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [tablePagination, setTablePagination] = useState([])
@@ -203,19 +203,8 @@ const WinningDetail = ({ detailRow, setDetailRow }) => {
 		}
 	}, [isSuccess, resData])
 
-	// useEffect(() => {
-	// 	let getData = resData
-	// 	//타입, 리액트쿼리, 데이터 확인 후 실행
-	// 	if (!isSuccess && !resData) return
-	// 	if (Array.isArray(getData)) {
-	// 		setGetRow(add_element_field(getData, AuctionWinningDetailFields))
-	// 		setTablePagination(resPagination)
-	// 	}
-	// }, [isSuccess, resData])
-
 	useEffect(() => {
 		const productNumbers = checkedArray?.map((item) => item['주문 고유 번호'])
-
 		const updatedBiddingList = productNumbers?.map((uid) => ({
 			uid,
 		}))
@@ -436,55 +425,6 @@ const WinningDetail = ({ detailRow, setDetailRow }) => {
 			</ClaimTable>
 			{exFilterToggle && (
 				<>
-					{/* <FilterSubcontianer>
-						<FilterLeft>
-							<RowWrap>
-								<PartWrap>
-									<h6 style={{ width: '130px' }}>확정 전송 일자</h6>
-									<GridWrap>
-										<DateGrid bgColor={'white'} fontSize={17} />
-										<Tilde>~</Tilde>
-										<DateGrid bgColor={'white'} fontSize={17} />
-									</GridWrap>
-								</PartWrap>
-							</RowWrap>
-							<RowWrap style={{ borderBottom: '0px' }}>
-								{' '}
-								<PartWrap>
-									<h6>주문 상태</h6>
-									<ExCheckWrap>
-										{checkSales.map((x, index) => (
-											<ExCheckDiv>
-												<StyledCheckSubSquDiv
-													onClick={() => setCheck1(CheckBox(check1, check1.length, index, true))}
-													isChecked={check1[index]}
-												>
-													<CheckImg2 src="/svg/check.svg" isChecked={check1[index]} />
-												</StyledCheckSubSquDiv>
-												<p>{x}</p>
-											</ExCheckDiv>
-										))}
-									</ExCheckWrap>
-								</PartWrap>
-							</RowWrap>
-						</FilterLeft>
-					</FilterSubcontianer>
-					<FilterFooter>
-						<div style={{ display: 'flex' }}>
-							<p>초기화</p>
-							<ResetImg
-								src="/img/reset.png"
-								style={{ marginLeft: '10px', marginRight: '20px' }}
-								onClick={handleImageClick}
-								className={isRotated ? 'rotate' : ''}
-							/>
-						</div>
-						<div style={{ width: '180px' }}>
-							<BlackBtn width={100} height={40}>
-								검색
-							</BlackBtn>
-						</div>
-					</FilterFooter> */}
 					<GlobalProductSearch
 						param={param}
 						isToggleSeparate={true}
@@ -564,7 +504,8 @@ const WinningDetail = ({ detailRow, setDetailRow }) => {
 						width={13}
 						height={40}
 						onClick={() => {
-							setDetailRow(null)
+							setDetailRow(false)
+							setAucDetail('')
 						}}
 					>
 						돌아가기
