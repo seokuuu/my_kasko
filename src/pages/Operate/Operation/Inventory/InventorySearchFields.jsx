@@ -38,8 +38,8 @@ const InventorySearchFields = ({ search, setSearch, commonDropdownButtonHandler 
 					maxWidth: '70%',
 				}}
 			>
-				<RowWrap first>
-					<PartWrap>
+				<RowWrap>
+					<PartWrap first>
 						<h6>창고 구분</h6>
 						<PWRight>
 							<MainSelect
@@ -63,7 +63,7 @@ const InventorySearchFields = ({ search, setSearch, commonDropdownButtonHandler 
 					/>
 				</RowWrap>
 				<RowWrap>
-					<PartWrap>
+					<PartWrap first>
 						<h6>구분</h6>
 						<PWRight>
 							<MainSelect
@@ -87,7 +87,7 @@ const InventorySearchFields = ({ search, setSearch, commonDropdownButtonHandler 
 					</PartWrap>
 				</RowWrap>
 				<RowWrap>
-					<PartWrap>
+					<PartWrap first>
 						<h6>판매 구분</h6>
 						<CustomCheckBox
 							initOptions={generateCheckOptions(saleCategoryList)}
@@ -110,7 +110,7 @@ const InventorySearchFields = ({ search, setSearch, commonDropdownButtonHandler 
 				</RowWrap>
 
 				<RowWrap>
-					<PartWrap>
+					<PartWrap first>
 						<h6>출하 상태</h6>
 						<CustomCheckBox
 							initOptions={generateCheckOptions(shipmentStatusList)}

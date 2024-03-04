@@ -46,7 +46,7 @@ const InventorySearchFields = ({
 			<FilterLeft>
 				<RowWrap>
 					{/* 창고 구분 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>창고 구분</h6>
 						<PWRight>
 							<MainSelect
@@ -90,7 +90,7 @@ const InventorySearchFields = ({
 					</PartWrap>
 				</RowWrap>
 				<RowWrap>
-					<PartWrap>
+					<PartWrap first>
 						<DateSearchSelect
 							title={'입고일자'}
 							startInitDate={search.startSendDate}
@@ -174,7 +174,7 @@ const InventorySearchFields = ({
 				</RowWrap>
 				<RowWrap>
 					{/* 구분 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>구분</h6>
 						{/* 제품군 */}
 						<PWRight>

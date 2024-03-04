@@ -1,22 +1,7 @@
-import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
-import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import {
-	ExInputsWrap,
-	FilterLeft,
-	FilterRight,
-	Input,
-	PWRight,
-	PartWrap,
-	RowWrap,
-} from '../../../modal/External/ExternalFilter'
+import { FilterLeft, FilterRight, Input, PartWrap, PWRight, RowWrap } from '../../../modal/External/ExternalFilter'
 
-import React, { useState } from 'react'
-import { DateSearchSelect, InputSearch, RadioSearchButton } from '../../../components/Search'
+import React from 'react'
 import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
-import { GreyBtn } from '../../../common/Button/Button'
-import { useAtomValue, useSetAtom } from 'jotai'
-import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
-import StandardFind from '../../../modal/Multi/StandardFind'
 import { MainSelect } from '../../../common/Option/Main'
 import { styled } from 'styled-components'
 
@@ -40,7 +25,7 @@ const ClientSearchFields = ({ search, setSearch }) => {
 		<>
 			<FilterLeft>
 				<RowWrap>
-					<PartWrap>
+					<PartWrap first>
 						<h6>사용자 구분</h6>
 						<CustomCheckBox
 							initOptions={generateCheckOptions(roleList)}
@@ -80,7 +65,7 @@ const ClientSearchFields = ({ search, setSearch }) => {
 					</PartWrap>
 				</RowWrap>
 				<RowWrap>
-					<PartWrap>
+					<PartWrap first>
 						<h6>승인 상태</h6>
 						<CustomCheckBox
 							initOptions={generateCheckOptions(agreeStatusList)}

@@ -60,7 +60,7 @@ export default function StandardFind({ closeFn }) {
 							<FSTitle>
 								<div style={{ fontSize: '16px', justifyContent: 'space-evenly' }}>검색</div>
 								<RBInput
-									placeholder="회사 명"
+									placeholder=""
 									ref={gridRef}
 									value={filterText}
 									onChange={(e) => setFilterText(e.target.value)}
