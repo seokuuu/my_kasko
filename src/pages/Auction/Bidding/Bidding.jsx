@@ -54,10 +54,11 @@ import { onSizeChange } from '../../Operate/utils'
 
 const Bidding = ({}) => {
 	const [live, setLive] = useState(true) // LIVE get 일시 중단
+	console.log('live', live)
 	const navigate = useNavigate()
 	const [realAucNum, setRealAucNum] = useState(null) // 진짜 경매 번호
 	const [getAgreeState, setGetAgreeState] = useState(false) // 동의 상태
-	const [aucDetail, setAucDetail] = useAtom(auctionPackDetailNumAtom) // 해당 row 값 저장
+	const [aucDetail, setAucDetail] = useAtom(auctionPackDetailNumAtom) // 패키지 해당 row 값 저장
 	const [aucDetailModal, setAucDetailModal] = useAtom(auctionPackDetailModal) // 패키지 모달
 	const [agreementModal, setAgreementModal] = useAtom(biddingAgreementModal) // 입찰 동의서 모달
 
@@ -98,6 +99,7 @@ const Bidding = ({}) => {
 
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
+	console.log('destiObject', destiObject)
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
@@ -211,8 +213,9 @@ const Bidding = ({}) => {
 
 	const [winningCreateData, setWinningCreateData] = useState(init)
 
-	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getDestinations)
+	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
 
+	console.log('즐', auctionDestination?.data?.data)
 	//
 	useEffect(() => {
 		const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
@@ -238,7 +241,7 @@ const Bidding = ({}) => {
 						item['응찰가'] === 0
 							? item['시작가'] + finalInput?.biddingPrice
 							: item['응찰가'] + finalInput?.biddingPrice,
-					customerDestinationUid: finalInput?.customerDestinationUid ?? item['목적지 코드'],
+					customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 				}
 			} else if (param?.type === '패키지') {
 				return {
@@ -247,7 +250,7 @@ const Bidding = ({}) => {
 						item['응찰가'] === 0
 							? item['시작가'] + finalInput?.biddingPrice
 							: item['응찰가'] + finalInput?.biddingPrice,
-					customerDestinationUid: finalInput?.customerDestinationUid ?? item['목적지 코드'],
+					customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 				}
 			}
 		})
@@ -281,8 +284,10 @@ const Bidding = ({}) => {
 				title: '응찰이 완료되었습니다.',
 				content: '',
 				func: () => {
-					setLive(true) // 실시간으로 다시 설정
-					setWinningCreateData(init)
+					setWinningCreateData({
+						...init,
+						auctionNumber: auctionNumber,
+					})
 					setwinningCreateInput({
 						biddingPrice: null,
 						customerDestinationUid: null,
@@ -297,8 +302,10 @@ const Bidding = ({}) => {
 			})
 		},
 		onError: () => {
-			setLive(true)
-			setWinningCreateData(init)
+			setWinningCreateData({
+				...init,
+				auctionNumber: auctionNumber,
+			})
 			setwinningCreateInput({
 				biddingPrice: null,
 				customerDestinationUid: null,
@@ -314,6 +321,7 @@ const Bidding = ({}) => {
 
 	// 응찰 버튼 POST
 	const confirmOnClickHandler = () => {
+		setLive(true) // 실시간으로 다시 설정
 		postMutation(winningCreateData)
 	}
 
@@ -405,7 +413,7 @@ const Bidding = ({}) => {
 			return
 		}
 
-		simpleAlert('적용 되었습니다')
+		simpleAlert('적용 되었습니다.')
 		const updatedResData = resData.map((item) => {
 			if (param?.type === '단일')
 				if (uids.includes(item.productNumber)) {
@@ -531,25 +539,11 @@ const Bidding = ({}) => {
 						>
 							찾기
 						</TWhiteBtn>
-						<TGreyBtn
-							// onClick={() => {
-							// 	setFinalInput((prevFinalInput) => ({
-							// 		...prevFinalInput,
-							// 		customerDestinationUid: destiObject && destiObject.uid,
-							// 	}))
-							// 	setValues((p) => ({
-							// 		...p,
-							// 		customerDestinationUid: destiObject && destiObject.uid,
-							// 	}))
-							// }}
-							onClick={destiOnClickHandler}
-						>
-							적용
-						</TGreyBtn>
+						<TGreyBtn onClick={destiOnClickHandler}>적용</TGreyBtn>
 						<BtnBound style={{ margin: '0px' }} />
-						<p>일괄 경매 응찰</p>
+						<p>일괄 경매 응찰 최고가 +</p>
 						<CustomInput
-							placeholder="최고가 입력"
+							placeholder=""
 							width={140}
 							height={32}
 							value={winningCreateInput.biddingPrice !== null ? winningCreateInput.biddingPrice : ''}

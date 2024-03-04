@@ -47,6 +47,7 @@ export function getCustomerDestinationByCustomerCode(customerCode) {
 }
 
 export function getDestinations(keyword) {
+	console.log('키워드 ==>', keyword)
 	return client.get(`${urls.destination}?keyword=${keyword}`)
 }
 

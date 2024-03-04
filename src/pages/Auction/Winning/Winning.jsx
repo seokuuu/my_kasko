@@ -1,32 +1,41 @@
-import {useEffect, useRef, useState} from 'react'
-import {SkyBtn, WhiteBlackBtn, WhiteRedBtn} from '../../../common/Button/Button'
+import { useEffect, useRef, useState } from 'react'
+import { SkyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import {selectedRowsAtom, toggleAtom, winningAtom} from '../../../store/Layout/Layout'
+import {
+	selectedRowsAtom,
+	toggleAtom,
+	winningAtom,
+	winningDetailAucNumAtom,
+	winningDetailModal,
+} from '../../../store/Layout/Layout'
 
 import Table from '../../Table/Table'
 
-import {FilterContianer, FilterHeader, TableContianer, TCSubContainer,} from '../../../modal/External/ExternalFilter'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 
-import {useAtom} from 'jotai'
-import {Link} from 'react-router-dom'
+import { useAtom } from 'jotai'
+import { Link } from 'react-router-dom'
 
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import {AuctionWinningFields, AuctionWinningFieldsCols} from '../../../constants/admin/Auction'
-import {useMutation, useQueryClient} from '@tanstack/react-query'
+import { AuctionWinningFields, AuctionWinningFieldsCols } from '../../../constants/admin/Winning'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useReactQuery from '../../../hooks/useReactQuery'
-import {deleteBidding, depositConfirm, getWinning} from '../../../api/auction/winning'
-import {add_element_field} from '../../../lib/tableHelpers'
+import { deleteBidding, depositConfirm, getWinning } from '../../../api/auction/winning'
+import { add_element_field } from '../../../lib/tableHelpers'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import {isEqual} from 'lodash'
+import { isEqual } from 'lodash'
 import WinningSearchFields from './WinningSearchFields'
-import {CAUTION_CATEGORY, CautionBox} from '../../../components/CautionBox'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import useAlert from '../../../store/Alert/useAlert'
-import {onSizeChange} from "../../Operate/utils";
+import { onSizeChange } from '../../Operate/utils'
 
 // src\pages\Sales\Single\Single.jsx 참고해서 작업 !!!
-const Winning = ({ detailRow }) => {
+const Winning = ({}) => {
+	const [aucDetail, setAucDetail] = useAtom(winningDetailAucNumAtom) // 패키지 해당 row 값 저장
+	const [aucDetailModal, setAucDetailModal] = useAtom(winningDetailModal) // 패키지 모달
+
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const [tablePagination, setTablePagination] = useState([])

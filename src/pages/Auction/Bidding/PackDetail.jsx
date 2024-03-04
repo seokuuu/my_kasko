@@ -246,7 +246,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 									선택 중량<span> 2 </span>kg / 총 중량 kg
 								</div>
 								<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-									<p>일괄 경매 응찰</p>
+									<p>일괄 경매 응찰 최고가 +</p>
 									<CustomInput
 										placeholder="응찰가 + 최고가 입력"
 										width={140}
