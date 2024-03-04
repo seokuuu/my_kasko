@@ -54,6 +54,7 @@ export const DispatchFieldsCols = [
  * 출하 지시 항목 필드
  */
 export const ShippingRegisterFields = {
+	순번: 'index',
 	'주문 고유 번호': 'orderUid',
 	경매번호: 'auctionNumber',
 	'상시판매 번호': 'orderNumber',
@@ -108,9 +109,9 @@ export const ShippingRegisterFields = {
 	'매입 운반비': 'inboundFreightAmount',
 	'매출 운반비': 'outboundFreightAmount',
 	두께: 'thickness',
-	폭: 'weight',
+	폭: 'width',
 	길이: 'length',
-	중량: 'width',
+	중량: 'weight',
 	규격약호: 'spec',
 	TS: 'ts',
 	YP: 'yp',
@@ -145,20 +146,30 @@ export const ShippingRegisterFields = {
 
 export const ShippingRegisterFieldsCols = [
 	{ field: '', ...commonStyles, minWidth: 50, checkboxSelection, headerCheckboxSelection },
-	...Object.keys(ShippingRegisterFields).map((item) =>
-		item !== '비고'
-			? {
-					...commonStyles,
-					field: item,
-					minWidth: 200,
-			  }
-			: {
-					field: '비고',
-					...commonStyles,
-					minWidth: 300,
-					cellRenderer: Note,
-			  },
-	),
+	...Object.keys(ShippingRegisterFields).map((item) => {
+		if (item === '비고') {
+			return {
+				field: '비고',
+				...commonStyles,
+				minWidth: 300,
+				cellRenderer: Note,
+			}
+		}
+
+		if (item === '순번') {
+			return {
+				...commonStyles,
+				field: item,
+				minWidth: 80,
+			}
+		}
+
+		return {
+			...commonStyles,
+			field: item,
+			minWidth: 200,
+		}
+	}),
 ]
 
 // 배차/출고 등록 페이지 목록 필드

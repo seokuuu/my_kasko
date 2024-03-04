@@ -26,6 +26,7 @@ const PackageProductSearchFields = ({
 }) => {
 	const {
 		// prettier-ignore
+		storageList,
 		gradeList,
 		preferThicknessList,
 	} = useGlobalProductSearchFieldData()
@@ -36,6 +37,19 @@ const PackageProductSearchFields = ({
 		<div style={{ display: 'flex', justifyContent: 'space-between', gap: 20, width: '100%' }}>
 			<FilterLeft style={{ justifyContent: 'center', flex: 1 }}>
 				<RowWrap>
+					{/* 창고 구분 */}
+					<PartWrap first>
+						<h6>창고 구분</h6>
+						<PWRight>
+							<MainSelect
+								options={storageList}
+								// defaultValue={storageList[0]}
+								value={search.storage}
+								name="storage"
+								onChange={(e) => commonDropdownButtonHandler(e, 'storage')}
+							/>
+						</PWRight>
+					</PartWrap>
 					{/* 규격약호 */}
 					<PartWrap>
 						<h6>규격 약호</h6>
@@ -50,7 +64,9 @@ const PackageProductSearchFields = ({
 							찾기
 						</GreyBtn>
 					</PartWrap>
-					<PartWrap>
+				</RowWrap>
+				<RowWrap>
+					<PartWrap first>
 						<h6>구분</h6>
 						<PWRight>
 							{/* 등급 */}
@@ -77,7 +93,7 @@ const PackageProductSearchFields = ({
 				{/* 2행 */}
 				<RowWrap none>
 					{/* 두깨 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>두께(MM)</h6>
 						<ExInputsWrap>
 							<MiniInput
