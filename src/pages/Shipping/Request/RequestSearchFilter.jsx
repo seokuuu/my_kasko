@@ -60,7 +60,7 @@ const RequestSearchFilter = ({ search, setSearch }) => {
 					/>
 				</RowWrap>
 				<RowWrap none>
-					<PartWrap>
+					<PartWrap first>
 						<h6>구분</h6>
 						{/* 제품군 */}
 						<MainSelect

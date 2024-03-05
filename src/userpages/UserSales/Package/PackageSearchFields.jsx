@@ -30,8 +30,8 @@ const PackageSearchFields = ({
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
 
 	return (
-		<div style={{display: 'flex', justifyContent: 'space-between', gap: 20, width: '100%'}}>
-			<FilterLeft style={{justifyContent: 'center', flex: 1}}>
+		<div style={{ display: 'flex', justifyContent: 'space-between', gap: 20, width: '100%' }}>
+			<FilterLeft style={{ justifyContent: 'center', flex: 1 }}>
 				<RowWrap>
 					{/* 규격약호 찾기 */}
 					<PartWrap first>
@@ -47,7 +47,7 @@ const PackageSearchFields = ({
 							찾기
 						</GreyBtn>
 					</PartWrap>
-					<PartWrap first>
+					<PartWrap>
 						<h6>구분</h6>
 						<PWRight>
 							<MainSelect
@@ -63,7 +63,7 @@ const PackageSearchFields = ({
 				{/* 두께 |  폭 | 길이 */}
 				<RowWrap none>
 					{/* 두깨 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>두께(MM)</h6>
 						<ExInputsWrap>
 							<MiniInput
@@ -128,7 +128,7 @@ const PackageSearchFields = ({
 				</RowWrap>
 			</FilterLeft>
 			{/* 제품 번호 */}
-			<FilterRight style={{flex: 'inherit'}}>
+			<FilterRight style={{ flex: 'inherit' }}>
 				<div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 					<ProductNumber
 						initialValue={search.productNumberList}

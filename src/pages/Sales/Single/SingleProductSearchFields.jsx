@@ -43,7 +43,7 @@ const SingleProductSearchFields = ({
 			<FilterLeft>
 				<RowWrap>
 					{/* 창고 구분 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>창고 구분</h6>
 						<PWRight>
 							<MainSelect
@@ -86,7 +86,7 @@ const SingleProductSearchFields = ({
 				{/* 2행 */}
 				<RowWrap>
 					{/* 구분 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>구분</h6>
 						{/* 제품군 */}
 						<PWRight>
@@ -142,7 +142,7 @@ const SingleProductSearchFields = ({
 				</RowWrap>
 				<RowWrap>
 					{/* 두깨 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>두께(MM)</h6>
 						<ExInputsWrap>
 							<MiniInput
@@ -206,28 +206,28 @@ const SingleProductSearchFields = ({
 					</PartWrap>
 				</RowWrap>
 				{/* 6 행 */}
-				<RowWrap none>
-					<PartWrap first>
-						<h6>유찰 횟수</h6>
-						<ExInputsWrap>
-							<Input
-								type="number"
-								name="minFailCount"
-								value={search.minFailCount}
-								onChange={commonNumInputHandler}
-								min={0}
-							/>
-							<Tilde>~</Tilde>
-							<Input
-								type="number"
-								name="maxFailCount"
-								value={search.maxFailCount}
-								onChange={commonNumInputHandler}
-								min={0}
-							/>
-						</ExInputsWrap>
-					</PartWrap>
-				</RowWrap>
+				{/*<RowWrap none>*/}
+				{/*	<PartWrap first>*/}
+				{/*		<h6>유찰 횟수</h6>*/}
+				{/*		<ExInputsWrap>*/}
+				{/*			<Input*/}
+				{/*				type="number"*/}
+				{/*				name="minFailCount"*/}
+				{/*				value={search.minFailCount}*/}
+				{/*				onChange={commonNumInputHandler}*/}
+				{/*				min={0}*/}
+				{/*			/>*/}
+				{/*			<Tilde>~</Tilde>*/}
+				{/*			<Input*/}
+				{/*				type="number"*/}
+				{/*				name="maxFailCount"*/}
+				{/*				value={search.maxFailCount}*/}
+				{/*				onChange={commonNumInputHandler}*/}
+				{/*				min={0}*/}
+				{/*			/>*/}
+				{/*		</ExInputsWrap>*/}
+				{/*	</PartWrap>*/}
+				{/*</RowWrap>*/}
 				{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
 			</FilterLeft>
 			<FilterRight>

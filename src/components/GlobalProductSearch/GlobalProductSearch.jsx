@@ -135,9 +135,10 @@ const GlobalProductSearch = ({
 				'value' in userSearchParam[key]
 			) {
 				// Handling complex objects like supplier with an inline check
-				if (userSearchParam[key].value !== initialParamRef.current[key].value) {
-					updatedProperties[key] = userSearchParam[key].value // Storing just the value as a string
-				}
+				// if (userSearchParam[key].value !== initialParamRef.current[key].value) {
+				// 	updatedProperties[key] = userSearchParam[key].value // Storing just the value as a string
+				// }
+				updatedProperties[key] = userSearchParam[key].value // Storing just the value as a string
 			} else if (userSearchParam[key] !== initialParamRef.current[key]) {
 				// Handling normal properties
 				updatedProperties[key] = userSearchParam[key]

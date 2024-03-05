@@ -49,7 +49,7 @@ const IncomingSearchFields = ({
 			<FilterLeft>
 				<RowWrap>
 					{/* 창고 구분 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>창고 구분</h6>
 						<PWRight>
 							<MainSelect
@@ -92,14 +92,18 @@ const IncomingSearchFields = ({
 				{/* 2행 */}
 				<RowWrap>
 					{/* 구분 */}
-					<PartWrap>
-						<DateSearchSelect
-							title={'구분'}
-							startInitDate={search.startDate}
-							endInitDate={search.endDate}
-							startDateChange={(value) => onChange('startDate', value)}
-							endDateChange={(value) => onChange('endDate', value)}
-						/>
+					<PartWrap first>
+						<h6>구분</h6>
+						{/* 제조사 */}
+						<PWRight>
+							<MainSelect
+								options={makerList}
+								defaultValue={makerList[0]}
+								value={search.maker}
+								name="maker"
+								onChange={(e) => commonDropdownButtonHandler(e, 'maker')}
+							/>
+						</PWRight>
 						{/* 제품군 */}
 						<PWRight>
 							<MainSelect
@@ -110,14 +114,14 @@ const IncomingSearchFields = ({
 								onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
 							/>
 						</PWRight>
-						{/* 제조사 */}
+						{/* 등급 */}
 						<PWRight>
 							<MainSelect
-								options={makerList}
-								defaultValue={makerList[0]}
-								value={search.maker}
-								name="maker"
-								onChange={(e) => commonDropdownButtonHandler(e, 'maker')}
+								options={gradeList}
+								defaultValue={gradeList[0]}
+								value={search.grade}
+								name="grade"
+								onChange={(e) => commonDropdownButtonHandler(e, 'grade')}
 							/>
 						</PWRight>
 						{/* 재고 상태 */}
@@ -130,11 +134,21 @@ const IncomingSearchFields = ({
 								onChange={(e) => commonDropdownButtonHandler(e, 'stockStatus')}
 							/>
 						</PWRight>
+						{/* 정척여부 */}
+						<PWRight>
+							<MainSelect
+								options={preferThicknessList}
+								defaultValue={preferThicknessList[0]}
+								value={search.preferThickness}
+								name="preferThickness"
+								onChange={(e) => commonDropdownButtonHandler(e, 'preferThickness')}
+							/>
+						</PWRight>
 					</PartWrap>
 				</RowWrap>
 				<RowWrap>
 					{/* 두깨 */}
-					<PartWrap>
+					<PartWrap first>
 						<h6>두께(MM)</h6>
 						<ExInputsWrap>
 							<MiniInput
@@ -200,24 +214,13 @@ const IncomingSearchFields = ({
 				{/* 6 행 */}
 				<RowWrap none>
 					<PartWrap first>
-						<h6>구분</h6>
 						<PWRight>
-							<MainSelect
-								options={gradeList}
-								defaultValue={gradeList[0]}
-								value={search.grade}
-								name="grade"
-								onChange={(e) => commonDropdownButtonHandler(e, 'grade')}
-							/>
-						</PWRight>
-						{/* 정척여부 */}
-						<PWRight>
-							<MainSelect
-								options={preferThicknessList}
-								defaultValue={preferThicknessList[0]}
-								value={search.preferThickness}
-								name="preferThickness"
-								onChange={(e) => commonDropdownButtonHandler(e, 'preferThickness')}
+							<DateSearchSelect
+								title={'입고 일자'}
+								startInitDate={search.startDate}
+								endInitDate={search.endDate}
+								startDateChange={(value) => onChange('startDate', value)}
+								endDateChange={(value) => onChange('endDate', value)}
 							/>
 						</PWRight>
 					</PartWrap>
