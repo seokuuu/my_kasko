@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { BlackBtn, GreyBtn, NewBottomBtnWrap, SkyBtn, WhiteBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
@@ -43,6 +44,7 @@ import BiddingSearchFields from '../Bidding/BiddingSearchFields'
 import WinningProductAdd from './WinningProductAdd'
 
 const WinningCreate = ({}) => {
+	const navigate = useNavigate()
 	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [destinationData, setDestinationData] = useAtom(winningDestiData)
@@ -263,6 +265,7 @@ const WinningCreate = ({}) => {
 				func: () => {
 					refetch()
 					queryClient.invalidateQueries('winningcreate')
+					navigate('/auction/winning')
 				},
 			})
 		},

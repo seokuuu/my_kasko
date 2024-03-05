@@ -51,8 +51,10 @@ import BiddingSearchFields from './BiddingSearchFields'
 import PackDetail from './PackDetail'
 import { getDestinations } from '../../../api/search'
 import { onSizeChange } from '../../Operate/utils'
+import { useCheckAuction } from '../../../hooks/useCheckAuction'
 
 const Bidding = ({}) => {
+	const nowAuction = useCheckAuction() // 현재 경매 여부 체크
 	const [live, setLive] = useState(true) // LIVE get 일시 중단
 	console.log('live', live)
 	const navigate = useNavigate()
@@ -167,7 +169,9 @@ const Bidding = ({}) => {
 	}
 
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
-	const [liveStatus, setLiveStatus] = useState('LIVEgetBidding') // TODO : 수정해놓기
+	const [liveStatus, setLiveStatus] = useState(nowAuction ? 'LIVEgetBidding' : 'getBidding') // 현재 경매에 따라 실시간 get 
+
+	console.log('liveStatus', liveStatus)
 	// 전체 GET
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list
@@ -334,6 +338,7 @@ const Bidding = ({}) => {
 				func: () => {
 					refetch()
 					setAgreementModal(false)
+					window.location.reload()
 				},
 			})
 		},
@@ -442,6 +447,8 @@ const Bidding = ({}) => {
 		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
 
+	console.log('checkGetAgreement', checkGetAgreement)
+
 	useEffect(() => {
 		// 경매번호도 잘 들어오고, get 미동의(false)가 들어왔을 때
 		if (realAucNum && checkGetAgreement === false) {
@@ -498,82 +505,87 @@ const Bidding = ({}) => {
 				</>
 			)}
 			<TableContianer>
-				<TCSubContainer bor>
-					<div>
-						조회 목록 (선택 <span>2</span> / 50개 )
-						<Hidden />
-					</div>
-					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
-						<Excel getRow={getRow} />
-					</div>
-				</TCSubContainer>
-				<TCSubContainer bor>
-					<div>
-						선택 중량<span> 2 </span>kg / 총 중량 kg
-					</div>
-					<div
-						style={{
-							display: 'flex',
-							gap: '10px',
-							alignItems: 'center',
-							justifyContent: 'center',
-						}}
-					>
-						<p>목적지</p>
-						<CustomInput placeholder="h50" width={60} height={32} defaultValue={destiObject?.code} readOnly />
-						<CustomInput
-							placeholder="목적지 명"
-							width={120}
-							height={32}
-							defaultValue={destiObject?.destinationName}
-							readOnly
-						/>
-						<CustomInput placeholder="도착지 연락처" defaultValue={destiObject?.phone} width={120} height={32} />
-						<TWhiteBtn
-							style={{ width: '50px' }}
-							height={30}
-							onClick={() => {
-								setDestinationPopUp(true)
-							}}
-						>
-							찾기
-						</TWhiteBtn>
-						<TGreyBtn onClick={destiOnClickHandler}>적용</TGreyBtn>
-						<BtnBound style={{ margin: '0px' }} />
-						<p>일괄 경매 응찰 | 최고가 +</p>
-						<CustomInput
-							placeholder=""
-							width={140}
-							height={32}
-							value={winningCreateInput.biddingPrice !== null ? winningCreateInput.biddingPrice : ''}
-							onChange={(e) => {
-								setwinningCreateInput((p) => ({
-									...p,
-									biddingPrice: parseInt(e.target.value) || null,
-								}))
-								setAddedInput(parseInt(e.target.value))
-							}}
-						/>
-						<TGreyBtn
-							height={30}
-							style={{ width: '50px' }}
-							// onClick={() => {
-							// 	setFinalInput((p) => ({
-							// 		...p,
-							// 		biddingPrice: winningCreateInput?.biddingPrice,
-							// 	}))
-							// }}
-							onClick={unitPriceBatchOnClick}
-						>
-							적용
-						</TGreyBtn>
-						<BtnBound style={{ margin: '0px' }} />
-						<SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50} onClick={confirmOnClickHandler}>
-							응찰
-						</SkyBtn>
-					</div>
-				</TCSubContainer>
+				{nowAuction && (
+					<>
+						<TCSubContainer bor>
+							<div>
+								조회 목록 (선택 <span>2</span> / 50개 )
+								<Hidden />
+							</div>
+							<div style={{ display: 'flex', gap: '10px' }}>
+								<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
+								<Excel getRow={getRow} />
+							</div>
+						</TCSubContainer>
+						<TCSubContainer bor>
+							<div>
+								선택 중량<span> 2 </span>kg / 총 중량 kg
+							</div>
+							<div
+								style={{
+									display: 'flex',
+									gap: '10px',
+									alignItems: 'center',
+									justifyContent: 'center',
+								}}
+							>
+								<p>목적지</p>
+								<CustomInput placeholder="h50" width={60} height={32} defaultValue={destiObject?.code} readOnly />
+								<CustomInput
+									placeholder="목적지 명"
+									width={120}
+									height={32}
+									defaultValue={destiObject?.destinationName}
+									readOnly
+								/>
+								<CustomInput placeholder="도착지 연락처" defaultValue={destiObject?.phone} width={120} height={32} />
+								<TWhiteBtn
+									style={{ width: '50px' }}
+									height={30}
+									onClick={() => {
+										setDestinationPopUp(true)
+									}}
+								>
+									찾기
+								</TWhiteBtn>
+								<TGreyBtn onClick={destiOnClickHandler}>적용</TGreyBtn>
+								<BtnBound style={{ margin: '0px' }} />
+								<p>일괄 경매 응찰 | 최고가 +</p>
+								<CustomInput
+									placeholder=""
+									width={140}
+									height={32}
+									value={winningCreateInput.biddingPrice !== null ? winningCreateInput.biddingPrice : ''}
+									onChange={(e) => {
+										setwinningCreateInput((p) => ({
+											...p,
+											biddingPrice: parseInt(e.target.value) || null,
+										}))
+										setAddedInput(parseInt(e.target.value))
+									}}
+								/>
+								<TGreyBtn
+									height={30}
+									style={{ width: '50px' }}
+									// onClick={() => {
+									// 	setFinalInput((p) => ({
+									// 		...p,
+									// 		biddingPrice: winningCreateInput?.biddingPrice,
+									// 	}))
+									// }}
+									onClick={unitPriceBatchOnClick}
+								>
+									적용
+								</TGreyBtn>
+								<BtnBound style={{ margin: '0px' }} />
+								<SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50} onClick={confirmOnClickHandler}>
+									응찰
+								</SkyBtn>
+							</div>
+						</TCSubContainer>
+					</>
+				)}
+
 				<Table
 					getCol={param?.type === '단일' ? AuctionBiddingFieldsCols : AuctionPackageBiddingFieldsCols}
 					getRow={getRow}
@@ -597,7 +609,11 @@ const Bidding = ({}) => {
 			)}
 			{/* 입찰 동의서 모달 */}
 			{agreementModal && (
-				<Agreement setCheckAgreement={setCheckAgreement} agreementOnClickHandler={agreementOnClickHandler} />
+				<Agreement
+					setCheckAgreement={setCheckAgreement}
+					agreementOnClickHandler={agreementOnClickHandler}
+					refetch={refetch}
+				/>
 			)}
 		</FilterContianer>
 	)

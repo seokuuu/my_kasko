@@ -12,6 +12,7 @@ const Countdown = () => {
 	const getCountdownData = async () => {
 		try {
 			const response = await getCountdown()
+			console.log('경매 시간', response?.data?.data)
 			return response?.data?.data
 		} catch (e) {
 			console.log(e)

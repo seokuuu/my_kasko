@@ -44,12 +44,18 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 	}
 
 	const tableField = useRef(AuctionBiddingFieldsCols)
-	const [packDetailInput, setPackDetailInput] = useState(null)
-	const [innerObject, setInnerObject] = useState({})
 
 	// 체크박스 없애기
 	useEffect(() => {
-		const modifiedCols = tableField.current.filter((col) => col.field !== '') // 체크박스 열 제거
+		const modifiedCols = tableField.current.filter(
+			(col) =>
+				col.field !== '' &&
+				col.field !== '목적지 코드' &&
+				col.field !== '목적지 명' &&
+				col.field !== '목적지 주소' &&
+				col.field !== '목적지 연락처',
+		)
+
 		tableField.current = modifiedCols
 
 		// 상위 컴포넌트 값 받아오기
@@ -87,19 +93,6 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 
 	console.log('패키지 모달 바디값 ', winningCreateInput)
 	console.log('getRow', getRow)
-
-	// useEffect(() => {
-	// 	const updatedProductList = {
-	// 		packageNumber: packNum,
-	// 		customerDestinationUid: destiObject && destiObject['uid'],
-	// 		biddingPrice: '',
-	// 	}
-	// 	// winningCreateData를 업데이트하여 productList를 갱신
-	// 	setWinningCreateData((prevData) => ({
-	// 		...prevData,
-	// 		biddingList: updatedProductList,
-	// 	}))
-	// }, [finalInput])
 
 	const paramData = {
 		pageNum: 1,
@@ -179,7 +172,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 					{
 						packageNumber: packNum,
 						customerDestinationUid: destiObject && destiObject?.['uid'],
-						biddingPrice: firstBiddingEntry.memberBiddingPrice + finalInput?.biddingPrice,
+						biddingPrice: firstBiddingEntry['응찰가'] + finalInput?.biddingPrice,
 					},
 				],
 			}))
@@ -203,7 +196,6 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 			<FadeOverlay />
 			<ModalContainer style={{ width: '75%', height: '95vh' }}>
 				<BlueBarHeader style={{ height: '60px' }}>
-					{/* <div>{title}</div> */}
 					<div>패키지 상세 보기(경매)</div>
 					<div>
 						<WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
