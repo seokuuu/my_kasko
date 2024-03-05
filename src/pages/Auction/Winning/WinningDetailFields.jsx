@@ -1,14 +1,9 @@
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import {
-	FilterLeft,
-	FilterRight,
-	PartWrap,
-	RowWrap
-} from '../../../modal/External/ExternalFilter'
+import { FilterLeft, FilterRight, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
 
 import { useSetAtom } from 'jotai'
 import { useState } from 'react'
-import { DateSearchSelect } from '../../../components/Search'
+import { DateSearchSelect, RadioSearchButton } from '../../../components/Search'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
 
@@ -40,6 +35,10 @@ const WinningDetailFields = ({
 	const [param, setParam] = useState(init)
 	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
 
+	const onChangeRadio = (key, value) => {
+		setSearch((p) => ({ ...p, [key]: value }))
+	}
+
 	console.log('param', param)
 
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
@@ -63,22 +62,16 @@ const WinningDetailFields = ({
 				<RowWrap>
 					{/* 구분 */}
 					<PartWrap first>
-						<h6>주문 상태</h6>
-						<CustomCheckBox
-							initOptions={[
-								{
-									checked: false,
-									text: '확정 전송',
-									value: '확정 전송',
-								},
-								{
-									checked: false,
-									text: '확정 전송 대기',
-									value: '확정 전송 대기',
-								},
+						<h6>낙찰 상태</h6>
+						<RadioSearchButton
+							options={[
+								{ label: '전체', value: '' },
+								{ label: '낙찰', value: '낙찰' },
+								{ label: '낙찰 취소', value: '낙찰 취소' },
+								{ label: '낙찰 확정', value: '낙찰 확정' },
 							]}
-							setState={setSearch}
-							stateKey="orderStatusList"
+							value={search.biddingStatus}
+							onChange={(value) => onChangeRadio('biddingStatus', value)}
 						/>
 					</PartWrap>
 				</RowWrap>

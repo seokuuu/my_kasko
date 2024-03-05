@@ -86,7 +86,7 @@ export const AgreementMain = styled.div`
 export const AgreementTop = styled.div`
 	margin-left: auto;
 	margin-right: auto;
-	padding: 5px 15px;
+	padding: 10px 10px;
 	width: 90%;
 	background-color: white;
 	font-size: 16px;
