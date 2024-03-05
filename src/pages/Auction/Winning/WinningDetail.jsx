@@ -228,6 +228,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 
 	console.log('destiObject ###', destiObject)
 	console.log('finalInput ###', finalInput)
+
 	useEffect(() => {
 		setDestiObject(destinationData)
 	}, [destinationData])
@@ -474,9 +475,8 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 							적용
 						</TGreyBtn>
 						<BtnBound style={{ margin: '0px' }} />
-						<WhiteBlackBtn onClick={destiApproveOnClickHandler}>목적지 승인 요청</WhiteBlackBtn>
-
-						<BtnBound style={{ margin: '0px' }} />
+						{/* <WhiteBlackBtn onClick={destiApproveOnClickHandler}>목적지 승인 요청</WhiteBlackBtn>
+						<BtnBound style={{ margin: '0px' }} /> */}
 						<WhiteRedBtn onClick={destiChangeRejOnClickHandler}>목적지 변경 반려</WhiteRedBtn>
 						<WhiteSkyBtn str onClick={destiChangeApprovOnClickHandler}>
 							목적지 변경 승인

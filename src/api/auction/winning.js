@@ -97,9 +97,6 @@ export const successfulBid = (data) => {
 export function getWinningDetail(data) {
 	return client.get(urls.winningDetail, {
 		params: data,
-		paramsSerializer: (param) => {
-			return qs.stringify(param)
-		},
 	})
 }
 

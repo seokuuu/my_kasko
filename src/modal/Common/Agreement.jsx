@@ -24,7 +24,7 @@ import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/
 import { CheckBox } from '../../common/Check/Checkbox'
 import { styled } from 'styled-components'
 
-const Agreement = ({ setAgreementModal, setCheckAgreement, agreementOnClickHandler }) => {
+const Agreement = ({ setAgreementModal, setCheckAgreement, agreementOnClickHandler, refetch }) => {
 	const [isModal, setIsModal] = useAtom(blueModalAtom)
 
 	const modalClose = () => {
@@ -46,7 +46,7 @@ const Agreement = ({ setAgreementModal, setCheckAgreement, agreementOnClickHandl
 		// 입찰 동의서
 		<div>
 			<FadeOverlay />
-			<ModalContainer width={850}>
+			<ModalContainer width={750}>
 				<BlueBarHeader
 					// onClick={() => {
 					// 	setAgreementModal(false)
