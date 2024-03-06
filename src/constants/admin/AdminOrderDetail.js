@@ -134,7 +134,7 @@ export const AdminOrderManageFieldsCols = (toggleModal) => [
 		field: ['제품 번호'],
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 90,
+		width: 150,
 		cellRenderer: (params) => params.value || 'N',
 	},
 	{
