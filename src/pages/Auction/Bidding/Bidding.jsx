@@ -52,6 +52,8 @@ import PackDetail from './PackDetail'
 import { getDestinations } from '../../../api/search'
 import { onSizeChange } from '../../Operate/utils'
 import { useCheckAuction } from '../../../hooks/useCheckAuction'
+import useTableSelection from '../../../hooks/useTableSelection'
+import useTableData from '../../../hooks/useTableData'
 
 const Bidding = ({}) => {
 	const nowAuction = useCheckAuction() // 현재 경매 여부 체크
@@ -150,7 +152,7 @@ const Bidding = ({}) => {
 					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+					item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
 				}
 			if (param?.type === '패키지')
 				if (packUids.includes(item.packageNumber)) {
@@ -160,7 +162,7 @@ const Bidding = ({}) => {
 					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+					item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
 				}
 			return item
 		})
@@ -169,7 +171,7 @@ const Bidding = ({}) => {
 	}
 
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
-	const [liveStatus, setLiveStatus] = useState(nowAuction ? 'LIVEgetBidding' : 'getBidding') // 현재 경매에 따라 실시간 get 
+	const [liveStatus, setLiveStatus] = useState(nowAuction ? 'LIVEgetBidding' : 'getBidding') // 현재 경매에 따라 실시간 get
 
 	console.log('liveStatus', liveStatus)
 	// 전체 GET
@@ -244,7 +246,7 @@ const Bidding = ({}) => {
 					biddingPrice:
 						item['응찰가'] === 0
 							? item['시작가'] + finalInput?.biddingPrice
-							: item['응찰가'] + finalInput?.biddingPrice,
+							: item['현재 최고 가격'] + finalInput?.biddingPrice,
 					customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 				}
 			} else if (param?.type === '패키지') {
@@ -253,7 +255,7 @@ const Bidding = ({}) => {
 					biddingPrice:
 						item['응찰가'] === 0
 							? item['시작가'] + finalInput?.biddingPrice
-							: item['응찰가'] + finalInput?.biddingPrice,
+							: item['현재 최고 가격'] + finalInput?.biddingPrice,
 					customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 				}
 			}
@@ -428,7 +430,7 @@ const Bidding = ({}) => {
 					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+					item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
 				}
 			if (param?.type === '패키지')
 				if (packUids.includes(item.packageNumber)) {
@@ -438,7 +440,7 @@ const Bidding = ({}) => {
 					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-					item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+					item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
 				}
 			return item
 		})
@@ -470,6 +472,17 @@ const Bidding = ({}) => {
 			})
 		}
 	}, [agreementModal, firstDestiData, initDestiData])
+
+	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
+
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
+		tableField: AuctionBiddingFields,
+		serverData: data?.data?.data,
+		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		best: { display: true },
+	})
 
 	return (
 		<FilterContianer>
@@ -509,7 +522,7 @@ const Bidding = ({}) => {
 					<>
 						<TCSubContainer bor>
 							<div>
-								조회 목록 (선택 <span>2</span> / 50개 )
+								조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 								<Hidden />
 							</div>
 							<div style={{ display: 'flex', gap: '10px' }}>
@@ -519,7 +532,7 @@ const Bidding = ({}) => {
 						</TCSubContainer>
 						<TCSubContainer bor>
 							<div>
-								선택 중량<span> 2 </span>kg / 총 중량 kg
+								선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 							</div>
 							<div
 								style={{

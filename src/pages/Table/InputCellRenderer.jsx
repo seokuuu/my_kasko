@@ -147,10 +147,10 @@
 // 	}
 // `
 
-import React, { useEffect } from 'react'
-import styled from 'styled-components'
 import { useAtom } from 'jotai'
-import { requestSingleModify, singleModifyObj } from '../../store/Layout/Layout'
+import React from 'react'
+import styled from 'styled-components'
+import { requestSingleModify } from '../../store/Layout/Layout'
 export default function InputCellRenderer({ data, uidFieldName, valueName, type }) {
 	// const [request, setRequest] = useAtom(requestSingleModify)
 	const [request, setRequest] = useAtom(requestSingleModify)

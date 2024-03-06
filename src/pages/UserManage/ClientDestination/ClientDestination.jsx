@@ -1,41 +1,40 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
+import { isArray, isEqual } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { delete_clientDestination, get_clientDestination } from '../../../api/userManage'
 import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
+import Hidden from '../../../components/TableInner/Hidden'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import {
+	UserManageCustomerDestinationManageFields,
+	adminCustomerDestinationManageFieldsCols,
+} from '../../../constants/admin/UserManage'
+import useReactQuery from '../../../hooks/useReactQuery'
+import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
+import { add_element_field } from '../../../lib/tableHelpers'
 import {
 	FilterContianer,
 	FilterHeader,
 	FilterWrap,
-	TableContianer,
 	TCSubContainer,
+	TableContianer,
 } from '../../../modal/External/ExternalFilter'
+import useAlert from '../../../store/Alert/useAlert'
 import {
+	UsermanageFindModal,
 	adminPageDestiEditModal,
-	blueModalAtom,
 	btnCellUidAtom,
 	selectedRowsAtom,
-	toggleAtom,
-	UsermanageFindModal,
+	toggleAtom
 } from '../../../store/Layout/Layout'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { isArray, isEqual } from 'lodash'
-import { delete_clientDestination, get_clientDestination } from '../../../api/userManage'
-import Hidden from '../../../components/TableInner/Hidden'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
-import {
-	adminCustomerDestinationManageFieldsCols,
-	UserManageCustomerDestinationManageFields,
-} from '../../../constants/admin/UserManage'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { add_element_field } from '../../../lib/tableHelpers'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 import Table from '../../Table/Table'
 import ClientDestinationSearchFields from './ClientDestinationSearchFields'
 import DestinationEdit from './DestinationEdit'
-import useAlert from '../../../store/Alert/useAlert'
-import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 
 const ClientDestination = ({ setChoiceComponent }) => {
 	const [findModal, setFindModal] = useAtom(UsermanageFindModal)

@@ -1,19 +1,12 @@
-import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import { useEffect, useState } from 'react'
 import {
+  FWTitle,
+  FullWrap,
   OnePageContainer,
   OnePageSubContainer,
-  MainTitle,
-  HalfWrap,
-  Left,
-  Right,
-  Title,
-  Part,
-  At,
-  Titles,
   TitleChild,
-  FullWrap,
-  FWTitle,
+  Titles
 } from '../../../common/OnePage/OnePage.Styled'
 import { formatDateString } from '../../../utils/utils'
 import { titles } from './termsConstants'

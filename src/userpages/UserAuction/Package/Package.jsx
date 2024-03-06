@@ -32,19 +32,19 @@ import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { AuctionBiddingFields, AuctionPackageBiddingFieldsCols } from '../../../constants/admin/Auction'
 import { PROD_COL_NAME } from '../../../constants/user/constantKey'
+import { useCheckAuction } from '../../../hooks/useCheckAuction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Agreement from '../../../modal/Common/Agreement'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
+import PackDetail from '../../../pages/Auction/Bidding/PackDetail'
 import Table from '../../../pages/Table/Table'
 import useAlert from '../../../store/Alert/useAlert'
 import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
 import AddWishButton from '../../UserSales/_components/AddWishButton'
 import UserBiddingSearchFields from '../Single/UserBiddingSearchFields'
-import PackDetail from '../../../pages/Auction/Bidding/PackDetail'
-import { useCheckAuction } from '../../../hooks/useCheckAuction'
 
 const Package = ({}) => {
 	const nowAuction = useCheckAuction()
@@ -202,7 +202,9 @@ const Package = ({}) => {
 		const updatedProductList = checkedArrayState?.map((item) => ({
 			packageNumber: item['패키지 번호'],
 			biddingPrice:
-				item['응찰가'] === 0 ? item['시작가'] + finalInput?.biddingPrice : item['응찰가'] + finalInput?.biddingPrice,
+				item['응찰가'] === 0
+					? item['시작가'] + finalInput?.biddingPrice
+					: item['현재 최고 가격'] + finalInput?.biddingPrice,
 			customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
 		}))
@@ -340,7 +342,7 @@ const Package = ({}) => {
 				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+				item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item
 		})
@@ -398,7 +400,7 @@ const Package = ({}) => {
 				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+				item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
 			}
 
 			return item

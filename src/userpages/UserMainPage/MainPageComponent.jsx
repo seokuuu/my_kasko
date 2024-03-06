@@ -1,13 +1,8 @@
 import { useCustomerMainPageQuery } from '../../api/mainPage/mainPage'
-import Test3 from '../../pages/Test/Test3'
-import { Bar } from '../../common/OnePage/OnePage.Styled'
 import { useLoading } from '../../store/Loading/loadingAtom'
-import { useEffect, useState } from 'react'
-import { add_element_field } from '../../lib/tableHelpers'
-import { ShippingRegisterFields } from '../../constants/admin/Shipping'
-import { Left, LeftSub1, MainWrap, Title, RightSub, Right } from './MainPageStyled'
-import MainNotice from './MainNotice'
 import FavoriteProduct from './FavoriteProduct'
+import MainNotice from './MainNotice'
+import { Left, MainWrap, Right } from './MainPageStyled'
 import MainProductComponent from './MainProductComponent'
 
 const MainPageComponent = () => {

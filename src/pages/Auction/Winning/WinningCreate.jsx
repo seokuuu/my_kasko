@@ -187,10 +187,6 @@ const WinningCreate = ({}) => {
 		}))
 	}, [checkedArray2, winningCreateInput])
 
-	console.log('checkedArray2', checkedArray2)
-
-	console.log('winningCreateData', winningCreateData)
-
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
@@ -297,6 +293,7 @@ const WinningCreate = ({}) => {
 		})
 	}
 
+	console.log('customerData', customerData)
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -317,8 +314,9 @@ const WinningCreate = ({}) => {
 						<FilterTCBottom>
 							<FilterTCBSubdiv>
 								<div>
-									<h6 style={{ fontSize: '18px' }}>고객사</h6>
-									<Input />
+									<h6 style={{ fontSize: '18px' }}>고객사 명/고객사 코드</h6>
+									<Input style={{ width: '110px', marginRight: '10px', fontSize: '16px' }} value={customerData?.name} />
+									<Input style={{ width: '110px', marginRight: '10px', fontSize: '16px' }} value={customerData?.code} />
 									<GreyBtn
 										style={{ width: '70px' }}
 										height={35}
@@ -330,7 +328,7 @@ const WinningCreate = ({}) => {
 									>
 										찾기
 									</GreyBtn>
-									<p style={{ color: '#4C83D6' }}>{customerData?.code}</p>
+									{/* <p style={{ color: '#4C83D6' }}>{customerData?.code}</p> */}
 								</div>
 
 								<div>

@@ -1,18 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { BlackBtn, GreyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
 
 import Excel from '../../../components/TableInner/Excel'
 
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
+import Table from '../../../pages/Table/Table'
 import {
 	StockMultiModal,
-	popupObject,
 	selectedRowsAtom,
 	toggleAtom,
-	weightAtom,
-	weightObj,
+	weightAtom
 } from '../../../store/Layout/Layout'
-import Table from '../../../pages/Table/Table'
 
 import { useAtom, useAtomValue } from 'jotai'
 import Hidden from '../../../components/TableInner/Hidden'
@@ -21,30 +19,28 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import {
 	FilterContianer,
 	FilterHeader,
-	FilterSubcontianer,
-	TableContianer,
 	TCSubContainer,
-	Tilde,
+	TableContianer
 } from '../../../modal/External/ExternalFilter'
 import { modalAtom } from '../../../store/Layout/Layout'
 
-import useReactQuery from '../../../hooks/useReactQuery'
+import { isArray } from 'lodash'
 import { getInventoryStocks, patchStockCategory, postCancelInStock } from '../../../api/stocks/Inventory'
 import { StockInventoryFieldCols, StockInventoryFields } from '../../../constants/admin/StockInventory'
+import useMutationQuery from '../../../hooks/useMutationQuery'
+import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Multi2 from '../../../modal/Common/Multi2'
-import { isArray } from 'lodash'
-import useMutationQuery from '../../../hooks/useMutationQuery'
 import { changeCategoryAtom } from '../../../store/Layout/Popup'
 
-import WeightSales from '../../../modal/Multi/WeightSales'
-import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import InventorySearchFields from './InventorySearchFields'
 import { isEqual } from 'lodash'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
+import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
+import WeightSales from '../../../modal/Multi/WeightSales'
 import useAlert from '../../../store/Alert/useAlert'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { onSizeChange } from '../../Operate/utils'
+import InventorySearchFields from './InventorySearchFields'
 
 const Inventory = ({}) => {
 	const paramData = { pageNum: 1, pageSize: 50, reciptStatus: '입고 확정' }

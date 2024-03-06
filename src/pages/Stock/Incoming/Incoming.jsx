@@ -2,7 +2,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import React, { useEffect, useState } from 'react'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
+import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
 import { selectedRowsAtom, singleProductModify, toggleAtom } from '../../../store/Layout/Layout'
 
 import { isEqual } from 'lodash'
@@ -12,17 +12,17 @@ import { SwitchBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../com
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { stockFields, StockIncomingFields } from '../../../constants/admin/StockIncoming'
+import { StockIncomingFields, stockFields } from '../../../constants/admin/StockIncoming'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Upload from '../../../modal/Upload/Upload'
 import useAlert from '../../../store/Alert/useAlert'
 import { KilogramSum } from '../../../utils/KilogramSum'
+import { onSizeChange } from '../../Operate/utils'
 import Table from '../../Table/Table'
 import IncomingModify from './IncomingModify'
 import IncomingSearchFields from './IncomingSearchFields'
-import { onSizeChange } from '../../Operate/utils'
 
 const Incoming = ({}) => {
 	const { simpleConfirm, simpleAlert } = useAlert()

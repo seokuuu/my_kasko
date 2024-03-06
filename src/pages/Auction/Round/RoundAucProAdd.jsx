@@ -34,6 +34,8 @@ import {
 import useAlert from '../../../store/Alert/useAlert'
 import Table from '../../Table/Table'
 import RoundAucListEditFields from './RoundAucListEditFields'
+import useTableSelection from '../../../hooks/useTableSelection'
+import useTableData from '../../../hooks/useTableData'
 
 // 경매 제품 추가(단일) 메인 컴포넌트
 // 경매 제품 추가 (패키지), 경매 목록 상세(종료된 경매)와 호환 가능
@@ -170,6 +172,17 @@ const RoundAucProAdd = ({
 		})
 	}
 
+	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
+
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
+		tableField: AuctionRoundExtraProductFields,
+		serverData: data?.data?.data,
+		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		best: { display: true },
+	})
+
 	return (
 		<>
 			<FadeOverlay />
@@ -208,7 +221,7 @@ const RoundAucProAdd = ({
 						<TableContianer>
 							<TCSubContainer bor>
 								<div>
-									조회 목록 (선택 <span>2</span> / 50개 )
+									조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 									<Hidden />
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
@@ -218,7 +231,7 @@ const RoundAucProAdd = ({
 							</TCSubContainer>
 							<TCSubContainer>
 								<div>
-									선택 중량<span> 2 </span>kg / 총 중량 kg
+									선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 								</div>
 								<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}></div>
 							</TCSubContainer>
