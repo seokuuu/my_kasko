@@ -3,11 +3,13 @@ import 'ag-grid-community/styles/ag-theme-alpine.css'
 import 'ag-grid-enterprise'
 import { AgGridReact } from 'ag-grid-react'
 import { useAtom, useAtomValue } from 'jotai'
+import PropTypes from 'prop-types'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { styled } from 'styled-components'
 import { BlackBtn, GreyBtn } from '../../common/Button/Button'
 import CustomPagination from '../../components/pagination/CustomPagination'
+import useDragginRow from '../../hooks/useDragginRow'
 import {
 	BlueBarBtnWrap,
 	BlueBarHeader,
@@ -25,9 +27,6 @@ import {
 	selectedRowsAtom2,
 } from '../../store/Layout/Layout'
 import './TableUi.css'
-import PropTypes from 'prop-types'
-import useDragginRow from '../../hooks/useDragginRow'
-import InputCellRenderer from './InputCellRenderer'
 // import TableStyle from './Table.module.css'
 
 // import { get } from 'lodash'

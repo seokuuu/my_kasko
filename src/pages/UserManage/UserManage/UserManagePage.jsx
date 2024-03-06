@@ -1,14 +1,12 @@
 import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
 
-import SideBar from '../../../components/Left/SideBar'
+import { useState } from 'react'
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
-import UserManage from './UserManage'
-import { useState } from 'react'
-import UserPostPage from './UserPostPage'
-import UserEditPage from './UserEditPage'
-import UserPost from './UserPost'
+import SideBar from '../../../components/Left/SideBar'
 import UserEdit from './UserEdit'
+import UserManage from './UserManage'
+import UserPost from './UserPost'
 
 const UserManagePage = () => {
   const [expanded, setExpanded] = useState('사용자 관리')

@@ -1,12 +1,11 @@
+import { AgGridReact } from 'ag-grid-react'; // the AG Grid React Component
 import React, {
-  useState,
-  useRef,
+  useCallback,
   useEffect,
   useMemo,
-  useCallback,
+  useRef,
+  useState,
 } from 'react';
-import { createRoot } from 'react-dom/client';
-import { AgGridReact } from 'ag-grid-react'; // the AG Grid React Component
 
 import 'ag-grid-community/styles/ag-grid.css'; // Core grid CSS, always needed
 import 'ag-grid-community/styles/ag-theme-alpine.css'; // Optional theme CSS

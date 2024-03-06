@@ -3,8 +3,8 @@ import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSear
 import { FilterLeft, FilterRight, PartWrap, PWRight, RowWrap } from '../../../modal/External/ExternalFilter'
 
 import { useState } from 'react'
-import { CustomerSearch, DateSearchSelect, RadioSearchButton } from '../../../components/Search'
 import { MainSelect } from '../../../common/Option/Main'
+import { DateSearchSelect, RadioSearchButton } from '../../../components/Search'
 
 const UserWinningSearchFields = ({
 	// prettier-ignore

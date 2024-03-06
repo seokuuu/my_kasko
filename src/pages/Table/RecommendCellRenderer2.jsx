@@ -1,15 +1,9 @@
 import { useAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { SkyBtn } from '../../common/Button/Button'
 import {
-  StandardDispatchEditAtom,
-  btnCellRenderAtom,
-  btnCellUidAtom,
-  consolEditModalAtom,
-  surEditModalAtom,
   userpageDestinationEdit,
-  userpageUserPreferEdit,
+  userpageUserPreferEdit
 } from '../../store/Layout/Layout'
 
 const RecommendCellRenderer2 = ({ data, uidFieldName, editType }) => {

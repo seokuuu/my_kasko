@@ -1,4 +1,4 @@
-import { Suspense, useState } from 'react'
+import { useState } from 'react'
 import { USER_URL, useUserSingleProductListQuery } from '../../../api/user'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
@@ -24,7 +24,6 @@ import AddCartButton from '../_components/AddCartButton'
 import AddOrderButton from '../_components/AddOrderButton'
 import AddWishButton from '../_components/AddWishButton'
 import SingleSearchFields from './SingleSearchFields'
-import LoadingSpinner from '../../../store/Loading/LoadingSpinner'
 
 /**
  * @constant 기본 페이지 검색 값

@@ -3,23 +3,28 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAtom } from 'jotai'
 import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import Hidden from '../../../components/TableInner/Hidden'
-import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
+import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
 import {
+	StandardConsoliateEdit,
 	btnCellUidAtom,
 	consolEditModalAtom,
 	popupAtom,
 	popupObject,
 	popupTypeAtom,
 	selectedRowsAtom,
-	StandardConsoliateEdit,
 } from '../../../store/Layout/Layout'
 
 import { StandardConsolidationFields, StandardConsolidationFieldsCols } from '../../../constants/admin/Standard'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isArray, isEqual } from 'lodash'
+import { useParams } from 'react-router-dom'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import useBlockRoute from '../../../hooks/useBlockRoute'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
+import AlertPopup from '../../../modal/Alert/AlertPopup'
+import { popupDummy } from '../../../modal/Alert/PopupDummy'
 import ConsolidationModal from '../../../modal/Multi/Consolidation'
 import {
 	deleteAdminConsolidation,
@@ -27,14 +32,8 @@ import {
 	getAdminConsolidation,
 	postAdminConsolidation,
 } from '../../../service/admin/Standard'
-import Table from '../../Table/Table'
-import useMutationQuery from '../../../hooks/useMutationQuery'
-import { popupDummy } from '../../../modal/Alert/PopupDummy'
-import AlertPopup from '../../../modal/Alert/AlertPopup'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
-import useBlockRoute from '../../../hooks/useBlockRoute'
-import { useParams } from 'react-router-dom'
 import useAlert from '../../../store/Alert/useAlert'
+import Table from '../../Table/Table'
 
 const Consolidation = ({}) => {
 	const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치

@@ -15,11 +15,11 @@ import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { AuctionWinningFields, UserAuctionWinningFieldsCols } from '../../../constants/admin/Winning'
 import useReactQuery from '../../../hooks/useReactQuery'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../../pages/Table/Table'
 import UserWinningSearchFields from './UserWinningSearchFields'
-import useTableSelection from '../../../hooks/useTableSelection'
-import useTableData from '../../../hooks/useTableData'
 
 const Winning = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])

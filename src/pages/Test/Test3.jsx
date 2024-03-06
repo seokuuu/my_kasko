@@ -1,22 +1,20 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react'
-import { createRoot } from 'react-dom/client'
-import { AgGridReact } from 'ag-grid-react'
-import 'ag-grid-enterprise'
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
-import { styled } from 'styled-components'
-import { ContentBlock } from 'draft-js'
+import 'ag-grid-enterprise'
+import { AgGridReact } from 'ag-grid-react'
 import { useAtom } from 'jotai'
-import { blueModalAtom } from '../../store/Layout/Layout'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
+import { styled } from 'styled-components'
+import { BlackBtn, GreyBtn } from '../../common/Button/Button'
 import {
-  NonFadeOverlay,
-  ModalContainer,
-  BlueBarHeader,
-  WhiteCloseBtn,
-  BlueSubContainer,
   BlueBarBtnWrap,
+  BlueBarHeader,
+  BlueSubContainer,
+  ModalContainer,
+  NonFadeOverlay,
+  WhiteCloseBtn,
 } from '../../modal/Common/Common.Styled'
-import { GreyBtn, BlackBtn } from '../../common/Button/Button'
+import { blueModalAtom } from '../../store/Layout/Layout'
 
 var dateFilterParams = {
   comparator: (filterLocalDateAtMidnight, cellValue) => {

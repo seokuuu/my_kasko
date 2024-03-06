@@ -1,22 +1,21 @@
 import React from 'react'
 import {
-  OnePageContainer,
-  OnePageSubContainer,
-  MainTitle,
+  At,
   HalfWrap,
   Left,
+  MainTitle,
+  OnePageContainer,
+  OnePageSubContainer,
+  Part,
   Right,
   Title,
-  Part,
-  At,
 } from '../../../common/OnePage/OnePage.Styled'
 
 import { CustomInput, TxtInput } from '../../../common/Input/Input'
 import { CustomSelect } from '../../../common/Option/Main'
 import { emailOptions } from '../../../common/Option/SignUp'
-import { styled } from 'styled-components'
 
-import { BtnWrap, WhiteBtn, BlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
+import { BlackBtn, BtnWrap, WhiteBtn, WhiteRedBtn } from '../../../common/Button/Button'
 const CarrierEdit = () => {
   return (
     <OnePageContainer>

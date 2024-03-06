@@ -1,12 +1,12 @@
-import {useEffect, useState} from 'react'
-import {styled} from 'styled-components'
-import {checkBusinessNumber} from '../../../api/myPage'
-import {postClient, postUserManage, resetCustomer} from '../../../api/userManage'
-import {BlackBtn, BtnWrap} from '../../../common/Button/Button'
-import {CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv} from '../../../common/Check/CheckImg'
-import {CheckBox} from '../../../common/Check/Checkbox'
-import {RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv} from '../../../common/Check/RadioImg'
-import {CustomInput, FlexInput} from '../../../common/Input/Input'
+import { useEffect, useState } from 'react'
+import { styled } from 'styled-components'
+import { checkBusinessNumber } from '../../../api/myPage'
+import { postUserManage, resetCustomer } from '../../../api/userManage'
+import { BlackBtn, BtnWrap } from '../../../common/Button/Button'
+import { CheckImg2, StyledCheckMainDiv, StyledCheckSubSquDiv } from '../../../common/Check/CheckImg'
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import { CustomInput, FlexInput } from '../../../common/Input/Input'
 import {
     Bar,
     FlexContent,
@@ -16,23 +16,23 @@ import {
     OnePageFlexSubContainer,
     Right,
 } from '../../../common/OnePage/OnePage.Styled'
-import {AccountSelect, EditSelect, accountOptions, depositOptions} from '../../../common/Option/SignUp'
+import { AccountSelect, accountOptions } from '../../../common/Option/SignUp'
 import RadioButton from '../../../components/RadioButton/RadioButton'
 import useReactQuery from '../../../hooks/useReactQuery'
-import {WhiteCloseBtn} from '../../../modal/Common/Common.Styled'
+import { WhiteCloseBtn } from '../../../modal/Common/Common.Styled'
 import SignUpPost from '../../../modal/SignUp/SignUpPost'
-import {CheckBtn, TxtDivNoborder} from '../../../pages/User/SignUp/SignUp.Styled'
-import {IIDImg, IncomeImgDiv} from '../../../userpages/UserMyPage/Profile/Profile'
+import { CheckBtn, TxtDivNoborder } from '../../../pages/User/SignUp/SignUp.Styled'
+import { IIDImg, IncomeImgDiv } from '../../../userpages/UserMyPage/Profile/Profile'
 
-import {getStorageList} from '../../../api/search'
-import {MainSelect} from '../../../common/Option/Main'
+import { getStorageList } from '../../../api/search'
+import { MainSelect } from '../../../common/Option/Main'
 import {
+    CheckTxt2,
     FlexContent2,
     MainTitleC,
     ModalContainerC,
     ModalContainerSubC,
     ModalOverlayC,
-    CheckTxt2,
 } from '../Client/ClientPostModal'
 
 const init = {

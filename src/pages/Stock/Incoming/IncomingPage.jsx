@@ -1,16 +1,14 @@
 import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
 
-import SideBar from '../../../components/Left/SideBar'
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
+import SideBar from '../../../components/Left/SideBar'
 import Incoming from './Incoming'
 
 import { useState } from 'react'
-import { styled } from 'styled-components'
 
 import { useAtom } from 'jotai'
 import { rightArray } from '../../../store/Layout/Layout'
-import Right from '../../../components/Right/Right'
 
 const IncomingPage = () => {
 	const [expanded, setExpanded] = useState('재고 관리')

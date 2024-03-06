@@ -1,44 +1,29 @@
 import { useEffect, useRef, useState } from 'react'
-import { BlackBtn, GreyBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
-import { storageOptions } from '../../../common/Option/SignUp'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import {
-	DoubleWrap,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
-	Input,
-	MiniInput,
-	PartWrap,
-	PWRight,
-	ResetImg,
-	RowWrap,
 	TableContianer,
-	TCSubContainer,
-	Tilde,
+	TCSubContainer
 } from '../../../modal/External/ExternalFilter'
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
-import Hidden from '../../../components/TableInner/Hidden'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { getProgess } from '../../../api/auction/progress'
-import { add_element_field } from '../../../lib/tableHelpers'
-import { AuctionProgressFields, AuctionProgressFieldsCols } from '../../../constants/admin/Auction'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
-import Table from '../../../pages/Table/Table'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import ProgressSearchFields from '../../../pages/Auction/Progress/ProgressSearchFields'
 import { isEqual } from 'lodash'
+import { getProgess } from '../../../api/auction/progress'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
+import Hidden from '../../../components/TableInner/Hidden'
+import { AuctionProgressFields, AuctionProgressFieldsCols } from '../../../constants/admin/Auction'
+import useReactQuery from '../../../hooks/useReactQuery'
+import { add_element_field } from '../../../lib/tableHelpers'
+import ProgressSearchFields from '../../../pages/Auction/Progress/ProgressSearchFields'
+import Table from '../../../pages/Table/Table'
 
 const Status = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])

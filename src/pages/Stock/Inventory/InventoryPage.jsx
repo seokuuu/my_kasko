@@ -1,8 +1,8 @@
 import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/Overall.styled'
 
-import SideBar from '../../../components/Left/SideBar'
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
+import SideBar from '../../../components/Left/SideBar'
 import Inventory from './Inventory'
 
 import { useState } from 'react'
