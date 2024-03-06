@@ -36,26 +36,26 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 	console.log('detailRow', detailRow)
 
 	const titleData = [
+		'경매 번호',
 		'고객사 명',
 		'고객 코드',
-		'',
+		'창고',
 		'총 수량',
 		'총 중량',
-		'입금 요청 금액',
 		'제품 금액 (VAT 포함)',
 		'운반비 (VAT 포함)',
-		'',
+		'입금 요청 금액',
 	]
 	const contentData = [
+		detailRow?.['경매 번호'],
 		detailRow?.['고객사명'],
 		detailRow?.['고객 코드'],
-		'',
+		detailRow?.['창고'],
 		detailRow?.['수량'],
 		detailRow?.['중량'],
 		new Intl.NumberFormat('en-US').format(detailRow?.['입금 요청액']) + '원',
 		new Intl.NumberFormat('en-US').format(detailRow?.['제품 금액 (VAT 포함)']) + '원',
 		new Intl.NumberFormat('en-US').format(detailRow?.['운반비 (VAT 포함)']) + '원',
-		'',
 	]
 
 	const matchingData = {
