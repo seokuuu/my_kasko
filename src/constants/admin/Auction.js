@@ -150,7 +150,7 @@ export const AuctionRoundDetailFields = {
 	'제품 번호': 'productNumber',
 	등급: 'grade',
 	'정척 여부': 'preferThickness',
-	'유찰 횟수': 'faliCount',
+	'유찰 횟수': 'failCount',
 	'경매 시작가': 'auctionStartPrice',
 	두께: 'thickness',
 	폭: 'width',
