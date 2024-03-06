@@ -202,7 +202,9 @@ const Package = ({}) => {
 		const updatedProductList = checkedArrayState?.map((item) => ({
 			packageNumber: item['패키지 번호'],
 			biddingPrice:
-				item['응찰가'] === 0 ? item['시작가'] + finalInput?.biddingPrice : item['응찰가'] + finalInput?.biddingPrice,
+				item['응찰가'] === 0
+					? item['시작가'] + finalInput?.biddingPrice
+					: item['현재 최고 가격'] + finalInput?.biddingPrice,
 			customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
 		}))
@@ -340,7 +342,7 @@ const Package = ({}) => {
 				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+				item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item
 		})
@@ -398,7 +400,7 @@ const Package = ({}) => {
 				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+				item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
 			}
 
 			return item

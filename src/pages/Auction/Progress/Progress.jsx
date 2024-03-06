@@ -18,6 +18,8 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import ProgressSearchFields from './ProgressSearchFields'
 import { onSizeChange } from '../../Operate/utils'
+import useTableSelection from '../../../hooks/useTableSelection'
+import useTableData from '../../../hooks/useTableData'
 
 const Progress = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
@@ -122,6 +124,17 @@ const Progress = ({}) => {
 		})
 	}
 
+	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
+
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
+		tableField: AuctionProgressFields,
+		serverData: data?.data?.data,
+		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		best: { display: true },
+	})
+
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -132,84 +145,6 @@ const Progress = ({}) => {
 
 			{exFilterToggle && (
 				<>
-					{/* <FilterSubcontianer>
-						<FilterLeft>
-							<RowWrap none>
-								<PartWrap first>
-									<h6>창고 구분</h6>
-									<PWRight>
-										<MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-									</PWRight>
-								</PartWrap>
-
-								<PartWrap>
-									<h6>규격 약호</h6>
-									<Input />
-									<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-										찾기
-									</GreyBtn>
-								</PartWrap>
-							</RowWrap>
-							<RowWrap>
-								<PartWrap>
-									<h6>고객사 명/고객사코드</h6>
-									<Input />
-									<Input />
-									<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-										찾기
-									</GreyBtn>
-								</PartWrap>
-							</RowWrap>
-							<RowWrap none>
-								<PartWrap first>
-									<h6>구분</h6>
-									<MainSelect />
-									<MainSelect />
-								</PartWrap>
-							</RowWrap>
-							<RowWrap none>
-								<PartWrap first>
-									<h6>두께(MM)</h6>
-									<MiniInput /> <Tilde>~</Tilde>
-									<MiniInput />
-								</PartWrap>
-								<PartWrap>
-									<h6>폭(MM)</h6>
-									<MiniInput /> <Tilde>~</Tilde>
-									<MiniInput />
-								</PartWrap>
-								<PartWrap>
-									<h6>길이(MM)</h6>
-									<MiniInput /> <Tilde>~</Tilde>
-									<MiniInput />
-								</PartWrap>
-							</RowWrap>
-						</FilterLeft>
-						<FilterRight>
-							<DoubleWrap>
-								<h6>제품 번호 </h6>
-								<textarea
-									placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-								/>
-							</DoubleWrap>
-						</FilterRight>
-					</FilterSubcontianer> */}
-					{/* <FilterFooter>
-            <div style={{ display: 'flex' }}>
-              <p>초기화</p>
-              <ResetImg
-                src="/img/reset.png"
-                style={{ marginLeft: '10px', marginRight: '20px' }}
-                onClick={handleImageClick}
-                className={isRotated ? 'rotate' : ''}
-              />
-            </div>
-            <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40}>
-                검색
-              </BlackBtn>
-            </div>
-          </FilterFooter> */}
 					<GlobalProductSearch
 						param={param}
 						isToggleSeparate={true}
@@ -222,7 +157,7 @@ const Progress = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>2</span> / 50개 )
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>

@@ -37,6 +37,8 @@ import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import RoundAucListEditFields from './RoundAucListEditFields'
 import RoundAucProAdd from './RoundAucProAdd'
+import useTableSelection from '../../../hooks/useTableSelection'
+import useTableData from '../../../hooks/useTableData'
 
 //경매 목록 수정(단일)
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStatus }) => {
@@ -79,6 +81,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const queryClient = useQueryClient()
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 
+	console.log('selectedRows', selectedRows)
+
 	// const checkedArray = useAtom(selectedRowsAtom)[0]
 
 	const paramData = {
@@ -104,9 +108,26 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const resData = data?.data?.data?.list
 
 	const [startPrice, setStartPrice] = useState(null)
-	const [realStartPrice, realSetStartPrice] = useState(null)
+	const [realStartPrice, setRealStartPrice] = useState(null)
 
 	const [initRow, setInitRow] = useState([])
+
+	const uids = selectedRows?.map((item) => item['제품 번호'])
+	// 시작가 일괄 변경 "버튼" onClick
+	const startPriceOnClickHandler = () => {
+		const updatedResData = resData.map((item) => {
+			if (uids.includes(item.productNumber)) {
+				item.auctionStartPrice = item.auctionStartPrice + startPrice
+			}
+			return item
+		})
+		if (selectedRows.some((row) => row.매입처 === '현대제철')) {
+			simpleAlert('현대제철(타사) 시작가 변경이 불가합니다.')
+		} else {
+			setRealStartPrice(startPrice)
+			setGetRow(add_element_field(updatedResData, AuctionRoundDetailFields))
+		}
+	}
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -226,9 +247,16 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const [incomingCheckState, setIncomingCheckState] = useState(false)
 	const incomingCheck = selectedRows?.map((x) => x['매입처'])
 
-	// useEffect(() => {
+	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
 
-	// }, [selectedRows])
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
+		tableField: AuctionRoundDetailFields,
+		serverData: data?.data?.data,
+		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		best: { display: true },
+	})
 
 	return (
 		<FilterContianer>
@@ -259,7 +287,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{selectedRows ? selectedRows.length : 0}</span> / {param.pageSize}개 )
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -269,7 +297,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량<span> 2 </span>kg / 총 중량 kg
+						선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 					</div>
 					{auctionStatus !== '종료' && (
 						<>
@@ -283,13 +311,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 										setStartPrice(parseInt(e.target.value))
 									}}
 								/>
-								<TGreyBtn
-									height={30}
-									style={{ width: '50px' }}
-									onClick={() => {
-										realSetStartPrice(startPrice)
-									}}
-								>
+								<TGreyBtn height={30} style={{ width: '50px' }} onClick={startPriceOnClickHandler}>
 									적용
 								</TGreyBtn>
 								<BtnBound />

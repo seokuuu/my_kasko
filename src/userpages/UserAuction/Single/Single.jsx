@@ -188,7 +188,9 @@ const Single = ({}) => {
 		const updatedProductList = checkedArrayState?.map((item) => ({
 			productUid: item['제품 고유 번호'],
 			biddingPrice:
-				item['응찰가'] === 0 ? item['시작가'] + finalInput?.biddingPrice : item['응찰가'] + finalInput?.biddingPrice,
+				item['응찰가'] === 0
+					? item['시작가'] + finalInput?.biddingPrice
+					: item['현재 최고 가격'] + finalInput?.biddingPrice,
 			customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
 		}))
@@ -325,7 +327,7 @@ const Single = ({}) => {
 				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+				item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item
 		})
@@ -379,7 +381,7 @@ const Single = ({}) => {
 				item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
 				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
-				item.memberBiddingPrice = item.memberBiddingPrice + winningCreateInput?.biddingPrice
+				item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
 			}
 
 			return item
@@ -504,7 +506,7 @@ const Single = ({}) => {
 						</TCSubContainer>
 						<TCSubContainer bor>
 							<div>
-								선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
+								선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 							</div>
 							<div
 								style={{
