@@ -1,13 +1,10 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
-import { storageOptions } from '../../common/Option/SignUp'
-import { DefaultSelect } from '../../common/Option/SignUp'
-import Select from 'react-select'
+import { BlackBtn, GreyBtn } from '../../common/Button/Button'
 import { MainSelect } from '../../common/Option/Main'
-import { BlackBtn, BtnWrap } from '../../common/Button/Button'
+import { storageOptions } from '../../common/Option/SignUp'
+import { Circle, ToggleBtn, Wrapper } from '../../common/Toggle/Toggle'
 import DateGrid from '../../components/DateGrid/DateGrid'
-import { ToggleBtn, Circle, Wrapper } from '../../common/Toggle/Toggle'
-import { GreyBtn } from '../../common/Button/Button'
 import Test3 from './Test3'
 
 const Test2 = () => {

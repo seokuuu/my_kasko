@@ -1,6 +1,11 @@
+import { useSetAtom } from 'jotai/index'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { login } from '../../../api/auth'
 import { CheckImg, StyledCheckMainDiv, StyledCheckSubDiv } from '../../../common/Check/CheckImg'
+import useAlert from '../../../store/Alert/useAlert'
+import useAuth from '../../../store/Auth/useAuth'
+import { accordionAtom, headerAtom, subHeaderAtom } from '../../../store/Layout/Layout'
 import {
 	Container,
 	IbwLeft,
@@ -21,11 +26,6 @@ import {
 	SubContainer,
 	Title,
 } from './Login.Styled'
-import { accordionAtom, headerAtom, subHeaderAtom } from '../../../store/Layout/Layout'
-import { login } from '../../../api/auth'
-import { useSetAtom } from 'jotai/index'
-import useAlert from '../../../store/Alert/useAlert'
-import useAuth from '../../../store/Auth/useAuth'
 
 const Login = () => {
 	const { setLogin } = useAuth()

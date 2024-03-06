@@ -1,9 +1,8 @@
-import { useMergeListQuery } from '../../../api/shipment'
 import React, { useEffect, useState } from 'react'
+import { useMergeListQuery } from '../../../api/shipment'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
-import { RadioSearchButton } from '../../../components/Search'
-import { calculateTotal } from '../Request/utils'
 import { formatWeight } from '../../../utils/utils'
+import { calculateTotal } from '../Request/utils'
 
 const StausDetailHeader = ({ data }) => {
 	const { data: mergeCostList } = useMergeListQuery()

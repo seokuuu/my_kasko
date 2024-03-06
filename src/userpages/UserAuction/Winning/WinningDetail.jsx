@@ -10,24 +10,24 @@ import {
 	FilterContianer,
 	FilterHeader,
 	FilterTCTop,
-	TableContianer,
 	TCSubContainer,
+	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import { invenDestination, invenDestinationData, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
-import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
-import useReactQuery from '../../../hooks/useReactQuery'
-import { getCustomerDestinationByCustomerCode, getDestinationFind } from '../../../api/search'
-import { destiApproveReq, getWinningDetail } from '../../../api/auction/winning'
-import { UserAuctionWinningDetailFields, UserAuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { destiApproveReq, getWinningDetail } from '../../../api/auction/winning'
+import { getCustomerDestinationByCustomerCode } from '../../../api/search'
+import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
+import { UserAuctionWinningDetailFields, UserAuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
+import useReactQuery from '../../../hooks/useReactQuery'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import Table from '../../../pages/Table/Table'
-import PrintDepositRequestButton from '../../UserSales/_components/PrintDepositRequestButton'
 import useAlert from '../../../store/Alert/useAlert'
-import useTableSelection from '../../../hooks/useTableSelection'
-import useTableData from '../../../hooks/useTableData'
+import PrintDepositRequestButton from '../../UserSales/_components/PrintDepositRequestButton'
 
 const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()

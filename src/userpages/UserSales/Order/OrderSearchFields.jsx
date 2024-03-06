@@ -1,16 +1,12 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useState } from 'react'
 import { GreyBtn } from '../../../common/Button/Button'
-import { CheckBox } from '../../../common/Check/Checkbox'
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 import { MainSelect } from '../../../common/Option/Main'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
-import { CustomerSearch, RadioSearchButton } from '../../../components/Search'
 import DateSearchSelect from '../../../components/Search/DateSearchSelect'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
 	ExInputsWrap,
-	ExRadioWrap,
 	FilterLeft,
 	FilterRight,
 	Input,
@@ -18,11 +14,11 @@ import {
 	PWRight,
 	PartWrap,
 	RowWrap,
-	Tilde,
+	Tilde
 } from '../../../modal/External/ExternalFilter'
 import StandardFind from '../../../modal/Multi/StandardFind'
-import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 import CustomCheckBox from '../../../pages/Operate/UI/CustomCheckBox/CustomCheckBox'
+import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 
 /**
  * @constant 주문 상태

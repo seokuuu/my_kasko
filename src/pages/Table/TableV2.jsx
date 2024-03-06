@@ -7,24 +7,14 @@ import PropTypes from 'prop-types'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { styled } from 'styled-components'
-import { BlackBtn, GreyBtn } from '../../common/Button/Button'
 import CustomPagination from '../../components/pagination/CustomPagination'
 import useDragginRow from '../../hooks/useDragginRow'
 import {
-	BlueBarBtnWrap,
-	BlueBarHeader,
-	BlueSubContainer,
-	ModalContainer,
-	NonFadeOverlay,
-	WhiteCloseBtn,
-} from '../../modal/Common/Common.Styled'
-import {
-	blueModalAtom,
 	doubleClickedRowAtom,
 	pageSort,
 	selectedRows2Switch,
 	selectedRowsAtom,
-	selectedRowsAtom2,
+	selectedRowsAtom2
 } from '../../store/Layout/Layout'
 import {
 	TABLE_TYPE,
@@ -34,7 +24,6 @@ import {
 	tableShowColumnAtom,
 } from '../../store/Table/Table'
 import './TableUi.css'
-import CustomTableHeader from './CustomTableHeader'
 
 /**
  * AG-GRID settings 함수
