@@ -18,6 +18,8 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../../pages/Table/Table'
 import UserWinningSearchFields from './UserWinningSearchFields'
+import useTableSelection from '../../../hooks/useTableSelection'
+import useTableData from '../../../hooks/useTableData'
 
 const Winning = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
@@ -137,6 +139,17 @@ const Winning = ({}) => {
 		})
 	}
 
+	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
+
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
+		tableField: AuctionWinningFields,
+		serverData: data?.data?.data,
+		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		best: { display: true },
+	})
+
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -162,7 +175,7 @@ const Winning = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>2</span> / 50개 )
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -172,7 +185,7 @@ const Winning = ({}) => {
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량<span> 2 </span>kg / 총 중량 kg
+						선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}></div>
 				</TCSubContainer>

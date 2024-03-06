@@ -26,6 +26,8 @@ import InventoryFind from '../../../modal/Multi/InventoryFind'
 import Table from '../../../pages/Table/Table'
 import PrintDepositRequestButton from '../../UserSales/_components/PrintDepositRequestButton'
 import useAlert from '../../../store/Alert/useAlert'
+import useTableSelection from '../../../hooks/useTableSelection'
+import useTableData from '../../../hooks/useTableData'
 
 const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
@@ -242,6 +244,17 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 		destiApproveMutation(winningCreateData)
 	}
 
+	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
+
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
+		tableField: UserAuctionWinningDetailFields,
+		serverData: data?.data?.data,
+		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		best: { display: true },
+	})
+
 	return (
 		<FilterContianer>
 			<div>
@@ -269,7 +282,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>2</span> / 50개 )
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -283,7 +296,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량<span> 2 </span>kg / 총 중량 kg
+						선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<P>목적지</P>
