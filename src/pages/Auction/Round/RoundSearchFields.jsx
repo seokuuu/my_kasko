@@ -84,14 +84,6 @@ const RoundSearchFields = ({
 					</PartWrap>
 				</RowWrap>
 			</FilterLeft>
-			<FilterRight>
-				<ProductNumber
-					initialValue={search.productNumberList}
-					setState={setSearch}
-					valueName={'productNumberList'}
-					height="100%"
-				/>
-			</FilterRight>
 		</>
 	)
 }
