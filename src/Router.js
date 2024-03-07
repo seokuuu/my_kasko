@@ -165,6 +165,8 @@ import PackageDetailModal from './modal/Multi/PackageDetailModal'
 import PopupComponent from './pages/Operate/Exposure/Popup/PopupComponent'
 import Agreement from './modal/Common/Agreement'
 import DuplicateLogin from './pages/DuplicateLogin'
+import Timeout from './pages/Timeout'
+
 const Router = () => {
 	const auth = useAtomValue(authAtom)
 	console.log('로그인 정보 : ', auth)
@@ -184,6 +186,7 @@ const Router = () => {
 			<Route path="/forbidden" element={<Forbidden />} />
 			<Route path="/not-auth" element={<NotAuth />} />
 			<Route path="/duplicate-login" element={<DuplicateLogin />} />
+			<Route path="/time-out" element={<Timeout />} />
 			{/* 로그인, 회원가입, 아이디 찾기, 비밀번호 재발급, 캘린더, 메인 */}
 			<Route path="/" element={<Login />} />
 			<Route path="/signup" element={<SignUp />} />

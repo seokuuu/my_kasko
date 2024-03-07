@@ -5,7 +5,6 @@ import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
 import { useShipmentListQuery, useShipmentStatusUpdateMutation } from '../../../api/shipment'
 import { GlobalFilterHeader } from '../../../components/Filter'
-import { ShippingRegisterFields, ShippingRegisterFieldsCols } from '../../../constants/admin/Shipping'
 import { add_element_field } from '../../../lib/tableHelpers'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Excel from '../../../components/TableInner/Excel'
@@ -20,6 +19,7 @@ import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import { authAtom } from '../../../store/Auth/auth'
+import { RegisterFields, RegisterFieldsCols } from '../fields/RegisterFields'
 
 const initData = {
 	pageNum: 1,
@@ -28,9 +28,9 @@ const initData = {
 }
 
 const Register = () => {
-	const { simpleAlert, simpleConfirm } = useAlert()
 	const auth = useAtomValue(authAtom)
-	console.log('auth : ', auth)
+	const { simpleAlert, simpleConfirm } = useAlert()
+
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 	const exFilterToggle = useAtomValue(toggleAtom)
 
@@ -41,9 +41,10 @@ const Register = () => {
 	const { mutate: shipmentStatusUpdate } = useShipmentStatusUpdateMutation()
 
 	const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
-		tableField: ShippingRegisterFields,
+		tableField: RegisterFields(auth),
 		serverData: data,
 	})
+
 	// 선택 항목
 	const { selectedWeightStr, selectedCountStr } = useTableSelection({
 		weightKey: '중량',
@@ -100,7 +101,7 @@ const Register = () => {
 		const list = data?.list
 		if (list && Array.isArray(list)) {
 			const newList = list.map((item, index) => ({ index: index + 1, ...item }))
-			setRows(add_element_field(newList, ShippingRegisterFields))
+			setRows(add_element_field(newList, RegisterFields(auth)))
 		}
 	}, [data])
 
@@ -153,7 +154,7 @@ const Register = () => {
 				<TableV2
 					getRow={tableRowData}
 					loading={isLoading}
-					getCol={ShippingRegisterFieldsCols}
+					getCol={RegisterFieldsCols(RegisterFields(auth))}
 					tablePagination={paginationData}
 					onPageChange={onPageChange}
 				/>

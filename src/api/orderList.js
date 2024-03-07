@@ -98,7 +98,7 @@ export async function successfulOrderPost(data) {
 
 export async function successfulOrderListPost(data) {
 	try {
-		const response = await client.post(`${urls.successfulOrderAll}`, data)
+		const response = await client.post(`${urls.successfulOrderAll}`, data, { timeout: 60000 * 10 })
 		return response.data
 	} catch (e) {
 		throw new Error(e?.data)

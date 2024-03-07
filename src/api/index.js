@@ -7,7 +7,7 @@ export const formHeaders = { 'Content-Type': 'multipart/form-data' }
 
 export const client = axios.create({
 	baseURL: API_PATH,
-	timeout: 15000,
+	timeout: 30000,
 	headers: {
 		'Cache-Control': 'no-cache',
 		'Content-Type': 'application/json',
@@ -41,6 +41,9 @@ client.interceptors.response.use(
 			}
 			if (response?.status === 412) {
 				window.location.href = '/duplicate-login'
+			}
+			if (error.code === 'ECONNABORTED') {
+				window.location.href = '/time-out'
 			}
 			return Promise.reject(response)
 		} catch (e) {
