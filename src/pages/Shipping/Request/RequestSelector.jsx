@@ -8,13 +8,24 @@ import MergeHeader from './MergeHeader'
 import { calculateTotal } from './utils'
 import useAlert from '../../../store/Alert/useAlert'
 import { useLoading } from '../../../store/Loading/loadingAtom'
+import { RegisterFields, RegisterFieldsCols } from '../fields/RegisterFields'
+import TableV2 from '../../Table/TableV2'
+import { useAtomValue } from 'jotai/index'
+import { authAtom } from '../../../store/Auth/auth'
+import useTableSelection from '../../../hooks/useTableSelection'
 
 const RequestSelector = ({ list, destinations, removeSelector }) => {
+	const auth = useAtomValue(authAtom)
 	const { simpleAlert, simpleConfirm } = useAlert()
 	const [dockStatus, setDockStatus] = useState(false) // 상차도 여부
 	const [mergeCost, setMergeCost] = useState(0) // 합짐비
 
 	const { mutate: onCreateMerge, isLoading } = useShipmentMergeMutation()
+
+	// 선택 항목
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
 
 	// 선별 등록
 	const onRegister = () => {
@@ -44,17 +55,22 @@ const RequestSelector = ({ list, destinations, removeSelector }) => {
 			/>
 			<TableContianer>
 				<TCSubContainer bor>
-					<div>목록 총 ({list?.length}개 )</div>
+					<div>
+						선택목록 (선택 <span>{selectedCountStr}</span> / {list?.length?.toLocaleString()}개 )
+					</div>
 					<div style={{ display: 'flex', gap: '10px' }}></div>
 				</TCSubContainer>
 				<TCSubContainer>
-					<div>총 중량 {calculateTotal(list, '중량')} kg</div>
+					<div>
+						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {calculateTotal(list, '중량')} kg
+					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteRedBtn onClick={removeSelector}>목록 제거</WhiteRedBtn>
 						<WhiteSkyBtn onClick={onRegister}>선별 등록</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={ShippingRegisterFieldsCols} getRow={list} />
+
+				<TableV2 getRow={list} getCol={RegisterFieldsCols(RegisterFields(auth))} />
 			</TableContianer>
 		</>
 	)
