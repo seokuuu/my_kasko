@@ -14,6 +14,7 @@ export const initAuth = {
 	customerName: '',
 	role: '',
 	authorities: [],
+	statusList: [],
 }
 
 export const authAtom = atomWithStorage('auth', initAuth)

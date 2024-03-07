@@ -27,7 +27,7 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { isEqual } from 'lodash'
 import { getAgreement, getBidding, postAgreement, postBidding } from '../../../api/auction/bidding'
 import { getAuctionDestination } from '../../../api/auction/winning'
@@ -46,16 +46,17 @@ import Agreement from '../../../modal/Common/Agreement'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import useAlert from '../../../store/Alert/useAlert'
 
+import { useCheckAuction } from '../../../hooks/useCheckAuction'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
+import { authAtom } from '../../../store/Auth/auth'
+import { onSizeChange } from '../../Operate/utils'
 import Table from '../../Table/Table'
 import BiddingSearchFields from './BiddingSearchFields'
 import PackDetail from './PackDetail'
-import { getDestinations } from '../../../api/search'
-import { onSizeChange } from '../../Operate/utils'
-import { useCheckAuction } from '../../../hooks/useCheckAuction'
-import useTableSelection from '../../../hooks/useTableSelection'
-import useTableData from '../../../hooks/useTableData'
 
 const Bidding = ({}) => {
+	const auth = useAtomValue(authAtom)
 	const nowAuction = useCheckAuction() // 현재 경매 여부 체크
 	const [live, setLive] = useState(true) // LIVE get 일시 중단
 	console.log('live', live)
@@ -192,8 +193,13 @@ const Bidding = ({}) => {
 	const filteredDestiData = initDestiData?.filter((item) => item.represent === 1)
 	const firstDestiData = filteredDestiData?.[0]
 
+	const restrictStartPriceData = resData?.map((item) => ({
+		...item,
+		auctionStartPrice: null,
+	}))
+
 	useEffect(() => {
-		let getData = resData
+		let getData = auth?.statusList?.auctionStatus === '시작가 제한' ? restrictStartPriceData : resData
 		const filteredAucNum = resData && resData.map((x) => x['auctionNumber']) // 경매 번호 get
 		const checkAgreeAucNum = filteredAucNum && filteredAucNum[0] // 경매 번호 1개 추출
 		if (!isSuccess && !resData) return
@@ -455,8 +461,12 @@ const Bidding = ({}) => {
 		// 경매번호도 잘 들어오고, get 미동의(false)가 들어왔을 때
 		if (realAucNum && checkGetAgreement === false) {
 			setAgreementModal(true)
+		} else if (auth?.statusList?.auctionStatus === '경매 제한') {
+			simpleAlert('경매에 참여하실 수 없습니다.', () => {
+				navigate('/main')
+			})
 		} else setAgreementModal(false)
-	}, [realAucNum, checkGetAgreement])
+	}, [realAucNum, checkGetAgreement, auth])
 
 	// 목적지, 입찰 동의서 & 모달 여부
 	useEffect(() => {

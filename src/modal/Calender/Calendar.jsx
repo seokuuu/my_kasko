@@ -18,6 +18,7 @@ import {
 } from './Calendar.Styled'
 import { useAtom } from 'jotai'
 import { calendarAtom } from '../../store/Layout/Layout'
+import useReactQuery from '../../hooks/useReactQuery'
 
 const CalendarModal = () => {
 	const [calModal, setCalModal] = useAtom(calendarAtom)
@@ -47,6 +48,8 @@ const CalendarModal = () => {
 	function CustomFormatDay(locale, date) {
 		return date.getDate().toString()
 	}
+
+	// const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'auction', getAuction)
 
 	function customTileContent({ date, view }) {
 		if (view === 'month' && date.toDateString() === new Date().toDateString()) {

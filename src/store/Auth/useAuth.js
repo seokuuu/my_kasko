@@ -8,6 +8,7 @@ const useAuth = () => {
 	const { showAlert } = useAlert()
 	const navigate = useNavigate()
 	const auth = useAtomValue(authAtom)
+
 	const setAuth = useSetAtom(authAtom)
 
 	const authRouter = () => {
@@ -24,6 +25,8 @@ const useAuth = () => {
 		const customerName = user?.customerName
 		const role = user.roles?.role
 		const authorities = user.roles?.authorities
+		const statusList = user.statusList
+
 		const token = user?.accessToken
 		const isTempPassword = user?.useTempPassword
 
@@ -35,7 +38,7 @@ const useAuth = () => {
 		}
 
 		localStorage.setItem('accessToken', token)
-		setAuth({ ...initAuth, isAuth: true, name, customerName, role, authorities })
+		setAuth({ ...initAuth, isAuth: true, name, customerName, role, authorities, statusList })
 		queryClient.resetQueries()
 		navigate(role === '고객사' ? '/userpage/main' : 'main', { replace: true })
 	}
@@ -43,6 +46,8 @@ const useAuth = () => {
 	const getName = () => {
 		return auth ? { name: auth.name, customerName: auth.customerName } : null
 	}
+
+	console.log('어쓰 =>', auth)
 
 	// 로그아웃
 	const logout = () => {
