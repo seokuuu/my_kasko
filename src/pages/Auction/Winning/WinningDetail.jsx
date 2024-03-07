@@ -6,10 +6,8 @@ import {
 	SkyBtn,
 	TGreyBtn,
 	TWhiteBtn,
-	WhiteBlackBtn,
-	WhiteBtn,
 	WhiteRedBtn,
-	WhiteSkyBtn,
+	WhiteSkyBtn
 } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
@@ -41,20 +39,20 @@ import {
 	partDepositConfirm,
 	publishDepositForm,
 } from '../../../api/auction/winning'
-import { getCustomerDestinationByCustomerCode, getDestinationFind } from '../../../api/search'
+import { getCustomerDestinationByCustomerCode } from '../../../api/search'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import { AuctionWinningDetailFields, AuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import useAlert from '../../../store/Alert/useAlert'
 import PrintDepositRequestButton from '../../../userpages/UserSales/_components/PrintDepositRequestButton'
 import Table from '../../Table/Table'
 import WinningDetailFields from './WinningDetailFields'
-import useTableSelection from '../../../hooks/useTableSelection'
-import useTableData from '../../../hooks/useTableData'
 
 // 경매 낙찰 상세
 const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
