@@ -191,6 +191,11 @@ export const AdminOrderManageFieldsCols = (toggleModal) => [
 	},
 	{
 		...commonStyles,
+		field: '합계 금액',
+		minWidth: 150,
+	},
+	{
+		...commonStyles,
 		field: '목적지 코드',
 		minWidth: 150,
 	},
@@ -212,6 +217,11 @@ export const AdminOrderManageFieldsCols = (toggleModal) => [
 	{
 		...commonStyles,
 		field: '목적지 담당자 연락처',
+		minWidth: 150,
+	},
+	{
+		...commonStyles,
+		field: '하차지명',
 		minWidth: 150,
 	},
 	{
@@ -356,11 +366,13 @@ export const DetailOrderFieldsManage = {
 	'총 부가세': 'totalVat',
 	'제품 금액 (VAT포함)': 'totalOrderPrice',
 	'운반비 금액 (VAT포함)': 'totalFreightCost',
+	'합계 금액': 'totalPrice',
 	'목적지 코드': 'destinationCode',
 	목적지명: 'destinationName',
 	'목적지 주소': 'customerDestinationAddress',
 	'목적지 연락처': 'customerDestinationPhone',
 	'목적지 담당자 연락처': 'customerDestinationManagerPhone',
+	하차지명: 'customerDestinationName',
 	'목적지 변경 요청 상태': 'requestStatus',
 	'변경 요청 목적지명': 'requestDestinationName',
 	'변경 요청 목적지 주소': 'requestCustomerDestinationAddress',
