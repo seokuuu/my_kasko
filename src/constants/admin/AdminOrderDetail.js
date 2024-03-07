@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { commonStyles } from './Auction'
 
 var checkboxSelection = function (params) {
 	return params.columnApi.getRowGroupColumns().length === 0
@@ -16,14 +17,14 @@ const LinkRenderer = (props) => {
 	const { data } = props
 
 	const queryParams = new URLSearchParams({
-		productNoNumber: data['ProNo.'],
+		productNoNumber: data['ProNo'],
 	})
 
 	const url = `admin/order/detail?${queryParams}`
 
 	return (
 		<a style={{ color: 'blue', textDecoration: 'underline' }} rel="noreferrer">
-			{props.value || 'N'}
+			{props.value}
 		</a>
 	)
 }
@@ -35,114 +36,66 @@ const LinkRenderer = (props) => {
 export const AdminOrderManageFieldsCols = (toggleModal) => [
 	{
 		field: '',
-		width: 50,
-		headerClass: 'custom-header-style',
+		minWidth: 50,
+		...commonStyles,
 		checkboxSelection: checkboxSelection,
-		cellStyle: { borderRight: '1px solid #c8c8c8' },
 		headerCheckboxSelection: headerCheckboxSelection,
 	},
 	{
 		field: '순번',
-		width: 100,
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+		minWidth: 100,
+		...commonStyles,
 		onCellClicked: onCellClicked,
-		cellRenderer: (params) => params.value || 'N',
 	},
 	{
-		headerName: '경매 번호',
-		field: ['경매 번호'],
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 120,
-		cellRenderer: (params) => params.value || 'N',
+		...commonStyles,
+		field: '경매 번호',
+		minWidth: 120,
 	},
 	{
-		headerName: '상시 판매 번호',
-		field: ['상시판매 주문번호'],
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 120,
-		cellRenderer: (params) => params.value || 'N',
-	},
-	{
-		headerName: '주문 일자',
-		field: ['상시판매 주문일자'],
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 107,
-		cellRenderer: (params) => params.value || 'N',
-	},
-	{
-		headerName: '패키지 명',
+		...commonStyles,
 		field: '패키지명',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 100,
-		cellRenderer: (params) => params.value || 'N',
+		minWidth: 100,
 	},
 	{
-		headerName: '패키지 번호',
-		field: ['패키지 번호'],
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 100,
-		cellRenderer: (params) => params.value || 'N',
+		...commonStyles,
+		field: '패키지 번호',
+		minWidth: 100,
 	},
 	{
-		headerName: '주문 상태',
-		field: ['주문 상태'],
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 90,
-		cellRenderer: (params) => params.value || 'N',
+		...commonStyles,
+		field: '주문 상태',
+		minWidth: 90,
 	},
 	{
-		headerName: '확정전송 일자',
-		field: ['확정 전송일'],
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 107,
-		cellRenderer: (params) => params.value || 'N',
+		...commonStyles,
+		field: '확정 전송일',
+		minWidth: 107,
 	},
 	{
-		headerName: '주문 번호',
-		field: ['주문 고유 번호'],
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 110,
-		cellRenderer: (params) => params.value || '-',
+		...commonStyles,
+		field: '주문 고유 번호',
+		minWidth: 110,
 	},
 	{
-		headerName: '고객사 명',
+		...commonStyles,
 		field: '고객사명',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 110,
-		cellRenderer: (params) => params.value || 'N',
+		minWidth: 110,
 	},
 	{
-		headerName: '고객 코드',
-		field: ['고객 코드'],
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 110,
-		cellRenderer: (params) => params.value || 'N',
+		...commonStyles,
+		field: '고객 코드',
+		minWidth: 110,
 	},
 	{
-		headerName: '제품 번호',
-		field: ['제품 번호'],
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 90,
-		cellRenderer: (params) => params.value || 'N',
+		...commonStyles,
+		field: '제품 번호',
+		minWidth: 150,
 	},
 	{
-		headerName: 'ProNo.',
-		field: ['Pro.No 번호'],
-		headerClass: 'custom-header-style',
-		cellStyle: { textAlign: 'center' },
-		width: 150,
+		...commonStyles,
+		field: 'ProNo',
+		minWidth: 150,
 		cellRenderer: LinkRenderer,
 		onCellClicked: (params) => toggleModal(params),
 	},
@@ -160,7 +113,7 @@ export const DetailOrderFieldsManage = {
 	'판매가 유형': 'salePriceType',
 	'경매 번호': 'auctionNumber',
 	'제품 번호': 'productNumber',
-	'Pro.No 번호': 'productNoNumber',
+	ProNo: 'productNoNumber',
 	낙찰가: 'biddingPrice',
 	'확정 전송가': 'confirmPrice',
 	'규격 약호': 'spec',
@@ -197,9 +150,7 @@ export const DetailOrderFieldsManage = {
 	패키지명: 'packageName',
 	'패키지 번호': 'packageNumber',
 	'판매 구분': 'saleCategory',
-	'상시판매 주문번호': 'orderNumber',
 	'현대제철 주문번호': 'hsOrderNo',
-	'상시판매 주문일자': 'createDate',
 	등급: 'grade',
 	중량: 'weight',
 	두께: 'thickness',
