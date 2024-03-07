@@ -42,6 +42,9 @@ client.interceptors.response.use(
 			if (response?.status === 412) {
 				window.location.href = '/duplicate-login'
 			}
+			if (error.code === 'ECONNABORTED') {
+				window.location.href = '/time-out'
+			}
 			return Promise.reject(response)
 		} catch (e) {
 			console.error('error', '네트워크 오류가 발생했습니다.', e)
