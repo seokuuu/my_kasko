@@ -13,13 +13,11 @@ import {
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import { useState } from 'react'
-import { CustomerSearch, DateSearchSelect } from '../../../components/Search'
-import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
-import { GreyBtn } from '../../../common/Button/Button'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
+import { useState } from 'react'
+import { GreyBtn } from '../../../common/Button/Button'
 import StandardFind from '../../../modal/Multi/StandardFind'
+import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 
 const RoundAucListEditFields = ({
 	// prettier-ignore
@@ -73,13 +71,14 @@ const RoundAucListEditFields = ({
 					<PartWrap>
 						<h6>매입처</h6>
 						<PWRight>
-							<MainSelect
+							{/* <MainSelect
 								options={supplierList}
 								defaultValue={supplierList[0]}
 								value={search.supplier}
 								name="supplier"
 								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
-							/>
+							/> */}
+							<Input name="supplier" value={search.supplier} onChange={commonNumInputHandler} />
 						</PWRight>
 					</PartWrap>
 
@@ -120,12 +119,19 @@ const RoundAucListEditFields = ({
 								name="stockStatus"
 								onChange={(e) => commonDropdownButtonHandler(e, 'stockStatus')}
 							/>
-							<MainSelect
+							{/* 제조사 */}
+							{/* <MainSelect
 								options={makerList}
 								defaultValue={makerList[0]}
 								value={search.maker}
 								name="maker"
 								onChange={(e) => commonDropdownButtonHandler(e, 'maker')}
+							/> */}
+							<Input
+								style={{ marginRight: '5px' }}
+								name="maker"
+								value={search.maker}
+								onChange={commonNumInputHandler}
 							/>
 							<MainSelect
 								options={gradeList}

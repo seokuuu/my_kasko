@@ -1,32 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
-import { BlackBtn, BtnBound, GreyBtn, TGreyBtn } from '../../../common/Button/Button'
-import { MainSelect } from '../../../common/Option/Main'
-import { storageOptions } from '../../../common/Option/SignUp'
+import { BlackBtn, BtnBound, TGreyBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import {
 	CustomInput,
-	DoubleWrap,
-	ExInputsWrap,
 	FilterContianer,
-	FilterFooter,
 	FilterHeader,
-	FilterLeft,
-	FilterRight,
-	FilterSubcontianer,
 	FilterTCTop,
 	FilterTopContainer,
-	Input,
-	MiniInput,
-	PartWrap,
-	PWRight,
-	ResetImg,
-	RowWrap,
 	TableContianer,
 	TCSubContainer,
-	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
 import { useAtom } from 'jotai'
@@ -34,7 +19,9 @@ import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { useQueryClient } from '@tanstack/react-query'
+import { isArray, isEqual } from 'lodash'
 import { getWinningCreate } from '../../../api/auction/winning'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { AuctionWinningCreateFields, AuctionWinningCreateFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -45,15 +32,13 @@ import {
 	ModalContainer,
 	WhiteCloseBtn,
 } from '../../../modal/Common/Common.Styled'
-import Table from '../../Table/Table'
-import { isArray, isEqual } from 'lodash'
-import { selectedRows2Switch } from '../../../store/Layout/Layout'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import WinningCreateSearchFields from './WinningCreateSearchFields'
 import useAlert from '../../../store/Alert/useAlert'
+import { selectedRows2Switch } from '../../../store/Layout/Layout'
+import Table from '../../Table/Table'
+import WinningCreateSearchFields from './WinningCreateSearchFields'
 
 // 낙찰 생성 제품 추가(단일) 메인 컴포넌트
-const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData }) => {
+const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, setwinningCreateInput }) => {
 	const { simpleConfirm, simpleAlert } = useAlert()
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
@@ -209,10 +194,14 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData })
 		})
 	}
 
+	const confirmOnClickHandler = () => {
+		simpleAlert('적용 되었습니다.')
+	}
+
 	return (
 		<>
 			<FadeOverlay />
-			<ModalContainer style={{ width: '75%', height: '98vh' }}>
+			<ModalContainer style={{ width: '75%', height: '100%' }}>
 				<BlueBarHeader style={{ height: '60px' }}>
 					{/* <div>{title}</div> */}
 					<div>낙찰 생성 제품 추가</div>
@@ -261,14 +250,34 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData })
 								</div>
 								<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
 									<p>낙찰가 일괄 변경</p>
-									<CustomInput placeholder="낙찰가 입력" width={120} height={32} />
-									<TGreyBtn height={30} style={{ width: '50px' }}>
+									<CustomInput
+										placeholder="낙찰가 입력"
+										width={120}
+										height={32}
+										onChange={(e) => {
+											setwinningCreateInput((p) => ({
+												...p,
+												biddingPrice: parseInt(e.target.value) || null,
+											}))
+										}}
+									/>
+									<TGreyBtn height={30} style={{ width: '50px' }} onClick={confirmOnClickHandler}>
 										적용
 									</TGreyBtn>
 									<BtnBound />
 									<p>확정전송가 일괄 변경</p>
-									<CustomInput placeholder="확정전송가 입력" width={120} height={32} />
-									<TGreyBtn height={30} style={{ width: '50px' }}>
+									<CustomInput
+										placeholder="확정전송가 입력"
+										width={120}
+										height={32}
+										onChange={(e) => {
+											setwinningCreateInput((p) => ({
+												...p,
+												confirmPrice: parseInt(e.target.value) || null,
+											}))
+										}}
+									/>
+									<TGreyBtn height={30} style={{ width: '50px' }} onClick={confirmOnClickHandler}>
 										적용
 									</TGreyBtn>
 								</div>

@@ -72,7 +72,7 @@ const WinningCreate = ({}) => {
 	const [winningCreateData, setWinningCreateData] = useState(init)
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
 
-	console.log('winningCreateInput', winningCreateInput)
+	console.log('winningCreateInput', winningCreateInput.biddingPrice)
 
 	console.log('winningCreateData', winningCreateData)
 
@@ -83,34 +83,7 @@ const WinningCreate = ({}) => {
 	const [isModal, setIsModal] = useAtom(WinningCreateFindAtom)
 	const [addProdModal, setAddProdModal] = useAtom(WinningProductAddAtom)
 	//checkSales
-	console.log('addProdModal', addProdModal)
-	const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
 
-	//checkShips
-	const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
-
-	useEffect(() => {
-		// true에 해당되면, value를, false면 빈값을 반환ㄴ
-		const updatedCheck = checkSales.map((value, index) => {
-			return check1[index] ? value : ''
-		})
-		// 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-		const filteredCheck = updatedCheck.filter((item) => item !== '')
-		setCheckData1(filteredCheck)
-
-		// 전송용 input에 담을 때
-		// setInput({
-		//   ...input,
-		//   businessType: updatedCheck.filter(item => item !== ''),
-		// });
-	}, [check1])
-
-	const handleSelectChange = (selectedOption, name) => {
-		// setInput(prevState => ({
-		//   ...prevState,
-		//   [name]: selectedOption.label,
-		// }));
-	}
 	const [isRotated, setIsRotated] = useState(false)
 
 	// Function to handle image click and toggle rotation
@@ -169,8 +142,14 @@ const WinningCreate = ({}) => {
 	const queryClient = useQueryClient()
 	const checkedArray2 = useAtom(selectedRowsAtom2)[0]
 	const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
+	const [totalWon, setTotalWon] = useState({
+		biddingPrice: null,
+		confirmPrice: null,
+	})
 
-	console.log('rowAtomSwitch main @@', rowAtomSwitch)
+	console.log('totalWon', totalWon)
+
+	console.log('checkedArray2', checkedArray2?.length)
 
 	useEffect(() => {
 		const updatedProductList = checkedArray2?.map((item) => ({
@@ -184,6 +163,13 @@ const WinningCreate = ({}) => {
 		setWinningCreateData((prevData) => ({
 			...prevData,
 			productList: updatedProductList,
+		}))
+
+		// TODO !!!!!!!!!!!
+		setTotalWon((prevData) => ({
+			...prevData,
+			biddingPrice: winningCreateInput?.biddingPrice * (checkedArray2?.length || 0),
+			confirmPrice: winningCreateInput?.confirmPrice * (checkedArray2?.length || 0),
 		}))
 	}, [checkedArray2, winningCreateInput])
 
@@ -210,19 +196,6 @@ const WinningCreate = ({}) => {
 			// setTablePagination(resPagination)
 		}
 	}, [newResData])
-
-	// const handleRemoveBtn = useCallback(() => {
-	// 	if (isArray(checkedArray2) && checkedArray2.length > 0) {
-	// 		if (window.confirm('선택한 항목을 삭제 목록에 추가하시겠습니까?')) {
-	// 			const filteredArray = newResData.filter(
-	// 				(item) => !checkedArray2.some((checkedItem) => checkedItem['제품 고유 번호'] === item['제품 고유 번호']),
-	// 			)
-	// 			setNewResData(filteredArray)
-	// 		}
-	// 	} else {
-	// 		alert('선택해주세요!')
-	// 	}
-	// }, [checkedArray2, newResData])
 
 	const handleRemoveBtn = useCallback(() => {
 		if (!isArray(checkedArray2) || !checkedArray2.length > 0) return simpleAlert('추가할 항목을 선택해주세요.')
@@ -374,17 +347,9 @@ const WinningCreate = ({}) => {
 							</FilterTCBSubdiv>
 							<FilterTCBSubdiv>
 								<div style={{ marginRight: '10px' }}>
-									<h6 style={{ fontSize: '18px' }}>낙찰가 총액</h6>
+									<h6 style={{ fontSize: '18px' }}>낙찰가 총액 (VAT 포함)</h6>
 									<InputContainer>
-										<NoOutInput
-											type="number"
-											onChange={(e) => {
-												setwinningCreateInput((p) => ({
-													...p,
-													biddingPrice: parseInt(e.target.value) || null,
-												}))
-											}}
-										/>
+										<NoOutInput type="number" value={totalWon?.biddingPrice} />
 										<Unit>원</Unit>
 									</InputContainer>
 								</div>
@@ -394,98 +359,15 @@ const WinningCreate = ({}) => {
                 </div> */}
 
 								<div style={{ marginRight: '10px' }}>
-									<h6 style={{ fontSize: '17px' }}> 확정전송 총액</h6>
+									<h6 style={{ fontSize: '17px' }}> 확정전송 총액 (공급가)</h6>
 									<InputContainer>
-										<NoOutInput
-											type="number"
-											onChange={(e) => {
-												setwinningCreateInput((p) => ({
-													...p,
-													confirmPrice: parseInt(e.target.value) || null,
-												}))
-											}}
-										/>
+										<NoOutInput type="number" value={totalWon?.confirmPrice} />
 										<Unit>원</Unit>
 									</InputContainer>
 								</div>
 							</FilterTCBSubdiv>
 						</FilterTCBottom>
 					</FilterTopContainer>
-					{/* <FilterSubcontianer>
-            <FilterLeft>
-              <RowWrap>
-                <PartWrap first>
-                  <h6>창고 구분</h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>매입처 </h6>
-                  <PWRight>
-                    <MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-                  </PWRight>
-                </PartWrap>
-
-                <PartWrap>
-                  <h6>규격 약호</h6>
-                  <Input />
-                  <GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17}>
-                    찾기
-                  </GreyBtn>
-                </PartWrap>
-              </RowWrap>
-              <RowWrap none>
-                <PartWrap first>
-                  <h6>구분</h6>
-                  <MainSelect />
-                  <MainSelect />
-                </PartWrap>
-              </RowWrap>
-              <RowWrap none>
-                <PartWrap first>
-                  <h6>두께(MM)</h6>
-                  <MiniInput /> <Tilde>~</Tilde>
-                  <MiniInput />
-                </PartWrap>
-                <PartWrap>
-                  <h6>폭(MM)</h6>
-                  <MiniInput /> <Tilde>~</Tilde>
-                  <MiniInput />
-                </PartWrap>
-                <PartWrap>
-                  <h6>길이(MM)</h6>
-                  <MiniInput /> <Tilde>~</Tilde>
-                  <MiniInput />
-                </PartWrap>
-              </RowWrap>
-            </FilterLeft>
-            <FilterRight>
-              <DoubleWrap>
-                <h6>제품 번호 </h6>
-                <textarea
-                  placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-                />
-              </DoubleWrap>
-            </FilterRight>
-          </FilterSubcontianer>
-          <FilterFooter>
-            <div style={{ display: 'flex' }}>
-              <p>초기화</p>
-              <ResetImg
-                src="/img/reset.png"
-                style={{ marginLeft: '10px', marginRight: '20px' }}
-                onClick={handleImageClick}
-                className={isRotated ? 'rotate' : ''}
-              />
-            </div>
-            <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40}>
-                검색
-              </BlackBtn>
-            </div>
-          </FilterFooter> */}
 					<GlobalProductSearch
 						param={param}
 						isToggleSeparate={true}
@@ -543,6 +425,7 @@ const WinningCreate = ({}) => {
 					setAddModal={setAddProdModal}
 					newResData={newResData}
 					setNewResData={setNewResData}
+					setwinningCreateInput={setwinningCreateInput}
 				/>
 			)}
 			{destinationPopUp && (

@@ -7,7 +7,7 @@ import {
 	TGreyBtn,
 	TWhiteBtn,
 	WhiteRedBtn,
-	WhiteSkyBtn
+	WhiteSkyBtn,
 } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
@@ -60,6 +60,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [tablePagination, setTablePagination] = useState([])
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
+
 	console.log('detailRow', detailRow)
 	const titleData = [
 		'경매 번호',
@@ -333,6 +334,9 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 					refetch()
 					queryClient.invalidateQueries('destiApprove')
 					setWinningCreateData({})
+					if (totalCountStr === 0) {
+						window.location.reload()
+					}
 				},
 			})
 		},
@@ -421,6 +425,17 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
 		best: { display: true },
 	})
+
+	const [totalHap, setTotalHap] = useState(totalCountStr)
+
+	// 목록에 하나도 없으면 닫음.
+	useEffect(() => {
+		console.log('작동 전 : ', totalCountStr)
+		if (resData?.length === 0) {
+			console.log('작동 후 : ', totalCountStr)
+			window.location.reload()
+		}
+	}, [resData, totalHap])
 
 	return (
 		<FilterContianer>
