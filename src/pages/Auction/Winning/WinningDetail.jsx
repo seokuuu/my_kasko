@@ -53,6 +53,8 @@ import useAlert from '../../../store/Alert/useAlert'
 import PrintDepositRequestButton from '../../../userpages/UserSales/_components/PrintDepositRequestButton'
 import Table from '../../Table/Table'
 import WinningDetailFields from './WinningDetailFields'
+import useTableSelection from '../../../hooks/useTableSelection'
+import useTableData from '../../../hooks/useTableData'
 
 // 경매 낙찰 상세
 const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
@@ -60,14 +62,28 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [tablePagination, setTablePagination] = useState([])
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
-	const titleData = ['고객사 명', '고객 코드', '창고', '총 수량', '총 중량', '입금 요청 금액']
+	console.log('detailRow', detailRow)
+	const titleData = [
+		'경매 번호',
+		'고객사 명',
+		'고객 코드',
+		'창고',
+		'총 수량',
+		'총 중량',
+		'제품 금액 (VAT 포함)',
+		'운반비 (VAT 포함)',
+		'입금 요청 금액',
+	]
 	const contentData = [
+		detailRow?.['경매 번호'],
 		detailRow?.['고객사명'],
 		detailRow?.['고객 코드'],
 		detailRow?.['창고'],
 		detailRow?.['수량'],
 		detailRow?.['중량'],
 		new Intl.NumberFormat('en-US').format(detailRow?.['입금 요청액']) + '원',
+		new Intl.NumberFormat('en-US').format(detailRow?.['제품 금액 (VAT 포함)']) + '원',
+		new Intl.NumberFormat('en-US').format(detailRow?.['운반비 (VAT 포함)']) + '원',
 	]
 
 	const matchingData = {
@@ -397,6 +413,17 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 		})
 	}
 
+	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
+
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
+		tableField: AuctionWinningDetailFields,
+		serverData: data?.data?.data,
+		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		best: { display: true },
+	})
+
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -413,7 +440,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 				</FilterTCTop>
 			</FilterTopContainer>
 			<ClaimTable style={{ marginBottom: '30px' }}>
-				{[0, 1].map((index) => (
+				{[0, 1, 2].map((index) => (
 					<ClaimRow key={index}>
 						{titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
 							<Fragment agmentkey={title}>
@@ -438,7 +465,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>2</span> / 50개 )
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -448,7 +475,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량<span> 2 </span>kg / 총 중량 kg
+						선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 					</div>
 					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
 						<p>목적지</p>

@@ -141,7 +141,7 @@ const SideBar = ({ expanded, setExpanded, depth2Color }) => {
 			{calModal && (
 				<ModalBg onClick={closeModal}>
 					<CalModalWrap onClick={handleModalClick}>
-						<CalendarModal />
+						<CalendarModal setCalModal={setCalModal} />
 					</CalModalWrap>
 				</ModalBg>
 			)}

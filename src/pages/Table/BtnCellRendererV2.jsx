@@ -1,8 +1,7 @@
-import { useAtom, useSetAtom } from 'jotai'
-import React, { useState } from 'react'
+import { useAtom } from 'jotai'
+import React from 'react'
 import { SkyBtn } from '../../common/Button/Button'
-import { operateAddAtom, selectedRowsAtom, weightAtom, weightObj } from '../../store/Layout/Layout'
-import { useAtomValue } from 'jotai'
+import { weightAtom, weightObj } from '../../store/Layout/Layout'
 const BtnCellRendererV2 = ({ data, uidFieldName, editType, moveUrl }) => {
   const uid = data[uidFieldName]
   const [weight, setWeight] = useAtom(weightAtom)

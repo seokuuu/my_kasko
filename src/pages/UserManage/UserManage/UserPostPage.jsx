@@ -4,12 +4,12 @@ import {
   OverAllSub,
 } from '../../../common/Overall/Overall.styled';
 
-import SideBar from '../../../components/Left/SideBar';
 import Header from '../../../components/Header/Header';
 import SubHeader from '../../../components/Header/SubHeader';
+import SideBar from '../../../components/Left/SideBar';
 
-import UserPost from './UserPost';
 import { useState } from 'react';
+import UserPost from './UserPost';
 const UserPostPage = () => {
   const [expanded, setExpanded] = useState('사용자 관리');
   const [depth2Color, setDepth2Color] = useState('사용자 관리');

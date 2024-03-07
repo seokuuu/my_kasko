@@ -1,20 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
+import styled from 'styled-components'
+import { BlackBtn } from '../../../common/Button/Button'
+import { CheckBox } from '../../../common/Check/Checkbox'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
+import { FlexContent, FlexPart } from '../../../common/OnePage/OnePage.Styled'
 import {
 	FadeOverlay,
-	ModalContainer,
-	ModalSubContainer,
-	ModalText,
 	ModalTitle,
-	WhiteCloseBtn,
+	WhiteCloseBtn
 } from '../../../modal/Common/Common.Styled'
-import { ModalPart } from '../../User/SignUp/SignUp.Styled'
-import { BlackBtn } from '../../../common/Button/Button'
-import { log } from '../../../lib'
-import styled from 'styled-components'
-import { useState } from 'react'
-import { FlexContent, FlexPart, FlexTitle } from '../../../common/OnePage/OnePage.Styled'
-import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
-import { CheckBox } from '../../../common/Check/Checkbox'
 
 const ClientAuctionRestrictionModal = ({ clientRestrict, selectedValue, setSelectedValue, setAuctionModal }) => {
 	const radioDummy3 = ['제한 없음', '시작가 제한', '경매 제한']

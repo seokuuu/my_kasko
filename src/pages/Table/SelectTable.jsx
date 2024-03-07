@@ -1,10 +1,8 @@
-import Table from './Table'
-import { AdminOrderManageFieldsCols } from '../../constants/admin/AdminOrderDetail'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import { client } from '../../api'
 import TableUi from '../../components/TableUiComponent/TableUi'
 import { columnDefs } from '../../components/TableUiComponent/etcVariable'
 import useAlert from '../../store/Alert/useAlert'
-import { client } from '../../api'
 
 
 const SelectedRowsTable = ({ selectedRows, orderId }) => {

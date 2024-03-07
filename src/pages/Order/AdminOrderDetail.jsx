@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { SkyBtn, WhiteRedBtn } from '../../common/Button/Button'
+import { BlackBtn, NewBottomBtnWrap, SkyBtn, WhiteBtn, WhiteRedBtn } from '../../common/Button/Button'
 import Excel from '../../components/TableInner/Excel'
 import { onClickCheckAtom, selectedRowsAtom, toggleAtom } from '../../store/Layout/Layout'
 import {
@@ -26,6 +26,7 @@ import GlobalProductSearch from '../../components/GlobalProductSearch/GlobalProd
 import { isEqual } from 'lodash'
 import OrderDetailSearchFields from './OrderDetailSearchFields'
 import useOrder from './useOrder'
+import { StyledBtnContainer } from '../Operate/Common/Claim/styles/StyledClaim'
 
 const useQuery = () => {
 	return new URLSearchParams(useLocation().search)
@@ -160,7 +161,7 @@ const AdminOrderDetail = () => {
 	const [orderId, setOrderId] = useState(0)
 	const toggleModal = (data) => {
 		setIsTableModal((prev) => !prev)
-		setSelectedCellData(data.data['Pro.No 번호'])
+		setSelectedCellData(data.data['ProNo'])
 		setOrderId(data.data['주문 고유 번호'])
 	}
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
@@ -328,6 +329,11 @@ const AdminOrderDetail = () => {
 							)}
 						</div>
 					</TCSubContainer>
+					<NewBottomBtnWrap bottom={-5} borderTop={'none'}>
+						<WhiteBtn width={13} height={40} onClick={() => navigate('/order')}>
+							돌아가기
+						</WhiteBtn>
+					</NewBottomBtnWrap>
 				</TableContianer>
 			</FilterContianer>
 			{isTableModal && (

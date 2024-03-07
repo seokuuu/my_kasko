@@ -305,64 +305,6 @@ const StartPrice = ({}) => {
 
 			{exFilterToggle && (
 				<>
-					{/* <FilterSubcontianer>
-						<FilterLeft>
-							<RowWrap>
-								<PartWrap first>
-									<h6>구분</h6>
-									<PWRight style={{ width: '160px' }}>
-										<MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-									</PWRight>
-									<PWRight style={{ width: '160px' }}>
-										<MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-									</PWRight>
-									<PWRight style={{ width: '160px' }}>
-										<MainSelect options={storageOptions} defaultValue={storageOptions[0]} />
-									</PWRight>
-								</PartWrap>
-							</RowWrap>
-
-							<RowWrap style={{ borderBottom: '0px' }}>
-								<PartWrap first>
-									<h6>적용 일자</h6>
-									<GridWrap>
-										<DateGrid bgColor={'white'} fontSize={17} />
-										<Tilde>~</Tilde>
-										<DateGrid bgColor={'white'} fontSize={17} />
-									</GridWrap>
-								</PartWrap>
-
-								<PartWrap>
-									<h6>유찰 횟수</h6>
-									<ExInputsWrap>
-										<Input /> <Tilde>~</Tilde>
-										<Input />
-									</ExInputsWrap>
-								</PartWrap>
-								<PartWrap />
-							</RowWrap>
-						</FilterLeft>
-						<FilterRight>
-							<DoubleWrap></DoubleWrap>
-						</FilterRight>
-					</FilterSubcontianer> */}
-					{/* <FilterFooter>
-            <div style={{ display: 'flex' }}>
-              <p>초기화</p>
-              <ResetImg
-                src="/img/reset.png"
-                style={{ marginLeft: '10px', marginRight: '20px' }}
-                onClick={handleImageClick}
-                className={isRotated ? 'rotate' : ''}
-              />
-            </div>
-            <div style={{ width: '180px' }}>
-              <BlackBtn width={100} height={40}>
-                검색
-              </BlackBtn>
-            </div>
-						sdfdf
-          </FilterFooter> */}
 					<GlobalProductSearch
 						param={param}
 						isToggleSeparate={true}
