@@ -188,9 +188,9 @@ const Single = ({}) => {
 		const updatedProductList = checkedArrayState?.map((item) => ({
 			productUid: item['제품 고유 번호'],
 			biddingPrice:
-				item['응찰가'] === 0
-					? item['시작가'] + finalInput?.biddingPrice
-					: item['현재 최고 가격'] + finalInput?.biddingPrice,
+				item['현재 최고 가격'] === 0
+					? item['시작가'] + (finalInput?.biddingPrice || 1)
+					: item['현재 최고 가격'] + (finalInput?.biddingPrice || 1),
 			customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
 		}))

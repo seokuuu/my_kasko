@@ -23,6 +23,8 @@ import { getExtraProductList } from '../../../api/auction/round'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { AuctionRoundExtraProductFields, AuctionRoundExtraProductFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
 import {
 	BlueBarHeader,
@@ -34,8 +36,6 @@ import {
 import useAlert from '../../../store/Alert/useAlert'
 import Table from '../../Table/Table'
 import RoundAucListEditFields from './RoundAucListEditFields'
-import useTableSelection from '../../../hooks/useTableSelection'
-import useTableData from '../../../hooks/useTableData'
 
 // 경매 제품 추가(단일) 메인 컴포넌트
 // 경매 제품 추가 (패키지), 경매 목록 상세(종료된 경매)와 호환 가능
@@ -187,14 +187,14 @@ const RoundAucProAdd = ({
 		<>
 			<FadeOverlay />
 			<ModalContainer style={{ width: '75%', height: '100%' }}>
-				<BlueBarHeader style={{ height: '60px' }}>
+				<BlueBarHeader style={{ height: '50px' }}>
 					{/* <div>{title}</div> */}
 					<div>경매 제품 추가({types})</div>
 					<div>
 						<WhiteCloseBtn onClick={blockModalExitHandler} src="/svg/white_btn_close.svg" />
 					</div>
 				</BlueBarHeader>
-				<BlueSubContainer style={{ padding: '0px 25px' }}>
+				<BlueSubContainer style={{ padding: '0px 25px', height: '500px' }}>
 					<FilterContianer>
 						<FilterHeader>
 							<div style={{ display: 'flex' }}></div>
@@ -202,7 +202,7 @@ const RoundAucProAdd = ({
 							<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 						</FilterHeader>
 						<FilterTopContainer>
-							<FilterTCTop>
+							<FilterTCTop style={{ height: '40px' }}>
 								<h6>경매 번호</h6>
 								<p>2023041050</p>
 							</FilterTCTop>
@@ -243,7 +243,7 @@ const RoundAucProAdd = ({
 								isLoading={isLoading}
 								onPageChange={onPageChange}
 							/>
-							<TCSubContainer style={{ marginTop: '25px' }}>
+							<TCSubContainer>
 								<div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
 									<BlackBtn width={13} height={40} onClick={onAdd}>
 										제품 추가

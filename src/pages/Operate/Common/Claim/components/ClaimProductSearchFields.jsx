@@ -93,12 +93,11 @@ const ClaimProductSearchFields = ({
 						</PWRight>
 						{/* 제조사 */}
 						<PWRight>
-							<MainSelect
-								options={makerList}
-								defaultValue={makerList[0]}
+							<Input
+								style={{ marginRight: '5px' }}
 								name="maker"
 								value={search.maker}
-								onChange={(e) => commonDropdownButtonHandler(e, 'maker')}
+								onChange={commonNumInputHandler}
 							/>
 						</PWRight>
 						{/* 재고 상태 */}

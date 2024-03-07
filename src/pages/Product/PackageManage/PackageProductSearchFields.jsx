@@ -1,21 +1,18 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-import { BlackBtn, GreyBtn } from '../../../common/Button/Button'
+import { useSetAtom } from 'jotai'
 import { MainSelect } from '../../../common/Option/Main'
+import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
+	ExCheckWrap,
 	ExInputsWrap,
-	FilterRight,
 	FilterLeft,
+	FilterRight,
 	Input,
 	PWRight,
 	PartWrap,
 	RowWrap,
 	Tilde,
-	FilterSubcontianer,
-	ExCheckWrap,
 } from '../../../modal/External/ExternalFilter'
-import StandardFind from '../../../modal/Multi/StandardFind'
-import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 
 import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'

@@ -244,18 +244,18 @@ const Bidding = ({}) => {
 				return {
 					productUid: item['제품 고유 번호'],
 					biddingPrice:
-						item['응찰가'] === 0
-							? item['시작가'] + finalInput?.biddingPrice
-							: item['현재 최고 가격'] + finalInput?.biddingPrice,
+						item['현재 최고 가격'] === 0
+							? item['시작가'] + (finalInput?.biddingPrice || 1)
+							: item['현재 최고 가격'] + (finalInput?.biddingPrice || 1),
 					customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 				}
 			} else if (param?.type === '패키지') {
 				return {
 					packageNumber: item['패키지 번호'],
 					biddingPrice:
-						item['응찰가'] === 0
-							? item['시작가'] + finalInput?.biddingPrice
-							: item['현재 최고 가격'] + finalInput?.biddingPrice,
+						item['현재 최고 가격'] === 0
+							? item['시작가'] + (finalInput?.biddingPrice || 1)
+							: item['현재 최고 가격'] + (finalInput?.biddingPrice || 1),
 					customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 				}
 			}
