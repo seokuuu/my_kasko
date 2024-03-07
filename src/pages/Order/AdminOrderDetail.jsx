@@ -1,32 +1,31 @@
+import { useAtom, useAtomValue } from 'jotai/index'
+import { isEqual } from 'lodash'
 import React, { Fragment, useEffect, useState } from 'react'
-import { BlackBtn, NewBottomBtnWrap, SkyBtn, WhiteBtn, WhiteRedBtn } from '../../common/Button/Button'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { getDetailOrderList } from '../../api/orderList'
+import { NewBottomBtnWrap, SkyBtn, WhiteBtn, WhiteRedBtn } from '../../common/Button/Button'
+import GlobalProductSearch from '../../components/GlobalProductSearch/GlobalProductSearch'
+import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../components/MapTable/MapTable'
 import Excel from '../../components/TableInner/Excel'
-import { onClickCheckAtom, selectedRowsAtom, toggleAtom } from '../../store/Layout/Layout'
+import Hidden from '../../components/TableInner/Hidden'
+import PageDropdown from '../../components/TableInner/PageDropdown'
+import { AdminOrderManageFieldsCols, DetailOrderFieldsManage } from '../../constants/admin/AdminOrderDetail'
+import useReactQuery from '../../hooks/useReactQuery'
+import { add_element_field } from '../../lib/tableHelpers'
 import {
 	FilterContianer,
 	FilterHeader,
 	FilterTCTop,
-	TableContianer,
 	TCSubContainer,
+	TableContianer,
 } from '../../modal/External/ExternalFilter'
-import Hidden from '../../components/TableInner/Hidden'
-import PageDropdown from '../../components/TableInner/PageDropdown'
-import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../components/MapTable/MapTable'
-import Table from '../Table/Table'
-import { AdminOrderManageFieldsCols, DetailOrderFieldsManage } from '../../constants/admin/AdminOrderDetail'
-import useReactQuery from '../../hooks/useReactQuery'
-import { getDetailOrderList } from '../../api/orderList'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { useAtom, useAtomValue } from 'jotai/index'
-import ProNoPage from './ProNoPage'
-import { add_element_field } from '../../lib/tableHelpers'
-import { KilogramSum } from '../../utils/KilogramSum'
 import useAlert from '../../store/Alert/useAlert'
-import GlobalProductSearch from '../../components/GlobalProductSearch/GlobalProductSearch'
-import { isEqual } from 'lodash'
+import { onClickCheckAtom, selectedRowsAtom, toggleAtom } from '../../store/Layout/Layout'
+import { KilogramSum } from '../../utils/KilogramSum'
+import Table from '../Table/Table'
 import OrderDetailSearchFields from './OrderDetailSearchFields'
+import ProNoPage from './ProNoPage'
 import useOrder from './useOrder'
-import { StyledBtnContainer } from '../Operate/Common/Claim/styles/StyledClaim'
 
 const useQuery = () => {
 	return new URLSearchParams(useLocation().search)

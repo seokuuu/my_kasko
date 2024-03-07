@@ -129,28 +129,49 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 		}
 	}
 
+	console.log('newResData', newResData)
+
 	useEffect(() => {
 		const fetchData = async () => {
 			if (resData && Array.isArray(resData)) {
 				const newInitRow = await add_element_field(resData, AuctionRoundDetailFields)
 				console.log('newInitRow', newInitRow)
-
 				setInitRow(newInitRow)
-				setGetRow([...newResData, ...newInitRow])
+
+				// 제품 추가에서 '고유 번호' 중복 object 제거
+				const removeDuplicates = (data) => {
+					// 중복을 확인할 객체 생성
+					const uniqueMap = {}
+
+					// 중복을 제거한 결과 반환
+					return data.filter((item) => {
+						const uniqueKey = item['고유 번호']
+
+						// 중복된 '고유 번호'가 없으면 해당 항목을 유지하고 true 반환
+						if (!uniqueMap[uniqueKey]) {
+							uniqueMap[uniqueKey] = true
+							return true
+						}
+
+						// 중복된 '고유 번호'가 있으면 해당 항목을 제거하고 false 반환
+						return false
+					})
+				}
+
+				const uniqueData = removeDuplicates(newResData)
+				setGetRow([...uniqueData, ...newInitRow])
 			}
 		}
 
 		fetchData() // 비동기 함수를 호출
 	}, [newResData, resData])
 
-	const [outAddData, setOutAddData] = useState()
-	const [delData, setDelData] = useState()
+	const [outAddData, setOutAddData] = useState([])
+	const [delData, setDelData] = useState([])
 	const onListAdd = (selectedData) => {
 		try {
-			// const newList = [...new Set([...selectedData, ...list])]
-			// setList(newList) // 선별 목록 데이터 등록
 			setSelectedRows([]) // 테이블 체크 목록 초기화
-			setOutAddData(selectedData.map((x) => x['uid']))
+			setOutAddData((prev) => [...prev, ...selectedData.map((x) => x['uid'])])
 		} catch (error) {
 			simpleAlert(error.message)
 		}
@@ -206,7 +227,10 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 		if (outAddData) {
 			const updatedOutAddData = outAddData.filter((item) => !selectedRows.map((row) => row[newKey]).includes(item)) // add된 것들 처리
 
-			setOutAddData(updatedOutAddData)
+			setOutAddData((prev) => ({
+				...prev,
+				updatedOutAddData,
+			}))
 		}
 	}
 

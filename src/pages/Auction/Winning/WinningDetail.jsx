@@ -6,8 +6,6 @@ import {
 	SkyBtn,
 	TGreyBtn,
 	TWhiteBtn,
-	WhiteBlackBtn,
-	WhiteBtn,
 	WhiteRedBtn,
 	WhiteSkyBtn,
 } from '../../../common/Button/Button'
@@ -41,20 +39,20 @@ import {
 	partDepositConfirm,
 	publishDepositForm,
 } from '../../../api/auction/winning'
-import { getCustomerDestinationByCustomerCode, getDestinationFind } from '../../../api/search'
+import { getCustomerDestinationByCustomerCode } from '../../../api/search'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import { AuctionWinningDetailFields, AuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import useAlert from '../../../store/Alert/useAlert'
 import PrintDepositRequestButton from '../../../userpages/UserSales/_components/PrintDepositRequestButton'
 import Table from '../../Table/Table'
 import WinningDetailFields from './WinningDetailFields'
-import useTableSelection from '../../../hooks/useTableSelection'
-import useTableData from '../../../hooks/useTableData'
 
 // 경매 낙찰 상세
 const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
@@ -62,6 +60,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [tablePagination, setTablePagination] = useState([])
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
+
 	console.log('detailRow', detailRow)
 	const titleData = [
 		'경매 번호',
@@ -335,6 +334,9 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 					refetch()
 					queryClient.invalidateQueries('destiApprove')
 					setWinningCreateData({})
+					if (totalCountStr === 0) {
+						window.location.reload()
+					}
 				},
 			})
 		},
@@ -423,6 +425,17 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
 		best: { display: true },
 	})
+
+	const [totalHap, setTotalHap] = useState(totalCountStr)
+
+	// 목록에 하나도 없으면 닫음.
+	useEffect(() => {
+		console.log('작동 전 : ', totalCountStr)
+		if (resData?.length === 0) {
+			console.log('작동 후 : ', totalCountStr)
+			window.location.reload()
+		}
+	}, [resData, totalHap])
 
 	return (
 		<FilterContianer>

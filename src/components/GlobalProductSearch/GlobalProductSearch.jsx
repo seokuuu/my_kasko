@@ -25,8 +25,8 @@ const GlobalProductSearch = ({
 
 	const {
 		// prettier-ignore
-		supplierList,
-		makerList,
+		// supplierList,
+		// makerList,
 		stockStatusList,
 		gradeList,
 		preferThicknessList,
@@ -51,10 +51,10 @@ const GlobalProductSearch = ({
 			productNumberList: [], // 제품 번호 목록 (Product number list)
 			packageNumber: '', // 패키지 번호 (Package number)
 			packageNumberList: [], // 패키지 번호 목록 (Package number list)
-			supplier: supplierList[0], // 매입처
+			supplier: '', // 매입처
 			spart: spartList[0], // 제품군
 			spartUid: null, // 제품군 번호 (Product group UID)
-			maker: makerList[0], // 제조사
+			maker: '', // 제조사
 			stockStatus: stockStatusList[0], // 재고 상태
 			spec: '', // 규격 약호 (Specification abbreviation)
 			grade: gradeList[0], // 등급
@@ -121,7 +121,7 @@ const GlobalProductSearch = ({
 			updateDate: '',
 			roles: [], // 사용자 구분 (창고 / 운송사 / 카스코철강 / 현대제철 / 고객사)
 		}
-	}, [storageList, supplierList, spartList, makerList, stockStatusList, gradeList, preferThicknessList])
+	}, [storageList, spartList, stockStatusList, gradeList, preferThicknessList])
 
 	const initialParamRef = useRef(initialSearchParams)
 	const [userSearchParam, setUserSearchParam] = useState({ ...initialSearchParams })
@@ -141,7 +141,11 @@ const GlobalProductSearch = ({
 				updatedProperties[key] = userSearchParam[key].value // Storing just the value as a string
 			} else if (userSearchParam[key] !== initialParamRef.current[key]) {
 				// Handling normal properties
-				updatedProperties[key] = userSearchParam[key]
+				if (key === 'productNumberList' && Array.isArray(userSearchParam[key])) {
+					updatedProperties[key] = userSearchParam[key]?.join(',')
+				} else {
+					updatedProperties[key] = userSearchParam[key]
+				}
 			}
 		}
 
