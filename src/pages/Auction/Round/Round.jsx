@@ -95,10 +95,6 @@ const Round = ({}) => {
 
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'auction', getAuction)
 
-	// useEffect(() => {
-	// 	if (isSuccess) refetch()
-	// }, [isSuccess])
-
 	const resData = data?.data?.data?.list
 
 	const resPagination = data?.data?.data?.pagination
