@@ -143,14 +143,12 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 		fetchData() // 비동기 함수를 호출
 	}, [newResData, resData])
 
-	const [outAddData, setOutAddData] = useState()
-	const [delData, setDelData] = useState()
+	const [outAddData, setOutAddData] = useState([])
+	const [delData, setDelData] = useState([])
 	const onListAdd = (selectedData) => {
 		try {
-			// const newList = [...new Set([...selectedData, ...list])]
-			// setList(newList) // 선별 목록 데이터 등록
 			setSelectedRows([]) // 테이블 체크 목록 초기화
-			setOutAddData(selectedData.map((x) => x['uid']))
+			setOutAddData((prev) => [...prev, ...selectedData.map((x) => x['uid'])])
 		} catch (error) {
 			simpleAlert(error.message)
 		}
@@ -206,7 +204,10 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 		if (outAddData) {
 			const updatedOutAddData = outAddData.filter((item) => !selectedRows.map((row) => row[newKey]).includes(item)) // add된 것들 처리
 
-			setOutAddData(updatedOutAddData)
+			setOutAddData((prev) => ({
+				...prev,
+				updatedOutAddData,
+			}))
 		}
 	}
 
