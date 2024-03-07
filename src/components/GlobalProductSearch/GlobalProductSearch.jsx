@@ -141,7 +141,11 @@ const GlobalProductSearch = ({
 				updatedProperties[key] = userSearchParam[key].value // Storing just the value as a string
 			} else if (userSearchParam[key] !== initialParamRef.current[key]) {
 				// Handling normal properties
-				updatedProperties[key] = userSearchParam[key]
+				if (key === 'productNumberList' && Array.isArray(userSearchParam[key])) {
+					updatedProperties[key] = userSearchParam[key]?.join(',')
+				} else {
+					updatedProperties[key] = userSearchParam[key]
+				}
 			}
 		}
 

@@ -1,53 +1,59 @@
 import React, { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import { WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { WhiteBlackBtn, WhiteBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import { useShipmentMergeListQuery, useShipmentMergeMutation } from '../../../api/shipment'
 import { GlobalFilterHeader } from '../../../components/Filter'
-import { ShippingRegisterFields, ShippingRegisterFieldsCols } from '../../../constants/admin/Shipping'
 import { aucProAddModalAtom, selectedRowsAtom } from '../../../store/Layout/Layout'
 import { useAtom } from 'jotai'
-import Table from '../../Table/Table'
-import { add_element_field } from '../../../lib/tableHelpers'
 import MergeHeader from './MergeHeader'
-import { calculateTotal, calculateTowDataTotal, getAddNewDestination } from './utils'
+import { calculateTotal, calculateTowDataTotal, storageValid } from './utils'
 import RequestAddModal from './RequestAddModal'
 import useAlert from '../../../store/Alert/useAlert'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import useTableSelection from '../../../hooks/useTableSelection'
+import useTableData from '../../../hooks/useTableData'
+import { RegisterFields, RegisterFieldsCols } from '../fields/RegisterFields'
+import { useAtomValue } from 'jotai/index'
+import { authAtom } from '../../../store/Auth/auth'
+import TableV2 from '../../Table/TableV2'
 
 const RequestRecom = ({ setChoiceComponent }) => {
+	const auth = useAtomValue(authAtom)
 	const { simpleAlert, simpleConfirm } = useAlert()
 	const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 
-	const [list, setList] = useState([]) // useShipmentMergeListQuery + 직접 추가한 목록
-	const [rows, setRows] = useState('')
+	const [serverData, setServerData] = useState({ list: [] }) // useShipmentMergeListQuery + 직접 추가한 목록
+
 	const [dockStatus, setDockStatus] = useState(false) // 상차도 여부
 	const [mergeCost, setMergeCost] = useState(0) // 합짐비
 	const [destinations, setDestinations] = useState(new Array(3)) // 목적지
 
+	const { tableRowData } = useTableData({
+		tableField: RegisterFields(auth),
+		serverData,
+	})
+
 	const { data, isLoading } = useShipmentMergeListQuery()
 	const { mutate: onCreateMerge } = useShipmentMergeMutation()
 
+	// 선택 항목
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
+
 	// 목적지 get
-	const getDestinations = () => {
-		const destination = data.map((item) => item?.destinationName)
+	const getDestinations = (list) => {
+		const destination = list.map((item) => item?.destinationName)
 		const duplicationDestination = [...new Set(destination)]
+		if (duplicationDestination.length > 3) {
+			throw new Error('선별할 시 목적지 3개 이상은 선별 목록에 추가할 수 없습니다.')
+		}
 		while (duplicationDestination.length < 3) {
 			duplicationDestination.push('-')
 		}
 		setDestinations(duplicationDestination)
-	}
-
-	// 목록 제거
-	const onListRemove = () => {
-		if (!selectedRows || selectedRows.length === 0) {
-			return simpleAlert('제품을 선택해주세요.')
-		}
-		const key = '주문 고유 번호'
-		const deleteKeys = selectedRows.map((item) => item[key])
-		const newSelectors = list.filter((item) => !deleteKeys.includes(item?.orderUid))
-		setList(newSelectors)
-		setSelectedRows([]) // 테이블 체크 목록 초기화
 	}
 
 	// 목록 추가 모달 오픈
@@ -58,10 +64,15 @@ const RequestRecom = ({ setChoiceComponent }) => {
 
 	// 목록 추가
 	const onListAdd = (selectedData) => {
+		if (!selectedRows || selectedRows.length === 0) {
+			return simpleAlert('제품을 선택해주세요.')
+		}
 		try {
-			const newDestination = getAddNewDestination(selectedRows)
-			setDestinations(newDestination) // 목적지 등록
-			setList((prev) => [...new Set([...prev, ...selectedData])]) // 선별 목록 데이터 등록
+			const newList = [...new Set([...serverData.list, ...selectedData])]
+
+			storageValid(newList)
+			getDestinations(newList)
+			setServerData({ list: newList }) // 선별 목록 데이터 등록
 			setSelectedRows([]) // 테이블 체크 목록 초기화
 			addListModalClose()
 		} catch (error) {
@@ -69,9 +80,22 @@ const RequestRecom = ({ setChoiceComponent }) => {
 		}
 	}
 
+	// 목록 제거
+	const onListRemove = () => {
+		if (!selectedRows || selectedRows.length === 0) {
+			return simpleAlert('제품을 선택해주세요.')
+		}
+		const key = '주문 고유 번호'
+		const deleteKeys = selectedRows.map((item) => item[key])
+		const newSelectors = serverData.list.filter((item) => !deleteKeys.includes(item?.orderUid))
+		setServerData({ list: newSelectors })
+		setSelectedRows([]) // 테이블 체크 목록 초기화
+		getDestinations(newSelectors)
+	}
+
 	// 선별 등록
 	const onRegister = () => {
-		const orderUids = list?.map((item) => item?.orderUid)
+		const orderUids = serverData?.list?.map((item) => item?.orderUid)
 		if (orderUids.length === 0) {
 			return simpleAlert('선별 목록에 제품을 추가해주세요.')
 		}
@@ -79,15 +103,9 @@ const RequestRecom = ({ setChoiceComponent }) => {
 	}
 
 	useEffect(() => {
-		if (list && Array.isArray(list)) {
-			setRows(add_element_field(list, ShippingRegisterFields))
-		}
-	}, [list])
-
-	useEffect(() => {
 		if (data && Array.isArray(data)) {
-			setList(data)
-			getDestinations()
+			setServerData({ list: data })
+			getDestinations(data)
 		}
 	}, [data])
 
@@ -99,7 +117,7 @@ const RequestRecom = ({ setChoiceComponent }) => {
 				subTitle={<Subtitle2 onClick={() => setChoiceComponent('request')}>출고 요청</Subtitle2>}
 			/>
 			<MergeHeader
-				list={list}
+				list={serverData.list}
 				destinations={destinations}
 				mergeCost={mergeCost}
 				setMergeCost={setMergeCost}
@@ -107,27 +125,42 @@ const RequestRecom = ({ setChoiceComponent }) => {
 				setDockStatus={setDockStatus}
 			/>
 			<TableContianer style={{ paddingBottom: '10px' }}>
+				<TCSubContainer bor>
+					<div>
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {serverData?.list?.length.toLocaleString()}개 )
+						<TableV2HiddenSection />
+					</div>
+				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량<span> 2 </span>kg / 총 {calculateTotal(list, 'width')}중량 kg
+						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {calculateTotal(serverData?.list, 'weight')} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteRedBtn onClick={onListRemove}>목록 제거</WhiteRedBtn>
 						<WhiteSkyBtn onClick={onRegister}>선별 등록</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={ShippingRegisterFieldsCols} getRow={rows} isLoading={isLoading} />
+				<TableV2 getRow={tableRowData} loading={isLoading} getCol={RegisterFieldsCols(RegisterFields(auth))} />
 				<TCSubContainer style={{ paddingBottom: '0px' }}>
-					<div>
-						합계 금액(매입/매출 운임비):
-						<span>{calculateTowDataTotal(list, 'outboundFreightAmount', 'inboundFreightAmount')}</span>(원)
-					</div>
+					{auth.role === '카스코철강' ? (
+						<div>
+							합계 금액(매입/매출 운임비):
+							<span>{calculateTowDataTotal(serverData.list, 'outboundFreightAmount', 'inboundFreightAmount')}</span>(원)
+						</div>
+					) : (
+						<div></div>
+					)}
 					<div>
 						<WhiteBlackBtn onClick={addListModalOpen}>목록 추가</WhiteBlackBtn>
 					</div>
 				</TCSubContainer>
+				<TCSubContainer style={{ display: 'flex', justifyContent: 'center', padding: '18px 0' }}>
+					<WhiteBtn type={'button'} width={20} height={40} onClick={() => setChoiceComponent('request')}>
+						돌아가기
+					</WhiteBtn>
+				</TCSubContainer>
 			</TableContianer>
-			{addModal && <RequestAddModal list={list} onListAdd={onListAdd} />}
+			{addModal && <RequestAddModal list={serverData.list} onListAdd={onListAdd} />}
 		</FilterContianer>
 	)
 }
