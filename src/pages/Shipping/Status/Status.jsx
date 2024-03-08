@@ -12,16 +12,20 @@ import { useShipmentDispatchListQuery, useShipmentStatusUpdateMutation } from '.
 import { GlobalFilterHeader } from '../../../components/Filter'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { ShippingDispatchFields, ShippingDispatchFieldsCols } from '../../../constants/admin/Shipping'
+import {
+	ShippingDispatchFields,
+	ShippingStatusFields,
+	ShippingStatusFieldsCols,
+} from '../../../constants/admin/Shipping'
 import { add_element_field } from '../../../lib/tableHelpers'
 import useAlert from '../../../store/Alert/useAlert'
-import { KilogramSum } from '../../../utils/KilogramSum'
-import { formatWeight } from '../../../utils/utils'
-import Table from '../../Table/Table'
 import ReceiptExcel from './ReceiptExcel'
 import StatusSearchFilter from './StatusSearchFilter'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
+import TableV2 from '../../Table/TableV2'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const initData = {
 	pageNum: 1,
@@ -38,10 +42,19 @@ const Status = () => {
 
 	const [param, setParam] = useState(initData)
 	const [rows, setGetRow] = useState([])
-	const [pagination, setPagination] = useState(null)
 
 	const { isLoading, data, refetch } = useShipmentDispatchListQuery(param)
 	const { mutate: shipmentStatusUpdate } = useShipmentStatusUpdateMutation() // 출고 상태 변경
+
+	const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
+		tableField: ShippingStatusFields,
+		serverData: data,
+	})
+
+	// 선택 항목
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({
+		weightKey: '중량 합계',
+	})
 
 	// 출고 취소
 	const onShipmentCancel = () => {
@@ -97,7 +110,6 @@ const Status = () => {
 		const list = data?.list
 		if (list && Array.isArray(list)) {
 			setGetRow(add_element_field(list, ShippingDispatchFields))
-			setPagination(data?.pagination)
 		}
 	}, [data])
 
@@ -127,9 +139,8 @@ const Status = () => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{selectedRows?.length > 0 ? selectedRows?.length : '0'}</span> /{' '}
-						{pagination?.listCount}개 )
-						<Hidden />
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount.toLocaleString()}개 )
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
@@ -138,19 +149,17 @@ const Status = () => {
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량
-						<span> {formatWeight(KilogramSum(selectedRows))} </span>
-						kg / 총 중량 {formatWeight(pagination?.totalWeight)} kg
+						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight.toLocaleString()} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteRedBtn onClick={onShipmentCancel}>출고 취소</WhiteRedBtn>
 					</div>
 				</TCSubContainer>
-				<Table
-					getCol={ShippingDispatchFieldsCols}
-					getRow={rows}
+				<TableV2
+					getRow={tableRowData}
 					loading={isLoading}
-					tablePagination={pagination}
+					getCol={ShippingStatusFieldsCols}
+					tablePagination={paginationData}
 					onPageChange={onPageChange}
 				/>
 				<TCSubContainer>

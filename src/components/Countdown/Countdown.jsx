@@ -30,8 +30,8 @@ const Countdown = () => {
 
 	const setCountdownData = (responseData) => {
 		setData({
-			type: responseData.type,
-			date: moment(responseData.date).toDate().getTime(),
+			type: responseData?.type,
+			date: moment(responseData?.date).toDate().getTime(),
 		})
 	}
 

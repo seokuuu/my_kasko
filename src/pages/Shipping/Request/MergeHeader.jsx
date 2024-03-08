@@ -28,9 +28,7 @@ const MergeHeader = ({ list, destinations, mergeCost, setMergeCost, dockStatus, 
 		const getLand = mergeCostList?.filter((item) => item.land === land)
 		if (getLand.length === 0) {
 			setMergeCost(0)
-			simpleAlert('합짐비 데이터가 누락되었습니다. 관리자에게 문의바랍니다.', () => {
-				window.location.reload()
-			})
+			simpleAlert('합짐비 데이터가 누락되었습니다. 관리자에게 문의바랍니다.')
 			return
 		}
 		const { inAreaPrice, outAreaPrice } = getLand[0]

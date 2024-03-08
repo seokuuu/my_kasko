@@ -6,22 +6,24 @@ import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { GlobalFilterHeader } from '../../../components/Filter'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { DispatchFields, DispatchFieldsCols } from '../../../constants/admin/Shipping'
 import { add_element_field } from '../../../lib/tableHelpers'
-import { FilterContianer, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
+import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import DispatchPost from '../../../modal/Multi/DispatchPost'
 import useAlert from '../../../store/Alert/useAlert'
 import {
-	StandardDispatchEditAtom,
-	StandardDispatchPostAtom,
 	btnCellUidAtom,
 	selectedRowsAtom,
+	StandardDispatchEditAtom,
+	StandardDispatchPostAtom,
 	toggleAtom,
 } from '../../../store/Layout/Layout'
-import Table from '../../Table/Table'
 import DispatchSearchFilter from './DispatchSearchFilter'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
+import TableV2 from '../../Table/TableV2'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const initData = {
 	pageNum: 1,
@@ -37,11 +39,20 @@ const Dispatch = () => {
 	const [isModalEdit, setIsModalEdit] = useAtom(StandardDispatchEditAtom)
 
 	const [rows, setRows] = useState([])
-	const [pagination, setPagination] = useState(null)
 	const [param, setParam] = useState(initData)
 
 	const { refetch, data, isLoading } = useDriverListQuery(param)
 	const { mutate: onDelete } = useDriverRemoveMutation()
+
+	const { tableRowData, paginationData, totalCount } = useTableData({
+		tableField: DispatchFields,
+		serverData: data,
+	})
+
+	// 선택 항목
+	const { selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
 
 	const handleDeleteEvent = async () => {
 		if (!selectedRows || selectedRows?.length === 0) {
@@ -91,7 +102,6 @@ const Dispatch = () => {
 		const list = data?.list
 		if (list && Array.isArray(list)) {
 			setRows(add_element_field(list, DispatchFields))
-			setPagination(data?.pagination)
 		}
 	}, [data])
 
@@ -110,9 +120,8 @@ const Dispatch = () => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{selectedRows?.length > 0 ? selectedRows?.length : '0'}</span> /{' '}
-						{pagination?.listCount}개 )
-						<Hidden />
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount.toLocaleString()}개 )
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
@@ -126,11 +135,11 @@ const Dispatch = () => {
 						<WhiteSkyBtn onClick={() => setIsModalPost(true)}>추가 등록</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table
-					getRow={rows}
+				<TableV2
+					getRow={tableRowData}
 					loading={isLoading}
 					getCol={DispatchFieldsCols}
-					tablePagination={pagination}
+					tablePagination={paginationData}
 					onPageChange={onPageChange}
 				/>
 			</TableContianer>

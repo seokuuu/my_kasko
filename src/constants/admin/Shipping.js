@@ -1,13 +1,11 @@
 import Note from '../../pages/Shipping/Request/Note'
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
 
-var checkboxSelection = function (params) {
-	// we put checkbox on the name if we are not doing grouping
+const checkboxSelection = (params) => {
 	return params.columnApi.getRowGroupColumns().length === 0
 }
 
-var headerCheckboxSelection = function (params) {
-	// we put checkbox on the name if we are not doing grouping
+const headerCheckboxSelection = (params) => {
 	return params.columnApi.getRowGroupColumns().length === 0
 }
 
@@ -174,15 +172,16 @@ export const ShippingRegisterFieldsCols = [
 
 // 배차/출고 등록 페이지 목록 필드
 export const ShippingDispatchFields = {
+	순번: 'index',
 	'출고 고유번호': 'outUid',
 	출고요청일자: 'shipmentRequestDate',
 	// 출하지시일자: 'shippingDate',
+	'제품추가 일자': 'outCreateDate',
+	'승인 상태': 'outStatus',
 	// '출고 번호': 'outNumber',
 	// '출고 일자': 'outDate',
-	'제품추가 일자': 'outCreateDate',
-	'합짐 승인 상태': 'outStatus',
-	'출하 상태': 'shipmentStatus',
 	'배차 여부': 'driverStatus',
+	'출하 상태': 'shipmentStatus',
 	'고객사명 1/2/3': 'customerName',
 	'고객코드 1/2/3': 'customerCode',
 	창고: 'storageName',
@@ -191,7 +190,7 @@ export const ShippingDispatchFields = {
 	차량번호: 'carNumber',
 	'차량 종류': 'carType',
 	'제품 수량': 'quantity',
-	'제품 총 중량': 'totalWeight',
+	'중량 합계': 'totalWeight',
 	'목적지 코드': 'destinationCode',
 	'목적지 1/2/3': 'destinationName',
 	'목적지 주소 1/2/3': 'customerDestinationAddress',
@@ -200,7 +199,7 @@ export const ShippingDispatchFields = {
 	'하차지명 1/2/3': 'customerDestinationName',
 	비고: 'outNote',
 	'회차 여부': 'outCancelStatus',
-	'회차 일자 (출고 취소된 일자)': 'outCancelDate',
+	'회차 일자': 'outCancelDate', //(출고 취소된 일자)
 	최종수정자: 'updater',
 	최종수정일시자: 'updateDate',
 	// 경매번호: 'auctionNumber',
@@ -223,51 +222,53 @@ export const ShippingDispatchFieldsCols = [
 
 // 배차/출고 등록 상세페이지 목록
 export const ShippingDispatchDetailsFields = {
+	순번: 'index',
 	경매번호: 'auctionNumber',
-	경매일자: 'auctionStartDate',
-	'주문 고유 번호': 'orderUid',
-	'주문번호 & 상시판매 번호': 'orderNumber',
 	'확정전송 일자': 'sendDate',
+	주문번호: 'orderNumber',
 	출하지시일자: 'shippingDate',
 	출고요청일자: 'shipmentRequestDate',
-	'출하 상태': 'shipmentStatus',
 	'출고 고유번호': 'outUid',
-	'출고 번호': 'outNumber',
-	'출고 일자': 'outDate',
 	'제품추가 일자': 'outCreateDate',
-	'합짐 승인 상태': 'outStatus',
-	비고: 'outNote',
-	'회차 여부': 'outCancelStatus',
-	'회차 일자 (출고 취소된 일자)': 'outCancelDate',
+	'출하 상태': 'shipmentStatus',
+	'출고 일자': 'outDate',
+	'출고 번호': 'outNumber',
+	'승인 상태': 'outStatus',
 	'배차 여부': 'driverStatus',
-	'제품 수량': 'quantity',
-	'제품 총 중량': 'totalWeight',
-	최종수정자: 'updater',
-	최종수정일시자: 'updateDate',
-	제품번호: 'productNumber',
-	창고: 'storageName',
-	'판매 구분 (판매재 / 판매 제외재 / 판매 완료재)': 'saleCategory',
-	'판매 유형 (경매 대상재 / 상시 판매 대상재)': 'saleType',
-	제품군: 'spart',
-	'제품 등급 (1 / 2 / 3 / 4/ 5)': 'grade',
-	두께: 'thickness',
-	폭: 'width',
-	길이: 'length',
-	중량: 'weight',
-	규격약호: 'spec',
-	'제품 비고': 'productNote',
+	운전기사명: 'driverName',
+	'운전기사 연락처': 'driverPhone',
+	차량번호: 'carNumber',
+	'차량 종류': 'carType',
 	고객사명: 'customerName',
 	고객코드: 'customerCode',
+	제품번호: 'productNumber',
+	창고: 'storageName',
+	'판매 구분': 'saleCategory',
+	'판매 유형': 'saleType',
+	제품군: 'spart',
 	'목적지 코드': 'destinationCode',
 	'목적지 명': 'destinationName',
 	'목적지 주소': 'customerDestinationAddress',
 	'목적지 연락처(사무실)': 'customerDestinationPhone',
 	'목적지담당자 연락처 (휴대폰)': 'customerDestinationManagerPhone',
 	하차지명: 'customerDestinationName',
-	운전기사명: 'driverName',
-	'운전기사 연락처': 'driverPhone',
-	차량번호: 'carNumber',
-	'차량 종류': 'carType',
+	'제품 등급': 'grade',
+	두께: 'thickness',
+	폭: 'width',
+	길이: 'length',
+	중량: 'weight',
+	규격약호: 'spec',
+	'제품 비고': 'productNote',
+	'주문 고유 번호': 'orderUid',
+	'회차 여부': 'outCancelStatus',
+	'회차 일자': 'outCancelDate', //(출고 취소된 일자)
+	최종수정자: 'updater',
+	최종수정일시자: 'updateDate',
+
+	// 경매일자: 'auctionStartDate',
+	// 비고: 'outNote',
+	// '제품 수량': 'quantity',
+	// '제품 총 중량': 'totalWeight',
 }
 
 // 배차/출고 등록 페이지 상세 필드
@@ -276,7 +277,108 @@ export const ShippingDispatchDetailsFieldsCols = [
 	...Object.keys(ShippingDispatchDetailsFields).map((item) => ({
 		...commonStyles,
 		field: item,
-		minWidth: 200,
+		minWidth: 180,
+	})),
+]
+
+// 출고현황 목록
+export const ShippingStatusFields = {
+	순번: 'index',
+	경매번호: 'auctionNumber',
+	'확정전송 일자': 'sendDate',
+	// '주문 고유 번호': 'orderUid',
+	주문번호: 'orderNumber',
+	출하지시일자: 'shippingDate',
+	출고요청일자: 'shipmentRequestDate',
+	'출하 상태': 'shipmentStatus',
+	'출고 고유번호': 'outUid',
+	'출고 일자': 'outDate',
+	'출고 번호': 'outNumber',
+	운송진행일자: 'outEndDate',
+	운송진행: 'outEndStatus',
+	고객사명: 'customerName',
+	고객코드: 'customerCode',
+	창고: 'storageName',
+	'배차 여부': 'driverStatus',
+	운전기사명: 'driverName',
+	'운전기사 연락처': 'driverPhone',
+	차량번호: 'carNumber',
+	'차량 종류': 'carType',
+	'제품 수량': 'quantity',
+	'중량 합계': 'totalWeight',
+	'목적지 코드': 'destinationCode',
+	'목적지 명': 'destinationName',
+	'목적지 주소': 'customerDestinationAddress',
+	'목적지 연락처(사무실)': 'customerDestinationPhone',
+	'목적지담당자 연락처 (휴대폰)': 'customerDestinationManagerPhone',
+	하차지명: 'customerDestinationName',
+	비고: 'productNote',
+	'회차 여부': 'outCancelStatus',
+	'회차 일자': 'outCancelDate', //(출고 취소된 일자)
+	최종수정자: 'updater',
+	최종수정일시자: 'updateDate',
+}
+
+export const ShippingStatusFieldsCols = [
+	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	...Object.keys(ShippingStatusFields).map((item) => ({
+		...commonStyles,
+		field: item,
+		minWidth: 180,
+	})),
+]
+
+// 출고현황 목록
+export const ShippingStatusDetailsFields = {
+	순번: 'index',
+	경매번호: 'auctionNumber',
+	'확정전송 일자': 'sendDate',
+	주문번호: 'orderNumber',
+	출하지시일자: 'shippingDate',
+	출고요청일자: 'shipmentRequestDate',
+	'출하 상태': 'shipmentStatus',
+	'출고 고유번호': 'outUid',
+	'출고 일자': 'outDate',
+	'출고 번호': 'outNumber',
+	운송진행일자: 'outEndDate',
+	운송진행: 'outEndStatus',
+	고객사명: 'customerName',
+	고객코드: 'customerCode',
+	운전기사명: 'driverName',
+	'운전기사 연락처': 'driverPhone',
+	차량번호: 'carNumber',
+	'차량 종류': 'carType',
+	제품번호: 'productNumber',
+	창고: 'storageName',
+	'판매 구분': 'saleCategory',
+	'판매 유형': 'saleType',
+	제품군: 'spart',
+	'목적지 코드': 'destinationCode',
+	'목적지 명': 'destinationName',
+	'목적지 주소': 'customerDestinationAddress',
+	'목적지 연락처(사무실)': 'customerDestinationPhone',
+	'목적지담당자 연락처 (휴대폰)': 'customerDestinationManagerPhone',
+	하차지명: 'customerDestinationName',
+	'제품 등급': 'grade',
+	두께: 'thickness',
+	폭: 'width',
+	길이: 'length',
+	중량: 'weight',
+	규격약호: 'spec',
+	비고: 'productNote',
+	'클레임 진행상태': 'claimStatus',
+	'회차 여부': 'outCancelStatus',
+	'회차 일자': 'outCancelDate', //(출고 취소된 일자)
+	최종수정자: 'updater',
+	최종수정일시자: 'updateDate',
+}
+
+export const ShippingStatusDetailsFieldsCols = [
+	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	...Object.keys(ShippingStatusDetailsFields).map((item) => ({
+		...commonStyles,
+		field: item,
+		minWidth: 180,
 	})),
 ]
 
