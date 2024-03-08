@@ -1,8 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BlackBtn, BtnBound, TGreyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
-
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
@@ -15,16 +13,7 @@ import {
 	TableContianer,
 	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
-import {
-	blueModalAtom,
-	hyunDaiMultiModal,
-	popupAtom,
-	popupObject,
-	selectedRowsAtom,
-	singleProductModify,
-	specAtom,
-	toggleAtom,
-} from '../../../store/Layout/Layout'
+import { hyunDaiMultiModal, selectedRowsAtom, singleProductModify, toggleAtom } from '../../../store/Layout/Layout'
 import { isEqual } from 'lodash'
 import Multi2 from '../../../modal/Common/Multi2'
 import { useAtom, useAtomValue } from 'jotai'
@@ -42,62 +31,73 @@ import { singleDispatchFields, SingleSalesDispatchFieldsCols } from '../../../co
 import SingleSellProductSearchFields from './SingleProductSearchFields/SingleSellProductSearchFileds'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
-import { KilogramSum } from '../../../utils/KilogramSum'
-import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
-import { onSizeChange } from '../../Operate/utils'
-import Table from '../../Table/Table'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { changeCategoryAtom, changeSaleTypeAtom } from '../../../store/Layout/Popup'
 import SalseType from '../../../modal/Multi/SaleType'
 import UploadV2 from '../../../modal/Upload/UploadV2'
 import SingleProductModify from './SingleProductModify'
 import useAlert from '../../../store/Alert/useAlert'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
+import { queryClient } from '../../../api/query'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import TableV2 from '../../Table/TableV2'
+
+const paramData = {
+	pageNum: 1,
+	pageSize: 50,
+	type: '단일',
+	category: '판매제품',
+}
 
 const SalesProduct = () => {
-	const [popup, setPopup] = useAtom(popupAtom)
-	// const checkSales = ['전체', '미응찰', '관심제품', '응찰']
-
-	//state
-	const [filterData, setFilteredData] = useState([])
-	//store
-	const [spec, setSpec] = useAtom(specAtom)
-	const [isModal, setIsModal] = useState(blueModalAtom)
-	const [pagination, setPagination] = useState({})
+	const { simpleConfirm, simpleAlert } = useAlert()
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+	const parameter = useAtomValue(changeCategoryAtom)
+	const parameter2 = useAtomValue(changeSaleTypeAtom)
 	const [isMultiModal, setIsMultiModal] = useAtom(hyunDaiMultiModal)
-	const [parameter, setParameter] = useAtom(changeCategoryAtom)
-	const [parameter2, setParameter2] = useAtom(changeSaleTypeAtom)
-	const { simpleConfirm, showAlert, simpleAlert } = useAlert()
-	// 판매유형 변경
+	const singleModfiy = useAtomValue(singleProductModify)
 
+	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+	const [toggleMsg, setToggleMsg] = useState('On')
+	const [selectProductNumber, setSelectProductNumber] = useState([])
+	const [memo, setMemo] = useState([])
 	const [isSaleType, setIsSaleType] = useState(false)
-	const [singleModfiy, setSingleModify] = useAtom(singleProductModify)
 	const [uploadModal, setUploadModal] = useState(false)
-	const [isRotated, setIsRotated] = useState(false)
 	const [errorMsg, setErrorMsg] = useState('')
-	const [nowPopup, setNowPopup] = useAtom(popupObject)
-	// Function to handle image click and toggle rotation
-	const paramData = {
-		pageNum: 1,
-		pageSize: 50,
-		type: '일반',
-		category: '동은스틸',
-	}
+	const [excelToJson, setExcelToJson] = useState([])
+	/// 아울렛 가격 일괄 설정 파트
+	const [outletPrice, setOutletPrice] = useState(0)
+	const [outletParameter, setOutletParameter] = useState({
+		price: 0, // 아울렛 등록 가격
+		numbers: [], // 제품번호 목록
+	})
+
 	const [param, setParam] = useState(paramData)
+	const [getRow, setGetRow] = useState('')
+	const [filterData, setFilteredData] = useState([])
+
 	const { data, isSuccess, isLoading, refetch } = useReactQuery(param, 'product-list', getSingleProducts)
 	const SaleProductList = data?.r
 	const SaleProductPages = data?.pagination
 
-	const [getRow, setGetRow] = useState('')
-	const tableField = useRef(SingleSalesDispatchFieldsCols(true))
-	const getCol = tableField.current
-	const [memo, setMemo] = useState([])
-	// Filter State
+	const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
+		tableField: singleDispatchFields,
+		serverData: filterData,
+	})
+
+	// 선택 항목
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
+
+	const { mutate } = useMutationQuery('change-category', patchSaleCategory)
+	const { mutate: changeSaleType } = useMutationQuery('change-saleType', patchSaleType)
+	const { mutate: changeOutlet } = useMutationQuery('change-outlet', patchOutlet)
+	const { mutate: deletePr } = useMutationQuery('delete-Product', deleteProduct)
+	const { mutate: memoAndNote } = useMutationQuery('memo-note', postingMemoAndNote)
 
 	// 토글 쓰기
-	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-	const [toggleMsg, setToggleMsg] = useState('On')
-	const [selectProductNumber, setSelectProductNumber] = useState([])
 	const toggleBtnClick = () => {
 		setExfilterToggle((prev) => !prev)
 		if (exFilterToggle === true) {
@@ -106,38 +106,6 @@ const SalesProduct = () => {
 			setToggleMsg('On')
 		}
 	}
-
-	useEffect(() => {
-		if (filterData === undefined) {
-			SaleProductList && setFilteredData(SaleProductList)
-		}
-
-		if (!isSuccess && !filterData) return
-		if (Array.isArray(filterData)) {
-			setGetRow(add_element_field(filterData, singleDispatchFields))
-		}
-		//타입, 리액트쿼리, 데이터 확인 후 실행
-	}, [isSuccess, filterData])
-
-	useEffect(() => {
-		if (isSuccess) {
-			setFilteredData(SaleProductList)
-			setPagination(SaleProductPages)
-		}
-	}, [isSuccess])
-
-	// 초기화
-
-	useEffect(() => {
-		if (checkBoxSelect?.length === 0) return
-		setSelectProductNumber(() => checkBoxSelect?.map((i) => i['제품 번호']))
-	}, [checkBoxSelect])
-	const [excelToJson, setExcelToJson] = useState([])
-	const { mutate, isError } = useMutationQuery('change-category', patchSaleCategory)
-	const { mutate: changeSaleType, isError: saleTypeError } = useMutationQuery('change-saleType', patchSaleType)
-	const { mutate: changeOutlet, isError: outletError } = useMutationQuery('change-outlet', patchOutlet)
-	const { mutate: deletePr, isError: deleteError } = useMutationQuery('delete-Product', deleteProduct)
-	const { mutate: memoAndNote } = useMutationQuery('memo-note', postingMemoAndNote)
 
 	// Memo and Note
 	const handleChangeMemo = (params) => {
@@ -154,125 +122,93 @@ const SalesProduct = () => {
 
 	const createMemoAndNote = () => {
 		memoAndNote(memo, {
-			onSuccess: (d) => {
-				if (d?.data?.status === 200) {
-					showAlert({
-						title: '저장되었습니다.',
-						func: () => {
-							setPopup(false)
-							window.location.reload()
-						},
-					})
-				}
-				if (d?.data?.status === 400) {
-					showAlert({
-						title: `${d?.data?.message}`,
-						func: () => {
-							setPopup(false)
-							window.location.reload()
-						},
-					})
-				}
+			onSuccess: () => {
+				simpleAlert('저장 되었습니다.', () => {
+					setSelectProductNumber([])
+					queryClient.invalidateQueries('product-list')
+				})
+			},
+			onError: (e) => {
+				simpleAlert(e?.data?.message || '실패하였습니다.')
 			},
 		})
 	}
 
 	//판매 구분
 	const changeSaleCategory = () => {
-		const res = mutate(parameter, {
-			onSuccess: (d) => {
-				showAlert({
-					title: '저장되었습니다.',
-					func: () => {
-						setIsMultiModal(false)
-						window.location.reload()
-					},
+		return mutate(parameter, {
+			onSuccess: () => {
+				simpleAlert('저장되었습니다.', () => {
+					setIsMultiModal(false)
+					setSelectProductNumber([])
+					queryClient.invalidateQueries('product-list')
 				})
 			},
 			onError: (e) => {
-				setErrorMsg(e.data.message)
-				simpleAlert(e.data.message, () => {
+				setErrorMsg(e?.data?.message || '적용 실패하였습니다.')
+				simpleAlert(e?.data?.message || '적용 실패하였습니다.', () => {
 					setIsMultiModal(false)
-					window.location.reload()
 				})
 			},
 		})
-
-		return res
 	}
+
 	// 판매 유형
 	const handlechangeSaleType = () => {
 		changeSaleType(parameter2, {
 			onSuccess: () => {
 				simpleAlert('변경되었습니다.', () => {
-					setIsMultiModal(false)
-					window.location.reload()
+					setIsSaleType(false)
+					setSelectProductNumber([])
+					queryClient.invalidateQueries('product-list')
+					queryClient.invalidateQueries('getSingleProducts')
 				})
 			},
 			onError: (e) => {
-				setErrorMsg(e.data.message)
-				simpleAlert(e.data.message, () => {
-					setIsMultiModal(false)
-					window.location.reload()
+				setErrorMsg(e?.data?.message || '적용 실패하였습니다.')
+				simpleAlert(e?.data?.message || '적용 실패하였습니다.', () => {
+					setIsSaleType(false)
 				})
 			},
 		})
 	}
-
-	/// 아울렛 가격 일괄 설정 파트
-	const [outletPrice, setOutletPrice] = useState(0)
-	const [outletParameter, setOutletParameter] = useState({
-		price: 0, // 아울렛 등록 가격
-		numbers: [], // 제품번호 목록
-	})
-
-	useEffect(() => {
-		setOutletParameter({
-			price: outletPrice,
-			numbers: selectProductNumber,
-		})
-	}, [selectProductNumber, outletPrice])
 
 	// 아울렛
 	const handlechangeOutlet = () => {
-		const res = changeOutlet(outletParameter, {
-			onSuccess: (d) => {
-				if (d?.data?.status) {
-					showAlert({
-						title: '일괄 변경되었습니다.',
-						func: () => {
-							window.location.reload()
-						},
-					})
-				}
-			},
-			onError: (e) => {
-				setErrorMsg(e.data.message)
-				showAlert({
-					title: `${e.data.message}`,
-					func: () => {
-						window.location.reload()
+		if (outletParameter?.numbers?.length === 0) {
+			simpleAlert('아울렛으로 등록할 제품을 선택해주세요.')
+		} else {
+			simpleConfirm('선택하신 제품을 아울렛으로 등록하시겠습니까?', () => {
+				changeOutlet(outletParameter, {
+					onSuccess: () => {
+						simpleAlert('변경되었습니다.')
+						setSelectProductNumber([])
+						queryClient.invalidateQueries('product-list')
+					},
+					onError: (e) => {
+						simpleAlert(e?.data?.message || '적용 실패하였습니다.')
 					},
 				})
-			},
-		})
-		return res
-	}
-	// console.log(selectProductNumber.join(','))
-	const handleDelete = () => {
-		const confirm = window.confirm('정말로 삭제하시겠습니까?')
-		if (confirm) {
-			deletePr(selectProductNumber?.join(','), {
-				onSuccess: () => {
-					window.location.reload()
-				},
 			})
-		} else return
+		}
+	}
+
+	const handleDelete = () => {
+		if (selectProductNumber) {
+			simpleConfirm('정말로 삭제하시겠습니까?', () => {
+				deletePr(selectProductNumber?.join(','), {
+					onSuccess: () => {
+						queryClient.invalidateQueries('product-list')
+					},
+					onError: (e) => {
+						simpleAlert(e?.data?.message || '적용 실패하였습니다.')
+					},
+				})
+			})
+		}
 	}
 
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
 		setParam(paramData)
 	}
 
@@ -288,7 +224,47 @@ const SalesProduct = () => {
 			}
 		})
 	}
-	const { pagination: customPagination, onPageChanage } = useTablePaginationPageChange(data, setParam)
+
+	const onPageChange = (value) => {
+		setParam((prevParam) => ({
+			...prevParam,
+			pageNum: Number(value),
+		}))
+	}
+
+	const handleTablePageSize = (event) => {
+		setParam((prevParam) => ({
+			...prevParam,
+			pageSize: Number(event.target.value),
+			pageNum: 1,
+		}))
+	}
+
+	useEffect(() => {
+		if (checkBoxSelect?.length === 0) return setSelectProductNumber([])
+		setSelectProductNumber(() => checkBoxSelect?.map((i) => i['제품 번호']))
+	}, [checkBoxSelect])
+
+	useEffect(() => {
+		setOutletParameter({
+			price: outletPrice,
+			numbers: selectProductNumber,
+		})
+	}, [selectProductNumber, outletPrice])
+
+	useEffect(() => {
+		if (filterData && Array.isArray(filterData?.list)) {
+			setGetRow(add_element_field(filterData.list, singleDispatchFields))
+		}
+	}, [filterData])
+
+	useEffect(() => {
+		const newFilterData = { list: SaleProductList, pagination: SaleProductPages }
+		if (isSuccess && newFilterData?.list) {
+			setFilteredData(newFilterData)
+		}
+	}, [isSuccess, data])
+
 	return (
 		<>
 			<FilterContianer>
@@ -320,19 +296,17 @@ const SalesProduct = () => {
 				<TableContianer>
 					<TCSubContainer bor>
 						<div>
-							조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
-							{pagination ? pagination?.listCount : SaleProductPages?.listCount}개 )
-							<Hidden />
+							조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount.toLocaleString()}개 )
+							<TableV2HiddenSection />
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
-							<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
+							<PageDropdown handleDropdown={handleTablePageSize} />
 							<Excel getRow={getRow} sheetName="단일제품 판매제품 리스트" />
 						</div>
 					</TCSubContainer>
 					<TCSubContainer bor>
 						<div>
-							선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총{' '}
-							{pagination ? pagination?.totalWeight : SaleProductPages?.totalWeight} 중량 kg
+							선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight.toLocaleString()} kg
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
 							<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -351,9 +325,9 @@ const SalesProduct = () => {
 							<BtnBound />
 							<WhiteBlackBtn
 								onClick={() => {
-									if (checkBoxSelect?.length > 0) setIsMultiModal(true)
+									if (checkBoxSelect == null) simpleAlert('제품을 선택해 주세요.')
 									else {
-										simpleAlert('제품을 선택해 주세요.')
+										setIsMultiModal(true)
 									}
 								}}
 							>
@@ -362,10 +336,9 @@ const SalesProduct = () => {
 							<BtnBound />
 							<WhiteBlackBtn
 								onClick={() => {
-									if (checkBoxSelect?.length > 0) {
+									if (checkBoxSelect == null) simpleAlert('제품을 선택해 주세요.')
+									else {
 										setIsSaleType(true)
-									} else {
-										simpleAlert('1개 이상의 품목을 선택해주세요')
 									}
 								}}
 							>
@@ -373,12 +346,12 @@ const SalesProduct = () => {
 							</WhiteBlackBtn>
 						</div>
 					</TCSubContainer>
-					<Table
-						getRow={getRow}
-						getCol={getCol}
+					<TableV2
+						getRow={tableRowData}
+						getCol={SingleSalesDispatchFieldsCols(true)}
+						tablePagination={paginationData}
+						onPageChange={onPageChange}
 						loading={isLoading}
-						tablePagination={customPagination}
-						onPageChange={onPageChanage}
 						changeFn={handleChangeMemo}
 					/>
 					<TCSubContainer bor>
@@ -406,7 +379,6 @@ const SalesProduct = () => {
 					length={3}
 					closeFn={(e, text) => {
 						const { tagName } = e.target
-						// console.log('TARGET :', e.target.tagName)
 						if (tagName === 'IMG') {
 							setIsMultiModal(false)
 						}
@@ -439,7 +411,6 @@ const SalesProduct = () => {
 				/>
 			)}
 			{singleModfiy && <SingleProductModify title={'제품 수정'} />}
-			{/* {popup && <AlertPopup saveFn={createMemoAndNote} err={'안됩니다'} setPopupSwitch={setPopup} />} */}
 		</>
 	)
 }
