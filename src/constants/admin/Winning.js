@@ -116,6 +116,7 @@ export const AuctionWinningFieldsCols = [
 	{ ...commonStyles, field: '목적지 담당자 연락처', minWidth: 150 },
 	{ ...commonStyles, field: '하차지 명', minWidth: 150 },
 	{ ...commonStyles, field: '주문 상태', minWidth: 120 },
+	// 비고
 	{ ...commonStyles, field: '매입 운반비', minWidth: 120 },
 	{ ...commonStyles, field: '매출 운반비', minWidth: 120 },
 	{ ...commonStyles, field: '카스코 낙찰가', minWidth: 120 },
@@ -153,6 +154,7 @@ export const UserAuctionWinningFieldsCols = [
 	{ ...commonStyles, field: '목적지 연락처', minWidth: 150 },
 	{ ...commonStyles, field: '목적지 담당자 연락처', minWidth: 150 },
 	{ ...commonStyles, field: '하차지 명', minWidth: 150 },
+	// 메모
 	{ ...commonStyles, field: '수정자', minWidth: 120 },
 	{ ...commonStyles, field: '수정일', minWidth: 120 },
 ]
