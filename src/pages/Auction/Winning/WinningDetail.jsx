@@ -53,6 +53,7 @@ import useAlert from '../../../store/Alert/useAlert'
 import PrintDepositRequestButton from '../../../userpages/UserSales/_components/PrintDepositRequestButton'
 import Table from '../../Table/Table'
 import WinningDetailFields from './WinningDetailFields'
+import { onSizeChange } from '../../Operate/utils'
 
 // 경매 낙찰 상세
 const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
@@ -205,13 +206,16 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
-	console.log('resData !@#', resData)
-	console.log('resData !@#', resData)
+	console.log('resData', resData?.length)
 
 	useEffect(() => {
 		let getData = resData
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 		if (!isSuccess && !resData) return
+		if (!resData?.length >= 1) {
+			setDetailRow(false)
+			setAucDetail('')
+		}
 		if (Array.isArray(getData)) {
 			setGetRow(add_element_field(getData, AuctionWinningDetailFields))
 			setTablePagination(resPagination)
@@ -426,17 +430,6 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 		best: { display: true },
 	})
 
-	const [totalHap, setTotalHap] = useState(totalCountStr)
-
-	// 목록에 하나도 없으면 닫음.
-	useEffect(() => {
-		console.log('작동 전 : ', totalCountStr)
-		if (resData?.length === 0) {
-			console.log('작동 후 : ', totalCountStr)
-			window.location.reload()
-		}
-	}, [resData, totalHap])
-
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -482,7 +475,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown />
+						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
 						<Excel getRow={getRow} />
 					</div>
 				</TCSubContainer>

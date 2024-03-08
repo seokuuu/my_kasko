@@ -204,7 +204,7 @@ const RoundAucProAdd = ({
 						<FilterTopContainer>
 							<FilterTCTop style={{ height: '40px' }}>
 								<h6>경매 번호</h6>
-								<p>2023041050</p>
+								<p>{auctionNumber}</p>
 							</FilterTCTop>
 						</FilterTopContainer>
 						{exFilterToggle && (
