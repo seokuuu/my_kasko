@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 //외부 필터 영역 전체 + 테이블 영역 전체 (페이지 본문 div)
 export const FilterContianer = styled.div`
 	width: 100%;
-	min-width: 1200px;
+	min-width: 1280px;
 `
 
 // 외부 필터 영역 (검색필터로 사라지는 부분)

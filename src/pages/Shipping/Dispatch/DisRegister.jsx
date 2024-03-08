@@ -7,7 +7,6 @@ import {
 	toggleAtom,
 } from '../../../store/Layout/Layout'
 import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
-import Hidden from '../../../components/TableInner/Hidden'
 import { useAtom, useAtomValue } from 'jotai'
 import DispatchDetail from '../../../modal/Multi/DispatchDetail'
 import { GlobalFilterHeader } from '../../../components/Filter'
@@ -18,16 +17,18 @@ import {
 	useShipmentStatusUpdateMutation,
 } from '../../../api/shipment'
 import { add_element_field } from '../../../lib/tableHelpers'
-import Table from '../../Table/Table'
 import useAlert from '../../../store/Alert/useAlert'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { isEqual } from 'lodash'
 import DisRegisterSearchFilter from './DisRegisterSearchFilter'
-import { formatWeight } from '../../../utils/utils'
-import { KilogramSum } from '../../../utils/KilogramSum'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Excel from '../../../components/TableInner/Excel'
 import { useNavigate } from 'react-router-dom'
+import { authAtom } from '../../../store/Auth/auth'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
+import TableV2 from '../../Table/TableV2'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const initData = {
 	pageNum: 1,
@@ -36,6 +37,7 @@ const initData = {
 }
 
 const DisRegister = () => {
+	const auth = useAtomValue(authAtom)
 	const navigate = useNavigate()
 	const { simpleAlert, simpleConfirm } = useAlert()
 	const selectedRows = useAtomValue(selectedRowsAtom)
@@ -46,11 +48,20 @@ const DisRegister = () => {
 	const [id, setId] = useState(null) // 체크 박스 선택한 id 값
 	const [param, setParam] = useState(initData)
 	const [rows, setRows] = useState([])
-	const [pagination, setPagination] = useState(null)
 
 	const { data, isLoading, refetch } = useShipmentDispatchListQuery(param)
 	const { mutate: removeDispatch } = useRemoveDispatchMutation() // 배차 취소
 	const { mutate: shipmentStatusUpdate } = useShipmentStatusUpdateMutation() // 출고 상태 변경
+
+	const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
+		tableField: ShippingDispatchFields,
+		serverData: data,
+	})
+
+	// 선택 항목
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({
+		weightKey: '중량 합계',
+	})
 
 	// 배차기사 취소
 	const onRemoveDispatch = () => {
@@ -58,9 +69,9 @@ const DisRegister = () => {
 			return simpleAlert('배차 취소할 제품을 선택해주세요.')
 		}
 		const selectItem = selectedRows[0]
-		const driverStatus = Boolean(selectItem['배차 여부'])
+		const driverStatus = selectItem['배차 여부']
 
-		if (!driverStatus) {
+		if (driverStatus === 'N') {
 			return simpleAlert('취소하기 전 배차를 등록해주세요.')
 		}
 		simpleConfirm('배차 취소를 하시겠습니까?', () => removeDispatch(selectItem['출고 고유번호']))
@@ -86,13 +97,13 @@ const DisRegister = () => {
 		}
 		const shipmentStatus = '출고 등록'
 		const uids = selectedRows.map((item) => item['출고 고유번호'])
-		const outStatusArray = selectedRows.map((item) => item['합짐 승인 상태'])
+		const outStatusArray = selectedRows.map((item) => item['승인 상태'])
 		const driverStatusArray = selectedRows.map((item) => item['배차 여부'])
 
 		if (!outStatusArray.every((value) => value === '승인')) {
 			return simpleAlert('출고 등록을 하려면 출고 상태를 승인 받아야 합니다.')
 		}
-		if (!driverStatusArray.every((value) => !!value)) {
+		if (!driverStatusArray.every((value) => value === 'Y')) {
 			return simpleAlert('출고 등록을 하려면 배차 등록은 필수입니다.')
 		}
 		simpleConfirm('출고 등록하시겠습니까?', () => shipmentStatusUpdate({ shipmentStatus, uids }))
@@ -135,7 +146,6 @@ const DisRegister = () => {
 		const list = data?.list
 		if (list && Array.isArray(list)) {
 			setRows(add_element_field(list, ShippingDispatchFields))
-			setPagination(data?.pagination)
 		}
 	}, [data])
 
@@ -162,8 +172,8 @@ const DisRegister = () => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{selectedRows?.length > 0 ? selectedRows?.length : '0'}</span> / )
-						<Hidden />
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount.toLocaleString()}개 )
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
@@ -172,20 +182,18 @@ const DisRegister = () => {
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량
-						<span> {formatWeight(KilogramSum(selectedRows, '제품 총 중량'))} </span>
-						kg / 총 중량 {formatWeight(pagination?.totalWeight)} kg
+						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight.toLocaleString()} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteRedBtn onClick={onRemoveDispatch}>배차 취소</WhiteRedBtn>
 						<WhiteSkyBtn onClick={onSetDispatch}>배차 등록</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table
-					getRow={rows}
+				<TableV2
+					getRow={tableRowData}
 					loading={isLoading}
 					getCol={ShippingDispatchFieldsCols}
-					tablePagination={pagination}
+					tablePagination={paginationData}
 					onPageChange={onPageChange}
 				/>
 				<TCSubContainer>
@@ -193,7 +201,7 @@ const DisRegister = () => {
 					<div style={{ display: 'flex', gap: '10px' }}>
 						{/*<WhiteBlackBtn onClick={getInvoicesHandler}>수취서 출력</WhiteBlackBtn>*/}
 						{/*<ReceiptExcel />*/}
-						<WhiteBlackBtn onClick={onRegister}>출고 등록</WhiteBlackBtn>
+						{auth.role !== '운송사' && <WhiteBlackBtn onClick={onRegister}>출고 등록</WhiteBlackBtn>}
 					</div>
 				</TCSubContainer>
 			</TableContianer>

@@ -110,9 +110,9 @@ const GlobalProductSearch = ({
 			shipmentRequestEndDate: '', // 출고 요청 종료 일자 (Shipment request end date)
 			shipmentStartDate: '', // 출고 시작 일자 (Shipment start date)
 			shipmentEndDate: '', // 출고 종료 일자 (Shipment end date)
-			mergeStatus: false, // 합짐 여부 (Merge status)
-			driverStatus: false, // 배차 입력 여부 (Driver status)
-			dockStatus: false, // 상차도 여부 (Dock status)
+			mergeStatus: '', // 합짐 여부 (Merge status)
+			driverStatus: '', // 배차 입력 여부 (Driver status)
+			dockStatus: '', // 상차도 여부 (Dock status)
 			orderType: '', // 주문 타입 (Order type)
 			orderNumber: '', // 주문 번호 (Order number)
 			carType: '', // 차량종류

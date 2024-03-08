@@ -2,23 +2,25 @@ import React, { useEffect, useState } from 'react'
 import { WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { achievementAddedAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import { useNavigate } from 'react-router-dom'
-import Hidden from '../../../components/TableInner/Hidden'
 import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import AchievementModal from '../../../modal/Multi/Achievement'
 import { useAtom, useAtomValue } from 'jotai'
 import { useShipmentListQuery, useShipmentRemoveExtraCostMutation } from '../../../api/shipment'
-import { ShippingRegisterFields, ShippingRegisterFieldsCols } from '../../../constants/admin/Shipping'
+import { ShippingRegisterFields } from '../../../constants/admin/Shipping'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { GlobalFilterHeader } from '../../../components/Filter'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Excel from '../../../components/TableInner/Excel'
-import Table from '../../Table/Table'
 import useAlert from '../../../store/Alert/useAlert'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import AchievementSearchFilter from './AchievementSearchFilter'
 import { isEqual } from 'lodash'
-import { formatWeight } from '../../../utils/utils'
-import { KilogramSum } from '../../../utils/KilogramSum'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
+import { AchievementFields, AchievementFieldsCols } from '../fields/AchievementFields'
+import { authAtom } from '../../../store/Auth/auth'
+import TableV2 from '../../Table/TableV2'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const initData = {
 	pageNum: 1,
@@ -27,6 +29,7 @@ const initData = {
 }
 
 const Achievement = () => {
+	const auth = useAtomValue(authAtom)
 	const navigate = useNavigate()
 	const { simpleAlert, redAlert } = useAlert()
 	const [addedModal, setAddedModal] = useAtom(achievementAddedAtom)
@@ -34,12 +37,21 @@ const Achievement = () => {
 	const selectedRows = useAtomValue(selectedRowsAtom)
 
 	const [getRow, setGetRow] = useState([])
-	const [pagination, setPagination] = useState(null)
 	const [param, setParam] = useState(initData)
 
 	const { data, refetch, isLoading } = useShipmentListQuery(param)
 	const [selectedData, setSelectedData] = useState(null)
 	const { mutate: removeExtarCost } = useShipmentRemoveExtraCostMutation() // 추가비 및 공차비 삭제
+
+	const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
+		tableField: AchievementFields(auth),
+		serverData: data,
+	})
+
+	// 선택 항목
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
 
 	const openExtarCostModal = () => {
 		if (!selectedRows || selectedRows?.length === 0) {
@@ -139,7 +151,6 @@ const Achievement = () => {
 		const list = data?.list
 		if (list && Array.isArray(list)) {
 			setGetRow(add_element_field(list, ShippingRegisterFields))
-			setPagination(data?.pagination)
 		}
 	}, [data])
 
@@ -158,9 +169,8 @@ const Achievement = () => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{selectedRows?.length > 0 ? selectedRows?.length : '0'}</span> /{' '}
-						{pagination?.listCount}개 )
-						<Hidden />
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount.toLocaleString()}개 )
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
@@ -169,20 +179,18 @@ const Achievement = () => {
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량
-						<span> {formatWeight(KilogramSum(selectedRows))} </span>
-						kg / 총 중량 {formatWeight(pagination?.totalWeight)} kg
+						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight.toLocaleString()} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteRedBtn onClick={onRemoveExtraCost}>추가비 및 공차비 삭제</WhiteRedBtn>
 						<WhiteSkyBtn onClick={openExtarCostModal}>추가비 및 공차비 추가</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table
-					getCol={ShippingRegisterFieldsCols}
-					getRow={getRow}
+				<TableV2
+					getRow={tableRowData}
 					loading={isLoading}
-					tablePagination={pagination}
+					getCol={AchievementFieldsCols(AchievementFields(auth))}
+					tablePagination={paginationData}
 					onPageChange={onPageChange}
 				/>
 				<TCSubContainer>

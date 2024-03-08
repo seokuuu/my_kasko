@@ -69,8 +69,8 @@ const DisRegisterSearchFilter = ({ search, setSearch }) => {
 						<RadioSearchButton
 							options={[
 								{ label: '전체', value: '' },
-								{ label: 'Y', value: true },
-								{ label: 'N', value: false },
+								{ label: 'Y', value: 1 },
+								{ label: 'N', value: 0 },
 							]}
 							value={search.driverStatus}
 							onChange={(value) => onChange('driverStatus', value)}
