@@ -197,23 +197,23 @@ export const Dot = styled.div`
 `
 
 export const DotContainer = styled.div`
-	min-height: 0px;
+	min-height: 95px;
 	position: relative;
 	left: 0px;
 	right: 0px;
+	top: 10px;
 `
 
 export const DotWrap = styled.div`
-	margin-top: 4px;
 	height: 30px;
 	display: flex;
 	line-height: -10px;
+	align-items: center;
 
 	p {
-		width: 100px;
-		line-height: -10px;
+		display: flex;
+		width: max-content;
 		margin-left: 3px;
-		margin-top: 3px;
 	}
 `
 

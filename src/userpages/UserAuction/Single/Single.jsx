@@ -514,23 +514,27 @@ const Single = ({}) => {
 				</>
 			)}
 			<TableContianer>
-				{nowAuction && (
-					<>
-						<TCSubContainer bor>
-							<div>
-								조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-								<Hidden />
-							</div>
+				<TCSubContainer bor>
+					<div>
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
+						<Hidden />
+					</div>
+					{nowAuction && (
+						<>
 							<div style={{ display: 'flex', gap: '10px' }}>
 								<PageDropdown handleDropdown={handleTablePageSize} />
 								<Excel getRow={getRow} />
 								<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
 							</div>
-						</TCSubContainer>
-						<TCSubContainer bor>
-							<div>
-								선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
-							</div>
+						</>
+					)}
+				</TCSubContainer>
+				<TCSubContainer bor>
+					<div>
+						선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
+					</div>
+					{nowAuction && (
+						<>
 							<div
 								style={{
 									display: 'flex',
@@ -564,21 +568,7 @@ const Single = ({}) => {
 								>
 									찾기
 								</TWhiteBtn>
-								<TGreyBtn
-									// onClick={() => {
-									// 	setFinalInput((prevFinalInput) => ({
-									// 		...prevFinalInput,
-									// 		customerDestinationUid: destiObject && destiObject.uid,
-									// 	}))
-									// 	setValues((p) => ({
-									// 		...p,
-									// 		customerDestinationUid: destiObject && destiObject.uid,
-									// 	}))
-									// }}
-									onClick={destiOnClickHandler}
-								>
-									적용
-								</TGreyBtn>
+								<TGreyBtn onClick={destiOnClickHandler}>적용</TGreyBtn>
 
 								<BtnBound style={{ margin: '0px' }} />
 								<p>일괄 경매 응찰 | 최고가 +</p>
@@ -613,9 +603,9 @@ const Single = ({}) => {
 									응찰
 								</SkyBtn>
 							</div>
-						</TCSubContainer>
-					</>
-				)}
+						</>
+					)}
+				</TCSubContainer>
 
 				<Table
 					getCol={getCol}
@@ -636,7 +626,7 @@ const Single = ({}) => {
 			)}
 			{/* 입찰 동의서 모달 */}
 			{console.log('agreementModal', agreementModal)}
-			{agreementModal && (
+			{agreementModal && nowAuction && (
 				<Agreement setCheckAgreement={setCheckAgreement} agreementOnClickHandler={agreementOnClickHandler} />
 			)}
 		</FilterContianer>

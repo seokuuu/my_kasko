@@ -47,6 +47,8 @@ const CalendarModal = () => {
 	const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()]
 	const formattedDate = `${month}/${day}(${dayOfWeek})`
 
+	console.log('모멘트', moment(date).format('YYYY-MM-DD'))
+
 	function CustomFormatDay(locale, date) {
 		return date.getDate().toString()
 	}
@@ -70,7 +72,6 @@ const CalendarModal = () => {
 		const day = datePart.slice(6)
 
 		let period
-		let time
 
 		if (timePart === '01' || timePart === '11') {
 			period = '오전 경매'
@@ -89,9 +90,10 @@ const CalendarModal = () => {
 		return {
 			date: `${year}-${month}-${day}`,
 			period,
-			// time,
 		}
 	}
+
+	console.log()
 
 	// 각 경매번호에 대해 파싱된 정보 출력
 	useEffect(() => {
@@ -101,89 +103,65 @@ const CalendarModal = () => {
 
 	console.log('auctionData', auctionData)
 
-	// function customTileContent({ date, view }) {
-	// 	if (view === 'month' && date.toDateString() === new Date().toDateString()) {
-	// 		return (
-	// 			<>
-	// 				{mark.find((x) => x === moment(date).format('YYYY-MM-DD')) ? (
-	// 					<>
-	// 						<Wrap></Wrap>
-	// 						<Today>today</Today>
-	// 						<DotContainer>
-	// 							<DotWrap>
-	// 								<Dot dotColor={dotAm}>
-	// 									<p>오전 경매</p>
-	// 								</Dot>
-	// 							</DotWrap>
-	// 							<DotWrap>
-	// 								<Dot dotColor={dotPm}>
-	// 									<p>오후 경매</p>
-	// 								</Dot>
-	// 							</DotWrap>
-	// 							<DotWrap>
-	// 								<Dot dotColor={dotPlus}>
-	// 									<p>추가 경매</p>
-	// 								</Dot>
-	// 							</DotWrap>
-	// 						</DotContainer>
-	// 					</>
-	// 				) : null}
-	// 			</>
-	// 		)
-	// 	}
+	const todayDate = moment().format('YYYY-MM-DD')
+	const todayPeriods = auctionData && auctionData?.filter((item) => item.date === todayDate)
 
-	// 	// 기존의 커스텀 콘텐츠 반환
-	// 	if (mark.find((x) => x === moment(date).format('YYYY-MM-DD'))) {
-	// 		return (
-	// 			<>
-	// 				<Wrap></Wrap>
-	// 				<DotContainer>
-	// 					<DotWrap>
-	// 						<Dot dotColor={dotAm}>
-	// 							<p>오전 경매</p>
-	// 						</Dot>
-	// 					</DotWrap>
-	// 					<DotWrap>
-	// 						<Dot dotColor={dotPm}>
-	// 							<p>오후 경매</p>
-	// 						</Dot>
-	// 					</DotWrap>
-	// 					<DotWrap>
-	// 						<Dot dotColor={dotPlus}>
-	// 							<p>추가 경매</p>
-	// 						</Dot>
-	// 					</DotWrap>
-	// 				</DotContainer>
-	// 			</>
-	// 		)
-	// 	}
+	// 오늘의 일정
+	const renderPeriods = () => {
+		const sortedPeriods = ['오전 경매', '오후 경매', '추가 경매']?.filter((period) =>
+			todayPeriods?.some((item) => item.period === period),
+		)
 
-	// 	return null
-	// }
+		return sortedPeriods?.map((period, index) => {
+			const matchingAuctions = todayPeriods?.filter((item) => item.period === period)
+			return (
+				<DotWrap style={{ marginTop: '5px' }} key={index}>
+					<Dot dotColor={getDotColor(period)} />
+					<p style={{ marginLeft: '5px', fontWeight: 'bolder', fontFamily: 'SUIT', fontSize: '18px' }}>
+						{period}
+						{matchingAuctions.length > 1 && ` + ${matchingAuctions.length}`}
+					</p>
+				</DotWrap>
+			)
+		})
+	}
+
+	console.log('todayPeriods', todayPeriods)
 
 	function customTileContent({ date, view }) {
 		const formattedDate = moment(date).format('YYYY-MM-DD')
-		const matchingAuctions = auctionData?.filter((auction) => auction.date === formattedDate)
 
+		const matchingAuctions = auctionData?.filter((auction) => auction.date === formattedDate)
+		console.log('matchingAuctions', matchingAuctions)
 		if (view === 'month' && matchingAuctions?.length > 0) {
+			const isAdditionalAuction = matchingAuctions.some((auction) => auction.period === '추가 경매')
+
 			return (
 				<>
-					<Today>today</Today>
+					<Today></Today>
 					<DotContainer>
-						{matchingAuctions?.map((auction, index) => (
-							<DotWrap key={index}>
-								{auction?.period === '추가 경매' ? (
-									<Dot dotColor={getDotColor('추가 경매')}>
-										<p>추가 경매</p>
-										{matchingAuctions.length > 1 && <span>({matchingAuctions.length})</span>}
-									</Dot>
-								) : (
-									<Dot dotColor={getDotColor(auction?.period)}>
-										<p>{auction?.period}</p>
-									</Dot>
-								)}
+						{isAdditionalAuction ? (
+							<DotWrap>
+								<Dot dotColor={getDotColor('추가 경매')}></Dot>
+								<p style={{ marginLeft: '5px', fontWeight: 'bolder', fontFamily: 'SUIT', fontSize: '17px' }}>
+									추가 경매{matchingAuctions.length > 1 && ` + ${matchingAuctions.length}`}
+								</p>
 							</DotWrap>
-						))}
+						) : (
+							matchingAuctions
+								?.sort((a, b) => {
+									const order = { '오전 경매': 1, '오후 경매': 2, '추가 경매': 3 }
+									return order[a.period] - order[b.period]
+								})
+								.map((auction, index) => (
+									<DotWrap key={index}>
+										<Dot dotColor={getDotColor(auction?.period)}></Dot>
+										<p style={{ marginLeft: '5px', fontWeight: 'bolder', fontFamily: 'SUIT', fontSize: '17px' }}>
+											{auction?.period}
+										</p>
+									</DotWrap>
+								))
+						)}
 					</DotContainer>
 				</>
 			)
@@ -235,16 +213,8 @@ const CalendarModal = () => {
 					<TodayWrap>
 						<span>today</span> <span>{formattedDate}</span>
 					</TodayWrap>
-					<DotWrap>
-						<Dot dotColor={dotPlus}>
-							<TodayTxt>추가 경매</TodayTxt>
-						</Dot>
-					</DotWrap>
-					<DotWrap>
-						<Dot dotColor={dotAm}>
-							<TodayTxt>추가 경매</TodayTxt>
-						</Dot>
-					</DotWrap>
+					{/* 오늘의 일정 */}
+					<div>{renderPeriods()}</div>
 				</CalBtnWrap>
 				<CloseBtnWrap>
 					<CalBtn

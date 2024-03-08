@@ -58,6 +58,9 @@ import PackDetail from './PackDetail'
 const Bidding = ({}) => {
 	const auth = useAtomValue(authAtom)
 	const nowAuction = useCheckAuction() // 현재 경매 여부 체크
+
+
+
 	const [live, setLive] = useState(true) // LIVE get 일시 중단
 	console.log('live', live)
 	const navigate = useNavigate()
@@ -528,22 +531,26 @@ const Bidding = ({}) => {
 				</>
 			)}
 			<TableContianer>
-				{nowAuction && (
-					<>
-						<TCSubContainer bor>
-							<div>
-								조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-								<Hidden />
-							</div>
+				<TCSubContainer bor>
+					<div>
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
+						<Hidden />
+					</div>
+					{nowAuction && (
+						<>
 							<div style={{ display: 'flex', gap: '10px' }}>
 								<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
 								<Excel getRow={getRow} />
 							</div>
-						</TCSubContainer>
-						<TCSubContainer bor>
-							<div>
-								선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
-							</div>
+						</>
+					)}
+				</TCSubContainer>
+				<TCSubContainer bor>
+					<div>
+						선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
+					</div>
+					{nowAuction && (
+						<>
 							<div
 								style={{
 									display: 'flex',
@@ -605,9 +612,9 @@ const Bidding = ({}) => {
 									응찰
 								</SkyBtn>
 							</div>
-						</TCSubContainer>
-					</>
-				)}
+						</>
+					)}
+				</TCSubContainer>
 
 				<Table
 					getCol={param?.type === '단일' ? AuctionBiddingFieldsCols : AuctionPackageBiddingFieldsCols}
@@ -631,7 +638,7 @@ const Bidding = ({}) => {
 				<PackDetail aucDetail={aucDetail} packNum={aucDetail['패키지 번호']} setAucDetailModal={setAucDetailModal} />
 			)}
 			{/* 입찰 동의서 모달 */}
-			{agreementModal && (
+			{agreementModal && nowAuction && (
 				<Agreement
 					setCheckAgreement={setCheckAgreement}
 					agreementOnClickHandler={agreementOnClickHandler}
