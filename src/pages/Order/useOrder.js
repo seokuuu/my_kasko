@@ -106,7 +106,7 @@ const useOrder = () => {
 						})
 					},
 					onError: (error) => {
-						simpleAlert('확정 전송 중 오류가 발생했습니다.')
+						simpleAlert(error?.data?.message || '확정 전송 중 오류가 발생했습니다.')
 					},
 				},
 			)
@@ -123,7 +123,8 @@ const useOrder = () => {
 					})
 				},
 				onError: (error) => {
-					simpleAlert('확정 전송 중 오류가 발생했습니다.')
+					console.error(error)
+					simpleAlert(error?.data?.message || '확정 전송 중 오류가 발생했습니다.')
 				},
 			})
 		})
