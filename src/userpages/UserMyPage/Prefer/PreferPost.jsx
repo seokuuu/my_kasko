@@ -32,28 +32,27 @@ const init = {
 		text: '',
 		uid: 0,
 	}, //DB 필요
-	thicknessMin: 0,
-	thicknessMax: 0,
-	widthMin: 0,
-	widthMax: 0,
-	lengthMin: 0,
-	lengthMax: 0,
-	tsMin: 0,
-	tsMax: 0,
-	ypMin: 0,
-	ypMax: 0,
-	cMin: 0,
-	cMax: 0,
-	elMin: 0,
-	elMax: 0,
+	thicknessMin: '',
+	thicknessMax: '',
+	widthMin: '',
+	widthMax: '',
+	lengthMin: '',
+	lengthMax: '',
+	tsMin: '',
+	tsMax: '',
+	ypMin: '',
+	ypMax: '',
+	cMin: '',
+	cMax: '',
+	elMin: '',
+	elMax: '',
 }
 
-// TODO : 규격약호 DB 셋팅 안되있음
 const PreferPost = ({ setChoiceComponent }) => {
 	const [submitData, setSubmitData] = useState(init)
 
 	const { simpleAlert, showAlert, simpleConfirm } = useAlert()
-	console.log('submitData :', submitData)
+
 	// 등록 API
 	const { mutate: create } = useMutation(postCustomerfavorite, {
 		onSuccess() {
@@ -75,9 +74,14 @@ const PreferPost = ({ setChoiceComponent }) => {
 	const [isModal, setIsModal] = useAtom(kyuModalAtom)
 	const eventHandle = (e) => {
 		const { name, value } = e.target
-		const fieldValue = name === 'name' ? value : parseInt(value, 10)
-
-		setSubmitData({ ...submitData, [name]: fieldValue })
+		if (name !== 'name') {
+			const regex =
+				name.toString().includes('length') || name.toString().includes('el')
+					? /^[0-9]+$/.test(value)
+					: /^[0-9.]+$/.test(value)
+			return setSubmitData({ ...submitData, [name]: regex ? value : '' })
+		}
+		setSubmitData({ ...submitData, [name]: value })
 	}
 
 	const submitHandle = () => {
@@ -102,8 +106,6 @@ const PreferPost = ({ setChoiceComponent }) => {
 	// 규격 약호 핸들러
 	function onSpecHandler(e, text, uid) {
 		const { tagName } = e.target
-
-		console.log('e.tareget :', e.target)
 		if (tagName === 'IMG') {
 			setIsModal(false)
 		} else {
@@ -121,6 +123,8 @@ const PreferPost = ({ setChoiceComponent }) => {
 			simpleConfirm('현재 작업 중인 내용이 저장되지 않았습니다. \n페이지를 나가시겠습니까?', () =>
 				setChoiceComponent('리스트'),
 			)
+		} else {
+			setChoiceComponent('리스트')
 		}
 	}
 
@@ -128,7 +132,7 @@ const PreferPost = ({ setChoiceComponent }) => {
 
 	return (
 		<OnePageContainer>
-			<MainTitle></MainTitle>
+			<MainTitle>선호제품 등록</MainTitle>
 			<OnePageSubContainer>
 				<HalfWrap>
 					<Left>
@@ -162,9 +166,23 @@ const PreferPost = ({ setChoiceComponent }) => {
 								<h4>두께</h4>
 								<p></p>
 							</Title>
-							<CustomInput width={150} name="thicknessMin" value={submitData.thicknessMin} onChange={eventHandle} />
+							<CustomInput
+								type={'number'}
+								step={0.01}
+								width={150}
+								name="thicknessMin"
+								value={submitData.thicknessMin}
+								onChange={eventHandle}
+							/>
 							<span style={{ padding: '0px 5px' }}>~</span>
-							<CustomInput width={150} name="thicknessMax" value={submitData.thicknessMax} onChange={eventHandle} />
+							<CustomInput
+								type={'number'}
+								step={0.01}
+								width={150}
+								name="thicknessMax"
+								value={submitData.thicknessMax}
+								onChange={eventHandle}
+							/>
 						</Part>
 
 						<Part style={{ marginTop: '35px' }}>
@@ -172,9 +190,23 @@ const PreferPost = ({ setChoiceComponent }) => {
 								<h4>폭</h4>
 								<p></p>
 							</Title>
-							<CustomInput width={150} name="widthMin" onChange={eventHandle} value={submitData.widthMin} />
+							<CustomInput
+								type={'number'}
+								step={0.01}
+								width={150}
+								name="widthMin"
+								onChange={eventHandle}
+								value={submitData.widthMin}
+							/>
 							<span style={{ padding: '0px 5px' }}>~</span>
-							<CustomInput width={150} name="widthMax" onChange={eventHandle} value={submitData.widthMax} />
+							<CustomInput
+								type={'number'}
+								step={0.01}
+								width={150}
+								name="widthMax"
+								onChange={eventHandle}
+								value={submitData.widthMax}
+							/>
 						</Part>
 
 						<Part style={{ marginTop: '35px' }}>
@@ -182,9 +214,23 @@ const PreferPost = ({ setChoiceComponent }) => {
 								<h4>길이</h4>
 								<p></p>
 							</Title>
-							<CustomInput width={150} name="lengthMin" onChange={eventHandle} value={submitData.lengthMin} />
+							<CustomInput
+								type={'number'}
+								step={0}
+								width={150}
+								name="lengthMin"
+								onChange={eventHandle}
+								value={submitData.lengthMin}
+							/>
 							<span style={{ padding: '0px 5px' }}>~</span>
-							<CustomInput width={150} name="lengthMax" onChange={eventHandle} value={submitData.lengthMax} />
+							<CustomInput
+								type={'number'}
+								step={0}
+								width={150}
+								name="lengthMax"
+								onChange={eventHandle}
+								value={submitData.lengthMax}
+							/>
 						</Part>
 					</Left>
 					<Right>
@@ -193,9 +239,23 @@ const PreferPost = ({ setChoiceComponent }) => {
 								<h4>TS</h4>
 								<p></p>
 							</Title>
-							<CustomInput width={150} name="tsMin" onChange={eventHandle} value={submitData.tsMin} />
+							<CustomInput
+								type={'number'}
+								step={0.01}
+								width={150}
+								name="tsMin"
+								onChange={eventHandle}
+								value={submitData.tsMin}
+							/>
 							<span style={{ padding: '0px 5px' }}>~</span>
-							<CustomInput width={150} name="tsMax" onChange={eventHandle} value={submitData.tsMax} />
+							<CustomInput
+								type={'number'}
+								step={0.01}
+								width={150}
+								name="tsMax"
+								onChange={eventHandle}
+								value={submitData.tsMax}
+							/>
 						</Part>
 
 						<Part style={{ marginTop: '35px' }}>
@@ -203,18 +263,46 @@ const PreferPost = ({ setChoiceComponent }) => {
 								<h4>YP</h4>
 								<p></p>
 							</Title>
-							<CustomInput width={150} name="ypMin" onChange={eventHandle} value={submitData.ypMin} />
+							<CustomInput
+								type={'number'}
+								step={0.01}
+								width={150}
+								name="ypMin"
+								onChange={eventHandle}
+								value={submitData.ypMin}
+							/>
 							<span style={{ padding: '0px 5px' }}>~</span>
-							<CustomInput width={150} name="ypMax" onChange={eventHandle} value={submitData.ypMax} />
+							<CustomInput
+								type={'number'}
+								step={0.01}
+								width={150}
+								name="ypMax"
+								onChange={eventHandle}
+								value={submitData.ypMax}
+							/>
 						</Part>
 						<Part style={{ marginTop: '35px' }}>
 							<Title>
 								<h4>C%</h4>
 								<p></p>
 							</Title>
-							<CustomInput width={150} name="cMin" onChange={eventHandle} value={submitData.cMin} />
+							<CustomInput
+								type={'number'}
+								step={0.01}
+								width={150}
+								name="cMin"
+								onChange={eventHandle}
+								value={submitData.cMin}
+							/>
 							<span style={{ padding: '0px 5px' }}>~</span>
-							<CustomInput width={150} name="cMax" onChange={eventHandle} value={submitData.cMax} />
+							<CustomInput
+								type={'number'}
+								step={0.01}
+								width={150}
+								name="cMax"
+								onChange={eventHandle}
+								value={submitData.cMax}
+							/>
 						</Part>
 
 						<Part style={{ marginTop: '35px' }}>
@@ -222,9 +310,23 @@ const PreferPost = ({ setChoiceComponent }) => {
 								<h4>EL</h4>
 								<p></p>
 							</Title>
-							<CustomInput width={150} name="elMin" onChange={eventHandle} value={submitData.elMin} />
+							<CustomInput
+								type={'number'}
+								step={0.01}
+								width={150}
+								name="elMin"
+								onChange={eventHandle}
+								value={submitData.elMin}
+							/>
 							<span style={{ padding: '0px 5px' }}>~</span>
-							<CustomInput width={150} name="elMax" onChange={eventHandle} value={submitData.elMax} />
+							<CustomInput
+								type={'number'}
+								step={0.01}
+								width={150}
+								name="elMax"
+								onChange={eventHandle}
+								value={submitData.elMax}
+							/>
 						</Part>
 					</Right>
 				</HalfWrap>
