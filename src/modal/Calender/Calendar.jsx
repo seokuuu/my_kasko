@@ -1,5 +1,5 @@
 import moment from 'moment/moment'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
 	CalBtn,
@@ -19,8 +19,10 @@ import {
 import { useAtom } from 'jotai'
 import { calendarAtom } from '../../store/Layout/Layout'
 import useReactQuery from '../../hooks/useReactQuery'
+import { getAuction } from '../../api/auction/round'
 
 const CalendarModal = () => {
+	const [auctionData, setAuctionData] = useState([])
 	const [calModal, setCalModal] = useAtom(calendarAtom)
 	const navigate = useNavigate()
 	const [mark, setMark] = useState(['2023-07-04', '2023-07-05', '2023-07-06'])
@@ -49,66 +51,158 @@ const CalendarModal = () => {
 		return date.getDate().toString()
 	}
 
-	// const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'auction', getAuction)
+	const param = { pageNum: 1, pageSize: 5000 }
 
-	function customTileContent({ date, view }) {
-		if (view === 'month' && date.toDateString() === new Date().toDateString()) {
-			return (
-				<>
-					{mark.find((x) => x === moment(date).format('YYYY-MM-DD')) ? (
-						<>
-							<Wrap></Wrap>
-							<Today>today</Today>
-							<DotContainer>
-								<DotWrap>
-									<Dot dotColor={dotAm}>
-										<p>오전 경매</p>
-									</Dot>
-								</DotWrap>
-								<DotWrap>
-									<Dot dotColor={dotPm}>
-										<p>오후 경매</p>
-									</Dot>
-								</DotWrap>
-								<DotWrap>
-									<Dot dotColor={dotPlus}>
-										<p>추가 경매</p>
-									</Dot>
-								</DotWrap>
-							</DotContainer>
-						</>
-					) : null}
-				</>
-			)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'auction', getAuction)
+
+	const resData = data?.data?.data?.list
+
+	const calAucNumber = resData?.map((x) => x.number)
+
+	console.log('calAucNumber 캘린더', calAucNumber)
+
+	const parseAuctionData = (auctionNumber) => {
+		const datePart = auctionNumber.slice(0, 8) // 날짜 부분 추출
+		const timePart = auctionNumber.slice(8) // 시간 부분 추출
+
+		const year = datePart.slice(0, 4)
+		const month = datePart.slice(4, 6)
+		const day = datePart.slice(6)
+
+		let period
+		let time
+
+		if (timePart === '01' || timePart === '11') {
+			period = '오전 경매'
+			// time = '01, 11'
+		} else if (timePart === '02' || timePart === '12') {
+			period = '오후 경매'
+			// time = '02, 12'
+		} else if (
+			(parseInt(timePart) >= 3 && parseInt(timePart) <= 9) ||
+			(parseInt(timePart) >= 13 && parseInt(timePart) <= 19)
+		) {
+			period = '추가 경매'
+			// time = parseInt(timePart) >= 3 && parseInt(timePart) <= 9 ? '03 ~ 09' : '13 ~ 19'
 		}
 
-		// 기존의 커스텀 콘텐츠 반환
-		if (mark.find((x) => x === moment(date).format('YYYY-MM-DD'))) {
+		return {
+			date: `${year}-${month}-${day}`,
+			period,
+			// time,
+		}
+	}
+
+	// 각 경매번호에 대해 파싱된 정보 출력
+	useEffect(() => {
+		const parsedAuctions = calAucNumber?.map((auctionNumber) => parseAuctionData(auctionNumber))
+		setAuctionData(parsedAuctions)
+	}, [resData])
+
+	console.log('auctionData', auctionData)
+
+	// function customTileContent({ date, view }) {
+	// 	if (view === 'month' && date.toDateString() === new Date().toDateString()) {
+	// 		return (
+	// 			<>
+	// 				{mark.find((x) => x === moment(date).format('YYYY-MM-DD')) ? (
+	// 					<>
+	// 						<Wrap></Wrap>
+	// 						<Today>today</Today>
+	// 						<DotContainer>
+	// 							<DotWrap>
+	// 								<Dot dotColor={dotAm}>
+	// 									<p>오전 경매</p>
+	// 								</Dot>
+	// 							</DotWrap>
+	// 							<DotWrap>
+	// 								<Dot dotColor={dotPm}>
+	// 									<p>오후 경매</p>
+	// 								</Dot>
+	// 							</DotWrap>
+	// 							<DotWrap>
+	// 								<Dot dotColor={dotPlus}>
+	// 									<p>추가 경매</p>
+	// 								</Dot>
+	// 							</DotWrap>
+	// 						</DotContainer>
+	// 					</>
+	// 				) : null}
+	// 			</>
+	// 		)
+	// 	}
+
+	// 	// 기존의 커스텀 콘텐츠 반환
+	// 	if (mark.find((x) => x === moment(date).format('YYYY-MM-DD'))) {
+	// 		return (
+	// 			<>
+	// 				<Wrap></Wrap>
+	// 				<DotContainer>
+	// 					<DotWrap>
+	// 						<Dot dotColor={dotAm}>
+	// 							<p>오전 경매</p>
+	// 						</Dot>
+	// 					</DotWrap>
+	// 					<DotWrap>
+	// 						<Dot dotColor={dotPm}>
+	// 							<p>오후 경매</p>
+	// 						</Dot>
+	// 					</DotWrap>
+	// 					<DotWrap>
+	// 						<Dot dotColor={dotPlus}>
+	// 							<p>추가 경매</p>
+	// 						</Dot>
+	// 					</DotWrap>
+	// 				</DotContainer>
+	// 			</>
+	// 		)
+	// 	}
+
+	// 	return null
+	// }
+
+	function customTileContent({ date, view }) {
+		const formattedDate = moment(date).format('YYYY-MM-DD')
+		const matchingAuctions = auctionData?.filter((auction) => auction.date === formattedDate)
+
+		if (view === 'month' && matchingAuctions?.length > 0) {
 			return (
 				<>
-					<Wrap></Wrap>
+					<Today>today</Today>
 					<DotContainer>
-						<DotWrap>
-							<Dot dotColor={dotAm}>
-								<p>오전 경매</p>
-							</Dot>
-						</DotWrap>
-						<DotWrap>
-							<Dot dotColor={dotPm}>
-								<p>오후 경매</p>
-							</Dot>
-						</DotWrap>
-						<DotWrap>
-							<Dot dotColor={dotPlus}>
-								<p>추가 경매</p>
-							</Dot>
-						</DotWrap>
+						{matchingAuctions?.map((auction, index) => (
+							<DotWrap key={index}>
+								{auction?.period === '추가 경매' ? (
+									<Dot dotColor={getDotColor('추가 경매')}>
+										<p>추가 경매</p>
+										{matchingAuctions.length > 1 && <span>({matchingAuctions.length})</span>}
+									</Dot>
+								) : (
+									<Dot dotColor={getDotColor(auction?.period)}>
+										<p>{auction?.period}</p>
+									</Dot>
+								)}
+							</DotWrap>
+						))}
 					</DotContainer>
 				</>
 			)
 		}
 
 		return null
+	}
+
+	const getDotColor = (period) => {
+		switch (period) {
+			case '오전 경매':
+				return dotAm
+			case '오후 경매':
+				return dotPm
+			case '추가 경매':
+				return dotPlus
+			default:
+				return null
+		}
 	}
 
 	return (
