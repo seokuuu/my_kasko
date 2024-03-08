@@ -26,6 +26,7 @@ import Table from '../Table/Table'
 import OrderDetailSearchFields from './OrderDetailSearchFields'
 import ProNoPage from './ProNoPage'
 import useOrder from './useOrder'
+import { onSizeChange } from '../Operate/utils'
 
 const useQuery = () => {
 	return new URLSearchParams(useLocation().search)
@@ -295,7 +296,8 @@ const AdminOrderDetail = () => {
 							<Hidden />
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
-							<PageDropdown />
+							{/*<PageDropdown />*/}
+							<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
 							<Excel getRow={getRow} />
 						</div>
 					</TCSubContainer>
