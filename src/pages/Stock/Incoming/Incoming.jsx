@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
@@ -23,6 +23,8 @@ import { onSizeChange } from '../../Operate/utils'
 import Table from '../../Table/Table'
 import IncomingModify from './IncomingModify'
 import IncomingSearchFields from './IncomingSearchFields'
+import TableV2ExcelDownloader from '../../Table/TableV2ExcelDownloader'
+import { SingleDispatchFieldsCols } from '../../../constants/admin/Single'
 
 const Incoming = ({}) => {
 	const { simpleConfirm, simpleAlert } = useAlert()
@@ -42,7 +44,10 @@ const Incoming = ({}) => {
 	const formatTableRowData = (inComingData) => {
 		return add_element_field(inComingData, stockFields)
 	}
-	const [getRow, setGetRow] = useState('')
+	const [getRow, setGetRow] = useState([])
+	const tableField = useRef(StockIncomingFields)
+	const getCol = tableField.current
+
 	// 데이터 가져오기
 	const paramData = {
 		pageNum: 1,
@@ -59,6 +64,7 @@ const Incoming = ({}) => {
 		if (inComingData && inComingData.data && inComingData.data.list) {
 			setInComingListData(formatTableRowData(inComingData.data.list))
 			setInComingPagination(inComingData.data.pagination)
+			setGetRow(add_element_field(inComingData?.data.list, stockFields))
 		}
 	}, [inComingData, isSuccess])
 
@@ -207,12 +213,7 @@ const Incoming = ({}) => {
 						</div>
 					</TCSubContainer>
 
-					<Table
-						getCol={StockIncomingFields}
-						getRow={inComingListData}
-						tablePagination={inComingPagination}
-						onPageChange={onPageChange}
-					/>
+					<Table getRow={getRow} getCol={getCol} tablePagination={inComingPagination} onPageChange={onPageChange} />
 					<TCSubContainer>
 						<div></div>
 						<div style={{ display: 'flex', gap: '10px' }}>
