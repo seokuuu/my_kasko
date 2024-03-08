@@ -6,8 +6,10 @@ import { useMergeListQuery } from '../../../api/shipment'
 import { RadioSearchButton } from '../../../components/Search'
 import { useAtomValue } from 'jotai/index'
 import { authAtom } from '../../../store/Auth/auth'
+import useAlert from '../../../store/Alert/useAlert'
 
 const DisRegisterDetailHeader = ({ data, dockStatus, setDockStatus }) => {
+	const { simpleAlert } = useAlert()
 	const auth = useAtomValue(authAtom)
 	const { data: mergeCostList } = useMergeListQuery()
 	const [mergeCost, setMergeCost] = useState(0)
@@ -41,8 +43,7 @@ const DisRegisterDetailHeader = ({ data, dockStatus, setDockStatus }) => {
 		const getLand = mergeCostList?.filter((item) => item.land === land)
 		if (getLand.length === 0) {
 			setMergeCost(0)
-			window.alert('합짐비 데이터가 없습니다. 관리자에게 문의바랍니다.')
-			window.location.reload()
+			simpleAlert('합짐비 데이터가 누락되었습니다. 관리자에게 문의바랍니다.')
 			return
 		}
 		const { inAreaPrice, outAreaPrice } = getLand[0]
@@ -50,10 +51,12 @@ const DisRegisterDetailHeader = ({ data, dockStatus, setDockStatus }) => {
 		// destinations 배열에서 타사 시군 개수 구하기
 		const sameCountArray = []
 		destinations.forEach((destination) => {
-			const address = destination?.split(' ')
-			const key = `${address[0]} ${address[1]}` // 시군구와 동을 조합한 키 생성
-			if (!sameCountArray.includes(key)) {
-				sameCountArray.push(key)
+			if (destination) {
+				const address = destination?.split(' ')
+				const key = `${address[0]} ${address[1]}` // 시군구와 동을 조합한 키 생성
+				if (!sameCountArray.includes(key)) {
+					sameCountArray.push(key)
+				}
 			}
 		})
 

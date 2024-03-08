@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import Excel from '../../../components/TableInner/Excel'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-
-import Hidden from '../../../components/TableInner/Hidden'
+import { toggleAtom } from '../../../store/Layout/Layout'
 import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
-
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { ShippingRegisterFields, ShippingRegisterFieldsCols } from '../../../constants/admin/Shipping'
+import { ShippingRegisterFields } from '../../../constants/admin/Shipping'
 import { useAtomValue } from 'jotai'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { GlobalFilterHeader } from '../../../components/Filter'
 import { useShipmentListQuery } from '../../../api/shipment'
-import Table from '../../../pages/Table/Table'
 import UserPerformanceFilter from './UserPerformanceFilter'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { isEqual } from 'lodash'
-import { formatWeight } from '../../../utils/utils'
-import { KilogramSum } from '../../../utils/KilogramSum'
+import useTableData from '../../../hooks/useTableData'
+import { AchievementFields } from '../../../pages/Shipping/fields/AchievementFields'
+import useTableSelection from '../../../hooks/useTableSelection'
+import { authAtom } from '../../../store/Auth/auth'
+import TableV2 from '../../../pages/Table/TableV2'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
+import { UserPerformanceFields, UserPerformanceFieldsCols } from './UserPerformanceFields'
 
 const initData = {
 	pageNum: 1,
@@ -25,14 +26,23 @@ const initData = {
 }
 
 const UserPerformance = () => {
-	const selectedRows = useAtomValue(selectedRowsAtom)
+	const auth = useAtomValue(authAtom)
 	const exFilterToggle = useAtomValue(toggleAtom)
 
 	const [rows, setRows] = useState([])
-	const [pagination, setPagination] = useState(null)
 
 	const [param, setParam] = useState(initData)
 	const { data, refetch, isLoading } = useShipmentListQuery(param)
+
+	const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
+		tableField: UserPerformanceFields,
+		serverData: data,
+	})
+
+	// 선택 항목
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -74,7 +84,6 @@ const UserPerformance = () => {
 		const list = data?.list
 		if (list && Array.isArray(list)) {
 			setRows(add_element_field(list, ShippingRegisterFields))
-			setPagination(data?.pagination)
 		}
 	}, [data])
 
@@ -93,9 +102,8 @@ const UserPerformance = () => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{selectedRows?.length > 0 ? selectedRows?.length : '0'}</span> /{' '}
-						{pagination?.listCount}개 )
-						<Hidden />
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount.toLocaleString()}개 )
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
@@ -104,17 +112,15 @@ const UserPerformance = () => {
 				</TCSubContainer>
 				<TCSubContainer bor>
 					<div>
-						선택 중량
-						<span> {formatWeight(KilogramSum(selectedRows))} </span>
-						kg / 총 중량 {formatWeight(pagination?.totalWeight)} kg
+						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight.toLocaleString()} kg
 					</div>
 					<div></div>
 				</TCSubContainer>
-				<Table
-					getCol={ShippingRegisterFieldsCols}
-					getRow={rows}
+				<TableV2
+					getRow={tableRowData}
 					loading={isLoading}
-					tablePagination={pagination}
+					getCol={UserPerformanceFieldsCols}
+					tablePagination={paginationData}
 					onPageChange={onPageChange}
 				/>
 			</TableContianer>

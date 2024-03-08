@@ -3,9 +3,12 @@ import { useMergeListQuery } from '../../../api/shipment'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
 import { formatWeight } from '../../../utils/utils'
 import { calculateTotal } from '../Request/utils'
+import { useAtomValue } from 'jotai/index'
+import { authAtom } from '../../../store/Auth/auth'
 
 const StausDetailHeader = ({ data }) => {
 	const { data: mergeCostList } = useMergeListQuery()
+	const auth = useAtomValue(authAtom)
 	const [mergeCost, setMergeCost] = useState(0)
 	const [customerDestinations, setCustomerDestinations] = useState([])
 	const [customerDestinationPhones, setCustomerDestinationPhones] = useState(new Array(3))
@@ -137,26 +140,28 @@ const StausDetailHeader = ({ data }) => {
 							</div>
 						</ClaimContent>
 					</ClaimRow>
-					<ClaimRow>
-						<ClaimTitle>매출운입비</ClaimTitle>
-						<ClaimContent>
-							<div style={{ display: 'flex', marginLeft: '5px' }}>
-								<p>{calculateTotal(data, 'outboundFreightAmount')}</p>
-							</div>
-						</ClaimContent>
-						<ClaimTitle>매입운임비</ClaimTitle>
-						<ClaimContent>
-							<div style={{ display: 'flex', marginLeft: '5px' }}>
-								<p>{calculateTotal(data, 'inboundFreightAmount')}</p>
-							</div>
-						</ClaimContent>
-						<ClaimTitle>합짐비</ClaimTitle>
-						<ClaimContent>
-							<div style={{ display: 'flex', marginLeft: '5px' }}>
-								<p>{formatWeight(mergeCost ?? 0)}</p>
-							</div>
-						</ClaimContent>
-					</ClaimRow>
+					{auth.role === '카스코철강' && (
+						<ClaimRow>
+							<ClaimTitle>매출운입비</ClaimTitle>
+							<ClaimContent>
+								<div style={{ display: 'flex', marginLeft: '5px' }}>
+									<p>{calculateTotal(data, 'outboundFreightAmount')}</p>
+								</div>
+							</ClaimContent>
+							<ClaimTitle>매입운임비</ClaimTitle>
+							<ClaimContent>
+								<div style={{ display: 'flex', marginLeft: '5px' }}>
+									<p>{calculateTotal(data, 'inboundFreightAmount')}</p>
+								</div>
+							</ClaimContent>
+							<ClaimTitle>합짐비</ClaimTitle>
+							<ClaimContent>
+								<div style={{ display: 'flex', marginLeft: '5px' }}>
+									<p>{formatWeight(mergeCost ?? 0)}</p>
+								</div>
+							</ClaimContent>
+						</ClaimRow>
+					)}
 					<ClaimRow>
 						<ClaimTitle>운전사 명</ClaimTitle>
 						<ClaimContent>

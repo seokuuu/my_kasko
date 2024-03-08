@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { client } from '../index'
 import { queryClient } from '../query'
 import useAlert from '../../store/Alert/useAlert'
+import { useNavigate } from 'react-router-dom'
 
 const MERGE_CODE_URL = '/admin/mergecost'
 const SHIPMENT_URL = '/shipment'
@@ -125,15 +126,18 @@ export function useShipmentMergeUpdateMutation() {
 // 선별 목록 해제
 export function useShipmentMergeDeleteMutation() {
 	const { simpleAlert } = useAlert()
+	const navigate = useNavigate()
 	return useMutation({
 		mutationKey: QUERY_KEY.deleteMerge,
 		mutationFn: async function (id) {
 			return client.delete(`${SHIPMENT_MERGE_URL}/${id}`)
 		},
 		onSuccess() {
-			simpleAlert('해제 완료되었습니다.', () => window.location.reload())
-			queryClient.invalidateQueries(QUERY_KEY.dispatchList)
-			queryClient.invalidateQueries(QUERY_KEY.dispatchDetails)
+			simpleAlert('해제 완료되었습니다.', () => {
+				queryClient.invalidateQueries(QUERY_KEY.dispatchList)
+				queryClient.invalidateQueries(QUERY_KEY.dispatchDetails)
+				navigate('/shipping/dispatch/register')
+			})
 		},
 		onError(error) {
 			simpleAlert(error?.message ?? '해제 실패하였습니다.')
@@ -178,6 +182,7 @@ export function useShipmentDispatchDetailsQuery(id) {
 			const response = await client.get(`${SHIPMENT_OUT_URL}/${id}`)
 			return response.data.data
 		},
+		enabled: !!id,
 	})
 }
 

@@ -9,11 +9,7 @@ import {
 	Right,
 	Title,
 } from '../../../common/OnePage/OnePage.Styled'
-
 import { CustomInput } from '../../../common/Input/Input'
-
-import { styled } from 'styled-components'
-
 import { useMutation } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { getDetailCustomerfavorite, patchCustomerfavorite, preferQueryKey } from '../../../api/myPage'
@@ -48,7 +44,7 @@ const init = {
 	uid: 0,
 }
 
-const PreferEdit = ({ setChoiceComponent, setSwtichEdit, uidAtom }) => {
+const PreferEdit = ({ setSwtichEdit, uidAtom }) => {
 	const { simpleAlert, showAlert } = useAlert()
 	// 규격 약호 모달
 	const [isModal, setIsModal] = useAtom(kyuModalAtom)
@@ -65,7 +61,6 @@ const PreferEdit = ({ setChoiceComponent, setSwtichEdit, uidAtom }) => {
 			})
 		},
 		onError(error) {
-
 			simpleAlert(error.status === 400 ? error.data.message : '저장에 실패하였습니다.')
 		},
 	})
@@ -103,9 +98,6 @@ const PreferEdit = ({ setChoiceComponent, setSwtichEdit, uidAtom }) => {
 		}
 	}, [isSuccess, detailData])
 
-	console.log('submitData', submitData)
-	console.log('detailsData :', detailData)
-
 	const eventHandle = (e) => {
 		const { name, value } = e.target
 		setSubmitData({ ...submitData, [name]: value })
@@ -140,8 +132,6 @@ const PreferEdit = ({ setChoiceComponent, setSwtichEdit, uidAtom }) => {
 	// 규격 약호 핸들러
 	function onSpecHandler(e, text, uid) {
 		const { tagName } = e.target
-
-		console.log('e.tareget :', e.target)
 		if (tagName === 'IMG') {
 			setIsModal(false)
 		} else {
@@ -151,7 +141,7 @@ const PreferEdit = ({ setChoiceComponent, setSwtichEdit, uidAtom }) => {
 	}
 	return (
 		<OnePageContainer>
-			<MainTitle></MainTitle>
+			<MainTitle>선호제품 수정</MainTitle>
 			<OnePageSubContainer>
 				<HalfWrap>
 					<Left>
@@ -266,9 +256,3 @@ const PreferEdit = ({ setChoiceComponent, setSwtichEdit, uidAtom }) => {
 }
 
 export default PreferEdit
-
-const RadioContainer = styled.div`
-	display: flex;
-	width: 250px;
-	justify-content: space-between;
-`

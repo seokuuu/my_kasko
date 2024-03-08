@@ -174,6 +174,11 @@ export const AuctionRoundDetailFields = {
 	등록일: 'createDate',
 	매입가: 'price',
 	'고유 번호': 'uid',
+	패키지명: 'packageName',
+	패키지번호: 'packageNumber',
+	메모: 'memo',
+	비고: 'note',
+	ProNo: 'productNoNumber',
 }
 
 /* ===================================================================
@@ -201,7 +206,7 @@ export const AuctionRoundExtraProductFields = {
 	yp: 'yp',
 	el: 'el',
 	제품군: 'spart',
-	품명명: 'name',
+	품명: 'name',
 	'정척 여부': 'preferThickness', // (Y / N)
 	'여재 원인 코드': 'causeCode',
 	'여재 원인명': 'causeCodeName',
@@ -228,6 +233,7 @@ export const AuctionRoundExtraProductFieldsCols = [
 	{ ...commonStyles, field: '제품 번호', minWidth: 150 },
 	{ ...commonStyles, field: '패키지명', minWidth: 100 },
 	{ ...commonStyles, field: '패키지 번호', minWidth: 100 },
+
 	{ ...commonStyles, field: 'Pro.No 번호', minWidth: 150 },
 	// 경매 등록 일자
 
@@ -237,6 +243,7 @@ export const AuctionRoundExtraProductFieldsCols = [
 	{ ...commonStyles, field: '판매 구분', minWidth: 100 },
 	{ ...commonStyles, field: '판매 유형', minWidth: 100 },
 	{ ...commonStyles, field: '판매가 유형', minWidth: 100 },
+
 	{ ...commonStyles, field: '등급', minWidth: 100 },
 	{ ...commonStyles, field: '정척 여부', minWidth: 150 },
 	{ ...commonStyles, field: '유찰 횟수', minWidth: 100 },
@@ -257,6 +264,7 @@ export const AuctionRoundExtraProductFieldsCols = [
 	{ ...commonStyles, field: 'p', minWidth: 100 },
 	{ ...commonStyles, field: 's', minWidth: 100 },
 
+
 	{ ...commonStyles, field: '용도 코드', minWidth: 100 },
 	{ ...commonStyles, field: '용도명', minWidth: 100 },
 	// 메모
@@ -272,14 +280,17 @@ export const AuctionRoundExtraProductFieldsCols = [
 	{ ...commonStyles, field: '매입처', minWidth: 200 },
 	{ ...commonStyles, field: '제조사', minWidth: 200 },
 	{ ...commonStyles, field: '생성일', minWidth: 150 },
+
 ]
 
 export const AuctionRoundDetailFieldsCols = [
 	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{ ...commonStyles, field: '제품 번호', minWidth: 100 },
+
 	// 패키지 명
 	// 패키지 번호
 	// 프로넘
+
 	{ ...commonStyles, field: '등록일', minWidth: 100 },
 	{ ...commonStyles, field: '창고', minWidth: 100 },
 	{ ...commonStyles, field: '경매 등록 상태', minWidth: 100 },
@@ -319,14 +330,17 @@ export const AuctionRoundDetailFieldsCols = [
 	{ ...commonStyles, field: '여재 원인명', minWidth: 100 }, //여재원인명1
 	{ ...commonStyles, field: '용도 코드', minWidth: 100 },
 	{ ...commonStyles, field: '용도명', minWidth: 100 },
-	// + 메모, 비고
+	{ ...commonStyles, field: '메모', minWidth: 100 },
+	{ ...commonStyles, field: '비고', minWidth: 100 },
 	{ ...commonStyles, field: '재고 상태', minWidth: 100 },
 	{ ...commonStyles, field: '판매 제외 사유', minWidth: 100 }, //판매 제외
 	// + 사유 최종수정자
 	// + 최종수정일시
+
 	{ ...commonStyles, field: '제품군', minWidth: 100 }, // 필드에 없음
 	{ ...commonStyles, field: '매입처', minWidth: 100 }, // 필드에 없음
 	{ ...commonStyles, field: '제조사', minWidth: 100 }, // 필드에 없음
+
 
 	// 패키지 관련 - 패키지명, 패키지번호 처리
 ]

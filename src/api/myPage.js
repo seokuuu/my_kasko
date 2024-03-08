@@ -86,7 +86,6 @@ export function getCustomerfavorite(data) {
 	return client.get(`${urls.favorite}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
 }
 export function postCustomerfavorite(data) {
-	console.log('data !!!', data)
 	return client.post(urls.favorite, data)
 }
 export function getDetailCustomerfavorite(data) {
