@@ -42,6 +42,7 @@ import useTableData from '../../../hooks/useTableData'
 
 //경매 목록 수정(단일)
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStatus }) => {
+	const [btnClick, setBtnClick] = useState(false)
 	const [newResData, setNewResData] = useState([])
 	const [addAuction, setAddAuction] = useState({
 		productUid: null,
@@ -167,6 +168,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	}, [newResData, resData])
 
 	const [outAddData, setOutAddData] = useState([])
+	console.log('outAddData', outAddData)
 	const [delData, setDelData] = useState([])
 	const onListAdd = (selectedData) => {
 		try {
@@ -185,8 +187,14 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			auctionStartPrice: realStartPrice,
 		}))
 
+		console.log('uniqueNumbers 캬캬 1', uniqueNumbers)
+
 		setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
-	}, [newResData, outAddData, realStartPrice])
+	}, [outAddData, realStartPrice])
+
+	console.log('editData 캬캬 2', editData)
+
+	console.log('newResData 캬캬 3', newResData)
 
 	// 목록 제거
 	const onListRemove = () => {
@@ -219,19 +227,24 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 
 			setSelectedRows([]) // 테이블 체크 목록 초기화
 			setDelData(resultRemove)
+
+			const newKey = '고유 번호'
+
+			// 제품 추가된 항목 삭제 처리
+			if (outAddData) {
+				const updatedOutAddData = outAddData.filter((item) => !selectedRows.map((row) => row[newKey]).includes(item)) // add된 것들 처리
+
+				console.log('updatedOutAddData', updatedOutAddData)
+
+				// setOutAddData((prev) => ({
+				// 	...prev,
+				// 	updatedOutAddData,
+				// }))
+				setOutAddData(updatedOutAddData)
+			}
 		})
 
-		const newKey = '고유 번호'
-
-		// 제품 추가된 항목 삭제 처리
-		if (outAddData) {
-			const updatedOutAddData = outAddData.filter((item) => !selectedRows.map((row) => row[newKey]).includes(item)) // add된 것들 처리
-
-			setOutAddData((prev) => ({
-				...prev,
-				updatedOutAddData,
-			}))
-		}
+		setBtnClick((prev) => !prev)
 	}
 
 	const globalProductResetOnClick = () => {
