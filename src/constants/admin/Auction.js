@@ -151,7 +151,7 @@ export const AuctionRoundDetailFields = {
 	등급: 'grade',
 	'정척 여부': 'preferThickness',
 	'유찰 횟수': 'failCount',
-	'경매 시작가': 'auctionStartPrice',
+	시작가: 'auctionStartPrice',
 	두께: 'thickness',
 	폭: 'width',
 	길이: 'length',
@@ -264,7 +264,6 @@ export const AuctionRoundExtraProductFieldsCols = [
 	{ ...commonStyles, field: 'p', minWidth: 100 },
 	{ ...commonStyles, field: 's', minWidth: 100 },
 
-
 	{ ...commonStyles, field: '용도 코드', minWidth: 100 },
 	{ ...commonStyles, field: '용도명', minWidth: 100 },
 	// 메모
@@ -280,7 +279,6 @@ export const AuctionRoundExtraProductFieldsCols = [
 	{ ...commonStyles, field: '매입처', minWidth: 200 },
 	{ ...commonStyles, field: '제조사', minWidth: 200 },
 	{ ...commonStyles, field: '생성일', minWidth: 150 },
-
 ]
 
 export const AuctionRoundDetailFieldsCols = [
@@ -312,7 +310,7 @@ export const AuctionRoundDetailFieldsCols = [
 	{ ...commonStyles, field: '정척 여부', minWidth: 100 },
 	{ ...commonStyles, field: '유찰 횟수', minWidth: 100 },
 	{ ...commonStyles, field: '매입가', minWidth: 100 },
-	{ ...commonStyles, field: '경매 시작가', minWidth: 100 },
+	{ ...commonStyles, field: '시작가', minWidth: 100 },
 	{ ...commonStyles, field: '두께', minWidth: 100 },
 	{ ...commonStyles, field: '폭', minWidth: 100 },
 	{ ...commonStyles, field: '길이', minWidth: 100 },
@@ -340,7 +338,6 @@ export const AuctionRoundDetailFieldsCols = [
 	{ ...commonStyles, field: '제품군', minWidth: 100 }, // 필드에 없음
 	{ ...commonStyles, field: '매입처', minWidth: 100 }, // 필드에 없음
 	{ ...commonStyles, field: '제조사', minWidth: 100 }, // 필드에 없음
-
 
 	// 패키지 관련 - 패키지명, 패키지번호 처리
 ]
