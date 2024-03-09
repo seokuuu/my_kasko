@@ -42,8 +42,6 @@ const NUMBER_KEY = '상시판매 번호'
 
 /**
  * (사용자)상시판매 주문확인 목록
- * @todo
- * - 필터 초기화시 주문일자 변경되지 않음
  */
 const Order = ({}) => {
 	const [searchParams, setSearchParams] = useState({ ...initialPageParams })

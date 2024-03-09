@@ -24,7 +24,6 @@ import { KilogramSum } from '../../../utils/KilogramSum'
 import { formatWeight } from '../../../utils/utils'
 import Table from '../../Table/Table'
 import SellOrderSearchFields from './SellOrderSearchFields'
-import { useLoading } from '../../../store/Loading/loadingAtom'
 
 const SellOrder = () => {
 	const { simpleConfirm, simpleAlert } = useAlert()

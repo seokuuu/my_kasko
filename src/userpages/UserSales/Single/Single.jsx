@@ -31,6 +31,7 @@ import SingleSearchFields from './SingleSearchFields'
 const initialPageParams = {
 	pageNum: 1, // 페이지 번호
 	pageSize: 50, // 페이지 갯수
+	type: '단일',
 	saleType: '상시판매 대상재',
 }
 
