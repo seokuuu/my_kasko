@@ -1,4 +1,5 @@
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
+import {commonStyles} from "./Auction";
 
 var checkboxSelection = function (params) {
 	return params.columnApi.getRowGroupColumns().length === 0
@@ -10,52 +11,31 @@ var headerCheckboxSelection = function (params) {
 
 export const StockIncomingFields = [
 	{
+		...commonStyles,
 		field: '',
-		width: 50,
-		headerClass: 'custom-header-style',
+		minWidth: 50,
 		checkboxSelection: checkboxSelection,
 		headerCheckboxSelection: headerCheckboxSelection,
-		cellStyle: { borderRight: '1px solid #c8c8c8' },
 	},
-	// {
-	// 	headerName: '수정',
-	// 	field: '수정',
-	// 	width: 100,
-	// 	headerClass: 'custom-header-style',
-	// 	cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-	// 	cellRenderer: BtnCellRenderer,
-	// 	cellRendererParams: {
-	// 		uidFieldName: '경매 번호',
-	// 		editType: 'productModify',
-	// 	},
-	// },
 	{
+		...commonStyles,
 		headerName: '순번',
-		field: '',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 120,
+		field: '순번',
+		minWidth: 120,
 	},
 	{
-		headerName: '제품 번호',
+		...commonStyles,
 		field: '제품 번호',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 150,
-		cellRenderer: (params) => params.value || 'N',
+		minWidth: 150,
 	},
 	{
-		headerName: '창고',
+		...commonStyles,
 		field: '창고',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 190,
-		cellRenderer: (params) => params.value || 'N',
+		minWidth: 190,
 	},
 	{
-		headerName: '입고상태',
+		...commonStyles,
 		field: '입고 상태',
-		headerClass: 'custom-header-style',
 		cellStyle: function (params) {
 			if (params.value === '입고 확정') {
 				return { color: 'dodgerblue', borderRight: '1px solid #c8c8c8', textAlign: 'center' }
@@ -65,53 +45,36 @@ export const StockIncomingFields = [
 				return { borderRight: '1px solid #c8c8c8', textAlign: 'center' }
 			}
 		},
-		width: 110,
-		cellRenderer: (params) => params.value || 'N',
+		minWidth: 110,
 	},
 	{
-		headerName: '입고일자',
+		...commonStyles,
 		field: '입고일',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 120,
-		cellRenderer: (params) => params.value || 'N',
+		minWidth: 120,
 	},
 	{
-		headerName: '매입처',
+		...commonStyles,
 		field: '매입처',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 110,
-		cellRenderer: (params) => params.value || 'N',
+		minWidth: 110,
 	},
 	{
-		headerName: '제조사',
+		...commonStyles,
 		field: '제조사',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 110,
-		cellRenderer: (params) => params.value || 'N',
+		minWidth: 110,
 	},
 	{
-		headerName: '제품군',
+		...commonStyles,
 		field: '제품군',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 107,
-		cellRenderer: (params) => params.value || 'N',
+		minWidth: 107,
 	},
 	{
-		headerName: '등급',
+		...commonStyles,
 		field: '등급',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 90,
-		cellRenderer: (params) => params.value || 'N',
+		minWidth: 90,
 	},
 	{
-		headerName: '정척여부',
+		...commonStyles,
 		field: '정척 여부',
-		headerClass: 'custom-header-style',
 		cellStyle: function (params) {
 			if (params.value === 'Y') {
 				return { color: 'dodgerblue', borderRight: '1px solid #c8c8c8', textAlign: 'center' }
@@ -119,47 +82,75 @@ export const StockIncomingFields = [
 				return { borderRight: '1px solid #c8c8c8', textAlign: 'center' }
 			}
 		},
-		width: 100,
-		cellRenderer: (params) => params.value || 'N',
+		minWidth: 100,
 	},
 	{
-		headerName: '두께(MM)',
+		...commonStyles,
+		field: '유찰 횟수',
+		minWidth: 90,
+	},
+	{
+		...commonStyles,
+		field: '매입가',
+		minWidth: 90,
+	},
+	{
+		...commonStyles,
 		field: '두께',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 100,
-		cellRenderer: function (params) {
-			if (params.value !== null && params.value !== undefined) {
-				return `${Math.round(params.value)}MM`
-			} else {
-				return 'N'
-			}
-		},
+		minWidth: 100,
 	},
 	{
-		headerName: '폭(MM)',
+		...commonStyles,
 		field: '폭',
-		headerClass: 'custom-header-style',
-		cellStyle: { textAlign: 'center' },
-		width: 100,
-		cellRenderer: function (params) {
-			if (params.value !== null && params.value !== undefined) {
-				return `${Math.round(params.value)}MM`
-			} else {
-				return 'N'
-			}
-		},
+		minWidth: 100,
 	},
+	{
+		...commonStyles,
+		field: '길이',
+		minWidth: 100,
+	},
+	{
+		...commonStyles,
+		field: '중량',
+		minWidth: 100,
+	},
+	{
+		...commonStyles,
+		field: '규격 약호',
+		minWidth: 100,
+	},
+	{ ...commonStyles, field: 'ts', minWidth: 100 },
+	{ ...commonStyles, field: 'yp', minWidth: 100 },
+	{ ...commonStyles, field: 'c', minWidth: 100 },
+	{ ...commonStyles, field: 'el', minWidth: 100 },
+	{ ...commonStyles, field: 'si', minWidth: 100 },
+	{ ...commonStyles, field: 'mn', minWidth: 100 },
+	{ ...commonStyles, field: 'p', minWidth: 100 },
+	{ ...commonStyles, field: 's', minWidth: 100 },
+	{ ...commonStyles, field: '여재 원인 코드', minWidth: 100 },
+	{ ...commonStyles, field: '여재 원인명', minWidth: 100 },
+	{ ...commonStyles, field: '용도 코드', minWidth: 100 },
+	{ ...commonStyles, field: '용도명', minWidth: 100 },
+	{ ...commonStyles, field: '메모', minWidth: 100 },
+	{ ...commonStyles, field: '확정전송일', minWidth: 100 },
+	{ ...commonStyles, field: '주문 번호', minWidth: 100 },
+	{ ...commonStyles, field: '출고일자', minWidth: 100 },
+	{ ...commonStyles, field: '비고', minWidth: 100 },
+	{ ...commonStyles, field: '재고 상태', minWidth: 100 },
+	{ ...commonStyles, field: '클레임 진행상태', minWidth: 100 },
+	{ ...commonStyles, field: '현대제철 반품일자', minWidth: 100 },
+	{ ...commonStyles, field: '카스코 반품일자', minWidth: 100 },
 ]
 
 export const stockFields = {
+	순번: 'index',
 	등급: 'grade',
 	중량: 'weight',
 	두께: 'thickness',
 	폭: 'width',
 	길이: 'length',
 	yp: 'yp',
-	ys: 'ts',
+	ts: 'ts',
 	c: 'c',
 	p: 'p',
 	s: 's',
@@ -189,4 +180,7 @@ export const stockFields = {
 	생성일: 'createDate',
 	확정전송일: 'sendDate',
 	매입가: 'price',
+	메모: 'memo',
+	비고: 'note',
+	출고일자: 'outDate'
 }
