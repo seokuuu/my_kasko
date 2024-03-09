@@ -1,4 +1,3 @@
-import { useSetAtom } from 'jotai'
 import { MainSelect } from '../../../common/Option/Main'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
@@ -8,12 +7,11 @@ import {
 	FilterLeft,
 	FilterRight,
 	Input,
-	PWRight,
 	PartWrap,
+	PWRight,
 	RowWrap,
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
-import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 
 import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
 
@@ -22,8 +20,6 @@ const PackageProductSearchFields = ({
 	search,
 	setSearch,
 	commonDropdownButtonHandler,
-	commonNumInputHandler,
-	onSpecHandler,
 }) => {
 	const {
 		// prettier-ignore
@@ -36,8 +32,6 @@ const PackageProductSearchFields = ({
 		preferThicknessList,
 	} = useGlobalProductSearchFieldData()
 
-	const setIsKyuModal = useSetAtom(kyuModalAtom)
-
 	return (
 		<>
 			<FilterLeft>
@@ -47,7 +41,7 @@ const PackageProductSearchFields = ({
 						<PWRight>
 							<MainSelect
 								options={storageList}
-								// defaultValue={storageList[0]}
+								defaultValue={storageList[0]}
 								value={search.storage}
 								name="storage"
 								onChange={(e) => commonDropdownButtonHandler(e, 'storage')}
@@ -161,6 +155,7 @@ const PackageProductSearchFields = ({
 							]}
 							setState={setSearch}
 							stateKey="saleCategoryList"
+							stateType="object"
 						/>
 					</PartWrap>
 					<PartWrap>
@@ -180,8 +175,8 @@ const PackageProductSearchFields = ({
 									},
 								]}
 								setState={setSearch}
-								stateKey="saleType"
-								stateType="single"
+								stateKey="saleTypeList"
+								stateType="object"
 							/>
 						</ExCheckWrap>
 					</PartWrap>
@@ -194,17 +189,18 @@ const PackageProductSearchFields = ({
 							initOptions={[
 								{
 									checked: false,
-									text: '특가',
-									value: '특가',
+									text: '일반',
+									value: '일반',
 								},
 								{
 									checked: false,
-									text: '할인',
-									value: '할인',
+									text: '특가',
+									value: '특가',
 								},
 							]}
 							setState={setSearch}
-							stateKey="salePriceType"
+							stateKey="salePriceTypeList"
+							stateType="object"
 						/>
 					</PartWrap>
 				</RowWrap>

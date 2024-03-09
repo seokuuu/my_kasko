@@ -33,6 +33,7 @@ const Single = () => {
 	const initialParamState = {
 		pageNum: 1,
 		pageSize: 50,
+		type: '단일',
 		saleType: '상시판매 대상재',
 	}
 
