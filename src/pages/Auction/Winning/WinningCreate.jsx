@@ -410,7 +410,13 @@ const WinningCreate = ({}) => {
 					</div>
 				</TCSubContainer>
 				<NewBottomBtnWrap bottom={-5}>
-					<WhiteBtn width={13} height={40}>
+					<WhiteBtn
+						width={13}
+						height={40}
+						onClick={() => {
+							navigate(-1)
+						}}
+					>
 						돌아가기
 					</WhiteBtn>
 					<BlackBtn width={13} height={40} onClick={successfulBidOnClick}>
