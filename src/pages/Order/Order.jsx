@@ -112,7 +112,7 @@ const Order = () => {
 	}, [getOrderRes, isSuccess])
 
 	const totalWeight = getOrderRes?.data.pagination.totalWeight
-	const formattedTotalWeight = totalWeight && totalWeight.toLocaleString()
+	const formattedTotalWeight = totalWeight && totalWeight?.toLocaleString()
 	const [selected, setSelected] = useState({ sPart: '' })
 
 	// 고객사 팝업 상태,객체

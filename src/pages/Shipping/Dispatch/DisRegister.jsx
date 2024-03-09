@@ -172,7 +172,7 @@ const DisRegister = () => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount.toLocaleString()}개 )
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount?.toLocaleString()}개 )
 						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -182,7 +182,7 @@ const DisRegister = () => {
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight.toLocaleString()} kg
+						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteRedBtn onClick={onRemoveDispatch}>배차 취소</WhiteRedBtn>

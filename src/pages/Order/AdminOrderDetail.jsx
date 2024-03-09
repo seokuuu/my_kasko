@@ -98,7 +98,7 @@ const AdminOrderDetail = () => {
 		}
 	}, [isSuccess, detailRes])
 	const totalWeight = detailRes?.data.pagination.totalWeight
-	const formattedTotalWeight = totalWeight && totalWeight.toLocaleString()
+	const formattedTotalWeight = totalWeight && totalWeight?.toLocaleString()
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
 			...prevParam,

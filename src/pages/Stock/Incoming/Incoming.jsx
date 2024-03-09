@@ -77,7 +77,7 @@ const Incoming = ({}) => {
 
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const totalWeight = inComingData?.data.pagination.totalWeight
-	const formattedTotalWeight = totalWeight && totalWeight.toLocaleString()
+	const formattedTotalWeight = totalWeight && totalWeight?.toLocaleString()
 
 	/**
 	 * @description 재고 수신

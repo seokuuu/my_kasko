@@ -205,7 +205,7 @@ const Package = () => {
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight.toLocaleString()} kg
+						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteBlackBtn onClick={(checkRadio) => editStatusButtonOnClickHandler(checkRadio)}>

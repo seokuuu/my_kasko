@@ -122,7 +122,7 @@ const Register = () => {
 					<ClaimTable>
 						<ClaimRow>
 							<ClaimTitle>제품 중량(kg)</ClaimTitle>
-							<ClaimContent>{totalWeight.toLocaleString()}</ClaimContent>
+							<ClaimContent>{totalWeight?.toLocaleString()}</ClaimContent>
 							<ClaimTitle>제품 공급가액</ClaimTitle>
 							<ClaimContent>{calculateTotal(data?.list, 'orderPrice')}</ClaimContent>
 							<ClaimTitle>운반비 공급가액</ClaimTitle>
@@ -135,7 +135,7 @@ const Register = () => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount.toLocaleString()}개 )
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount?.toLocaleString()}개 )
 						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -145,7 +145,7 @@ const Register = () => {
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight.toLocaleString()} kg
+						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
 					</div>
 					<div>
 						<WhiteSkyBtn onClick={onRegister}>출하 지시</WhiteSkyBtn>
