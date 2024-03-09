@@ -1,28 +1,25 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import {
-	NonFadeOverlay,
-	ModalContainer,
-	WhiteCloseBtn,
-	BlueSubContainer,
 	BlueBarHeader,
-	BlueMainDiv,
-	BlueSubDiv,
-	BlueBtnWrap,
 	BlueBlackBtn,
+	BlueBtnWrap,
+	BlueMainDiv,
+	BlueRadioWrap,
+	BlueSubContainer,
+	BlueSubDiv,
+	ModalContainer,
+	NonFadeOverlay,
+	WhiteCloseBtn,
 } from '../Common/Common.Styled'
 
-import { blueModalAtom, salesPackageModal } from '../../store/Layout/Layout'
-import { useAtom } from 'jotai'
-
-import { ExRadioWrap } from '../External/ExternalFilter'
-import { BlueRadioWrap } from '../Common/Common.Styled'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
+import { salesPackageModal } from '../../store/Layout/Layout'
+import { useSetAtom } from 'jotai'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 
 import { CheckBox } from '../../common/Check/Checkbox'
 
 const SalesPackage = ({ onClick }) => {
-	const [isModal, setIsModal] = useAtom(salesPackageModal)
+	const setIsModal = useSetAtom(salesPackageModal)
 
 	const modalClose = () => {
 		setIsModal(false)
@@ -31,8 +28,6 @@ const SalesPackage = ({ onClick }) => {
 	const radioDummy = ['노출 ', '비노출']
 
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-
-	console.log('checkRadio =>', checkRadio)
 
 	const confirmButtonOnClick = () => {
 		onClick(checkRadio)
