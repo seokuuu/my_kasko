@@ -111,26 +111,60 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const [startPrice, setStartPrice] = useState(null)
 	const [realStartPrice, setRealStartPrice] = useState(null)
 
+	console.log('realStartPrice', realStartPrice)
+
 	const [initRow, setInitRow] = useState([])
 
 	const uids = selectedRows?.map((item) => item['제품 번호'])
 	// 시작가 일괄 변경 "버튼" onClick
+	// const startPriceOnClickHandler = () => {
+	// 	const updatedResData = resData.map((item) => {
+	// 		if (uids.includes(item.productNumber)) {
+	// 			item.auctionStartPrice = item.auctionStartPrice + startPrice
+	// 		}
+	// 		return item
+	// 	})
+	// 	if (selectedRows.some((row) => row.매입처 === '현대제철')) {
+	// 		simpleAlert('현대제철(타사) 시작가 변경이 불가합니다.')
+	// 	} else {
+	// 		setRealStartPrice(startPrice)
+	// 		setGetRow(add_element_field(updatedResData, AuctionRoundDetailFields))
+	// 	}
+	// }
+
 	const startPriceOnClickHandler = () => {
+		// resData는 영문이라 add_element_field 처리해야하고
+		// newResData는 한글이라 그냥 setGetRow 처리해야함
+
+		// resData는 item이 영문으로 넣어줘야하고
+		// newResData는 그냥 한글로 넣어주면 됨
+		// 다 한뒤에 mergedData 해주고, setGetRow 해주면 됨
+
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.productNumber)) {
-				item.auctionStartPrice = item.auctionStartPrice + startPrice
+				item.auctionStartPrice = parseInt(item.auctionStartPrice) + parseInt(startPrice)
 			}
 			return item
 		})
+
+		const updatedNewResData = newResData.map((item) => {
+			if (uids.includes(item['제품 번호'])) {
+				item['시작가'] = parseInt(item['시작가']) + parseInt(startPrice)
+			}
+			return item
+		})
+
 		if (selectedRows.some((row) => row.매입처 === '현대제철')) {
 			simpleAlert('현대제철(타사) 시작가 변경이 불가합니다.')
 		} else {
 			setRealStartPrice(startPrice)
-			setGetRow(add_element_field(updatedResData, AuctionRoundDetailFields))
+			setGetRow([...add_element_field(updatedResData, AuctionRoundDetailFields), ...updatedNewResData])
+			// setGetRow(add_element_field(updatedResData, AuctionRoundDetailFields))
+			//  newResData 한글로 된것들은 그대로두고,  resData는 필드항목 씌워서 setGetRow처리
 		}
 	}
 
-	console.log('newResData', newResData)
+	console.log('getRow 키키', getRow)
 
 	useEffect(() => {
 		const fetchData = async () => {
