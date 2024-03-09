@@ -156,11 +156,6 @@ const OrderDetail = ({ salesNumber }) => {
 		setDestination(null)
 	}
 
-	// ERROR SECTION
-	if (isError) {
-		return <div>ERROR</div>
-	}
-
 	return (
 		<FilterContianer>
 			<div>

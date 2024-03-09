@@ -1,4 +1,4 @@
-import { useState, Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import { useNavigate, useParams } from 'react-router-dom'
 import { styled } from 'styled-components'
@@ -12,40 +12,31 @@ import {
 } from '../../../api/auction/successfulBid'
 import useReactQuery from '../../../hooks/useReactQuery'
 import useAlert from '../../../store/Alert/useAlert'
-import Excel from '../../../components/TableInner/Excel'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import Table from '../../Table/Table'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import {
-	CustomInput,
 	FilterContianer,
 	FilterHeader,
 	FilterTCTop,
-	TCSubContainer,
 	TableContianer,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
+import { BtnBound, SkyBtn, TGreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
+import { invenDestination, selectedRowsAtom } from '../../../store/Layout/Layout'
 import {
-	BtnBound,
-	SkyBtn,
-	TGreyBtn,
-	TWhiteBtn,
-	WhiteBlackBtn,
-	WhiteRedBtn,
-	WhiteSkyBtn,
-} from '../../../common/Button/Button'
-import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
-import { TableWrap } from '../../../components/MapTable/MapTable'
-import { invenDestination, invenDestinationData, selectedRowsAtom } from '../../../store/Layout/Layout'
-import {
-	saleProductOrderDetailsTableRowMap,
 	saleProductOrderDetailsCols,
+	saleProductOrderDetailsTableRowMap,
 } from '../../../constants/admin/saleProductOrderDetails'
-import { add_element_field } from '../../../lib/tableHelpers'
-import { formatWeight } from '../../../utils/utils'
-import { KilogramSum } from '../../../utils/KilogramSum'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import { queryClient } from '../../../api/query'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
+import { USER_URL } from '../../../api/user'
+import TableV2ExcelDownloader from '../../Table/TableV2ExcelDownloader'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import TableV2 from '../../Table/TableV2'
+import DestinationChange from '../../../modal/Multi/DestinationChange'
 
 const SellOrderDetail = () => {
 	const { simpleAlert, simpleConfirm } = useAlert()
@@ -62,14 +53,26 @@ const SellOrderDetail = () => {
 	const titleData = ['주문 번호', '고객사', '고객코드', '총 수량', '총 중량(KG)', '입금 요청 금액(원)']
 
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
-	const destinationData = useAtomValue(invenDestinationData)
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 
 	const [contentData, setContentData] = useState(contentDataInit)
 	const [param, setParam] = useState(paramDataInit)
-	const [saleProductDetailData, setSaleProductDetailData] = useState([])
-	const [saleProductDetailPagination, setSaleProductDetailPagination] = useState([])
+	const [serverData, setServerData] = useState({ list: [], pagination: {} })
 	const [isPackage, setIsPackage] = useState(false)
+
+	// 목적지 데이터 || 목적지 변경 항목 데이터
+	const [destination, setDestination] = useState(null) // { code: '', name: '', tel: '' }
+
+	// 테이블 데이터, 페이지 데이터, 총 중량
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
+		tableField: saleProductOrderDetailsTableRowMap,
+		serverData,
+		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		best: { display: true },
+	})
+
+	// 선택항목 데이터
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({ weightKey: '중량' })
 
 	const {
 		// prettier-ignore
@@ -116,8 +119,6 @@ const SellOrderDetail = () => {
 	useEffect(() => {
 		if (getSaleProductDetailResponse?.data?.data) {
 			const { list, pagination } = getSaleProductDetailResponse.data.data
-			console.log('list---', list)
-			console.log('pagination---', pagination)
 			if (list && list.length > 0) {
 				const [firstItem] = list
 				const {
@@ -125,7 +126,6 @@ const SellOrderDetail = () => {
 					auctionNumber,
 					customerName,
 					customerCode,
-					depositRequestAmount,
 				} = firstItem
 				const {
 					// prettier-ignore
@@ -133,15 +133,16 @@ const SellOrderDetail = () => {
 					totalWeight,
 				} = pagination
 
-				setSaleProductDetailData(formatTableRowData(list))
-				setSaleProductDetailPagination(pagination)
+				const totalPrice = list.map((item) => item.totalPrice).reduce((prev, curr) => prev + curr, 0)
+
+				setServerData({ list, pagination })
 				setContentData([
 					auctionNumber,
 					customerName,
 					customerCode,
 					listCount,
-					parseFloat(totalWeight).toLocaleString(undefined, { minimumFractionDigits: 2 }),
-					depositRequestAmount,
+					totalWeight?.toLocaleString(),
+					totalPrice?.toLocaleString(),
 				])
 				setIsPackage(!!list[0].packageNumber)
 			}
@@ -151,10 +152,6 @@ const SellOrderDetail = () => {
 			simpleAlert('요청중 오류가 발생했습니다.\n다시 시도해 주세요.')
 		}
 	}, [getSaleProductDetailResponse, isError])
-
-	const formatTableRowData = (singleProductListData) => {
-		return add_element_field(singleProductListData, saleProductOrderDetailsTableRowMap)
-	}
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -220,22 +217,12 @@ const SellOrderDetail = () => {
 		)
 	}
 
-	// 목적지 승인 요청 버튼
-	const destinationRequestButtonOnClickHandler = () => {
-		handleButtonClick(
-			'목적지를 적용할 제품을 선택해 주세요.',
-			'선택한 제품의 목적지 승인 요청하시겠습니까?',
-			(value) => ({ uid: value['주문번호'], requestCustomerDestinationUid: destinationData.uid }),
-			mutateAuctionSuccessfulBidRequest,
-		)
-	}
-
 	// 목적지 변경 승인 버튼
 	const destinationChangeApproveButtonOnClickHandler = () => {
 		handleButtonClick(
 			'목적지 변경 승일할 제품을 선택해 주세요.',
 			'선택한 제품의 목적지 변경을 승인하시겠습니까?',
-			(value) => ({ uid: value['주문번호'], requestCustomerDestinationUid: destinationData.uid }),
+			(value) => ({ uid: value['주문번호'], requestCustomerDestinationUid: value['변경 목적지 번호'] }),
 			mutateAuctionSuccessfulBidApprove,
 		)
 	}
@@ -245,7 +232,7 @@ const SellOrderDetail = () => {
 		handleButtonClick(
 			'목적지 변경 반려할 제품을 선택해 주세요.',
 			'선택한 제품의 목적지 변경을 반려하시겠습니까?',
-			(value) => ({ uid: value['주문번호'], requestCustomerDestinationUid: destinationData.uid }),
+			(value) => ({ uid: value['주문번호'], requestCustomerDestinationUid: value['변경 목적지 번호'] }),
 			mutateAuctionSuccessfulBidReject,
 		)
 	}
@@ -255,7 +242,7 @@ const SellOrderDetail = () => {
 		handleButtonClick(
 			'목적지를 적용할 제품을 선택해 주세요.',
 			'선택한 제품에 목적지를 적용하시겠습니까?',
-			(value) => ({ uid: value['주문번호'], requestCustomerDestinationUid: destinationData.uid }),
+			(value) => ({ uid: value['주문번호'], requestCustomerDestinationUid: destination?.uid }),
 			mutateAuctionSuccessfulBidRequest,
 		)
 	}
@@ -288,38 +275,37 @@ const SellOrderDetail = () => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
-						{saleProductDetailPagination?.listCount}개 )
-						<Hidden />
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						<Excel getRow={saleProductDetailData} />
+						<TableV2ExcelDownloader
+							requestUrl={USER_URL.orderDetail}
+							requestParam={{ auctionNumber: id }}
+							requestCount={totalCount}
+							field={saleProductOrderDetailsTableRowMap}
+							sheetName={`주문확인상세(${id})`}
+						/>
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량
-						<span> {formatWeight(KilogramSum(checkBoxSelect))} </span>
-						kg / 총 중량 {formatWeight(saleProductDetailPagination.totalWeight)} kg
+						선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 					</div>
 					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-						<p>목적지</p>
-						<CustomInput placeholder="h50" width={60} height={32} defaultValue={destinationData?.code} readOnly />
-						<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destinationData?.name} readOnly />
-						{/* <CustomInput placeholder="도착지 연락처" width={120} height={32} /> */}
-						<TWhiteBtn
-							style={{ writingMode: 'horizontal-tb' }}
-							height={30}
-							onClick={() => {
-								setDestinationPopUp(true)
+						<P>목적지</P>
+						<DestinationChange
+							customerCode={contentData[2]}
+							customerName={contentData[3]}
+							value={destination}
+							onSubmit={(d) => {
+								setDestination(d)
 							}}
-						>
-							찾기
-						</TWhiteBtn>
+						/>
 						<TGreyBtn onClick={updateCustomerDestinationButtonOnClick}>적용</TGreyBtn>
-						<BtnBound style={{ margin: '0px' }} />
-						<WhiteBlackBtn onClick={destinationRequestButtonOnClickHandler}>목적지 승인 요청</WhiteBlackBtn>
+						{/*<BtnBound style={{ margin: '0px' }} />*/}
+						{/*<WhiteBlackBtn onClick={destinationRequestButtonOnClickHandler}>목적지 승인 요청</WhiteBlackBtn>*/}
 						<BtnBound style={{ margin: '0px' }} />
 						<WhiteRedBtn onClick={destinationChangeRejectButtonOnClickHandler}>목적지 변경 반려</WhiteRedBtn>
 						<WhiteSkyBtn str onClick={destinationChangeApproveButtonOnClickHandler}>
@@ -327,12 +313,11 @@ const SellOrderDetail = () => {
 						</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
-				{/* <Test3 /> */}
-				<Table
+				<TableV2
+					getRow={tableRowData}
 					getCol={saleProductOrderDetailsCols}
-					getRow={saleProductDetailData}
 					loading={isLoading}
-					tablePagination={saleProductDetailPagination}
+					paginationData={paginationData}
 					onPageChange={onPageChange}
 				/>
 				<TCSubContainer>
