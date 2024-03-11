@@ -79,7 +79,7 @@ function ProNoPage({ productNumberOut, title, proNoNumber, orderId }) {
 		setSortNum(e.target.value)
 	}
 	const totalWeight = proNoRes?.data?.pagination?.totalWeight
-	const formattedTotalWeight = totalWeight && totalWeight.toLocaleString()
+	const formattedTotalWeight = totalWeight && totalWeight?.toLocaleString()
 	const modalClose = () => {
 		if (onClickCheck) {
 			setBtnCellModal(false)

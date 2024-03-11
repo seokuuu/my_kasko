@@ -100,7 +100,7 @@ const Prefer = ({ setChoiceComponent }) => {
 					<TableContianer>
 						<TCSubContainer bor>
 							<div>
-								조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount.toLocaleString()}개 )
+								조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount?.toLocaleString()}개 )
 								<TableV2HiddenSection />
 							</div>
 							<div

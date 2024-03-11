@@ -1,95 +1,71 @@
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { isEqual } from 'lodash'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { cancelAllOrderList } from '../../../api/orderList'
 import { getSaleProductList, usePostSaleProductOrderConfirm } from '../../../api/saleProduct'
 import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import Excel from '../../../components/TableInner/Excel'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { UserPageUserPreferFieldsCols } from '../../../constants/admin/UserManage'
 import { saleProductListFieldsCols, saleProductListResponseToTableRowMap } from '../../../constants/admin/saleProduct'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { add_element_field } from '../../../lib/tableHelpers'
-import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import useAlert from '../../../store/Alert/useAlert'
-import { blueModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import PrintDepositRequestButton from '../../../userpages/UserSales/_components/PrintDepositRequestButton'
-import { KilogramSum } from '../../../utils/KilogramSum'
-import { formatWeight } from '../../../utils/utils'
-import Table from '../../Table/Table'
 import SellOrderSearchFields from './SellOrderSearchFields'
-import { useLoading } from '../../../store/Loading/loadingAtom'
+import TableV2 from '../../Table/TableV2'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import { USER_URL } from '../../../api/user'
+import TableV2ExcelDownloader from '../../Table/TableV2ExcelDownloader'
+
+const paramData = {
+	pageNum: 1,
+	pageSize: 50,
+}
 
 const SellOrder = () => {
+	const navigate = useNavigate()
 	const { simpleConfirm, simpleAlert } = useAlert()
 	const { mutate: cancelAllOrder, loading: loadingOrderCancel } = useMutationQuery(
 		'cancelAllOrderList',
 		cancelAllOrderList,
 	)
 	const { mutate: mutateDepositOrderConfirm, loading: loadingOrderConfirm } = usePostSaleProductOrderConfirm()
-	const paramData = {
-		pageNum: 1,
-		pageSize: 50,
-	}
+
 	const [param, setParam] = useState(paramData)
+	const [serverData, setServerData] = useState({ list: [], pagination: {} })
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
-	// 입금요청서 발행 모드
-	const [receiptPrint, setReceiptPrint] = useState(false)
-	const navigate = useNavigate()
-	const checkSales = ['전체', '확정 전송', '확정전송 대기']
-	const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
 
 	const {
 		isLoading,
-		isError,
 		data: getSaleProductListRes,
 		isSuccess,
 		refetch,
 	} = useReactQuery(param, 'getSaleProductList', getSaleProductList)
 
-	const [saleProductListData, setSaleProductListData] = useState(null)
-	const [saleProductPagination, setSaleProductPagination] = useState([])
+	// 테이블 데이터, 페이지 데이터, 총 중량
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
+		tableField: saleProductListResponseToTableRowMap,
+		serverData,
+		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		best: { display: true },
+	})
+
+	// 선택 항목
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({ weightKey: '총 중량' })
 
 	useEffect(() => {
 		if (getSaleProductListRes?.data?.data) {
-			setSaleProductListData(formatTableRowData(getSaleProductListRes.data.data.list))
-			setSaleProductPagination(getSaleProductListRes.data.data.pagination)
+			const data = getSaleProductListRes.data.data
+			setServerData({ list: data.list, pagination: data.pagination })
 		}
 	}, [isSuccess, getSaleProductListRes])
-
-	const formatTableRowData = (rowData) => {
-		return add_element_field(rowData, saleProductListResponseToTableRowMap)
-	}
-
-	// 토글 쓰기
-	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-	const [toggleMsg, setToggleMsg] = useState('On')
-	const toggleBtnClick = () => {
-		setExfilterToggle((prev) => !prev)
-		if (exFilterToggle === true) {
-			setToggleMsg('Off')
-		} else {
-			setToggleMsg('On')
-		}
-	}
-
-	const [isModal, setIsModal] = useAtom(blueModalAtom)
-
-	console.log('isModal =>', isModal)
-
-	const modalOpen = () => {
-		setIsModal(true)
-	}
-
-	const tableField = useRef(UserPageUserPreferFieldsCols)
-	const getCol = tableField.current
-	const checkedArray = useAtom(selectedRowsAtom)[0]
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -106,8 +82,6 @@ const SellOrder = () => {
 	}
 
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search field
 		setParam(paramData)
 	}
 
@@ -165,6 +139,18 @@ const SellOrder = () => {
 		})
 	}
 
+	// 토글 쓰기
+	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+	const [toggleMsg, setToggleMsg] = useState('On')
+	const toggleBtnClick = () => {
+		setExfilterToggle((prev) => !prev)
+		if (exFilterToggle === true) {
+			setToggleMsg('Off')
+		} else {
+			setToggleMsg('On')
+		}
+	}
+
 	return (
 		<FilterContianer>
 			<div>
@@ -188,21 +174,22 @@ const SellOrder = () => {
 			</div>
 			<TableContianer>
 				<TCSubContainer bor>
-					<div>
-						조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
-						{saleProductPagination?.listCount}개 )
-						<Hidden />
+					<div style={{ flex: 1 }}>
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						<Excel />
+						<TableV2ExcelDownloader
+							requestUrl={USER_URL.orderList}
+							requestCount={totalCount}
+							field={saleProductListResponseToTableRowMap}
+						/>
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량
-						<span> {formatWeight(KilogramSum(checkBoxSelect))} </span>
-						kg / 총 중량 {formatWeight(saleProductPagination.totalWeight)} kg
+						선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteRedBtn onClick={orderCancelButtonOnClickHandler} disabled={loadingOrderCancel}>
@@ -210,13 +197,14 @@ const SellOrder = () => {
 						</WhiteRedBtn>
 					</div>
 				</TCSubContainer>
-				<Table
+				<TableV2
+					getRow={tableRowData}
 					getCol={saleProductListFieldsCols}
-					getRow={saleProductListData}
-					handleOnRowClicked={handleOnRowClicked}
 					loading={isLoading}
+					isRowClickable
+					handleOnRowClicked={handleOnRowClicked}
+					tablePagination={paginationData}
 					onPageChange={onPageChange}
-					tablePagination={saleProductPagination}
 				/>
 				<TCSubContainer>
 					<div></div>

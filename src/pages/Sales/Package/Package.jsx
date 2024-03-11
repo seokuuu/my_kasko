@@ -1,27 +1,20 @@
-import { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
-import Excel from '../../../components/TableInner/Excel'
 import { BlackBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { toggleAtom, selectedRowsAtom, salesPackageModal } from '../../../store/Layout/Layout'
-import { FilterWrap } from '../../../modal/External/ExternalFilter'
+import { salesPackageModal, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import {
 	FilterContianer,
 	FilterHeader,
-	TCSubContainer,
+	FilterWrap,
 	TableBottomWrap,
 	TableContianer,
-	FilterHeaderAlert,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import Hidden from '../../../components/TableInner/Hidden'
-import Table from '../../../pages/Table/Table'
-import { add_element_field, formatBooleanFields } from '../../../lib/tableHelpers'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { packageProductEndpoint, getPackageProductList } from '../../../api/packageProduct.js'
+import { getPackageProductList, packageProductEndpoint } from '../../../api/packageProduct.js'
 import { packageFieldsCols, packageResponseToTableRowMap } from '../../../constants/admin/packageProducts.js'
-import { KilogramSum } from '../../../utils/KilogramSum'
-import { formatWeight } from '../../../utils/utils'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import PackageProductSearchFields from './PackageProductSearchFields'
 import { isEqual } from 'lodash'
@@ -32,6 +25,10 @@ import TableV2ExcelDownloader from '../../Table/TableV2ExcelDownloader.jsx'
 import CautionBox from '../../../components/CautionBox/CautionBox.jsx'
 import { CAUTION_CATEGORY } from '../../../components/CautionBox/constants.js'
 import { PackageViewerDispatchContext } from '../../../userpages/UserSales/_layouts/UserSalesWrapper'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
+import TableV2 from '../../Table/TableV2'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const Package = () => {
 	const { simpleAlert } = useAlert()
@@ -49,10 +46,10 @@ const Package = () => {
 
 	const [checkRadio, setCheckRadio] = useState(null)
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-	const [param, setParam] = useState(initialParamState)
-	const [packageProductListData, setPackageProductListData] = useState(null)
-	const [packageProductPagination, setPackageProductPagination] = useState([])
 	const [toggleMsg, setToggleMsg] = useState('On')
+
+	const [param, setParam] = useState(initialParamState)
+	const [serverData, setServerData] = useState({ list: [], pagination: {} })
 
 	const {
 		isLoading,
@@ -68,10 +65,24 @@ const Package = () => {
 		isSuccess: isSuccessPackageProductViewStatusUpdate,
 	} = usePackageProductViewStatusUpdate()
 
+	const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
+		tableField: packageResponseToTableRowMap,
+		serverData,
+		wish: false,
+		best: true,
+	})
+
+	// 선택 항목
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
+
 	useEffect(() => {
 		if (getPackageProductListRes?.data?.data) {
-			setPackageProductListData(formatTableRowData(getPackageProductListRes.data.data.list))
-			setPackageProductPagination(getPackageProductListRes.data.data.pagination)
+			const data = getPackageProductListRes.data.data
+			const list = data.list
+			const pagination = data.pagination
+			setServerData({ list, pagination })
 		}
 
 		if (isError) {
@@ -84,11 +95,6 @@ const Package = () => {
 			refetch()
 		}
 	}, [isSuccessPackageProductViewStatusUpdate])
-
-	const formatTableRowData = (packageProductListData) => {
-		const processedData = add_element_field(packageProductListData, packageResponseToTableRowMap)
-		return formatBooleanFields(processedData, [{ fieldName: '노출 여부', trueValue: '노출', falseValue: '비노출' }])
-	}
 
 	// 토글 쓰기
 	const toggleBtnClick = () => {
@@ -147,7 +153,7 @@ const Package = () => {
 			return simpleAlert('노출상태를 변경할 제품을 선택해 주세요.')
 		}
 
-		const productNumbers = checkBoxSelect.map((item) => item['순번'])
+		const productNumbers = checkBoxSelect.map((item) => item['패키지 고유번호'])
 
 		const viewStatusData = {
 			status: checkRadio,
@@ -185,24 +191,21 @@ const Package = () => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
-						{packageProductPagination?.listCount}개 )
-						<Hidden />
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount?.toLocaleString()}개 )
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
 						<TableV2ExcelDownloader
 							requestUrl={packageProductEndpoint}
-							requestCount={packageProductPagination?.listCount}
+							requestCount={totalCount}
 							field={packageResponseToTableRowMap}
 						/>
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량
-						<span> {formatWeight(KilogramSum(checkBoxSelect))} </span>
-						kg / 총 중량 {formatWeight(packageProductPagination.totalWeight)} kg
+						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteBlackBtn onClick={(checkRadio) => editStatusButtonOnClickHandler(checkRadio)}>
@@ -210,11 +213,11 @@ const Package = () => {
 						</WhiteBlackBtn>
 					</div>
 				</TCSubContainer>
-				<Table
+				<TableV2
 					getCol={packageFieldsCols(setPackageReadOnlyViewer)}
-					getRow={packageProductListData}
+					getRow={tableRowData}
 					loading={isLoading}
-					tablePagination={packageProductPagination}
+					tablePagination={paginationData}
 					onPageChange={onPageChange}
 				/>
 				<TableBottomWrap>

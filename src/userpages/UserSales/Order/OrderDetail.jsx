@@ -54,7 +54,7 @@ const getInfoRows = (data, salesNumber) => {
 		data.forEach((v) => {
 			initialData[3] += Number(v?.quantity) || 0 // 총 수량
 			initialData[4] += Number(v?.totalWeight) || 0 // 총 중량
-			initialData[5] += Number(v?.totalBiddingPrice) || 0 // 입금 요청 금액
+			initialData[5] += Number(v?.totalPrice) || 0 // 입금 요청 금액
 		})
 		initialData.forEach((v, idx) => {
 			if (!isNaN(v)) {
@@ -154,11 +154,6 @@ const OrderDetail = ({ salesNumber }) => {
 		requestDestinationUpdate({ updateList: selectedUpdateList })
 		setDestinationUpdateItems([])
 		setDestination(null)
-	}
-
-	// ERROR SECTION
-	if (isError) {
-		return <div>ERROR</div>
 	}
 
 	return (

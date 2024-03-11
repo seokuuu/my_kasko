@@ -1,105 +1,85 @@
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BlackBtn, BtnBound, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
-
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import {
-	hyunDaiMultiModal,
-	hyundaiModalAtom,
-	hyundaiSpecAtom,
-	onClickCheckAtom,
-	selectedRowsAtom,
-	toggleAtom,
-} from '../../../store/Layout/Layout'
-import { patchOutlet, postingMemoAndNote } from '../../../api/SellProduct'
-
+import { hyunDaiMultiModal, onClickCheckAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { getSingleProducts, patchOutlet, patchSaleCategory, postingMemoAndNote } from '../../../api/SellProduct'
 import { useAtom, useAtomValue } from 'jotai'
-import { getSingleProducts, patchSaleCategory } from '../../../api/SellProduct'
-import { getSPartList, getStorageList } from '../../../api/search'
-
 import Excel from '../../../components/TableInner/Excel'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { SingleDispatchFieldsCols, singleDispatchFields } from '../../../constants/admin/Single'
+import { singleDispatchFields, SingleDispatchFieldsCols } from '../../../constants/admin/Single'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { isEqual } from 'lodash'
 import {
+	CustomInput,
 	FilterContianer,
 	FilterHeader,
 	SubTitle,
-	TCSubContainer,
 	TableBottomWrap,
 	TableContianer,
-	Tilde,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
-import StandardFind from '../../../modal/Multi/StandardFind'
-
-import Table from '../../Table/Table'
-// import { requestDataAtom } from '../../../store/Table/SalesRequst'
-
 import Multi2 from '../../../modal/Common/Multi2'
-import { popupObject } from '../../../store/Layout/Layout'
 import { changeCategoryAtom } from '../../../store/Layout/Popup'
-import { KilogramSum } from '../../../utils/KilogramSum'
-import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
-import { onSizeChange } from '../../Operate/utils'
 import HyunDaiOriginal from './HyunDaiOriginal'
-import { CustomInput } from '../../../modal/External/ExternalFilter'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import SingleSellProductSearchFields from './SingleProductSearchFields/SingleSellProductSearchFileds'
 import useAlert from '../../../store/Alert/useAlert'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import TableV2 from '../../Table/TableV2'
+import { queryClient } from '../../../api/query'
+
+const paramData = {
+	pageNum: 1,
+	pageSize: 50,
+	type: '단일',
+	category: '현대제철',
+}
 
 const Hyundai = ({}) => {
-	const [memo, setMemo] = useState([])
-
-	const paramData = {
-		pageNum: 1,
-		pageSize: 50,
-		type: '일반',
-		category: '현대제철',
-	}
-	const [param, setParam] = useState(paramData)
-
+	const { simpleAlert, simpleConfirm } = useAlert()
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
-
-	// Function to handle image click and toggle rotation
+	const parameter = useAtomValue(changeCategoryAtom)
 	const [isTableModal, setIsTableModal] = useAtom(onClickCheckAtom)
-	const [getRow, setGetRow] = useState('')
-	const { data, isSuccess, refetch, isLoading } = useReactQuery(param, 'product-list', getSingleProducts)
-
-	const hyunDaiList = data?.r
-	const hyunDaiPage = data?.pagination
-
-	const tableField = useRef(SingleDispatchFieldsCols)
-	const getCol = tableField.current
-	const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
-	const { data: spartList } = useReactQuery('', 'getSPartList', getSPartList)
-	// modal
 	const [isMultiModal, setIsMultiModal] = useAtom(hyunDaiMultiModal)
-	// const [requestData, setRequestData] = useAtom(requestDataAtom)
-
-	const [filterData, setFilteredData] = useState([])
 
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 	const [toggleMsg, setToggleMsg] = useState('On')
+	const [selectProductNumber, setSelectProductNumber] = useState([])
+	const [errorMsg, setErrorMsg] = useState('')
 
-	const [pagiNation, setPagination] = useState({})
+	const [memo, setMemo] = useState([])
+	const [outletPrice, setOutletPrice] = useState(0)
+	const [outletParameter, setOutletParameter] = useState({
+		price: 0, // 아울렛 등록 가격
+		numbers: [], // 제품번호 목록
+	})
 
-	const [storages, setStorages] = useState([])
-	const [sparts, setSparts] = useState([])
+	const [param, setParam] = useState(paramData)
+	const [getRow, setGetRow] = useState([])
+	const [filterData, setFilteredData] = useState([])
 
-	const { simpleConfirm, showAlert } = useAlert()
-	// 초기화
+	const { data, isSuccess, refetch, isLoading } = useReactQuery(param, 'product-list', getSingleProducts)
+	const hyunDaiList = data?.r
+	const hyunDaiPage = data?.pagination
 
-	useEffect(() => {
-		if (storageList) return setStorages(storageList)
-	}, [storageList])
+	const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
+		tableField: singleDispatchFields,
+		serverData: filterData,
+	})
 
-	useEffect(() => {
-		if (spartList) return setSparts(spartList)
-	}, [spartList])
+	// 선택 항목
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
+
+	const { mutate } = useMutationQuery('change-category', patchSaleCategory)
+	const { mutate: memoAndNote } = useMutationQuery('memo-note', postingMemoAndNote)
+	const { mutate: changeOutlet } = useMutationQuery('change-outlet', patchOutlet)
 
 	const toggleBtnClick = () => {
 		setExfilterToggle((prev) => !prev)
@@ -110,129 +90,72 @@ const Hyundai = ({}) => {
 		}
 	}
 
-	useEffect(() => {
-		if (isSuccess) {
-			setFilteredData(hyunDaiList)
-			setPagination(hyunDaiPage)
-		}
-	}, [isSuccess])
-
-	useEffect(() => {
-		if (filterData === undefined) {
-			hyunDaiList &&
-				setFilteredData((p) => {
-					hyunDaiList.map((i, idx) => ({
-						순번: idx,
-						...i,
-					}))
-				})
-		}
-		if (!isSuccess && !filterData) return null
-		if (Array.isArray(filterData)) {
-			setGetRow(add_element_field(filterData, singleDispatchFields))
-		}
-		//타입, 리액트쿼리, 데이터 확인 후 실행
-	}, [isSuccess, filterData])
-
-	const [selectProductNumber, setSelectProductNumber] = useState([])
-	const [parameter, setParameter] = useAtom(changeCategoryAtom)
-	const [errorMsg, setErrorMsg] = useState('')
-	const [nowPopup, setNowPopup] = useAtom(popupObject)
-	// 판매 구분 변경
-	useEffect(() => {
-		if (checkBoxSelect?.length === 0) return
-		setSelectProductNumber(() => checkBoxSelect?.map((i) => i['제품 번호']))
-	}, [checkBoxSelect])
-
-	// 상태구분 변경
-
-	const { mutate, isError } = useMutationQuery('change-category', patchSaleCategory)
-	const { simpleAlert } = useAlert()
 	const changeSaleCategory = () => {
-		const res = mutate(parameter, {
-			onSuccess: (d) => {
+		return mutate(parameter, {
+			onSuccess: () => {
 				simpleAlert('저장되었습니다.', () => {
 					setIsMultiModal(false)
-					window.location.reload()
+					setSelectProductNumber([])
+					queryClient.invalidateQueries('product-list')
 				})
 			},
 			onError: (e) => {
-				setErrorMsg(e.data.message)
-				simpleAlert(e.data.message, () => {
+				setErrorMsg(e?.data?.message || '적용 실패하였습니다.')
+				simpleAlert(e?.data?.message || '적용 실패하였습니다.', () => {
 					setIsMultiModal(false)
-					window.location.reload()
+					queryClient.invalidateQueries('product-list')
 				})
 			},
 		})
-
-		return res
 	}
-	const { mutate: memoAndNote } = useMutationQuery('memo-note', postingMemoAndNote)
-	const { mutate: changeOutlet } = useMutationQuery('change-outlet', patchOutlet)
-	const [outletPrice, setOutletPrice] = useState(0)
-	const [outletParameter, setOutletParameter] = useState({
-		price: 10000, // 아울렛 등록 가격
-		numbers: ['FC53683103-1'], // 제품번호 목록
-	})
+
 	const handleChangeMemo = (params) => {
 		const data = params?.data
 		setMemo((p) => [
 			...p,
 			{
 				number: data['제품 번호'],
-				memo: data['비고'] || '',
-				note: data['메모'] || '',
+				memo: data['메모'] || '',
+				note: data['비고'] || '',
 			},
 		])
 	}
-	useEffect(() => {
-		setOutletParameter({
-			price: outletPrice,
-			numbers: selectProductNumber,
-		})
-	}, [selectProductNumber, outletPrice])
 
 	// 아울렛
 	const handlechangeOutlet = () => {
-		console.log('아울렛 변경')
-		changeOutlet(outletParameter, {
-			onSuccess: () => {
-				showAlert({
-					title: '일괄 변경되었습니다.',
-					func: () => {
-						window.location.reload()
+		if (outletParameter?.numbers?.length === 0) {
+			simpleAlert('아울렛으로 등록할 제품을 선택해주세요.')
+		} else {
+			simpleConfirm('선택하신 제품을 아울렛으로 등록하시겠습니까?', () => {
+				changeOutlet(outletParameter, {
+					onSuccess: () => {
+						simpleAlert('변경되었습니다.')
+						setSelectProductNumber([])
+						queryClient.invalidateQueries('product-list')
+					},
+					onError: (e) => {
+						simpleAlert(e?.data?.message || '적용 실패하였습니다.')
 					},
 				})
-			},
-			onError: (e) => {
-				setErrorMsg(e.data.message)
-				setNowPopup({
-					num: '1-12',
-					title: '',
-					content: `${e.data.message}`,
-					func: () => {
-						console.log('hi')
-						setIsMultiModal(false)
-					},
-				})
-			},
-		})
+			})
+		}
 	}
+
 	const createMemoAndNote = () => {
 		memoAndNote(memo, {
 			onSuccess: () => {
-				showAlert({
-					title: '저장 되었습니다.',
-					func: () => {
-						window.location.reload()
-					},
+				simpleAlert('저장 되었습니다.', () => {
+					setSelectProductNumber([])
+					queryClient.invalidateQueries('product-list')
 				})
+			},
+			onError: (e) => {
+				simpleAlert(e?.data?.message || '실패하였습니다.')
 			},
 		})
 	}
+
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
 		setParam(paramData)
 	}
 
@@ -248,7 +171,47 @@ const Hyundai = ({}) => {
 			}
 		})
 	}
-	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setParam)
+
+	const onPageChange = (value) => {
+		setParam((prevParam) => ({
+			...prevParam,
+			pageNum: Number(value),
+		}))
+	}
+
+	const handleTablePageSize = (event) => {
+		setParam((prevParam) => ({
+			...prevParam,
+			pageSize: Number(event.target.value),
+			pageNum: 1,
+		}))
+	}
+
+	useEffect(() => {
+		if (checkBoxSelect?.length === 0) return setSelectProductNumber([])
+		setSelectProductNumber(() => checkBoxSelect?.map((i) => i['제품 번호']))
+	}, [checkBoxSelect])
+
+	useEffect(() => {
+		setOutletParameter({
+			price: outletPrice,
+			numbers: selectProductNumber,
+		})
+	}, [selectProductNumber, outletPrice])
+
+	useEffect(() => {
+		const newFilterData = { list: hyunDaiList, pagination: hyunDaiPage }
+		if (isSuccess && newFilterData?.list) {
+			setFilteredData(newFilterData)
+		}
+	}, [isSuccess, data])
+
+	useEffect(() => {
+		if (filterData && Array.isArray(filterData?.list)) {
+			setGetRow(add_element_field(filterData.list, singleDispatchFields))
+		}
+	}, [filterData])
+
 	return (
 		<>
 			<FilterContianer>
@@ -279,22 +242,17 @@ const Hyundai = ({}) => {
 				<TableContianer>
 					<TCSubContainer bor>
 						<div>
-							조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
-							{pagiNation ? pagiNation?.listCount : hyunDaiPage?.listCount}개 )
-							<Hidden />
+							조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount?.toLocaleString()}개 )
+							<TableV2HiddenSection />
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
-							<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
+							<PageDropdown handleDropdown={handleTablePageSize} />
 							<Excel getRow={getRow} sheetName="단일제품 현대제철" />
 						</div>
 					</TCSubContainer>
 					<TCSubContainer bor>
 						<div>
-							선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총{' '}
-							{pagiNation
-								? pagiNation?.totalWeight?.toLocaleString('ko-kr')
-								: hyunDaiPage?.totalWeight?.toLocaleString('ko-kr')}{' '}
-							중량 kg
+							선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
 							<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -323,13 +281,11 @@ const Hyundai = ({}) => {
 							</WhiteBlackBtn>
 						</div>
 					</TCSubContainer>
-					<Table
-						getRow={getRow}
-						getCol={getCol}
-						setChoiceComponent={() => {}}
-						handleOnRowClicked={() => {}}
-						tablePagination={pagination}
-						onPageChange={onPageChanage}
+					<TableV2
+						getRow={tableRowData}
+						getCol={SingleDispatchFieldsCols}
+						tablePagination={paginationData}
+						onPageChange={onPageChange}
 						loading={isLoading}
 						changeFn={handleChangeMemo}
 					/>
@@ -358,15 +314,12 @@ const Hyundai = ({}) => {
 					</TableBottomWrap>
 				</TableContianer>
 			</FilterContianer>
-
 			{isTableModal && <HyunDaiOriginal title={'원본보기'} />}
-
 			{isMultiModal === true && (
 				<Multi2
 					length={3}
 					closeFn={(e, text) => {
 						const { tagName } = e.target
-						// console.log('TARGET :', e.target.tagName)
 						if (tagName === 'IMG') {
 							setIsMultiModal(false)
 						}

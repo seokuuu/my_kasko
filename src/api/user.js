@@ -15,7 +15,7 @@ export const USER_URL = {
 	orderList: '/sale-product/order', // GET
 	orderDetail: '/sale-product/order/details', // GET
 	orderCancel: '/admin/order/cancel',
-	destinationList: '/auction/destination',
+	destinationList: '/auction/successfulBid/destination',
 	destinationUpdate: '/auction/successfulBid/request',
 }
 
@@ -215,7 +215,7 @@ export const useUserDestinationQuery = (param) =>
 	useQuery({
 		queryKey: ['user', 'destination', 'list', param],
 		queryFn: async () => {
-			const { data } = await client.get(USER_URL.destinationList)
+			const { data } = await client.get(`${USER_URL.destinationList}?customerCode=${param}`)
 			return data.data
 		},
 	})

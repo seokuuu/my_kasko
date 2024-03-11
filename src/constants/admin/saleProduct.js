@@ -1,5 +1,7 @@
 // 상시 판매 관리 > 주문 확인
 
+import { getNormalTableRows } from '../../utils/table'
+
 var checkboxSelection = function (params) {
 	return params.columnApi.getRowGroupColumns().length === 0
 }
@@ -8,7 +10,7 @@ var headerCheckboxSelection = function (params) {
 	return params.columnApi.getRowGroupColumns().length === 0
 }
 
-export const saleProductListFieldsCols = [
+export const saleProductListFieldsCols = getNormalTableRows([
 	{
 		maxWidth: 50,
 		checkboxSelection: checkboxSelection,
@@ -29,7 +31,7 @@ export const saleProductListFieldsCols = [
 	{ field: '판매가유형', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '제품군', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '제품 수량', minWidth: 100, cellStyle: { textAlign: 'center' } },
-	{ field: '중량 합계', minWidth: 100, cellStyle: { textAlign: 'center' } },
+	{ field: '총 중량', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '제품금액 (VAT포함)', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '운반비 금액 (VAT포함)', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '입금 요청액', minWidth: 100, cellStyle: { textAlign: 'center' } },
@@ -48,7 +50,7 @@ export const saleProductListFieldsCols = [
 	{ field: '재고상태', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '최종수정자', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '최종수정일시', minWidth: 100, cellStyle: { textAlign: 'center' } },
-]
+])
 
 export const saleProductListResponseToTableRowMap = {
 	uid: 'auctionNumber',
@@ -65,7 +67,7 @@ export const saleProductListResponseToTableRowMap = {
 	판매가유형: 'salePriceType',
 	제품군: 'spart',
 	'제품 수량': 'quantity',
-	'중량 합계': 'totalWeight',
+	'총 중량': 'totalWeight',
 	'제품금액 (VAT포함)': 'totalOrderPrice',
 	'운반비 금액 (VAT포함)': 'totalFreightCost',
 	'입금 요청액': 'orderPrice',
@@ -81,7 +83,7 @@ export const saleProductListResponseToTableRowMap = {
 	비고: 'productMemo',
 	매입운반비: 'freightCost',
 	매출운반비: 'totalFreightCost',
-	재고상태: 'saleStatus',
+	재고상태: 'stockStatus',
 	최종수정자: 'updateMemberName',
 	최종수정일시: 'updateDate',
 }

@@ -1,6 +1,11 @@
 import { LeftSub1, MainTabs, MainTabTitle } from './MainPageStyled'
 import React, { useEffect, useState } from 'react'
-import { MainPackageProductFieldsCols, MainProductFields, MainProductFieldsCols } from './MainProductFields'
+import {
+	MainPackageProductFields,
+	MainPackageProductFieldsCols,
+	MainProductFields,
+	MainProductFieldsCols,
+} from './MainProductFields'
 import Table from '../../pages/Table/Table'
 import { add_element_field } from '../../lib/tableHelpers'
 
@@ -13,8 +18,8 @@ const MainProductComponent = ({ products = null, packageList = null }) => {
 		if (products && Array.isArray(products)) {
 			setProductRows(add_element_field(products, MainProductFields))
 		}
-		if (products && Array.isArray(products)) {
-			setPackageProductRows(add_element_field(products, MainPackageProductFieldsCols))
+		if (packageList && Array.isArray(packageList)) {
+			setPackageProductRows(add_element_field(packageList, MainPackageProductFields))
 		}
 	}, [products, packageList])
 

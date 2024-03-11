@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import { isEqual } from 'lodash'
 import { urls, getSingleProducts, useSingleProductViewStatusUpdate } from '../../../api/SellProduct'
@@ -26,25 +26,31 @@ import {
 	TableBottomWrap,
 	TableContianer,
 } from '../../../modal/External/ExternalFilter'
+import useTableData from '../../../hooks/useTableData'
+import { singleDispatchFields, SingleDispatchFieldsCols } from '../../../constants/admin/Single'
+import useTableSelection from '../../../hooks/useTableSelection'
+import TableV2 from '../../Table/TableV2'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+
+const initialParamState = {
+	pageNum: 1,
+	pageSize: 50,
+	type: '단일',
+	saleType: '상시판매 대상재',
+}
 
 const Single = () => {
 	const { simpleAlert } = useAlert()
-
-	const initialParamState = {
-		pageNum: 1,
-		pageSize: 50,
-		saleType: '상시판매 대상재',
-	}
 
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const [isEditStatusModal, setIsEditStatusModal] = useAtom(salesPackageModal)
 
 	const [checkRadio, setCheckRadio] = useState(null)
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-	const [param, setParam] = useState(initialParamState)
-	const [singleProductListData, setSingleProductListData] = useState(null)
-	const [singleProductPagination, setSingleProductPagination] = useState([])
 	const [toggleMsg, setToggleMsg] = useState('On')
+
+	const [param, setParam] = useState(initialParamState)
+	const [serverData, setServerData] = useState({ list: [], pagination: {} })
 
 	const {
 		isLoading,
@@ -60,27 +66,15 @@ const Single = () => {
 		isSuccess: isSuccessSingleProductViewStatusUpdate,
 	} = useSingleProductViewStatusUpdate()
 
-	useEffect(() => {
-		if (getSingleProductsRes) {
-			setSingleProductListData(formatTableRowData(getSingleProductsRes.r))
-			setSingleProductPagination(getSingleProductsRes.pagination)
-		}
+	const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
+		tableField: responseToTableRowMap,
+		serverData,
+	})
 
-		if (isError) {
-			simpleAlert('요청중 오류가 발생했습니다.\n다시 시도해 주세요.')
-		}
-	}, [isSuccess, getSingleProductsRes, isError])
-
-	useEffect(() => {
-		if (isSuccessSingleProductViewStatusUpdate) {
-			refetch()
-		}
-	}, [isSuccessSingleProductViewStatusUpdate])
-
-	const formatTableRowData = (singleProductListData) => {
-		const processedData = add_element_field(singleProductListData, responseToTableRowMap)
-		return formatBooleanFields(processedData, [{ fieldName: '노출여부', trueValue: '노출', falseValue: '비노출' }])
-	}
+	// 선택 항목
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
 
 	// 토글 쓰기
 	const toggleBtnClick = () => {
@@ -114,26 +108,6 @@ const Single = () => {
 		setIsEditStatusModal(false)
 	}
 
-	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
-		setParam(initialParamState)
-	}
-
-	const globalProductSearchOnClick = (userSearchParam) => {
-		console.log('SingleUserSearchParam---', userSearchParam)
-		setParam((prevParam) => {
-			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				refetch()
-				return prevParam
-			}
-			return {
-				...prevParam,
-				...userSearchParam,
-			}
-		})
-	}
-
 	// 노출 저장 버튼
 	const saveButtonOnClickHandler = () => {
 		if (checkBoxSelect === null || checkBoxSelect.length === 0) {
@@ -151,6 +125,43 @@ const Single = () => {
 
 		mutateSingleProductViewStatusUpdate({ status, numbers })
 	}
+
+	const globalProductResetOnClick = () => {
+		setParam(initialParamState)
+	}
+
+	const globalProductSearchOnClick = (userSearchParam) => {
+		setParam((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				refetch()
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+			}
+		})
+	}
+
+	useEffect(() => {
+		if (getSingleProductsRes) {
+			setServerData({ list: getSingleProductsRes.r, pagination: getSingleProductsRes.pagination })
+		}
+
+		if (isError) {
+			simpleAlert('요청중 오류가 발생했습니다.\n다시 시도해 주세요.')
+		}
+	}, [isSuccess, getSingleProductsRes, isError])
+
+	useEffect(() => {
+		if (isSuccessSingleProductViewStatusUpdate) {
+			refetch()
+		}
+	}, [isSuccessSingleProductViewStatusUpdate])
+
+	useEffect(() => {
+		refetch()
+	}, [])
 
 	return (
 		<FilterContianer>
@@ -175,24 +186,21 @@ const Single = () => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
-						{singleProductPagination?.listCount}개 )
-						<Hidden />
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount?.toLocaleString()}개 )
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
 						<TableV2ExcelDownloader
 							requestUrl={urls.single}
-							requestCount={singleProductPagination?.listCount}
+							requestCount={paginationData?.listCount}
 							field={responseToTableRowMap}
 						/>
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량
-						<span> {formatWeight(KilogramSum(checkBoxSelect))} </span>
-						kg / 총 중량 {formatWeight(singleProductPagination.totalWeight)} kg
+						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteBlackBtn onClick={(checkRadio) => editStatusButtonOnClickHandler(checkRadio)}>
@@ -200,11 +208,11 @@ const Single = () => {
 						</WhiteBlackBtn>
 					</div>
 				</TCSubContainer>
-				<Table
+				<TableV2
 					getCol={singleProductListFieldCols}
-					getRow={singleProductListData}
+					getRow={tableRowData}
 					loading={isLoading}
-					tablePagination={singleProductPagination}
+					tablePagination={paginationData}
 					onPageChange={onPageChange}
 				/>
 				<TableBottomWrap>

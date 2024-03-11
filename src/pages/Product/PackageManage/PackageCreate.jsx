@@ -51,7 +51,7 @@ const PackageCreate = () => {
 	const [packageObj, setPackageObj] = useAtom(packageCreateObjAtom)
 	const [updateObj, setUpdateObj] = useAtom(packageUpdateObjAtom)
 	const [packageName, setPackageName] = useState(prevData ? prevData['패키지 이름'] : packageObj?.packageName)
-	const [price, setPrice] = useState(prevData ? prevData['패키지 경매&판매 시작가'] : packageObj?.price)
+	const [price, setPrice] = useState(prevData ? prevData['시작가/판매가'] : packageObj?.price)
 
 	const [isModal, setIsModal] = useAtom(singleAllProductModal)
 	const [mode, setMode] = useAtom(packageModeAtom)

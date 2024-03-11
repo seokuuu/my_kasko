@@ -68,11 +68,7 @@ export async function patchSaleCategory(data) {
 }
 
 export async function patchOutlet(data) {
-	try {
-		return await client.patch(`${urls.changeOutlet}`, data)
-	} catch (e) {
-		alert(e?.data.message)
-	}
+	return await client.patch(`${urls.changeOutlet}`, data)
 }
 export async function patchSaleType(data) {
 	return await client.patch(`${urls.changeSaleType}`, data)
@@ -108,7 +104,6 @@ export async function getPackageProductsList(params) {
 	const r = response.data?.data.list.map((i, idx) => {
 		return { index: idx + 1, ...i }
 	})
-	console.log('RES', r)
 	return { pagination, r }
 }
 

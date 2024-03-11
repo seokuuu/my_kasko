@@ -40,17 +40,15 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
-		type: '일반',
+		type: '단일',
 		category: '전체',
-		saleType: packageObj?.sellType === '경매' ? '경매 대상재' : '상시판매 대상재',
 		packageStatus: 1,
+		saleType: packageObj?.sellType === '경매' ? '경매 대상재' : '상시판매 대상재',
 		productStatus: packageObj?.sellType === '경매' ? '등록 대기' : '판매중',
-		stockStatus: packageObj?.sellType === '상시' ? '자사재고' : '',
+		stockStatus: packageObj?.sellType === '상시' ? '자사 재고' : '',
 	}
 
 	const [param, setParam] = useState(paramData)
-	//✅ request, Data패칭
-
 	const { data, isSuccess, refetch } = useReactQuery(param, 'product-list', getSingleProducts)
 	const singleList = data?.r
 	const singleProductPage = data?.pagination

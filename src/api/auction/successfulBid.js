@@ -1,6 +1,7 @@
 import { client } from '../'
 import useAlert from '../../store/Alert/useAlert'
 import { useMutation } from '@tanstack/react-query'
+import { queryClient } from '../query'
 
 const auctionSuccessfulBidApproveEndpoint = '/auction/successfulBid/approve'
 const auctionSuccessfulBidRejectEndpoint = '/auction/successfulBid/reject'
@@ -14,9 +15,11 @@ export const useAuctionSuccessfulBidMutation = (url, successMessage) => {
 			await client.post(url, orderParam)
 		},
 		onSuccess: () => {
+			queryClient.invalidateQueries('getSaleProductDetail')
 			return simpleAlert(successMessage)
 		},
 		onError: (error) => {
+			queryClient.invalidateQueries('getSaleProductDetail')
 			return simpleAlert(error?.data?.message || '요청중 오류가 발생했습니다.\n다시 시도해 주세요.')
 		},
 	})

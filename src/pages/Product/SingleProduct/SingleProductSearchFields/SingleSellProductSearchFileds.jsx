@@ -20,6 +20,7 @@ import ProductNumber from '../../../../components/GlobalProductSearch/SearchFiel
 import { kyuModalAtom, proNoModalAtom } from '../../../../store/Layout/GlobalProductSearch'
 import CustomCheckBox from '../../../Operate/UI/CustomCheckBox/CustomCheckBox'
 import ProNoFindModal from '../../../../modal/Multi/ProNoFindModal'
+import React from 'react'
 
 const SingleSellProductSearchFields = ({
 	// prettier-ignore
@@ -322,7 +323,12 @@ const SingleSellProductSearchFields = ({
 			</FilterLeft>
 			<FilterRight>
 				<DoubleWrap>
-					<ProductNumber setState={setSearch} valueName={'productNumber'} height="100%" />
+					<ProductNumber
+						initialValue={search.productNumberList}
+						setState={setSearch}
+						valueName={'productNumberList'}
+						height="100%"
+					/>
 				</DoubleWrap>
 			</FilterRight>
 		</>

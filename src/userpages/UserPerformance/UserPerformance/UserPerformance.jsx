@@ -12,7 +12,6 @@ import UserPerformanceFilter from './UserPerformanceFilter'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { isEqual } from 'lodash'
 import useTableData from '../../../hooks/useTableData'
-import { AchievementFields } from '../../../pages/Shipping/fields/AchievementFields'
 import useTableSelection from '../../../hooks/useTableSelection'
 import { authAtom } from '../../../store/Auth/auth'
 import TableV2 from '../../../pages/Table/TableV2'
@@ -102,7 +101,7 @@ const UserPerformance = () => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount.toLocaleString()}개 )
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount?.toLocaleString()}개 )
 						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -112,7 +111,7 @@ const UserPerformance = () => {
 				</TCSubContainer>
 				<TCSubContainer bor>
 					<div>
-						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight.toLocaleString()} kg
+						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
 					</div>
 					<div></div>
 				</TCSubContainer>
