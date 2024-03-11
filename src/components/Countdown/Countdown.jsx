@@ -4,6 +4,7 @@ import moment from 'moment'
 import FlipClockCountdown from '@leenguyen/react-flip-clock-countdown'
 import '@leenguyen/react-flip-clock-countdown/dist/index.css'
 import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
 
 const Countdown = () => {
 	const navigate = useNavigate()
@@ -36,6 +37,7 @@ const Countdown = () => {
 	}
 
 	const onTimeUp = () => {
+		window.location.reload()
 		setTimeout(() => {
 			getCountdown()
 				.then((response) => response?.data?.data)
@@ -53,8 +55,8 @@ const Countdown = () => {
 			{data && (
 				<div style={{ cursor: 'pointer' }} onClick={() => navigate('/auction/bidding')}>
 					<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-						{data?.type === 'START' && <span>경매 시작까지 남은 시간 </span>}
-						{data?.type === 'END' && <span>경매 종료까지 남은 시간 </span>}
+						{data?.type === 'START' && <CountText>경매 시작까지 남은 시간 </CountText>}
+						{data?.type === 'END' && <CountText>경매 종료까지 남은 시간 </CountText>}
 						<FlipClockCountdown
 							to={data?.date}
 							renderMap={[false, true, true, true]}
@@ -73,3 +75,8 @@ const Countdown = () => {
 }
 
 export default React.memo(Countdown)
+
+const CountText = styled.span`
+	color: #337ae4;
+	font-weight: bolder;
+`

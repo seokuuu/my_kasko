@@ -52,6 +52,9 @@ const Single = ({}) => {
 	// 	}
 	// }, [])
 	const nowAuction = useCheckAuction() // 현재 경매 여부 체크
+
+	console.log('nowAuction', nowAuction)
+
 	const [live, setLive] = useState(true) // LIVE get 일시 중단
 	const navigate = useNavigate()
 	const [addedInput, setAddedInput] = useState(null) // 일괄 경매 응찰 input state
@@ -165,6 +168,30 @@ const Single = ({}) => {
 			}))
 		}
 	}, [isSuccess, resData, initDestiData])
+
+	useEffect(() => {
+		if (resData) {
+			const updatedResData = resData?.map((item) => {
+				if (
+					!item.destinationCode ||
+					!item.destinationName ||
+					!item.customerDestinationName ||
+					!item.customerDestinationAddress ||
+					!item.customerDestinationPhone
+				) {
+					item.destinationCode = destiObject?.destinationCode
+					item.destinationName = destiObject?.destinationName
+					item.customerDestinationName = destiObject?.customerDestinationName
+					item.customerDestinationAddress = destiObject?.address
+					item.customerDestinationPhone = destiObject?.phone
+				}
+
+				return item
+			})
+
+			setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+		}
+	}, [auctionDestination])
 
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']
