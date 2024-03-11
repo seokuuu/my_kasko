@@ -12,7 +12,7 @@ export default function useReactQuery(obj, key, api) {
 	const { isLoading, isError, data, isSuccess, refetch } = useQuery([key, obj], () => api(obj), {
 		retry: false,
 		enabled: isEnable,
-		...(key && key?.includes('LIVE') ? { refetchInterval: 2000 } : {}), // 조건에 따라 refetchInterval 추가
+		...(key && key?.includes('LIVE') ? { refetchInterval: 1000 } : {}), // 조건에 따라 refetchInterval 추가
 	})
 	return { isLoading, isError, data, isSuccess, refetch }
 }
