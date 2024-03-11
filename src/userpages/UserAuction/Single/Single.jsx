@@ -191,7 +191,7 @@ const Single = ({}) => {
 
 			setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 		}
-	}, [auctionDestination])
+	}, [destiObject])
 
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']

@@ -409,14 +409,15 @@ export const AuctionBiddingFieldsCols = [
 	{ ...commonStyles, field: '상태', minWidth: 100 },
 	{ ...commonStyles, field: '경매 번호', minWidth: 100 },
 	{ ...commonStyles, field: '추천 여부', minWidth: 100, cellRenderer: (params) => (params.value ? 'O' : 'X') },
-	{
-		...commonStyles,
-		field: PROD_COL_NAME.productNumber,
-		minWidth: 250,
-		cellRenderer: MarkerCellRenderer,
-		cellRendererParams: (params) => params.data[params.column.colId],
-		valueGetter: (v) => v.data[v.column.colId]?.value || '',
-	},
+	// {
+	// 	...commonStyles,
+	// 	field: '제품 번호',
+	// 	minWidth: 250,
+	// 	cellRenderer: MarkerCellRenderer,
+	// 	cellRendererParams: (params) => params.data[params.column.colId],
+	// 	valueGetter: (v) => v.data[v.column.colId].value,
+	// },
+	{ ...commonStyles, field: '제품 번호', minWidth: 100 },
 	{ ...commonStyles, field: '프로넘 번호', minWidth: 100 },
 	{ ...commonStyles, field: '창고', minWidth: 100 },
 	{ ...commonStyles, field: '판매 유형', minWidth: 100 },
@@ -483,6 +484,7 @@ export const AuctionBiddingFieldsCols = [
 	{ ...commonStyles, field: '여재 원인명', minWidth: 100 },
 	{ ...commonStyles, field: '용도 코드', minWidth: 100 },
 	{ ...commonStyles, field: '용도명', minWidth: 100 },
+	{ ...commonStyles, field: '제품 고유 번호', minWidth: 100 },
 	{ ...commonStyles, field: '메모', minWidth: 100 },
 ]
 // export const AuctionBiddingPackageFields = {
