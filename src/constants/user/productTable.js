@@ -119,6 +119,7 @@ export const userSingleProductFieldsCols = getNormalTableRows([
 		cellRendererParams: (params) => params.data[params.column.colId],
 		valueGetter: (v) => v.data[v.column.colId].value,
 	},
+
 	{ field: '프로넘(ProNo)' },
 	{ field: '창고' },
 	{ field: '상시판매 상태' },

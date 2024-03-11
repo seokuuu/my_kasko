@@ -167,6 +167,30 @@ const Package = ({}) => {
 		}
 	}, [isSuccess, resData, initDestiData])
 
+	useEffect(() => {
+		if (resData) {
+			const updatedResData = resData?.map((item) => {
+				if (
+					!item.destinationCode ||
+					!item.destinationName ||
+					!item.customerDestinationName ||
+					!item.customerDestinationAddress ||
+					!item.customerDestinationPhone
+				) {
+					item.destinationCode = destiObject?.destinationCode
+					item.destinationName = destiObject?.destinationName
+					item.customerDestinationName = destiObject?.customerDestinationName
+					item.customerDestinationAddress = destiObject?.address
+					item.customerDestinationPhone = destiObject?.phone
+				}
+
+				return item
+			})
+
+			setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+		}
+	}, [auctionDestination])
+
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']
 
