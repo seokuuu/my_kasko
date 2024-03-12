@@ -55,7 +55,7 @@ import Table from '../../Table/Table'
 import BiddingSearchFields from './BiddingSearchFields'
 import PackDetail from './PackDetail'
 
-const Bidding = ({}) => {
+const Bidding = () => {
 	const auth = useAtomValue(authAtom)
 	const nowAuction = useCheckAuction() // 현재 경매 여부 체크
 
@@ -72,6 +72,8 @@ const Bidding = ({}) => {
 		auctionNumber: '',
 		agreement: '',
 	})
+
+	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
 
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(userPageSingleDestiFindAtom)
@@ -250,7 +252,7 @@ const Bidding = ({}) => {
 
 			setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 		}
-	}, [auctionDestination])
+	}, [destiObject])
 
 	//
 	useEffect(() => {
