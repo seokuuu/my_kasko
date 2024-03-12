@@ -154,7 +154,10 @@ const Bidding = () => {
 					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-					item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
+					item.memberBiddingPrice =
+						item.biddingPrice === 0
+							? item.auctionStartPrice + winningCreateInput?.biddingPrice
+							: item.biddingPrice + winningCreateInput?.biddingPrice
 				}
 			if (param?.type === '패키지')
 				if (packUids.includes(item.packageNumber)) {
@@ -164,7 +167,10 @@ const Bidding = () => {
 					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-					item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
+					item.memberBiddingPrice =
+						item.biddingPrice === 0
+							? item.auctionStartPrice + winningCreateInput?.biddingPrice
+							: item.biddingPrice + winningCreateInput?.biddingPrice
 				}
 			return item
 		})
@@ -173,9 +179,11 @@ const Bidding = () => {
 	}
 
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
-	const [liveStatus, setLiveStatus] = useState(nowAuction ? 'LIVEgetBidding' : 'getBidding') // 현재 경매에 따라 실시간 get
+	const [liveStatus, setLiveStatus] = useState(null)
 
-	console.log('liveStatus', liveStatus)
+	useEffect(() => {
+		setLiveStatus(nowAuction && live ? true : false)
+	}, [nowAuction, live])
 	// 전체 GET
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list
@@ -460,7 +468,10 @@ const Bidding = () => {
 					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-					item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
+					item.memberBiddingPrice =
+						item.biddingPrice === 0
+							? item.auctionStartPrice + winningCreateInput?.biddingPrice
+							: item.biddingPrice + winningCreateInput?.biddingPrice
 				}
 			if (param?.type === '패키지')
 				if (packUids.includes(item.packageNumber)) {
@@ -470,7 +481,10 @@ const Bidding = () => {
 					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-					item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
+					item.memberBiddingPrice =
+						item.biddingPrice === 0
+							? item.auctionStartPrice + winningCreateInput?.biddingPrice
+							: item.biddingPrice + winningCreateInput?.biddingPrice
 				}
 			return item
 		})
