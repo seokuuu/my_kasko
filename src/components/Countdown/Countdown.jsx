@@ -3,11 +3,12 @@ import { getCountdown } from '../../api/mainPage/mainPage'
 import moment from 'moment'
 import FlipClockCountdown from '@leenguyen/react-flip-clock-countdown'
 import '@leenguyen/react-flip-clock-countdown/dist/index.css'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 const Countdown = () => {
 	const navigate = useNavigate()
+	const { pathname } = useLocation()
 	const [data, setData] = useState(null)
 
 	const getCountdownData = async () => {
@@ -37,7 +38,11 @@ const Countdown = () => {
 	}
 
 	const onTimeUp = () => {
-		window.location.reload()
+		const isAuction = data?.type
+		const auctionPages = ['/auction/bidding', '/userpage/auctionsingle', '/userpage/auctionpackage']
+		if (isAuction && auctionPages.includes(pathname)) {
+			window.location.reload()
+		}
 		setTimeout(() => {
 			getCountdown()
 				.then((response) => response?.data?.data)
