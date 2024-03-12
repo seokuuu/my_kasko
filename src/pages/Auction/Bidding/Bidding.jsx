@@ -154,7 +154,10 @@ const Bidding = () => {
 					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-					item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
+					item.memberBiddingPrice =
+						item.biddingPrice === 0
+							? item.auctionStartPrice + winningCreateInput?.biddingPrice
+							: item.biddingPrice + winningCreateInput?.biddingPrice
 				}
 			if (param?.type === '패키지')
 				if (packUids.includes(item.packageNumber)) {
@@ -164,7 +167,10 @@ const Bidding = () => {
 					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-					item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
+					item.memberBiddingPrice =
+						item.biddingPrice === 0
+							? item.auctionStartPrice + winningCreateInput?.biddingPrice
+							: item.biddingPrice + winningCreateInput?.biddingPrice
 				}
 			return item
 		})
@@ -460,7 +466,10 @@ const Bidding = () => {
 					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-					item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
+					item.memberBiddingPrice =
+						item.biddingPrice === 0
+							? item.auctionStartPrice + winningCreateInput?.biddingPrice
+							: item.biddingPrice + winningCreateInput?.biddingPrice
 				}
 			if (param?.type === '패키지')
 				if (packUids.includes(item.packageNumber)) {
@@ -470,7 +479,10 @@ const Bidding = () => {
 					item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 					item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-					item.memberBiddingPrice = item.biddingPrice + winningCreateInput?.biddingPrice
+					item.memberBiddingPrice =
+						item.biddingPrice === 0
+							? item.auctionStartPrice + winningCreateInput?.biddingPrice
+							: item.biddingPrice + winningCreateInput?.biddingPrice
 				}
 			return item
 		})
