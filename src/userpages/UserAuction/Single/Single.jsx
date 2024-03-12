@@ -41,20 +41,9 @@ import UserBiddingSearchFields from './UserBiddingSearchFields'
 import { authAtom } from '../../../store/Auth/auth'
 
 const Single = ({}) => {
-	const auth = useAtomValue(authAtom)
-
+	const auth = useAtomValue(authAtom) // 이거 auction.js에서 hook으로 바꾸기
 	console.log('로그인 ㅇㅇ', auth?.statusList.auctionStatus)
-	// useEffect(() => {
-	// 	if (auth?.statusList?.auctionStatus === '시작가 제한') {
-	// 		simpleAlert('경매에 참여하실 수 없습니다.', () => {
-	// 			navigate('/userpage/main')
-	// 		})
-	// 	}
-	// }, [])
 	const nowAuction = useCheckAuction() // 현재 경매 여부 체크
-
-	console.log('nowAuction', nowAuction)
-
 	const [live, setLive] = useState(true) // LIVE get 일시 중단
 	const navigate = useNavigate()
 	const [addedInput, setAddedInput] = useState(null) // 일괄 경매 응찰 input state
@@ -89,6 +78,8 @@ const Single = ({}) => {
 
 	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
 
+	console.log('auctionDestination Single 목적지', auctionDestination?.data?.data)
+
 	const [customerData, setCustomerData] = useState()
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
@@ -105,6 +96,7 @@ const Single = ({}) => {
 	console.log('winningCreateInput', winningCreateInput)
 
 	const [getRow, setGetRow] = useState('')
+	const [newGetRow, setNewGetRow] = useState({})
 	const tableField = useRef(AuctionBiddingFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
@@ -112,7 +104,9 @@ const Single = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 
-	const uids = checkedArrayState?.map((item) => item['제품 번호'])
+	const uids = checkedArrayState?.map((item) => item['제품 번호'].value)
+
+	console.log('uids', uids)
 
 	const paramData = {
 		pageNum: 1,
@@ -121,7 +115,11 @@ const Single = ({}) => {
 	}
 	const [param, setParam] = useState(paramData)
 
-	const [liveStatus, setLiveStatus] = useState(nowAuction ? 'LIVEgetBidding' : 'getBidding')
+	const [liveStatus, setLiveStatus] = useState(null)
+
+	useEffect(() => {
+		setLiveStatus(nowAuction && live ? true : false)
+	}, [nowAuction, live])
 
 	const [realAucNum, setRealAucNum] = useState(null)
 	console.log('realAucNum', realAucNum)
@@ -129,6 +127,10 @@ const Single = ({}) => {
 
 	// 전체 GET
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
+	const originData = data?.data?.data
+	const [oriData, setOridata] = useState()
+
+	console.log('oriData', oriData)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
@@ -152,12 +154,15 @@ const Single = ({}) => {
 
 	useEffect(() => {
 		let getData = auth?.statusList?.auctionStatus === '시작가 제한' ? restrictStartPriceData : resData
-		console.log('getData', getData)
+
 		const filteredAucNum = resData && resData.map((x) => x['auctionNumber'])
 		const checkAgreeAucNum = filteredAucNum && filteredAucNum[0]
 		if (!isSuccess && !resData) return
-		if (Array.isArray(getData)) {
-			if (live) setGetRow(add_element_field(getData, AuctionBiddingFields))
+		if (Array.isArray(originData?.list)) {
+			if (live) {
+				setOridata(originData)
+				// setGetRow(add_element_field(getData, AuctionBiddingFields))
+			}
 			setTablePagination(resPagination)
 			setRealAucNum(checkAgreeAucNum)
 			setCheckAgreement((prev) => ({
@@ -168,8 +173,8 @@ const Single = ({}) => {
 	}, [isSuccess, resData, initDestiData])
 
 	useEffect(() => {
-		if (resData) {
-			const updatedResData = resData?.map((item) => {
+		if (oriData) {
+			const updatedResData = oriData?.list?.map((item) => {
 				if (
 					!item.destinationCode ||
 					!item.destinationName ||
@@ -187,9 +192,12 @@ const Single = ({}) => {
 				return item
 			})
 
-			setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+			setOridata((prevData) => ({
+				...prevData,
+				list: updatedResData,
+			}))
 		}
-	}, [destiObject])
+	}, [auctionDestination])
 
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']
@@ -363,7 +371,7 @@ const Single = ({}) => {
 		}
 
 		simpleAlert('적용 되었습니다.')
-		const updatedResData = resData.map((item) => {
+		const updatedResData = oriData?.list?.map((item) => {
 			if (uids.includes(item.productNumber)) {
 				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
 				item.destinationName = destiObject?.destinationName ?? item.destinationName
@@ -376,11 +384,22 @@ const Single = ({}) => {
 						? item.auctionStartPrice + winningCreateInput?.biddingPrice
 						: item.biddingPrice + winningCreateInput?.biddingPrice
 			}
+			console.log('가격 변동 확인', item.memberBiddingPrice)
 			return item
 		})
+
+		console.log('updatedResData 빠빠', updatedResData[0])
+
 		// 변경된 데이터로 state 업데이트
-		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+		setOridata((prevData) => ({
+			...prevData,
+			list: updatedResData,
+		}))
+
+		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
+
+	console.log('oriDataList', oriData?.list)
 
 	/* ==================== 관심상품 등록 start ==================== */
 	/**
@@ -395,10 +414,13 @@ const Single = ({}) => {
 	// 테이블 데이터, 페이지 데이터, 총 중량
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: AuctionBiddingFields,
-		serverData: data?.data?.data,
+		serverData: oriData,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
 		best: { display: true },
 	})
+
+	console.log('getRow', getRow)
+	console.log('originData', originData)
 	/* ==================== 관심상품 등록 end ==================== */
 	console.log('destiObject', destiObject)
 	// 목적지 적용 버튼 handler 111
@@ -420,14 +442,14 @@ const Single = ({}) => {
 			}))
 			setDestiObject(destiObject)
 		})
-		const updatedResData = resData.map((item) => {
-			console.log('item => ', item, ' destiObject =>', destiObject)
+		const updatedResData = oriData?.list?.map((item) => {
 			if (uids.includes(item.productNumber)) {
 				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
 				item.destinationName = destiObject?.destinationName ?? item.destinationName
 				item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
 				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
+
 				item.memberBiddingPrice =
 					item.biddingPrice === 0
 						? item.auctionStartPrice + winningCreateInput?.biddingPrice
@@ -436,7 +458,11 @@ const Single = ({}) => {
 
 			return item
 		})
-		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+		setOridata((prevData) => ({
+			...prevData,
+			list: updatedResData,
+		}))
+		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
 
 	console.log('values', values)
@@ -554,7 +580,7 @@ const Single = ({}) => {
 						<>
 							<div style={{ display: 'flex', gap: '10px' }}>
 								<PageDropdown handleDropdown={handleTablePageSize} />
-								<Excel getRow={getRow} />
+								<Excel getRow={tableRowData} />
 								<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
 							</div>
 						</>
@@ -640,7 +666,7 @@ const Single = ({}) => {
 
 				<Table
 					getCol={getCol}
-					getRow={getRow}
+					getRow={tableRowData}
 					tablePagination={tablePagination}
 					onPageChange={onPageChange}
 					changeFn={onCellValueChanged}

@@ -179,9 +179,11 @@ const Bidding = () => {
 	}
 
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
-	const [liveStatus, setLiveStatus] = useState(nowAuction ? 'LIVEgetBidding' : 'getBidding') // 현재 경매에 따라 실시간 get
+	const [liveStatus, setLiveStatus] = useState(null)
 
-	console.log('liveStatus', liveStatus)
+	useEffect(() => {
+		setLiveStatus(nowAuction && live ? true : false)
+	}, [nowAuction, live])
 	// 전체 GET
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list

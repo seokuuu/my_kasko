@@ -109,7 +109,7 @@ const Package = ({}) => {
 	// const checkedArrayState = useAtom(selectedRowsAtom)[0]
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
-	const uids = checkedArrayState?.map((item) => item['패키지 번호'])
+	const uids = checkedArrayState?.map((item) => item['패키지 번호'].value)
 
 	console.log('uids ', uids)
 
@@ -120,7 +120,11 @@ const Package = ({}) => {
 	}
 	const [param, setParam] = useState(paramData)
 
-	const [liveStatus, setLiveStatus] = useState(nowAuction ? 'LIVEgetBidding' : 'getBidding') // 현재 경매에 따라 실시간 get
+	const [liveStatus, setLiveStatus] = useState(null)
+
+	useEffect(() => {
+		setLiveStatus(nowAuction && live ? true : false)
+	}, [nowAuction, live])
 
 	const [realAucNum, setRealAucNum] = useState(null)
 	console.log('realAucNum', realAucNum)
@@ -132,6 +136,8 @@ const Package = ({}) => {
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
+	const originData = data?.data?.data
+	const [oriData, setOridata] = useState()
 
 	console.log('resData', resData)
 
@@ -155,7 +161,10 @@ const Package = ({}) => {
 		const checkAgreeAucNum = filteredAucNum && filteredAucNum[0]
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
-			if (live) setGetRow(add_element_field(getData, AuctionBiddingFields))
+			if (live) {
+				setOridata(originData)
+				setGetRow(add_element_field(getData, AuctionBiddingFields))
+			}
 			setTablePagination(resPagination)
 			setRealAucNum(checkAgreeAucNum)
 			setCheckAgreement((prev) => ({
@@ -166,8 +175,8 @@ const Package = ({}) => {
 	}, [isSuccess, resData, initDestiData])
 
 	useEffect(() => {
-		if (resData) {
-			const updatedResData = resData?.map((item) => {
+		if (oriData) {
+			const updatedResData = oriData?.list?.map((item) => {
 				if (
 					!item.destinationCode ||
 					!item.destinationName ||
@@ -185,7 +194,10 @@ const Package = ({}) => {
 				return item
 			})
 
-			setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+			setOridata((prevData) => ({
+				...prevData,
+				list: updatedResData,
+			}))
 		}
 	}, [auctionDestination])
 
@@ -363,7 +375,7 @@ const Package = ({}) => {
 		}
 
 		simpleAlert('적용 되었습니다.')
-		const updatedResData = resData.map((item) => {
+		const updatedResData = oriData?.list?.map((item) => {
 			if (uids.includes(item.packageNumber)) {
 				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
 				item.destinationName = destiObject?.destinationName ?? item.destinationName
@@ -382,7 +394,11 @@ const Package = ({}) => {
 		console.log('222 뒤', updatedResData)
 
 		// 변경된 데이터로 state 업데이트
-		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+		setOridata((prevData) => ({
+			...prevData,
+			list: updatedResData,
+		}))
 	}
 
 	/* ==================== 관심상품 등록 start ==================== */
@@ -398,7 +414,7 @@ const Package = ({}) => {
 	// 테이블 데이터, 페이지 데이터, 총 중량
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: AuctionBiddingFields,
-		serverData: data?.data?.data,
+		serverData: oriData,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
 		best: { display: true },
 	})
@@ -424,7 +440,7 @@ const Package = ({}) => {
 			setDestiObject(destiObject)
 		})
 
-		const updatedResData = resData.map((item) => {
+		const updatedResData = oriData?.list?.map((item) => {
 			if (uids.includes(item.packageNumber)) {
 				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
 				item.destinationName = destiObject?.destinationName ?? item.destinationName
@@ -440,9 +456,13 @@ const Package = ({}) => {
 
 			return item
 		})
-		console.log('111 앞 ', updatedResData)
-		console.log('destiObject', destiObject)
-		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+
+		setOridata((prevData) => ({
+			...prevData,
+			list: updatedResData,
+		}))
+
+		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
 
 	console.log('values', values)
@@ -563,7 +583,7 @@ const Package = ({}) => {
 						<>
 							<div style={{ display: 'flex', gap: '10px' }}>
 								<PageDropdown handleDropdown={handleTablePageSize} />
-								<Excel getRow={getRow} />
+								<Excel getRow={tableRowData} />
 								<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
 							</div>
 						</>
@@ -649,7 +669,7 @@ const Package = ({}) => {
 				</TCSubContainer>
 				<Table
 					getCol={getCol}
-					getRow={getRow}
+					getRow={tableRowData}
 					tablePagination={tablePagination}
 					onPageChange={onPageChange}
 					changeFn={onCellValueChanged}
