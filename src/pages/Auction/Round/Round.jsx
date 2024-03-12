@@ -187,6 +187,7 @@ const Round = ({}) => {
 					uidAtom={uidAtom}
 					auctionNum={auctionNum}
 					auctionStatus={auctionStatus}
+					roundPageRefetch={refetch}
 				/>
 			) : (
 				<FilterContianer>

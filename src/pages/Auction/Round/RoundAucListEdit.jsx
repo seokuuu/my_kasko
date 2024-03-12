@@ -41,7 +41,7 @@ import useTableSelection from '../../../hooks/useTableSelection'
 import useTableData from '../../../hooks/useTableData'
 
 //경매 목록 수정(단일)
-const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStatus }) => {
+const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStatus, roundPageRefetch }) => {
 	const [btnClick, setBtnClick] = useState(false)
 	const [newResData, setNewResData] = useState([])
 	const [addAuction, setAddAuction] = useState({
@@ -304,6 +304,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			simpleAlert('수정 되었습니다.', () => {
 				setEditPage(false)
 				refetch()
+				roundPageRefetch()
 			})
 		},
 		onError: () => {
