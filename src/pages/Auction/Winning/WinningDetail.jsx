@@ -81,9 +81,9 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 		detailRow?.['창고'],
 		detailRow?.['수량'],
 		detailRow?.['중량'],
-		new Intl.NumberFormat('en-US').format(detailRow?.['입금 요청액']) + '원',
 		new Intl.NumberFormat('en-US').format(detailRow?.['제품 금액 (VAT 포함)']) + '원',
 		new Intl.NumberFormat('en-US').format(detailRow?.['운반비 (VAT 포함)']) + '원',
+		new Intl.NumberFormat('en-US').format(detailRow?.['입금 요청액']) + '원',
 	]
 
 	const matchingData = {
