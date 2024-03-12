@@ -3,7 +3,8 @@ import MarkerCellRenderer from '../../pages/Table/MarkerCellRenderer'
 import { PROD_COL_NAME } from '../user/constantKey'
 import { auctionPackDetailNumAtom, auctionPackDetailModal } from '../../store/Layout/Layout'
 import axios from 'axios'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
+import { authAtom } from '../../store/Auth/auth'
 
 var checkboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping
@@ -19,6 +20,7 @@ export const commonStyles = {
 	headerClass: 'custom-header-style',
 	flex: 1,
 	cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+	getFieldMinWidth: (field) => field.length * 10 + 50, // 조절 가능한 계수 및 기본 값 사용
 }
 
 const LinkRenderer = (props) => {
@@ -409,15 +411,15 @@ export const AuctionBiddingFieldsCols = [
 	{ ...commonStyles, field: '상태', minWidth: 100 },
 	{ ...commonStyles, field: '경매 번호', minWidth: 100 },
 	{ ...commonStyles, field: '추천 여부', minWidth: 100, cellRenderer: (params) => (params.value ? 'O' : 'X') },
-	// {
-	// 	...commonStyles,
-	// 	field: '제품 번호',
-	// 	minWidth: 250,
-	// 	cellRenderer: MarkerCellRenderer,
-	// 	cellRendererParams: (params) => params.data[params.column.colId],
-	// 	valueGetter: (v) => v.data[v.column.colId].value,
-	// },
-	{ ...commonStyles, field: '제품 번호', minWidth: 100 },
+	{
+		...commonStyles,
+		field: '제품 번호',
+		minWidth: 250,
+		cellRenderer: MarkerCellRenderer,
+		cellRendererParams: (params) => params.data[params.column.colId],
+		valueGetter: (v) => v.data[v.column.colId].value,
+	},
+	// { ...commonStyles, field: '제품 번호', minWidth: 100 },
 	{ ...commonStyles, field: '프로넘 번호', minWidth: 100 },
 	{ ...commonStyles, field: '창고', minWidth: 100 },
 	{ ...commonStyles, field: '판매 유형', minWidth: 100 },
@@ -512,6 +514,18 @@ export const AuctionBiddingFieldsCols = [
 // 	'나의 최고 응찰 가격': 'memberBestBiddingPrice',
 // 	응찰가: 'memberBiddingPrice',
 // }
+
+// ** TODO : 아래 fieldsCols로 전부 교체하기.
+// export const AuctionBiddingFieldsCols = [
+// 	{ ...commonStyles, field: '' },
+// 	{ ...commonStyles, field: '나의 현재 응찰 가격' },
+// 	{ ...commonStyles, field: '목적지 명', minWidth: 150 }, // 이 부분은 고정된 minWidth 값을 사용
+// 	// 나머지 필드들도 동일하게 추가
+// 	// ...
+// ].map((col) => ({
+// 	...col,
+// 	minWidth: col.minWidth !== undefined ? col.minWidth : commonStyles.getFieldMinWidth(col.field),
+// }))
 
 // 패키지 응찰
 export const AuctionPackageBiddingFieldsCols = [
