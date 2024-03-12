@@ -109,8 +109,9 @@ const Bidding = () => {
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
-	const uids = checkedArrayState?.map((item) => item['제품 번호'])
-	const packUids = checkedArrayState?.map((item) => item['패키지 번호'])
+	const uids = checkedArrayState?.map((item) => item['제품 번호'].value)
+	const packUids = checkedArrayState?.map((item) => item['패키지 번호'].value)
+	console.log('uids', uids)
 	const [tablePagination, setTablePagination] = useState([])
 	const paramData = {
 		pageNum: 1,
@@ -145,7 +146,7 @@ const Bidding = () => {
 			setDestiObject(destiObject)
 		})
 
-		const updatedResData = resData.map((item) => {
+		const updatedResData = oriData?.list?.map((item) => {
 			if (param?.type === '단일')
 				if (uids.includes(item.productNumber)) {
 					item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
@@ -188,6 +189,8 @@ const Bidding = () => {
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
 	const resData = data?.data?.data?.list
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
+	const originData = data?.data?.data
+	const [oriData, setOridata] = useState()
 
 	const checkGetAgreement = getAgreementData?.data?.data
 
@@ -213,7 +216,9 @@ const Bidding = () => {
 		const checkAgreeAucNum = filteredAucNum && filteredAucNum[0] // 경매 번호 1개 추출
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
-			if (live) setGetRow(add_element_field(getData, AuctionBiddingFields))
+			if (live) {
+				setOridata(originData)
+			}
 			setTablePagination(resPagination)
 			setRealAucNum(checkAgreeAucNum)
 			setCheckAgreement((prev) => ({
@@ -527,7 +532,7 @@ const Bidding = () => {
 
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: AuctionBiddingFields,
-		serverData: data?.data?.data,
+		serverData: oriData,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
 		best: { display: true },
 	})
@@ -653,7 +658,7 @@ const Bidding = () => {
 
 				<Table
 					getCol={param?.type === '단일' ? AuctionBiddingFieldsCols : AuctionPackageBiddingFieldsCols}
-					getRow={getRow}
+					getRow={tableRowData}
 					tablePagination={tablePagination}
 					onPageChange={onPageChange}
 					changeFn={onCellValueChanged}
