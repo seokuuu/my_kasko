@@ -216,6 +216,18 @@ const Bidding = ({}) => {
 		}
 	}, [isSuccess, resData, initDestiData])
 
+	// 경매 번호 가져오기
+	const auctionNumber = checkedArray?.[0]?.['경매 번호']
+
+	const init = {
+		auctionNumber: null,
+		type: types,
+	}
+
+	const [winningCreateData, setWinningCreateData] = useState(init)
+
+	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
+
 	useEffect(() => {
 		if (resData) {
 			const updatedResData = resData?.map((item) => {
@@ -240,19 +252,6 @@ const Bidding = ({}) => {
 		}
 	}, [auctionDestination])
 
-	// 경매 번호 가져오기
-	const auctionNumber = checkedArray?.[0]?.['경매 번호']
-
-	const init = {
-		auctionNumber: null,
-		type: types,
-	}
-
-	const [winningCreateData, setWinningCreateData] = useState(init)
-
-	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
-
-	console.log('즐', auctionDestination?.data?.data)
 	//
 	useEffect(() => {
 		const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)

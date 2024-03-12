@@ -87,8 +87,6 @@ const Package = ({}) => {
 
 	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
 
-	console.log('auctionDestination Single 목적지', auctionDestination?.data?.data)
-
 	const [customerData, setCustomerData] = useState()
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
