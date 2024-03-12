@@ -73,8 +73,6 @@ const Bidding = () => {
 		agreement: '',
 	})
 
-	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
-
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(userPageSingleDestiFindAtom)
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
@@ -218,6 +216,18 @@ const Bidding = () => {
 		}
 	}, [isSuccess, resData, initDestiData])
 
+	// 경매 번호 가져오기
+	const auctionNumber = checkedArray?.[0]?.['경매 번호']
+
+	const init = {
+		auctionNumber: null,
+		type: types,
+	}
+
+	const [winningCreateData, setWinningCreateData] = useState(init)
+
+	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
+
 	useEffect(() => {
 		if (resData) {
 			const updatedResData = resData?.map((item) => {
@@ -242,16 +252,7 @@ const Bidding = () => {
 		}
 	}, [destiObject])
 
-	// 경매 번호 가져오기
-	const auctionNumber = checkedArray?.[0]?.['경매 번호']
-
-	const init = {
-		auctionNumber: null,
-		type: types,
-	}
-
-	const [winningCreateData, setWinningCreateData] = useState(init)
-
+	//
 	useEffect(() => {
 		const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
 		if (propsUid) setDestiObject(selectedObject)
