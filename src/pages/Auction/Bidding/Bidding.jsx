@@ -73,8 +73,6 @@ const Bidding = () => {
 		agreement: '',
 	})
 
-	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
-
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(userPageSingleDestiFindAtom)
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
