@@ -68,11 +68,6 @@ export const OrderManageFieldsCols = [
 	},
 	{
 		...commonStyles,
-		field: '주문 일자',
-		minWidth: 107,
-	},
-	{
-		...commonStyles,
 		field: '패키지명',
 		minWidth: 90,
 	},
@@ -236,7 +231,6 @@ export const orderFieldData = {
 	'상시판매 주문번호': 'orderNumber',
 	'현대제철 주문번호': 'hsOrderNo',
 	'제품 수량': 'productCount',
-	'상시판매 주문일자': 'createDate',
 	패키지명: 'packageName',
 	'패키지 번호': 'packageNumber',
 	'확정 전송가': 'confirmPrice',
