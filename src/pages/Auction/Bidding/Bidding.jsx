@@ -5,6 +5,7 @@ import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
 	auctionPackDetailModal,
 	auctionPackDetailNumAtom,
+	auctionStartAtom,
 	biddingAgreementModal,
 	invenDestinationData,
 	selectedRowsAtom,
@@ -54,8 +55,11 @@ import { onSizeChange } from '../../Operate/utils'
 import Table from '../../Table/Table'
 import BiddingSearchFields from './BiddingSearchFields'
 import PackDetail from './PackDetail'
+import AddWishButton from '../../../userpages/UserSales/_components/AddWishButton'
+import { PROD_COL_NAME } from '../../../constants/user/constantKey'
 
 const Bidding = () => {
+	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
 	const auth = useAtomValue(authAtom)
 	const nowAuction = useCheckAuction() // 현재 경매 여부 체크
 
@@ -139,10 +143,10 @@ const Bidding = () => {
 				...prevFinalInput,
 				customerDestinationUid: destiObject && destiObject.uid,
 			}))
-			setValues((p) => ({
-				...p,
-				customerDestinationUid: destiObject && destiObject.uid,
-			}))
+			// setValues((p) => ({
+			// 	...p,
+			// 	customerDestinationUid: destiObject && destiObject.uid,
+			// }))
 			setDestiObject(destiObject)
 		})
 
@@ -176,7 +180,11 @@ const Bidding = () => {
 			return item
 		})
 
-		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+		setOridata((prevData) => ({
+			...prevData,
+			list: updatedResData,
+		}))
 	}
 
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
@@ -205,19 +213,23 @@ const Bidding = () => {
 	const filteredDestiData = initDestiData?.filter((item) => item.represent === 1)
 	const firstDestiData = filteredDestiData?.[0]
 
-	const restrictStartPriceData = resData?.map((item) => ({
-		...item,
-		auctionStartPrice: null,
-	}))
+	const restrictStartPriceData = {
+		...originData,
+		list: originData?.list?.map((item) => ({
+			...item,
+			auctionStartPrice: null,
+		})),
+	}
 
 	useEffect(() => {
-		let getData = auth?.statusList?.auctionStatus === '시작가 제한' ? restrictStartPriceData : resData
+		let restrictOriginData =
+			auth?.statusList?.auctionStatus === '시작가 제한' && aucCheck === 'START' ? restrictStartPriceData : originData
 		const filteredAucNum = resData && resData.map((x) => x['auctionNumber']) // 경매 번호 get
 		const checkAgreeAucNum = filteredAucNum && filteredAucNum[0] // 경매 번호 1개 추출
 		if (!isSuccess && !resData) return
-		if (Array.isArray(getData)) {
+		if (Array.isArray(originData?.list)) {
 			if (live) {
-				setOridata(originData)
+				setOridata(restrictOriginData)
 			}
 			setTablePagination(resPagination)
 			setRealAucNum(checkAgreeAucNum)
@@ -241,6 +253,7 @@ const Bidding = () => {
 
 	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
 
+	// 목적지 관련 rows 빈 값일 시 대표 목적지 자동 Mapping
 	useEffect(() => {
 		if (resData) {
 			const updatedResData = resData?.map((item) => {
@@ -251,19 +264,22 @@ const Bidding = () => {
 					!item.customerDestinationAddress ||
 					!item.customerDestinationPhone
 				) {
-					item.destinationCode = destiObject?.destinationCode
-					item.destinationName = destiObject?.destinationName
-					item.customerDestinationName = destiObject?.customerDestinationName
-					item.customerDestinationAddress = destiObject?.address
-					item.customerDestinationPhone = destiObject?.phone
+					item.destinationCode = firstDestiData?.destinationCode
+					item.destinationName = firstDestiData?.destinationName
+					item.customerDestinationName = firstDestiData?.customerDestinationName
+					item.customerDestinationAddress = firstDestiData?.address
+					item.customerDestinationPhone = firstDestiData?.phone
 				}
 
 				return item
 			})
 
-			setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+			// setOridata((prevData) => ({
+			// 	...prevData,
+			// 	list: updatedResData,
+			// }))
 		}
-	}, [destiObject])
+	}, [firstDestiData, resData, destiObject])
 
 	//
 	useEffect(() => {
@@ -289,6 +305,8 @@ const Bidding = () => {
 					biddingPrice:
 						item['현재 최고 가격'] === 0
 							? item['시작가'] + (finalInput?.biddingPrice || 1)
+							: item['현재 최고 가격'] >= 1 && item['현재 최고 가격'] <= item['나의 최고 응찰 가격']
+							? item['나의 최고 응찰 가격'] + (finalInput?.biddingPrice || 1)
 							: item['현재 최고 가격'] + (finalInput?.biddingPrice || 1),
 					customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 				}
@@ -298,6 +316,8 @@ const Bidding = () => {
 					biddingPrice:
 						item['현재 최고 가격'] === 0
 							? item['시작가'] + (finalInput?.biddingPrice || 1)
+							: item['현재 최고 가격'] >= 1 && item['현재 최고 가격'] <= item['나의 최고 응찰 가격']
+							? item['나의 최고 응찰 가격'] + (finalInput?.biddingPrice || 1)
 							: item['현재 최고 가격'] + (finalInput?.biddingPrice || 1),
 					customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 				}
@@ -425,27 +445,27 @@ const Bidding = () => {
 		})
 	}
 
-	const [values, setValues] = useState({})
+	// const [values, setValues] = useState({})
 	// const [valueDesti, setValueDesti] = useState()
 
-	const onCellValueChanged = (params) => {
-		const p = params.data
+	// const onCellValueChanged = (params) => {
+	// 	const p = params.data
 
-		setValues((prevValues) => ({
-			...prevValues,
-			biddingPrice: p['응찰가'],
-			productUid: p['제품 고유 번호'],
-		}))
-		// setValueDesti(p['경매 번호'])
-	}
+	// 	setValues((prevValues) => ({
+	// 		...prevValues,
+	// 		biddingPrice: p['응찰가'],
+	// 		productUid: p['제품 고유 번호'],
+	// 	}))
+	// 	// setValueDesti(p['경매 번호'])
+	// }
 
-	useEffect(() => {
-		setWinningCreateData((prev) => ({
-			...prev,
-			biddingList: [{ ...values }],
-			auctionNumber: auctionNumber,
-		}))
-	}, [values])
+	// useEffect(() => {
+	// 	setWinningCreateData((prev) => ({
+	// 		...prev,
+	// 		biddingList: [{ ...values }],
+	// 		auctionNumber: auctionNumber,
+	// 	}))
+	// }, [values])
 
 	//일괄 경매 응찰 적용 onClick hanlder
 	const unitPriceBatchOnClick = () => {
@@ -464,7 +484,7 @@ const Bidding = () => {
 		}
 
 		simpleAlert('적용 되었습니다.')
-		const updatedResData = resData.map((item) => {
+		const updatedResData = oriData?.list?.map((item) => {
 			if (param?.type === '단일')
 				if (uids.includes(item.productNumber)) {
 					item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
@@ -476,6 +496,8 @@ const Bidding = () => {
 					item.memberBiddingPrice =
 						item.biddingPrice === 0
 							? item.auctionStartPrice + winningCreateInput?.biddingPrice
+							: item.biddingPrice >= 1 && item.biddingPrice <= item.memberBiddingPrice
+							? item.memberBestBiddingPrice + winningCreateInput.biddingPrice
 							: item.biddingPrice + winningCreateInput?.biddingPrice
 				}
 			if (param?.type === '패키지')
@@ -489,13 +511,20 @@ const Bidding = () => {
 					item.memberBiddingPrice =
 						item.biddingPrice === 0
 							? item.auctionStartPrice + winningCreateInput?.biddingPrice
+							: item.biddingPrice >= 1 && item.biddingPrice <= item.memberBiddingPrice
+							? item.memberBestBiddingPrice + winningCreateInput.biddingPrice
 							: item.biddingPrice + winningCreateInput?.biddingPrice
 				}
 			return item
 		})
 
 		// 변경된 데이터로 state 업데이트
-		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+
+		setOridata((prevData) => ({
+			...prevData,
+			list: updatedResData,
+		}))
 	}
 
 	console.log('checkGetAgreement', checkGetAgreement)
@@ -529,6 +558,8 @@ const Bidding = () => {
 	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
 		weightKey: '중량',
 	})
+
+	console.log('PROD_COL_NAME', PROD_COL_NAME)
 
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: AuctionBiddingFields,
@@ -580,7 +611,8 @@ const Bidding = () => {
 						<>
 							<div style={{ display: 'flex', gap: '10px' }}>
 								<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
-								<Excel getRow={getRow} />
+								<Excel getRow={tableRowData} />
+								{/* <AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} /> */}
 							</div>
 						</>
 					)}
@@ -600,15 +632,27 @@ const Bidding = () => {
 								}}
 							>
 								<p>목적지</p>
-								<CustomInput placeholder="h50" width={60} height={32} defaultValue={destiObject?.code} readOnly />
+								<CustomInput
+									placeholder="h50"
+									width={60}
+									height={32}
+									value={destiObject && destiObject?.code}
+									readOnly
+								/>
 								<CustomInput
 									placeholder="목적지 명"
 									width={120}
 									height={32}
-									defaultValue={destiObject?.destinationName}
+									value={destiObject && destiObject?.destinationName}
 									readOnly
 								/>
-								<CustomInput placeholder="도착지 연락처" defaultValue={destiObject?.phone} width={120} height={32} />
+								<CustomInput
+									placeholder="도착지 연락처"
+									value={destiObject && destiObject?.phone}
+									width={120}
+									height={32}
+									readOnly
+								/>
 								<TWhiteBtn
 									style={{ width: '50px' }}
 									height={30}
@@ -657,11 +701,15 @@ const Bidding = () => {
 				</TCSubContainer>
 
 				<Table
-					getCol={param?.type === '단일' ? AuctionBiddingFieldsCols : AuctionPackageBiddingFieldsCols}
+					getCol={
+						param?.type === '단일'
+							? AuctionBiddingFieldsCols(checkedArrayState)
+							: AuctionPackageBiddingFieldsCols(checkedArrayState)
+					}
 					getRow={tableRowData}
 					tablePagination={tablePagination}
 					onPageChange={onPageChange}
-					changeFn={onCellValueChanged}
+					// changeFn={onCellValueChanged}
 				/>
 			</TableContianer>
 			{destinationPopUp && (
