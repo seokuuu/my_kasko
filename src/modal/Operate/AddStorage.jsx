@@ -2,12 +2,13 @@ import { useSetAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { BlackBtn } from '../../common/Button/Button'
-import { operateAddAtom } from '../../store/Layout/Layout'
+import { operateAddAtom, storageAddAtom } from '../../store/Layout/Layout'
 import {
 	BlueBarHeader,
 	BlueInput,
 	BlueMainDiv,
 	BlueSubContainer,
+	BlueSubDiv,
 	FadeOverlay,
 	ModalContainer,
 	WhiteCloseBtn,
@@ -15,7 +16,7 @@ import {
 
 /**
  * @description
- * 사용처 : 제품군 추가
+ * 사용처 : 창고 추가
  * @param title 모달 타이틀(헤더 텍스트)
  * @param contentTitle 내용 라벨
  * @param register 버튼 이벤트 핸들러
@@ -23,12 +24,11 @@ import {
  * @param closeHandler 모달 닫을 시 부모 컴포넌트에서 추가적으로 해줘야하는 핸들러
 
  */
-const AddProduct = ({ title, contentTitle, deliveryHandler, register, initValue, closeHandler }) => {
-	const setModal = useSetAtom(operateAddAtom)
+const AddStorage = ({ title, deliveryHandler, register, initValue, closeHandler }) => {
+	const setModal = useSetAtom(storageAddAtom)
 
 	// 인풋
 	const [value, setValue] = useState('')
-	console.log('value :', value)
 	// 모달 닫기
 	function closeModal() {
 		setValue('')
@@ -50,7 +50,6 @@ const AddProduct = ({ title, contentTitle, deliveryHandler, register, initValue,
 		return () => setValue('')
 	}, [])
 
-	console.log('value :', value)
 	return (
 		<>
 			<FadeOverlay />
@@ -63,11 +62,38 @@ const AddProduct = ({ title, contentTitle, deliveryHandler, register, initValue,
 				</BlueBarHeader>
 
 				<BlueSubContainer>
-					<BlueMainDiv
-						style={{ height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '50px' }}
-					>
-						<h1>{contentTitle}</h1>
-						<BlueInput placeholder="" value={value} onChange={(e) => setValue(e.target.value)} />
+					<BlueMainDiv>
+						<BlueSubDiv
+							style={{
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'space-between',
+								gap: '50px',
+							}}
+						>
+							<h1>창고명 입력</h1>
+							<BlueInput
+								placeholder=""
+								value={value.storage}
+								onChange={(e) => setValue((prev) => ({ ...prev, storage: e.target.value }))}
+							/>
+						</BlueSubDiv>
+						<BlueSubDiv
+							bor
+							style={{
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'space-between',
+								gap: '50px',
+							}}
+						>
+							<h1>코드 입력</h1>
+							<BlueInput
+								placeholder=""
+								value={value.code}
+								onChange={(e) => setValue((prev) => ({ ...prev, code: e.target.value }))}
+							/>
+						</BlueSubDiv>
 					</BlueMainDiv>
 				</BlueSubContainer>
 				<BtnContainer>
@@ -80,7 +106,7 @@ const AddProduct = ({ title, contentTitle, deliveryHandler, register, initValue,
 	)
 }
 
-export default AddProduct
+export default AddStorage
 
 const BtnContainer = styled.div`
 	display: flex;
