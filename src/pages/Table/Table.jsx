@@ -253,9 +253,44 @@ const Table = ({
 		// console.log('Double clicked row UID: ', event.data)
 	}
 
+	const throttle = (func, limit) => {
+		let lastFunc
+		let lastRan
+		return function () {
+			const context = this
+			const args = arguments
+			if (!lastRan) {
+				func.apply(context, args)
+				lastRan = Date.now()
+			} else {
+				clearTimeout(lastFunc)
+				lastFunc = setTimeout(function () {
+					if (Date.now() - lastRan >= limit) {
+						func.apply(context, args)
+						lastRan = Date.now()
+					}
+				}, limit - (Date.now() - lastRan))
+			}
+		}
+	}
+
 	// Grid api 설정확인
 	const onGridReady = (params) => {
-		setGridApi(params.api)
+		const agGridApi = params.api
+		setGridApi(agGridApi)
+
+		const throttledAutoSize = throttle(() => {
+			params.columnApi.autoSizeAllColumns(false)
+		}, 500)
+
+		agGridApi.addEventListener('bodyScroll', throttledAutoSize)
+	}
+
+	const onFirstDataRendered = (params) => {
+		const columnApi = params.columnApi
+		if (columnApi) {
+			columnApi.autoSizeAllColumns(false)
+		}
 	}
 
 	// 체크했을때 jotai 전역상태값 설정
@@ -431,6 +466,7 @@ const Table = ({
 					<AgGridReact
 						// {...gridOptions}
 						onGridReady={effectGridReady}
+						onFirstDataRendered={onFirstDataRendered}
 						columnDefs={columnDefs}
 						rowData={rowData}
 						defaultColDef={defaultColDef}
