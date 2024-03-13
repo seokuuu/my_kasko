@@ -27,6 +27,7 @@ import {
 	selectedRowsAtom2,
 } from '../../store/Layout/Layout'
 import './TableUi.css'
+import { customNumberFormatter } from '../../utils/utils'
 // import TableStyle from './Table.module.css'
 
 // import { get } from 'lodash'
@@ -288,7 +289,19 @@ const Table = ({
 
 	const onFirstDataRendered = (params) => {
 		const columnApi = params.columnApi
+
 		if (columnApi) {
+			const allColumns = columnApi.getAllColumns()
+			console.log(allColumns)
+			if (allColumns) {
+				const excludeIds = ['경매 번호', '제품 번호']
+				allColumns.forEach((column) => {
+					if (!excludeIds.includes(column.colId)) {
+						column.getColDef().valueFormatter = customNumberFormatter
+					}
+				})
+			}
+
 			columnApi.autoSizeAllColumns(false)
 		}
 	}
