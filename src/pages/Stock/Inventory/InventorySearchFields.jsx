@@ -58,19 +58,6 @@ const InventorySearchFields = ({
 							/>
 						</PWRight>
 					</PartWrap>
-					{/* 매입처 */}
-					<PartWrap>
-						<h6>매입처</h6>
-						<PWRight>
-							<MainSelect
-								options={supplierList}
-								defaultValue={supplierList[0]}
-								value={search.supplier}
-								name="supplier"
-								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
-							/>
-						</PWRight>
-					</PartWrap>
 					{/* 규격약호 */}
 					<PartWrap>
 						<h6>규격 약호</h6>
@@ -186,16 +173,6 @@ const InventorySearchFields = ({
 								onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
 							/>
 						</PWRight>
-						{/* 제조사 */}
-						<PWRight>
-							<MainSelect
-								options={makerList}
-								defaultValue={makerList[0]}
-								value={search.maker}
-								name="maker"
-								onChange={(e) => commonDropdownButtonHandler(e, 'maker')}
-							/>
-						</PWRight>
 						{/* 재고 상태 */}
 						<PWRight>
 							<MainSelect
@@ -225,6 +202,21 @@ const InventorySearchFields = ({
 								name="preferThickness"
 								onChange={(e) => commonDropdownButtonHandler(e, 'preferThickness')}
 							/>
+						</PWRight>
+					</PartWrap>
+				</RowWrap>
+
+				<RowWrap>
+					<PartWrap first>
+						<h6>매입처</h6>
+						<PWRight>
+							<Input name="supplier" value={search.supplier} onChange={commonNumInputHandler} />
+						</PWRight>
+					</PartWrap>
+					<PartWrap>
+						<h6>제조사</h6>
+						<PWRight>
+							<Input name="maker" value={search.maker} onChange={commonNumInputHandler} />
 						</PWRight>
 					</PartWrap>
 				</RowWrap>
@@ -266,6 +258,27 @@ const InventorySearchFields = ({
 								type="number"
 								name="maxWidth"
 								value={search.maxWidth}
+								onChange={commonNumInputHandler}
+								min={0}
+							/>
+						</ExInputsWrap>
+					</PartWrap>
+					{/* 길이 */}
+					<PartWrap>
+						<h6>길이(MM)</h6>
+						<ExInputsWrap>
+							<MiniInput
+								type="number"
+								name="minLength"
+								value={search.minLength}
+								onChange={commonNumInputHandler}
+								min={0}
+							/>
+							<Tilde>~</Tilde>
+							<MiniInput
+								type="number"
+								name="maxLength"
+								value={search.maxLength}
 								onChange={commonNumInputHandler}
 								min={0}
 							/>

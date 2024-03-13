@@ -22,6 +22,7 @@ import {
 	getSingleProducts,
 	patchOutlet,
 	patchSaleCategory,
+	patchSalePriceType,
 	patchSaleType,
 	postExcelSubmitProduct,
 	postingMemoAndNote,
@@ -42,6 +43,7 @@ import useTableSelection from '../../../hooks/useTableSelection'
 import { queryClient } from '../../../api/query'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import TableV2 from '../../Table/TableV2'
+import SalsePriceType from '../../../modal/Multi/SalePriceType'
 
 const paramData = {
 	pageNum: 1,
@@ -52,7 +54,7 @@ const paramData = {
 
 const SalesProduct = () => {
 	const { simpleConfirm, simpleAlert } = useAlert()
-	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+	const [checkBoxSelect, setCheckBoxSelect] = useAtom(selectedRowsAtom)
 	const parameter = useAtomValue(changeCategoryAtom)
 	const parameter2 = useAtomValue(changeSaleTypeAtom)
 	const [isMultiModal, setIsMultiModal] = useAtom(hyunDaiMultiModal)
@@ -63,6 +65,7 @@ const SalesProduct = () => {
 	const [selectProductNumber, setSelectProductNumber] = useState([])
 	const [memo, setMemo] = useState([])
 	const [isSaleType, setIsSaleType] = useState(false)
+
 	const [uploadModal, setUploadModal] = useState(false)
 	const [errorMsg, setErrorMsg] = useState('')
 	const [excelToJson, setExcelToJson] = useState([])
@@ -72,6 +75,10 @@ const SalesProduct = () => {
 		price: 0, // 아울렛 등록 가격
 		numbers: [], // 제품번호 목록
 	})
+
+	// 판매가 유형 변경
+	const [salePriceType, setSalePriceType] = useState('일반')
+	const [isSalePriceType, setIsSalePriceType] = useState(false)
 
 	const [param, setParam] = useState(paramData)
 	const [getRow, setGetRow] = useState('')
@@ -87,12 +94,13 @@ const SalesProduct = () => {
 	})
 
 	// 선택 항목
-	const { selectedWeightStr, selectedCountStr } = useTableSelection({
+	const { selectedWeightStr, selectedCountStr, selectedData, hasSelected } = useTableSelection({
 		weightKey: '중량',
 	})
 
 	const { mutate } = useMutationQuery('change-category', patchSaleCategory)
 	const { mutate: changeSaleType } = useMutationQuery('change-saleType', patchSaleType)
+	const { mutate: changeSalePriceType } = useMutationQuery('change-sale-price_type', patchSalePriceType)
 	const { mutate: changeOutlet } = useMutationQuery('change-outlet', patchOutlet)
 	const { mutate: deletePr } = useMutationQuery('delete-Product', deleteProduct)
 	const { mutate: memoAndNote } = useMutationQuery('memo-note', postingMemoAndNote)
@@ -125,6 +133,7 @@ const SalesProduct = () => {
 			onSuccess: () => {
 				simpleAlert('저장 되었습니다.', () => {
 					setSelectProductNumber([])
+					setCheckBoxSelect([])
 					queryClient.invalidateQueries('product-list')
 				})
 			},
@@ -141,6 +150,7 @@ const SalesProduct = () => {
 				simpleAlert('저장되었습니다.', () => {
 					setIsMultiModal(false)
 					setSelectProductNumber([])
+					setCheckBoxSelect([])
 					queryClient.invalidateQueries('product-list')
 				})
 			},
@@ -160,6 +170,7 @@ const SalesProduct = () => {
 				simpleAlert('변경되었습니다.', () => {
 					setIsSaleType(false)
 					setSelectProductNumber([])
+					setCheckBoxSelect([])
 					queryClient.invalidateQueries('product-list')
 					queryClient.invalidateQueries('getSingleProducts')
 				})
@@ -168,6 +179,34 @@ const SalesProduct = () => {
 				setErrorMsg(e?.data?.message || '적용 실패하였습니다.')
 				simpleAlert(e?.data?.message || '적용 실패하였습니다.', () => {
 					setIsSaleType(false)
+				})
+			},
+		})
+	}
+
+	// 판매가 유형
+	const handleChangeSalePriceType = () => {
+		if (!hasSelected) {
+			return simpleAlert('변경할 제품을 선택해 주세요.')
+		}
+		const numbers = selectedData?.map((item) => item['제품 번호'])
+		const body = { salePriceType, numbers }
+		changeSalePriceType(body, {
+			onSuccess: () => {
+				simpleAlert('변경되었습니다.', () => {
+					setIsSalePriceType(false)
+					setSelectProductNumber([])
+					setCheckBoxSelect([])
+					setSalePriceType('일반')
+					queryClient.invalidateQueries('product-list')
+					queryClient.invalidateQueries('getSingleProducts')
+				})
+			},
+			onError: (e) => {
+				setErrorMsg(e?.data?.message || '적용 실패하였습니다.')
+				simpleAlert(e?.data?.message || '적용 실패하였습니다.', () => {
+					setIsSalePriceType(false)
+					setCheckBoxSelect([])
 				})
 			},
 		})
@@ -183,6 +222,7 @@ const SalesProduct = () => {
 					onSuccess: () => {
 						simpleAlert('변경되었습니다.')
 						setSelectProductNumber([])
+						setCheckBoxSelect([])
 						queryClient.invalidateQueries('product-list')
 					},
 					onError: (e) => {
@@ -198,6 +238,7 @@ const SalesProduct = () => {
 			simpleConfirm('정말로 삭제하시겠습니까?', () => {
 				deletePr(selectProductNumber?.join(','), {
 					onSuccess: () => {
+						setCheckBoxSelect([])
 						queryClient.invalidateQueries('product-list')
 					},
 					onError: (e) => {
@@ -344,6 +385,16 @@ const SalesProduct = () => {
 							>
 								판매 유형 변경
 							</WhiteBlackBtn>
+							<WhiteBlackBtn
+								onClick={() => {
+									if (checkBoxSelect == null) simpleAlert('제품을 선택해 주세요.')
+									else {
+										setIsSalePriceType(true)
+									}
+								}}
+							>
+								판매가 유형 변경
+							</WhiteBlackBtn>
 						</div>
 					</TCSubContainer>
 					<TableV2
@@ -399,6 +450,14 @@ const SalesProduct = () => {
 					errMsg={errorMsg}
 					saveFn={handlechangeSaleType}
 					productNumbers={selectProductNumber}
+				/>
+			)}
+			{isSalePriceType && (
+				<SalsePriceType
+					closeFn={() => setIsSalePriceType(false)}
+					saveFn={handleChangeSalePriceType}
+					data={salePriceType}
+					setData={setSalePriceType}
 				/>
 			)}
 			{uploadModal && (

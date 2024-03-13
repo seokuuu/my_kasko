@@ -10,6 +10,7 @@ export const urls = {
 	original: '/single-product/original',
 	package: 'package-product',
 	changeSaleType: 'single-product/sale-type',
+	changeSalePriceType: 'single-product/sale-price-type',
 	changeOutlet: 'single-product/outlet',
 	packageProducts: '/package-product/products',
 	recommend: '/single-product/best-order',
@@ -72,6 +73,10 @@ export async function patchOutlet(data) {
 }
 export async function patchSaleType(data) {
 	return await client.patch(`${urls.changeSaleType}`, data)
+}
+
+export async function patchSalePriceType(data) {
+	return await client.patch(`${urls.changeSalePriceType}`, data)
 }
 
 export async function gethyunDaiOriginal(data) {
