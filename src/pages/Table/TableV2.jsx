@@ -24,6 +24,7 @@ import {
 	tableShowColumnAtom,
 } from '../../store/Table/Table'
 import './TableUi.css'
+import { customNumberFormatter } from '../../utils/utils'
 
 /**
  * AG-GRID settings 함수
@@ -260,6 +261,16 @@ const TableV2 = ({
 	const onFirstDataRendered = (params) => {
 		const columnApi = params.columnApi
 		if (columnApi) {
+			const allColumns = columnApi.getAllColumns()
+			if (allColumns) {
+				const excludeIds = ['경매 번호', '제품 번호']
+				allColumns.forEach((column) => {
+					if (!excludeIds.includes(column.colId)) {
+						column.getColDef().valueFormatter = customNumberFormatter
+					}
+				})
+			}
+
 			columnApi.autoSizeAllColumns(false)
 		}
 	}
