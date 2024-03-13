@@ -5,11 +5,14 @@ import FlipClockCountdown from '@leenguyen/react-flip-clock-countdown'
 import '@leenguyen/react-flip-clock-countdown/dist/index.css'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import { useAtom } from 'jotai'
+import { auctionStartAtom } from '../../store/Layout/Layout'
 
 const Countdown = () => {
 	const navigate = useNavigate()
 	const { pathname } = useLocation()
 	const [data, setData] = useState(null)
+	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom)
 
 	const getCountdownData = async () => {
 		try {
@@ -35,10 +38,16 @@ const Countdown = () => {
 			type: responseData?.type,
 			date: moment(responseData?.date).toDate().getTime(),
 		})
+		setAucCheck(responseData?.type)
 	}
+
+	console.log('isAuction', data?.type)
+	// 경매 중에는 END
+	// 경매 끝나고 다음 경매떄까진 START
 
 	const onTimeUp = () => {
 		const isAuction = data?.type
+
 		const auctionPages = ['/auction/bidding', '/userpage/auctionsingle', '/userpage/auctionpackage']
 		if (isAuction && auctionPages.includes(pathname)) {
 			window.location.reload()
