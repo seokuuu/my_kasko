@@ -74,6 +74,11 @@ export const AdminOrderManageFieldsCols = (toggleModal) => [
 	},
 	{
 		...commonStyles,
+		field: '입금 확인일',
+		minWidth: 107,
+	},
+	{
+		...commonStyles,
 		field: '고객사명',
 		minWidth: 110,
 	},
@@ -381,6 +386,7 @@ export const DetailOrderFieldsManage = {
 	'최종 수정일': 'updateDate',
 	'주문 상태': 'status',
 	'확정 전송일': 'sendDate',
+	'입금 확인일': 'depositDate',
 	메모: 'memo',
 	비고: 'note',
 	'입고 상태': 'receiptStatus',

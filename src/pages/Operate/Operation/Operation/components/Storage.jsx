@@ -14,11 +14,17 @@ import { add_element_field } from '../../../../../lib/tableHelpers'
 import { TableContianer } from '../../../../../modal/External/ExternalFilter'
 import AddProduct from '../../../../../modal/Operate/AddProduct'
 import useAlert from '../../../../../store/Alert/useAlert'
-import { btnCellUidAtom, operateAddAtom } from '../../../../../store/Layout/Layout'
+import { btnCellUidAtom, operateAddAtom, storageAddAtom } from '../../../../../store/Layout/Layout'
 import Table from '../../../../Table/Table'
 import CommonTableHeader from '../../../UI/CommonTableHeader'
 import { commonListSearchInitValue } from '../../../constants'
+import AddStorage from '../../../../../modal/Operate/AddStorage'
 
+const params = {
+	uid: '',
+	storage: '',
+	code: '',
+}
 /**
  * @description
  * 창고 관리
@@ -48,7 +54,7 @@ const Storage = () => {
 	// 테이블에서 선택된 값,선택된 데이터 갯수
 	const { selectedData, selectedCount } = useTableSelection()
 	// 모달
-	const [modal, setModal] = useAtom(operateAddAtom)
+	const [modal, setModal] = useAtom(storageAddAtom)
 	// 팝업 모달 여닫이 여부 & 팝업 타입 설정(보내는 값에 따라 팝업 내용이 달라짐.)
 	const { simpleConfirm, simpleAlert } = useAlert()
 
@@ -72,14 +78,15 @@ const Storage = () => {
 
 	// 등록
 	function productRegister() {
-		register({ storage, address: '' })
+		console.log('storage', storage)
+		register(storage)
 		setStorage('')
 		setModal(false)
 	}
 
 	// 수정
 	function productUpdate() {
-		update({ uid: detailsData.uid, storage, address: '' })
+		update(storage)
 		setStorage('')
 		setModal(false)
 		setUid('')
@@ -131,10 +138,9 @@ const Storage = () => {
 				loading={isLoading}
 			/>
 			{modal && (
-				<AddProduct
-					initValue={detailsData && Boolean(uid) ? detailsData.storage : ''}
+				<AddStorage
+					initValue={detailsData && Boolean(uid) ? detailsData : params}
 					title={detailsData ? '창고 수정' : '창고 추가'}
-					contentTitle={'창고명 입력'}
 					deliveryHandler={(v) => setStorage(v)}
 					register={uid ? productUpdate : productRegister}
 					// 등록과 수정을 구분하기 위해 => 초기화 해주지 않으면 등록을 눌렀을 때, detailsId 값으로 인해 수정이 되는 경우가 있을 수 있습니다.
