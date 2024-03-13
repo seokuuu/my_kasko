@@ -54,12 +54,13 @@ export function useProductRangeRegisterMutation() {
 			return client.post(urls, params)
 		},
 		onSuccess() {
+			simpleAlert('등록이 완료 되었습니다.')
 			queryClient.invalidateQueries({
 				queryKey: PRODUCT_RANGE_KEYS.getProductRangeList,
 			})
 		},
-		onError() {
-			simpleAlert('등록에 실패하였습니다.')
+		onError(e) {
+			simpleAlert(e?.data?.message || '등록에 실패하였습니다.')
 		},
 	})
 }
@@ -74,6 +75,7 @@ export function useProductRangeUpdateMutation() {
 			return client.patch(urls, params)
 		},
 		onSuccess() {
+			simpleAlert('수정이 완료 되었습니다.')
 			queryClient.invalidateQueries({
 				queryKey: PRODUCT_RANGE_KEYS.getProductRangeList,
 			})
@@ -81,8 +83,8 @@ export function useProductRangeUpdateMutation() {
 				queryKey: PRODUCT_RANGE_KEYS.getProductRange,
 			})
 		},
-		onError() {
-			simpleAlert('수정에 실패하였습니다.')
+		onError(e) {
+			simpleAlert(e?.data?.message || '수정에 실패하였습니다.')
 		},
 	})
 }
