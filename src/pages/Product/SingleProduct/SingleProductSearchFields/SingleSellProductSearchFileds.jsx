@@ -73,17 +73,10 @@ const SingleSellProductSearchFields = ({
 							/>
 						</PWRight>
 					</PartWrap>
-					{/* 매입처 */}
 					<PartWrap>
 						<h6>매입처</h6>
 						<PWRight>
-							<MainSelect
-								options={supplierList}
-								defaultValue={supplierList[0]}
-								value={search.supplier}
-								name="supplier"
-								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
-							/>
+							<Input name="supplier" value={search.supplier} onChange={commonNumInputHandler} />
 						</PWRight>
 					</PartWrap>
 				</RowWrap>
@@ -101,6 +94,12 @@ const SingleSellProductSearchFields = ({
 							찾기
 						</GreyBtn>
 					</PartWrap>
+					<PartWrap first>
+						<h6>제조사</h6>
+						<PWRight>
+							<Input name="maker" value={search.maker} onChange={commonNumInputHandler} />
+						</PWRight>
+					</PartWrap>
 				</RowWrap>
 				<RowWrap>
 					{/* 구분 */}
@@ -114,16 +113,6 @@ const SingleSellProductSearchFields = ({
 								value={search.spart}
 								name="spart"
 								onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
-							/>
-						</PWRight>
-						{/* 제조사 */}
-						<PWRight>
-							<MainSelect
-								options={makerList}
-								defaultValue={makerList[0]}
-								value={search.maker}
-								name="maker"
-								onChange={(e) => commonDropdownButtonHandler(e, 'maker')}
 							/>
 						</PWRight>
 						{/* 재고 상태 */}
@@ -214,18 +203,23 @@ const SingleSellProductSearchFields = ({
 							initOptions={[
 								{
 									checked: false,
+									text: '일반',
+									value: '일반',
+								},
+								{
+									checked: false,
 									text: '특가',
 									value: '특가',
 								},
 								{
 									checked: false,
-									text: '일반',
-									value: '일반',
+									text: '특판',
+									value: '특판',
 								},
 							]}
 							setState={setSearch}
 							stateKey="salePriceTypeList"
-							stateType="object"
+							stateType={'object'}
 						/>
 					</PartWrap>
 				</RowWrap>
@@ -300,7 +294,7 @@ const SingleSellProductSearchFields = ({
 					<PartWrap first>
 						<h6>유찰 횟수</h6>
 						<ExInputsWrap>
-							<Input
+							<MiniInput
 								type="number"
 								name="minFailCount"
 								value={search.minFailCount}
@@ -308,7 +302,7 @@ const SingleSellProductSearchFields = ({
 								min={0}
 							/>
 							<Tilde>~</Tilde>
-							<Input
+							<MiniInput
 								type="number"
 								name="maxFailCount"
 								value={search.maxFailCount}

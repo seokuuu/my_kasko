@@ -52,6 +52,7 @@ const SingleProduct = () => {
 	const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
 		tableField: singleDispatchFields,
 		serverData: filterData,
+		best: true,
 	})
 
 	// 선택 항목

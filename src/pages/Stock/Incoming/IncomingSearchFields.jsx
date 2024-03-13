@@ -59,19 +59,6 @@ const IncomingSearchFields = ({
 							/>
 						</PWRight>
 					</PartWrap>
-					{/* 매입처 */}
-					<PartWrap>
-						<h6>매입처</h6>
-						<PWRight>
-							<MainSelect
-								options={supplierList}
-								defaultValue={supplierList[0]}
-								value={search.supplier}
-								name="supplier"
-								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
-							/>
-						</PWRight>
-					</PartWrap>
 					{/* 규격약호 */}
 					<PartWrap>
 						<h6>규격 약호</h6>
@@ -92,16 +79,6 @@ const IncomingSearchFields = ({
 					{/* 구분 */}
 					<PartWrap first>
 						<h6>구분</h6>
-						{/* 제조사 */}
-						<PWRight>
-							<MainSelect
-								options={makerList}
-								defaultValue={makerList[0]}
-								value={search.maker}
-								name="maker"
-								onChange={(e) => commonDropdownButtonHandler(e, 'maker')}
-							/>
-						</PWRight>
 						{/* 제품군 */}
 						<PWRight>
 							<MainSelect
@@ -141,6 +118,20 @@ const IncomingSearchFields = ({
 								name="preferThickness"
 								onChange={(e) => commonDropdownButtonHandler(e, 'preferThickness')}
 							/>
+						</PWRight>
+					</PartWrap>
+				</RowWrap>
+				<RowWrap>
+					<PartWrap first>
+						<h6>매입처</h6>
+						<PWRight>
+							<Input name="supplier" value={search.supplier} onChange={commonNumInputHandler} />
+						</PWRight>
+					</PartWrap>
+					<PartWrap>
+						<h6>제조사</h6>
+						<PWRight>
+							<Input name="maker" value={search.maker} onChange={commonNumInputHandler} />
 						</PWRight>
 					</PartWrap>
 				</RowWrap>
