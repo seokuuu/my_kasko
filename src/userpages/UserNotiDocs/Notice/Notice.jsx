@@ -37,11 +37,9 @@ const Notice = () => {
 	const pagination = notices?.pagination
 
 	const { onPageChanage } = useTablePaginationPageChange(notices, setParam)
-	// Function to handle image click and toggle rotation
-
-	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 	const [toggleMsg, setToggleMsg] = useState('On')
+
 	const toggleBtnClick = () => {
 		setExfilterToggle((prev) => !prev)
 		if (exFilterToggle === true) {
@@ -72,7 +70,6 @@ const Notice = () => {
 							return {
 								...d,
 								작성일자: d.createDate ? moment(d.createDate).format('YYYY-MM-DD HH:mm:ss') : '-',
-								// id: Notice.length, // 순번 내림차순
 								uid: d.uid,
 								title: d.title,
 								count: d.count,
@@ -142,7 +139,6 @@ const Notice = () => {
 			<div>
 				<FilterHeader>
 					<h1>공지사항</h1>
-					{/* 토글 쓰기 */}
 					<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 				</FilterHeader>
 				{exFilterToggle && (
@@ -162,10 +158,7 @@ const Notice = () => {
 
 			<TableContianer>
 				<TCSubContainer bor>
-					<div>
-						조회 목록 ({pagination?.listCount}개 )
-						<Hidden />
-					</div>
+					<div>게시글 목록 ({pagination?.listCount}개 )</div>
 					<div style={{ gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
 					</div>

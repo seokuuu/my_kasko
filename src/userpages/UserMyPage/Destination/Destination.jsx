@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import Excel from '../../../components/TableInner/Excel'
 
@@ -6,8 +6,6 @@ import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import { btnCellUidAtom, userPageDestiEditModal } from '../../../store/Layout/Layout'
 
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
-
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -22,9 +20,16 @@ import {
 } from '../../../constants/admin/UserManage'
 import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
-import Table from '../../../pages/Table/Table'
 import useAlert from '../../../store/Alert/useAlert'
 import DestinationEdit from './DestinationEdit'
+import useTableData from '../../../hooks/useTableData'
+import TableV2 from '../../../pages/Table/TableV2'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
+
+const initData = {
+	pageNum: 1,
+	pageSize: 50,
+}
 
 const Destination = ({ setChoiceComponent }) => {
 	const { simpleAlert, simpleConfirm } = useAlert()
@@ -35,42 +40,50 @@ const Destination = ({ setChoiceComponent }) => {
 	const [switchDestiEdit, setSwtichDestiEdit] = useAtom(userPageDestiEditModal)
 
 	useEffect(() => {
-		// 컴포넌트가 언마운트될 때 switchEdit을 재설정하는 정리 함수
 		return () => {
 			setSwtichDestiEdit(false)
 		}
 	}, [])
 
-	const [getRow, setGetRow] = useState([])
-	const tableField = useRef(UserManageCustomerDestinationManageFieldsCols)
-	const getCol = tableField.current
-
-	// 리스트 옵션
-	const [request, setRequest] = useState({
-		pageNum: 1,
-		pageSize: 50,
-	})
-
-	// 리스트 API
-	const { isLoading, isError, data, isSuccess } = useReactQuery(request, destinationQueryKey.list, getDestination)
-	const [pages, setPages] = useState([])
-	const resData = data?.data?.data?.list?.map((item) => ({
-		...item,
-		represent: Boolean(item.represent) ? '대표' : '-',
-	}))
-	const pagination = data?.data?.data?.pagination
-
-	const onPageChange = (value) => {
-		setRequest((p) => ({ ...p, pageNum: Number(value) }))
-	}
+	const [rows, setRows] = useState([])
+	const [param, setParam] = useState(initData)
+	const { isLoading, data, refetch } = useReactQuery(param, destinationQueryKey.list, getDestination)
+	const [newData, setNewData] = useState([])
 
 	useEffect(() => {
-		if (!isSuccess && !resData) return
-		if (Array.isArray(resData)) {
-			setGetRow(add_element_field(resData, UserManageCustomerDestinationManageFields))
-			setPages(pagination)
+		const list = data?.list
+		if (list && Array.isArray(list)) {
+			setRows(add_element_field(list, UserManageCustomerDestinationManageFields))
+
+			setNewData({
+				...data,
+				list: data.list?.map((item) => ({
+					...item,
+					represent: item.represent ? '대표' : '-',
+				})),
+			})
 		}
 	}, [data])
+
+	const { tableRowData, paginationData, totalCount } = useTableData({
+		tableField: UserManageCustomerDestinationManageFields,
+		serverData: newData,
+	})
+
+	const onPageChange = (value) => {
+		setParam((prevParam) => ({
+			...prevParam,
+			pageNum: Number(value),
+		}))
+	}
+
+	const handleTablePageSize = (event) => {
+		setParam((prevParam) => ({
+			...prevParam,
+			pageSize: Number(event.target.value),
+			pageNum: 1,
+		}))
+	}
 
 	const openPost = () => {
 		setChoiceComponent('등록')
@@ -93,6 +106,11 @@ const Destination = ({ setChoiceComponent }) => {
 			mutation.mutate(selectedData.map((s) => s['목적지 고유 번호'])),
 		)
 	}, [selectedData])
+
+	useEffect(() => {
+		refetch()
+	}, [param])
+
 	return (
 		<>
 			{switchDestiEdit ? (
@@ -113,16 +131,12 @@ const Destination = ({ setChoiceComponent }) => {
 					<TableContianer>
 						<TCSubContainer bor>
 							<div>
-								조회 목록 (선택 <span>{selectedCount}</span> /{request.pageSize}개 )
-								<Hidden />
+								조회 목록 (선택 <span>{selectedCount}</span> /{totalCount?.toLocaleString()}개 )
+								<TableV2HiddenSection />
 							</div>
 							<div style={{ display: 'flex', gap: '10px' }}>
-								<PageDropdown
-									handleDropdown={(e) => {
-										setRequest((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))
-									}}
-								/>
-								<Excel getRow={getRow} sheetName="목적지 관리" />
+								<PageDropdown handleDropdown={handleTablePageSize} />
+								<Excel getRow={rows} sheetName="목적지 관리" />
 							</div>
 						</TCSubContainer>
 						<TCSubContainer>
@@ -135,13 +149,12 @@ const Destination = ({ setChoiceComponent }) => {
 							</div>
 						</TCSubContainer>
 
-						<Table
-							getCol={getCol}
-							getRow={getRow}
-							tablePagination={pages}
-							onPageChange={onPageChange}
-							isRowClickable={true}
+						<TableV2
+							getRow={tableRowData}
 							loading={isLoading}
+							getCol={UserManageCustomerDestinationManageFieldsCols}
+							tablePagination={paginationData}
+							onPageChange={onPageChange}
 						/>
 					</TableContianer>
 				</FilterContianer>

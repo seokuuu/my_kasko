@@ -1,48 +1,27 @@
-import PropTypes from 'prop-types'
-import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { categories, corLabels, responseToTableRowMap } from '../../../constants/user/faqTableConfig'
-import { add_element_field } from '../../../lib/tableHelpers'
+import { categories, corLabels } from '../../../constants/user/faqTableConfig'
 import {
 	FilterContianer,
 	FilterHeader,
 	SubTitle,
-	TCSubContainer,
 	TableContianer,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
-import Table from '../../../pages/Table/Table'
-import { formatDateString } from '../../../utils/utils'
+import TableV2 from '../../../pages/Table/TableV2'
+import { useNavigate } from 'react-router-dom'
 
-const FAQ = ({ faqList, faqPagination, onPageChange, handleTablePageSize, onSelectedCategory, isLoading, isError }) => {
-	const [faqListData, setFaqListData] = useState(null)
-	const [faqPaginationData, setFaqPaginationData] = useState(null)
-	const [selectedCategory, setSelectedCategory] = useState('경매')
+const FAQ = ({
+	faqList,
+	faqPagination,
+	totalCount,
+	onPageChange,
+	handleTablePageSize,
+	onSelectedCategory,
+	isLoading,
+}) => {
 	const navigate = useNavigate()
-
-	console.log('faqPagination :', faqPagination)
-
-	useEffect(() => {
-		setFaqListData(formatTableRowData(faqList))
-		setFaqPaginationData(faqPagination)
-	}, [faqList, faqPagination, selectedCategory])
-
-	const formatDate = (date) => {
-		return formatDateString(date, '/')
-	}
-
-	const formatTableRowData = (faqList) => {
-		if (!faqList || faqList.length === 0) return null
-
-		const filteredList = faqList
-			.map((e) => {
-				e.createDate = formatDate(e.createDate)
-				return e
-			})
-			.filter((faq) => faq.category === selectedCategory)
-
-		return add_element_field(filteredList, responseToTableRowMap)
-	}
+	const [selectedCategory, setSelectedCategory] = useState('경매')
 
 	const getCategoryStyle = (category) => ({
 		color: selectedCategory === category ? 'black' : 'grey',
@@ -55,13 +34,10 @@ const FAQ = ({ faqList, faqPagination, onPageChange, handleTablePageSize, onSele
 	}
 
 	const handleOnRowClicked = (row) => {
-		console.log('row =>', row)
 		const faqUid = row.data.uid
 		navigate(`/userpage/userfaq/${faqUid}`)
 	}
 
-	// 목록 갯수
-	const listCount = useMemo(() => faqPagination.listCount, [faqPagination])
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -78,35 +54,22 @@ const FAQ = ({ faqList, faqPagination, onPageChange, handleTablePageSize, onSele
 			</FilterHeader>
 			<TableContianer>
 				<TCSubContainer bor>
-					<div>게시글 목록 ({listCount}개 )</div>
+					<div>게시글 목록 ({totalCount?.toLocaleString()}개 )</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
 					</div>
 				</TCSubContainer>
-				<Table
-					getCol={corLabels}
-					getRow={faqListData}
-					isRowClickable={true}
-					handleOnRowClicked={handleOnRowClicked}
-					tablePagination={faqPaginationData}
-					onPageChange={onPageChange}
+				<TableV2
+					getRow={faqList}
 					loading={isLoading}
+					getCol={corLabels}
+					tablePagination={faqPagination}
+					onPageChange={onPageChange}
+					handleOnRowClicked={handleOnRowClicked}
 				/>
 			</TableContianer>
 		</FilterContianer>
 	)
-}
-
-FAQ.propTypes = {
-	faqList: PropTypes.arrayOf(
-		PropTypes.shape({
-			category: PropTypes.string,
-			count: PropTypes.number,
-			createDate: PropTypes.string,
-			title: PropTypes.string,
-			uid: PropTypes.number,
-		}),
-	),
 }
 
 export default FAQ

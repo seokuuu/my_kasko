@@ -422,7 +422,7 @@ const Package = ({}) => {
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: AuctionBiddingFields,
 		serverData: oriData,
-		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		// wish: { display: true, key: ['productNumber', 'packageNumber'] },
 		best: { display: true },
 	})
 	/* ==================== 관심상품 등록 end ==================== */
