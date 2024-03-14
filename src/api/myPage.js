@@ -25,8 +25,9 @@ export function postDestination(data) {
 	return client.post(urls.Destination, data)
 }
 
-export function getDestination(data) {
-	return client.get(`${urls.Destination}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
+export const getDestination = async (data) => {
+	const response = await client.get(`${urls.Destination}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
+	return response.data.data
 }
 
 export function getDetailDestination(data) {

@@ -48,7 +48,12 @@ const Countdown = () => {
 	const onTimeUp = () => {
 		const isAuction = data?.type
 
-		const auctionPages = ['/auction/bidding', '/userpage/auctionsingle', '/userpage/auctionpackage']
+		const auctionPages = [
+			'/auction/biddingsingle',
+			'/auction/biddingpackage',
+			'/userpage/auctionsingle',
+			'/userpage/auctionpackage',
+		]
 		if (isAuction && auctionPages.includes(pathname)) {
 			window.location.reload()
 		}

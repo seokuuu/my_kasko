@@ -404,10 +404,11 @@ export const AuctionBiddingFields = {
 // 단일 응찰
 export const AuctionBiddingFieldsCols = (selected) => {
 	console.log('AuctionBiddingFieldsCols selected: ', selected)
+
 	const checkboxSelection2 = (params) => {
 		// we put checkbox on the name if we are not doing grouping
 		if (selected && selected.length > 0) {
-			const selectedUid = [...new Set(selected.map((item) => item['제품 번호'].value))]
+			const selectedUid = [...new Set(selected?.map((item) => item['제품 번호']?.value))]
 
 			if (selectedUid?.includes(params.data['제품 번호'].value)) {
 				params.node.setSelected(true)
@@ -425,6 +426,7 @@ export const AuctionBiddingFieldsCols = (selected) => {
 			headerCheckboxSelection,
 			pinned: 'left',
 		},
+
 		{ ...commonStyles, field: '경매 상태', minWidth: 100 },
 		{ ...commonStyles, field: '상태', minWidth: 100 },
 		{ ...commonStyles, field: '경매 번호', minWidth: 100 },
@@ -438,6 +440,7 @@ export const AuctionBiddingFieldsCols = (selected) => {
 			valueGetter: (v) => v.data[v.column.colId]?.value || '',
 		},
 		// { ...commonStyles, field: '제품 번호', minWidth: 100 },
+
 		{ ...commonStyles, field: '프로넘 번호', minWidth: 100 },
 		{ ...commonStyles, field: '창고', minWidth: 100 },
 		{ ...commonStyles, field: '판매 유형', minWidth: 100 },

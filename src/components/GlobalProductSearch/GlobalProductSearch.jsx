@@ -12,6 +12,7 @@ import {
 import { globalProductSearchToggleAtom } from '../../store/Layout/GlobalProductSearch'
 import HeaderToggle from '../Toggle/HeaderToggle'
 import ProductSearchFields from './ProductSearchFields'
+import { noticeSearchCategoryOptions } from '../../pages/Operate/constants'
 
 const GlobalProductSearch = ({
 	// prettier-ignore
@@ -41,7 +42,7 @@ const GlobalProductSearch = ({
 			keyword: '', // 검색어 (Search keyword)
 			status: '', // 상태값 (Status)
 			statusList: [], // 상태값 목록 (Status list)
-			category: '', // 검색 카테고리 (Search category)
+			category: noticeSearchCategoryOptions[0], // 검색 카테고리 (Search category)
 			type: '', // 메뉴 타입 (Menu type)
 			startDate: '', // 시작 날짜 (Start date)
 			endDate: '', // 종료 날짜 (End date)

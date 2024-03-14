@@ -44,6 +44,7 @@ const Dispatch = () => {
 	const { refetch, data, isLoading } = useDriverListQuery(param)
 	const { mutate: onDelete } = useDriverRemoveMutation()
 
+	console.log('data', data)
 	const { tableRowData, paginationData, totalCount } = useTableData({
 		tableField: DispatchFields,
 		serverData: data,

@@ -44,7 +44,7 @@ const data = [
 		depth1: '경매 관리',
 		depth2: [
 			{ title: '경매 회차 관리', link: 'auction/round' },
-			{ title: '경매 응찰(단일/패키지)', link: 'auction/bidding' },
+			{ title: '경매 응찰(단일/패키지)', link: 'auction/biddingsingle' },
 			{ title: '경매 진행 조회', link: 'auction/progress' },
 			{ title: '경매 진행 상세 조회', link: 'auction/detailprogress' },
 			{ title: '경매 낙찰 관리', link: 'auction/winning' },
