@@ -334,7 +334,7 @@ const Hyundai = ({}) => {
 					</TCSubContainer>
 					<TableV2
 						getRow={tableRowData}
-						getCol={SingleDispatchFieldsCols}
+						getCol={SingleDispatchFieldsCols()}
 						tablePagination={paginationData}
 						onPageChange={onPageChange}
 						loading={isLoading}

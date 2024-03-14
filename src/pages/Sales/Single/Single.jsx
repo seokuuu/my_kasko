@@ -1,33 +1,27 @@
 import React, { useEffect, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import { isEqual } from 'lodash'
-import { urls, getSingleProducts, useSingleProductViewStatusUpdate } from '../../../api/SellProduct'
+import { getSingleProducts, urls, useSingleProductViewStatusUpdate } from '../../../api/SellProduct'
 import useReactQuery from '../../../hooks/useReactQuery'
 import useAlert from '../../../store/Alert/useAlert'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import SingleProductSearchFields from './SingleProductSearchFields'
 import TableV2ExcelDownloader from '../../Table/TableV2ExcelDownloader'
-import { CautionBox, CAUTION_CATEGORY } from '../../../components/CautionBox'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import SalesPackage from '../../../modal/Multi/SalesPackage'
-import Table from '../../../pages/Table/Table'
 import { BlackBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import { responseToTableRowMap, singleProductListFieldCols } from '../../../constants/admin/singleProduct'
-import { add_element_field, formatBooleanFields } from '../../../lib/tableHelpers'
-import { KilogramSum } from '../../../utils/KilogramSum'
-import { formatWeight } from '../../../utils/utils'
 import { salesPackageModal, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import {
 	FilterContianer,
 	FilterHeader,
-	TCSubContainer,
 	TableBottomWrap,
 	TableContianer,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 import useTableData from '../../../hooks/useTableData'
-import { singleDispatchFields, SingleDispatchFieldsCols } from '../../../constants/admin/Single'
 import useTableSelection from '../../../hooks/useTableSelection'
 import TableV2 from '../../Table/TableV2'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'

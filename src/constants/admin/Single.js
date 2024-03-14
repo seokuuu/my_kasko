@@ -135,11 +135,9 @@ export const SingleSalesDispatchFieldsCols = (isUpdate = false) => [
 		},
 	},
 	{ ...commonStyles, field: '순번', minWidth: 100 },
-	{ ...commonStyles, field: '고유 번호', minWidth: 100 },
-
 	{ ...commonStyles, field: '제품 번호', minWidth: 200, cellRenderer: recommendCell },
 	...Object.keys(singleDispatchFields)
-		.slice(3)
+		.slice(2)
 		.map((item) => ({
 			...commonStyles,
 			field: item,
