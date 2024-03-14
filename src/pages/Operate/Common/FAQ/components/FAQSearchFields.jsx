@@ -6,7 +6,10 @@ import { FilterLeft, Input, PartWrap, RowWrap } from '../../../../../modal/Exter
  * @description
  * FAQ 목록 검색필터입니다.
  */
-const FAQSearchFields = ({ search, setSearch, commonDropdownButtonHandler, searchOptions, s }) => {
+const FAQSearchFields = ({ search, setSearch, searchOptions, s }) => {
+	const onChange = (key, value) => {
+		setSearch((p) => ({ ...p, [key]: value }))
+	}
 	return (
 		<>
 			<FilterLeft>
@@ -15,10 +18,9 @@ const FAQSearchFields = ({ search, setSearch, commonDropdownButtonHandler, searc
 						<h6>검색</h6>
 						<MainSelect
 							options={searchOptions}
-							defaultValue={searchOptions[0]}
-							value={searchOptions[0]}
+							value={search.category}
 							onChange={(e) => {
-								commonDropdownButtonHandler(e, 'category')
+								onChange('category', e)
 							}}
 						/>
 						<Input value={search.keyword} onChange={(e) => setSearch((p) => ({ ...p, keyword: e.target.value }))} />
