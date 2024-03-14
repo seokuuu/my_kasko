@@ -16,7 +16,6 @@ var headerCheckboxSelection = function (params) {
 
 export const singleDispatchFields = {
 	순번: 'index',
-	'고유 번호': 'uid',
 	'제품 번호': 'number',
 	창고: 'storageName',
 	ProNo: 'productNoNumber',
@@ -86,6 +85,7 @@ export const singleDispatchFields = {
 	'아울렛 가격': 'outletPrice',
 	'추천 제품 여부': 'bestStatus',
 	'노출 상태': 'viewStatus',
+	'고유 번호': 'uid',
 	'최종 수정자': 'lastedUpdater',
 	'최종 수정 일자': 'updateDate',
 }
@@ -102,11 +102,9 @@ export const SingleDispatchFieldsCols = () => [
 	// 	},
 	// },
 	{ ...commonStyles, field: '순번', minWidth: 100 },
-	{ ...commonStyles, field: '고유 번호', minWidth: 100 },
-
 	{ ...commonStyles, field: '제품 번호', minWidth: 200, cellRenderer: recommendCell },
 	...Object.keys(singleDispatchFields)
-		.slice(3)
+		.slice(2)
 		.map((item) => ({
 			...commonStyles,
 			field: item,

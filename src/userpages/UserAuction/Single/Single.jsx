@@ -39,8 +39,10 @@ import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
 import AddWishButton from '../../UserSales/_components/AddWishButton'
 import UserBiddingSearchFields from './UserBiddingSearchFields'
 import { authAtom } from '../../../store/Auth/auth'
+import { auctionStartAtom } from '../../../store/Layout/Layout'
 
 const Single = ({}) => {
+	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
 	const auth = useAtomValue(authAtom) // 이거 auction.js에서 hook으로 바꾸기
 	console.log('로그인 ㅇㅇ', auth?.statusList.auctionStatus)
 	const nowAuction = useCheckAuction() // 현재 경매 여부 체크
@@ -134,7 +136,7 @@ const Single = ({}) => {
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
-	// 시작가 제한 Data
+	// 시작가 제한 Data.
 
 	// 초기 목적지 GET
 	const { data: destiData } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
@@ -143,24 +145,24 @@ const Single = ({}) => {
 	const filteredDestiData = initDestiData?.filter((item) => item.represent === 1)
 	const firstDestiData = filteredDestiData?.[0]
 
-	console.log('firstDestiData', firstDestiData)
-
-	console.log('resData', resData)
-
-	const restrictStartPriceData = resData?.map((item) => ({
-		...item,
-		auctionStartPrice: null,
-	}))
+	const restrictStartPriceData = {
+		...originData,
+		list: originData?.list?.map((item) => ({
+			...item,
+			auctionStartPrice: null,
+		})),
+	}
 
 	useEffect(() => {
-		let getData = auth?.statusList?.auctionStatus === '시작가 제한' ? restrictStartPriceData : resData
+		let restrictOriginData =
+			auth?.statusList?.auctionStatus === '시작가 제한' && aucCheck === 'START' ? restrictStartPriceData : originData
 
 		const filteredAucNum = resData && resData.map((x) => x['auctionNumber'])
 		const checkAgreeAucNum = filteredAucNum && filteredAucNum[0]
 		if (!isSuccess && !resData) return
 		if (Array.isArray(originData?.list)) {
 			if (live) {
-				setOridata(originData)
+				setOridata(restrictOriginData)
 				// setGetRow(add_element_field(getData, AuctionBiddingFields))
 			}
 			setTablePagination(resPagination)
@@ -172,9 +174,11 @@ const Single = ({}) => {
 		}
 	}, [isSuccess, resData, initDestiData])
 
+	// 111 - 1
+	// 목적지 관련 rows 빈 값일 시 대표 목적지 자동 Mapping
 	useEffect(() => {
-		if (oriData) {
-			const updatedResData = oriData?.list?.map((item) => {
+		if (resData) {
+			const updatedResData = resData?.map((item) => {
 				if (
 					!item.destinationCode ||
 					!item.destinationName ||
@@ -182,22 +186,22 @@ const Single = ({}) => {
 					!item.customerDestinationAddress ||
 					!item.customerDestinationPhone
 				) {
-					item.destinationCode = destiObject?.destinationCode
-					item.destinationName = destiObject?.destinationName
-					item.customerDestinationName = destiObject?.customerDestinationName
-					item.customerDestinationAddress = destiObject?.address
-					item.customerDestinationPhone = destiObject?.phone
+					item.destinationCode = firstDestiData?.destinationCode
+					item.destinationName = firstDestiData?.destinationName
+					item.customerDestinationName = firstDestiData?.customerDestinationName
+					item.customerDestinationAddress = firstDestiData?.address
+					item.customerDestinationPhone = firstDestiData?.phone
 				}
 
 				return item
 			})
 
-			setOridata((prevData) => ({
-				...prevData,
-				list: updatedResData,
-			}))
+			// setOridata((prevData) => ({
+			// 	...prevData,
+			// 	list: updatedResData,
+			// }))
 		}
-	}, [auctionDestination])
+	}, [firstDestiData, resData, destiObject])
 
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']
@@ -242,9 +246,11 @@ const Single = ({}) => {
 			biddingPrice:
 				item['현재 최고 가격'] === 0
 					? item['시작가'] + (finalInput?.biddingPrice || 1)
+					: item['현재 최고 가격'] >= 1 && item['현재 최고 가격'] <= item['나의 최고 응찰 가격']
+					? item['나의 최고 응찰 가격'] + (finalInput?.biddingPrice || 1)
 					: item['현재 최고 가격'] + (finalInput?.biddingPrice || 1),
+
 			customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
-			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
 		}))
 
 		// winningCreateData를 업데이트하여 productList를 갱신
@@ -252,7 +258,7 @@ const Single = ({}) => {
 			...prevData,
 			biddingList: updatedProductList,
 		}))
-	}, [checkedArrayState, finalInput, param])
+	}, [checkedArrayState, finalInput, param, destiObject])
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -331,28 +337,28 @@ const Single = ({}) => {
 		})
 	}
 
-	const [values, setValues] = useState({}) // cell input 직접 입력 값
+	// const [values, setValues] = useState({}) // cell input 직접 입력 값
 	// const [valueDesti, setValueDesti] = useState()
 
 	// 응찰가 직접 입력
-	const onCellValueChanged = (params) => {
-		const p = params.data
-		console.log('바뀌는 값 확인', p['제품 고유 번호'])
-		setValues((prevValues) => ({
-			...prevValues,
-			biddingPrice: p['응찰가'],
-			productUid: p['제품 고유 번호'],
-		}))
-		// setValueDesti(p['경매 번호'])
-	}
+	// const onCellValueChanged = (params) => {
+	// 	const p = params.data
+	// 	console.log('바뀌는 값 확인', p['제품 고유 번호'])
+	// 	setValues((prevValues) => ({
+	// 		...prevValues,
+	// 		biddingPrice: p['응찰가'],
+	// 		productUid: p['제품 고유 번호'],
+	// 	}))
+	// 	// setValueDesti(p['경매 번호'])
+	// }
 
-	useEffect(() => {
-		setWinningCreateData((prev) => ({
-			...prev,
-			biddingList: [{ ...values }],
-			auctionNumber: auctionNumber,
-		}))
-	}, [values])
+	// useEffect(() => {
+	// 	setWinningCreateData((prev) => ({
+	// 		...prev,
+	// 		biddingList: [{ ...values }],
+	// 		auctionNumber: auctionNumber,
+	// 	}))
+	// }, [values])
 
 	//  222
 	const unitPriceBatchOnClick = () => {
@@ -382,6 +388,8 @@ const Single = ({}) => {
 				item.memberBiddingPrice =
 					item.biddingPrice === 0
 						? item.auctionStartPrice + winningCreateInput?.biddingPrice
+						: item.biddingPrice >= 1 && item.biddingPrice <= item.memberBiddingPrice
+						? item.memberBestBiddingPrice + winningCreateInput.biddingPrice
 						: item.biddingPrice + winningCreateInput?.biddingPrice
 			}
 			console.log('가격 변동 확인', item.memberBiddingPrice)
@@ -423,7 +431,7 @@ const Single = ({}) => {
 	console.log('originData', originData)
 	/* ==================== 관심상품 등록 end ==================== */
 	console.log('destiObject', destiObject)
-	// 목적지 적용 버튼 handler 111
+	// 목적지 적용 버튼 handler 111 - 2
 
 	const destiOnClickHandler = () => {
 		setLive(false)
@@ -436,11 +444,11 @@ const Single = ({}) => {
 				...prevFinalInput,
 				customerDestinationUid: destiObject.uid,
 			}))
-			setValues((p) => ({
-				...p,
-				customerDestinationUid: destiObject.uid,
-			}))
-			setDestiObject(destiObject)
+			// setValues((p) => ({
+			// 	...p,
+			// 	customerDestinationUid: destiObject.uid,
+			// }))
+			// setDestiObject(destiObject)
 		})
 		const updatedResData = oriData?.list?.map((item) => {
 			if (uids.includes(item.productNumber)) {
@@ -455,7 +463,6 @@ const Single = ({}) => {
 						? item.auctionStartPrice + winningCreateInput?.biddingPrice
 						: item.biddingPrice + winningCreateInput?.biddingPrice
 			}
-
 			return item
 		})
 		setOridata((prevData) => ({
@@ -464,8 +471,6 @@ const Single = ({}) => {
 		}))
 		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
-
-	console.log('values', values)
 
 	// 응찰가 Table Cell Input
 	const handleCheckboxChange = (event, rowData) => {
@@ -605,15 +610,21 @@ const Single = ({}) => {
 									placeholder="h50"
 									width={60}
 									height={32}
-									defaultValue={destiObject?.destinationCode}
+									value={destiObject && destiObject?.destinationCode}
 									readOnly
 								/>
-								<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destiObject?.name} readOnly />
+								<CustomInput
+									placeholder="목적지명"
+									width={120}
+									height={32}
+									value={destiObject && destiObject?.name}
+									readOnly
+								/>
 								<CustomInput
 									placeholder="도착지 연락처"
 									width={120}
 									height={32}
-									defaultValue={destiObject?.phone}
+									value={destiObject && destiObject?.phone}
 									readOnly
 								/>
 								<TWhiteBtn
@@ -665,11 +676,11 @@ const Single = ({}) => {
 				</TCSubContainer>
 
 				<Table
-					getCol={getCol}
+					getCol={AuctionBiddingFieldsCols(checkedArrayState)}
 					getRow={tableRowData}
 					tablePagination={tablePagination}
 					onPageChange={onPageChange}
-					changeFn={onCellValueChanged}
+					// changeFn={onCellValueChanged}
 				/>
 			</TableContianer>
 			{destinationPopUp && (

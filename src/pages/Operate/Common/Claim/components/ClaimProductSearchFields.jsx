@@ -189,17 +189,23 @@ const ClaimProductSearchFields = ({
 							initOptions={[
 								{
 									checked: false,
+									text: '일반',
+									value: '일반',
+								},
+								{
+									checked: false,
 									text: '특가',
 									value: '특가',
 								},
 								{
 									checked: false,
-									text: '일반',
-									value: '일반',
+									text: '특판',
+									value: '특판',
 								},
 							]}
 							setState={setSearch}
 							stateKey="salePriceTypeList"
+							stateType={'object'}
 						/>
 					</PartWrap>
 				</RowWrap>
@@ -274,7 +280,7 @@ const ClaimProductSearchFields = ({
 					<PartWrap first>
 						<h6>유찰 횟수</h6>
 						<ExInputsWrap>
-							<Input
+							<MiniInput
 								type="number"
 								name="minFailCount"
 								value={search.minFailCount}
@@ -282,7 +288,7 @@ const ClaimProductSearchFields = ({
 								min={0}
 							/>
 							<Tilde>~</Tilde>
-							<Input
+							<MiniInput
 								type="number"
 								name="maxFailCount"
 								value={search.maxFailCount}

@@ -16,6 +16,7 @@ import {
 import StandardFind from '../../../modal/Multi/StandardFind'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
+import React from 'react'
 
 const SingleProductSearchFields = ({
 	// prettier-ignore
@@ -55,19 +56,7 @@ const SingleProductSearchFields = ({
 							/>
 						</PWRight>
 					</PartWrap>
-					{/* 매입처 */}
-					<PartWrap>
-						<h6>매입처</h6>
-						<PWRight>
-							<MainSelect
-								options={supplierList}
-								defaultValue={supplierList[0]}
-								value={search.supplier}
-								name="supplier"
-								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
-							/>
-						</PWRight>
-					</PartWrap>
+
 					{/* 규격약호 */}
 					<PartWrap>
 						<h6>규격 약호</h6>
@@ -83,6 +72,20 @@ const SingleProductSearchFields = ({
 						</GreyBtn>
 					</PartWrap>
 				</RowWrap>
+				<RowWrap>
+					<PartWrap first>
+						<h6>매입처</h6>
+						<PWRight>
+							<Input name="supplier" value={search.supplier} onChange={commonNumInputHandler} />
+						</PWRight>
+					</PartWrap>
+					<PartWrap>
+						<h6>제조사</h6>
+						<PWRight>
+							<Input name="maker" value={search.maker} onChange={commonNumInputHandler} />
+						</PWRight>
+					</PartWrap>
+				</RowWrap>
 				{/* 2행 */}
 				<RowWrap>
 					{/* 구분 */}
@@ -96,16 +99,6 @@ const SingleProductSearchFields = ({
 								value={search.spart}
 								name="spart"
 								onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
-							/>
-						</PWRight>
-						{/* 제조사 */}
-						<PWRight>
-							<MainSelect
-								options={makerList}
-								defaultValue={makerList[0]}
-								value={search.maker}
-								name="maker"
-								onChange={(e) => commonDropdownButtonHandler(e, 'maker')}
 							/>
 						</PWRight>
 						{/* 재고 상태 */}

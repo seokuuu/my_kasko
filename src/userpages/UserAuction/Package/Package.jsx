@@ -6,6 +6,7 @@ import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
 	auctionPackDetailModal,
 	auctionPackDetailNumAtom,
+	auctionStartAtom,
 	biddingAgreementModal,
 	selectedRowsAtom,
 	toggleAtom,
@@ -48,6 +49,7 @@ import UserBiddingSearchFields from '../Single/UserBiddingSearchFields'
 import { authAtom } from '../../../store/Auth/auth'
 
 const Package = ({}) => {
+	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
 	const auth = useAtomValue(authAtom)
 	const nowAuction = useCheckAuction()
 	const [aucDetailModal, setAucDetailModal] = useAtom(auctionPackDetailModal) // 패키지 모달
@@ -148,22 +150,23 @@ const Package = ({}) => {
 	const filteredDestiData = initDestiData?.filter((item) => item.represent === 1)
 	const firstDestiData = filteredDestiData?.[0]
 
-	console.log('firstDestiData', firstDestiData)
-
-	const restrictStartPriceData = resData?.map((item) => ({
-		...item,
-		auctionStartPrice: null,
-	}))
-
+	const restrictStartPriceData = {
+		...originData,
+		list: originData?.list?.map((item) => ({
+			...item,
+			auctionStartPrice: null,
+		})),
+	}
 	useEffect(() => {
-		let getData = auth?.statusList?.auctionStatus === '시작가 제한' ? restrictStartPriceData : resData
+		let restrictOriginData =
+			auth?.statusList?.auctionStatus === '시작가 제한' && aucCheck === 'START' ? restrictStartPriceData : originData
 		const filteredAucNum = resData && resData.map((x) => x['auctionNumber'])
 		const checkAgreeAucNum = filteredAucNum && filteredAucNum[0]
 		if (!isSuccess && !resData) return
-		if (Array.isArray(getData)) {
+		if (Array.isArray(originData?.list)) {
 			if (live) {
-				setOridata(originData)
-				setGetRow(add_element_field(getData, AuctionBiddingFields))
+				setOridata(restrictOriginData)
+				// setGetRow(add_element_field(getData, AuctionBiddingFields))
 			}
 			setTablePagination(resPagination)
 			setRealAucNum(checkAgreeAucNum)
@@ -174,9 +177,11 @@ const Package = ({}) => {
 		}
 	}, [isSuccess, resData, initDestiData])
 
+	// 목적지 관련 rows 빈 값일 시 대표 목적지 자동 Mapping
+
 	useEffect(() => {
-		if (oriData) {
-			const updatedResData = oriData?.list?.map((item) => {
+		if (resData) {
+			const updatedResData = resData?.map((item) => {
 				if (
 					!item.destinationCode ||
 					!item.destinationName ||
@@ -184,22 +189,22 @@ const Package = ({}) => {
 					!item.customerDestinationAddress ||
 					!item.customerDestinationPhone
 				) {
-					item.destinationCode = destiObject?.destinationCode
-					item.destinationName = destiObject?.destinationName
-					item.customerDestinationName = destiObject?.customerDestinationName
-					item.customerDestinationAddress = destiObject?.address
-					item.customerDestinationPhone = destiObject?.phone
+					item.destinationCode = firstDestiData?.destinationCode
+					item.destinationName = firstDestiData?.destinationName
+					item.customerDestinationName = firstDestiData?.customerDestinationName
+					item.customerDestinationAddress = firstDestiData?.address
+					item.customerDestinationPhone = firstDestiData?.phone
 				}
 
 				return item
 			})
 
-			setOridata((prevData) => ({
-				...prevData,
-				list: updatedResData,
-			}))
+			// setOridata((prevData) => ({
+			// 	...prevData,
+			// 	list: updatedResData,
+			// }))
 		}
-	}, [auctionDestination])
+	}, [firstDestiData, resData, destiObject])
 
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']
@@ -245,6 +250,8 @@ const Package = ({}) => {
 			biddingPrice:
 				item['현재 최고 가격'] === 0
 					? item['시작가'] + (finalInput?.biddingPrice || 1)
+					: item['현재 최고 가격'] >= 1 && item['현재 최고 가격'] <= item['나의 최고 응찰 가격']
+					? item['나의 최고 응찰 가격'] + (finalInput?.biddingPrice || 1)
 					: item['현재 최고 가격'] + (finalInput?.biddingPrice || 1),
 			customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
@@ -335,28 +342,28 @@ const Package = ({}) => {
 		})
 	}
 
-	const [values, setValues] = useState({})
+	// const [values, setValues] = useState({})
 	// const [valueDesti, setValueDesti] = useState()
 
 	// 응찰가 직접 입력
-	const onCellValueChanged = (params) => {
-		const p = params.data
-		console.log('바뀌는 값 확인', p['패키지 번호'])
-		setValues((prevValues) => ({
-			...prevValues,
-			biddingPrice: p['응찰가'],
-			packageNumber: p['패키지 번호'],
-		}))
-		// setValueDesti(p['경매 번호'])
-	}
+	// const onCellValueChanged = (params) => {
+	// 	const p = params.data
+	// 	console.log('바뀌는 값 확인', p['패키지 번호'])
+	// 	setValues((prevValues) => ({
+	// 		...prevValues,
+	// 		biddingPrice: p['응찰가'],
+	// 		packageNumber: p['패키지 번호'],
+	// 	}))
+	// 	// setValueDesti(p['경매 번호'])
+	// }
 
-	useEffect(() => {
-		setWinningCreateData((prev) => ({
-			...prev,
-			biddingList: [{ ...values }],
-			auctionNumber: auctionNumber,
-		}))
-	}, [values])
+	// useEffect(() => {
+	// 	setWinningCreateData((prev) => ({
+	// 		...prev,
+	// 		biddingList: [{ ...values }],
+	// 		auctionNumber: auctionNumber,
+	// 	}))
+	// }, [values])
 
 	//  222
 	const unitPriceBatchOnClick = () => {
@@ -415,7 +422,7 @@ const Package = ({}) => {
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: AuctionBiddingFields,
 		serverData: oriData,
-		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		wish: { display: true, key: [PROD_COL_NAME.productNumber, PROD_COL_NAME.packageNumber] },
 		best: { display: true },
 	})
 	/* ==================== 관심상품 등록 end ==================== */
@@ -433,10 +440,10 @@ const Package = ({}) => {
 				...prevFinalInput,
 				customerDestinationUid: destiObject.uid,
 			}))
-			setValues((p) => ({
-				...p,
-				customerDestinationUid: destiObject.uid,
-			}))
+			// setValues((p) => ({
+			// 	...p,
+			// 	customerDestinationUid: destiObject.uid,
+			// }))
 			setDestiObject(destiObject)
 		})
 
@@ -464,8 +471,6 @@ const Package = ({}) => {
 
 		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
-
-	console.log('values', values)
 
 	// 응찰가 Table Cell Input
 	const handleCheckboxChange = (event, rowData) => {
@@ -668,11 +673,11 @@ const Package = ({}) => {
 					)}
 				</TCSubContainer>
 				<Table
-					getCol={getCol}
+					getCol={AuctionPackageBiddingFieldsCols(checkedArrayState)}
 					getRow={tableRowData}
 					tablePagination={tablePagination}
 					onPageChange={onPageChange}
-					changeFn={onCellValueChanged}
+					// changeFn={onCellValueChanged}
 				/>
 			</TableContianer>
 			{destinationPopUp && (

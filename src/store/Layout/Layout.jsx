@@ -377,3 +377,6 @@ export const userPageSingleDestiFindAtom = atom(false)
 
 // 상시 판매 관리 > 노출 상태 변경 모달
 export const salesPackageModal = atom(false)
+
+// 카운트 다운 - 경매 시작
+export const auctionStartAtom = atom('')

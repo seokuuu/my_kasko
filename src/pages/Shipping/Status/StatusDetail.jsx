@@ -4,17 +4,10 @@ import { useShipmentDispatchDetailsQuery } from '../../../api/shipment'
 import { WhiteBtn } from '../../../common/Button/Button'
 import { GlobalFilterHeader } from '../../../components/Filter'
 import Excel from '../../../components/TableInner/Excel'
-import Hidden from '../../../components/TableInner/Hidden'
-import {
-	ShippingDispatchDetailsFields,
-	ShippingDispatchDetailsFieldsCols,
-	ShippingStatusDetailsFields,
-	ShippingStatusDetailsFieldsCols,
-} from '../../../constants/admin/Shipping'
+import { ShippingStatusDetailsFields, ShippingStatusDetailsFieldsCols } from '../../../constants/admin/Shipping'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { BlueBarBtnWrap } from '../../../modal/Common/Common.Styled'
-import { FilterContianer, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
-import Table from '../../Table/Table'
+import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import StausDetailHeader from './StausDetailHeader'
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
