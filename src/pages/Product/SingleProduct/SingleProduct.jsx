@@ -190,7 +190,7 @@ const SingleProduct = () => {
 					<TableV2
 						getRow={tableRowData}
 						loading={isLoading}
-						getCol={SingleDispatchFieldsCols}
+						getCol={SingleDispatchFieldsCols()}
 						tablePagination={paginationData}
 						onPageChange={onPageChange}
 					/>
