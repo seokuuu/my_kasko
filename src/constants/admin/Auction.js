@@ -404,6 +404,7 @@ export const AuctionBiddingFields = {
 // 단일 응찰
 export const AuctionBiddingFieldsCols = (selected) => {
 	console.log('AuctionBiddingFieldsCols selected: ', selected)
+
 	const checkboxSelection2 = (params) => {
 		// we put checkbox on the name if we are not doing grouping
 		if (selected && selected.length > 0) {

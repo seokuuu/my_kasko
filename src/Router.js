@@ -166,6 +166,8 @@ import PopupComponent from './pages/Operate/Exposure/Popup/PopupComponent'
 import Agreement from './modal/Common/Agreement'
 import DuplicateLogin from './pages/DuplicateLogin'
 import Timeout from './pages/Timeout'
+import BiddingPackage from './pages/Auction/Bidding/BiddingPackage'
+import BiddingPackagePage from './pages/Auction/Bidding/BiddingPackagePage'
 
 const Router = () => {
 	const auth = useAtomValue(authAtom)
@@ -215,7 +217,8 @@ const Router = () => {
 			{/* 경매 관리  */}
 			<Route path="/auction">
 				<Route path="/auction/round" element={<RoundPage />}></Route>
-				<Route path="/auction/bidding" element={<BiddingPage />}></Route>
+				<Route path="/auction/biddingsingle" element={<BiddingPage />}></Route>
+				<Route path="/auction/biddingpackage" element={<BiddingPackagePage />}></Route>
 				<Route path="/auction/progress" element={<ProgressPage />}></Route>
 				<Route path="/auction/detailprogress" element={<DetailProgressPage />}></Route>
 				<Route path="/auction/winning" element={<WinningPage />}></Route>
