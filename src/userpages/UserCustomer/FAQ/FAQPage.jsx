@@ -6,27 +6,28 @@ import SubHeader from '../../../components/Header/SubHeader'
 import UserSideBar from '../../../components/Left/UserSideBar'
 import useReactQuery from '../../../hooks/useReactQuery'
 import FAQ from './FAQ'
+import useTableData from '../../../hooks/useTableData'
+import { responseToTableRowMap } from '../../../constants/user/faqTableConfig'
 
 const FAQPage = () => {
 	const depth2Color = 'FAQ'
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
-		category: '카테고리', // This value is hard coded value. It is not user selected category.
-		keyword: '경매', // This is the user selected category.
+		category: '카테고리',
+		keyword: '경매',
 	}
 	const [param, setParam] = useState(paramData)
 	const [expanded, setExpanded] = useState('고객센터')
-	const [faqList, setFaqList] = useState(null)
-	const [faqPagination, setFaqPagination] = useState([])
-	const { isLoading, isError, data: getFaqListRes, isSuccess } = useReactQuery(param, 'getFaqList', getFaqList)
+	const { isLoading, isError, data, refetch } = useReactQuery(param, 'getFaqList', getFaqList)
+	const { tableRowData, paginationData, totalCount } = useTableData({
+		tableField: responseToTableRowMap,
+		serverData: data,
+	})
 
 	useEffect(() => {
-		if (getFaqListRes && getFaqListRes.data && getFaqListRes.data.data) {
-			setFaqList(getFaqListRes.data.data.list)
-			setFaqPagination(getFaqListRes.data.data.pagination)
-		}
-	}, [isSuccess, getFaqListRes])
+		refetch()
+	}, [param])
 
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
@@ -60,8 +61,9 @@ const FAQPage = () => {
 					<OverAllTable>
 						<FAQ
 							handleTablePageSize={handleTablePageSize}
-							faqList={faqList}
-							faqPagination={faqPagination}
+							faqList={tableRowData}
+							faqPagination={paginationData}
+							totalCount={totalCount}
 							onPageChange={onPageChange}
 							onSelectedCategory={onSelectedCategory}
 							isLoading={isLoading}

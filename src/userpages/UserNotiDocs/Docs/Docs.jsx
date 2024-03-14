@@ -54,12 +54,10 @@ const Docs = () => {
 		() =>
 			Docs
 				? Docs.list.filter((d, index) => {
-						// console.log('DD', moment(d.createDate).format('YYYY-MM-DD'))
 						if (!d.status) {
 							return {
 								...d,
 								작성일자: moment(d.createDate).format('YYYY-MM-DD HH:mm:ss'),
-								// id: Docs.length, // 순번 내림차순
 								uid: d.uid,
 								title: d.title,
 								count: d.count,
@@ -161,10 +159,7 @@ const Docs = () => {
 
 			<TableContianer>
 				<TCSubContainer bor>
-					<div>
-						게시글 목록 ({pagination?.listCount}개)
-						<Hidden />
-					</div>
+					<div>게시글 목록 ({pagination?.listCount}개)</div>
 					<div style={{ gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
 					</div>
