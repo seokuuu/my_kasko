@@ -280,30 +280,28 @@ const Table = ({
 		const agGridApi = params.api
 		setGridApi(agGridApi)
 
-		const throttledAutoSize = throttle(() => {
-			params.columnApi.autoSizeAllColumns(false)
-		}, 500)
-
-		agGridApi.addEventListener('bodyScroll', throttledAutoSize)
+		// const throttledAutoSize = throttle(() => {
+		// 	params.columnApi.autoSizeAllColumns(false)
+		// }, 500)
+		//
+		// agGridApi.addEventListener('bodyScroll', throttledAutoSize)
 	}
 
 	const onFirstDataRendered = (params) => {
-		const columnApi = params.columnApi
-
-		if (columnApi) {
-			const allColumns = columnApi.getAllColumns()
-			console.log(allColumns)
-			if (allColumns) {
-				const excludeIds = ['경매 번호', '제품 번호']
-				allColumns.forEach((column) => {
-					if (!excludeIds.includes(column.colId)) {
-						column.getColDef().valueFormatter = customNumberFormatter
-					}
-				})
-			}
-
-			columnApi.autoSizeAllColumns(false)
-		}
+		// const columnApi = params.columnApi
+		// if (columnApi) {
+		// 	const allColumns = columnApi.getAllColumns()
+		// 	if (allColumns) {
+		// 		const excludeIds = ['경매 번호', '제품 번호']
+		// 		allColumns.forEach((column) => {
+		// 			if (!excludeIds.includes(column.colId)) {
+		// 				column.getColDef().valueFormatter = customNumberFormatter
+		// 			}
+		// 		})
+		// 	}
+		//
+		// 	columnApi.autoSizeAllColumns(false)
+		// }
 	}
 
 	// 체크했을때 jotai 전역상태값 설정
