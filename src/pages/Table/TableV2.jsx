@@ -334,6 +334,7 @@ const TableV2 = ({
 			<TestContainer hei={hei}>
 				<div style={{ height: '100%', width: '100%' }} className="ag-theme-alpine">
 					<AgGridReact
+						suppressColumnVirtualisation={true}
 						onGridReady={onGridReady}
 						onFirstDataRendered={onFirstDataRendered}
 						columnDefs={columnDefs}
