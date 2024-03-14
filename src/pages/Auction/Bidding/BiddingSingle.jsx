@@ -158,7 +158,7 @@ const BiddingSingle = ({}) => {
 				auctionNumber: checkAgreeAucNum,
 			}))
 		}
-	}, [isSuccess, initDestiData])
+	}, [isSuccess, initDestiData, originData])
 
 	// 111 - 1
 	// 목적지 관련 rows 빈 값일 시 대표 목적지 자동 Mapping
