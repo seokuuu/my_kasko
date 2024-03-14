@@ -3,16 +3,19 @@ import { MainSelect } from '../../../common/Option/Main'
 import { CustomerSearch, DateSearchSelect, DestinationSearch } from '../../../components/Search'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
+	ExInputsWrap,
 	FilterLeft,
 	FilterRight,
+	MiniInput,
 	PartWrap,
 	PWRight,
 	RowWrap,
 	SearchContainer,
+	Tilde,
 } from '../../../modal/External/ExternalFilter'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 
-const AchievementSearchFilter = ({ search, setSearch }) => {
+const AchievementSearchFilter = ({ search, setSearch, commonNumInputHandler }) => {
 	const { storageList, spartList } = useGlobalProductSearchFieldData()
 	const onChange = (key, value) => {
 		setSearch((p) => ({ ...p, [key]: value }))
@@ -86,6 +89,71 @@ const AchievementSearchFilter = ({ search, setSearch }) => {
 						startDateChange={(value) => onChange('orderStartDate', value)}
 						endDateChange={(value) => onChange('orderEndDate', value)}
 					/>
+				</RowWrap>
+				<RowWrap none>
+					{/* 두깨 */}
+					<PartWrap first>
+						<h6>두께(MM)</h6>
+						<ExInputsWrap>
+							<MiniInput
+								type="number"
+								name="minThickness"
+								value={search.minThickness}
+								onChange={commonNumInputHandler}
+								min={0}
+							/>
+							<Tilde>~</Tilde>
+							<MiniInput
+								type="number"
+								name="maxThickness"
+								value={search.maxThickness}
+								onChange={commonNumInputHandler}
+								min={0}
+							/>
+						</ExInputsWrap>
+					</PartWrap>
+					{/* 폭 */}
+					<PartWrap>
+						<h6>폭(MM)</h6>
+						<ExInputsWrap>
+							<MiniInput
+								type="number"
+								name="minWidth"
+								value={search.minWidth}
+								onChange={commonNumInputHandler}
+								min={0}
+							/>
+							<Tilde>~</Tilde>
+							<MiniInput
+								type="number"
+								name="maxWidth"
+								value={search.maxWidth}
+								onChange={commonNumInputHandler}
+								min={0}
+							/>
+						</ExInputsWrap>
+					</PartWrap>
+					{/* 길이 */}
+					<PartWrap>
+						<h6>길이(MM)</h6>
+						<ExInputsWrap>
+							<MiniInput
+								type="number"
+								name="minLength"
+								value={search.minLength}
+								onChange={commonNumInputHandler}
+								min={0}
+							/>
+							<Tilde>~</Tilde>
+							<MiniInput
+								type="number"
+								name="maxLength"
+								value={search.maxLength}
+								onChange={commonNumInputHandler}
+								min={0}
+							/>
+						</ExInputsWrap>
+					</PartWrap>
 				</RowWrap>
 			</FilterLeft>
 			<FilterRight>

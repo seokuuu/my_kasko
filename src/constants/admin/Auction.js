@@ -404,6 +404,7 @@ export const AuctionBiddingFields = {
 // 단일 응찰
 export const AuctionBiddingFieldsCols = (selected) => {
 	console.log('AuctionBiddingFieldsCols selected: ', selected)
+
 	const checkboxSelection2 = (params) => {
 		// we put checkbox on the name if we are not doing grouping
 		if (selected && selected.length > 0) {
@@ -434,8 +435,8 @@ export const AuctionBiddingFieldsCols = (selected) => {
 			field: PROD_COL_NAME.productNumber,
 			minWidth: 250,
 			cellRenderer: MarkerCellRenderer,
-			cellRendererParams: (params) => params.data[params.column.colId],
-			valueGetter: (v) => v.data[v.column.colId].value,
+			cellRendererParams: (params) => params?.data[params.column.colId] || '',
+			valueGetter: (v) => v.data[v.column.colId]?.value || '',
 		},
 		// { ...commonStyles, field: '제품 번호', minWidth: 100 },
 		{ ...commonStyles, field: '프로넘 번호', minWidth: 100 },

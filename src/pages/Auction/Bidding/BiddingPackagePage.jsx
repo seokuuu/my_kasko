@@ -6,8 +6,9 @@ import SubHeader from '../../../components/Header/SubHeader'
 import Bidding from './BiddingSingle'
 
 import { useState } from 'react'
+import BiddingPackage from './BiddingPackage'
 
-const BiddingPage = () => {
+const BiddingPackagePage = () => {
 	const [expanded, setExpanded] = useState('경매 관리')
 	const [depth2Color, setDepth2Color] = useState('경매 응찰(단일/패키지)')
 	return (
@@ -18,7 +19,7 @@ const BiddingPage = () => {
 				<OverAllSub>
 					<SubHeader />
 					<OverAllTable>
-						<Bidding />
+						<BiddingPackage />
 					</OverAllTable>
 				</OverAllSub>
 			</OverAllMain>
@@ -26,4 +27,4 @@ const BiddingPage = () => {
 	)
 }
 
-export default BiddingPage
+export default BiddingPackagePage
