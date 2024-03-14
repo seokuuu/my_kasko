@@ -55,12 +55,13 @@ export function useStorageRegisterMutation() {
 			return client.post(urls, params)
 		},
 		onSuccess() {
+			simpleAlert('등록이 완료 되었습니다.')
 			queryClient.invalidateQueries({
 				queryKey: STORAGE_KEYS.getStorageList,
 			})
 		},
-		onError() {
-			simpleAlert('등록에 실패하였습니다.')
+		onError(e) {
+			simpleAlert(e?.data?.message || '등록에 실패하였습니다.')
 		},
 	})
 }
@@ -75,6 +76,7 @@ export function useStorageUpdateMutation() {
 			return client.patch(urls, params)
 		},
 		onSuccess() {
+			simpleAlert('수정이 완료 되었습니다.')
 			queryClient.invalidateQueries({
 				queryKey: STORAGE_KEYS.getStorageList,
 			})
@@ -82,8 +84,8 @@ export function useStorageUpdateMutation() {
 				queryKey: STORAGE_KEYS.getStorage,
 			})
 		},
-		onError() {
-			simpleAlert('수정에 실패하였습니다.')
+		onError(e) {
+			simpleAlert(e?.data?.message || '수정에 실패하였습니다.')
 		},
 	})
 }

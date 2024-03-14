@@ -3,7 +3,13 @@ import { Link } from 'react-router-dom'
 import { BlackBtn, BtnBound, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { hyunDaiMultiModal, onClickCheckAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-import { getSingleProducts, patchOutlet, patchSaleCategory, postingMemoAndNote } from '../../../api/SellProduct'
+import {
+	getSingleProducts,
+	patchOutlet,
+	patchSaleCategory,
+	patchSalePriceType,
+	postingMemoAndNote,
+} from '../../../api/SellProduct'
 import { useAtom, useAtomValue } from 'jotai'
 import Excel from '../../../components/TableInner/Excel'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -32,6 +38,7 @@ import useTableSelection from '../../../hooks/useTableSelection'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import TableV2 from '../../Table/TableV2'
 import { queryClient } from '../../../api/query'
+import SalsePriceType from '../../../modal/Multi/SalePriceType'
 
 const paramData = {
 	pageNum: 1,
@@ -42,7 +49,7 @@ const paramData = {
 
 const Hyundai = ({}) => {
 	const { simpleAlert, simpleConfirm } = useAlert()
-	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+	const [checkBoxSelect, setCheckBoxSelect] = useAtom(selectedRowsAtom)
 	const parameter = useAtomValue(changeCategoryAtom)
 	const [isTableModal, setIsTableModal] = useAtom(onClickCheckAtom)
 	const [isMultiModal, setIsMultiModal] = useAtom(hyunDaiMultiModal)
@@ -63,6 +70,10 @@ const Hyundai = ({}) => {
 	const [getRow, setGetRow] = useState([])
 	const [filterData, setFilteredData] = useState([])
 
+	// 판매가 유형 변경
+	const [salePriceType, setSalePriceType] = useState('일반')
+	const [isSalePriceType, setIsSalePriceType] = useState(false)
+
 	const { data, isSuccess, refetch, isLoading } = useReactQuery(param, 'product-list', getSingleProducts)
 	const hyunDaiList = data?.r
 	const hyunDaiPage = data?.pagination
@@ -73,11 +84,12 @@ const Hyundai = ({}) => {
 	})
 
 	// 선택 항목
-	const { selectedWeightStr, selectedCountStr } = useTableSelection({
+	const { selectedWeightStr, selectedCountStr, selectedData, hasSelected } = useTableSelection({
 		weightKey: '중량',
 	})
 
 	const { mutate } = useMutationQuery('change-category', patchSaleCategory)
+	const { mutate: changeSalePriceType } = useMutationQuery('change-sale-price_type', patchSalePriceType)
 	const { mutate: memoAndNote } = useMutationQuery('memo-note', postingMemoAndNote)
 	const { mutate: changeOutlet } = useMutationQuery('change-outlet', patchOutlet)
 
@@ -96,6 +108,7 @@ const Hyundai = ({}) => {
 				simpleAlert('저장되었습니다.', () => {
 					setIsMultiModal(false)
 					setSelectProductNumber([])
+					setCheckBoxSelect([])
 					queryClient.invalidateQueries('product-list')
 				})
 			},
@@ -103,7 +116,6 @@ const Hyundai = ({}) => {
 				setErrorMsg(e?.data?.message || '적용 실패하였습니다.')
 				simpleAlert(e?.data?.message || '적용 실패하였습니다.', () => {
 					setIsMultiModal(false)
-					queryClient.invalidateQueries('product-list')
 				})
 			},
 		})
@@ -131,6 +143,7 @@ const Hyundai = ({}) => {
 					onSuccess: () => {
 						simpleAlert('변경되었습니다.')
 						setSelectProductNumber([])
+						setCheckBoxSelect([])
 						queryClient.invalidateQueries('product-list')
 					},
 					onError: (e) => {
@@ -141,11 +154,39 @@ const Hyundai = ({}) => {
 		}
 	}
 
+	// 판매가 유형
+	const handleChangeSalePriceType = () => {
+		if (!hasSelected) {
+			return simpleAlert('변경할 제품을 선택해 주세요.')
+		}
+		const numbers = selectedData?.map((item) => item['제품 번호'])
+		const body = { salePriceType, numbers }
+		changeSalePriceType(body, {
+			onSuccess: () => {
+				simpleAlert('변경되었습니다.', () => {
+					setIsSalePriceType(false)
+					setSelectProductNumber([])
+					setCheckBoxSelect([])
+					setSalePriceType('일반')
+					queryClient.invalidateQueries('product-list')
+					queryClient.invalidateQueries('getSingleProducts')
+				})
+			},
+			onError: (e) => {
+				setErrorMsg(e?.data?.message || '적용 실패하였습니다.')
+				simpleAlert(e?.data?.message || '적용 실패하였습니다.', () => {
+					setIsSalePriceType(false)
+				})
+			},
+		})
+	}
+
 	const createMemoAndNote = () => {
 		memoAndNote(memo, {
 			onSuccess: () => {
 				simpleAlert('저장 되었습니다.', () => {
 					setSelectProductNumber([])
+					setCheckBoxSelect([])
 					queryClient.invalidateQueries('product-list')
 				})
 			},
@@ -279,6 +320,16 @@ const Hyundai = ({}) => {
 							>
 								판매 구분 변경
 							</WhiteBlackBtn>
+							<WhiteBlackBtn
+								onClick={() => {
+									if (checkBoxSelect == null) simpleAlert('제품을 선택해 주세요.')
+									else {
+										setIsSalePriceType(true)
+									}
+								}}
+							>
+								판매가 유형 변경
+							</WhiteBlackBtn>
 						</div>
 					</TCSubContainer>
 					<TableV2
@@ -315,6 +366,14 @@ const Hyundai = ({}) => {
 				</TableContianer>
 			</FilterContianer>
 			{isTableModal && <HyunDaiOriginal title={'원본보기'} />}
+			{isSalePriceType && (
+				<SalsePriceType
+					closeFn={() => setIsSalePriceType(false)}
+					saveFn={handleChangeSalePriceType}
+					data={salePriceType}
+					setData={setSalePriceType}
+				/>
+			)}
 			{isMultiModal === true && (
 				<Multi2
 					length={3}

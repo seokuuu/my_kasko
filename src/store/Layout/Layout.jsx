@@ -238,6 +238,7 @@ export const onClickCheckAtom = atom(false)
 
 // 운영 관리 > 제품군 수정,창고 추가
 export const operateAddAtom = atom(false)
+export const storageAddAtom = atom(false)
 
 // 테이블 모달에 대한 atom
 // 해당 모달을

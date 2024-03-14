@@ -7,6 +7,7 @@ import {
 	FilterLeft,
 	FilterRight,
 	Input,
+	MiniInput,
 	PartWrap,
 	PWRight,
 	RowWrap,
@@ -14,19 +15,19 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
+import React from 'react'
 
 const PackageProductSearchFields = ({
 	// prettier-ignore
 	search,
 	setSearch,
 	commonDropdownButtonHandler,
+	commonNumInputHandler,
 }) => {
 	const {
 		// prettier-ignore
 		storageList,
-		supplierList,
 		spartList,
-		makerList,
 		stockStatusList,
 		gradeList,
 		preferThicknessList,
@@ -48,32 +49,17 @@ const PackageProductSearchFields = ({
 							/>
 						</PWRight>
 					</PartWrap>
-					{/* 매입처 */}
 					<PartWrap>
 						<h6>매입처</h6>
 						<PWRight>
-							<MainSelect
-								options={supplierList}
-								defaultValue={supplierList[0]}
-								value={search.supplier}
-								name="supplier"
-								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
-							/>
+							<Input name="supplier" value={search.supplier} onChange={commonNumInputHandler} />
 						</PWRight>
 					</PartWrap>
 					<PartWrap>
-						<h6>유찰 횟수</h6>
-						<ExInputsWrap>
-							<Input
-								value={search.minFailCount ?? ''}
-								onChange={(e) => commonDropdownButtonHandler(e.target.value, 'minFailCount')}
-							/>{' '}
-							<Tilde>~</Tilde>
-							<Input
-								value={search.maxFailCount ?? ''}
-								onChange={(e) => commonDropdownButtonHandler(e.target.value, 'maxFailCount')}
-							/>
-						</ExInputsWrap>
+						<h6>제조사</h6>
+						<PWRight>
+							<Input name="maker" value={search.maker} onChange={commonNumInputHandler} />
+						</PWRight>
 					</PartWrap>
 				</RowWrap>
 				<RowWrap>
@@ -88,16 +74,6 @@ const PackageProductSearchFields = ({
 								value={search.spart}
 								name="spart"
 								onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
-							/>
-						</PWRight>
-						{/* 제조사 */}
-						<PWRight>
-							<MainSelect
-								options={makerList}
-								defaultValue={makerList[0]}
-								value={search.maker}
-								name="maker"
-								onChange={(e) => commonDropdownButtonHandler(e, 'maker')}
 							/>
 						</PWRight>
 						{/* 재고 상태 */}
@@ -182,7 +158,7 @@ const PackageProductSearchFields = ({
 					</PartWrap>
 				</RowWrap>
 
-				<RowWrap style={{ border: '0px' }}>
+				<RowWrap>
 					<PartWrap first>
 						<h6>판매가 유형</h6>
 						<CustomCheckBox
@@ -197,11 +173,38 @@ const PackageProductSearchFields = ({
 									text: '특가',
 									value: '특가',
 								},
+								{
+									checked: false,
+									text: '특판',
+									value: '특판',
+								},
 							]}
 							setState={setSearch}
 							stateKey="salePriceTypeList"
-							stateType="object"
+							stateType={'object'}
 						/>
+					</PartWrap>
+				</RowWrap>
+				<RowWrap none>
+					<PartWrap first>
+						<h6>유찰 횟수</h6>
+						<ExInputsWrap>
+							<MiniInput
+								type="number"
+								name="minFailCount"
+								value={search.minFailCount}
+								onChange={commonNumInputHandler}
+								min={0}
+							/>
+							<Tilde>~</Tilde>
+							<MiniInput
+								type="number"
+								name="maxFailCount"
+								value={search.maxFailCount}
+								onChange={commonNumInputHandler}
+								min={0}
+							/>
+						</ExInputsWrap>
 					</PartWrap>
 				</RowWrap>
 			</FilterLeft>

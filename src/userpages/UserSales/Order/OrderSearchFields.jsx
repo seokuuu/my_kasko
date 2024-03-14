@@ -14,7 +14,7 @@ import {
 	PWRight,
 	PartWrap,
 	RowWrap,
-	Tilde
+	Tilde,
 } from '../../../modal/External/ExternalFilter'
 import StandardFind from '../../../modal/Multi/StandardFind'
 import CustomCheckBox from '../../../pages/Operate/UI/CustomCheckBox/CustomCheckBox'
@@ -72,19 +72,6 @@ const OrderSearchFields = ({
 							/>
 						</PWRight>
 					</PartWrap>
-					{/* 매입처 */}
-					<PartWrap>
-						<h6>매입처</h6>
-						<PWRight>
-							<MainSelect
-								options={supplierList}
-								defaultValue={supplierList[0]}
-								value={search.supplier}
-								name="supplier"
-								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
-							/>
-						</PWRight>
-					</PartWrap>
 					{/* 규격약호 찾기 */}
 					<PartWrap>
 						<h6>규격 약호</h6>
@@ -100,11 +87,6 @@ const OrderSearchFields = ({
 						</GreyBtn>
 					</PartWrap>
 				</RowWrap>
-				{/* 고객사 찾기 */}
-				{/*<RowWrap>*/}
-				{/*	<CustomerSearch search={search} setSearch={setSearch} />*/}
-				{/*</RowWrap>*/}
-				{/* 구분 */}
 				<RowWrap style={{ width: '100%', flexWrap: 'nowrap' }}>
 					<PartWrap first>
 						<h6>구분</h6>
@@ -116,16 +98,6 @@ const OrderSearchFields = ({
 								value={search.spart}
 								name="spart"
 								onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
-							/>
-						</PWRight>
-						{/* 제조사 */}
-						<PWRight>
-							<MainSelect
-								options={makerList}
-								defaultValue={makerList[0]}
-								value={search.maker}
-								name="maker"
-								onChange={(e) => commonDropdownButtonHandler(e, 'maker')}
 							/>
 						</PWRight>
 						{/* 등급 */}
@@ -140,22 +112,20 @@ const OrderSearchFields = ({
 						</PWRight>
 					</PartWrap>
 					<PartWrap>
-						{/* 주문 일자 */}
-						<DateSearchSelect
-							title="주문일자"
-							startInitDate={search.orderStartDate ? new Date(search.orderStartDate) : ''}
-							endInitDate={search.orderEndDate ? new Date(search.orderEndDate) : ''}
-							startDateChange={(v) => {
-								setSearch((prev) => ({ ...prev, orderStartDate: v }))
-							}}
-							endDateChange={(v) => {
-								setSearch((prev) => ({ ...prev, orderEndDate: v }))
-							}}
-						/>
+						<h6>매입처</h6>
+						<PWRight>
+							<Input name="supplier" value={search.supplier} onChange={commonNumInputHandler} />
+						</PWRight>
+					</PartWrap>
+					<PartWrap>
+						<h6>제조사</h6>
+						<PWRight>
+							<Input name="maker" value={search.maker} onChange={commonNumInputHandler} />
+						</PWRight>
 					</PartWrap>
 				</RowWrap>
 				{/* 두께 |  폭 | 길이 */}
-				<RowWrap none>
+				<RowWrap>
 					{/* 두깨 */}
 					<PartWrap first>
 						<h6>두께(MM)</h6>
@@ -221,8 +191,22 @@ const OrderSearchFields = ({
 					</PartWrap>
 				</RowWrap>
 				<RowWrap none>
-					{/* 진행상태 */}
 					<PartWrap first>
+						{/* 주문 일자 */}
+						<DateSearchSelect
+							title="주문일자"
+							startInitDate={search.orderStartDate ? new Date(search.orderStartDate) : ''}
+							endInitDate={search.orderEndDate ? new Date(search.orderEndDate) : ''}
+							startDateChange={(v) => {
+								setSearch((prev) => ({ ...prev, orderStartDate: v }))
+							}}
+							endDateChange={(v) => {
+								setSearch((prev) => ({ ...prev, orderEndDate: v }))
+							}}
+						/>
+					</PartWrap>
+					{/* 진행상태 */}
+					<PartWrap>
 						<h6>상시판매 상태</h6>
 						<CustomCheckBox
 							initOptions={[

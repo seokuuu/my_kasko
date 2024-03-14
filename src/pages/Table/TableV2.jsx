@@ -14,7 +14,7 @@ import {
 	pageSort,
 	selectedRows2Switch,
 	selectedRowsAtom,
-	selectedRowsAtom2
+	selectedRowsAtom2,
 } from '../../store/Layout/Layout'
 import {
 	TABLE_TYPE,
@@ -24,6 +24,7 @@ import {
 	tableShowColumnAtom,
 } from '../../store/Table/Table'
 import './TableUi.css'
+import { customNumberFormatter } from '../../utils/utils'
 
 /**
  * AG-GRID settings 함수
@@ -225,6 +226,55 @@ const TableV2 = ({
 		setShowColumnClear({ type: tableType })
 	}
 
+	const throttle = (func, limit) => {
+		let lastFunc
+		let lastRan
+		return function () {
+			const context = this
+			const args = arguments
+			if (!lastRan) {
+				func.apply(context, args)
+				lastRan = Date.now()
+			} else {
+				clearTimeout(lastFunc)
+				lastFunc = setTimeout(function () {
+					if (Date.now() - lastRan >= limit) {
+						func.apply(context, args)
+						lastRan = Date.now()
+					}
+				}, limit - (Date.now() - lastRan))
+			}
+		}
+	}
+
+	const onGridReady = (params) => {
+		const agGridApi = params.api
+		setGridApi(agGridApi)
+
+		// const throttledAutoSize = throttle(() => {
+		// 	params.columnApi.autoSizeAllColumns(false)
+		// }, 500)
+		//
+		// agGridApi.addEventListener('bodyScroll', throttledAutoSize)
+	}
+
+	const onFirstDataRendered = (params) => {
+		// const columnApi = params.columnApi
+		// if (columnApi) {
+		// 	const allColumns = columnApi.getAllColumns()
+		// 	if (allColumns) {
+		// 		const excludeIds = ['경매 번호', '제품 번호']
+		// 		allColumns.forEach((column) => {
+		// 			if (!excludeIds.includes(column.colId)) {
+		// 				column.getColDef().valueFormatter = customNumberFormatter
+		// 			}
+		// 		})
+		// 	}
+		//
+		// 	columnApi.autoSizeAllColumns(false)
+		// }
+	}
+
 	/* ==================== STATE start ==================== */
 	// 페이지네이션 변경
 	useEffect(() => {
@@ -280,9 +330,8 @@ const TableV2 = ({
 			<TestContainer hei={hei}>
 				<div style={{ height: '100%', width: '100%' }} className="ag-theme-alpine">
 					<AgGridReact
-						onGridReady={(params) => {
-							setGridApi(params.api)
-						}}
+						onGridReady={onGridReady}
+						onFirstDataRendered={onFirstDataRendered}
 						columnDefs={columnDefs}
 						rowData={rowData}
 						defaultColDef={GRID_SETTIGS.defaultColDef}
