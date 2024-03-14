@@ -44,7 +44,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 	}
 
 	// AuctionBiddingFieldsCols(checkedArrayState) 이런식으로 써야하나?
-	const tableField = useRef(AuctionBiddingFieldsCols)
+	const tableField = useRef(AuctionBiddingFieldsCols(checkedArray))
 
 	// 체크박스 없애기
 	useEffect(() => {
@@ -79,7 +79,6 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 		biddingPrice: null,
 	})
 
-
 	const init = {
 		auctionNumber: auctionNum,
 		type: '패키지',
@@ -91,7 +90,6 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 	const modalClose = () => {
 		setAucDetailModal(false)
 	}
-
 
 	const paramData = {
 		pageNum: 1,
@@ -145,7 +143,6 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 	const confirmOnClickHandler = () => {
 		postMutation(winningCreateData)
 	}
-
 
 	const titleData = ['패키지 명', '수량', '시작가']
 	const contentData = [aucDetail['패키지명'], '수정해야함', aucDetail['시작가']]
