@@ -1,29 +1,29 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import moment from 'moment'
-import { useNavigate } from 'react-router-dom'
 import { useNoticeListQuery } from '../../../api/operate/notice'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { UserNoticeListFieldCols, UserNoticeListFields } from '../../../constants/userNotDoc'
-import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
-import { add_element_field } from '../../../lib/tableHelpers'
 import {
 	FilterContianer,
 	FilterHeader,
 	FilterWrap,
-	TCSubContainer,
 	TableContianer,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 import FAQSearchFields from '../../../pages/Operate/Common/FAQ/components/FAQSearchFields'
 import { noticeSearchCategoryOptions } from '../../../pages/Operate/constants'
-import useGlobalSearch from '../../../pages/Operate/hook/useGlobalSearch'
-import Table from '../../../pages/Table/Table'
 import { toggleAtom } from '../../../store/Layout/Layout'
+import TableV2 from '../../../pages/Table/TableV2'
+import useTableData from '../../../hooks/useTableData'
+import { useNavigate } from 'react-router-dom'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
+import { isEqual } from 'lodash'
 
 const Notice = () => {
+	const navigate = useNavigate()
 	const [title, setTitle] = useState('')
 
 	const Params = {
@@ -33,10 +33,42 @@ const Notice = () => {
 	}
 
 	const [param, setParam] = useState(Params)
-	const { isSuccess, data: notices, refetch } = useNoticeListQuery(param)
-	const pagination = notices?.pagination
+	const { isLoading, data, refetch } = useNoticeListQuery(param)
+	const [newData, setNewData] = useState([])
 
-	const { onPageChanage } = useTablePaginationPageChange(notices, setParam)
+	useEffect(() => {
+		const list = data?.list
+		if (list && Array.isArray(list)) {
+			setNewData({
+				...data,
+				list: data.list.filter((d, index) => {
+					if (!d.status) {
+						return {
+							...d,
+							작성일자: d.createDate ? moment(d.createDate).format('YYYY-MM-DD HH:mm:ss') : '-',
+							uid: d.uid,
+							title: d.title,
+							count: d.count,
+							name: d.name,
+						}
+					}
+				}),
+			})
+		}
+	}, [data])
+
+	const { tableRowData, paginationData, totalCount } = useTableData({
+		tableField: UserNoticeListFields,
+		serverData: newData,
+	})
+
+	const onPageChange = (value) => {
+		setParam((prevParam) => ({
+			...prevParam,
+			pageNum: Number(value),
+		}))
+	}
+
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 	const [toggleMsg, setToggleMsg] = useState('On')
 
@@ -49,37 +81,19 @@ const Notice = () => {
 		}
 	}
 
-	const [getRow, setGetRow] = useState('')
-	const navigate = useNavigate()
-	const tableField = useRef(UserNoticeListFieldCols)
-	const getCol = tableField.current
 	const [fixed, setFixed] = useState([])
-	const fixedItem = notices && notices?.list.filter((i) => i.status !== 0)
+	const fixedItem = data && data?.list.filter((i) => i.status !== 0)
+
+	const handleOnRowClicked = (e) => {
+		const uid = e.data.고유값
+		navigate(`/userpage/notice/${uid}`)
+	}
 
 	useEffect(() => {
 		if (!title && fixedItem) {
 			setFixed(fixedItem)
 		}
-	}, [notices])
-
-	const mappingData2 = useMemo(
-		() =>
-			notices
-				? notices.list.filter((d, index) => {
-						if (!d.status) {
-							return {
-								...d,
-								작성일자: d.createDate ? moment(d.createDate).format('YYYY-MM-DD HH:mm:ss') : '-',
-								uid: d.uid,
-								title: d.title,
-								count: d.count,
-								name: d.name,
-							}
-						}
-				  })
-				: [],
-		[notices],
-	)
+	}, [data])
 
 	function createData(data) {
 		var result = []
@@ -96,23 +110,6 @@ const Notice = () => {
 		}
 		return result
 	}
-	const gettingRow = () => {
-		const getData = mappingData2
-
-		if (!isSuccess && !getData) return null
-		if (Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, UserNoticeListFields))
-		}
-	}
-	useEffect(() => {
-		gettingRow()
-		//타입, 리액트쿼리, 데이터 확인 후 실행
-	}, [isSuccess, notices])
-
-	const handleOnRowClicked = (e) => {
-		const uid = e.data.고유값
-		navigate(`/userpage/notice/${uid}`)
-	}
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -124,15 +121,24 @@ const Notice = () => {
 
 	useEffect(() => {
 		refetch()
-	}, [])
+	}, [param])
 
-	const { globalProductSearchOnClick, globalProductResetOnClick } = useGlobalSearch({
-		setSearch: setParam,
-		refetch,
-		initParams: {
-			type: '공지사항',
-		},
-	})
+	const searchOnClick = (userSearchParam) => {
+		setParam((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+				pageNum: 1,
+			}
+		})
+	}
+
+	const resetOnClick = () => {
+		setParam(Params)
+	}
 
 	return (
 		<FilterContianer>
@@ -149,8 +155,8 @@ const Notice = () => {
 							renderCustomSearchFields={(props) => (
 								<FAQSearchFields {...props} searchOptions={noticeSearchCategoryOptions} />
 							)}
-							globalProductSearchOnClick={globalProductSearchOnClick}
-							globalProductResetOnClick={globalProductResetOnClick}
+							globalProductSearchOnClick={searchOnClick}
+							globalProductResetOnClick={resetOnClick}
 						/>
 					</FilterWrap>
 				)}
@@ -158,20 +164,23 @@ const Notice = () => {
 
 			<TableContianer>
 				<TCSubContainer bor>
-					<div>게시글 목록 ({pagination?.listCount}개 )</div>
+					<div>
+						게시글 목록 ({totalCount?.toLocaleString()}개 )
+						<TableV2HiddenSection />
+					</div>
 					<div style={{ gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
 					</div>
 				</TCSubContainer>
 				<div>
-					<Table
-						getRow={getRow}
-						getCol={getCol}
-						tablePagination={pagination}
-						isRowClickable={true}
-						handleOnRowClicked={handleOnRowClicked}
-						onPageChange={onPageChanage}
+					<TableV2
+						getRow={tableRowData}
+						loading={isLoading}
+						getCol={UserNoticeListFieldCols}
+						tablePagination={paginationData}
+						onPageChange={onPageChange}
 						topData={createData(fixed)}
+						handleOnRowClicked={handleOnRowClicked}
 					/>
 				</div>
 			</TableContianer>
