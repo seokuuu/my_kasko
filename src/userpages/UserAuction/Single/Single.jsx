@@ -116,8 +116,6 @@ const Single = ({}) => {
 
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
 
-	console.log('라이브 상태값', live)
-
 	// 전체 GET
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding)
 	const originData = data?.data?.data
@@ -162,7 +160,7 @@ const Single = ({}) => {
 				auctionNumber: checkAgreeAucNum,
 			}))
 		}
-	}, [isSuccess, initDestiData, originData])
+	}, [isSuccess, initDestiData, originData, originData])
 
 	// 111 - 1
 	// 목적지 관련 rows 빈 값일 시 대표 목적지 자동 Mapping
