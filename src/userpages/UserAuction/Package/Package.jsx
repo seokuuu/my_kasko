@@ -122,11 +122,11 @@ const Package = ({}) => {
 	}
 	const [param, setParam] = useState(paramData)
 
-	const [liveStatus, setLiveStatus] = useState(null)
+	// const [liveStatus, setLiveStatus] = useState(null)
 
-	useEffect(() => {
-		setLiveStatus(nowAuction && live ? true : false)
-	}, [nowAuction, live])
+	// useEffect(() => {
+	// 	setLiveStatus(nowAuction && live ? true : false)
+	// }, [nowAuction, live])
 
 	const [realAucNum, setRealAucNum] = useState(null)
 	console.log('realAucNum', realAucNum)
@@ -135,7 +135,7 @@ const Package = ({}) => {
 	console.log('getAgreementData', getAgreementData)
 
 	// 전체 GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 	const originData = data?.data?.data
@@ -175,13 +175,13 @@ const Package = ({}) => {
 				auctionNumber: checkAgreeAucNum,
 			}))
 		}
-	}, [isSuccess, resData, initDestiData])
+	}, [isSuccess, initDestiData])
 
 	// 목적지 관련 rows 빈 값일 시 대표 목적지 자동 Mapping
 
 	useEffect(() => {
-		if (resData) {
-			const updatedResData = resData?.map((item) => {
+		if (firstDestiData && originData) {
+			const updatedResData = originData?.list?.map((item) => {
 				if (
 					!item.destinationCode ||
 					!item.destinationName ||
@@ -199,12 +199,12 @@ const Package = ({}) => {
 				return item
 			})
 
-			// setOridata((prevData) => ({
-			// 	...prevData,
-			// 	list: updatedResData,
-			// }))
+			setOridata((prevData) => ({
+				...prevData,
+				list: updatedResData,
+			}))
 		}
-	}, [firstDestiData, resData, destiObject])
+	}, [firstDestiData, destiObject])
 
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']

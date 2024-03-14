@@ -15,7 +15,6 @@ const urls = {
 
 // productNumberList 오류가 남
 export function getBidding(data) {
-	console.log('응찰 목록 data', data)
 	return client.get(`${urls.bidding}/list`, {
 		params: data,
 		paramsSerializer: (param) => {
@@ -46,7 +45,6 @@ export function postAgreement(data) {
 
 //입찰 동의 여부 체크
 export function getAgreement(data) {
-	console.log('data 루니', data)
 	return client.get(`${urls.agreement}/${data}`)
 }
 

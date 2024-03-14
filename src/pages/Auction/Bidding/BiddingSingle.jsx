@@ -40,7 +40,6 @@ import BiddingSearchFields from './BiddingSearchFields'
 const BiddingSingle = ({}) => {
 	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
 	const auth = useAtomValue(authAtom) // 이거 auction.js에서 hook으로 바꾸기
-	console.log('로그인 ㅇㅇ', auth?.statusList.auctionStatus)
 	const nowAuction = useCheckAuction() // 현재 경매 여부 체크
 	const [live, setLive] = useState(true) // LIVE get 일시 중단
 	const navigate = useNavigate()
@@ -76,13 +75,9 @@ const BiddingSingle = ({}) => {
 
 	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
 
-	console.log('auctionDestination Single 목적지', auctionDestination?.data?.data)
-
 	const [customerData, setCustomerData] = useState()
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
-
-	console.log('destiObject', destiObject)
 
 	const productListInner = {
 		biddingPrice: null,
@@ -90,8 +85,6 @@ const BiddingSingle = ({}) => {
 	}
 
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
-
-	console.log('winningCreateInput', winningCreateInput)
 
 	const [getRow, setGetRow] = useState('')
 	const [newGetRow, setNewGetRow] = useState({})
@@ -102,9 +95,7 @@ const BiddingSingle = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 
-	const uids = checkedArrayState?.map((item) => item['제품 번호'].value)
-
-	console.log('uids', uids)
+	const uids = checkedArrayState?.map((item) => item && item['제품 번호']?.value)
 
 	const paramData = {
 		pageNum: 1,
@@ -113,22 +104,21 @@ const BiddingSingle = ({}) => {
 	}
 	const [param, setParam] = useState(paramData)
 
-	const [liveStatus, setLiveStatus] = useState(null)
+	// const [liveStatus, setLiveStatus] = useState(null)
 
-	useEffect(() => {
-		setLiveStatus(nowAuction && live ? true : false)
-	}, [nowAuction, live])
+	// useEffect(() => {
+	// 	setLiveStatus(nowAuction && live ? true : false)
+	// }, [nowAuction, live])
 
 	const [realAucNum, setRealAucNum] = useState(null)
-	console.log('realAucNum', realAucNum)
+
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
 
 	// 전체 GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getBidding)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding)
 	const originData = data?.data?.data
 	const [oriData, setOridata] = useState()
 
-	console.log('oriData', oriData)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
@@ -168,13 +158,13 @@ const BiddingSingle = ({}) => {
 				auctionNumber: checkAgreeAucNum,
 			}))
 		}
-	}, [isSuccess, resData, initDestiData])
+	}, [isSuccess, initDestiData])
 
 	// 111 - 1
 	// 목적지 관련 rows 빈 값일 시 대표 목적지 자동 Mapping
 	useEffect(() => {
-		if (resData) {
-			const updatedResData = resData?.map((item) => {
+		if (firstDestiData || destiObject) {
+			const updatedResData = originData?.list?.map((item) => {
 				if (
 					!item.destinationCode ||
 					!item.destinationName ||
@@ -192,12 +182,12 @@ const BiddingSingle = ({}) => {
 				return item
 			})
 
-			// setOridata((prevData) => ({
-			// 	...prevData,
-			// 	list: updatedResData,
-			// }))
+			setOridata((prevData) => ({
+				...prevData,
+				list: updatedResData,
+			}))
 		}
-	}, [firstDestiData, resData, destiObject])
+	}, [firstDestiData, destiObject])
 
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']
@@ -207,7 +197,6 @@ const BiddingSingle = ({}) => {
 		type: '단일',
 	}
 	const [winningCreateData, setWinningCreateData] = useState(init)
-	console.log('winningCreateData', winningCreateData)
 	//
 	useEffect(() => {
 		// TODO : 수정하기
@@ -223,8 +212,6 @@ const BiddingSingle = ({}) => {
 		biddingPrice: null,
 		customerDestinationUid: null,
 	})
-
-	console.log('finalInput', finalInput)
 
 	// 첫 렌더시 초기 및 대표 목적지 set
 	useMemo(() => {
@@ -339,7 +326,6 @@ const BiddingSingle = ({}) => {
 	// 응찰가 직접 입력
 	// const onCellValueChanged = (params) => {
 	// 	const p = params.data
-	// 	console.log('바뀌는 값 확인', p['제품 고유 번호'])
 	// 	setValues((prevValues) => ({
 	// 		...prevValues,
 	// 		biddingPrice: p['응찰가'],
@@ -388,11 +374,9 @@ const BiddingSingle = ({}) => {
 						? item.memberBestBiddingPrice + winningCreateInput.biddingPrice
 						: item.biddingPrice + winningCreateInput?.biddingPrice
 			}
-			console.log('가격 변동 확인', item.memberBiddingPrice)
+
 			return item
 		})
-
-		console.log('updatedResData 빠빠', updatedResData[0])
 
 		// 변경된 데이터로 state 업데이트
 		setOridata((prevData) => ({
@@ -402,8 +386,6 @@ const BiddingSingle = ({}) => {
 
 		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
-
-	console.log('oriDataList', oriData?.list)
 
 	/* ==================== 관심상품 등록 start ==================== */
 	/**
@@ -423,10 +405,8 @@ const BiddingSingle = ({}) => {
 		best: { display: true },
 	})
 
-	console.log('getRow', getRow)
-	console.log('originData', originData)
 	/* ==================== 관심상품 등록 end ==================== */
-	console.log('destiObject', destiObject)
+
 	// 목적지 적용 버튼 handler 111 - 2
 
 	const destiOnClickHandler = () => {
@@ -481,7 +461,6 @@ const BiddingSingle = ({}) => {
 
 	// status가 false여야지 모달이 보이는거니 !false 형식으로
 	const checkGetAgreement = getAgreementData?.data?.data
-	console.log('checkGetAgreement', checkGetAgreement)
 
 	// 입찰 동의서 Mutate
 	const { mutate: postAgreementMutation } = useMutation(postAgreement, {
@@ -689,7 +668,7 @@ const BiddingSingle = ({}) => {
 				/>
 			)}
 			{/* 입찰 동의서 모달 */}
-			{console.log('agreementModal', agreementModal)}
+
 			{agreementModal && nowAuction && (
 				<Agreement setCheckAgreement={setCheckAgreement} agreementOnClickHandler={agreementOnClickHandler} />
 			)}

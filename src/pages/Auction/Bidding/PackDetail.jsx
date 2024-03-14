@@ -79,7 +79,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 		biddingPrice: null,
 	})
 
-	console.log('finalInput', finalInput)
+
 	const init = {
 		auctionNumber: auctionNum,
 		type: '패키지',
@@ -92,8 +92,6 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 		setAucDetailModal(false)
 	}
 
-	console.log('패키지 모달 바디값 ', winningCreateInput)
-	console.log('getRow', getRow)
 
 	const paramData = {
 		pageNum: 1,
@@ -103,8 +101,6 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 	}
 
 	const [param, setParam] = useState(paramData)
-
-	console.log('param 파람 ==>', param)
 
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(
 		paramData,
@@ -150,7 +146,6 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 		postMutation(winningCreateData)
 	}
 
-	console.log('winningCreateData PackDetail.jsx', winningCreateData)
 
 	const titleData = ['패키지 명', '수량', '시작가']
 	const contentData = [aucDetail['패키지명'], '수정해야함', aucDetail['시작가']]
