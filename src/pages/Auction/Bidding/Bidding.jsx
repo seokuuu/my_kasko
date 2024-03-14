@@ -564,7 +564,7 @@ const Bidding = () => {
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: AuctionBiddingFields,
 		serverData: oriData,
-		wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		wish: { display: true, key: [PROD_COL_NAME.productNumber, PROD_COL_NAME.packageNumber] },
 		best: { display: true },
 	})
 
