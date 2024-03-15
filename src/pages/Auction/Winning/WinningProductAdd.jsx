@@ -38,7 +38,7 @@ import Table from '../../Table/Table'
 import WinningCreateSearchFields from './WinningCreateSearchFields'
 
 // 낙찰 생성 제품 추가(단일) 메인 컴포넌트
-const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, setwinningCreateInput }) => {
+const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, setwinningCreateInput, dupleUids }) => {
 	const { simpleConfirm, simpleAlert } = useAlert()
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
@@ -99,7 +99,7 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 	const resPagination = data?.data?.data?.pagination
 
 	useEffect(() => {
-		let getData = resData
+		const getData = resData?.filter((obj) => !dupleUids.includes(obj.uid))
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
@@ -236,11 +236,11 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 						<TableContianer>
 							<TCSubContainer bor>
 								<div>
-									조회 목록 (선택 <span>2</span> / 50개 )
-									<Hidden />
+									조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / {(getRow && getRow?.length) || 0}개 )
+									{/* <Hidden /> */}
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
-									<PageDropdown />
+									<PageDropdown handleDropdown={handleTablePageSize} />
 									<Excel getRow={getRow} />
 								</div>
 							</TCSubContainer>
@@ -285,7 +285,7 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 							<Table
 								getCol={getCol}
 								getRow={getRow}
-								hei2={250}
+								hei2={exFilterToggle ? 250 : 500}
 								tablePagination={tablePagination}
 								onPageChange={onPageChange}
 							/>

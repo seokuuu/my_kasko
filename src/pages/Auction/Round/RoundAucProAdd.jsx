@@ -242,7 +242,7 @@ const RoundAucProAdd = ({
 								<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}></div>
 							</TCSubContainer>
 							<Table
-								hei2={250}
+								hei2={exFilterToggle ? 250 : 520}
 								hei={100}
 								getCol={AuctionRoundExtraProductFieldsCols}
 								getRow={getRow}

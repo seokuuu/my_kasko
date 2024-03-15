@@ -197,6 +197,8 @@ const WinningCreate = ({}) => {
 		}
 	}, [newResData])
 
+	const dupleUids = getRow && getRow?.map((item) => item['제품 고유 번호'])
+
 	const handleRemoveBtn = useCallback(() => {
 		if (!isArray(checkedArray2) || !checkedArray2.length > 0) return simpleAlert('추가할 항목을 선택해주세요.')
 
@@ -277,97 +279,97 @@ const WinningCreate = ({}) => {
 				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 			</FilterHeader>
 
-			{exFilterToggle && (
-				<>
-					<FilterTopContainer>
-						<FilterTCTop>
-							<h6>경매 번호</h6>
-							<p>{auctionNowNum?.data?.data}</p>
-						</FilterTCTop>
-						<FilterTCBottom>
-							<FilterTCBSubdiv>
-								<div>
-									<h6 style={{ fontSize: '18px' }}>고객사 명/고객사 코드</h6>
-									<Input style={{ width: '110px', marginRight: '10px', fontSize: '16px' }} value={customerData?.name} />
-									<Input style={{ width: '110px', marginRight: '10px', fontSize: '16px' }} value={customerData?.code} />
-									<GreyBtn
-										style={{ width: '70px' }}
-										height={35}
-										margin={10}
-										fontSize={17}
-										onClick={() => {
-											setIsModal(true)
-										}}
-									>
-										찾기
-									</GreyBtn>
-									{/* <p style={{ color: '#4C83D6' }}>{customerData?.code}</p> */}
-								</div>
+			<FilterTopContainer>
+				<FilterTCTop>
+					<h6>경매 번호</h6>
+					<p>{auctionNowNum?.data?.data}</p>
+				</FilterTCTop>
+				<FilterTCBottom>
+					<FilterTCBSubdiv>
+						<div>
+							<h6 style={{ fontSize: '18px' }}>고객사 명/고객사 코드</h6>
+							<Input style={{ width: '110px', marginRight: '10px', fontSize: '16px' }} value={customerData?.name} />
+							<Input style={{ width: '110px', marginRight: '10px', fontSize: '16px' }} value={customerData?.code} />
+							<GreyBtn
+								style={{ width: '70px' }}
+								height={35}
+								margin={10}
+								fontSize={17}
+								onClick={() => {
+									setIsModal(true)
+								}}
+							>
+								찾기
+							</GreyBtn>
+							{/* <p style={{ color: '#4C83D6' }}>{customerData?.code}</p> */}
+						</div>
 
-								<div>
-									<h6 style={{ fontSize: '18px' }}>목적지</h6>
-									<Input
-										placeholder="코드"
-										style={{ width: '60px', marginRight: '10px', fontSize: '16px' }}
-										defaultValue={destiObject?.code}
-									/>
-									<Input
-										placeholder="목적지명"
-										style={{ width: '120px', marginRight: '10px', fontSize: '16px' }}
-										defaultValue={destiObject?.destinationName}
-									/>
-									<Input
-										placeholder="하차지명"
-										style={{ width: '130px', marginRight: '10px', fontSize: '16px' }}
-										defaultValue={destiObject?.name}
-									/>
-									<Input
-										placeholder="하차지 연락처"
-										style={{ width: '130px', marginRight: '10px', fontSize: '16px' }}
-										defaultValue={destiObject?.phone}
-									/>
-									<Input
-										placeholder="주소"
-										style={{ width: '130px', marginRight: '10px', fontSize: '16px' }}
-										defaultValue={destiObject?.address}
-									/>
+						<div>
+							<h6 style={{ fontSize: '18px' }}>목적지</h6>
+							<Input
+								placeholder="코드"
+								style={{ width: '60px', marginRight: '10px', fontSize: '16px' }}
+								defaultValue={destiObject?.code}
+							/>
+							<Input
+								placeholder="목적지명"
+								style={{ width: '120px', marginRight: '10px', fontSize: '16px' }}
+								defaultValue={destiObject?.destinationName}
+							/>
+							<Input
+								placeholder="하차지명"
+								style={{ width: '130px', marginRight: '10px', fontSize: '16px' }}
+								defaultValue={destiObject?.name}
+							/>
+							<Input
+								placeholder="하차지 연락처"
+								style={{ width: '130px', marginRight: '10px', fontSize: '16px' }}
+								defaultValue={destiObject?.phone}
+							/>
+							<Input
+								placeholder="주소"
+								style={{ width: '130px', marginRight: '10px', fontSize: '16px' }}
+								defaultValue={destiObject?.address}
+							/>
 
-									<GreyBtn
-										style={{ width: '70px' }}
-										height={35}
-										margin={10}
-										fontSize={17}
-										onClick={() => {
-											setDestinationPopUp(true)
-										}}
-									>
-										찾기
-									</GreyBtn>
-								</div>
-							</FilterTCBSubdiv>
-							<FilterTCBSubdiv>
-								<div style={{ marginRight: '10px' }}>
-									<h6 style={{ fontSize: '18px' }}>낙찰가 총액 (VAT 포함)</h6>
-									<InputContainer>
-										<NoOutInput type="number" value={totalWon?.biddingPrice} />
-										<Unit>원</Unit>
-									</InputContainer>
-								</div>
-								{/* <div style={{ marginRight: '10px' }}>
+							<GreyBtn
+								style={{ width: '70px' }}
+								height={35}
+								margin={10}
+								fontSize={17}
+								onClick={() => {
+									setDestinationPopUp(true)
+								}}
+							>
+								찾기
+							</GreyBtn>
+						</div>
+					</FilterTCBSubdiv>
+					<FilterTCBSubdiv>
+						<div style={{ marginRight: '10px' }}>
+							<h6 style={{ fontSize: '18px' }}>낙찰가 총액 (VAT 포함)</h6>
+							<InputContainer>
+								<NoOutInput type="number" value={totalWon?.biddingPrice} />
+								<Unit>원</Unit>
+							</InputContainer>
+						</div>
+						{/* <div style={{ marginRight: '10px' }}>
                   <h6 style={{ fontSize: '17px' }}>총 중량</h6>
                   <Input />
                 </div> */}
 
-								<div style={{ marginRight: '10px' }}>
-									<h6 style={{ fontSize: '17px' }}> 확정전송 총액 (공급가)</h6>
-									<InputContainer>
-										<NoOutInput type="number" value={totalWon?.confirmPrice} />
-										<Unit>원</Unit>
-									</InputContainer>
-								</div>
-							</FilterTCBSubdiv>
-						</FilterTCBottom>
-					</FilterTopContainer>
+						<div style={{ marginRight: '10px' }}>
+							<h6 style={{ fontSize: '17px' }}> 확정전송 총액 (공급가)</h6>
+							<InputContainer>
+								<NoOutInput type="number" value={totalWon?.confirmPrice} />
+								<Unit>원</Unit>
+							</InputContainer>
+						</div>
+					</FilterTCBSubdiv>
+				</FilterTCBottom>
+			</FilterTopContainer>
+			{exFilterToggle && (
+				<>
 					<GlobalProductSearch
 						param={param}
 						isToggleSeparate={true}
@@ -380,7 +382,7 @@ const WinningCreate = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>2</span> / 50개 )
+						{/* 조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 ) */}
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -389,9 +391,7 @@ const WinningCreate = ({}) => {
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
-					<div>
-						선택 중량<span> 2 </span>kg / 총 중량 kg
-					</div>
+					<div>{/* 선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg) */}</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<SkyBtn
 							onClick={() => {
@@ -432,6 +432,7 @@ const WinningCreate = ({}) => {
 					newResData={newResData}
 					setNewResData={setNewResData}
 					setwinningCreateInput={setwinningCreateInput}
+					dupleUids={dupleUids}
 				/>
 			)}
 			{destinationPopUp && (
