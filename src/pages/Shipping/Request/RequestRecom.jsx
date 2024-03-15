@@ -17,9 +17,11 @@ import { RegisterFields, RegisterFieldsCols } from '../fields/RegisterFields'
 import { useAtomValue } from 'jotai/index'
 import { authAtom } from '../../../store/Auth/auth'
 import TableV2 from '../../Table/TableV2'
+import { useNavigate } from 'react-router-dom'
 
-const RequestRecom = ({ setChoiceComponent }) => {
+const RequestRecom = () => {
 	const auth = useAtomValue(authAtom)
+	const navigate = useNavigate()
 	const { simpleAlert, simpleConfirm } = useAlert()
 	const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
@@ -114,7 +116,7 @@ const RequestRecom = ({ setChoiceComponent }) => {
 			<GlobalFilterHeader
 				title={'선별 추천 목록'}
 				enableSearchFilters={false}
-				subTitle={<Subtitle2 onClick={() => setChoiceComponent('request')}>출고 요청</Subtitle2>}
+				subTitle={<Subtitle2 onClick={() => navigate('/shipping/request')}>출고 요청</Subtitle2>}
 			/>
 			<MergeHeader
 				list={serverData.list}
@@ -155,7 +157,7 @@ const RequestRecom = ({ setChoiceComponent }) => {
 					</div>
 				</TCSubContainer>
 				<TCSubContainer style={{ display: 'flex', justifyContent: 'center', padding: '18px 0' }}>
-					<WhiteBtn type={'button'} width={20} height={40} onClick={() => setChoiceComponent('request')}>
+					<WhiteBtn type={'button'} width={20} height={40} onClick={() => navigate('/shipping/request')}>
 						돌아가기
 					</WhiteBtn>
 				</TCSubContainer>

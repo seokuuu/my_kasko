@@ -12,6 +12,7 @@ const ClientSearchFields = ({ search, setSearch }) => {
 	const roleList = ['창고', '운송사', '현대제철', '카스코철강', '고객사']
 	const customerStatusList = ['일반', '장기 미접속', '장기 미낙찰', '폐업', '정지']
 	const agreeStatusList = ['승인', '미승인', '대기']
+	const auctionStatusList = ['제한 없음', '경매 제한', '시작가 제한']
 
 	function generateCheckOptions(textOptions) {
 		return textOptions.map((text) => ({
@@ -24,6 +25,40 @@ const ClientSearchFields = ({ search, setSearch }) => {
 	return (
 		<>
 			<FilterLeft>
+				<RowWrap>
+					<PartWrap first>
+						<CustomPartWrap>
+							<MainSelect
+								name="category"
+								options={[
+									{ label: '선택', value: '' },
+									{ label: '고객사 명', value: '고객사' },
+									{ label: '고객 코드', value: '고객 코드' },
+									{ label: '사업자 번호', value: '사업자 번호' },
+								]}
+								value={search.category || { label: '선택', value: '' }}
+								onChange={(e) => onChange('category', e)}
+							/>
+							<Input name="keyword" value={search.keyword} onChange={(e) => onChange('keyword', e.target.value)} />
+						</CustomPartWrap>
+					</PartWrap>
+					<PartWrap>
+						<h6>고객사 유형</h6>
+						<PWRight>
+							<MainSelect
+								name="type"
+								options={[
+									{ label: '전체', value: '' },
+									{ label: '업태', value: '업태' },
+									{ label: '유통', value: '유통' },
+									{ label: '제조', value: '제조' },
+								]}
+								value={search.type || { label: '전체', value: '' }}
+								onChange={(e) => onChange('type', e)}
+							/>
+						</PWRight>
+					</PartWrap>
+				</RowWrap>
 				<RowWrap>
 					<PartWrap first>
 						<h6>사용자 구분</h6>
@@ -47,24 +82,20 @@ const ClientSearchFields = ({ search, setSearch }) => {
 							stateType="object"
 						/>
 					</PartWrap>
-					<PartWrap>
-						<h6>고객사 유형</h6>
-						<PWRight>
-							<MainSelect
-								name="type"
-								options={[
-									{ label: '전체', value: '' },
-									{ label: '업태', value: '업태' },
-									{ label: '유통', value: '유통' },
-									{ label: '제조', value: '제조' },
-								]}
-								value={search.type || { label: '전체', value: '' }}
-								onChange={(e) => onChange('type', e)}
-							/>
-						</PWRight>
-					</PartWrap>
 				</RowWrap>
 				<RowWrap>
+					<PartWrap first>
+						<h6>경매 제한 상태</h6>
+						<CustomCheckBox
+							initOptions={generateCheckOptions(auctionStatusList)}
+							setState={setSearch}
+							stateKey={'auctionStatusList'}
+							isExistEntireValue={true}
+							stateType="object"
+						/>
+					</PartWrap>
+				</RowWrap>
+				<RowWrap none>
 					<PartWrap first>
 						<h6>승인 상태</h6>
 						<CustomCheckBox
@@ -74,22 +105,6 @@ const ClientSearchFields = ({ search, setSearch }) => {
 							isExistEntireValue={true}
 							stateType="object"
 						/>
-					</PartWrap>
-					<PartWrap>
-						<CustomPartWrap>
-							<MainSelect
-								name="category"
-								options={[
-									{ label: '선택', value: '' },
-									{ label: '고객사 명', value: '고객사' },
-									{ label: '고객 코드', value: '고객 코드' },
-									{ label: '사업자 번호', value: '사업자 번호' },
-								]}
-								value={search.category || { label: '선택', value: '' }}
-								onChange={(e) => onChange('category', e)}
-							/>
-							<Input name="keyword" value={search.keyword} onChange={(e) => onChange('keyword', e.target.value)} />
-						</CustomPartWrap>
 					</PartWrap>
 				</RowWrap>
 			</FilterLeft>

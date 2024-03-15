@@ -32,20 +32,20 @@ const init = {
 		text: '',
 		uid: 0,
 	}, //DB 필요
-	thicknessMin: '',
-	thicknessMax: '',
-	widthMin: '',
-	widthMax: '',
-	lengthMin: '',
-	lengthMax: '',
-	tsMin: '',
-	tsMax: '',
-	ypMin: '',
-	ypMax: '',
-	cMin: '',
-	cMax: '',
-	elMin: '',
-	elMax: '',
+	thicknessMin: null,
+	thicknessMax: null,
+	widthMin: null,
+	widthMax: null,
+	lengthMin: null,
+	lengthMax: null,
+	tsMin: null,
+	tsMax: null,
+	ypMin: null,
+	ypMax: null,
+	cMin: null,
+	cMax: null,
+	elMin: null,
+	elMax: null,
 }
 
 const PreferPost = ({ setChoiceComponent }) => {
@@ -91,10 +91,10 @@ const PreferPost = ({ setChoiceComponent }) => {
 		}
 		delete requestParams.spec
 
-		if (isEmptyObj(submitData)) {
-			create(requestParams)
+		if (!requestParams.name) {
+			simpleAlert('선호제품명을 기입해주세요.')
 		} else {
-			simpleAlert('내용을 모두 기입해주세요.')
+			create(requestParams)
 		}
 	}
 

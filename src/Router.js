@@ -168,10 +168,10 @@ import DuplicateLogin from './pages/DuplicateLogin'
 import Timeout from './pages/Timeout'
 import BiddingPackage from './pages/Auction/Bidding/BiddingPackage'
 import BiddingPackagePage from './pages/Auction/Bidding/BiddingPackagePage'
+import RequestRecomPage from './pages/Shipping/Request/RequestRecomPage'
 
 const Router = () => {
 	const auth = useAtomValue(authAtom)
-	console.log('로그인 정보 : ', auth)
 	return (
 		<Routes>
 			{/* 테스트 URL */}
@@ -239,6 +239,7 @@ const Router = () => {
 			<Route path="/shipping">
 				<Route path="/shipping/register" element={<RegisterPage />} />
 				<Route path="/shipping/request" element={<RequestPage />} />
+				<Route path="/shipping/request/recom" element={<RequestRecomPage />} />
 				<Route path="/shipping/dispatch" element={<DispatchPage />} />
 				<Route path="/shipping/dispatch/register" element={<DisRegisterPage />} />
 				<Route path="/shipping/dispatch/register/:id" element={<DisRegisterDetailPage />} />

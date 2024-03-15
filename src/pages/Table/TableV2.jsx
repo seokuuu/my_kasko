@@ -25,6 +25,7 @@ import {
 } from '../../store/Table/Table'
 import './TableUi.css'
 import { customNumberFormatter } from '../../utils/utils'
+import { getTableLocalStorageByPageName } from '../../store/Table/tabeleLocalStorage'
 
 /**
  * AG-GRID settings 함수
@@ -151,6 +152,8 @@ const TableV2 = ({
 	const setShowColumnClear = useSetAtom(tableRestoreColumnAtom) // 테이블 노출 칼럼 처리
 	const setResetHiddenColumn = useSetAtom(tableResetColumnAtom) // 테이블 숨김항목 초기화 처리
 
+	const localTableList = getTableLocalStorageByPageName()
+
 	/**
 	 * 그리드 옵션
 	 * 주의: GridOptios은 컴포넌트 내에서 선언해 주세요.
@@ -216,63 +219,26 @@ const TableV2 = ({
 		}
 
 		const api = gridRef.current.columnApi
-		const savedState = api.getColumnState()
-		const applyState = savedState.reduce((acc, v) => {
-			if (v?.colId === showId) v.hide = false
-			return [...acc, v]
-		}, [])
+		const savedState = api?.getColumnState()
+		if (savedState) {
+			const applyState = savedState.reduce((acc, v) => {
+				if (v?.colId === showId) v.hide = false
+				return [...acc, v]
+			}, [])
 
-		api.applyColumnState({ state: applyState })
-		setShowColumnClear({ type: tableType })
-	}
-
-	const throttle = (func, limit) => {
-		let lastFunc
-		let lastRan
-		return function () {
-			const context = this
-			const args = arguments
-			if (!lastRan) {
-				func.apply(context, args)
-				lastRan = Date.now()
-			} else {
-				clearTimeout(lastFunc)
-				lastFunc = setTimeout(function () {
-					if (Date.now() - lastRan >= limit) {
-						func.apply(context, args)
-						lastRan = Date.now()
-					}
-				}, limit - (Date.now() - lastRan))
-			}
+			api.applyColumnState({ state: applyState })
 		}
+		setShowColumnClear({ type: tableType })
 	}
 
 	const onGridReady = (params) => {
 		const agGridApi = params.api
 		setGridApi(agGridApi)
-
-		// const throttledAutoSize = throttle(() => {
-		// 	params.columnApi.autoSizeAllColumns(false)
-		// }, 500)
-		//
-		// agGridApi.addEventListener('bodyScroll', throttledAutoSize)
 	}
 
 	const onFirstDataRendered = (params) => {
-		// const columnApi = params.columnApi
-		// if (columnApi) {
-		// 	const allColumns = columnApi.getAllColumns()
-		// 	if (allColumns) {
-		// 		const excludeIds = ['경매 번호', '제품 번호']
-		// 		allColumns.forEach((column) => {
-		// 			if (!excludeIds.includes(column.colId)) {
-		// 				column.getColDef().valueFormatter = customNumberFormatter
-		// 			}
-		// 		})
-		// 	}
-		//
-		// 	columnApi.autoSizeAllColumns(false)
-		// }
+		const columnApi = params.columnApi
+		columnApi.autoSizeAllColumns(false)
 	}
 
 	/* ==================== STATE start ==================== */
@@ -299,16 +265,64 @@ const TableV2 = ({
 		const showId = showColumnId[tableType]
 		onColumnShow(showId)
 	}, [showColumnId])
+
+	// 로컬 스토리지 저장된 숨김목록처리
+	useEffect(() => {
+		if (!localTableList) {
+			return
+		}
+
+		if (gridRef.current.columnApi) {
+			const columnApi = gridRef.current.columnApi
+			if (columnApi) {
+				const allColumns = columnApi.getAllColumns()
+				if (allColumns) {
+					const hiddenIds = localTableList[tableType].hiddenIds
+
+					allColumns.forEach((column) => {
+						if (hiddenIds.includes(column.colId)) {
+							column.setVisible(false)
+						}
+					})
+				}
+			}
+		}
+	}, [localTableList])
 	/* ==================== STATE end ==================== */
 
 	/* ==================== INITIALIZE start ==================== */
 	// 테이블 칼럼, 로우 데이터 초기화
 	useEffect(() => {
-		if (getCol) {
-			setColumnDefs(getCol)
+		if (getCol && getCol?.length > 0) {
+			const newCol = getCol?.map((item, index) => {
+				if (index === 0) {
+					item.pinned = 'left'
+					item.minWidth = 50
+					item.maxWidth = 50
+				}
+				if (item.checkboxSelection) {
+					item.pinned = 'left'
+					item.minWidth = 50
+					item.maxWidth = 50
+				}
+				return item
+			})
+			setColumnDefs(newCol)
 		}
+
 		if (getRow && getRow.length > 0) {
-			setRowData(getRow)
+			const formattedRow = getRow.map((item) => {
+				const formattedItem = {}
+				Object.keys(item).forEach((key) => {
+					if (['순번', '고객 구분', '중량', '총 중량', '제품 중량'].includes(key) || key.includes('번호')) {
+						return (formattedItem[key] = item[key])
+					} else {
+						formattedItem[key] = customNumberFormatter({ value: item[key] })
+					}
+				})
+				return formattedItem
+			})
+			setRowData(formattedRow)
 		} else {
 			setRowData(null)
 		}
@@ -330,6 +344,7 @@ const TableV2 = ({
 			<TestContainer hei={hei}>
 				<div style={{ height: '100%', width: '100%' }} className="ag-theme-alpine">
 					<AgGridReact
+						suppressColumnVirtualisation={true}
 						onGridReady={onGridReady}
 						onFirstDataRendered={onFirstDataRendered}
 						columnDefs={columnDefs}
@@ -414,66 +429,3 @@ const TestContainer = styled.div`
 		justify-content: center !important;
 	}
 `
-
-export const TestHeader = styled.div`
-	font-size: 13px;
-	margin-bottom: 10px;
-	display: flex;
-	justify-content: space-around;
-	border: 1px solid grey;
-	padding: 10px;
-	border-radius: 5px;
-`
-
-export const FindSpec = styled.div`
-	width: 100%;
-	height: 300px;
-`
-
-export const FSTitle = styled.div`
-	width: 100%;
-	height: 50px;
-	border: 1px solid #c8c8c8;
-	display: flex;
-	align-items: center;
-	justify-content: space-around;
-
-	input {
-		border: 1px solid #c8c8c8;
-		height: 30px;
-		width: 300px;
-	}
-`
-
-export const FSResult = styled.div`
-	width: 100%;
-	height: 295px;
-	display: flex;
-	flex-wrap: wrap;
-	gap: 5px;
-	padding: 5px;
-	overflow: scroll;
-	border: 1px solid #c8c8c8;
-`
-
-export const ResultBlock = styled.div`
-	width: 24%;
-	height: 50px;
-	border: 1px solid black;
-	cursor: pointer;
-	font-size: 16px;
-	justify-content: center;
-	align-items: center;
-	text-align: center;
-	display: flex;
-
-	&:hover {
-		background-color: #eee;
-	}
-`
-
-export const RBInput = styled.input`
-	font-size: 16px;
-`
-
-export const Pagination = styled.ul``
