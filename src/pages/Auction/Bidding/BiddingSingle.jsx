@@ -88,8 +88,7 @@ const BiddingSingle = ({}) => {
 
 	const [getRow, setGetRow] = useState('')
 	const [newGetRow, setNewGetRow] = useState({})
-	const tableField = useRef(AuctionBiddingFieldsCols)
-	const getCol = tableField.current
+
 	const queryClient = useQueryClient()
 	// const checkedArrayState = useAtom(selectedRowsAtom)[0]
 	const [tablePagination, setTablePagination] = useState([])
@@ -118,6 +117,10 @@ const BiddingSingle = ({}) => {
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding)
 	const originData = data?.data?.data
 	const [oriData, setOridata] = useState()
+
+	const tableField = useMemo(() => {
+		return AuctionBiddingFieldsCols(checkedArrayState)
+	}, [checkedArrayState])
 
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
@@ -653,7 +656,7 @@ const BiddingSingle = ({}) => {
 				</TCSubContainer>
 
 				<Table
-					getCol={AuctionBiddingFieldsCols(checkedArrayState)}
+					getCol={tableField}
 					getRow={tableRowData}
 					tablePagination={tablePagination}
 					onPageChange={onPageChange}

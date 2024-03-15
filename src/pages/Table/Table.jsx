@@ -197,36 +197,9 @@ const Table = ({
 
 	// ---------------------------------------------------------------------
 
-	const countries = rowData?.map((item) => item.country)
-	const uniqueCountriesSet = new Set(countries)
-	const uniqueCountries = Array.from(uniqueCountriesSet)
-	const sortedCountries = uniqueCountries.sort()
-	// console.log(sortedCountries)
-
-	const externalFilterChanged = useCallback((newValue) => {
-		ageType = newValue
-		gridRef.current.api.onFilterChanged()
-	}, [])
 	const isExternalFilterPresent = useCallback(() => {
 		// if ageType is not everyone or either minAge or maxAge is set, then we are filtering
 		return ageType !== 'everyone' || minAge !== null || maxAge !== null || countryFilter !== null
-	}, [])
-
-	const onMinAgeChange = useCallback((event) => {
-		minAge = event.target.value !== '' ? parseInt(event.target.value) : null
-		gridRef.current.api.onFilterChanged()
-	}, [])
-
-	const onMaxAgeChange = useCallback((event) => {
-		maxAge = event.target.value !== '' ? parseInt(event.target.value) : null
-		gridRef.current.api.onFilterChanged()
-	}, [])
-
-	const onCountryFilterChange = useCallback((event) => {
-		const newCountryFilter = event.target.value.trim()
-		const filters = newCountryFilter.split(/,|\n/).map((filter) => filter.trim()) // 스페이스 요청시 (/,|\n|\s+/) 이걸로 바꾸자.
-		countryFilter = filters.length > 0 ? filters : null
-		gridRef.current.api.onFilterChanged()
 	}, [])
 
 	const onFindButtonClick = () => {
