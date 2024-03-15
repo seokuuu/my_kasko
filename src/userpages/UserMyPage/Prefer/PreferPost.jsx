@@ -91,7 +91,7 @@ const PreferPost = ({ setChoiceComponent }) => {
 		}
 		delete requestParams.spec
 
-		if (isEmptyObj(submitData)) {
+		if (!submitData.name) {
 			create(requestParams)
 		} else {
 			simpleAlert('내용을 모두 기입해주세요.')
