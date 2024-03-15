@@ -394,7 +394,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 								<SkyBtn
 									onClick={() => {
 										setAddModal(true)
-									}}k
+									}}
 								>
 									제품 추가
 								</SkyBtn>

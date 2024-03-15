@@ -134,6 +134,14 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 		pageSize: 50,
 	})
 
+	const handleTablePageSize = (event) => {
+		setParam((prevParam) => ({
+			...prevParam,
+			pageSize: Number(event.target.value),
+			pageNum: 1,
+		}))
+	}
+
 	useEffect(() => {
 		setDetailParams((prev) => ({
 			...prev,
@@ -286,7 +294,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<PageDropdown />
+						<PageDropdown handleDropdown={handleTablePageSize} />
 						<Excel
 						// getRow={getRow}
 						/>
