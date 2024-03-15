@@ -312,7 +312,15 @@ const TableV2 = ({
 			setColumnDefs(newCol)
 		}
 		if (getRow && getRow.length > 0) {
-			setRowData(getRow)
+			const formattedRow = getRow.map((item) => {
+				const formattedItem = {}
+				Object.keys(item).forEach((key) => {
+					formattedItem[key] = customNumberFormatter({ value: item[key] })
+				})
+				return formattedItem
+			})
+
+			setRowData(formattedRow)
 		} else {
 			setRowData(null)
 		}
