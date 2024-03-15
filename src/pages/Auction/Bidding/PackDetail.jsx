@@ -32,6 +32,8 @@ import {
 import useAlert from '../../../store/Alert/useAlert'
 import { selectedRowsAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
+import useTableSelection from '../../../hooks/useTableSelection'
+import useTableData from '../../../hooks/useTableData'
 
 // 패키지 상세보기 (경매)
 const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
@@ -43,8 +45,9 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 		biddingPrice: null,
 	}
 
+	console.log('aucDetail', aucDetail)
 	// AuctionBiddingFieldsCols(checkedArrayState) 이런식으로 써야하나?
-	const tableField = useRef(AuctionBiddingFieldsCols)
+	const tableField = useRef(AuctionBiddingFieldsCols(checkedArray))
 
 	// 체크박스 없애기
 	useEffect(() => {
@@ -79,7 +82,6 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 		biddingPrice: null,
 	})
 
-
 	const init = {
 		auctionNumber: auctionNum,
 		type: '패키지',
@@ -91,7 +93,6 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 	const modalClose = () => {
 		setAucDetailModal(false)
 	}
-
 
 	const paramData = {
 		pageNum: 1,
@@ -107,6 +108,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 		'getBiddingDetail',
 		getBiddingPackDetail,
 	)
+
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
@@ -146,7 +148,6 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 		postMutation(winningCreateData)
 	}
 
-
 	const titleData = ['패키지 명', '수량', '시작가']
 	const contentData = [aucDetail['패키지명'], '수정해야함', aucDetail['시작가']]
 
@@ -160,32 +161,34 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 
 	// 응찰가 일괄 적용 버튼
 	const handleButtonClick = () => {
-		const firstBiddingEntry = getRow[0]
-		if (firstBiddingEntry) {
-			setWinningCreateData((prevData) => ({
-				...prevData,
-				biddingList: [
-					{
-						packageNumber: packNum,
-						customerDestinationUid: destiObject && destiObject?.['uid'],
-						biddingPrice: firstBiddingEntry['응찰가'] + finalInput?.biddingPrice,
-					},
-				],
-			}))
+		if (finalInput.biddingPrice === null) simpleAlert('값을 입력해주세요.')
+		else {
+			simpleAlert('적용 되었습니다.', () => {
+				const firstBiddingEntry = getRow[0]
+				if (firstBiddingEntry) {
+					setWinningCreateData((prevData) => ({
+						...prevData,
+						biddingList: [
+							{
+								packageNumber: packNum,
+								customerDestinationUid: destiObject && destiObject?.['uid'],
+								biddingPrice: firstBiddingEntry['응찰가'] + finalInput?.biddingPrice,
+							},
+						],
+					}))
+				}
+
+				const uids = getRow?.[0]?.['경매 번호']
+				const updatedResData = resData.map((item) => {
+					if (uids.includes(item.auctionNumber)) {
+						item.memberBiddingPrice = item.memberBiddingPrice + finalInput?.biddingPrice
+					}
+					return item
+				})
+				setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
+			})
 		}
-
-		const uids = getRow?.[0]?.['경매 번호']
-		const updatedResData = resData.map((item) => {
-			if (uids.includes(item.auctionNumber)) {
-				item.memberBiddingPrice = item.memberBiddingPrice + finalInput?.biddingPrice
-			}
-			return item
-		})
-		setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
-
-	// JSX 내부에서 버튼에 onClick 이벤트 핸들러 추가
-	;<button onClick={handleButtonClick}>클릭</button>
 
 	return (
 		<>
@@ -220,19 +223,14 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 						</ClaimTable>
 						<TableContianer>
 							<TCSubContainer bor>
-								<div>
-									조회 목록 (선택 <span>2</span> / 50개 )
-									<Hidden />
-								</div>
+								<div></div>
 								<div style={{ display: 'flex', gap: '10px' }}>
 									<PageDropdown handleDropdown={handleTablePageSize} />
 									<Excel getRow={getRow} />
 								</div>
 							</TCSubContainer>
 							<TCSubContainer>
-								<div>
-									선택 중량<span> 2 </span>kg / 총 중량 kg
-								</div>
+								<div></div>
 								<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
 									<p>일괄 경매 응찰 | 최고가 +</p>
 									<CustomInput
