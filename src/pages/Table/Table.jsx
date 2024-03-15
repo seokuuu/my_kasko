@@ -159,10 +159,32 @@ const Table = ({
 	// console.log(getCol)
 	useEffect(() => {
 		if (getCol) {
-			setColumnDefs(getCol)
+			const newCol = getCol?.map((item, index) => {
+				if (index === 0) {
+					item.pinned = 'left'
+					item.minWidth = 50
+					item.maxWidth = 50
+				}
+				if (item.checkboxSelection) {
+					item.pinned = 'left'
+					item.minWidth = 50
+					item.maxWidth = 50
+				}
+				return item
+			})
+
+			setColumnDefs(newCol)
 		}
 		if (getRow && getRow.length > 0) {
-			setRowData(getRow)
+			const formattedRow = getRow.map((item) => {
+				const formattedItem = {}
+				Object.keys(item).forEach((key) => {
+					formattedItem[key] = customNumberFormatter({ value: item[key] })
+				})
+				return formattedItem
+			})
+
+			setRowData(formattedRow)
 		} else {
 			setRowData(null)
 		}
@@ -254,54 +276,15 @@ const Table = ({
 		// console.log('Double clicked row UID: ', event.data)
 	}
 
-	const throttle = (func, limit) => {
-		let lastFunc
-		let lastRan
-		return function () {
-			const context = this
-			const args = arguments
-			if (!lastRan) {
-				func.apply(context, args)
-				lastRan = Date.now()
-			} else {
-				clearTimeout(lastFunc)
-				lastFunc = setTimeout(function () {
-					if (Date.now() - lastRan >= limit) {
-						func.apply(context, args)
-						lastRan = Date.now()
-					}
-				}, limit - (Date.now() - lastRan))
-			}
-		}
-	}
-
 	// Grid api 설정확인
 	const onGridReady = (params) => {
 		const agGridApi = params.api
 		setGridApi(agGridApi)
-
-		// const throttledAutoSize = throttle(() => {
-		// 	params.columnApi.autoSizeAllColumns(false)
-		// }, 500)
-		//
-		// agGridApi.addEventListener('bodyScroll', throttledAutoSize)
 	}
 
 	const onFirstDataRendered = (params) => {
-		// const columnApi = params.columnApi
-		// if (columnApi) {
-		// 	const allColumns = columnApi.getAllColumns()
-		// 	if (allColumns) {
-		// 		const excludeIds = ['경매 번호', '제품 번호']
-		// 		allColumns.forEach((column) => {
-		// 			if (!excludeIds.includes(column.colId)) {
-		// 				column.getColDef().valueFormatter = customNumberFormatter
-		// 			}
-		// 		})
-		// 	}
-		//
-		// 	columnApi.autoSizeAllColumns(false)
-		// }
+		const columnApi = params.columnApi
+		columnApi.autoSizeAllColumns(false)
 	}
 
 	// 체크했을때 jotai 전역상태값 설정
@@ -476,6 +459,7 @@ const Table = ({
 				<div style={gridStyle} className="ag-theme-alpine">
 					<AgGridReact
 						// {...gridOptions}
+						suppressColumnVirtualisation={true}
 						onGridReady={effectGridReady}
 						onFirstDataRendered={onFirstDataRendered}
 						columnDefs={columnDefs}
