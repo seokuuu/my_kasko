@@ -47,8 +47,6 @@ const useAuth = () => {
 		return auth ? { name: auth.name, customerName: auth.customerName } : null
 	}
 
-	console.log('어쓰 =>', auth)
-
 	// 로그아웃
 	const logout = () => {
 		setAuth(initAuth)

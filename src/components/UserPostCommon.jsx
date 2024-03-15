@@ -37,6 +37,7 @@ export default function UserPostCommon({ id, isCustomer = false, closeModal = nu
 			businessType: '유통',
 			approvalStatus: '승인',
 			auctionStatus: '제한 없음',
+			status: '일반',
 			memberType: '고객사',
 		},
 	})
@@ -73,6 +74,7 @@ export default function UserPostCommon({ id, isCustomer = false, closeModal = nu
 			}
 			setValue(key, value)
 		}
+		setBusIdDupleCheck(true)
 		setOriginalBusinessNumber(customerData?.businessNumber)
 		setBank(customerData.bank)
 	}
@@ -191,7 +193,9 @@ export default function UserPostCommon({ id, isCustomer = false, closeModal = nu
 				setIdDupleCheck(false)
 			}
 			if (name === 'memberType') {
-				const isKasko = value['memberType'] === '카스코철강'
+				const isKasko =
+					value['memberType'] === '카스코철강' ||
+					(originalBusinessNumber && value['memberType'] === originalBusinessNumber)
 				setBusIdDupleCheck(isKasko)
 			}
 		})
@@ -489,6 +493,47 @@ export default function UserPostCommon({ id, isCustomer = false, closeModal = nu
 													checked={watch('approvalStatus') === '미승인'}
 												/>
 												미승인
+											</RadioLabel>
+										</div>
+									</FlexContent>
+								</FlexPart>
+								<FlexPart style={{ flexDirection: 'column', gap: '20px', alignItems: 'flex-start' }}>
+									<FlexTitle>
+										회원 상태<span>*</span>
+									</FlexTitle>
+									<FlexContent style={{ width: '100%' }}>
+										<div
+											style={{
+												display: 'flex',
+												gap: '12px',
+											}}
+										>
+											<RadioLabel>
+												<input
+													type="radio"
+													value="일반"
+													{...register('status', { required: true })}
+													checked={watch('status') === '일반'}
+												/>
+												일반
+											</RadioLabel>
+											<RadioLabel>
+												<input
+													type="radio"
+													value="폐업"
+													{...register('status', { required: true })}
+													checked={watch('status') === '폐업'}
+												/>
+												폐업
+											</RadioLabel>
+											<RadioLabel>
+												<input
+													type="radio"
+													value="정지"
+													{...register('status', { required: true })}
+													checked={watch('status') === '정지'}
+												/>
+												정지
 											</RadioLabel>
 										</div>
 									</FlexContent>
@@ -1049,7 +1094,7 @@ export default function UserPostCommon({ id, isCustomer = false, closeModal = nu
 										/>
 									)}
 								/>
-								{watch('memberType') !== '카스코철강' && (
+								{!busIdDupleCheck && (
 									<CheckBtn
 										onClick={handleBusIdDupleCheck}
 										type="button"

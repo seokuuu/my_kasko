@@ -171,7 +171,6 @@ import BiddingPackagePage from './pages/Auction/Bidding/BiddingPackagePage'
 
 const Router = () => {
 	const auth = useAtomValue(authAtom)
-	console.log('로그인 정보 : ', auth)
 	return (
 		<Routes>
 			{/* 테스트 URL */}
