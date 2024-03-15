@@ -201,6 +201,10 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 		fetchData() // 비동기 함수를 호출
 	}, [newResData, resData])
 
+	const dupleUids = getRow && getRow?.map((item) => item['제품 고유 번호'] || item['고유 번호'])
+
+	console.log('dupleUids', dupleUids)
+
 	const [outAddData, setOutAddData] = useState([])
 	console.log('outAddData', outAddData)
 	const [delData, setDelData] = useState([])
@@ -390,7 +394,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 								<SkyBtn
 									onClick={() => {
 										setAddModal(true)
-									}}
+									}}k
 								>
 									제품 추가
 								</SkyBtn>
@@ -421,6 +425,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 						outAddData={outAddData}
 						setOutAddData={setOutAddData}
 						auctionNumber={auctionNum}
+						dupleUids={dupleUids}
 					/>
 				)}
 				<NewBottomBtnWrap bottom={-5} borderTop={'none'}>
