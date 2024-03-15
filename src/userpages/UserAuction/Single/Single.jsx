@@ -37,6 +37,7 @@ import { auctionStartAtom, userPageSingleDestiFindAtom } from '../../../store/La
 import Table from '../../../pages/Table/Table'
 
 import UserBiddingSearchFields from './UserBiddingSearchFields'
+import { useLoading } from '../../../store/Loading/loadingAtom'
 
 const Single = ({}) => {
 	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
@@ -254,7 +255,7 @@ const Single = ({}) => {
 		}))
 	}
 
-	const { mutate: postMutation } = useMutation(postBidding, {
+	const { mutate: postMutation, isLoading: postAuctionLoading } = useMutation(postBidding, {
 		onSuccess() {
 			showAlert({
 				title: '응찰이 완료되었습니다.',
@@ -291,10 +292,19 @@ const Single = ({}) => {
 		},
 	})
 
+	// 경매 로딩
+	useLoading(isLoading || postAuctionLoading)
+
 	// 응찰 버튼 POST
 	const confirmOnClickHandler = () => {
-		setLive(true) // 실시간으로 다시 설정
-		postMutation(winningCreateData)
+		if (!winningCreateData.auctionNumber) {
+			simpleAlert('응찰할 제품을 선택해주세요.')
+			return
+		}
+		if (!isLoading || !postAuctionLoading) {
+			postMutation(winningCreateData)
+		}
+		setLive(true)
 	}
 
 	const globalProductResetOnClick = () => {
