@@ -176,20 +176,20 @@ const Table = ({
 			setColumnDefs(newCol)
 		}
 		if (getRow && getRow.length > 0) {
-			const formattedRow = getRow.map((item) => {
-				const formattedItem = {}
-				Object.keys(item).forEach((key) => {
-					if (['순번', '고객 구분'].includes(key) || key.includes('번호')) {
-						return (formattedItem[key] = item[key])
-					} else {
-						formattedItem[key] = customNumberFormatter({ value: item[key] })
-					}
-					formattedItem[key] = customNumberFormatter({ value: item[key] })
-				})
-				return formattedItem
-			})
+			// const formattedRow = getRow.map((item) => {
+			// 	const formattedItem = {}
+			// 	Object.keys(item).forEach((key) => {
+			// 		if (['순번', '고객 구분'].includes(key) || key.includes('번호')) {
+			// 			return (formattedItem[key] = item[key])
+			// 		} else {
+			// 			formattedItem[key] = customNumberFormatter({ value: item[key] })
+			// 		}
+			// 		// formattedItem[key] = customNumberFormatter({ value: item[key] })
+			// 	})
+			// 	return formattedItem
+			// })
 
-			setRowData(formattedRow)
+			setRowData(getRow)
 		} else {
 			setRowData(null)
 		}
