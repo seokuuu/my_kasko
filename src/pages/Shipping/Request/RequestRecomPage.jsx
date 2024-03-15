@@ -3,9 +3,9 @@ import { OverAllMain, OverAllSub, OverAllTable } from '../../../common/Overall/O
 import SideBar from '../../../components/Left/SideBar'
 import Header from '../../../components/Header/Header'
 import SubHeader from '../../../components/Header/SubHeader'
-import Request from './Request'
+import RequestRecom from './RequestRecom'
 
-const RequestPage = () => {
+const RequestRecomPage = () => {
 	const depth2Color = '출고 요청'
 	const [expanded, setExpanded] = useState('출고 관리')
 
@@ -17,7 +17,7 @@ const RequestPage = () => {
 				<OverAllSub>
 					<SubHeader />
 					<OverAllTable>
-						<Request />
+						<RequestRecom />
 					</OverAllTable>
 				</OverAllSub>
 			</OverAllMain>
@@ -25,4 +25,4 @@ const RequestPage = () => {
 	)
 }
 
-export default RequestPage
+export default RequestRecomPage

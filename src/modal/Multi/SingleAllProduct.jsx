@@ -30,7 +30,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 	const packageObj = useAtomValue(isUpdate ? packageUpdateObjAtom : packageCreateObjAtom)
 	const [getRow, setGetRow] = useState([])
 
-	const tableField = useRef(SingleDispatchFieldsCols)
+	const tableField = useRef(SingleDispatchFieldsCols())
 	const getCol = tableField.current
 
 	const [isModal, setIsModal] = useAtom(singleAllProductModal)
@@ -167,8 +167,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 							<TCSubContainer bor>
 								<div>
 									조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
-									{pagiNation ? pagiNation.listCount : singleProductPage?.listCount}개 )
-									<Hidden />
+									{pagiNation ? pagiNation.listCount : singleProductPage?.listCount}개 ){/*<Hidden />*/}
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
 									<PageDropdown
@@ -212,7 +211,7 @@ export default SingleAllProduct
 
 export const Container = styled.div`
 	min-width: 75%;
-	max-height: 800px;
+	height: 800px;
 	position: absolute;
 	top: 50%;
 	left: 55%;

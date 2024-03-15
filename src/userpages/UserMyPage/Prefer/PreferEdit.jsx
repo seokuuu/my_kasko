@@ -27,21 +27,21 @@ const init = {
 		text: '',
 		uid: 0,
 	}, //DB 필요
-	thicknessMin: 0,
-	thicknessMax: 0,
-	widthMin: 0,
-	widthMax: 0,
-	lengthMin: 0,
-	lengthMax: 0,
-	tsMin: 0,
-	tsMax: 0,
-	ypMin: 0,
-	ypMax: 0,
-	cmin: 0,
-	cmax: 0,
-	elMin: 0,
-	elMax: 0,
-	uid: 0,
+	thicknessMin: null,
+	thicknessMax: null,
+	widthMin: null,
+	widthMax: null,
+	lengthMin: null,
+	lengthMax: null,
+	tsMin: null,
+	tsMax: null,
+	ypMin: null,
+	ypMax: null,
+	cmin: null,
+	cmax: null,
+	elMin: null,
+	elMax: null,
+	uid: null,
 }
 
 const PreferEdit = ({ setSwtichEdit, uidAtom }) => {
@@ -114,10 +114,11 @@ const PreferEdit = ({ setSwtichEdit, uidAtom }) => {
 		delete requestParams.cmin
 		delete requestParams.cmax
 		delete requestParams.spec
-		if (!submitData.name) {
-			update(requestParams)
+
+		if (!requestParams.name) {
+			simpleAlert('선호제품명을 기입해주세요.')
 		} else {
-			simpleAlert('내용을 모두 기입해주세요.')
+			update(requestParams)
 		}
 	}
 

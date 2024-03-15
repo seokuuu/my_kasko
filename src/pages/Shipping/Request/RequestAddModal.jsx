@@ -3,7 +3,7 @@ import { BlackBtn } from '../../../common/Button/Button'
 import { aucProAddModalAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import {
 	BlueBarBtnWrap,
 	BlueBarHeader,
@@ -24,6 +24,7 @@ import { authAtom } from '../../../store/Auth/auth'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import TableV2 from '../../Table/TableV2'
 import { calculateTotal } from './utils'
+import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 
 const initData = {
 	pageNum: 1,
@@ -34,7 +35,7 @@ const initData = {
 // 합짐 추가 등록 메인 컴포넌트
 const RequestAddModal = ({ list, onListAdd }) => {
 	const auth = useAtomValue(authAtom)
-	const exFilterToggle = useAtomValue(toggleAtom)
+	const [exFilterToggle, setExFilterToggle] = useState(toggleAtom)
 	const selectedRows = useAtomValue(selectedRowsAtom)
 	const setAddModal = useSetAtom(aucProAddModalAtom)
 
@@ -97,7 +98,7 @@ const RequestAddModal = ({ list, onListAdd }) => {
 	return (
 		<>
 			<FadeOverlay />
-			<ModalContainer style={{ width: '75%', height: '85vh' }}>
+			<ModalContainer style={{ width: '1400px', height: '90vh' }}>
 				<BlueBarHeader style={{ height: '60px' }}>
 					<div>선별 추가 등록</div>
 					<div>
@@ -106,6 +107,13 @@ const RequestAddModal = ({ list, onListAdd }) => {
 				</BlueBarHeader>
 				<BlueSubContainer style={{ padding: '0px 30px' }}>
 					<FilterContianer style={{ paddingBottom: '0px' }}>
+						<div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', margin: '24px 0' }}>
+							<HeaderToggle
+								exFilterToggle={exFilterToggle}
+								toggleBtnClick={() => setExFilterToggle((prev) => !prev)}
+								toggleMsg={exFilterToggle ? 'On' : 'Off'}
+							/>
+						</div>
 						{exFilterToggle && (
 							<GlobalProductSearch
 								param={param}
@@ -119,7 +127,7 @@ const RequestAddModal = ({ list, onListAdd }) => {
 							<TCSubContainer bor>
 								<div>
 									조회 목록 (선택 <span>{selectedCountStr}</span> / {serverData.list?.length?.toLocaleString()}개 )
-									<TableV2HiddenSection />
+									{/*<TableV2HiddenSection />*/}
 								</div>
 							</TCSubContainer>
 							<TCSubContainer>
@@ -129,7 +137,7 @@ const RequestAddModal = ({ list, onListAdd }) => {
 								</div>
 							</TCSubContainer>
 							<TableV2
-								hei2={450}
+								hei2={exFilterToggle ? 200 : 480}
 								hei={100}
 								getRow={tableRowData}
 								loading={isLoading}

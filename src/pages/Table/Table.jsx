@@ -158,7 +158,7 @@ const Table = ({
 
 	// console.log(getCol)
 	useEffect(() => {
-		if (getCol) {
+		if (getCol && getCol?.length > 0) {
 			const newCol = getCol?.map((item, index) => {
 				if (index === 0) {
 					item.pinned = 'left'

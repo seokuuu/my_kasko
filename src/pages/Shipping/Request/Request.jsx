@@ -22,6 +22,7 @@ import { authAtom } from '../../../store/Auth/auth'
 import { ShippingRequestFields, ShippingRequestFieldsCols } from '../fields/ShippingRequestFields'
 import TableV2 from '../../Table/TableV2'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import { useNavigate } from 'react-router-dom'
 
 const initData = {
 	pageNum: 1,
@@ -29,7 +30,8 @@ const initData = {
 	shipmentStatus: '출하 지시',
 }
 
-const Request = ({ setChoiceComponent }) => {
+const Request = () => {
+	const navigate = useNavigate()
 	const auth = useAtomValue(authAtom)
 	const { simpleAlert, simpleConfirm } = useAlert()
 
@@ -176,7 +178,7 @@ const Request = ({ setChoiceComponent }) => {
 		<FilterContianer>
 			<GlobalFilterHeader
 				title={'출고 요청'}
-				subTitle={<Subtitle2 onClick={() => setChoiceComponent('requestRecom')}>선별 추천</Subtitle2>}
+				subTitle={<Subtitle2 onClick={() => navigate('/shipping/request/recom')}>선별 추천</Subtitle2>}
 			/>
 			{exFilterToggle && (
 				<GlobalProductSearch
