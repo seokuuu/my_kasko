@@ -159,10 +159,32 @@ const Table = ({
 	// console.log(getCol)
 	useEffect(() => {
 		if (getCol) {
-			setColumnDefs(getCol)
+			const newCol = getCol?.map((item, index) => {
+				if (index === 0) {
+					item.pinned = 'left'
+					item.minWidth = 50
+					item.maxWidth = 50
+				}
+				if (item.checkboxSelection) {
+					item.pinned = 'left'
+					item.minWidth = 50
+					item.maxWidth = 50
+				}
+				return item
+			})
+
+			setColumnDefs(newCol)
 		}
 		if (getRow && getRow.length > 0) {
-			setRowData(getRow)
+			const formattedRow = getRow.map((item) => {
+				const formattedItem = {}
+				Object.keys(item).forEach((key) => {
+					formattedItem[key] = customNumberFormatter({ value: item[key] })
+				})
+				return formattedItem
+			})
+
+			setRowData(formattedRow)
 		} else {
 			setRowData(null)
 		}
@@ -262,19 +284,7 @@ const Table = ({
 
 	const onFirstDataRendered = (params) => {
 		const columnApi = params.columnApi
-		if (columnApi) {
-			const allColumns = columnApi.getAllColumns()
-			if (allColumns) {
-				const excludeIds = ['경매 번호', '제품 번호']
-				allColumns.forEach((column) => {
-					if (!excludeIds.includes(column.colId)) {
-						column.getColDef().valueFormatter = customNumberFormatter
-					}
-				})
-			}
-
-			columnApi.autoSizeAllColumns(false)
-		}
+		columnApi.autoSizeAllColumns(false)
 	}
 
 	// 체크했을때 jotai 전역상태값 설정
