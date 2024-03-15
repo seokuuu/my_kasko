@@ -114,7 +114,7 @@ const PreferEdit = ({ setSwtichEdit, uidAtom }) => {
 		delete requestParams.cmin
 		delete requestParams.cmax
 		delete requestParams.spec
-		if (isEmptyObj(submitData)) {
+		if (!submitData.name) {
 			update(requestParams)
 		} else {
 			simpleAlert('내용을 모두 기입해주세요.')
