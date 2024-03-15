@@ -106,12 +106,6 @@ const Single = ({}) => {
 	}
 	const [param, setParam] = useState(paramData)
 
-	// const [liveStatus, setLiveStatus] = useState(null)
-
-	// useEffect(() => {
-	// 	setLiveStatus(nowAuction && live ? true : false)
-	// }, [nowAuction, live])
-
 	const [realAucNum, setRealAucNum] = useState(null)
 
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)

@@ -31,7 +31,7 @@ import { getAgreement, getBidding, postAgreement, postBidding } from '../../../a
 import { getAuctionDestination } from '../../../api/auction/winning'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import { AuctionBiddingFields, AuctionPackageBiddingFieldsCols } from '../../../constants/admin/Auction'
+import { AuctionBiddingPackageFields, AuctionPackageBiddingFieldsCols } from '../../../constants/admin/Auction'
 import { PROD_COL_NAME } from '../../../constants/user/constantKey'
 import { useCheckAuction } from '../../../hooks/useCheckAuction'
 import useReactQuery from '../../../hooks/useReactQuery'
@@ -111,7 +111,7 @@ const Package = ({}) => {
 	// const checkedArrayState = useAtom(selectedRowsAtom)[0]
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
-	const uids = checkedArrayState?.map((item) => item['패키지 번호'].value)
+	const uids = checkedArrayState?.map((item) => item['패키지 번호'])
 
 	console.log('uids ', uids)
 
@@ -121,12 +121,6 @@ const Package = ({}) => {
 		type: '패키지',
 	}
 	const [param, setParam] = useState(paramData)
-
-	// const [liveStatus, setLiveStatus] = useState(null)
-
-	// useEffect(() => {
-	// 	setLiveStatus(nowAuction && live ? true : false)
-	// }, [nowAuction, live])
 
 	const [realAucNum, setRealAucNum] = useState(null)
 	console.log('realAucNum', realAucNum)
@@ -141,7 +135,7 @@ const Package = ({}) => {
 	const originData = data?.data?.data
 	const [oriData, setOridata] = useState()
 
-	console.log('resData', resData)
+	console.log('oriData', oriData?.list)
 
 	// 초기 목적지 GET
 	const { data: destiData } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
@@ -420,7 +414,7 @@ const Package = ({}) => {
 	})
 	// 테이블 데이터, 페이지 데이터, 총 중량
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
-		tableField: AuctionBiddingFields,
+		tableField: AuctionBiddingPackageFields,
 		serverData: oriData,
 		wish: { display: true, key: [PROD_COL_NAME.productNumber, PROD_COL_NAME.packageNumber] },
 		best: { display: true },
@@ -444,7 +438,7 @@ const Package = ({}) => {
 			// 	...p,
 			// 	customerDestinationUid: destiObject.uid,
 			// }))
-			setDestiObject(destiObject)
+			// setDestiObject(destiObject)
 		})
 
 		const updatedResData = oriData?.list?.map((item) => {
@@ -471,6 +465,8 @@ const Package = ({}) => {
 
 		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
+
+	console.log('uids', uids)
 
 	// 응찰가 Table Cell Input
 	const handleCheckboxChange = (event, rowData) => {
@@ -610,21 +606,9 @@ const Package = ({}) => {
 								}}
 							>
 								<p>목적지</p>
-								<CustomInput
-									placeholder="h50"
-									width={60}
-									height={32}
-									defaultValue={destiObject?.destinationCode}
-									readOnly
-								/>
-								<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destiObject?.name} readOnly />
-								<CustomInput
-									placeholder="도착지 연락처"
-									width={120}
-									height={32}
-									defaultValue={destiObject?.phone}
-									readOnly
-								/>
+								<CustomInput placeholder="h50" width={60} height={32} value={destiObject?.destinationCode} readOnly />
+								<CustomInput placeholder="목적지명" width={120} height={32} value={destiObject?.name} readOnly />
+								<CustomInput placeholder="도착지 연락처" width={120} height={32} value={destiObject?.phone} readOnly />
 								<TWhiteBtn
 									style={{ width: '50px' }}
 									height={30}
