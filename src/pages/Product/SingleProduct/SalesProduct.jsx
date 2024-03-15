@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BlackBtn, BtnBound, TGreyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
@@ -82,6 +82,7 @@ const SalesProduct = () => {
 
 	const [param, setParam] = useState(paramData)
 	const [getRow, setGetRow] = useState('')
+	const getCol = useRef(SingleSalesDispatchFieldsCols(true))
 	const [filterData, setFilteredData] = useState([])
 
 	const { data, isSuccess, isLoading, refetch } = useReactQuery(param, 'product-list', getSingleProducts)
@@ -399,7 +400,7 @@ const SalesProduct = () => {
 					</TCSubContainer>
 					<TableV2
 						getRow={tableRowData}
-						getCol={SingleSalesDispatchFieldsCols(true)}
+						getCol={getCol.current}
 						tablePagination={paginationData}
 						onPageChange={onPageChange}
 						loading={isLoading}

@@ -291,8 +291,6 @@ const TableV2 = ({
 	/* ==================== STATE end ==================== */
 
 	/* ==================== INITIALIZE start ==================== */
-	const numberCols = ['중량', '운반비 공급가']
-
 	// 테이블 칼럼, 로우 데이터 초기화
 	useEffect(() => {
 		if (getCol && getCol?.length > 0) {
@@ -316,7 +314,7 @@ const TableV2 = ({
 			const formattedRow = getRow.map((item) => {
 				const formattedItem = {}
 				Object.keys(item).forEach((key) => {
-					if (['순번', '고객 구분'].includes(key) || key.includes('번호')) {
+					if (['순번', '고객 구분', '중량', '총 중량', '제품 중량'].includes(key) || key.includes('번호')) {
 						return (formattedItem[key] = item[key])
 					} else {
 						formattedItem[key] = customNumberFormatter({ value: item[key] })
@@ -324,7 +322,6 @@ const TableV2 = ({
 				})
 				return formattedItem
 			})
-
 			setRowData(formattedRow)
 		} else {
 			setRowData(null)

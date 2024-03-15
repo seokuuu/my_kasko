@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getSingleProducts, patchBeBestRecommend } from '../../../api/SellProduct'
 import { YellBtn } from '../../../common/Button/Button'
@@ -43,6 +43,7 @@ const SingleProduct = () => {
 
 	const [filterData, setFilteredData] = useState([])
 	const [getRow, setGetRow] = useState('')
+	const getCol = useRef(SingleDispatchFieldsCols())
 	const { data, isSuccess, refetch, isLoading } = useReactQuery(param, 'product-list', getSingleProducts)
 	const singleList = data?.r
 	const singleProductPage = data?.pagination
@@ -190,7 +191,7 @@ const SingleProduct = () => {
 					<TableV2
 						getRow={tableRowData}
 						loading={isLoading}
-						getCol={SingleDispatchFieldsCols()}
+						getCol={getCol.current}
 						tablePagination={paginationData}
 						onPageChange={onPageChange}
 					/>

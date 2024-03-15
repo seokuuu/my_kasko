@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BlackBtn, BtnBound, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
@@ -68,13 +68,14 @@ const Hyundai = ({}) => {
 
 	const [param, setParam] = useState(paramData)
 	const [getRow, setGetRow] = useState([])
+	const getCol = useRef(SingleDispatchFieldsCols())
 	const [filterData, setFilteredData] = useState([])
 
 	// 판매가 유형 변경
 	const [salePriceType, setSalePriceType] = useState('일반')
 	const [isSalePriceType, setIsSalePriceType] = useState(false)
 
-	const { data, isSuccess, refetch, isLoading } = useReactQuery(param, 'product-list', getSingleProducts)
+	const { data, refetch, isLoading } = useReactQuery(param, 'product-list', getSingleProducts)
 	const hyunDaiList = data?.r
 	const hyunDaiPage = data?.pagination
 
@@ -242,10 +243,10 @@ const Hyundai = ({}) => {
 
 	useEffect(() => {
 		const newFilterData = { list: hyunDaiList, pagination: hyunDaiPage }
-		if (isSuccess && newFilterData?.list) {
+		if (newFilterData?.list) {
 			setFilteredData(newFilterData)
 		}
-	}, [isSuccess, data])
+	}, [data])
 
 	useEffect(() => {
 		if (filterData && Array.isArray(filterData?.list)) {
@@ -334,7 +335,7 @@ const Hyundai = ({}) => {
 					</TCSubContainer>
 					<TableV2
 						getRow={tableRowData}
-						getCol={SingleDispatchFieldsCols()}
+						getCol={getCol.current}
 						tablePagination={paginationData}
 						onPageChange={onPageChange}
 						loading={isLoading}
