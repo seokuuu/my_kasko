@@ -172,7 +172,13 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 							{
 								packageNumber: packNum,
 								customerDestinationUid: destiObject && destiObject?.['uid'],
-								biddingPrice: firstBiddingEntry['응찰가'] + finalInput?.biddingPrice,
+								biddingPrice:
+									firstBiddingEntry['현재 최고 가격'] === 0
+										? firstBiddingEntry['시작가'] + (finalInput?.biddingPrice || 1)
+										: firstBiddingEntry['현재 최고 가격'] >= 1 &&
+										  firstBiddingEntry['현재 최고 가격'] <= firstBiddingEntry['나의 최고 응찰 가격']
+										? firstBiddingEntry['나의 최고 응찰 가격'] + (finalInput?.biddingPrice || 1)
+										: firstBiddingEntry['현재 최고 가격'] + (finalInput?.biddingPrice || 1),
 							},
 						],
 					}))
@@ -181,7 +187,12 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 				const uids = getRow?.[0]?.['경매 번호']
 				const updatedResData = resData.map((item) => {
 					if (uids.includes(item.auctionNumber)) {
-						item.memberBiddingPrice = item.memberBiddingPrice + finalInput?.biddingPrice
+						item.memberBiddingPrice =
+							item.biddingPrice === 0
+								? item.auctionStartPrice + winningCreateInput?.biddingPrice
+								: item.biddingPrice >= 1 && item.biddingPrice <= item.memberBiddingPrice
+								? item.memberBestBiddingPrice + winningCreateInput.biddingPrice
+								: item.biddingPrice + winningCreateInput?.biddingPrice
 					}
 					return item
 				})

@@ -437,6 +437,8 @@ const BiddingSingle = ({}) => {
 				item.memberBiddingPrice =
 					item.biddingPrice === 0
 						? item.auctionStartPrice + winningCreateInput?.biddingPrice
+						: item.biddingPrice >= 1 && item.biddingPrice <= item.memberBiddingPrice
+						? item.memberBestBiddingPrice + winningCreateInput.biddingPrice
 						: item.biddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item

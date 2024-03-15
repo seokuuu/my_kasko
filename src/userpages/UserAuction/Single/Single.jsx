@@ -31,12 +31,13 @@ import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
 import Agreement from '../../../modal/Common/Agreement'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
+import Table from '../../../pages/Table/Table'
 import useAlert from '../../../store/Alert/useAlert'
 import { authAtom } from '../../../store/Auth/auth'
 import { auctionStartAtom, userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
-import Table from '../../../pages/Table/Table'
-
+import AddWishButton from '../../UserSales/_components/AddWishButton'
 import UserBiddingSearchFields from './UserBiddingSearchFields'
+import { PROD_COL_NAME } from '../../../constants/user/constantKey'
 
 const Single = ({}) => {
 	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
@@ -433,6 +434,8 @@ const Single = ({}) => {
 				item.memberBiddingPrice =
 					item.biddingPrice === 0
 						? item.auctionStartPrice + winningCreateInput?.biddingPrice
+						: item.biddingPrice >= 1 && item.biddingPrice <= item.memberBiddingPrice
+						? item.memberBestBiddingPrice + winningCreateInput.biddingPrice
 						: item.biddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item
@@ -557,7 +560,7 @@ const Single = ({}) => {
 							<div style={{ display: 'flex', gap: '10px' }}>
 								<PageDropdown handleDropdown={handleTablePageSize} />
 								<Excel getRow={tableRowData} />
-								{/* <AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} /> */}
+								<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
 							</div>
 						</>
 					)}

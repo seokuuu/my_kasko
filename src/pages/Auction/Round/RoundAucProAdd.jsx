@@ -49,6 +49,7 @@ const RoundAucProAdd = ({
 	list,
 	onListAdd,
 	auctionNumber,
+	dupleUids,
 }) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -61,6 +62,8 @@ const RoundAucProAdd = ({
 	const handleImageClick = () => {
 		setIsRotated((prevIsRotated) => !prevIsRotated)
 	}
+
+	console.log('dupleUids 모달', dupleUids)
 
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -88,7 +91,7 @@ const RoundAucProAdd = ({
 
 	const paramData = {
 		pageNum: 1,
-		pageSize: 50,
+		pageSize: 50000,
 		saleType: '경매 대상재',
 		registrationStatus: '경매 등록 대기',
 		type: types,
@@ -105,11 +108,14 @@ const RoundAucProAdd = ({
 
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
-	console.log('resData', resData)
+	console.log('resData 모달', resData)
 
 	useEffect(() => {
 		// 이미 추가된 데이터 중복 제거
-		const getData = resData?.filter((obj) => !list?.some((item) => obj.uid === item.uid))
+		const getData = resData?.filter((obj) => !dupleUids.includes(obj.uid))
+
+		console.log('getData 필터 =>', getData)
+
 		if (getData && Array.isArray(getData)) {
 			setGetRow(add_element_field(getData, AuctionRoundExtraProductFields))
 			setTablePagination(data?.pagination)
@@ -221,8 +227,8 @@ const RoundAucProAdd = ({
 						<TableContianer>
 							<TCSubContainer bor>
 								<div>
-									조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-									<Hidden />
+									조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / {(getRow && getRow?.length) || 0}개 )
+									{/* <Hidden /> */}
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
 									<PageDropdown handleDropdown={handleTablePageSize} />
