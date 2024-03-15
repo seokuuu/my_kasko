@@ -98,7 +98,7 @@ export async function successfulOrderPost(data) {
 
 export async function successfulOrderListPost(data) {
 	try {
-		const response = await client.post(`${urls.successfulOrderAll}`, data, { timeout: 60000 * 10 })
+		const response = await client.post(`${urls.successfulOrderAll}`, data, { timeout: 120000 * 10 })
 		return response.data
 	} catch (e) {
 		throw new Error(e?.data?.message || '확정 전송 중 오류가 발생했습니다.')
