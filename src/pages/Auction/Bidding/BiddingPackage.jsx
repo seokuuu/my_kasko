@@ -31,7 +31,7 @@ import { getAgreement, getBidding, postAgreement, postBidding } from '../../../a
 import { getAuctionDestination } from '../../../api/auction/winning'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import { AuctionBiddingFields, AuctionPackageBiddingFieldsCols } from '../../../constants/admin/Auction'
+import { AuctionBiddingPackageFields, AuctionPackageBiddingFieldsCols } from '../../../constants/admin/Auction'
 import { PROD_COL_NAME } from '../../../constants/user/constantKey'
 import { useCheckAuction } from '../../../hooks/useCheckAuction'
 import useReactQuery from '../../../hooks/useReactQuery'
@@ -44,9 +44,10 @@ import Table from '../../../pages/Table/Table'
 import useAlert from '../../../store/Alert/useAlert'
 import { authAtom } from '../../../store/Auth/auth'
 import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
-import BiddingSearchFields from './BiddingSearchFields'
+import AddWishButton from '../../../userpages/UserSales/_components/AddWishButton'
+import UserBiddingSearchFields from '../../../userpages/UserAuction/Single/UserBiddingSearchFields'
 
-const BiddingPackage = ({}) => {
+const Package = ({}) => {
 	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
 	const auth = useAtomValue(authAtom)
 	const nowAuction = useCheckAuction()
@@ -109,7 +110,7 @@ const BiddingPackage = ({}) => {
 	// const checkedArrayState = useAtom(selectedRowsAtom)[0]
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
-	const uids = checkedArrayState?.map((item) => item['패키지 번호'].value)
+	const uids = checkedArrayState?.map((item) => item['패키지 번호'])
 
 	console.log('uids ', uids)
 
@@ -119,12 +120,6 @@ const BiddingPackage = ({}) => {
 		type: '패키지',
 	}
 	const [param, setParam] = useState(paramData)
-
-	// const [liveStatus, setLiveStatus] = useState(null)
-
-	// useEffect(() => {
-	// 	setLiveStatus(nowAuction && live ? true : false)
-	// }, [nowAuction, live])
 
 	const [realAucNum, setRealAucNum] = useState(null)
 	console.log('realAucNum', realAucNum)
@@ -139,7 +134,7 @@ const BiddingPackage = ({}) => {
 	const originData = data?.data?.data
 	const [oriData, setOridata] = useState()
 
-	console.log('resData', resData)
+	console.log('oriData', oriData?.list)
 
 	// 초기 목적지 GET
 	const { data: destiData } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
@@ -239,7 +234,7 @@ const BiddingPackage = ({}) => {
 			...p,
 			customerDestinationUid: firstDestiData?.uid,
 		}))
-	}, [isSuccess])
+	}, [destiData])
 
 	// biddingList에 들어갈 3총사를 다 넣어줌.
 	useEffect(() => {
@@ -418,7 +413,7 @@ const BiddingPackage = ({}) => {
 	})
 	// 테이블 데이터, 페이지 데이터, 총 중량
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
-		tableField: AuctionBiddingFields,
+		tableField: AuctionBiddingPackageFields,
 		serverData: oriData,
 		wish: { display: true, key: [PROD_COL_NAME.productNumber, PROD_COL_NAME.packageNumber] },
 		best: { display: true },
@@ -442,7 +437,7 @@ const BiddingPackage = ({}) => {
 			// 	...p,
 			// 	customerDestinationUid: destiObject.uid,
 			// }))
-			setDestiObject(destiObject)
+			// setDestiObject(destiObject)
 		})
 
 		const updatedResData = oriData?.list?.map((item) => {
@@ -469,6 +464,8 @@ const BiddingPackage = ({}) => {
 
 		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
+
+	console.log('uids', uids)
 
 	// 응찰가 Table Cell Input
 	const handleCheckboxChange = (event, rowData) => {
@@ -525,7 +522,7 @@ const BiddingPackage = ({}) => {
 			setAgreementModal(true)
 		} else if (auth?.statusList?.auctionStatus === '경매 제한') {
 			simpleAlert('경매에 참여하실 수 없습니다.', () => {
-				navigate('/userpage/main')
+				navigate('/main')
 			})
 		} else setAgreementModal(false)
 	}, [realAucNum, checkGetAgreement, auth])
@@ -535,12 +532,12 @@ const BiddingPackage = ({}) => {
 		if (initDestiData === undefined) return
 		if (agreementModal === false && initDestiData.length === 0) {
 			simpleAlert('목적지를 등록하지 않으면 \n 경매에 참여하실 수 없습니다. \n 목적지를 등록하시겠습니까?', () => {
-				navigate('/userpage/userdestination')
+				navigate('/usermanage/clientdestination')
 			})
 		}
 		if (initDestiData.length > 0 && firstDestiData?.represent !== 1) {
 			simpleAlert('대표 목적지를 등록하지 않으셨습니다.  \n 목적지를 등록하시겠습니까?', () => {
-				navigate('/userpage/userdestination')
+				navigate('/usermanage/clientdestination')
 			})
 		}
 	}, [agreementModal, firstDestiData, initDestiData])
@@ -570,7 +567,7 @@ const BiddingPackage = ({}) => {
 					<GlobalProductSearch
 						param={param}
 						isToggleSeparate={true}
-						renderCustomSearchFields={(props) => <BiddingSearchFields {...props} />}
+						renderCustomSearchFields={(props) => <UserBiddingSearchFields {...props} />}
 						globalProductSearchOnClick={globalProductSearchOnClick}
 						globalProductResetOnClick={globalProductResetOnClick}
 					/>
@@ -587,7 +584,7 @@ const BiddingPackage = ({}) => {
 							<div style={{ display: 'flex', gap: '10px' }}>
 								<PageDropdown handleDropdown={handleTablePageSize} />
 								<Excel getRow={tableRowData} />
-								{/* <AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} /> */}
+								<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
 							</div>
 						</>
 					)}
@@ -608,21 +605,9 @@ const BiddingPackage = ({}) => {
 								}}
 							>
 								<p>목적지</p>
-								<CustomInput
-									placeholder="h50"
-									width={60}
-									height={32}
-									defaultValue={destiObject?.destinationCode}
-									readOnly
-								/>
-								<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destiObject?.name} readOnly />
-								<CustomInput
-									placeholder="도착지 연락처"
-									width={120}
-									height={32}
-									defaultValue={destiObject?.phone}
-									readOnly
-								/>
+								<CustomInput placeholder="h50" width={60} height={32} value={destiObject?.destinationCode} readOnly />
+								<CustomInput placeholder="목적지명" width={120} height={32} value={destiObject?.name} readOnly />
+								<CustomInput placeholder="도착지 연락처" width={120} height={32} value={destiObject?.phone} readOnly />
 								<TWhiteBtn
 									style={{ width: '50px' }}
 									height={30}
@@ -704,4 +689,4 @@ const BiddingPackage = ({}) => {
 	)
 }
 
-export default BiddingPackage
+export default Package
