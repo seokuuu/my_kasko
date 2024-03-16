@@ -105,105 +105,51 @@ const Table = ({
 	const [rowData, setRowData] = useState()
 	const rowAtomSwitch = useAtomValue(selectedRows2Switch)
 
-	var checkboxSelection = function (params) {
-		// we put checkbox on the name if we are not doing grouping
-		return params.columnApi.getRowGroupColumns().length === 0
-	}
-
-	var headerCheckboxSelection = function (params) {
-		// we put checkbox on the name if we are not doing grouping
-		return params.columnApi.getRowGroupColumns().length === 0
-	}
+	const [gridApi, setGridApi] = useState(null)
+	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
+	const [selectedRows2, setSelectedRows2] = useAtom(selectedRowsAtom2)
+	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
+	const navigate = useNavigate()
 
 	// ---------------------------------------------------------------------
-	const [columnDefs, setColumnDefs] = useState([
-		{
-			field: '고객 코드',
-			width: 45,
-			checkboxSelection: checkboxSelection,
-			headerCheckboxSelection: headerCheckboxSelection,
-		},
-		{
-			field: '고객 코드',
-			width: 45,
-			checkboxSelection: checkboxSelection,
-			headerCheckboxSelection: headerCheckboxSelection,
-		},
+	const [columnDefs, setColumnDefs] = useState([])
 
-		{ field: '대표', maxWidth: 80 }, //숫자
-		{ field: '목적지 코드' },
-		{ field: '목적지 명', maxWidth: 90 },
-		{
-			field: '담당자 연락처',
-		},
-		{
-			field: '하차지 명',
-		},
-		{ field: '도착지 연락처' },
-		{ field: '상세 주소' },
-		{ field: '비고란' },
-	])
+	useEffect(() => {
+		if (getRow && getRow.length > 0) {
+			setRowData(getRow)
+		}
+	}, [getRow])
 
-	// const defaultColDef = useMemo(() => {
-	//   return {
-	//     flex: 1,
-	//     minWidth: 120,
-	//     filter: true,
-	//   }
-	// }, [])
+	useEffect(() => {
+		if (
+			[
+				'/auction/biddingsingle',
+				'auction/biddingpackage',
+				'/userpage/auctionsingle',
+				'/userpage/auctionpackage',
+			].includes(location.pathname)
+		) {
+			if (gridRef.current.api) {
+				const nodesToSelect = []
+				console.log('gridRef.current.api : ', gridRef.current.api)
 
-	// const dummyD = {
-	//   '고객 코드': 'nope',
-	//   대표: 'nope',
-	//   '목적지 코드': 'nope',
-	//   '목적지 명': 'nope',
-	//   '담당자 연락처': 'nope',
-	//   '하차지 명': 'nope',
-	//   '도착지 연락처': 'nope',
-	//   '상세 주소': 'nope',
-	//   비고란: 'nope',
-	// }
+				gridRef.current.api.forEachNode((node) => {
+					const selectedUid = [...new Set(selectedRows?.map((item) => item['제품 번호']?.value))]
 
-	// const dummyData = Array(300).fill(dummyD)
+					if (node.data && selectedUid.includes(node.data['제품 번호'].value)) {
+						nodesToSelect.push(node)
+					}
+				})
+				gridRef.current.api.setNodesSelected({ nodes: nodesToSelect, newValue: true })
+			}
+		}
+	}, [rowData])
 
-	// console.log(getCol)
 	useEffect(() => {
 		if (getCol && getCol?.length > 0) {
-			const newCol = getCol?.map((item, index) => {
-				if (index === 0) {
-					item.pinned = 'left'
-					item.minWidth = 50
-					item.maxWidth = 50
-				}
-				if (item.checkboxSelection) {
-					item.pinned = 'left'
-					item.minWidth = 50
-					item.maxWidth = 50
-				}
-				return item
-			})
-
-			setColumnDefs(newCol)
+			setColumnDefs(getCol)
 		}
-		if (getRow && getRow.length > 0) {
-			// const formattedRow = getRow.map((item) => {
-			// 	const formattedItem = {}
-			// 	Object.keys(item).forEach((key) => {
-			// 		if (['순번', '고객 구분'].includes(key) || key.includes('번호')) {
-			// 			return (formattedItem[key] = item[key])
-			// 		} else {
-			// 			formattedItem[key] = customNumberFormatter({ value: item[key] })
-			// 		}
-			// 		// formattedItem[key] = customNumberFormatter({ value: item[key] })
-			// 	})
-			// 	return formattedItem
-			// })
-
-			setRowData(getRow)
-		} else {
-			setRowData(null)
-		}
-	}, [getRow, getCol])
+	}, [])
 
 	// ---------------------------------------------------------------------
 
@@ -247,12 +193,6 @@ const Table = ({
 	const modalClose = () => {
 		setIsModal(false)
 	}
-
-	const [gridApi, setGridApi] = useState(null)
-	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
-	const [selectedRows2, setSelectedRows2] = useAtom(selectedRowsAtom2)
-	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
-	const navigate = useNavigate()
 
 	// 일단 router 이동 등록
 	const onRowDoubleClicked = (event) => {
@@ -529,6 +469,7 @@ const Table = ({
 			<TestContainer hei={hei}>
 				<div style={gridStyle} className="ag-theme-alpine">
 					<AgGridReact
+						ref={gridRef}
 						// {...gridOptions}
 						suppressColumnVirtualisation={true}
 						onGridReady={effectGridReady}
@@ -537,7 +478,6 @@ const Table = ({
 						rowData={rowData}
 						defaultColDef={defaultColDef}
 						gridOptions={effectiveGridOptions}
-						ref={gridRef}
 						onRowDoubleClicked={onRowDoubleClicked}
 						autoGroupColumnDef={autoGroupColumnDef}
 						animateRows={true}

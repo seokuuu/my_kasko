@@ -1,8 +1,12 @@
 import { atom, useSetAtom } from 'jotai'
+import { useEffect } from 'react'
 
 export const loadingAtom = atom(false)
 
 export const useLoading = (isLoading) => {
 	const setLoading = useSetAtom(loadingAtom)
-	setLoading(isLoading)
+
+	useEffect(() => {
+		setLoading(isLoading)
+	}, [isLoading])
 }

@@ -9,7 +9,11 @@ export const useCheckAuction = () => {
 			try {
 				// API를 통해 경매 시간 가져오기
 				const countdownData = await getCountdown()
-				console.log('경매 시간', countdownData)
+
+				if (countdownData?.data?.data === null) {
+					setIsEventActive(false)
+					return
+				}
 
 				// 경매 시작 및 종료 시간
 				const { startDate, endDate } = countdownData?.data?.data
