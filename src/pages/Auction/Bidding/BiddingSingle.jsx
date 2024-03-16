@@ -37,6 +37,7 @@ import { auctionStartAtom, userPageSingleDestiFindAtom } from '../../../store/La
 import Table from '../../Table/Table'
 import BiddingSearchFields from './BiddingSearchFields'
 import { useLoading } from '../../../store/Loading/loadingAtom'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const BiddingSingle = ({}) => {
 	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
@@ -569,7 +570,7 @@ const BiddingSingle = ({}) => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					{nowAuction && (
 						<>
