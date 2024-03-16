@@ -89,7 +89,7 @@ const Achievement = () => {
 		if (!selectedRows || selectedRows?.length === 0) {
 			return simpleAlert('제품을 선택해주세요.')
 		}
-		const findNumbers = [...new Set(selectedRows.map((item) => `${item['고객코드']}/${item['출고번호']}`))]
+		const findNumbers = [...new Set(selectedRows.map((item) => `${item['고객코드']}/${item['출고 번호']}`))]
 
 		if (findNumbers.length > 1) {
 			return simpleAlert('거래명세서는 하나의 출고번호와 고객사으로 확인할 수 있습니다.')

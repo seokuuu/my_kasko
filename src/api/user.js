@@ -128,6 +128,9 @@ export const useUserAddCartMutaion = () => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['user', 'cart'] })
+			queryClient.invalidateQueries({ queryKey: ['user', 'single'] })
+			queryClient.invalidateQueries({ queryKey: ['user', 'package'] })
+			queryClient.invalidateQueries({ queryKey: ['user', 'order'] })
 			simpleAlert('장바구니에 추가하였습니다.')
 		},
 		onError: (error) => {

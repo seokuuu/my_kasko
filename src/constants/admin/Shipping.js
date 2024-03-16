@@ -173,13 +173,10 @@ export const ShippingRegisterFieldsCols = [
 // 배차/출고 등록 페이지 목록 필드
 export const ShippingDispatchFields = {
 	순번: 'index',
-	'출고 고유번호': 'outUid',
 	출고요청일자: 'shipmentRequestDate',
-	// 출하지시일자: 'shippingDate',
 	'제품추가 일자': 'outCreateDate',
 	'승인 상태': 'outStatus',
-	// '출고 번호': 'outNumber',
-	// '출고 일자': 'outDate',
+	'상차도 여부': 'dockStatus',
 	'배차 여부': 'driverStatus',
 	'출하 상태': 'shipmentStatus',
 	'고객사명 1/2/3': 'customerName',
@@ -201,8 +198,12 @@ export const ShippingDispatchFields = {
 	비고: 'outNote',
 	'회차 여부': 'outCancelStatus',
 	'회차 일자': 'outCancelDate', //(출고 취소된 일자)
+	'출고 고유번호': 'outUid',
 	최종수정자: 'updater',
 	최종수정일시자: 'updateDate',
+	// 출하지시일자: 'shippingDate',
+	// '출고 번호': 'outNumber',
+	// '출고 일자': 'outDate',
 	// 경매번호: 'auctionNumber',
 	// 경매일자: 'auctionStartDate',
 	// '주문 고유 번호': 'orderUid',
@@ -214,11 +215,40 @@ export const ShippingDispatchFields = {
 // 배차/출고 등록 페이지 목록 필드
 export const ShippingDispatchFieldsCols = [
 	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
-	...Object.keys(ShippingDispatchFields).map((item) => ({
-		...commonStyles,
-		field: item,
-		minWidth: 180,
-	})),
+	{ ...commonStyles, field: '순번', minWidth: 80 },
+	{ ...commonStyles, field: '출고요청일자', minWidth: 180 },
+	{ ...commonStyles, field: '제품추가 일자', minWidth: 180 },
+	{ ...commonStyles, field: '승인 상태', minWidth: 100 },
+	{ ...commonStyles, field: '상차도 여부', minWidth: 100 },
+	{ ...commonStyles, field: '배차 여부', minWidth: 100 },
+	{ ...commonStyles, field: '출하 상태', minWidth: 100 },
+	{ ...commonStyles, field: '고객사명 1/2/3', minWidth: 150 },
+	{ ...commonStyles, field: '고객코드 1/2/3', minWidth: 150 },
+	{ ...commonStyles, field: '창고', minWidth: 100 },
+	{ ...commonStyles, field: '운전기사명', minWidth: 100 },
+	{ ...commonStyles, field: '운전기사 연락처', minWidth: 150 },
+	{ ...commonStyles, field: '차량번호', minWidth: 100 },
+	{ ...commonStyles, field: '차량 종류', minWidth: 100 },
+	{ ...commonStyles, field: '운송사명', minWidth: 100 },
+	{ ...commonStyles, field: '제품 수량', minWidth: 100 },
+	{ ...commonStyles, field: '중량 합계', minWidth: 100 },
+	{ ...commonStyles, field: '목적지 코드', minWidth: 100 },
+	{ ...commonStyles, field: '목적지 1/2/3', minWidth: 250 },
+	{ ...commonStyles, field: '목적지 주소 1/2/3', minWidth: 250 },
+	{ ...commonStyles, field: '목적지 연락처(사무실) 1/2/3', minWidth: 180 },
+	{ ...commonStyles, field: '목적지담당자 연락처 (휴대폰) 1/2/3', minWidth: 180 },
+	{ ...commonStyles, field: '하차지명 1/2/3', minWidth: 180 },
+	{ ...commonStyles, field: '비고', minWidth: 100 },
+	{ ...commonStyles, field: '회차 여부', minWidth: 100 },
+	{ ...commonStyles, field: '회차 일자', minWidth: 180 },
+	{ ...commonStyles, field: '출고 고유번호', minWidth: 100 },
+	{ ...commonStyles, field: '최종수정자', minWidth: 100 },
+	{ ...commonStyles, field: '최종수정일시자', minWidth: 180 },
+	// ...Object.keys(ShippingDispatchFields).map((item) => ({
+	// 	...commonStyles,
+	// 	field: item,
+	// 	minWidth: 180,
+	// })),
 ]
 
 // 배차/출고 등록 상세페이지 목록
@@ -296,6 +326,7 @@ export const ShippingStatusFields = {
 	'출고 고유번호': 'outUid',
 	'출고 일자': 'outDate',
 	'출고 번호': 'outNumber',
+	'상차도 여부': 'dockStatus',
 	운송진행일자: 'outEndDate',
 	운송진행: 'outEndStatus',
 	고객사명: 'customerName',
@@ -324,11 +355,14 @@ export const ShippingStatusFields = {
 
 export const ShippingStatusFieldsCols = [
 	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
-	...Object.keys(ShippingStatusFields).map((item) => ({
-		...commonStyles,
-		field: item,
-		minWidth: 180,
-	})),
+	{ ...commonStyles, field: '순번', minWidth: 80 },
+	...Object.keys(ShippingStatusFields)
+		.slice(1)
+		.map((item) => ({
+			...commonStyles,
+			field: item,
+			minWidth: 180,
+		})),
 ]
 
 // 출고현황 목록
@@ -379,11 +413,14 @@ export const ShippingStatusDetailsFields = {
 
 export const ShippingStatusDetailsFieldsCols = [
 	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
-	...Object.keys(ShippingStatusDetailsFields).map((item) => ({
-		...commonStyles,
-		field: item,
-		minWidth: 180,
-	})),
+	{ ...commonStyles, field: '순번', minWidth: 80 },
+	...Object.keys(ShippingStatusDetailsFields)
+		.slice(1)
+		.map((item) => ({
+			...commonStyles,
+			field: item,
+			minWidth: 180,
+		})),
 ]
 
 // 출고 거래명세서

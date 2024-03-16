@@ -238,7 +238,7 @@ const TableV2 = ({
 
 	const onFirstDataRendered = (params) => {
 		const columnApi = params.columnApi
-		columnApi.autoSizeAllColumns(false)
+		// columnApi.autoSizeAllColumns(false)
 	}
 
 	/* ==================== STATE start ==================== */
@@ -294,12 +294,7 @@ const TableV2 = ({
 	// 테이블 칼럼, 로우 데이터 초기화
 	useEffect(() => {
 		if (getCol && getCol?.length > 0) {
-			const newCol = getCol?.map((item, index) => {
-				if (index === 0) {
-					item.pinned = 'left'
-					item.minWidth = 50
-					item.maxWidth = 50
-				}
+			const newCol = getCol?.map((item) => {
 				if (item.checkboxSelection) {
 					item.pinned = 'left'
 					item.minWidth = 50
@@ -322,7 +317,7 @@ const TableV2 = ({
 				})
 				return formattedItem
 			})
-			setRowData(formattedRow)
+			setRowData(getRow)
 		} else {
 			setRowData(null)
 		}

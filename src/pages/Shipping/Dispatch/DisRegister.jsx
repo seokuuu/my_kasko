@@ -68,6 +68,9 @@ const DisRegister = () => {
 		if (!selectedRows || selectedRows?.length === 0) {
 			return simpleAlert('배차 취소할 제품을 선택해주세요.')
 		}
+		if (!selectedRows || selectedRows?.length > 1) {
+			return simpleAlert('배차 취소는 하나만 가능합니다.')
+		}
 		const selectItem = selectedRows[0]
 		const driverStatus = selectItem['배차 여부']
 

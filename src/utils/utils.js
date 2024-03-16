@@ -62,3 +62,11 @@ export function customNumberFormatter(params) {
 		return params.value
 	}
 }
+
+// 콤마 제거
+export function numberDeleteComma(value) {
+	if (typeof value === 'string' && value?.includes(',')) {
+		return value.replaceAll(',', '')
+	}
+	return value
+}

@@ -5,6 +5,7 @@ import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKe
 import { getProductNumber } from '../../../hooks/useWishList'
 import useAlert from '../../../store/Alert/useAlert'
 import { useLoading } from '../../../store/Loading/loadingAtom'
+import { numberDeleteComma } from '../../../utils/utils'
 
 /**
  * @constant 최소 주문 중량(25톤/단위kg)
@@ -55,11 +56,11 @@ const AddOrderButton = ({ category, totalWeight, products = [], buttonType }) =>
 					category === PROD_CATEGORY.single
 						? {
 								productUid: v[PROD_COL_NAME.productUid] || '',
-								salePrice: v[PROD_COL_NAME.salePrice] || 0,
+								salePrice: numberDeleteComma(v[PROD_COL_NAME.salePrice]) || 0,
 						  }
 						: {
 								packageNumber: getProductNumber(v[PROD_COL_NAME.packageNumber]) || 0,
-								salePrice: v[PROD_COL_NAME.salePrice] || 0,
+								salePrice: numberDeleteComma(v[PROD_COL_NAME.salePrice]) || 0,
 						  },
 				),
 			})

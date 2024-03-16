@@ -140,9 +140,9 @@ const DisRegisterDetail = ({ id }) => {
 			dockStatus,
 			orderUids: updateOrderUids,
 		}
-		if (isEqual) {
-			return simpleAlert('변경할 목록을 추가하거나 제거해주세요.')
-		}
+		// if (isEqual) {
+		// 	return simpleAlert('변경할 목록을 추가하거나 제거해주세요.')
+		// }
 		if (body.orderUids.length === 0) {
 			return simpleAlert('변경할 목록을 추가해주세요.')
 		}
