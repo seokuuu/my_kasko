@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useAtom } from 'jotai'
 import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
@@ -34,6 +34,7 @@ import {
 } from '../../../service/admin/Standard'
 import useAlert from '../../../store/Alert/useAlert'
 import Table from '../../Table/Table'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const Consolidation = ({}) => {
 	const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
@@ -225,7 +226,7 @@ const Consolidation = ({}) => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / {data?.data?.data?.pagination?.listCount}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}></div>
 				</TCSubContainer>

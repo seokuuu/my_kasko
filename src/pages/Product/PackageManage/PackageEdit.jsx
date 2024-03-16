@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BlackBtn, BtnBound, BtnWrap, GreyBtn, SkyBtn, WhiteBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import { MainSelect } from '../../../common/Option/Main'
 import { storageOptions } from '../../../common/Option/SignUp'
@@ -42,6 +42,7 @@ import { ExRadioWrap } from '../../../modal/External/ExternalFilter'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../common/Check/RadioImg'
 
 import Hidden from '../../../components/TableInner/Hidden'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const PackageEdit = ({}) => {
 	const checkSales = ['전체', '판매재', '판매제외재', '판매완료재', '카스코 추천 제품']
@@ -321,7 +322,7 @@ const PackageEdit = ({}) => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>2</span> / 50개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown />

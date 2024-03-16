@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useAtomValue } from 'jotai'
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { getInventoryLedger } from '../../../../api/operate/inventory'
 import GlobalProductSearch from '../../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../../components/TableInner/Excel'
@@ -21,6 +21,7 @@ import { KilogramSum } from '../../../../utils/KilogramSum'
 import Table from '../../../Table/Table'
 import useGlobalSearch from '../../hook/useGlobalSearch'
 import InventorySearchFields from './InventorySearchFields'
+import TableV2HiddenSection from '../../../Table/TableV2HiddenSection'
 
 const Inventory = () => {
 	// checkSelect
@@ -104,7 +105,7 @@ const Inventory = () => {
 					<div>
 						조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
 						{pagination?.listCount}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown

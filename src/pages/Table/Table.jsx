@@ -28,6 +28,15 @@ import {
 } from '../../store/Layout/Layout'
 import './TableUi.css'
 import { customNumberFormatter } from '../../utils/utils'
+import { useSetAtom } from 'jotai/index'
+import {
+	TABLE_TYPE,
+	tableHiddenColumnAtom,
+	tableResetColumnAtom,
+	tableRestoreColumnAtom,
+	tableShowColumnAtom,
+} from '../../store/Table/Table'
+import { getTableLocalStorageByPageName } from '../../store/Table/tabeleLocalStorage'
 // import TableStyle from './Table.module.css'
 
 // import { get } from 'lodash'
@@ -78,6 +87,7 @@ const Table = ({
 	loading = false, // 로딩 여부
 	dragAndDrop = false,
 	changeFn,
+	popupTable = false, // 팝업 테이블 여부
 }) => {
 	const [selectedCountry, setSelectedCountry] = useState(null)
 	// const [packageUids, setPackageUids] = useState([])
@@ -431,6 +441,89 @@ const Table = ({
 	const effectiveGridOptions = parentGridOptions || gridOptions
 	const effectiveOnSelectionChanged = parentOnSelectionChanged || onSelectionChanged
 	const effectGridReady = parentOngridReady || onGridReady
+
+	const tableType = useMemo(() => (popupTable ? TABLE_TYPE.popupTable : TABLE_TYPE.pageTable), [popupTable]) // 팝업 테이블 여부
+	const setHiddenColumn = useSetAtom(tableHiddenColumnAtom) // 테이블 칼럼 숨기기 처리
+	const showColumnId = useAtomValue(tableShowColumnAtom) // 테이블 노출 칼럼
+	const setShowColumnClear = useSetAtom(tableRestoreColumnAtom) // 테이블 노출 칼럼 처리
+	const setResetHiddenColumn = useSetAtom(tableResetColumnAtom) // 테이블 숨김항목 초기화 처리
+
+	const localTableList = getTableLocalStorageByPageName()
+
+	/**
+	 * 칼럼 숨기기 처리 핸들러
+	 */
+	const onColumnVisibleChange = useCallback(
+		(event) => {
+			const isHidden = event.visible === false
+			if (!isHidden) {
+				return
+			}
+
+			const columnId = event.column.colId
+			setHiddenColumn({
+				type: tableType,
+				value: columnId,
+			})
+		},
+		[tableType],
+	)
+
+	/**
+	 * 칼럼 노출 핸들러
+	 */
+	const onColumnShow = (showId) => {
+		if (!showId) {
+			return
+		}
+
+		const api = gridRef.current.columnApi
+		const savedState = api?.getColumnState()
+		if (savedState) {
+			const applyState = savedState.reduce((acc, v) => {
+				if (v?.colId === showId) v.hide = false
+				return [...acc, v]
+			}, [])
+
+			api.applyColumnState({ state: applyState })
+		}
+		setShowColumnClear({ type: tableType })
+	}
+
+	// 로컬 스토리지 저장된 숨김목록처리
+	useEffect(() => {
+		if (!localTableList) {
+			return
+		}
+
+		if (gridRef.current.columnApi) {
+			const columnApi = gridRef.current.columnApi
+			if (columnApi) {
+				const allColumns = columnApi.getAllColumns()
+				if (allColumns) {
+					const hiddenIds = localTableList[tableType].hiddenIds
+
+					allColumns.forEach((column) => {
+						if (hiddenIds.includes(column.colId)) {
+							column.setVisible(false)
+						}
+					})
+				}
+			}
+		}
+	}, [localTableList])
+
+	// 노출칼럼 변경
+	useEffect(() => {
+		const showId = showColumnId[tableType]
+		onColumnShow(showId)
+	}, [showColumnId])
+
+	// 테이블 선택, 숨김항목 초기화
+	useEffect(() => {
+		setResetHiddenColumn({ type: tableType })
+	}, [location, tableType])
+
 	return (
 		<div style={containerStyle}>
 			<TestContainer hei={hei}>
@@ -467,6 +560,7 @@ const Table = ({
 						// sideBar={{ toolPanels: ['columns', 'filters'] }}
 						onRowDragEnd={dragAndDrop ? onRowDragEnd : () => {}}
 						onCellValueChanged={changeFn}
+						onColumnVisible={onColumnVisibleChange}
 					/>
 				</div>
 			</TestContainer>

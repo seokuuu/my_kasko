@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SkyBtn, WhiteRedBtn } from '../../common/Button/Button'
 import Excel from '../../components/TableInner/Excel'
 import HeaderToggle from '../../components/Toggle/HeaderToggle'
@@ -24,6 +24,7 @@ import { isEqual } from 'lodash'
 import useAlert from '../../store/Alert/useAlert'
 import useOrder from './useOrder'
 import { onSizeChange } from '../Operate/utils'
+import TableV2HiddenSection from '../Table/TableV2HiddenSection'
 
 const Order = () => {
 	const { simpleAlert } = useAlert()
@@ -218,7 +219,7 @@ const Order = () => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /
-						{orderPagination?.listCount}개 )<Hidden />
+						{orderPagination?.listCount}개 )<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />

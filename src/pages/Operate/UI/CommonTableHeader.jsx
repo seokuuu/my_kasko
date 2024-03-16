@@ -3,6 +3,7 @@ import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { TCSubContainer } from '../../../modal/External/ExternalFilter'
 import { onSizeChange } from '../utils'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 /**
  * @description
@@ -32,6 +33,7 @@ const CommonTableHeader = ({
 				<div>
 					조회 목록 (선택 <span>{selectedLength}</span> / {totalLength}개 )
 				</div>
+				<TableV2HiddenSection />
 				<PageDropdown handleDropdown={(e) => onSizeChange(e, setState)} />
 			</TCSubContainer>
 			<TCSubContainer>

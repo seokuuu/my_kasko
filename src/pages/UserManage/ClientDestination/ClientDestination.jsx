@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isArray, isEqual } from 'lodash'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { delete_clientDestination, get_clientDestination } from '../../../api/userManage'
 import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
@@ -30,11 +30,12 @@ import {
 	adminPageDestiEditModal,
 	btnCellUidAtom,
 	selectedRowsAtom,
-	toggleAtom
+	toggleAtom,
 } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import ClientDestinationSearchFields from './ClientDestinationSearchFields'
 import DestinationEdit from './DestinationEdit'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const ClientDestination = ({ setChoiceComponent }) => {
 	const [findModal, setFindModal] = useAtom(UsermanageFindModal)
@@ -199,7 +200,7 @@ const ClientDestination = ({ setChoiceComponent }) => {
 						<TCSubContainer bor>
 							<div>
 								조회 목록 (선택 <span>{checkedArray ? checkedArray.length : '0'}</span> / {pagination?.listCount}개 )
-								<Hidden />
+								<TableV2HiddenSection />
 							</div>
 							<div style={{ display: 'flex', gap: '10px' }}>
 								<PageDropdown

@@ -1,27 +1,17 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
 
 import Excel from '../../../components/TableInner/Excel'
 
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import Table from '../../../pages/Table/Table'
-import {
-	StockMultiModal,
-	selectedRowsAtom,
-	toggleAtom,
-	weightAtom
-} from '../../../store/Layout/Layout'
+import { StockMultiModal, selectedRowsAtom, toggleAtom, weightAtom } from '../../../store/Layout/Layout'
 
 import { useAtom, useAtomValue } from 'jotai'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
-import {
-	FilterContianer,
-	FilterHeader,
-	TCSubContainer,
-	TableContianer
-} from '../../../modal/External/ExternalFilter'
+import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
 import { modalAtom } from '../../../store/Layout/Layout'
 
 import { isArray } from 'lodash'
@@ -41,6 +31,7 @@ import useAlert from '../../../store/Alert/useAlert'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import { onSizeChange } from '../../Operate/utils'
 import InventorySearchFields from './InventorySearchFields'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const Inventory = ({}) => {
 	const paramData = { pageNum: 1, pageSize: 50, reciptStatus: '입고 확정' }
@@ -192,7 +183,7 @@ const Inventory = ({}) => {
 					<div>
 						조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
 						{pagenations ? pagenations?.listCount : TableData?.listCount}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
