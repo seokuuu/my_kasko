@@ -116,7 +116,27 @@ const Table = ({
 
 	useEffect(() => {
 		if (getRow && getRow.length > 0) {
-			setRowData(getRow)
+			if (
+				[
+					'/auction/biddingsingle',
+					'auction/biddingpackage',
+					'/userpage/auctionsingle',
+					'/userpage/auctionpackage',
+				].includes(location.pathname)
+			) {
+				const formattedRow = getRow.map((item) => {
+					const formattedItem = {}
+					Object.keys(item).forEach((key) => {
+						if (['제품 고유 번호'].includes(key) || key.includes('번호')) {
+							return (formattedItem[key] = item[key])
+						} else {
+							formattedItem[key] = customNumberFormatter({ value: item[key] })
+						}
+					})
+					return formattedItem
+				})
+				setRowData(formattedRow)
+			} else setRowData(getRow)
 		}
 	}, [getRow])
 

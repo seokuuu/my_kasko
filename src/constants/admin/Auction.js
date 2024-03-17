@@ -671,7 +671,6 @@ export const AuctionBiddingPackageFields = {
 
 // 패키지 응찰
 export const AuctionPackageBiddingFieldsCols = (selected) => {
-	console.log('AuctionBiddingFieldsCols selected: ', selected)
 	const checkboxSelection2 = (params) => {
 		if (selected && selected.length > 0) {
 			const selectedUid = [...new Set(selected.map((item) => item['패키지 번호']))]

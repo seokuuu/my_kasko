@@ -107,8 +107,7 @@ const Package = ({}) => {
 	console.log('winningCreateInput', winningCreateInput)
 
 	const [getRow, setGetRow] = useState('')
-	const tableField = useRef(AuctionPackageBiddingFieldsCols)
-	const getCol = tableField.current
+
 	const queryClient = useQueryClient()
 	// const checkedArrayState = useAtom(selectedRowsAtom)[0]
 	const [tablePagination, setTablePagination] = useState([])
@@ -136,6 +135,10 @@ const Package = ({}) => {
 	const resPagination = data?.data?.data?.pagination
 	const originData = data?.data?.data
 	const [oriData, setOridata] = useState()
+
+	const tableField = useMemo(() => {
+		return AuctionPackageBiddingFieldsCols(checkedArrayState)
+	}, [checkedArrayState])
 
 	console.log('oriData', oriData?.list)
 
@@ -244,11 +247,13 @@ const Package = ({}) => {
 		const updatedProductList = checkedArrayState?.map((item) => ({
 			packageNumber: item['패키지 번호'],
 			biddingPrice:
-				item['현재 최고 가격'] === 0
-					? item['시작가'] + (finalInput?.biddingPrice || 1)
-					: item['현재 최고 가격'] >= 1 && item['현재 최고 가격'] <= item['나의 최고 응찰 가격']
-					? item['나의 최고 응찰 가격'] + (finalInput?.biddingPrice || 1)
-					: item['현재 최고 가격'] + (finalInput?.biddingPrice || 1),
+				parseInt(item['현재 최고 가격']?.replace(/,/g, '')) === 0
+					? parseInt(item['시작가']?.replace(/,/g, '')) + (finalInput?.biddingPrice || 1)
+					: parseInt(item['현재 최고 가격']?.replace(/,/g, '')) >= 1 &&
+					  parseInt(item['현재 최고 가격']?.replace(/,/g, '')) <=
+							parseInt(item['나의 최고 응찰 가격']?.replace(/,/g, ''))
+					? parseInt(item['나의 최고 응찰 가격']?.replace(/,/g, '')) + (finalInput?.biddingPrice || 1)
+					: parseInt(item['현재 최고 가격']?.replace(/,/g, '')) + (finalInput?.biddingPrice || 1),
 			customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
 		}))
@@ -672,7 +677,7 @@ const Package = ({}) => {
 					)}
 				</TCSubContainer>
 				<Table
-					getCol={AuctionPackageBiddingFieldsCols(checkedArrayState)}
+					getCol={tableField}
 					getRow={tableRowData}
 					tablePagination={tablePagination}
 					onPageChange={onPageChange}
