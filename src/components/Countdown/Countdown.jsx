@@ -17,7 +17,6 @@ const Countdown = () => {
 	const getCountdownData = async () => {
 		try {
 			const response = await getCountdown()
-			console.log('경매 시간', response?.data?.data)
 			return response?.data?.data
 		} catch (e) {
 			console.log(e)
@@ -41,7 +40,6 @@ const Countdown = () => {
 		setAucCheck(responseData?.type)
 	}
 
-	console.log('isAuction', data?.type)
 	// 경매 중에는 END
 	// 경매 끝나고 다음 경매떄까진 START
 

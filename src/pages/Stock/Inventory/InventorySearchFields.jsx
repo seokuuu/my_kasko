@@ -67,10 +67,7 @@ const InventorySearchFields = ({
 							height={35}
 							margin={10}
 							fontSize={17}
-							onClick={() => {
-								console.log('hi')
-								setIsKyuModal(true)
-							}}
+							onClick={() => setIsKyuModal(true)}
 						>
 							찾기
 						</GreyBtn>

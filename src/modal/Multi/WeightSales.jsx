@@ -1,75 +1,63 @@
-import React, { useEffect, useState, useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { BlackBtn, WhiteRedBtn } from '../../common/Button/Button'
-import Test3 from '../../pages/Test/Test3'
-import { selectedRowsAtom, selectedRowsAtom3, toggleAtom, weightAtom, weightObj } from '../../store/Layout/Layout'
+import { anotherTableRowsAtom, selectedRowsAtom, weightAtom, weightObj } from '../../store/Layout/Layout'
 import Table from '../../pages/Table/Table'
-import {
-	FilterContianer,
-	TableContianer,
-	TCSubContainer,
-	FilterTopContainer,
-	FilterTCTop,
-} from '../../modal/External/ExternalFilter'
-
-import { useAtom, useAtomValue } from 'jotai'
-import { aucProAddModalAtom } from '../../store/Layout/Layout'
+import { FilterContianer, FilterTCTop, TableContianer, TCSubContainer } from '../../modal/External/ExternalFilter'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import useReactQuery from '../../hooks/useReactQuery'
 import styled from 'styled-components'
-import { BlueBarHeader, BlueSubContainer, FadeOverlay, ModalContainer, WhiteCloseBtn } from '../Common/Common.Styled'
+import { BlueBarHeader, BlueSubContainer, ModalContainer, WhiteCloseBtn } from '../Common/Common.Styled'
 import { getDetailStocks, getInventoryStocks, postStocks } from '../../api/stocks/Inventory'
 import { add_element_field } from '../../lib/tableHelpers'
 import {
 	StockDetailInventoryFields,
 	StockInventoryDetailFieldCols,
-	StockInventoryFieldCols,
 	StockInventoryFields,
 } from '../../constants/admin/StockInventory'
 import useMutationQuery from '../../hooks/useMutationQuery'
 import useAlert from '../../store/Alert/useAlert'
-import { update } from 'lodash'
-import { OutSide } from './PackageDetailModal'
-// 중량 판매 등록
-const WeightSales = ({}) => {
+import { authAtom } from '../../store/Auth/auth'
+import moment from 'moment'
+
+// 중량 판매 등록 모달
+const WeightSales = () => {
+	const auth = useAtomValue(authAtom)
 	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
-	// const [isModal, setIsModal] = useAtom()
 
-	const modalClose = () => {
-		setAddModal(false)
-	}
+	const setAddModal = useSetAtom(weightAtom)
+	const selectObj = useAtomValue(weightObj)
 
-	const titleData = ['패키지 명', '수량', '시작가']
-	const contentData = ['알뜰패키지', '50', '3598']
-	const [addModal, setAddModal] = useAtom(weightAtom)
-	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
-	const [weightModal, setWeightModal] = useAtom(weightAtom)
-	const [selectObj, setSelectObj] = useAtom(weightObj)
 	// 이건 ag-grid에서 받아오는 테이블 로우의 값이다.
-	const [selectedRowData, setSelectedRowData] = useAtom(selectedRowsAtom)
-	const [request, setRequest] = useState({
+	const [selectedRowData, setSelectedRowData] = useAtom(anotherTableRowsAtom)
+	const requestData = {
 		pageNum: 1,
 		pageSize: 50,
 		reciptStatus: '입고 확정',
-	})
+	}
 
 	const [postRequest, setPostRequest] = useState({
 		originalProductUid: selectObj['제품 고유 번호'], // 제품 고유 번호
 		addProductList: [],
 		deleteProductUids: [],
 	})
-	const {
-		data: originalData,
-		isLoading: loading,
-		isSuccess: success,
-	} = useReactQuery(request, 'getInventroyStock', getInventoryStocks)
+
+	const modalClose = () => {
+		setAddModal(false)
+	}
+
+	const { data: originalData, isLoading: loading } = useReactQuery(requestData, 'getInventroyStock', getInventoryStocks)
+
 	const {
 		data: TableData,
 		isLoading,
 		isSuccess,
 	} = useReactQuery(selectObj['제품 고유 번호'], 'getInventroyStockDetail', getDetailStocks)
+
 	const [rows, setRows] = useState([])
 	const [checkedRows, setCheckedRows] = useState([])
 
 	const [updateState, setUpdateState] = useState([])
+
 	const tableRowData = useMemo(() => {
 		if (!originalData || !originalData?.data?.list) {
 			return []
@@ -109,7 +97,6 @@ const WeightSales = ({}) => {
 		)
 	}, [TableData, quantity])
 
-	console.log('UPDATE', updateState)
 	const tableTitle = StockInventoryDetailFieldCols
 	const tableFields = useRef(tableTitle)
 	const getCol = tableFields.current
@@ -129,7 +116,6 @@ const WeightSales = ({}) => {
 		setSelect(() =>
 			selectedRowData?.map((i, idx) => ({
 				'중량 제품 번호': i['중량 제품 번호'] || '',
-				'제품 고유 번호': i['제품 고유 번호'] || '',
 				'제품 번호':
 					rows?.length === 0
 						? selectObj['제품 번호'] + '-' + (selectedRowData.length - newNumber++)
@@ -141,8 +127,9 @@ const WeightSales = ({}) => {
 				제조사: i['제조사'],
 				'판매 구분': i['판매 구분'],
 				'유찰 횟수': i['유찰 횟수'],
-				수정자: i['수정자'] || '',
-				'수정 날짜': i['수정일'],
+				'제품 고유 번호': i['제품 고유 번호'] || '',
+				수정자: auth.name || '',
+				'수정 날짜': moment(new Date()).format('YYYY-MM-DD'),
 				'중량 판매 개수': i['중량 판매 개수'],
 			})),
 		)
@@ -151,7 +138,6 @@ const WeightSales = ({}) => {
 	useEffect(() => {
 		const usedNumber = rows.map((item) => Number(item['제품 번호'].split('-')[1]))
 		let maxNumber = Math.max(...usedNumber) + 1
-		console.log('ADD', add)
 		setAdd(() =>
 			selectedRowData?.map((i, idx) => ({
 				productNumber:
@@ -164,7 +150,7 @@ const WeightSales = ({}) => {
 			})),
 		)
 	}, [select, quantity.thickness, quantity.width, quantity.length])
-	console.log('셀렉트', select)
+
 	// select => 테이블에서 추가
 	// Rows가 기존
 	const handleImageClick = () => {
@@ -183,17 +169,10 @@ const WeightSales = ({}) => {
 				setPostRequest((p) => ({ ...p, addProductList: [...add] }))
 				setSelectedRowData([])
 				if (rows.length + select.length > 4) {
-					showAlert({
-						title: '4개 이하로만 추가 가능합니다.',
-						func: () => {
-							window.location.reload()
-						},
-					})
+					simpleAlert('4개 이하로만 추가 가능합니다.')
 				} else {
 					return null
 				}
-				console.log(add)
-				console.log('포스트', postRequest)
 			}
 			if (rows.length >= 4) {
 				simpleAlert('4개 이하로만 추가 가능합니다.')
@@ -203,7 +182,6 @@ const WeightSales = ({}) => {
 				return null
 			})
 		}
-
 		setSelect([])
 	}
 
@@ -225,8 +203,8 @@ const WeightSales = ({}) => {
 		})
 	}
 	const handleCheck = (id, data) => {
-		if (Array.isArray(checkedRows) && checkedRows?.includes(id)) {
-			setCheckedRows(...checkedRows.filter((rowId) => rowId !== id))
+		if (checkedRows?.includes(id)) {
+			setCheckedRows(checkedRows.filter((rowId) => rowId !== id))
 		} else {
 			setCheckedRows([...checkedRows, id])
 			setDeleted([...deleted, data])
@@ -243,20 +221,21 @@ const WeightSales = ({}) => {
 
 	// 수치값을 변형시켠 값을 업데이트해서 보내주는걸로
 
-	useState(() => {
+	useEffect(() => {
 		setPostRequest((p) => ({
 			...p,
 			addProductList: updateState,
 		}))
 	}, [updateState])
+
 	const reload = () => {
 		setAddModal(false)
 		window.location.reload()
 	}
+
 	const handleSubmit = () => {
-		console.log(postRequest)
 		mutate(postRequest, {
-			onSuccess: (d) => {
+			onSuccess: () => {
 				showAlert({ title: '저장되었습니다.', func: reload })
 			},
 			onError: (e) => {
@@ -265,7 +244,6 @@ const WeightSales = ({}) => {
 		})
 	}
 	useEffect(() => {
-		console.log('UPDATE ROWS:', rows)
 		setUpdateState(
 			rows.map((i) => {
 				return {
@@ -275,16 +253,12 @@ const WeightSales = ({}) => {
 				}
 			}),
 		)
-		console.log('UPDATE ROWS2:', updateState)
 	}, [rows])
 
-	console.log(rows)
 	return (
 		<OutSideArea>
-			{/* <FadeOverlay /> */}
-			<ModalContainer style={{ width: '50%', height: '90%', zIndex: 1 }}>
+			<ModalContainer style={{ width: '1200px', height: '90%', zIndex: 1 }}>
 				<BlueBarHeader style={{ height: '60px' }}>
-					{/* <div>{title}</div> */}
 					<div>중량 판매 등록</div>
 					<div>
 						<WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
@@ -297,8 +271,14 @@ const WeightSales = ({}) => {
 								<h6 style={{ fontSize: '17px' }}>중량 판매 대상 제품</h6>
 								<p>{selectObj['제품 번호']}</p>
 							</FilterTCTop>
-							{/* <Test3 hei2={330} hei={100} /> */}
-							<Table hei2={330} hei={100} getRow={tableRowData} getCol={getCol} isLoading={isLoading} />
+							<Table
+								hei2={330}
+								hei={100}
+								getRow={tableRowData}
+								getCol={getCol}
+								isLoading={isLoading}
+								isAnotherTable={true}
+							/>
 						</TableContianer>
 					</FilterContianer>
 					<FilterContianer style={{ color: '#B02525', paddingLeft: '20px', paddingTop: '5px' }}>
@@ -311,10 +291,10 @@ const WeightSales = ({}) => {
 						</button>
 					</PowerMiddle>
 					<TableContainer>
-						<div style={{ border: '1px solid', padding: '4px 2px', overflow: 'scroll' }}>
-							<TCSubContainer>
+						<div style={{ border: '1px solid #c8c8c8', overflow: 'scroll' }}>
+							<TCSubContainer style={{ padding: '18px 12px 12px' }}>
 								<div>
-									중량 판매 (<span>2</span> /4 ){/* <Hidden /> */}
+									중량 판매 (<span>{checkedRows?.length}</span> / {rows?.length} )
 								</div>
 							</TCSubContainer>
 							<SubTables>
@@ -332,18 +312,22 @@ const WeightSales = ({}) => {
 											/>
 										</TableHeaderCell>
 										{tableTitle.map((title, index) =>
-											title.field !== '' ? <TableHeaderCell key={index}>{title.field}</TableHeaderCell> : null,
+											title.field !== '' ? (
+												<TableHeaderCell key={index}>
+													{title.field === '수정 날짜' ? '절단일자' : title.field}
+												</TableHeaderCell>
+											) : null,
 										)}
 									</TableRow>
 								</thead>
 								<tbody>
 									{rows.map((row, index) => (
-										<TableRow>
+										<TableRow key={index}>
 											<TableCell>
 												<Checkbox
 													type="checkbox"
-													checked={checkedRows?.includes(row['중량 제품 번호'])}
-													onChange={() => handleCheck(row['중량 제품 번호'], row)}
+													checked={checkedRows?.includes(row['제품 번호'])}
+													onChange={() => handleCheck(row['제품 번호'], row)}
 												/>
 											</TableCell>
 											{Object.entries(row)?.map(([k, v], idx) => (
@@ -353,12 +337,20 @@ const WeightSales = ({}) => {
 															defaultValue={v}
 															name={k === '폭' ? 'width' : k === '길이' ? 'length' : 'thickness'}
 															id={row['제품 번호']}
-															onChange={(e) => {
-																handleOnchange(e, String(row['제품 고유 번호']), index, k)
-															}}
+															onChange={(e) => handleOnchange(e, String(row['제품 고유 번호']), index, k)}
 														/>
 													) : (
-														<div>{row[k]}</div>
+														<div
+															style={{
+																width: '100%',
+																height: '100%',
+																display: 'flex',
+																alignItems: 'center',
+																justifyContent: 'center',
+															}}
+														>
+															{row[k]}
+														</div>
 													)}
 												</TableCell>
 											))}
@@ -384,7 +376,9 @@ const WeightSales = ({}) => {
 						height={40}
 						fontSize={17}
 						onClick={() => {
-							simpleConfirm('저장하시겠습니까?', handleSubmit)
+							simpleConfirm('저장하시겠습니까?', () => {
+								handleSubmit()
+							})
 						}}
 					>
 						저장
@@ -403,11 +397,6 @@ const TableContainer = styled.div`
 	overflow-x: scroll;
 `
 
-const TCSDiv = styled.div`
-	padding: 15px 0px;
-	font-weight: 700;
-`
-
 const PowerMiddle = styled.div`
 	display: flex;
 	justify-content: center;
@@ -423,7 +412,7 @@ const TableRow = styled.tr`
 
 const TableHeaderCell = styled.th`
 	text-align: center;
-	border: 1px solid #000;
+	border: 1px solid #c8c8c8;
 	width: 150px;
 	margin-top: 4px;
 	padding: 8px 2px;
@@ -436,7 +425,7 @@ const TableHeaderCell = styled.th`
 
 const TableCell = styled.td`
 	text-align: center;
-	border: 1px solid #000;
+	border: 1px solid #c8c8c8;
 	width: 150px;
 	padding: 4px 2px;
 	&:first-child {
@@ -446,13 +435,14 @@ const TableCell = styled.td`
 	input {
 		max-width: 128px;
 		height: 30px;
-		border: 1px solid #000;
+		border: 1px solid #c8c8c8;
 		width: max-content;
 	}
 `
 
 const SubTables = styled.table`
 	min-width: 900px;
+	height: 220px;
 	border-collapse: collapse;
 	overflow: scroll;
 `
@@ -460,16 +450,12 @@ const Checkbox = styled.input`
 	margin-right: 10px;
 `
 
-const DeleteButton = styled.button`
-	padding: 10px;
-	margin-top: 10px;
-`
 const OutSideArea = styled.div`
 	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	z-index: 0;
+	z-index: 9;
 	background-color: rgba(0, 0, 0, 0.4);
 `
