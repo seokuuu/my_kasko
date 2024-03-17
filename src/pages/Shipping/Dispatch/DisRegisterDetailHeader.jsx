@@ -74,7 +74,7 @@ const DisRegisterDetailHeader = ({ data, dockStatus, setDockStatus }) => {
 	useEffect(() => {
 		if (data) {
 			setHeaderData(data[0])
-			setDockStatus(data[0]?.dockStatus)
+			setDockStatus(data[0]?.dockStatus === 'Y')
 			getCustomer()
 		}
 	}, [data])

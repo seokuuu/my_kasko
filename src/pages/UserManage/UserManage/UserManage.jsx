@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import { useAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
@@ -18,7 +18,7 @@ import {
 	StyledSubHeading,
 	SubTitle,
 	TCSubContainer,
-	TableContianer
+	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import {
 	UsermanageUserPostModal,
@@ -38,10 +38,11 @@ import { UsermanageUserManageEditModal } from '../../../store/Layout/Layout'
 import UserEdit from './UserEdit'
 import UserManangeSearchFields from './UserManangeSearchFields'
 import UserPost from './UserPost'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 const UserManage = ({ setChoiceComponent }) => {
 	const [editModal, setEditModal] = useAtom(UsermanageUserManageEditModal)
 	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-	const { simpleAlert } = useAlert();
+	const { simpleAlert } = useAlert()
 	const [postModal, setPostModal] = useAtom(UsermanageUserPostModal)
 	const [types, setTypes] = useState('카스코철강') //카스코철강, 현대제철 , 운송, 창고
 	const handleSelectChange = (selectedOption, name) => {
@@ -202,9 +203,9 @@ const UserManage = ({ setChoiceComponent }) => {
 						<GlobalProductSearch
 							param={param}
 							isToggleSeparate={true}
-							renderCustomSearchFields={(props) => <UserManangeSearchFields {...props} />} // 
-							globalProductSearchOnClick={globalProductSearchOnClick}  
-							globalProductResetOnClick={globalProductResetOnClick} 
+							renderCustomSearchFields={(props) => <UserManangeSearchFields {...props} />} //
+							globalProductSearchOnClick={globalProductSearchOnClick}
+							globalProductResetOnClick={globalProductResetOnClick}
 						/>
 					</FilterWrap>
 				)}
@@ -214,7 +215,7 @@ const UserManage = ({ setChoiceComponent }) => {
 					<div>
 						조회 목록 (선택 <span>{checkedArray ? checkedArray.length : '0'}</span> /{' '}
 						{resPagination ? resPagination.listCount : '0'}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}></div>
 				</TCSubContainer>

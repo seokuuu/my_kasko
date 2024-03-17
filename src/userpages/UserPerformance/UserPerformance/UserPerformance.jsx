@@ -13,10 +13,10 @@ import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalP
 import { isEqual } from 'lodash'
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
-import { authAtom } from '../../../store/Auth/auth'
 import TableV2 from '../../../pages/Table/TableV2'
 import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import { UserPerformanceFields, UserPerformanceFieldsCols } from './UserPerformanceFields'
+import { ShippingInvoiceUserView } from '../../../components/shipping/ShippingInvoiceView'
 
 const initData = {
 	pageNum: 1,
@@ -25,7 +25,6 @@ const initData = {
 }
 
 const UserPerformance = () => {
-	const auth = useAtomValue(authAtom)
 	const exFilterToggle = useAtomValue(toggleAtom)
 
 	const [rows, setRows] = useState([])
@@ -122,6 +121,10 @@ const UserPerformance = () => {
 					tablePagination={paginationData}
 					onPageChange={onPageChange}
 				/>
+				<TCSubContainer>
+					<div></div>
+					<ShippingInvoiceUserView />
+				</TCSubContainer>
 			</TableContianer>
 		</FilterContianer>
 	)

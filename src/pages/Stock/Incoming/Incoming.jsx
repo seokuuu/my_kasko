@@ -25,6 +25,7 @@ import IncomingModify from './IncomingModify'
 import IncomingSearchFields from './IncomingSearchFields'
 import TableV2ExcelDownloader from '../../Table/TableV2ExcelDownloader'
 import { SingleDispatchFieldsCols } from '../../../constants/admin/Single'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const Incoming = ({}) => {
 	const { simpleConfirm, simpleAlert } = useAlert()
@@ -197,7 +198,7 @@ const Incoming = ({}) => {
 					<TCSubContainer bor>
 						<div>
 							조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{param.pageSize}
-							개 )<Hidden />
+							개 <TableV2HiddenSection />
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
 							<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />

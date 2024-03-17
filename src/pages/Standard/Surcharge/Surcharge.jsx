@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { BlackBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -44,6 +44,7 @@ import { popupDummy } from '../../../modal/Alert/PopupDummy'
 import AlertPopup from '../../../modal/Alert/AlertPopup'
 import useAlert from '../../../store/Alert/useAlert'
 import { queryClient } from '../../../api/query'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const Transport = () => {
 	const { simpleAlert } = useAlert()
@@ -258,7 +259,7 @@ const Transport = () => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / 50개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />

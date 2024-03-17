@@ -6,6 +6,7 @@ import PageDropdown from '../../../../../../components/TableInner/PageDropdown'
 import { TCSubContainer } from '../../../../../../modal/External/ExternalFilter'
 import useAlert from '../../../../../../store/Alert/useAlert'
 import { onSizeChange } from '../../../../utils'
+import TableV2HiddenSection from '../../../../../Table/TableV2HiddenSection'
 
 /**
  * @description
@@ -33,6 +34,7 @@ const TableHeader = ({ totalLength, selected, setState }) => {
 				<div>
 					FAQ 목록 (선택 <span>{selectedLength}</span> / {totalLength}개 )
 				</div>
+				<TableV2HiddenSection />
 				<PageDropdown handleDropdown={(e) => onSizeChange(e, setState)} />
 			</TCSubContainer>
 			<TCSubContainer>

@@ -47,6 +47,7 @@ import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
 import AddWishButton from '../../../userpages/UserSales/_components/AddWishButton'
 import UserBiddingSearchFields from '../../../userpages/UserAuction/Single/UserBiddingSearchFields'
 import { useLoading } from '../../../store/Loading/loadingAtom'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const Package = ({}) => {
 	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
@@ -591,7 +592,7 @@ const Package = ({}) => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					{nowAuction && (
 						<>

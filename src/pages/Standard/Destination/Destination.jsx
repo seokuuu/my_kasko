@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import Hidden from '../../../components/TableInner/Hidden'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
@@ -48,6 +48,7 @@ import DestinationSearchFilter from './DestinationSearchFilter'
 import { queryClient } from '../../../api/query'
 import { useLoading } from '../../../store/Loading/loadingAtom'
 import Excel from '../../../components/TableInner/Excel'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 // INITIAL PARAM
 const initialParamData = {
@@ -265,7 +266,7 @@ const Destination = () => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / {data?.data?.data?.pagination?.listCount}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={onPageSizeChange} />

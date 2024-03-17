@@ -25,6 +25,7 @@ import Table from '../../Table/Table'
 import ClientPostModal from './ClientPostModal'
 import ClientSearchFields from './ClientSearchFields'
 import { GlobalFilterHeader } from '../../../components/Filter'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const paramData = {
 	pageNum: 1,
@@ -170,7 +171,7 @@ const Client = ({ postModal, setPostModal }) => {
 					<TCSubContainer bor>
 						<div>
 							고객 정보 목록 (선택 <span>{checkedArray?.length || 0}</span> /{getRow?.length || 0} 개)
-							<Hidden />
+							<TableV2HiddenSection />
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
 							<PageDropdown handleDropdown={handleTablePageSize} />

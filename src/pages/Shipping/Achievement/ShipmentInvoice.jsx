@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { ClaimContent2, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
-import { FilterContianer, TableContianer } from '../../../modal/External/ExternalFilter'
+import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import { GlobalFilterHeader } from '../../../components/Filter'
 import InvoiceDetailHeader from './InvoiceDetailHeader'
 import { useShipmentInvoiceListQuery } from '../../../api/shipment'
@@ -9,6 +9,7 @@ import Table from '../../Table/Table'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { ShippingInvoiceFields, ShippingInvoiceFieldsCols } from '../../../constants/admin/Shipping'
 import { formatWeight } from '../../../utils/utils'
+import ShippingInvoiceView from '../../../components/shipping/ShippingInvoiceView'
 
 const ShipmentInvoice = () => {
 	const [getRow, setGetRow] = useState('')
@@ -21,8 +22,8 @@ const ShipmentInvoice = () => {
 	const [details, setDetails] = useState()
 
 	const calculatePrice = () => {
-		const productCost = data?.map((item) => item.orderPrice + item.orderPriceVat).reduce((acc, cur) => acc + cur, 0)
-		const freightCost = data?.map((item) => item.freightCost + item.freightCostVat).reduce((acc, cur) => acc + cur, 0)
+		const productCost = data?.map((item) => item.totalOrderPrice).reduce((acc, cur) => acc + cur, 0)
+		const freightCost = data?.map((item) => item.totalFreightCost).reduce((acc, cur) => acc + cur, 0)
 		return productCost + freightCost
 	}
 
@@ -76,6 +77,10 @@ const ShipmentInvoice = () => {
 						<ClaimContent2>{formatWeight(calculateTotalPrice())}</ClaimContent2>
 					</ClaimRow>
 				</ClaimTable>
+				<TCSubContainer>
+					<div></div>
+					<ShippingInvoiceView customerCode={customerCode} outNumber={outNumber} />
+				</TCSubContainer>
 			</TableWrap>
 		</FilterContianer>
 	)

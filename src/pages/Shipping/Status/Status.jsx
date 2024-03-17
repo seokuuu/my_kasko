@@ -13,19 +13,15 @@ import { GlobalFilterHeader } from '../../../components/Filter'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import {
-	ShippingDispatchFields,
-	ShippingStatusFields,
-	ShippingStatusFieldsCols,
-} from '../../../constants/admin/Shipping'
+import { ShippingStatusFields, ShippingStatusFieldsCols } from '../../../constants/admin/Shipping'
 import { add_element_field } from '../../../lib/tableHelpers'
 import useAlert from '../../../store/Alert/useAlert'
-import ReceiptExcel from './ReceiptExcel'
 import StatusSearchFilter from './StatusSearchFilter'
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
 import TableV2 from '../../Table/TableV2'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import ReceiptExcelV2 from './ReceiptExcelV2'
 
 const initData = {
 	pageNum: 1,
@@ -109,7 +105,7 @@ const Status = () => {
 	useEffect(() => {
 		const list = data?.list
 		if (list && Array.isArray(list)) {
-			setGetRow(add_element_field(list, ShippingDispatchFields))
+			setGetRow(add_element_field(list, ShippingStatusFields))
 		}
 	}, [data])
 
@@ -125,7 +121,7 @@ const Status = () => {
 	}, [detailRow])
 
 	return (
-		<FilterContianer>
+		<FilterContianer style={{ minWidth: '1400px' }}>
 			<GlobalFilterHeader title={'출고 현황'} />
 			{exFilterToggle && (
 				<GlobalProductSearch
@@ -166,7 +162,7 @@ const Status = () => {
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteBlackBtn onClick={onShipmentCompletion}>운송 완료</WhiteBlackBtn>
-						<ReceiptExcel />
+						<ReceiptExcelV2 />
 					</div>
 				</TCSubContainer>
 			</TableContianer>

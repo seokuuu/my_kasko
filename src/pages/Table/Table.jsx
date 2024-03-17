@@ -28,6 +28,15 @@ import {
 } from '../../store/Layout/Layout'
 import './TableUi.css'
 import { customNumberFormatter } from '../../utils/utils'
+import { useSetAtom } from 'jotai/index'
+import {
+	TABLE_TYPE,
+	tableHiddenColumnAtom,
+	tableResetColumnAtom,
+	tableRestoreColumnAtom,
+	tableShowColumnAtom,
+} from '../../store/Table/Table'
+import { getTableLocalStorageByPageName } from '../../store/Table/tabeleLocalStorage'
 // import TableStyle from './Table.module.css'
 
 // import { get } from 'lodash'
@@ -78,6 +87,7 @@ const Table = ({
 	loading = false, // 로딩 여부
 	dragAndDrop = false,
 	changeFn,
+	popupTable = false, // 팝업 테이블 여부
 }) => {
 	const [selectedCountry, setSelectedCountry] = useState(null)
 	// const [packageUids, setPackageUids] = useState([])
@@ -95,105 +105,51 @@ const Table = ({
 	const [rowData, setRowData] = useState()
 	const rowAtomSwitch = useAtomValue(selectedRows2Switch)
 
-	var checkboxSelection = function (params) {
-		// we put checkbox on the name if we are not doing grouping
-		return params.columnApi.getRowGroupColumns().length === 0
-	}
-
-	var headerCheckboxSelection = function (params) {
-		// we put checkbox on the name if we are not doing grouping
-		return params.columnApi.getRowGroupColumns().length === 0
-	}
+	const [gridApi, setGridApi] = useState(null)
+	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
+	const [selectedRows2, setSelectedRows2] = useAtom(selectedRowsAtom2)
+	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
+	const navigate = useNavigate()
 
 	// ---------------------------------------------------------------------
-	const [columnDefs, setColumnDefs] = useState([
-		{
-			field: '고객 코드',
-			width: 45,
-			checkboxSelection: checkboxSelection,
-			headerCheckboxSelection: headerCheckboxSelection,
-		},
-		{
-			field: '고객 코드',
-			width: 45,
-			checkboxSelection: checkboxSelection,
-			headerCheckboxSelection: headerCheckboxSelection,
-		},
+	const [columnDefs, setColumnDefs] = useState([])
 
-		{ field: '대표', maxWidth: 80 }, //숫자
-		{ field: '목적지 코드' },
-		{ field: '목적지 명', maxWidth: 90 },
-		{
-			field: '담당자 연락처',
-		},
-		{
-			field: '하차지 명',
-		},
-		{ field: '도착지 연락처' },
-		{ field: '상세 주소' },
-		{ field: '비고란' },
-	])
+	useEffect(() => {
+		if (getRow && getRow.length > 0) {
+			setRowData(getRow)
+		}
+	}, [getRow])
 
-	// const defaultColDef = useMemo(() => {
-	//   return {
-	//     flex: 1,
-	//     minWidth: 120,
-	//     filter: true,
-	//   }
-	// }, [])
+	useEffect(() => {
+		if (
+			[
+				'/auction/biddingsingle',
+				'auction/biddingpackage',
+				'/userpage/auctionsingle',
+				'/userpage/auctionpackage',
+			].includes(location.pathname)
+		) {
+			if (gridRef.current.api) {
+				const nodesToSelect = []
+				console.log('gridRef.current.api : ', gridRef.current.api)
 
-	// const dummyD = {
-	//   '고객 코드': 'nope',
-	//   대표: 'nope',
-	//   '목적지 코드': 'nope',
-	//   '목적지 명': 'nope',
-	//   '담당자 연락처': 'nope',
-	//   '하차지 명': 'nope',
-	//   '도착지 연락처': 'nope',
-	//   '상세 주소': 'nope',
-	//   비고란: 'nope',
-	// }
+				gridRef.current.api.forEachNode((node) => {
+					const selectedUid = [...new Set(selectedRows?.map((item) => item['제품 번호']?.value))]
 
-	// const dummyData = Array(300).fill(dummyD)
+					if (node.data && selectedUid.includes(node.data['제품 번호'].value)) {
+						nodesToSelect.push(node)
+					}
+				})
+				gridRef.current.api.setNodesSelected({ nodes: nodesToSelect, newValue: true })
+			}
+		}
+	}, [rowData])
 
-	// console.log(getCol)
 	useEffect(() => {
 		if (getCol && getCol?.length > 0) {
-			const newCol = getCol?.map((item, index) => {
-				if (index === 0) {
-					item.pinned = 'left'
-					item.minWidth = 50
-					item.maxWidth = 50
-				}
-				if (item.checkboxSelection) {
-					item.pinned = 'left'
-					item.minWidth = 50
-					item.maxWidth = 50
-				}
-				return item
-			})
-
-			setColumnDefs(newCol)
+			setColumnDefs(getCol)
 		}
-		if (getRow && getRow.length > 0) {
-			// const formattedRow = getRow.map((item) => {
-			// 	const formattedItem = {}
-			// 	Object.keys(item).forEach((key) => {
-			// 		if (['순번', '고객 구분'].includes(key) || key.includes('번호')) {
-			// 			return (formattedItem[key] = item[key])
-			// 		} else {
-			// 			formattedItem[key] = customNumberFormatter({ value: item[key] })
-			// 		}
-			// 		// formattedItem[key] = customNumberFormatter({ value: item[key] })
-			// 	})
-			// 	return formattedItem
-			// })
-
-			setRowData(getRow)
-		} else {
-			setRowData(null)
-		}
-	}, [getRow, getCol])
+	}, [])
 
 	// ---------------------------------------------------------------------
 
@@ -237,12 +193,6 @@ const Table = ({
 	const modalClose = () => {
 		setIsModal(false)
 	}
-
-	const [gridApi, setGridApi] = useState(null)
-	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
-	const [selectedRows2, setSelectedRows2] = useAtom(selectedRowsAtom2)
-	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
-	const navigate = useNavigate()
 
 	// 일단 router 이동 등록
 	const onRowDoubleClicked = (event) => {
@@ -431,11 +381,95 @@ const Table = ({
 	const effectiveGridOptions = parentGridOptions || gridOptions
 	const effectiveOnSelectionChanged = parentOnSelectionChanged || onSelectionChanged
 	const effectGridReady = parentOngridReady || onGridReady
+
+	const tableType = useMemo(() => (popupTable ? TABLE_TYPE.popupTable : TABLE_TYPE.pageTable), [popupTable]) // 팝업 테이블 여부
+	const setHiddenColumn = useSetAtom(tableHiddenColumnAtom) // 테이블 칼럼 숨기기 처리
+	const showColumnId = useAtomValue(tableShowColumnAtom) // 테이블 노출 칼럼
+	const setShowColumnClear = useSetAtom(tableRestoreColumnAtom) // 테이블 노출 칼럼 처리
+	const setResetHiddenColumn = useSetAtom(tableResetColumnAtom) // 테이블 숨김항목 초기화 처리
+
+	const localTableList = getTableLocalStorageByPageName()
+
+	/**
+	 * 칼럼 숨기기 처리 핸들러
+	 */
+	const onColumnVisibleChange = useCallback(
+		(event) => {
+			const isHidden = event.visible === false
+			if (!isHidden) {
+				return
+			}
+
+			const columnId = event.column.colId
+			setHiddenColumn({
+				type: tableType,
+				value: columnId,
+			})
+		},
+		[tableType],
+	)
+
+	/**
+	 * 칼럼 노출 핸들러
+	 */
+	const onColumnShow = (showId) => {
+		if (!showId) {
+			return
+		}
+
+		const api = gridRef.current.columnApi
+		const savedState = api?.getColumnState()
+		if (savedState) {
+			const applyState = savedState.reduce((acc, v) => {
+				if (v?.colId === showId) v.hide = false
+				return [...acc, v]
+			}, [])
+
+			api.applyColumnState({ state: applyState })
+		}
+		setShowColumnClear({ type: tableType })
+	}
+
+	// 로컬 스토리지 저장된 숨김목록처리
+	useEffect(() => {
+		if (!localTableList) {
+			return
+		}
+
+		if (gridRef.current.columnApi) {
+			const columnApi = gridRef.current.columnApi
+			if (columnApi) {
+				const allColumns = columnApi.getAllColumns()
+				if (allColumns) {
+					const hiddenIds = localTableList[tableType].hiddenIds
+
+					allColumns.forEach((column) => {
+						if (hiddenIds.includes(column.colId)) {
+							column.setVisible(false)
+						}
+					})
+				}
+			}
+		}
+	}, [localTableList])
+
+	// 노출칼럼 변경
+	useEffect(() => {
+		const showId = showColumnId[tableType]
+		onColumnShow(showId)
+	}, [showColumnId])
+
+	// 테이블 선택, 숨김항목 초기화
+	useEffect(() => {
+		setResetHiddenColumn({ type: tableType })
+	}, [location, tableType])
+
 	return (
 		<div style={containerStyle}>
 			<TestContainer hei={hei}>
 				<div style={gridStyle} className="ag-theme-alpine">
 					<AgGridReact
+						ref={gridRef}
 						// {...gridOptions}
 						suppressColumnVirtualisation={true}
 						onGridReady={effectGridReady}
@@ -444,7 +478,6 @@ const Table = ({
 						rowData={rowData}
 						defaultColDef={defaultColDef}
 						gridOptions={effectiveGridOptions}
-						ref={gridRef}
 						onRowDoubleClicked={onRowDoubleClicked}
 						autoGroupColumnDef={autoGroupColumnDef}
 						animateRows={true}
@@ -467,6 +500,7 @@ const Table = ({
 						// sideBar={{ toolPanels: ['columns', 'filters'] }}
 						onRowDragEnd={dragAndDrop ? onRowDragEnd : () => {}}
 						onCellValueChanged={changeFn}
+						onColumnVisible={onColumnVisibleChange}
 					/>
 				</div>
 			</TestContainer>

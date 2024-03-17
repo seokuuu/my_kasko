@@ -27,6 +27,7 @@ import OrderDetailSearchFields from './OrderDetailSearchFields'
 import ProNoPage from './ProNoPage'
 import useOrder from './useOrder'
 import { onSizeChange } from '../Operate/utils'
+import TableV2HiddenSection from '../Table/TableV2HiddenSection'
 
 const useQuery = () => {
 	return new URLSearchParams(useLocation().search)
@@ -293,7 +294,7 @@ const AdminOrderDetail = () => {
 						<div>
 							조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /
 							{detailOrderPagination?.listCount}개 )
-							<Hidden />
+							<TableV2HiddenSection />
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
 							{/*<PageDropdown />*/}

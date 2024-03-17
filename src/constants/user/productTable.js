@@ -124,7 +124,7 @@ export const userSingleProductFieldsCols = getNormalTableRows([
 	{ field: '창고' },
 	{ field: '상시판매 상태' },
 	{ field: '승인상태' },
-	{ field: '판매유형' },
+	{ field: '판매유형', minWidth: 150 },
 	{ field: '판매가유형' },
 	{ field: '제품군' },
 	{ field: '제품 등급' },

@@ -238,7 +238,7 @@ const TableV2 = ({
 
 	const onFirstDataRendered = (params) => {
 		const columnApi = params.columnApi
-		columnApi.autoSizeAllColumns(false)
+		// columnApi.autoSizeAllColumns(false)
 	}
 
 	/* ==================== STATE start ==================== */
@@ -293,28 +293,14 @@ const TableV2 = ({
 	/* ==================== INITIALIZE start ==================== */
 	// 테이블 칼럼, 로우 데이터 초기화
 	useEffect(() => {
-		if (getCol && getCol?.length > 0) {
-			const newCol = getCol?.map((item, index) => {
-				if (index === 0) {
-					item.pinned = 'left'
-					item.minWidth = 50
-					item.maxWidth = 50
-				}
-				if (item.checkboxSelection) {
-					item.pinned = 'left'
-					item.minWidth = 50
-					item.maxWidth = 50
-				}
-				return item
-			})
-			setColumnDefs(newCol)
-		}
-
 		if (getRow && getRow.length > 0) {
 			const formattedRow = getRow.map((item) => {
 				const formattedItem = {}
 				Object.keys(item).forEach((key) => {
-					if (['순번', '고객 구분', '중량', '총 중량', '제품 중량'].includes(key) || key.includes('번호')) {
+					if (
+						['순번', '고객 구분', '중량', '총 중량', '제품 중량', '상시 판매가', '응찰가'].includes(key) ||
+						key.includes('번호')
+					) {
 						return (formattedItem[key] = item[key])
 					} else {
 						formattedItem[key] = customNumberFormatter({ value: item[key] })
@@ -326,7 +312,21 @@ const TableV2 = ({
 		} else {
 			setRowData(null)
 		}
-	}, [getRow, getCol])
+	}, [getRow])
+
+	useEffect(() => {
+		if (getCol && getCol?.length > 0) {
+			const newCol = getCol?.map((item) => {
+				if (item.checkboxSelection) {
+					item.pinned = 'left'
+					item.minWidth = 50
+					item.maxWidth = 50
+				}
+				return item
+			})
+			setColumnDefs(newCol)
+		}
+	}, [getCol])
 
 	// 페이지 이동시에 테이블 선택이 겹칠 수 있으므로 초기화
 	useEffect(() => {

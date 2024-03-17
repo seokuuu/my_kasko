@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Excel from '../../../components/TableInner/Excel'
 import { BlackBtn, BtnWrap, WhiteBlackBtn, WhiteBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
@@ -42,6 +42,7 @@ import Table from '../../Table/Table'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useAlert from '../../../store/Alert/useAlert'
 import { KilogramSum } from '../../../utils/KilogramSum'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const PackageCreate = () => {
 	const navigate = useNavigate()
@@ -369,7 +370,7 @@ const PackageCreate = () => {
 						{check?.length}
 						조회 목록(선택 <span>{check?.length}</span> /
 						{!prevData ? select.length : pagination ? pagination?.listCount : pagination?.listCount}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setRequestParams)} />

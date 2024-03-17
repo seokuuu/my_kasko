@@ -136,7 +136,6 @@ export default function PackageDetailModal() {
 								<div>
 									조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
 									{tablePagination ? tablePagination?.listCount : tablePagination?.listCount}개 )
-									<Hidden />
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
 									<PageDropdown handleDropdown={handleTablePageSize} />
