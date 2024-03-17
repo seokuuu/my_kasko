@@ -117,8 +117,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 
 	const uids = selectedRows?.map((item) => item['제품 번호'])
 
-	const totalWeight = getRow?.map((x) => x['중량'])
-	const sum = totalWeight.reduce((acc, curr) => acc + parseInt(curr), 0)
+	const totalWeight = getRow && getRow?.map((x) => x['중량'])
+	const sum = totalWeight && totalWeight?.reduce((acc, curr) => acc + parseInt(curr), 0)
 
 	// 시작가 일괄 변경 "버튼" onClick
 	// const startPriceOnClickHandler = () => {
