@@ -116,6 +116,10 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const [initRow, setInitRow] = useState([])
 
 	const uids = selectedRows?.map((item) => item['제품 번호'])
+
+	const totalWeight = getRow?.map((x) => x['중량'])
+	const sum = totalWeight.reduce((acc, curr) => acc + parseInt(curr), 0)
+
 	// 시작가 일괄 변경 "버튼" onClick
 	// const startPriceOnClickHandler = () => {
 	// 	const updatedResData = resData.map((item) => {
@@ -363,7 +367,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {getRow?.length}개 )
 						<Hidden />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -373,7 +377,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
+						선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 <span>{sum.toLocaleString()}</span> (kg)
 					</div>
 					{auctionStatus !== '종료' && (
 						<>

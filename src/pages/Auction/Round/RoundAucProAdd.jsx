@@ -91,7 +91,7 @@ const RoundAucProAdd = ({
 
 	const paramData = {
 		pageNum: 1,
-		pageSize: 50000,
+		pageSize: 50,
 		saleType: '경매 대상재',
 		registrationStatus: '경매 등록 대기',
 		type: types,
