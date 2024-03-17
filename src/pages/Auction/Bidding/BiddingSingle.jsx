@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { BtnBound, SkyBtn, TGreyBtn, TWhiteBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
@@ -14,7 +14,6 @@ import {
 	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -34,10 +33,10 @@ import InventoryFind from '../../../modal/Multi/InventoryFind'
 import useAlert from '../../../store/Alert/useAlert'
 import { authAtom } from '../../../store/Auth/auth'
 import { auctionStartAtom, userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
-import Table from '../../Table/Table'
-import BiddingSearchFields from './BiddingSearchFields'
 import { useLoading } from '../../../store/Loading/loadingAtom'
+import Table from '../../Table/Table'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import BiddingSearchFields from './BiddingSearchFields'
 
 const BiddingSingle = ({}) => {
 	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
@@ -123,6 +122,8 @@ const BiddingSingle = ({}) => {
 	const tableField = useMemo(() => {
 		return AuctionBiddingFieldsCols(checkedArrayState)
 	}, [checkedArrayState])
+
+	console.log('tableField', tableField)
 
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
@@ -232,11 +233,13 @@ const BiddingSingle = ({}) => {
 		const updatedProductList = checkedArrayState?.map((item) => ({
 			productUid: item['제품 고유 번호'],
 			biddingPrice:
-				item['현재 최고 가격'] === 0
-					? item['시작가'] + (finalInput?.biddingPrice || 1)
-					: item['현재 최고 가격'] >= 1 && item['현재 최고 가격'] <= item['나의 최고 응찰 가격']
-					? item['나의 최고 응찰 가격'] + (finalInput?.biddingPrice || 1)
-					: item['현재 최고 가격'] + (finalInput?.biddingPrice || 1),
+				parseInt(item['현재 최고 가격']?.replace(/,/g, '')) === 0
+					? parseInt(item['시작가']?.replace(/,/g, '')) + (finalInput?.biddingPrice || 1)
+					: parseInt(item['현재 최고 가격']?.replace(/,/g, '')) >= 1 &&
+					  parseInt(item['현재 최고 가격']?.replace(/,/g, '')) <=
+							parseInt(item['나의 최고 응찰 가격']?.replace(/,/g, ''))
+					? parseInt(item['나의 최고 응찰 가격']?.replace(/,/g, '')) + (finalInput?.biddingPrice || 1)
+					: parseInt(item['현재 최고 가격']?.replace(/,/g, '')) + (finalInput?.biddingPrice || 1),
 
 			customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 		}))
@@ -314,6 +317,8 @@ const BiddingSingle = ({}) => {
 		}
 		setLive(true)
 	}
+
+	console.log('winningCreateData', winningCreateData)
 
 	const globalProductResetOnClick = () => {
 		// if resetting the search field shouldn't rerender table

@@ -93,8 +93,7 @@ const Single = ({}) => {
 
 	const [getRow, setGetRow] = useState('')
 	const [newGetRow, setNewGetRow] = useState({})
-	const tableField = useRef(AuctionBiddingFieldsCols)
-	const getCol = tableField.current
+
 	const queryClient = useQueryClient()
 	// const checkedArrayState = useAtom(selectedRowsAtom)[0]
 	const [tablePagination, setTablePagination] = useState([])
@@ -117,6 +116,10 @@ const Single = ({}) => {
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding)
 	const originData = data?.data?.data
 	const [oriData, setOridata] = useState()
+
+	const tableField = useMemo(() => {
+		return AuctionBiddingFieldsCols(checkedArrayState)
+	}, [checkedArrayState])
 
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
@@ -226,11 +229,13 @@ const Single = ({}) => {
 		const updatedProductList = checkedArrayState?.map((item) => ({
 			productUid: item['제품 고유 번호'],
 			biddingPrice:
-				item['현재 최고 가격'] === 0
-					? item['시작가'] + (finalInput?.biddingPrice || 1)
-					: item['현재 최고 가격'] >= 1 && item['현재 최고 가격'] <= item['나의 최고 응찰 가격']
-					? item['나의 최고 응찰 가격'] + (finalInput?.biddingPrice || 1)
-					: item['현재 최고 가격'] + (finalInput?.biddingPrice || 1),
+				parseInt(item['현재 최고 가격']?.replace(/,/g, '')) === 0
+					? parseInt(item['시작가']?.replace(/,/g, '')) + (finalInput?.biddingPrice || 1)
+					: parseInt(item['현재 최고 가격']?.replace(/,/g, '')) >= 1 &&
+					  parseInt(item['현재 최고 가격']?.replace(/,/g, '')) <=
+							parseInt(item['나의 최고 응찰 가격']?.replace(/,/g, ''))
+					? parseInt(item['나의 최고 응찰 가격']?.replace(/,/g, '')) + (finalInput?.biddingPrice || 1)
+					: parseInt(item['현재 최고 가격']?.replace(/,/g, '')) + (finalInput?.biddingPrice || 1),
 
 			customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 		}))
@@ -661,7 +666,7 @@ const Single = ({}) => {
 				</TCSubContainer>
 
 				<Table
-					getCol={AuctionBiddingFieldsCols(checkedArrayState)}
+					getCol={tableField}
 					getRow={tableRowData}
 					tablePagination={tablePagination}
 					onPageChange={onPageChange}

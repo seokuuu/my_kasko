@@ -71,13 +71,6 @@ const RoundAucListEditFields = ({
 					<PartWrap>
 						<h6>매입처</h6>
 						<PWRight>
-							{/* <MainSelect
-								options={supplierList}
-								defaultValue={supplierList[0]}
-								value={search.supplier}
-								name="supplier"
-								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
-							/> */}
 							<Input name="supplier" value={search.supplier} onChange={commonNumInputHandler} />
 						</PWRight>
 					</PartWrap>
@@ -108,8 +101,8 @@ const RoundAucListEditFields = ({
 								options={spartList}
 								defaultValue={spartList[0]}
 								value={search.spart}
-								name="supplier"
-								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
+								name="spart"
+								onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
 							/>
 
 							<MainSelect
@@ -128,10 +121,11 @@ const RoundAucListEditFields = ({
 								onChange={(e) => commonDropdownButtonHandler(e, 'maker')}
 							/> */}
 							<Input
-								style={{ marginRight: '5px' }}
+								style={{ marginRight: '5px', fontSize: '16px' }}
 								name="maker"
 								value={search.maker}
 								onChange={commonNumInputHandler}
+								placeholder="제조사"
 							/>
 							<MainSelect
 								options={gradeList}
