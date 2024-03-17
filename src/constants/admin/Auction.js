@@ -1246,18 +1246,15 @@ export const AuctionStartPriceFields = {
 
 export const AuctionStartPriceFieldsCols = [
 	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
-	{ ...commonStyles, field: '고유 번호' },
-	{ ...commonStyles, field: '제품군' },
-	{ ...commonStyles, field: '정척 여부' },
-	{ ...commonStyles, field: '유찰 횟수' },
-	{ ...commonStyles, field: '등급' },
-	{ ...commonStyles, field: '적용일' },
-	{ ...commonStyles, field: '적용전 단가' },
-	{ ...commonStyles, field: '적용 단가' },
-].map((col) => ({
-	...col,
-	minWidth: col.minWidth !== undefined ? col.minWidth : commonStyles.getFieldMinWidth(col.field),
-}))
+	{ ...commonStyles, field: '고유 번호', minWidth: 170 },
+	{ ...commonStyles, field: '제품군', minWidth: 170 },
+	{ ...commonStyles, field: '정척 여부', minWidth: 170 },
+	{ ...commonStyles, field: '유찰 횟수', minWidth: 170 },
+	{ ...commonStyles, field: '등급', minWidth: 170 },
+	{ ...commonStyles, field: '적용일', minWidth: 170 },
+	{ ...commonStyles, field: '적용전 단가', minWidth: 170 },
+	{ ...commonStyles, field: '적용 단가', minWidth: 200 },
+]
 
 const uniqueKeys = new Set([...Object.keys(AuctionRoundExtraProductFields), ...Object.keys(AuctionRoundDetailFields)])
 

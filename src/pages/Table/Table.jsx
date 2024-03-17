@@ -137,6 +137,8 @@ const Table = ({
 				})
 				setRowData(formattedRow)
 			} else setRowData(getRow)
+		} else {
+			setRowData(null)
 		}
 	}, [getRow])
 
