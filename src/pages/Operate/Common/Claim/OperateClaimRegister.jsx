@@ -42,6 +42,7 @@ const OperateClaimRegister = ({ pageType }) => {
 		maker,
 		grade,
 		preferThickness,
+		customerName,
 	} = location.state ?? {}
 	const titleData = [
 		'제품 번호',
@@ -58,7 +59,7 @@ const OperateClaimRegister = ({ pageType }) => {
 		'',
 	]
 
-	const contentData = ['-', '-', '-', '-', '-', '-', '-', '-', '-']
+	const contentData = ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-']
 
 	// 상단 정보 데이터
 	const [contents, setContents] = useState({ content: contentData, title: '-' })
@@ -186,7 +187,7 @@ const OperateClaimRegister = ({ pageType }) => {
 				preferThickness,
 			]
 
-			setContents({ title: maker, content: newContentsData })
+			setContents({ title: customerName, content: newContentsData })
 		}
 
 		// 수정시 상세 데이터 바인딩

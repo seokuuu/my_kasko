@@ -5,16 +5,14 @@ import Excel from '../../../components/TableInner/Excel'
 
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import Table from '../../../pages/Table/Table'
-import { StockMultiModal, selectedRowsAtom, toggleAtom, weightAtom } from '../../../store/Layout/Layout'
+import { modalAtom, selectedRowsAtom, StockMultiModal, toggleAtom, weightAtom } from '../../../store/Layout/Layout'
 
 import { useAtom, useAtomValue } from 'jotai'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
-import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
-import { modalAtom } from '../../../store/Layout/Layout'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 
-import { isArray } from 'lodash'
+import { isArray, isEqual } from 'lodash'
 import { getInventoryStocks, patchStockCategory, postCancelInStock } from '../../../api/stocks/Inventory'
 import { StockInventoryFieldCols, StockInventoryFields } from '../../../constants/admin/StockInventory'
 import useMutationQuery from '../../../hooks/useMutationQuery'
@@ -22,8 +20,6 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Multi2 from '../../../modal/Common/Multi2'
 import { changeCategoryAtom } from '../../../store/Layout/Popup'
-
-import { isEqual } from 'lodash'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
 import WeightSales from '../../../modal/Multi/WeightSales'
@@ -49,9 +45,8 @@ const Inventory = ({}) => {
 	const getCol = table.current
 	const page = TableData?.data?.pagination
 	const [pagenations, setPaginations] = useState([])
-	const [weight, setWeight] = useAtom(weightAtom)
+	const weight = useAtomValue(weightAtom)
 	const [isMulti, setIsMulti] = useAtom(StockMultiModal)
-	// const [selectObj, setSelectObj] = useAtom(weightObj)
 	const [selectProductNumber, setSelectProductNumber] = useState([])
 
 	const tableRowData = useMemo(() => {
@@ -82,7 +77,7 @@ const Inventory = ({}) => {
 	const openModal = () => {
 		setModalSwitch(true)
 	}
-	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
+	const { simpleAlert, showAlert } = useAlert()
 	const changeSaleCategory = () => {
 		const res = mutate(parameter, {
 			onSuccess: (d) => {
@@ -142,7 +137,6 @@ const Inventory = ({}) => {
 	const { mutate: cancelInStock } = useMutationQuery('cancelInStock', postCancelInStock)
 	const handleCancelInStock = () => {
 		const dataUid = checkBoxSelect?.map((item) => item['제품 고유 번호'])
-		console.log(dataUid)
 		cancelInStock(dataUid, {
 			onSuccess: () => {
 				showAlert({
@@ -158,7 +152,9 @@ const Inventory = ({}) => {
 	useEffect(() => {
 		if (checkBoxSelect) return setSelectProductNumber((p) => [...checkBoxSelect.map((i) => i['제품 번호'])])
 	}, [checkBoxSelect])
+
 	const { pagination: customPagination, onPageChanage } = useTablePaginationPageChange(TableData, setParam)
+
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -167,16 +163,13 @@ const Inventory = ({}) => {
 				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 			</FilterHeader>
 			{exFilterToggle && (
-				<>
-					<GlobalProductSearch
-						// prettier-ignore
-						param={param}
-						isToggleSeparate={true}
-						renderCustomSearchFields={(props) => <InventorySearchFields {...props} />}
-						globalProductSearchOnClick={globalProductSearchOnClick}
-						globalProductResetOnClick={globalProductResetOnClick}
-					/>
-				</>
+				<GlobalProductSearch
+					param={param}
+					isToggleSeparate={true}
+					renderCustomSearchFields={(props) => <InventorySearchFields {...props} />}
+					globalProductSearchOnClick={globalProductSearchOnClick}
+					globalProductResetOnClick={globalProductResetOnClick}
+				/>
 			)}
 			<TableContianer>
 				<TCSubContainer bor>
@@ -187,7 +180,7 @@ const Inventory = ({}) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
-						<Excel getRow={TableData} />
+						<Excel getRow={TableData} sheetName={'재고관리'} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
@@ -199,7 +192,7 @@ const Inventory = ({}) => {
 							onClick={() => {
 								if (!isArray(checkBoxSelect)) return
 								if (checkBoxSelect.length === 0) {
-									alert('제품을 선택해주세요')
+									simpleAlert('제품을 선택해주세요')
 								} else {
 									openModal()
 								}
@@ -210,7 +203,13 @@ const Inventory = ({}) => {
 						<WhiteRedBtn onClick={handleCancelInStock}>입고 확정 취소</WhiteRedBtn>
 					</div>
 				</TCSubContainer>
-				<Table getRow={tableRowData} getCol={getCol} tablePagination={page} onPageChange={onPageChanage} />
+				<Table
+					loading={isLoading}
+					getRow={tableRowData}
+					getCol={getCol}
+					tablePagination={page}
+					onPageChange={onPageChanage}
+				/>
 			</TableContianer>
 
 			{modalSwitch && (

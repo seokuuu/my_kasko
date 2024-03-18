@@ -19,6 +19,7 @@ import {
 	WhiteCloseBtn,
 } from '../../modal/Common/Common.Styled'
 import {
+	anotherTableRowsAtom,
 	blueModalAtom,
 	doubleClickedRowAtom,
 	pageSort,
@@ -88,6 +89,7 @@ const Table = ({
 	dragAndDrop = false,
 	changeFn,
 	popupTable = false, // 팝업 테이블 여부
+	isAnotherTable = false, // 한 페이지에 이중 테이블 여부
 }) => {
 	const [selectedCountry, setSelectedCountry] = useState(null)
 	// const [packageUids, setPackageUids] = useState([])
@@ -108,6 +110,7 @@ const Table = ({
 	const [gridApi, setGridApi] = useState(null)
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 	const [selectedRows2, setSelectedRows2] = useAtom(selectedRowsAtom2)
+	const setAnotherTableRows = useSetAtom(anotherTableRowsAtom)
 	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
 	const navigate = useNavigate()
 
@@ -206,6 +209,7 @@ const Table = ({
 	useEffect(() => {
 		// setDetailRow(null)
 		setSelectedRows(null)
+		setAnotherTableRows(null)
 	}, [location])
 
 	const modalOpen = () => {
@@ -242,7 +246,11 @@ const Table = ({
 		if (gridApi) {
 			const selectedNodes = gridApi.getSelectedNodes()
 			const selectedData = selectedNodes.map((node) => node.data)
-			setSelectedRows(selectedData)
+			if (isAnotherTable) {
+				setAnotherTableRows(selectedData)
+			} else {
+				setSelectedRows(selectedData)
+			}
 
 			// 이중으로 check 사용 시
 			if (rowAtomSwitch) {
