@@ -21,6 +21,7 @@ import ProgressSearchFields from '../Progress/ProgressSearchFields'
 import { onSizeChange } from '../../Operate/utils'
 import useTableSelection from '../../../hooks/useTableSelection'
 import useTableData from '../../../hooks/useTableData'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const DetailProgress = ({}) => {
 	const radioDummy = ['전체', '미진행', '진행중', '종료']
@@ -156,7 +157,7 @@ const DetailProgress = ({}) => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />

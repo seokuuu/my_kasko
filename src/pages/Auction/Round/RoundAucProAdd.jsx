@@ -40,6 +40,8 @@ import RoundAucListEditFields from './RoundAucListEditFields'
 // 경매 제품 추가(단일) 메인 컴포넌트
 // 경매 제품 추가 (패키지), 경매 목록 상세(종료된 경매)와 호환 가능
 const RoundAucProAdd = ({
+	setIsAccept,
+	setOutAddData,
 	setAddModal,
 	setAddModalnewResData,
 	setNewResData,
@@ -126,7 +128,7 @@ const RoundAucProAdd = ({
 		const key = '고유 번호'
 		const findKey = selectedRows.map((item) => item[key])
 		const addData = resData?.filter((item) => findKey.includes(item?.uid))
-		console.log('addData', addData)
+		console.log('findKey 큐큐', findKey)
 		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
 		else {
 			simpleConfirm('선택한 항목을 추가하시겠습니까?', () =>
@@ -135,6 +137,8 @@ const RoundAucProAdd = ({
 					setNewResData((prevData) => [...prevData, item])
 					setAddModal(false)
 					onListAdd(addData)
+					setOutAddData(findKey)
+					setIsAccept((prev) => !prev)
 				}),
 			)
 		}

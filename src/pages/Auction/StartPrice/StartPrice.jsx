@@ -27,7 +27,6 @@ import {
 	uploadMultiPrice,
 } from '../../../api/auction/startprice'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import Hidden from '../../../components/TableInner/Hidden'
 import {
 	AuctionStartPriceFields,
 	AuctionStartPriceFieldsCols,
@@ -41,9 +40,10 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import Upload from '../../../modal/Upload/Upload'
 import useAlert from '../../../store/Alert/useAlert'
 import { AuctionUnitPriceAtom } from '../../../store/Layout/Layout'
-import Table from '../../Table/Table'
-import StartPriceFields from './StartPriceFields'
 import { onSizeChange } from '../../Operate/utils'
+import Table from '../../Table/Table'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import StartPriceFields from './StartPriceFields'
 
 const StartPrice = ({}) => {
 	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
@@ -318,7 +318,7 @@ const StartPrice = ({}) => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>{selectedCount}</span> / {param.pageSize}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
