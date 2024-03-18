@@ -44,14 +44,7 @@ import useTableData from '../../../hooks/useTableData'
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStatus, roundPageRefetch }) => {
 	const [btnClick, setBtnClick] = useState(false)
 	const [newResData, setNewResData] = useState([])
-	const [addAuction, setAddAuction] = useState({
-		productUid: null,
-		auctionStartPrice: null,
-	})
-	const [delAuction, setDelAuction] = useState({
-		productUid: null,
-		auctionProductUid: null,
-	})
+
 	const [editData, setEditData] = useState({
 		type: types,
 		auctionNumber: auctionNum,
@@ -63,7 +56,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	// const [rows, setRows] = useState('')
 	// const [list, setList] = useState([])
 	const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
-	const [pagination, setPagination] = useState(null)
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 	const [toggleMsg, setToggleMsg] = useState('On')
@@ -77,9 +69,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	}
 
 	const [getRow, setGetRow] = useState('')
-	const tableField = useRef(AuctionRoundDetailFieldsCols)
-	const getCol = tableField.current
-	const queryClient = useQueryClient()
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 
 	console.log('selectedRows', selectedRows)
@@ -120,22 +109,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const totalWeight = getRow && getRow?.map((x) => x['중량'])
 	const sum = totalWeight && totalWeight?.reduce((acc, curr) => acc + parseInt(curr), 0)
 
-	// 시작가 일괄 변경 "버튼" onClick
-	// const startPriceOnClickHandler = () => {
-	// 	const updatedResData = resData.map((item) => {
-	// 		if (uids.includes(item.productNumber)) {
-	// 			item.auctionStartPrice = item.auctionStartPrice + startPrice
-	// 		}
-	// 		return item
-	// 	})
-	// 	if (selectedRows.some((row) => row.매입처 === '현대제철')) {
-	// 		simpleAlert('현대제철(타사) 시작가 변경이 불가합니다.')
-	// 	} else {
-	// 		setRealStartPrice(startPrice)
-	// 		setGetRow(add_element_field(updatedResData, AuctionRoundDetailFields))
-	// 	}
-	// }
-
 	const startPriceOnClickHandler = () => {
 		// resData는 영문이라 add_element_field 처리해야하고
 		// newResData는 한글이라 그냥 setGetRow 처리해야함
@@ -170,52 +143,52 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 
 	console.log('getRow 키키', getRow)
 
+	const [isAccept, setIsAccept] = useState(false)
+
 	useEffect(() => {
-		const fetchData = async () => {
-			if (resData && Array.isArray(resData)) {
-				const newInitRow = await add_element_field(resData, AuctionRoundDetailFields)
-				console.log('newInitRow', newInitRow)
-				setInitRow(newInitRow)
+		// const fetchData = async () => {
 
-				// 제품 추가에서 '고유 번호' 중복 object 제거
-				const removeDuplicates = (data) => {
-					// 중복을 확인할 객체 생성
-					const uniqueMap = {}
+		// }
 
-					// 중복을 제거한 결과 반환
-					return data.filter((item) => {
-						const uniqueKey = item['고유 번호']
+		// fetchData() // 비동기 함수를 호출
 
-						// 중복된 '고유 번호'가 없으면 해당 항목을 유지하고 true 반환
-						if (!uniqueMap[uniqueKey]) {
-							uniqueMap[uniqueKey] = true
-							return true
-						}
+		if (resData && Array.isArray(resData)) {
+			const newInitRow = add_element_field(resData, AuctionRoundDetailFields)
 
-						// 중복된 '고유 번호'가 있으면 해당 항목을 제거하고 false 반환
-						return false
-					})
-				}
+			// 제품 추가에서 '고유 번호' 중복 object 제거
+			const removeDuplicates = (data) => {
+				// 중복을 확인할 객체 생성
+				const uniqueMap = {}
 
-				const uniqueData = removeDuplicates(newResData)
-				setGetRow([...uniqueData, ...newInitRow])
+				// 중복을 제거한 결과 반환
+				return data.filter((item) => {
+					const uniqueKey = item['고유 번호']
+
+					// 중복된 '고유 번호'가 없으면 해당 항목을 유지하고 true 반환
+					if (!uniqueMap[uniqueKey]) {
+						uniqueMap[uniqueKey] = true
+						return true
+					}
+
+					// 중복된 '고유 번호'가 있으면 해당 항목을 제거하고 false 반환
+					return false
+				})
 			}
-		}
 
-		fetchData() // 비동기 함수를 호출
-	}, [newResData, resData])
+			const uniqueData = removeDuplicates(newResData)
+			setInitRow(newInitRow)
+			setGetRow([...uniqueData, ...newInitRow])
+		}
+	}, [isSuccess, resData, isAccept])
 
 	const dupleUids = getRow && getRow?.map((item) => item['제품 고유 번호'] || item['고유 번호'])
 
-	console.log('dupleUids', dupleUids)
-
 	const [outAddData, setOutAddData] = useState([])
-	console.log('outAddData', outAddData)
-	const [delData, setDelData] = useState([])
+
 	const onListAdd = (selectedData) => {
 		try {
 			setSelectedRows([]) // 테이블 체크 목록 초기화
-			setOutAddData((prev) => [...prev, ...selectedData.map((x) => x['uid'])])
+			// setOutAddData((prev) => [...prev, ...selectedData.map((x) => x['uid'])])
 		} catch (error) {
 			simpleAlert(error.message)
 		}
@@ -250,7 +223,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 				(item) => !selectedRows.some((checkedItem) => checkedItem['고유 번호'] === item['고유 번호']),
 			)
 
-			// setNewResData(filteredArray)
+			setNewResData(filteredArray)
 
 			const resultRemove = selectedRows
 				.filter((item) => item && item['경매 제품 고유 번호'] !== undefined && item['경매 제품 고유 번호'] !== null)
@@ -258,7 +231,12 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 					auctionProductUid: item['경매 제품 고유 번호'],
 					productUid: item['제품 고유 번호'],
 				}))
-			setEditData({ ...editData, deleteAuctionProductList: resultRemove })
+
+			const updatedDelData = [...editData.deleteAuctionProductList, ...resultRemove]
+			setEditData((prevEditData) => ({
+				...prevEditData,
+				deleteAuctionProductList: updatedDelData,
+			}))
 
 			const filteredArray2 = getRow.filter(
 				(item) =>
@@ -268,7 +246,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			setGetRow([...filteredArray, ...filteredArray2])
 
 			setSelectedRows([]) // 테이블 체크 목록 초기화
-			setDelData(resultRemove)
 
 			const newKey = '고유 번호'
 
@@ -430,6 +407,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 						setOutAddData={setOutAddData}
 						auctionNumber={auctionNum}
 						dupleUids={dupleUids}
+						setIsAccept={setIsAccept}
 					/>
 				)}
 				<NewBottomBtnWrap bottom={-5} borderTop={'none'}>

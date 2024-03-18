@@ -36,6 +36,8 @@ import useAlert from '../../../store/Alert/useAlert'
 import { selectedRows2Switch } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import WinningCreateSearchFields from './WinningCreateSearchFields'
+import useTableData from '../../../hooks/useTableData'
+import { KilogramSum } from '../../../utils/KilogramSum'
 
 // 낙찰 생성 제품 추가(단일) 메인 컴포넌트
 const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, setwinningCreateInput, dupleUids }) => {
@@ -91,6 +93,8 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
+
+	console.log('checkedArray', checkedArray)
 
 	// GET
 	const { isLoading, isError, data, isSuccess } = useReactQuery(param, 'getWinningCreate', getWinningCreate)
@@ -198,6 +202,16 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 		simpleAlert('적용 되었습니다.')
 	}
 
+	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableData({
+		weightKey: '중량',
+	})
+
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
+		tableField: AuctionWinningCreateFields,
+		serverData: data?.data?.data,
+		wish: { display: true, key: ['productNumber'] },
+	})
+
 	return (
 		<>
 			<FadeOverlay />
@@ -246,7 +260,7 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 							</TCSubContainer>
 							<TCSubContainer>
 								<div>
-									선택 중량<span> 2 </span>kg / 총 중량 kg
+									선택 중량 <span>{KilogramSum(checkedArray)} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 								</div>
 								<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
 									<p>낙찰가 일괄 변경</p>

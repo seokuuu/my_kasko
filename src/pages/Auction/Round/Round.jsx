@@ -38,6 +38,7 @@ import useAlert from '../../../store/Alert/useAlert'
 import RoundAucListEdit from './RoundAucListEdit'
 import RoundSearchFields from './RoundSearchFields'
 import { onSizeChange } from '../../Operate/utils'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const Round = ({}) => {
 	const { simpleConfirm, simpleAlert } = useAlert()
@@ -208,70 +209,6 @@ const Round = ({}) => {
 					</FilterHeader>
 					{exFilterToggle && (
 						<>
-							{/* <FilterSubcontianer>
-								<FilterLeft>
-									<RowWrap>
-										<PartWrap first>
-											<h6>경매 일자</h6>
-											<GridWrap>
-												<DateGrid bgColor={'white'} fontSize={17} />
-												<Tilde>~</Tilde>
-												<DateGrid bgColor={'white'} fontSize={17} />
-											</GridWrap>
-										</PartWrap>
-										<PartWrap>
-											<h6>경매 회차 번호</h6>
-											<Input />
-										</PartWrap>
-										<PartWrap />
-									</RowWrap>
-
-									<RowWrap>
-										<PartWrap first>
-											<h6>진행 상태</h6>
-											<ExRadioWrap>
-												{radioDummy.map((text, index) => (
-													<RadioMainDiv key={index}>
-														<RadioCircleDiv
-															isChecked={checkRadio[index]}
-															onClick={() => {
-																setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-															}}
-														>
-															<RadioInnerCircleDiv isChecked={checkRadio[index]} />
-														</RadioCircleDiv>
-														<div style={{ display: 'flex', marginLeft: '5px' }}>{text}</div>
-													</RadioMainDiv>
-												))}
-											</ExRadioWrap>
-										</PartWrap>
-									</RowWrap>
-								</FilterLeft>
-								<FilterRight>
-									<DoubleWrap>
-										<h6>제품 번호 </h6>
-										<textarea
-											placeholder='복수 조회 진행 &#13;&#10;  제품 번호 "," 혹은 enter로 &#13;&#10;  구분하여 작성해주세요.'
-										/>
-									</DoubleWrap>
-								</FilterRight>
-							</FilterSubcontianer> */}
-							{/* <FilterFooter>
-								<div style={{ display: 'flex' }}>
-									<p>초기화</p>
-									<ResetImg
-										src="/img/reset.png"
-										style={{ marginLeft: '10px', marginRight: '20px' }}
-										onClick={handleImageClick}
-										className={isRotated ? 'rotate' : ''}
-									/>
-								</div>
-								<div style={{ width: '180px' }}>
-									<BlackBtn width={100} height={40}>
-										검색
-									</BlackBtn>
-								</div>
-							</FilterFooter> */}
 							<GlobalProductSearch
 								param={param}
 								isToggleSeparate={true}
@@ -285,7 +222,7 @@ const Round = ({}) => {
 						<TCSubContainer bor>
 							<div>
 								조회 목록 (선택 <span>{checkedArray.length}</span> / {param.pageSize}개 )
-								<Hidden />
+								<TableV2HiddenSection />
 							</div>
 							<div style={{ display: 'flex', gap: '10px' }}>
 								<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />

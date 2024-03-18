@@ -54,6 +54,7 @@ import PrintDepositRequestButton from '../../../userpages/UserSales/_components/
 import Table from '../../Table/Table'
 import WinningDetailFields from './WinningDetailFields'
 import { onSizeChange } from '../../Operate/utils'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 // 경매 낙찰 상세
 const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
@@ -472,7 +473,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
