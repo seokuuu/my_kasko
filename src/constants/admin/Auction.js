@@ -575,18 +575,20 @@ export const AuctionBiddingFieldsCols = (selected) => {
 			cellStyle: function (params) {
 				let lost = params.data['응찰 상태'] === '응찰 실패'
 				let win = params.data['응찰 상태'] === '응찰' || params.data['응찰 상태'] === null
-				// let defaultData = params.data['나의 최고 응찰 가격'] === 0 || null
 				if (params.data['응찰가'] === 0) {
 					return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' }
 				}
 				if (lost) {
 					return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // dodgerblue
 				} else if (win) {
-					if (params.data['나의 최고 응찰 가격'] < params.data['현재 최고 가격']) {
+					const memberBestBiddingPrice = parseInt(params.data['나의 최고 응찰 가격']?.replace(/,/g, ''))
+					const biddingPrice = parseInt(params.data['현재 최고 가격']?.replace(/,/g, ''))
+
+					if (memberBestBiddingPrice < biddingPrice) {
 						return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // dodgerblue
-					} else if (params.data['나의 최고 응찰 가격'] > params.data['현재 최고 가격']) {
+					} else if (memberBestBiddingPrice > biddingPrice) {
 						return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // red
-					} else if ((params.data['나의 최고 응찰 가격'] = params.data['현재 최고 가격'])) {
+					} else if (memberBestBiddingPrice === biddingPrice) {
 						return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // red
 					} else {
 						return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' }
@@ -707,7 +709,6 @@ export const AuctionPackageBiddingFieldsCols = (selected) => {
 			cellStyle: function (params) {
 				let lost = params.data['응찰 상태'] === '응찰 실패'
 				let win = params.data['응찰 상태'] === '응찰' || params.data['응찰 상태'] === null
-				// let defaultData = params.data['나의 최고 응찰 가격'] === 0 || null
 				if (params.data['응찰가'] === 0) {
 					return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' }
 				}
@@ -715,14 +716,17 @@ export const AuctionPackageBiddingFieldsCols = (selected) => {
 				if (lost) {
 					return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' } // dodgerblue
 				} else if (win) {
-					if (params.data['나의 최고 응찰 가격'] < params.data['현재 최고 가격']) {
-						return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' } // dodgerblue
-					} else if (params.data['나의 최고 응찰 가격'] > params.data['현재 최고 가격']) {
-						return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' } // red
-					} else if ((params.data['나의 최고 응찰 가격'] = params.data['현재 최고 가격'])) {
-						return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' } // red
+					const memberBestBiddingPrice = parseInt(params.data['나의 최고 응찰 가격']?.replace(/,/g, ''))
+					const biddingPrice = parseInt(params.data['현재 최고 가격']?.replace(/,/g, ''))
+
+					if (memberBestBiddingPrice < biddingPrice) {
+						return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // dodgerblue
+					} else if (memberBestBiddingPrice > biddingPrice) {
+						return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // red
+					} else if (memberBestBiddingPrice === biddingPrice) {
+						return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // red
 					} else {
-						return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' }
+						return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' }
 					}
 				} else {
 					return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' }
