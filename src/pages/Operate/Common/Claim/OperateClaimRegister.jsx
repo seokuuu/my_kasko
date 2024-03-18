@@ -69,7 +69,7 @@ const OperateClaimRegister = ({ pageType }) => {
 	// 제품 목록에서 등록을 위해 선택된 값
 	const selected = useAtomValue(selectedRowsAtom)
 
-	console.log('목록에서 선택된 데이터 :', selected)
+
 	// 제품 목록에서 선택한 productUid(제품 고유 번호) & auctionNumber(경매번호)
 
 	// 확인 모달 관련 값들
@@ -95,11 +95,10 @@ const OperateClaimRegister = ({ pageType }) => {
 		endDate: '', // 클레임 종료일
 	}
 
-	console.log('initForm :', initForm)
 
 	// 등록 폼
 	const [form, setForm] = useState(initForm)
-	console.log('form :', form)
+
 
 	// 등록 API
 	const { mutate: register } = useClaimRegisterMutation()

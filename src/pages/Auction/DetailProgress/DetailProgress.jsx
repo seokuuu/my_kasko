@@ -85,7 +85,7 @@ const DetailProgress = ({}) => {
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
-	console.log('resData', resData)
+
 
 	useEffect(() => {
 		let getData = resData

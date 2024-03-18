@@ -95,7 +95,7 @@ const BiddingSingle = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 
-	const uids = checkedArrayState?.map((item) => item && item['제품 번호']?.value)
+	const uids = checkedArrayState?.map((item) => item && item['제품 고유 번호']?.value)
 
 	const paramData = {
 		pageNum: 1,
@@ -122,8 +122,6 @@ const BiddingSingle = ({}) => {
 	const tableField = useMemo(() => {
 		return AuctionBiddingFieldsCols(checkedArrayState)
 	}, [checkedArrayState])
-
-	console.log('tableField', tableField)
 
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
@@ -318,8 +316,6 @@ const BiddingSingle = ({}) => {
 		setLive(true)
 	}
 
-	console.log('winningCreateData', winningCreateData)
-
 	const globalProductResetOnClick = () => {
 		// if resetting the search field shouldn't rerender table
 		// then we need to create paramData object to reset the search fields.
@@ -379,7 +375,7 @@ const BiddingSingle = ({}) => {
 
 		simpleAlert('적용 되었습니다.')
 		const updatedResData = oriData?.list?.map((item) => {
-			if (uids.includes(item.productNumber)) {
+			if (uids.includes(item.productUid)) {
 				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
 				item.destinationName = destiObject?.destinationName ?? item.destinationName
 				item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName

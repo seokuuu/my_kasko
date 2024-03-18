@@ -1074,7 +1074,7 @@ export const AuctionWinningDetailFields = {
 }
 
 export const AuctionWinningDetailFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	...Object.keys(AuctionWinningDetailFields)
 		.filter((item) => !item.includes('고유 번호'))
 		.map((item) => ({
@@ -1150,7 +1150,7 @@ export const UserAuctionWinningDetailFields = {
 }
 
 export const UserAuctionWinningDetailFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	...Object.keys(UserAuctionWinningDetailFields)
 		.filter((item) => !item.includes('고유 번호'))
 		.map((item) => ({

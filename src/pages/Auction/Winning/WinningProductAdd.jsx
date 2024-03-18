@@ -94,12 +94,12 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
 
-	console.log('checkedArray', checkedArray)
+
 
 	// GET
 	const { isLoading, isError, data, isSuccess } = useReactQuery(param, 'getWinningCreate', getWinningCreate)
 	const resData = data?.data?.data?.list
-	console.log('resData Modal ', resData)
+
 	const resPagination = data?.data?.data?.pagination
 
 	useEffect(() => {
@@ -124,7 +124,7 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 	// 	if (isArray(checkedArray) && checkedArray.length > 0) {
 	// 		if (window.confirm('선택한 항목을 추가하시겠습니까?')) {
 	// 			checkedArray.forEach((item) => {
-	// 				console.log('item =>', item)
+
 	// 				setNewResData((prevData) => [...prevData, item])
 	// 			})
 	// 			setAddModal(false)
@@ -139,7 +139,7 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 		else {
 			simpleConfirm('선택한 항목을 추가하시겠습니까?', () =>
 				checkedArray.forEach((item) => {
-					console.log('item =>', item)
+
 					setNewResData((prevData) => [...prevData, item])
 					setAddModal(false)
 				}),

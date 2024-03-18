@@ -64,8 +64,7 @@ const RoundAucProAdd = ({
 	const handleImageClick = () => {
 		setIsRotated((prevIsRotated) => !prevIsRotated)
 	}
-
-	console.log('dupleUids 모달', dupleUids)
+	
 
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -100,7 +99,7 @@ const RoundAucProAdd = ({
 	}
 	const [param, setParam] = useState(paramData)
 
-	console.log('auctionNumber', auctionNumber)
+
 
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(
 		param,
@@ -110,13 +109,12 @@ const RoundAucProAdd = ({
 
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
-	console.log('resData 모달', resData)
 
 	useEffect(() => {
 		// 이미 추가된 데이터 중복 제거
 		const getData = resData?.filter((obj) => !dupleUids.includes(obj.uid))
 
-		console.log('getData 필터 =>', getData)
+
 
 		if (getData && Array.isArray(getData)) {
 			setGetRow(add_element_field(getData, AuctionRoundExtraProductFields))
@@ -128,19 +126,16 @@ const RoundAucProAdd = ({
 		const key = '고유 번호'
 		const findKey = selectedRows.map((item) => item[key])
 		const addData = resData?.filter((item) => findKey.includes(item?.uid))
-		console.log('findKey 큐큐', findKey)
 		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
 		else {
-			simpleConfirm('선택한 항목을 추가하시겠습니까?', () =>
+			simpleConfirm('선택한 항목을 추가하시겠습니까?', () => {
 				checkedArray.forEach((item) => {
-					console.log('item =>', item)
 					setNewResData((prevData) => [...prevData, item])
 					setAddModal(false)
 					onListAdd(addData)
 					setOutAddData(findKey)
-					setIsAccept((prev) => !prev)
-				}),
-			)
+				})
+			})
 		}
 	}
 

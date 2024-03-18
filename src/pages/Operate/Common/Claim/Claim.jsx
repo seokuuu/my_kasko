@@ -37,7 +37,7 @@ const Claim = () => {
 	const { data, refetch } = useClaimListQuery(search)
 	const { pagination, onPageChanage } = useTablePaginationPageChange(data, setSearch)
 
-	console.log('data :', data)
+
 
 	// 등록 핸들러
 	function toRegister() {
