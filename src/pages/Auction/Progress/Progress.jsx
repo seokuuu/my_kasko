@@ -74,7 +74,7 @@ const Progress = ({}) => {
 		pageSize: 50,
 	}
 	const [param, setParam] = useState(paramData)
-	console.log('param !@#', param)
+
 
 	const [liveStatus, setLiveStatus] = useState('LIVEgetProgess')
 	// GET
@@ -92,7 +92,7 @@ const Progress = ({}) => {
 		}
 	}, [isSuccess, resData])
 
-	console.log('getRow =>', getRow)
+
 
 	useEffect(() => {
 		if (isSuccess) refetch()

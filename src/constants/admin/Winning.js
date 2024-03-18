@@ -1,9 +1,6 @@
-import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
-import MarkerCellRenderer from '../../pages/Table/MarkerCellRenderer'
-import { PROD_COL_NAME } from '../user/constantKey'
-import { winningDetailAucNumAtom, winningDetailModal } from '../../store/Layout/Layout'
-import axios from 'axios'
 import { useAtom } from 'jotai'
+import { winningDetailAucNumAtom, winningDetailModal } from '../../store/Layout/Layout'
+import { Link } from 'react-router-dom'
 
 var checkboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping
@@ -24,6 +21,7 @@ export const commonStyles = {
 const LinkRenderer = (props) => {
 	const { data } = props
 	const [aucDetail, setAucDetail] = useAtom(winningDetailAucNumAtom) // 해당 row 값 저장
+
 	const [aucDetailModal, setAucDetailModal] = useAtom(winningDetailModal) // 패키지 모달
 
 	return (
@@ -31,7 +29,8 @@ const LinkRenderer = (props) => {
 			{aucDetailModal ? (
 				<>{props.value || ''}</>
 			) : (
-				<a
+				<Link
+					to={`/auction/winning/detail`}
 					onClick={() => {
 						setAucDetailModal(true)
 						setAucDetail(data)
@@ -40,7 +39,7 @@ const LinkRenderer = (props) => {
 					rel="noreferrer"
 				>
 					{props.value || ''}
-				</a>
+				</Link>
 			)}
 		</>
 	)
@@ -85,7 +84,7 @@ export const AuctionWinningFields = {
 }
 
 export const AuctionWinningFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{
 		headerName: '경매 번호',
 		field: '경매 번호',
@@ -125,7 +124,7 @@ export const AuctionWinningFieldsCols = [
 ]
 
 export const UserAuctionWinningFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{
 		headerName: '경매 번호',
 		field: '경매 번호',

@@ -48,7 +48,7 @@ const WinningCreate = ({}) => {
 	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [destinationData, setDestinationData] = useAtom(winningDestiData)
-	console.log('destinationData', destinationData)
+
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const [editData, setEditData] = useState({
 		auctionNumber: '',
@@ -72,13 +72,10 @@ const WinningCreate = ({}) => {
 	const [winningCreateData, setWinningCreateData] = useState(init)
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
 
-	console.log('winningCreateInput', winningCreateInput.biddingPrice)
-
-	console.log('winningCreateData', winningCreateData)
 
 	const [customerData, setCustomerData] = useState()
 	const [destiData, setDestiData] = useState()
-	console.log('customerData', customerData)
+
 
 	const [isModal, setIsModal] = useAtom(WinningCreateFindAtom)
 	const [addProdModal, setAddProdModal] = useAtom(WinningProductAddAtom)
@@ -112,7 +109,7 @@ const WinningCreate = ({}) => {
 		getAuctionDetailDestination,
 	)
 
-	console.log('auctionDestination', auctionDestination?.data?.data)
+
 
 	const [propsUid, setPropsUid] = useState(null) // CustomerCodeFind에서 찾아온 uid
 	const [destiObject, setDestiObject] = useState()
@@ -120,7 +117,7 @@ const WinningCreate = ({}) => {
 	// 목적지 찾기 및 목적지 uid, auctionNumber set //
 	useEffect(() => {
 		const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
-		console.log('selectedObject', selectedObject)
+
 		setDestiObject(selectedObject)
 		setWinningCreateData((p) => ({
 			...p,
@@ -131,12 +128,11 @@ const WinningCreate = ({}) => {
 		}))
 	}, [propsUid, auctionNowNum, customerData])
 
-	console.log('destiObject', destiObject)
 
 	const [tablePagination, setTablePagination] = useState([])
 
 	const [getRow, setGetRow] = useState('')
-	console.log('getRow @@@@', getRow)
+
 	const tableField = useRef(AuctionWinningCreateFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
@@ -147,9 +143,6 @@ const WinningCreate = ({}) => {
 		confirmPrice: null,
 	})
 
-	console.log('totalWon', totalWon)
-
-	console.log('checkedArray2', checkedArray2?.length)
 
 	useEffect(() => {
 		const updatedProductList = checkedArray2?.map((item) => ({
@@ -185,7 +178,7 @@ const WinningCreate = ({}) => {
 	// const resPagination = data?.data?.data?.pagination
 	const [newResData, setNewResData] = useState([])
 
-	console.log('newResData', newResData)
+
 
 	useEffect(() => {
 		//타입, 리액트쿼리, 데이터 확인 후 실행
@@ -210,7 +203,7 @@ const WinningCreate = ({}) => {
 		})
 	}, [checkedArray2, newResData])
 
-	console.log('newResData =>', newResData)
+
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -268,7 +261,7 @@ const WinningCreate = ({}) => {
 		})
 	}
 
-	console.log('customerData', customerData)
+
 	return (
 		<FilterContianer>
 			<FilterHeader>

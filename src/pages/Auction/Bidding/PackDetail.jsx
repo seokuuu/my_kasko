@@ -45,7 +45,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 		biddingPrice: null,
 	}
 
-	console.log('aucDetail', aucDetail)
+
 	// AuctionBiddingFieldsCols(checkedArrayState) 이런식으로 써야하나?
 	const tableField = useRef(AuctionBiddingFieldsCols(checkedArray))
 

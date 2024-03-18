@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
 	BlackBtn,
 	BtnBound,
@@ -22,7 +22,7 @@ import {
 	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isEqual } from 'lodash'
 import { editAuction, getDetailAuction } from '../../../api/auction/round'
@@ -31,14 +31,14 @@ import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { AuctionRoundDetailFields, AuctionRoundDetailFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
 import useAlert from '../../../store/Alert/useAlert'
 import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import RoundAucListEditFields from './RoundAucListEditFields'
 import RoundAucProAdd from './RoundAucProAdd'
-import useTableSelection from '../../../hooks/useTableSelection'
-import useTableData from '../../../hooks/useTableData'
 
 //경매 목록 수정(단일)
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStatus, roundPageRefetch }) => {
@@ -71,7 +71,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const [getRow, setGetRow] = useState('')
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 
-	console.log('selectedRows', selectedRows)
+
 
 	// const checkedArray = useAtom(selectedRowsAtom)[0]
 
@@ -100,7 +100,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const [startPrice, setStartPrice] = useState(null)
 	const [realStartPrice, setRealStartPrice] = useState(null)
 
-	console.log('realStartPrice', realStartPrice)
+
 
 	const [initRow, setInitRow] = useState([])
 
@@ -141,17 +141,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 		}
 	}
 
-	console.log('getRow 키키', getRow)
-
-	const [isAccept, setIsAccept] = useState(false)
 
 	useEffect(() => {
-		// const fetchData = async () => {
-
-		// }
-
-		// fetchData() // 비동기 함수를 호출
-
 		if (resData && Array.isArray(resData)) {
 			const newInitRow = add_element_field(resData, AuctionRoundDetailFields)
 
@@ -179,7 +170,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			setInitRow(newInitRow)
 			setGetRow([...uniqueData, ...newInitRow])
 		}
-	}, [isSuccess, resData, isAccept])
+	}, [isSuccess, resData, addModal])
 
 	const dupleUids = getRow && getRow?.map((item) => item['제품 고유 번호'] || item['고유 번호'])
 
@@ -202,14 +193,12 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			auctionStartPrice: realStartPrice,
 		}))
 
-		console.log('uniqueNumbers 캬캬 1', uniqueNumbers)
+
 
 		setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
 	}, [outAddData, realStartPrice])
 
-	console.log('editData 캬캬 2', editData)
 
-	console.log('newResData 캬캬 3', newResData)
 
 	// 목록 제거
 	const onListRemove = () => {
@@ -253,7 +242,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			if (outAddData) {
 				const updatedOutAddData = outAddData.filter((item) => !selectedRows.map((row) => row[newKey]).includes(item)) // add된 것들 처리
 
-				console.log('updatedOutAddData', updatedOutAddData)
+	
 
 				// setOutAddData((prev) => ({
 				// 	...prev,
@@ -407,7 +396,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 						setOutAddData={setOutAddData}
 						auctionNumber={auctionNum}
 						dupleUids={dupleUids}
-						setIsAccept={setIsAccept}
 					/>
 				)}
 				<NewBottomBtnWrap bottom={-5} borderTop={'none'}>

@@ -39,7 +39,7 @@ const WinningDetailFields = ({
 		setSearch((p) => ({ ...p, [key]: value }))
 	}
 
-	console.log('param', param)
+
 
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
 

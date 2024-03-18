@@ -115,7 +115,7 @@ const Winning = ({}) => {
 		}, {}),
 	)
 
-	console.log('extractedArray', extractedArray)
+
 
 	// 낙찰 취소 버튼 Handler
 	const { mutate: deleteMutation } = useMutation(deleteBidding, {
@@ -170,7 +170,6 @@ const Winning = ({}) => {
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getDetailProgress', getWinning)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
-	console.log('resData', resData)
 
 	useEffect(() => {
 		let getData = resData
