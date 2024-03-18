@@ -57,7 +57,7 @@ const ClaimProductSearchFields = ({
 					{/* 매입처 */}
 					<PartWrap>
 						<h6>매입처</h6>
-						<PWRight>
+						{/*<PWRight>
 							<MainSelect
 								options={supplierList}
 								defaultValue={supplierList[0]}
@@ -65,6 +65,9 @@ const ClaimProductSearchFields = ({
 								value={search.supplier}
 								onChange={(e) => commonDropdownButtonHandler(e, 'supplier')}
 							/>
+						</PWRight>*/}
+						<PWRight>
+							<Input name="supplier" value={search.supplier} onChange={commonNumInputHandler} />
 						</PWRight>
 					</PartWrap>
 					{/* 규격약호 */}
