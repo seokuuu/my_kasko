@@ -2,6 +2,7 @@ import MarkerCellRenderer from '../../pages/Table/MarkerCellRenderer'
 import { checkboxSelection, headerCheckboxSelection } from '../../pages/Table/util'
 import { getNormalTableRows } from '../../utils/table'
 import { PROD_COL_NAME } from './constantKey'
+import { ProNoCellRenderer } from '../../pages/Table/ProNoCellRenderer'
 
 /**
  * @constant 테이블컬럼 라벨 - 변수명 바인딩 객체
@@ -12,7 +13,7 @@ export const userSingleProductField = {
 	'상시판매 번호': 'orderNumber',
 	'상시판매 주문일자': 'saleOrderDate',
 	[PROD_COL_NAME.productNumber]: 'number',
-	'프로넘(ProNo.)': 'productNoNumber',
+	'프로넘(ProNo)': 'productNoNumber',
 	창고: 'storageName',
 	'상시판매 상태': 'saleStatus',
 	승인상태: 'approvalStatus',
@@ -114,13 +115,17 @@ export const userSingleProductFieldsCols = getNormalTableRows([
 	{ field: '상시판매 주문일자' },
 	{
 		field: PROD_COL_NAME.productNumber,
-		minWidth: 250,
+		minWidth: 200,
 		cellRenderer: MarkerCellRenderer,
 		cellRendererParams: (params) => params.data[params.column.colId],
-		valueGetter: (v) => v.data[v.column.colId].value,
+		valueGetter: (v) => v.data[v.column.colId]?.value || '',
 	},
 
-	{ field: '프로넘(ProNo)' },
+	{
+		field: '프로넘(ProNo)',
+		minWidth: 180,
+		cellRenderer: ProNoCellRenderer,
+	},
 	{ field: '창고' },
 	{ field: '상시판매 상태' },
 	{ field: '승인상태' },

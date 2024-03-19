@@ -2,7 +2,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import React, { useEffect, useRef, useState } from 'react'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import { selectedRowsAtom, singleProductModify, toggleAtom } from '../../../store/Layout/Layout'
 
 import { isEqual } from 'lodash'
@@ -10,9 +10,8 @@ import { client } from '../../../api'
 import { deleteIncomeProduct, getInComingList, incomingConfirm, postExcelSubmitProduct } from '../../../api/stock'
 import { SwitchBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { StockIncomingFields, stockFields } from '../../../constants/admin/StockIncoming'
+import { stockFields, StockIncomingFields } from '../../../constants/admin/StockIncoming'
 import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
@@ -23,8 +22,6 @@ import { onSizeChange } from '../../Operate/utils'
 import Table from '../../Table/Table'
 import IncomingModify from './IncomingModify'
 import IncomingSearchFields from './IncomingSearchFields'
-import TableV2ExcelDownloader from '../../Table/TableV2ExcelDownloader'
-import { SingleDispatchFieldsCols } from '../../../constants/admin/Single'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 const Incoming = ({}) => {
@@ -197,12 +194,13 @@ const Incoming = ({}) => {
 				<TableContianer>
 					<TCSubContainer bor>
 						<div>
-							조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{param.pageSize}
-							개 <TableV2HiddenSection />
+							조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length?.toLocaleString() : '0'}</span>{' '}
+							/ {inComingPagination ? inComingPagination?.listCount?.toLocaleString() : 0}
+							) 개 <TableV2HiddenSection />
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
 							<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
-							<Excel getRow={getRow} />
+							<Excel getRow={getRow} sheetName={'입고 관리'} />
 						</div>
 					</TCSubContainer>
 					<TCSubContainer>
