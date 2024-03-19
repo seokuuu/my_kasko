@@ -21,7 +21,6 @@ function SellWeight() {
     setWeightModal(false)
   }
 
-  console.log('LoadingData', TableData)
   return (
     <OutSide>
       <Container>

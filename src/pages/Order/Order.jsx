@@ -144,7 +144,6 @@ const Order = () => {
 			simpleAlert('선택된 항목이 없습니다.')
 			return // 함수 실행 중단
 		}
-		console.log(requestList)
 		postCancelOrderAll(requestList, 'getOrderList')
 	}
 
@@ -171,7 +170,6 @@ const Order = () => {
 			simpleAlert('선택된 항목이 없습니다.')
 			return // 함수 실행 중단
 		}
-		console.log('requestList : ', requestList)
 		postSuccessfulOrderAll(requestList, 'getOrderList')
 	}
 

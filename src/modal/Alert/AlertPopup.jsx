@@ -15,7 +15,6 @@ const AlertPopup = ({ propsRemove, setPopupSwitch, saveFn, err }) => {
 
   const [rowChecked, setRowChecked] = useAtom(selectedRowsAtom)
 
-  // console.log('nowPopup !!!', nowPopup)
 
   const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
   // const [checkNext, setCheckNext] = useState(false) //임시 next 작동시 reload
@@ -38,7 +37,6 @@ const AlertPopup = ({ propsRemove, setPopupSwitch, saveFn, err }) => {
   // next가 없으면, 팝업과 해당 모달이 종료된다
 
   const showNextPopup = () => {
-    console.log('qq1', nowPopup)
     const nextType = nowPopup.next?.split('-')[0]
     if (nowPopup && nowPopup?.next) {
       nowPopup.func()

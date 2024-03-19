@@ -34,7 +34,6 @@ const TextEditor = ({ setState = () => {}, name = 'content', value }) => {
 	}
 
 	async function uploadImageCallBack(file) {
-		console.log('editor file :', file)
 
 		return new Promise(async (resolve, reject) => {
 			try {
@@ -42,7 +41,6 @@ const TextEditor = ({ setState = () => {}, name = 'content', value }) => {
 
 				reader.onloadend = async () => {
 					const res = await editorFileUpload(file)
-					console.log('res :', res)
 					resolve({ data: { link: res.data.data } })
 				}
 				reader.readAsDataURL(file)
@@ -59,12 +57,10 @@ const TextEditor = ({ setState = () => {}, name = 'content', value }) => {
 			// xhr.send(data)
 			// xhr.addEventListener('load', () => {
 			// 	const response = JSON.parse(xhr.responseText)
-			// 	console.log(response)
 			// 	resolve(response)
 			// })
 			// xhr.addEventListener('error', () => {
 			// 	const error = JSON.parse(xhr.responseText)
-			// 	console.log(error)
 			// 	reject(error)
 			// })
 		})

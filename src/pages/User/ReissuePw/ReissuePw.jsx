@@ -35,7 +35,6 @@ const ReissuePw = () => {
 	const [validErrorMassage, setValidErrorMessage] = useState(init)
 	const [emailFirst, setEmailFirst] = useState('')
 	const [emailDomain, setEmailDomain] = useState({ selectModeValue: '', inputModeValue: '' })
-	console.log('emailDomain :', emailDomain)
 	const [isActive, setIsActive] = useState(false)
 
 	const reissueHandler = useCallback((e) => {

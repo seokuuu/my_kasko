@@ -60,7 +60,6 @@ const Multi = ({ modalSwitch, setModalSwitch, saveFn }) => {
 
   const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, (_, index) => index === 0))
 
-  console.log('', (popupMessages[1].find((message) => message.num === '4') || {}).title)
 
   return (
     // 재고 관리 - 판매 구분 변경

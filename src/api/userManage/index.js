@@ -119,7 +119,6 @@ export function get_addressFind(data) {
 ============================== */
 // {{dev}}/api/admin/member?pageNum=1&pageSize=50
 export function get_userManage(data) {
-	console.log('data', data)
 	return client.get(`${urls.userManage}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&type=${data.type}`)
 }
 
@@ -159,7 +158,6 @@ export function postUserManage(input, fileForms) {
 		form.append('registration', fileForms.registration)
 	}
 	for (const pair of form.entries()) {
-		console.log('폼 데이터 =>', pair[0], pair[1])
 	}
 
 	return client.post(urls.userManage, form, {

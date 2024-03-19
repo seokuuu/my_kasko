@@ -55,7 +55,6 @@ const Package = ({}) => {
 	const [aucDetailModal, setAucDetailModal] = useAtom(auctionPackDetailModal) // 패키지 모달
 	const [aucDetail, setAucDetail] = useAtom(auctionPackDetailNumAtom) // 해당 row 값 저장
 	const [live, setLive] = useState(true) // LIVE get 일시 중단
-	console.log('live', live)
 	const navigate = useNavigate()
 	const [addedInput, setAddedInput] = useState(null) // 일괄 경매 응찰 input state
 	const [checkedBiddingPrice, setCheckedBiddingPrice] = useState(null) // 체크된 응찰가
@@ -93,7 +92,6 @@ const Package = ({}) => {
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
 
-	console.log('destiObject', destiObject)
 
 	const productListInner = {
 		biddingPrice: null,
@@ -102,7 +100,6 @@ const Package = ({}) => {
 
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
 
-	console.log('winningCreateInput', winningCreateInput)
 
 	const [getRow, setGetRow] = useState('')
 
@@ -112,7 +109,6 @@ const Package = ({}) => {
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 	const uids = checkedArrayState?.map((item) => item['패키지 번호'])
 
-	console.log('uids ', uids)
 
 	const paramData = {
 		pageNum: 1,
@@ -122,10 +118,8 @@ const Package = ({}) => {
 	const [param, setParam] = useState(paramData)
 
 	const [realAucNum, setRealAucNum] = useState(null)
-	console.log('realAucNum', realAucNum)
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
 
-	console.log('getAgreementData', getAgreementData)
 
 	// 전체 GET
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding)
@@ -138,7 +132,6 @@ const Package = ({}) => {
 		return AuctionPackageBiddingFieldsCols(checkedArrayState)
 	}, [checkedArrayState])
 
-	console.log('oriData', oriData?.list)
 
 	// 초기 목적지 GET
 	const { data: destiData } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
@@ -206,14 +199,12 @@ const Package = ({}) => {
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']
 
-	console.log('auctionNumber', auctionNumber)
 
 	const init = {
 		auctionNumber: null,
 		type: '패키지',
 	}
 	const [winningCreateData, setWinningCreateData] = useState(init)
-	console.log('winningCreateData', winningCreateData)
 	//
 	useEffect(() => {
 		const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
@@ -229,7 +220,6 @@ const Package = ({}) => {
 		customerDestinationUid: null,
 	})
 
-	console.log('finalInput', finalInput)
 
 	// 첫 렌더시 초기 및 대표 목적지 set
 	useMemo(() => {
@@ -356,7 +346,6 @@ const Package = ({}) => {
 	// 응찰가 직접 입력
 	// const onCellValueChanged = (params) => {
 	// 	const p = params.data
-	// 	console.log('바뀌는 값 확인', p['패키지 번호'])
 	// 	setValues((prevValues) => ({
 	// 		...prevValues,
 	// 		biddingPrice: p['응찰가'],
@@ -408,7 +397,6 @@ const Package = ({}) => {
 			return item
 		})
 
-		console.log('222 뒤', updatedResData)
 
 		// 변경된 데이터로 state 업데이트
 		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
@@ -437,7 +425,6 @@ const Package = ({}) => {
 	})
 	/* ==================== 관심상품 등록 end ==================== */
 
-	console.log('destiObject', destiObject)
 	// 목적지 적용 버튼 handler 111
 	const destiOnClickHandler = () => {
 		setLive(false)
@@ -484,7 +471,6 @@ const Package = ({}) => {
 		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
 
-	console.log('uids', uids)
 
 	// 응찰가 Table Cell Input
 	const handleCheckboxChange = (event, rowData) => {
@@ -499,7 +485,6 @@ const Package = ({}) => {
 
 	// status가 false여야지 모달이 보이는거니 !false 형식으로
 	const checkGetAgreement = getAgreementData?.data?.data
-	console.log('checkGetAgreement', checkGetAgreement)
 
 	// 입찰 동의서 Mutate
 	const { mutate: postAgreementMutation } = useMutation(postAgreement, {
@@ -561,8 +546,6 @@ const Package = ({}) => {
 		}
 	}, [agreementModal, firstDestiData, initDestiData])
 
-	console.log('agreementModal', agreementModal)
-	console.log('winningCreateData', winningCreateData)
 
 	return (
 		<FilterContianer>

@@ -31,7 +31,6 @@ const Test2 = () => {
       setToggleMsg('On')
     }
   }
-  console.log('exFilterToggle =>', exFilterToggle)
 
   return (
     <FilterContianer>

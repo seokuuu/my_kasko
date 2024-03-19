@@ -94,7 +94,7 @@ const UserManage = ({ setChoiceComponent }) => {
 	const [param, setParam] = useState(paramData)
 	const { onPageChanage } = useTablePaginationPageChange(data, setParam)
 
-	if (isError) console.log('데이터 request ERROR')
+
 
 	useEffect(() => {
 		let getData = resData

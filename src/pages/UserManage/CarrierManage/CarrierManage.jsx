@@ -49,7 +49,6 @@ const CarrierManage = ({}) => {
 
 	const [isModal, setIsModal] = useAtom(blueModalAtom)
 
-	console.log('isModal =>', isModal)
 
 	const modalOpen = () => {
 		setIsModal(true)

@@ -94,7 +94,6 @@ const Status = ({}) => {
 		}
 	}, [isSuccess, resData])
 
-	console.log('getRow =>', getRow)
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({

@@ -10,7 +10,6 @@ var headerCheckboxSelection = function (params) {
 }
 
 const onCellClicked = (params) => {
-	console.log('클릭 발생')
 }
 
 const LinkRenderer = (props) => {

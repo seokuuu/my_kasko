@@ -32,7 +32,6 @@ const TransportationCost = ({ title, setSwitch }) => {
 
   const customerGetData = data?.data?.data
 
-  console.log('data', customerGetData)
 
   const [isModal, setIsModal] = useAtom(blueModalAtom)
   const [searchTerm, setSearchTerm] = useState('')
@@ -41,10 +40,7 @@ const TransportationCost = ({ title, setSwitch }) => {
   const [selectedUid, setSelectedUid] = useState(null)
   const [selectedUids, setSelectedUids] = useState([])
 
-  console.log('clickedResult', clickedResult)
 
-  console.log('searchTerm !!!', searchTerm)
-  console.log('result !!!', result)
 
   const modalClose = () => {
     setSwitch(false)
@@ -70,7 +66,6 @@ const TransportationCost = ({ title, setSwitch }) => {
   }
 
   const handleCellClick = (uid, name, code, businessNumber) => {
-    console.log('클릭한 셀 데이터:', { uid, name, code, businessNumber })
 
     const isUidSelected = clickedResult.some((result) => result.uid === uid)
 

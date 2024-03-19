@@ -10,7 +10,7 @@ const urls = {
 
 // 목록
 export function getStartPrice(data) {
-	console.log('data', data)
+
 	return client.get(`${urls.startprice}`, { params: data })
 }
 
@@ -37,7 +37,7 @@ export const uploadMultiPrice = (data) => {
 	return client.post(`${urls.startprice}/excel`, form, {
 		headers: formHeaders,
 		// onUploadProgress: (e) => {
-		// 	console.log('progreess event L', e)
+
 		// },
 	})
 }

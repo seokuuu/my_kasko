@@ -78,7 +78,6 @@ const Storage = () => {
 
 	// 등록
 	function productRegister() {
-		console.log('storage', storage)
 		register(storage)
 		setStorage('')
 		setModal(false)

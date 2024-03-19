@@ -60,7 +60,6 @@ const AttachedFile = ({ setState = () => {}, name = 'file', fileList, isExistTit
     }
   }, [])
 
-  console.log('existFileList :', existFileList)
 
   return (
     <div style={{ width: '40%' }}>

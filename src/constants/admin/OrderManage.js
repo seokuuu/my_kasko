@@ -1,5 +1,4 @@
-import { atom } from 'jotai'
-import React, { useState } from 'react'
+import React from 'react'
 import { commonStyles } from './Auction'
 
 var checkboxSelection = function (params) {

@@ -111,13 +111,11 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
 
 	// const resData2 = data2?.data?.data
 
-	// console.log('resData2', resData2)
 
 	const checkBusiness = () => {
 		try {
 			checkBusinessNumber(businessNumber)
 		} catch (err) {
-			console.log(err)
 		}
 
 		// if (isBusinessNumberSuccess) {
@@ -131,7 +129,6 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
 		setBusinessNumber(e.target.value)
 	}
 
-	if (isError) console.log('ERROR')
 
 	useEffect(() => {
 		if (isSuccess) {
@@ -222,7 +219,6 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
 			const response = await updateCustomer(input, fileForms)
 			alert('고객사 상세 정보가 수정되었습니다.')
 		} catch (err) {
-			console.log(err)
 			alert('ERROR:', err.data)
 		}
 	}
@@ -235,7 +231,6 @@ const ClientEditModal = ({ setEditModal, uidAtom }) => {
 					const response = await updateCustomer(input, fileForms)
 					alert('고객사 상세 정보가 수정되었습니다.')
 				} catch (err) {
-					console.log(err)
 					alert('ERROR:', err.data)
 				}
 				setShouldUpdateCustomer(false)

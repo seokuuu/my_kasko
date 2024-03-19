@@ -6,7 +6,6 @@ const RadioButton = ({ radioButtonLabels, style, selection }) => {
 	const [isRadioChecked, setIsRadioChecked] = useState(Array.from({ length: radioButtonLabels.length }, () => false))
 
 	const radioButtonOnClickHandler = (index) => {
-		console.log('radioButtonOnClickHandler, clicked')
 		const newCheckedState = CheckBox(isRadioChecked, isRadioChecked.length, index)
 		setIsRadioChecked(newCheckedState)
 		selection(newCheckedState)

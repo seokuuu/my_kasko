@@ -83,7 +83,6 @@ const InventoryFind = ({
 		}
 	}
 	const handleCellClick = (uid, name, code, businessNumber, destinationName, phone, address) => {
-		console.log('클릭한 셀 데이터:', { uid, name, code, businessNumber })
 		if (type === '낙찰 생성') {
 			setClickedResult({ code, destinationName, name, phone, address })
 			setPropsUid(uid)

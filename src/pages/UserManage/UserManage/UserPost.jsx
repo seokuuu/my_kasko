@@ -89,7 +89,6 @@ const init = {
 const UserPost = ({setPostModal}) => {
     const [selected, setSelected] = useState({storage: '', storageUid: ''})
 
-    console.log('selected', selected)
     const [selectSwitch, setSelectSwitch] = useState({
         A: false,
         deposit: false,
@@ -97,7 +96,6 @@ const UserPost = ({setPostModal}) => {
     })
     const [modalSwitch, setModalSwitch] = useState(false)
     const [input, setInput] = useState(init)
-    console.log('input', input)
     const [isUser, setIsUser] = useState(false)
     const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
     const [renderFileName, setRenderFileName] = useState({businessNumberFile: '', bankbookFile: ''})
@@ -115,7 +113,6 @@ const UserPost = ({setPostModal}) => {
 
     // const resData2 = data2?.data?.data
 
-    // console.log('resData2', resData2)
 
     const checkBusiness = async () => {
         try {
@@ -139,7 +136,6 @@ const UserPost = ({setPostModal}) => {
     }
     const handleCheck = (e) => {
         setBusinessNumber(e.target.value)
-        console.log(businessNumber)
     }
 
     const handleSelectChange = (selectedOption, name) => {
@@ -154,7 +150,6 @@ const UserPost = ({setPostModal}) => {
 
     const {data: storageList} = useReactQuery('', 'getStorageList', getStorageList)
 
-    console.log('storageList', storageList)
 
     // checked,file 빼고 submit하기 (checkbox는 따로 useState로 하였음)
     const handleSubmit = async (e) => {
@@ -163,7 +158,6 @@ const UserPost = ({setPostModal}) => {
         const formData = new FormData(e.target)
         const updatedInput = {...input}
 
-        console.log('updatedInput', updatedInput)
 
         formData.forEach((value, key) => {
             if (input.hasOwnProperty(key) && value && !checkboxType.includes(key)) {
@@ -173,14 +167,11 @@ const UserPost = ({setPostModal}) => {
 
         for (let i in updatedInput) {
             if (updatedInput.hasOwnProperty(i)) {
-                console.log(`Input 체크 안되었습니다 ***${i}***`)
                 // return
             }
         }
 
         setInput({...input, ...updatedInput, ...selected, type: savedRadioValue})
-        console.log('input <3', input)
-        console.log('updatedInput <3', updatedInput)
 
         setShouldUpdateCustomer(true)
     }
@@ -191,10 +182,8 @@ const UserPost = ({setPostModal}) => {
             if (shouldUpdateCustomer) {
                 try {
                     const response = await postUserManage(input, fileForms)
-                    console.log(response.data)
                     alert('회원 생성이 완료되었습니다.')
                 } catch (err) {
-                    console.log(err)
                     alert('ERROR:', err.data)
                 }
                 setShouldUpdateCustomer(false)
@@ -324,7 +313,6 @@ const UserPost = ({setPostModal}) => {
     const [checkData, setCheckData] = useState(Array.from({length: checkDummy.length}, () => ''))
     const [checkData2, setCheckData2] = useState(Array.from({length: checkDummy2.length}, () => ''))
 
-    console.log('check data =>', checkData, checkData2)
 
     useEffect(() => {
         const updatedCheck = checkDummy.map((value, index) => {
@@ -375,7 +363,6 @@ const UserPost = ({setPostModal}) => {
         const value = e.target.value
         const name = e.target.name
         setInput((prev) => ({...prev, [name]: value}))
-        console.log(input)
     }
 
     const modalOFF = () => {
@@ -385,7 +372,6 @@ const UserPost = ({setPostModal}) => {
     const handleFiles = (e) => {
         const name = e.target.name
         const file = e.target.files[0]
-        console.log('')
         const fileName = e.target.files[0].name
         if (renderFileName.hasOwnProperty(name)) {
             setRenderFileName((prev) => ({

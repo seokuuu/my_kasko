@@ -11,7 +11,6 @@
 // export const useGetAdminDestinationQuery = (params) => {
 //   return useQuery(DESTINATE_KEYS.getAdminDestination, async () => {
 //     const { data } = await getAdminDestination(params)
-//     console.log('data=>', data)
 //     return data
 //   })
 // }
@@ -20,7 +19,6 @@
 // export const usePostAdminDestinationQuery = () =>
 //   useMutation({
 //     mutationFn: (params) => {
-//       console.log('params =>', params)
 //       return postAdminDestination(params)
 //     },
 //   })

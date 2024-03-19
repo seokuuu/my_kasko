@@ -10,7 +10,6 @@ const DaumPost = () => {
   }
 
   const postHandleComplete = (data) => {
-    console.log('data <3', data)
     const { address } = data
     setAddress(address)
     setIsOpen(false)

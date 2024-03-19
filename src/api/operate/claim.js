@@ -103,7 +103,7 @@ export function useProductListToRegisterClaimQuery(params) {
 				},
 			})
 
-			console.log('response :', response)
+			
 			return response.data.data
 		},
 	})

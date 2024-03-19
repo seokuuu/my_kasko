@@ -60,13 +60,6 @@ const BiddingSingle = ({}) => {
 		agreement: '',
 	})
 
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
-
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 	const [toggleMsg, setToggleMsg] = useState('On')
@@ -81,7 +74,6 @@ const BiddingSingle = ({}) => {
 
 	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
 
-	const [customerData, setCustomerData] = useState()
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
 
@@ -91,9 +83,6 @@ const BiddingSingle = ({}) => {
 	}
 
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
-
-	const [getRow, setGetRow] = useState('')
-	const [newGetRow, setNewGetRow] = useState({})
 
 	const queryClient = useQueryClient()
 	// const checkedArrayState = useAtom(selectedRowsAtom)[0]

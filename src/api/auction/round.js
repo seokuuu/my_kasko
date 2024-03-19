@@ -64,7 +64,7 @@ export function editAuction(data) {
 
 // 공지&자료실 목록 조회
 export function useGetAuctionList(params) {
-	console.log('params', params)
+
 	return useQuery({
 		queryKey: keys.getAuction,
 		queryFn: async function () {

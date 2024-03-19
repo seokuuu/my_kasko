@@ -30,7 +30,6 @@ const NoticePopup = () => {
 
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
-  console.log('checkRadio =>', checkRadio)
 
   return (
     // 재고 관리 - 판매 구분 변경
