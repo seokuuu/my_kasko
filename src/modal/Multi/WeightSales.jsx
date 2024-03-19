@@ -3,7 +3,7 @@ import { BlackBtn, WhiteRedBtn } from '../../common/Button/Button'
 import { anotherTableRowsAtom, weightAtom, weightObj } from '../../store/Layout/Layout'
 import Table from '../../pages/Table/Table'
 import { FilterContianer, FilterTCTop, TableContianer, TCSubContainer } from '../../modal/External/ExternalFilter'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import useReactQuery from '../../hooks/useReactQuery'
 import styled from 'styled-components'
 import { BlueBarHeader, BlueSubContainer, ModalContainer, WhiteCloseBtn } from '../Common/Common.Styled'
@@ -21,6 +21,7 @@ import moment from 'moment'
 
 // 중량 판매 등록 모달
 const WeightSales = () => {
+	console.log('WeightSales')
 	const auth = useAtomValue(authAtom)
 	const { simpleConfirm, simpleAlert } = useAlert()
 
