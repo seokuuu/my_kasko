@@ -1,12 +1,9 @@
 import { useAtom } from 'jotai'
 import React from 'react'
-import { getDestinationFind } from '../../api/search'
 import { GreyBtn } from '../../common/Button/Button'
-import useReactQuery from '../../hooks/useReactQuery'
 import { CustomInput, PartWrap } from '../../modal/External/ExternalFilter'
-import InventoryFind from '../../modal/Multi/InventoryFind'
-import { invenDestination } from '../../store/Layout/Layout'
 import DestinationFind from '../../modal/Multi/DestinationFind'
+import { invenDestination } from '../../store/Layout/Layout'
 
 /**
  * TODO 목적지 검색 components

@@ -1,5 +1,5 @@
+import React, { useState } from 'react'
 import { DoubleWrap } from '../../modal/External/ExternalFilter'
-import React, { useEffect, useState } from 'react'
 
 /**
  * TODO 제품 번호 검색 components

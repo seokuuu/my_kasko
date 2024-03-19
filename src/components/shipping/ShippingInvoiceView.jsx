@@ -1,6 +1,10 @@
+import html2pdf from 'html2pdf.js'
+import moment from 'moment'
 import React, { useEffect, useRef, useState } from 'react'
-import { WhiteSkyBtn } from '../../common/Button/Button'
+import styled from 'styled-components'
 import { useShipmentInvoiceListQuery } from '../../api/shipment'
+import { WhiteSkyBtn } from '../../common/Button/Button'
+import useTableSelection from '../../hooks/useTableSelection'
 import {
 	BlueBarHeader,
 	BlueSubContainer,
@@ -9,12 +13,8 @@ import {
 	WhiteCloseBtn,
 } from '../../modal/Common/Common.Styled'
 import { FilterContianer, TableContianer } from '../../modal/External/ExternalFilter'
-import styled from 'styled-components'
-import html2pdf from 'html2pdf.js'
-import moment from 'moment'
-import { formatWeight } from '../../utils/utils'
 import useAlert from '../../store/Alert/useAlert'
-import useTableSelection from '../../hooks/useTableSelection'
+import { formatWeight } from '../../utils/utils'
 
 const ShippingInvoiceView = ({ customerCode, outNumber }) => {
 	const { simpleAlert } = useAlert()

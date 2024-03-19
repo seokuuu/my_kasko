@@ -15,9 +15,6 @@ import {
 	WhiteCloseBtn,
 } from '../Common/Common.Styled'
 
-import { GreyBtn } from '../../common/Button/Button'
-import { TxtInput } from '../../common/Input/Input'
-
 import styled from 'styled-components'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 

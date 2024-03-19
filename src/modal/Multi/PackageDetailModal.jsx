@@ -1,34 +1,26 @@
-import React, { useState, Fragment, useRef, useEffect } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 
+import { useAtom, useAtomValue } from 'jotai'
 import styled from 'styled-components'
+import { getPackageProductsList } from '../../api/SellProduct'
+import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../components/MapTable/MapTable'
+import Excel from '../../components/TableInner/Excel'
+import PageDropdown from '../../components/TableInner/PageDropdown'
+import { packageDetailDispatchFieldsCols, packageProductsDispatchFields } from '../../constants/admin/SellPackage'
+import useReactQuery from '../../hooks/useReactQuery'
+import { add_element_field } from '../../lib/tableHelpers'
+import Table from '../../pages/Table/Table'
+import { packageDetailModal, selectPackageAtom, selectedRowsAtom } from '../../store/Layout/Layout'
+import { KilogramSum } from '../../utils/KilogramSum'
 import { BlueBarHeader, WhiteCloseBtn } from '../Common/Common.Styled'
-import { WhiteBlackBtn } from '../../common/Button/Button'
 import {
 	FilterContianer,
 	FilterHeader,
-	FilterTCBottom,
 	FilterTCTop,
 	FilterTopContainer,
 	TCSubContainer,
 	TableContianer,
 } from '../External/ExternalFilter'
-import HeaderToggle from '../../components/Toggle/HeaderToggle'
-import { useAtom, useAtomValue } from 'jotai'
-import { packageDetailModal, selectPackageAtom, selectedRowsAtom, toggleAtom } from '../../store/Layout/Layout'
-import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../components/MapTable/MapTable'
-import Table from '../../pages/Table/Table'
-import Hidden from '../../components/TableInner/Hidden'
-import PageDropdown from '../../components/TableInner/PageDropdown'
-import Excel from '../../components/TableInner/Excel'
-import {
-	packageProductsDispatchFields,
-	packageProductsDispatchFieldsCols,
-	packageDetailDispatchFieldsCols,
-} from '../../constants/admin/SellPackage'
-import useReactQuery from '../../hooks/useReactQuery'
-import { getPackageProductsList } from '../../api/SellProduct'
-import { add_element_field } from '../../lib/tableHelpers'
-import { KilogramSum } from '../../utils/KilogramSum'
 
 export default function PackageDetailModal() {
 	const [isModal, setIsModal] = useAtom(packageDetailModal)
