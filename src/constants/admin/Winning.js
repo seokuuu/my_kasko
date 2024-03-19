@@ -1,6 +1,7 @@
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { winningDetailAucNumAtom, winningDetailModal } from '../../store/Layout/Layout'
 import { Link } from 'react-router-dom'
+import { authAtom } from '../../store/Auth/auth'
 
 var checkboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping
@@ -19,6 +20,9 @@ export const commonStyles = {
 }
 
 const LinkRenderer = (props) => {
+	const auth = useAtomValue(authAtom)
+	const url = auth.role === '카스코철강' ? '/auction/winning/detail' : '/userpage/auctionwinning/detail'
+
 	const { data } = props
 	const [aucDetail, setAucDetail] = useAtom(winningDetailAucNumAtom) // 해당 row 값 저장
 
@@ -30,7 +34,7 @@ const LinkRenderer = (props) => {
 				<>{props.value || ''}</>
 			) : (
 				<Link
-					to={`/auction/winning/detail`}
+					to={url}
 					onClick={() => {
 						setAucDetailModal(true)
 						setAucDetail(data)

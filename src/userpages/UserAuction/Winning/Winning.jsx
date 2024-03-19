@@ -11,7 +11,6 @@ import { isEqual } from 'lodash'
 import { getWinning } from '../../../api/auction/winning'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { AuctionWinningFields, UserAuctionWinningFieldsCols } from '../../../constants/admin/Winning'
 import useReactQuery from '../../../hooks/useReactQuery'
@@ -19,6 +18,7 @@ import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../../pages/Table/Table'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import UserWinningSearchFields from './UserWinningSearchFields'
 
 const Winning = ({}) => {
@@ -176,7 +176,7 @@ const Winning = ({}) => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />

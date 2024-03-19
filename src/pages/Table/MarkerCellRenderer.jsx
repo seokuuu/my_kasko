@@ -44,10 +44,12 @@ const bestIcon = `
  * @param {string} text 텍스트
  * @returns 텍스트 태그
  */
-const textTag = (clickable = false, text = '') =>
+const textTag = (clickable = false, text = '', isProNo = false) =>
 	clickable
-		? `<button class="text" style="background:transparent;text-decoration:underline;color: #4C83D6;font-weight:medium;">${text}</button>`
-		: `<span class="text">${text}</span>`
+		? `<button class="text" style="${
+				isProNo ? `width: 0;opacity:0` : ''
+		  }background:transparent;text-decoration:underline;color: #4C83D6;font-weight:medium;>${text}</button>`
+		: `<span class="text" style="${isProNo ? `width: 0;opacity:0` : ''}">${text}</span>`
 
 /**
  * 테이블 마커 Cell Renderer
@@ -64,11 +66,16 @@ class MarkerCellRenderer {
 	cellBest
 	clickHandler
 	clickEventListener
+	isProNo
 
 	init(params) {
+		const proNoKey = '프로넘(ProNo)'
+		const proNo = params.data[proNoKey]
+
+		this.isProNo = !!proNo
 		this.cellValue = params.value
-		this.cellWish = Boolean(params?.wish)
-		this.cellBest = Boolean(params?.best)
+		this.cellWish = !!proNo ? false : Boolean(params?.wish)
+		this.cellBest = !!proNo ? false : Boolean(params?.best)
 		this.clickHandler = params?.clickHandler
 		this.eGui = document.createElement('div')
 		this.renderCell()
@@ -99,10 +106,11 @@ class MarkerCellRenderer {
 		const textValue = this.cellValue || '-' // 셀 텍스트
 
 		this.eGui.innerHTML = `
-          <div style="display:flex;align-items:center;justify-content:center;gap:4px;height:34px;">
+          <div style='display:flex;align-items:center;justify-content:center;gap:4px;height:34px;position:relative;'>
+          	${this.isProNo ? `<div>-</div>` : ''}
             ${this.best ? bestIcon : ''}
             ${this.cellWish ? wishIcon : ''}
-            ${textTag(Boolean(this.cellValue && this.clickHandler), textValue)}
+            ${textTag(Boolean(this.cellValue && this.clickHandler), textValue, this.isProNo)}
           </div>
     `
 

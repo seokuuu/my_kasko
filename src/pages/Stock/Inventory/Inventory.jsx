@@ -174,8 +174,8 @@ const Inventory = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
-						{pagenations ? pagenations?.listCount : TableData?.listCount}개 )
+						조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length?.toLocaleString() : '0'}</span> /{' '}
+						{pagenations ? pagenations?.listCount?.toLocaleString() : TableData?.listCount?.toLocaleString()}개 )
 						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -185,7 +185,7 @@ const Inventory = ({}) => {
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총 {pagenations?.totalWeight} kg
+						선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총 {pagenations?.totalWeight?.toLocaleString()} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteBlackBtn
