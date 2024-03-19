@@ -71,27 +71,6 @@ const StartPrice = ({}) => {
 	const [modalSwitch, setModalSwitch] = useAtom(AuctionUnitPriceAtom)
 
 
-	//checkSales
-	const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
-
-	//checkShips
-	const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
-
-	useEffect(() => {
-		// true에 해당되면, value를, false면 빈값을 반환
-		const updatedCheck = checkSales.map((value, index) => {
-			return check1[index] ? value : ''
-		})
-		// 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-		const filteredCheck = updatedCheck.filter((item) => item !== '')
-		setCheckData1(filteredCheck)
-
-		// 전송용 input에 담을 때
-		// setInput({
-		//   ...input,
-		//   businessType: updatedCheck.filter(item => item !== ''),
-		// });
-	}, [check1])
 
 	const [dropInput, setDropInput] = useState({
 		spart: '',

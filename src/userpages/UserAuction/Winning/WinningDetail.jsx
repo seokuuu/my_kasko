@@ -361,8 +361,7 @@ const WinningDetail = ({ setAucDetail }) => {
 						width={13}
 						height={40}
 						onClick={() => {
-							setDetailRow(false)
-							setAucDetail('')
+							navigate(-1)
 						}}
 					>
 						돌아가기

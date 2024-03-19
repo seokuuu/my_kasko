@@ -1,8 +1,11 @@
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
 import MarkerCellRenderer from '../../pages/Table/MarkerCellRenderer'
 import { auctionPackDetailModal, auctionPackDetailNumAtom } from '../../store/Layout/Layout'
 import { PROD_COL_NAME } from '../user/constantKey'
+import { ProNoCellRenderer } from '../../pages/Table/ProNoCellRenderer'
+import { authAtom } from '../../store/Auth/auth'
+import { useLocation } from 'react-router-dom'
 
 var checkboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping
@@ -369,7 +372,7 @@ export const AuctionBiddingFields = {
 	'판매 유형': 'saleType',
 	'경매 번호': 'auctionNumber',
 	[PROD_COL_NAME.productNumber]: 'productNumber',
-	'프로넘 번호': 'productNoNumber',
+	'프로넘(ProNo)': 'productNoNumber',
 	[PROD_COL_NAME.packageNumber]: 'packageNumber',
 	시작가: 'auctionStartPrice',
 	'현재 최고 가격': 'biddingPrice',
@@ -523,11 +526,12 @@ export const AuctionBiddingFields = {
 // }
 
 export const AuctionBiddingFieldsCols = (selected) => {
+	const location = useLocation()
+	const checkAucURL = ['/auction/biddingsingle'].includes(location.pathname)
 	const checkboxSelection2 = (params) => {
 		// we put checkbox on the name if we are not doing grouping
 		if (selected && selected.length > 0) {
 			const selectedUid = [...new Set(selected?.map((item) => item['제품 번호']?.value))]
-
 			if (selectedUid?.includes(params.data['제품 번호'].value)) {
 				params.node.setSelected(true)
 			}
@@ -554,13 +558,18 @@ export const AuctionBiddingFieldsCols = (selected) => {
 			...commonStyles,
 			field: PROD_COL_NAME.productNumber,
 			minWidth: 150,
-			cellRenderer: MarkerCellRenderer,
+			cellRenderer: checkAucURL ? null : MarkerCellRenderer,
 			cellRendererParams: (params) => params?.data[params.column.colId] || '',
 			valueGetter: (v) => v.data[v.column.colId]?.value || '',
 		},
 		// { ...commonStyles, field: '제품 번호', minWidth: 100 },
+		{
+			...commonStyles,
+			field: '프로넘(ProNo)',
+			minWidth: 100,
 
-		{ ...commonStyles, field: '프로넘 번호', minWidth: 100 },
+			cellRenderer: ProNoCellRenderer,
+		},
 		{ ...commonStyles, field: '창고', minWidth: 100 },
 		{ ...commonStyles, field: '판매 유형', minWidth: 100 },
 		{ ...commonStyles, field: '판매가 유형', minWidth: 100 },

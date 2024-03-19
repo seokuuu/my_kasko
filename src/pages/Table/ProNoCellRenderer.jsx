@@ -4,9 +4,19 @@ import { jwtDecode } from 'jwt-decode'
 import { useAtom } from 'jotai/index'
 import { wishProductNumbersAtom } from '../../store/Product'
 import { useAtomValue } from 'jotai'
+import { authAtom } from '../../store/Auth/auth'
+import { useLocation } from 'react-router-dom'
 
 export function ProNoCellRenderer({ data }) {
+	const location = useLocation()
 	const wishProdNums = useAtomValue(wishProductNumbersAtom)
+
+	const checkAucURL = ['/auction/biddingsingle'].includes(location.pathname)
+
+	console.log('checkAucURL', checkAucURL)
+	console.log("!data['프로넘(ProNo)']", data['프로넘(Pro'])
+
+	if (checkAucURL) return <Number>{data['프로넘(ProNo)']}</Number>
 
 	if (!data['프로넘(ProNo)']) {
 		return <span>-</span>
