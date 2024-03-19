@@ -11,7 +11,13 @@ import {
 } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { invenDestination, invenDestinationData, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import {
+	invenDestination,
+	invenDestinationData,
+	selectedRowsAtom,
+	toggleAtom,
+	winningDetailAucNumAtom,
+} from '../../../store/Layout/Layout'
 
 import {
 	CustomInput,
@@ -24,7 +30,6 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import { useAtom } from 'jotai'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import DefaultBlueBar from '../../../modal/Multi/DefaultBlueBar'
 import { aucProAddModalAtom } from '../../../store/Layout/Layout'
@@ -51,18 +56,22 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import useAlert from '../../../store/Alert/useAlert'
 import PrintDepositRequestButton from '../../../userpages/UserSales/_components/PrintDepositRequestButton'
-import Table from '../../Table/Table'
-import WinningDetailFields from './WinningDetailFields'
 import { onSizeChange } from '../../Operate/utils'
+import Table from '../../Table/Table'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import WinningDetailFields from './WinningDetailFields'
+import { useNavigate } from 'react-router-dom'
 
 // 경매 낙찰 상세
-const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
+const WinningDetail = ({ setAucDetail }) => {
+	const navigate = useNavigate()
+	const [detailRow, setDetaiRow] = useAtom(winningDetailAucNumAtom)
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [tablePagination, setTablePagination] = useState([])
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
+	const [contentData, setContentData] = useState([])
 
-	console.log('detailRow', detailRow)
 	const titleData = [
 		'경매 번호',
 		'고객사 명',
@@ -74,17 +83,36 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 		'운반비 (VAT 포함)',
 		'입금 요청 금액',
 	]
-	const contentData = [
-		detailRow?.['경매 번호'],
-		detailRow?.['고객사명'],
-		detailRow?.['고객 코드'],
-		detailRow?.['창고'],
-		detailRow?.['수량'],
-		detailRow?.['중량'],
-		new Intl.NumberFormat('en-US').format(detailRow?.['제품 금액 (VAT 포함)']) + '원',
-		new Intl.NumberFormat('en-US').format(detailRow?.['운반비 (VAT 포함)']) + '원',
-		new Intl.NumberFormat('en-US').format(detailRow?.['입금 요청액']) + '원',
-	]
+
+	useEffect(() => {
+		if (detailRow) {
+			const newContentData = [
+				detailRow['경매 번호'],
+				detailRow['고객사명'],
+				detailRow['고객 코드'],
+				detailRow['창고'],
+				detailRow['수량'],
+				detailRow['중량'],
+				detailRow['제품 금액 (VAT 포함)'] + '원',
+				detailRow['운반비 (VAT 포함)'] + '원',
+				detailRow['입금 요청액'] + '원',
+			]
+			// 새로운 contentData 값을 상태로 업데이트
+			setContentData(newContentData)
+		}
+	}, [detailRow])
+
+	// const contentData = [
+	// 	detailRow?.['경매 번호'],
+	// 	detailRow?.['고객사명'],
+	// 	detailRow?.['고객 코드'],
+	// 	detailRow?.['창고'],
+	// 	detailRow?.['수량'],
+	// 	detailRow?.['중량'],
+	// 	detailRow?.['제품 금액 (VAT 포함)'] + '원',
+	// 	detailRow?.['운반비 (VAT 포함)'] + '원',
+	// 	detailRow?.['입금 요청액'] + '원',
+	// ]
 
 	const matchingData = {
 		'경매 번호': 'auctionNumber',
@@ -129,7 +157,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 
 	const [input, setInput] = useState(init)
 
-	console.log('checkedArray', checkedArray)
+
 
 	// 낙찰 취소 관련
 	const keysToExtract = ['주문 고유 번호']
@@ -141,7 +169,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 	// 부분 낙찰 취소
 	const extractedArray = checkedArray?.reduce((result, item) => {
 		const orderUid = item[keysToExtract[0]]
-		console.log('orderUid 추워', orderUid)
+
 
 		// 중복 체크
 		if (!result.includes(orderUid)) {
@@ -175,22 +203,8 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 		...matchedResult,
 	}
 
-	// Test 후 주석 해제 필
 	const [param, setParam] = useState(paramData)
-	console.log('param !@#', param)
 
-	// Test 후 주석 해제 필
-	// useEffect(() => {
-	//   window.scrollTo(0, 0)
-
-	//   setParam((p) => ({
-	//     ...p,
-	//     auctionNumber: detailRow?.['경매 번호'],
-	//     storage: detailRow?.['고객사명'],
-	//     customerDestinationUid: detailRow?.['고객사 목적지 고유 번호'],
-	//     biddingStatus: detailRow?.['낙찰 상태'],
-	//   }))
-	// }, [])
 
 	const customerCode = detailRow?.['고객 코드']
 	const { data: inventoryDestination } = useReactQuery(
@@ -199,21 +213,30 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 		getCustomerDestinationByCustomerCode,
 	)
 
-	console.log('inventoryDestination', inventoryDestination?.data?.data)
+
 
 	const [winningCreateData, setWinningCreateData] = useState({})
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getWinningDetail', getWinningDetail)
+
 	const resData = data?.data?.data?.list
+
+	// 예외 처리
+	useEffect(() => {
+		if (isSuccess && resData === undefined)
+			simpleAlert('잘못된 접근입니다.', () => {
+				navigate('/auction/winning')
+			})
+	}, [isSuccess, data])
+
 	const resPagination = data?.data?.data?.pagination
 
-	console.log('resData', resData?.length)
+
 
 	useEffect(() => {
 		let getData = resData
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 		if (!isSuccess && !resData) return
 		if (!resData?.length >= 1) {
-			setDetailRow(false)
 			setAucDetail('')
 		}
 		if (Array.isArray(getData)) {
@@ -239,14 +262,13 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 		// setBiddingList(updatedBiddingList)
 	}, [checkedArray])
 
-	console.log('updateList', input.updateList?.length)
+
 	const [destiObject, setDestiObject] = useState()
 	const [finalInput, setFinalInput] = useState({
 		requestCustomerDestinationUid: null,
 	})
 
-	console.log('destiObject ###', destiObject)
-	console.log('finalInput ###', finalInput)
+
 
 	useEffect(() => {
 		setDestiObject(destinationData)
@@ -266,7 +288,6 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 		}))
 	}, [checkedArray, finalInput])
 
-	console.log('winningCreateData', winningCreateData)
 
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -442,7 +463,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 			<FilterTopContainer>
 				<FilterTCTop>
 					<h6>경매 번호</h6>
-					<p>{detailRow && detailRow['경매 번호']}</p>
+					<p>{contentData[0]}</p>
 				</FilterTCTop>
 			</FilterTopContainer>
 			<ClaimTable style={{ marginBottom: '30px' }}>
@@ -472,7 +493,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
@@ -537,7 +558,6 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 						width={13}
 						height={40}
 						onClick={() => {
-							setDetailRow(false)
 							setAucDetail('')
 						}}
 					>

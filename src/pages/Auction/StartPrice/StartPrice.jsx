@@ -27,7 +27,6 @@ import {
 	uploadMultiPrice,
 } from '../../../api/auction/startprice'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import Hidden from '../../../components/TableInner/Hidden'
 import {
 	AuctionStartPriceFields,
 	AuctionStartPriceFieldsCols,
@@ -41,9 +40,10 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import Upload from '../../../modal/Upload/Upload'
 import useAlert from '../../../store/Alert/useAlert'
 import { AuctionUnitPriceAtom } from '../../../store/Layout/Layout'
-import Table from '../../Table/Table'
-import StartPriceFields from './StartPriceFields'
 import { onSizeChange } from '../../Operate/utils'
+import Table from '../../Table/Table'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import StartPriceFields from './StartPriceFields'
 
 const StartPrice = ({}) => {
 	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
@@ -53,10 +53,10 @@ const StartPrice = ({}) => {
 	const [excelToJson, setExcelToJson] = useState([])
 	const [final, setFinal] = useState()
 
-	console.log('final!!! ', final)
+
 
 	const [insertList, setInsertList] = useState({ insertList: [] })
-	console.log('insertList', insertList)
+
 	const [tablePagination, setTablePagination] = useState([])
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 
@@ -70,8 +70,6 @@ const StartPrice = ({}) => {
 
 	const [modalSwitch, setModalSwitch] = useAtom(AuctionUnitPriceAtom)
 
-	console.log('modalSwitch', modalSwitch)
-	console.log('initObject', initObject)
 
 	//checkSales
 	const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
@@ -197,7 +195,7 @@ const StartPrice = ({}) => {
 	// 단가 등록
 	const [editInput, setEditInput] = useState(editInit)
 
-	console.log('editInput', editInput)
+
 
 	// editInput과 onEditHandler를 name 매칭
 	const convertKey = {
@@ -226,7 +224,7 @@ const StartPrice = ({}) => {
 
 	// 단가 등록 폼 핸들러
 	const onEditHandler = useCallback((e) => {
-		console.log('Edit input event:', e)
+
 		const { name, value } = e.target
 
 		// failCount와 effectPrice에 대해서만 정수로 변환
@@ -318,7 +316,7 @@ const StartPrice = ({}) => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>{selectedCount}</span> / {param.pageSize}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
@@ -345,7 +343,6 @@ const StartPrice = ({}) => {
 							height={32}
 							value={effectPrice}
 							onChange={(e) => {
-								console.log(e.target.value)
 								setEffectPrice(parseInt(e.target.value))
 							}}
 						/>

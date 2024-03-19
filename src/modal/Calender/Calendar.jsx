@@ -47,7 +47,7 @@ const CalendarModal = () => {
 	const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()]
 	const formattedDate = `${month}/${day}(${dayOfWeek})`
 
-	console.log('모멘트', moment(date).format('YYYY-MM-DD'))
+
 
 	function CustomFormatDay(locale, date) {
 		return date.getDate().toString()
@@ -61,7 +61,7 @@ const CalendarModal = () => {
 
 	const calAucNumber = resData?.map((x) => x.number)
 
-	console.log('calAucNumber 캘린더', calAucNumber)
+
 
 	const parseAuctionData = (auctionNumber) => {
 		const datePart = auctionNumber.slice(0, 8) // 날짜 부분 추출
@@ -93,7 +93,7 @@ const CalendarModal = () => {
 		}
 	}
 
-	console.log()
+
 
 	// 각 경매번호에 대해 파싱된 정보 출력
 	useEffect(() => {
@@ -101,7 +101,7 @@ const CalendarModal = () => {
 		setAuctionData(parsedAuctions)
 	}, [resData])
 
-	console.log('auctionData', auctionData)
+
 
 	const todayDate = moment().format('YYYY-MM-DD')
 	const todayPeriods = auctionData && auctionData?.filter((item) => item.date === todayDate)
@@ -126,13 +126,13 @@ const CalendarModal = () => {
 		})
 	}
 
-	console.log('todayPeriods', todayPeriods)
+
 
 	function customTileContent({ date, view }) {
 		const formattedDate = moment(date).format('YYYY-MM-DD')
 
 		const matchingAuctions = auctionData?.filter((auction) => auction.date === formattedDate)
-		console.log('matchingAuctions', matchingAuctions)
+
 		if (view === 'month' && matchingAuctions?.length > 0) {
 			const isAdditionalAuction = matchingAuctions.some((auction) => auction.period === '추가 경매')
 

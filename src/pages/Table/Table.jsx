@@ -122,7 +122,14 @@ const Table = ({
 			if (
 				[
 					'/auction/biddingsingle',
-					'auction/biddingpackage',
+					'/auction/biddingpackage',
+					'/auction/progress',
+					'/auction/detailprogress',
+					'/auction/round',
+					'/auction/winning',
+					'/auction/startprice',
+					'/auction/winningcreate',
+					'/userpage/auctionwinning',
 					'/userpage/auctionsingle',
 					'/userpage/auctionpackage',
 				].includes(location.pathname)
@@ -130,7 +137,7 @@ const Table = ({
 				const formattedRow = getRow.map((item) => {
 					const formattedItem = {}
 					Object.keys(item).forEach((key) => {
-						if (['제품 고유 번호'].includes(key) || key.includes('번호')) {
+						if (['제품 고유 번호'].includes(key) || key.includes('번호', '연락처')) {
 							return (formattedItem[key] = item[key])
 						} else {
 							formattedItem[key] = customNumberFormatter({ value: item[key] })
@@ -149,7 +156,7 @@ const Table = ({
 		if (
 			[
 				'/auction/biddingsingle',
-				'auction/biddingpackage',
+				'/auction/biddingpackage',
 				'/userpage/auctionsingle',
 				'/userpage/auctionpackage',
 			].includes(location.pathname)

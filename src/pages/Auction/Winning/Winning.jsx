@@ -32,6 +32,7 @@ import useAlert from '../../../store/Alert/useAlert'
 import { onSizeChange } from '../../Operate/utils'
 import useTableSelection from '../../../hooks/useTableSelection'
 import useTableData from '../../../hooks/useTableData'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 // src\pages\Sales\Single\Single.jsx 참고해서 작업 !!!
 const Winning = ({}) => {
@@ -114,7 +115,7 @@ const Winning = ({}) => {
 		}, {}),
 	)
 
-	console.log('extractedArray', extractedArray)
+
 
 	// 낙찰 취소 버튼 Handler
 	const { mutate: deleteMutation } = useMutation(deleteBidding, {
@@ -169,7 +170,6 @@ const Winning = ({}) => {
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getDetailProgress', getWinning)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
-	console.log('resData', resData)
 
 	useEffect(() => {
 		let getData = resData
@@ -244,7 +244,7 @@ const Winning = ({}) => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
