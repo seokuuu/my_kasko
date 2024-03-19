@@ -11,10 +11,11 @@ import { doubleClickedRowAtom, winningDetailAucNumAtom, winningDetailModal } fro
 import { useState } from 'react'
 import { useAtom } from 'jotai'
 
-const WinningPage = () => {
+const WinningDetailPage = () => {
 	const [expanded, setExpanded] = useState('경매 관리')
 	const [depth2Color, setDepth2Color] = useState('경매 낙찰 관리')
 	const [aucDetail, setAucDetail] = useAtom(winningDetailAucNumAtom) // 패키지 해당 row 값 저장
+
 	const [aucDetailModal, setAucDetailModal] = useAtom(winningDetailModal) // 패키지 모달
 
 	useEffect(() => {
@@ -33,7 +34,7 @@ const WinningPage = () => {
 				<OverAllSub>
 					<SubHeader />
 					<OverAllTable>
-						<Winning />
+						<WinningDetail detailRow={aucDetail} setAucDetail={setAucDetail} setDetailRow={setAucDetailModal} />
 					</OverAllTable>
 				</OverAllSub>
 			</OverAllMain>
@@ -41,4 +42,4 @@ const WinningPage = () => {
 	)
 }
 
-export default WinningPage
+export default WinningDetailPage

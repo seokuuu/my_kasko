@@ -169,6 +169,7 @@ import Timeout from './pages/Timeout'
 import BiddingPackage from './pages/Auction/Bidding/BiddingPackage'
 import BiddingPackagePage from './pages/Auction/Bidding/BiddingPackagePage'
 import RequestRecomPage from './pages/Shipping/Request/RequestRecomPage'
+import WinningDetailPage from './pages/Auction/Winning/WinningDetailPage'
 
 const Router = () => {
 	const auth = useAtomValue(authAtom)
@@ -222,6 +223,7 @@ const Router = () => {
 				<Route path="/auction/progress" element={<ProgressPage />}></Route>
 				<Route path="/auction/detailprogress" element={<DetailProgressPage />}></Route>
 				<Route path="/auction/winning" element={<WinningPage />}></Route>
+				<Route path="/auction/winning/detail" element={<WinningDetailPage />} />
 				<Route path="/auction/winningcreate" element={<WinningCreatePage />}></Route>
 				<Route path="/auction/startprice" element={<StartPricePage />}></Route>
 			</Route>

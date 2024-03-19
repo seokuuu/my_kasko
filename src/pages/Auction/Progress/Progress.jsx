@@ -11,15 +11,15 @@ import { useAtom } from 'jotai'
 import { isEqual } from 'lodash'
 import { getProgess } from '../../../api/auction/progress'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import Hidden from '../../../components/TableInner/Hidden'
 import { AuctionProgressFields, AuctionProgressFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { add_element_field } from '../../../lib/tableHelpers'
-import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
-import ProgressSearchFields from './ProgressSearchFields'
-import { onSizeChange } from '../../Operate/utils'
-import useTableSelection from '../../../hooks/useTableSelection'
 import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { FilterContianer, FilterHeader, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
+import { onSizeChange } from '../../Operate/utils'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import ProgressSearchFields from './ProgressSearchFields'
 
 const Progress = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
@@ -74,7 +74,7 @@ const Progress = ({}) => {
 		pageSize: 50,
 	}
 	const [param, setParam] = useState(paramData)
-	console.log('param !@#', param)
+
 
 	const [liveStatus, setLiveStatus] = useState('LIVEgetProgess')
 	// GET
@@ -92,7 +92,7 @@ const Progress = ({}) => {
 		}
 	}, [isSuccess, resData])
 
-	console.log('getRow =>', getRow)
+
 
 	useEffect(() => {
 		if (isSuccess) refetch()
@@ -158,7 +158,7 @@ const Progress = ({}) => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
