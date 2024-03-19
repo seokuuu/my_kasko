@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { BtnBound, SkyBtn, TGreyBtn, TWhiteBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
@@ -14,7 +14,6 @@ import {
 	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -25,6 +24,7 @@ import { getAuctionDestination } from '../../../api/auction/winning'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constants/admin/Auction'
+import { PROD_COL_NAME } from '../../../constants/user/constantKey'
 import { useCheckAuction } from '../../../hooks/useCheckAuction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import useTableData from '../../../hooks/useTableData'
@@ -32,14 +32,13 @@ import useTableSelection from '../../../hooks/useTableSelection'
 import Agreement from '../../../modal/Common/Agreement'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import Table from '../../../pages/Table/Table'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import useAlert from '../../../store/Alert/useAlert'
 import { authAtom } from '../../../store/Auth/auth'
 import { auctionStartAtom, userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
+import { useLoading } from '../../../store/Loading/loadingAtom'
 import AddWishButton from '../../UserSales/_components/AddWishButton'
 import UserBiddingSearchFields from './UserBiddingSearchFields'
-import { PROD_COL_NAME } from '../../../constants/user/constantKey'
-import { useLoading } from '../../../store/Loading/loadingAtom'
-import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 
 const Single = ({}) => {
 	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom

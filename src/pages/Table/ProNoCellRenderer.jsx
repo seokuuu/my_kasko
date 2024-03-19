@@ -4,6 +4,8 @@ import { jwtDecode } from 'jwt-decode'
 import { useAtom } from 'jotai/index'
 import { wishProductNumbersAtom } from '../../store/Product'
 import { useAtomValue } from 'jotai'
+import { authAtom } from '../../store/Auth/auth'
+import { useLocation } from 'react-router-dom'
 
 export function ProNoCellRenderer({ data }) {
 	const wishProdNums = useAtomValue(wishProductNumbersAtom)
