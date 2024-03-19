@@ -1,37 +1,29 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
+import styled from 'styled-components'
 import {
-	NonFadeOverlay,
+	BlueBarHeader,
+	BlueBlackBtn,
+	BlueBtnWrap,
+	BlueMainDiv,
+	BlueSubContainer,
+	BlueSubDiv,
 	ModalContainer,
 	WhiteCloseBtn,
-	BlueSubContainer,
-	BlueBarHeader,
-	BlueMainDiv,
-	BlueSubDiv,
-	BlueBtnWrap,
-	BlueBlackBtn,
-	FadeOverlay,
 } from '../Common/Common.Styled'
-import styled from 'styled-components'
 
-import { blueModalAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 import { ExRadioWrap } from '../External/ExternalFilter'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
 
-import { CheckBox } from '../../common/Check/Checkbox'
 import { useEffect } from 'react'
-import CommonTest from '../Alert/PopupMessages'
-import { popupMessages } from '../Alert/PopupMessages'
-import AlertPopup from '../Alert/AlertPopup'
+import { CheckBox } from '../../common/Check/Checkbox'
 import { popupAtom } from '../../store/Layout/Layout'
 
-import { popupObject } from '../../store/Layout/Layout'
-import { popupDummy } from '../Alert/PopupDummy'
-import { popupTypeAtom } from '../../store/Layout/Layout'
-import { changeCategoryAtom, changePkgSaleTypeAtom } from '../../store/Layout/Popup'
 import useAlert from '../../store/Alert/useAlert'
+import { popupObject, popupTypeAtom } from '../../store/Layout/Layout'
+import { changeCategoryAtom, changePkgSaleTypeAtom } from '../../store/Layout/Popup'
+import { popupDummy } from '../Alert/PopupDummy'
 
 const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productNumbers, length, isPkg = false }) => {
 	const [popupSwitch, setPopupSwitch] = useAtom(popupAtom) // 팝업 스위치
@@ -47,9 +39,7 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
 				return (popup.func = callBack)
 			}
 
-			console.log(popup)
 		})
-		// console.log(firstPopup)
 		setNowPopup(firstPopup)
 	}
 
@@ -91,7 +81,6 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
 		setCheckData2(filteredCheck)
 	}, [checkRadio2])
 
-	// console.log('라디오값', checkData1)
 	useEffect(() => {
 		setParmeter((p) =>
 			isPkg

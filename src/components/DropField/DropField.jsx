@@ -27,8 +27,6 @@ const DropField = forwardRef(
     const [fileSizeError, setFileSizeError] = useState(false)
     const handleClose = (index) => {
       const newFiles = [...(validFileList ?? [])]
-      console.log(fileName, ref)
-      newFiles.splice(index, 1)
       onFileListChange(newFiles)
 
       const newFilesData = [...(filesData ?? [])]
@@ -41,8 +39,7 @@ const DropField = forwardRef(
         const updatedFileList = [...(fileList ?? [])]
         updatedFileList.push(value)
         onFileListChange(updatedFileList)
-        console.log(updatedFileList)
-      } else console.log('Over')
+      } 
     }
 
     const handleFileChange = (e) => {
@@ -68,7 +65,6 @@ const DropField = forwardRef(
     }
 
     useEffect(() => {
-      console.log('현재 파일 데이터:', filesData)
     }, [filesData])
     return (
       <>

@@ -93,7 +93,6 @@ export const PrintDepositRequestButton = ({
 				orientation: 'portrait', // or landscape : 가로
 			},
 			callback: () => {
-				console.log('PDF 다운로드 완료')
 			},
 		})
 	}

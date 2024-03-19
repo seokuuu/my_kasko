@@ -28,8 +28,7 @@ const PopupTest = () => {
     setNowPopupType(firstType)
   }, [nowPopup])
 
-  console.log('nowPopup', nowPopup)
-  console.log('nowPopupType', nowPopupType)
+
 
   return (
     <div>

@@ -86,7 +86,6 @@ function IncomingModify({ title }) {
 
 	const onCellValueChanged = (params) => {
 		const p = params.data
-		console.log('바뀌는 값 확인', p)
 		setValues({
 			number: p['제품 번호'],
 			storageName: p['창고'],

@@ -15,7 +15,6 @@ const IncomingPage = () => {
 	const [depth2Color, setDepth2Color] = useState('입고 관리')
 	const [imageStates, setImageStates] = useAtom(rightArray)
 
-	console.log('imageStates =>', imageStates)
 
 	return (
 		<>

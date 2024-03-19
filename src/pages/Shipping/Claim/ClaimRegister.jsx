@@ -57,7 +57,6 @@ const ClaimRegister = () => {
 			hsReturnDate: form.hsReturnDate && moment(form.hsReturnDate).format('YYYY-MM-DD HH:mm:ss'),
 			endDate: form.endDate && moment(form.endDate).format('YYYY-MM-DD HH:mm:ss'),
 		}
-		console.log(param)
 		createClaim(param)
 	}
 

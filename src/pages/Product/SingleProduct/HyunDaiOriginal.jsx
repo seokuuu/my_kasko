@@ -66,7 +66,6 @@ function HyunDaiOriginal({ title }) {
 	const d = original?.data?.list
 	const [startDate, setStartDate] = useState('')
 	const [endDate, setEndDate] = useState('')
-	console.log('data :', original)
 	//====================== 라디오체크 (오전이냐 오후냐 선택하는 부분) ======================
 	useEffect(() => {
 		// true에 해당되면, value를, false면 빈값을 반환
@@ -93,7 +92,6 @@ function HyunDaiOriginal({ title }) {
 		}
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 	}, [isSuccess, filterData])
-	console.log(filterData)
 	const modalClose = () => {
 		if (onClickCheck) {
 			setBtnCellModal(false)

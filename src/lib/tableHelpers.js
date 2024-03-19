@@ -1,6 +1,6 @@
 export function add_element_field(array, elemFields) {
 	if (!array && !elemFields) {
-		return console.log('인자를 확인해주세요')
+		
 	}
 	return array.map((item) => {
 		const newItem = {}

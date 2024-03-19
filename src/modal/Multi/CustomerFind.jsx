@@ -33,9 +33,7 @@ const CustomerFind = ({ title, setSwitch, setModalData }) => {
 
   const customerGetData = data?.data?.data
 
-  console.log('customerGetData', customerGetData)
 
-  console.log('data', customerGetData)
 
   const [isModal, setIsModal] = useAtom(blueModalAtom)
   const [searchTerm, setSearchTerm] = useState('')
@@ -44,10 +42,7 @@ const CustomerFind = ({ title, setSwitch, setModalData }) => {
   const [selectedUid, setSelectedUid] = useState(null)
   const [selectedUids, setSelectedUids] = useState([])
 
-  console.log('clickedResult', clickedResult)
 
-  console.log('searchTerm !!!', searchTerm)
-  console.log('result !!!', result)
 
   const modalClose = () => {
     setSwitch(false)
@@ -73,7 +68,6 @@ const CustomerFind = ({ title, setSwitch, setModalData }) => {
   }
 
   const handleCellClick = (uid, name, code, businessNumber, memberUid) => {
-    console.log('클릭한 셀 데이터:', { uid, name, code, businessNumber, memberUid })
     setClickedResult({ uid, name, code, businessNumber, memberUid })
     setSelectedUid(uid) // 클릭한 셀의 uid를 저장
   }

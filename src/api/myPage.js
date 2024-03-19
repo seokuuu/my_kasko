@@ -61,7 +61,7 @@ export function updateCustomer(input, fileForms) {
 	}
 
 	for (let [key, value] of form.entries()) {
-		console.log(key, value)
+
 	}
 
 	return client.patch(urls.privacy, form, {

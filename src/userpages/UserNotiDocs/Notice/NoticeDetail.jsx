@@ -21,7 +21,6 @@ const NoticeDetail = () => {
 
 	const { data: noticeDetails } = useNoticeDetailsQuery(uid)
 
-	console.log('noticeDetails :', noticeDetails)
 	const navigate = useNavigate()
 
 	function createMarkup(content) {

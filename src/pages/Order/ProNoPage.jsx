@@ -38,9 +38,7 @@ export const Container = styled.div`
 `
 
 function ProNoPage({ productNumberOut, title, proNoNumber, orderId }) {
-	useEffect(() => {
-		console.log('아웃될 번호들', productNumberOut)
-	}, [])
+
 	const [gridApi, setGridApi] = useState(null)
 	const { simpleAlert } = useAlert()
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)

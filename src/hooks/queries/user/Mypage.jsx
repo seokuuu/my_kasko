@@ -11,7 +11,6 @@ const DESTINATE_KEYS = {
 export const useGetUserDestinationQuery = (params) => {
   return useQuery(DESTINATE_KEYS.getDestination, async () => {
     const { data } = await getMemberDestination(params)
-    console.log('user Desti get =>', params)
     return data
   })
 }
@@ -20,7 +19,6 @@ export const useGetUserDestinationQuery = (params) => {
 export const usePostUserDestinationQuery = () =>
   useMutation({
     mutationFn: (params) => {
-      console.log('params =>', params)
       return postMemberDestination(params)
     },
   })

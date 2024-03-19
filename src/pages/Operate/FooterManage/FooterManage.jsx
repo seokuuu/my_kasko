@@ -46,7 +46,6 @@ const FooterManage = () => {
 		[emailDomain],
 	)
 
-	console.log('chooseEmailDomain', chooseEmailDomain)
 
 	/**
 	 * @description
@@ -104,7 +103,6 @@ const FooterManage = () => {
 			// data.email 값이 nullish 하다면 defaultEmailValue 값 할당
 			const { prefix, domain } = separateDomain(data?.email ?? defaultEmailValue)
 
-			console.log('domain :', domain)
 
 			setForm({
 				name: data?.name ?? '',

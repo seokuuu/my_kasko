@@ -1,5 +1,4 @@
-import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
-import {commonStyles} from "./Auction";
+import { commonStyles } from './Auction'
 
 var checkboxSelection = function (params) {
 	return params.columnApi.getRowGroupColumns().length === 0
@@ -182,5 +181,5 @@ export const stockFields = {
 	매입가: 'price',
 	메모: 'memo',
 	비고: 'note',
-	출고일자: 'outDate'
+	출고일자: 'outDate',
 }

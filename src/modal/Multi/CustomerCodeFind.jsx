@@ -15,9 +15,6 @@ import {
 	WhiteCloseBtn,
 } from '../Common/Common.Styled'
 
-import { GreyBtn } from '../../common/Button/Button'
-import { TxtInput } from '../../common/Input/Input'
-
 import styled from 'styled-components'
 import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 
@@ -27,7 +24,6 @@ const CustomerCodeFind = ({ title, setSwitch, data, type, setPropsUid, handleBut
 	const destinationData = { name: '목적지', code: '목적지 코드' }
 	const customerGetData = data?.data?.data //상위 WinningCreate의 Props Data
 
-	console.log('customerGetData', customerGetData)
 
 	const [searchTerm, setSearchTerm] = useState('')
 	const [result, setResult] = useState([])
@@ -90,7 +86,6 @@ const CustomerCodeFind = ({ title, setSwitch, data, type, setPropsUid, handleBut
 	}, [customerGetData])
 
 	const handleCellClick = (uid, name, code, businessNumber, destinationName, phone, address) => {
-		console.log('클릭한 셀 데이터:', { uid, name, code, businessNumber })
 		if (type === '낙찰 생성') {
 			setClickedResult({ code, destinationName, name, phone, address })
 			setPropsUid(uid)

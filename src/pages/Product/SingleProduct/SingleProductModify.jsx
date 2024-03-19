@@ -62,7 +62,6 @@ function SingleProductModify({ title }) {
 			}
 		})
 	}, [])
-	// console.log(modifyObj)
 	//테이블에 데이터 패치하는중
 	useEffect(() => {
 		if (Array.isArray([modifyObj])) {
@@ -73,7 +72,6 @@ function SingleProductModify({ title }) {
 
 	const onCellValueChanged = (params) => {
 		const p = params.data
-		console.log('파람', p)
 		setValues({
 			number: p['제품 번호'],
 			storage: p['저장 위치'],
@@ -123,7 +121,6 @@ function SingleProductModify({ title }) {
 
 	const { mutate } = useMutationQuery('modifyProduct', updateSingleProduct)
 	const handleSubmit = () => {
-		console.log(values)
 		mutate(values, {
 			onSuccess: (d) => {
 				if (d?.data?.status === 200) {

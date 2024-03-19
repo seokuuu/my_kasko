@@ -1,11 +1,7 @@
-import RecommendCellRenderer from '../../pages/Table/RecommendCellRenderer'
-import RecommendCellRenderer2 from '../../pages/Table/RecommendCellRenderer2'
-import BtnCellRenderer from '../../pages/Table/BtnCellRenderer.jsx'
-import LinkCellRender from '../../pages/Table/LinkCellRenderer.jsx'
-import { commonStyles } from '../commonCellStyle.js'
-import LinkCellRenderer from '../../pages/Table/LinkCellRenderer.jsx'
-import { recommendCell } from '../../pages/Product/SingleProduct/cellRender/RecommendCellRender'
 import PackageNumberRecommendCell from '../../pages/Product/PackageManage/cellRender/packageNumberRender'
+import BtnCellRenderer from '../../pages/Table/BtnCellRenderer.jsx'
+import LinkCellRenderer from '../../pages/Table/LinkCellRenderer.jsx'
+import { commonStyles } from '../commonCellStyle.js'
 var checkboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping
 	return params.columnApi.getRowGroupColumns().length === 0

@@ -90,7 +90,7 @@ function createFormData(params, type, isRegister) {
 	// 폼 데이터에 파일 데이터 추가
 	if (fileData) {
 		fileData.forEach((f) => {
-			console.log('post file :', f)
+			
 			form.append(`fileList`, f)
 		})
 	}

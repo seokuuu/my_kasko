@@ -29,7 +29,6 @@ const BtnCellRenderer = ({ data, uidFieldName, editType, moveUrl }) => {
 
 	const [overallData, setOverallData] = useState(data)
 	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
-	// console.log('uidAtom @@@', uidAtom)
 	const [btnCellModal, setBtnCellModal] = useAtom(btnCellRenderAtom)
 	const [modalMode, setModalMode] = useAtom(surEditModalAtom) // 할증 관리 modal
 	const [dispatchModalMode, setDispatchModalMode] = useAtom(StandardDispatchEditAtom)
@@ -104,7 +103,6 @@ const BtnCellRenderer = ({ data, uidFieldName, editType, moveUrl }) => {
 				setAuctionRoundEditModal(true)
 				break
 			case 'packageUpdate':
-				console.log('EDIT', data)
 				navigate('/product/packageedit/' + data[uidFieldName], { state: { data: data } })
 				break
 			// 관리자 > 운영관리 > 제품군 관리 목록 수정
@@ -116,7 +114,6 @@ const BtnCellRenderer = ({ data, uidFieldName, editType, moveUrl }) => {
 				setUidAtom(uid)
 				setSingleModify(true)
 				setModifyObj(data)
-				console.log(data)
 				break
 			case 'weight':
 				setUidAtom(uid)

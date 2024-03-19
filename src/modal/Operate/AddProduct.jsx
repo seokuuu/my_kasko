@@ -28,7 +28,6 @@ const AddProduct = ({ title, contentTitle, deliveryHandler, register, initValue,
 
 	// 인풋
 	const [value, setValue] = useState('')
-	console.log('value :', value)
 	// 모달 닫기
 	function closeModal() {
 		setValue('')
@@ -50,7 +49,6 @@ const AddProduct = ({ title, contentTitle, deliveryHandler, register, initValue,
 		return () => setValue('')
 	}, [])
 
-	console.log('value :', value)
 	return (
 		<>
 			<FadeOverlay />

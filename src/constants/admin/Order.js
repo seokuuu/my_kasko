@@ -14,7 +14,6 @@ var headerCheckboxSelection = function (params) {
 
 const onCellClicked = (params) => {
 	const finalData = params.data['경매 번호']
-	console.log('params', finalData)
 }
 
 /* ==============================

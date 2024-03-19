@@ -42,7 +42,6 @@
 // 			const nextInput = e.target.parentNode.nextSibling // 현재 엘리먼트의 다음 형제 엘리먼트를 찾음
 
 // 			if (nextInput && nextInput.tagName === 'DIV') {
-// 				console.log(nextInput.childNodes[0])
 // 				nextInput.childNodes[0].focus()
 // 				if (nextInput.childNodes[0].tagName === 'INPUT') {
 // 					nextInput.childNodes[0].focus()
@@ -155,11 +154,9 @@ export default function InputCellRenderer({ data, uidFieldName, valueName, type 
 	// const [request, setRequest] = useAtom(requestSingleModify)
 	const [request, setRequest] = useAtom(requestSingleModify)
 	const handleChange = (e) => {
-		console.log('hi', valueName, e.target.value)
 		setRequest((p) => ({ ...p, [valueName]: e.target.value }))
 	}
-	console.log('DATA', request)
-	console.log('DATA', [uidFieldName])
+
 
 	return (
 		<>

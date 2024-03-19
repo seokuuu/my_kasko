@@ -48,7 +48,6 @@ const PopupPost = ({ isRegister }) => {
 	// 등록/수정 폼
 
 	const [form, setForm] = useState(initForm)
-	console.log('form :', form)
 	//  팝업 상세 API
 	const { data } = usePopupDetailsQuery(id)
 

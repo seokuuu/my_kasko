@@ -41,7 +41,6 @@ export default function ProNoFindModal({ setData }) {
 	}
 
 	useEffect(() => {
-		console.log('proNoList', proNoList)
 		if (proNoList) {
 			setList([{ number: '전체', uid: '' }, ...proNoList])
 		}

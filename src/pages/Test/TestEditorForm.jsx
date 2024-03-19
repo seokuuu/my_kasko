@@ -32,12 +32,10 @@ function uploadImageCallBack(file) {
     xhr.send(data);
     xhr.addEventListener('load', () => {
       const response = JSON.parse(xhr.responseText);
-      console.log(response);
       resolve(response);
     });
     xhr.addEventListener('error', () => {
       const error = JSON.parse(xhr.responseText);
-      console.log(error);
       reject(error);
     });
   });
@@ -54,7 +52,6 @@ const TestEditorForm = () => {
   };
 
   const uploadCallback = () => {
-    console.log('이미지 업로드');
   };
 
   return (
