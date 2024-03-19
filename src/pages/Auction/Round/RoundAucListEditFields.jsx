@@ -47,7 +47,7 @@ const RoundAucListEditFields = ({
 	const [param, setParam] = useState(init)
 	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
 
-	console.log('param', param)
+
 
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
 

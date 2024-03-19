@@ -27,7 +27,6 @@ const useProductRange = () => {
 
 	// 제품군 상세 API
 	const { data: detailsData } = useProductRangeDetailsQuery(uid)
-	console.log('detailsData :', detailsData)
 
 	// 모달
 	const [modal, setModal] = useAtom(operateAddAtom)
@@ -38,7 +37,7 @@ const useProductRange = () => {
 		setSpart('')
 		setModal(false)
 	}
-	console.log('uid :', uid)
+
 	// 수정
 	function productUpdate() {
 		update({ uid, spart })

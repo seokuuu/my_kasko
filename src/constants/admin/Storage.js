@@ -21,12 +21,13 @@ export const StorageFieldCols = [
 	},
 	{ field: '순번', maxWidth: 100, ...commonStyles },
 	{ field: '창고', ...commonStyles },
+	{ field: '코드', ...commonStyles },
 ]
 
 // 전광판 관리 목록 키값 맵핑
 export const StorageFields = {
 	순번: 'id',
 	창고: 'storage',
-	상세주소: 'address',
+	코드: 'code',
 	고유값: 'uid',
 }

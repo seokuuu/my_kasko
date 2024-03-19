@@ -231,7 +231,7 @@ export const AuctionRoundExtraProductFields = {
 }
 
 export const AuctionRoundExtraProductFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{ ...commonStyles, field: '고유 번호' },
 	{ ...commonStyles, field: '제품 번호' },
 	{ ...commonStyles, field: '패키지명' },
@@ -288,7 +288,7 @@ export const AuctionRoundExtraProductFieldsCols = [
 }))
 
 export const AuctionRoundDetailFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{ ...commonStyles, field: '제품 번호' },
 
 	// 패키지 명
@@ -575,18 +575,20 @@ export const AuctionBiddingFieldsCols = (selected) => {
 			cellStyle: function (params) {
 				let lost = params.data['응찰 상태'] === '응찰 실패'
 				let win = params.data['응찰 상태'] === '응찰' || params.data['응찰 상태'] === null
-				// let defaultData = params.data['나의 최고 응찰 가격'] === 0 || null
 				if (params.data['응찰가'] === 0) {
 					return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' }
 				}
 				if (lost) {
 					return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // dodgerblue
 				} else if (win) {
-					if (params.data['나의 최고 응찰 가격'] < params.data['현재 최고 가격']) {
+					const memberBestBiddingPrice = parseInt(params.data['나의 최고 응찰 가격']?.replace(/,/g, ''))
+					const biddingPrice = parseInt(params.data['현재 최고 가격']?.replace(/,/g, ''))
+
+					if (memberBestBiddingPrice < biddingPrice) {
 						return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // dodgerblue
-					} else if (params.data['나의 최고 응찰 가격'] > params.data['현재 최고 가격']) {
+					} else if (memberBestBiddingPrice > biddingPrice) {
 						return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // red
-					} else if ((params.data['나의 최고 응찰 가격'] = params.data['현재 최고 가격'])) {
+					} else if (memberBestBiddingPrice === biddingPrice) {
 						return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // red
 					} else {
 						return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' }
@@ -601,11 +603,11 @@ export const AuctionBiddingFieldsCols = (selected) => {
 		{ ...commonStyles, field: '나의 현재 응찰 가격', minWidth: 100 },
 		{ ...commonStyles, field: '나의 최고 응찰 가격', minWidth: 150 },
 		{ ...commonStyles, field: '응찰가', minWidth: 150, editable: true },
-		{ ...commonStyles, field: '하차지 명', minWidth: 100 },
-		{ ...commonStyles, field: '목적지 명', minWidth: 100 },
-		{ ...commonStyles, field: '목적지 코드', minWidth: 100 },
-		{ ...commonStyles, field: '목적지 주소', minWidth: 100 },
-		{ ...commonStyles, field: '목적지 연락처', minWidth: 100 },
+		// { ...commonStyles, field: '목적지 명', minWidth: 100 },
+		// { ...commonStyles, field: '목적지 코드', minWidth: 100 },
+		// { ...commonStyles, field: '목적지 주소', minWidth: 100 },
+		// { ...commonStyles, field: '목적지 연락처', minWidth: 100 },
+		// { ...commonStyles, field: '하차지 명', minWidth: 100 },
 		{ ...commonStyles, field: '두께', minWidth: 100 },
 		{ ...commonStyles, field: '폭', minWidth: 100 },
 		{ ...commonStyles, field: '길이', minWidth: 100 },
@@ -707,7 +709,6 @@ export const AuctionPackageBiddingFieldsCols = (selected) => {
 			cellStyle: function (params) {
 				let lost = params.data['응찰 상태'] === '응찰 실패'
 				let win = params.data['응찰 상태'] === '응찰' || params.data['응찰 상태'] === null
-				// let defaultData = params.data['나의 최고 응찰 가격'] === 0 || null
 				if (params.data['응찰가'] === 0) {
 					return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' }
 				}
@@ -715,14 +716,17 @@ export const AuctionPackageBiddingFieldsCols = (selected) => {
 				if (lost) {
 					return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' } // dodgerblue
 				} else if (win) {
-					if (params.data['나의 최고 응찰 가격'] < params.data['현재 최고 가격']) {
-						return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' } // dodgerblue
-					} else if (params.data['나의 최고 응찰 가격'] > params.data['현재 최고 가격']) {
-						return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' } // red
-					} else if ((params.data['나의 최고 응찰 가격'] = params.data['현재 최고 가격'])) {
-						return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' } // red
+					const memberBestBiddingPrice = parseInt(params.data['나의 최고 응찰 가격']?.replace(/,/g, ''))
+					const biddingPrice = parseInt(params.data['현재 최고 가격']?.replace(/,/g, ''))
+
+					if (memberBestBiddingPrice < biddingPrice) {
+						return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // dodgerblue
+					} else if (memberBestBiddingPrice > biddingPrice) {
+						return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // red
+					} else if (memberBestBiddingPrice === biddingPrice) {
+						return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // red
 					} else {
-						return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' }
+						return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' }
 					}
 				} else {
 					return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #c8c8c8' }
@@ -734,11 +738,11 @@ export const AuctionPackageBiddingFieldsCols = (selected) => {
 		{ ...commonStyles, field: '나의 현재 응찰 가격' },
 		{ ...commonStyles, field: '나의 최고 응찰 가격', minWidth: 150 },
 		{ ...commonStyles, field: '응찰가', minWidth: 150, editable: true },
+		{ ...commonStyles, field: '하차지 명' },
 		{ ...commonStyles, field: '목적지 명' },
 		{ ...commonStyles, field: '목적지 코드' },
 		{ ...commonStyles, field: '목적지 주소' },
 		{ ...commonStyles, field: '목적지 연락처' },
-		{ ...commonStyles, field: '하차지 명' },
 		{ ...commonStyles, field: '메모' },
 		{ ...commonStyles, field: '비고' },
 		{ ...commonStyles, field: '총 중량' },
@@ -803,7 +807,7 @@ export const AuctionProgressFields = {
 }
 
 export const AuctionProgressFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 
 	{ ...commonStyles, field: '경매 상태' },
 	{ ...commonStyles, field: '경매 번호' },
@@ -918,7 +922,7 @@ export const AuctionDetailProgressFields = {
 }
 
 export const AuctionDetailProgressFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{ ...commonStyles, field: '응찰 고유 번호', minWidth: 150 },
 	{ ...commonStyles, field: '경매 상태', minWidth: 120 },
 	{ ...commonStyles, field: '경매 번호', minWidth: 120 },
@@ -1070,7 +1074,7 @@ export const AuctionWinningDetailFields = {
 }
 
 export const AuctionWinningDetailFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	...Object.keys(AuctionWinningDetailFields)
 		.filter((item) => !item.includes('고유 번호'))
 		.map((item) => ({
@@ -1146,7 +1150,7 @@ export const UserAuctionWinningDetailFields = {
 }
 
 export const UserAuctionWinningDetailFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	...Object.keys(UserAuctionWinningDetailFields)
 		.filter((item) => !item.includes('고유 번호'))
 		.map((item) => ({
@@ -1222,7 +1226,7 @@ export const AuctionWinningCreateFields = {
 }
 
 export const AuctionWinningCreateFieldsCols = [
-	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
 	...Object.keys(AuctionWinningCreateFields).map((item) => ({
 		...commonStyles,
 		field: item,
@@ -1246,14 +1250,14 @@ export const AuctionStartPriceFields = {
 
 export const AuctionStartPriceFieldsCols = [
 	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
-	{ ...commonStyles, field: '고유 번호', minWidth: 170 },
+	{ ...commonStyles, field: '고유 번호', minWidth: 150 },
 	{ ...commonStyles, field: '제품군', minWidth: 170 },
 	{ ...commonStyles, field: '정척 여부', minWidth: 170 },
 	{ ...commonStyles, field: '유찰 횟수', minWidth: 170 },
 	{ ...commonStyles, field: '등급', minWidth: 170 },
 	{ ...commonStyles, field: '적용일', minWidth: 170 },
 	{ ...commonStyles, field: '적용전 단가', minWidth: 170 },
-	{ ...commonStyles, field: '적용 단가', minWidth: 200 },
+	{ ...commonStyles, field: '적용 단가', minWidth: 190 },
 ]
 
 const uniqueKeys = new Set([...Object.keys(AuctionRoundExtraProductFields), ...Object.keys(AuctionRoundDetailFields)])

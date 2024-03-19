@@ -23,8 +23,6 @@ const ClaimProduct = () => {
 
 	// 테이블에서 선택된 값,선택된 데이터 갯수
 	const { selectedData, selectedCount } = useTableSelection()
-	// 검색 필터 상태 초기값
-
 	// 검색필터 상태값
 	const [search, setSearch] = useState({
 		pageNum: 1,
@@ -63,6 +61,7 @@ const ClaimProduct = () => {
 
 		navigate(`/operate/common/product/register`, {
 			state: {
+				customerName: selectedData[0]['고객사 명'],
 				productUid: selectedData[0]['제품 고유 번호'],
 				auctionNumber: selectedData[0]['경매 번호'],
 				productNumber: selectedData[0]['제품 번호'],
@@ -89,8 +88,7 @@ const ClaimProduct = () => {
 	// 제품을 2개이상 선택할 시, 새로고침
 	useEffect(() => {
 		if (selectedCount > 1) {
-			simpleAlert('제품은 1개만 선택 가능합니다.')
-			window.location.reload()
+			simpleAlert('제품은 1개만 선택 가능합니다.', () => window.location.reload())
 		}
 	}, [selectedCount])
 
@@ -114,6 +112,7 @@ const ClaimProduct = () => {
 					tablePagination={pagination}
 					onPageChange={onPageChanage}
 				/>
+
 				{/* 버튼 */}
 				<StyledBtnContainer>
 					<WhiteBtn width={10} height={40} onClick={() => navigate('/operate/common')}>

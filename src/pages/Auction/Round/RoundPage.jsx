@@ -15,7 +15,7 @@ const RoundPage = () => {
   const [depth2Color, setDepth2Color] = useState('경매 회차 관리')
   const [type, setType] = useAtom(aucProListEditAtom)
 
-  console.log('type => ', type)
+
   return (
     <>
       <Header />

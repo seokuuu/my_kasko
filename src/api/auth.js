@@ -30,7 +30,6 @@ export function businessNumberDuplication(data) {
     회원가입
 ============================== */
 export async function signup(data, bankBook, registration) {
-	console.log('회원가입 정보', data)
 	const form = new FormData()
 	form.append(
 		'request',

@@ -42,6 +42,7 @@ const OperateClaimRegister = ({ pageType }) => {
 		maker,
 		grade,
 		preferThickness,
+		customerName,
 	} = location.state ?? {}
 	const titleData = [
 		'제품 번호',
@@ -58,7 +59,7 @@ const OperateClaimRegister = ({ pageType }) => {
 		'',
 	]
 
-	const contentData = ['-', '-', '-', '-', '-', '-', '-', '-', '-']
+	const contentData = ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-']
 
 	// 상단 정보 데이터
 	const [contents, setContents] = useState({ content: contentData, title: '-' })
@@ -68,7 +69,7 @@ const OperateClaimRegister = ({ pageType }) => {
 	// 제품 목록에서 등록을 위해 선택된 값
 	const selected = useAtomValue(selectedRowsAtom)
 
-	console.log('목록에서 선택된 데이터 :', selected)
+
 	// 제품 목록에서 선택한 productUid(제품 고유 번호) & auctionNumber(경매번호)
 
 	// 확인 모달 관련 값들
@@ -94,11 +95,10 @@ const OperateClaimRegister = ({ pageType }) => {
 		endDate: '', // 클레임 종료일
 	}
 
-	console.log('initForm :', initForm)
 
 	// 등록 폼
 	const [form, setForm] = useState(initForm)
-	console.log('form :', form)
+
 
 	// 등록 API
 	const { mutate: register } = useClaimRegisterMutation()
@@ -186,7 +186,7 @@ const OperateClaimRegister = ({ pageType }) => {
 				preferThickness,
 			]
 
-			setContents({ title: maker, content: newContentsData })
+			setContents({ title: customerName, content: newContentsData })
 		}
 
 		// 수정시 상세 데이터 바인딩
