@@ -526,6 +526,12 @@ export const AuctionBiddingFields = {
 // }
 
 export const AuctionBiddingFieldsCols = (selected) => {
+	/**
+	 * 경매 응찰 Cols
+	 * @description
+	 * 관리자 / 사용자 경매 응찰 Cols 입니다.
+	 * 사용자의 경우 프로넘 번호가 존재시 제품 번호가 렌더되지 않아야 합니다.
+	 */
 	const location = useLocation()
 	const checkAucURL = ['/auction/biddingsingle'].includes(location.pathname)
 	const checkboxSelection2 = (params) => {
