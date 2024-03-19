@@ -33,11 +33,7 @@ const WinningPage = () => {
 				<OverAllSub>
 					<SubHeader />
 					<OverAllTable>
-						{aucDetailModal ? (
-							<WinningDetail detailRow={aucDetail} setAucDetail={setAucDetail} setDetailRow={setAucDetailModal} />
-						) : (
-							<Winning />
-						)}
+						<WinningDetail detailRow={aucDetail} setAucDetail={setAucDetail} setDetailRow={setAucDetailModal} />
 					</OverAllTable>
 				</OverAllSub>
 			</OverAllMain>

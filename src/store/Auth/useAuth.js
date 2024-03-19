@@ -8,6 +8,7 @@ const useAuth = () => {
 	const { showAlert } = useAlert()
 	const navigate = useNavigate()
 	const auth = useAtomValue(authAtom)
+	
 
 	const setAuth = useSetAtom(authAtom)
 

@@ -23,7 +23,6 @@ import {
 	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { InputContainer, NoOutInput, Unit } from '../../../common/Input/Input'
@@ -40,6 +39,7 @@ import CustomerFind from '../../../modal/Multi/CustomerFind'
 import useAlert from '../../../store/Alert/useAlert'
 import { WinningCreateFindAtom, WinningProductAddAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import BiddingSearchFields from '../Bidding/BiddingSearchFields'
 import WinningProductAdd from './WinningProductAdd'
 
@@ -72,10 +72,8 @@ const WinningCreate = ({}) => {
 	const [winningCreateData, setWinningCreateData] = useState(init)
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
 
-
 	const [customerData, setCustomerData] = useState()
 	const [destiData, setDestiData] = useState()
-
 
 	const [isModal, setIsModal] = useAtom(WinningCreateFindAtom)
 	const [addProdModal, setAddProdModal] = useAtom(WinningProductAddAtom)
@@ -109,8 +107,6 @@ const WinningCreate = ({}) => {
 		getAuctionDetailDestination,
 	)
 
-
-
 	const [propsUid, setPropsUid] = useState(null) // CustomerCodeFind에서 찾아온 uid
 	const [destiObject, setDestiObject] = useState()
 
@@ -128,7 +124,6 @@ const WinningCreate = ({}) => {
 		}))
 	}, [propsUid, auctionNowNum, customerData])
 
-
 	const [tablePagination, setTablePagination] = useState([])
 
 	const [getRow, setGetRow] = useState('')
@@ -142,7 +137,6 @@ const WinningCreate = ({}) => {
 		biddingPrice: null,
 		confirmPrice: null,
 	})
-
 
 	useEffect(() => {
 		const updatedProductList = checkedArray2?.map((item) => ({
@@ -178,8 +172,6 @@ const WinningCreate = ({}) => {
 	// const resPagination = data?.data?.data?.pagination
 	const [newResData, setNewResData] = useState([])
 
-
-
 	useEffect(() => {
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 		if (Array.isArray(newResData)) {
@@ -202,8 +194,6 @@ const WinningCreate = ({}) => {
 			setNewResData(filteredArray)
 		})
 	}, [checkedArray2, newResData])
-
-
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -260,7 +250,6 @@ const WinningCreate = ({}) => {
 			}
 		})
 	}
-
 
 	return (
 		<FilterContianer>
@@ -376,7 +365,7 @@ const WinningCreate = ({}) => {
 				<TCSubContainer bor>
 					<div>
 						{/* 조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 ) */}
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />

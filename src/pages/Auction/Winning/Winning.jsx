@@ -17,22 +17,21 @@ import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '.
 import { useAtom } from 'jotai'
 import { Link } from 'react-router-dom'
 
-import Hidden from '../../../components/TableInner/Hidden'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { isEqual } from 'lodash'
+import { deleteBidding, depositConfirm, getWinning } from '../../../api/auction/winning'
+import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { AuctionWinningFields, AuctionWinningFieldsCols } from '../../../constants/admin/Winning'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useReactQuery from '../../../hooks/useReactQuery'
-import { deleteBidding, depositConfirm, getWinning } from '../../../api/auction/winning'
+import useTableData from '../../../hooks/useTableData'
+import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import { isEqual } from 'lodash'
-import WinningSearchFields from './WinningSearchFields'
-import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import useAlert from '../../../store/Alert/useAlert'
 import { onSizeChange } from '../../Operate/utils'
-import useTableSelection from '../../../hooks/useTableSelection'
-import useTableData from '../../../hooks/useTableData'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import WinningSearchFields from './WinningSearchFields'
 
 // src\pages\Sales\Single\Single.jsx 참고해서 작업 !!!
 const Winning = ({}) => {
@@ -96,6 +95,7 @@ const Winning = ({}) => {
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
+	
 
 	// 낙찰 취소 관련
 	const keysToExtract = ['경매 번호', '창고', '고객사 목적지 고유 번호', '낙찰 상태']
