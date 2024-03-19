@@ -676,6 +676,7 @@ const BiddingSingle = ({}) => {
 					setSwitch={setDestinationPopUp}
 					data={auctionDestination}
 					setPropsUid={setPropsUid}
+					modalWidth={1000}
 				/>
 			)}
 			{/* 입찰 동의서 모달 */}

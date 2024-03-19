@@ -496,6 +496,19 @@ const Table = ({
 		setResetHiddenColumn({ type: tableType })
 	}, [location, tableType])
 
+	/**
+	 * 테이블 컬럼 이동 hook
+	 * @description
+	 * 추후 대비용 Test
+	 */
+	const onColumnMoved = () => {
+		const api = gridRef.current.columnApi
+		if (api) {
+			const columnState = api.getColumnState()
+			console.log('columnState', columnState)
+		}
+	}
+
 	return (
 		<div style={containerStyle}>
 			<TestContainer hei={hei}>
@@ -503,6 +516,7 @@ const Table = ({
 					<AgGridReact
 						ref={gridRef}
 						// {...gridOptions}
+						onColumnMoved={onColumnMoved}
 						suppressColumnVirtualisation={true}
 						onGridReady={effectGridReady}
 						onFirstDataRendered={onFirstDataRendered}
