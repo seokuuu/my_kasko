@@ -220,7 +220,7 @@ const WinningDetail = ({ setAucDetail }) => {
 	useEffect(() => {
 		if (isSuccess && resData === undefined && !detailRow)
 			simpleAlert('잘못된 접근입니다.', () => {
-				navigate('/userpage/auctionwinning')
+				navigate('/auction/winning')
 			})
 	}, [isSuccess, resData, detailRow])
 
