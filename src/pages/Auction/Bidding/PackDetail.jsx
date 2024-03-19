@@ -11,7 +11,6 @@ import {
 	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
@@ -32,8 +31,6 @@ import {
 import useAlert from '../../../store/Alert/useAlert'
 import { selectedRowsAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
-import useTableSelection from '../../../hooks/useTableSelection'
-import useTableData from '../../../hooks/useTableData'
 
 // 패키지 상세보기 (경매)
 const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {

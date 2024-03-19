@@ -3,7 +3,6 @@ import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { BlackBtn, BtnBound, NewBottomBtnWrap, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import {
 	CustomInput,
@@ -13,9 +12,16 @@ import {
 	TCSubContainer,
 	TableContianer,
 } from '../../../modal/External/ExternalFilter'
-import { invenDestination, invenDestinationData, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import {
+	invenDestination,
+	invenDestinationData,
+	selectedRowsAtom,
+	toggleAtom,
+	winningDetailAucNumAtom,
+} from '../../../store/Layout/Layout'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 import { destiApproveReq, getWinningDetail } from '../../../api/auction/winning'
 import { getCustomerDestinationByCustomerCode } from '../../../api/search'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
@@ -26,13 +32,16 @@ import useTableSelection from '../../../hooks/useTableSelection'
 import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import Table from '../../../pages/Table/Table'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import useAlert from '../../../store/Alert/useAlert'
 import PrintDepositRequestButton from '../../UserSales/_components/PrintDepositRequestButton'
 
-const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
+const WinningDetail = ({ setAucDetail }) => {
+	const navigate = useNavigate()
+	const [detailRow, setDetailRow] = useAtom(winningDetailAucNumAtom)
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
-
+	const [contentData, setContentData] = useState([])
 	console.log('detailRow', detailRow)
 
 	const titleData = [
@@ -46,17 +55,24 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 		'운반비 (VAT 포함)',
 		'입금 요청 금액',
 	]
-	const contentData = [
-		detailRow?.['경매 번호'],
-		detailRow?.['고객사명'],
-		detailRow?.['고객 코드'],
-		detailRow?.['창고'],
-		detailRow?.['수량'],
-		detailRow?.['중량'],
-		detailRow?.['제품 금액 (VAT 포함)'] + '원',
-		detailRow?.['운반비 (VAT 포함)'] + '원',
-		detailRow?.['입금 요청액'] + '원',
-	]
+
+	useEffect(() => {
+		if (detailRow) {
+			const newContentData = [
+				detailRow['경매 번호'],
+				detailRow['고객사명'],
+				detailRow['고객 코드'],
+				detailRow['창고'],
+				detailRow['수량'],
+				detailRow['중량'],
+				detailRow['제품 금액 (VAT 포함)'] + '원',
+				detailRow['운반비 (VAT 포함)'] + '원',
+				detailRow['입금 요청액'] + '원',
+			]
+			// 새로운 contentData 값을 상태로 업데이트
+			setContentData(newContentData)
+		}
+	}, [detailRow])
 
 	const matchingData = {
 		'경매 번호': 'auctionNumber',
@@ -129,11 +145,6 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 	}
 	const [input, setInput] = useState(init)
 
-	const [detailParams, setDetailParams] = useState({
-		pageNum: 1,
-		pageSize: 50,
-	})
-
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
 			...prevParam,
@@ -142,16 +153,6 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 		}))
 	}
 
-	useEffect(() => {
-		setDetailParams((prev) => ({
-			...prev,
-			auctionNumber: detailRow['경매 번호'],
-			storage: detailRow['창고'],
-			customerDestinationUid: detailRow['고객사 목적지 고유 번호'],
-			biddingStatus: detailRow['낙찰 상태'],
-		}))
-	}, [detailRow])
-
 	const customerCode = detailRow?.['고객 코드']
 	const { data: inventoryDestination } = useReactQuery(
 		customerCode,
@@ -159,24 +160,31 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 		getCustomerDestinationByCustomerCode,
 	)
 
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(
-		detailParams,
-		'getWinningDetail',
-		getWinningDetail,
-	)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getWinningDetail', getWinningDetail)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 	const [winningCreateData, setWinningCreateData] = useState({})
 
+	console.log('isSuccess', isSuccess)
+
+	// 예외 처리
 	useEffect(() => {
-		let getData = resData
+		if (isSuccess && resData === undefined && !detailRow)
+			simpleAlert('잘못된 접근입니다.', () => {
+				navigate('/userpage/auctionwinning')
+			})
+	}, [isSuccess, resData, detailRow])
+
+	console.log('detailRow', detailRow)
+
+	useEffect(() => {
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 		if (!isSuccess && !resData) return
-		if (Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, UserAuctionWinningDetailFields))
+		if (Array.isArray(resData)) {
+			setGetRow(add_element_field(resData, UserAuctionWinningDetailFields))
 			setTablePagination(resPagination)
 		}
-	}, [isSuccess, resData])
+	}, [isSuccess, resData, data])
 
 	useEffect(() => {
 		const productNumbers = checkedArray?.map((item) => item['주문 고유 번호'])
@@ -225,7 +233,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 	console.log('winningCreateData', winningCreateData)
 
 	const onPageChange = (value) => {
-		setDetailParams((prevParam) => ({
+		setParam((prevParam) => ({
 			...prevParam,
 			pageNum: Number(value),
 		}))
@@ -271,7 +279,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 				</FilterHeader>
 				<FilterTCTop>
 					<h6>경매 번호</h6>
-					<p>{detailRow && detailRow['경매 번호']}</p>
+					<p>{contentData[0]}</p>
 				</FilterTCTop>
 
 				<ClaimTable style={{ marginBottom: '30px' }}>
@@ -291,7 +299,7 @@ const WinningDetail = ({ detailRow, setDetailRow, setAucDetail }) => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-						<Hidden />
+						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />

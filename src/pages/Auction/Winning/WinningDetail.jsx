@@ -36,6 +36,7 @@ import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isEqual } from 'lodash'
+import { useNavigate } from 'react-router-dom'
 import {
 	destiApproveReq,
 	destiChangeReject,
@@ -60,12 +61,11 @@ import { onSizeChange } from '../../Operate/utils'
 import Table from '../../Table/Table'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import WinningDetailFields from './WinningDetailFields'
-import { useNavigate } from 'react-router-dom'
 
 // 경매 낙찰 상세
 const WinningDetail = ({ setAucDetail }) => {
 	const navigate = useNavigate()
-	const [detailRow, setDetaiRow] = useAtom(winningDetailAucNumAtom)
+	const [detailRow, setDetailRow] = useAtom(winningDetailAucNumAtom)
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [tablePagination, setTablePagination] = useState([])
@@ -137,6 +137,8 @@ const WinningDetail = ({ setAucDetail }) => {
 	// 상세 GET 및 param
 	const matchedResult = matchDetailRowWithMatchingData(detailRow, matchingData)
 
+	console.log('matchedResult', matchedResult)
+
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
 	//checkSales
@@ -157,8 +159,6 @@ const WinningDetail = ({ setAucDetail }) => {
 
 	const [input, setInput] = useState(init)
 
-
-
 	// 낙찰 취소 관련
 	const keysToExtract = ['주문 고유 번호']
 
@@ -169,7 +169,6 @@ const WinningDetail = ({ setAucDetail }) => {
 	// 부분 낙찰 취소
 	const extractedArray = checkedArray?.reduce((result, item) => {
 		const orderUid = item[keysToExtract[0]]
-
 
 		// 중복 체크
 		if (!result.includes(orderUid)) {
@@ -205,15 +204,12 @@ const WinningDetail = ({ setAucDetail }) => {
 
 	const [param, setParam] = useState(paramData)
 
-
 	const customerCode = detailRow?.['고객 코드']
 	const { data: inventoryDestination } = useReactQuery(
 		customerCode,
 		'getCustomerDestinationByCustomerCode',
 		getCustomerDestinationByCustomerCode,
 	)
-
-
 
 	const [winningCreateData, setWinningCreateData] = useState({})
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getWinningDetail', getWinningDetail)
@@ -222,23 +218,18 @@ const WinningDetail = ({ setAucDetail }) => {
 
 	// 예외 처리
 	useEffect(() => {
-		if (isSuccess && resData === undefined)
+		if (isSuccess && resData === undefined && !detailRow)
 			simpleAlert('잘못된 접근입니다.', () => {
-				navigate('/auction/winning')
+				navigate('/userpage/auctionwinning')
 			})
-	}, [isSuccess, data])
+	}, [isSuccess, resData, detailRow])
 
 	const resPagination = data?.data?.data?.pagination
-
-
 
 	useEffect(() => {
 		let getData = resData
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 		if (!isSuccess && !resData) return
-		if (!resData?.length >= 1) {
-			setAucDetail('')
-		}
 		if (Array.isArray(getData)) {
 			setGetRow(add_element_field(getData, AuctionWinningDetailFields))
 			setTablePagination(resPagination)
@@ -262,13 +253,10 @@ const WinningDetail = ({ setAucDetail }) => {
 		// setBiddingList(updatedBiddingList)
 	}, [checkedArray])
 
-
 	const [destiObject, setDestiObject] = useState()
 	const [finalInput, setFinalInput] = useState({
 		requestCustomerDestinationUid: null,
 	})
-
-
 
 	useEffect(() => {
 		setDestiObject(destinationData)
@@ -287,7 +275,6 @@ const WinningDetail = ({ setAucDetail }) => {
 			updateList: updatedProductList,
 		}))
 	}, [checkedArray, finalInput])
-
 
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -558,7 +545,7 @@ const WinningDetail = ({ setAucDetail }) => {
 						width={13}
 						height={40}
 						onClick={() => {
-							setAucDetail('')
+							navigate(-1)
 						}}
 					>
 						돌아가기

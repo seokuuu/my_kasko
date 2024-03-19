@@ -14,7 +14,6 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import { useAtom, useAtomValue } from 'jotai'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { useQueryClient } from '@tanstack/react-query'

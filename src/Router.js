@@ -105,6 +105,7 @@ import UAuctionPackage from './userpages/UserAuction/Package/PackagePage'
 import UAuctionSingle from './userpages/UserAuction/Single/SinglePage'
 import UAuctionStatus from './userpages/UserAuction/Status/StatusPage'
 import UAuctionWinning from './userpages/UserAuction/Winning/WinningPage'
+import UAuctionWinningDetail from './userpages/UserAuction/Winning/WinningDetailPage'
 
 // 상시 판매
 import USalesCart from './userpages/UserSales/Cart/CartPage'
@@ -337,6 +338,7 @@ const Router = () => {
 				<Route path="/userpage/auctionpackage" element={<UAuctionPackage />}></Route>
 				<Route path="/userpage/actionstatus" element={<UAuctionStatus />}></Route>
 				<Route path="/userpage/auctionwinning" element={<UAuctionWinning />}></Route>
+				<Route path="/userpage/auctionwinning/detail" element={<UAuctionWinningDetail />} />
 
 				{/* 상시 판매 */}
 				<Route path="/userpage/salessingle" element={<USalesSingle />}></Route>
