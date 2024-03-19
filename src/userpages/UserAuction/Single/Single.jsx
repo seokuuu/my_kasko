@@ -99,7 +99,7 @@ const Single = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 
-	const uids = checkedArrayState?.map((item) => item && item['제품 번호']?.value)
+	const uids = checkedArrayState?.map((item) => item && item['제품 고유 번호']?.value)
 
 	const paramData = {
 		pageNum: 1,
@@ -164,32 +164,32 @@ const Single = ({}) => {
 
 	// 111 - 1
 	// 목적지 관련 rows 빈 값일 시 대표 목적지 자동 Mapping
-	useEffect(() => {
-		if (firstDestiData || destiObject) {
-			const updatedResData = originData?.list?.map((item) => {
-				if (
-					!item.destinationCode ||
-					!item.destinationName ||
-					!item.customerDestinationName ||
-					!item.customerDestinationAddress ||
-					!item.customerDestinationPhone
-				) {
-					item.destinationCode = firstDestiData?.destinationCode
-					item.destinationName = firstDestiData?.destinationName
-					item.customerDestinationName = firstDestiData?.customerDestinationName
-					item.customerDestinationAddress = firstDestiData?.address
-					item.customerDestinationPhone = firstDestiData?.phone
-				}
+	// useEffect(() => {
+	// 	if (firstDestiData || destiObject) {
+	// 		const updatedResData = originData?.list?.map((item) => {
+	// 			if (
+	// 				!item.destinationCode ||
+	// 				!item.destinationName ||
+	// 				!item.customerDestinationName ||
+	// 				!item.customerDestinationAddress ||
+	// 				!item.customerDestinationPhone
+	// 			) {
+	// 				item.destinationCode = firstDestiData?.destinationCode
+	// 				item.destinationName = firstDestiData?.destinationName
+	// 				item.customerDestinationName = firstDestiData?.customerDestinationName
+	// 				item.customerDestinationAddress = firstDestiData?.address
+	// 				item.customerDestinationPhone = firstDestiData?.phone
+	// 			}
 
-				return item
-			})
+	// 			return item
+	// 		})
 
-			setOridata((prevData) => ({
-				...prevData,
-				list: updatedResData,
-			}))
-		}
-	}, [firstDestiData, destiObject])
+	// 		setOridata((prevData) => ({
+	// 			...prevData,
+	// 			list: updatedResData,
+	// 		}))
+	// 	}
+	// }, [firstDestiData, destiObject])
 
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']

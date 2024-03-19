@@ -38,6 +38,11 @@ import Table from '../../Table/Table'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import BiddingSearchFields from './BiddingSearchFields'
 
+// 관리자 "응찰" 페이지
+// 사용자 페이와의 차이
+// 1. 관심 상품 등록이 없다
+// 2. 관리자의 경매 고유키 (uids)는 제품 고유 번호(productUid) 이다.
+
 const BiddingSingle = ({}) => {
 	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
 	const auth = useAtomValue(authAtom) // 이거 auction.js에서 hook으로 바꾸기
@@ -46,7 +51,7 @@ const BiddingSingle = ({}) => {
 	const navigate = useNavigate()
 	const [addedInput, setAddedInput] = useState(null) // 일괄 경매 응찰 input state
 	const [checkedBiddingPrice, setCheckedBiddingPrice] = useState(null) // 체크된 응찰가
-	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
+	const { simpleAlert, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(userPageSingleDestiFindAtom)
 	const [agreementModal, setAgreementModal] = useAtom(biddingAgreementModal) // 입찰 동의서 모달
 
@@ -95,7 +100,7 @@ const BiddingSingle = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 
-	const uids = checkedArrayState?.map((item) => item && item['제품 고유 번호']?.value)
+	const uids = checkedArrayState?.map((item) => item && item['제품 번호']?.value)
 
 	const paramData = {
 		pageNum: 1,
@@ -166,32 +171,32 @@ const BiddingSingle = ({}) => {
 
 	// 111 - 1
 	// 목적지 관련 rows 빈 값일 시 대표 목적지 자동 Mapping
-	useEffect(() => {
-		if (firstDestiData || destiObject) {
-			const updatedResData = originData?.list?.map((item) => {
-				if (
-					!item.destinationCode ||
-					!item.destinationName ||
-					!item.customerDestinationName ||
-					!item.customerDestinationAddress ||
-					!item.customerDestinationPhone
-				) {
-					item.destinationCode = firstDestiData?.destinationCode
-					item.destinationName = firstDestiData?.destinationName
-					item.customerDestinationName = firstDestiData?.customerDestinationName
-					item.customerDestinationAddress = firstDestiData?.address
-					item.customerDestinationPhone = firstDestiData?.phone
-				}
+	// useEffect(() => {
+	// 	if (firstDestiData && originData) {
+	// 		const updatedResData = originData?.list?.map((item) => {
+	// 			if (
+	// 				!item.destinationCode ||
+	// 				!item.destinationName ||
+	// 				!item.customerDestinationName ||
+	// 				!item.customerDestinationAddress ||
+	// 				!item.customerDestinationPhone
+	// 			) {
+	// 				item.destinationCode = firstDestiData?.destinationCode
+	// 				item.destinationName = firstDestiData?.destinationName
+	// 				item.customerDestinationName = firstDestiData?.customerDestinationName
+	// 				item.customerDestinationAddress = firstDestiData?.address
+	// 				item.customerDestinationPhone = firstDestiData?.phone
+	// 			}
 
-				return item
-			})
+	// 			return item
+	// 		})
 
-			setOridata((prevData) => ({
-				...prevData,
-				list: updatedResData,
-			}))
-		}
-	}, [firstDestiData, destiObject])
+	// 		setOridata((prevData) => ({
+	// 			...prevData,
+	// 			list: updatedResData,
+	// 		}))
+	// 	}
+	// }, [firstDestiData, resData, originData])
 
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']
@@ -375,7 +380,7 @@ const BiddingSingle = ({}) => {
 
 		simpleAlert('적용 되었습니다.')
 		const updatedResData = oriData?.list?.map((item) => {
-			if (uids.includes(item.productUid)) {
+			if (uids.includes(item.productNumber)) {
 				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
 				item.destinationName = destiObject?.destinationName ?? item.destinationName
 				item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { BtnBound, SkyBtn, TGreyBtn, TWhiteBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
@@ -21,7 +21,6 @@ import {
 	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -37,18 +36,17 @@ import { useCheckAuction } from '../../../hooks/useCheckAuction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
-import { add_element_field } from '../../../lib/tableHelpers'
 import Agreement from '../../../modal/Common/Agreement'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import PackDetail from '../../../pages/Auction/Bidding/PackDetail'
 import Table from '../../../pages/Table/Table'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import useAlert from '../../../store/Alert/useAlert'
+import { authAtom } from '../../../store/Auth/auth'
 import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
+import { useLoading } from '../../../store/Loading/loadingAtom'
 import AddWishButton from '../../UserSales/_components/AddWishButton'
 import UserBiddingSearchFields from '../Single/UserBiddingSearchFields'
-import { authAtom } from '../../../store/Auth/auth'
-import { useLoading } from '../../../store/Loading/loadingAtom'
-import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 
 const Package = ({}) => {
 	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
@@ -178,32 +176,32 @@ const Package = ({}) => {
 
 	// 목적지 관련 rows 빈 값일 시 대표 목적지 자동 Mapping
 
-	useEffect(() => {
-		if (firstDestiData && originData) {
-			const updatedResData = originData?.list?.map((item) => {
-				if (
-					!item.destinationCode ||
-					!item.destinationName ||
-					!item.customerDestinationName ||
-					!item.customerDestinationAddress ||
-					!item.customerDestinationPhone
-				) {
-					item.destinationCode = firstDestiData?.destinationCode
-					item.destinationName = firstDestiData?.destinationName
-					item.customerDestinationName = firstDestiData?.customerDestinationName
-					item.customerDestinationAddress = firstDestiData?.address
-					item.customerDestinationPhone = firstDestiData?.phone
-				}
+	// useEffect(() => {
+	// 	if (firstDestiData && originData) {
+	// 		const updatedResData = originData?.list?.map((item) => {
+	// 			if (
+	// 				!item.destinationCode ||
+	// 				!item.destinationName ||
+	// 				!item.customerDestinationName ||
+	// 				!item.customerDestinationAddress ||
+	// 				!item.customerDestinationPhone
+	// 			) {
+	// 				item.destinationCode = firstDestiData?.destinationCode
+	// 				item.destinationName = firstDestiData?.destinationName
+	// 				item.customerDestinationName = firstDestiData?.customerDestinationName
+	// 				item.customerDestinationAddress = firstDestiData?.address
+	// 				item.customerDestinationPhone = firstDestiData?.phone
+	// 			}
 
-				return item
-			})
+	// 			return item
+	// 		})
 
-			setOridata((prevData) => ({
-				...prevData,
-				list: updatedResData,
-			}))
-		}
-	}, [firstDestiData, destiObject])
+	// 		setOridata((prevData) => ({
+	// 			...prevData,
+	// 			list: updatedResData,
+	// 		}))
+	// 	}
+	// }, [firstDestiData, destiObject])
 
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']
