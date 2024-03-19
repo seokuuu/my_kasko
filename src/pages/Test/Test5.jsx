@@ -53,7 +53,6 @@ const Test5 = ({ hei, destination }) => {
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), [])
   const [rowData, setRowData] = useState()
 
-  console.log('rowData', rowData)
 
   var checkboxSelection = function (params) {
     // we put checkbox on the name if we are not doing grouping
@@ -158,7 +157,6 @@ const Test5 = ({ hei, destination }) => {
   const uniqueCountriesSet = new Set(countries)
   const uniqueCountries = Array.from(uniqueCountriesSet)
   const sortedCountries = uniqueCountries.sort()
-  // console.log(sortedCountries)
 
   const externalFilterChanged = useCallback((newValue) => {
     ageType = newValue

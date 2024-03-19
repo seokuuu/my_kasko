@@ -39,9 +39,7 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
 				return (popup.func = callBack)
 			}
 
-			console.log(popup)
 		})
-		// console.log(firstPopup)
 		setNowPopup(firstPopup)
 	}
 
@@ -83,7 +81,6 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
 		setCheckData2(filteredCheck)
 	}, [checkRadio2])
 
-	// console.log('라디오값', checkData1)
 	useEffect(() => {
 		setParmeter((p) =>
 			isPkg

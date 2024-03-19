@@ -36,7 +36,6 @@ const AutionPolicy = () => {
 		pmEndMinute: 0,
 		pmEffectDate: '',
 	})
-	console.log('form :', form)
 	// 등록 및 수정
 	function submit() {
 		simpleConfirm('저장하시겠습니까?', () =>

@@ -87,7 +87,6 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
   })
   const [modalSwitch, setModalSwitch] = useState(false)
   const [input, setInput] = useState(init)
-  console.log('input', input)
   const [isUser, setIsUser] = useState(false)
   const [shouldUpdateCustomer, setShouldUpdateCustomer] = useState(false)
   const [renderFileName, setRenderFileName] = useState({ businessNumberFile: '', bankbookFile: ' ' })
@@ -105,24 +104,19 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
 
   // get 상세
 
-  console.log('uidAtom', uidAtom)
   const { isError, isSuccess, data } = useReactQuery(uidAtom, 'getUserDetail', get_userDetail)
 
   const [user, setUser] = useState('')
   const resData = data?.data?.data
 
-  console.log('resData', resData)
 
   // const resData2 = data2?.data?.data
 
-  // console.log('resData2', resData2)
 
   const checkBusiness = () => {
     try {
       checkBusinessNumber(businessNumber)
-      console.log('done')
     } catch (err) {
-      console.log(err)
     }
 
     // if (isBusinessNumberSuccess) {
@@ -134,10 +128,8 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
   }
   const handleCheck = (e) => {
     setBusinessNumber(e.target.value)
-    console.log(businessNumber)
   }
 
-  if (isError) console.log('ERROR')
 
   useEffect(() => {
     if (isSuccess) {
@@ -219,15 +211,12 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
 
     for (let i in updatedInput) {
       if (updatedInput.hasOwnProperty(i)) {
-        console.log(`Input 체크 안되었습니다 ***${i}***`)
         // return
       }
     }
 
     setInput({ ...input, ...updatedInput, ...checkFileName })
-    console.log('input <3', input)
-    console.log('updatedInput <3', updatedInput)
-    console.log('checkFileName <3', checkFileName)
+
     setShouldUpdateCustomer(true)
   }
 
@@ -237,10 +226,8 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
       if (shouldUpdateCustomer) {
         try {
           const response = await updateCustomer(input, fileForms)
-          console.log(response.data)
           alert('고객사 상세 정보가 수정되었습니다.')
         } catch (err) {
-          console.log(err)
           alert('ERROR:', err.data)
         }
         setShouldUpdateCustomer(false)
@@ -372,7 +359,6 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
     const value = e.target.value
     const name = e.target.name
     setInput((prev) => ({ ...prev, [name]: value }))
-    console.log(input)
   }
 
   const modalOFF = () => {

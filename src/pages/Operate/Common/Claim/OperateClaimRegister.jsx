@@ -217,7 +217,6 @@ const OperateClaimRegister = ({ pageType }) => {
 			const existFile =
 				detailsData.fileList.length !== 0 ? detailsData.fileList.map((f) => ({ ...f, name: f.originalName })) : []
 
-			console.log('claimStatus :', claimStatus)
 			setForm((p) => ({
 				...p,
 				content: detailsData.content,
@@ -235,7 +234,6 @@ const OperateClaimRegister = ({ pageType }) => {
 		}
 	}, [selected, id, detailsData, pageType])
 
-	console.log('form :', form)
 	return (
 		<>
 			<CenterRectangleWrap>

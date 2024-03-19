@@ -42,7 +42,6 @@ const PlusBtnUploader = ({ convertKey, startDate, setStartDate }) => {
 
 	// handler
 	const onEditHandler = useCallback((e) => {
-		console.log('Edit input event:', e)
 		const { name, value } = e.target
 
 		// failCount와 effectPrice에 대해서만 정수로 변환

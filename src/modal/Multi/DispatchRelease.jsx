@@ -41,7 +41,6 @@ const DispatchRelease = ({ setIsModalPost }) => {
 
   const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 
-  console.log('checkRadio =>', checkRadio)
 
   return (
     // 판매 제품 관리 - 패키지 관리

@@ -6,7 +6,6 @@ const urls = {
 }
 
 // export function getProgess(data) {
-// 	console.log('data', data)
 // 	return client.get(`${urls.progress}?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
 // }
 

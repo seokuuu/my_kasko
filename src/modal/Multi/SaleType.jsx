@@ -41,7 +41,6 @@ const SalseType = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, produ
 	const [nowPopupType, setNowPopupType] = useAtom(popupTypeAtom) // 팝업 타입
 
 	const [parameter, setParmeter] = useAtom(changeSaleTypeAtom)
-	console.log('에러')
 	// 처음 팝업 띄우는 컴포넌트의 onClickHandler
 	const firstPopupClick = (num, callBack) => {
 		setPopupSwitch(true)
@@ -50,13 +49,10 @@ const SalseType = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, produ
 				return (popup.func = callBack)
 			}
 
-			console.log(popup)
 		})
-		// console.log(firstPopup)
 		setNowPopup(firstPopup)
 	}
 
-	console.log('에러2')
 	// 팝업 타입 최신화
 	useEffect(() => {
 		const firstType = nowPopup.num.split('-')[0]
@@ -67,7 +63,6 @@ const SalseType = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, produ
 		setModalSwitch(false)
 	}
 
-	console.log('에러3')
 	// const radioDummy = ['판매재', '판매제외재', '판매완료재']
 	const radioDummy2 = ['경매 대상재', '상시판매 대상재']
 	// const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
@@ -87,7 +82,6 @@ const SalseType = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, produ
 		setCheckData(filteredCheck)
 	}, [checkRadio])
 
-	console.log('에러5')
 	useEffect(() => {
 		setParmeter((p) => ({
 			...p,

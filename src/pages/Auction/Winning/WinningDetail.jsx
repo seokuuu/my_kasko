@@ -137,7 +137,6 @@ const WinningDetail = ({ setAucDetail }) => {
 	// 상세 GET 및 param
 	const matchedResult = matchDetailRowWithMatchingData(detailRow, matchingData)
 
-	console.log('matchedResult', matchedResult)
 
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const [addModal, setAddModal] = useAtom(aucProAddModalAtom)

@@ -12,7 +12,6 @@ const SubHeader = () => {
 			const responseData = response?.data?.data
 			setBanner(responseData)
 		} catch (e) {
-			console.log(e)
 		}
 	}
 

@@ -60,7 +60,7 @@ export async function postingMemoAndNote(data) {
 		const response = await client.patch(`${urls.single}/memo`, data)
 		return response
 	} catch (e) {
-		console.log(e)
+
 	}
 }
 
@@ -147,7 +147,7 @@ export async function patchChangeBestPackageRecommend(data) {
 		const response = await client.patch(`${urls.pkgrecommend}`, data)
 		return response.data
 	} catch (e) {
-		console.log(e)
+
 	}
 }
 export async function patchBeBestPackageRecommend(data) {

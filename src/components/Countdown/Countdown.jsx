@@ -19,7 +19,6 @@ const Countdown = () => {
 			const response = await getCountdown()
 			return response?.data?.data
 		} catch (e) {
-			console.log(e)
 		}
 	}
 
@@ -28,7 +27,6 @@ const Countdown = () => {
 			const responseData = await getCountdownData()
 			setCountdownData(responseData)
 		} catch (e) {
-			console.log(e)
 		}
 	}
 
@@ -59,7 +57,6 @@ const Countdown = () => {
 			getCountdown()
 				.then((response) => response?.data?.data)
 				.then((responseData) => setCountdownData(responseData))
-				.catch((e) => console.log(e))
 		}, 3000)
 	}
 

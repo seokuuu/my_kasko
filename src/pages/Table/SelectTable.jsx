@@ -37,7 +37,6 @@ const SelectedRowsTable = ({ selectedRows, orderId }) => {
 			client
 				.post(`/admin/order/product`, requestData)
 				.then((response) => {
-					console.log('작업 성공:', response.data)
 				})
 				.catch((error) => {
 					console.error('작업 실패:', error)

@@ -55,7 +55,6 @@ const UploadV2 = ({ setModalSwitch, title, originEngRowField, setExcelToJson, wi
 			simpleAlert(error?.data?.message && '둥록에 실패하였습니다.')
 		},
 	})
-	// console.log('excel upload error ;', error)
 	const handlerFileUpload = (e) => {
 		const formData = new FormData()
 		Array.from(selectedFile).forEach((el) => {
@@ -93,7 +92,6 @@ const UploadV2 = ({ setModalSwitch, title, originEngRowField, setExcelToJson, wi
 
 				setExcelToJson(mappedData)
 			} catch (error) {
-				console.log(error)
 			}
 		}
 	}
@@ -137,7 +135,6 @@ const UploadV2 = ({ setModalSwitch, title, originEngRowField, setExcelToJson, wi
 						<input
 							type="text"
 							onChange={(e) => {
-								console.log('input event :', e)
 							}}
 						/>
 						<BlueMainDiv style={{ margin: '8px auto', height: '200px' }}>

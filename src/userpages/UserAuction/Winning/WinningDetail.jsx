@@ -42,7 +42,6 @@ const WinningDetail = ({ setAucDetail }) => {
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [contentData, setContentData] = useState([])
-	console.log('detailRow', detailRow)
 
 	const titleData = [
 		'경매 번호',
@@ -139,7 +138,6 @@ const WinningDetail = ({ setAucDetail }) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
 
-	console.log('destinationData', destinationData)
 	const init = {
 		updateList: [],
 	}
@@ -165,7 +163,6 @@ const WinningDetail = ({ setAucDetail }) => {
 	const resPagination = data?.data?.data?.pagination
 	const [winningCreateData, setWinningCreateData] = useState({})
 
-	console.log('isSuccess', isSuccess)
 
 	// 예외 처리
 	useEffect(() => {
@@ -175,7 +172,6 @@ const WinningDetail = ({ setAucDetail }) => {
 			})
 	}, [isSuccess, resData, detailRow])
 
-	console.log('detailRow', detailRow)
 
 	useEffect(() => {
 		//타입, 리액트쿼리, 데이터 확인 후 실행
@@ -204,14 +200,12 @@ const WinningDetail = ({ setAucDetail }) => {
 		// setBiddingList(updatedBiddingList)
 	}, [checkedArray])
 
-	console.log('updateList', input.updateList?.length)
 	const [destiObject, setDestiObject] = useState()
 	const [finalInput, setFinalInput] = useState({
 		requestCustomerDestinationUid: null,
 	})
 
-	console.log('destiObject ###', destiObject)
-	console.log('finalInput ###', finalInput)
+
 	useEffect(() => {
 		setDestiObject(destinationData)
 	}, [destinationData])
@@ -230,7 +224,6 @@ const WinningDetail = ({ setAucDetail }) => {
 		}))
 	}, [checkedArray, finalInput])
 
-	console.log('winningCreateData', winningCreateData)
 
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({

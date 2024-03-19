@@ -36,7 +36,6 @@ const NoticeBoardPost = () => {
 	//  전광판 상세 API
 	const { data } = useNoticeBoardDetailsQuery(id)
 
-	console.log('상세 데이터 :', data)
 
 	// 전광판 등록 API
 	const { mutate: register } = useNoticeBoardRegisterMutation()

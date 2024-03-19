@@ -87,7 +87,6 @@ const Incoming = ({}) => {
 			simpleAlert('재고수신이 완료되었습니다.')
 		} catch (error) {
 			simpleAlert('재고 수신에 실패하였습니다.')
-			console.log('재고수신 에러발생', error)
 		}
 	}
 

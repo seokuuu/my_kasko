@@ -40,13 +40,11 @@ export default function PackageDetailModal() {
 	const detailList = data?.r
 	const tablePagination = data?.pagination
 	const [filteredData, setFilteredData] = useState([])
-	// console.log('ROW', detailList)
 
 	useEffect(() => {
 		if (filteredData && isSuccess) {
 			detailList && setFilteredData(detailList)
 		}
-		console.log('error1')
 		if (!isSuccess && !filteredData) return null
 		if (Array.isArray(filteredData)) {
 			setGetRow(add_element_field(filteredData, packageProductsDispatchFields))
@@ -68,7 +66,6 @@ export default function PackageDetailModal() {
 		}))
 	}
 
-	console.log('필터 데이터', filteredData[0])
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
 			...prevParam,

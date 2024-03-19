@@ -6,7 +6,6 @@ const PopupComponent = ({}) => {
 
 	const resData = data?.data?.data
 
-	console.log('data2 =>', data)
 
 	useEffect(() => {
 		const sortedData = resData?.sort((a, b) => b.position - a.position)
@@ -18,7 +17,6 @@ const PopupComponent = ({}) => {
 		let lastPopupX = (window.innerWidth - popupWidth + 100) / 2 + diagonalMove + 100
 		let lastPopupY = (window.innerHeight - popupHeight) / 2 + diagonalMove
 
-		console.log('x랑 y위치 =>', lastPopupX, lastPopupY)
 
 		sortedData?.forEach((item, index) => {
 			const { title, startDate, endDate, content, link } = item

@@ -28,7 +28,6 @@ const RecommendCellRenderer2 = ({ data, uidFieldName, editType }) => {
   useEffect(() => {
     btnClickedHandler()
   }, [editType])
-  console.log('REC', data['추천 제품 여부'])
 
   return (
     <>

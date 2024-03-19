@@ -163,7 +163,6 @@ const Table = ({
 		) {
 			if (gridRef.current.api) {
 				const nodesToSelect = []
-				console.log('gridRef.current.api : ', gridRef.current.api)
 
 				gridRef.current.api.forEachNode((node) => {
 					const selectedUid = [...new Set(selectedRows?.map((item) => item['제품 번호']?.value))]
@@ -230,11 +229,9 @@ const Table = ({
 	// 일단 router 이동 등록
 	const onRowDoubleClicked = (event) => {
 		// const path = event.data['고객 코드']
-		// console.log(event.data)
 		setDetailRow(event.data)
 		setChoiceComponent(event.data)
 		// navigate(`/userpage/userdestination/${path}`)
-		// console.log('Double clicked row UID: ', event.data)
 	}
 
 	// Grid api 설정확인
@@ -332,7 +329,6 @@ const Table = ({
 				// 백엔드로부터 데이터 가져오기
 				// const response = await fetch('/inventory-ledger?pageNum=1&pageSize=1')
 				// const rowData = await response.json()
-				// console.log(rowData)
 				// ag-Grid에 데이터 설정
 				// params.successCallback(getRow)
 			},
@@ -342,7 +338,6 @@ const Table = ({
 	}
 	// new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
 
-	// console.log('gridOptions', gridOptions)
 	const pinnedTopRowData = useMemo(() => {
 		return topData
 	}, [topData])

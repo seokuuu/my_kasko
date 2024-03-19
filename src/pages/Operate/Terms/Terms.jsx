@@ -32,10 +32,8 @@ const Terms = () => {
 
 	const responseData = data?.data?.data
 
-	console.log('responseData :', responseData)
 
 	const blockCondition = useMemo(() => responseData?.content !== content, [content, data])
-	console.log('blockCondition :', blockCondition)
 	useBlockRoute(blockCondition)
 	// data  바인딩
 	useEffect(() => {

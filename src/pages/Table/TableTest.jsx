@@ -111,7 +111,6 @@ const TableTest = ({
 
   const dummyData = Array(300).fill(dummyD)
 
-  // console.log(getCol)
   useEffect(() => {
     if (getCol) {
       setColumnDefs(getCol)
@@ -200,11 +199,9 @@ const TableTest = ({
   // 일단 router 이동 등록
   const onRowDoubleClicked = (event) => {
     // const path = event.data['고객 코드']
-    // console.log(event.data)
     setDetailRow(event.data)
     setChoiceComponent('수정')
     // navigate(`/userpage/userdestination/${path}`)
-    // console.log('Double clicked row UID: ', event.data)
   }
 
   // 체크했을때 jotai 전역상태값 설정
@@ -213,7 +210,6 @@ const TableTest = ({
       const selectedNodes = gridApi.getSelectedNodes()
       const selectedData = selectedNodes.map((node) => node.data)
       setSelectedRows(selectedData)
-      // console.log(selectedRows)
     }
   }
   const autoGroupColumnDef = useMemo(() => {
@@ -252,7 +248,6 @@ const TableTest = ({
   const [sortNum] = useAtom(pageSort)
   const onPageSizeChanged = useCallback(
     (sortNum) => {
-      console.log(sortNum)
       gridRef.current.api.paginationSetPageSize(Number(sortNum))
     },
     [sortNum],
@@ -318,7 +313,6 @@ const TableTest = ({
 
   const totalPage = Math.ceil(pagination?.listCount / gridOptions.paginationPageSize)
 
-  console.log('TOTALPAGE', totalPage)
   // const [gridApi, setGridApi] = useState(null)
   const [gridColumnApi, setGridColumnApi] = useState(null)
 

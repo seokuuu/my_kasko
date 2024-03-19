@@ -8,7 +8,7 @@ const urls = {
 }
 
 // export function getWinning(data) {
-// 	console.log('### getWinning ###')
+
 // 	return client.get(`${urls.winning}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&orderType=${data.orderType}`)
 // }
 
@@ -65,7 +65,7 @@ export const getAuctionDestination = () => {
 
 // 고객사 목적지 목록 상세 (경매 낙찰 관리)
 export const getAuctionDetailDestination = (data) => {
-	console.log('data', data)
+
 	return client.get(`${urls.winning}/destination?customerCode=${data}`)
 }
 
@@ -85,7 +85,7 @@ export const successfulBid = (data) => {
 }
 
 // export function getWinningDetail(data) {
-// 	console.log('data !@#', data)
+
 // 	return client.get(
 // 		`${urls.winningDetail}?pageNum=${data.pageNum}&pageSize=${data.pageSize}&auctionNumber=${data.auctionNumber}&storage=${data.storage}&customerDestinationUid=${data.customerDestinationUid}&biddingStatus=${data.biddingStatus}`,
 // 	)

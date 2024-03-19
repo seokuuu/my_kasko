@@ -119,7 +119,6 @@ class CustomTableHeader {
   // ADD PIN FUNC
   togglePinFunction(agParams) {
     this.onPinClickListener = (e) => {
-      console.log(this.agApi);
     }
     this.ePinButton.addEventListener('click', this.onPinClickListener);
   }
@@ -127,7 +126,6 @@ class CustomTableHeader {
 
   // SORT CHANGE FN HELPER
   onSortStatusChange(e, sortStatus) {
-    console.log(e, sortStatus);
     if(sortStatus === this.sortStatus) {
       this.onRemoveSortListener(e);
       this.sortStatus = SORT_STATUS.reset;

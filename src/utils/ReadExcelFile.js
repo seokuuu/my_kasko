@@ -2,8 +2,7 @@ import * as XLSX from 'xlsx'
 
 const readExcelFile = (file) => {
   const reader = new FileReader()
-  console.log('파일',file)
-  console.log('리더',reader)
+
 
   return new Promise((resolve, reject) => {
     reader.onload = (e) => {

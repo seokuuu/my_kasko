@@ -4,7 +4,6 @@ import { SkyBtn } from '../../../../../common/Button/Button'
 
 const ClaimCellRender = (props) => {
 	const { data } = props
-	console.log('data: ', data)
 
 	const navigate = useNavigate()
 

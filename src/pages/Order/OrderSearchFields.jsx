@@ -36,7 +36,6 @@ const OrderSearchFields = ({
 		spartList,
 	} = useGlobalProductSearchFieldData()
 
-	console.log('search ###', search)
 
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
 	const onChange = (key, value) => {

@@ -7,12 +7,10 @@ function useMutationQuery(queryKeys, api, options = {}) {
 
 	return useMutation(api, {
 		1: () => {
-			console.log('Success')
 			queryClient.invalidateQueries(queryKeys)
 			options.onSuccess && options.onSuccess()
 		},
 		onError: (error) => {
-			console.log(`MUTATION ERROR : ${error.message}`)
 			// alert(`에러가 발생했습니다: ${error.message}`)
 			options.onError && options.onError(error)
 		},

@@ -35,7 +35,6 @@ const FAQ = ({}) => {
 	// 목록 API
 	const { data, refetch } = useFaqListQuery(search)
 
-	console.log('data :', data)
 	/**
 	 * @constant
 	 * @description

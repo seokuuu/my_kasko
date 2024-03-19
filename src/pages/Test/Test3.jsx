@@ -101,7 +101,6 @@ const Test3 = ({ hei, hei2 }) => {
   const uniqueCountriesSet = new Set(countries)
   const uniqueCountries = Array.from(uniqueCountriesSet)
   const sortedCountries = uniqueCountries.sort()
-  console.log(sortedCountries)
 
   const externalFilterChanged = useCallback((newValue) => {
     ageType = newValue
