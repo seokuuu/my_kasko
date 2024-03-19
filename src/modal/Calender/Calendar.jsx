@@ -47,8 +47,6 @@ const CalendarModal = () => {
 	const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()]
 	const formattedDate = `${month}/${day}(${dayOfWeek})`
 
-
-
 	function CustomFormatDay(locale, date) {
 		return date.getDate().toString()
 	}
@@ -60,8 +58,6 @@ const CalendarModal = () => {
 	const resData = data?.data?.data?.list
 
 	const calAucNumber = resData?.map((x) => x.number)
-
-
 
 	const parseAuctionData = (auctionNumber) => {
 		const datePart = auctionNumber.slice(0, 8) // 날짜 부분 추출
@@ -93,15 +89,11 @@ const CalendarModal = () => {
 		}
 	}
 
-
-
 	// 각 경매번호에 대해 파싱된 정보 출력
 	useEffect(() => {
 		const parsedAuctions = calAucNumber?.map((auctionNumber) => parseAuctionData(auctionNumber))
 		setAuctionData(parsedAuctions)
 	}, [resData])
-
-
 
 	const todayDate = moment().format('YYYY-MM-DD')
 	const todayPeriods = auctionData && auctionData?.filter((item) => item.date === todayDate)
@@ -126,8 +118,6 @@ const CalendarModal = () => {
 		})
 	}
 
-
-
 	function customTileContent({ date, view }) {
 		const formattedDate = moment(date).format('YYYY-MM-DD')
 
@@ -140,7 +130,7 @@ const CalendarModal = () => {
 				<>
 					<Today></Today>
 					<DotContainer>
-						{isAdditionalAuction ? (
+						{/* {isAdditionalAuction ? (
 							<DotWrap>
 								<Dot dotColor={getDotColor('추가 경매')}></Dot>
 								<p style={{ marginLeft: '5px', fontWeight: 'bolder', fontFamily: 'SUIT', fontSize: '17px' }}>
@@ -161,7 +151,8 @@ const CalendarModal = () => {
 										</p>
 									</DotWrap>
 								))
-						)}
+						)} */}
+						{renderPeriods()}
 					</DotContainer>
 				</>
 			)
