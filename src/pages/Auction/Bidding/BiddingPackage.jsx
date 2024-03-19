@@ -128,8 +128,6 @@ const Package = ({}) => {
 		return AuctionPackageBiddingFieldsCols(checkedArrayState)
 	}, [checkedArrayState])
 
-
-
 	// 초기 목적지 GET
 	const { data: destiData } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
 
@@ -166,37 +164,35 @@ const Package = ({}) => {
 
 	// 목적지 관련 rows 빈 값일 시 대표 목적지 자동 Mapping
 
-	useEffect(() => {
-		if (firstDestiData && originData) {
-			const updatedResData = originData?.list?.map((item) => {
-				if (
-					!item.destinationCode ||
-					!item.destinationName ||
-					!item.customerDestinationName ||
-					!item.customerDestinationAddress ||
-					!item.customerDestinationPhone
-				) {
-					item.destinationCode = firstDestiData?.destinationCode
-					item.destinationName = firstDestiData?.destinationName
-					item.customerDestinationName = firstDestiData?.customerDestinationName
-					item.customerDestinationAddress = firstDestiData?.address
-					item.customerDestinationPhone = firstDestiData?.phone
-				}
+	// useEffect(() => {
+	// 	if (firstDestiData && originData) {
+	// 		const updatedResData = originData?.list?.map((item) => {
+	// 			if (
+	// 				!item.destinationCode ||
+	// 				!item.destinationName ||
+	// 				!item.customerDestinationName ||
+	// 				!item.customerDestinationAddress ||
+	// 				!item.customerDestinationPhone
+	// 			) {
+	// 				item.destinationCode = firstDestiData?.destinationCode
+	// 				item.destinationName = firstDestiData?.destinationName
+	// 				item.customerDestinationName = firstDestiData?.customerDestinationName
+	// 				item.customerDestinationAddress = firstDestiData?.address
+	// 				item.customerDestinationPhone = firstDestiData?.phone
+	// 			}
 
-				return item
-			})
+	// 			return item
+	// 		})
 
-			setOridata((prevData) => ({
-				...prevData,
-				list: updatedResData,
-			}))
-		}
-	}, [firstDestiData, destiObject])
+	// 		setOridata((prevData) => ({
+	// 			...prevData,
+	// 			list: updatedResData,
+	// 		}))
+	// 	}
+	// }, [firstDestiData, destiObject])
 
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']
-
-
 
 	const init = {
 		auctionNumber: null,
@@ -218,8 +214,6 @@ const Package = ({}) => {
 		biddingPrice: null,
 		customerDestinationUid: null,
 	})
-
-
 
 	// 첫 렌더시 초기 및 대표 목적지 set
 	useMemo(() => {
@@ -398,8 +392,6 @@ const Package = ({}) => {
 			return item
 		})
 
-
-
 		// 변경된 데이터로 state 업데이트
 		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 		setOridata((prevData) => ({
@@ -426,7 +418,6 @@ const Package = ({}) => {
 		best: { display: true },
 	})
 	/* ==================== 관심상품 등록 end ==================== */
-
 
 	// 목적지 적용 버튼 handler 111
 	const destiOnClickHandler = () => {
@@ -474,8 +465,6 @@ const Package = ({}) => {
 		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
 
-
-
 	// 응찰가 Table Cell Input
 	const handleCheckboxChange = (event, rowData) => {
 		if (event.target.checked) {
@@ -489,7 +478,6 @@ const Package = ({}) => {
 
 	// status가 false여야지 모달이 보이는거니 !false 형식으로
 	const checkGetAgreement = getAgreementData?.data?.data
-
 
 	// 입찰 동의서 Mutate
 	const { mutate: postAgreementMutation } = useMutation(postAgreement, {
@@ -550,8 +538,6 @@ const Package = ({}) => {
 			})
 		}
 	}, [agreementModal, firstDestiData, initDestiData])
-
-
 
 	return (
 		<FilterContianer>
