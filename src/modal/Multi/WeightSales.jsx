@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { BlackBtn, WhiteRedBtn } from '../../common/Button/Button'
-import { anotherTableRowsAtom, selectedRowsAtom, weightAtom, weightObj } from '../../store/Layout/Layout'
+import { anotherTableRowsAtom, weightAtom, weightObj } from '../../store/Layout/Layout'
 import Table from '../../pages/Table/Table'
 import { FilterContianer, FilterTCTop, TableContianer, TCSubContainer } from '../../modal/External/ExternalFilter'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -22,170 +22,124 @@ import moment from 'moment'
 // 중량 판매 등록 모달
 const WeightSales = () => {
 	const auth = useAtomValue(authAtom)
-	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
+	const { simpleConfirm, simpleAlert } = useAlert()
 
 	const setAddModal = useSetAtom(weightAtom)
 	const selectObj = useAtomValue(weightObj)
+	const selectedRowData = useAtomValue(anotherTableRowsAtom)
 
-	// 이건 ag-grid에서 받아오는 테이블 로우의 값이다.
-	const [selectedRowData, setSelectedRowData] = useAtom(anotherTableRowsAtom)
 	const requestData = {
 		pageNum: 1,
-		pageSize: 50,
+		pageSize: 1,
+		number: selectObj['제품 번호'],
 		reciptStatus: '입고 확정',
 	}
 
+	const [rows, setRows] = useState([]) // 중량판매 테이블 row 데이터
+	const [checkedRows, setCheckedRows] = useState([]) // 중량 판매 테이블 체크 리스트
+	const [updateState, setUpdateState] = useState([]) // 변경 데이터
+	const [deleted, setDeleted] = useState([]) // 삭제 데이터
 	const [postRequest, setPostRequest] = useState({
 		originalProductUid: selectObj['제품 고유 번호'], // 제품 고유 번호
 		addProductList: [],
 		deleteProductUids: [],
 	})
-
-	const modalClose = () => {
-		setAddModal(false)
-	}
-
+	// 제품 상세
 	const { data: originalData, isLoading: loading } = useReactQuery(requestData, 'getInventroyStock', getInventoryStocks)
 
-	const {
-		data: TableData,
-		isLoading,
-		isSuccess,
-	} = useReactQuery(selectObj['제품 고유 번호'], 'getInventroyStockDetail', getDetailStocks)
+	// 해당 제품 중량 판매 제품 목록
+	const { data: TableData } = useReactQuery(selectObj['제품 고유 번호'], 'getInventroyStockDetail', getDetailStocks)
 
-	const [rows, setRows] = useState([])
-	const [checkedRows, setCheckedRows] = useState([])
-
-	const [updateState, setUpdateState] = useState([])
-
+	// 제품 상세 정보 테이블 데이터
 	const tableRowData = useMemo(() => {
 		if (!originalData || !originalData?.data?.list) {
 			return []
 		}
-		const rowData = originalData?.data?.list
+		return add_element_field(originalData?.data?.list, StockInventoryFields)
+	}, [originalData])
 
-		const displayData = add_element_field(rowData, StockInventoryFields)
-		return displayData
-	}, [isSuccess, originalData])
-
+	// 제품 > 중량 판매로 지정된 제품 목록
 	const bottomTableRowData = useMemo(() => {
 		if (!TableData || !TableData?.data) {
 			return []
 		}
-		const rowData = TableData?.data
-
-		const displayData = add_element_field(rowData, StockDetailInventoryFields)
-		return displayData
-	}, [isSuccess, TableData])
-
-	const [quantity, setQuantity] = useState({
-		thickness: '',
-		width: '',
-		length: '',
-	})
-
-	useEffect(() => {
-		setRows(
-			bottomTableRowData.map((i) => {
-				return {
-					...i,
-					두께: i['두께'],
-					중량: i['중량'],
-					길이: i['길이'],
-				}
-			}),
-		)
-	}, [TableData, quantity])
+		return add_element_field(TableData?.data, StockDetailInventoryFields)
+	}, [TableData])
 
 	const tableTitle = StockInventoryDetailFieldCols
 	const tableFields = useRef(tableTitle)
 	const getCol = tableFields.current
-	const [select, setSelect] = useState([])
-	const [add, setAdd] = useState([]) // 추가값
-	const [deleted, setDeleted] = useState([])
-	// 체크된 값 들어올때 하단 테이블의 컬럼에 맞게 다시 매핑작업
 
-	// 각각값
-
-	useEffect(() => {
+	// 중량판매 제품 등록
+	const createSelectData = (idx = null) => {
 		let newNumber = 1
-		// 현존하는 중량 제품 번호에서 가장 큰 번호 다음으로 추가 되는걸로
 		const usedNumber = rows.map((item) => Number(item['제품 번호'].split('-')[1]))
 		let maxNumber = Math.max(...usedNumber) + 1
 
-		setSelect(() =>
-			selectedRowData?.map((i, idx) => ({
-				'중량 제품 번호': i['중량 제품 번호'] || '',
-				'제품 번호':
-					rows?.length === 0
-						? selectObj['제품 번호'] + '-' + (selectedRowData.length - newNumber++)
-						: selectObj['제품 번호'] + '-' + maxNumber++,
-				중량: i['중량'],
-				폭: i['폭'],
-				길이: i['길이'],
-				두께: i['두께'],
-				제조사: i['제조사'],
-				'판매 구분': i['판매 구분'],
-				'유찰 횟수': i['유찰 횟수'],
-				'제품 고유 번호': i['제품 고유 번호'] || '',
-				수정자: auth.name || '',
-				'수정 날짜': moment(new Date()).format('YYYY-MM-DD'),
-				'중량 판매 개수': i['중량 판매 개수'],
-			})),
-		)
-	}, [selectedRowData])
-
-	useEffect(() => {
-		const usedNumber = rows.map((item) => Number(item['제품 번호'].split('-')[1]))
-		let maxNumber = Math.max(...usedNumber) + 1
-		setAdd(() =>
-			selectedRowData?.map((i, idx) => ({
-				productNumber:
-					rows?.length === 0
-						? selectObj['제품 번호'] + '-' + (selectedRowData.length - idx)
-						: selectObj['제품 번호'] + '-' + maxNumber++,
-				thickness: i['두께'],
-				width: quantity['폭'] ? quantity['폭'] : i['폭'],
-				length: quantity['길이'] ? quantity['길이'] : i['길이'],
-			})),
-		)
-	}, [select, quantity.thickness, quantity.width, quantity.length])
-
-	// select => 테이블에서 추가
-	// Rows가 기존
-	const handleImageClick = () => {
-		if (select?.length > 4) {
-			simpleAlert('4개 이하로만 추가 가능합니다.', () => {
-				return null
-			})
-		}
-		if (select?.length > 0) {
-			if (rows.length === 0) {
-				setRows(() => [...select])
-				setPostRequest((p) => ({ ...p, addProductList: [...add] }))
-				setSelectedRowData([])
-			} else if (rows.length < 4) {
-				setRows((p) => [...p, ...select])
-				setPostRequest((p) => ({ ...p, addProductList: [...add] }))
-				setSelectedRowData([])
-				if (rows.length + select.length > 4) {
-					simpleAlert('4개 이하로만 추가 가능합니다.')
-				} else {
-					return null
-				}
-			}
-			if (rows.length >= 4) {
-				simpleAlert('4개 이하로만 추가 가능합니다.')
-			}
-		} else if (select?.length === 0) {
-			simpleAlert('중량 판매 등록할 상품을 선택해 주세요.', () => {
-				return null
-			})
-		}
-		setSelect([])
+		return selectedRowData?.map((i) => ({
+			'중량 제품 번호': i['중량 제품 번호'] || '',
+			'제품 번호':
+				rows?.length === 0
+					? selectObj['제품 번호'] + '-' + (idx != null ? idx : selectedRowData.length - newNumber++)
+					: selectObj['제품 번호'] + '-' + maxNumber++,
+			중량: i['중량'],
+			두께: i['두께'],
+			폭: i['폭'],
+			길이: i['길이'],
+			제조사: i['제조사'],
+			'판매 구분': i['판매 구분'],
+			'유찰 횟수': i['유찰 횟수'],
+			'제품 고유 번호': i['제품 고유 번호'] || '',
+			수정자: auth.name || '',
+			'수정 날짜': moment(new Date()).format('YYYY-MM-DD'),
+			'중량 판매 개수': i['중량 판매 개수'],
+		}))
 	}
 
-	const handleOnchange = (e, uid, rowIndex) => {
+	const updateRowsReValue = (data) => {
+		const row = tableRowData[0]
+		return data?.map((item) => ({
+			...item,
+			두께: (row['두께'] / data?.length).toFixed(1),
+			폭: (row['폭'] / data?.length).toFixed(1),
+			길이: (row['길이'] / data?.length).toFixed(1),
+		}))
+	}
+
+	// Rows가 기존
+	const handleImageClick = () => {
+		if (!selectedRowData || selectedRowData?.length === 0) {
+			simpleAlert('중량 판매 등록할 상품을 선택해 주세요.')
+			return
+		}
+		if (rows?.length >= 4) {
+			simpleAlert('4개 이하로만 추가 가능합니다')
+			return
+		}
+
+		// table row add
+		let newSelectedData = createSelectData()
+		if (rows.length === 0) {
+			newSelectedData = [...newSelectedData, ...createSelectData(1)]
+		}
+		const newRows = updateRowsReValue([...rows, ...newSelectedData])
+		setRows([])
+		setTimeout(() => {
+			setRows(newRows)
+		}, 100)
+
+		// post data set
+		const newAddData = newRows.map((item) => ({
+			productNumber: item['제품 번호'],
+			thickness: item['두께'],
+			width: item['폭'],
+			length: item['길이'],
+		}))
+		setPostRequest((p) => ({ ...p, addProductList: [...newAddData] }))
+	}
+
+	// 중량 제품 두께, 폭, 길이 수정
+	const handleOnchange = (e, rowIndex) => {
 		const { value, name } = e.target
 		setPostRequest((prevPostRequest) => {
 			return {
@@ -202,6 +156,8 @@ const WeightSales = () => {
 			}
 		})
 	}
+
+	// 체크박스 check handler
 	const handleCheck = (id, data) => {
 		if (checkedRows?.includes(id)) {
 			setCheckedRows(checkedRows.filter((rowId) => rowId !== id))
@@ -211,49 +167,59 @@ const WeightSales = () => {
 		}
 	}
 
+	// 선택 목록 제거
 	const handleDelete = () => {
-		setRows(rows.filter((row) => !checkedRows?.includes(row['중량 제품 번호'])))
-		// setCheckedRows([])
-		setPostRequest((p) => ({ ...p, deleteProductUids: [...checkedRows] }))
+		let deleteRows = rows.filter((row) => !checkedRows?.includes(row['제품 번호']))
+		const newRows = updateRowsReValue(deleteRows)
+		setRows([])
+		if (rows.length > 2) {
+			setTimeout(() => {
+				setRows(newRows)
+			}, 100)
+		}
+
+		const deleteUids = deleteRows.map((item) => item['중량 제품 번호'])
+		setPostRequest((p) => ({ ...p, deleteProductUids: [...p.deleteProductUids, ...deleteUids] }))
+		setCheckedRows([])
 	}
 
 	const { mutate } = useMutationQuery('getJunior', postStocks)
 
-	// 수치값을 변형시켠 값을 업데이트해서 보내주는걸로
-
-	useEffect(() => {
-		setPostRequest((p) => ({
-			...p,
-			addProductList: updateState,
-		}))
-	}, [updateState])
-
-	const reload = () => {
-		setAddModal(false)
-		window.location.reload()
-	}
-
 	const handleSubmit = () => {
+		if (!postRequest.originalProductUid) {
+			simpleAlert('중량 판매 등록할 제품을 선택해주세요.')
+			return
+		}
+		if (postRequest.addProductList.length === 0 && postRequest.deleteProductUids.length === 0) {
+			simpleAlert('중량 판매 등록할 제품을 등록해주세요.')
+			return
+		}
 		mutate(postRequest, {
 			onSuccess: () => {
-				showAlert({ title: '저장되었습니다.', func: reload })
+				simpleAlert('저장되었습니다.', () => window.location.reload())
 			},
 			onError: (e) => {
-				showAlert({ title: e.data.message, func: reload })
+				simpleAlert(e?.data?.message || '실패하였습니다.', () => window.location.reload())
 			},
 		})
 	}
+
+	const modalClose = () => {
+		setAddModal(false)
+	}
+
 	useEffect(() => {
-		setUpdateState(
-			rows.map((i) => {
+		setRows(
+			bottomTableRowData.map((i) => {
 				return {
-					thickness: i['두께'],
-					width: i['폭'],
-					length: i['길이'],
+					...i,
+					두께: i['두께'],
+					중량: i['중량'],
+					길이: i['길이'],
 				}
 			}),
 		)
-	}, [rows])
+	}, [TableData])
 
 	return (
 		<OutSideArea>
@@ -272,11 +238,11 @@ const WeightSales = () => {
 								<p>{selectObj['제품 번호']}</p>
 							</FilterTCTop>
 							<Table
-								hei2={330}
+								hei2={120}
 								hei={100}
 								getRow={tableRowData}
 								getCol={getCol}
-								isLoading={isLoading}
+								isLoading={loading}
 								isAnotherTable={true}
 							/>
 						</TableContianer>
@@ -337,7 +303,7 @@ const WeightSales = () => {
 															defaultValue={v}
 															name={k === '폭' ? 'width' : k === '길이' ? 'length' : 'thickness'}
 															id={row['제품 번호']}
-															onChange={(e) => handleOnchange(e, String(row['제품 고유 번호']), index, k)}
+															onChange={(e) => handleOnchange(e, index)}
 														/>
 													) : (
 														<div

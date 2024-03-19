@@ -101,7 +101,7 @@ export const SingleDispatchFieldsCols = () => [
 	// 		editType: 'productModify',
 	// 	},
 	// },
-	{ ...commonStyles, field: '순번', minWidth: 100 },
+	{ ...commonStyles, field: '순번', minWidth: 80 },
 	{ ...commonStyles, field: '제품 번호', minWidth: 200, cellRenderer: recommendCell },
 	...Object.keys(singleDispatchFields)
 		.slice(2)
@@ -134,7 +134,7 @@ export const SingleSalesDispatchFieldsCols = (isUpdate = false) => [
 			editType: 'productModify',
 		},
 	},
-	{ ...commonStyles, field: '순번', minWidth: 100 },
+	{ ...commonStyles, field: '순번', minWidth: 80 },
 	{ ...commonStyles, field: '제품 번호', minWidth: 200, cellRenderer: recommendCell },
 	...Object.keys(singleDispatchFields)
 		.slice(2)
