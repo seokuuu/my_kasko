@@ -33,7 +33,7 @@ const InventoryFind = ({
 	destiresult,
 }) => {
 	const matchData = { name: '고객명', code: '고객사 코드', businessNumber: '사업자번호' }
-	const destinationData = { name: '목적지', code: '목적지 코드' }
+	const destinationData = { name: '목적지', code: '목적지 코드', address: '목적지 주소' }
 	const customerGetData = data?.data?.data
 
 	const [searchTerm, setSearchTerm] = useState('')
@@ -96,7 +96,7 @@ const InventoryFind = ({
 	return (
 		<>
 			<FadeOverlay />
-			<ModalContainer style={{ width: '700px', height: '720px' }}>
+			<ModalContainer style={{ width: '900px', height: '720px' }}>
 				<BlueBarHeader style={{ height: '60px' }}>
 					<div>{title}</div>
 					<div>
@@ -106,7 +106,7 @@ const InventoryFind = ({
 				<BlueSubContainer>
 					<div>
 						<BlueMainDiv style={{ fontSize: '18px' }}>
-							<div style={{ display: 'flex', alignItems: 'center' }}>
+							<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
 								<BMDTitle style={{ width: '90px' }}>검색</BMDTitle>
 								<TxtInput
 									placeholder={title === '고객사 찾기' ? '고객사 코드 : K00000, 대소문자에 유의' : '목적지 명 입력...'}
@@ -127,7 +127,9 @@ const InventoryFind = ({
 						<BlueMainDiv style={{ padding: '0px' }}>
 							<ResultContainer>
 								<ResultHead>
-									<ResultCell wid={50}>선택</ResultCell>
+									<ResultCell wid={50} style={{ marginLeft: '3px' }}>
+										선택
+									</ResultCell>
 									{title === '고객사 찾기' && (
 										<>
 											<ResultCell>{matchData.name}</ResultCell>
@@ -137,9 +139,9 @@ const InventoryFind = ({
 									)}
 									{title === '목적지 찾기' && (
 										<>
-											<ResultCell style={{ width: '60%' }}>{destinationData.name}</ResultCell>
+											<ResultCell style={{ width: '40%' }}>{destinationData.name}</ResultCell>
 											<ResultCell style={{ width: '20%' }}>{destinationData.code}</ResultCell>
-											{/* <ResultCell wid={130}>{matchData.businessNumber}</ResultCell> */}
+											<ResultCell style={{ width: '40%' }}>{destinationData.address}</ResultCell>
 										</>
 									)}
 								</ResultHead>
@@ -186,7 +188,8 @@ const InventoryFind = ({
 											</ResultCell>
 											<ResultCell wid={title === '목적지 찾기' ? 300 : 100}>{item.name}</ResultCell>
 											<ResultCell>{item.code}</ResultCell>
-											{title == '고객사 찾기' && (
+											<ResultCell wid={300}>{item.address}</ResultCell>
+											{title === '고객사 찾기' && (
 												<>
 													<ResultCell wid={130}>{item.businessNumber}</ResultCell>
 												</>
