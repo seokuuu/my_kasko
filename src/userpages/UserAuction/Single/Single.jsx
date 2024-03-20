@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { BtnBound, SkyBtn, TGreyBtn, TWhiteBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { biddingAgreementModal, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { biddingAgreementModal, selectedRowsAtom, toggleAtom, userBiddingWishCheck } from '../../../store/Layout/Layout'
 
 import {
 	CustomInput,
@@ -41,6 +41,7 @@ import AddWishButton from '../../UserSales/_components/AddWishButton'
 import UserBiddingSearchFields from './UserBiddingSearchFields'
 
 const Single = ({}) => {
+	const checkWish = useAtomValue(userBiddingWishCheck)
 	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
 	const auth = useAtomValue(authAtom) // 이거 auction.js에서 hook으로 바꾸기
 	const nowAuction = useCheckAuction() // 현재 경매 여부 체크
@@ -98,6 +99,8 @@ const Single = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 
+	console.log('checkedArrayState', checkedArrayState)
+
 	const uids = checkedArrayState?.map((item) => item && item['제품 고유 번호']?.value)
 
 	const paramData = {
@@ -116,6 +119,8 @@ const Single = ({}) => {
 	const originData = data?.data?.data
 	const [oriData, setOridata] = useState()
 
+	console.log('oriData', oriData?.list)
+
 	const tableField = useMemo(() => {
 		return AuctionBiddingFieldsCols(checkedArrayState)
 	}, [checkedArrayState])
@@ -132,6 +137,16 @@ const Single = ({}) => {
 	const filteredDestiData = initDestiData?.filter((item) => item.represent === 1)
 	const firstDestiData = filteredDestiData?.[0]
 
+	// const wishedProducts =
+	// 	originData?.list &&
+	// 	originData?.list?.filter((product) => {
+	// 		const hasWishedProductNumber = product['제품 번호']?.wish
+	// 		const hasWishedPackageNumber = product['패키지 번호']?.wish
+	// 		return hasWishedProductNumber || hasWishedPackageNumber
+	// 	})
+
+	// console.log('wishedProducts', wishedProducts)
+
 	const restrictStartPriceData = {
 		...originData,
 		list: originData?.list?.map((item) => ({
@@ -139,6 +154,8 @@ const Single = ({}) => {
 			auctionStartPrice: null,
 		})),
 	}
+
+	console.log('originData?.list', originData?.list)
 
 	useEffect(() => {
 		let restrictOriginData =
@@ -159,7 +176,7 @@ const Single = ({}) => {
 				auctionNumber: checkAgreeAucNum,
 			}))
 		}
-	}, [isSuccess, initDestiData, originData, originData])
+	}, [isSuccess, initDestiData, originData])
 
 	// 111 - 1
 	// 목적지 관련 rows 빈 값일 시 대표 목적지 자동 Mapping
@@ -228,13 +245,13 @@ const Single = ({}) => {
 		const updatedProductList = checkedArrayState?.map((item) => ({
 			productUid: item['제품 고유 번호'],
 			biddingPrice:
-				parseInt(item['현재 최고 가격']?.replace(/,/g, '')) === 0
-					? parseInt(item['시작가']?.replace(/,/g, '')) + (finalInput?.biddingPrice || 1)
-					: parseInt(item['현재 최고 가격']?.replace(/,/g, '')) >= 1 &&
-					  parseInt(item['현재 최고 가격']?.replace(/,/g, '')) <=
-							parseInt(item['나의 최고 응찰 가격']?.replace(/,/g, ''))
-					? parseInt(item['나의 최고 응찰 가격']?.replace(/,/g, '')) + (finalInput?.biddingPrice || 1)
-					: parseInt(item['현재 최고 가격']?.replace(/,/g, '')) + (finalInput?.biddingPrice || 1),
+				parseInt(item?.['현재 최고 가격']?.replace(/,/g, '')) === 0
+					? parseInt(item?.['시작가']?.replace(/,/g, '')) + (finalInput?.biddingPrice || 1)
+					: parseInt(item?.['현재 최고 가격']?.replace(/,/g, '')) >= 1 &&
+					  parseInt(item?.['현재 최고 가격']?.replace(/,/g, '')) <=
+							parseInt(item?.['나의 최고 응찰 가격']?.replace(/,/g, ''))
+					? parseInt(item?.['나의 최고 응찰 가격']?.replace(/,/g, '')) + (finalInput?.biddingPrice || 1)
+					: parseInt(item?.['현재 최고 가격']?.replace(/,/g, '')) + (finalInput?.biddingPrice || 1),
 
 			customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
 		}))
@@ -483,7 +500,6 @@ const Single = ({}) => {
 				title: '해당 회차에 동의하셨습니다.',
 				content: '',
 				func: () => {
-					refetch()
 					setAgreementModal(false)
 					window.location.reload()
 				},
@@ -527,11 +543,13 @@ const Single = ({}) => {
 		if (agreementModal === false && initDestiData.length === 0) {
 			simpleAlert('목적지를 등록하지 않으면 \n 경매에 참여하실 수 없습니다. \n 목적지를 등록하시겠습니까?', () => {
 				navigate('/userpage/userdestination')
+				queryClient.clear()
 			})
 		}
 		if (initDestiData.length > 0 && firstDestiData?.represent !== 1) {
 			simpleAlert('대표 목적지를 등록하지 않으셨습니다.  \n 목적지를 등록하시겠습니까?', () => {
 				navigate('/userpage/userdestination')
+				queryClient.clear()
 			})
 		}
 	}, [agreementModal, firstDestiData, initDestiData])
