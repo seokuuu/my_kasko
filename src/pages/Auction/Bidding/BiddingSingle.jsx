@@ -480,7 +480,6 @@ const BiddingSingle = ({}) => {
 				title: '해당 회차에 동의하셨습니다.',
 				content: '',
 				func: () => {
-					refetch()
 					setAgreementModal(false)
 					window.location.reload()
 				},
@@ -524,11 +523,13 @@ const BiddingSingle = ({}) => {
 		if (agreementModal === false && initDestiData.length === 0) {
 			simpleAlert('목적지를 등록하지 않으면 \n 경매에 참여하실 수 없습니다. \n 목적지를 등록하시겠습니까?', () => {
 				navigate('/usermanage/clientdestination')
+				queryClient.clear()
 			})
 		}
 		if (initDestiData.length > 0 && firstDestiData?.represent !== 1) {
 			simpleAlert('대표 목적지를 등록하지 않으셨습니다.  \n 목적지를 등록하시겠습니까?', () => {
 				navigate('/usermanage/clientdestination')
+				queryClient.clear()
 			})
 		}
 	}, [agreementModal, firstDestiData, initDestiData])

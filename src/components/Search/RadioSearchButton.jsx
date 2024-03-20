@@ -1,4 +1,8 @@
+import { useAtom } from 'jotai'
+import { constructN } from 'ramda'
+import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
+import { userBiddingWishCheck } from '../../store/Layout/Layout'
 
 /**
  * 라디오 서치 버튼
@@ -7,17 +11,28 @@ import { styled } from 'styled-components'
  * @param value 선택 값
  * @param onChange 체인지 이벤트 void | undefined
  */
-const RadioSearchButton = ({ title, options, value, onChange }) => {
-	const changeHandler = (value) => {
+const RadioSearchButton = ({ title, options, value, onChange, label }) => {
+	const [wishCheck, setWishCheck] = useAtom(userBiddingWishCheck) // 관심제품
+	const [check, setCheck] = useState()
+	const changeHandler = (value, label) => {
 		if (!onChange) return
 		onChange(value)
+		setCheck(label)
 	}
+
+	console.log('check', check, wishCheck)
+
+	useEffect(() => {
+		if (check === '관심제품') setWishCheck(true)
+		else setWishCheck(false)
+	}, [check])
+
 	return (
 		<RadioContainer>
 			{title && <h6>{title}</h6>}
 			<RadioBox>
 				{options.map((option, index) => (
-					<RadioMainDiv key={index} onClick={() => changeHandler(option.value)}>
+					<RadioMainDiv key={index} onClick={() => changeHandler(option.value, option.label)}>
 						<RadioCircleDiv isChecked={option.value === value}>
 							<RadioInnerCircleDiv isChecked={option.value === value} />
 						</RadioCircleDiv>
