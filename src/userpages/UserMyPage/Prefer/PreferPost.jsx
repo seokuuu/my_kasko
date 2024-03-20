@@ -30,7 +30,7 @@ const init = {
 	name: '', // 선호제품명
 	spec: {
 		text: '',
-		uid: 0,
+		uid: null,
 	}, //DB 필요
 	thicknessMin: null,
 	thicknessMax: null,
