@@ -250,7 +250,6 @@ export const storageAddAtom = atom(false)
 export const packDetailAuctView = atom(false)
 
 export const modal1 = atom(false)
-
 /* ==============================
   ***** 사용자 페이지 *****
 ============================== */
@@ -381,3 +380,6 @@ export const salesPackageModal = atom(false)
 
 // 카운트 다운 - 경매 시작
 export const auctionStartAtom = atom('')
+
+// 사용자 경매 응찰 - 관심 제품 boolean
+export const userBiddingWishCheck = atom(false)

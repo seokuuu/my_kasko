@@ -83,7 +83,7 @@ const UserBiddingSearchFields = ({
 						<RadioSearchButton
 							options={[
 								{ label: '전체', value: null },
-								{ label: '관심제품', value: '관심제품' },
+								{ label: '관심제품', value: undefined },
 								{ label: '응찰', value: '응찰' },
 								{ label: '미응찰', value: '미응찰' },
 							]}

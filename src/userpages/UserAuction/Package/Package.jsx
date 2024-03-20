@@ -92,14 +92,12 @@ const Package = ({}) => {
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
 
-
 	const productListInner = {
 		biddingPrice: null,
 		customerDestinationUid: null,
 	}
 
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
-
 
 	const [getRow, setGetRow] = useState('')
 
@@ -108,7 +106,6 @@ const Package = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 	const uids = checkedArrayState?.map((item) => item['패키지 번호'])
-
 
 	const paramData = {
 		pageNum: 1,
@@ -120,7 +117,6 @@ const Package = ({}) => {
 	const [realAucNum, setRealAucNum] = useState(null)
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
 
-
 	// 전체 GET
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding)
 	const resData = data?.data?.data?.list
@@ -131,7 +127,6 @@ const Package = ({}) => {
 	const tableField = useMemo(() => {
 		return AuctionPackageBiddingFieldsCols(checkedArrayState)
 	}, [checkedArrayState])
-
 
 	// 초기 목적지 GET
 	const { data: destiData } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
@@ -199,7 +194,6 @@ const Package = ({}) => {
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']
 
-
 	const init = {
 		auctionNumber: null,
 		type: '패키지',
@@ -219,7 +213,6 @@ const Package = ({}) => {
 		biddingPrice: null,
 		customerDestinationUid: null,
 	})
-
 
 	// 첫 렌더시 초기 및 대표 목적지 set
 	useMemo(() => {
@@ -397,7 +390,6 @@ const Package = ({}) => {
 			return item
 		})
 
-
 		// 변경된 데이터로 state 업데이트
 		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 		setOridata((prevData) => ({
@@ -471,7 +463,6 @@ const Package = ({}) => {
 		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}
 
-
 	// 응찰가 Table Cell Input
 	const handleCheckboxChange = (event, rowData) => {
 		if (event.target.checked) {
@@ -493,7 +484,6 @@ const Package = ({}) => {
 				title: '해당 회차에 동의하셨습니다.',
 				content: '',
 				func: () => {
-					refetch()
 					setAgreementModal(false)
 					window.location.reload()
 				},
@@ -537,15 +527,16 @@ const Package = ({}) => {
 		if (agreementModal === false && initDestiData.length === 0) {
 			simpleAlert('목적지를 등록하지 않으면 \n 경매에 참여하실 수 없습니다. \n 목적지를 등록하시겠습니까?', () => {
 				navigate('/userpage/userdestination')
+				queryClient.clear()
 			})
 		}
 		if (initDestiData.length > 0 && firstDestiData?.represent !== 1) {
 			simpleAlert('대표 목적지를 등록하지 않으셨습니다.  \n 목적지를 등록하시겠습니까?', () => {
 				navigate('/userpage/userdestination')
+				queryClient.clear()
 			})
 		}
 	}, [agreementModal, firstDestiData, initDestiData])
-
 
 	return (
 		<FilterContianer>
