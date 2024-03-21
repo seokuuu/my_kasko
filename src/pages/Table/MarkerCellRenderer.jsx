@@ -75,8 +75,7 @@ class MarkerCellRenderer {
 		this.isProNo = !!proNo
 		this.cellValue = params.value
 		this.cellWish = !!proNo ? false : Boolean(params?.wish)
-		this.cellBest = !proNo ? false : Boolean(params?.best)
-		this.cellBest = Boolean(params?.best)
+		this.cellBest = !!proNo ? false : !!params.data['추천 제품 여부'] || !!params.data['추천 여부']
 		this.clickHandler = params?.clickHandler
 		this.eGui = document.createElement('div')
 		this.renderCell()
@@ -105,7 +104,6 @@ class MarkerCellRenderer {
 	// 셀 렌더링
 	renderCell() {
 		const textValue = this.cellValue || '-' // 셀 텍스트
-
 		this.eGui.innerHTML = `
           <div style='display:flex;align-items:center;justify-content:center;gap:4px;height:34px;position:relative;'>
           	${this.isProNo ? `<div>-</div>` : ''}
