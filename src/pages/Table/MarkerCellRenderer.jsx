@@ -75,7 +75,8 @@ class MarkerCellRenderer {
 		this.isProNo = !!proNo
 		this.cellValue = params.value
 		this.cellWish = !!proNo ? false : Boolean(params?.wish)
-		this.cellBest = !!proNo ? false : Boolean(params?.best)
+		this.cellBest = !proNo ? false : Boolean(params?.best)
+		this.cellBest = Boolean(params?.best)
 		this.clickHandler = params?.clickHandler
 		this.eGui = document.createElement('div')
 		this.renderCell()
@@ -108,7 +109,7 @@ class MarkerCellRenderer {
 		this.eGui.innerHTML = `
           <div style='display:flex;align-items:center;justify-content:center;gap:4px;height:34px;position:relative;'>
           	${this.isProNo ? `<div>-</div>` : ''}
-            ${this.best ? bestIcon : ''}
+            ${this.cellBest ? bestIcon : ''}
             ${this.cellWish ? wishIcon : ''}
             ${textTag(Boolean(this.cellValue && this.clickHandler), textValue, this.isProNo)}
           </div>

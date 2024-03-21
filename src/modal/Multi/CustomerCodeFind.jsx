@@ -21,9 +21,8 @@ import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/
 // 고객사 찾기
 const CustomerCodeFind = ({ title, setSwitch, data, type, setPropsUid, handleButtonOnClick, defaultValue }) => {
 	const matchData = { name: '고객명', code: '고객사 코드', businessNumber: '사업자번호' }
-	const destinationData = { name: '목적지', code: '목적지 코드' }
+	const destinationData = { name: '목적지', code: '목적지 코드', address: '목적지 주소' }
 	const customerGetData = data?.data?.data //상위 WinningCreate의 Props Data
-
 
 	const [searchTerm, setSearchTerm] = useState('')
 	const [result, setResult] = useState([])
@@ -99,7 +98,7 @@ const CustomerCodeFind = ({ title, setSwitch, data, type, setPropsUid, handleBut
 	return (
 		<>
 			<FadeOverlay />
-			<ModalContainer style={{ width: '700px', height: '720px' }}>
+			<ModalContainer style={{ width: '900px', height: '720px' }}>
 				<BlueBarHeader style={{ height: '60px' }}>
 					<div>{title}</div>
 					<div>
@@ -140,8 +139,9 @@ const CustomerCodeFind = ({ title, setSwitch, data, type, setPropsUid, handleBut
 									)}
 									{title === '목적지 찾기' && (
 										<>
-											<ResultCell style={{ width: '60%' }}>{destinationData.name}</ResultCell>
+											<ResultCell style={{ width: '40%' }}>{destinationData.name}</ResultCell>
 											<ResultCell style={{ width: '20%' }}>{destinationData.code}</ResultCell>
+											<ResultCell style={{ width: '40%' }}>{destinationData.address}</ResultCell>
 											{/* <ResultCell wid={130}>{matchData.businessNumber}</ResultCell> */}
 										</>
 									)}
@@ -189,7 +189,12 @@ const CustomerCodeFind = ({ title, setSwitch, data, type, setPropsUid, handleBut
 											</ResultCell>
 											<ResultCell wid={title === '목적지 찾기' ? 300 : 100}>{item.name}</ResultCell>
 											<ResultCell>{item.code}</ResultCell>
-											{title == '고객사 찾기' && (
+											{title === '목적지 찾기' && (
+												<>
+													<ResultCell wid={300}>{item.address}</ResultCell>
+												</>
+											)}
+											{title === '고객사 찾기' && (
 												<>
 													<ResultCell wid={130}>{item.businessNumber}</ResultCell>
 												</>

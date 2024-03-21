@@ -20,11 +20,10 @@ import { add_element_field } from '../../../lib/tableHelpers'
 import Table from '../../../pages/Table/Table'
 import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import UserWinningSearchFields from './UserWinningSearchFields'
+import moment from 'moment'
 
 const Winning = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
-	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
-	const radioDummy = ['전체', '낙찰', '낙찰 취소', '낙찰 확정']
 
 	//checkSales
 	// 토글 쓰기
@@ -39,19 +38,36 @@ const Winning = ({}) => {
 		}
 	}
 
+	/**
+	 * @description
+	 * - 페이지 첫 렌더시
+	 * - 현재 시간 (00:00:00 ~ 23:59:59)이 default.
+	 */
+	const currentTime = moment() // 현재 시간 가져오기
+	const startOfDay = currentTime.startOf('day')
+	const endOfDay = currentTime.endOf('day')
+
 	const paramData = {
 		pageNum: 1,
-		pageSize: 50,
+		pageSize: 10,
 		orderType: '경매',
+		auctionStartDate: null,
+		auctionEndDate: null,
 	}
+
 	const [param, setParam] = useState(paramData)
+
+	useEffect(() => {
+		setParam((prev) => ({
+			...prev,
+			auctionStartDate: startOfDay.format('YYYY-MM-DD 00:00:00'),
+			auctionEndDate: endOfDay.format('YYYY-MM-DD 23:59:59'),
+		}))
+	}, [])
 
 	const [getRow, setGetRow] = useState('')
 	const tableField = useRef(UserAuctionWinningFieldsCols)
 	const getCol = tableField.current
-
-	const queryClient = useQueryClient()
-	const checkedArray = useAtom(selectedRowsAtom)[0]
 
 	// GET
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getDetailProgress', getWinning)

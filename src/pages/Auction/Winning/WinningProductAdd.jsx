@@ -54,15 +54,13 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 	}
 	const [param, setParam] = useState(paramData)
 	//checkSales
-	
 
 	const [getRow, setGetRow] = useState('')
 	const tableField = useRef(AuctionWinningCreateFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
-	const checkedArray = useAtom(selectedRowsAtom)[0]
 
-
+	const [checkedArray, setCheckedArray] = useAtom(selectedRowsAtom)
 
 	// GET
 	const { isLoading, isError, data, isSuccess } = useReactQuery(param, 'getWinningCreate', getWinningCreate)
@@ -107,9 +105,9 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 		else {
 			simpleConfirm('선택한 항목을 추가하시겠습니까?', () =>
 				checkedArray.forEach((item) => {
-
 					setNewResData((prevData) => [...prevData, item])
 					setAddModal(false)
+					setCheckedArray([])
 				}),
 			)
 		}
