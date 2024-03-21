@@ -20,8 +20,6 @@ const RadioSearchButton = ({ title, options, value, onChange, label }) => {
 		setCheck(label)
 	}
 
-	console.log('check', check, wishCheck)
-
 	useEffect(() => {
 		if (check === '관심제품') setWishCheck(true)
 		else setWishCheck(false)

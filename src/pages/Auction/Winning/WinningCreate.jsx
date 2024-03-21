@@ -42,6 +42,7 @@ import Table from '../../Table/Table'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import BiddingSearchFields from '../Bidding/BiddingSearchFields'
 import WinningProductAdd from './WinningProductAdd'
+import useTableSelection from '../../../hooks/useTableSelection'
 
 const WinningCreate = ({}) => {
 	const navigate = useNavigate()
@@ -131,7 +132,9 @@ const WinningCreate = ({}) => {
 	const tableField = useRef(AuctionWinningCreateFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
-	const checkedArray2 = useAtom(selectedRowsAtom2)[0]
+
+	const [checkedArray2, setCheckedArray2] = useAtom(selectedRowsAtom2)
+
 	const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
 	const [totalWon, setTotalWon] = useState({
 		biddingPrice: null,
@@ -251,6 +254,13 @@ const WinningCreate = ({}) => {
 		})
 	}
 
+	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
+		weightKey: '중량',
+	})
+
+	const totalWeight = getRow && getRow?.map((x) => x['중량'])
+	const sum = totalWeight && totalWeight?.reduce((acc, curr) => acc + parseInt(curr), 0)
+
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -329,7 +339,7 @@ const WinningCreate = ({}) => {
 					</FilterTCBSubdiv>
 					<FilterTCBSubdiv>
 						<div style={{ marginRight: '10px' }}>
-							<h6 style={{ fontSize: '18px' }}>낙찰가 총액 (VAT 포함)</h6>
+							<h6 style={{ fontSize: '18px' }}>낙찰가 총액 (공급가)</h6>
 							<InputContainer>
 								<NoOutInput type="number" value={totalWon?.biddingPrice} />
 								<Unit>원</Unit>
@@ -341,7 +351,7 @@ const WinningCreate = ({}) => {
                 </div> */}
 
 						<div style={{ marginRight: '10px' }}>
-							<h6 style={{ fontSize: '17px' }}> 확정전송 총액 (공급가)</h6>
+							<h6 style={{ fontSize: '17px' }}> 확정전송액 (공급가)</h6>
 							<InputContainer>
 								<NoOutInput type="number" value={totalWon?.confirmPrice} />
 								<Unit>원</Unit>
@@ -364,7 +374,7 @@ const WinningCreate = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						{/* 조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 ) */}
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {getRow?.length}개 )
 						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -373,7 +383,9 @@ const WinningCreate = ({}) => {
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
-					<div>{/* 선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg) */}</div>
+					<div>
+						선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 <span>{sum.toLocaleString()}</span> (kg)
+					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<SkyBtn
 							onClick={() => {

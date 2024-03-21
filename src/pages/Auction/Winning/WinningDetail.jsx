@@ -137,14 +137,8 @@ const WinningDetail = ({ setAucDetail }) => {
 	// 상세 GET 및 param
 	const matchedResult = matchDetailRowWithMatchingData(detailRow, matchingData)
 
-
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
-	//checkSales
-	const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
-
-	//checkShips
-	const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
 
 	const [getRow, setGetRow] = useState('')
 	const tableField = useRef(AuctionWinningDetailFieldsCols)

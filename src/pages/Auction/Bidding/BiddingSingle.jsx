@@ -74,6 +74,8 @@ const BiddingSingle = ({}) => {
 
 	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
 
+	console.log('auctionDestination', auctionDestination?.data?.data)
+
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
 

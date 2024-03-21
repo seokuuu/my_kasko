@@ -118,7 +118,7 @@ const InventoryFind = ({
 									height={40}
 									width={15}
 									margin={5}
-									onClick={title == '고객사 찾기' ? handleSearch : handleSearch2}
+									onClick={title === '고객사 찾기' ? handleSearch : handleSearch2}
 								>
 									찾기
 								</GreyBtn>
@@ -188,7 +188,12 @@ const InventoryFind = ({
 											</ResultCell>
 											<ResultCell wid={title === '목적지 찾기' ? 300 : 100}>{item.name}</ResultCell>
 											<ResultCell>{item.code}</ResultCell>
-											<ResultCell wid={300}>{item.address}</ResultCell>
+											{title === '목적지 찾기' && (
+												<>
+													<ResultCell wid={300}>{item.address}</ResultCell>
+												</>
+											)}
+
 											{title === '고객사 찾기' && (
 												<>
 													<ResultCell wid={130}>{item.businessNumber}</ResultCell>

@@ -35,6 +35,7 @@ import {
 import useAlert from '../../../store/Alert/useAlert'
 import Table from '../../Table/Table'
 import RoundAucListEditFields from './RoundAucListEditFields'
+import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
 // 경매 제품 추가(단일) 메인 컴포넌트
 // 경매 제품 추가 (패키지), 경매 목록 상세(종료된 경매)와 호환 가능
@@ -63,7 +64,6 @@ const RoundAucProAdd = ({
 	const handleImageClick = () => {
 		setIsRotated((prevIsRotated) => !prevIsRotated)
 	}
-	
 
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -98,8 +98,6 @@ const RoundAucProAdd = ({
 	}
 	const [param, setParam] = useState(paramData)
 
-
-
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(
 		param,
 		'getExtraProductList',
@@ -112,8 +110,6 @@ const RoundAucProAdd = ({
 	useEffect(() => {
 		// 이미 추가된 데이터 중복 제거
 		const getData = resData?.filter((obj) => !dupleUids.includes(obj.uid))
-
-
 
 		if (getData && Array.isArray(getData)) {
 			setGetRow(add_element_field(getData, AuctionRoundExtraProductFields))
@@ -227,6 +223,7 @@ const RoundAucProAdd = ({
 								<div>
 									조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / {(getRow && getRow?.length) || 0}개 )
 									{/* <Hidden /> */}
+									<TableV2HiddenSection />
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
 									<PageDropdown handleDropdown={handleTablePageSize} />
