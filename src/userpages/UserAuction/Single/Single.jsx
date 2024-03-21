@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { BtnBound, SkyBtn, TGreyBtn, TWhiteBtn } from '../../../common/Button/Button'
-import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { biddingAgreementModal, selectedRowsAtom, toggleAtom, userBiddingWishCheck } from '../../../store/Layout/Layout'
+import { biddingAgreementModal, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import {
 	CustomInput,
@@ -37,11 +36,12 @@ import useAlert from '../../../store/Alert/useAlert'
 import { authAtom } from '../../../store/Auth/auth'
 import { auctionStartAtom, userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
 import { useLoading } from '../../../store/Loading/loadingAtom'
+import { wishProductNumbersAtom } from '../../../store/Product'
 import AddWishButton from '../../UserSales/_components/AddWishButton'
 import UserBiddingSearchFields from './UserBiddingSearchFields'
 
 const Single = ({}) => {
-	const checkWish = useAtomValue(userBiddingWishCheck)
+	const checkWish = useAtomValue(wishProductNumbersAtom)
 	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
 	const auth = useAtomValue(authAtom) // 이거 auction.js에서 hook으로 바꾸기
 	const nowAuction = useCheckAuction() // 현재 경매 여부 체크
@@ -99,7 +99,7 @@ const Single = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 
-	console.log('checkedArrayState', checkedArrayState)
+	// console.log('checkedArrayState', checkedArrayState)
 
 	const uids = checkedArrayState?.map((item) => item && item['제품 고유 번호']?.value)
 
@@ -119,7 +119,15 @@ const Single = ({}) => {
 	const originData = data?.data?.data
 	const [oriData, setOridata] = useState()
 
-	console.log('oriData', oriData?.list)
+	// 관심 제품 필터
+	/**
+	* @description
+	- checkWish 목록을 가져와야하니, dependency에 넣어주자
+	- 관심제품 atom이 true && 검색 버튼 true여야지
+	- 초기화 누르면
+	*/
+	const wishFilterData = oriData?.list.filter((item) => checkWish && checkWish?.includes(item?.productNumber))
+	// console.log('wishFilterData', wishFilterData)
 
 	const tableField = useMemo(() => {
 		return AuctionBiddingFieldsCols(checkedArrayState)
@@ -337,7 +345,13 @@ const Single = ({}) => {
 	}
 	// import
 	const globalProductSearchOnClick = (userSearchParam) => {
+		if (userSearchParam.biddingStatus === '관심제품') {
+			userSearchParam.productNumberList = userSearchParam.productNumberList
+				? userSearchParam.productNumberList + ','
+				: '' + checkWish.join(',')
+		}
 		setParam((prevParam) => {
+			console.log('prevParam : ', prevParam)
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
 				refetch()
 				return prevParam
@@ -523,8 +537,6 @@ const Single = ({}) => {
 			postAgreementMutation(checkAgreement)
 		}
 	}
-
-	const [getAgreeState, setGetAgreeState] = useState(false) // 동의 상태
 
 	useEffect(() => {
 		// 경매번호도 잘 들어오고, get 미동의(false)가 들어왔을 때

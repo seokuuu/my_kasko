@@ -32,6 +32,7 @@ import useAlert from '../../../store/Alert/useAlert'
 import { onSizeChange } from '../../Operate/utils'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import WinningSearchFields from './WinningSearchFields'
+import moment from 'moment'
 
 // src\pages\Sales\Single\Single.jsx 참고해서 작업 !!!
 const Winning = ({}) => {
@@ -41,42 +42,6 @@ const Winning = ({}) => {
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const [tablePagination, setTablePagination] = useState([])
-	const [winningCreate, setWinningCreate] = useAtom(winningAtom)
-
-	//checkSales
-	const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
-
-	//checkShips
-	const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
-
-	useEffect(() => {
-		// true에 해당되면, value를, false면 빈값을 반환
-		const updatedCheck = checkSales.map((value, index) => {
-			return check1[index] ? value : ''
-		})
-		// 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-		const filteredCheck = updatedCheck.filter((item) => item !== '')
-		setCheckData1(filteredCheck)
-
-		// 전송용 input에 담을 때
-		// setInput({
-		//   ...input,
-		//   businessType: updatedCheck.filter(item => item !== ''),
-		// });
-	}, [check1])
-
-	const handleSelectChange = (selectedOption, name) => {
-		// setInput(prevState => ({
-		//   ...prevState,
-		//   [name]: selectedOption.label,
-		// }));
-	}
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
 
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -95,7 +60,6 @@ const Winning = ({}) => {
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
-	
 
 	// 낙찰 취소 관련
 	const keysToExtract = ['경매 번호', '창고', '고객사 목적지 고유 번호', '낙찰 상태']
@@ -114,8 +78,6 @@ const Winning = ({}) => {
 			return obj
 		}, {}),
 	)
-
-
 
 	// 낙찰 취소 버튼 Handler
 	const { mutate: deleteMutation } = useMutation(deleteBidding, {
@@ -158,16 +120,39 @@ const Winning = ({}) => {
 		depositMuation(extractedArray)
 	}
 
+	/**
+	 * @description
+	 * - 페이지 첫 렌더시
+	 * - 현재 시간 (00:00:00 ~ 23:59:59) 이 default.
+	 */
+
+	const currentTime = moment() // 현재 시간 가져오기
+	const startOfDay = currentTime.startOf('day')
+	const endOfDay = currentTime.endOf('day')
+
+	console.log('endOfDay', endOfDay)
+
 	const paramData = {
 		pageNum: 1,
 		pageSize: 10,
 		orderType: '경매',
+		auctionStartDate: null,
+		auctionEndDate: null,
 	}
 
 	const [param, setParam] = useState(paramData)
 
+	useEffect(() => {
+		setParam((prev) => ({
+			...prev,
+			auctionStartDate: startOfDay.format('YYYY-MM-DD 00:00:00'),
+			auctionEndDate: endOfDay.format('YYYY-MM-DD 23:59:59'),
+		}))
+	}, [])
+
 	// GET
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getDetailProgress', getWinning)
+
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 

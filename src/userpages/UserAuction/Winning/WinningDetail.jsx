@@ -35,6 +35,9 @@ import Table from '../../../pages/Table/Table'
 import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import useAlert from '../../../store/Alert/useAlert'
 import PrintDepositRequestButton from '../../UserSales/_components/PrintDepositRequestButton'
+import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
+import WinningDetailFields from '../../../pages/Auction/Winning/WinningDetailFields'
+import { isEqual } from 'lodash'
 
 const WinningDetail = ({ setAucDetail }) => {
 	const navigate = useNavigate()
@@ -163,7 +166,6 @@ const WinningDetail = ({ setAucDetail }) => {
 	const resPagination = data?.data?.data?.pagination
 	const [winningCreateData, setWinningCreateData] = useState({})
 
-
 	// 예외 처리
 	useEffect(() => {
 		if (isSuccess && resData === undefined && !detailRow)
@@ -171,7 +173,6 @@ const WinningDetail = ({ setAucDetail }) => {
 				navigate('/userpage/auctionwinning')
 			})
 	}, [isSuccess, resData, detailRow])
-
 
 	useEffect(() => {
 		//타입, 리액트쿼리, 데이터 확인 후 실행
@@ -205,7 +206,6 @@ const WinningDetail = ({ setAucDetail }) => {
 		requestCustomerDestinationUid: null,
 	})
 
-
 	useEffect(() => {
 		setDestiObject(destinationData)
 	}, [destinationData])
@@ -223,7 +223,6 @@ const WinningDetail = ({ setAucDetail }) => {
 			updateList: updatedProductList,
 		}))
 	}, [checkedArray, finalInput])
-
 
 	const onPageChange = (value) => {
 		setParam((prevParam) => ({
@@ -264,6 +263,23 @@ const WinningDetail = ({ setAucDetail }) => {
 		best: { display: true },
 	})
 
+	const globalProductResetOnClick = () => {
+		setParam(paramData)
+	}
+	// import
+	const globalProductSearchOnClick = (userSearchParam) => {
+		setParam((prevParam) => {
+			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
+				refetch()
+				return prevParam
+			}
+			return {
+				...prevParam,
+				...userSearchParam,
+			}
+		})
+	}
+
 	return (
 		<FilterContianer>
 			<div>
@@ -288,6 +304,17 @@ const WinningDetail = ({ setAucDetail }) => {
 					))}
 				</ClaimTable>
 			</div>
+			{exFilterToggle && (
+				<>
+					<GlobalProductSearch
+						param={param}
+						isToggleSeparate={true}
+						renderCustomSearchFields={(props) => <WinningDetailFields {...props} />}
+						globalProductSearchOnClick={globalProductSearchOnClick}
+						globalProductResetOnClick={globalProductResetOnClick}
+					/>
+				</>
+			)}
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
