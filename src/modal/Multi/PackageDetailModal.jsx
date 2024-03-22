@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import styled from 'styled-components'
 import { getPackageProductsList } from '../../api/SellProduct'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../components/MapTable/MapTable'
@@ -23,7 +23,8 @@ import {
 } from '../External/ExternalFilter'
 
 export default function PackageDetailModal() {
-	const [isModal, setIsModal] = useAtom(packageDetailModal)
+	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+	const setIsModal = useSetAtom(packageDetailModal)
 	const select = useAtomValue(selectPackageAtom)
 	const [param, setParam] = useState({
 		pageNum: 1,
@@ -50,7 +51,8 @@ export default function PackageDetailModal() {
 			setGetRow(add_element_field(filteredData, packageProductsDispatchFields))
 		}
 		//타입, 리액트쿼리, 데이터 확인 후 실행
-	}, [isSuccess, filteredData])
+	}, [data, filteredData])
+
 	useEffect(() => {
 		document.body.style.overflow = 'hidden'
 		return () => {
@@ -72,7 +74,7 @@ export default function PackageDetailModal() {
 			pageNum: Number(value),
 		}))
 	}
-	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+
 	return (
 		<OutSide>
 			<Container>
@@ -91,7 +93,6 @@ export default function PackageDetailModal() {
 					<FilterContianer>
 						<FilterHeader>
 							<div style={{ display: 'flex' }}></div>
-							{/* <HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} /> */}
 						</FilterHeader>
 						<FilterTopContainer>
 							<FilterTCTop>
@@ -110,10 +111,10 @@ export default function PackageDetailModal() {
 											)}
 											{title === '수량' && <ClaimContent>{filteredData.length}</ClaimContent>}
 											{title === '상시판매가' && (
-												<ClaimContent>{detailList ? detailList[0].packagePrice : null}</ClaimContent>
+												<ClaimContent>{detailList ? detailList[0].packagePrice?.toLocaleString() : null}</ClaimContent>
 											)}
 											{title === '시작가' && (
-												<ClaimContent>{detailList ? detailList[0].auctionStartPrice : null}</ClaimContent>
+												<ClaimContent>{detailList ? detailList[0].packagePrice?.toLocaleString() : null}</ClaimContent>
 											)}
 										</Fragment>
 									))}
@@ -124,7 +125,7 @@ export default function PackageDetailModal() {
 							<TCSubContainer bor>
 								<div>
 									조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
-									{tablePagination ? tablePagination?.listCount : tablePagination?.listCount}개 )
+									{tablePagination?.listCount?.toLocaleString()}개 )
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
 									<PageDropdown handleDropdown={handleTablePageSize} />
@@ -133,7 +134,8 @@ export default function PackageDetailModal() {
 							</TCSubContainer>
 							<TCSubContainer bor>
 								<div>
-									선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총 {tablePagination?.totalWeight} kg
+									선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총{' '}
+									{tablePagination?.totalWeight?.toLocaleString()} kg
 								</div>
 							</TCSubContainer>
 							<Table getRow={getRow} getCol={getCol} tablePagination={tablePagination} onPageChange={onPageChange} />

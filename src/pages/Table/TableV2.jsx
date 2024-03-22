@@ -341,7 +341,7 @@ const TableV2 = ({
 				if (['고유 번호', '고유번호'].includes(item.field)) {
 					item.hide = true
 				}
-				if (['추천'].includes(item.field)) {
+				if (['추천 제품 여부', '추천 여부', '추천여부'].includes(item.field)) {
 					item.hide = true
 				}
 				// 로컬 스토리지 저장된 숨김목록처리
