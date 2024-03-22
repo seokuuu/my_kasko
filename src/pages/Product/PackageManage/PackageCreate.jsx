@@ -1,19 +1,15 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Excel from '../../../components/TableInner/Excel'
 import { BlackBtn, BtnWrap, WhiteBlackBtn, WhiteBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
 	packageCreateObjAtom,
-	packageModeAtom,
 	packageUpdateObjAtom,
 	selectedRowsAtom,
-	selectedRowsAtom2,
 	singleAllProductModal,
 	toggleAtom,
 } from '../../../store/Layout/Layout'
-import { CheckBox } from '../../../common/Check/Checkbox'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import {
 	ExRadioWrap,
@@ -43,7 +39,7 @@ import useMutationQuery from '../../../hooks/useMutationQuery'
 import useAlert from '../../../store/Alert/useAlert'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
-import { numberDeleteComma } from '../../../utils/utils'
+import { formatWeight, numberDeleteComma } from '../../../utils/utils'
 
 const PackageCreate = () => {
 	const navigate = useNavigate()
@@ -52,7 +48,7 @@ const PackageCreate = () => {
 
 	const [isModal, setIsModal] = useAtom(singleAllProductModal)
 	const [packageObj, setPackageObj] = useAtom(packageCreateObjAtom)
-	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+	const [checkBoxSelect, setCheckBoxSelect] = useAtom(selectedRowsAtom)
 	const setUpdateObj = useSetAtom(packageUpdateObjAtom)
 
 	const [packageName, setPackageName] = useState(prevData ? prevData['패키지 이름'] : packageObj?.packageName)
@@ -101,8 +97,10 @@ const PackageCreate = () => {
 	const { pagination, onPageChanage } = useTablePaginationPageChange(prevData ? data : select, setRequestParams)
 
 	const { simpleConfirm, showAlert, simpleAlert } = useAlert()
-	const { mutate: create } = useMutationQuery(['query'], postCreatePackage)
-	const { mutate: update } = useMutationQuery(['query'], postUpdatePackage)
+	const { mutate: create, isLoading: createLoading } = useMutationQuery(['query'], postCreatePackage)
+	const { mutate: update, isLoading: updateLoading } = useMutationQuery(['query'], postUpdatePackage)
+
+	useLocation(createLoading || updateLoading)
 
 	const handleSubmit = () => {
 		if (!createRequest.name) {
@@ -153,21 +151,13 @@ const PackageCreate = () => {
 
 		simpleConfirm('수정하시겠습니까?', () => {
 			update(updateRequest, {
-				onSuccess: (d) => {
-					if (d?.data?.status === 200) {
-						simpleAlert('수정되었습니다', () => navigate('/product/package'))
-					}
+				onSuccess: () => {
+					simpleAlert('수정되었습니다', () => navigate('/product/package'))
 				},
 				onError: (e) => {
-					if (e.data?.status === 400)
-						showAlert({
-							title: `${e?.data?.message}`,
-							content: '',
-							func: () => {
-								// navigate(-1)
-								window.location.reload()
-							},
-						})
+					simpleAlert(`${e?.data?.message || '수정 실패하였습니다.'}`, () => {
+						window.location.reload()
+					})
 				},
 			})
 		})
@@ -188,12 +178,14 @@ const PackageCreate = () => {
 			const filteredArr = select.filter((li) => !check.includes(li['제품 고유 번호']))
 			setSelect(filteredArr)
 		}
+		setCheckBoxSelect([])
 		return { sumArr, updateRequest }
 	}
 
+	// 제품 추가
 	useEffect(() => {
 		if (getRow && select) {
-			setSumArr([...getRow, ...select])
+			setSumArr((prev) => [...getRow, ...prev, ...select])
 		}
 	}, [getRow, select])
 
@@ -322,6 +314,11 @@ const PackageCreate = () => {
 		navigate(-1)
 	}
 
+	const calculateTotal = (list, key) => {
+		if (!list) return 0
+		return formatWeight(list?.map((item) => Number(item[key])).reduce((acc, cur) => acc + cur, 0))
+	}
+
 	return (
 		<FilterContianer>
 			<FilterHeader>
@@ -348,9 +345,9 @@ const PackageCreate = () => {
 												<RadioCircleDiv
 													isWhite
 													isChecked={checkRadio[index]}
-													onClick={() => {
-														setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
-													}}
+													// onClick={() => {
+													// 	setCheckRadio(CheckBox(checkRadio, checkRadio.length, index))
+													// }}
 												>
 													<RadioInnerCircleDiv isWhite isChecked={checkRadio[index]} />
 												</RadioCircleDiv>
@@ -392,7 +389,12 @@ const PackageCreate = () => {
 				<TCSubContainer bor>
 					<div>
 						선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총{' '}
-						{!prevData ? select.length : pagination ? pagination?.totalWeight : pagination?.totalWeight} 중량 kg
+						{!prevData
+							? calculateTotal(select, '제품 중량')
+							: pagination
+							? pagination?.totalWeight
+							: pagination?.totalWeight}{' '}
+						중량 kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
 						<WhiteRedBtn onClick={handleRemoveItem}>목록 제거</WhiteRedBtn>
@@ -436,7 +438,7 @@ const PackageCreate = () => {
 					</CRWSub>
 				</CRWMainBottom>
 			</TableContianer>
-			{isModal && <SingleAllProduct selectPr={select} setSelectPr={setSelect} isUpdate={prevData ? true : false} />}
+			{isModal && <SingleAllProduct selectPr={select} setSelectPr={setSelect} isUpdate={!!prevData} />}
 		</FilterContianer>
 	)
 }

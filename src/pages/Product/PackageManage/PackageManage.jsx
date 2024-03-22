@@ -126,8 +126,9 @@ const PackageManage = () => {
 		}
 		deletePkg(selectUids, {
 			onSuccess: () => {
-				simpleAlert('해제되었습니다.')
-				window.location.reload()
+				simpleAlert('해제되었습니다.', () => {
+					window.location.reload()
+				})
 			},
 			onError: (e) => {
 				simpleAlert(e?.data?.message ?? '해제 실패하였습니다.')
@@ -136,13 +137,18 @@ const PackageManage = () => {
 	}
 
 	const handleOpenSaleType = () => {
+		if (request?.uids?.length === 0) {
+			simpleAlert('제품을 선택해주세요')
+			return
+		}
 		changeCT(request, {
 			onSuccess: () => {
-				simpleAlert('저장이 되었습니다.')
-				window.location.reload()
+				simpleAlert('저장이 되었습니다.', () => {
+					window.location.reload()
+				})
 			},
 			onError: (e) => {
-				simpleAlert(e?.data?.message)
+				simpleAlert(e?.data?.message || '실파하였습니다.')
 			},
 		})
 	}
