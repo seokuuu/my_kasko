@@ -7,7 +7,15 @@ import { commonStyles } from './Auction'
 
 // 클레임 관리 목록 헤더
 export const ClaimListFieldCols = [
-	{ field: '', checkboxSelection, headerCheckboxSelection, minWidth: 50, ...commonStyles },
+	{
+		field: '',
+		checkboxSelection,
+		headerCheckboxSelection,
+		minWidth: 50,
+		...commonStyles,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	{ field: '순번', ...commonStyles, minWidth: 100 },
 	{ field: '수정', minWidth: 90, cellRenderer: ClaimCellRender, ...commonStyles },
 	{ field: '경매일자', minWidth: 200, ...commonStyles },
@@ -89,7 +97,15 @@ export const ClaimListFields = {
 
 // 클레임 등록할 제품 찾기 목록 헤더
 export const ClaimProductListFieldCols = [
-	{ ...commonStyles, field: '', checkboxSelection, headerCheckboxSelection, maxWidth: 50 },
+	{
+		...commonStyles,
+		field: '',
+		checkboxSelection,
+		headerCheckboxSelection,
+		maxWidth: 50,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	{ ...commonStyles, field: '순번', maxWidth: 100 },
 	{ ...commonStyles, field: '제품 번호' },
 	{ ...commonStyles, field: '창고' },

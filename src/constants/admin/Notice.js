@@ -7,7 +7,15 @@ import { commonStyles } from './Auction'
 
 // 공지사항 관리 목록 헤더
 export const NoticeListFieldCols = [
-	{ ...commonStyles, field: '', checkboxSelection, headerCheckboxSelection, maxWidth: 50 },
+	{
+		...commonStyles,
+		field: '',
+		checkboxSelection,
+		headerCheckboxSelection,
+		maxWidth: 50,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	{ ...commonStyles, field: '순번', maxWidth: 100 },
 	{ ...commonStyles, field: '제목', minWidth: 350 },
 	{ ...commonStyles, field: '상단노출여부', maxWidth: 150 },

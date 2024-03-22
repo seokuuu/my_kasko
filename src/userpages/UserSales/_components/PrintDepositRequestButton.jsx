@@ -1,20 +1,16 @@
 import { useQuery } from '@tanstack/react-query'
+import html2pdf from 'html2pdf.js'
 import moment from 'moment/moment'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { client } from '../../../api'
-import { BlackBtn, NewBottomBtnWrap, WhiteSkyBtn } from '../../../common/Button/Button'
+import { BlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
-import {
-	BlueBarHeader,
-	BlueSubContainer,
-	FadeOverlay,
-	ModalContainer,
-	WhiteCloseBtn,
-} from '../../../modal/Common/Common.Styled'
+import { BlueBarHeader, BlueSubContainer, WhiteCloseBtn } from '../../../modal/Common/Common.Styled'
 import { FilterContianer, FilterHeaderAlert, TableContianer } from '../../../modal/External/ExternalFilter'
+import { OutSide } from '../../../modal/Multi/SingleAllProduct'
 import useAlert from '../../../store/Alert/useAlert'
-import html2pdf from 'html2pdf.js'
+import PrintType from '../../../modal/Multi/PrintType'
 /**
  * @constant 입금요청서 요청 URL
  * @description auction:경매, salesDeposit:상시판매
@@ -80,20 +76,37 @@ export const PrintDepositRequestButton = ({
 	customerDestinationUid = '',
 	biddingStatus = '',
 }) => {
-	const [isExtracted, setIsExtracted] = useState(false)
 	const containerRef = useRef(null)
 	// pdf 추출
+
+	const [checkModal, setCheckModal] = useState(false)
+	const checkTypeOnClickHandler = () => {
+		setCheckModal(true)
+	}
+
+	const radioDummy = ['가로', '세로']
+	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
+	const [checkRadioValue, setCheckRadioValue] = useState(Array.from({ length: radioDummy.length }, () => ''))
+
+	useEffect(() => {
+		const update = radioDummy.map((value, idx) => {
+			return checkRadio[idx] ? value : ''
+		})
+		const filteredCheck = update.filter((item) => item !== '')
+		setCheckRadioValue(filteredCheck)
+	}, [checkRadio])
+
 	const handleExtract = () => {
 		const element = containerRef.current
+		const orientation = checkRadioValue[0] === '가로' ? 'landscape' : 'portrait'
 		html2pdf(element, {
 			filename: `입금요청서_${auctionDate}.pdf`, // default : file.pdf
 			html2canvas: { scale: 3 }, // 캡처한 이미지의 크기를 조절, 값이 클수록 더 선명하다.
 			jsPDF: {
 				format: 'a2', // 종이 크기 형식
-				orientation: 'portrait', // or landscape : 가로
+				orientation: orientation, // or landscape : 가로
 			},
-			callback: () => {
-			},
+			callback: setCheckModal(false),
 		})
 	}
 
@@ -102,6 +115,7 @@ export const PrintDepositRequestButton = ({
 	// 입금요청서 발행 모드
 	const [receiptPrint, setReceiptPrint] = useState(false)
 	// 데이터
+
 	const {
 		data: infoData,
 		refetch: requestData,
@@ -125,6 +139,8 @@ export const PrintDepositRequestButton = ({
 		enabled: Boolean(oneAuctionNumber.current),
 		retry: false,
 	})
+
+	console.log('뭐고 =>', infoData?.list)
 	// 총계 데이터
 	const totalData = useMemo(() => getTotalData(infoData), [infoData])
 	// 일자 데이터
@@ -169,16 +185,16 @@ export const PrintDepositRequestButton = ({
 			<WhiteSkyBtn onClick={handlePrintClick}>입금 요청서 발행</WhiteSkyBtn>
 			{receiptPrint && (
 				<>
-					<FadeOverlay />
-					<ModalContainer
-						style={{
-							width: '75%',
-							maxHeight: '90vh',
-							minHeight: 740,
-							background: '#eef3fb',
-							flexDirection: 'column',
-							alignItems: 'flex-end',
-						}}
+					<OutSide />
+					<NewContainer
+					// style={{
+					// 	width: '75%',
+					// 	maxHeight: '90vh',
+					// 	minHeight: 740,
+					// 	background: '#eef3fb',
+					// 	flexDirection: 'column',
+					// 	alignItems: 'flex-end',
+					// }}
 					>
 						<BlueBarHeader style={{ height: '20px' }}>
 							<div></div>
@@ -294,14 +310,15 @@ export const PrintDepositRequestButton = ({
 																<Td>{v.productName}</Td>
 																<Td>{v.productSpec}</Td>
 																<Td>{v.productWdh}</Td>
-																<Td>{v.weight}</Td>
-																<Td>{v.orderPrice}</Td>
-																<Td>{v.freightCost}</Td>
-																<Td>{v.orderPrice + v.freightCost}</Td>
-																<Td>{v.orderPriceVat}</Td>
-																<Td>{v.freightCostVat}</Td>
-																<Td>{v.orderPriceVat + v.freightCostVat}</Td>
-																<Td>{v.totalPrice}</Td>
+																<Td>{parseInt(v.weight).toLocaleString()}</Td>
+
+																<Td>{v.orderPrice.toLocaleString()}</Td>
+																<Td>{v.freightCost.toLocaleString()}</Td>
+																<Td>{(v.orderPrice + v.freightCost).toLocaleString()}</Td>
+																<Td>{v.orderPriceVat.toLocaleString()}</Td>
+																<Td>{v.freightCostVat.toLocaleString()}</Td>
+																<Td>{(v.orderPriceVat + v.freightCostVat).toLocaleString()}</Td>
+																<Td>{v.totalPrice.toLocaleString()}</Td>
 															</tr>
 														))}
 													{/* 총계 */}
@@ -327,12 +344,23 @@ export const PrintDepositRequestButton = ({
 						</BlueSubContainer>
 						<DepositRequestBottom>
 							<div></div>
-							<BlackBtn width={12} height={45} onClick={handleExtract} style={{ cursor: 'pointer' }}>
+							<BlackBtn width={12} height={45} onClick={checkTypeOnClickHandler} style={{ cursor: 'pointer' }}>
 								출력하기
 							</BlackBtn>
-							<img src="/img/logo.png" />
+							<img src="/img/logo.png" style={{ width: '50px', height: '35px' }} />
 						</DepositRequestBottom>
-					</ModalContainer>
+					</NewContainer>
+					{checkModal && (
+						<PrintType
+							checkRadio={checkRadio}
+							setCheckRadio={setCheckRadio}
+							checkRadioValue={checkRadioValue}
+							setCheckRadioValue={setCheckRadioValue}
+							setCheckModal={setCheckModal}
+							radioDummy={radioDummy}
+							handleExtract={handleExtract}
+						/>
+					)}
 				</>
 			)}
 		</>
@@ -402,4 +430,18 @@ const DepositRequestBottom = styled.div`
 	z-index: 9999;
 	width: 100%;
 	padding: 15px 30px;
+`
+
+const NewContainer = styled.div`
+	position: fixed;
+	top: 50%;
+	left: 53%;
+	background-color: #eef3fb;
+	width: ${(props) => props.width}px;
+	width: 1500px;
+	height: 900px;
+
+	overflow-y: scroll;
+	transform: translate(-50%, -50%);
+	z-index: 9999;
 `

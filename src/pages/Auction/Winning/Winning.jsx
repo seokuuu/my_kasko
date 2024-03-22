@@ -2,13 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { SkyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import {
-	selectedRowsAtom,
-	toggleAtom,
-	winningAtom,
-	winningDetailAucNumAtom,
-	winningDetailModal,
-} from '../../../store/Layout/Layout'
+import { selectedRowsAtom, toggleAtom, winningDetailAucNumAtom, winningDetailModal } from '../../../store/Layout/Layout'
 
 import Table from '../../Table/Table'
 
@@ -19,6 +13,7 @@ import { Link } from 'react-router-dom'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isEqual } from 'lodash'
+import moment from 'moment'
 import { deleteBidding, depositConfirm, getWinning } from '../../../api/auction/winning'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
@@ -32,7 +27,6 @@ import useAlert from '../../../store/Alert/useAlert'
 import { onSizeChange } from '../../Operate/utils'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import WinningSearchFields from './WinningSearchFields'
-import moment from 'moment'
 
 // src\pages\Sales\Single\Single.jsx 참고해서 작업 !!!
 const Winning = ({}) => {

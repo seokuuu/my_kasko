@@ -12,13 +12,12 @@ import useTablePaginationPageChange from '../../../../../hooks/useTablePaginatio
 import useTableSelection from '../../../../../hooks/useTableSelection'
 import { add_element_field } from '../../../../../lib/tableHelpers'
 import { TableContianer } from '../../../../../modal/External/ExternalFilter'
-import AddProduct from '../../../../../modal/Operate/AddProduct'
+import AddStorage from '../../../../../modal/Operate/AddStorage'
 import useAlert from '../../../../../store/Alert/useAlert'
-import { btnCellUidAtom, operateAddAtom, storageAddAtom } from '../../../../../store/Layout/Layout'
+import { btnCellUidAtom, storageAddAtom } from '../../../../../store/Layout/Layout'
 import Table from '../../../../Table/Table'
 import CommonTableHeader from '../../../UI/CommonTableHeader'
 import { commonListSearchInitValue } from '../../../constants'
-import AddStorage from '../../../../../modal/Operate/AddStorage'
 
 const params = {
 	uid: '',

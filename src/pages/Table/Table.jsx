@@ -177,15 +177,38 @@ const Table = ({
 		}
 	}, [rowData])
 
+	const tableV2CommonStyles = {
+		headerClass: 'custom-header-style',
+		flex: 1,
+		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+	}
+
 	useEffect(() => {
-		if (getCol && getCol.length > 0) {
-			const newCol = getCol.map((item) => {
-				if (['추천 여부'].includes(item.field)) {
+		if (getCol && getCol?.length > 0) {
+			// 행 정의
+			const newCol = getCol?.map((item) => {
+				if (item.checkboxSelection) {
+					item.suppressMovable = true
+					item.pinned = 'left'
+					item.minWidth = 50
+					item.maxWidth = 50
+					return { ...item, ...tableV2CommonStyles }
+				}
+				if (['고유 번호', '고유번호'].includes(item.field)) {
 					item.hide = true
 				}
-				return item
+				if (['추천'].includes(item.field)) {
+					item.hide = true
+				}
+				// 로컬 스토리지 저장된 숨김목록처리
+				if (localTableList && tableType) {
+					const hiddenIds = localTableList[tableType]?.hiddenIds
+					if (hiddenIds.includes(item.field)) {
+						item.hide = true
+					}
+				}
+				return { ...item, ...tableV2CommonStyles, maxWidth: 999, minWidth: 80, width: 100 }
 			})
-
 			setColumnDefs(newCol)
 		}
 	}, [])
@@ -210,11 +233,6 @@ const Table = ({
 		})
 		gridApi.onFilterChanged()
 	}
-
-	const handleResultBlockClick = useCallback((country) => {
-		setSelectedCountry(country)
-		setFilterText(country) // 클릭한 국가로 필터 텍스트를 설정합니다
-	}, [])
 
 	const [isModal, setIsModal] = useAtom(blueModalAtom)
 	const location = useLocation()
@@ -320,31 +338,13 @@ const Table = ({
 
 	//Options
 	const gridOptions = {
-		// other grid options
-		// rowModelType: 'serverSide',
+		suppressScrollOnNewData: true, // 스크롤 유지
 		headerHeight: 30,
-
-		// rowDragManaged: true, // Enable row dragging
 		animateRows: true, // Enable row animations
-		// onRowDragEnd:
-		// animateRows: true,
-		// paginationPageSize: size, // 요청할 페이지 사이즈
 		cacheBlockSize: 100, // 캐시에 보관할 블록 사이즈
 		maxBlocksInCache: 10, // 캐시에 최대로 보관할 블록 수
 		// 서버 측 데이터 요청을 처리하는 함수
-		serverSideDatasource: {
-			getRows: async function (params) {
-				// 백엔드로부터 데이터 가져오기
-				// const response = await fetch('/inventory-ledger?pageNum=1&pageSize=1')
-				// const rowData = await response.json()
-				// ag-Grid에 데이터 설정
-				// params.successCallback(getRow)
-			},
-		},
-		// overlayNoRowsTemplate:
-		//   '<div style="padding: 20px; border: 2px solid #666; background: #EEF3FB; fontsize: 20px; ">항목이 존재하지 않습니다.</div>',
 	}
-	// new agGrid.Grid(document.querySelector('#myGrid'), gridOptions)
 
 	const pinnedTopRowData = useMemo(() => {
 		return topData
@@ -544,19 +544,6 @@ const Table = ({
 		setResetHiddenColumn({ type: tableType })
 	}, [location, tableType])
 
-	/**
-	 * 테이블 컬럼 이동 hook
-	 * @description
-	 * 추후 대비용 Test
-	 */
-	const onColumnMoved = () => {
-		const api = gridRef.current.columnApi
-		if (api) {
-			const columnState = api.getColumnState()
-			console.log('columnState', columnState)
-		}
-	}
-
 	return (
 		<div style={containerStyle}>
 			<TestContainer hei={hei}>
@@ -564,7 +551,6 @@ const Table = ({
 					<AgGridReact
 						ref={gridRef}
 						// {...gridOptions}
-						onColumnMoved={onColumnMoved}
 						suppressColumnVirtualisation={true}
 						onGridReady={effectGridReady}
 						onFirstDataRendered={onFirstDataRendered}

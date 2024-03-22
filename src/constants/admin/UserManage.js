@@ -35,6 +35,8 @@ export const UserManageCustomerManageFieldsCols = [
 		minWidth: 50,
 		checkboxSelection: checkboxSelection,
 		headerCheckboxSelection: headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
 	},
 	{
 		...commonStyles,
@@ -137,6 +139,8 @@ export const UserManageCustomerDestinationManageFieldsCols = [
 		minWidth: 50,
 		checkboxSelection: checkboxSelection,
 		headerCheckboxSelection: headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
 	},
 	{
 		...commonStyles,
@@ -190,6 +194,8 @@ export const adminCustomerDestinationManageFieldsCols = [
 		minWidth: 50,
 		checkboxSelection: checkboxSelection,
 		headerCheckboxSelection: headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
 	},
 	{
 		...commonStyles,
@@ -250,6 +256,8 @@ export const UserManageFieldsCols = [
 		...commonStyles,
 		checkboxSelection: checkboxSelection,
 		headerCheckboxSelection: headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
 	},
 	{
 		field: '수정',
@@ -304,7 +312,15 @@ export const UserPageUserPreferFields = {
 	비고: '',
 }
 export const UserPageUserPreferFieldsCols = [
-	{ field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection, ...commonStyles },
+	{
+		field: '',
+		maxWidth: 50,
+		checkboxSelection,
+		headerCheckboxSelection,
+		...commonStyles,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	{
 		...commonStyles,
 		field: '수정',
