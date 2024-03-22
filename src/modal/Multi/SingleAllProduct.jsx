@@ -34,7 +34,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 	const getCol = tableField.current
 
 	const [isModal, setIsModal] = useAtom(singleAllProductModal)
-	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+	const [checkBoxSelect, setCheckBoxSelect] = useAtom(selectedRowsAtom)
 	const [pagiNation, setPagination] = useState({})
 
 	const paramData = {
@@ -93,30 +93,30 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 	}
 
 	const handleSelectProduct = () => {
-		setSelectPr(() =>
-			checkBoxSelect.map((item) => {
-				return {
-					...item,
-					'패키지 번호': '',
-					'제품 고유 번호': item['고유 번호'],
-					'제품 창고': item['창고'],
-					'제품 매입처': item['매입처'],
-					'제품 제조사': item['제조사'],
-					'제품 경매 번호': item['제품 경매 번호'],
-					'제품 판매 유형': item['판매 유형'],
-					'제품 판매 구분': item['판매 구분'],
-					'제품 판매가 유형': item['판매가 유형'],
-					제품군: item['제품군명'],
-					'제품 중량': item['중량'],
-					공급가: item['운반비 공급가'],
-					부가세: item['운반비 부가세'],
-					'경매 시작가': item['경매 시장 단가'],
-					'최종 수정자': item['최종 수정자'],
-					메모: item['메모'],
-					비고: item['비고'],
-				}
-			}),
-		)
+		const newSelects = checkBoxSelect.map((item) => {
+			return {
+				...item,
+				'패키지 번호': '',
+				'제품 고유 번호': item['고유 번호'],
+				'제품 창고': item['창고'],
+				'제품 매입처': item['매입처'],
+				'제품 제조사': item['제조사'],
+				'제품 경매 번호': item['제품 경매 번호'],
+				'제품 판매 유형': item['판매 유형'],
+				'제품 판매 구분': item['판매 구분'],
+				'제품 판매가 유형': item['판매가 유형'],
+				제품군: item['제품군명'],
+				'제품 중량': item['중량'],
+				공급가: item['운반비 공급가'],
+				부가세: item['운반비 부가세'],
+				'경매 시작가': item['경매 시장 단가'],
+				'최종 수정자': item['최종 수정자'],
+				메모: item['메모'],
+				비고: item['비고'],
+			}
+		})
+		setSelectPr((prev) => [...prev, ...newSelects])
+		setCheckBoxSelect([])
 		modalClose()
 	}
 
@@ -167,7 +167,10 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 							<TCSubContainer bor>
 								<div>
 									조회 목록 (선택 <span>{checkBoxSelect?.length > 0 ? checkBoxSelect?.length : '0'}</span> /{' '}
-									{pagiNation ? pagiNation.listCount : singleProductPage?.listCount}개 ){/*<Hidden />*/}
+									{pagiNation
+										? pagiNation?.listCount?.toLocaleString()
+										: singleProductPage?.listCount?.toLocaleString()}
+									개 )
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
 									<PageDropdown
@@ -180,7 +183,8 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 							</TCSubContainer>
 							<TCSubContainer bor>
 								<div style={{ margin: '4px' }}>
-									선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총{singleProductPage?.totalWeight} 중량 kg
+									선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총
+									{singleProductPage?.totalWeight?.toLocaleString()} 중량 kg
 								</div>
 							</TCSubContainer>
 							<Table

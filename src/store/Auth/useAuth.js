@@ -8,7 +8,6 @@ const useAuth = () => {
 	const { showAlert } = useAlert()
 	const navigate = useNavigate()
 	const auth = useAtomValue(authAtom)
-	
 
 	const setAuth = useSetAtom(authAtom)
 
@@ -48,6 +47,10 @@ const useAuth = () => {
 		return auth ? { name: auth.name, customerName: auth.customerName } : null
 	}
 
+	const getRole = () => {
+		return auth ? auth.role : null
+	}
+
 	// 로그아웃
 	const logout = () => {
 		setAuth(initAuth)
@@ -59,6 +62,7 @@ const useAuth = () => {
 		authRouter,
 		setLogin,
 		getName,
+		getRole,
 		logout,
 	}
 }
