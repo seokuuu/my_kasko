@@ -29,8 +29,8 @@ import { onSizeChange } from '../../Operate/utils'
 import InventorySearchFields from './InventorySearchFields'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 
-const Inventory = ({}) => {
-	const paramData = { pageNum: 1, pageSize: 50, reciptStatus: '입고 확정' }
+const Inventory = () => {
+	const paramData = { pageNum: 1, pageSize: 50 }
 	const [param, setParam] = useState(paramData)
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const {
@@ -71,7 +71,6 @@ const Inventory = ({}) => {
 		}
 	}
 	const [parameter, setParameter] = useAtom(changeCategoryAtom)
-	// const [nowPopup, setNowPopup] = useAtom(popupObject)
 	const [modalSwitch, setModalSwitch] = useAtom(modalAtom)
 	const [errorMsg, setErrorMsg] = useState('')
 	const openModal = () => {
@@ -117,8 +116,6 @@ const Inventory = ({}) => {
 		return res
 	}
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
 		setParam(paramData)
 	}
 

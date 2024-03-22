@@ -21,7 +21,6 @@ import moment from 'moment'
 
 // 중량 판매 등록 모달
 const WeightSales = () => {
-	console.log('WeightSales')
 	const auth = useAtomValue(authAtom)
 	const { simpleConfirm, simpleAlert } = useAlert()
 
@@ -38,7 +37,6 @@ const WeightSales = () => {
 
 	const [rows, setRows] = useState([]) // 중량판매 테이블 row 데이터
 	const [checkedRows, setCheckedRows] = useState([]) // 중량 판매 테이블 체크 리스트
-	const [updateState, setUpdateState] = useState([]) // 변경 데이터
 	const [deleted, setDeleted] = useState([]) // 삭제 데이터
 	const [postRequest, setPostRequest] = useState({
 		originalProductUid: selectObj['제품 고유 번호'], // 제품 고유 번호
@@ -101,7 +99,6 @@ const WeightSales = () => {
 		const row = tableRowData[0]
 		return data?.map((item) => ({
 			...item,
-			두께: (row['두께'] / data?.length).toFixed(1),
 			폭: (row['폭'] / data?.length).toFixed(1),
 			길이: (row['길이'] / data?.length).toFixed(1),
 		}))
@@ -132,28 +129,38 @@ const WeightSales = () => {
 		// post data set
 		const newAddData = newRows.map((item) => ({
 			productNumber: item['제품 번호'],
-			thickness: item['두께'],
 			width: item['폭'],
 			length: item['길이'],
 		}))
 		setPostRequest((p) => ({ ...p, addProductList: [...newAddData] }))
 	}
 
-	// 중량 제품 두께, 폭, 길이 수정
+	// 중량 제품 폭, 길이 수정
 	const handleOnchange = (e, rowIndex) => {
 		const { value, name } = e.target
+		const row = tableRowData[0]
+		const originUpdateValue = Number(row[name === 'width' ? '폭' : '길이']) - value
+
+		const newAddProductList = postRequest.addProductList.map((item, idx) => {
+			if (idx === rowIndex) {
+				return {
+					...item,
+					[name]: value,
+				}
+			} else {
+				return {
+					...item,
+					[name]: originUpdateValue / rows.length - 1,
+				}
+			}
+		})
+
+		console.log('newAddProductList : ', newAddProductList)
+
 		setPostRequest((prevPostRequest) => {
 			return {
 				...prevPostRequest,
-				addProductList: prevPostRequest.addProductList.map((item, idx) => {
-					if (idx === rowIndex) {
-						return {
-							...item,
-							[name]: value,
-						}
-					}
-					return item
-				}),
+				addProductList: newAddProductList,
 			}
 		})
 	}
@@ -299,10 +306,10 @@ const WeightSales = () => {
 											</TableCell>
 											{Object.entries(row)?.map(([k, v], idx) => (
 												<TableCell key={idx}>
-													{k === '폭' || k === '길이' || k === '두께' ? (
+													{k === '폭' || k === '길이' ? (
 														<input
 															defaultValue={v}
-															name={k === '폭' ? 'width' : k === '길이' ? 'length' : 'thickness'}
+															name={k === '폭' ? 'width' : 'length'}
 															id={row['제품 번호']}
 															onChange={(e) => handleOnchange(e, index)}
 														/>

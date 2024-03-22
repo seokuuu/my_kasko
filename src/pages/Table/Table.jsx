@@ -38,6 +38,7 @@ import {
 	tableShowColumnAtom,
 } from '../../store/Table/Table'
 import { getTableLocalStorageByPageName } from '../../store/Table/tabeleLocalStorage'
+import { getOrderTableStore, setOrderTableStore } from '../../store/Table/orderTableStore'
 // import TableStyle from './Table.module.css'
 
 // import { get } from 'lodash'
@@ -422,22 +423,44 @@ const Table = ({
 	const tableType = useMemo(() => (popupTable ? TABLE_TYPE.popupTable : TABLE_TYPE.pageTable), [popupTable]) // 팝업 테이블 여부
 	const setHiddenColumn = useSetAtom(tableHiddenColumnAtom) // 테이블 칼럼 숨기기 처리
 	const showColumnId = useAtomValue(tableShowColumnAtom) // 테이블 노출 칼럼
+	const setShowColumn = useSetAtom(tableShowColumnAtom)
 	const setShowColumnClear = useSetAtom(tableRestoreColumnAtom) // 테이블 노출 칼럼 처리
 	const setResetHiddenColumn = useSetAtom(tableResetColumnAtom) // 테이블 숨김항목 초기화 처리
 
 	const localTableList = getTableLocalStorageByPageName()
+	const TableColumnsOrder = getOrderTableStore(tableType)
+
+	/**
+	 * 테이블 헤더 컬럼 이동 이벤트
+	 * @param e
+	 */
+	const onColumnMoveEvent = useCallback(
+		(e) => {
+			const source = e.source // 이벤트 여부
+			const isFinished = e.finished // 끝남여부
+
+			// 컬럼위치 로컬로 저장
+			if (source === 'uiColumnMoved' && isFinished) {
+				const cols = gridRef.current.columnApi.getAllGridColumns()
+				const data = cols.map((col, index) => ({ index: index, id: col.colId }))
+				setOrderTableStore(data, tableType)
+			}
+		},
+		[tableType],
+	)
 
 	/**
 	 * 칼럼 숨기기 처리 핸들러
 	 */
 	const onColumnVisibleChange = useCallback(
 		(event) => {
+			const columnId = event.column.colId
 			const isHidden = event.visible === false
 			if (!isHidden) {
+				setShowColumn({ type: tableType, value: columnId })
 				return
 			}
 
-			const columnId = event.column.colId
 			setHiddenColumn({
 				type: tableType,
 				value: columnId,
@@ -490,6 +513,24 @@ const Table = ({
 		}
 	}, [localTableList])
 
+	// 로컬 스토리지 순서 지정
+	useEffect(() => {
+		if (!TableColumnsOrder) {
+			return
+		}
+		if (gridRef.current.columnApi) {
+			const columnApi = gridRef.current.columnApi
+			if (columnApi) {
+				const orderCols = TableColumnsOrder?.columns
+				if (orderCols?.length > 0) {
+					orderCols.forEach((col) => {
+						columnApi.moveColumns([col?.id], col?.index)
+					})
+				}
+			}
+		}
+	}, [TableColumnsOrder])
+
 	// 노출칼럼 변경
 	useEffect(() => {
 		const showId = showColumnId[tableType]
@@ -537,7 +578,8 @@ const Table = ({
 						// sideBar={{ toolPanels: ['columns', 'filters'] }}
 						onRowDragEnd={dragAndDrop ? onRowDragEnd : () => {}}
 						onCellValueChanged={changeFn}
-						onColumnVisible={onColumnVisibleChange}
+						onColumnVisible={onColumnVisibleChange} // 테이블 숨김처리 저장
+						onColumnMoved={onColumnMoveEvent} // 테이블 항목 쿠키 저장
 					/>
 				</div>
 			</TestContainer>
