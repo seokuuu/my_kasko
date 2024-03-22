@@ -7,7 +7,15 @@ import { commonStyles } from './Auction'
 
 // FAQ 관리 목록 헤더
 export const FaqListFieldCols = [
-	{ field: '', checkboxSelection, headerCheckboxSelection, maxWidth: 50, ...commonStyles },
+	{
+		field: '',
+		checkboxSelection,
+		headerCheckboxSelection,
+		maxWidth: 50,
+		...commonStyles,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	{ field: '순번', maxWidth: 100, ...commonStyles },
 	{ field: '카테고리', maxWidth: 150, ...commonStyles },
 	{ field: '제목', ...commonStyles, minWidth: 200 },

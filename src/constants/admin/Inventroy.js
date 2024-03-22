@@ -15,6 +15,8 @@ export const InventoryFieldsCols = [
 		minWidth: 50,
 		checkboxSelection: checkboxSelection,
 		headerCheckboxSelection: headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
 	},
 	{ ...commonStyles, field: '제품 번호', minWidth: 150 },
 	{ ...commonStyles, field: '창고', minWidth: 100 },

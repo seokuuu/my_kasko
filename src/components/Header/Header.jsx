@@ -35,9 +35,10 @@ const HeaderWrap = styled.div`
 	display: flex;
 	height: 65px;
 	width: 100%;
-	max-width: 100%;
+	min-width: 1330px;
+	/* width: 100%;
+	max-width: 100%; */
 	background-color: #061737;
-	border: 1px solid black;
 	align-items: center;
 `
 const UserWrap = styled.div`

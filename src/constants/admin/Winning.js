@@ -88,7 +88,15 @@ export const AuctionWinningFields = {
 }
 
 export const AuctionWinningFieldsCols = [
-	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{
+		...commonStyles,
+		field: '',
+		maxWidth: 50,
+		checkboxSelection,
+		headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	{
 		headerName: '경매 번호',
 		field: '경매 번호',
@@ -128,7 +136,15 @@ export const AuctionWinningFieldsCols = [
 ]
 
 export const UserAuctionWinningFieldsCols = [
-	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{
+		...commonStyles,
+		field: '',
+		maxWidth: 50,
+		checkboxSelection,
+		headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	{
 		headerName: '경매 번호',
 		field: '경매 번호',

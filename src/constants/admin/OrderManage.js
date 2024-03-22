@@ -53,6 +53,8 @@ export const OrderManageFieldsCols = [
 		...commonStyles,
 		checkboxSelection: checkboxSelection,
 		headerCheckboxSelection: headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
 	},
 	{
 		...commonStyles,

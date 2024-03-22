@@ -7,7 +7,15 @@ import { commonStyles } from './Auction'
 
 // 전광판 관리 목록 헤더
 export const ProductRangeFieldCols = [
-	{ field: '', checkboxSelection, headerCheckboxSelection, maxWidth: 50, ...commonStyles },
+	{
+		field: '',
+		checkboxSelection,
+		headerCheckboxSelection,
+		maxWidth: 50,
+		...commonStyles,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	{
 		field: '수정',
 		maxWidth: 90,

@@ -171,6 +171,7 @@ import BiddingPackage from './pages/Auction/Bidding/BiddingPackage'
 import BiddingPackagePage from './pages/Auction/Bidding/BiddingPackagePage'
 import RequestRecomPage from './pages/Shipping/Request/RequestRecomPage'
 import WinningDetailPage from './pages/Auction/Winning/WinningDetailPage'
+import PrintType from './modal/Multi/PrintType'
 
 const Router = () => {
 	const auth = useAtomValue(authAtom)
@@ -178,7 +179,7 @@ const Router = () => {
 		<Routes>
 			{/* 테스트 URL */}
 			<Route path="/popup2" element={<PopupComponent />} />
-			<Route path="/ppap" element={<Agreement />} />
+			<Route path="/ppap" element={<PrintType />} />
 			<Route path="/TableTest" element={<TableTest />} />
 			<Route path="/test" element={<Test />} />
 			<Route path="/test2" element={<Test2 />} />

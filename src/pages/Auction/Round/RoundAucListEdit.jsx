@@ -39,6 +39,7 @@ import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import RoundAucListEditFields from './RoundAucListEditFields'
 import RoundAucProAdd from './RoundAucProAdd'
+import { useLoading } from '../../../store/Loading/loadingAtom'
 
 //경매 목록 수정(단일)
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStatus, roundPageRefetch }) => {
@@ -71,8 +72,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const [getRow, setGetRow] = useState('')
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 
-
-
 	// const checkedArray = useAtom(selectedRowsAtom)[0]
 
 	const paramData = {
@@ -99,8 +98,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 
 	const [startPrice, setStartPrice] = useState(null)
 	const [realStartPrice, setRealStartPrice] = useState(null)
-
-
 
 	const [initRow, setInitRow] = useState([])
 
@@ -140,7 +137,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			//  newResData 한글로 된것들은 그대로두고,  resData는 필드항목 씌워서 setGetRow처리
 		}
 	}
-
 
 	useEffect(() => {
 		if (resData && Array.isArray(resData)) {
@@ -193,12 +189,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			auctionStartPrice: realStartPrice,
 		}))
 
-
-
 		setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
 	}, [outAddData, realStartPrice])
-
-
 
 	// 목록 제거
 	const onListRemove = () => {
@@ -242,8 +234,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			if (outAddData) {
 				const updatedOutAddData = outAddData.filter((item) => !selectedRows.map((row) => row[newKey]).includes(item)) // add된 것들 처리
 
-	
-
 				// setOutAddData((prev) => ({
 				// 	...prev,
 				// 	updatedOutAddData,
@@ -273,7 +263,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	}
 
 	// 수정 PATCH
-	const { mutate: auctionEdit } = useMutation(editAuction, {
+	const { mutate: auctionEdit, isLoading: auctionEditLoading } = useMutation(editAuction, {
 		onSuccess: () => {
 			simpleAlert('수정 되었습니다.', () => {
 				setEditPage(false)
@@ -303,6 +293,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
 		best: { display: true },
 	})
+
+	useLoading(auctionEditLoading)
 
 	return (
 		<FilterContianer>
