@@ -112,7 +112,7 @@ export const UserManageCustomerManageFieldsCols = [
 // 사용자 목적지 관리 fields
 export const UserManageCustomerDestinationManageFields = {
 	'목적지 고유 번호': 'uid',
-	대표여부: 'represent',
+	'대표 목적지 여부': 'represent',
 	고객명: 'customerName',
 	'고객 코드': 'customerCode',
 	'목적지 명': 'destinationName',
@@ -148,7 +148,7 @@ export const UserManageCustomerDestinationManageFieldsCols = [
 			editType: 'userPageDestination',
 		},
 	},
-	{ ...commonStyles, field: '대표여부', minWidth: 100 }, //숫자
+	{ ...commonStyles, field: '대표 목적지 여부', minWidth: 100 }, //숫자
 	{
 		...commonStyles,
 		field: '고객명',
@@ -202,8 +202,22 @@ export const adminCustomerDestinationManageFieldsCols = [
 		},
 	},
 
-	{ ...commonStyles, field: '승인여부', minWidth: 100 }, //숫자
-	{ ...commonStyles, field: '대표여부', minWidth: 100 }, //숫자
+	{
+		...commonStyles,
+		field: '승인여부',
+		minWidth: 100,
+		cellRenderer: (params) => {
+			return !!params?.value ? 'O' : 'X'
+		},
+	}, //숫자
+	{
+		...commonStyles,
+		field: '대표 목적지 여부',
+		minWidth: 100,
+		cellRenderer: (params) => {
+			return !!params?.value ? '대표' : '-'
+		},
+	}, //숫자
 	{
 		...commonStyles,
 		field: '고객명',

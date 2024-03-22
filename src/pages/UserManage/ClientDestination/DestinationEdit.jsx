@@ -62,6 +62,11 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 
 	const getSpecials = async () => {
 		const response = await getSpecialDestination()
+		response.forEach((item) => {
+			if (matchingData.destinationName === item.value) {
+				setSelectedSpecialDestination(item)
+			}
+		})
 		setSpecialDestinations(response)
 	}
 
@@ -129,6 +134,9 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 			...submitData,
 			...matchingData,
 		})
+		if (matchingData) {
+			getSpecials()
+		}
 	}, [matchingData])
 
 	const eventHandle = (e) => {
@@ -170,10 +178,6 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 		}
 	}, [])
 
-	useEffect(() => {
-		getSpecials()
-	}, [])
-
 	return (
 		<OnePageContainer style={{ minHeight: '88vh' }}>
 			<MainTitle>고객사 목적지 수정</MainTitle>
@@ -182,7 +186,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 					<Left style={{ width: '50%' }}>
 						<Part>
 							<Title>
-								<h4>대표 주소 지정</h4>
+								<h4>대표 목적지 지정</h4>
 								<p></p>
 							</Title>
 							<RadioContainer>

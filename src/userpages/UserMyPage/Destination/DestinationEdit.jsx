@@ -52,6 +52,11 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 
 	const getSpecials = async () => {
 		const response = await getSpecialDestination()
+		response.forEach((item) => {
+			if (detailData.destinationName === item.value) {
+				setSelectedSpecialDestination(item)
+			}
+		})
 		setSpecialDestinations(response)
 	}
 
@@ -129,12 +134,9 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 				address: detailData.address, // 주소 필드
 				addressDetail: detailData.addressDetail, // 상세 주소 필드
 			})
+			getSpecials()
 		}
 	}, [detailData])
-
-	useEffect(() => {
-		getSpecials()
-	}, [])
 
 	return (
 		<OnePageContainer>
@@ -144,7 +146,7 @@ const DestinationEdit = ({ setSwtichDestiEdit, uidAtom }) => {
 					<Left>
 						<Part>
 							<Title>
-								<h4>대표 주소 지정</h4>
+								<h4>대표 목적지 지정</h4>
 								<p></p>
 							</Title>
 							<RadioContainer>

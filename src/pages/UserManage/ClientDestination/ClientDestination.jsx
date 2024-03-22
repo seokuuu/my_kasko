@@ -7,12 +7,11 @@ import { SkyBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
-	UserManageCustomerDestinationManageFields,
 	adminCustomerDestinationManageFieldsCols,
+	UserManageCustomerDestinationManageFields,
 } from '../../../constants/admin/UserManage'
 import useReactQuery from '../../../hooks/useReactQuery'
 import useTablePaginationPageChange from '../../../hooks/useTablePaginationPageChange'
@@ -21,16 +20,16 @@ import {
 	FilterContianer,
 	FilterHeader,
 	FilterWrap,
-	TCSubContainer,
 	TableContianer,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 import useAlert from '../../../store/Alert/useAlert'
 import {
-	UsermanageFindModal,
 	adminPageDestiEditModal,
 	btnCellUidAtom,
 	selectedRowsAtom,
 	toggleAtom,
+	UsermanageFindModal,
 } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import ClientDestinationSearchFields from './ClientDestinationSearchFields'
@@ -109,7 +108,7 @@ const ClientDestination = ({ setChoiceComponent }) => {
 							window.location.reload()
 						})
 					},
-				}) //mutation.mutate로 api 인자 전해줌
+				})
 			})
 		} else {
 			redAlert('삭제에 실패했습니다. 다시 시도 해주세요')
@@ -121,8 +120,6 @@ const ClientDestination = ({ setChoiceComponent }) => {
 	}
 
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
 		setParam(paramData)
 	}
 	// import
@@ -155,36 +152,6 @@ const ClientDestination = ({ setChoiceComponent }) => {
 						<CautionBox category={CAUTION_CATEGORY.order} />
 						{exFilterToggle && (
 							<FilterWrap>
-								{/* <FilterSubcontianer>
-									<FilterLeft>
-										<RowWrap>
-											<PartWrap>
-												<h6>고객사 명/고객사코드</h6>
-												<MainSelect />
-												<Input />
-												<GreyBtn style={{ width: '70px' }} height={35} margin={10} onClick={modalOpen} fontSize={17}>
-													찾기
-												</GreyBtn>
-											</PartWrap>
-										</RowWrap>
-									</FilterLeft>
-								</FilterSubcontianer>
-								<FilterFooter>
-									<div style={{ display: 'flex' }}>
-										<p>초기화</p>
-										<ResetImg
-											src="/img/reset.png"
-											style={{ marginLeft: '10px', marginRight: '20px' }}
-											onClick={handleImageClick}
-											className={isRotated ? 'rotate' : ''}
-										/>
-									</div>
-									<div style={{ width: '180px' }}>
-										<BlackBtn width={100} height={40}>
-											검색
-										</BlackBtn>
-									</div>
-								</FilterFooter> */}
 								<GlobalProductSearch
 									param={param}
 									isToggleSeparate={true}
@@ -207,7 +174,7 @@ const ClientDestination = ({ setChoiceComponent }) => {
 										setParam((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))
 									}
 								/>
-								<Excel getRow={getRow} />
+								<Excel getRow={getRow} sheetName={'고객사 목적지'} />
 							</div>
 						</TCSubContainer>
 						<TCSubContainer>
