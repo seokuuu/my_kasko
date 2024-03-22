@@ -66,7 +66,7 @@ const PackageManage = () => {
 	const { mutate: deletePkg } = useMutationQuery('deletePkg', deletePackage)
 	const { mutate: changeCT } = useMutationQuery('change-Pkg-category', patchPkgSaleCategory)
 
-	const { tableRowData, paginationData, totalWeight, totalWeightStr, totalCount, totalCountStr } = useTableData({
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
 		tableField: packageDispatchFields,
 		serverData: filteredData,
 		wish: { display: false },

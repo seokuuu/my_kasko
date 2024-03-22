@@ -31,7 +31,7 @@ import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../../comm
 import { getPackageProductsList, postCreatePackage, postUpdatePackage } from '../../../api/SellProduct'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { packageProductsDispatchFields, packageProductsDispatchFieldsCols } from '../../../constants/admin/SellPackage'
 import { add_element_field } from '../../../lib/tableHelpers'
 import SingleAllProduct from '../../../modal/Multi/SingleAllProduct'
@@ -43,27 +43,182 @@ import useMutationQuery from '../../../hooks/useMutationQuery'
 import useAlert from '../../../store/Alert/useAlert'
 import { KilogramSum } from '../../../utils/KilogramSum'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import { numberDeleteComma } from '../../../utils/utils'
 
 const PackageCreate = () => {
 	const navigate = useNavigate()
 	const radioDummy = ['경매', '상시']
 	const prevData = useLocation().state?.data
 
+	const [isModal, setIsModal] = useAtom(singleAllProductModal)
 	const [packageObj, setPackageObj] = useAtom(packageCreateObjAtom)
-	const [updateObj, setUpdateObj] = useAtom(packageUpdateObjAtom)
+	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+	const setUpdateObj = useSetAtom(packageUpdateObjAtom)
+
 	const [packageName, setPackageName] = useState(prevData ? prevData['패키지 이름'] : packageObj?.packageName)
 	const [price, setPrice] = useState(prevData ? prevData['시작가/판매가'] : packageObj?.price)
-
-	const [isModal, setIsModal] = useAtom(singleAllProductModal)
-	const [mode, setMode] = useAtom(packageModeAtom)
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 	const [savedRadioValue, setSavedRadioValue] = useState('')
 	const [select, setSelect] = useState([])
 	const [selectUid, setSelectUid] = useState([])
 	const [curUid, setCuruid] = useState([])
 	const [check, setCheck] = useState([])
-	const checkBoxSelect = useAtomValue(selectedRowsAtom)
-	const checkBoxSelect2 = useAtomValue(selectedRowsAtom2)
+	const [sumArr, setSumArr] = useState([])
+	const [getRow, setGetRow] = useState('')
+	const [filteredData, setFilteredData] = useState([])
+	const [createRequest, setCreateRequest] = useState({})
+	const [updateRequest, setUpdateRequest] = useState({})
+	const [requestParams, setRequestParams] = useState(
+		prevData && {
+			pageNum: 1,
+			pageSize: 50,
+			packageNumber: prevData ? prevData['패키지 번호'] : '',
+		},
+	)
+
+	const { data, isSuccess, isLoading } = useQuery(
+		['packageProducts', requestParams],
+		() => getPackageProductsList(requestParams),
+		{
+			enabled: !!requestParams?.packageNumber,
+		},
+	)
+
+	const packageData = data?.r
+
+	const handleAddProduct = () => {
+		setIsModal(true)
+	}
+	const handleChangePackName = (e) => {
+		const { value, name } = e.currentTarget
+		if (name === 'packageName') {
+			setPackageName(value)
+		} else if (name === 'price') {
+			setPrice(value)
+		}
+	}
+
+	const { pagination, onPageChanage } = useTablePaginationPageChange(prevData ? data : select, setRequestParams)
+
+	const { simpleConfirm, showAlert, simpleAlert } = useAlert()
+	const { mutate: create } = useMutationQuery(['query'], postCreatePackage)
+	const { mutate: update } = useMutationQuery(['query'], postUpdatePackage)
+
+	const handleSubmit = () => {
+		if (!createRequest.name) {
+			simpleAlert('패키지 명을 입력해주세요.')
+			return
+		}
+		if (!createRequest.price) {
+			simpleAlert('시작가/판매가를 입력해주세요.')
+			return
+		}
+		if (createRequest.productUids.length === 0) {
+			simpleAlert('등록할 제품을 추가해주세요.')
+			return
+		}
+		simpleConfirm('저장하시겠습니까?', () => {
+			create(createRequest, {
+				onSuccess: (d) => {
+					simpleAlert('저장되었습니다.', () => {
+						navigate('/product/package')
+					})
+
+					if (d?.data?.status === 400) {
+						simpleAlert(price === undefined || price === '0' ? '판매가를 입력하세요' : `${d?.data?.message}`)
+					}
+				},
+				onError: (error) => {
+					return simpleAlert(error?.data?.message || '요청중 오류가 발생했습니다.\n다시 시도해 주세요.')
+				},
+			})
+		})
+	}
+
+	const handleUpdate = () => {
+		if (!updateRequest.name) {
+			simpleAlert('패키지 명을 입력해주세요.')
+			return
+		}
+		if (!updateRequest.price) {
+			simpleAlert('시작가/판매가를 입력해주세요.')
+			return
+		}
+		if (updateRequest.productUids.length === 0) {
+			simpleAlert('등록할 제품을 추가해주세요.')
+			return
+		}
+
+		updateRequest.price = numberDeleteComma(updateRequest.price)
+
+		simpleConfirm('수정하시겠습니까?', () => {
+			update(updateRequest, {
+				onSuccess: (d) => {
+					if (d?.data?.status === 200) {
+						simpleAlert('수정되었습니다', () => navigate('/product/package'))
+					}
+				},
+				onError: (e) => {
+					if (e.data?.status === 400)
+						showAlert({
+							title: `${e?.data?.message}`,
+							content: '',
+							func: () => {
+								// navigate(-1)
+								window.location.reload()
+							},
+						})
+				},
+			})
+		})
+	}
+
+	const handleRemoveItem = () => {
+		if (prevData) {
+			if (select.length === 0) {
+				const filteredArr = getRow.filter((li) => !check.includes(li['제품 고유 번호']))
+				setGetRow(filteredArr)
+				setUpdateRequest((p) => ({ ...p, productUids: filteredArr.map((i) => i['제품 고유 번호']) }))
+			} else if (select.length > 0) {
+				const filteredArr = sumArr.filter((li) => !check.includes(li['제품 고유 번호']))
+				setSumArr(filteredArr)
+				setUpdateRequest((p) => ({ ...p, productUids: filteredArr.map((i) => i['제품 고유 번호']) }))
+			}
+		} else {
+			const filteredArr = select.filter((li) => !check.includes(li['제품 고유 번호']))
+			setSelect(filteredArr)
+		}
+		return { sumArr, updateRequest }
+	}
+
+	useEffect(() => {
+		if (getRow && select) {
+			setSumArr([...getRow, ...select])
+		}
+	}, [getRow, select])
+
+	useEffect(() => {
+		if (isSuccess && prevData) {
+			setFilteredData(packageData)
+		}
+	}, [isSuccess, requestParams, packageData])
+
+	// 제품 추가하는 Uids
+	useEffect(() => {
+		setCuruid(filteredData.map((item) => item?.productUid))
+	}, [isSuccess, filteredData])
+
+	useEffect(() => {
+		if (isSuccess && filteredData === undefined) {
+			packageData && setFilteredData(packageData)
+		}
+		if (!isSuccess && !filteredData) return null
+		if (Array.isArray(filteredData) && prevData) {
+			setGetRow(add_element_field(filteredData, packageProductsDispatchFields))
+		}
+		//타입, 리액트쿼리, 데이터 확인 후 실행
+	}, [isSuccess, filteredData, prevData])
+
 	// 경매,상시 선택시 선택한 내용의 라디오가 선택되게끔 하는
 
 	useEffect(() => {
@@ -118,87 +273,11 @@ const PackageCreate = () => {
 		})
 	}, [checkRadio])
 
-	const tableField = useRef(packageProductsDispatchFieldsCols)
-	const getCol = tableField.current
-	const [requestParams, setRequestParams] = useState(
-		prevData && {
-			pageNum: 1,
-			pageSize: 50,
-			packageNumber: prevData ? prevData['패키지 번호'] : '',
-		},
-	)
-
-	const { data, isSuccess, isLoading } = useQuery(
-		['packageProducts', requestParams],
-		() => getPackageProductsList(requestParams),
-		{
-			enabled: !!requestParams?.packageNumber,
-		},
-	)
-
-	// const { data, isSuccess } = useReactQuery(requestParams, 'packageProducts', getPackageProductsList)
-	const packageData = data?.r
-	const packagePage = data?.pagination
-
-	const [getRow, setGetRow] = useState('')
-	const [filteredData, setFilteredData] = useState([])
-
-	// 토글 쓰기
-	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-	const [toggleMsg, setToggleMsg] = useState('On')
-
-	const toggleBtnClick = () => {
-		setExfilterToggle((prev) => !prev)
-		if (exFilterToggle === true) {
-			setToggleMsg('Off')
-		} else {
-			setToggleMsg('On')
-		}
-	}
-
-	useEffect(() => {
-		if (isSuccess && prevData) {
-			setFilteredData(packageData)
-		}
-	}, [isSuccess, requestParams, packageData])
-
-	// 제품 추가하는 Uids
-	useEffect(() => {
-		setCuruid(filteredData.map((item) => item?.productUid))
-	}, [isSuccess, filteredData])
-
-	useEffect(() => {
-		if (isSuccess && filteredData === undefined) {
-			packageData && setFilteredData(packageData)
-		}
-		if (!isSuccess && !filteredData) return null
-		if (Array.isArray(filteredData) && prevData) {
-			setGetRow(add_element_field(filteredData, packageProductsDispatchFields))
-		}
-		//타입, 리액트쿼리, 데이터 확인 후 실행
-	}, [isSuccess, filteredData, prevData])
-
-	const handleAddProduct = () => {
-		setIsModal(true)
-	}
-	const handleChangePackName = (e) => {
-		const { value, name } = e.currentTarget
-		if (name === 'packageName') {
-			setPackageName(value)
-		} else if (name === 'price') {
-			setPrice(value)
-		}
-	}
-
-	const { pagination, onPageChanage } = useTablePaginationPageChange(prevData ? data : select, setRequestParams)
 	useEffect(() => {
 		if (!select) return null
 
 		setSelectUid(() => select.map((i) => i['고유 번호']))
 	}, [select])
-
-	const [createRequest, setCreateRequest] = useState({})
-	const [updateRequest, setUpdateRequest] = useState({})
 
 	// 기존 테이블에서 선택한 체크박스
 	useEffect(() => {
@@ -225,87 +304,20 @@ const PackageCreate = () => {
 			},
 		)
 	}, [packageName, savedRadioValue, selectUid, price, curUid])
-	const { simpleConfirm, showAlert, simpleAlert } = useAlert()
-	const { mutate: create } = useMutationQuery(['query'], postCreatePackage)
-	const { mutate: update } = useMutationQuery(['query'], postUpdatePackage)
 
-	const handleSubmit = () => {
-		if (!createRequest.name) {
-			simpleAlert('패키지 명을 입력해주세요.')
-			return
-		}
-		if (!createRequest.price) {
-			simpleAlert('시작가/판매가를 입력해주세요.')
-			return
-		}
-		if (createRequest.productUids.length === 0) {
-			simpleAlert('등록할 제품을 추가해주세요.')
-			return
-		}
-		simpleConfirm('저장하시겠습니까?', () => {
-			create(createRequest, {
-				onSuccess: (d) => {
-					simpleAlert('저장되었습니다.', () => {
-						navigate('/product/package')
-					})
+	// 토글 쓰기
+	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+	const [toggleMsg, setToggleMsg] = useState('On')
 
-					if (d?.data?.status === 400) {
-						simpleAlert(price === undefined || price === '0' ? '판매가를 입력하세요' : `${d?.data?.message}`)
-					}
-				},
-				onError: (error) => {
-					return simpleAlert(error?.data?.message || '요청중 오류가 발생했습니다.\n다시 시도해 주세요.')
-				},
-			})
-		})
-	}
-
-	const handleUpdate = () => {
-		simpleConfirm('수정하시겠습니까?', () => {
-			update(updateRequest, {
-				onSuccess: (d) => {
-					if (d?.data?.status === 200) {
-						simpleAlert('수정되었습니다', () => navigate('/product/package'))
-					}
-				},
-				onError: (e) => {
-					if (e.data?.status === 400)
-						showAlert({
-							title: `${e?.data?.message}`,
-							content: '',
-							func: () => {
-								// navigate(-1)
-								window.location.reload()
-							},
-						})
-				},
-			})
-		})
-	}
-	const [sumArr, setSumArr] = useState([])
-	useEffect(() => {
-		if (getRow && select) {
-			setSumArr([...getRow, ...select])
-		}
-	}, [getRow, select])
-
-	const handleRemoveItem = () => {
-		if (prevData) {
-			if (select.length === 0) {
-				const filteredArr = getRow.filter((li) => !check.includes(li['제품 고유 번호']))
-				setGetRow(filteredArr)
-				setUpdateRequest((p) => ({ ...p, productUids: filteredArr.map((i) => i['제품 고유 번호']) }))
-			} else if (select.length > 0) {
-				const filteredArr = sumArr.filter((li) => !check.includes(li['제품 고유 번호']))
-				setSumArr(filteredArr)
-				setUpdateRequest((p) => ({ ...p, productUids: filteredArr.map((i) => i['제품 고유 번호']) }))
-			}
+	const toggleBtnClick = () => {
+		setExfilterToggle((prev) => !prev)
+		if (exFilterToggle === true) {
+			setToggleMsg('Off')
 		} else {
-			const filteredArr = select.filter((li) => !check.includes(li['제품 고유 번호']))
-			setSelect(filteredArr)
+			setToggleMsg('On')
 		}
-		return { sumArr, updateRequest }
 	}
+
 	const handleBackPage = () => {
 		navigate(-1)
 	}
@@ -388,7 +400,7 @@ const PackageCreate = () => {
 					</div>
 				</TCSubContainer>
 				<Table
-					getCol={getCol}
+					getCol={packageProductsDispatchFieldsCols}
 					getRow={prevData ? (select.length > 0 ? sumArr : getRow) : select}
 					tablePagination={pagination}
 					onPageChange={onPageChanage}

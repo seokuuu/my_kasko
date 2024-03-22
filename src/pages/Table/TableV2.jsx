@@ -4,7 +4,7 @@ import 'ag-grid-enterprise'
 import { AgGridReact } from 'ag-grid-react'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import PropTypes from 'prop-types'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { styled } from 'styled-components'
 import CustomPagination from '../../components/pagination/CustomPagination'
@@ -26,6 +26,7 @@ import {
 import './TableUi.css'
 import { customNumberFormatter } from '../../utils/utils'
 import { getTableLocalStorageByPageName } from '../../store/Table/tabeleLocalStorage'
+import { getOrderTableStore, setOrderTableStore } from '../../store/Table/orderTableStore'
 
 /**
  * AG-GRID settings 함수
@@ -46,6 +47,12 @@ var GRID_FUNC = {
 			return { width: '100%', height: '500px' }
 		}
 	},
+}
+
+const tableV2CommonStyles = {
+	headerClass: 'custom-header-style',
+	flex: 1,
+	cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
 }
 
 /**
@@ -85,19 +92,19 @@ var GRID_SETTIGS = {
 	},
 	defaultColDef: {
 		editable: false,
-		enableRowGroup: true,
-		enablePivot: true,
+		enableRowGroup: false,
+		enablePivot: false,
 		enableValue: true,
-		enableMenu: true,
-		sortable: true,
+		enableMenu: false,
+		sortable: false,
 		resizable: true,
-		filter: true,
+		filter: false,
 	},
 	defaultGridOption: {
 		headerHeight: 30,
-		animateRows: true, // Enable row animations
-		cacheBlockSize: 100, // 캐시에 보관할 블록 사이즈
-		maxBlocksInCache: 10, // 캐시에 최대로 보관할 블록 수
+		animateRows: false, // Enable row animations
+		cacheBlockSize: 50, // 캐시에 보관할 블록 사이즈
+		maxBlocksInCache: 50, // 캐시에 최대로 보관할 블록 수
 	},
 }
 
@@ -149,10 +156,12 @@ const TableV2 = ({
 	const setDetailRow = useSetAtom(doubleClickedRowAtom) // 상세데이터 정보
 	const setHiddenColumn = useSetAtom(tableHiddenColumnAtom) // 테이블 칼럼 숨기기 처리
 	const showColumnId = useAtomValue(tableShowColumnAtom) // 테이블 노출 칼럼
+	const setShowColumn = useSetAtom(tableShowColumnAtom)
 	const setShowColumnClear = useSetAtom(tableRestoreColumnAtom) // 테이블 노출 칼럼 처리
 	const setResetHiddenColumn = useSetAtom(tableResetColumnAtom) // 테이블 숨김항목 초기화 처리
 
 	const localTableList = getTableLocalStorageByPageName()
+	const TableColumnsOrder = getOrderTableStore(tableType)
 
 	/**
 	 * 그리드 옵션
@@ -160,9 +169,6 @@ const TableV2 = ({
 	 */
 	const gridOptions = {
 		...GRID_SETTIGS.defaultGridOption,
-		serverSideDatasource: {
-			getRows: async function (params) {},
-		},
 	}
 
 	/**
@@ -192,23 +198,36 @@ const TableV2 = ({
 	}
 
 	/**
+	 * 테이블 헤더 컬럼 이동 이벤트
+	 * @param e
+	 */
+	const onColumnMoveEvent = useCallback((e) => {
+		const source = e.source // 이벤트 여부
+		const isFinished = e.finished // 끝남여부
+
+		// 컬럼위치 로컬로 저장
+		if (source === 'uiColumnMoved' && isFinished) {
+			const cols = gridRef.current.columnApi.getAllGridColumns()
+			const data = cols.map((col, index) => ({ index: index, id: col.colId }))
+			setOrderTableStore(data, tableType)
+		}
+	}, [])
+
+	/**
 	 * 칼럼 숨기기 처리 핸들러
 	 */
-	const onColumnVisibleChange = useCallback(
-		(event) => {
-			const isHidden = event.visible === false
-			if (!isHidden) {
-				return
-			}
-
-			const columnId = event.column.colId
-			setHiddenColumn({
-				type: tableType,
-				value: columnId,
-			})
-		},
-		[tableType],
-	)
+	const onColumnVisibleChange = useCallback((event) => {
+		const columnId = event?.column?.colId
+		const isHidden = event.visible === false
+		if (!isHidden) {
+			setShowColumn({ type: tableType, value: columnId })
+			return
+		}
+		setHiddenColumn({
+			type: tableType,
+			value: columnId,
+		})
+	}, [])
 
 	/**
 	 * 칼럼 노출 핸들러
@@ -217,7 +236,6 @@ const TableV2 = ({
 		if (!showId) {
 			return
 		}
-
 		const api = gridRef.current.columnApi
 		const savedState = api?.getColumnState()
 		if (savedState) {
@@ -231,16 +249,6 @@ const TableV2 = ({
 		setShowColumnClear({ type: tableType })
 	}
 
-	const onGridReady = (params) => {
-		const agGridApi = params.api
-		setGridApi(agGridApi)
-	}
-
-	const onFirstDataRendered = (params) => {
-		const columnApi = params.columnApi
-		// columnApi.autoSizeAllColumns(false)
-	}
-
 	/* ==================== STATE start ==================== */
 	// 페이지네이션 변경
 	useEffect(() => {
@@ -248,6 +256,15 @@ const TableV2 = ({
 			gridRef.current.api.paginationSetPageSize(Number(sortNum))
 		}
 	}, [sortNum])
+	//
+	// 노출칼럼 변경
+	useEffect(() => {
+		const showId = showColumnId[tableType]
+		onColumnShow(showId)
+	}, [showColumnId])
+	/* ==================== STATE end ==================== */
+
+	/* ==================== INITIALIZE start ==================== */
 
 	// 로딩 중일때와 데이터가 길이가 0일 때를 구분하여 상황에 맞는 UI를 보여줍니다.
 	useEffect(() => {
@@ -260,37 +277,6 @@ const TableV2 = ({
 		}
 	}, [loading, getRow])
 
-	// 노출칼럼 변경
-	useEffect(() => {
-		const showId = showColumnId[tableType]
-		onColumnShow(showId)
-	}, [showColumnId])
-
-	// 로컬 스토리지 저장된 숨김목록처리
-	useEffect(() => {
-		if (!localTableList) {
-			return
-		}
-
-		if (gridRef.current.columnApi) {
-			const columnApi = gridRef.current.columnApi
-			if (columnApi) {
-				const allColumns = columnApi.getAllColumns()
-				if (allColumns) {
-					const hiddenIds = localTableList[tableType].hiddenIds
-
-					allColumns.forEach((column) => {
-						if (hiddenIds.includes(column.colId)) {
-							column.setVisible(false)
-						}
-					})
-				}
-			}
-		}
-	}, [localTableList])
-	/* ==================== STATE end ==================== */
-
-	/* ==================== INITIALIZE start ==================== */
 	// 테이블 칼럼, 로우 데이터 초기화
 	useEffect(() => {
 		if (getRow && getRow.length > 0) {
@@ -312,21 +298,7 @@ const TableV2 = ({
 		} else {
 			setRowData(null)
 		}
-	}, [getRow])
-
-	useEffect(() => {
-		if (getCol && getCol?.length > 0) {
-			const newCol = getCol?.map((item) => {
-				if (item.checkboxSelection) {
-					item.pinned = 'left'
-					item.minWidth = 50
-					item.maxWidth = 50
-				}
-				return item
-			})
-			setColumnDefs(newCol)
-		}
-	}, [getCol])
+	}, [getRow, loading])
 
 	// 페이지 이동시에 테이블 선택이 겹칠 수 있으므로 초기화
 	useEffect(() => {
@@ -337,6 +309,64 @@ const TableV2 = ({
 	useEffect(() => {
 		setResetHiddenColumn({ type: tableType })
 	}, [location, tableType])
+
+	useEffect(() => {
+		if (gridRef.current.columnApi) {
+			const columnApi = gridRef.current.columnApi
+			if (columnApi) {
+				if (TableColumnsOrder) {
+					const orderCols = TableColumnsOrder?.columns
+					// 로컬 스토리지 순서 지정
+					if (orderCols?.length > 0) {
+						orderCols.forEach((col) => {
+							columnApi.moveColumns([col?.id], col?.index)
+						})
+					}
+				}
+			}
+		}
+	}, [columnDefs, tableType])
+
+	useEffect(() => {
+		if (getCol && getCol?.length > 0) {
+			// 행 정의
+			const newCol = getCol?.map((item) => {
+				if (item.checkboxSelection) {
+					item.suppressMovable = true
+					item.pinned = 'left'
+					item.minWidth = 50
+					item.maxWidth = 50
+					return { ...item, ...tableV2CommonStyles }
+				}
+				if (['고유 번호', '고유번호'].includes(item.field)) {
+					item.hide = true
+				}
+				if (['추천'].includes(item.field)) {
+					item.hide = true
+				}
+				// 로컬 스토리지 저장된 숨김목록처리
+				if (localTableList && tableType) {
+					const hiddenIds = localTableList[tableType]?.hiddenIds
+					if (hiddenIds.includes(item.field)) {
+						item.hide = true
+					}
+				}
+				return { ...item, ...tableV2CommonStyles, maxWidth: 999, minWidth: 80, width: 100 }
+			})
+			setColumnDefs(newCol)
+		}
+	}, [])
+
+	const onGridReady = useCallback((params) => {
+		const agGridApi = params.api
+		setGridApi(agGridApi)
+	}, [])
+
+	const onFirstDataRendered = useCallback((params) => {
+		const columnApi = params.columnApi
+		columnApi.autoSizeAllColumns(true)
+	}, [])
+
 	/* ==================== INITIALIZE end ==================== */
 
 	return (
@@ -344,6 +374,7 @@ const TableV2 = ({
 			<TestContainer hei={hei}>
 				<div style={{ height: '100%', width: '100%' }} className="ag-theme-alpine">
 					<AgGridReact
+						skipHeaderOnAutoSize={true}
 						suppressColumnVirtualisation={true}
 						onGridReady={onGridReady}
 						onFirstDataRendered={onFirstDataRendered}
@@ -368,6 +399,8 @@ const TableV2 = ({
 						overlayLoadingTemplate="데이터를 불러오는 중..."
 						onCellValueChanged={changeFn}
 						onColumnVisible={onColumnVisibleChange}
+						onColumnMoved={onColumnMoveEvent}
+						suppressColumnMoveAnimation={false}
 						{...(dragAndDrop && { onRowDragEnd: onRowDragEnd })}
 						{...(isRowClickable && { getRowStyle: () => ({ cursor: 'pointer' }) })}
 						{...(handleOnRowClicked && {
@@ -419,7 +452,7 @@ TableV2.defaultProps = {
 	popupTable: false,
 }
 
-export default TableV2
+export default memo(TableV2)
 
 const TestContainer = styled.div`
 	display: flex;
