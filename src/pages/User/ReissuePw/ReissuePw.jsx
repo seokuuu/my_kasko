@@ -163,6 +163,7 @@ const ReissuePw = () => {
 										onChange={(selectedOption) => {
 											setEmailDomain((p) => ({ ...p, selectModeValue: selectedOption.label }))
 										}}
+										isSearchable={false} // 입력 비활성화
 									/>
 								)}
 							</div>
