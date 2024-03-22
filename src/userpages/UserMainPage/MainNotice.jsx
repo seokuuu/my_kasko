@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import moment from 'moment'
 import {
 	LeftSub2,
@@ -11,11 +11,14 @@ import {
 	MainBorderBar,
 } from './MainPageStyled'
 import { useNavigate } from 'react-router-dom'
+import { useCustomerMainPageNotionQuery } from '../../api/mainPage/mainPage'
+import { FadeLoader } from 'react-spinners'
 
-const MainNotice = ({ notices = null, docs = null }) => {
+const MainNotice = () => {
+	const { data, isLoading } = useCustomerMainPageNotionQuery()
 	const [noticeTab, setNoticeTab] = useState(true)
 	return (
-		<LeftSub2>
+		<LeftSub2 style={{ position: 'relative' }}>
 			<MainTabs>
 				<MainTabTitle isColor={!!noticeTab} onClick={() => setNoticeTab(true)}>
 					공지사항
@@ -25,7 +28,12 @@ const MainNotice = ({ notices = null, docs = null }) => {
 				</MainTabTitle>
 			</MainTabs>
 			<MainBorderBar />
-			<NoticeCard list={!!noticeTab ? notices : docs} />
+			<NoticeCard list={!!noticeTab ? data?.notices : data?.docs} isLoading={isLoading} />
+			{isLoading && (
+				<div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+					<FadeLoader color="#4C83D6" size={20} />
+				</div>
+			)}
 		</LeftSub2>
 	)
 }
