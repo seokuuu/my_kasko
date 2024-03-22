@@ -178,8 +178,15 @@ const Table = ({
 	}, [rowData])
 
 	useEffect(() => {
-		if (getCol && getCol?.length > 0) {
-			setColumnDefs(getCol)
+		if (getCol && getCol.length > 0) {
+			const newCol = getCol.map((item) => {
+				if (['추천 여부'].includes(item.field)) {
+					item.hide = true
+				}
+				return item
+			})
+
+			setColumnDefs(newCol)
 		}
 	}, [])
 

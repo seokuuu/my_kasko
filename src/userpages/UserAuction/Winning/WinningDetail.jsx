@@ -70,6 +70,8 @@ const WinningDetail = ({ setAucDetail }) => {
 				detailRow['제품 금액 (VAT 포함)'] + '원',
 				detailRow['운반비 (VAT 포함)'] + '원',
 				detailRow['입금 요청액'] + '원',
+
+				// new Intl.NumberFormat('en-US').format(detailRow?.['입금 요청액']) + '원',
 			]
 			// 새로운 contentData 값을 상태로 업데이트
 			setContentData(newContentData)
