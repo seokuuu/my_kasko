@@ -108,8 +108,21 @@ export const AuctionRoundFields = {
 	수정자: 'updateMemberName',
 }
 
+if (commonStyles.field === '') {
+	commonStyles.lockVisible = true
+	commonStyles.lockPinned = true
+}
+
 export const AuctionRoundFieldsCols = [
-	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{
+		...commonStyles,
+		field: '',
+		maxWidth: 50,
+		checkboxSelection,
+		headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	{
 		...commonStyles,
 		field: '수정',
@@ -234,7 +247,15 @@ export const AuctionRoundExtraProductFields = {
 }
 
 export const AuctionRoundExtraProductFieldsCols = [
-	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{
+		...commonStyles,
+		field: '',
+		maxWidth: 50,
+		checkboxSelection,
+		headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	{ ...commonStyles, field: '고유 번호' },
 	{ ...commonStyles, field: '제품 번호' },
 	{ ...commonStyles, field: '패키지명' },
@@ -291,7 +312,15 @@ export const AuctionRoundExtraProductFieldsCols = [
 }))
 
 export const AuctionRoundDetailFieldsCols = [
-	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{
+		...commonStyles,
+		field: '',
+		maxWidth: 50,
+		checkboxSelection,
+		headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	{ ...commonStyles, field: '제품 번호' },
 
 	// 패키지 명
@@ -553,6 +582,8 @@ export const AuctionBiddingFieldsCols = (selected) => {
 			headerCheckboxSelection,
 			showDisabledCheckboxes: true,
 			pinned: 'left',
+			lockVisible: true,
+			lockPinned: true,
 		},
 
 		{ ...commonStyles, field: '경매 상태', minWidth: 100 },
@@ -821,7 +852,15 @@ export const AuctionProgressFields = {
 }
 
 export const AuctionProgressFieldsCols = [
-	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{
+		...commonStyles,
+		field: '',
+		maxWidth: 50,
+		checkboxSelection,
+		headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
+	},
 
 	{ ...commonStyles, field: '경매 상태' },
 	{ ...commonStyles, field: '경매 번호' },
@@ -936,7 +975,15 @@ export const AuctionDetailProgressFields = {
 }
 
 export const AuctionDetailProgressFieldsCols = [
-	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{
+		...commonStyles,
+		field: '',
+		maxWidth: 50,
+		checkboxSelection,
+		headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	{ ...commonStyles, field: '응찰 고유 번호', minWidth: 150 },
 	{ ...commonStyles, field: '경매 상태', minWidth: 120 },
 	{ ...commonStyles, field: '경매 번호', minWidth: 120 },
@@ -1088,7 +1135,15 @@ export const AuctionWinningDetailFields = {
 }
 
 export const AuctionWinningDetailFieldsCols = [
-	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{
+		...commonStyles,
+		field: '',
+		maxWidth: 50,
+		checkboxSelection,
+		headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	...Object.keys(AuctionWinningDetailFields)
 		.filter((item) => !item.includes('고유 번호'))
 		.map((item) => ({
@@ -1164,7 +1219,15 @@ export const UserAuctionWinningDetailFields = {
 }
 
 export const UserAuctionWinningDetailFieldsCols = [
-	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{
+		...commonStyles,
+		field: '',
+		maxWidth: 50,
+		checkboxSelection,
+		headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	...Object.keys(UserAuctionWinningDetailFields)
 		.filter((item) => !item.includes('고유 번호'))
 		.map((item) => ({
@@ -1240,7 +1303,15 @@ export const AuctionWinningCreateFields = {
 }
 
 export const AuctionWinningCreateFieldsCols = [
-	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{
+		...commonStyles,
+		field: '',
+		maxWidth: 50,
+		checkboxSelection,
+		headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	...Object.keys(AuctionWinningCreateFields).map((item) => ({
 		...commonStyles,
 		field: item,
@@ -1263,7 +1334,15 @@ export const AuctionStartPriceFields = {
 }
 
 export const AuctionStartPriceFieldsCols = [
-	{ ...commonStyles, field: '', maxWidth: 50, checkboxSelection, headerCheckboxSelection },
+	{
+		...commonStyles,
+		field: '',
+		maxWidth: 50,
+		checkboxSelection,
+		headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	{ ...commonStyles, field: '고유 번호', minWidth: 150 },
 	{ ...commonStyles, field: '제품군', minWidth: 170 },
 	{ ...commonStyles, field: '정척 여부', minWidth: 170 },

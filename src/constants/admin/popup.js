@@ -7,7 +7,15 @@ import { commonStyles } from './Auction'
 
 // 팝업 목록 헤더
 export const PopupListFieldCols = [
-	{ field: '', checkboxSelection, headerCheckboxSelection, maxWidth: 50, ...commonStyles },
+	{
+		field: '',
+		checkboxSelection,
+		headerCheckboxSelection,
+		maxWidth: 50,
+		...commonStyles,
+		lockVisible: true,
+		lockPinned: true,
+	},
 	{ field: '순번', maxWidth: 100, ...commonStyles },
 	{ field: '제목', minWidth: 300, ...commonStyles },
 	{ field: '노출 유/무', maxWidth: 200, ...commonStyles },

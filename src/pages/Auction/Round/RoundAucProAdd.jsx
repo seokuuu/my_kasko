@@ -105,7 +105,11 @@ const RoundAucProAdd = ({
 	)
 
 	const resData = data?.data?.data?.list
+
+
 	const resPagination = data?.data?.data?.pagination
+
+
 
 	useEffect(() => {
 		// 이미 추가된 데이터 중복 제거
@@ -221,7 +225,7 @@ const RoundAucProAdd = ({
 						<TableContianer>
 							<TCSubContainer bor>
 								<div>
-									조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / {(getRow && getRow?.length) || 0}개 )
+									조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / {resPagination?.listCount}개 )
 									{/* <Hidden /> */}
 									<TableV2HiddenSection />
 								</div>

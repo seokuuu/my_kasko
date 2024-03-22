@@ -26,7 +26,7 @@ const AddWishButton = ({ products, productNumberKey }) => {
 
 	return (
 		<>
-			<WhiteGrnBtn onClick={handleWishAdd}>
+			<WhiteGrnBtn onClick={handleWishAdd} style={{ minWidth: '130px' }}>
 				<div>
 					<img src="/img/grnstar.png" alt="" />
 				</div>

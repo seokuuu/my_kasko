@@ -46,16 +46,6 @@ const Round = ({}) => {
 	const [editPage, setEditPage] = useAtom(auctionRoundEditPageAtom)
 	const [types, setTypes] = useState('단일')
 
-	const radioDummy = ['전체', '미진행', '진행중', '종료']
-	const radioDummy2 = ['불량', '제외 요청', '기타 사유']
-
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
-
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 	const [toggleMsg, setToggleMsg] = useState('On')
