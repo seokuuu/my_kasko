@@ -177,11 +177,11 @@ const Table = ({
 		}
 	}, [rowData])
 
-	const tableV2CommonStyles = {
-		headerClass: 'custom-header-style',
-		flex: 1,
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-	}
+	// const tableV2CommonStyles = {
+	// 	headerClass: 'custom-header-style',
+	// 	flex: 1,
+	// 	cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
+	// }
 
 	useEffect(() => {
 		if (getCol && getCol?.length > 0) {
@@ -192,12 +192,12 @@ const Table = ({
 					item.pinned = 'left'
 					item.minWidth = 50
 					item.maxWidth = 50
-					return { ...item, ...tableV2CommonStyles }
+					return { ...item }
 				}
 				if (['고유 번호', '고유번호'].includes(item.field)) {
 					item.hide = true
 				}
-				if (['추천'].includes(item.field)) {
+				if (['추천 여부', '추천'].includes(item.field)) {
 					item.hide = true
 				}
 				// 로컬 스토리지 저장된 숨김목록처리
@@ -207,7 +207,7 @@ const Table = ({
 						item.hide = true
 					}
 				}
-				return { ...item, ...tableV2CommonStyles, maxWidth: 999, minWidth: 80, width: 100 }
+				return { ...item, maxWidth: 999, minWidth: 80, width: 100 }
 			})
 			setColumnDefs(newCol)
 		}
