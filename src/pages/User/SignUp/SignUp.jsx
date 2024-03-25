@@ -72,7 +72,9 @@ const SignUp = () => {
 			setValue('depositManagerTitle', '')
 			setValue('depositManagerPhone', '')
 		}
+	}, [auctionInfoSameForDeposit, setValue, watch])
 
+	useEffect(() => {
 		// 출고 담당자 정보 체크박스 로직
 		if (auctionInfoSameForRelease) {
 			const memberName = watch('memberName')
@@ -87,7 +89,7 @@ const SignUp = () => {
 			setValue('releaseManagerTitle', '')
 			setValue('releaseManagerPhone', '')
 		}
-	}, [auctionInfoSameForDeposit, auctionInfoSameForRelease, setValue, watch])
+	}, [auctionInfoSameForRelease, setValue, watch])
 
 	/** radioBox -- 그대로 진행? */
 	const radioDummy = ['개인', '법인(주)', '법인(유)']

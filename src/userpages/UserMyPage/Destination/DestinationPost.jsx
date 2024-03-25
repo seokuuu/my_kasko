@@ -130,7 +130,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 					<Left>
 						<Part>
 							<Title>
-								<h4>대표 주소 지정</h4>
+								<h4>대표 목적지 지정</h4>
 								<p></p>
 							</Title>
 							<RadioContainer>

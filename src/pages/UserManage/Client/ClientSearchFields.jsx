@@ -34,6 +34,7 @@ const ClientSearchFields = ({ search, setSearch }) => {
 									{ label: '선택', value: '' },
 									{ label: '고객사 명', value: '고객사' },
 									{ label: '고객 코드', value: '고객 코드' },
+									{ label: '고객사 아이디', value: '고객사 아이디' },
 									{ label: '사업자 번호', value: '사업자 번호' },
 								]}
 								value={search.category || { label: '선택', value: '' }}

@@ -3,8 +3,11 @@ import { MainTabs, MainTabTitle, RightSub } from './MainPageStyled'
 import { add_element_field } from '../../lib/tableHelpers'
 import { MainProductFields, MainProductFieldsCols } from './MainProductFields'
 import Table from '../../pages/Table/Table'
+import { FadeLoader } from 'react-spinners'
+import { useCustomerMainPageFavoriteProductsQuery } from '../../api/mainPage/mainPage'
 
-const FavoriteProduct = ({ list = null }) => {
+const FavoriteProduct = () => {
+	const { data, isLoading } = useCustomerMainPageFavoriteProductsQuery()
 	const [tabList, setTabList] = useState([])
 	const [rows, setRows] = useState([])
 
@@ -16,6 +19,7 @@ const FavoriteProduct = ({ list = null }) => {
 	}
 
 	useEffect(() => {
+		const list = data?.favoriteProductList
 		if (list && Array.isArray(list)) {
 			const checkedTab = tabList.find((item) => item.isCheck)
 			const products = list.filter((item) => item.favoriteName === checkedTab?.name).flatMap((item) => item.products)
@@ -24,14 +28,17 @@ const FavoriteProduct = ({ list = null }) => {
 	}, [tabList])
 
 	useEffect(() => {
-		if (list && Array.isArray(list)) {
-			const tabs = list?.map((item, i) => ({
-				name: item?.favoriteName,
-				isCheck: i === 0,
-			}))
-			setTabList(tabs)
+		if (data) {
+			const list = data?.favoriteProductList
+			if (list && Array.isArray(list)) {
+				const tabs = list?.map((item, i) => ({
+					name: item?.favoriteName,
+					isCheck: i === 0,
+				}))
+				setTabList(tabs)
+			}
 		}
-	}, [list])
+	}, [data])
 
 	return (
 		<>
@@ -46,8 +53,13 @@ const FavoriteProduct = ({ list = null }) => {
 						))}
 					</MainTabs>
 				)}
-				<div>
+				<div style={{ position: 'relative' }}>
 					<Table getRow={rows} getCol={MainProductFieldsCols} />
+					{isLoading && (
+						<div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+							<FadeLoader color="#4C83D6" size={20} />
+						</div>
+					)}
 				</div>
 			</RightSub>
 		</>
