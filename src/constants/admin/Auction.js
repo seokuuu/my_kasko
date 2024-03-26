@@ -946,6 +946,7 @@ export const AuctionDetailProgressFields = {
 	패키지명: 'packageName',
 	'패키지 번호': 'packageNumber',
 	'낙찰 상태': 'biddingStatus',
+	사유: 'reason',
 	목적지명: 'destinationName',
 	'목적지 코드': 'destinationCode',
 	'목적지 주소': 'customerDestinationAddress',
@@ -1006,7 +1007,7 @@ export const AuctionDetailProgressFieldsCols = [
 	// 나의 응찰 최고 가격
 	// 응찰가격
 	{ ...commonStyles, field: '낙찰 상태', minWidth: 120 },
-	// 취소 사유
+	{ ...commonStyles, field: '사유', minWidth: 120 },
 	{ ...commonStyles, field: '입찰 순번' },
 	{ ...commonStyles, field: '입찰 고객명', minWidth: 150 },
 	{ ...commonStyles, field: '입찰 고객 코드', minWidth: 120 },
