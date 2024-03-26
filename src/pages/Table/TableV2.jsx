@@ -105,6 +105,7 @@ var GRID_SETTIGS = {
 		animateRows: false, // Enable row animations
 		cacheBlockSize: 50, // 캐시에 보관할 블록 사이즈
 		maxBlocksInCache: 50, // 캐시에 최대로 보관할 블록 수
+		suppressCopyRowsToClipboard: true, // 행 전체 복사 비활성화
 	},
 }
 
