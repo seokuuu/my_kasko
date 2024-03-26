@@ -1,9 +1,9 @@
 import React from 'react'
 import { MainSelect } from '../../../../../common/Option/Main'
-import ProductNumber from '../../../../../components/ProductNumber/ProductNumber'
 import DateSearchSelect from '../../../../../components/Search/DateSearchSelect'
 import { FilterLeft, FilterRight, PartWrap, RowWrap } from '../../../../../modal/External/ExternalFilter'
 import { claimSearchCategoryOptions } from '../../../constants'
+import ProductNumber from '../../../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 
 /**
  * @description

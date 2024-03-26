@@ -299,7 +299,7 @@ const AdminOrderDetail = () => {
 						<div style={{ display: 'flex', gap: '10px' }}>
 							{/*<PageDropdown />*/}
 							<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
-							<Excel getRow={getRow} />
+							<Excel getRow={getRow} sheetName="주문 관리 상세" />
 						</div>
 					</TCSubContainer>
 					<TCSubContainer>

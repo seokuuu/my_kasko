@@ -1,11 +1,11 @@
 import React from 'react'
 import { MainSelect } from '../../../../common/Option/Main'
-import ProductNumber from '../../../../components/ProductNumber/ProductNumber'
 import { DateSearchSelect, DestinationSearch } from '../../../../components/Search'
 import CustomerSearch from '../../../../components/Search/CustomerSearch'
 import useGlobalProductSearchFieldData from '../../../../hooks/useGlobalProductSearchFieldData'
 import { FilterLeft, FilterRight, PWRight, PartWrap, RowWrap } from '../../../../modal/External/ExternalFilter'
 import CustomCheckBox from '../../UI/CustomCheckBox/CustomCheckBox'
+import ProductNumber from '../../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 
 /**
  * @description

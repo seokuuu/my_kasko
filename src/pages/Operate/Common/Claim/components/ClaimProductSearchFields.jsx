@@ -2,7 +2,6 @@ import { useAtom } from 'jotai'
 import React from 'react'
 import { GreyBtn } from '../../../../../common/Button/Button'
 import { MainSelect } from '../../../../../common/Option/Main'
-import ProductNumber from '../../../../../components/ProductNumber/ProductNumber'
 import useGlobalProductSearchFieldData from '../../../../../hooks/useGlobalProductSearchFieldData'
 import {
 	ExInputsWrap,
@@ -18,6 +17,7 @@ import {
 import StandardFind from '../../../../../modal/Multi/StandardFind'
 import { kyuModalAtom } from '../../../../../store/Layout/GlobalProductSearch'
 import CustomCheckBox from '../../../UI/CustomCheckBox/CustomCheckBox'
+import ProductNumber from '../../../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 
 const ClaimProductSearchFields = ({
 	search,

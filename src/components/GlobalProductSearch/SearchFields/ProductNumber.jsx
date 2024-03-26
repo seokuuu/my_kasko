@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { DoubleWrap } from '../../../modal/External/ExternalFilter'
+import { useAtomValue } from 'jotai'
+import { filterisReset } from '../../../store/Layout/Layout'
 
 const ProductNumber = ({ stateValue, setState, valueName, title, height = '100px' }) => {
 	const [value, setValue] = useState(stateValue || '')
+	const isReset = useAtomValue(filterisReset)
 
 	const onChange = (e) => {
 		setValue(e.target.value)
@@ -14,7 +17,10 @@ const ProductNumber = ({ stateValue, setState, valueName, title, height = '100px
 	}, [stateValue])
 
 	useEffect(() => {
-		// Split the value by commas and new lines, trim spaces, and filter out empty strings.
+		setValue('')
+	}, [isReset])
+
+	useEffect(() => {
 		const splitValues = value
 			? value
 					.split(/,|\n/)

@@ -91,7 +91,7 @@ const RoundAucProAdd = ({
 
 	const paramData = {
 		pageNum: 1,
-		pageSize: 50,
+		pageSize: 10000,
 		saleType: '경매 대상재',
 		registrationStatus: '경매 등록 대기',
 		type: types,
@@ -106,10 +106,7 @@ const RoundAucProAdd = ({
 
 	const resData = data?.data?.data?.list
 
-
 	const resPagination = data?.data?.data?.pagination
-
-
 
 	useEffect(() => {
 		// 이미 추가된 데이터 중복 제거
@@ -230,8 +227,8 @@ const RoundAucProAdd = ({
 									<TableV2HiddenSection />
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
-									<PageDropdown handleDropdown={handleTablePageSize} />
-									<Excel getRow={getRow} />
+									{/* <PageDropdown handleDropdown={handleTablePageSize} /> */}
+									<Excel getRow={getRow} sheetName="경매 제품 추가" />
 								</div>
 							</TCSubContainer>
 							<TCSubContainer>

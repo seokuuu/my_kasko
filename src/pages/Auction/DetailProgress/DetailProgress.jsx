@@ -85,8 +85,6 @@ const DetailProgress = ({}) => {
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
-
-
 	useEffect(() => {
 		let getData = resData
 		//타입, 리액트쿼리, 데이터 확인 후 실행
@@ -161,7 +159,7 @@ const DetailProgress = ({}) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
-						<Excel getRow={getRow} />
+						<Excel getRow={getRow} sheetName="경매 진행 상세 조회" />
 					</div>
 				</TCSubContainer>
 				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />

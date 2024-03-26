@@ -22,7 +22,7 @@ import {
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import { destiApproveReq, getWinningDetail } from '../../../api/auction/winning'
+import { destiApproveReq, getAuctionDetailDestination, getWinningDetail } from '../../../api/auction/winning'
 import { getCustomerDestinationByCustomerCode } from '../../../api/search'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import { UserAuctionWinningDetailFields, UserAuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
@@ -142,6 +142,7 @@ const WinningDetail = ({ setAucDetail }) => {
 	const checkedArray = useAtom(selectedRowsAtom)[0]
 	const [tablePagination, setTablePagination] = useState([])
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
+	console.log('destinationData', destinationData)
 
 	const init = {
 		updateList: [],
@@ -156,17 +157,29 @@ const WinningDetail = ({ setAucDetail }) => {
 		}))
 	}
 
-	const customerCode = detailRow?.['고객 코드']
-	const { data: inventoryDestination } = useReactQuery(
-		customerCode,
-		'getCustomerDestinationByCustomerCode',
-		getCustomerDestinationByCustomerCode,
-	)
-
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getWinningDetail', getWinningDetail)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 	const [winningCreateData, setWinningCreateData] = useState({})
+
+	const newCustomerCode = resData?.map((x) => x?.code)[0]
+
+	const { data: inventoryDestination } = useReactQuery(
+		newCustomerCode,
+		'getAuctionDetailDestination',
+		getAuctionDetailDestination,
+	)
+
+	const resDestiData = inventoryDestination?.data?.data
+
+	console.log('resDestiData', resDestiData)
+
+	// useEffect(() => {
+	// 	if (destinationData) {
+	// 		const filteredDestinationData = destinationData?.filter((item) => item.uid === destinationData?.uid)
+	// 		console.log('filteredDestinationData', filteredDestinationData)
+	// 	}
+	// }, [destinationData])
 
 	// 예외 처리
 	useEffect(() => {
@@ -204,6 +217,9 @@ const WinningDetail = ({ setAucDetail }) => {
 	}, [checkedArray])
 
 	const [destiObject, setDestiObject] = useState()
+	const [tableDesti, setTabelDesti] = useState({})
+	console.log('destiObject @@', destiObject)
+	console.log('resDestiData @@', resDestiData)
 	const [finalInput, setFinalInput] = useState({
 		requestCustomerDestinationUid: null,
 	})
@@ -211,6 +227,11 @@ const WinningDetail = ({ setAucDetail }) => {
 	useEffect(() => {
 		setDestiObject(destinationData)
 	}, [destinationData])
+
+	const matchedDestination = resDestiData.find((item) => item.uid === destinationData?.uid)
+	console.log('matchedDestination', matchedDestination)
+
+	// TODO : 매치된거 테이블에 적용시키기
 
 	useEffect(() => {
 		const updatedProductList = checkedArray?.map((item) => ({
@@ -325,11 +346,7 @@ const WinningDetail = ({ setAucDetail }) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						<Excel
-						// getRow={getRow}
-						/>
-
-						{/*<Excel getRow={getRow} />*/}
+						<Excel getRow={getRow} sheetName="낙찰 확인 상세" />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>

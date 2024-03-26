@@ -40,6 +40,7 @@ import { useNavigate } from 'react-router-dom'
 import {
 	destiApproveReq,
 	destiChangeReject,
+	getAuctionDetailDestination,
 	getWinningDetail,
 	partDeleteBidding,
 	partDepositConfirm,
@@ -70,6 +71,7 @@ const WinningDetail = ({ setAucDetail }) => {
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [tablePagination, setTablePagination] = useState([])
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
+	console.log('destinationData', destinationData)
 	const [contentData, setContentData] = useState([])
 
 	const titleData = [
@@ -197,17 +199,24 @@ const WinningDetail = ({ setAucDetail }) => {
 
 	const [param, setParam] = useState(paramData)
 
-	const customerCode = detailRow?.['고객 코드']
-	const { data: inventoryDestination } = useReactQuery(
-		customerCode,
-		'getCustomerDestinationByCustomerCode',
-		getCustomerDestinationByCustomerCode,
-	)
+	const customerCode = detailRow['고객 코드']
 
 	const [winningCreateData, setWinningCreateData] = useState({})
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getWinningDetail', getWinningDetail)
 
 	const resData = data?.data?.data?.list
+
+	const newCustomerCode = resData?.map((x) => x?.code)[0]
+
+	const { data: inventoryDestination } = useReactQuery(
+		newCustomerCode,
+		'getAuctionDetailDestination',
+		getAuctionDetailDestination,
+	)
+
+	const resDestiData = inventoryDestination?.data?.data
+
+	console.log('resDestiData', resDestiData)
 
 	// 예외 처리
 	useEffect(() => {
@@ -477,7 +486,7 @@ const WinningDetail = ({ setAucDetail }) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
-						<Excel getRow={getRow} />
+						<Excel getRow={getRow} sheetName="경매 낙찰 상세" />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>

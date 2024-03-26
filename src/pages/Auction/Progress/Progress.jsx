@@ -75,7 +75,6 @@ const Progress = ({}) => {
 	}
 	const [param, setParam] = useState(paramData)
 
-
 	const [liveStatus, setLiveStatus] = useState('LIVEgetProgess')
 	// GET
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getProgess)
@@ -91,8 +90,6 @@ const Progress = ({}) => {
 			setTablePagination(resPagination)
 		}
 	}, [isSuccess, resData])
-
-
 
 	useEffect(() => {
 		if (isSuccess) refetch()
@@ -162,7 +159,7 @@ const Progress = ({}) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
-						<Excel getRow={getRow} />
+						<Excel getRow={getRow} sheetName="경매 진행 조회" />
 					</div>
 				</TCSubContainer>
 				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
