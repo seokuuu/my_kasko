@@ -330,7 +330,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => setParam((p) => ({ ...p, pageSize: e.target.value }))} />
-						<Excel getRow={getRow} />
+						<Excel getRow={getRow} sheetName="경매 목록 수정" />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>

@@ -65,7 +65,6 @@ export const getAuctionDestination = () => {
 
 // 고객사 목적지 목록 상세 (경매 낙찰 관리)
 export const getAuctionDetailDestination = (data) => {
-
 	return client.get(`${urls.winning}/destination?customerCode=${data}`)
 }
 

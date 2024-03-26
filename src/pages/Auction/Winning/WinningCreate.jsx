@@ -111,6 +111,8 @@ const WinningCreate = ({}) => {
 	const [propsUid, setPropsUid] = useState(null) // CustomerCodeFind에서 찾아온 uid
 	const [destiObject, setDestiObject] = useState()
 
+	console.log('destiObject', destiObject)
+
 	// 목적지 찾기 및 목적지 uid, auctionNumber set //
 	useEffect(() => {
 		const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
@@ -379,7 +381,7 @@ const WinningCreate = ({}) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						<Excel getRow={getRow} />
+						<Excel getRow={getRow} sheetName="낙찰 생성" />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>

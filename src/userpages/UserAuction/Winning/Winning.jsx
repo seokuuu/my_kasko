@@ -159,7 +159,7 @@ const Winning = ({}) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						<Excel getRow={getRow} />
+						<Excel getRow={getRow} sheetName="낙찰 확인" />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>

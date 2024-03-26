@@ -12,8 +12,6 @@ import {
 
 import Table from '../../Table/Table'
 
-import PageDropdown from '../../../components/TableInner/PageDropdown'
-
 import {
 	FilterContianer,
 	FilterHeader,
@@ -34,7 +32,6 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import AuctionRound from '../../../modal/Multi/AuctionRound'
 import useAlert from '../../../store/Alert/useAlert'
-import { onSizeChange } from '../../Operate/utils'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import RoundAucListEdit from './RoundAucListEdit'
 import RoundSearchFields from './RoundSearchFields'
@@ -67,7 +64,7 @@ const Round = ({}) => {
 
 	const initialParamState = {
 		pageNum: 1,
-		pageSize: 50,
+		pageSize: 10000,
 		type: types,
 	}
 
@@ -214,8 +211,8 @@ const Round = ({}) => {
 								<TableV2HiddenSection />
 							</div>
 							<div style={{ display: 'flex', gap: '10px' }}>
-								<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
-								<Excel getRow={getRow} />
+								{/* <PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} /> */}
+								<Excel getRow={getRow} sheetName="경매 회차 관리" />
 							</div>
 						</TCSubContainer>
 						<TCSubContainer>
