@@ -343,6 +343,7 @@ const Table = ({
 		animateRows: true, // Enable row animations
 		cacheBlockSize: 100, // 캐시에 보관할 블록 사이즈
 		maxBlocksInCache: 10, // 캐시에 최대로 보관할 블록 수
+		suppressCopyRowsToClipboard: true, // 행 전체 복사 비활성화
 		// 서버 측 데이터 요청을 처리하는 함수
 	}
 

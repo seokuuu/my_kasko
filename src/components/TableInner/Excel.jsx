@@ -3,6 +3,29 @@ import { ExcelBtn } from '../../common/Button/Button'
 import * as XLSX from 'xlsx'
 import useAlert from '../../store/Alert/useAlert'
 
+// prettier-ignore
+const numberFormatList = [
+	'제품 등급', '등급', '중량', '제품 중량','수량',
+	'폭', '길이', '두께', 'TS', 'YP', 'C%', 'C', 'EL', 'Si', 'Mn', 'P', 'S',
+	'매입가',
+	'낙찰가',
+	'응찰가',
+	'제품 금액',
+	'제품 낙찰 단가',
+	'낙찰 총 단가',
+	'제품 공급가',
+	'제품 부가세',
+	'제품 금액(VAT 포함)',
+	'운반비(VAT 포함)',
+	'입금 요청액',
+	'할증 운임 단가',
+	'매입 운반비', '매입 기본 운임단가', '매입 할증 운임단가', '매입 운송비 공급가', '매입 운송비 부가세',
+	'매출 운반비', '매출 기본 운임단가', '매출 할증 운임단가', '매출 운송비 공급가', '매출 운송비 부가세',
+	'카스코 낙찰가', '상시 판매가', '아울렛 가격',
+	'총공급가', '총부가세', '합계',
+	'적용 단가', '시작가', '경매 시작가', '적용전 단가', '시작가/판매가'
+]
+
 /**
  * 엑셀
  * @param getRow 엑셀 데이터
@@ -12,7 +35,19 @@ const Excel = ({ getRow, sheetName = 'kasko' }) => {
 	const { simpleAlert } = useAlert()
 
 	const exportToXLSX = () => {
-		const jsonData = getRow
+		// 숫자 처리
+		const jsonData = getRow.map((item) => {
+			const keys = Object.keys(item)
+			const newItem = item
+			for (let key of keys) {
+				if (numberFormatList.includes(key)) {
+					newItem[key] = Number(item[key])
+				} else {
+					newItem[key] = item[key]
+				}
+			}
+			return newItem
+		})
 
 		if (!jsonData || jsonData?.length === 0) {
 			return simpleAlert('다운로드 받을 데이터가 존재하지 않습니다.')
