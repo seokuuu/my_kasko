@@ -32,6 +32,7 @@ const CustomerFind = ({ title, setSwitch, setModalData }) => {
 	const { isLoading, isError, data, isSuccess } = useReactQuery('', 'getCustomerFind', getCustomerFind)
 
 	const customerGetData = data?.data?.data
+	console.log('customerGetData', customerGetData)
 
 	const [isModal, setIsModal] = useAtom(blueModalAtom)
 	const [searchTerm, setSearchTerm] = useState('')

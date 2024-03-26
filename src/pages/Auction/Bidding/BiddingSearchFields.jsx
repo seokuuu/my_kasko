@@ -17,7 +17,7 @@ import { GreyBtn } from '../../../common/Button/Button'
 
 import StandardFind from '../../../modal/Multi/StandardFind'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
-import ProductNumber from '../../../components/ProductNumber/ProductNumber'
+import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 
 const BiddingSearchFields = ({
 	// prettier-ignore

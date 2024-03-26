@@ -15,10 +15,10 @@ import {
 import { useAtomValue, useSetAtom } from 'jotai'
 import React from 'react'
 import { GreyBtn } from '../../../common/Button/Button'
-import ProductNumber from '../../../components/ProductNumber/ProductNumber'
 import { RadioSearchButton } from '../../../components/Search'
 import StandardFind from '../../../modal/Multi/StandardFind'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
+import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 
 const UserBiddingSearchFields = ({
 	// prettier-ignore

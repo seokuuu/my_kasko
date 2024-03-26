@@ -42,7 +42,6 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 		biddingPrice: null,
 	}
 
-
 	// AuctionBiddingFieldsCols(checkedArrayState) 이런식으로 써야하나?
 	const tableField = useRef(AuctionBiddingFieldsCols(checkedArray))
 
@@ -234,7 +233,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 								<div></div>
 								<div style={{ display: 'flex', gap: '10px' }}>
 									<PageDropdown handleDropdown={handleTablePageSize} />
-									<Excel getRow={getRow} />
+									<Excel getRow={getRow} sheetName="패키지 상세" />
 								</div>
 							</TCSubContainer>
 							<TCSubContainer>

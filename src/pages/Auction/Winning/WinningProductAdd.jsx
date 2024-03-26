@@ -221,7 +221,7 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
 									<PageDropdown handleDropdown={handleTablePageSize} />
-									<Excel getRow={getRow} />
+									<Excel getRow={getRow} sheetName="낙찰 생성 제품 추가" />
 								</div>
 							</TCSubContainer>
 							<TCSubContainer>

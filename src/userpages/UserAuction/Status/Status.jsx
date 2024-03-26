@@ -4,12 +4,7 @@ import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 
 import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
-import {
-	FilterContianer,
-	FilterHeader,
-	TableContianer,
-	TCSubContainer
-} from '../../../modal/External/ExternalFilter'
+import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
@@ -93,7 +88,6 @@ const Status = ({}) => {
 			setTablePagination(resPagination)
 		}
 	}, [isSuccess, resData])
-
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
