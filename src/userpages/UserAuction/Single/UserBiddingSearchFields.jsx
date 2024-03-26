@@ -15,10 +15,10 @@ import {
 import { useAtomValue, useSetAtom } from 'jotai'
 import React from 'react'
 import { GreyBtn } from '../../../common/Button/Button'
+import ProductNumber from '../../../components/ProductNumber/ProductNumber'
 import { RadioSearchButton } from '../../../components/Search'
 import StandardFind from '../../../modal/Multi/StandardFind'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
-import ProductNumber from '../../../components/ProductNumber/ProductNumber'
 
 const UserBiddingSearchFields = ({
 	// prettier-ignore
@@ -183,7 +183,7 @@ const UserBiddingSearchFields = ({
 			{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
 			<FilterRight>
 				<ProductNumber
-					initialValue={search.productNumberList}
+					value={search.productNumberList}
 					setState={setSearch}
 					valueName={'productNumberList'}
 					height="100%"
