@@ -13,6 +13,7 @@ import { globalProductSearchToggleAtom } from '../../store/Layout/GlobalProductS
 import HeaderToggle from '../Toggle/HeaderToggle'
 import ProductSearchFields from './ProductSearchFields'
 import { noticeSearchCategoryOptions } from '../../pages/Operate/constants'
+import { filterisReset } from '../../store/Layout/Layout'
 
 const GlobalProductSearch = ({
 	// prettier-ignore
@@ -23,6 +24,7 @@ const GlobalProductSearch = ({
 }) => {
 	const [toggle, setToggle] = useAtom(globalProductSearchToggleAtom)
 	const [searchReset, setSearchReset] = useState(false)
+	const [isReset, setIsReset] = useAtom(filterisReset)
 
 	const {
 		// prettier-ignore
@@ -157,6 +159,7 @@ const GlobalProductSearch = ({
 		setSearchReset((searchReset) => !searchReset)
 		setUserSearchParam({ ...initialParamRef.current })
 		globalProductResetOnClick()
+		setIsReset((prev) => !prev)
 	}
 
 	const searchButtonOnClickHandler = () => {

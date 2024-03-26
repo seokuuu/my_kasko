@@ -383,3 +383,5 @@ export const auctionStartAtom = atom('')
 
 // 사용자 경매 응찰 - 관심 제품 boolean
 export const userBiddingWishCheck = atom(false)
+
+export const filterisReset = atom(false)
