@@ -18,6 +18,7 @@ import useMutationQuery from '../../hooks/useMutationQuery'
 import useAlert from '../../store/Alert/useAlert'
 import { authAtom } from '../../store/Auth/auth'
 import moment from 'moment'
+import { useLoading } from '../../store/Loading/loadingAtom'
 
 // 중량 판매 등록 모달
 const WeightSales = () => {
@@ -36,13 +37,9 @@ const WeightSales = () => {
 	}
 
 	const [rows, setRows] = useState([]) // 중량판매 테이블 row 데이터
+	const [deletedRows, setDeletedRows] = useState([]) // 삭제 데이터
 	const [checkedRows, setCheckedRows] = useState([]) // 중량 판매 테이블 체크 리스트
-	const [deleted, setDeleted] = useState([]) // 삭제 데이터
-	const [postRequest, setPostRequest] = useState({
-		originalProductUid: selectObj['제품 고유 번호'], // 제품 고유 번호
-		addProductList: [],
-		deleteProductUids: [],
-	})
+
 	// 제품 상세
 	const { data: originalData, isLoading: loading } = useReactQuery(requestData, 'getInventroyStock', getInventoryStocks)
 
@@ -69,22 +66,36 @@ const WeightSales = () => {
 	const tableFields = useRef(tableTitle)
 	const getCol = tableFields.current
 
-	// 중량판매 제품 등록
-	const createSelectData = (idx = null) => {
-		let newNumber = 1
+	// 제품 번호 생성
+	const createProductNumber = () => {
 		const usedNumber = rows.map((item) => Number(item['제품 번호'].split('-')[1]))
 		let maxNumber = Math.max(...usedNumber) + 1
 
+		return rows?.length === 0 ? selectObj['제품 번호'] + '-' + 0 : selectObj['제품 번호'] + '-' + maxNumber++
+	}
+
+	// 중량 판매 폭/길이 계산
+	const addAutoCalculator = (item, key) => {
+		const updateKey = key === '폭' ? 'width' : 'length'
+		const originValue = item[key]
+		const totalValue = rows.map((row) => row[key]).reduce((acc, curr) => acc + parseInt(curr), 0)
+		const isUpdate = rows.filter((row) => row[updateKey])
+
+		const autoValue = item[key] - totalValue
+		const updateValue = isUpdate?.length > 0 ? 0 : Number(item[key])
+
+		return (originValue - totalValue > 0 ? autoValue : updateValue).toFixed(0)
+	}
+
+	// 중량판매 제품 등록
+	const createSelectData = () => {
 		return selectedRowData?.map((i) => ({
 			'중량 제품 번호': i['중량 제품 번호'] || '',
-			'제품 번호':
-				rows?.length === 0
-					? selectObj['제품 번호'] + '-' + (idx != null ? idx : selectedRowData.length - newNumber++)
-					: selectObj['제품 번호'] + '-' + maxNumber++,
+			'제품 번호': createProductNumber(),
 			중량: i['중량'],
 			두께: i['두께'],
-			폭: i['폭'],
-			길이: i['길이'],
+			폭: addAutoCalculator(i, '폭'),
+			길이: addAutoCalculator(i, '길이'),
 			제조사: i['제조사'],
 			'판매 구분': i['판매 구분'],
 			'유찰 횟수': i['유찰 횟수'],
@@ -92,15 +103,8 @@ const WeightSales = () => {
 			수정자: auth.name || '',
 			'수정 날짜': moment(new Date()).format('YYYY-MM-DD'),
 			'중량 판매 개수': i['중량 판매 개수'],
-		}))
-	}
-
-	const updateRowsReValue = (data) => {
-		const row = tableRowData[0]
-		return data?.map((item) => ({
-			...item,
-			폭: (row['폭'] / data?.length).toFixed(1),
-			길이: (row['길이'] / data?.length).toFixed(1),
+			length: false,
+			width: false,
 		}))
 	}
 
@@ -116,98 +120,101 @@ const WeightSales = () => {
 		}
 
 		// table row add
-		let newSelectedData = createSelectData()
-		if (rows.length === 0) {
-			newSelectedData = [...newSelectedData, ...createSelectData(1)]
-		}
-		const newRows = updateRowsReValue([...rows, ...newSelectedData])
-		setRows([])
-		setTimeout(() => {
-			setRows(newRows)
-		}, 100)
-
-		// post data set
-		const newAddData = newRows.map((item) => ({
-			productNumber: item['제품 번호'],
-			width: item['폭'],
-			length: item['길이'],
-		}))
-		setPostRequest((p) => ({ ...p, addProductList: [...newAddData] }))
+		const newRows = createSelectData()
+		setRows((prev) => [...prev, ...newRows])
 	}
 
 	// 중량 제품 폭, 길이 수정
-	const handleOnchange = (e, rowIndex) => {
+	const handleOnchange = (e, target) => {
 		const { value, name } = e.target
-		const row = tableRowData[0]
-		const originUpdateValue = Number(row[name === 'width' ? '폭' : '길이']) - value
+		const key = name === 'width' ? '폭' : '길이'
+		const productKey = '제품 번호'
 
-		const newAddProductList = postRequest.addProductList.map((item, idx) => {
-			if (idx === rowIndex) {
+		// 기존 로우 업데이트
+		const newRows = rows.map((item) => {
+			if (item[productKey] === target[productKey]) {
 				return {
 					...item,
-					[name]: value,
-				}
-			} else {
-				return {
-					...item,
-					[name]: originUpdateValue / rows.length - 1,
+					[key]: value,
+					[name]: true,
 				}
 			}
+			return item
 		})
 
-		console.log('newAddProductList : ', newAddProductList)
-
-		setPostRequest((prevPostRequest) => {
-			return {
-				...prevPostRequest,
-				addProductList: newAddProductList,
-			}
-		})
+		setRows(newRows)
 	}
 
 	// 체크박스 check handler
-	const handleCheck = (id, data) => {
+	const handleCheck = (id) => {
 		if (checkedRows?.includes(id)) {
 			setCheckedRows(checkedRows.filter((rowId) => rowId !== id))
 		} else {
 			setCheckedRows([...checkedRows, id])
-			setDeleted([...deleted, data])
 		}
 	}
 
 	// 선택 목록 제거
 	const handleDelete = () => {
-		let deleteRows = rows.filter((row) => !checkedRows?.includes(row['제품 번호']))
-		const newRows = updateRowsReValue(deleteRows)
-		setRows([])
-		if (rows.length > 2) {
-			setTimeout(() => {
-				setRows(newRows)
-			}, 100)
-		}
+		const newRows = rows.filter((row) => !checkedRows?.includes(row['제품 번호']))
+		setRows(newRows)
 
-		const deleteUids = deleteRows.map((item) => item['중량 제품 번호'])
-		setPostRequest((p) => ({ ...p, deleteProductUids: [...p.deleteProductUids, ...deleteUids] }))
+		const newDeletedRows = rows.filter((row) => checkedRows?.includes(row['제품 번호']))
+		setDeletedRows((prev) => [...prev, newDeletedRows['제품 고유 번호']])
 		setCheckedRows([])
 	}
 
-	const { mutate } = useMutationQuery('getJunior', postStocks)
+	const { mutate, isLoading } = useMutationQuery('getJunior', postStocks)
+	useLoading(isLoading)
 
 	const handleSubmit = () => {
-		if (!postRequest.originalProductUid) {
-			simpleAlert('중량 판매 등록할 제품을 선택해주세요.')
-			return
-		}
-		if (postRequest.addProductList.length === 0 && postRequest.deleteProductUids.length === 0) {
+		if (rows?.length === 0) {
 			simpleAlert('중량 판매 등록할 제품을 등록해주세요.')
 			return
 		}
+		if (rows?.length === 1) {
+			simpleAlert('절단 제품을 2개 이상 등록해주세요.')
+			return
+		}
+
+		const row = tableRowData[0]
+		const isWidthUpdate = rows.filter((item) => !!item.width)[0]?.width || false
+		const isLengthUpdate = rows.filter((item) => !!item.length)[0]?.length || false
+		const totalWidth = rows.map((item) => item['폭']).reduce((acc, curr) => acc + parseInt(curr), 0)
+		const totalLength = rows.map((item) => item['길이']).reduce((acc, curr) => acc + parseInt(curr), 0)
+
+		if (!isWidthUpdate && !isLengthUpdate) {
+			simpleAlert('제품의 폭 또는 길이를 수정해주세요.')
+			return
+		}
+
+		if (isWidthUpdate && totalWidth > row['폭']) {
+			simpleAlert('절단한 제품의 총 폭 크기가 원본 폭보다 큽니다.')
+			return
+		}
+
+		if (isLengthUpdate && totalLength > row['길이']) {
+			simpleAlert('절단한 제품의 총 길이가 원본 길이보다 큽니다.')
+			return
+		}
+
+		const postRequest = {
+			originalProductUid: selectObj['제품 고유 번호'],
+			addProductList: rows.map((item) => ({
+				productNumber: item['제품 번호'],
+				thickness: item['두께'],
+				width: item['폭'],
+				length: item['길이'],
+			})),
+			deleteProductUids: deletedRows,
+		}
+
 		mutate(postRequest, {
 			onSuccess: () => {
 				simpleAlert('저장되었습니다.', () => window.location.reload())
 			},
 			onError: (e) => {
-				simpleAlert(e?.data?.message || '실패하였습니다.', () => window.location.reload())
+				simpleAlert('실패하였습니다.', () => window.location.reload())
 			},
 		})
 	}
@@ -301,33 +308,38 @@ const WeightSales = () => {
 												<Checkbox
 													type="checkbox"
 													checked={checkedRows?.includes(row['제품 번호'])}
-													onChange={() => handleCheck(row['제품 번호'], row)}
+													onChange={() => handleCheck(row['제품 번호'])}
 												/>
 											</TableCell>
-											{Object.entries(row)?.map(([k, v], idx) => (
-												<TableCell key={idx}>
-													{k === '폭' || k === '길이' ? (
-														<input
-															defaultValue={v}
-															name={k === '폭' ? 'width' : 'length'}
-															id={row['제품 번호']}
-															onChange={(e) => handleOnchange(e, index)}
-														/>
-													) : (
-														<div
-															style={{
-																width: '100%',
-																height: '100%',
-																display: 'flex',
-																alignItems: 'center',
-																justifyContent: 'center',
-															}}
-														>
-															{row[k]}
-														</div>
-													)}
-												</TableCell>
-											))}
+											{Object.entries(row)?.map(([k, v], idx) => {
+												if (k === 'width' || k === 'length') {
+													return <></>
+												}
+												return (
+													<TableCell key={idx}>
+														{k === '폭' || k === '길이' ? (
+															<input
+																value={v}
+																name={k === '폭' ? 'width' : 'length'}
+																id={row['제품 번호']}
+																onChange={(e) => handleOnchange(e, row)}
+															/>
+														) : (
+															<div
+																style={{
+																	width: '100%',
+																	height: '100%',
+																	display: 'flex',
+																	alignItems: 'center',
+																	justifyContent: 'center',
+																}}
+															>
+																{row[k]}
+															</div>
+														)}
+													</TableCell>
+												)
+											})}
 										</TableRow>
 									))}
 								</tbody>
