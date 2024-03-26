@@ -91,7 +91,10 @@ const BiddingSingle = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 
+	// 사용자완 다르게 관리자엔 .value까지 붙어줘야 함.
 	const uids = checkedArrayState?.map((item) => item && item['제품 번호']?.value)
+
+	console.log('관리자 uids', uids)
 
 	const paramData = {
 		pageNum: 1,

@@ -101,7 +101,7 @@ const Single = ({}) => {
 
 	// console.log('checkedArrayState', checkedArrayState)
 
-	const uids = checkedArrayState?.map((item) => item && item['제품 고유 번호']?.value)
+	const uids = checkedArrayState?.map((item) => item && item['제품 고유 번호'])
 
 	const paramData = {
 		pageNum: 1,
@@ -403,7 +403,7 @@ const Single = ({}) => {
 
 		simpleAlert('적용 되었습니다.')
 		const updatedResData = oriData?.list?.map((item) => {
-			if (uids.includes(item.productNumber)) {
+			if (uids.includes(item.productUid)) {
 				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
 				item.destinationName = destiObject?.destinationName ?? item.destinationName
 				item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
@@ -470,7 +470,7 @@ const Single = ({}) => {
 			// setDestiObject(destiObject)
 		})
 		const updatedResData = oriData?.list?.map((item) => {
-			if (uids.includes(item.productNumber)) {
+			if (uids.includes(item.productUid)) {
 				item.destinationCode = destiObject?.destinationCode ?? item.destinationCode
 				item.destinationName = destiObject?.destinationName ?? item.destinationName
 				item.customerDestinationName = destiObject?.customerDestinationName ?? item.customerDestinationName
