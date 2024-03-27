@@ -139,7 +139,7 @@ const WinningDetail = ({ setAucDetail }) => {
 	const tableField = useRef(UserAuctionWinningDetailFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
-	const checkedArray = useAtom(selectedRowsAtom)[0]
+	const [checkedArray, setCheckedArray] = useAtom(selectedRowsAtom)
 	const [tablePagination, setTablePagination] = useState([])
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
 	console.log('destinationData', destinationData)
@@ -218,8 +218,7 @@ const WinningDetail = ({ setAucDetail }) => {
 
 	const [destiObject, setDestiObject] = useState()
 	const [tableDesti, setTabelDesti] = useState({})
-	console.log('destiObject @@', destiObject)
-	console.log('resDestiData @@', resDestiData)
+
 	const [finalInput, setFinalInput] = useState({
 		requestCustomerDestinationUid: null,
 	})
@@ -228,10 +227,36 @@ const WinningDetail = ({ setAucDetail }) => {
 		setDestiObject(destinationData)
 	}, [destinationData])
 
-	const matchedDestination = resDestiData.find((item) => item.uid === destinationData?.uid)
-	console.log('matchedDestination', matchedDestination)
+	const matchedDestination = resDestiData?.find((item) => item.uid === destinationData?.uid)
 
-	// TODO : 매치된거 테이블에 적용시키기
+	const uids = checkedArray?.map((item) => item && item['제품 번호'])
+
+	// 목적지 적용 버튼 onClick Handler
+	const destiOnClickHandler = () => {
+		if (!uids || uids?.length === 0) {
+			simpleAlert('적용할 경매를 선택해주세요.')
+			return
+		}
+		simpleAlert('적용 되었습니다.', () => {
+			setFinalInput((prevFinalInput) => ({
+				...prevFinalInput,
+				requestCustomerDestinationUid: destiObject && destiObject.uid,
+			}))
+			setCheckedArray([])
+		})
+
+		const updatedResData = resData?.map((item) => {
+			if (uids.includes(item.productNumber)) {
+				item.requestDestinationName = matchedDestination?.destinationName
+				item.requestDestinationAddress = matchedDestination?.address
+				item.requestDestinationPhone = matchedDestination?.managerPhone
+				item.requestDestinationManagerPhone = matchedDestination?.phone
+			}
+			return item
+		})
+
+		setGetRow(add_element_field(updatedResData, UserAuctionWinningDetailFields))
+	}
 
 	useEffect(() => {
 		const updatedProductList = checkedArray?.map((item) => ({
@@ -364,16 +389,7 @@ const WinningDetail = ({ setAucDetail }) => {
 						>
 							찾기
 						</WhiteBlackBtn>
-						<TGreyBtn
-							onClick={() => {
-								setFinalInput((prevFinalInput) => ({
-									...prevFinalInput,
-									requestCustomerDestinationUid: destiObject && destiObject.uid,
-								}))
-							}}
-						>
-							적용
-						</TGreyBtn>
+						<TGreyBtn onClick={destiOnClickHandler}>적용</TGreyBtn>
 						<BtnBound />
 						<WhiteBlackBtn
 							onClick={() => {

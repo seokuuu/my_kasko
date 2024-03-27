@@ -76,8 +76,6 @@ const UserBiddingSearchFields = ({
 					</PartWrap>
 				</RowWrap>
 				<RowWrap>
-					{/* TODO : 라디오 컴포넌트 수정하기 */}
-					{/* driverStatus 수정하기 !! */}
 					<PartWrap first>
 						<h6>진행 상태</h6>
 						<RadioSearchButton

@@ -108,11 +108,6 @@ const UserPost = ({setPostModal}) => {
         bank: '',
     })
 
-    // TODO : 중복체크 response 없음
-    // const { isError, isSuccess, data } = useReactQuery('getCustomerPrivacy', {}, getCustomerPrivacy)
-
-    // const resData2 = data2?.data?.data
-
 
     const checkBusiness = async () => {
         try {
@@ -176,7 +171,6 @@ const UserPost = ({setPostModal}) => {
         setShouldUpdateCustomer(true)
     }
 
-    //TODO: 파일 추가 후에 왜 test1만 바뀌는지
     useEffect(() => {
         const updateCustomerData = async () => {
             if (shouldUpdateCustomer) {

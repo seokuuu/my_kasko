@@ -225,7 +225,6 @@ const Single = ({}) => {
 	const [winningCreateData, setWinningCreateData] = useState(init)
 	//
 	useEffect(() => {
-		// TODO : 수정하기
 		const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
 		if (propsUid) setDestiObject(selectedObject)
 		setWinningCreateData((p) => ({

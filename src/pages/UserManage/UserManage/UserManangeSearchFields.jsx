@@ -49,7 +49,6 @@ const UserManangeSearchFields = ({
 			<FilterLeft>
 				<RowWrap>
 					<PartWrap>
-						{/* TODO : 변경해야함 */}
 						<h6>고객 검색</h6>
 						<MainSelect
 							options={storageList} 
