@@ -231,8 +231,6 @@ const WinningDetail = ({ setAucDetail }) => {
 	const matchedDestination = resDestiData.find((item) => item.uid === destinationData?.uid)
 	console.log('matchedDestination', matchedDestination)
 
-	// TODO : 매치된거 테이블에 적용시키기
-
 	useEffect(() => {
 		const updatedProductList = checkedArray?.map((item) => ({
 			uid: item['주문 고유 번호'],
