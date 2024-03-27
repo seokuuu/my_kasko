@@ -957,7 +957,7 @@ export const AuctionDetailProgressFields = {
 	'입찰 고객 코드': 'biddingCustomerCode',
 	'입찰자 ID': 'biddingMemberId',
 	입찰일시: 'biddingTime',
-	'취소 사유': 'failReason',
+	사유: 'reason',
 	yp: 'yp',
 	ts: 'ts',
 	c: 'c',
