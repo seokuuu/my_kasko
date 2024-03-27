@@ -43,8 +43,8 @@ export const responseToTableRowMap = {
 	MN: 'mn', // Mn
 	P: 'p', // P
 	S: 's', // S
-	여재원인: 'causeCode', // 여재 원인 코드
-	여제원인명1: 'causeCodeName', // 여재 원인명
+	여재원인: 'causeCode', // 여재 원인
+	여제원인명1: 'causeCodeName', // 여재 원인명1
 	용도코드: 'usageCode', // 용도 코드
 	용도명: 'usageCodeName', // 용도명
 	메모: 'memo', // 메모
@@ -67,7 +67,7 @@ export const responseToTableRowMap = {
 	// 경매등록상태: 'registrationStatus', // 경매 등록 상태
 	// 입고상태: 'receiptStatus', // 입고 상태
 	// '경매시작단가 (시작가)': 'auctionStartPrice', // 경매 시작 단가
-	// 확정전송일자: 'sendDate', // 확정 전송 일자
+	// 확정전송일자자: 'sendDate', // 확정 전송 일자
 	// 패키지명: 'packageName', // 패키지명
 	// 패키지번호: 'packageNumber', // 패키지번호
 	// '제품 낙찰단가(원/톤)': 'productBiddingPrice', // 제품 낙찰 단가 (원/톤)

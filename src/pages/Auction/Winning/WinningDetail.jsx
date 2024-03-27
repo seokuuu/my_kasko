@@ -39,6 +39,7 @@ import { isEqual } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import {
 	destiApproveReq,
+	destiChangeApprove,
 	destiChangeReject,
 	getAuctionDetailDestination,
 	getWinningDetail,
@@ -416,7 +417,7 @@ const WinningDetail = ({ setAucDetail }) => {
 	}
 
 	// 목적지 변경 승인 POST
-	const { mutate: destiChangeApproveMutation } = useMutation(destiChangeReject, {
+	const { mutate: destiChangeApproveMutation } = useMutation(destiChangeApprove, {
 		onSuccess() {
 			showAlert({
 				title: '목적지 변경이 승인되었습니다.',
