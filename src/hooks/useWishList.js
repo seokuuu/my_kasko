@@ -1,99 +1,97 @@
 import { useAtom, useSetAtom, useAtomValue } from 'jotai'
-import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
-import { wishProductNumbersAtom } from '../store/Product';
-import useAlert from '../store/Alert/useAlert';
-import { selectedRows2Switch, selectedRowsAtom, selectedRowsAtom2 } from '../store/Layout/Layout';
+import { useEffect, useState } from 'react'
+import { jwtDecode } from 'jwt-decode'
+import { wishProductNumbersAtom } from '../store/Product'
+import useAlert from '../store/Alert/useAlert'
+import { selectedRows2Switch, selectedRowsAtom, selectedRowsAtom2 } from '../store/Layout/Layout'
 
 /**
  * @constant 스토리지 키
  */
-const TOKEN_STORAGE_KEY = 'accessToken';
-const WISH_STORAGE_KEY = 'ksk_wish';
+const TOKEN_STORAGE_KEY = 'accessToken'
+const WISH_STORAGE_KEY = 'ksk_wish'
 
 /**
  * @constant 위시리스트 최대 갯수
  */
-const MAX_WISH_COUNT = 10;
+const MAX_WISH_COUNT = 10
 
 /**
  * 위시리스트 스토리지 저장 키 반환 함수
- * @param {string} userId 
+ * @param {string} userId
  * @returns {string} 스토리지 키
  */
-const USER_WISH_STORAGE_KEY = (userId) => `${WISH_STORAGE_KEY}_${userId}`; 
+const USER_WISH_STORAGE_KEY = (userId) => `${WISH_STORAGE_KEY}_${userId}`
 
 /**
  * 비로그인 회원 처리 함수
  */
 function thorwGuest() {
-  alert('로그인 후 이용해 주세요.');
-  window.location.href = '/';
-  throw new Error('not logged in');
+	window.location.href = '/not-auth'
 }
 
 /**
  * 관심상품 HOOK
  */
 export default function useWishList() {
-  const [wishProdNums, setWishProdNums] = useAtom(wishProductNumbersAtom);
-  const [userId, setUserId] = useState('');
-  const { simpleAlert } = useAlert();
-  const rowAtomSwitch = useAtomValue(selectedRows2Switch) // 이중테이블 여부
-  const setSelectedRows = useSetAtom(selectedRowsAtom) // 테이블1 선택데이터
+	const [wishProdNums, setWishProdNums] = useAtom(wishProductNumbersAtom)
+	const [userId, setUserId] = useState('')
+	const { simpleAlert } = useAlert()
+	const rowAtomSwitch = useAtomValue(selectedRows2Switch) // 이중테이블 여부
+	const setSelectedRows = useSetAtom(selectedRowsAtom) // 테이블1 선택데이터
 	const setSelectedRows2 = useSetAtom(selectedRowsAtom2) // 테이블2 선택데이터
 
-  /**
-   * 선택 데이터 초기화
-   */
-  function resetSelect() {
-    setSelectedRows([])
+	/**
+	 * 선택 데이터 초기화
+	 */
+	function resetSelect() {
+		setSelectedRows([])
 
 		// 이중으로 check 사용 시
 		if (rowAtomSwitch) {
 			setSelectedRows2([])
 		}
-  }
-  
-  /**
-   * 위시리스트에 상품 추가 함수
-   * @param {object[]} products 상품 목록 
-   * @param {string} prodNumKey 상품 object에서 productNumber를 가져올 수 있는 key 
-   */
-  function addWishList(products=[], prodNumKey='number') {
-    if(!userId) {
-      thorwGuest();
-    }
+	}
 
-    if(products.length < 1) {
-      return simpleAlert('관심상품으로 등록할 상품을 선택해 주세요.');
-    }
+	/**
+	 * 위시리스트에 상품 추가 함수
+	 * @param {object[]} products 상품 목록
+	 * @param {string} prodNumKey 상품 object에서 productNumber를 가져올 수 있는 key
+	 */
+	function addWishList(products = [], prodNumKey = 'number') {
+		if (!userId) {
+			thorwGuest()
+		}
 
-    const addProdNums = products.map(v => getProductNumber(v[prodNumKey])).filter(v => v.length > 0);
-    const mergedProdNums = getMergedProdNums(wishProdNums, addProdNums);
+		if (products.length < 1) {
+			return simpleAlert('관심상품으로 등록할 상품을 선택해 주세요.')
+		}
 
-    saveWishList(mergedProdNums, userId);
-    setWishProdNums(mergedProdNums);
-    simpleAlert('관심상품으로 등록하였습니다.');
-    resetSelect();
-  }
+		const addProdNums = products.map((v) => getProductNumber(v[prodNumKey])).filter((v) => v.length > 0)
+		const mergedProdNums = getMergedProdNums(wishProdNums, addProdNums)
 
-  // 로그인유저 관심상품목록 설정
-  useEffect(() => {
-    const token = localStorage.getItem(TOKEN_STORAGE_KEY);
-    if(token) {
-      const userId = jwtDecode(token)?.sub || '';
-      setUserId(userId);
-      setWishProdNums(getWishList(userId));
-    } else {
-      thorwGuest();
-    }
-  }, []);
+		saveWishList(mergedProdNums, userId)
+		setWishProdNums(mergedProdNums)
+		simpleAlert('관심상품으로 등록하였습니다.')
+		resetSelect()
+	}
 
-  return ({
-    wishProdNums,
-    addWishList
-  })
+	// 로그인유저 관심상품목록 설정
+	useEffect(() => {
+		const token = localStorage.getItem(TOKEN_STORAGE_KEY)
+		if (token) {
+			const userId = jwtDecode(token)?.sub || ''
+			setUserId(userId)
+			setWishProdNums(getWishList(userId))
+		} else {
+			thorwGuest()
+		}
+	}, [])
+
+	return {
+		wishProdNums,
+		addWishList,
+	}
 }
 
 /* ==================== UTILS start ==================== */
@@ -103,28 +101,28 @@ export default function useWishList() {
  * @param {string[]} addProdNums 새로 저장할 ProductNumber 목록
  * @returns {string[]} 스토리지에 저장할 ProductNumber 목록
  */
-function getMergedProdNums(prevProdNums=[], addProdNums=[]) {
-  const mergedProdNums = [...addProdNums].slice(0, MAX_WISH_COUNT);
+function getMergedProdNums(prevProdNums = [], addProdNums = []) {
+	const mergedProdNums = [...addProdNums].slice(0, MAX_WISH_COUNT)
 
-  if(prevProdNums.length > 0 && mergedProdNums.length < MAX_WISH_COUNT) {
-    let idx = 0;
-    while(idx < prevProdNums.length && mergedProdNums.length < MAX_WISH_COUNT) {
-      if(!mergedProdNums.includes(prevProdNums[idx])) mergedProdNums.push(prevProdNums[idx]);
-      idx++;
-    }
-  }
-  return mergedProdNums;
+	if (prevProdNums.length > 0 && mergedProdNums.length < MAX_WISH_COUNT) {
+		let idx = 0
+		while (idx < prevProdNums.length && mergedProdNums.length < MAX_WISH_COUNT) {
+			if (!mergedProdNums.includes(prevProdNums[idx])) mergedProdNums.push(prevProdNums[idx])
+			idx++
+		}
+	}
+	return mergedProdNums
 }
 
 /**
  * 스토리지 위시리시트 반환 함수
- * @param {string} userId 
+ * @param {string} userId
  * @returns {string[]} 위시리스트 ProductNumber 목록
  */
-function getWishList(userId='') {
-  const savedData = localStorage.getItem(USER_WISH_STORAGE_KEY(userId));
-  const parsedData = savedData? JSON.parse(savedData) : [];
-  return parsedData;
+function getWishList(userId = '') {
+	const savedData = localStorage.getItem(USER_WISH_STORAGE_KEY(userId))
+	const parsedData = savedData ? JSON.parse(savedData) : []
+	return parsedData
 }
 
 /**
@@ -132,13 +130,10 @@ function getWishList(userId='') {
  * @param {string[]} productNumbers 저장할 ProductNumber 목록
  * @param {string} userId 사용자 아이디
  */
-function saveWishList(productNumbers=[], userId='') {
-  if(userId.length > 0) {
-    localStorage.setItem(
-      USER_WISH_STORAGE_KEY(userId), 
-      JSON.stringify(productNumbers)
-    );
-  }
+function saveWishList(productNumbers = [], userId = '') {
+	if (userId.length > 0) {
+		localStorage.setItem(USER_WISH_STORAGE_KEY(userId), JSON.stringify(productNumbers))
+	}
 }
 
 /**
@@ -149,12 +144,12 @@ function saveWishList(productNumbers=[], userId='') {
  * 위 형식에서 value만을 추출하는 함수입니다.
  */
 export function getProductNumber(value) {
-  if(typeof value === 'string' || typeof value === 'number') {
-    return value + '';
-  }
-  if(typeof value === 'object') {
-    return value?.value || ''
-  }
-  return '';
+	if (typeof value === 'string' || typeof value === 'number') {
+		return value + ''
+	}
+	if (typeof value === 'object') {
+		return value?.value || ''
+	}
+	return ''
 }
 /* ==================== UTILS end ==================== */
