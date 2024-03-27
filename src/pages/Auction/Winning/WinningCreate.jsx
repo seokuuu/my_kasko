@@ -157,7 +157,6 @@ const WinningCreate = ({}) => {
 			productList: updatedProductList,
 		}))
 
-		// TODO !!!!!!!!!!!
 		setTotalWon((prevData) => ({
 			...prevData,
 			biddingPrice: winningCreateInput?.biddingPrice * (checkedArray2?.length || 0),

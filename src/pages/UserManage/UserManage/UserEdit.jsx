@@ -220,7 +220,6 @@ const UserEdit = ({ setEditModal, uidAtom }) => {
     setShouldUpdateCustomer(true)
   }
 
-  //TODO: 파일 추가 후에 왜 test1만 바뀌는지
   useEffect(() => {
     const updateCustomerData = async () => {
       if (shouldUpdateCustomer) {
