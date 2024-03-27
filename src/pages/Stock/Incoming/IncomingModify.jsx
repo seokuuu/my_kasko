@@ -51,8 +51,8 @@ function IncomingModify({ title }) {
 				failCount: p['유찰 횟수'],
 				usageCode: p['용도 코드'],
 				usageCodeName: p['용도명'],
-				causeCode: p['여재 원인 코드'],
-				causeCodeName: p['여재 원인명'],
+				causeCode: p['여재 원인'],
+				causeCodeName: p['여재 원인명1'],
 				updateDate: p['수정일'],
 				hsOrderNo: p['주문 번호'],
 				claimStatus: p['클레임 진행상태'],
@@ -60,7 +60,7 @@ function IncomingModify({ title }) {
 				hsReturnDate: p['현대제철 반품일자'],
 				kaskoReturnDate: p['카스코 반품일자'],
 				createDate: p['생성일'],
-				sendDate: p['확정전송일'],
+				sendDate: p['확정전송일자'],
 				price: p['매입가'],
 			}
 		})
@@ -112,7 +112,7 @@ function IncomingModify({ title }) {
 			failCount: p['유찰 횟수'],
 			usageCode: p['용도 코드'],
 			usageCodeName: p['용도명'],
-			causeCode: p['여재 원인 코드'],
+			causeCode: p['여재 원인'],
 			causeCodeName: modifyObj.causeCodeName,
 			updateDate: p['수정일'],
 			hsOrderNo: p['주문 번호'],
@@ -121,13 +121,13 @@ function IncomingModify({ title }) {
 			hsReturnDate: p['현대제철 반품일자'],
 			kaskoReturnDate: p['카스코 반품일자'],
 			createDate: p['생성일'],
-			sendDate: p['확정전송일'],
+			sendDate: p['확정전송일자'],
 			price: Number(p['매입가']),
-			wdh:'제품 사양',
+			wdh: '제품 사양',
 			spec: '없음',
-			storage:'맞나',
-			spartCode:'이거',
-			name:'네임'
+			storage: '맞나',
+			spartCode: '이거',
+			name: '네임',
 		})
 	}
 
