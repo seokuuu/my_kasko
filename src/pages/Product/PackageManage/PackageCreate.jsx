@@ -49,6 +49,9 @@ const PackageCreate = () => {
 	const [isModal, setIsModal] = useAtom(singleAllProductModal)
 	const [packageObj, setPackageObj] = useAtom(packageCreateObjAtom)
 	const [checkBoxSelect, setCheckBoxSelect] = useAtom(selectedRowsAtom)
+	const checkWeight = checkBoxSelect?.map((x) => parseInt(x['제품 중량']))
+	const checkWeightSum = checkWeight?.reduce((total, current) => total + current, 0)?.toLocaleString()
+
 	const setUpdateObj = useSetAtom(packageUpdateObjAtom)
 
 	const [packageName, setPackageName] = useState(prevData ? prevData['패키지 이름'] : packageObj?.packageName)
@@ -376,7 +379,6 @@ const PackageCreate = () => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						{check?.length}
 						조회 목록(선택 <span>{check?.length}</span> /
 						{!prevData ? select.length : pagination ? pagination?.listCount : pagination?.listCount}개 )
 						<TableV2HiddenSection />
@@ -388,13 +390,13 @@ const PackageCreate = () => {
 				</TCSubContainer>
 				<TCSubContainer bor>
 					<div>
-						선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총{' '}
+						선택 중량<span> {checkWeightSum} </span>kg / 총 중량
 						{!prevData
 							? calculateTotal(select, '제품 중량')
 							: pagination
-							? pagination?.totalWeight
-							: pagination?.totalWeight}{' '}
-						중량 kg
+							? pagination?.totalWeight?.toLocaleString()
+							: pagination?.totalWeight?.toLocaleString()}{' '}
+						kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
 						<WhiteRedBtn onClick={handleRemoveItem}>목록 제거</WhiteRedBtn>

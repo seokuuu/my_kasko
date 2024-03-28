@@ -141,8 +141,8 @@ const PackageProductSearchFields = ({
 								initOptions={[
 									{
 										checked: false,
-										text: '경매대상재',
-										value: '경매대상재',
+										text: '경매 대상재',
+										value: '경매 대상재',
 									},
 									{
 										checked: false,

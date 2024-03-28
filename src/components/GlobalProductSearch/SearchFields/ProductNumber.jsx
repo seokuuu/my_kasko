@@ -23,9 +23,9 @@ const ProductNumber = ({ stateValue, setState, valueName, title, height = '100px
 	useEffect(() => {
 		const splitValues = value
 			? value
-					.split(/,|\n/)
-					.map((item) => item.trim())
-					.filter((item) => item !== '')
+					?.split(/,|\n/)
+					?.map((item) => item.trim())
+					?.filter((item) => item !== '')
 			: []
 		setState((prevState) => ({ ...prevState, [valueName]: splitValues }))
 	}, [value, setState, valueName])

@@ -47,8 +47,10 @@ import { userPageSingleDestiFindAtom } from '../../../store/Layout/Layout'
 import { useLoading } from '../../../store/Loading/loadingAtom'
 import AddWishButton from '../../UserSales/_components/AddWishButton'
 import UserBiddingSearchFields from '../Single/UserBiddingSearchFields'
+import { wishProductNumbersAtom } from '../../../store/Product'
 
 const Package = ({}) => {
+	const checkWish = useAtomValue(wishProductNumbersAtom)
 	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
 	const auth = useAtomValue(authAtom)
 	const nowAuction = useCheckAuction()
@@ -321,6 +323,10 @@ const Package = ({}) => {
 	}
 	// import
 	const globalProductSearchOnClick = (userSearchParam) => {
+		let newProductNumber = ''
+		if (userSearchParam.biddingStatus === '관심제품') {
+			newProductNumber = checkWish.join(',')
+		}
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
 				refetch()
@@ -329,6 +335,7 @@ const Package = ({}) => {
 			return {
 				...prevParam,
 				...userSearchParam,
+				productNumberList: newProductNumber ? newProductNumber : userSearchParam.productNumberList,
 			}
 		})
 	}
@@ -444,12 +451,12 @@ const Package = ({}) => {
 				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-				item.memberBiddingPrice =
-					item.biddingPrice === 0
-						? item.auctionStartPrice + winningCreateInput?.biddingPrice
-						: item.biddingPrice >= 1 && item.biddingPrice <= item.memberBiddingPrice
-						? item.memberBestBiddingPrice + winningCreateInput.biddingPrice
-						: item.biddingPrice + winningCreateInput?.biddingPrice
+				// item.memberBiddingPrice =
+				// 	item.biddingPrice === 0
+				// 		? item.auctionStartPrice + winningCreateInput?.biddingPrice
+				// 		: item.biddingPrice >= 1 && item.biddingPrice <= item.memberBiddingPrice
+				// 		? item.memberBestBiddingPrice + winningCreateInput.biddingPrice
+				// 		: item.biddingPrice + winningCreateInput?.biddingPrice
 			}
 
 			return item
