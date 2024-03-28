@@ -250,6 +250,10 @@ const WinningDetail = ({ setAucDetail }) => {
 		setGetRow(add_element_field(updatedResData, AuctionWinningDetailFields))
 	}
 
+	useEffect(() => {
+		queryClient.invalidateQueries('getWinningDetail')
+	}, [])
+
 	// 예외 처리
 	useEffect(() => {
 		if (isSuccess && resData === undefined && !detailRow)
