@@ -5,10 +5,13 @@ import FlipClockCountdown from '@leenguyen/react-flip-clock-countdown'
 import '@leenguyen/react-flip-clock-countdown/dist/index.css'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { auctionStartAtom } from '../../store/Layout/Layout'
+import { authAtom } from '../../store/Auth/auth'
 
 const Countdown = () => {
+	const auth = useAtomValue(authAtom)
+	console.log('auth', auth)
 	const navigate = useNavigate()
 	const { pathname } = useLocation()
 	const [data, setData] = useState(null)
@@ -18,16 +21,14 @@ const Countdown = () => {
 		try {
 			const response = await getCountdown()
 			return response?.data?.data
-		} catch (e) {
-		}
+		} catch (e) {}
 	}
 
 	const countdown = async () => {
 		try {
 			const responseData = await getCountdownData()
 			setCountdownData(responseData)
-		} catch (e) {
-		}
+		} catch (e) {}
 	}
 
 	const setCountdownData = (responseData) => {
@@ -64,10 +65,15 @@ const Countdown = () => {
 		countdown()
 	}, [])
 
+	const auctionDirectonClick = () => {
+		if (auth?.role === '카스코철강') navigate('/auction/biddingsingle')
+		else navigate('/userpage/auctionsingle')
+	}
+
 	return (
 		<>
 			{data && (
-				<div style={{ cursor: 'pointer' }} onClick={() => navigate('/auction/bidding')}>
+				<div style={{ cursor: 'pointer' }} onClick={auctionDirectonClick}>
 					<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
 						{data?.type === 'START' && <CountText>경매 시작까지 남은 시간 </CountText>}
 						{data?.type === 'END' && <CountText>경매 종료까지 남은 시간 </CountText>}

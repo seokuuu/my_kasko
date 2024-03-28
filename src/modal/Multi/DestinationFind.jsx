@@ -30,20 +30,19 @@ const DestinationFind = ({ setSwitch, handleButtonOnClick }) => {
 	const [result, setResult] = useState([]) // 목적지 get data
 	const [error, setError] = useState(false) // 목적지 get data
 
-
 	const modalClose = () => {
 		setSwitch(false)
 	}
 
 	const handleSearch = async () => {
-		if (!searchTerm) {
-			simpleAlert('검색할 목적지를 입력해주세요.')
-			return
-		}
-		if (searchTerm.length < 2) {
-			simpleAlert('검색어를 2글자 이상 입력해주세요.')
-			return
-		}
+		// if (!searchTerm) {
+		// 	simpleAlert('검색할 목적지를 입력해주세요.')
+		// 	return
+		// }
+		// if (searchTerm.length < 2) {
+		// 	simpleAlert('검색어를 2글자 이상 입력해주세요.')
+		// 	return
+		// }
 		// if (!['동', '리', '면', '읍'].some((key) => searchTerm.includes(key))) {
 		// 	simpleAlert('검색어에 "동 / 리 / 면 / 읍"을 포함시켜주세요. ')
 		// 	return
