@@ -118,6 +118,7 @@ const Table = ({
 	// ---------------------------------------------------------------------
 	const [columnDefs, setColumnDefs] = useState([])
 
+	// 정수형 콤마 표시 filter
 	useEffect(() => {
 		if (getRow && getRow.length > 0) {
 			if (
@@ -129,10 +130,13 @@ const Table = ({
 					'/auction/round',
 					'/auction/winning',
 					'/auction/startprice',
+					'/auction/winning/detail',
 					'/auction/winningcreate',
 					'/userpage/auctionwinning',
 					'/userpage/auctionsingle',
 					'/userpage/auctionpackage',
+					'/userpage/auctionwinning/detail',
+					'/operate/inventory',
 				].includes(location.pathname)
 			) {
 				const formattedRow = getRow.map((item) => {
@@ -186,29 +190,31 @@ const Table = ({
 	useEffect(() => {
 		if (getCol && getCol?.length > 0) {
 			// 행 정의
-			const newCol = getCol?.map((item) => {
-				if (item.checkboxSelection) {
-					item.suppressMovable = true
-					item.pinned = 'left'
-					item.minWidth = 50
-					item.maxWidth = 50
-					return { ...item }
-				}
-				if (['고유 번호', '고유번호'].includes(item.field)) {
-					item.hide = true
-				}
-				if (['추천 여부', '추천'].includes(item.field)) {
-					item.hide = true
-				}
-				// 로컬 스토리지 저장된 숨김목록처리
-				if (localTableList && tableType) {
-					const hiddenIds = localTableList[tableType]?.hiddenIds
-					if (hiddenIds.includes(item.field)) {
+			const newCol =
+				getCol &&
+				getCol?.map((item) => {
+					if (item.checkboxSelection) {
+						item.suppressMovable = true
+						item.pinned = 'left'
+						item.minWidth = 50
+						item.maxWidth = 50
+						return { ...item }
+					}
+					if (['고유 번호', '고유번호'].includes(item.field)) {
 						item.hide = true
 					}
-				}
-				return { ...item, maxWidth: 999, minWidth: 80, width: 100 }
-			})
+					if (['추천 여부', '추천'].includes(item.field)) {
+						item.hide = true
+					}
+					// 로컬 스토리지 저장된 숨김목록처리
+					if (localTableList && tableType) {
+						const hiddenIds = localTableList[tableType]?.hiddenIds
+						if (hiddenIds.includes(item.field)) {
+							item.hide = true
+						}
+					}
+					return { ...item, maxWidth: 999, minWidth: 80, width: 100 }
+				})
 			setColumnDefs(newCol)
 		}
 	}, [])

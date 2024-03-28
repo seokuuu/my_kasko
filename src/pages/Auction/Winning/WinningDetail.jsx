@@ -39,6 +39,7 @@ import { isEqual } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import {
 	destiApproveReq,
+	destiChangeApprove,
 	destiChangeReject,
 	getAuctionDetailDestination,
 	getWinningDetail,
@@ -249,6 +250,10 @@ const WinningDetail = ({ setAucDetail }) => {
 		setGetRow(add_element_field(updatedResData, AuctionWinningDetailFields))
 	}
 
+	useEffect(() => {
+		queryClient.invalidateQueries('getWinningDetail')
+	}, [])
+
 	// 예외 처리
 	useEffect(() => {
 		if (isSuccess && resData === undefined && !detailRow)
@@ -386,8 +391,8 @@ const WinningDetail = ({ setAucDetail }) => {
 				},
 			})
 		},
-		onError: () => {
-			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		onError: (error) => {
+			simpleAlert(error.status === 400 ? error.data.message : '오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
 	const destiApproveOnClickHandler = () => {
@@ -407,8 +412,8 @@ const WinningDetail = ({ setAucDetail }) => {
 				},
 			})
 		},
-		onError: () => {
-			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		onError: (error) => {
+			simpleAlert(error.status === 400 ? error.data.message : '오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
 	const destiChangeRejOnClickHandler = () => {
@@ -416,7 +421,7 @@ const WinningDetail = ({ setAucDetail }) => {
 	}
 
 	// 목적지 변경 승인 POST
-	const { mutate: destiChangeApproveMutation } = useMutation(destiChangeReject, {
+	const { mutate: destiChangeApproveMutation } = useMutation(destiChangeApprove, {
 		onSuccess() {
 			showAlert({
 				title: '목적지 변경이 승인되었습니다.',
@@ -428,8 +433,8 @@ const WinningDetail = ({ setAucDetail }) => {
 				},
 			})
 		},
-		onError: () => {
-			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		onError: (error) => {
+			simpleAlert(error.status === 400 ? error.data.message : '오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
 	const destiChangeApprovOnClickHandler = () => {

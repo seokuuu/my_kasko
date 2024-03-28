@@ -448,15 +448,15 @@ const BiddingSingle = ({}) => {
 				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-				item.memberBiddingPrice =
-					item.biddingPrice === 0
-						? item.auctionStartPrice + winningCreateInput?.biddingPrice
-						: item.biddingPrice >= 1 && item.biddingPrice <= item.memberBiddingPrice
-						? item.memberBestBiddingPrice + winningCreateInput.biddingPrice
-						: item.biddingPrice + winningCreateInput?.biddingPrice
+				// item.memberBiddingPrice =
+				// 	item.biddingPrice === 0
+				// 		? item.auctionStartPrice + winningCreateInput?.biddingPrice
+				// 		: item.biddingPrice >= 1 && item.biddingPrice <= item.memberBiddingPrice
+				// 		? item.memberBestBiddingPrice + winningCreateInput.biddingPrice
+				// 		: item.biddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item
-		})
+	})
 		setOridata((prevData) => ({
 			...prevData,
 			list: updatedResData,

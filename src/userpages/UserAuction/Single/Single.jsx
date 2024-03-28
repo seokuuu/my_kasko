@@ -163,8 +163,6 @@ const Single = ({}) => {
 		})),
 	}
 
-	console.log('originData?.list', originData?.list)
-
 	useEffect(() => {
 		let restrictOriginData =
 			auth?.statusList?.auctionStatus === '시작가 제한' && aucCheck === 'START' ? restrictStartPriceData : originData
@@ -344,13 +342,11 @@ const Single = ({}) => {
 	}
 	// import
 	const globalProductSearchOnClick = (userSearchParam) => {
+		let newProductNumber = ''
 		if (userSearchParam.biddingStatus === '관심제품') {
-			userSearchParam.productNumberList = userSearchParam.productNumberList
-				? userSearchParam.productNumberList + ','
-				: '' + checkWish.join(',')
+			newProductNumber = checkWish.join(',')
 		}
 		setParam((prevParam) => {
-			console.log('prevParam : ', prevParam)
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
 				refetch()
 				return prevParam
@@ -358,6 +354,7 @@ const Single = ({}) => {
 			return {
 				...prevParam,
 				...userSearchParam,
+				productNumberList: newProductNumber ? newProductNumber : userSearchParam.productNumberList,
 			}
 		})
 	}
@@ -476,12 +473,12 @@ const Single = ({}) => {
 				item.customerDestinationAddress = destiObject?.address ?? item.customerDestinationAddress
 				item.customerDestinationPhone = destiObject?.phone ?? item.customerDestinationPhone
 
-				item.memberBiddingPrice =
-					item.biddingPrice === 0
-						? item.auctionStartPrice + winningCreateInput?.biddingPrice
-						: item.biddingPrice >= 1 && item.biddingPrice <= item.memberBiddingPrice
-						? item.memberBestBiddingPrice + winningCreateInput.biddingPrice
-						: item.biddingPrice + winningCreateInput?.biddingPrice
+				// item.memberBiddingPrice =
+				// 	item.biddingPrice === 0
+				// 		? item.auctionStartPrice + winningCreateInput?.biddingPrice
+				// 		: item.biddingPrice >= 1 && item.biddingPrice <= item.memberBiddingPrice
+				// 		? item.memberBestBiddingPrice + winningCreateInput.biddingPrice
+				// 		: item.biddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item
 		})

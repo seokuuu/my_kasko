@@ -24,6 +24,9 @@ import {
 
 export default function PackageDetailModal() {
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
+	const checkWeight = checkBoxSelect?.map((x) => parseInt(x['제품 중량']))
+	const checkWeightSum = checkWeight?.reduce((total, current) => total + current, 0)?.toLocaleString()
+
 	const setIsModal = useSetAtom(packageDetailModal)
 	const select = useAtomValue(selectPackageAtom)
 	const [param, setParam] = useState({
@@ -134,8 +137,7 @@ export default function PackageDetailModal() {
 							</TCSubContainer>
 							<TCSubContainer bor>
 								<div>
-									선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총{' '}
-									{tablePagination?.totalWeight?.toLocaleString()} kg
+									선택 중량 <span> {checkWeightSum} </span>kg / 총 {tablePagination?.totalWeight?.toLocaleString()} kg
 								</div>
 							</TCSubContainer>
 							<Table getRow={getRow} getCol={getCol} tablePagination={tablePagination} onPageChange={onPageChange} />
