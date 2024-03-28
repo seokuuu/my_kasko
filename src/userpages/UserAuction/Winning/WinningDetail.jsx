@@ -181,6 +181,10 @@ const WinningDetail = ({ setAucDetail }) => {
 	// 	}
 	// }, [destinationData])
 
+	useEffect(() => {
+		queryClient.invalidateQueries('getWinningDetail')
+	}, [])
+
 	// 예외 처리
 	useEffect(() => {
 		if (isSuccess && resData === undefined && !detailRow)
