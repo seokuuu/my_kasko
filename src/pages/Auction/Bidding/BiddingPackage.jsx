@@ -570,7 +570,7 @@ const Package = ({}) => {
 						<>
 							<div style={{ display: 'flex', gap: '10px' }}>
 								<PageDropdown handleDropdown={handleTablePageSize} />
-								<Excel getRow={tableRowData} />
+								<Excel getRow={tableRowData} sheetName="패키지 응찰" />
 								<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
 							</div>
 						</>

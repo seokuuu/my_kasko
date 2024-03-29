@@ -11,7 +11,6 @@ import { authAtom } from '../../store/Auth/auth'
 
 const Countdown = () => {
 	const auth = useAtomValue(authAtom)
-	console.log('auth', auth)
 	const navigate = useNavigate()
 	const { pathname } = useLocation()
 	const [data, setData] = useState(null)
