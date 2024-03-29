@@ -285,7 +285,8 @@ const TableV2 = ({
 				const formattedItem = {}
 				Object.keys(item).forEach((key) => {
 					if (
-						['순번', '고객 구분', '중량', '총 중량', '제품 중량', '상시 판매가', '응찰가'].includes(key) ||
+						(!['/product/package'].includes(location.pathname) &&
+							[('순번', '고객 구분', '중량', '총 중량', '제품 중량', '상시 판매가', '응찰가')].includes(key)) ||
 						key.includes('번호')
 					) {
 						return (formattedItem[key] = item[key])

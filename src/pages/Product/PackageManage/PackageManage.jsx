@@ -188,13 +188,36 @@ const PackageManage = () => {
 		}
 	}, [checkBoxSelect])
 
+	const useConvertTotalWeightToInt = (data) => {
+		const convertTotalWeightToInt = () => {
+			return data.map((item) => ({
+				...item,
+				totalWeight: parseInt(item.totalWeight),
+			}))
+		}
+
+		return convertTotalWeightToInt
+	}
+
 	useEffect(() => {
-		const newFilterData = { list: packageList, pagination: pagination }
+		const filteredData = packageList?.map((item) => ({
+			...item,
+			totalWeight: parseInt(item.totalWeight),
+		}))
+
+		const newFilterData = { list: filteredData, pagination: pagination }
+
+		console.log('newFilterData', newFilterData?.list)
+
+		// TODO : singlebidding 처럼 넣기
+
 		if (isSuccess && Array.isArray(newFilterData?.list)) {
 			setGetRow(add_element_field(newFilterData?.list, packageDispatchFields))
 			setFilterData(newFilterData)
 		}
 	}, [isSuccess, data])
+
+	console.log('filteredData', filteredData)
 
 	useEffect(() => {
 		refetch()
