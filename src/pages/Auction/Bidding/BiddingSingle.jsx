@@ -456,7 +456,7 @@ const BiddingSingle = ({}) => {
 				// 		: item.biddingPrice + winningCreateInput?.biddingPrice
 			}
 			return item
-	})
+		})
 		setOridata((prevData) => ({
 			...prevData,
 			list: updatedResData,
@@ -577,7 +577,7 @@ const BiddingSingle = ({}) => {
 						<>
 							<div style={{ display: 'flex', gap: '10px' }}>
 								<PageDropdown handleDropdown={handleTablePageSize} />
-								<Excel getRow={tableRowData} />
+								<Excel getRow={tableRowData} sheetName="경매 낙찰 상세" />
 								{/* <AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} /> */}
 							</div>
 						</>
