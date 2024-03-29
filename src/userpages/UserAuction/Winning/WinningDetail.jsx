@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import React, { Fragment, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { BlackBtn, BtnBound, NewBottomBtnWrap, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
@@ -158,6 +158,10 @@ const WinningDetail = ({ setAucDetail }) => {
 	}
 
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getWinningDetail', getWinningDetail)
+
+	const originData = data?.data?.data
+	const [oriData, setOridata] = useState()
+
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 	const [winningCreateData, setWinningCreateData] = useState({})
@@ -197,10 +201,15 @@ const WinningDetail = ({ setAucDetail }) => {
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 		if (!isSuccess && !resData) return
 		if (Array.isArray(resData)) {
-			setGetRow(add_element_field(resData, UserAuctionWinningDetailFields))
+			setOridata(originData)
+			// setGetRow(add_element_field(resData, UserAuctionWinningDetailFields))
 			setTablePagination(resPagination)
 		}
 	}, [isSuccess, resData, data])
+
+	const tableFields = useMemo(() => {
+		return UserAuctionWinningDetailFieldsCols(checkedArray)
+	}, [checkedArray])
 
 	useEffect(() => {
 		const productNumbers = checkedArray?.map((item) => item['주문 고유 번호'])
@@ -233,7 +242,7 @@ const WinningDetail = ({ setAucDetail }) => {
 
 	const matchedDestination = resDestiData?.find((item) => item.uid === destinationData?.uid)
 
-	const uids = checkedArray?.map((item) => item && item['제품 번호'])
+	const uids = checkedArray?.map((item) => item && item['제품 번호']?.value)
 
 	// 목적지 적용 버튼 onClick Handler
 	const destiOnClickHandler = () => {
@@ -259,7 +268,10 @@ const WinningDetail = ({ setAucDetail }) => {
 			return item
 		})
 
-		setGetRow(add_element_field(updatedResData, UserAuctionWinningDetailFields))
+		setOridata((prevData) => ({
+			...prevData,
+			list: updatedResData,
+		}))
 	}
 
 	useEffect(() => {
@@ -310,7 +322,7 @@ const WinningDetail = ({ setAucDetail }) => {
 
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: UserAuctionWinningDetailFields,
-		serverData: data?.data?.data,
+		serverData: oriData,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
 		best: { display: true },
 	})
@@ -375,7 +387,7 @@ const WinningDetail = ({ setAucDetail }) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						<Excel getRow={getRow} sheetName="낙찰 확인 상세" />
+						<Excel getRow={tableRowData} sheetName="낙찰 확인 상세" />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
@@ -404,7 +416,12 @@ const WinningDetail = ({ setAucDetail }) => {
 						</WhiteBlackBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
+				<Table
+					getCol={tableFields}
+					getRow={tableRowData}
+					tablePagination={tablePagination}
+					onPageChange={onPageChange}
+				/>
 				<TCSubContainer>
 					<div></div>
 					{/* 입금 확인 요청서 */}

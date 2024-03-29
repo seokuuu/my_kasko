@@ -555,7 +555,7 @@ export const AuctionBiddingFields = {
 
 export const AuctionBiddingFieldsCols = (selected) => {
 	/**
-	 * 경매 응찰 Cols
+	 * 단일 응찰 Cols
 	 * @description
 	 * 관리자 / 사용자 경매 응찰 Cols 입니다.
 	 * 사용자의 경우 프로넘 번호가 존재시 제품 번호가 렌더되지 않아야 합니다.
@@ -1135,27 +1135,114 @@ export const AuctionWinningDetailFields = {
 	수정일: 'updateDate',
 }
 
-export const AuctionWinningDetailFieldsCols = [
-	{
-		...commonStyles,
-		field: '',
-		maxWidth: 50,
-		checkboxSelection,
-		headerCheckboxSelection,
-		lockVisible: true,
-		lockPinned: true,
-	},
-	...Object.keys(AuctionWinningDetailFields)
-		.filter((item) => !item.includes('고유 번호'))
-		.map((item) => ({
+export const AuctionWinningDetailFieldsCols = (selected) => {
+	console.log('셀렉티드', selected)
+	const checkboxSelection2 = (params) => {
+		if (selected && selected.length > 0) {
+			const selectedUid = selected?.map((item) => item['제품 번호'])
+			console.log('selectedUid', selectedUid)
+			if (selectedUid?.includes(params.data['제품 번호'])) {
+				params.node.setSelected(true)
+			}
+		}
+		return params.columnApi.getRowGroupColumns().length === 0
+	}
+
+	return [
+		{
 			...commonStyles,
-			field: item,
+			field: '',
+			maxWidth: 50,
+			checkboxSelection: checkboxSelection2,
+			headerCheckboxSelection,
+			lockVisible: true,
+			lockPinned: true,
+		},
+		{ ...commonStyles, field: '경매 번호', minWidth: 100 },
+		{ ...commonStyles, field: '주문 고유 번호', minWidth: 100 },
+		{ ...commonStyles, field: '고객사 목적지 고유 번호', minWidth: 100 },
+		{ ...commonStyles, field: '목적지 고유 번호', minWidth: 100 },
+		{ ...commonStyles, field: '패키지 명', minWidth: 100 },
+		{
+			...commonStyles,
+			field: PROD_COL_NAME.packageNumber,
 			minWidth: 150,
-		})),
-].map((col) => ({
-	...col,
-	minWidth: col.minWidth !== undefined ? col.minWidth : commonStyles.getFieldMinWidth(col.field),
-}))
+			cellRendererParams: (params) => params?.data[params.column.colId] || '',
+			valueGetter: (v) => v.data[v.column.colId]?.value || '',
+		},
+		{ ...commonStyles, field: '고객사명', minWidth: 100 },
+		{ ...commonStyles, field: '고객 코드', minWidth: 100 },
+		{
+			...commonStyles,
+			field: PROD_COL_NAME.productNumber,
+			minWidth: 150,
+			// cellRenderer: MarkerCellRenderer,
+			cellRendererParams: (params) => params?.data[params.column.colId] || '',
+			valueGetter: (v) => v.data[v.column.colId]?.value || '',
+		},
+		{ ...commonStyles, field: 'Pro.No 번호', minWidth: 100 },
+		{ ...commonStyles, field: '창고', minWidth: 100 },
+		{ ...commonStyles, field: '낙찰 상태', minWidth: 100 },
+		{ ...commonStyles, field: '낙찰가', minWidth: 100 },
+		{ ...commonStyles, field: '승인 상태', minWidth: 100 },
+		{ ...commonStyles, field: '목적지 코드', minWidth: 100 },
+		{ ...commonStyles, field: '목적지 명', minWidth: 100 },
+		{ ...commonStyles, field: '목적지 주소', minWidth: 100 },
+		{ ...commonStyles, field: '목적지 연락처', minWidth: 100 },
+		{ ...commonStyles, field: '목적지 담당자 연락처', minWidth: 100 },
+		{ ...commonStyles, field: '하차지 명', minWidth: 100 },
+		{ ...commonStyles, field: '변경 요청 목적지명', minWidth: 100 },
+		{ ...commonStyles, field: '변경 요청 목적지 주소', minWidth: 100 },
+		{ ...commonStyles, field: '변경 요청 목적지 연락처', minWidth: 100 },
+		{ ...commonStyles, field: '변경 요청 목적지 담당자 연락처', minWidth: 100 },
+		{ ...commonStyles, field: '판매 구분', minWidth: 100 },
+		{ ...commonStyles, field: '판매 유형', minWidth: 100 },
+		{ ...commonStyles, field: '판매가 유형', minWidth: 100 },
+		{ ...commonStyles, field: '제품군', minWidth: 100 },
+		{ ...commonStyles, ...commonStyles, field: '등급', minWidth: 100 },
+		{ ...commonStyles, field: '정척여부', minWidth: 100 },
+		{ ...commonStyles, field: '유찰횟수', minWidth: 100 },
+		{ ...commonStyles, field: '제품 낙찰 단가', minWidth: 100 },
+		{ ...commonStyles, field: '낙찰 총 단가', minWidth: 100 },
+		{ ...commonStyles, field: '제품 공급가', minWidth: 100 },
+		{ ...commonStyles, field: '제품 부가세', minWidth: 100 },
+		{ ...commonStyles, field: '매출 기본 운임단가', minWidth: 100 },
+		{ ...commonStyles, field: '매출 할증 운임단가', minWidth: 100 },
+		{ ...commonStyles, field: '매출 운송비 공급가', minWidth: 100 },
+		{ ...commonStyles, field: '매출 운송비 부가세', minWidth: 100 },
+		{ ...commonStyles, field: '매입 기본 운임단가', minWidth: 100 },
+		{ ...commonStyles, field: '총부가세', minWidth: 100 },
+		{ ...commonStyles, field: '합계', minWidth: 100 },
+		{ ...commonStyles, field: '두께', minWidth: 100 },
+		{ ...commonStyles, field: '폭', minWidth: 100 },
+		{ ...commonStyles, field: '길이', minWidth: 100 },
+		{ ...commonStyles, field: '중량', minWidth: 100 },
+		{ ...commonStyles, field: '규격 약호', minWidth: 100 },
+		{ ...commonStyles, field: 'ts', minWidth: 100 },
+		{ ...commonStyles, field: 'yp', minWidth: 100 },
+		{ ...commonStyles, field: 'c', minWidth: 100 },
+		{ ...commonStyles, field: 'el', minWidth: 100 },
+		{ ...commonStyles, field: 'si', minWidth: 100 },
+		{ ...commonStyles, field: 'mn', minWidth: 100 },
+		{ ...commonStyles, field: 'p', minWidth: 100 },
+		{ ...commonStyles, field: 's', minWidth: 100 },
+		{ ...commonStyles, field: '여재 원인', minWidth: 100 },
+		{ ...commonStyles, field: '여재 원인명1', minWidth: 100 },
+		{ ...commonStyles, field: '여재 원인명1', minWidth: 100 },
+		{ ...commonStyles, field: '용도명', minWidth: 100 },
+		{ ...commonStyles, field: '메모', minWidth: 100 },
+		{ ...commonStyles, field: '주문 상태', minWidth: 100 },
+		{ ...commonStyles, field: '확정 전송일', minWidth: 100 },
+		{ ...commonStyles, field: '주문 번호', minWidth: 100 },
+		{ ...commonStyles, field: '비고', minWidth: 100 },
+		{ ...commonStyles, field: '매입 할증 운임단가', minWidth: 100 },
+		{ ...commonStyles, field: '매입 운송비 공급가', minWidth: 100 },
+		{ ...commonStyles, field: '매입 운송비 부가세', minWidth: 100 },
+		{ ...commonStyles, field: '재고 상태', minWidth: 100 },
+		{ ...commonStyles, field: '카스코 낙찰가', minWidth: 100 },
+		{ ...commonStyles, field: '수정일', minWidth: 100 },
+	]
+}
 
 export const UserAuctionWinningDetailFields = {
 	'주문 고유 번호': 'orderUid',
@@ -1219,26 +1306,101 @@ export const UserAuctionWinningDetailFields = {
 	수정일: 'updateDate',
 }
 
-export const UserAuctionWinningDetailFieldsCols = [
-	{
-		...commonStyles,
-		field: '',
-		maxWidth: 50,
-		checkboxSelection,
-		headerCheckboxSelection,
-		lockVisible: true,
-		lockPinned: true,
-	},
-	...Object.keys(UserAuctionWinningDetailFields)
-		.filter((item) => !item.includes('고유 번호'))
-		.map((item) => ({
+export const UserAuctionWinningDetailFieldsCols = (selected) => {
+	const checkboxSelection2 = (params) => {
+		if (selected && selected.length > 0) {
+			const selectedUid = selected?.map((item) => item['제품 번호'])
+			console.log('selectedUid', selectedUid)
+			if (selectedUid?.includes(params.data['제품 번호'])) {
+				params.node.setSelected(true)
+			}
+		}
+		return params.columnApi.getRowGroupColumns().length === 0
+	}
+
+	return [
+		{
 			...commonStyles,
-			field: item,
-		})),
-].map((col) => ({
-	...col,
-	minWidth: col.minWidth !== undefined ? col.minWidth : commonStyles.getFieldMinWidth(col.field),
-}))
+			field: '',
+			maxWidth: 50,
+			checkboxSelection: checkboxSelection2,
+			headerCheckboxSelection,
+			lockVisible: true,
+			lockPinned: true,
+		},
+		{ ...commonStyles, field: '주문 고유 번호', minWidth: 100 },
+		{ ...commonStyles, field: '고객사 목적지 고유 번호', minWidth: 100 },
+		{ ...commonStyles, field: '목적지 고유 번호', minWidth: 100 },
+		{ ...commonStyles, field: '경매 번호', minWidth: 100 },
+		{ ...commonStyles, field: '패키지 명', minWidth: 100 },
+		{
+			...commonStyles,
+			field: PROD_COL_NAME.packageNumber,
+			minWidth: 150,
+			cellRendererParams: (params) => params?.data[params.column.colId] || '',
+			valueGetter: (v) => v.data[v.column.colId]?.value || '',
+		},
+		{ ...commonStyles, field: '고객사명', minWidth: 100 },
+		{ ...commonStyles, field: '고객 코드', minWidth: 100 },
+		{
+			...commonStyles,
+			field: PROD_COL_NAME.productNumber,
+			minWidth: 150,
+			// cellRenderer: MarkerCellRenderer,
+			cellRendererParams: (params) => params?.data[params.column.colId] || '',
+			valueGetter: (v) => v.data[v.column.colId]?.value || '',
+		},
+		{ ...commonStyles, field: 'Pro.No 번호', minWidth: 100 },
+		{ ...commonStyles, field: '창고', minWidth: 100 },
+		{ ...commonStyles, field: '낙찰 상태', minWidth: 100 },
+		{ ...commonStyles, field: '낙찰가', minWidth: 100 },
+		{ ...commonStyles, field: '승인 상태', minWidth: 100 },
+		{ ...commonStyles, field: '목적지 코드', minWidth: 100 },
+		{ ...commonStyles, field: '목적지 명', minWidth: 100 },
+		{ ...commonStyles, field: '목적지 주소', minWidth: 100 },
+		{ ...commonStyles, field: '목적지 연락처', minWidth: 100 },
+		{ ...commonStyles, field: '목적지 담당자 연락처', minWidth: 100 },
+		{ ...commonStyles, field: '하차지 명', minWidth: 100 },
+		{ ...commonStyles, field: '변경 요청 목적지명', minWidth: 100 },
+		{ ...commonStyles, field: '변경 요청 목적지 주소', minWidth: 100 },
+		{ ...commonStyles, field: '변경 요청 목적지 연락처', minWidth: 100 },
+		{ ...commonStyles, field: '변경 요청 목적지 담당자 연락처', minWidth: 100 },
+		{ ...commonStyles, field: '판매 유형 (경매 대상재 / 상시 판매 대상재)', minWidth: 100 },
+		{ ...commonStyles, field: '판매가 유형 (특가 / 일반)', minWidth: 100 },
+		{ ...commonStyles, field: '제품군', minWidth: 100 },
+		{ ...commonStyles, field: '등급', minWidth: 100 },
+		{ ...commonStyles, field: '제품 낙찰 단가', minWidth: 100 },
+		{ ...commonStyles, field: '낙찰 총 단가', minWidth: 100 },
+		{ ...commonStyles, field: '제품 공급가', minWidth: 100 },
+		{ ...commonStyles, field: '제품 부가세', minWidth: 100 },
+		{ ...commonStyles, field: '기본 운임단가', minWidth: 100 },
+		{ ...commonStyles, field: '할증 운임단가', minWidth: 100 },
+		{ ...commonStyles, field: '운송비 공급가', minWidth: 100 },
+		{ ...commonStyles, field: '운송비 부가세', minWidth: 100 },
+		{ ...commonStyles, field: '총공급가', minWidth: 100 },
+		{ ...commonStyles, field: '총부가세', minWidth: 100 },
+		{ ...commonStyles, field: '합계', minWidth: 100 },
+		{ ...commonStyles, field: '두께', minWidth: 100 },
+		{ ...commonStyles, field: '폭', minWidth: 100 },
+		{ ...commonStyles, field: '길이', minWidth: 100 },
+		{ ...commonStyles, field: '중량', minWidth: 100 },
+		{ ...commonStyles, field: '규격 약호', minWidth: 100 },
+		{ ...commonStyles, field: 'ts', minWidth: 100 },
+		{ ...commonStyles, field: 'yp', minWidth: 100 },
+		{ ...commonStyles, field: 'c', minWidth: 100 },
+		{ ...commonStyles, field: 'el', minWidth: 100 },
+		{ ...commonStyles, field: 'si', minWidth: 100 },
+		{ ...commonStyles, field: 'mn', minWidth: 100 },
+		{ ...commonStyles, field: 'p', minWidth: 100 },
+		{ ...commonStyles, field: 's', minWidth: 100 },
+		{ ...commonStyles, field: '여재 원인', minWidth: 100 },
+		{ ...commonStyles, field: '여재 원인명1', minWidth: 100 },
+		{ ...commonStyles, field: '용도 코드', minWidth: 100 },
+		{ ...commonStyles, field: '용도명', minWidth: 100 },
+		{ ...commonStyles, field: '메모', minWidth: 100 },
+		{ ...commonStyles, field: '수정일', minWidth: 100 },
+	]
+}
 
 /* ======================================================
     경매 관리 - 경매 낙찰 관리 - "낙찰 생성" (winningCreate)

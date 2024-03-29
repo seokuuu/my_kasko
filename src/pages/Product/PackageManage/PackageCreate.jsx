@@ -56,6 +56,7 @@ const PackageCreate = () => {
 
 	const [packageName, setPackageName] = useState(prevData ? prevData['패키지 이름'] : packageObj?.packageName)
 	const [price, setPrice] = useState(prevData ? prevData['시작가/판매가'] : packageObj?.price)
+
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 	const [savedRadioValue, setSavedRadioValue] = useState('')
 	const [select, setSelect] = useState([])
@@ -93,7 +94,8 @@ const PackageCreate = () => {
 		if (name === 'packageName') {
 			setPackageName(value)
 		} else if (name === 'price') {
-			setPrice(value)
+			const intValue = parseInt(value.replace(/,/g, ''), 10)
+			setPrice(intValue)
 		}
 	}
 
@@ -369,7 +371,7 @@ const PackageCreate = () => {
 							<div>
 								<h6>시작가/판매가</h6>
 								<div>
-									<Input name={'price'} value={price} onChange={handleChangePackName} />
+									<Input name={'price'} value={price?.toLocaleString()} onChange={handleChangePackName} />
 								</div>
 							</div>
 						</FilterTCBSub>

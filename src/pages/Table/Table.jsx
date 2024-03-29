@@ -157,6 +157,7 @@ const Table = ({
 		}
 	}, [getRow])
 
+	// TODO : 여기 URL 추가해서 다시 해보기.
 	useEffect(() => {
 		if (
 			[
@@ -164,6 +165,8 @@ const Table = ({
 				'/auction/biddingpackage',
 				'/userpage/auctionsingle',
 				'/userpage/auctionpackage',
+				'/auction/winning/detail',
+				'/userpage/auctionwinning/detail',
 			].includes(location.pathname)
 		) {
 			if (gridRef.current.api) {
@@ -275,6 +278,12 @@ const Table = ({
 	const onFirstDataRendered = (params) => {
 		const columnApi = params.columnApi
 		columnApi.autoSizeAllColumns(false)
+	}
+
+	const onHoldCheck = (params) => {
+		if (params?.includes(params.data['제품 번호'].value)) {
+			params.node.setSelected(true)
+		}
 	}
 
 	// 체크했을때 jotai 전역상태값 설정
