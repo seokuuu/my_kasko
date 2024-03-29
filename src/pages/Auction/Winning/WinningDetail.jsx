@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import {
 	BlackBtn,
 	BtnBound,
@@ -206,6 +206,9 @@ const WinningDetail = ({ setAucDetail }) => {
 	const [winningCreateData, setWinningCreateData] = useState({})
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getWinningDetail', getWinningDetail)
 
+	const originData = data?.data?.data
+	const [oriData, setOridata] = useState()
+
 	const resData = data?.data?.data?.list
 
 	const newCustomerCode = resData?.map((x) => x?.code)[0]
@@ -221,7 +224,9 @@ const WinningDetail = ({ setAucDetail }) => {
 
 	console.log('matchedDestination', matchedDestination)
 
-	const uids = checkedArray?.map((item) => item && item['제품 번호'])
+	const uids = checkedArray?.map((item) => item && item['제품 번호']?.value)
+
+	console.log('uids', uids)
 
 	// 목적지 적용 버튼 onClick Handler
 	const destiOnClickHandler = () => {
@@ -234,21 +239,28 @@ const WinningDetail = ({ setAucDetail }) => {
 				...prevFinalInput,
 				requestCustomerDestinationUid: destiObject && destiObject.uid,
 			}))
-			setCheckedArray([])
 		})
 
-		const updatedResData = resData?.map((item) => {
+		const updatedResData = oriData?.list?.map((item) => {
 			if (uids.includes(item.productNumber)) {
 				item.requestDestinationName = matchedDestination?.destinationName
 				item.requestDestinationAddress = matchedDestination?.address
 				item.requestDestinationPhone = matchedDestination?.managerPhone
 				item.requestDestinationManagerPhone = matchedDestination?.phone
 			}
+
 			return item
 		})
 
-		setGetRow(add_element_field(updatedResData, AuctionWinningDetailFields))
+		console.log('updatedResData', updatedResData)
+
+		setOridata((prevData) => ({
+			...prevData,
+			list: updatedResData,
+		}))
 	}
+
+	console.log('matchedDestination', matchedDestination)
 
 	useEffect(() => {
 		queryClient.invalidateQueries('getWinningDetail')
@@ -268,11 +280,16 @@ const WinningDetail = ({ setAucDetail }) => {
 		let getData = resData
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 		if (!isSuccess && !resData) return
-		if (Array.isArray(getData)) {
-			setGetRow(add_element_field(getData, AuctionWinningDetailFields))
+		if (Array.isArray(originData?.list)) {
+			setOridata(originData)
+			// setGetRow(add_element_field(getData, AuctionWinningDetailFields))
 			setTablePagination(resPagination)
 		}
-	}, [isSuccess, resData])
+	}, [isSuccess, originData])
+
+	const tableFields = useMemo(() => {
+		return AuctionWinningDetailFieldsCols(checkedArray)
+	}, [checkedArray])
 
 	useEffect(() => {
 		const productNumbers = checkedArray?.map((item) => item['주문 고유 번호'])
@@ -466,13 +483,14 @@ const WinningDetail = ({ setAucDetail }) => {
 		})
 	}
 
+	// getRow 이걸로 전부 바꾸기 TODO
 	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
 		weightKey: '중량',
 	})
 
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: AuctionWinningDetailFields,
-		serverData: data?.data?.data,
+		serverData: oriData,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
 		best: { display: true },
 	})
@@ -523,7 +541,7 @@ const WinningDetail = ({ setAucDetail }) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
-						<Excel getRow={getRow} sheetName="경매 낙찰 상세" />
+						<Excel getRow={tableRowData} sheetName="경매 낙찰 상세" />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
@@ -554,7 +572,12 @@ const WinningDetail = ({ setAucDetail }) => {
 						</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
+				<Table
+					getCol={tableFields}
+					getRow={tableRowData}
+					tablePagination={tablePagination}
+					onPageChange={onPageChange}
+				/>
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
