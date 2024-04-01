@@ -2,6 +2,8 @@ import MarkerCellRenderer from '../../pages/Table/MarkerCellRenderer'
 import { checkboxSelection, headerCheckboxSelection } from '../../pages/Table/util'
 import { getNormalTableRows } from '../../utils/table'
 import { PROD_COL_NAME } from './constantKey'
+import { ProNoCellRenderer } from '../../pages/Table/ProNoCellRenderer'
+import { SaleNumberCellRender } from '../../pages/Table/SaleNumberCellRender'
 
 /**
  * @constant 테이블컬럼 라벨 - 변수명 바인딩 객체
@@ -148,7 +150,11 @@ export const userOrderListFieldsCols = (numberClickHandler = undefined) =>
 	getNormalTableRows([
 		{ field: '', maxWidth: 50, checkboxSelection: checkboxSelection, headerCheckboxSelection: headerCheckboxSelection },
 		{ field: '주문 고유 번호', minWidth: 140 },
-		{ field: '상시판매 번호', minWidth: 140 },
+		{
+			field: '상시판매 번호',
+			minWidth: 140,
+			cellRenderer: SaleNumberCellRender,
+		},
 		{ field: '상시판매 주문일자', minWidth: 140 },
 		{ field: '상시판매 상태', minWidth: 140 },
 		{ field: '패키지명' },
@@ -167,7 +173,7 @@ export const userOrderListFieldsCols = (numberClickHandler = undefined) =>
 			cellRendererParams: (params) => ({ ...params.data[params.column.colId], clickHandler: () => {} }),
 			valueGetter: (v) => v.data[v.column.colId]?.value || '',
 		},
-		{ field: '프로넘(ProNo)' },
+		{ field: '프로넘(ProNo)', cellRenderer: ProNoCellRenderer },
 		{ field: '창고' },
 		{ field: '상시판매 상태', minWidth: 140 },
 		{ field: '승인상태' },

@@ -22,6 +22,7 @@ import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import useAlert from '../../../store/Alert/useAlert'
 import PrintDepositRequestButton from '../_components/PrintDepositRequestButton'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
+import { numberDeleteComma } from '../../../utils/utils'
 
 /**
  * @constant 기본 검색 값
@@ -52,9 +53,9 @@ const getInfoRows = (data, salesNumber) => {
 		initialData[1] = data[0]?.customerName || '-' // 고객사
 		initialData[2] = data[0]?.customerCode || '-' // 고객코드
 		data.forEach((v) => {
-			initialData[3] += Number(v?.quantity) || 0 // 총 수량
-			initialData[4] += Number(v?.totalWeight) || 0 // 총 중량
-			initialData[5] += Number(v?.totalPrice) || 0 // 입금 요청 금액
+			initialData[3] += Number(numberDeleteComma(v?.quantity || 1)) || 0 // 총 수량
+			initialData[4] += Number(numberDeleteComma(v?.totalWeight || v?.weight)) || 0 // 총 중량
+			initialData[5] += Number(numberDeleteComma(v?.totalPrice)) || 0 // 입금 요청 금액
 		})
 		initialData.forEach((v, idx) => {
 			if (!isNaN(v)) {

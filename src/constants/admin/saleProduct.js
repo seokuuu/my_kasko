@@ -1,6 +1,7 @@
 // 상시 판매 관리 > 주문 확인
 
 import { getNormalTableRows } from '../../utils/table'
+import { SaleNumberCellRender } from '../../pages/Table/SaleNumberCellRender'
 
 var checkboxSelection = function (params) {
 	return params.columnApi.getRowGroupColumns().length === 0
@@ -19,7 +20,7 @@ export const saleProductListFieldsCols = getNormalTableRows([
 		cellStyle: { textAlign: 'center' },
 	},
 	{ field: '순번', minWidth: 100, cellStyle: { textAlign: 'center' } },
-	{ field: '상시판매 번호', minWidth: 100, cellStyle: { textAlign: 'center' } },
+	{ field: '상시판매 번호', minWidth: 100, cellStyle: { textAlign: 'center' }, cellRenderer: SaleNumberCellRender },
 	{ field: '상시판매 주문일자', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '고객사명', minWidth: 100, cellStyle: { textAlign: 'center' } },
 	{ field: '고객코드', minWidth: 100, cellStyle: { textAlign: 'center' } },
