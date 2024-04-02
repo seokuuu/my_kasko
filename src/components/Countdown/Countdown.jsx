@@ -8,8 +8,10 @@ import styled from 'styled-components'
 import { useAtom, useAtomValue } from 'jotai'
 import { auctionStartAtom } from '../../store/Layout/Layout'
 import { authAtom } from '../../store/Auth/auth'
+import { useCheckAuction } from '../../hooks/useCheckAuction'
 
 const Countdown = () => {
+	const nowAuction = useCheckAuction()
 	const auth = useAtomValue(authAtom)
 	const navigate = useNavigate()
 	const { pathname } = useLocation()
@@ -53,11 +55,13 @@ const Countdown = () => {
 		if (isAuction && auctionPages.includes(pathname)) {
 			window.location.reload()
 		}
-		setTimeout(() => {
-			getCountdown()
-				.then((response) => response?.data?.data)
-				.then((responseData) => setCountdownData(responseData))
-		}, 3000)
+		if (nowAuction) {
+			setTimeout(() => {
+				getCountdown()
+					.then((response) => response?.data?.data)
+					.then((responseData) => setCountdownData(responseData))
+			}, 3000)
+		}
 	}
 
 	useEffect(() => {

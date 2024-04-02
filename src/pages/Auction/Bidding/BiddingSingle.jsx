@@ -46,6 +46,7 @@ import BiddingSearchFields from './BiddingSearchFields'
 const BiddingSingle = ({}) => {
 	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
 	const auth = useAtomValue(authAtom) // 이거 auction.js에서 hook으로 바꾸기
+	console.log('auth', auth)
 	const nowAuction = useCheckAuction() // 현재 경매 여부 체크
 	const [live, setLive] = useState(true) // LIVE get 일시 중단
 	const navigate = useNavigate()

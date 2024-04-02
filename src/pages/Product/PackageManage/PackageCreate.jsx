@@ -75,7 +75,7 @@ const PackageCreate = () => {
 	const [requestParams, setRequestParams] = useState(
 		prevData && {
 			pageNum: 1,
-			pageSize: 50,
+			pageSize: 10000,
 			packageNumber: prevData ? prevData['패키지 번호'] : '',
 		},
 	)
