@@ -114,7 +114,7 @@ const BiddingSingle = ({}) => {
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
 
 	// 전체 GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding, nowAuction)
 	const originData = data?.data?.data
 	const [oriData, setOridata] = useState()
 

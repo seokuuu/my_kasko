@@ -110,7 +110,7 @@ const Package = ({}) => {
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
 
 	// 전체 GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding, nowAuction)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 	const originData = data?.data?.data
