@@ -207,7 +207,7 @@ const Round = ({}) => {
 					<TableContianer>
 						<TCSubContainer bor>
 							<div>
-								조회 목록 (선택 <span>{checkedArray.length}</span> / {param.pageSize}개 )
+								조회 목록 (선택 <span>{checkedArray.length}</span> / {resData?.length}개 )
 								<TableV2HiddenSection />
 							</div>
 							<div style={{ display: 'flex', gap: '10px' }}>

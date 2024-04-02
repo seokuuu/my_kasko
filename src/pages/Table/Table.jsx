@@ -121,39 +121,20 @@ const Table = ({
 	// 정수형 콤마 표시 filter
 	useEffect(() => {
 		if (getRow && getRow.length > 0) {
-			if (
-				[
-					'/auction/biddingsingle',
-					'/auction/biddingpackage',
-					'/auction/progress',
-					'/auction/detailprogress',
-					'/auction/round',
-					'/auction/winning',
-					'/auction/startprice',
-					'/auction/winning/detail',
-					'/auction/winningcreate',
-					'/userpage/auctionwinning',
-					'/userpage/auctionsingle',
-					'/userpage/auctionpackage',
-					'/userpage/auctionwinning/detail',
-					'/operate/inventory',
-				].includes(location.pathname)
-			) {
-				const formattedRow = getRow.map((item) => {
-					const formattedItem = {}
-					Object.keys(item).forEach((key) => {
-						if (['제품 고유 번호'].includes(key) || key.includes('번호', '연락처')) {
-							return (formattedItem[key] = item[key])
-						} else {
-							formattedItem[key] = customNumberFormatter({ value: item[key] })
-						}
-					})
-					return formattedItem
+			const formattedRow = getRow.map((item) => {
+				const formattedItem = {}
+				Object.keys(item).forEach((key) => {
+					if (['제품 고유 번호'].includes(key) || key.includes('번호', '연락처')) {
+						return (formattedItem[key] = item[key])
+					} else {
+						formattedItem[key] = customNumberFormatter({ value: item[key] })
+					}
 				})
-				setRowData(formattedRow)
-			} else setRowData(getRow)
+				return formattedItem
+			})
+			setRowData(formattedRow)
 		} else {
-			setRowData(null)
+			setRowData(getRow)
 		}
 	}, [getRow])
 
@@ -303,25 +284,7 @@ const Table = ({
 			}
 		}
 	}
-	const autoGroupColumnDef = useMemo(() => {
-		return {
-			headerName: 'Group',
-			minWidth: 170,
-			field: 'athlete',
-			valueGetter: (params) => {
-				if (params.node.group) {
-					return params.node.key
-				} else {
-					return params.data[params.colDef.field]
-				}
-			},
-			headerCheckboxSelection: true,
-			cellRenderer: 'agGroupCellRenderer',
-			cellRendererParams: {
-				checkbox: true,
-			},
-		}
-	}, [])
+
 	const defaultColDef = useMemo(() => {
 		return {
 			editable: false,
@@ -575,7 +538,6 @@ const Table = ({
 						defaultColDef={defaultColDef}
 						gridOptions={effectiveGridOptions}
 						onRowDoubleClicked={onRowDoubleClicked}
-						autoGroupColumnDef={autoGroupColumnDef}
 						animateRows={true}
 						suppressRowClickSelection={true}
 						groupSelectsChildren={true}

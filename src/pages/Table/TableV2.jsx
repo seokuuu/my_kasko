@@ -96,7 +96,7 @@ var GRID_SETTIGS = {
 		enablePivot: false,
 		enableValue: true,
 		enableMenu: false,
-		sortable: false,
+		sortable: true,
 		resizable: true,
 		filter: false,
 	},

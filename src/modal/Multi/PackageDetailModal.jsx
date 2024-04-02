@@ -132,7 +132,7 @@ export default function PackageDetailModal() {
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
 									<PageDropdown handleDropdown={handleTablePageSize} />
-									<Excel getRow={getRow} />
+									<Excel getRow={getRow} sheetName="패키지 상세 보기" />
 								</div>
 							</TCSubContainer>
 							<TCSubContainer bor>
