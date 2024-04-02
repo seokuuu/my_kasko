@@ -97,7 +97,7 @@ class MarkerCellRenderer {
 
 	destroy() {
 		if (this.eButton && this.clickEventListener) {
-			this.eButton.removeEventListener('click', this.clickEventListener)
+			this.eButton?.removeEventListener('click', this.clickEventListener)
 		}
 	}
 
@@ -120,7 +120,7 @@ class MarkerCellRenderer {
 			this.clickEventListener = () => {
 				this.clickHandler(textValue)
 			}
-			this.eButton.addEventListener('click', this.clickEventListener)
+			this.eButton?.addEventListener('click', this.clickEventListener)
 		}
 	}
 }
