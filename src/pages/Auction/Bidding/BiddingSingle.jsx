@@ -39,7 +39,7 @@ import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import BiddingSearchFields from './BiddingSearchFields'
 
 // 관리자 "응찰" 페이지
-// 사용자 페이와의 차이
+// 사용자 페이지와의 차이
 // 1. 관심 상품 등록이 없다
 // 2. 관리자의 경매 고유키 (uids)는 제품 고유 번호(productUid) 이다.
 

@@ -284,25 +284,7 @@ const Table = ({
 			}
 		}
 	}
-	const autoGroupColumnDef = useMemo(() => {
-		return {
-			headerName: 'Group',
-			minWidth: 170,
-			field: 'athlete',
-			valueGetter: (params) => {
-				if (params.node.group) {
-					return params.node.key
-				} else {
-					return params.data[params.colDef.field]
-				}
-			},
-			headerCheckboxSelection: true,
-			cellRenderer: 'agGroupCellRenderer',
-			cellRendererParams: {
-				checkbox: true,
-			},
-		}
-	}, [])
+
 	const defaultColDef = useMemo(() => {
 		return {
 			editable: false,
@@ -556,7 +538,6 @@ const Table = ({
 						defaultColDef={defaultColDef}
 						gridOptions={effectiveGridOptions}
 						onRowDoubleClicked={onRowDoubleClicked}
-						autoGroupColumnDef={autoGroupColumnDef}
 						animateRows={true}
 						suppressRowClickSelection={true}
 						groupSelectsChildren={true}
