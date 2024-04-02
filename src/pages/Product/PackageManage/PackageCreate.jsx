@@ -64,14 +64,18 @@ const PackageCreate = () => {
 	const [curUid, setCuruid] = useState([])
 	const [check, setCheck] = useState([])
 	const [sumArr, setSumArr] = useState([])
+
+	console.log('sumArr', sumArr)
+
 	const [getRow, setGetRow] = useState('')
+	console.log('getRow', getRow)
 	const [filteredData, setFilteredData] = useState([])
 	const [createRequest, setCreateRequest] = useState({})
 	const [updateRequest, setUpdateRequest] = useState({})
 	const [requestParams, setRequestParams] = useState(
 		prevData && {
 			pageNum: 1,
-			pageSize: 50,
+			pageSize: 10000,
 			packageNumber: prevData ? prevData['패키지 번호'] : '',
 		},
 	)
@@ -157,7 +161,10 @@ const PackageCreate = () => {
 		simpleConfirm('수정하시겠습니까?', () => {
 			update(updateRequest, {
 				onSuccess: () => {
-					simpleAlert('수정되었습니다', () => navigate('/product/package'))
+					simpleAlert('수정되었습니다', () => {
+						navigate('/product/package')
+						window.location.reload()
+					})
 				},
 				onError: (e) => {
 					simpleAlert(`${e?.data?.message || '수정 실패하였습니다.'}`, () => {
@@ -190,7 +197,13 @@ const PackageCreate = () => {
 	// 제품 추가
 	useEffect(() => {
 		if (getRow && select) {
-			setSumArr((prev) => [...getRow, ...prev, ...select])
+			const filterData = [...getRow, ...select]
+			const neoFilterData = filterData?.map((item) => ({
+				...item,
+				'총 중량': parseInt(item['총 중량']).toLocaleString(),
+				'제품 중량': parseInt(item['제품 중량']).toLocaleString(),
+			}))
+			setSumArr(neoFilterData)
 		}
 	}, [getRow, select])
 
@@ -211,10 +224,17 @@ const PackageCreate = () => {
 		}
 		if (!isSuccess && !filteredData) return null
 		if (Array.isArray(filteredData) && prevData) {
-			setGetRow(add_element_field(filteredData, packageProductsDispatchFields))
+			const localeFilteredData = filteredData?.map((item) => ({
+				...item,
+				totalWeight: parseInt(item.totalWeight),
+				weight: parseInt(item.weight),
+			}))
+			setGetRow(add_element_field(localeFilteredData, packageProductsDispatchFields))
 		}
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 	}, [isSuccess, filteredData, prevData])
+
+	console.log('filteredData', filteredData)
 
 	// 경매,상시 선택시 선택한 내용의 라디오가 선택되게끔 하는
 
@@ -408,7 +428,7 @@ const PackageCreate = () => {
 				<Table
 					getCol={packageProductsDispatchFieldsCols}
 					getRow={prevData ? (select.length > 0 ? sumArr : getRow) : select}
-					tablePagination={pagination}
+					// tablePagination={pagination}
 					onPageChange={onPageChanage}
 					loading={isLoading}
 				/>

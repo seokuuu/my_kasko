@@ -100,7 +100,10 @@ const SellOrder = () => {
 
 	const handleOnRowClicked = (row) => {
 		const uid = row.data.uid
-		navigate(`/sales/order/${uid}`)
+		const saleStatus = row.data['상시판매 상태']
+		console.log('row data', row.data)
+
+		navigate(`/sales/order/${uid}/${saleStatus}`)
 	}
 
 	const orderCancelButtonOnClickHandler = () => {

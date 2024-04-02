@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 // import axios from 'axios'
 // import { getDestination } from '../api/myPage'
 
-export default function useReactQuery(obj, key, api) {
+export default function useReactQuery(obj, key, api, auctionStatus) {
 	const [isEnable, setIsEnable] = useState(true)
 	useEffect(() => {
 		setIsEnable(true)
@@ -12,7 +12,7 @@ export default function useReactQuery(obj, key, api) {
 	const { isLoading, isError, data, isSuccess, refetch } = useQuery([key, obj], () => api(obj), {
 		retry: false,
 		enabled: isEnable,
-		...(key === true ? { refetchInterval: 1000 } : {}), // 조건에 따라 refetchInterval 추가
+		...(key && auctionStatus ? { refetchInterval: 1000 } : {}), // 조건에 따라 refetchInterval 추가
 	})
 	return { isLoading, isError, data, isSuccess, refetch }
 }
