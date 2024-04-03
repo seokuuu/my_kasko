@@ -234,7 +234,7 @@ const Router = () => {
 				<Route path="/sales/single" element={<SinglePage />}></Route>
 				<Route path="/sales/package" element={<PackagePage />}></Route>
 				<Route path="/sales/order" element={<SellOrderPage />}></Route>
-				<Route path="/sales/order/:id" element={<SellOrderDetailPage />} />
+				<Route path="/sales/order/:id/:status" element={<SellOrderDetailPage />} />
 			</Route>
 			{/* 주문 관리 */}
 			<Route path="/order" element={<OrderPage />}></Route>

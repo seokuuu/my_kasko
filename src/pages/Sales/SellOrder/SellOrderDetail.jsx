@@ -41,12 +41,13 @@ import DestinationChange from '../../../modal/Multi/DestinationChange'
 const SellOrderDetail = () => {
 	const { simpleAlert, simpleConfirm } = useAlert()
 	const navigate = useNavigate()
-	const { id } = useParams()
+	const { id, status } = useParams()
 
 	const paramDataInit = {
 		pageNum: 1,
 		pageSize: 50,
 		auctionNumber: id,
+		saleStatus: status,
 	}
 
 	const contentDataInit = ['2023040558', '4,685,798', 'K00000', '30', '4,685,798', '54,685,798']
