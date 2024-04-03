@@ -75,6 +75,7 @@ export const PrintDepositRequestButton = ({
 	storage = '',
 	customerDestinationUid = '',
 	biddingStatus = '',
+	saleStatus = '',
 }) => {
 	const containerRef = useRef(null)
 	// pdf 추출
@@ -127,7 +128,7 @@ export const PrintDepositRequestButton = ({
 		queryFn: async () => {
 			const requestUrl = salesDeposit ? REQUEST_DEPOSIT_URL.salesDeposit : REQUEST_DEPOSIT_URL.aution
 			const { data } = salesDeposit
-				? await client.get(`${requestUrl}/${oneAuctionNumber.current}`)
+				? await client.get(`${requestUrl}/${oneAuctionNumber.current}/${saleStatus}`)
 				: await client.post(requestUrl, {
 						auctionNumber: oneAuctionNumber.current,
 						storage: storage,
