@@ -87,30 +87,26 @@ const SingleProductSearchFields = ({
 						</PWRight>
 					</PartWrap>
 
-					<PartWrap first>
-						<h6>판매 구분</h6>
-						<CustomCheckBox
-							initOptions={[
-								{
-									checked: false,
-									text: '판매재',
-									value: '판매재',
-								},
-								{
-									checked: false,
-									text: '판매 제외재',
-									value: '판매 제외재',
-								},
-								{
-									checked: false,
-									text: '판매 완료재',
-									value: '판매 완료재',
-								},
-							]}
-							setState={setSearch}
-							stateKey="saleCategoryList"
-						/>
-					</PartWrap>
+					{/*<PartWrap first>*/}
+					{/*	<h6>판매 구분</h6>*/}
+					{/*	<CustomCheckBox*/}
+					{/*		initOptions={[*/}
+					{/*			{*/}
+					{/*				checked: false,*/}
+					{/*				text: '판매재',*/}
+					{/*				value: '판매재',*/}
+					{/*			},*/}
+					{/*			{*/}
+					{/*				checked: false,*/}
+					{/*				text: '판매 완료재',*/}
+					{/*				value: '판매 완료재',*/}
+					{/*			},*/}
+					{/*		]}*/}
+					{/*		setState={setSearch}*/}
+					{/*		isExistEntireValue={true}*/}
+					{/*		stateType="object"*/}
+					{/*	/>*/}
+					{/*</PartWrap>*/}
 				</RowWrap>
 				{/* 2행 */}
 				<RowWrap>
