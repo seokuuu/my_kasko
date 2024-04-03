@@ -186,28 +186,15 @@ export const PrintDepositRequestButton = ({
 			<WhiteSkyBtn onClick={handlePrintClick}>입금 요청서 발행</WhiteSkyBtn>
 			{receiptPrint && (
 				<>
+					<WhiteCloseBtn2
+						onClick={(e) => {
+							setReceiptPrint(false)
+						}}
+						src="/svg/white_btn_close.svg"
+					/>
 					<OutSide />
-					<NewContainer
-					// style={{
-					// 	width: '75%',
-					// 	maxHeight: '90vh',
-					// 	minHeight: 740,
-					// 	background: '#eef3fb',
-					// 	flexDirection: 'column',
-					// 	alignItems: 'flex-end',
-					// }}
-					>
-						<BlueBarHeader style={{ height: '20px' }}>
-							<div></div>
-							<div>
-								<WhiteCloseBtn
-									onClick={(e) => {
-										setReceiptPrint(false)
-									}}
-									src="/svg/white_btn_close.svg"
-								/>
-							</div>
-						</BlueBarHeader>
+					<NewContainer>
+						<BlueBarHeader style={{ height: '20px' }}></BlueBarHeader>
 						<BlueSubContainer ref={containerRef} style={{ width: '100%', padding: '0px 30px' }}>
 							<FilterContianer>
 								{/* 요청서 제목 | 일자 */}
@@ -441,8 +428,16 @@ const NewContainer = styled.div`
 	width: ${(props) => props.width}px;
 	width: 1500px;
 	height: 900px;
-
 	overflow-y: scroll;
 	transform: translate(-50%, -50%);
+	z-index: 9998;
+`
+
+export const WhiteCloseBtn2 = styled.img`
+	cursor: pointer;
+	position: fixed;
+	top: 5%;
+	right: 9%;
+	width: 25px;
 	z-index: 9999;
 `

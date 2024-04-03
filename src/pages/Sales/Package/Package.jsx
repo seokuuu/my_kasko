@@ -29,6 +29,7 @@ import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
 import TableV2 from '../../Table/TableV2'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import Excel from '../../../components/TableInner/Excel'
 
 const Package = () => {
 	const { simpleAlert } = useAlert()
@@ -65,7 +66,7 @@ const Package = () => {
 		isSuccess: isSuccessPackageProductViewStatusUpdate,
 	} = usePackageProductViewStatusUpdate()
 
-	const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
+	const { tableRowData, paginationData, totalWeightStr, totalCountStr } = useTableData({
 		tableField: packageResponseToTableRowMap,
 		serverData,
 		wish: false,
@@ -122,9 +123,12 @@ const Package = () => {
 		setIsEditStatusModal(true)
 	}
 
-	// 노출 상태 변경 모달 > 확인 버튼
+	// TODO: 노출 상태 변경 모달 > 확인 버튼
 	const editStatusModalConfirmButtonOnClickHandler = (checkRadio) => {
 		setCheckRadio(checkRadio[0])
+
+		console.log('checkRadio[0] : ', checkRadio[0])
+
 		setIsEditStatusModal(false)
 	}
 
@@ -191,21 +195,17 @@ const Package = () => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCount?.toLocaleString()}개 )
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						<TableV2ExcelDownloader
-							requestUrl={packageProductEndpoint}
-							requestCount={totalCount}
-							field={packageResponseToTableRowMap}
-						/>
+						<Excel getRow={tableRowData} sheetName="상시판매_패키지관리" />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
+						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeightStr} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteBlackBtn onClick={(checkRadio) => editStatusButtonOnClickHandler(checkRadio)}>

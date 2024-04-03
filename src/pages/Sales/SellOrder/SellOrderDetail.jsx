@@ -21,7 +21,15 @@ import {
 	TableContianer,
 	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
-import { BtnBound, SkyBtn, TGreyBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import {
+	BlackBtn,
+	BtnBound,
+	NewBottomBtnWrap,
+	SkyBtn,
+	TGreyBtn,
+	WhiteRedBtn,
+	WhiteSkyBtn,
+} from '../../../common/Button/Button'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
 import { invenDestination, selectedRowsAtom } from '../../../store/Layout/Layout'
 import {
@@ -338,6 +346,17 @@ const SellOrderDetail = () => {
 						</SkyBtn>
 					</div>
 				</TCSubContainer>
+				<NewBottomBtnWrap>
+					<BlackBtn
+						width={13}
+						height={40}
+						onClick={() => {
+							navigate(-1)
+						}}
+					>
+						돌아가기
+					</BlackBtn>
+				</NewBottomBtnWrap>
 			</TableContianer>
 			{destinationPopUp && (
 				<InventoryFind title={'목적지 찾기'} setSwitch={setDestinationPopUp} data={inventoryDestination} />

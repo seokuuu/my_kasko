@@ -17,6 +17,7 @@ import StandardFind from '../../../modal/Multi/StandardFind'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 import React from 'react'
+import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
 
 const SingleProductSearchFields = ({
 	// prettier-ignore
@@ -85,6 +86,27 @@ const SingleProductSearchFields = ({
 							<Input name="maker" value={search.maker} onChange={commonNumInputHandler} />
 						</PWRight>
 					</PartWrap>
+
+					{/*<PartWrap first>*/}
+					{/*	<h6>판매 구분</h6>*/}
+					{/*	<CustomCheckBox*/}
+					{/*		initOptions={[*/}
+					{/*			{*/}
+					{/*				checked: false,*/}
+					{/*				text: '판매재',*/}
+					{/*				value: '판매재',*/}
+					{/*			},*/}
+					{/*			{*/}
+					{/*				checked: false,*/}
+					{/*				text: '판매 완료재',*/}
+					{/*				value: '판매 완료재',*/}
+					{/*			},*/}
+					{/*		]}*/}
+					{/*		setState={setSearch}*/}
+					{/*		isExistEntireValue={true}*/}
+					{/*		stateType="object"*/}
+					{/*	/>*/}
+					{/*</PartWrap>*/}
 				</RowWrap>
 				{/* 2행 */}
 				<RowWrap>

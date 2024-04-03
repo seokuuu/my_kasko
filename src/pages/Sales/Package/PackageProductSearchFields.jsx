@@ -164,15 +164,15 @@ const PackageProductSearchFields = ({
 						initialValue={search.productNumberList}
 						setState={setSearch}
 						valueName={'productNumberList'}
-						height="80px"
+						height="100%"
 					/>
-					<ProductNumber
-						title="패키지 번호"
-						initialValue={search.packageNumberList || []}
-						setState={setSearch}
-						valueName={'packageNumberList'}
-						height="80px"
-					/>
+					{/*<ProductNumber*/}
+					{/*	title="패키지 번호"*/}
+					{/*	initialValue={search.packageNumberList || []}*/}
+					{/*	setState={setSearch}*/}
+					{/*	valueName={'packageNumberList'}*/}
+					{/*	height="80px"*/}
+					{/*/>*/}
 				</div>
 			</FilterRight>
 		</div>
