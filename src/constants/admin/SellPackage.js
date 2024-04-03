@@ -31,6 +31,7 @@ export const packageDispatchFields = {
 
 export const packageProductsDispatchFields = {
 	순번: 'index',
+	'제품 번호': 'productNumber',
 	'패키지 번호': 'packageNumber',
 	'패키지 명': 'packageName',
 	수량: 'quantity',

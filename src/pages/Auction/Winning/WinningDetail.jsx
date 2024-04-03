@@ -387,6 +387,7 @@ const WinningDetail = ({ setAucDetail }) => {
 			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
+
 	// 부분 입금 확인 버튼 Handler
 	const partDepostiHandler = () => {
 		depositMuation(extractedArray)
