@@ -222,6 +222,13 @@ const SellOrder = () => {
 									: []
 							}
 							salesDeposit
+							saleStatus={
+								Array.isArray(checkBoxSelect)
+									? checkBoxSelect.map((v) => v['상시판매 상태'])
+									: checkBoxSelect
+									? checkBoxSelect['상시판매 상태']
+									: []
+							}
 						/>
 						<SkyBtn onClick={orderCompletionHandler} disabled={loadingOrderConfirm}>
 							입금 확인
