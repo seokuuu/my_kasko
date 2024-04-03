@@ -284,9 +284,9 @@ const TableV2 = ({
 			const formattedRow = getRow.map((item) => {
 				const formattedItem = {}
 				Object.keys(item).forEach((key) => {
-					if (['순번', '고객 구분', '응찰가'].includes(key) || key.includes('번호')) {
+					if (['순번', '고객 구분', '응찰가'].includes(key) || key.indexOf('번호') > -1) {
 						return (formattedItem[key] = item[key])
-					} else if (['중량', '제품중량', '제품 중량', '총 중량', '총중량', '상시 판매가'].includes(key)) {
+					} else if (['중량', '제품중량', '제품 중량', '총 중량', '총중량', '상시 판매가', '중량 합계'].includes(key)) {
 						return (formattedItem[key] = customNumberFormatter({ value: Number(item[key]) }))
 					} else {
 						formattedItem[key] = customNumberFormatter({ value: item[key] })
@@ -338,7 +338,7 @@ const TableV2 = ({
 					item.maxWidth = 50
 					return { ...item, ...tableV2CommonStyles }
 				}
-				if (['고유 번호', '고유번호', '주문 고유 번호'].includes(item.field)) {
+				if (['고유 번호', '고유번호', '주문 고유 번호', '패키지 고유 번호'].includes(item.field)) {
 					item.hide = true
 				}
 				if (['추천 제품 여부', '추천 여부', '추천여부'].includes(item.field)) {
