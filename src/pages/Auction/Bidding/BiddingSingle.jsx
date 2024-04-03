@@ -39,13 +39,14 @@ import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import BiddingSearchFields from './BiddingSearchFields'
 
 // 관리자 "응찰" 페이지
-// 사용자 페이와의 차이
+// 사용자 페이지와의 차이
 // 1. 관심 상품 등록이 없다
 // 2. 관리자의 경매 고유키 (uids)는 제품 고유 번호(productUid) 이다.
 
 const BiddingSingle = ({}) => {
 	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
 	const auth = useAtomValue(authAtom) // 이거 auction.js에서 hook으로 바꾸기
+	console.log('auth', auth)
 	const nowAuction = useCheckAuction() // 현재 경매 여부 체크
 	const [live, setLive] = useState(true) // LIVE get 일시 중단
 	const navigate = useNavigate()
@@ -114,7 +115,7 @@ const BiddingSingle = ({}) => {
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
 
 	// 전체 GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding, nowAuction)
 	const originData = data?.data?.data
 	const [oriData, setOridata] = useState()
 

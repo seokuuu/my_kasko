@@ -38,7 +38,6 @@ export const Container = styled.div`
 `
 
 function ProNoPage({ productNumberOut, title, proNoNumber, orderId }) {
-
 	const [gridApi, setGridApi] = useState(null)
 	const { simpleAlert } = useAlert()
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
@@ -161,7 +160,7 @@ function ProNoPage({ productNumberOut, title, proNoNumber, orderId }) {
 							<div>조회 목록 (선택 0 / 12개)</div>
 							<div style={{ display: 'flex', gap: '10px' }}>
 								<PageDropdown handleDropdown={handleDropdown} />
-								<Excel />
+								<Excel getRow={proNoListData} sheetName="Pro.no" />
 							</div>
 						</TCSubContainer>
 						<TCSubContainer bor>

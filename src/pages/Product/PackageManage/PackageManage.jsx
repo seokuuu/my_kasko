@@ -37,7 +37,7 @@ import TableV2 from '../../Table/TableV2'
 
 const paramData = {
 	pageNum: 1,
-	pageSize: 50,
+	pageSize: 10000,
 }
 
 const PackageManage = () => {
@@ -276,7 +276,7 @@ const PackageManage = () => {
 					getRow={tableRowData}
 					loading={isLoading}
 					getCol={packageDispatchFieldsCols}
-					tablePagination={paginationData}
+					// tablePagination={paginationData}
 					onPageChange={onChangePage}
 					isRowClickable={true}
 				/>
