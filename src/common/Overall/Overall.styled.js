@@ -14,5 +14,5 @@ export const OverAllSub = styled.div`
 
 export const OverAllTable = styled.div`
 	width: 100%;
-	padding: 0px 20px;
+	padding: 0px 50px;
 `
