@@ -224,7 +224,7 @@ const DestinationChange = ({ customerName, customerCode, value, onSubmit }) => {
 															<td>{v?.represent ? '대표 목적지' : '-'}</td>
 															<td>{v?.code}</td>
 															<td>{v?.name}</td>
-															<td>하차지명</td>
+															<td>{v?.customerDestinationName}</td>
 															<td>{v?.managerPhone}</td>
 															<td>{v?.phone}</td>
 															<td>{v?.address}</td>
