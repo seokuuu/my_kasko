@@ -124,7 +124,7 @@ const Table = ({
 			const formattedRow = getRow.map((item) => {
 				const formattedItem = {}
 				Object.keys(item).forEach((key) => {
-					if (['제품 고유 번호'].includes(key) || key.includes('번호', '연락처')) {
+					if (['순번', '제품 고유 번호', '연락처'].includes(key) || key.indexOf('번호') > -1) {
 						return (formattedItem[key] = item[key])
 					} else {
 						formattedItem[key] = customNumberFormatter({ value: item[key] })
