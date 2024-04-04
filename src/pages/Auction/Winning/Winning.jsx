@@ -102,11 +102,12 @@ const Winning = ({}) => {
 				func: () => {
 					refetch()
 					queryClient.invalidateQueries('alldeposit')
+					window.location.reload()
 				},
 			})
 		},
-		onError: () => {
-			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		onError: (error) => {
+			simpleAlert(error?.data?.message || '오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
 	// 부분 입금 확인 버튼 Handler
@@ -128,7 +129,7 @@ const Winning = ({}) => {
 
 	const paramData = {
 		pageNum: 1,
-		pageSize: 10,
+		pageSize: 50,
 		orderType: '경매',
 		auctionStartDate: null,
 		auctionEndDate: null,

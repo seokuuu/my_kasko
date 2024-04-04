@@ -585,7 +585,7 @@ const Package = ({}) => {
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
 						{!nowAuction && <Excel getRow={tableRowData} sheetName="경매 응찰" />}
-						{nowAuction && <AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />}
+						<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>

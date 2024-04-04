@@ -148,8 +148,8 @@ const Table = ({
 			[
 				'/auction/biddingsingle',
 				'/userpage/auctionsingle',
-				'/auction/winning/detail',
-				'/userpage/auctionwinning/detail',
+				// '/auction/winning/detail',
+				// '/userpage/auctionwinning/detail',
 			].includes(location.pathname)
 		) {
 			if (gridRef.current.api) {
@@ -180,6 +180,20 @@ const Table = ({
 					const selectedUid = [...new Set(selectedRows && selectedRows?.map((item) => item['패키지 번호']))]
 
 					if (node.data && selectedUid.includes(node.data['패키지 번호'])) {
+						nodesToSelect.push(node)
+					}
+				})
+				gridRef.current.api.setNodesSelected({ nodes: nodesToSelect, newValue: true })
+			}
+		}
+		if (['/auction/winning/detail', '/userpage/auctionwinning/detail'].includes(location.pathname)) {
+			if (gridRef.current.api) {
+				const nodesToSelect = []
+
+				gridRef.current.api.forEachNode((node) => {
+					const selectedUid = [...new Set(selectedRows && selectedRows?.map((item) => item['주문 고유 번호']))]
+
+					if (node.data && selectedUid.includes(node.data['주문 고유 번호'])) {
 						nodesToSelect.push(node)
 					}
 				})
