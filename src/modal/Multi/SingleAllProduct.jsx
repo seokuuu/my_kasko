@@ -52,7 +52,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 	const [param, setParam] = useState(paramData)
 	const { data, isSuccess, refetch } = useReactQuery(param, 'product-list', getSingleProducts)
 	const singleList = data?.r
-	console.log('singleList 링링', singleList)
+
 	const singleProductPage = data?.pagination
 
 	// Function to handle image click and toggle rotation
