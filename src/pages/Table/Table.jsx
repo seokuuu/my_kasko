@@ -147,9 +147,7 @@ const Table = ({
 		if (
 			[
 				'/auction/biddingsingle',
-
 				'/userpage/auctionsingle',
-
 				'/auction/winning/detail',
 				'/userpage/auctionwinning/detail',
 			].includes(location.pathname)
@@ -166,7 +164,14 @@ const Table = ({
 				})
 				gridRef.current.api.setNodesSelected({ nodes: nodesToSelect, newValue: true })
 			}
-		} else if (['/auction/biddingpackage', '/userpage/auctionpackage'].includes(location.pathname)) {
+		} else if (
+			[
+				'/auction/biddingpackage',
+				'/userpage/auctionpackage',
+				// '/auction/winning/detail',
+				// '/userpage/auctionwinning/detail',
+			].includes(location.pathname)
+		) {
 			if (gridRef.current.api) {
 				const nodesToSelect = []
 
