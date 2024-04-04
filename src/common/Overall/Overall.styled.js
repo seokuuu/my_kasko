@@ -1,20 +1,18 @@
 import { styled } from 'styled-components'
 
 export const OverAllMain = styled.div`
-  min-width: 1200px;
-  display: flex;
+	width: 100%;
+	display: flex;
 `
 
 export const OverAllSub = styled.div`
-  width: 100%;
-  display: block;
-  background-color: ${(props) => props.theme.colors.BgPrimary};
+	display: flex;
+	flex-direction: column;
+	width: calc(100% - 230px);
+	background-color: ${(props) => props.theme.colors.BgPrimary};
 `
 
 export const OverAllTable = styled.div`
-  width: 90%;
-  position: relative;
-  left: -15px;
-  margin-left: auto;
-  margin-right: auto;
+	width: 100%;
+	padding: 0px 50px;
 `

@@ -566,15 +566,11 @@ const Package = ({}) => {
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 						<TableV2HiddenSection />
 					</div>
-					{nowAuction && (
-						<>
-							<div style={{ display: 'flex', gap: '10px' }}>
-								<PageDropdown handleDropdown={handleTablePageSize} />
-								<Excel getRow={tableRowData} sheetName="패키지 응찰" />
-								<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
-							</div>
-						</>
-					)}
+					<div style={{ display: 'flex', gap: '10px' }}>
+						<PageDropdown handleDropdown={handleTablePageSize} />
+						<Excel getRow={tableRowData} sheetName="경매 응찰" />
+						{/* <AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} /> */}
+					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>
 					<div>
@@ -582,7 +578,6 @@ const Package = ({}) => {
 					</div>
 					{nowAuction && (
 						<>
-							{' '}
 							<div
 								style={{
 									display: 'flex',

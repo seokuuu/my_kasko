@@ -186,158 +186,164 @@ export const PrintDepositRequestButton = ({
 			<WhiteSkyBtn onClick={handlePrintClick}>입금 요청서 발행</WhiteSkyBtn>
 			{receiptPrint && (
 				<>
-					<WhiteCloseBtn2
-						onClick={(e) => {
-							setReceiptPrint(false)
-						}}
-						src="/svg/white_btn_close.svg"
-					/>
 					<OutSide />
-					<NewContainer>
-						<BlueBarHeader style={{ height: '20px' }}></BlueBarHeader>
-						<BlueSubContainer ref={containerRef} style={{ width: '100%', padding: '0px 30px' }}>
-							<FilterContianer>
-								{/* 요청서 제목 | 일자 */}
-								<FormTitle>
-									<b>
-										{salesDeposit ? '상시 판매' : '경매'} 입금 요청서 ({auctionDate || '-'} 일자
-									</b>
-									)
-								</FormTitle>
-								{/* 입금 정보 공지 */}
-								<FilterHeaderAlert>
-									<div style={{ display: 'flex' }}>
-										<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '15px' }}>
-											<img src="/img/notice.png" />
-										</div>
-										<FormContentWrap>
-											<div>
-												<b>· 연락처 : </b>070-8889-3456{' '}
-											</div>
-											<div>
-												<b>· 입금계좌번호 : </b> 우리은행 1005-301-817070, 신한은행 140-013-498612, 기업은행
-												070-8889-3456, 예금주 : 카스코철강
-											</div>
-											<div>
-												<b>· 입금 기한 : </b> 경매일 익영업일 12시 限
-											</div>
-										</FormContentWrap>
-									</div>
-								</FilterHeaderAlert>
-								{/* 인사글 */}
-								<Text>
-									<div>
-										<b>저희 주식회사 카스코철강 제품을 구매해 주시는 귀사에 항상 감사드립니다.</b>
-									</div>
-									<div>
+					<OutSideInner>
+						<BlueBarHeader2 style={{ height: '20px' }}>
+							<div>
+								<WhiteCloseBtn
+									onClick={(e) => {
+										setReceiptPrint(false)
+									}}
+									src="/svg/white_btn_close.svg"
+								/>
+							</div>
+						</BlueBarHeader2>
+						<NewContainer>
+							<BlueSubContainer ref={containerRef} style={{ width: '100%', padding: '0px 30px' }}>
+								<FilterContianer>
+									{/* 요청서 제목 | 일자 */}
+									<FormTitle>
 										<b>
-											해당 거래에 대해 귀사가 입금하셔야 할 낙찰금액은 아래와 같사오니, 확인하신 후 입금해 주시기
-											바랍니다.
+											{salesDeposit ? '상시 판매' : '경매'} 입금 요청서 ({auctionDate || '-'} 일자
 										</b>
-									</div>
-								</Text>
+										)
+									</FormTitle>
+									{/* 입금 정보 공지 */}
+									<FilterHeaderAlert>
+										<div style={{ display: 'flex' }}>
+											<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '15px' }}>
+												<img src="/img/notice.png" />
+											</div>
+											<FormContentWrap>
+												<div>
+													<b>· 연락처 : </b>070-8889-3456{' '}
+												</div>
+												<div>
+													<b>· 입금계좌번호 : </b> 우리은행 1005-301-817070, 신한은행 140-013-498612, 기업은행
+													070-8889-3456, 예금주 : 카스코철강
+												</div>
+												<div>
+													<b>· 입금 기한 : </b> 경매일 익영업일 12시 限
+												</div>
+											</FormContentWrap>
+										</div>
+									</FilterHeaderAlert>
+									{/* 인사글 */}
+									<Text>
+										<div>
+											<b>저희 주식회사 카스코철강 제품을 구매해 주시는 귀사에 항상 감사드립니다.</b>
+										</div>
+										<div>
+											<b>
+												해당 거래에 대해 귀사가 입금하셔야 할 낙찰금액은 아래와 같사오니, 확인하신 후 입금해 주시기
+												바랍니다.
+											</b>
+										</div>
+									</Text>
 
-								{!isSuccess ? (
-									<p
-										style={{
-											width: '100%',
-											height: 280,
-											padding: '230px 20px',
-											background: 'white',
-											textAlign: 'center',
-											wordBreak: 'keep-all',
-										}}
-									>
-										{isLoading
-											? '입금요청서 데이터를 불러오고 있습니다.'
-											: '입금요청서 데이터를 불러올 수 없습니다.' +
-											  (error?.data?.message ? `\n(${error.data.message})` : '')}
-									</p>
-								) : (
-									<TableContianer>
-										<ClaimTable style={{ margin: '20px 0px' }}>
-											<ClaimRow>
-												<ClaimTitle>경매일자</ClaimTitle>
-												<ClaimContent>{infoData?.auctionDate}</ClaimContent>
-												<ClaimTitle>고객명</ClaimTitle>
-												<ClaimContent>{infoData?.customerName}</ClaimContent>
-												<ClaimTitle>낙찰 중량</ClaimTitle>
-												<ClaimContent bold>{totalData.weight}</ClaimContent>
-												<ClaimTitle>낙찰 금액</ClaimTitle>
-												<ClaimContent bold>{totalData.price}</ClaimContent>
-											</ClaimRow>
-										</ClaimTable>
-										<TableContainer>
-											<Table>
-												<thead>
-													<tr>
-														<Th rowSpan="2">제품 정보</Th>
-														<Th rowSpan="2">품명</Th>
-														<Th rowSpan="2">규격 약호</Th>
-														<Th rowSpan="2">제품 사양</Th>
-														<Th rowSpan="2">중량</Th>
-														<Th colSpan="3">공급가액</Th>
-														<Th colSpan="3">VAT</Th>
-														<Th rowSpan="2">총계</Th>
-													</tr>
-													<tr>
-														<Th>제품대</Th>
-														<Th>운송비</Th>
-														<Th>총합</Th>
-														<Th>제품대</Th>
-														<Th>운송비</Th>
-														<Th>총합</Th>
-													</tr>
-												</thead>
-												<tbody>
-													{/* 테이블 내용 추가 */}
-													{infoData?.list &&
-														infoData.list.map((v) => (
-															<tr key={v.uid}>
-																<Td>{v.productNumber}</Td>
-																<Td>{v.productName}</Td>
-																<Td>{v.productSpec}</Td>
-																<Td>{v.productWdh}</Td>
-																<Td>{parseInt(v.weight).toLocaleString()}</Td>
+									{!isSuccess ? (
+										<p
+											style={{
+												width: '100%',
+												height: 280,
+												padding: '230px 20px',
+												background: 'white',
+												textAlign: 'center',
+												wordBreak: 'keep-all',
+											}}
+										>
+											{isLoading
+												? '입금요청서 데이터를 불러오고 있습니다.'
+												: '입금요청서 데이터를 불러올 수 없습니다.' +
+												  (error?.data?.message ? `\n(${error.data.message})` : '')}
+										</p>
+									) : (
+										<TableContianer>
+											<ClaimTable style={{ margin: '20px 0px' }}>
+												<ClaimRow>
+													<ClaimTitle>경매일자</ClaimTitle>
+													<ClaimContent>{infoData?.auctionDate}</ClaimContent>
+													<ClaimTitle>고객명</ClaimTitle>
+													<ClaimContent>{infoData?.customerName}</ClaimContent>
+													<ClaimTitle>낙찰 중량</ClaimTitle>
+													<ClaimContent bold>{totalData.weight}</ClaimContent>
+													<ClaimTitle>낙찰 금액</ClaimTitle>
+													<ClaimContent bold>{totalData.price}</ClaimContent>
+												</ClaimRow>
+											</ClaimTable>
+											<TableContainer>
+												<Table>
+													<thead>
+														<tr>
+															<Th rowSpan="2">제품 정보</Th>
+															<Th rowSpan="2">품명</Th>
+															<Th rowSpan="2">규격 약호</Th>
+															<Th rowSpan="2">제품 사양</Th>
+															<Th rowSpan="2">중량</Th>
+															<Th colSpan="3">공급가액</Th>
+															<Th colSpan="3">VAT</Th>
+															<Th rowSpan="2">총계</Th>
+														</tr>
+														<tr>
+															<Th>제품대</Th>
+															<Th>운송비</Th>
+															<Th>총합</Th>
+															<Th>제품대</Th>
+															<Th>운송비</Th>
+															<Th>총합</Th>
+														</tr>
+													</thead>
+													<tbody>
+														{/* 테이블 내용 추가 */}
+														{infoData?.list &&
+															infoData.list.map((v) => (
+																<tr key={v.uid}>
+																	<Td>{v.productNumber}</Td>
+																	<Td>{v.productName}</Td>
+																	<Td>{v.productSpec}</Td>
+																	<Td>{v.productWdh}</Td>
+																	<Td>{parseInt(v.weight).toLocaleString()}</Td>
 
-																<Td>{v.orderPrice.toLocaleString()}</Td>
-																<Td>{v.freightCost.toLocaleString()}</Td>
-																<Td>{(v.orderPrice + v.freightCost).toLocaleString()}</Td>
-																<Td>{v.orderPriceVat.toLocaleString()}</Td>
-																<Td>{v.freightCostVat.toLocaleString()}</Td>
-																<Td>{(v.orderPriceVat + v.freightCostVat).toLocaleString()}</Td>
-																<Td>{v.totalPrice.toLocaleString()}</Td>
-															</tr>
-														))}
-													{/* 총계 */}
-													<tr style={{ border: '2px solid #c8c8c8' }}>
-														<Th colSpan="4">총계</Th>
-														<Td blue bold>
-															{totalData.weight}
-														</Td>
-														<Td>{totalData.orderPrice}</Td>
-														<Td>{totalData.freightCost}</Td>
-														<Td>{totalData.sumCost}</Td>
-														<Td>{totalData.orderPriceVat}</Td>
-														<Td>{totalData.freightCostVat}</Td>
-														<Td>{totalData.sumCostVat}</Td>
-														<Td>{totalData.sum}</Td>
-													</tr>
-												</tbody>
-											</Table>
-										</TableContainer>
-									</TableContianer>
-								)}
-							</FilterContianer>
-						</BlueSubContainer>
-						<DepositRequestBottom>
-							<div></div>
-							<BlackBtn width={12} height={45} onClick={checkTypeOnClickHandler} style={{ cursor: 'pointer' }}>
-								출력하기
-							</BlackBtn>
-							<img src="/img/logo.png" style={{ width: '50px', height: '35px' }} />
-						</DepositRequestBottom>
-					</NewContainer>
+																	<Td>{v.orderPrice.toLocaleString()}</Td>
+																	<Td>{v.freightCost.toLocaleString()}</Td>
+																	<Td>{(v.orderPrice + v.freightCost).toLocaleString()}</Td>
+																	<Td>{v.orderPriceVat.toLocaleString()}</Td>
+																	<Td>{v.freightCostVat.toLocaleString()}</Td>
+																	<Td>{(v.orderPriceVat + v.freightCostVat).toLocaleString()}</Td>
+																	<Td>{v.totalPrice.toLocaleString()}</Td>
+																</tr>
+															))}
+														{/* 총계 */}
+														<tr style={{ border: '2px solid #c8c8c8' }}>
+															<Th colSpan="4">총계</Th>
+															<Td blue bold>
+																{totalData.weight}
+															</Td>
+															<Td>{totalData.orderPrice}</Td>
+															<Td>{totalData.freightCost}</Td>
+															<Td>{totalData.sumCost}</Td>
+															<Td>{totalData.orderPriceVat}</Td>
+															<Td>{totalData.freightCostVat}</Td>
+															<Td>{totalData.sumCostVat}</Td>
+															<Td>{totalData.sum}</Td>
+														</tr>
+													</tbody>
+												</Table>
+											</TableContainer>
+										</TableContianer>
+									)}
+								</FilterContianer>
+							</BlueSubContainer>
+							<DepositRequestBottom>
+								<div></div>
+								<BlackBtn width={12} height={45} onClick={checkTypeOnClickHandler} style={{ cursor: 'pointer' }}>
+									출력하기
+								</BlackBtn>
+								<img src="/img/logo.png" style={{ width: '50px', height: '35px' }} />
+							</DepositRequestBottom>
+						</NewContainer>
+					</OutSideInner>
+
 					{checkModal && (
 						<PrintType
 							checkRadio={checkRadio}
@@ -421,7 +427,6 @@ const DepositRequestBottom = styled.div`
 `
 
 const NewContainer = styled.div`
-	position: fixed;
 	top: 50%;
 	left: 53%;
 	background-color: #eef3fb;
@@ -429,15 +434,24 @@ const NewContainer = styled.div`
 	width: 1500px;
 	height: 900px;
 	overflow-y: scroll;
-	transform: translate(-50%, -50%);
 	z-index: 9998;
 `
 
-export const WhiteCloseBtn2 = styled.img`
-	cursor: pointer;
+const OutSideInner = styled.div`
 	position: fixed;
-	top: 5%;
-	right: 9%;
-	width: 25px;
+	transform: translate(-75%, -130%);
+	z-index: 9999;
+`
+
+const BlueBarHeader2 = styled.div`
+	top: 5px;
+	height: 70px;
+	background-color: ${(props) => props.theme.colors.PriHeavy};
+	display: flex;
+	flex-direction: row-reverse;
+	align-items: center;
+	justify-content: space-between;
+	padding: 20px;
+	color: white;
 	z-index: 9999;
 `
