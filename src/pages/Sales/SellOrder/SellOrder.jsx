@@ -136,6 +136,15 @@ const SellOrder = () => {
 		}
 
 		const auctionNumbers = checkBoxSelect.map((value) => value['상시판매 번호'])
+		const saleStatus = checkBoxSelect.map((value) => value['상시판매 상태'])
+
+		if (saleStatus.includes('주문 취소')) {
+			return simpleAlert('주문 취소된 주문건입니다.')
+		}
+
+		if (saleStatus.includes('주문 확정')) {
+			return simpleAlert('이미 입금확인된 주문건입니다.')
+		}
 
 		simpleConfirm('입금확인 하시겠습니까?', () => {
 			mutateDepositOrderConfirm({ auctionNumbers })

@@ -63,7 +63,12 @@ export const packageFieldsCols = (numberClickHandler = undefined) =>
 		{ ...commonStyles, field: '중량', minWidth: 100 },
 		{ ...commonStyles, field: '메모', minWidth: 100 },
 		{ ...commonStyles, field: '비고', minWidth: 100 },
-		{ ...commonStyles, field: '노출 여부', minWidth: 100 },
+		{
+			...commonStyles,
+			field: '노출 여부',
+			minWidth: 100,
+			cellRenderer: (params) => (params.value ? '노출' : '비노출'),
+		},
 		{ ...commonStyles, field: '패키지 고유번호', minWidth: 100 },
 		{ ...commonStyles, field: '최종수정자', minWidth: 100 },
 		{ ...commonStyles, field: '최종수정일시', minWidth: 100 },

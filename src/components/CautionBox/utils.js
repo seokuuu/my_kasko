@@ -23,7 +23,7 @@ export function getHasEditAuth(cateogry) {
 	if (!token || !editAuthArr) {
 		return false
 	}
-	const auth = jwtDecode(token)['auth']
+	const auth = jwtDecode(token).role
 
 	if (!auth) {
 		return false

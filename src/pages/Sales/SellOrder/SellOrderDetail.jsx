@@ -45,6 +45,7 @@ import TableV2ExcelDownloader from '../../Table/TableV2ExcelDownloader'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import TableV2 from '../../Table/TableV2'
 import DestinationChange from '../../../modal/Multi/DestinationChange'
+import PrintDepositRequestButton from '../../../userpages/UserSales/_components/PrintDepositRequestButton'
 
 const SellOrderDetail = () => {
 	const { simpleAlert, simpleConfirm } = useAlert()
@@ -218,6 +219,20 @@ const SellOrderDetail = () => {
 
 	// 부분 입금 확인 버튼
 	const depositOrderConfirmButtonOnClickHandler = () => {
+		if (checkBoxSelect === null || checkBoxSelect.length === 0) {
+			return simpleAlert('입금 확인할 제품을 선택해 주세요.')
+		}
+
+		const saleStatus = checkBoxSelect.map((value) => value['상시판매 상태'])
+
+		if (saleStatus.includes('주문 취소')) {
+			return simpleAlert('주문 취소된 주문건입니다.')
+		}
+
+		if (saleStatus.includes('주문 확정')) {
+			return simpleAlert('이미 입금확인된 주문건입니다.')
+		}
+
 		handleButtonClick(
 			'입금 확인할 제품을 선택해 주세요.',
 			'선택한 주문에 대한 입금을 확인하시겠습니까?',
@@ -332,6 +347,10 @@ const SellOrderDetail = () => {
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
+						{/* 입금 확인 요청서 - uid 배열 전달*/}
+						<div style={{ display: 'flex', gap: '8px' }}>
+							<PrintDepositRequestButton auctionNumber={id} salesDeposit saleStatus={status} />
+						</div>
 						{isPackage ? (
 							<WhiteRedBtn onClick={packageOrderCancelHandler} disabled={loadingOrderCancel}>
 								주문 취소
