@@ -24,7 +24,7 @@ import {
 	tableShowColumnAtom,
 } from '../../store/Table/Table'
 import './TableUi.css'
-import { customNumberFormatter } from '../../utils/utils'
+import { customNumberFormatter, numberDeleteComma } from '../../utils/utils'
 import { getTableLocalStorageByPageName } from '../../store/Table/tabeleLocalStorage'
 import { getOrderTableStore, setOrderTableStore } from '../../store/Table/orderTableStore'
 
@@ -289,7 +289,7 @@ const TableV2 = ({
 					} else if (
 						['길이', '중량', '제품중량', '제품 중량', '총 중량', '총중량', '상시 판매가', '중량 합계'].includes(key)
 					) {
-						return (formattedItem[key] = customNumberFormatter({ value: Number(item[key]) }))
+						return (formattedItem[key] = customNumberFormatter({ value: Number(numberDeleteComma(item[key])) }))
 					} else {
 						formattedItem[key] = customNumberFormatter({ value: item[key] })
 					}

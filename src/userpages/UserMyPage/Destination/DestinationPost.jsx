@@ -225,6 +225,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								/>
 							</div>
 							<CustomInput
+								type="number"
 								placeholder="담당자 휴대폰 번호 입력 ('-' 제외)"
 								value={input.managerPhone}
 								width={340}
@@ -239,6 +240,7 @@ const DestinationPost = ({ setChoiceComponent }) => {
 								*토요일 출고시 목적지 하차관련 문제 발생, 통화불가할 경우 회차비용 발생할수 있음.
 							</Alert>
 							<CustomInput
+								type="number"
 								placeholder="하차지 연락처 입력 ('-' 제외)"
 								width={340}
 								name="phone"
