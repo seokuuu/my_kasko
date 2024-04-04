@@ -7,6 +7,8 @@ export function KilogramSum(data, name) {
 				sum += Number(i[name])
 			} else if (i?.중량.includes(',')) {
 				sum += Number(i.중량.replace(/,/g, ''))
+			} else if (i[name].includes(',')) {
+				sum += Number(i[name].replace(/,/g, ''))
 			} else {
 				sum += Number(i.중량)
 			}
