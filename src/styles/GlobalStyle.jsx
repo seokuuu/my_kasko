@@ -21,11 +21,12 @@ const GlobalStyle = createGlobalStyle`
 
   html, 
   body {
-    width:100%; 
+    width:100%;
+    max-width: 100%;
     font-size: calc( 12px + 0.4vw ); 
     font-family: 'SUIT';
     font-weight: 100;
-        letter-spacing: -0.2px; 
+    letter-spacing: -0.2px; 
     
   }
   html, 

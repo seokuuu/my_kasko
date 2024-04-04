@@ -18,6 +18,7 @@ import { GreyBtn } from '../../../common/Button/Button'
 import StandardFind from '../../../modal/Multi/StandardFind'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
+import styled from 'styled-components'
 
 const BiddingSearchFields = ({
 	// prettier-ignore
@@ -48,7 +49,7 @@ const BiddingSearchFields = ({
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
 
 	return (
-		<>
+		<Filter>
 			<FilterLeft>
 				<RowWrap>
 					{/* 창고 구분 */}
@@ -198,8 +199,14 @@ const BiddingSearchFields = ({
 					onChange={(e) => onChange('productNumberList', e.target.value)}
 				/> */}
 			</FilterRight>
-		</>
+		</Filter>
 	)
 }
 
 export default BiddingSearchFields
+
+// TODO : 4/4 TEST
+const Filter = styled.div`
+	width: 100%;
+	display: flex;
+`

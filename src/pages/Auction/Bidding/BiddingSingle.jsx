@@ -574,15 +574,12 @@ const BiddingSingle = ({}) => {
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
 						<TableV2HiddenSection />
 					</div>
-					{nowAuction && (
-						<>
-							<div style={{ display: 'flex', gap: '10px' }}>
-								<PageDropdown handleDropdown={handleTablePageSize} />
-								<Excel getRow={tableRowData} sheetName="경매 낙찰 상세" />
-								{/* <AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} /> */}
-							</div>
-						</>
-					)}
+
+					<div style={{ display: 'flex', gap: '10px' }}>
+						<PageDropdown handleDropdown={handleTablePageSize} />
+						<Excel getRow={tableRowData} sheetName="경매 응찰" />
+						{/* <AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} /> */}
+					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>
 					<div>
@@ -646,17 +643,7 @@ const BiddingSingle = ({}) => {
 										setAddedInput(parseInt(e.target.value))
 									}}
 								/>
-								<TGreyBtn
-									height={30}
-									style={{ width: '50px' }}
-									// onClick={() => {
-									// 	setFinalInput((p) => ({
-									// 		...p,
-									// 		biddingPrice: winningCreateInput?.biddingPrice,
-									// 	}))
-									// }}
-									onClick={unitPriceBatchOnClick}
-								>
+								<TGreyBtn height={30} style={{ width: '50px' }} onClick={unitPriceBatchOnClick}>
 									적용
 								</TGreyBtn>
 								<BtnBound style={{ margin: '0px' }} />
