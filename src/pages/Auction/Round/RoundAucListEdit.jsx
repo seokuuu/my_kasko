@@ -46,6 +46,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const [btnClick, setBtnClick] = useState(false)
 	const [newResData, setNewResData] = useState([])
 
+	console.log('newResData', newResData)
+
 	const [editData, setEditData] = useState({
 		type: types,
 		auctionNumber: auctionNum,
@@ -76,7 +78,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 
 	const paramData = {
 		pageNum: 1,
-		pageSize: 50,
+		pageSize: 10000,
 		auctionNumber: auctionNum,
 	}
 	const [param, setParam] = useState(paramData)
@@ -173,6 +175,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const [outAddData, setOutAddData] = useState([])
 
 	const onListAdd = (selectedData) => {
+		console.log('selectedData', selectedData)
 		try {
 			setSelectedRows([]) // 테이블 체크 목록 초기화
 			// setOutAddData((prev) => [...prev, ...selectedData.map((x) => x['uid'])])
@@ -234,10 +237,10 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			if (outAddData) {
 				const updatedOutAddData = outAddData.filter((item) => !selectedRows.map((row) => row[newKey]).includes(item)) // add된 것들 처리
 
-				// setOutAddData((prev) => ({
-				// 	...prev,
-				// 	updatedOutAddData,
-				// }))
+				setOutAddData((prev) => ({
+					...prev,
+					updatedOutAddData,
+				}))
 				setOutAddData(updatedOutAddData)
 			}
 		})

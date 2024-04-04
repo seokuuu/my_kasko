@@ -592,7 +592,7 @@ const Package = ({}) => {
 								<CustomInput placeholder="목적지명" width={120} height={32} value={destiObject?.name} readOnly />
 								<CustomInput placeholder="도착지 연락처" width={120} height={32} value={destiObject?.phone} readOnly />
 								<TWhiteBtn
-									style={{ width: '50px' }}
+									style={{ minWidth: '50px' }}
 									height={30}
 									onClick={() => {
 										setDestinationPopUp(true)
@@ -621,7 +621,7 @@ const Package = ({}) => {
 								/>
 								<TGreyBtn
 									height={30}
-									style={{ width: '50px' }}
+									style={{ minWidth: '50px' }}
 									// onClick={() => {
 									// 	setFinalInput((p) => ({
 									// 		...p,

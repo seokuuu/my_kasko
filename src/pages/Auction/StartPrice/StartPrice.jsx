@@ -53,8 +53,6 @@ const StartPrice = ({}) => {
 	const [excelToJson, setExcelToJson] = useState([])
 	const [final, setFinal] = useState()
 
-
-
 	const [insertList, setInsertList] = useState({ insertList: [] })
 
 	const [tablePagination, setTablePagination] = useState([])
@@ -69,8 +67,6 @@ const StartPrice = ({}) => {
 	const [initObject, setInitObject] = useState()
 
 	const [modalSwitch, setModalSwitch] = useAtom(AuctionUnitPriceAtom)
-
-
 
 	const [dropInput, setDropInput] = useState({
 		spart: '',
@@ -174,8 +170,6 @@ const StartPrice = ({}) => {
 	// 단가 등록
 	const [editInput, setEditInput] = useState(editInit)
 
-
-
 	// editInput과 onEditHandler를 name 매칭
 	const convertKey = {
 		유찰횟수: 'failCount',
@@ -203,7 +197,6 @@ const StartPrice = ({}) => {
 
 	// 단가 등록 폼 핸들러
 	const onEditHandler = useCallback((e) => {
-
 		const { name, value } = e.target
 
 		// failCount와 effectPrice에 대해서만 정수로 변환
@@ -334,7 +327,7 @@ const StartPrice = ({}) => {
 							startDate={applyDate}
 							setStartDate={setApplyDate}
 						/>
-						<TGreyBtn height={30} style={{ width: '50px' }} onClick={editPriceOnClickHandler}>
+						<TGreyBtn height={30} style={{ minWidth: '50px' }} onClick={editPriceOnClickHandler}>
 							적용
 						</TGreyBtn>
 					</div>

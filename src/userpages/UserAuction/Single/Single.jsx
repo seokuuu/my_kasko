@@ -601,7 +601,7 @@ const Single = ({}) => {
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
 						{!nowAuction && <Excel getRow={tableRowData} sheetName="경매 응찰" />}
-						{nowAuction && <AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />}
+						<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>
@@ -641,7 +641,7 @@ const Single = ({}) => {
 									readOnly
 								/>
 								<TWhiteBtn
-									style={{ width: '50px' }}
+									style={{ minWidth: '50px' }}
 									height={30}
 									onClick={() => {
 										setDestinationPopUp(true)
@@ -670,7 +670,7 @@ const Single = ({}) => {
 								/>
 								<TGreyBtn
 									height={30}
-									style={{ width: '50px' }}
+									style={{ minWidth: '50px' }}
 									// onClick={() => {
 									// 	setFinalInput((p) => ({
 									// 		...p,
