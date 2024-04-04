@@ -402,10 +402,7 @@ const WinningDetail = ({ setAucDetail }) => {
 				func: () => {
 					refetch()
 					queryClient.invalidateQueries('destiApprove')
-					setWinningCreateData({})
-					if (totalCountStr === 0) {
-						window.location.reload()
-					}
+					window.location.reload()
 				},
 			})
 		},
@@ -563,7 +560,9 @@ const WinningDetail = ({ setAucDetail }) => {
 						>
 							찾기
 						</TWhiteBtn>
-						<TGreyBtn style={{ minWidth: '50px' }} onClick={destiOnClickHandler}></TGreyBtn>
+						<TGreyBtn style={{ minWidth: '50px' }} onClick={destiOnClickHandler}>
+							적용
+						</TGreyBtn>
 						<BtnBound style={{ margin: '0px' }} />
 						{/* <WhiteBlackBtn onClick={destiApproveOnClickHandler}>목적지 승인 요청</WhiteBlackBtn>
 						<BtnBound style={{ margin: '0px' }} /> */}

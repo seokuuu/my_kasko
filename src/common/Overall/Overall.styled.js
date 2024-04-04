@@ -1,7 +1,8 @@
 import { styled } from 'styled-components'
 
 export const OverAllMain = styled.div`
-	width: 1900px;
+	width: calc(100vw - 20px);
+	min-width: 1900px;
 	display: flex;
 `
 
