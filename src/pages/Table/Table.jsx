@@ -164,7 +164,8 @@ const Table = ({
 				})
 				gridRef.current.api.setNodesSelected({ nodes: nodesToSelect, newValue: true })
 			}
-		} else if (
+		}
+		if (
 			[
 				'/auction/biddingpackage',
 				'/userpage/auctionpackage',
@@ -176,9 +177,9 @@ const Table = ({
 				const nodesToSelect = []
 
 				gridRef.current.api.forEachNode((node) => {
-					const selectedUid = [...new Set(selectedRows && selectedRows?.map((item) => item['패키지 번호']?.value))]
+					const selectedUid = [...new Set(selectedRows && selectedRows?.map((item) => item['패키지 번호']))]
 
-					if (node.data && selectedUid.includes(node.data['패키지 번호'].value)) {
+					if (node.data && selectedUid.includes(node.data['패키지 번호'])) {
 						nodesToSelect.push(node)
 					}
 				})

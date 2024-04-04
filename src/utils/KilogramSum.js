@@ -2,7 +2,6 @@ export function KilogramSum(data, name) {
 	let sum = 0
 	if (Array.isArray(data)) {
 		data.forEach((i) => {
-			console.log('씨발', i?.중량)
 			if (name) {
 				sum += Number(i[name])
 			} else if (i?.중량.includes(',')) {
