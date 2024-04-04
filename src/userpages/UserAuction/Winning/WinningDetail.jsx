@@ -405,7 +405,9 @@ const WinningDetail = ({ setAucDetail }) => {
 						>
 							찾기
 						</WhiteBlackBtn>
-						<TGreyBtn onClick={destiOnClickHandler}>적용</TGreyBtn>
+						<TGreyBtn style={{ minWidth: '50px' }} onClick={destiOnClickHandler}>
+							적용
+						</TGreyBtn>
 						<BtnBound />
 						<WhiteBlackBtn
 							onClick={() => {

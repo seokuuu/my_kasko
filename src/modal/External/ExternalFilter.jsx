@@ -552,3 +552,12 @@ export const SearchContainer = styled.div`
 	width: 100%;
 	justify-content: space-between;
 `
+
+export const TableIndicateWrap = styled.div`
+	min-width: ${(props) => {
+		if (props.weight) return '215px'
+		if (props.desti) return '50px'
+		if (props.overall) return '160px'
+		return 'auto' // 기본값 설정
+	}};
+`

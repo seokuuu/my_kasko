@@ -737,11 +737,8 @@ export const AuctionPackageBiddingFieldsCols = (selected) => {
 		{ ...commonStyles, field: '경매 번호' },
 		{ ...commonStyles, field: '패키지 명' },
 		{
-			headerName: '패키지 번호',
+			...commonStyles,
 			field: '패키지 번호',
-			headerClass: 'custom-header-style',
-			cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-			width: 150,
 			cellRenderer: LinkRenderer,
 		},
 		{ ...commonStyles, field: '추천 여부', cellRenderer: (params) => (params.value ? 'O' : 'X') },

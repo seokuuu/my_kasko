@@ -563,7 +563,7 @@ const WinningDetail = ({ setAucDetail }) => {
 						>
 							찾기
 						</TWhiteBtn>
-						<TGreyBtn onClick={destiOnClickHandler}>적용</TGreyBtn>
+						<TGreyBtn style={{ minWidth: '50px' }} onClick={destiOnClickHandler}></TGreyBtn>
 						<BtnBound style={{ margin: '0px' }} />
 						{/* <WhiteBlackBtn onClick={destiApproveOnClickHandler}>목적지 승인 요청</WhiteBlackBtn>
 						<BtnBound style={{ margin: '0px' }} /> */}
