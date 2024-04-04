@@ -400,7 +400,7 @@ const Package = ({}) => {
 	 */
 	// 선택상품(checked product) - 선택상품 정보를 조회합니다.
 	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
-		weightKey: '중량',
+		weightKey: '총 중량',
 	})
 	// 테이블 데이터, 페이지 데이터, 총 중량
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
