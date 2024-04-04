@@ -66,7 +66,7 @@ const UserWinningSearchFields = ({
 				</RowWrap>
 				<RowWrap>
 					<PartWrap first>
-						<h6>진행 상태</h6>
+						<h6>낙찰 상태</h6>
 						<RadioSearchButton
 							options={[
 								{ label: '전체', value: null },
