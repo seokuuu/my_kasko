@@ -207,6 +207,8 @@ export const ExcelBtn = styled.div`
 	border: 1px solid #c8c8c8;
 	padding: 0px 5px 0px 5px;
 	cursor: pointer;
+	height: 26px;
+	white-space: nowrap;
 
 	img {
 		margin-right: 3px;
