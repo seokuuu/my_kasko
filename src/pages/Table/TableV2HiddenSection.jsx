@@ -9,7 +9,7 @@ const SHiddenSection = {
 		flex-direction: column;
 		flex: 1;
 		gap: 8px;
-		max-width: calc(100% - 240px);
+		max-width: 100%;
 		padding: 0 12px;
 	`,
 	Button: styled.button`
@@ -37,6 +37,9 @@ const SHiddenSection = {
 	`,
 	HiddenBox: styled.div`
 		width: 100%;
+		position: relative;
+		bottom: 0;
+		left: -174px;
 
 		ul {
 			display: flex;

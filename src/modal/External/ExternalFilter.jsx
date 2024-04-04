@@ -394,6 +394,7 @@ export const HiddenBtn = styled.div`
 export const PageSelect = styled.select`
 	border: 1px solid #c8c8c8;
 	padding-right: 20px;
+	height: 26px;
 `
 
 // 흰색 배경 알림 창
