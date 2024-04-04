@@ -80,6 +80,13 @@ const Request = () => {
 		}
 		try {
 			const newSelectList = [...new Set([...selectorList, ...selectedRows])]
+			newSelectList.map((item) => {
+				Object.keys(item).forEach((key) => {
+					if (['길이', '중량'].includes(key)) {
+						return (item[key] = parseInt(item[key]?.replace(/,/g, '')))
+					}
+				})
+			})
 
 			destinationUpdate(newSelectList)
 			storageValid(newSelectList)
