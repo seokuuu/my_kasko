@@ -166,6 +166,7 @@ const WinningDetail = ({ setAucDetail }) => {
 	const resPagination = data?.data?.data?.pagination
 	const [winningCreateData, setWinningCreateData] = useState({})
 
+
 	const newCustomerCode = resData?.map((x) => x?.code)[0]
 
 	const { data: inventoryDestination } = useReactQuery(
@@ -255,7 +256,6 @@ const WinningDetail = ({ setAucDetail }) => {
 				...prevFinalInput,
 				requestCustomerDestinationUid: destiObject && destiObject.uid,
 			}))
-			setCheckedArray([])
 		})
 
 		const updatedResData = resData?.map((item) => {
