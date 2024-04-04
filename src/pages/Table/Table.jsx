@@ -124,7 +124,7 @@ const Table = ({
 			const formattedRow = getRow.map((item) => {
 				const formattedItem = {}
 				Object.keys(item).forEach((key) => {
-					if (['순번', '제품 고유 번호', '연락처'].includes(key) || key.indexOf('번호') > -1) {
+					if (['순번', '고객 구분', '제품 고유 번호', '연락처'].includes(key) || key.indexOf('번호') > -1) {
 						return (formattedItem[key] = item[key])
 					} else if (
 						['길이', '중량', '제품중량', '제품 중량', '총 중량', '총중량', '상시 판매가', '중량 합계'].includes(key)
