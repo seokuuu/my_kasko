@@ -37,6 +37,9 @@ const SHiddenSection = {
 	`,
 	HiddenBox: styled.div`
 		width: 100%;
+		position: relative;
+		bottom: 0;
+		left: -174px;
 
 		ul {
 			display: flex;
