@@ -627,7 +627,9 @@ const BiddingSingle = ({}) => {
 								>
 									찾기
 								</TWhiteBtn>
-								<TGreyBtn style={{ minWidth: '50px' }} onClick={destiOnClickHandler}>적용</TGreyBtn>
+								<TGreyBtn style={{ minWidth: '50px' }} onClick={destiOnClickHandler}>
+									적용
+								</TGreyBtn>
 
 								<BtnBound style={{ margin: '0px' }} />
 								<TableIndicateWrap overall>일괄 경매 응찰 | 최고가 +</TableIndicateWrap>
@@ -644,7 +646,7 @@ const BiddingSingle = ({}) => {
 										setAddedInput(parseInt(e.target.value))
 									}}
 								/>
-								<TGreyBtn height={30} style={{ width: '50px' }} onClick={unitPriceBatchOnClick}>
+								<TGreyBtn height={30} style={{ minWidth: '50px' }} onClick={unitPriceBatchOnClick}>
 									적용
 								</TGreyBtn>
 								<BtnBound style={{ margin: '0px' }} />

@@ -410,6 +410,7 @@ const WinningDetail = ({ setAucDetail }) => {
 			simpleAlert(error.status === 400 ? error.data.message : '오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
+
 	const destiApproveOnClickHandler = () => {
 		destiApproveMutation(winningCreateData)
 	}
@@ -552,7 +553,7 @@ const WinningDetail = ({ setAucDetail }) => {
 						<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destinationData?.name} readOnly />
 						{/* <CustomInput placeholder="도착지 연락처" width={120} height={32} /> */}
 						<TWhiteBtn
-							style={{ width: '50px' }}
+							style={{ minWidth: '50px' }}
 							height={30}
 							onClick={() => {
 								setDestinationPopUp(true)

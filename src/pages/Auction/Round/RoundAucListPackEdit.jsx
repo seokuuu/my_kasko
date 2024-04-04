@@ -177,7 +177,7 @@
 //           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
 //             <p>시작가 경매 응찰</p>
 //             <CustomInput placeholder="아울렛 입력" width={120} height={32} />
-//             <TGreyBtn height={30} style={{ width: '50px' }}>
+//             <TGreyBtn height={30} style={{ minWidth: '50px' }}>
 //               적용
 //             </TGreyBtn>
 //             <BtnBound style={{ margin: '0px' }} />

@@ -119,7 +119,7 @@
 // 					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
 // 						<p>시작가 일괄 변경</p>
 // 						<CustomInput placeholder="" width={120} height={32} />
-// 						<TGreyBtn height={30} style={{ width: '50px' }}>
+// 						<TGreyBtn height={30} style={{ minWidth: '50px' }}>
 // 							적용
 // 						</TGreyBtn>
 // 						<BtnBound />

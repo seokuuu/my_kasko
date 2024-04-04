@@ -641,7 +641,7 @@ const Single = ({}) => {
 									readOnly
 								/>
 								<TWhiteBtn
-									style={{ width: '50px' }}
+									style={{ minWidth: '50px' }}
 									height={30}
 									onClick={() => {
 										setDestinationPopUp(true)
@@ -670,7 +670,7 @@ const Single = ({}) => {
 								/>
 								<TGreyBtn
 									height={30}
-									style={{ width: '50px' }}
+									style={{ minWidth: '50px' }}
 									// onClick={() => {
 									// 	setFinalInput((p) => ({
 									// 		...p,
