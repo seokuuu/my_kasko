@@ -19,6 +19,11 @@ export const getAddNewDestination = (checkedData) => {
 	return duplicationDestination
 }
 
+export const calculateTotalCustom = (list, key) => {
+	if (!list) return 0
+	return formatWeight(list?.map((item) => parseInt(item[key]?.replace(/,/g, ''))).reduce((acc, cur) => acc + cur, 0))
+}
+
 export const calculateTotal = (list, key) => {
 	if (!list) return 0
 	return formatWeight(list?.map((item) => Number(item[key])).reduce((acc, cur) => acc + cur, 0))
