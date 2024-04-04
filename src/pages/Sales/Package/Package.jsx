@@ -120,21 +120,31 @@ const Package = () => {
 
 	// 노출 상태 변경 버튼
 	const editStatusButtonOnClickHandler = () => {
+		if (checkBoxSelect === null || checkBoxSelect.length === 0) {
+			return simpleAlert('노출상태를 변경할 제품을 선택해 주세요.')
+		}
 		setIsEditStatusModal(true)
 	}
 
-	// TODO: 노출 상태 변경 모달 > 확인 버튼
+	// 노출 상태 변경 모달 > 확인 버튼
 	const editStatusModalConfirmButtonOnClickHandler = (checkRadio) => {
 		setCheckRadio(checkRadio[0])
 
-		console.log('checkRadio[0] : ', checkRadio[0])
+		const productNumbers = checkBoxSelect.map((item) => item['패키지 고유번호'])
 
+		setServerData({
+			list: serverData.list.map((item) => {
+				if (productNumbers.includes(item.uid)) {
+					return { ...item, viewStatus: checkRadio[0] }
+				}
+				return item
+			}),
+			pagination: serverData.pagination,
+		})
 		setIsEditStatusModal(false)
 	}
 
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search field
 		setParam(initialParamState)
 	}
 

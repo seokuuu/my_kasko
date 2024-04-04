@@ -295,6 +295,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 								defaultValue={matchingData?.managerTitle}
 							/>
 							<CustomInput
+								type="number"
 								placeholder="담당자 휴대폰 번호 입력 ('-' 제외)"
 								width={340}
 								style={{ marginTop: '5px' }}
@@ -305,6 +306,7 @@ const DestinationEdit = ({ uidAtom, setEditModal }) => {
 
 							<Alert style={{ margin: '5px auto' }}>*하차지 연락처 미입력 시 토요일 하차 불가</Alert>
 							<CustomInput
+								type="number"
 								placeholder="하차지 연락처 입력 ('-' 제외)"
 								width={340}
 								name="phone"

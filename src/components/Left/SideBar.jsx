@@ -115,6 +115,8 @@ const data = [
 ]
 
 const SideBar = ({ expanded, setExpanded, depth2Color }) => {
+	const authData = JSON.parse(localStorage.getItem('auth'))
+	const userAuth = authData?.authorities
 	const [calModal, setCalModal] = useAtom(calendarAtom)
 
 	const closeModal = () => {
@@ -131,8 +133,6 @@ const SideBar = ({ expanded, setExpanded, depth2Color }) => {
 
 	const filteredData = data.filter((item) => {
 		const itemAuth = item.auth || []
-		const authData = JSON.parse(localStorage.getItem('auth'))
-		const userAuth = authData?.authorities
 		return userAuth.some((auth) => itemAuth.includes(auth))
 	})
 
@@ -176,13 +176,18 @@ const SideBar = ({ expanded, setExpanded, depth2Color }) => {
 						</StyledAccordionSummary>
 						<StyledAccordionDetails>
 							<Typography>
-								{item.depth2.map((subItem, subIndex) => (
-									<TypoContent key={subIndex} isIncoming={subItem.title === depth2Color}>
-										<Link to={`/${subItem.link}`}>
-											<Depth2>{subItem.title}</Depth2>
-										</Link>
-									</TypoContent>
-								))}
+								{item.depth2.map((subItem, subIndex) => {
+									if (authData?.role === '창고' && subItem.title === '출하 지시 등록') {
+										return
+									}
+									return (
+										<TypoContent key={subIndex} isIncoming={subItem.title === depth2Color}>
+											<Link to={`/${subItem.link}`}>
+												<Depth2>{subItem.title}</Depth2>
+											</Link>
+										</TypoContent>
+									)
+								})}
 							</Typography>
 						</StyledAccordionDetails>
 					</StyledAccordion>

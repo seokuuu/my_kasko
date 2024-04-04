@@ -93,12 +93,28 @@ const Single = () => {
 
 	// 노출 상태 변경 버튼
 	const editStatusButtonOnClickHandler = () => {
+		if (checkBoxSelect === null || checkBoxSelect.length === 0) {
+			return simpleAlert('노출상태를 변경할 제품을 선택해 주세요.')
+		}
 		setIsEditStatusModal(true)
 	}
 
 	// 노출 상태 변경 모달 > 확인 버튼
 	const editStatusModalConfirmButtonOnClickHandler = (checkRadio) => {
 		setCheckRadio(checkRadio[0])
+
+		const productNumbers = checkBoxSelect.map((item) => item['제품번호'])
+
+		setServerData({
+			list: serverData.list.map((item) => {
+				if (productNumbers.includes(item.number)) {
+					return { ...item, viewStatus: checkRadio[0] }
+				}
+				return item
+			}),
+			pagination: serverData.pagination,
+		})
+
 		setIsEditStatusModal(false)
 	}
 

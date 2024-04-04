@@ -37,7 +37,7 @@ const SalesPackage = ({ onClick }) => {
 		// 재고 관리 - 판매 구분 변경
 		<>
 			<NonFadeOverlay />
-			<ModalContainer width={530}>
+			<ModalContainer width={530} style={{ borderRadius: '4px', boxShadow: '0px 4px 20px 0px rgba(0,0,0,0.4)' }}>
 				<BlueBarHeader>
 					<div>노출 상태 변경</div>
 					<div>

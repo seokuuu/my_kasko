@@ -79,7 +79,7 @@ const Achievement = ({ setAddedModal, data }) => {
 		const transportationCost = response?.data?.data?.list[0].effectCost ?? 0
 		const weight = data?.weight ?? 0
 		onChange('transportationCost', transportationCost)
-		onChange('extraFreightCost', weight * transportationCost)
+		onChange('extraFreightCost', Math.floor(weight * transportationCost) / 1000)
 	}
 
 	useEffect(() => {
