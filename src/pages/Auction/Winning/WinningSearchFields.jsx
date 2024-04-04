@@ -4,7 +4,7 @@ import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSear
 import { FilterLeft, FilterRight, PWRight, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
 
 import { useState } from 'react'
-import { CustomerSearch, DateSearchSelect } from '../../../components/Search'
+import { CustomerSearch, DateSearchSelect, RadioSearchButton } from '../../../components/Search'
 import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
 
 const WinningSearchFields = ({
@@ -76,23 +76,17 @@ const WinningSearchFields = ({
 							/>
 						</PWRight>
 					</PartWrap>
-					<PartWrap>
-						<h6>주문 상태</h6>
-						<CustomCheckBox
-							initOptions={[
-								{
-									checked: false,
-									text: '확정 전송',
-									value: '확정 전송',
-								},
-								{
-									checked: false,
-									text: '확정 전송 대기',
-									value: '확정 전송 대기',
-								},
+					<PartWrap first>
+						<h6>낙찰 상태</h6>
+						<RadioSearchButton
+							options={[
+								{ label: '전체', value: null },
+								{ label: '낙찰', value: '낙찰' },
+								{ label: '낙찰 취소', value: '낙찰 취소' },
+								{ label: '낙찰 확정', value: '낙찰 확정' },
 							]}
-							setState={setSearch}
-							stateKey="saleCategoryList"
+							value={search.biddingStatus}
+							onChange={(value) => onChange('biddingStatus', value)}
 						/>
 					</PartWrap>
 				</RowWrap>

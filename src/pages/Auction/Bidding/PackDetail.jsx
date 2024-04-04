@@ -145,7 +145,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 	}
 
 	const titleData = ['패키지 명', '수량', '시작가']
-	const contentData = [aucDetail['패키지 명'], aucDetail?.length, aucDetail['시작가']]
+	const contentData = [aucDetail['패키지 명'], getRow?.length, aucDetail['시작가']]
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
