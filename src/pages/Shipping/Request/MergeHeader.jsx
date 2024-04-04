@@ -1,5 +1,5 @@
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
-import { calculateTotal } from './utils'
+import { calculateTotal, calculateTotalCustom } from './utils'
 import { formatWeight } from '../../../utils/utils'
 import React, { useEffect } from 'react'
 import { useMergeListQuery } from '../../../api/shipment'
@@ -75,11 +75,11 @@ const MergeHeader = ({ list, destinations, mergeCost, setMergeCost, dockStatus, 
 						<ClaimRow>
 							<ClaimTitle>매출운임비</ClaimTitle>
 							<ClaimContent>
-								{calculateTotal(list, 'outboundFreightAmount') || calculateTotal(list, '매출 운반비')}
+								{calculateTotal(list, 'outboundFreightAmount') || calculateTotalCustom(list, '매출 운반비')}
 							</ClaimContent>
 							<ClaimTitle>매입운임비</ClaimTitle>
 							<ClaimContent>
-								{calculateTotal(list, 'inboundFreightAmount') || calculateTotal(list, '매입 운반비')}
+								{calculateTotal(list, 'inboundFreightAmount') || calculateTotalCustom(list, '매입 운반비')}
 							</ClaimContent>
 							<ClaimTitle>합짐비</ClaimTitle>
 							<ClaimContent>{formatWeight(mergeCost ?? 0)}</ClaimContent>
