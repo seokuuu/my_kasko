@@ -286,7 +286,9 @@ const TableV2 = ({
 				Object.keys(item).forEach((key) => {
 					if (['순번', '고객 구분', '응찰가'].includes(key) || key.indexOf('번호') > -1) {
 						return (formattedItem[key] = item[key])
-					} else if (['중량', '제품중량', '제품 중량', '총 중량', '총중량', '상시 판매가', '중량 합계'].includes(key)) {
+					} else if (
+						['길이', '중량', '제품중량', '제품 중량', '총 중량', '총중량', '상시 판매가', '중량 합계'].includes(key)
+					) {
 						return (formattedItem[key] = customNumberFormatter({ value: Number(item[key]) }))
 					} else {
 						formattedItem[key] = customNumberFormatter({ value: item[key] })

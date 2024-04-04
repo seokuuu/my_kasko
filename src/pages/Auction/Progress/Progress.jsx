@@ -162,6 +162,11 @@ const Progress = ({}) => {
 						<Excel getRow={getRow} sheetName="경매 진행 조회" />
 					</div>
 				</TCSubContainer>
+				<TCSubContainer>
+					<div>
+						선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
+					</div>
+				</TCSubContainer>
 				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
 			</TableContianer>
 		</FilterContianer>
