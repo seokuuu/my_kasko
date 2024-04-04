@@ -34,8 +34,7 @@ export default Header
 const HeaderWrap = styled.div`
 	display: flex;
 	height: 65px;
-	width: 100%;
-
+	width: 1900px;
 	background-color: #061737;
 	align-items: center;
 `

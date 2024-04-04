@@ -10,6 +10,7 @@ import {
 	FilterHeader,
 	SubTitle,
 	TableContianer,
+	TableIndicateWrap,
 	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 
@@ -604,9 +605,9 @@ const Single = ({}) => {
 					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>
-					<div>
+					<TableIndicateWrap weight>
 						선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
-					</div>
+					</TableIndicateWrap>
 					{nowAuction && (
 						<>
 							<div
@@ -617,7 +618,7 @@ const Single = ({}) => {
 									justifyContent: 'center',
 								}}
 							>
-								<p>목적지</p>
+								<TableIndicateWrap desti>목적지</TableIndicateWrap>
 								<CustomInput
 									placeholder="h50"
 									width={60}
@@ -648,10 +649,12 @@ const Single = ({}) => {
 								>
 									찾기
 								</TWhiteBtn>
-								<TGreyBtn onClick={destiOnClickHandler}>적용</TGreyBtn>
+								<TGreyBtn style={{ minWidth: '50px' }} onClick={destiOnClickHandler}>
+									적용
+								</TGreyBtn>
 
 								<BtnBound style={{ margin: '0px' }} />
-								<p>일괄 경매 응찰 | 최고가 +</p>
+								<TableIndicateWrap overall>일괄 경매 응찰 | 최고가 +</TableIndicateWrap>
 								<CustomInput
 									placeholder=""
 									width={140}
