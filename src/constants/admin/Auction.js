@@ -805,6 +805,7 @@ export const AuctionPackageBiddingFieldsCols = (selected) => {
 
 export const AuctionProgressFields = {
 	'경매 제품 고유 번호': 'uid',
+	'경매 상태': 'auctionStatus',
 	'고객 코드': 'code',
 	회사명: 'customerName',
 	'회원 이름': 'memberName',
@@ -813,7 +814,7 @@ export const AuctionProgressFields = {
 	'판매 유형': 'saleType', // (경매 대상재 / 상시 판매 대상재)
 	'경매 번호': 'auctionNumber',
 	'제품 번호': 'productNumber',
-	'Pro.No 번호': 'productNoNumber',
+	'ProNo 번호': 'productNoNumber',
 	등급: 'grade',
 	'정척 여부': 'preferThickness', //  (Y / N)
 	'유찰 횟수': 'failCount',
@@ -867,7 +868,7 @@ export const AuctionProgressFieldsCols = [
 	{ ...commonStyles, field: '패키지명' },
 	{ ...commonStyles, field: '패키지 번호' },
 	{ ...commonStyles, field: '제품 번호' },
-	{ ...commonStyles, field: 'Pro.No 번호' },
+	{ ...commonStyles, field: 'ProNo 번호' },
 	{ ...commonStyles, field: '창고' },
 	// 판매 구분
 	{ ...commonStyles, field: '판매 유형' },
@@ -935,7 +936,7 @@ export const AuctionDetailProgressFields = {
 	'판매 유형': 'saleType',
 	'경매 번호': 'auctionNumber',
 	'제품 번호': 'productNumber',
-	'Pro.No 번호': 'productNoNumber',
+	'ProNo 번호': 'productNoNumber',
 	등급: 'grade',
 	응찰가: 'biddingPrice',
 	두께: 'thickness',
@@ -991,7 +992,7 @@ export const AuctionDetailProgressFieldsCols = [
 	{ ...commonStyles, field: '패키지명', minWidth: 120 },
 	{ ...commonStyles, field: '패키지 번호', minWidth: 120 },
 	{ ...commonStyles, field: '제품 번호', minWidth: 120 },
-	{ ...commonStyles, field: 'Pro.No 번호', minWidth: 120 },
+	{ ...commonStyles, field: 'ProNo 번호', minWidth: 120 },
 	{ ...commonStyles, field: '창고' },
 	// 판매 구분
 	{ ...commonStyles, field: '판매 유형', minWidth: 120 },
