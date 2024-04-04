@@ -52,6 +52,7 @@ const RoundAucProAdd = ({
 	onListAdd,
 	auctionNumber,
 	dupleUids,
+	outAddData,
 }) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -121,6 +122,7 @@ const RoundAucProAdd = ({
 	const onAdd = () => {
 		const key = '고유 번호'
 		const findKey = selectedRows.map((item) => item[key])
+
 		const addData = resData?.filter((item) => findKey.includes(item?.uid))
 		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
 		else {
@@ -129,7 +131,10 @@ const RoundAucProAdd = ({
 					setNewResData((prevData) => [...prevData, item])
 					setAddModal(false)
 					onListAdd(addData)
-					setOutAddData(findKey)
+					setOutAddData((prevData) => {
+						const uniqueData = [...new Set([...prevData, ...findKey])]
+						return uniqueData
+					})
 				})
 			})
 		}

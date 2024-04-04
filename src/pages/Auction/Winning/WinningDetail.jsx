@@ -224,7 +224,7 @@ const WinningDetail = ({ setAucDetail }) => {
 
 	console.log('matchedDestination', matchedDestination)
 
-	const uids = checkedArray?.map((item) => item && item['제품 번호']?.value)
+	const uids = checkedArray?.map((item) => item && item['주문 고유 번호'])
 
 	console.log('uids', uids)
 
@@ -242,11 +242,11 @@ const WinningDetail = ({ setAucDetail }) => {
 		})
 
 		const updatedResData = oriData?.list?.map((item) => {
-			if (uids.includes(item.productNumber)) {
-				item.requestDestinationName = matchedDestination?.destinationName
-				item.requestDestinationAddress = matchedDestination?.address
-				item.requestDestinationPhone = matchedDestination?.managerPhone
-				item.requestDestinationManagerPhone = matchedDestination?.phone
+			if (uids.includes(item.orderUid)) {
+				item.requestDestinationName = matchedDestination?.destinationName || destinationData?.destinationName
+				item.requestDestinationAddress = matchedDestination?.address || destinationData?.address
+				item.requestDestinationPhone = matchedDestination?.managerPhone || destinationData?.managerPhone
+				item.requestDestinationManagerPhone = matchedDestination?.phone || destinationData?.phone
 			}
 
 			return item
@@ -321,7 +321,7 @@ const WinningDetail = ({ setAucDetail }) => {
 	useEffect(() => {
 		const updatedProductList = checkedArray?.map((item) => ({
 			uid: item['주문 고유 번호'],
-			requestCustomerDestinationUid: finalInput?.requestCustomerDestinationUid,
+			requestCustomerDestinationUid: destinationData?.uid || item['변경 요청 목적지 고유 번호'],
 			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
 		}))
 
@@ -345,6 +345,7 @@ const WinningDetail = ({ setAucDetail }) => {
 	}
 
 	const onPageChange = (value) => {
+		console.log('value', value)
 		setParam((prevParam) => ({
 			...prevParam,
 			pageNum: Number(value),
@@ -410,6 +411,7 @@ const WinningDetail = ({ setAucDetail }) => {
 			simpleAlert(error.status === 400 ? error.data.message : '오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
+
 	const destiApproveOnClickHandler = () => {
 		destiApproveMutation(winningCreateData)
 	}
@@ -552,7 +554,7 @@ const WinningDetail = ({ setAucDetail }) => {
 						<CustomInput placeholder="목적지명" width={120} height={32} defaultValue={destinationData?.name} readOnly />
 						{/* <CustomInput placeholder="도착지 연락처" width={120} height={32} /> */}
 						<TWhiteBtn
-							style={{ width: '50px' }}
+							style={{ minWidth: '50px' }}
 							height={30}
 							onClick={() => {
 								setDestinationPopUp(true)

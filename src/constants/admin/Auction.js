@@ -1056,7 +1056,6 @@ export const AuctionWinningDetailFields = {
 	'주문 고유 번호': 'orderUid',
 	'고객사 목적지 고유 번호': 'customerDestinationUid',
 	'목적지 고유 번호': 'destinationUid',
-
 	'패키지 명': 'packageName',
 	'패키지 번호': 'packageNumber',
 	고객사명: 'customerName',
@@ -1077,6 +1076,7 @@ export const AuctionWinningDetailFields = {
 	'변경 요청 목적지 주소': 'requestDestinationAddress',
 	'변경 요청 목적지 연락처': 'requestDestinationPhone',
 	'변경 요청 목적지 담당자 연락처': 'requestDestinationManagerPhone',
+	'변경 요청 목적지 고유 번호': 'requestDestinationUid',
 	'판매 구분': 'saleCategory',
 	'판매 유형': 'saleType',
 	'판매가 유형': 'salePriceType',

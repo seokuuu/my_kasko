@@ -241,7 +241,7 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 											}))
 										}}
 									/>
-									<TGreyBtn height={30} style={{ width: '50px' }} onClick={confirmOnClickHandler}>
+									<TGreyBtn height={30} style={{ minWidth: '50px' }} onClick={confirmOnClickHandler}>
 										적용
 									</TGreyBtn>
 									<BtnBound />
@@ -257,7 +257,7 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 											}))
 										}}
 									/>
-									<TGreyBtn height={30} style={{ width: '50px' }} onClick={confirmOnClickHandler}>
+									<TGreyBtn height={30} style={{ minWidth: '50px' }} onClick={confirmOnClickHandler}>
 										적용
 									</TGreyBtn>
 								</div>

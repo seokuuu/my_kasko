@@ -49,7 +49,7 @@ const Winning = ({}) => {
 
 	const paramData = {
 		pageNum: 1,
-		pageSize: 10,
+		pageSize: 50,
 		orderType: '경매',
 		auctionStartDate: null,
 		auctionEndDate: null,

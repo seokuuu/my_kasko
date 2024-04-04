@@ -251,7 +251,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 											}))
 										}}
 									/>
-									<TGreyBtn height={30} style={{ width: '50px' }} onClick={handleButtonClick}>
+									<TGreyBtn height={30} style={{ minWidth: '50px' }} onClick={handleButtonClick}>
 										적용
 									</TGreyBtn>
 									<BtnBound />

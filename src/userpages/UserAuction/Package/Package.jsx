@@ -585,7 +585,7 @@ const Package = ({}) => {
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
 						{!nowAuction && <Excel getRow={tableRowData} sheetName="경매 응찰" />}
-						{nowAuction && <AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />}
+						<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>
@@ -608,7 +608,7 @@ const Package = ({}) => {
 								<CustomInput placeholder="목적지명" width={120} height={32} value={destiObject?.name} readOnly />
 								<CustomInput placeholder="도착지 연락처" width={120} height={32} value={destiObject?.phone} readOnly />
 								<TWhiteBtn
-									style={{ width: '50px' }}
+									style={{ minWidth: '50px' }}
 									height={30}
 									onClick={() => {
 										setDestinationPopUp(true)
@@ -637,7 +637,7 @@ const Package = ({}) => {
 								/>
 								<TGreyBtn
 									height={30}
-									style={{ width: '50px' }}
+									style={{ minWidth: '50px' }}
 									// onClick={() => {
 									// 	setFinalInput((p) => ({
 									// 		...p,
