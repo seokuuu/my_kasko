@@ -681,6 +681,9 @@ const Package = ({}) => {
 					packNum={aucDetail['패키지 번호']}
 					setAucDetailModal={setAucDetailModal}
 					destiObject={destiObject}
+					nowAuction={nowAuction}
+					live={live}
+					setLive={setLive}
 				/>
 			)}
 			{/* 입찰 동의서 모달 */}

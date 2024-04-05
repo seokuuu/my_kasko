@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react'
+import React, { Fragment, memo, useEffect, useRef, useState } from 'react'
 import { BlackBtn, BtnBound, NewBottomBtnWrap, SkyBtn, TGreyBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 
@@ -33,7 +33,7 @@ import { selectedRowsAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 
 // 패키지 상세보기 (경매)
-const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuction }) => {
+const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuction, live, setLive }) => {
 	const auctionNum = aucDetail['경매 번호']
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert() // 에러 핸들링
 	const queryClient = useQueryClient()
@@ -71,6 +71,14 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 			...prevData,
 			biddingList: updatedProductList,
 		}))
+
+		// 부모 라이브 끄기 / 모달 라이브 켜기
+		setLive(false)
+
+		// 부모 라이브 켜기 / 모달 라이브 끄기
+		return () => {
+			setLive(true)
+		}
 	}, [])
 
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner) // 응찰 상태
@@ -101,15 +109,19 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(
 		paramData,
-		'getBiddingDetail',
+		!live,
 		getBiddingPackDetail,
+		nowAuction,
 	)
 
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
+	const firstGetRow = [getRow[0]]
+
 	useEffect(() => {
 		let getData = resData
+
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
 			setGetRow(add_element_field(getData, AuctionBiddingFields))
@@ -141,8 +153,16 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 	})
 
 	const confirmOnClickHandler = () => {
-		postMutation(winningCreateData)
+		if (finalInput.biddingPrice) {
+			postMutation(winningCreateData)
+		} else {
+			packageRowBidding()
+		}
 	}
+
+	console.log('finalInput', finalInput)
+
+	console.log('winningCreateData', winningCreateData)
 
 	const titleData = ['패키지 명', '수량', '시작가']
 	const contentData = [aucDetail['패키지 명'], getRow?.length, aucDetail['시작가']]
@@ -153,6 +173,30 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 			pageSize: Number(event.target.value),
 			pageNum: 1,
 		}))
+	}
+
+	// biddingList에 들어갈 3총사를 다 넣어줌.
+	const packageRowBidding = async () => {
+		console.log('되나')
+		const updatedProductList = firstGetRow?.map((item) => ({
+			packageNumber: item['패키지 번호'],
+			biddingPrice:
+				item['현재 최고 가격'] === 0
+					? item['시작가'] + 1
+					: item['현재 최고 가격'] >= 1 && item['현재 최고 가격'] <= item['나의 최고 응찰 가격']
+					? item['나의 최고 응찰 가격'] + (finalInput?.biddingPrice || 1)
+					: item['현재 최고 가격'] + (finalInput?.biddingPrice || 1),
+			customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
+			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
+		}))
+
+		// winningCreateData를 업데이트하여 productList를 갱신
+		setWinningCreateData((prevData) => ({
+			...prevData,
+			biddingList: updatedProductList,
+		}))
+
+		await postMutation(winningCreateData)
 	}
 
 	// 응찰가 일괄 적용 버튼
@@ -217,10 +261,10 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 							</FilterTCTop>
 						</FilterTopContainer>
 						<ClaimTable style={{ marginBottom: '30px' }}>
-							{[0].map((index) => (
+							{[0]?.map((index) => (
 								<ClaimRow key={index}>
 									{titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
-										<Fragment agmentkey={title}>
+										<Fragment key={idx}>
 											<ClaimTitle>{title}</ClaimTitle>
 											<ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
 										</Fragment>
