@@ -253,6 +253,7 @@ const Package = ({}) => {
 			...prevParam,
 			pageNum: Number(value),
 		}))
+		setCheckedArrayState([])
 	}
 
 	const { mutate: postMutation, isLoading: postAuctionLoading } = useMutation(postBidding, {
