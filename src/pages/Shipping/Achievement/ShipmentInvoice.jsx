@@ -4,14 +4,16 @@ import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/
 import { GlobalFilterHeader } from '../../../components/Filter'
 import InvoiceDetailHeader from './InvoiceDetailHeader'
 import { useShipmentInvoiceListQuery } from '../../../api/shipment'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import Table from '../../Table/Table'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { ShippingInvoiceFields, ShippingInvoiceFieldsCols } from '../../../constants/admin/Shipping'
 import { formatWeight } from '../../../utils/utils'
 import ShippingInvoiceView from '../../../components/shipping/ShippingInvoiceView'
+import { BlackBtn, NewBottomBtnWrap } from '../../../common/Button/Button'
 
 const ShipmentInvoice = () => {
+	const navigate = useNavigate()
 	const [getRow, setGetRow] = useState('')
 
 	const [searchParams] = useSearchParams()
@@ -81,6 +83,17 @@ const ShipmentInvoice = () => {
 					<div></div>
 					<ShippingInvoiceView customerCode={customerCode} outNumber={outNumber} />
 				</TCSubContainer>
+				<NewBottomBtnWrap>
+					<BlackBtn
+						width={13}
+						height={40}
+						onClick={() => {
+							navigate(-1)
+						}}
+					>
+						돌아가기
+					</BlackBtn>
+				</NewBottomBtnWrap>
 			</TableWrap>
 		</FilterContianer>
 	)

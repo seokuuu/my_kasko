@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useMemo, useState } from 'react'
+import React, { Fragment, useContext, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { USER_URL, useUserDestinationUpdateRequestMutation, useUserOrderDetailsQuery } from '../../../api/user'
 import { BtnBound, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
@@ -78,10 +78,12 @@ const OrderDetail = ({ salesNumber }) => {
 	})
 	// API
 	const { data: orderData, isError, isLoading } = useUserOrderDetailsQuery(searchParams)
+	const [serverData, setServerData] = useState({ list: [], pagination: {} })
+
 	// 테이블 데이터, 페이지 데이터, 총 중량
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: userOrderDetailsField,
-		serverData: orderData,
+		serverData: serverData,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
 		best: { display: true },
 	})
@@ -94,19 +96,7 @@ const OrderDetail = ({ salesNumber }) => {
 	const [destinationUpdateItems, setDestinationUpdateItems] = useState([])
 	// 목적지 변경 API
 	const { mutate: requestDestinationUpdate, isLoaidng: isRequstLoading } = useUserDestinationUpdateRequestMutation()
-	// 목적지 변경항목 반영 테이블 데이터
-	const tableRowDataWithNewDestination = useMemo(() => {
-		const destinationItemUids = destinationUpdateItems.map((v) => v[UID_KEY])
-		for (const row of tableRowData) {
-			if (destinationItemUids.includes(row[UID_KEY])) {
-				row['변경요청 목적지명'] = destination.name
-				row['변경요청 목적지코드'] = destination.code
-				row['변경요청 목적지 주소'] = destination.address
-				row['변경요청 목적지 연락처'] = destination.phone
-			}
-		}
-		return tableRowData
-	}, [destinationUpdateItems, tableRowData])
+
 	// ALERT
 	const { simpleAlert } = useAlert()
 	// 패키지 상세보기
@@ -156,6 +146,36 @@ const OrderDetail = ({ salesNumber }) => {
 		setDestinationUpdateItems([])
 		setDestination(null)
 	}
+
+	// 목적지 변경항목 반영 테이블 데이터
+	useEffect(() => {
+		if (destinationUpdateItems.length > 0) {
+			const destinationItemUids = destinationUpdateItems.map((v) => v[UID_KEY])
+			const newRowData = serverData?.list?.map((item) => {
+				if (destinationItemUids.includes(item.orderUid)) {
+					item.requestDestinationName = destination.name
+					item.requestDestinationCode = destination.code
+					item.requestCustomerDestinationAddress = destination.address
+					item.requestCustomerDestinationPhone = destination.phone
+				}
+				return item
+			})
+			setServerData({
+				list: newRowData,
+				pagination: serverData.pagination,
+			})
+		}
+	}, [destinationUpdateItems])
+
+	useEffect(() => {
+		if (orderData) {
+			setServerData({ list: orderData.list, pagination: orderData.pagination })
+		}
+
+		if (isError) {
+			simpleAlert('요청중 오류가 발생했습니다.\n다시 시도해 주세요.')
+		}
+	}, [orderData, isError])
 
 	return (
 		<FilterContianer>
@@ -225,7 +245,7 @@ const OrderDetail = ({ salesNumber }) => {
 				</TCSubContainer>
 				{/* 테이블 */}
 				<TableV2
-					getRow={tableRowDataWithNewDestination}
+					getRow={tableRowData}
 					getCol={userOrderDetailsFieldsCols(setPackageReadOnlyViewer)}
 					loading={isLoading}
 					paginationData={paginationData}

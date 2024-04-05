@@ -3,6 +3,7 @@ import qs from 'qs'
 import useAlert from '../store/Alert/useAlert'
 import { useMutation } from '@tanstack/react-query'
 import { queryClient } from './query'
+import { useNavigate } from 'react-router-dom'
 
 const urls = {
 	order: '/admin/order',
@@ -24,6 +25,7 @@ export async function useOrderCancel(data) {
 }
 
 export const useDepositOrderCancel = () => {
+	const navigate = useNavigate()
 	const { simpleAlert } = useAlert()
 
 	return useMutation({
@@ -32,7 +34,9 @@ export const useDepositOrderCancel = () => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: 'order' })
-			return simpleAlert('주문을 취소하였습니다.')
+			return simpleAlert('주문을 취소하였습니다.', () => {
+				navigate(-1)
+			})
 		},
 		onError: (error) => {
 			return simpleAlert(error?.data?.message || '주문 취소 중 오류가 발생했습니다.\n다시 시도해 주세요.')
