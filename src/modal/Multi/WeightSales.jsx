@@ -19,6 +19,7 @@ import useAlert from '../../store/Alert/useAlert'
 import { authAtom } from '../../store/Auth/auth'
 import moment from 'moment'
 import { useLoading } from '../../store/Loading/loadingAtom'
+import { calculateWeight, numberDeleteComma } from '../../utils/utils'
 
 // 중량 판매 등록 모달
 const WeightSales = () => {
@@ -77,12 +78,12 @@ const WeightSales = () => {
 	// 중량 판매 폭/길이 계산
 	const addAutoCalculator = (item, key) => {
 		const updateKey = key === '폭' ? 'width' : 'length'
-		const originValue = item[key]
-		const totalValue = rows.map((row) => row[key]).reduce((acc, curr) => acc + parseInt(curr), 0)
-		const isUpdate = rows.filter((row) => row[updateKey])
+		const originValue = numberDeleteComma(item[key])
+		const totalValue = rows.map((row) => numberDeleteComma(row[key])).reduce((acc, curr) => acc + parseInt(curr), 0)
+		const isUpdate = rows.filter((row) => numberDeleteComma(row[updateKey]))
 
-		const autoValue = item[key] - totalValue
-		const updateValue = isUpdate?.length > 0 ? 0 : Number(item[key])
+		const autoValue = originValue - totalValue
+		const updateValue = isUpdate?.length > 0 ? 0 : Number(originValue)
 
 		return (originValue - totalValue > 0 ? autoValue : updateValue).toFixed(0)
 	}
@@ -92,7 +93,7 @@ const WeightSales = () => {
 		return selectedRowData?.map((i) => ({
 			'중량 제품 번호': i['중량 제품 번호'] || '',
 			'제품 번호': createProductNumber(),
-			중량: i['중량'],
+			중량: calculateWeight(i['두께'], addAutoCalculator(i, '폭'), addAutoCalculator(i, '길이')),
 			두께: i['두께'],
 			폭: addAutoCalculator(i, '폭'),
 			길이: addAutoCalculator(i, '길이'),
@@ -135,6 +136,7 @@ const WeightSales = () => {
 			if (item[productKey] === target[productKey]) {
 				return {
 					...item,
+					중량: calculateWeight(item['두께'], key === '폭' ? value : item['폭'], key === '길이' ? value : item['길이']),
 					[key]: value,
 					[name]: true,
 				}
@@ -180,8 +182,12 @@ const WeightSales = () => {
 		const row = tableRowData[0]
 		const isWidthUpdate = rows.filter((item) => !!item.width)[0]?.width || false
 		const isLengthUpdate = rows.filter((item) => !!item.length)[0]?.length || false
-		const totalWidth = rows.map((item) => item['폭']).reduce((acc, curr) => acc + parseInt(curr), 0)
-		const totalLength = rows.map((item) => item['길이']).reduce((acc, curr) => acc + parseInt(curr), 0)
+		const totalWidth = rows
+			.map((item) => Number(numberDeleteComma(item['폭'])))
+			.reduce((acc, curr) => acc + parseInt(curr), 0)
+		const totalLength = rows
+			.map((item) => Number(numberDeleteComma(item['길이'])))
+			.reduce((acc, curr) => acc + parseInt(curr), 0)
 
 		if (!isWidthUpdate && !isLengthUpdate) {
 			simpleAlert('제품의 폭 또는 길이를 수정해주세요.')
@@ -203,8 +209,8 @@ const WeightSales = () => {
 			addProductList: rows.map((item) => ({
 				productNumber: item['제품 번호'],
 				thickness: item['두께'],
-				width: item['폭'],
-				length: item['길이'],
+				width: numberDeleteComma(item['폭']),
+				length: numberDeleteComma(item['길이']),
 			})),
 			deleteProductUids: deletedRows,
 		}
@@ -228,9 +234,9 @@ const WeightSales = () => {
 			bottomTableRowData.map((i) => {
 				return {
 					...i,
-					두께: i['두께'],
+					두께: numberDeleteComma(i['두께']),
 					중량: i['중량'],
-					길이: i['길이'],
+					길이: numberDeleteComma(i['길이']),
 				}
 			}),
 		)

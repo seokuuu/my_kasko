@@ -16,7 +16,7 @@ export const StockInventoryFields = {
 	'출고 번호': 'outNumber',
 	// 창고 - 누락 추가
 	등록일자: 'createDate',
-	'입고 상태 ': 'receiptStatus',
+	'입고 상태': 'receiptStatus',
 	입고일자: 'receiptDate',
 	// 매입구분 - 누락 추가
 	매입처: 'supplier',
@@ -76,7 +76,7 @@ export const StockInventoryFields = {
 	'운송비 부가세': 'freightCostVat',
 	'총 부가세': 'totalVat',
 
-	'운반비 금액 ': 'totalFreightCost',
+	'운반비 금액': 'totalFreightCost',
 	목적지명: 'destinationName',
 	수정일: 'updateDate',
 	'상시판매 주문번호': 'orderNumber',
@@ -85,7 +85,7 @@ export const StockInventoryFields = {
 	'패키지 번호': 'packageNumber',
 	'클레임 진행상태': 'claimStatus',
 
-	'출하 상태 ': 'shipmentStatus',
+	'출하 상태': 'shipmentStatus',
 	'현대제철 반품일자': 'hsReturnDate',
 	'카스코 반품일자': 'kaskoReturnDate',
 

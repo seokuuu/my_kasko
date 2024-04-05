@@ -15,7 +15,7 @@ const BtnCellRendererV2 = ({ data, uidFieldName }) => {
 
 	return (
 		<SkyBtn style={{ marginLeft: 'auto', marginRight: 'auto' }} onClick={btnClickedHandler}>
-			{data['중량 판매 개수'] === 0 ? '중량 판매' : '수정'}
+			{Number(data['중량 판매 개수']) === 0 ? '중량 판매' : '수정'}
 		</SkyBtn>
 	)
 }

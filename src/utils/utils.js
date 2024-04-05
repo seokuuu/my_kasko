@@ -70,3 +70,11 @@ export function numberDeleteComma(value) {
 	}
 	return value
 }
+
+// 중량 계산
+export function calculateWeight(thickness, width, length) {
+	const volume = Number(thickness) * Number(width) * Number(length)
+	const weight = volume * 7.85
+
+	return Math.ceil(weight / 1000000)
+}
