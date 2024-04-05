@@ -33,7 +33,7 @@ import { selectedRowsAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 
 // 패키지 상세보기 (경매)
-const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
+const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuction }) => {
 	const auctionNum = aucDetail['경매 번호']
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert() // 에러 핸들링
 	const queryClient = useQueryClient()
@@ -236,30 +236,33 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject }) => {
 									<Excel getRow={getRow} sheetName="패키지 상세" />
 								</div>
 							</TCSubContainer>
-							<TCSubContainer>
-								<div></div>
-								<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-									<p>일괄 경매 응찰 | 최고가 +</p>
-									<CustomInput
-										placeholder="응찰가 + 최고가 입력"
-										width={140}
-										height={32}
-										onChange={(e) => {
-											setFinalInput((p) => ({
-												...p,
-												biddingPrice: parseInt(e.target.value) || null,
-											}))
-										}}
-									/>
-									<TGreyBtn height={30} style={{ minWidth: '50px' }} onClick={handleButtonClick}>
-										적용
-									</TGreyBtn>
-									<BtnBound />
-									<SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50} onClick={confirmOnClickHandler}>
-										응찰
-									</SkyBtn>
-								</div>
-							</TCSubContainer>
+							{nowAuction && (
+								<TCSubContainer>
+									<div></div>
+									<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+										<p>일괄 경매 응찰 | 최고가 +</p>
+										<CustomInput
+											placeholder="응찰가 + 최고가 입력"
+											width={140}
+											height={32}
+											onChange={(e) => {
+												setFinalInput((p) => ({
+													...p,
+													biddingPrice: parseInt(e.target.value) || null,
+												}))
+											}}
+										/>
+										<TGreyBtn height={30} style={{ minWidth: '50px' }} onClick={handleButtonClick}>
+											적용
+										</TGreyBtn>
+										<BtnBound />
+										<SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50} onClick={confirmOnClickHandler}>
+											응찰
+										</SkyBtn>
+									</div>
+								</TCSubContainer>
+							)}
+
 							<Table
 								hei2={400}
 								hei={100}
