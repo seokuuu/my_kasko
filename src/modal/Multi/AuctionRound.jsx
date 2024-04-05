@@ -283,6 +283,7 @@ const AuctionRound = ({ setRoundModal, types, refetch }) => {
 											startDate={dates.addedDate}
 											setStartDate={(date) => dateHandler(date, 'addedDate')}
 											fontSize={16}
+											minDate={moment().toDate()}
 										/>
 										<div style={{ marginLeft: '10px' }}>
 											<TimeInput placeholder="0시" name="startHour" value={times.startHour} onChange={timesHandler} />
@@ -306,12 +307,14 @@ const AuctionRound = ({ setRoundModal, types, refetch }) => {
 												startDate={dates.insertStartDate}
 												setStartDate={(date) => dateHandler(date, 'insertStartDate')}
 												fontSize={16}
+												minDate={moment().toDate()}
 											/>
 											<p>~</p>{' '}
 											<DateGrid
 												startDate={dates.insertEndDate}
 												setStartDate={(date) => dateHandler(date, 'insertEndDate')}
 												fontSize={16}
+												minDate={moment().toDate()}
 											/>
 										</BlueDateDiv>
 									</BlueSubDiv>
