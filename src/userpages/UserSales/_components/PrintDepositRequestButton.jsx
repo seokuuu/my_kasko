@@ -141,7 +141,6 @@ export const PrintDepositRequestButton = ({
 		retry: false,
 	})
 
-	console.log('뭐고 =>', infoData?.list)
 	// 총계 데이터
 	const totalData = useMemo(() => getTotalData(infoData), [infoData])
 	// 일자 데이터
@@ -172,7 +171,7 @@ export const PrintDepositRequestButton = ({
 			if (auctionNumber.length === 1) {
 				num = auctionNumber[0]
 			} else {
-				return simpleAlert('입금요청서를 발행할 주문건을 1개 선택헤 주세요.')
+				return simpleAlert('입금요청서를 발행할 주문건을 1개 선택해주세요.')
 			}
 		} else if (typeof num !== 'string' || num.length < 1) {
 			return simpleAlert('입금요청서를 발행할 수 없습니다.')
@@ -439,7 +438,9 @@ const NewContainer = styled.div`
 
 const OutSideInner = styled.div`
 	position: fixed;
-	transform: translate(-75%, -130%);
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
 	z-index: 9999;
 `
 

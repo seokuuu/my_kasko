@@ -243,7 +243,6 @@ export const userOrderDetailsFieldsCols = (numberClickHandler = undefined) =>
 		},
 		{ field: '프로넘(ProNo)' },
 		{ field: '창고' },
-		{ field: '상시판매 상태' },
 		{ field: '승인상태' },
 		{ field: '판매유형' },
 		{ field: '판매가유형' },

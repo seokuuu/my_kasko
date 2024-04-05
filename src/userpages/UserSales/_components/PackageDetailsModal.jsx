@@ -5,10 +5,7 @@ import { USER_URL, useUserPackageProductDetailsListQuery } from '../../../api/us
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKey'
-import {
-	userPackageDetailsField,
-	userPackageDetailsFieldsCols,
-} from '../../../constants/user/productTable'
+import { userPackageDetailsField, userPackageDetailsFieldsCols } from '../../../constants/user/productTable'
 import useTableData from '../../../hooks/useTableData'
 import useTableSearchParams from '../../../hooks/useTableSearchParams'
 import useTableSelection from '../../../hooks/useTableSelection'
@@ -24,7 +21,7 @@ import {
 	FilterTCTop,
 	FilterTopContainer,
 	TCSubContainer,
-	TableContianer
+	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import TableV2 from '../../../pages/Table/TableV2'
 import TableV2ExcelDownloader from '../../../pages/Table/TableV2ExcelDownloader'
@@ -57,7 +54,7 @@ function getInfoData(productList, totalCount) {
 		return ['-', '-', '-']
 	}
 	const targetData = productList[0]
-	return [targetData['패키지 명'], totalCount, targetData['상시판매 시작가']]
+	return [targetData['패키지 명'], totalCount, Number(targetData['상시판매 시작가'] ?? 0)?.toLocaleString()]
 }
 
 /**
@@ -68,14 +65,16 @@ function getInfoData(productList, totalCount) {
  */
 function getCartOrderData(productList, packageNumber) {
 	if (productList.length < 1) {
-		return [];
+		return []
 	}
-	const targetData = productList[0];
-	return [{
-		[PROD_COL_NAME.packageUid]: targetData[PROD_COL_NAME.packageUid],
-		[PROD_COL_NAME.packageNumber]: packageNumber,
-		[PROD_COL_NAME.salePrice]: targetData[PROD_COL_NAME.salePrice],
-	}];
+	const targetData = productList[0]
+	return [
+		{
+			[PROD_COL_NAME.packageUid]: targetData[PROD_COL_NAME.packageUid],
+			[PROD_COL_NAME.packageNumber]: packageNumber,
+			[PROD_COL_NAME.salePrice]: targetData[PROD_COL_NAME.salePrice],
+		},
+	]
 }
 
 // 패키지 상세보기 (경매)
@@ -92,10 +91,10 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 		tableField: userPackageDetailsField,
 		serverData: packageData,
 		wish: { display: true, key: ['packageNumber'] },
-		best: { display: true }
+		best: { display: true },
 	})
 	// 장바구니, 주문하기 데이터
-	const cartOrderDatas = useMemo(() => getCartOrderData(tableRowData, packageNumber), [tableRowData, packageNumber]);
+	const cartOrderDatas = useMemo(() => getCartOrderData(tableRowData, packageNumber), [tableRowData, packageNumber])
 	// 요약정보 데이터
 	const infoData = useMemo(() => getInfoData(tableRowData, totalCountStr), [tableRowData, totalCountStr])
 	// 선택 항목
@@ -103,19 +102,19 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 		weightKey: '총 중량',
 	})
 	// 팝업 테이블 처리 스토어
-  const setRowAtomSwitch = useSetAtom(selectedRows2Switch)
+	const setRowAtomSwitch = useSetAtom(selectedRows2Switch)
 
 	useEffect(() => {
-		setRowAtomSwitch(false);
+		setRowAtomSwitch(false)
 
-		return(() => {
-			setRowAtomSwitch(true);
-		})
+		return () => {
+			setRowAtomSwitch(true)
+		}
 	}, [])
 
 	return (
 		<>
-			<FadeOverlay style={{zIndex: 98}}/>
+			<FadeOverlay style={{ zIndex: 98 }} />
 			<ModalContainer style={{ width: '75%', maxHeight: '98vh', zIndex: 99 }}>
 				<BlueBarHeader style={{ height: '60px' }}>
 					<div>패키지 상세 보기</div>
@@ -148,12 +147,12 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 							<TCSubContainer bor>
 								<div>
 									조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
-									<TableV2HiddenSection popupTable/>
+									<TableV2HiddenSection popupTable />
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
 									<PageDropdown handleDropdown={handlePageSizeChange} />
 									<TableV2ExcelDownloader
-										requestUrl={USER_URL.packageProductDetailsList} 
+										requestUrl={USER_URL.packageProductDetailsList}
 										requestCount={totalCount}
 										field={userPackageDetailsField}
 									/>
