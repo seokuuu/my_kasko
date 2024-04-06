@@ -562,6 +562,7 @@ export const AuctionBiddingFieldsCols = (selected) => {
 	 */
 	const location = useLocation()
 	const checkAucURL = ['/auction/biddingsingle'].includes(location.pathname)
+	const packDetail = ['/auction/biddingpackage', '/userpage/auctionpackage'].includes(location.pathname)
 	const checkboxSelection2 = (params) => {
 		// we put checkbox on the name if we are not doing grouping
 		if (selected && selected.length > 0) {
@@ -596,7 +597,7 @@ export const AuctionBiddingFieldsCols = (selected) => {
 			minWidth: 150,
 			cellRenderer: checkAucURL ? null : MarkerCellRenderer,
 			cellRendererParams: (params) => params?.data[params.column.colId] || '',
-			valueGetter: (v) => v.data[v.column.colId]?.value || '',
+			valueGetter: (v) => (packDetail ? v.data[v.column.colId] || '' : v.data[v.column.colId]?.value || ''),
 		},
 		// { ...commonStyles, field: '제품 번호', minWidth: 100 },
 		{
