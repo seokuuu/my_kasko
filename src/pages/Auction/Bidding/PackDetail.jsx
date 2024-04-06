@@ -152,6 +152,8 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 		},
 	})
 
+	console.log('finalInput.biddingPrice', finalInput.biddingPrice)
+
 	const confirmOnClickHandler = () => {
 		if (finalInput.biddingPrice) {
 			postMutation(winningCreateData)
@@ -176,8 +178,28 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 	}
 
 	// biddingList에 들어갈 3총사를 다 넣어줌.
-	const packageRowBidding = async () => {
-		console.log('되나')
+	// const packageRowBidding = async () => {
+	// 	console.log('되나')
+	// 	const updatedProductList = firstGetRow?.map((item) => ({
+	// 		packageNumber: item['패키지 번호'],
+	// 		biddingPrice:
+	// 			item['현재 최고 가격'] === 0
+	// 				? item['시작가'] + 1
+	// 				: item['현재 최고 가격'] >= 1 && item['현재 최고 가격'] <= item['나의 최고 응찰 가격']
+	// 				? item['나의 최고 응찰 가격'] + (finalInput?.biddingPrice || 1)
+	// 				: item['현재 최고 가격'] + (finalInput?.biddingPrice || 1),
+	// 	}))
+
+	// 	// winningCreateData를 업데이트하여 productList를 갱신
+	// 	setWinningCreateData((prevData) => ({
+	// 		...prevData,
+	// 		biddingList: updatedProductList,
+	// 	}))
+
+	// 	await postMutation(winningCreateData)
+	// }
+
+	const packageRowBidding = () => {
 		const updatedProductList = firstGetRow?.map((item) => ({
 			packageNumber: item['패키지 번호'],
 			biddingPrice:
@@ -186,17 +208,22 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 					: item['현재 최고 가격'] >= 1 && item['현재 최고 가격'] <= item['나의 최고 응찰 가격']
 					? item['나의 최고 응찰 가격'] + (finalInput?.biddingPrice || 1)
 					: item['현재 최고 가격'] + (finalInput?.biddingPrice || 1),
-			customerDestinationUid: finalInput?.customerDestinationUid ?? destiObject?.uid,
-			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
+			customerDestinationUid: destiObject && destiObject?.['uid'],
 		}))
 
 		// winningCreateData를 업데이트하여 productList를 갱신
+		const updatedData = {
+			...winningCreateData,
+			biddingList: updatedProductList,
+		}
+
 		setWinningCreateData((prevData) => ({
 			...prevData,
 			biddingList: updatedProductList,
 		}))
 
-		await postMutation(winningCreateData)
+		// postMutation 함수 내부에서 처리
+		postMutation(updatedData)
 	}
 
 	// 응찰가 일괄 적용 버튼
