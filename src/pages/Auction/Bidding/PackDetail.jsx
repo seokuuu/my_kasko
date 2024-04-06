@@ -144,6 +144,9 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 				func: () => {
 					refetch()
 					queryClient.invalidateQueries('auction')
+					setFinalInput({
+						biddingPrice: null,
+					})
 				},
 			})
 		},
@@ -316,6 +319,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 											placeholder="응찰가 + 최고가 입력"
 											width={140}
 											height={32}
+											value={finalInput.biddingPrice !== null ? finalInput.biddingPrice : ''}
 											onChange={(e) => {
 												setFinalInput((p) => ({
 													...p,
