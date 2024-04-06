@@ -8,7 +8,18 @@ import moment from 'moment'
 
 registerLocale('ko', ko)
 
-const DateGrid = ({ left, bgColor, fontSize, width, height, startDate, setStartDate, placeholder, isEnd = false }) => {
+const DateGrid = ({
+	left,
+	bgColor,
+	fontSize,
+	width,
+	height,
+	startDate,
+	setStartDate,
+	placeholder,
+	minDate,
+	isEnd = false,
+}) => {
 	const handleDateChange = (date) => {
 		if (date) {
 			let newDate = moment(date).startOf('hour').format('YYYY-MM-DD HH:mm:ss')
@@ -32,6 +43,7 @@ const DateGrid = ({ left, bgColor, fontSize, width, height, startDate, setStartD
 						placeholderText={placeholder}
 						locale="ko" // 설정한 로케일을 사용합니다.
 						dateFormat="yyyy-MM-dd"
+						minDate={minDate}
 					/>
 					<PickerImg onChange={(date) => setStartDate(date)} src="/svg/Calender.svg" />
 				</PickerWrap>

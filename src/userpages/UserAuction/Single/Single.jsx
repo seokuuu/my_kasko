@@ -543,7 +543,7 @@ const Single = ({}) => {
 			setAgreementModal(true)
 		} else if (auth?.statusList?.auctionStatus === '경매 제한') {
 			simpleAlert('경매에 참여하실 수 없습니다.', () => {
-				navigate('/main')
+				navigate('/userpage/main')
 			})
 		} else setAgreementModal(false)
 	}, [realAucNum, checkGetAgreement, auth])
