@@ -361,7 +361,6 @@ const BiddingSingle = ({}) => {
 
 	//  222
 	const unitPriceBatchOnClick = () => {
-		setLive(false) // LIVE get 일시 중단
 		setFinalInput((p) => ({
 			...p,
 			biddingPrice: winningCreateInput?.biddingPrice,
@@ -400,6 +399,8 @@ const BiddingSingle = ({}) => {
 			...prevData,
 			list: updatedResData,
 		}))
+
+		setLive(false) // LIVE get 일시 중단
 
 		// setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 	}

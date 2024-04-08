@@ -65,11 +65,11 @@ export const singleDispatchFields = {
 	패키지번호: 'packageNumber',
 	'Pro.No': 'productNoNumber',
 	'경매 번호': 'auctionNumber',
-	'제품 낙찰 단가': 'productBiddingPrice',
-	'낙찰 총 단가': 'totalBiddingPrice',
+	'제품 낙찰 단가(원/톤)': 'productBiddingPrice',
+	'낙찰 총 단가(원/톤)': 'totalBiddingPrice',
 	'기본 운임 단가': 'freightFee',
 	'할증 운임 단가': 'extraUnitPrice',
-	'제품 공급가': 'orderPrice',
+	'제품 공급가(원/톤)': 'orderPrice',
 	'제품 부가세': 'orderPriceVat',
 	'운반비 공급가': 'freightCost',
 	'운반비 부가세': 'freightCostVat',
@@ -420,13 +420,13 @@ export const SingleDispatchFieldsCols = [
 	{
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		field: '제품 낙찰 단가',
+		field: '제품 낙찰 단가(원/톤)',
 		minWidth: 100,
 	},
 	{
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		field: '낙찰 총 단가',
+		field: '낙찰 총 단가(원/톤)',
 		minWidth: 100,
 	},
 	{
@@ -444,7 +444,7 @@ export const SingleDispatchFieldsCols = [
 	{
 		headerClass: 'custom-header-style',
 		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		field: '제품 공급가',
+		field: '제품 공급가(원/톤)',
 		minWidth: 100,
 	},
 	{

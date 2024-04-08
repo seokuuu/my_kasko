@@ -417,7 +417,7 @@ const Package = ({}) => {
 	 */
 	// 선택상품(checked product) - 선택상품 정보를 조회합니다.
 	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
-		weightKey: '중량',
+		weightKey: '총 중량',
 	})
 	// 테이블 데이터, 페이지 데이터, 총 중량
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
@@ -586,7 +586,7 @@ const Package = ({}) => {
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
 						{!nowAuction && <Excel getRow={tableRowData} sheetName="경매 응찰" />}
-						<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
+						<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.packageNumber} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>

@@ -146,7 +146,7 @@ export const divideProField = {
 	길이: 'length',
 	yp: 'yp',
 	ys: 'ts',
-	c: 'c',
+	'c%': 'c',
 	p: 'p',
 	s: 's',
 	si: 'si',

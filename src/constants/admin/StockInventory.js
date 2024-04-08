@@ -55,10 +55,10 @@ export const StockInventoryFields = {
 	'용도 코드': 'usageCode',
 	용도명: 'usageCodeName',
 	//메모 - 누락 추가
-	'제품 낙찰 단가': 'productBiddingPrice',
-	'낙찰 총 단가': 'totalBiddingPrice',
-	'제품 공급가': 'orderPrice',
-	'제품대 부가세': 'orderPriceVat',
+	'제품 낙찰 단가(원/톤)': 'productBiddingPrice',
+	'낙찰 총 단가(원/톤)': 'totalBiddingPrice',
+	'제품 공급가(원/톤)': 'orderPrice',
+	'제품 부가세(원/톤)': 'orderPriceVat',
 	'제품 금액': 'totalOrderPrice',
 	'기본 운임 단가': 'freightFee',
 	'할증 운임 단가': 'extraUnitPrice',
@@ -70,11 +70,11 @@ export const StockInventoryFields = {
 
 	'재고 상태': 'stockStatus',
 
-	'운송비 공급가': 'freightCost',
-	'총 공급가': 'totalSupplyPrice',
+	'운반비 공급가(원/톤)': 'freightCost',
+	'총 공급가(원/톤)': 'totalSupplyPrice',
 
-	'운송비 부가세': 'freightCostVat',
-	'총 부가세': 'totalVat',
+	'운반비 부가세(원/톤)': 'freightCostVat',
+	'총 부가세(원/톤)': 'totalVat',
 
 	'운반비 금액': 'totalFreightCost',
 	목적지명: 'destinationName',
