@@ -74,10 +74,10 @@ const StartPriceFields = ({
 					<PartWrap first>
 						<DateSearchSelect
 							title={'적용 일자'}
-							startInitDate={search.auctionStartDate}
-							endInitDate={search.auctionEndDate}
-							startDateChange={(value) => commonDropdownButtonHandler(value, 'auctionStartDate')}
-							endDateChange={(value) => commonDropdownButtonHandler(value, 'auctionEndDate')}
+							startInitDate={search.startDate}
+							endInitDate={search.endDate}
+							startDateChange={(value) => commonDropdownButtonHandler(value, 'startDate')}
+							endDateChange={(value) => commonDropdownButtonHandler(value, 'endDate')}
 						/>
 					</PartWrap>
 					<PartWrap>

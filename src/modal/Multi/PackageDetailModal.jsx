@@ -24,7 +24,7 @@ import {
 
 export default function PackageDetailModal() {
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
-	const checkWeight = checkBoxSelect?.map((x) => parseInt(x['제품 중량']))
+	const checkWeight = checkBoxSelect?.map((x) => parseInt(x['제품 중량'].replace(/,/g, '')))
 	const checkWeightSum = checkWeight?.reduce((total, current) => total + current, 0)?.toLocaleString()
 
 	const setIsModal = useSetAtom(packageDetailModal)
