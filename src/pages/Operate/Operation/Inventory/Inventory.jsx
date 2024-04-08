@@ -62,6 +62,8 @@ const Inventory = () => {
 		}
 	}, [isSuccess, data])
 
+	console.log('겟로우 ', data?.data?.data?.list)
+
 	const [isRotated, setIsRotated] = useState(false)
 
 	// 토글 쓰기
@@ -116,7 +118,8 @@ const Inventory = () => {
 				</TCSubContainer>
 				<TCSubContainer>
 					<div style={{ padding: '8px 0' }}>
-						선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총 중량 {pagination?.totalWeight}kg
+						선택 중량<span> {KilogramSum(checkBoxSelect)} </span>kg / 총 중량 {pagination?.totalWeight.toLocaleString()}
+						kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>{/* <SwitchBtn>입고 확정</SwitchBtn> */}</div>
 				</TCSubContainer>

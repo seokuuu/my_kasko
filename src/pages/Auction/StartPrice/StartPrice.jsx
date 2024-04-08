@@ -143,7 +143,7 @@ const StartPrice = ({}) => {
 			...prevData,
 			updateList: updatedProductList,
 		}))
-	}, [checkedArray])
+	}, [checkedArray, applyDate, effectPrice])
 
 	// 삭제 mutate
 	const { mutate: remove } = useMutation(deleteStartPrice, {
@@ -310,6 +310,7 @@ const StartPrice = ({}) => {
 					>
 						<p>일괄 단가 적용</p>
 						<CustomInput
+							type={'number'}
 							placeholder="단가 입력"
 							width={120}
 							height={32}

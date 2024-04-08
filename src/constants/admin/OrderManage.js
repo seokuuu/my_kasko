@@ -22,7 +22,7 @@ const LinkRenderer = (props) => {
 		customerDestinationAddress: data['목적지 주소'],
 		customerDestinationName: data['하차지명'],
 		customerName: data['고객사명'],
-		customerDestinationPhone: data['목적지 연락처'],
+		customerDestinationPhone: data['목적지 연락처(사무실)'],
 		totalPrice: data['입금요청액'],
 	})
 
@@ -164,12 +164,12 @@ export const OrderManageFieldsCols = [
 	},
 	{
 		...commonStyles,
-		field: '목적지 연락처',
+		field: '목적지 연락처(사무실)',
 		minWidth: 150,
 	},
 	{
 		...commonStyles,
-		field: '목적지 담당자 연락처',
+		field: '목적지 담당자 연락처(휴대폰)',
 		minWidth: 150,
 	},
 	{
@@ -221,8 +221,8 @@ export const orderFieldData = {
 	목적지명: 'destinationName',
 	'고객사 목적지 고유 번호': 'customerDestinationUid',
 	'목적지 주소': 'customerDestinationAddress',
-	'목적지 연락처': 'customerDestinationPhone',
-	'목적지 담당자 연락처': 'customerDestinationManagerPhone',
+	'목적지 연락처(사무실)': 'customerDestinationPhone',
+	'목적지 담당자 연락처(휴대폰)': 'customerDestinationManagerPhone',
 	하차지명: 'customerDestinationName',
 	'최종 수정자': 'updateMemberName',
 	'최종 수정일': 'updateDate',
