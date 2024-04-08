@@ -33,7 +33,9 @@ const WinningSearchFields = ({
 		destinationName: '',
 	}
 
-	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
+	const onChange = (key, value) => {
+		setSearch((p) => ({ ...p, [key]: value }))
+	}
 
 	const [param, setParam] = useState(init)
 
