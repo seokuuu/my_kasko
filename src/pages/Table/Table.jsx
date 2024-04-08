@@ -136,6 +136,7 @@ const Table = ({
 				})
 				return formattedItem
 			})
+			console.log('formattedRow', formattedRow)
 			setRowData(formattedRow)
 		} else {
 			setRowData(getRow)

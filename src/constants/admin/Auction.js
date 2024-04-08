@@ -1,11 +1,11 @@
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtom } from 'jotai'
+import { jwtDecode } from 'jwt-decode'
+import { useLocation } from 'react-router-dom'
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
 import MarkerCellRenderer from '../../pages/Table/MarkerCellRenderer'
+import { ProNoCellRenderer } from '../../pages/Table/ProNoCellRenderer'
 import { auctionPackDetailModal, auctionPackDetailNumAtom } from '../../store/Layout/Layout'
 import { PROD_COL_NAME } from '../user/constantKey'
-import { ProNoCellRenderer } from '../../pages/Table/ProNoCellRenderer'
-import { authAtom } from '../../store/Auth/auth'
-import { useLocation } from 'react-router-dom'
 
 var checkboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping
@@ -24,26 +24,53 @@ export const commonStyles = {
 	getFieldMinWidth: (field) => field.length * 10 + 60, // 조절 가능한 계수 및 기본 값 사용
 }
 
+const TOKEN_STORAGE_KEY = 'accessToken'
+const WISH_STORAGE_KEY = 'ksk_wish'
+const USER_WISH_STORAGE_KEY = (userId) => `${WISH_STORAGE_KEY}_${userId}`
+
+console.log('USER_WISH_STORAGE_KEY', USER_WISH_STORAGE_KEY)
+
 const LinkRenderer = (props) => {
+	const token = localStorage.getItem(TOKEN_STORAGE_KEY)
+	const userId = jwtDecode(token)?.sub || ''
+	const wishListNum = USER_WISH_STORAGE_KEY(userId)
+	let wishList = JSON.parse(localStorage.getItem(wishListNum)) || [] // 기본값으로 빈 배열 설정
+
+	// 만약 wishList가 배열이 아닌 경우, 빈 배열로 초기화
+	if (!Array.isArray(wishList)) {
+		wishList = []
+	}
+
 	const { data } = props
 	const [aucDetail, setAucDetail] = useAtom(auctionPackDetailNumAtom) // 해당 row 값 저장
 	const [aucDetailModal, setAucDetailModal] = useAtom(auctionPackDetailModal) // 패키지 모달
+
+	const isValueInWishList = wishList.includes(props?.value)
+
+	console.log('wishList', wishList)
 
 	return (
 		<>
 			{aucDetailModal ? (
 				<>{props.value || ''}</>
 			) : (
-				<a
-					onClick={() => {
-						setAucDetailModal(true)
-						setAucDetail(data)
-					}}
-					style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer', fontWeight: 'bolder' }}
-					rel="noreferrer"
-				>
-					{props.value || ''}
-				</a>
+				<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+					{isValueInWishList && (
+						//  <wishIcon />
+						<img src="/svg/favorite.svg" alt="" />
+					)}
+					{/* props.value가 wishList에 있는 경우에만 "즐" 출력 */}
+					<a
+						onClick={() => {
+							setAucDetailModal(true)
+							setAucDetail(data)
+						}}
+						style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer', fontWeight: 'bolder' }}
+						rel="noreferrer"
+					>
+						{props.value || ''}
+					</a>
+				</div>
 			)}
 		</>
 	)
@@ -564,6 +591,7 @@ export const AuctionBiddingFieldsCols = (selected) => {
 	// const checkAucURL = ['/auction/biddingsingle'].includes(location.pathname)
 	const packDetail = ['/auction/biddingpackage', '/userpage/auctionpackage'].includes(location.pathname)
 	const checkboxSelection2 = (params) => {
+		console.log('파람스 싱글', params?.data)
 		if (selected && selected.length > 0) {
 			const selectedUid = [...new Set(selected?.map((item) => item['제품 번호']?.value))]
 			if (selectedUid?.includes(params.data['제품 번호'].value)) {
@@ -718,8 +746,11 @@ export const AuctionBiddingPackageFields = {
 // 패키지 응찰
 export const AuctionPackageBiddingFieldsCols = (selected) => {
 	const checkboxSelection2 = (params) => {
+		console.log('파람스', params?.data)
 		if (selected && selected.length > 0) {
 			const selectedUid = [...new Set(selected.map((item) => item['패키지 번호']))]
+
+			console.log('유아디', selectedUid)
 
 			if (selectedUid?.includes(params.data['패키지 번호'])) {
 				params.node.setSelected(true)
@@ -739,6 +770,8 @@ export const AuctionPackageBiddingFieldsCols = (selected) => {
 			...commonStyles,
 			field: '패키지 번호',
 			cellRenderer: LinkRenderer,
+			// cellRendererParams: (params) => params?.data[params.column.colId] || '',
+			// valueGetter: (v) => v.data[v.column.colId]?.value || '',
 		},
 		{ ...commonStyles, field: '추천 여부', cellRenderer: (params) => (params.value ? 'O' : 'X') },
 		{ ...commonStyles, field: '시작가' },
