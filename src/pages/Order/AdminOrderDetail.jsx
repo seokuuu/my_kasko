@@ -130,7 +130,7 @@ const AdminOrderDetail = () => {
 	}
 	// 토글 쓰기
 	const titleData = [
-		'판매 구분',
+		'판매 유형',
 		'고객 코드',
 		'고객사',
 		'총 중량',
