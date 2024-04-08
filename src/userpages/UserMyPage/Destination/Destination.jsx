@@ -94,8 +94,8 @@ const Destination = ({ setChoiceComponent }) => {
 		onSuccess: () => {
 			queryClient.invalidateQueries('destination')
 		},
-		onError() {
-			simpleAlert('삭제에 실패하였습니다.')
+		onError(e) {
+			simpleAlert(e?.data?.message || '삭제에 실패하였습니다.')
 		},
 	})
 
