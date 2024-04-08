@@ -53,7 +53,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 				col.field !== '목적지 코드' &&
 				col.field !== '목적지 명' &&
 				col.field !== '목적지 주소' &&
-				col.field !== '목적지 연락처',
+				col.field !== '목적지 연락처(사무실)',
 		)
 
 		tableField.current = modifiedCols
@@ -105,11 +105,16 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 		packageNumber: packNum,
 	}
 
+	// live가 false여야지 모달 라이브가 돈다. !live = true에
+	// modalLive 값을 하나 더 만들어 라이브 관리를 하자.
+
+	const [modalLive, setModalLive] = useState(true)
+
 	const [param, setParam] = useState(paramData)
 
 	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(
 		paramData,
-		!live,
+		!live && modalLive,
 		getBiddingPackDetail,
 		nowAuction,
 	)
@@ -147,6 +152,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 					setFinalInput({
 						biddingPrice: null,
 					})
+					setModalLive(true) // 모달 라이브 켜기
 				},
 			})
 		},
@@ -233,6 +239,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 	const handleButtonClick = () => {
 		if (finalInput.biddingPrice === null) simpleAlert('값을 입력해주세요.')
 		else {
+			setModalLive(false) // 모달 LIVE 일시 중단
 			simpleAlert('적용 되었습니다.', () => {
 				const firstBiddingEntry = getRow[0]
 				if (firstBiddingEntry) {
@@ -259,13 +266,16 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 					if (uids.includes(item.auctionNumber)) {
 						item.memberBiddingPrice =
 							item.biddingPrice === 0
-								? item.auctionStartPrice + winningCreateInput?.biddingPrice
+								? item.auctionStartPrice + finalInput?.biddingPrice // 이건 작동 됨
 								: item.biddingPrice >= 1 && item.biddingPrice <= item.memberBiddingPrice
-								? item.memberBestBiddingPrice + winningCreateInput.biddingPrice
-								: item.biddingPrice + winningCreateInput?.biddingPrice
+								? item.memberBestBiddingPrice + finalInput.biddingPrice
+								: item.biddingPrice + finalInput?.biddingPrice
 					}
 					return item
 				})
+
+				console.log('updatedResData', updatedResData[0]?.memberBiddingPrice)
+				console.log('finalInput?.biddingPrice ', finalInput?.biddingPrice)
 				setGetRow(add_element_field(updatedResData, AuctionBiddingFields))
 			})
 		}

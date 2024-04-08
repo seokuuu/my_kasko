@@ -49,7 +49,7 @@ export const packageProductsDispatchFields = {
 	메모: 'memo',
 	비고: 'note',
 	'낙찰 단가': 'productBiddingPrice',
-	'낙찰 총 단가': 'totalBiddingPrice',
+	'낙찰 총 단가(원/톤)': 'totalBiddingPrice',
 	공급가: 'orderPrice',
 	부가세: 'orderPriceVat',
 	'경매 시작가': 'auctionStartPrice',
