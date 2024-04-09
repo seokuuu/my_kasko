@@ -4,7 +4,7 @@ import { WhiteRedBtn } from '../../../common/Button/Button'
 import { PROD_CATEGORY, PROD_COL_NAME } from '../../../constants/user/constantKey'
 import useAlert from '../../../store/Alert/useAlert'
 
-const DelCartButton = ({ category, products = [], listRefetch }) => {
+const DelCartButton = ({ category, products = [] }) => {
 	// API
 	const { mutate: delCart, isLoading } = useUserDelCartMutaion() // 장바구니 추가하기 뮤테이션
 	// ALERT
@@ -23,7 +23,6 @@ const DelCartButton = ({ category, products = [], listRefetch }) => {
 		const uids = products.map((v) => v[PROD_COL_NAME.cartUid])
 		simpleConfirm('선택하신 장바구니 제품을 삭제하시겠습니까?', () => {
 			delCart(uids.toString())
-			listRefetch()
 		})
 	}
 
