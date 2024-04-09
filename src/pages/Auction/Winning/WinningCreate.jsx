@@ -253,6 +253,7 @@ const WinningCreate = ({}) => {
 
 	const successfulBidOnClick = () => {
 		// if (!isArray(checkedArray2) || !checkedArray2.length > 0) return simpleAlert('등록할 항목을 선택해주세요.')
+		if (!destiObject) return simpleAlert('목적지 적용이 필요합니다.')
 		successfulBidMutation(winningCreateData)
 	}
 
@@ -285,7 +286,6 @@ const WinningCreate = ({}) => {
 	console.log('getRow', getRow)
 
 	const productAddOnClickHandler = () => {
-		// if (!destiObject) return simpleAlert('상단 목적지 적용 후 추가해주세요.')
 		setAddProdModal(true)
 	}
 
@@ -418,8 +418,7 @@ const WinningCreate = ({}) => {
 					<div style={{ display: 'flex', gap: '10px' }}>
 						{/* 제품 대량 업로드 */}
 						<WinningProductCreateBtn setNewResData={setNewResData} />
-<SkyBtn onClick={productAddOnClickHandler}>제품 추가</SkyBtn>
-
+						<SkyBtn onClick={productAddOnClickHandler}>제품 추가</SkyBtn>
 					</div>
 				</TCSubContainer>
 				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
