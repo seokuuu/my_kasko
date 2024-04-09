@@ -52,7 +52,7 @@ const Cart = ({}) => {
 	)
 	const { searchParams, handleParamsChange, handlePageSizeChange } = useTableSearchParams(initialParams)
 	// API
-	const { data: cartData, isLoading, isError } = useUserCartListQuery(searchParams) // 카트 목록 조회 쿼리
+	const { data: cartData, isLoading, isError, refetch } = useUserCartListQuery(searchParams) // 카트 목록 조회 쿼리
 	// 카테고리 (단일| 패키지)
 	const isSingleCategory = useMemo(() => searchParams.category === PROD_CATEGORY.single, [searchParams])
 	// 테이블 데이터, 페이지 데이터, 총 중량
@@ -138,7 +138,7 @@ const Cart = ({}) => {
 				/>
 				{/* 테이블 액션 */}
 				<TCSubContainer style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', width: '100%' }}>
-					<DelCartButton category={searchParams.category} products={selectedData} />
+					<DelCartButton category={searchParams.category} products={selectedData} listRefetch={refetch} />
 					<AddOrderButton category={searchParams.category} totalWeight={selectedWeight} products={selectedData} />
 				</TCSubContainer>
 			</TableContianer>
