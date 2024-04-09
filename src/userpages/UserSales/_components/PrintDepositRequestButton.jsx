@@ -104,7 +104,7 @@ export const PrintDepositRequestButton = ({
 			filename: `입금요청서_${auctionDate}.pdf`, // default : file.pdf
 			html2canvas: { scale: 3 }, // 캡처한 이미지의 크기를 조절, 값이 클수록 더 선명하다.
 			jsPDF: {
-				format: 'a2', // 종이 크기 형식
+				format: 'a4', // 종이 크기 형식
 				orientation: orientation, // or landscape : 가로
 			},
 			callback: setCheckModal(false),
