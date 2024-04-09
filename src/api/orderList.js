@@ -13,10 +13,10 @@ const urls = {
 	orderDeposit: '/admin/order/deposit', // 상시 판매 관리 > 주문 확인 상세 > 부분 입금 취소
 	cancleAllOrderList: '/admin/order/cancel-all',
 	depositCancleAllOrderList: '/admin/order/deposit-all',
-	// successfulOrder: '/sendSuccessBid',
-	successfulOrder: '/dev-sendSuccessBid',
-	// successfulOrderAll: '/sendSuccessBidList',
-	successfulOrderAll: '/dev-sendSuccessBidList',
+	successfulOrder: '/sendSuccessBid',
+	// successfulOrder: '/dev-sendSuccessBid',
+	successfulOrderAll: '/sendSuccessBidList',
+	// successfulOrderAll: '/dev-sendSuccessBidList',
 }
 
 export async function useOrderCancel(data) {
@@ -92,19 +92,11 @@ export async function depositCancleAllOrderList(data) {
 }
 
 export async function successfulOrderPost(data) {
-	try {
-		const response = await client.post(`${urls.successfulOrder}`, data)
-		return response.data
-	} catch (e) {
-		throw new Error(e?.data?.message || '확정 전송 중 오류가 발생했습니다.')
-	}
+	const response = await client.post(`${urls.successfulOrder}`, data)
+	return response.data
 }
 
 export async function successfulOrderListPost(data) {
-	try {
-		const response = await client.post(`${urls.successfulOrderAll}`, data, { timeout: 120000 * 10 })
-		return response.data
-	} catch (e) {
-		throw new Error(e?.data?.message || '확정 전송 중 오류가 발생했습니다.')
-	}
+	const response = await client.post(`${urls.successfulOrderAll}`, data, { timeout: 120000 * 10 })
+	return response.data
 }
