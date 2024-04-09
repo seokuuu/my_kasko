@@ -364,8 +364,8 @@ const WinningDetail = ({ setAucDetail }) => {
 				},
 			})
 		},
-		onError: () => {
-			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		onError: (e) => {
+			simpleAlert(e?.data?.message || '오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
 	const deleteOnClickHandler = () => {
@@ -388,8 +388,8 @@ const WinningDetail = ({ setAucDetail }) => {
 				},
 			})
 		},
-		onError: () => {
-			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		onError: (e) => {
+			simpleAlert(e?.data?.message || '오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
 
