@@ -194,7 +194,7 @@ const OrderDetail = ({ salesNumber }) => {
 						{[0, 1].map((index) => (
 							<ClaimRow key={index}>
 								{INFO_COLUMNS.slice(index * 3, index * 3 + 3).map((title, idx) => (
-									<Fragment agmentkey={title}>
+									<Fragment key={title}>
 										<ClaimTitle>{title}</ClaimTitle>
 										<ClaimContent>{infoData[index * 3 + idx]}</ClaimContent>
 									</Fragment>
@@ -256,7 +256,11 @@ const OrderDetail = ({ salesNumber }) => {
 				<TCSubContainer>
 					<div></div>
 					{/* 입금 확인 요청서 */}
-					<PrintDepositRequestButton auctionNumber={salesNumber} salesDeposit />
+					<PrintDepositRequestButton
+						auctionNumber={salesNumber}
+						salesDeposit
+						saleStatus={serverData?.list && serverData?.list[0].saleStatus}
+					/>
 				</TCSubContainer>
 			</TableContianer>
 		</FilterContianer>
