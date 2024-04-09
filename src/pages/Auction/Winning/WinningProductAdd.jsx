@@ -48,7 +48,7 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 	const [tablePagination, setTablePagination] = useState([])
 	const paramData = {
 		pageNum: 1,
-		pageSize: 50,
+		pageSize: 10000,
 		saleType: '경매 대상재',
 		registrationStatus: '경매 등록 대기',
 	}

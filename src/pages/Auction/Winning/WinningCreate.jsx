@@ -181,10 +181,18 @@ const WinningCreate = ({}) => {
 		if (Array.isArray(newResData)) {
 			const combinedData = [...newResData]
 
-			setGetRow(combinedData)
+			const intUniqueData = combinedData.map((item) => ({
+				...item,
+				중량: parseInt(item.중량.replace(/,/g, ''), 10), // 콤마 제거 후 정수형 변환
+				길이: parseInt(item.길이.replace(/,/g, ''), 10), // 콤마 제거 후 정수형 변환
+			}))
+
+			setGetRow(intUniqueData)
 			// setTablePagination(resPagination)
 		}
 	}, [newResData])
+
+	console.log('newResData', newResData)
 
 	const dupleUids = getRow && getRow?.map((item) => item['제품 고유 번호'])
 
@@ -261,6 +269,8 @@ const WinningCreate = ({}) => {
 
 	const totalWeight = getRow && getRow?.map((x) => x['중량'])
 	const sum = totalWeight && totalWeight?.reduce((acc, curr) => acc + parseInt(curr), 0)
+
+	console.log('getRow', getRow)
 
 	return (
 		<FilterContianer>
