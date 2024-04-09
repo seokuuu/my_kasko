@@ -112,6 +112,10 @@ const Winning = ({}) => {
 	})
 	// 부분 입금 확인 버튼 Handler
 	const depositOnClickHandler = () => {
+		if (!checkedArray || checkedArray?.length === 0) {
+			simpleAlert('입금 확인할 제품을 선택해주세요.')
+			return
+		}
 		depositMuation(extractedArray)
 	}
 

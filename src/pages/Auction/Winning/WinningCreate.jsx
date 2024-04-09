@@ -8,7 +8,9 @@ import {
 	selectedRows2Switch,
 	selectedRowsAtom2,
 	toggleAtom,
+	WinningCreateFindAtom,
 	winningDestiData,
+	WinningProductAddAtom,
 } from '../../../store/Layout/Layout'
 
 import {
@@ -37,12 +39,12 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import CustomerCodeFind from '../../../modal/Multi/CustomerCodeFind'
 import CustomerFind from '../../../modal/Multi/CustomerFind'
 import useAlert from '../../../store/Alert/useAlert'
-import { WinningCreateFindAtom, WinningProductAddAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import BiddingSearchFields from '../Bidding/BiddingSearchFields'
 import WinningProductAdd from './WinningProductAdd'
 import useTableSelection from '../../../hooks/useTableSelection'
+import WinningProductCreateBtn from './WinningProductCreateBtn'
 
 const WinningCreate = ({}) => {
 	const navigate = useNavigate()
@@ -388,6 +390,8 @@ const WinningCreate = ({}) => {
 						선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 <span>{sum.toLocaleString()}</span> (kg)
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
+						{/* 제품 대량 업로드 */}
+						<WinningProductCreateBtn setNewResData={setNewResData} />
 						<SkyBtn
 							onClick={() => {
 								setAddProdModal(true)

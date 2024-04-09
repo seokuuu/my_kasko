@@ -369,6 +369,10 @@ const WinningDetail = ({ setAucDetail }) => {
 		},
 	})
 	const deleteOnClickHandler = () => {
+		if (!checkedArray || checkedArray?.length === 0) {
+			simpleAlert('제품을 선택해주세요.')
+			return
+		}
 		deleteMutation(extractedArray)
 	}
 
@@ -391,6 +395,10 @@ const WinningDetail = ({ setAucDetail }) => {
 
 	// 부분 입금 확인 버튼 Handler
 	const partDepostiHandler = () => {
+		if (!checkedArray || checkedArray?.length === 0) {
+			simpleAlert('제품을 선택해주세요.')
+			return
+		}
 		depositMuation(extractedArray)
 	}
 
@@ -434,6 +442,10 @@ const WinningDetail = ({ setAucDetail }) => {
 		},
 	})
 	const destiChangeRejOnClickHandler = () => {
+		if (!checkedArray || checkedArray?.length === 0) {
+			simpleAlert('제품을 선택해주세요.')
+			return
+		}
 		destiChangeRejMutation(winningCreateData)
 	}
 
@@ -455,6 +467,10 @@ const WinningDetail = ({ setAucDetail }) => {
 		},
 	})
 	const destiChangeApprovOnClickHandler = () => {
+		if (!checkedArray || checkedArray?.length === 0) {
+			simpleAlert('제품을 선택해주세요.')
+			return
+		}
 		destiChangeApproveMutation(winningCreateData)
 	}
 
