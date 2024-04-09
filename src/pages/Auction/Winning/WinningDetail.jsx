@@ -526,6 +526,7 @@ const WinningDetail = ({ setAucDetail }) => {
 				<>
 					<GlobalProductSearch
 						param={param}
+						setParam={setParam}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <WinningDetailFields {...props} />}
 						globalProductSearchOnClick={globalProductSearchOnClick}

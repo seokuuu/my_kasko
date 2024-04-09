@@ -150,6 +150,7 @@ const Docs = () => {
 					<FilterWrap>
 						<GlobalProductSearch
 							param={param}
+							setParam={setParam}
 							isToggleSeparate={true}
 							renderCustomSearchFields={(props) => (
 								<FAQSearchFields {...props} searchOptions={noticeSearchCategoryOptions} />

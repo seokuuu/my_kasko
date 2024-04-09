@@ -405,6 +405,7 @@ const Transport = () => {
 					<FilterWrap>
 						<GlobalProductSearch
 							param={param}
+							setParam={setParam}
 							isToggleSeparate={true}
 							renderCustomSearchFields={(props) => <TransportSearchFilter {...props} />}
 							globalProductSearchOnClick={globalProductSearchOnClick}

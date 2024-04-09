@@ -125,6 +125,7 @@ const Package = ({}) => {
 				<FilterWrap>
 					<GlobalProductSearch
 						param={searchParams}
+						setParam={setSearchParams}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <PackageSearchFields {...props} />}
 						globalProductSearchOnClick={handleFilterSearch}

@@ -56,6 +56,7 @@ const ClaimHeader = ({ search, setSearch, refetch }) => {
 			{exFilterToggle && (
 				<GlobalProductSearch
 					param={search}
+					setParam={setSearch}
 					isToggleSeparate={true}
 					renderCustomSearchFields={(props) => <ClaimSearchFields {...props} />}
 					globalProductSearchOnClick={globalProductSearchOnClick}

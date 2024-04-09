@@ -8,7 +8,10 @@ import Hidden from '../../../components/TableInner/Hidden'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
 	FilterContianer,
-	FilterHeader, FilterWrap, TCSubContainer, TableContianer
+	FilterHeader,
+	FilterWrap,
+	TCSubContainer,
+	TableContianer,
 } from '../../../modal/External/ExternalFilter'
 import { blueModalAtom, toggleAtom } from '../../../store/Layout/Layout'
 import Test3 from '../../Test/Test3'
@@ -48,7 +51,6 @@ const CarrierManage = ({}) => {
 	}
 
 	const [isModal, setIsModal] = useAtom(blueModalAtom)
-
 
 	const modalOpen = () => {
 		setIsModal(true)
@@ -115,6 +117,7 @@ const CarrierManage = ({}) => {
 						</FilterFooter> */}
 						<GlobalProductSearch
 							param={param}
+							setParam={setParam}
 							isToggleSeparate={true}
 							renderCustomSearchFields={(props) => <UserManangeSearchFields {...props} />} //
 							globalProductSearchOnClick={globalProductSearchOnClick}

@@ -125,6 +125,7 @@ const Single = () => {
 				<FilterWrap>
 					<GlobalProductSearch
 						param={searchParams}
+						setParam={setSearchParams}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <SingleSearchFields {...props} />}
 						globalProductSearchOnClick={handleFilterSearch}

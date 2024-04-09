@@ -159,6 +159,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 						{exFilterToggle && (
 							<GlobalProductSearch
 								param={param}
+								setParam={setParam}
 								isToggleSeparate={true}
 								renderCustomSearchFields={(props) => <PackageProductSearchModalFields {...props} />}
 								globalProductSearchOnClick={globalProductSearchOnClick}

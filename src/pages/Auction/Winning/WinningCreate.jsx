@@ -365,6 +365,7 @@ const WinningCreate = ({}) => {
 				<>
 					<GlobalProductSearch
 						param={param}
+						setParam={setParam}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <BiddingSearchFields type={'낙찰 생성'} {...props} />} // 만들어야함 -> WinningSearchFields
 						globalProductSearchOnClick={globalProductSearchOnClick} // import

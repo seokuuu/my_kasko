@@ -162,6 +162,7 @@ const Inventory = () => {
 			{exFilterToggle && (
 				<GlobalProductSearch
 					param={param}
+					setParam={setParam}
 					isToggleSeparate={true}
 					renderCustomSearchFields={(props) => <InventorySearchFields {...props} />}
 					globalProductSearchOnClick={globalProductSearchOnClick}

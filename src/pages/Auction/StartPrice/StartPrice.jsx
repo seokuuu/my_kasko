@@ -277,6 +277,7 @@ const StartPrice = ({}) => {
 				<>
 					<GlobalProductSearch
 						param={param}
+						setParam={setParam}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <StartPriceFields {...props} />}
 						globalProductSearchOnClick={globalProductSearchOnClick}

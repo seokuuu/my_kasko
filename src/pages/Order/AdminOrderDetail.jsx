@@ -282,6 +282,7 @@ const AdminOrderDetail = () => {
 					<>
 						<GlobalProductSearch
 							param={param}
+							setParam={setParam}
 							isToggleSeparate={true}
 							renderCustomSearchFields={(props) => <OrderDetailSearchFields {...props} />}
 							globalProductSearchOnClick={globalProductSearchOnClick}

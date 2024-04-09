@@ -144,6 +144,7 @@ const Winning = ({}) => {
 				<>
 					<GlobalProductSearch
 						param={param}
+						setParam={setParam}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <UserWinningSearchFields {...props} />}
 						globalProductSearchOnClick={globalProductSearchOnClick}

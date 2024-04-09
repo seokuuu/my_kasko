@@ -233,6 +233,7 @@ const PackageManage = () => {
 			{exFilterToggle && (
 				<GlobalProductSearch
 					param={param}
+					setParam={setParam}
 					isToggleSeparate={true}
 					renderCustomSearchFields={(props) => <PackageProductSearchFields {...props} />}
 					globalProductSearchOnClick={globalProductSearchOnClick}

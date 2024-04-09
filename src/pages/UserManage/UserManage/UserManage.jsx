@@ -94,8 +94,6 @@ const UserManage = ({ setChoiceComponent }) => {
 	const [param, setParam] = useState(paramData)
 	const { onPageChanage } = useTablePaginationPageChange(data, setParam)
 
-
-
 	useEffect(() => {
 		let getData = resData
 		if (!isSuccess && !resData) return
@@ -202,6 +200,7 @@ const UserManage = ({ setChoiceComponent }) => {
 						</FilterFooter> */}
 						<GlobalProductSearch
 							param={param}
+							setParam={setParam}
 							isToggleSeparate={true}
 							renderCustomSearchFields={(props) => <UserManangeSearchFields {...props} />} //
 							globalProductSearchOnClick={globalProductSearchOnClick}
