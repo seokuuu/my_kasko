@@ -45,6 +45,8 @@ import BiddingSearchFields from '../Bidding/BiddingSearchFields'
 import WinningProductAdd from './WinningProductAdd'
 import useTableSelection from '../../../hooks/useTableSelection'
 import WinningProductCreateBtn from './WinningProductCreateBtn'
+import { client } from '../../../api'
+import { numberDeleteComma } from '../../../utils/utils'
 
 const WinningCreate = ({}) => {
 	const [values, setValues] = useState([]) // 배열 형태로 초기화
@@ -130,6 +132,8 @@ const WinningCreate = ({}) => {
 			memberUid: customerData?.memberUid,
 			productList: values,
 		}))
+
+		totalPriceCalculation()
 	}, [propsUid, auctionNowNum, customerData])
 
 	const [tablePagination, setTablePagination] = useState([])
@@ -181,21 +185,54 @@ const WinningCreate = ({}) => {
 	// const resPagination = data?.data?.data?.pagination
 	const [newResData, setNewResData] = useState([])
 
+	// 낙찰가 & 확정전송가 총액
+	const getBiddingTotalPrice = async (params) => {
+		const response = await client.post('/auction/successfulBid/totalBiddingPrice', params)
+		return response.data.data
+	}
+
+	// 낙찰가 총액
+	const [totalBiddingPrice, setTotalBiddingPrice] = useState(0)
+	// 확정전송총액
+	const [totalSendBiddingPrice, setTotalSendBiddingPrice] = useState(0)
+
 	useEffect(() => {
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 		if (Array.isArray(newResData)) {
 			const combinedData = [...newResData]
+			console.log('combinedData : ', combinedData)
 
 			const intUniqueData = combinedData.map((item) => ({
 				...item,
-				중량: parseInt(item.중량.replace(/,/g, ''), 10), // 콤마 제거 후 정수형 변환
-				길이: parseInt(item.길이.replace(/,/g, ''), 10), // 콤마 제거 후 정수형 변환
+				중량: parseInt(numberDeleteComma(item['중량'])), // 콤마 제거 후 정수형 변환
+				길이: parseInt(numberDeleteComma(item['길이'])), // 콤마 제거 후 정수형 변환
 			}))
 
 			setGetRow(intUniqueData)
+			totalPriceCalculation()
 			// setTablePagination(resPagination)
 		}
 	}, [newResData])
+
+	const totalPriceCalculation = async () => {
+		if (newResData?.length > 0 && destiObject) {
+			const requestData = newResData.map((item) => ({
+				productUid: item['제품 고유 번호'],
+				customerDestinationUid: destiObject.uid,
+				biddingPrice: item['낙찰가'],
+			}))
+			const newBiddingTotalPrice = await getBiddingTotalPrice(requestData)
+			setTotalBiddingPrice(newBiddingTotalPrice)
+
+			const requestSendData = newResData.map((item) => ({
+				productUid: item['제품 고유 번호'],
+				customerDestinationUid: destiObject.uid,
+				biddingPrice: item['확정전송가'],
+			}))
+			const newSendBiddingTotalPrice = await getBiddingTotalPrice(requestSendData)
+			setTotalSendBiddingPrice(newSendBiddingTotalPrice)
+		}
+	}
 
 	console.log('newResData', newResData)
 
@@ -369,7 +406,7 @@ const WinningCreate = ({}) => {
 						<div style={{ marginRight: '10px' }}>
 							<h6 style={{ fontSize: '18px' }}>낙찰가 총액 (공급가)</h6>
 							<InputContainer>
-								<NoOutInput type="number" value={totalWon?.biddingPrice} />
+								{totalBiddingPrice?.toLocaleString()}
 								<Unit>원</Unit>
 							</InputContainer>
 						</div>
@@ -381,7 +418,7 @@ const WinningCreate = ({}) => {
 						<div style={{ marginRight: '10px' }}>
 							<h6 style={{ fontSize: '17px' }}> 확정전송액 (공급가)</h6>
 							<InputContainer>
-								<NoOutInput type="number" value={totalWon?.confirmPrice} />
+								{totalSendBiddingPrice?.toLocaleString()}
 								<Unit>원</Unit>
 							</InputContainer>
 						</div>
@@ -418,8 +455,7 @@ const WinningCreate = ({}) => {
 					<div style={{ display: 'flex', gap: '10px' }}>
 						{/* 제품 대량 업로드 */}
 						<WinningProductCreateBtn setNewResData={setNewResData} />
-<SkyBtn onClick={productAddOnClickHandler}>제품 추가</SkyBtn>
-
+						<SkyBtn onClick={productAddOnClickHandler}>제품 추가</SkyBtn>
 					</div>
 				</TCSubContainer>
 				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
