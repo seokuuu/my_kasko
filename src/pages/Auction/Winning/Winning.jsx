@@ -85,11 +85,15 @@ const Winning = ({}) => {
 				},
 			})
 		},
-		onError: () => {
-			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		onError: (e) => {
+			simpleAlert(e?.data?.message || '오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
 	const deleteOnClickHandler = () => {
+		if (!checkedArray || checkedArray?.length === 0) {
+			simpleAlert('제품을 선택해주세요.')
+			return
+		}
 		deleteMutation(extractedArray)
 	}
 
@@ -112,6 +116,10 @@ const Winning = ({}) => {
 	})
 	// 부분 입금 확인 버튼 Handler
 	const depositOnClickHandler = () => {
+		if (!checkedArray || checkedArray?.length === 0) {
+			simpleAlert('입금 확인할 제품을 선택해주세요.')
+			return
+		}
 		depositMuation(extractedArray)
 	}
 

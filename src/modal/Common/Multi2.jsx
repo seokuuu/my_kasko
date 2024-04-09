@@ -38,7 +38,6 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
 			if (popup.num === num) {
 				return (popup.func = callBack)
 			}
-
 		})
 		setNowPopup(firstPopup)
 	}
@@ -53,7 +52,7 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
 		setModalSwitch(false)
 	}
 
-	const radioDummy = length == 3 ? ['판매재', '판매제외재', '판매완료재'] : ['판매제', '판매제외재']
+	const radioDummy = length == 3 ? ['판매재', '판매 제외재', '판매 완료재'] : ['판매제', '판매 제외재']
 	const radioDummy2 = ['불량', '제외 요청', '기타 사유']
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 	const [checkRadio2, setCheckRadio2] = useState(Array.from({ length: radioDummy2.length }, (_, index) => index === 0))
@@ -86,14 +85,14 @@ const Multi2 = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, productN
 			isPkg
 				? {
 						...p,
-						saleCategory: checkData1 ? checkData1.join('') : '판매재', // 판매재, 판매제외재, 판매완료재
-						excludeSaleReason: checkData1.join('') !== '판매제외재' ? null : checkData2.join(''), // 판매 제외재 사유
+						saleCategory: checkData1 ? checkData1.join('') : '판매재', // 판매재, 판매 제외재, 판매 완료재
+						excludeSaleReason: checkData1.join('') !== '판매 제외재' ? null : checkData2.join(''), // 판매 제외재 사유
 						uids: productNumbers, // 제품번호 목록
 				  }
 				: {
 						...p,
-						saleCategory: checkData1 ? checkData1.join('') : '판매재', // 판매재, 판매제외재, 판매완료재
-						excludeSaleReason: checkData1.join('') !== '판매제외재' ? null : checkData2.join(''), // 판매 제외재 사유
+						saleCategory: checkData1 ? checkData1.join('') : '판매재', // 판매재, 판매 제외재, 판매 완료재
+						excludeSaleReason: checkData1.join('') !== '판매 제외재' ? null : checkData2.join(''), // 판매 제외재 사유
 						numbers: productNumbers, // 제품번호 목록
 				  },
 		)

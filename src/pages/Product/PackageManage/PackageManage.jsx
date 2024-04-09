@@ -160,15 +160,19 @@ const PackageManage = () => {
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				refetch()
 				return prevParam
 			}
 			return {
 				...prevParam,
 				...userSearchParam,
+				pageNum: 1,
 			}
 		})
 	}
+
+	useEffect(() => {
+		refetch()
+	}, [param])
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -207,8 +211,6 @@ const PackageManage = () => {
 
 		const newFilterData = { list: filteredData, pagination: pagination }
 
-		console.log('newFilterData', newFilterData?.list)
-
 		// TODO : singlebidding 처럼 넣기
 
 		if (isSuccess && Array.isArray(newFilterData?.list)) {
@@ -216,8 +218,6 @@ const PackageManage = () => {
 			setFilterData(newFilterData)
 		}
 	}, [isSuccess, data])
-
-	console.log('filteredData', filteredData)
 
 	useEffect(() => {
 		refetch()

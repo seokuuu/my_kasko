@@ -1,35 +1,25 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
-	NonFadeOverlay,
+	BlueBarHeader,
+	BlueBlackBtn,
+	BlueBtnWrap,
+	BlueMainDiv,
+	BlueSubContainer,
+	BlueSubDiv,
 	ModalContainer,
 	WhiteCloseBtn,
-	BlueSubContainer,
-	BlueBarHeader,
-	BlueMainDiv,
-	BlueSubDiv,
-	BlueBtnWrap,
-	BlueBlackBtn,
-	FadeOverlay,
 } from '../Common/Common.Styled'
 
 import styled from 'styled-components'
-import { blueModalAtom } from '../../store/Layout/Layout'
+import { popupAtom2, popupObject, popupTypeAtom } from '../../store/Layout/Layout'
 import { useAtom } from 'jotai'
 
-import { CustomInput, ExRadioWrap, Input } from '../External/ExternalFilter'
-import { RadioMainDiv, RadioCircleDiv, RadioInnerCircleDiv } from '../../common/Check/RadioImg'
+import { CustomInput, ExRadioWrap } from '../External/ExternalFilter'
+import { RadioCircleDiv, RadioInnerCircleDiv, RadioMainDiv } from '../../common/Check/RadioImg'
 
 import { CheckBox } from '../../common/Check/Checkbox'
-import { useEffect } from 'react'
-import CommonTest from '../Alert/PopupMessages'
-import { popupMessages } from '../Alert/PopupMessages'
 import AlertPopup from '../Alert/AlertPopup'
-import { popupAtom2 } from '../../store/Layout/Layout'
-
-import { popupObject } from '../../store/Layout/Layout'
 import { popupDummy } from '../Alert/PopupDummy'
-import { popupTypeAtom } from '../../store/Layout/Layout'
 import { changeSaleTypeAtom } from '../../store/Layout/Popup'
 import useAlert from '../../store/Alert/useAlert'
 
@@ -48,7 +38,6 @@ const SalseType = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, produ
 			if (popup.num === num) {
 				return (popup.func = callBack)
 			}
-
 		})
 		setNowPopup(firstPopup)
 	}
@@ -63,7 +52,7 @@ const SalseType = ({ modalSwitch, errMsg, setModalSwitch, closeFn, saveFn, produ
 		setModalSwitch(false)
 	}
 
-	// const radioDummy = ['판매재', '판매제외재', '판매완료재']
+	// const radioDummy = ['판매재', '판매 제외재', '판매 완료재']
 	const radioDummy2 = ['경매 대상재', '상시판매 대상재']
 	// const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy2.length }, (_, index) => index === 0))

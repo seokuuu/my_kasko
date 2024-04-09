@@ -364,11 +364,17 @@ const WinningDetail = ({ setAucDetail }) => {
 				},
 			})
 		},
-		onError: (error) => {
-			simpleAlert(error.status === 400 ? error.data.message : '오류가 발생했습니다. 다시 시도해주세요.')
+
+		onError: (e) => {
+			simpleAlert(e?.data?.message || '오류가 발생했습니다. 다시 시도해주세요.')
+
 		},
 	})
 	const deleteOnClickHandler = () => {
+		if (!checkedArray || checkedArray?.length === 0) {
+			simpleAlert('제품을 선택해주세요.')
+			return
+		}
 		deleteMutation(extractedArray)
 	}
 
@@ -384,13 +390,19 @@ const WinningDetail = ({ setAucDetail }) => {
 				},
 			})
 		},
-		onError: (error) => {
-			simpleAlert(error.status === 400 ? error.data.message : '오류가 발생했습니다. 다시 시도해주세요.')
+
+		onError: (e) => {
+			simpleAlert(e?.data?.message || '오류가 발생했습니다. 다시 시도해주세요.')
+
 		},
 	})
 
 	// 부분 입금 확인 버튼 Handler
 	const partDepostiHandler = () => {
+		if (!checkedArray || checkedArray?.length === 0) {
+			simpleAlert('제품을 선택해주세요.')
+			return
+		}
 		depositMuation(extractedArray)
 	}
 
@@ -434,6 +446,10 @@ const WinningDetail = ({ setAucDetail }) => {
 		},
 	})
 	const destiChangeRejOnClickHandler = () => {
+		if (!checkedArray || checkedArray?.length === 0) {
+			simpleAlert('제품을 선택해주세요.')
+			return
+		}
 		destiChangeRejMutation(winningCreateData)
 	}
 
@@ -455,6 +471,10 @@ const WinningDetail = ({ setAucDetail }) => {
 		},
 	})
 	const destiChangeApprovOnClickHandler = () => {
+		if (!checkedArray || checkedArray?.length === 0) {
+			simpleAlert('제품을 선택해주세요.')
+			return
+		}
 		destiChangeApproveMutation(winningCreateData)
 	}
 

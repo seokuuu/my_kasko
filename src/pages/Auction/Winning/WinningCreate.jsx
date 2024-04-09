@@ -8,7 +8,9 @@ import {
 	selectedRows2Switch,
 	selectedRowsAtom2,
 	toggleAtom,
+	WinningCreateFindAtom,
 	winningDestiData,
+	WinningProductAddAtom,
 } from '../../../store/Layout/Layout'
 
 import {
@@ -37,12 +39,12 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import CustomerCodeFind from '../../../modal/Multi/CustomerCodeFind'
 import CustomerFind from '../../../modal/Multi/CustomerFind'
 import useAlert from '../../../store/Alert/useAlert'
-import { WinningCreateFindAtom, WinningProductAddAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import BiddingSearchFields from '../Bidding/BiddingSearchFields'
 import WinningProductAdd from './WinningProductAdd'
 import useTableSelection from '../../../hooks/useTableSelection'
+import WinningProductCreateBtn from './WinningProductCreateBtn'
 
 const WinningCreate = ({}) => {
 	const [values, setValues] = useState([]) // 배열 형태로 초기화
@@ -414,7 +416,10 @@ const WinningCreate = ({}) => {
 						선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 <span>{sum.toLocaleString()}</span> (kg)
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<SkyBtn onClick={productAddOnClickHandler}>제품 추가</SkyBtn>
+						{/* 제품 대량 업로드 */}
+						<WinningProductCreateBtn setNewResData={setNewResData} />
+<SkyBtn onClick={productAddOnClickHandler}>제품 추가</SkyBtn>
+
 					</div>
 				</TCSubContainer>
 				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />

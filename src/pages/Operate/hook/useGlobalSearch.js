@@ -22,13 +22,14 @@ const useGlobalSearch = ({ setSearch, refetch, initParams = {} }) => {
 
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setSearch((prevParam) => {
+			refetch()
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				refetch()
 				return prevParam
 			}
 			return {
 				...prevParam,
 				...userSearchParam,
+				pageNum: 1,
 			}
 		})
 	}

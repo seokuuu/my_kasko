@@ -49,7 +49,7 @@ const PackageCreate = () => {
 	const [isModal, setIsModal] = useAtom(singleAllProductModal)
 	const [packageObj, setPackageObj] = useAtom(packageCreateObjAtom)
 	const [checkBoxSelect, setCheckBoxSelect] = useAtom(selectedRowsAtom)
-	const checkWeight = checkBoxSelect?.map((x) => parseInt(x['제품 중량']))
+	const checkWeight = checkBoxSelect?.map((x) => parseInt(numberDeleteComma(x['제품 중량'])))
 	const checkWeightSum = checkWeight?.reduce((total, current) => total + current, 0)?.toLocaleString()
 
 	const setUpdateObj = useSetAtom(packageUpdateObjAtom)
@@ -64,11 +64,8 @@ const PackageCreate = () => {
 	const [curUid, setCuruid] = useState([])
 	const [check, setCheck] = useState([])
 	const [sumArr, setSumArr] = useState([])
-
-	console.log('sumArr', sumArr)
-
 	const [getRow, setGetRow] = useState('')
-	console.log('getRow', getRow)
+
 	const [filteredData, setFilteredData] = useState([])
 	const [createRequest, setCreateRequest] = useState({})
 	const [updateRequest, setUpdateRequest] = useState({})

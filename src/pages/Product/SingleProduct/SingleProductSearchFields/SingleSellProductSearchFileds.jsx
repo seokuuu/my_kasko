@@ -160,13 +160,13 @@ const SingleSellProductSearchFields = ({
 									},
 									{
 										checked: false,
-										text: '판매제외재',
-										value: '판매제외재',
+										text: '판매 제외재',
+										value: '판매 제외재',
 									},
 									{
 										checked: false,
-										text: '판매완료재',
-										value: '판매완료재',
+										text: '판매 완료재',
+										value: '판매 완료재',
 									},
 								]}
 								setState={setSearch}

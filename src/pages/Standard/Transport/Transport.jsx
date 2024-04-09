@@ -373,6 +373,7 @@ const Transport = () => {
 			return {
 				...prevParam,
 				...userSearchParam,
+				pageNum: 1,
 			}
 		})
 	}

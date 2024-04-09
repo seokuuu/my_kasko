@@ -130,12 +130,12 @@ const Incoming = ({}) => {
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				refetch()
 				return prevParam
 			}
 			return {
 				...prevParam,
 				...userSearchParam,
+				pageNum: 1,
 			}
 		})
 	}
@@ -144,6 +144,10 @@ const Incoming = ({}) => {
 		// then we need to create paramData object to reset the search fields.
 		setParam(paramData)
 	}
+
+	useEffect(() => {
+		refetch()
+	}, [param])
 
 	/**
 	 * @description 입고 확정 버튼

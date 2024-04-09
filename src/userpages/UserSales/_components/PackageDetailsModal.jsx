@@ -134,10 +134,10 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 							{[0].map((index) => (
 								<ClaimRow key={index}>
 									{TITLE_DATA.slice(index * 3, index * 3 + 3).map((title, idx) => (
-										<Fragment agmentkey={title}>
+										<>
 											<ClaimTitle>{title}</ClaimTitle>
 											<ClaimContent>{infoData[index * 3 + idx]}</ClaimContent>
-										</Fragment>
+										</>
 									))}
 								</ClaimRow>
 							))}
@@ -152,6 +152,7 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 								<div style={{ display: 'flex', gap: '10px' }}>
 									<PageDropdown handleDropdown={handlePageSizeChange} />
 									<TableV2ExcelDownloader
+										sheetName={`${packageNumber} 패키지 상세 보기`}
 										requestUrl={USER_URL.packageProductDetailsList}
 										requestCount={totalCount}
 										field={userPackageDetailsField}
