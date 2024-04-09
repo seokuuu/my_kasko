@@ -161,6 +161,7 @@ const Client = ({ postModal, setPostModal }) => {
 				{exFilterToggle && (
 					<GlobalProductSearch
 						param={param}
+						setParam={setParam}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <ClientSearchFields {...props} />}
 						globalProductSearchOnClick={globalProductSearchOnClick}

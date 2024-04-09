@@ -202,6 +202,7 @@ const UserManage = ({ setChoiceComponent }) => {
 						</FilterFooter> */}
 						<GlobalProductSearch
 							param={param}
+							setParam={setParam}
 							isToggleSeparate={true}
 							renderCustomSearchFields={(props) => <UserManangeSearchFields {...props} />} //
 							globalProductSearchOnClick={globalProductSearchOnClick}

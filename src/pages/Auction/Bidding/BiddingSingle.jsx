@@ -564,6 +564,7 @@ const BiddingSingle = ({}) => {
 				<>
 					<GlobalProductSearch
 						param={param}
+						setParam={setParam}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <BiddingSearchFields {...props} />}
 						globalProductSearchOnClick={globalProductSearchOnClick}

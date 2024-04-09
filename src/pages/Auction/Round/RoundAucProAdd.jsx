@@ -217,6 +217,7 @@ const RoundAucProAdd = ({
 							<>
 								<GlobalProductSearch
 									param={param}
+									setParam={setParam}
 									isToggleSeparate={true}
 									renderCustomSearchFields={(props) => <RoundAucListEditFields {...props} />} // 만들어야함 -> WinningSearchFields
 									globalProductSearchOnClick={globalProductSearchOnClick} // import

@@ -62,6 +62,7 @@ const ClaimProductHeader = ({ search, setSearch, refetch }) => {
 					{/* 글로벌  */}
 					<GlobalProductSearch
 						param={search}
+						setParam={setSearch}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <ClaimProductSearchFields {...props} />}
 						globalProductSearchOnClick={globalProductSearchOnClick}

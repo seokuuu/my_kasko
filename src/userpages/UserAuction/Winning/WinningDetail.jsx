@@ -166,7 +166,6 @@ const WinningDetail = ({ setAucDetail }) => {
 	const resPagination = data?.data?.data?.pagination
 	const [winningCreateData, setWinningCreateData] = useState({})
 
-
 	const newCustomerCode = resData?.map((x) => x?.code)[0]
 
 	const { data: inventoryDestination } = useReactQuery(
@@ -372,6 +371,7 @@ const WinningDetail = ({ setAucDetail }) => {
 				<>
 					<GlobalProductSearch
 						param={param}
+						setParam={setParam}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <WinningDetailFields {...props} />}
 						globalProductSearchOnClick={globalProductSearchOnClick}
@@ -426,13 +426,16 @@ const WinningDetail = ({ setAucDetail }) => {
 				/>
 				<TCSubContainer>
 					<div></div>
-					{/* 입금 확인 요청서 */}
-					<PrintDepositRequestButton
-						auctionNumber={param?.auctionNumber}
-						storage={param?.storage}
-						customerDestinationUid={param?.customerDestinationUid}
-						biddingStatus={param?.biddingStatus}
-					/>
+					<div style={{ display: 'flex', gap: '10px' }}>
+						{/* 입금 확인 요청서 */}
+						<PrintDepositRequestButton
+							auctionNumber={param?.auctionNumber}
+							storage={param?.storage}
+							customerDestinationUid={param?.customerDestinationUid}
+							biddingStatus={param?.biddingStatus}
+						/>
+						<div></div>
+					</div>
 				</TCSubContainer>
 				<NewBottomBtnWrap>
 					<BlackBtn

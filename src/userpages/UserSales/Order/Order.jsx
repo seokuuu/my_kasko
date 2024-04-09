@@ -170,6 +170,7 @@ const Order = ({}) => {
 				<FilterWrap>
 					<GlobalProductSearch
 						param={searchParams}
+						setParam={setSearchParams}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <OrderSearchFields {...props} />}
 						globalProductSearchOnClick={handleFilterSearch}

@@ -184,6 +184,7 @@ const Incoming = ({}) => {
 							<>
 								<GlobalProductSearch
 									param={param}
+									setParam={setParam}
 									isToggleSeparate={true}
 									renderCustomSearchFields={(props) => <IncomingSearchFields {...props} />}
 									globalProductSearchOnClick={globalProductSearchOnClick}

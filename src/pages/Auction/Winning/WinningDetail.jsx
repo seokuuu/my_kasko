@@ -364,8 +364,10 @@ const WinningDetail = ({ setAucDetail }) => {
 				},
 			})
 		},
+
 		onError: (e) => {
 			simpleAlert(e?.data?.message || '오류가 발생했습니다. 다시 시도해주세요.')
+
 		},
 	})
 	const deleteOnClickHandler = () => {
@@ -388,8 +390,10 @@ const WinningDetail = ({ setAucDetail }) => {
 				},
 			})
 		},
+
 		onError: (e) => {
 			simpleAlert(e?.data?.message || '오류가 발생했습니다. 다시 시도해주세요.')
+
 		},
 	})
 
@@ -542,6 +546,7 @@ const WinningDetail = ({ setAucDetail }) => {
 				<>
 					<GlobalProductSearch
 						param={param}
+						setParam={setParam}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <WinningDetailFields {...props} />}
 						globalProductSearchOnClick={globalProductSearchOnClick}

@@ -55,6 +55,7 @@ const CommonHeader = ({
 				<FilterWrap>
 					<GlobalProductSearch
 						param={search}
+						setParam={setSearch}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <FAQSearchFields {...props} searchOptions={searchCategoryOptions} />}
 						globalProductSearchOnClick={globalProductSearchOnClick}

@@ -255,6 +255,7 @@ const Destination = () => {
 					<FilterWrap>
 						<GlobalProductSearch
 							param={param}
+							setParam={setParam}
 							isToggleSeparate={true}
 							renderCustomSearchFields={(props) => <DestinationSearchFilter {...props} />} // 만들어야함 -> WinningSearchFields
 							globalProductSearchOnClick={globalProductSearchOnClick} // import

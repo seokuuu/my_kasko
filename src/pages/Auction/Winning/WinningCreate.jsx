@@ -47,6 +47,7 @@ import useTableSelection from '../../../hooks/useTableSelection'
 import WinningProductCreateBtn from './WinningProductCreateBtn'
 
 const WinningCreate = ({}) => {
+	const [values, setValues] = useState([]) // 배열 형태로 초기화
 	const navigate = useNavigate()
 	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
@@ -73,6 +74,7 @@ const WinningCreate = ({}) => {
 	}
 
 	const [winningCreateData, setWinningCreateData] = useState(init)
+	console.log('winningCreateData', winningCreateData?.productList)
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
 
 	const [customerData, setCustomerData] = useState()
@@ -126,6 +128,7 @@ const WinningCreate = ({}) => {
 			auctionNumber: auctionNowNum?.data?.data,
 			customerUid: customerData?.uid,
 			memberUid: customerData?.memberUid,
+			productList: values,
 		}))
 	}, [propsUid, auctionNowNum, customerData])
 
@@ -146,17 +149,17 @@ const WinningCreate = ({}) => {
 	})
 
 	useEffect(() => {
-		const updatedProductList = checkedArray2?.map((item) => ({
-			productUid: item['제품 고유 번호'],
-			biddingPrice: winningCreateInput.biddingPrice,
-			confirmPrice: winningCreateInput.confirmPrice,
-			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
-		}))
+		// const updatedProductList = checkedArray2?.map((item) => ({
+		// 	productUid: item['제품 고유 번호'],
+		// 	biddingPrice: winningCreateInput.biddingPrice,
+		// 	confirmPrice: winningCreateInput.confirmPrice,
+		// 	// 여기에 다른 필요한 속성을 추가할 수 있습니다.
+		// }))
 
 		// winningCreateData를 업데이트하여 productList를 갱신
 		setWinningCreateData((prevData) => ({
 			...prevData,
-			productList: updatedProductList,
+			productList: values,
 		}))
 
 		setTotalWon((prevData) => ({
@@ -164,7 +167,7 @@ const WinningCreate = ({}) => {
 			biddingPrice: winningCreateInput?.biddingPrice * (checkedArray2?.length || 0),
 			confirmPrice: winningCreateInput?.confirmPrice * (checkedArray2?.length || 0),
 		}))
-	}, [checkedArray2, winningCreateInput])
+	}, [checkedArray2, winningCreateInput, addProdModal])
 
 	const paramData = {
 		pageNum: 1,
@@ -183,10 +186,18 @@ const WinningCreate = ({}) => {
 		if (Array.isArray(newResData)) {
 			const combinedData = [...newResData]
 
-			setGetRow(combinedData)
+			const intUniqueData = combinedData.map((item) => ({
+				...item,
+				중량: parseInt(item.중량.replace(/,/g, ''), 10), // 콤마 제거 후 정수형 변환
+				길이: parseInt(item.길이.replace(/,/g, ''), 10), // 콤마 제거 후 정수형 변환
+			}))
+
+			setGetRow(intUniqueData)
 			// setTablePagination(resPagination)
 		}
 	}, [newResData])
+
+	console.log('newResData', newResData)
 
 	const dupleUids = getRow && getRow?.map((item) => item['제품 고유 번호'])
 
@@ -198,8 +209,14 @@ const WinningCreate = ({}) => {
 				(item) => !checkedArray2.some((checkedItem) => checkedItem['제품 고유 번호'] === item['제품 고유 번호']),
 			)
 			setNewResData(filteredArray)
+
+			const deleteProductUids = checkedArray2.map((item) => item['제품 고유 번호'])
+			const filteredValues = values.filter((item) => !deleteProductUids.includes(item.productUid))
+			setValues(filteredValues)
 		})
 	}, [checkedArray2, newResData])
+
+	console.log('밸류', values)
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -235,6 +252,7 @@ const WinningCreate = ({}) => {
 	})
 
 	const successfulBidOnClick = () => {
+		// if (!isArray(checkedArray2) || !checkedArray2.length > 0) return simpleAlert('등록할 항목을 선택해주세요.')
 		successfulBidMutation(winningCreateData)
 	}
 
@@ -263,6 +281,13 @@ const WinningCreate = ({}) => {
 
 	const totalWeight = getRow && getRow?.map((x) => x['중량'])
 	const sum = totalWeight && totalWeight?.reduce((acc, curr) => acc + parseInt(curr), 0)
+
+	console.log('getRow', getRow)
+
+	const productAddOnClickHandler = () => {
+		// if (!destiObject) return simpleAlert('상단 목적지 적용 후 추가해주세요.')
+		setAddProdModal(true)
+	}
 
 	return (
 		<FilterContianer>
@@ -367,6 +392,7 @@ const WinningCreate = ({}) => {
 				<>
 					<GlobalProductSearch
 						param={param}
+						setParam={setParam}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <BiddingSearchFields type={'낙찰 생성'} {...props} />} // 만들어야함 -> WinningSearchFields
 						globalProductSearchOnClick={globalProductSearchOnClick} // import
@@ -392,13 +418,8 @@ const WinningCreate = ({}) => {
 					<div style={{ display: 'flex', gap: '10px' }}>
 						{/* 제품 대량 업로드 */}
 						<WinningProductCreateBtn setNewResData={setNewResData} />
-						<SkyBtn
-							onClick={() => {
-								setAddProdModal(true)
-							}}
-						>
-							제품 추가
-						</SkyBtn>
+<SkyBtn onClick={productAddOnClickHandler}>제품 추가</SkyBtn>
+
 					</div>
 				</TCSubContainer>
 				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
@@ -432,6 +453,9 @@ const WinningCreate = ({}) => {
 					setNewResData={setNewResData}
 					setwinningCreateInput={setwinningCreateInput}
 					dupleUids={dupleUids}
+					values={values}
+					setValues={setValues}
+					setWinningCreateData={setWinningCreateData}
 				/>
 			)}
 			{destinationPopUp && (

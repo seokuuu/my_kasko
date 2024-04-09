@@ -1450,6 +1450,8 @@ export const AuctionWinningCreateFields = {
 	제품군: 'spart',
 	등급: 'grade',
 	시작가: 'auctionStartPrice',
+	낙찰가: 'biddingPrice', // 0409 추가 됨
+	확정전송가: 'confirmPrice', // 0409 추가 됨
 	// 현재 최고 응찰가격
 	// 나의 현재 응찰 가격
 	// 나의 응찰 최고 가격
@@ -1505,6 +1507,8 @@ export const AuctionWinningCreateFieldsCols = [
 		lockVisible: true,
 		lockPinned: true,
 	},
+	{ ...commonStyles, field: '낙찰가', minWidth: 100, editable: true },
+	{ ...commonStyles, field: '확정전송가', minWidth: 100, editable: true },
 	...Object.keys(AuctionWinningCreateFields).map((item) => ({
 		...commonStyles,
 		field: item,

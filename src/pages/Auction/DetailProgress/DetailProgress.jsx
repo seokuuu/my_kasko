@@ -144,6 +144,7 @@ const DetailProgress = ({}) => {
 				<>
 					<GlobalProductSearch
 						param={param}
+						setParam={setParam}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <ProgressSearchFields {...props} />}
 						globalProductSearchOnClick={globalProductSearchOnClick}

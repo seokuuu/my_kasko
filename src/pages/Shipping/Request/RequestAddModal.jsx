@@ -117,6 +117,7 @@ const RequestAddModal = ({ list, onListAdd }) => {
 						{exFilterToggle && (
 							<GlobalProductSearch
 								param={param}
+								setParam={setParam}
 								isToggleSeparate={true}
 								globalProductSearchOnClick={searchOnClick}
 								globalProductResetOnClick={resetOnClick}

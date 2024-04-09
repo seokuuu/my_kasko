@@ -127,6 +127,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			if (uids.includes(item['제품 번호'])) {
 				item['시작가'] = parseInt(item['시작가']) + parseInt(startPrice)
 			}
+
 			return item
 		})
 
@@ -165,14 +166,25 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			}
 
 			const uniqueData = removeDuplicates(newResData)
+
+			const intUniqueData = uniqueData.map((item) => ({
+				...item,
+				중량: parseInt(item.중량.replace(/,/g, ''), 10), // 콤마 제거 후 정수형 변환
+				길이: parseInt(item.길이.replace(/,/g, ''), 10), // 콤마 제거 후 정수형 변환
+			}))
+
+			console.log('intUniqueData', intUniqueData)
+
 			setInitRow(newInitRow)
-			setGetRow([...uniqueData, ...newInitRow])
+			setGetRow([...intUniqueData, ...newInitRow])
 		}
 	}, [isSuccess, resData, addModal])
 
 	const dupleUids = getRow && getRow?.map((item) => item['제품 고유 번호'] || item['고유 번호'])
 
 	const [outAddData, setOutAddData] = useState([])
+
+	console.log('newResData', newResData)
 
 	const onListAdd = (selectedData) => {
 		console.log('selectedData', selectedData)
@@ -318,6 +330,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 				<>
 					<GlobalProductSearch
 						param={param}
+						setParam={setParam}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <RoundAucListEditFields {...props} />} // 만들어야함 -> WinningSearchFields
 						globalProductSearchOnClick={globalProductSearchOnClick} // import

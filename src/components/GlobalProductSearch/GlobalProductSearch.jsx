@@ -17,6 +17,7 @@ import { filterisReset } from '../../store/Layout/Layout'
 
 const GlobalProductSearch = ({
 	// prettier-ignore
+	setParam,
 	globalProductResetOnClick,
 	globalProductSearchOnClick,
 	renderCustomSearchFields,
@@ -164,6 +165,10 @@ const GlobalProductSearch = ({
 
 	const searchButtonOnClickHandler = () => {
 		globalProductSearchOnClick(getUpdatedProperties(userSearchParam))
+		setParam((prev) => ({
+			...prev,
+			pageNum: 1,
+		}))
 	}
 
 	const toggleBtnClick = () => {

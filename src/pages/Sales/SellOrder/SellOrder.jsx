@@ -181,6 +181,7 @@ const SellOrder = () => {
 					<GlobalProductSearch
 						// prettier-ignore
 						param={param}
+						setParam={setParam}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <SellOrderSearchFields {...props} />}
 						globalProductSearchOnClick={globalProductSearchOnClick}

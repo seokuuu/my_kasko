@@ -42,6 +42,7 @@ const Header = ({ search, setSearch, refetch }) => {
 				<FilterWrap>
 					<GlobalProductSearch
 						param={search}
+						setParam={setSearch}
 						isToggleSeparate={true}
 						renderCustomSearchFields={(props) => <FAQSearchFields {...props} searchOptions={searchCategoryOptions} />}
 						globalProductSearchOnClick={globalProductSearchOnClick}
