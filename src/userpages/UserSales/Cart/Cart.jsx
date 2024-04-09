@@ -42,7 +42,7 @@ const USER_CART_URL = '/userpage/salescart'
 /**
  * (사용자)사용자 장바구니 페이지
  */
-const Cart = ({}) => {
+const Cart = () => {
 	// PATH 파라미터
 	const { product: productType } = useParams()
 	// API 파라미터
@@ -96,9 +96,13 @@ const Cart = ({}) => {
 								{ text: '단일', value: PROD_CATEGORY.single },
 								{ text: '패키지', value: PROD_CATEGORY.package },
 							].map((v) => (
-								<Link role="button" style={{ cursor: 'pointer' }} to={`${USER_CART_URL}/${v.value}`}>
+								<div
+									role="button"
+									style={{ cursor: 'pointer' }}
+									onClick={() => window.location.assign(`${USER_CART_URL}/${v.value}`)}
+								>
 									{v.value === searchParams.category ? <h5>{v.text}</h5> : <h6>{v.text}</h6>}
-								</Link>
+								</div>
 							))}
 						</SubTitle>
 					</div>
@@ -114,6 +118,7 @@ const Cart = ({}) => {
 					<div>
 						<PageDropdown handleDropdown={handlePageSizeChange} />
 						<TableV2ExcelDownloader
+							sheetName={'장바구니'}
 							requestUrl={`${USER_URL.cartList}/${productType}`}
 							requestCount={totalCount}
 							field={isSingleCategory ? userCartListSingleField : userCartListPackageField}
