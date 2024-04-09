@@ -88,15 +88,19 @@ const SellOrder = () => {
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				refetch()
 				return prevParam
 			}
 			return {
 				...prevParam,
 				...userSearchParam,
+				pageNum: 1,
 			}
 		})
 	}
+
+	useEffect(() => {
+		refetch()
+	}, [param])
 
 	const handleOnRowClicked = (row) => {
 		const uid = row.data.uid

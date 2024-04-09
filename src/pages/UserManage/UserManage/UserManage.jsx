@@ -94,8 +94,6 @@ const UserManage = ({ setChoiceComponent }) => {
 	const [param, setParam] = useState(paramData)
 	const { onPageChanage } = useTablePaginationPageChange(data, setParam)
 
-
-
 	useEffect(() => {
 		let getData = resData
 		if (!isSuccess && !resData) return
@@ -126,23 +124,25 @@ const UserManage = ({ setChoiceComponent }) => {
 	}, [types])
 
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
 		setParam(paramData)
 	}
 	// import
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				refetch()
 				return prevParam
 			}
 			return {
 				...prevParam,
 				...userSearchParam,
+				pageNum: 1,
 			}
 		})
 	}
+
+	useEffect(() => {
+		refetch()
+	}, [param])
 
 	return (
 		<FilterContianer>

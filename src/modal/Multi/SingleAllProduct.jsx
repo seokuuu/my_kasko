@@ -13,7 +13,6 @@ import PageDropdown from '../../components/TableInner/PageDropdown'
 import { useAtom, useAtomValue } from 'jotai'
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../modal/External/ExternalFilter'
 import useReactQuery from '../../hooks/useReactQuery'
-import Hidden from '../../components/TableInner/Hidden'
 import { getSingleProducts } from '../../api/SellProduct'
 import { singleDispatchFields, SingleDispatchFieldsCols } from '../../constants/admin/Single'
 import { add_element_field } from '../../lib/tableHelpers'
@@ -55,13 +54,17 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 
 	const singleProductPage = data?.pagination
 
-	// Function to handle image click and toggle rotation
-
 	// 테이블 연결하기
 	useEffect(() => {
 		if (!isSuccess && !singleList) return
 		if (Array.isArray(singleList)) {
-			setGetRow(add_element_field(singleList, singleDispatchFields))
+			const savedIds = selectPr?.map((item) => item['제품 고유 번호'])
+			const newSingleList = singleList.filter((item) => !savedIds.includes(item.uid))
+			if (newSingleList.length === 0) {
+				setParam((prev) => ({ ...prev, pageNum: prev.pageNum + 1 }))
+			}
+
+			setGetRow(add_element_field(newSingleList, singleDispatchFields))
 			setPagination(singleProductPage)
 		}
 		//타입, 리액트쿼리, 데이터 확인 후 실행
@@ -137,9 +140,14 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 			return {
 				...prevParam,
 				...userSearchParam,
+				pageNum: 1,
 			}
 		})
 	}
+
+	useEffect(() => {
+		refetch()
+	}, [param])
 
 	return (
 		<OutSide>

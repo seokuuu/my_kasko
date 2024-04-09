@@ -122,15 +122,20 @@ const Inventory = () => {
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				refetch()
 				return prevParam
 			}
 			return {
 				...prevParam,
 				...userSearchParam,
+				pageNum: 1,
 			}
 		})
 	}
+
+	useEffect(() => {
+		refetch()
+	}, [param])
+
 	const { mutate: cancelInStock } = useMutationQuery('cancelInStock', postCancelInStock)
 	const handleCancelInStock = () => {
 		const dataUid = checkBoxSelect?.map((item) => item['제품 고유 번호'])

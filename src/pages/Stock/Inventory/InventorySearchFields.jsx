@@ -106,8 +106,8 @@ const InventorySearchFields = ({
 								},
 								{
 									checked: false,
-									text: '판매제외재',
-									value: '판매제외재',
+									text: '판매 제외재',
+									value: '판매 제외재',
 								},
 							]}
 							setState={setSearch}

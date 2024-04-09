@@ -151,7 +151,6 @@ const Package = () => {
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				refetch()
 				return prevParam
 			}
 			return {
@@ -160,6 +159,10 @@ const Package = () => {
 			}
 		})
 	}
+
+	useEffect(() => {
+		refetch()
+	}, [param])
 
 	// 노출 저장 버튼
 	const saveButtonOnClickHandler = () => {

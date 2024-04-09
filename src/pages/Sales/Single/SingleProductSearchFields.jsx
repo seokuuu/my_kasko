@@ -12,6 +12,7 @@ import {
 	PartWrap,
 	RowWrap,
 	Tilde,
+	ExCheckWrap,
 } from '../../../modal/External/ExternalFilter'
 import StandardFind from '../../../modal/Multi/StandardFind'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
@@ -87,26 +88,26 @@ const SingleProductSearchFields = ({
 						</PWRight>
 					</PartWrap>
 
-					{/*<PartWrap first>*/}
-					{/*	<h6>판매 구분</h6>*/}
-					{/*	<CustomCheckBox*/}
-					{/*		initOptions={[*/}
-					{/*			{*/}
-					{/*				checked: false,*/}
-					{/*				text: '판매재',*/}
-					{/*				value: '판매재',*/}
-					{/*			},*/}
-					{/*			{*/}
-					{/*				checked: false,*/}
-					{/*				text: '판매 완료재',*/}
-					{/*				value: '판매 완료재',*/}
-					{/*			},*/}
-					{/*		]}*/}
-					{/*		setState={setSearch}*/}
-					{/*		isExistEntireValue={true}*/}
-					{/*		stateType="object"*/}
-					{/*	/>*/}
-					{/*</PartWrap>*/}
+					<PartWrap first>
+						<h6>판매 구분</h6>
+						<CustomCheckBox
+							initOptions={[
+								{
+									checked: false,
+									text: '판매재',
+									value: '판매재',
+								},
+								{
+									checked: false,
+									text: '판매 완료재',
+									value: '판매 완료재',
+								},
+							]}
+							setState={setSearch}
+							stateKey="saleCategoryList"
+							stateType="object"
+						/>
+					</PartWrap>
 				</RowWrap>
 				{/* 2행 */}
 				<RowWrap>

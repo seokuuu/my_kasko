@@ -42,7 +42,7 @@ const SingleProduct = () => {
 	const [selectUid, setSelectUid] = useState([])
 
 	const [filterData, setFilteredData] = useState([])
-	console.log('filterData', filterData?.list)
+
 	const [getRow, setGetRow] = useState('')
 	const getCol = useRef(SingleDispatchFieldsCols())
 	const { data, isSuccess, refetch, isLoading } = useReactQuery(param, 'product-list', getSingleProducts)
@@ -103,6 +103,8 @@ const SingleProduct = () => {
 			return {
 				...prevParam,
 				...userSearchParam,
+				pageNum: 1,
+				category: '전체',
 			}
 		})
 	}

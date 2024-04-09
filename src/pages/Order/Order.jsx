@@ -179,18 +179,22 @@ const Order = () => {
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				refetch()
 				return prevParam
 			}
 			return {
 				...prevParam,
 				...userSearchParam,
+				pageNum: 1,
 			}
 		})
 	}
 	const globalProductResetOnClick = () => {
 		setParam(paramData)
 	}
+
+	useEffect(() => {
+		refetch()
+	}, [param])
 
 	return (
 		<FilterContianer>

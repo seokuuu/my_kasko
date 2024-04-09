@@ -340,7 +340,7 @@ const TableV2 = ({
 					item.maxWidth = 50
 					return { ...item, ...tableV2CommonStyles }
 				}
-				if (['고유 번호', '고유번호', '주문 고유 번호', '패키지 고유 번호'].includes(item.field)) {
+				if (['고유 번호', '고유번호', '주문 고유 번호', '패키지 고유 번호', '제품 고유 번호'].includes(item.field)) {
 					item.hide = true
 				}
 				if (['추천 제품 여부', '추천 여부', '추천여부'].includes(item.field)) {

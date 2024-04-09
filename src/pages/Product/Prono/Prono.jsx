@@ -38,7 +38,7 @@ import {
 } from '../../../modal/External/ExternalFilter'
 import Hidden from '../../../components/TableInner/Hidden'
 const Prono = ({}) => {
-	const checkSales = ['전체', '판매재', '판매제외재', '판매완료재', '카스코 추천 제품']
+	const checkSales = ['전체', '판매재', '판매 제외재', '판매 완료재', '카스코 추천 제품']
 
 	const checkShips = ['전체', '경매대상재', '상시판매 대상재']
 

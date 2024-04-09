@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { getInventoryLedger } from '../../../../api/operate/inventory'
 import GlobalProductSearch from '../../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../../components/TableInner/Excel'
-import Hidden from '../../../../components/TableInner/Hidden'
 import PageDropdown from '../../../../components/TableInner/PageDropdown'
 import { InventoryFieldsCols, InvertoryFields } from '../../../../constants/admin/Inventroy'
 import useReactQuery from '../../../../hooks/useReactQuery'
@@ -13,8 +12,8 @@ import { add_element_field } from '../../../../lib/tableHelpers'
 import {
 	FilterContianer,
 	FilterHeader,
-	TCSubContainer,
 	TableContianer,
+	TCSubContainer,
 } from '../../../../modal/External/ExternalFilter'
 import { selectedRowsAtom, toggleAtom } from '../../../../store/Layout/Layout'
 import { KilogramSum } from '../../../../utils/KilogramSum'
@@ -82,7 +81,7 @@ const Inventory = () => {
 
 	useEffect(() => {
 		refetch()
-	}, [param.pageNum, param.pageSize])
+	}, [param])
 
 	return (
 		<FilterContianer>
