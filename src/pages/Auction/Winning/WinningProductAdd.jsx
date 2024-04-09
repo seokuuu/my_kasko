@@ -40,7 +40,17 @@ import useTableData from '../../../hooks/useTableData'
 import { KilogramSum } from '../../../utils/KilogramSum'
 
 // 낙찰 생성 제품 추가(단일) 메인 컴포넌트
-const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, setwinningCreateInput, dupleUids }) => {
+const WinningProductAdd = ({
+	addModal,
+	setAddModal,
+	newResData,
+	setNewResData,
+	setwinningCreateInput,
+	dupleUids,
+	values,
+	setValues,
+}) => {
+	// const [values, setValues] = useState([]) // 배열 형태로 초기화
 	const { simpleConfirm, simpleAlert } = useAlert()
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
@@ -56,11 +66,21 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 	//checkSales
 
 	const [getRow, setGetRow] = useState('')
+	console.log('getRow', getRow)
 	const tableField = useRef(AuctionWinningCreateFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
 
 	const [checkedArray, setCheckedArray] = useAtom(selectedRowsAtom)
+
+	const checkUid = checkedArray?.map((x) => x['제품 고유 번호'])
+
+	const [biddingValue, setBiddingValue] = useState('')
+	const [confirmValue, setConfirmValue] = useState('')
+
+	console.log('checkUid', checkUid)
+
+	console.log('checkedArray', checkedArray)
 
 	// GET
 	const { isLoading, isError, data, isSuccess } = useReactQuery(param, 'getWinningCreate', getWinningCreate)
@@ -100,14 +120,30 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 	// 	}
 	// }
 
+	// 제품 추가 시 낙찰가, 확정전송가 없는 object 체크
+	const hasNullOrUndefinedInCheckedArray = () => {
+		return checkedArray.some(
+			(item) =>
+				item['낙찰가'] == null ||
+				item['확정전송가'] == null ||
+				typeof item['낙찰가'] === 'undefined' ||
+				typeof item['확정전송가'] === 'undefined',
+		)
+	}
+
 	const handleAddBtn = () => {
 		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('추가할 항목을 선택해주세요.')
+		if (hasNullOrUndefinedInCheckedArray()) return simpleAlert('추가할 낙찰가 / 확정전송가를 확인해주세요.')
 		else {
+			// 체크된 항목의 values만 set
+			const filteredValues = values.filter((item) => checkUid.includes(item.productUid))
+
 			simpleConfirm('선택한 항목을 추가하시겠습니까?', () =>
 				checkedArray.forEach((item) => {
 					setNewResData((prevData) => [...prevData, item])
 					setAddModal(false)
 					setCheckedArray([])
+					setValues(filteredValues)
 				}),
 			)
 		}
@@ -164,10 +200,6 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 		})
 	}
 
-	const confirmOnClickHandler = () => {
-		simpleAlert('적용 되었습니다.')
-	}
-
 	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableData({
 		weightKey: '중량',
 	})
@@ -177,6 +209,133 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 		serverData: data?.data?.data,
 		wish: { display: true, key: ['productNumber'] },
 	})
+
+	// const onCellValueChanged = (params) => {
+	// 	const p = params.data
+	// 	setValues((prevValues) => ({
+	// 		...prevValues,
+	// 		productUid: p['제품 고유 번호'],
+	// 		biddingPrice: p['낙찰가'],
+	// 		confirmPrice: p['확정전송가'],
+	// 	}))
+	// 	// setValueDesti(p['경매 번호'])
+	// }
+
+	// 낙찰가 일괄 변경 적용 버튼
+	const biddingOnClickHandler = () => {
+		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('항목을 선택해주세요.')
+		const updatedValues = checkUid.map((uid) => {
+			const existingItem = values.find((item) => item.productUid === uid)
+			if (existingItem) {
+				// 이미 해당 productUid의 값이 존재하면 업데이트
+				return {
+					...existingItem,
+					biddingPrice: parseInt(biddingValue, 10) || 0,
+				}
+			} else {
+				// 새로운 object 생성
+				return {
+					productUid: uid,
+					biddingPrice: parseInt(biddingValue, 10) || 0,
+					...existingItem, // 기존값 유지
+				}
+			}
+		})
+
+		// 기존 values 배열과 새로운 updatedValues 배열을 합칩니다.
+		const mergedValues = [...values.filter((item) => !checkUid.includes(item.productUid)), ...updatedValues]
+		setValues(mergedValues)
+
+		const updatedResData = getRow?.map((item) => {
+			if (checkUid?.includes(item['제품 고유 번호'])) {
+				item['낙찰가'] = biddingValue
+			}
+			return item
+		})
+
+		setGetRow(updatedResData)
+		setCheckedArray([])
+	}
+
+	// 확정전송가 일괄 변경 적용 버튼
+	const confirmOnClickHandler = () => {
+		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('항목을 선택해주세요.')
+		const updatedValues = checkUid.map((uid) => {
+			const existingItem = values.find((item) => item.productUid === uid)
+			if (existingItem) {
+				// 이미 해당 productUid의 값이 존재하면 업데이트
+				return {
+					...existingItem,
+					confirmPrice: parseInt(confirmValue, 10) || 0,
+				}
+			} else {
+				// 새로운 object 생성
+				return {
+					productUid: uid,
+					confirmPrice: parseInt(confirmValue, 10) || 0,
+					...existingItem, // 기존값 유지
+				}
+			}
+		})
+
+		// 기존 values 배열과 새로운 updatedValues 배열을 합칩니다.
+		const mergedValues = [...values.filter((item) => !checkUid.includes(item.productUid)), ...updatedValues]
+		setValues(mergedValues)
+
+		const updatedResData = getRow?.map((item) => {
+			console.log('아템 =>', item)
+			if (checkUid?.includes(item['제품 고유 번호'])) {
+				item['확정전송가'] = confirmValue
+			}
+			return item
+		})
+
+		setGetRow(updatedResData)
+		setCheckedArray([])
+	}
+
+	/**
+	 * @description
+	 * Table Cell Input onChange Handler
+	 */
+	const onCellValueChanged = (params) => {
+		const p = params.data
+
+		// productUid를 찾아서 기존 값 갱신 또는 새로운 객체 생성
+		const updatedValues = values.map((item) => {
+			if (item.productUid === p['제품 고유 번호']) {
+				// parseInt를 통해 문자열을 숫자로 변환하고, 기본값은 0으로 설정
+				return {
+					...item,
+					biddingPrice: parseInt(p['낙찰가'], 10) || 0,
+					confirmPrice: parseInt(p['확정전송가'], 10) || 0,
+				}
+			}
+			return item
+		})
+
+		// 기존 값이 없을 경우 새로운 객체 추가
+		if (!updatedValues.find((item) => item.productUid === p['제품 고유 번호'])) {
+			updatedValues.push({
+				productUid: p['제품 고유 번호'],
+				biddingPrice: parseInt(p['낙찰가'], 10) || 0,
+				confirmPrice: parseInt(p['확정전송가'], 10) || 0,
+			})
+		}
+
+		// 업데이트된 값을 상태로 설정
+		setValues(updatedValues)
+	}
+
+	console.log('values', values)
+
+	// useEffect(() => {
+	// 	setWinningCreateData((prev) => ({
+	// 		...prev,
+	// 		productList: [{ ...values }],
+	// 		auctionNumber: auctionNumber,
+	// 	}))
+	// }, [values])
 
 	return (
 		<>
@@ -235,13 +394,14 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 										width={120}
 										height={32}
 										onChange={(e) => {
-											setwinningCreateInput((p) => ({
-												...p,
-												biddingPrice: parseInt(e.target.value) || null,
-											}))
+											// setwinningCreateInput((p) => ({
+											// 	...p,
+											// 	biddingPrice: parseInt(e.target.value) || null,
+											// }))
+											setBiddingValue(e.target.value)
 										}}
 									/>
-									<TGreyBtn height={30} style={{ minWidth: '50px' }} onClick={confirmOnClickHandler}>
+									<TGreyBtn height={30} style={{ minWidth: '50px' }} onClick={biddingOnClickHandler}>
 										적용
 									</TGreyBtn>
 									<BtnBound />
@@ -251,10 +411,11 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 										width={120}
 										height={32}
 										onChange={(e) => {
-											setwinningCreateInput((p) => ({
-												...p,
-												confirmPrice: parseInt(e.target.value) || null,
-											}))
+											// setwinningCreateInput((p) => ({
+											// 	...p,
+											// 	confirmPrice: parseInt(e.target.value) || null,
+											// }))
+											setConfirmValue(e.target.value)
 										}}
 									/>
 									<TGreyBtn height={30} style={{ minWidth: '50px' }} onClick={confirmOnClickHandler}>
@@ -268,6 +429,7 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 								hei2={exFilterToggle ? 250 : 500}
 								tablePagination={tablePagination}
 								onPageChange={onPageChange}
+								changeFn={onCellValueChanged}
 							/>
 							<TCSubContainer style={{ padding: '0px', position: 'relative', top: '40px' }}>
 								<div></div>

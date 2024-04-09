@@ -45,6 +45,7 @@ import WinningProductAdd from './WinningProductAdd'
 import useTableSelection from '../../../hooks/useTableSelection'
 
 const WinningCreate = ({}) => {
+	const [values, setValues] = useState([]) // 배열 형태로 초기화
 	const navigate = useNavigate()
 	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
@@ -71,6 +72,7 @@ const WinningCreate = ({}) => {
 	}
 
 	const [winningCreateData, setWinningCreateData] = useState(init)
+	console.log('winningCreateData', winningCreateData?.productList)
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
 
 	const [customerData, setCustomerData] = useState()
@@ -124,6 +126,7 @@ const WinningCreate = ({}) => {
 			auctionNumber: auctionNowNum?.data?.data,
 			customerUid: customerData?.uid,
 			memberUid: customerData?.memberUid,
+			productList: values,
 		}))
 	}, [propsUid, auctionNowNum, customerData])
 
@@ -144,17 +147,17 @@ const WinningCreate = ({}) => {
 	})
 
 	useEffect(() => {
-		const updatedProductList = checkedArray2?.map((item) => ({
-			productUid: item['제품 고유 번호'],
-			biddingPrice: winningCreateInput.biddingPrice,
-			confirmPrice: winningCreateInput.confirmPrice,
-			// 여기에 다른 필요한 속성을 추가할 수 있습니다.
-		}))
+		// const updatedProductList = checkedArray2?.map((item) => ({
+		// 	productUid: item['제품 고유 번호'],
+		// 	biddingPrice: winningCreateInput.biddingPrice,
+		// 	confirmPrice: winningCreateInput.confirmPrice,
+		// 	// 여기에 다른 필요한 속성을 추가할 수 있습니다.
+		// }))
 
 		// winningCreateData를 업데이트하여 productList를 갱신
 		setWinningCreateData((prevData) => ({
 			...prevData,
-			productList: updatedProductList,
+			productList: values,
 		}))
 
 		setTotalWon((prevData) => ({
@@ -162,7 +165,7 @@ const WinningCreate = ({}) => {
 			biddingPrice: winningCreateInput?.biddingPrice * (checkedArray2?.length || 0),
 			confirmPrice: winningCreateInput?.confirmPrice * (checkedArray2?.length || 0),
 		}))
-	}, [checkedArray2, winningCreateInput])
+	}, [checkedArray2, winningCreateInput, addProdModal])
 
 	const paramData = {
 		pageNum: 1,
@@ -204,8 +207,14 @@ const WinningCreate = ({}) => {
 				(item) => !checkedArray2.some((checkedItem) => checkedItem['제품 고유 번호'] === item['제품 고유 번호']),
 			)
 			setNewResData(filteredArray)
+
+			const deleteProductUids = checkedArray2.map((item) => item['제품 고유 번호'])
+			const filteredValues = values.filter((item) => !deleteProductUids.includes(item.productUid))
+			setValues(filteredValues)
 		})
 	}, [checkedArray2, newResData])
+
+	console.log('밸류', values)
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -241,6 +250,7 @@ const WinningCreate = ({}) => {
 	})
 
 	const successfulBidOnClick = () => {
+		// if (!isArray(checkedArray2) || !checkedArray2.length > 0) return simpleAlert('등록할 항목을 선택해주세요.')
 		successfulBidMutation(winningCreateData)
 	}
 
@@ -271,6 +281,11 @@ const WinningCreate = ({}) => {
 	const sum = totalWeight && totalWeight?.reduce((acc, curr) => acc + parseInt(curr), 0)
 
 	console.log('getRow', getRow)
+
+	const productAddOnClickHandler = () => {
+		// if (!destiObject) return simpleAlert('상단 목적지 적용 후 추가해주세요.')
+		setAddProdModal(true)
+	}
 
 	return (
 		<FilterContianer>
@@ -399,13 +414,7 @@ const WinningCreate = ({}) => {
 						선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 <span>{sum.toLocaleString()}</span> (kg)
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<SkyBtn
-							onClick={() => {
-								setAddProdModal(true)
-							}}
-						>
-							제품 추가
-						</SkyBtn>
+						<SkyBtn onClick={productAddOnClickHandler}>제품 추가</SkyBtn>
 					</div>
 				</TCSubContainer>
 				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
@@ -439,6 +448,9 @@ const WinningCreate = ({}) => {
 					setNewResData={setNewResData}
 					setwinningCreateInput={setwinningCreateInput}
 					dupleUids={dupleUids}
+					values={values}
+					setValues={setValues}
+					setWinningCreateData={setWinningCreateData}
 				/>
 			)}
 			{destinationPopUp && (
