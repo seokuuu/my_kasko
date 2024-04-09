@@ -82,7 +82,7 @@ const WinningSearchFields = ({
 						<h6>낙찰 상태</h6>
 						<RadioSearchButton
 							options={[
-								{ label: '전체', value: null },
+								{ label: '전체', value: '' },
 								{ label: '낙찰', value: '낙찰' },
 								{ label: '낙찰 취소', value: '낙찰 취소' },
 								{ label: '낙찰 확정', value: '낙찰 확정' },

@@ -216,8 +216,7 @@ const WinningProductAdd = ({ addModal, setAddModal, newResData, setNewResData, s
 						<TableContianer>
 							<TCSubContainer bor>
 								<div>
-									조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / {(getRow && getRow?.length) || 0}개 )
-									{/* <Hidden /> */}
+									조회 목록 (선택 <span>{checkedArray?.length || 0}</span> / {totalCountStr}개 ){/* <Hidden /> */}
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
 									<PageDropdown handleDropdown={handleTablePageSize} />
