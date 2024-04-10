@@ -27,12 +27,17 @@ import {
 
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 
-import { InputContainer, NoOutInput, Unit } from '../../../common/Input/Input'
+import { InputContainer } from '../../../common/Input/Input'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { isArray, isEqual } from 'lodash'
-import { getAuctionDetailDestination, getAuctionNumber, successfulBid } from '../../../api/auction/winning'
+import {
+	getAuctionDetailDestination,
+	getAuctionNumber,
+	successfulBid,
+	useGetWinningCreateBiddingTotalPrice,
+} from '../../../api/auction/winning'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { AuctionWinningCreateFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
@@ -45,7 +50,6 @@ import BiddingSearchFields from '../Bidding/BiddingSearchFields'
 import WinningProductAdd from './WinningProductAdd'
 import useTableSelection from '../../../hooks/useTableSelection'
 import WinningProductCreateBtn from './WinningProductCreateBtn'
-import { client } from '../../../api'
 import { numberDeleteComma } from '../../../utils/utils'
 
 const WinningCreate = ({}) => {
@@ -119,6 +123,11 @@ const WinningCreate = ({}) => {
 
 	console.log('destiObject', destiObject)
 
+	// 낙찰가 총액
+	const [totalBiddingPriceRequestData, setTotalBiddingPriceRequestData] = useState(null)
+	// prettier-ignore
+	const { data: totalBiddingPriceData, isFetching: totalBiddingPriceLoading } = useGetWinningCreateBiddingTotalPrice(totalBiddingPriceRequestData)
+
 	// 목적지 찾기 및 목적지 uid, auctionNumber set //
 	useEffect(() => {
 		const selectedObject = auctionDestination?.data?.data.find((item) => item.uid === propsUid)
@@ -185,17 +194,6 @@ const WinningCreate = ({}) => {
 	// const resPagination = data?.data?.data?.pagination
 	const [newResData, setNewResData] = useState([])
 
-	// 낙찰가 & 확정전송가 총액
-	const getBiddingTotalPrice = async (params) => {
-		const response = await client.post('/auction/successfulBid/totalBiddingPrice', params)
-		return response.data.data
-	}
-
-	// 낙찰가 총액
-	const [totalBiddingPrice, setTotalBiddingPrice] = useState(0)
-	// 확정전송총액
-	const [totalSendBiddingPrice, setTotalSendBiddingPrice] = useState(0)
-
 	useEffect(() => {
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 		if (Array.isArray(newResData)) {
@@ -217,20 +215,12 @@ const WinningCreate = ({}) => {
 	const totalPriceCalculation = async () => {
 		if (newResData?.length > 0 && destiObject) {
 			const requestData = newResData.map((item) => ({
-				productUid: item['제품 고유 번호'],
+				productNumber: item['제품 번호'],
 				customerDestinationUid: destiObject.uid,
 				biddingPrice: item['낙찰가'],
+				sendBiddingPrice: item['확정전송가'],
 			}))
-			const newBiddingTotalPrice = await getBiddingTotalPrice(requestData)
-			setTotalBiddingPrice(newBiddingTotalPrice)
-
-			const requestSendData = newResData.map((item) => ({
-				productUid: item['제품 고유 번호'],
-				customerDestinationUid: destiObject.uid,
-				biddingPrice: item['확정전송가'],
-			}))
-			const newSendBiddingTotalPrice = await getBiddingTotalPrice(requestSendData)
-			setTotalSendBiddingPrice(newSendBiddingTotalPrice)
+			setTotalBiddingPriceRequestData(requestData)
 		}
 	}
 
@@ -405,10 +395,13 @@ const WinningCreate = ({}) => {
 					<FilterTCBSubdiv>
 						<div style={{ marginRight: '10px' }}>
 							<h6 style={{ fontSize: '18px' }}>낙찰가 총액 (공급가)</h6>
-							<InputContainer>
-								{totalBiddingPrice?.toLocaleString()}
-								<Unit>원</Unit>
-							</InputContainer>
+							{totalBiddingPriceLoading ? (
+								<InputContainer>데이터 로딩 중...</InputContainer>
+							) : totalBiddingPriceData ? (
+								<InputContainer>{totalBiddingPriceData?.totalBiddingPrice?.toLocaleString() + '원'}</InputContainer>
+							) : (
+								<InputContainer>0</InputContainer>
+							)}
 						</div>
 						{/* <div style={{ marginRight: '10px' }}>
                   <h6 style={{ fontSize: '17px' }}>총 중량</h6>
@@ -416,11 +409,14 @@ const WinningCreate = ({}) => {
                 </div> */}
 
 						<div style={{ marginRight: '10px' }}>
-							<h6 style={{ fontSize: '17px' }}> 확정전송액 (공급가)</h6>
-							<InputContainer>
-								{totalSendBiddingPrice?.toLocaleString()}
-								<Unit>원</Unit>
-							</InputContainer>
+							<h6 style={{ fontSize: '17px' }}>확정전송액 (공급가)</h6>
+							{totalBiddingPriceLoading ? (
+								<InputContainer>데이터 로딩 중...</InputContainer>
+							) : totalBiddingPriceData ? (
+								<InputContainer>{totalBiddingPriceData?.totalSendBiddingPrice?.toLocaleString() + '원'}</InputContainer>
+							) : (
+								<InputContainer>0</InputContainer>
+							)}
 						</div>
 					</FilterTCBSubdiv>
 				</FilterTCBottom>
