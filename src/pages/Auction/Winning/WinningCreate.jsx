@@ -141,8 +141,6 @@ const WinningCreate = ({}) => {
 			memberUid: customerData?.memberUid,
 			productList: values,
 		}))
-
-		totalPriceCalculation()
 	}, [propsUid, auctionNowNum, customerData])
 
 	const [tablePagination, setTablePagination] = useState([])
@@ -207,24 +205,21 @@ const WinningCreate = ({}) => {
 			}))
 
 			setGetRow(intUniqueData)
-			totalPriceCalculation()
 			// setTablePagination(resPagination)
 		}
 	}, [newResData])
 
-	const totalPriceCalculation = async () => {
+	useEffect(() => {
 		if (newResData?.length > 0 && destiObject) {
 			const requestData = newResData.map((item) => ({
 				productNumber: item['제품 번호'],
 				customerDestinationUid: destiObject.uid,
-				biddingPrice: item['낙찰가'],
-				sendBiddingPrice: item['확정전송가'],
+				biddingPrice: Number(numberDeleteComma(item['낙찰가'])),
+				sendBiddingPrice: Number(numberDeleteComma(item['확정전송가'])),
 			}))
 			setTotalBiddingPriceRequestData(requestData)
 		}
-	}
-
-	console.log('newResData', newResData)
+	}, [newResData, destiObject])
 
 	const dupleUids = getRow && getRow?.map((item) => item['제품 고유 번호'])
 
