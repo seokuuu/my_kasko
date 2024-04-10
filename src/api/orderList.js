@@ -34,6 +34,7 @@ export const useDepositOrderCancel = () => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: 'order' })
+			queryClient.invalidateQueries({ queryKey: 'getSaleProductDetail' })
 			return simpleAlert('주문을 취소하였습니다.', () => {
 				navigate(-1)
 			})

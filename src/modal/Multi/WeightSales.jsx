@@ -220,7 +220,7 @@ const WeightSales = () => {
 				simpleAlert('저장되었습니다.', () => window.location.reload())
 			},
 			onError: (e) => {
-				simpleAlert('실패하였습니다.', () => window.location.reload())
+				simpleAlert(e?.data?.message || '실패하였습니다.')
 			},
 		})
 	}

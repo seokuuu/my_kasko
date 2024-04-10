@@ -258,11 +258,13 @@ const OrderDetail = ({ salesNumber }) => {
 				<TCSubContainer>
 					<div></div>
 					{/* 입금 확인 요청서 */}
-					<PrintDepositRequestButton
-						auctionNumber={salesNumber}
-						salesDeposit
-						saleStatus={serverData?.list && serverData?.list[0]?.saleStatus}
-					/>
+					<div style={{ display: 'flex', gap: '8px' }}>
+						<PrintDepositRequestButton
+							auctionNumber={salesNumber}
+							salesDeposit
+							saleStatus={serverData?.list && serverData?.list[0]?.saleStatus}
+						/>
+					</div>
 				</TCSubContainer>
 				<NewBottomBtnWrap>
 					<BlackBtn
