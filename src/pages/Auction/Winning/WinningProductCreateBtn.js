@@ -2,7 +2,7 @@ import { WhiteSkyBtn } from '../../../common/Button/Button'
 import { readExcelFile } from '../../../utils/ReadExcelFile'
 import useAlert from '../../../store/Alert/useAlert'
 
-const WinningProductCreateBtn = ({ setNewResData }) => {
+const WinningProductCreateBtn = ({ newResData, setNewResData, values, setValues, setWinningCreateData }) => {
 	const { simpleAlert } = useAlert()
 
 	const fileUpload = async (e) => {
@@ -14,12 +14,30 @@ const WinningProductCreateBtn = ({ setNewResData }) => {
 		}
 
 		try {
+			const productNumbers = values.map((item) => item.productNumber)
+
 			const jsonData = await Promise.all(
 				Array.from(selectedFile).map(
 					(file) => readExcelFile(file), // Excel 파일을 JSON으로 변환
 				),
 			)
-			setNewResData(jsonData[0])
+			const newJsonData = jsonData[0].filter((item) => !productNumbers.includes(item['제품 번호']))
+			setNewResData([...newResData, ...newJsonData])
+
+			const newValues = jsonData[0]
+				.filter((item) => !productNumbers.includes(item['제품 번호']))
+				.map((item) => ({
+					productUid: null,
+					productNumber: item['제품 번호'],
+					biddingPrice: item['낙찰가'],
+					confirmPrice: item['확정전송가'],
+				}))
+			setValues([...values, ...newValues])
+
+			setWinningCreateData((prevData) => ({
+				...prevData,
+				productList: [...values, ...newValues],
+			}))
 		} catch (error) {
 			simpleAlert('경매 낙찰 생성 엑셀 업로드 형식이 아닙니다.')
 		}

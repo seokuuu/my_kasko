@@ -1443,8 +1443,8 @@ export const AuctionWinningCreateFields = {
 	// 경매 번호
 	// 관심 제품
 	'제품 번호': 'number',
-	'Pro.No 번호': 'productNoNumber',
-	창고: 'storagename',
+	'ProNo 번호': 'productNoNumber',
+	창고: 'storageName',
 	'판매 유형': 'saleType',
 	'판매가 유형': 'salePriceType',
 	제품군: 'spart',
