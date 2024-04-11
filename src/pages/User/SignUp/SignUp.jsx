@@ -155,10 +155,13 @@ const SignUp = () => {
 	/**  사업자 번호 중복 체크 */
 	const handleBusIdDupleCheck = async () => {
 		const businessNumber = watch('businessNumber')
-		// const idRegex = /^[0-9]{3}[0-9]{2}[0-9]{5}$/
-		// if (!businessNumber || !idRegex.test(businessNumber)) {
-		// 	return simpleAlert('올바른 사업자 등록 번호가 아닙니다.')
-		// }
+		if (!businessNumber) {
+			return simpleAlert('사업자 번호를 입력해주세요.')
+		}
+		const idRegex = /^[0-9]{3}[0-9]{2}[0-9]{5}$/
+		if (!idRegex.test(businessNumber)) {
+			return simpleAlert('올바른 사업자 등록 번호가 아닙니다.')
+		}
 		try {
 			await checkBusinessId(businessNumber)
 			simpleAlert('사용 가능한 사업자 번호입니다.')
@@ -835,7 +838,13 @@ const SignUp = () => {
 								</a>
 							</div>
 						</BottomItem>
-						{isNext ? <SignUpBtn isNext={true}>가입하기</SignUpBtn> : <SignUpBtn isNext={false}>가입하기</SignUpBtn>}
+						{isNext ? (
+							<SignUpBtn isNext={true}>가입하기</SignUpBtn>
+						) : (
+							<SignUpBtn type="button" isNext={false}>
+								가입하기
+							</SignUpBtn>
+						)}
 					</Bottom>
 				</form>
 			</SignupContainer>
