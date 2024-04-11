@@ -315,14 +315,14 @@ export const UserManageFieldsCols = [
 export const UserPageUserPreferFields = {
 	uid: 'uid',
 	'선호제품 명': 'name',
-	'두께(mm)': 'thicknessMax',
-	'폭(mm)': 'widthMax',
-	'길이(mm)': 'lengthMax',
+	'두께(mm)': 'thickness',
+	'폭(mm)': 'width',
+	'길이(mm)': 'length',
 	규격약호: 'spec',
-	TS: 'tsMax',
-	'C%': 'cmax',
-	EL: 'elMax',
-	YP: 'ypMax',
+	TS: 'ts',
+	'C%': 'c',
+	EL: 'el',
+	YP: 'yp',
 	비고: '',
 }
 export const UserPageUserPreferFieldsCols = [
