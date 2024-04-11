@@ -98,6 +98,6 @@ export async function successfulOrderPost(data) {
 }
 
 export async function successfulOrderListPost(data) {
-	const response = await client.post(`${urls.successfulOrderAll}`, data, { timeout: 120000 * 10 })
+	const response = await client.post(`${urls.successfulOrderAll}`, data, { timeout: 600000 * 2 })
 	return response.data
 }
