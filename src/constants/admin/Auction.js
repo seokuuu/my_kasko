@@ -6,6 +6,7 @@ import MarkerCellRenderer from '../../pages/Table/MarkerCellRenderer'
 import { ProNoCellRenderer } from '../../pages/Table/ProNoCellRenderer'
 import { auctionPackDetailModal, auctionPackDetailNumAtom } from '../../store/Layout/Layout'
 import { PROD_COL_NAME } from '../user/constantKey'
+import { PackageNumCellRenderer } from '../../pages/Table/PackageNumCellRenderer'
 
 var checkboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping
@@ -768,8 +769,8 @@ export const AuctionPackageBiddingFieldsCols = (selected) => {
 		{ ...commonStyles, field: '패키지 명' },
 		{
 			...commonStyles,
-			field: '패키지 번호',
-			cellRenderer: LinkRenderer,
+			field: PROD_COL_NAME.packageNumber,
+			cellRenderer: PackageNumCellRenderer,
 			// cellRendererParams: (params) => params?.data[params.column.colId] || '',
 			// valueGetter: (v) => v.data[v.column.colId]?.value || '',
 		},
