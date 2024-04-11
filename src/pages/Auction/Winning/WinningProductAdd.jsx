@@ -51,6 +51,8 @@ const WinningProductAdd = ({
 	setValues,
 }) => {
 	// const [values, setValues] = useState([]) // 배열 형태로 초기화
+	const originalValues = useRef(values) // 원본 값
+
 	const { simpleConfirm, simpleAlert } = useAlert()
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
@@ -66,7 +68,6 @@ const WinningProductAdd = ({
 	//checkSales
 
 	const [getRow, setGetRow] = useState('')
-	console.log('getRow', getRow)
 	const tableField = useRef(AuctionWinningCreateFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
@@ -77,10 +78,6 @@ const WinningProductAdd = ({
 
 	const [biddingValue, setBiddingValue] = useState('')
 	const [confirmValue, setConfirmValue] = useState('')
-
-	console.log('checkUid', checkUid)
-
-	console.log('checkedArray', checkedArray)
 
 	// GET
 	const { isLoading, isError, data, isSuccess } = useReactQuery(param, 'getWinningCreate', getWinningCreate)
@@ -131,6 +128,7 @@ const WinningProductAdd = ({
 		)
 	}
 
+	// 제품 추가
 	const handleAddBtn = () => {
 		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('추가할 항목을 선택해주세요.')
 		if (hasNullOrUndefinedInCheckedArray()) return simpleAlert('추가할 낙찰가 / 확정전송가를 확인해주세요.')
@@ -143,7 +141,7 @@ const WinningProductAdd = ({
 					setNewResData((prevData) => [...prevData, item])
 					setAddModal(false)
 					setCheckedArray([])
-					setValues(filteredValues)
+					setValues([...new Set([...originalValues.current, ...filteredValues])])
 				}),
 			)
 		}
@@ -283,7 +281,6 @@ const WinningProductAdd = ({
 		setValues(mergedValues)
 
 		const updatedResData = getRow?.map((item) => {
-			console.log('아템 =>', item)
 			if (checkUid?.includes(item['제품 고유 번호'])) {
 				item['확정전송가'] = confirmValue
 			}
@@ -295,7 +292,7 @@ const WinningProductAdd = ({
 	}
 
 	/**
-	 * @description
+	 * @description 낙찰가 또는 확정 전송가 입력 핸들러
 	 * Table Cell Input onChange Handler
 	 */
 	const onCellValueChanged = (params) => {
@@ -318,6 +315,7 @@ const WinningProductAdd = ({
 		if (!updatedValues.find((item) => item.productUid === p['제품 고유 번호'])) {
 			updatedValues.push({
 				productUid: p['제품 고유 번호'],
+				productNumber: p['제품 번호'],
 				biddingPrice: parseInt(p['낙찰가'], 10) || 0,
 				confirmPrice: parseInt(p['확정전송가'], 10) || 0,
 			})
@@ -326,8 +324,6 @@ const WinningProductAdd = ({
 		// 업데이트된 값을 상태로 설정
 		setValues(updatedValues)
 	}
-
-	console.log('values', values)
 
 	// useEffect(() => {
 	// 	setWinningCreateData((prev) => ({
@@ -355,12 +351,12 @@ const WinningProductAdd = ({
 							{/* 토글 쓰기 */}
 							<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
 						</FilterHeader>
-						<FilterTopContainer>
-							<FilterTCTop>
-								<h6>경매 번호</h6>
-								<p>2023041050</p>
-							</FilterTCTop>
-						</FilterTopContainer>
+						{/*<FilterTopContainer>*/}
+						{/*<FilterTCTop>*/}
+						{/*	/!*<h6>경매 번호</h6>*!/*/}
+						{/*	/!*<p>2023041050</p>*!/*/}
+						{/*</FilterTCTop>*/}
+						{/*</FilterTopContainer>*/}
 						{exFilterToggle && (
 							<>
 								<GlobalProductSearch

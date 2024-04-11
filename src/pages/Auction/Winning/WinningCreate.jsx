@@ -80,22 +80,12 @@ const WinningCreate = ({}) => {
 	}
 
 	const [winningCreateData, setWinningCreateData] = useState(init)
-	console.log('winningCreateData', winningCreateData?.productList)
 	const [winningCreateInput, setwinningCreateInput] = useState(productListInner)
 
 	const [customerData, setCustomerData] = useState()
-	const [destiData, setDestiData] = useState()
 
 	const [isModal, setIsModal] = useAtom(WinningCreateFindAtom)
 	const [addProdModal, setAddProdModal] = useAtom(WinningProductAddAtom)
-	//checkSales
-
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
 
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -120,8 +110,6 @@ const WinningCreate = ({}) => {
 
 	const [propsUid, setPropsUid] = useState(null) // CustomerCodeFind에서 찾아온 uid
 	const [destiObject, setDestiObject] = useState()
-
-	console.log('destiObject', destiObject)
 
 	// 낙찰가 총액
 	const [totalBiddingPriceRequestData, setTotalBiddingPriceRequestData] = useState(null)
@@ -161,7 +149,7 @@ const WinningCreate = ({}) => {
 
 	useEffect(() => {
 		// const updatedProductList = checkedArray2?.map((item) => ({
-		// 	productUid: item['제품 고유 번호'],
+		// 	productUid: item['제품 번호'],
 		// 	biddingPrice: winningCreateInput.biddingPrice,
 		// 	confirmPrice: winningCreateInput.confirmPrice,
 		// 	// 여기에 다른 필요한 속성을 추가할 수 있습니다.
@@ -196,7 +184,6 @@ const WinningCreate = ({}) => {
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 		if (Array.isArray(newResData)) {
 			const combinedData = [...newResData]
-			console.log('combinedData : ', combinedData)
 
 			const intUniqueData = combinedData.map((item) => ({
 				...item,
@@ -221,24 +208,22 @@ const WinningCreate = ({}) => {
 		}
 	}, [newResData, destiObject])
 
-	const dupleUids = getRow && getRow?.map((item) => item['제품 고유 번호'])
+	const dupleUids = getRow && getRow?.map((item) => item['제품 번호'])
 
 	const handleRemoveBtn = useCallback(() => {
 		if (!isArray(checkedArray2) || !checkedArray2.length > 0) return simpleAlert('추가할 항목을 선택해주세요.')
 
 		simpleConfirm('선택한 항목을 삭제 목록에 추가하시겠습니까?', () => {
 			const filteredArray = newResData.filter(
-				(item) => !checkedArray2.some((checkedItem) => checkedItem['제품 고유 번호'] === item['제품 고유 번호']),
+				(item) => !checkedArray2.some((checkedItem) => checkedItem['제품 번호'] === item['제품 번호']),
 			)
 			setNewResData(filteredArray)
 
-			const deleteProductUids = checkedArray2.map((item) => item['제품 고유 번호'])
+			const deleteProductUids = checkedArray2.map((item) => item['제품 번호'])
 			const filteredValues = values.filter((item) => !deleteProductUids.includes(item.productUid))
 			setValues(filteredValues)
 		})
 	}, [checkedArray2, newResData])
-
-	console.log('밸류', values)
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -268,14 +253,18 @@ const WinningCreate = ({}) => {
 				},
 			})
 		},
-		onError: () => {
-			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		onError: (e) => {
+			simpleAlert(e?.data?.message || '오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
 
 	const successfulBidOnClick = () => {
 		// if (!isArray(checkedArray2) || !checkedArray2.length > 0) return simpleAlert('등록할 항목을 선택해주세요.')
+		console.log('winningCreateData : ', winningCreateData)
 		if (!destiObject) return simpleAlert('목적지 적용이 필요합니다.')
+		if (winningCreateData?.productList?.length === 0) {
+			return simpleAlert('제품을 추가해주세요.')
+		}
 		successfulBidMutation(winningCreateData)
 	}
 
@@ -304,8 +293,6 @@ const WinningCreate = ({}) => {
 
 	const totalWeight = getRow && getRow?.map((x) => x['중량'])
 	const sum = totalWeight && totalWeight?.reduce((acc, curr) => acc + parseInt(curr), 0)
-
-	console.log('getRow', getRow)
 
 	const productAddOnClickHandler = () => {
 		setAddProdModal(true)
@@ -445,7 +432,13 @@ const WinningCreate = ({}) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						{/* 제품 대량 업로드 */}
-						<WinningProductCreateBtn setNewResData={setNewResData} />
+						<WinningProductCreateBtn
+							newResData={newResData}
+							setNewResData={setNewResData}
+							values={values}
+							setValues={setValues}
+							setWinningCreateData={setWinningCreateData}
+						/>
 						<SkyBtn onClick={productAddOnClickHandler}>제품 추가</SkyBtn>
 					</div>
 				</TCSubContainer>
