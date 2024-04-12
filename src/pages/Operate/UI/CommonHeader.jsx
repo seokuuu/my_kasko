@@ -46,7 +46,7 @@ const CommonHeader = ({
 		<div>
 			<FilterHeader>
 				<div style={{ display: 'flex' }}>
-					<h1>일반 관리</h1>
+					<h1>노출 관리</h1>
 					<CategoryTab options={categoryTabOptions} highLightValue={tabHighlightValue} />
 				</div>
 				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
