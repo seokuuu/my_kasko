@@ -77,7 +77,7 @@ const Progress = ({}) => {
 
 	const [liveStatus, setLiveStatus] = useState('LIVEgetProgess')
 	// GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getProgess)
+	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getProgess, liveStatus)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
