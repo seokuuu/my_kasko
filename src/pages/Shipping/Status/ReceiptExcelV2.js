@@ -72,9 +72,7 @@ function ReceiptForm({ data, closeModal }) {
 				format: 'a2', // 종이 크기 형식
 				orientation: 'portrait', // or landscape : 가로
 			},
-			callback: () => {
-				closeModal()
-			},
+			callback: closeModal(),
 		})
 	}
 
