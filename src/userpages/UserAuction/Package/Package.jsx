@@ -10,6 +10,7 @@ import {
 	biddingAgreementModal,
 	selectedRowsAtom,
 	toggleAtom,
+	userPackBiddingSearch,
 	wishListAtom,
 } from '../../../store/Layout/Layout'
 
@@ -82,6 +83,8 @@ const Package = ({}) => {
 	})
 
 	const [isRotated, setIsRotated] = useState(false)
+
+	const isUserPackBiddingSearch = useAtomValue(userPackBiddingSearch)
 
 	// Function to handle image click and toggle rotation
 	const handleImageClick = () => {
@@ -191,7 +194,8 @@ const Package = ({}) => {
 				// wishList에 있는 패키지를 제외한 나머지 추출하여 정렬
 				const remainingItems = restrictOriginData.list.filter((item) => !wishList.includes(item.packageNumber))
 				// wishList에 있는 패키지를 먼저, 그 다음 나머지를 합쳐서 정렬된 리스트 생성
-				const sortedList = [...wishedItems, ...remainingItems]
+
+				const sortedList = isUserPackBiddingSearch ? [...wishedItems] : [...wishedItems, ...remainingItems]
 				setOridata({ ...restrictOriginData, list: sortedList })
 			}
 			setTablePagination(resPagination)

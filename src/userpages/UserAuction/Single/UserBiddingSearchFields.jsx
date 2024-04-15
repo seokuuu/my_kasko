@@ -12,13 +12,15 @@ import {
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React from 'react'
 import { GreyBtn } from '../../../common/Button/Button'
+import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import { RadioSearchButton } from '../../../components/Search'
 import StandardFind from '../../../modal/Multi/StandardFind'
 import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
-import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
+import { useLocation } from 'react-router-dom'
+import { userPackBiddingSearch } from '../../../store/Layout/Layout'
 
 const UserBiddingSearchFields = ({
 	// prettier-ignore
@@ -35,10 +37,16 @@ const UserBiddingSearchFields = ({
 		gradeList,
 	} = useGlobalProductSearchFieldData()
 
+	const location = useLocation()
+
 	const onChange = (key, value) => setSearch((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
 
+	const [isUserPackBiddingSearch, setIsUserPackBiddingSearch] = useAtom(userPackBiddingSearch)
+
 	const onChangeRadio = (key, value) => {
-		setSearch((p) => ({ ...p, [key]: value }))
+		if (['/userpage/auctionpackage'].includes(location.pathname) && value === '관심제품') {
+			setIsUserPackBiddingSearch(true)
+		} else setSearch((p) => ({ ...p, [key]: value }))
 	}
 
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
