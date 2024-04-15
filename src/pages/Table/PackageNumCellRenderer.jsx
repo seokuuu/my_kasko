@@ -6,11 +6,14 @@ import { wishProductNumbersAtom } from '../../store/Product'
 import { useAtomValue } from 'jotai'
 import { authAtom } from '../../store/Auth/auth'
 import { useLocation } from 'react-router-dom'
-import { auctionPackDetailModal, auctionPackDetailNumAtom } from '../../store/Layout/Layout'
+import { auctionPackDetailModal, auctionPackDetailNumAtom, wishListAtom } from '../../store/Layout/Layout'
+import { useEffect } from 'react'
 
 export function PackageNumCellRenderer({ data }) {
 	const [aucDetail, setAucDetail] = useAtom(auctionPackDetailNumAtom) // 해당 row 값 저장
 	const [aucDetailModal, setAucDetailModal] = useAtom(auctionPackDetailModal) // 패키지 모달
+
+	const [wishListState, setWishListState] = useAtom(wishListAtom)
 
 	console.log('패키지 데이터', data)
 	const wishProdNums = useAtomValue(wishProductNumbersAtom)
@@ -23,6 +26,10 @@ export function PackageNumCellRenderer({ data }) {
 	const userId = jwtDecode(token)?.sub || ''
 	const wishListNum = USER_WISH_STORAGE_KEY(userId)
 	let wishList = JSON.parse(localStorage.getItem(wishListNum)) || [] // 기본값으로 빈 배열 설정
+
+	useEffect(() => {
+		setWishListState(wishList)
+	}, [])
 
 	console.log('wishList', wishList)
 

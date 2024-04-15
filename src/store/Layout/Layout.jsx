@@ -152,6 +152,9 @@ export const winningDetailModal = atom(false)
 // 입찰 동의서 모달
 export const biddingAgreementModal = atom(false)
 
+// 관심 제품 값
+export const wishListAtom = atom([])
+
 /* ==============================
     기준 관리 (Standard)
 ================================= */
