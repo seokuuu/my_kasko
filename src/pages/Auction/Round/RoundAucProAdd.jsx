@@ -204,7 +204,7 @@ const RoundAucProAdd = ({
 						<WhiteCloseBtn onClick={blockModalExitHandler} src="/svg/white_btn_close.svg" />
 					</div>
 				</BlueBarHeader>
-				<BlueSubContainer style={{ padding: '0px 25px', height: '500px' }}>
+				<BlueSubContainer style={{ padding: '0px 25px', height: '100%', overflowY: 'scroll' }}>
 					<FilterContianer>
 						<FilterHeader>
 							<div style={{ display: 'flex' }}></div>

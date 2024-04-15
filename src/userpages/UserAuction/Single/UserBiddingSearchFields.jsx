@@ -92,18 +92,30 @@ const UserBiddingSearchFields = ({
 				<RowWrap>
 					<PartWrap first>
 						<h6>진행 상태</h6>
-						<RadioSearchButton
-							options={[
-								{ label: '전체', value: null },
-								['/userpage/auctionpackage'].includes(location.pathname)
-									? { label: '관심제품', value: undefined }
-									: { label: '관심제품', value: '관심제품' },
-								{ label: '응찰', value: '응찰' },
-								{ label: '미응찰', value: '미응찰' },
-							]}
-							value={search.biddingStatus}
-							onChange={(value) => onChangeRadio('biddingStatus', value)}
-						/>
+						{['/auction/biddingpackage'].includes(location.pathname) ? (
+							<RadioSearchButton
+								options={[
+									{ label: '전체', value: null },
+									{ label: '응찰', value: '응찰' },
+									{ label: '미응찰', value: '미응찰' },
+								]}
+								value={search.biddingStatus}
+								onChange={(value) => onChangeRadio('biddingStatus', value)}
+							/>
+						) : (
+							<RadioSearchButton
+								options={[
+									{ label: '전체', value: null },
+									['/userpage/auctionpackage'].includes(location.pathname)
+										? { label: '관심제품', value: undefined }
+										: { label: '관심제품', value: '관심제품' },
+									{ label: '응찰', value: '응찰' },
+									{ label: '미응찰', value: '미응찰' },
+								]}
+								value={search.biddingStatus}
+								onChange={(value) => onChangeRadio('biddingStatus', value)}
+							/>
+						)}
 					</PartWrap>
 				</RowWrap>
 				{/* 2행 */}

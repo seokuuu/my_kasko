@@ -3,6 +3,7 @@ import { constructN } from 'ramda'
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { userBiddingWishCheck } from '../../store/Layout/Layout'
+import { useLocation } from 'react-router-dom'
 
 /**
  * 라디오 서치 버튼
@@ -20,25 +21,31 @@ const RadioSearchButton = ({ title, options, value, onChange, label }) => {
 		setCheck(label)
 	}
 
+	const location = useLocation()
+
 	useEffect(() => {
 		if (check === '관심제품') setWishCheck(true)
 		else setWishCheck(false)
 	}, [check])
 
 	return (
-		<RadioContainer>
-			{title && <h6>{title}</h6>}
-			<RadioBox>
-				{options.map((option, index) => (
-					<RadioMainDiv key={index} onClick={() => changeHandler(option.value, option.label)}>
-						<RadioCircleDiv isChecked={option.value === value}>
-							<RadioInnerCircleDiv isChecked={option.value === value} />
-						</RadioCircleDiv>
-						<div>{option.label}</div>
-					</RadioMainDiv>
-				))}
-			</RadioBox>
-		</RadioContainer>
+		<>
+			{['/auction/biddingpackage'].includes(location.pathname) && title === '관심제품' ? null : (
+				<RadioContainer>
+					{title && <h6>{title}</h6>}
+					<RadioBox>
+						{options.map((option, index) => (
+							<RadioMainDiv key={index} onClick={() => changeHandler(option.value, option.label)}>
+								<RadioCircleDiv isChecked={option.value === value}>
+									<RadioInnerCircleDiv isChecked={option.value === value} />
+								</RadioCircleDiv>
+								<div>{option.label}</div>
+							</RadioMainDiv>
+						))}
+					</RadioBox>
+				</RadioContainer>
+			)}
+		</>
 	)
 }
 

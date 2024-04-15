@@ -31,6 +31,7 @@ import {
 import useAlert from '../../../store/Alert/useAlert'
 import { selectedRowsAtom } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
+import styled from 'styled-components'
 
 // 패키지 상세보기 (경매)
 const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuction, live, setLive }) => {
@@ -156,8 +157,8 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 				},
 			})
 		},
-		onError: () => {
-			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		onError: (error) => {
+			simpleAlert(error?.data?.message || '오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
 
@@ -292,7 +293,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 					</div>
 				</BlueBarHeader>
 				<BlueSubContainer style={{ padding: '0px 30px' }}>
-					<FilterContianer>
+					<FilterContianer style={{ height: '65vh' }}>
 						<div style={{ marginTop: '50px' }}></div>
 						<FilterTopContainer>
 							<FilterTCTop>
@@ -312,57 +313,59 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 								</ClaimRow>
 							))}
 						</ClaimTable>
-						<TableContianer>
-							<TCSubContainer bor>
-								<div></div>
-								<div style={{ display: 'flex', gap: '10px' }}>
-									<PageDropdown handleDropdown={handleTablePageSize} />
-									<Excel getRow={getRow} sheetName="패키지 상세" />
-								</div>
-							</TCSubContainer>
-							{nowAuction && (
-								<TCSubContainer>
+						<TableDiv>
+							<TableContianer style={{ height: '55vh' }}>
+								<TCSubContainer bor>
 									<div></div>
-									<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-										<p>일괄 경매 응찰 | 최고가 +</p>
-										<CustomInput
-											placeholder="응찰가 + 최고가 입력"
-											width={140}
-											height={32}
-											value={finalInput.biddingPrice !== null ? finalInput.biddingPrice : ''}
-											onChange={(e) => {
-												setFinalInput((p) => ({
-													...p,
-													biddingPrice: parseInt(e.target.value) || null,
-												}))
-											}}
-										/>
-										<TGreyBtn height={30} style={{ minWidth: '50px' }} onClick={handleButtonClick}>
-											적용
-										</TGreyBtn>
-										<BtnBound />
-										<SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50} onClick={confirmOnClickHandler}>
-											응찰
-										</SkyBtn>
+									<div style={{ display: 'flex', gap: '10px' }}>
+										<PageDropdown handleDropdown={handleTablePageSize} />
+										<Excel getRow={getRow} sheetName="패키지 상세" />
 									</div>
 								</TCSubContainer>
-							)}
+								{nowAuction && (
+									<TCSubContainer>
+										<div></div>
+										<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+											<p>일괄 경매 응찰 | 최고가 +</p>
+											<CustomInput
+												placeholder="응찰가 + 최고가 입력"
+												width={140}
+												height={32}
+												value={finalInput.biddingPrice !== null ? finalInput.biddingPrice : ''}
+												onChange={(e) => {
+													setFinalInput((p) => ({
+														...p,
+														biddingPrice: parseInt(e.target.value) || null,
+													}))
+												}}
+											/>
+											<TGreyBtn height={30} style={{ minWidth: '50px' }} onClick={handleButtonClick}>
+												적용
+											</TGreyBtn>
+											<BtnBound />
+											<SkyBtn style={{ width: '200px', fontSize: '20px' }} height={50} onClick={confirmOnClickHandler}>
+												응찰
+											</SkyBtn>
+										</div>
+									</TCSubContainer>
+								)}
 
-							<Table
-								hei2={400}
-								hei={100}
-								getCol={tableField.current}
-								getRow={getRow}
-								tablePagination={tablePagination}
-								onPageChange={onPageChange}
-							/>
-						</TableContianer>
+								<Table
+									// hei2={400}
+									hei={55}
+									getCol={tableField.current}
+									getRow={getRow}
+									tablePagination={tablePagination}
+									onPageChange={onPageChange}
+								/>
+							</TableContianer>
+							<NewBottomBtnWrap style={{ height: '10%' }} bottom={-5}>
+								<BlackBtn width={13} height={40} onClick={modalClose}>
+									닫기
+								</BlackBtn>
+							</NewBottomBtnWrap>
+						</TableDiv>
 					</FilterContianer>
-					<NewBottomBtnWrap bottom={-5}>
-						<BlackBtn width={13} height={40} onClick={modalClose}>
-							닫기
-						</BlackBtn>
-					</NewBottomBtnWrap>
 				</BlueSubContainer>
 			</ModalContainer>
 		</>
@@ -370,3 +373,10 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 }
 
 export default PackDetail
+
+const TableDiv = styled.div`
+	overflow-y: scroll;
+	max-height: 95%;
+	display: flex;
+	flex-direction: column;
+`
