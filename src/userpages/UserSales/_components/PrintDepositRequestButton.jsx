@@ -234,8 +234,8 @@ export const PrintDepositRequestButton = ({
 								/>
 							</div>
 						</BlueBarHeader2>
-						<NewContainer>
-							<BlueSubContainer ref={containerRef} style={{ width: '100%', maxWidth: '100%', padding: '0px 0px' }}>
+						<NewContainer style={{ padding: '0px 30px' }}>
+							<BlueSubContainer ref={containerRef} style={{ width: '100%' }}>
 								<FilterContianer>
 									{/* 요청서 제목 | 일자 */}
 									<FormTitle>
