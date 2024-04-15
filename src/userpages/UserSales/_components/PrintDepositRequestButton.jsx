@@ -18,6 +18,7 @@ import {
 	calculateOrderTotalPrice,
 	calculateProductSplitPrice,
 } from '../../../utils/orderPrice'
+import { useReactToPrint } from 'react-to-print'
 /**
  * @constant 입금요청서 요청 URL
  * @description auction:경매, salesDeposit:상시판매
@@ -112,7 +113,7 @@ export const PrintDepositRequestButton = ({
 
 	const [checkModal, setCheckModal] = useState(false)
 	const checkTypeOnClickHandler = () => {
-		setCheckModal(true)
+		handleExtract()
 	}
 
 	const radioDummy = ['가로', '세로']
@@ -127,19 +128,25 @@ export const PrintDepositRequestButton = ({
 		setCheckRadioValue(filteredCheck)
 	}, [checkRadio])
 
-	const handleExtract = () => {
-		const element = containerRef.current
-		const orientation = checkRadioValue[0] === '가로' ? 'landscape' : 'portrait'
-		html2pdf(element, {
-			filename: `입금요청서_${auctionDate}.pdf`, // default : file.pdf
-			html2canvas: { scale: 3 }, // 캡처한 이미지의 크기를 조절, 값이 클수록 더 선명하다.
-			jsPDF: {
-				format: 'a4', // 종이 크기 형식
-				orientation: orientation, // or landscape : 가로
-			},
-			callback: setCheckModal(false),
-		})
-	}
+	// const handleExtract = () => {
+	// 	const element = containerRef.current
+	// 	const orientation = checkRadioValue[0] === '가로' ? 'landscape' : 'portrait'
+	// 	html2pdf(element, {
+	// 		filename: `입금요청서_${auctionDate}.pdf`, // default : file.pdf
+	// 		html2canvas: { scale: 3 }, // 캡처한 이미지의 크기를 조절, 값이 클수록 더 선명하다.
+	// 		jsPDF: {
+	// 			format: 'a4', // 종이 크기 형식
+	// 			orientation: orientation, // or landscape : 가로
+	// 		},
+	// 		callback: setCheckModal(false),
+	// 	})
+	// }
+
+	const handleExtract = useReactToPrint({
+		content: () => containerRef.current,
+		documentTitle: '파일 다운로드 시 저장되는 이름 작성',
+		// onAfterPrint: () => alert('파일 다운로드 후 알림창 생성 가능'),
+	})
 
 	// 경매|상시판매 번호
 	const oneAuctionNumber = useRef('')
@@ -228,7 +235,7 @@ export const PrintDepositRequestButton = ({
 							</div>
 						</BlueBarHeader2>
 						<NewContainer>
-							<BlueSubContainer ref={containerRef} style={{ width: '100%', padding: '0px 30px' }}>
+							<BlueSubContainer ref={containerRef} style={{ width: '100%', maxWidth: '100%', padding: '0px 0px' }}>
 								<FilterContianer>
 									{/* 요청서 제목 | 일자 */}
 									<FormTitle>
@@ -302,7 +309,7 @@ export const PrintDepositRequestButton = ({
 											</ClaimTable>
 											<TableContainer>
 												<Table>
-													<thead>
+													<Thead>
 														<tr>
 															<Th rowSpan="2">제품 정보</Th>
 															<Th rowSpan="2">품명</Th>
@@ -321,8 +328,8 @@ export const PrintDepositRequestButton = ({
 															<Th>운송비</Th>
 															<Th>총합</Th>
 														</tr>
-													</thead>
-													<tbody>
+													</Thead>
+													<Tbody>
 														{/* 테이블 내용 추가 */}
 														{infoData?.list &&
 															infoData.list.map((v) => (
@@ -368,7 +375,7 @@ export const PrintDepositRequestButton = ({
 															<Th colSpan="4">총 금액</Th>
 															<Td colSpan="8">{calculateOrderTotalPrice(infoData?.list).toLocaleString()}</Td>
 														</tr>
-													</tbody>
+													</Tbody>
 												</Table>
 											</TableContainer>
 										</TableContianer>
@@ -385,7 +392,7 @@ export const PrintDepositRequestButton = ({
 						</NewContainer>
 					</OutSideInner>
 
-					{checkModal && (
+					{/* {checkModal && (
 						<PrintType
 							checkRadio={checkRadio}
 							setCheckRadio={setCheckRadio}
@@ -395,7 +402,7 @@ export const PrintDepositRequestButton = ({
 							radioDummy={radioDummy}
 							handleExtract={handleExtract}
 						/>
-					)}
+					)} */}
 				</>
 			)}
 		</>
@@ -430,12 +437,15 @@ const Text = styled.div`
 	letter-spacing: -0.32px;
 `
 const TableContainer = styled.div`
+	min-width: 100%;
+	max-width: 100%;
 	margin-top: 20px;
 `
 
 const Table = styled.table`
 	border-collapse: collapse;
-	width: 100%;
+	min-width: 100%;
+	max-width: 100%;
 	font-size: 17px;
 `
 
@@ -447,6 +457,10 @@ const Th = styled.th`
 	border: 1px solid #c8c8c8;
 	background-color: #dbe2f0;
 `
+
+const Thead = styled.thead``
+
+const Tbody = styled.tbody``
 
 const Td = styled.td`
 	text-align: ${({ right }) => (right ? 'end' : 'center')};
