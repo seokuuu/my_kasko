@@ -71,7 +71,8 @@ export const BlueBarHeader = styled.div`
 export const AgreementMain = styled.div`
 	background-color: #eef3fb;
 	width: 100%;
-	height: 95%;
+	height: 96vh;
+	overflow-y: scroll;
 
 	> h6 {
 		display: flex;
@@ -130,7 +131,7 @@ export const AgreementBottom = styled.div`
 	width: 90%;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: 15px;
+	padding-top: 10px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
