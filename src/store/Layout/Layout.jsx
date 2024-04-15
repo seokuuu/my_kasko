@@ -152,6 +152,9 @@ export const winningDetailModal = atom(false)
 // 입찰 동의서 모달
 export const biddingAgreementModal = atom(false)
 
+// 관심 제품 값
+export const wishListAtom = atom([])
+
 /* ==============================
     기준 관리 (Standard)
 ================================= */
@@ -385,3 +388,6 @@ export const auctionStartAtom = atom('')
 export const userBiddingWishCheck = atom(false)
 
 export const filterisReset = atom(false)
+
+// 사용자 패키지 응찰 관심 제품 sort
+export const userPackBiddingSearch = atom(false)

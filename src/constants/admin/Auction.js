@@ -350,6 +350,7 @@ export const AuctionRoundDetailFieldsCols = [
 		lockPinned: true,
 	},
 	{ ...commonStyles, field: '제품 번호' },
+	{ ...commonStyles, field: 'ProNo' },
 
 	// 패키지 명
 	// 패키지 번호
