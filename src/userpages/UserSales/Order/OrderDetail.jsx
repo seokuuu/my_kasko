@@ -1,7 +1,7 @@
 import React, { Fragment, useContext, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { USER_URL, useUserDestinationUpdateRequestMutation, useUserOrderDetailsQuery } from '../../../api/user'
-import { BtnBound, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
+import { BlackBtn, BtnBound, NewBottomBtnWrap, TGreyBtn, WhiteBlackBtn } from '../../../common/Button/Button'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../../components/MapTable/MapTable'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { userOrderDetailsField, userOrderDetailsFieldsCols } from '../../../constants/user/orderTable'
@@ -23,6 +23,7 @@ import useAlert from '../../../store/Alert/useAlert'
 import PrintDepositRequestButton from '../_components/PrintDepositRequestButton'
 import { PackageViewerDispatchContext } from '../_layouts/UserSalesWrapper'
 import { numberDeleteComma } from '../../../utils/utils'
+import { useNavigate } from 'react-router-dom'
 
 /**
  * @constant 기본 검색 값
@@ -71,6 +72,7 @@ const getInfoRows = (data, salesNumber) => {
  * @param {string} props.salesNumber 상시판매 번호(경매 번호)
  */
 const OrderDetail = ({ salesNumber }) => {
+	const navigate = useNavigate()
 	// API 파라미터
 	const { searchParams, handleParamsChange, handlePageSizeChange } = useTableSearchParams({
 		...initialSearchParams,
@@ -256,12 +258,25 @@ const OrderDetail = ({ salesNumber }) => {
 				<TCSubContainer>
 					<div></div>
 					{/* 입금 확인 요청서 */}
-					<PrintDepositRequestButton
-						auctionNumber={salesNumber}
-						salesDeposit
-						saleStatus={serverData?.list && serverData?.list[0].saleStatus}
-					/>
+					<div style={{ display: 'flex', gap: '8px' }}>
+						<PrintDepositRequestButton
+							auctionNumber={salesNumber}
+							salesDeposit
+							saleStatus={serverData?.list && serverData?.list[0]?.saleStatus}
+						/>
+					</div>
 				</TCSubContainer>
+				<NewBottomBtnWrap>
+					<BlackBtn
+						width={13}
+						height={40}
+						onClick={() => {
+							navigate(-1)
+						}}
+					>
+						돌아가기
+					</BlackBtn>
+				</NewBottomBtnWrap>
 			</TableContianer>
 		</FilterContianer>
 	)

@@ -101,7 +101,7 @@ export const singleProductListFieldCols = [
 				if (item === '메모' || item === '비고') {
 					return params.value
 				}
-				if (item === '추천제품여부') {
+				if (typeof params.value === 'boolean') {
 					return params.value ? 'Y' : 'N'
 				} else if (item === '노출여부') {
 					return params.value ? '노출' : '비노출'

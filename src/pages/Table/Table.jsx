@@ -28,7 +28,7 @@ import {
 	selectedRowsAtom2,
 } from '../../store/Layout/Layout'
 import './TableUi.css'
-import { customNumberFormatter } from '../../utils/utils'
+import { customNumberFormatter, numberDeleteComma } from '../../utils/utils'
 import { useSetAtom } from 'jotai/index'
 import {
 	TABLE_TYPE,
@@ -129,14 +129,13 @@ const Table = ({
 					} else if (
 						['길이', '중량', '제품중량', '제품 중량', '총 중량', '총중량', '상시 판매가', '중량 합계'].includes(key)
 					) {
-						return (formattedItem[key] = customNumberFormatter({ value: Number(item[key]) }))
+						return (formattedItem[key] = customNumberFormatter({ value: Number(numberDeleteComma(item[key])) }))
 					} else {
-						formattedItem[key] = customNumberFormatter({ value: item[key] })
+						formattedItem[key] = customNumberFormatter({ value: numberDeleteComma(item[key]) })
 					}
 				})
 				return formattedItem
 			})
-			console.log('formattedRow', formattedRow)
 			setRowData(formattedRow)
 		} else {
 			setRowData(getRow)
@@ -222,7 +221,7 @@ const Table = ({
 						item.maxWidth = 50
 						return { ...item }
 					}
-					if (['고유 번호', '고유번호'].includes(item.field)) {
+					if (['고유 번호', '고유번호', '제품 고유 번호'].includes(item.field)) {
 						item.hide = true
 					}
 					if (['추천 여부', '추천'].includes(item.field)) {

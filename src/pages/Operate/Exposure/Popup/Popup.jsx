@@ -99,7 +99,7 @@ const Popup = ({}) => {
 			{/* 헤더(카테고리탭 & 검색) */}
 			<FilterHeader>
 				<div style={{ display: 'flex' }}>
-					<h1>일반 관리</h1>
+					<h1>노출 관리</h1>
 					<CategoryTab options={exposureTabOptions} highLightValue={'exposure'} />
 				</div>
 			</FilterHeader>

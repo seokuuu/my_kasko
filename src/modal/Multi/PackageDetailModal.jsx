@@ -114,10 +114,14 @@ export default function PackageDetailModal() {
 											)}
 											{title === '수량' && <ClaimContent>{filteredData.length}</ClaimContent>}
 											{title === '상시판매가' && (
-												<ClaimContent>{detailList ? detailList[0].packagePrice?.toLocaleString() : null}</ClaimContent>
+												<ClaimContent>
+													{detailList ? Number(detailList[0].packagePrice)?.toLocaleString() : null}
+												</ClaimContent>
 											)}
 											{title === '시작가' && (
-												<ClaimContent>{detailList ? detailList[0].packagePrice?.toLocaleString() : null}</ClaimContent>
+												<ClaimContent>
+													{detailList ? Number(detailList[0].packagePrice)?.toLocaleString() : null}
+												</ClaimContent>
 											)}
 										</Fragment>
 									))}

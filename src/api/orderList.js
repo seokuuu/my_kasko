@@ -34,6 +34,7 @@ export const useDepositOrderCancel = () => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: 'order' })
+			queryClient.invalidateQueries({ queryKey: 'getSaleProductDetail' })
 			return simpleAlert('주문을 취소하였습니다.', () => {
 				navigate(-1)
 			})
@@ -97,6 +98,6 @@ export async function successfulOrderPost(data) {
 }
 
 export async function successfulOrderListPost(data) {
-	const response = await client.post(`${urls.successfulOrderAll}`, data, { timeout: 120000 * 10 })
+	const response = await client.post(`${urls.successfulOrderAll}`, data, { timeout: 600000 * 2 })
 	return response.data
 }

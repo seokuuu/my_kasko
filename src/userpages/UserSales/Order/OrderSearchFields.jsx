@@ -212,17 +212,17 @@ const OrderSearchFields = ({
 							initOptions={[
 								{
 									checked: false,
-									text: '주문요청',
+									text: '주문 요청',
 									value: '주문 요청',
 								},
 								{
 									checked: false,
-									text: '주문확정',
+									text: '주문 확정',
 									value: '주문 확정',
 								},
 								{
 									checked: false,
-									text: '주문취소',
+									text: '주문 취소',
 									value: '주문 취소',
 								},
 							]}

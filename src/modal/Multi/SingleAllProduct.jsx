@@ -46,6 +46,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 		saleType: packageObj?.sellType === '경매' ? '경매 대상재' : '상시판매 대상재',
 		productStatus: packageObj?.sellType === '경매' ? '등록 대기' : '판매중',
 		stockStatus: packageObj?.sellType === '상시' ? '자사 재고' : '',
+		saleCategory: '판매재',
 	}
 
 	const [param, setParam] = useState(paramData)

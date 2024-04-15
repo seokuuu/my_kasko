@@ -51,8 +51,6 @@ const Winning = ({}) => {
 		pageNum: 1,
 		pageSize: 50,
 		orderType: '경매',
-		auctionStartDate: null,
-		auctionEndDate: null,
 	}
 
 	const [param, setParam] = useState(paramData)
@@ -60,8 +58,6 @@ const Winning = ({}) => {
 	useEffect(() => {
 		setParam((prev) => ({
 			...prev,
-			auctionStartDate: startOfDay.format('YYYY-MM-DD 00:00:00'),
-			auctionEndDate: endOfDay.format('YYYY-MM-DD 23:59:59'),
 		}))
 	}, [])
 

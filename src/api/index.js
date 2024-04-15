@@ -7,7 +7,7 @@ export const formHeaders = { 'Content-Type': 'multipart/form-data' }
 
 export const client = axios.create({
 	baseURL: API_PATH,
-	timeout: 30000,
+	timeout: 600000 * 2,
 	headers: {
 		'Cache-Control': 'no-cache',
 		'Content-Type': 'application/json',

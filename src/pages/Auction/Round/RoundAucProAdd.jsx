@@ -189,6 +189,10 @@ const RoundAucProAdd = ({
 		best: { display: true },
 	})
 
+	useEffect(() => {
+		refetch()
+	}, [param])
+
 	return (
 		<>
 			<FadeOverlay />

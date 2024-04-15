@@ -183,7 +183,7 @@ const Inventory = () => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
-						<Excel getRow={TableData} sheetName={'재고관리'} />
+						<Excel getRow={tableRowData} sheetName={'재고관리'} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>

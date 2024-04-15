@@ -49,7 +49,7 @@ const PackageCreate = () => {
 	const [isModal, setIsModal] = useAtom(singleAllProductModal)
 	const [packageObj, setPackageObj] = useAtom(packageCreateObjAtom)
 	const [checkBoxSelect, setCheckBoxSelect] = useAtom(selectedRowsAtom)
-	const checkWeight = checkBoxSelect?.map((x) => parseInt(numberDeleteComma(x['제품 중량'])))
+	const checkWeight = checkBoxSelect?.map((x) => parseInt(numberDeleteComma(x['제품 중량'] || x['중량'])))
 	const checkWeightSum = checkWeight?.reduce((total, current) => total + current, 0)?.toLocaleString()
 
 	const setUpdateObj = useSetAtom(packageUpdateObjAtom)
@@ -95,6 +95,14 @@ const PackageCreate = () => {
 		if (name === 'packageName') {
 			setPackageName(value)
 		} else if (name === 'price') {
+			if (value === '') {
+				setPrice('')
+				return
+			}
+			// 숫자와 쉼표만 허용하는 정규식
+			if (!/^[0-9,]+$/.test(value)) {
+				return
+			}
 			const intValue = parseInt(value.replace(/,/g, ''), 10)
 			setPrice(intValue)
 		}
@@ -102,7 +110,7 @@ const PackageCreate = () => {
 
 	const { pagination, onPageChanage } = useTablePaginationPageChange(prevData ? data : select, setRequestParams)
 
-	const { simpleConfirm, showAlert, simpleAlert } = useAlert()
+	const { simpleConfirm, simpleAlert } = useAlert()
 	const { mutate: create, isLoading: createLoading } = useMutationQuery(['query'], postCreatePackage)
 	const { mutate: update, isLoading: updateLoading } = useMutationQuery(['query'], postUpdatePackage)
 
@@ -195,10 +203,10 @@ const PackageCreate = () => {
 	useEffect(() => {
 		if (getRow && select) {
 			const filterData = [...getRow, ...select]
-			const neoFilterData = filterData?.map((item) => ({
+			const neoFilterData = filterData?.map((item, index) => ({
 				...item,
-				'총 중량': parseInt(item['총 중량']).toLocaleString(),
-				'제품 중량': parseInt(item['제품 중량']).toLocaleString(),
+				순번: index + 1,
+				'제품 중량': item['제품 중량'],
 			}))
 			setSumArr(neoFilterData)
 		}
@@ -230,8 +238,6 @@ const PackageCreate = () => {
 		}
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 	}, [isSuccess, filteredData, prevData])
-
-	console.log('filteredData', filteredData)
 
 	// 경매,상시 선택시 선택한 내용의 라디오가 선택되게끔 하는
 
@@ -338,7 +344,12 @@ const PackageCreate = () => {
 
 	const calculateTotal = (list, key) => {
 		if (!list) return 0
-		return formatWeight(list?.map((item) => Number(item[key])).reduce((acc, cur) => acc + cur, 0))
+		const totalWeight = pagination?.totalWeight || 0
+		const selectTotalWeight = list
+			?.map((item) => Number(numberDeleteComma(item[key])))
+			.reduce((acc, cur) => acc + cur, 0)
+
+		return formatWeight(Number(selectTotalWeight) + Number(totalWeight))
 	}
 
 	return (
@@ -399,7 +410,7 @@ const PackageCreate = () => {
 				<TCSubContainer bor>
 					<div>
 						조회 목록(선택 <span>{check?.length}</span> /
-						{!prevData ? select.length : pagination ? pagination?.listCount : pagination?.listCount}개 )
+						{!prevData ? select.length : pagination?.listCount + select.length}개 )
 						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
@@ -409,13 +420,7 @@ const PackageCreate = () => {
 				</TCSubContainer>
 				<TCSubContainer bor>
 					<div>
-						선택 중량<span> {checkWeightSum} </span>kg / 총 중량
-						{!prevData
-							? calculateTotal(select, '제품 중량')
-							: pagination
-							? pagination?.totalWeight?.toLocaleString()
-							: pagination?.totalWeight?.toLocaleString()}{' '}
-						kg
+						선택 중량<span> {checkWeightSum} </span>kg / 총 중량 {calculateTotal(select, '제품 중량')} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
 						<WhiteRedBtn onClick={handleRemoveItem}>목록 제거</WhiteRedBtn>

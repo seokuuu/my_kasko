@@ -1,5 +1,7 @@
 import qs from 'qs'
 import { client } from '..'
+import { useQuery } from '@tanstack/react-query'
+
 const urls = {
 	winning: 'auction/successfulBid',
 	winningDetail: 'auction/successfulBid/detail',
@@ -103,5 +105,16 @@ export function getWinningCreate(data) {
 		paramsSerializer: (param) => {
 			return qs.stringify(param)
 		},
+	})
+}
+
+export function useGetWinningCreateBiddingTotalPrice(data) {
+	return useQuery({
+		queryKey: ['winning', 'biddingtotalprice', data],
+		queryFn: async function () {
+			const response = await client.post('/auction/successfulBid/totalBiddingPrice', data)
+			return response.data.data
+		},
+		enabled: data !== null,
 	})
 }

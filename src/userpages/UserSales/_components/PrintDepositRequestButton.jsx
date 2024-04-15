@@ -11,6 +11,13 @@ import { FilterContianer, FilterHeaderAlert, TableContianer } from '../../../mod
 import { OutSide } from '../../../modal/Multi/SingleAllProduct'
 import useAlert from '../../../store/Alert/useAlert'
 import PrintType from '../../../modal/Multi/PrintType'
+import { numberDeleteComma } from '../../../utils/utils'
+import {
+	calculateOrderPrice,
+	calculateOrderRefundPrice,
+	calculateOrderTotalPrice,
+	calculateProductSplitPrice,
+} from '../../../utils/orderPrice'
 /**
  * @constant 입금요청서 요청 URL
  * @description auction:경매, salesDeposit:상시판매
@@ -43,16 +50,39 @@ const TOTAL_DATA = {
 function getTotalData(serverData) {
 	const data = { ...TOTAL_DATA }
 	if (serverData && Array.isArray(serverData.list)) {
+		const splitProducts = []
+		// 절단된 제품과 절단 하기 전 리스트
+		const splitProductNumbers = serverData.list
+			.filter((item) => item.splitStatus === 'Y')
+			.map((item) => item.productNumber)
+		if (splitProductNumbers.length > 0) {
+			for (let number of splitProductNumbers) {
+				const spiltList = serverData.list.filter((item) => item.productNumber.includes(number + '-'))
+				splitProducts.push(...spiltList)
+			}
+		}
+		const afterSplitProductNumber = splitProducts.map((item) => item.productNumber)
+		const isSplitProduct = afterSplitProductNumber.length > 0
+
 		for (const v of serverData.list) {
+			const isSplitProductIn = isSplitProduct && afterSplitProductNumber.includes(v.productNumber)
+
 			data.price += Number(v.totalPrice)
-			data.weight += Number(v.weight)
-			data.orderPrice += Number(v.orderPrice)
-			data.freightCost += Number(v.freightCost)
-			data.sumCost += Number(v.orderPrice + v.freightCost)
-			data.orderPriceVat += Number(v.orderPriceVat)
-			data.freightCostVat += Number(v.freightCostVat)
-			data.sumCostVat += Number(v.orderPriceVat + v.freightCostVat)
-			data.sum += Number(v.orderPrice + v.freightCost + v.orderPriceVat + v.freightCostVat)
+			data.weight += isSplitProduct && v.splitStatus === 'Y' ? 0 : Number(v.weight)
+
+			const orderPrice = isSplitProductIn ? 0 : Number(v.orderPrice)
+			const freightCost = isSplitProduct && v.splitStatus === 'Y' ? 0 : Number(v.freightCost)
+			data.orderPrice += orderPrice
+			data.freightCost += freightCost
+			data.sumCost += Number(orderPrice + freightCost)
+
+			const orderPriceVat = isSplitProductIn ? 0 : Number(v.orderPriceVat)
+			const freightCostVat = isSplitProduct && v.splitStatus === 'Y' ? 0 : Number(v.freightCostVat)
+			data.orderPriceVat += orderPriceVat
+			data.freightCostVat += freightCostVat
+			data.sumCostVat += Number(orderPriceVat + freightCostVat)
+
+			data.sum += Number(orderPrice + freightCost + orderPriceVat + freightCostVat)
 		}
 	}
 	for (const key in data) {
@@ -234,8 +264,8 @@ export const PrintDepositRequestButton = ({
 										</div>
 										<div>
 											<b>
-												해당 거래에 대해 귀사가 입금하셔야 할 낙찰금액은 아래와 같사오니, 확인하신 후 입금해 주시기
-												바랍니다.
+												해당 거래에 대해 귀사가 입금하셔야 할 {salesDeposit ? '상시판매 금액' : '낙찰 금액'}은 아래와
+												같사오니, 확인하신 후 입금해 주시기 바랍니다.
 											</b>
 										</div>
 									</Text>
@@ -260,14 +290,14 @@ export const PrintDepositRequestButton = ({
 										<TableContianer>
 											<ClaimTable style={{ margin: '20px 0px' }}>
 												<ClaimRow>
-													<ClaimTitle>경매일자</ClaimTitle>
+													<ClaimTitle>{salesDeposit ? '상시판매 일자' : '경매일자'}</ClaimTitle>
 													<ClaimContent>{infoData?.auctionDate}</ClaimContent>
 													<ClaimTitle>고객명</ClaimTitle>
 													<ClaimContent>{infoData?.customerName}</ClaimContent>
-													<ClaimTitle>낙찰 중량</ClaimTitle>
+													<ClaimTitle>{salesDeposit ? '총 중량' : '낙찰 중량'}</ClaimTitle>
 													<ClaimContent bold>{totalData.weight}</ClaimContent>
-													<ClaimTitle>낙찰 금액</ClaimTitle>
-													<ClaimContent bold>{totalData.price}</ClaimContent>
+													<ClaimTitle>{salesDeposit ? '상시판매 금액' : '낙찰 금액'}</ClaimTitle>
+													<ClaimContent bold>{calculateOrderPrice(infoData?.list)?.toLocaleString()}</ClaimContent>
 												</ClaimRow>
 											</ClaimTable>
 											<TableContainer>
@@ -324,7 +354,19 @@ export const PrintDepositRequestButton = ({
 															<Td>{totalData.orderPriceVat}</Td>
 															<Td>{totalData.freightCostVat}</Td>
 															<Td>{totalData.sumCostVat}</Td>
-															<Td>{totalData.sum}</Td>
+															<Td>{calculateOrderPrice(infoData?.list)?.toLocaleString()}</Td>
+														</tr>
+														<tr style={{ border: '2px solid #c8c8c8' }}>
+															<Th colSpan="4">절단비</Th>
+															<Td colSpan="8">{calculateProductSplitPrice(infoData?.list)?.toLocaleString()}</Td>
+														</tr>
+														<tr style={{ border: '2px solid #c8c8c8' }}>
+															<Th colSpan="4">환불비</Th>
+															<Td colSpan="8">- {calculateOrderRefundPrice(infoData?.list)?.toLocaleString()}</Td>
+														</tr>
+														<tr style={{ border: '2px solid #c8c8c8' }}>
+															<Th colSpan="4">총 금액</Th>
+															<Td colSpan="8">{calculateOrderTotalPrice(infoData?.list).toLocaleString()}</Td>
 														</tr>
 													</tbody>
 												</Table>
@@ -442,6 +484,8 @@ const OutSideInner = styled.div`
 	top: 50%;
 	transform: translate(-50%, -50%);
 	z-index: 9999;
+	display: flex;
+	flex-direction: column;
 `
 
 const BlueBarHeader2 = styled.div`

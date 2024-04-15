@@ -46,6 +46,7 @@ import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import TableV2 from '../../Table/TableV2'
 import DestinationChange from '../../../modal/Multi/DestinationChange'
 import PrintDepositRequestButton from '../../../userpages/UserSales/_components/PrintDepositRequestButton'
+import { calculateOrderTotalPrice } from '../../../utils/orderPrice'
 
 const SellOrderDetail = () => {
 	const { simpleAlert, simpleConfirm } = useAlert()
@@ -59,7 +60,7 @@ const SellOrderDetail = () => {
 		saleStatus: status,
 	}
 
-	const contentDataInit = ['2023040558', '4,685,798', 'K00000', '30', '4,685,798', '54,685,798']
+	const contentDataInit = ['2024040558', '4,685,798', 'K00000', '30', '4,685,798', '54,685,798']
 	const titleData = ['주문 번호', '고객사', '고객코드', '총 수량', '총 중량(KG)', '입금 요청 금액(원)']
 
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
@@ -143,7 +144,7 @@ const SellOrderDetail = () => {
 					totalWeight,
 				} = pagination
 
-				const totalPrice = list.map((item) => item.totalPrice).reduce((prev, curr) => prev + curr, 0)
+				const totalPrice = calculateOrderTotalPrice(list)
 
 				setServerData({ list, pagination })
 				setContentData([
@@ -233,12 +234,10 @@ const SellOrderDetail = () => {
 			return simpleAlert('이미 입금확인된 주문건입니다.')
 		}
 
-		handleButtonClick(
-			'입금 확인할 제품을 선택해 주세요.',
-			'선택한 주문에 대한 입금을 확인하시겠습니까?',
-			(value) => ({ uid: value['주문번호'] }),
-			mutateDepositOrderConfirm,
-		)
+		simpleConfirm('선택한 주문에 대한 입금을 확인하시겠습니까?', () => {
+			const data = checkBoxSelect.map((value) => ({ uid: value['주문번호'] }))
+			mutateDepositOrderConfirm({ updateList: data })
+		})
 	}
 
 	// 목적지 변경 승인 버튼
@@ -370,7 +369,7 @@ const SellOrderDetail = () => {
 						width={13}
 						height={40}
 						onClick={() => {
-							navigate(-1)
+							navigate(-1, { replace: true })
 						}}
 					>
 						돌아가기
