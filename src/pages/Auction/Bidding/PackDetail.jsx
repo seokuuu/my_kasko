@@ -36,6 +36,7 @@ import styled from 'styled-components'
 // 패키지 상세보기 (경매)
 const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuction, live, setLive }) => {
 	const auctionNum = aucDetail['경매 번호']
+	console.log('aucDetail', aucDetail)
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert() // 에러 핸들링
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
@@ -176,8 +177,8 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 
 	console.log('winningCreateData', winningCreateData)
 
-	const titleData = ['패키지 명', '수량', '시작가']
-	const contentData = [aucDetail['패키지 명'], getRow?.length, aucDetail['시작가']]
+	const titleData = ['패키지 명', '수량', '중량', '시작가']
+	const contentData = [aucDetail['패키지 명'], getRow?.length, aucDetail['총 중량'], aucDetail['시작가']]
 
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
@@ -304,10 +305,10 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 						<ClaimTable style={{ marginBottom: '30px' }}>
 							{[0]?.map((index) => (
 								<ClaimRow key={index}>
-									{titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
+									{titleData.slice(index * 4, index * 4 + 4).map((title, idx) => (
 										<Fragment key={idx}>
 											<ClaimTitle>{title}</ClaimTitle>
-											<ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
+											<ClaimContent>{contentData[index * 4 + idx]}</ClaimContent>
 										</Fragment>
 									))}
 								</ClaimRow>
