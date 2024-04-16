@@ -331,6 +331,7 @@ const Table = ({
 			sortable: true,
 			resizable: true,
 			filter: true,
+
 			// flex: 1,
 			// minWidth: 100,
 		}

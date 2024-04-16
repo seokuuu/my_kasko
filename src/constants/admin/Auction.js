@@ -582,7 +582,7 @@ export const AuctionBiddingFields = {
 // 	}))
 // }
 
-export const AuctionBiddingFieldsCols = (selected) => {
+export const AuctionBiddingFieldsCols = (selected, checkAvailable) => {
 	/**
 	 * 단일 응찰 Cols
 	 * @description
@@ -593,7 +593,7 @@ export const AuctionBiddingFieldsCols = (selected) => {
 	// const checkAucURL = ['/auction/biddingsingle'].includes(location.pathname)
 	const packDetail = ['/auction/biddingpackage', '/userpage/auctionpackage'].includes(location.pathname)
 	const checkboxSelection2 = (params) => {
-		console.log('파람스 싱글', params?.data)
+		if (checkAvailable) return null
 		if (selected && selected.length > 0) {
 			const selectedUid = [...new Set(selected?.map((item) => item['제품 번호']?.value))]
 			if (selectedUid?.includes(params.data['제품 번호'].value)) {

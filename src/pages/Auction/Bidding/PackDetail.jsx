@@ -45,7 +45,7 @@ const PackDetail = ({ aucDetail, setAucDetailModal, packNum, destiObject, nowAuc
 	}
 
 	// AuctionBiddingFieldsCols(checkedArrayState) 이런식으로 써야하나?
-	const tableField = useRef(AuctionBiddingFieldsCols(checkedArray))
+	const tableField = useRef(AuctionBiddingFieldsCols(checkedArray, true))
 
 	// 체크박스 없애기
 	useEffect(() => {
