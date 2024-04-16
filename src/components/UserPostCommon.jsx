@@ -657,7 +657,7 @@ export default function UserPostCommon({ id, isCustomer = false, closeModal = nu
 								</FlexContent>
 							</FlexPart>
 						)}
-						{(watch('memberType') === '창고' || watch('memberType') === '운송사') && (
+						{watch('memberType') === '창고' && (
 							<FlexPart>
 								<FlexTitle>
 									창고 구분<span>*</span>
