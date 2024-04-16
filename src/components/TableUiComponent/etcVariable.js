@@ -165,7 +165,7 @@ export const divideProField = {
 	'용도 코드': 'usageCode',
 	용도명: 'usageCodeName',
 	'여재 원인': 'causeCode',
-	'여재 원인명1': 'causeCodeName',
+	'여재 원인명': 'causeCodeName',
 	수정일: 'updateDate',
 	'주문 번호': 'hsOrderNo',
 	'클레임 진행상태': 'claimStatus',

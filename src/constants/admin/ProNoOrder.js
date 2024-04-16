@@ -173,7 +173,7 @@ export const proNoFieldManage = {
 	'낙찰 상태': 'biddingStatus',
 	'규격 약호': 'spec',
 	'여재 원인': 'causeCode',
-	'여재 원인명1': 'causeCodeName',
+	'여재 원인명': 'causeCodeName',
 	'용도 코드': 'usageCode',
 	용도명: 'usageCodeName',
 	메모: 'memo',

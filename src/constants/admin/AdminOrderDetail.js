@@ -294,7 +294,7 @@ export const AdminOrderManageFieldsCols = (toggleModal) => [
 	},
 	{
 		...commonStyles,
-		field: '여재 원인명1',
+		field: '여재 원인명',
 		minWidth: 150,
 	},
 	{
@@ -355,7 +355,7 @@ export const DetailOrderFieldsManage = {
 	낙찰가: 'biddingPrice',
 	'확정 전송가': 'confirmPrice',
 	'규격 약호': 'spec',
-	'여재 원인명1': 'causeCodeName',
+	'여재 원인명': 'causeCodeName',
 	용도명: 'usageCodeName',
 	'제품 낙찰 단가(원/톤)': 'productBiddingPrice',
 	'기본 운임단가(원/톤)': 'freightFee',

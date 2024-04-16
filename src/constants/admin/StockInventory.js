@@ -51,7 +51,7 @@ export const StockInventoryFields = {
 	p: 'p',
 	s: 's',
 	'여재 원인': 'causeCode',
-	'여재 원인명1': 'causeCodeName',
+	'여재 원인명': 'causeCodeName',
 	'용도 코드': 'usageCode',
 	용도명: 'usageCodeName',
 	//메모 - 누락 추가
@@ -59,41 +59,50 @@ export const StockInventoryFields = {
 	'낙찰 총 단가(원/톤)': 'totalBiddingPrice',
 	'제품 공급가(원/톤)': 'orderPrice',
 	'제품 부가세(원/톤)': 'orderPriceVat',
-	'제품 금액': 'totalOrderPrice',
-	'기본 운임 단가': 'freightFee',
-	'할증 운임 단가': 'extraUnitPrice',
-
-	// TODO : 운임 총 단가부터 체크하면 됨.
-
-	창고: 'storageName',
-	출고일: 'outDate',
-
-	'재고 상태': 'stockStatus',
-
+	'제품 금액(VAT 포함)': 'totalOrderPrice',
+	'기본 운임 단가(원/톤)': 'freightFee',
+	//할증율(%) - 누락 추가
+	'할증 운임 단가(원/톤)': 'extraUnitPrice',
+	//운임 총 단가 - 누락 추가
 	'운반비 공급가(원/톤)': 'freightCost',
-	'총 공급가(원/톤)': 'totalSupplyPrice',
 
 	'운반비 부가세(원/톤)': 'freightCostVat',
+	'운반비 금액(원/톤)': 'totalFreightCost',
+	'총 공급가(원/톤)': 'totalSupplyPrice',
 	'총 부가세(원/톤)': 'totalVat',
-
-	'운반비 금액': 'totalFreightCost',
+	//합계금액(원/톤) - 누락 추가
 	목적지명: 'destinationName',
-	수정일: 'updateDate',
-	'상시판매 주문번호': 'orderNumber',
-	'현대제철 주문번호': 'hsOrderNo',
+	//확정전송 일자 - 누락 추가
+	'상시판매 번호': 'orderNumber',
+	//목적지 명 - 누락 추가
+	'확정 전송일자': 'sendDate',
+	//상시판매 번호 - 누락 추가
+	//상시판매가 - 누락 추가
+	//주문번호 - 누락 추가
 	패키지명: 'packageName',
 	'패키지 번호': 'packageNumber',
-	'클레임 진행상태': 'claimStatus',
-
+	출고일자: 'outDate',
+	//출고번호 - 누락 추가
 	'출하 상태': 'shipmentStatus',
-	'현대제철 반품일자': 'hsReturnDate',
-	'카스코 반품일자': 'kaskoReturnDate',
 
-	'확정 전송일': 'sendDate',
-	'제품 고유 번호': 'uid',
-	'중량 판매 개수': 'splitCount',
+	//비고 - 누락 추가
 	'매입 운반비': 'inboundFreightAmount',
 	'매출 운반비': 'outboundFreightAmount',
+	'재고 상태': 'stockStatus',
+	//입찰고객명 - 누락 추가
+	//입찰고객코드 - 누락 추가
+	'현대제철 반품일자': 'hsReturnDate', // 이게 고객사 반품 일자로 변경됨. 백엔드 확인 필요 0416
+	'카스코 반품일자': 'kaskoReturnDate',
+	'클레임 진행상태': 'claimStatus',
+	//최종수정자 - 누락 추가
+	//최종수정일자 - 누락 추가
+
+	// ---- 밑에는 스프레드 시트 항목에 없는 것들. (기존 데이터) ---
+	창고: 'storageName',
+	수정일: 'updateDate',
+	'현대제철 주문번호': 'hsOrderNo',
+	'제품 고유 번호': 'uid',
+	'중량 판매 개수': 'splitCount',
 	시작가: 'auctionStartPrice',
 }
 
