@@ -170,8 +170,8 @@ const Transport = () => {
 		onSuccess: () => {
 			refetch()
 		},
-		onError: () => {
-			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		onError: (error) => {
+			simpleAlert(error?.data?.message || '오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
 
@@ -184,8 +184,8 @@ const Transport = () => {
 		onSuccess: () => {
 			refetch()
 		},
-		onError: () => {
-			simpleAlert('오류가 발생했습니다. 다시 시도해주세요.')
+		onError: (error) => {
+			simpleAlert(error?.data?.message || '오류가 발생했습니다. 다시 시도해주세요.')
 		},
 	})
 

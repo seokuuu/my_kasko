@@ -13,7 +13,7 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { GreyBtn } from '../../../common/Button/Button'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import { RadioSearchButton } from '../../../components/Search'
@@ -43,11 +43,17 @@ const UserBiddingSearchFields = ({
 
 	const [isUserPackBiddingSearch, setIsUserPackBiddingSearch] = useAtom(userPackBiddingSearch)
 
+	console.log('search', search)
+
 	const onChangeRadio = (key, value) => {
-		if (['/userpage/auctionpackage'].includes(location.pathname) && value === '관심제품') {
-			setIsUserPackBiddingSearch(true)
-		} else setSearch((p) => ({ ...p, [key]: value }))
+		setSearch((p) => ({ ...p, [key]: value }))
 	}
+
+	// 사용자 - 패키지 응찰 - 진행 상태 검색 필터 - "관심제품" 클릭 시
+	useEffect(() => {
+		if (search?.biddingStatus === undefined) setIsUserPackBiddingSearch(true)
+		else setIsUserPackBiddingSearch(false)
+	}, [search])
 
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
 
@@ -86,16 +92,30 @@ const UserBiddingSearchFields = ({
 				<RowWrap>
 					<PartWrap first>
 						<h6>진행 상태</h6>
-						<RadioSearchButton
-							options={[
-								{ label: '전체', value: null },
-								{ label: '관심제품', value: '관심제품' },
-								{ label: '응찰', value: '응찰' },
-								{ label: '미응찰', value: '미응찰' },
-							]}
-							value={search.biddingStatus}
-							onChange={(value) => onChangeRadio('biddingStatus', value)}
-						/>
+						{['/auction/biddingpackage'].includes(location.pathname) ? (
+							<RadioSearchButton
+								options={[
+									{ label: '전체', value: null },
+									{ label: '응찰', value: '응찰' },
+									{ label: '미응찰', value: '미응찰' },
+								]}
+								value={search.biddingStatus}
+								onChange={(value) => onChangeRadio('biddingStatus', value)}
+							/>
+						) : (
+							<RadioSearchButton
+								options={[
+									{ label: '전체', value: null },
+									['/userpage/auctionpackage'].includes(location.pathname)
+										? { label: '관심제품', value: undefined }
+										: { label: '관심제품', value: '관심제품' },
+									{ label: '응찰', value: '응찰' },
+									{ label: '미응찰', value: '미응찰' },
+								]}
+								value={search.biddingStatus}
+								onChange={(value) => onChangeRadio('biddingStatus', value)}
+							/>
+						)}
 					</PartWrap>
 				</RowWrap>
 				{/* 2행 */}

@@ -72,7 +72,9 @@ export default function useWishList() {
 
 		saveWishList(mergedProdNums, userId)
 		setWishProdNums(mergedProdNums)
-		simpleAlert('관심상품으로 등록하였습니다.')
+		simpleAlert('관심상품으로 등록하였습니다.', () => {
+			window.location.reload()
+		})
 		resetSelect()
 	}
 
