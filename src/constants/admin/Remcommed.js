@@ -38,7 +38,7 @@ export const singleRecommendDispatchFields = {
 	제품명: 'productName',
 	'정척 여부': 'preferThickness',
 	'여재 원인': 'causeCode',
-	'여재 원인명1': 'causeCodeName',
+	'여재 원인명': 'causeCodeName',
 	입고일: 'receiptDate',
 	'유찰 횟수': 'failCount',
 	'제품 상태': 'productStatus',
@@ -283,7 +283,7 @@ export const singleRecommendDispatchFieldsCols = [
 	// 	headerClass: 'custom-header-style',
 	// 	flex: 1,
 	// 	cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-	// 	field: '여재 원인명1',
+	// 	field: '여재 원인명',
 	// 	minWidth: 100,
 	// },
 	// {

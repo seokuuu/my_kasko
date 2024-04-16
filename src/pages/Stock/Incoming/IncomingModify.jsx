@@ -52,7 +52,7 @@ function IncomingModify({ title }) {
 				usageCode: p['용도 코드'],
 				usageCodeName: p['용도명'],
 				causeCode: p['여재 원인'],
-				causeCodeName: p['여재 원인명1'],
+				causeCodeName: p['여재 원인명'],
 				updateDate: p['수정일'],
 				hsOrderNo: p['주문 번호'],
 				claimStatus: p['클레임 진행상태'],

@@ -44,7 +44,7 @@ export const responseToTableRowMap = {
 	P: 'p', // P
 	S: 's', // S
 	여재원인: 'causeCode', // 여재 원인
-	여제원인명1: 'causeCodeName', // 여재 원인명1
+	여제원인명1: 'causeCodeName', // 여재 원인명
 	용도코드: 'usageCode', // 용도 코드
 	용도명: 'usageCodeName', // 용도명
 	메모: 'memo', // 메모

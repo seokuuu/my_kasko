@@ -32,7 +32,7 @@ export const singleDispatchFields = {
 	제품군명: 'spart',
 	'정척 여부': 'preferThickness',
 	'여재 원인': 'causeCode',
-	'여재 원인명1': 'causeCodeName',
+	'여재 원인명': 'causeCodeName',
 	입고일: 'receiptDate',
 	'추천 제품 여부': 'bestStatus',
 }
@@ -60,7 +60,7 @@ export const SingleDispatchFieldsCols = [
 	{ headerClass: 'custom-header-style', field: '제품군명', minWidth: 100 },
 	{ headerClass: 'custom-header-style', field: '정척 여부', minWidth: 100 },
 	{ headerClass: 'custom-header-style', field: '여재 원인', minWidth: 100 },
-	{ headerClass: 'custom-header-style', field: '여재 원인명1', minWidth: 100 },
+	{ headerClass: 'custom-header-style', field: '여재 원인명', minWidth: 100 },
 	{ headerClass: 'custom-header-style', field: '입고일', minWidth: 100 },
 	{
 		headerClass: 'custom-header-style',
