@@ -32,8 +32,9 @@ const CommonTableHeader = ({
 			<TCSubContainer bor>
 				<div>
 					조회 목록 (선택 <span>{selectedLength}</span> / {totalLength}개 )
+					<TableV2HiddenSection />
 				</div>
-				<TableV2HiddenSection />
+
 				<PageDropdown handleDropdown={(e) => onSizeChange(e, setState)} />
 			</TCSubContainer>
 			<TCSubContainer>
