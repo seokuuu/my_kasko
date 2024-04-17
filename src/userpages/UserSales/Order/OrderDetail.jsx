@@ -71,12 +71,14 @@ const getInfoRows = (data, salesNumber) => {
  * 사용자 주문 확인 상세 페이지
  * @param {string} props.salesNumber 상시판매 번호(경매 번호)
  */
-const OrderDetail = ({ salesNumber }) => {
+const OrderDetail = ({ salesNumber, status, packageNumber }) => {
 	const navigate = useNavigate()
 	// API 파라미터
 	const { searchParams, handleParamsChange, handlePageSizeChange } = useTableSearchParams({
 		...initialSearchParams,
 		auctionNumber: salesNumber,
+		saleStatus: status,
+		packageNumber: packageNumber === null ? null : packageNumber,
 	})
 	// API
 	const { data: orderData, isError, isLoading } = useUserOrderDetailsQuery(searchParams)
@@ -263,6 +265,7 @@ const OrderDetail = ({ salesNumber }) => {
 							auctionNumber={salesNumber}
 							salesDeposit
 							saleStatus={serverData?.list && serverData?.list[0]?.saleStatus}
+							packageNumber={packageNumber}
 						/>
 					</div>
 				</TCSubContainer>

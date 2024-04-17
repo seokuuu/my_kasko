@@ -234,7 +234,7 @@ const Router = () => {
 				<Route path="/sales/single" element={<SinglePage />}></Route>
 				<Route path="/sales/package" element={<PackagePage />}></Route>
 				<Route path="/sales/order" element={<SellOrderPage />}></Route>
-				<Route path="/sales/order/:id/:status" element={<SellOrderDetailPage />} />
+				<Route path="/sales/order/:id/:status/:packageNumber" element={<SellOrderDetailPage />} />
 			</Route>
 			{/* 주문 관리 */}
 			<Route path="/order" element={<OrderPage />}></Route>
@@ -345,7 +345,8 @@ const Router = () => {
 				<Route path="/userpage/salessingle" element={<USalesSingle />}></Route>
 				<Route path="/userpage/salespackage" element={<USalesPackage />}></Route>
 				<Route path="/userpage/salescart/:product?" element={<USalesCart />}></Route>
-				<Route path="/userpage/salesorder/:salesNumber?" element={<USalesOrder />}></Route>
+				<Route path="/userpage/salesorder" element={<USalesOrder />}></Route>
+				<Route path="/userpage/salesorder/:salesNumber/:status/:packageNumber" element={<USalesOrder />}></Route>
 
 				{/* 출고 실적 조회 */}
 				<Route path="/userpage/performance" element={<UPerformance />}></Route>
