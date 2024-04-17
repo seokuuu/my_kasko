@@ -354,6 +354,12 @@ export const TableContianer = styled.div`
 	padding-top: 10px;
 	padding-bottom: 50px;
 	background-color: #fcfcfc;
+
+	@media print {
+		margin-left: auto;
+		margin-right: auto;
+		width: 96%;
+	}
 `
 
 export const TCSubContainer = styled.div`
@@ -408,6 +414,14 @@ export const FilterHeaderAlert = styled.div`
 	justify-content: space-between;
 	align-items: center;
 	font-size: 17px;
+
+	@media print {
+		/* border-left: 5px solid #c8c8c8;
+		border-right: 5px solid #c8c8c8; */
+		margin-left: auto;
+		margin-right: auto;
+		width: 96%;
+	}
 `
 
 export const FilterAlterTxt = styled.div`
