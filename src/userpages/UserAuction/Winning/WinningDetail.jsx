@@ -83,6 +83,7 @@ const WinningDetail = ({ setAucDetail }) => {
 		창고: 'storage',
 		'고객사 목적지 고유 번호': 'customerDestinationUid',
 		'낙찰 상태': 'biddingStatus',
+		'패키지 번호': 'packageNumber',
 	}
 
 	// 상세 GET 및 param
@@ -433,6 +434,7 @@ const WinningDetail = ({ setAucDetail }) => {
 							storage={param?.storage}
 							customerDestinationUid={param?.customerDestinationUid}
 							biddingStatus={param?.biddingStatus}
+							packagerNumber={param?.packageNumber}
 						/>
 						<div></div>
 					</div>
