@@ -122,6 +122,7 @@ const WinningDetail = ({ setAucDetail }) => {
 		창고: 'storage',
 		'고객사 목적지 고유 번호': 'customerDestinationUid',
 		'낙찰 상태': 'biddingStatus',
+		'패키지 번호': 'packageNumber',
 	}
 
 	// 상세 GET 및 param
@@ -176,13 +177,14 @@ const WinningDetail = ({ setAucDetail }) => {
 		return result
 	}, [])
 
-	const keysToExtractDeposit = ['경매 번호', '창고', '고객사 목적지 고유 번호', '낙찰 상태']
+	const keysToExtractDeposit = ['경매 번호', '창고', '고객사 목적지 고유 번호', '낙찰 상태', '패키지 번호']
 
 	const keyMappingsDeposit = {
 		'경매 번호': 'auctionNumber',
 		창고: 'storage',
 		'고객사 목적지 고유 번호': 'customerDestinationUid',
 		'낙찰 상태': 'biddingStatus',
+		'패키지 번호': 'packageNumber',
 	}
 
 	// 입금 요청서 발행에 사용될 array
@@ -367,7 +369,6 @@ const WinningDetail = ({ setAucDetail }) => {
 
 		onError: (e) => {
 			simpleAlert(e?.data?.message || '오류가 발생했습니다. 다시 시도해주세요.')
-
 		},
 	})
 	const deleteOnClickHandler = () => {
@@ -393,7 +394,6 @@ const WinningDetail = ({ setAucDetail }) => {
 
 		onError: (e) => {
 			simpleAlert(e?.data?.message || '오류가 발생했습니다. 다시 시도해주세요.')
-
 		},
 	})
 
@@ -610,6 +610,7 @@ const WinningDetail = ({ setAucDetail }) => {
 							storage={param?.storage}
 							customerDestinationUid={param?.customerDestinationUid}
 							biddingStatus={param?.biddingStatus}
+							packagerNumber={param?.packageNumber}
 						/>
 						<BtnBound style={{ margin: '0px' }} />
 						<WhiteRedBtn onClick={deleteOnClickHandler}>부분 낙찰 취소 </WhiteRedBtn>

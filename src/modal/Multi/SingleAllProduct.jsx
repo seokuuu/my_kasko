@@ -39,7 +39,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 
 	const paramData = {
 		pageNum: 1,
-		pageSize: 50,
+		pageSize: 10000,
 		type: '단일',
 		category: '전체',
 		packageStatus: 1,
@@ -185,11 +185,6 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 									개 )
 								</div>
 								<div style={{ display: 'flex', gap: '10px' }}>
-									<PageDropdown
-										handleDropdown={(e) =>
-											setParam((prev) => ({ ...prev, pageNum: 1, pageSize: parseInt(e.target.value) }))
-										}
-									/>
 									<Excel />
 								</div>
 							</TCSubContainer>
@@ -199,13 +194,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 									{singleProductPage?.totalWeight?.toLocaleString()} 중량 kg
 								</div>
 							</TCSubContainer>
-							<Table
-								getRow={getRow}
-								getCol={getCol}
-								tablePagination={pagiNation}
-								isRowClickable={true}
-								onPageChange={onPageChange}
-							/>
+							<Table getRow={getRow} getCol={getCol} isRowClickable={true} onPageChange={onPageChange} />
 						</TableContianer>
 						<CRWMainBottom>
 							<CRWSub>
