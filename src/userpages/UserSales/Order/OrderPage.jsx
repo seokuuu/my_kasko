@@ -9,24 +9,28 @@ import Order from './Order'
 import OrderDetail from './OrderDetail'
 
 const OrderPage = () => {
-  const [expanded, setExpanded] = useState('상시판매')
-  const [depth2Color, setDepth2Color] = useState('주문확인')
-  const { salesNumber } = useParams(); 
+	const [expanded, setExpanded] = useState('상시판매')
+	const [depth2Color, setDepth2Color] = useState('주문확인')
+	const { salesNumber, status, packageNumber } = useParams()
 
-  return (
-    <UserSalesWrapper>
-      <Header />
-      <OverAllMain>
-        <UserSideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
-        <OverAllSub>
-          <SubHeader />
-          <OverAllTable>
-            { salesNumber? <OrderDetail salesNumber={salesNumber} /> : <Order /> }
-          </OverAllTable>
-        </OverAllSub>
-      </OverAllMain>
-    </UserSalesWrapper>
-  )
+	return (
+		<UserSalesWrapper>
+			<Header />
+			<OverAllMain>
+				<UserSideBar expanded={expanded} setExpanded={setExpanded} depth2Color={depth2Color} />
+				<OverAllSub>
+					<SubHeader />
+					<OverAllTable>
+						{salesNumber ? (
+							<OrderDetail salesNumber={salesNumber} status={status} packageNumber={packageNumber} />
+						) : (
+							<Order />
+						)}
+					</OverAllTable>
+				</OverAllSub>
+			</OverAllMain>
+		</UserSalesWrapper>
+	)
 }
 
 export default OrderPage

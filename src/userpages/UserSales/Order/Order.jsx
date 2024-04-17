@@ -130,9 +130,12 @@ const Order = ({}) => {
 	 */
 	function handleTableRowClick(row) {
 		const uid = row?.data['상시판매 번호']
+		const status = row?.data['상시판매 상태']
+		const packageNumber = row?.data['패키지 번호']?.value ?? null
+
 		const isBtnClicked = row?.event?.originalTarget?.tagName === 'BUTTON'
 		if (uid && !isBtnClicked) {
-			navigate(`/userpage/salesorder/${uid}`)
+			navigate(`/userpage/salesorder/${uid}/${status}/${packageNumber}`)
 		}
 	}
 

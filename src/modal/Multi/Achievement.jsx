@@ -103,7 +103,7 @@ const Achievement = ({ setAddedModal, data }) => {
 					<div>
 						<BlueMainDiv>
 							<BlueSubDiv style={{ height: '30px', margin: 0 }}>
-								<h6>출고번호 번호</h6>
+								<h6>출고번호</h6>
 								<p style={{ color: '#4C83D6' }}>{data?.outNumber ?? '-'}</p>
 							</BlueSubDiv>
 						</BlueMainDiv>

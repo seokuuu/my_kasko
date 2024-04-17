@@ -224,6 +224,8 @@ const WinningProductAdd = ({
 		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('항목을 선택해주세요.')
 		const updatedValues = checkUid.map((uid) => {
 			const existingItem = values.find((item) => item.productUid === uid)
+			const findItem = checkedArray.find((item) => item['제품 고유 번호'] === uid)
+
 			if (existingItem) {
 				// 이미 해당 productUid의 값이 존재하면 업데이트
 				return {
@@ -234,6 +236,7 @@ const WinningProductAdd = ({
 				// 새로운 object 생성
 				return {
 					productUid: uid,
+					productNumber: findItem['제품 번호'],
 					biddingPrice: parseInt(biddingValue, 10) || 0,
 					...existingItem, // 기존값 유지
 				}
@@ -260,6 +263,8 @@ const WinningProductAdd = ({
 		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('항목을 선택해주세요.')
 		const updatedValues = checkUid.map((uid) => {
 			const existingItem = values.find((item) => item.productUid === uid)
+			const findItem = checkedArray.find((item) => item['제품 고유 번호'] === uid)
+
 			if (existingItem) {
 				// 이미 해당 productUid의 값이 존재하면 업데이트
 				return {
@@ -270,6 +275,7 @@ const WinningProductAdd = ({
 				// 새로운 object 생성
 				return {
 					productUid: uid,
+					productNumber: findItem['제품 번호'],
 					confirmPrice: parseInt(confirmValue, 10) || 0,
 					...existingItem, // 기존값 유지
 				}
