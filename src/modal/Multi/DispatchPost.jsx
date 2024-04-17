@@ -38,7 +38,6 @@ const DispatchPost = ({ setIsModalPost, id }) => {
 		carNumber: '',
 		isCarNumberValid: false,
 		carType: '',
-		storage: '',
 		memo: '',
 	})
 
@@ -65,10 +64,6 @@ const DispatchPost = ({ setIsModalPost, id }) => {
 	}
 
 	const onSubmit = async () => {
-		if (!data.storage || data.storage === '전체') {
-			simpleAlert('창고를 선택해주세요.')
-			return
-		}
 		if (!data.name) {
 			simpleAlert('기사명을 입력해주세요.')
 			return
@@ -113,15 +108,6 @@ const DispatchPost = ({ setIsModalPost, id }) => {
 				<BlueSubContainer>
 					<div>
 						<BlueMainDiv style={{ border: 'none' }}>
-							<BlueOneDiv bor>
-								<h6>창고</h6>
-								<CustomSelect
-									name="storage"
-									value={storageList?.filter(({ label }) => label === data.storage)}
-									options={storageList}
-									onChange={(e) => setData((prev) => ({ ...prev, storage: e.label }))}
-								/>
-							</BlueOneDiv>
 							<BlueHalfDiv>
 								<div>
 									<h6>기사 명</h6>
