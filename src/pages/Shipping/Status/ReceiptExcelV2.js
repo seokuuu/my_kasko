@@ -111,7 +111,7 @@ function ReceiptForm({ data, closeModal }) {
 				</BlueBarHeader>
 				<Container ref={containerRef}>
 					{receiptMode.map((title, index) => (
-						<BlueSubContainer key={index} style={{ width: '100%', padding: '0px 30px' }}>
+						<BlueSubContainer2 key={index} style={{ width: '100%', padding: '0px 30px' }}>
 							<FilterContianer>
 								<FormTitle>
 									<b>{title}</b>
@@ -219,7 +219,7 @@ function ReceiptForm({ data, closeModal }) {
 								</MyTable>
 							</DepositRequestBottom>
 							{index !== receiptMode.length - 1 && <Bar />}
-						</BlueSubContainer>
+						</BlueSubContainer2>
 					))}
 				</Container>
 			</ModalContainer>
@@ -234,8 +234,17 @@ const Container = styled.div`
 	//overflow-y: scroll;
 	display: flex;
 	flex-direction: column;
-	gap: 120px;
+	/* gap: 120px; */
 	padding-bottom: 80px;
+
+	@page {
+		size: a4;
+	}
+
+	@media print {
+		min-height: 2000px;
+		size: a4;
+	}
 `
 
 const FormTitle = styled.h1`
@@ -284,4 +293,7 @@ const Bar = styled.div`
 	height: 1px;
 	background: #c8c8c8;
 	margin-top: 40px;
+`
+const BlueSubContainer2 = styled.div`
+	height: 1181px;
 `
