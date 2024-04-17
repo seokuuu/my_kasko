@@ -177,7 +177,10 @@ const SideBar = ({ expanded, setExpanded, depth2Color }) => {
 						<StyledAccordionDetails>
 							<Typography>
 								{item.depth2.map((subItem, subIndex) => {
-									if (authData?.role === '창고' && subItem.title === '출하 지시 등록') {
+									if (authData?.role === '창고' && ['출하 지시 등록', '배차기사 관리'].includes(subItem.title)) {
+										return
+									}
+									if (authData?.role === '운송사' && ['출하 지시 등록', '출고 요청'].includes(subItem.title)) {
 										return
 									}
 									return (

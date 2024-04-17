@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
-import { useAtom } from 'jotai/index'
+import { useAtom, useSetAtom } from 'jotai/index'
 import { isEqual } from 'lodash'
 import { styled } from 'styled-components'
 import { useShipmentListQuery, useShipmentStatusUpdateMutation } from '../../../api/shipment'
@@ -10,9 +10,9 @@ import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalP
 import Excel from '../../../components/TableInner/Excel'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { add_element_field } from '../../../lib/tableHelpers'
-import { FilterContianer, TCSubContainer, TableContianer } from '../../../modal/External/ExternalFilter'
+import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import useAlert from '../../../store/Alert/useAlert'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRows2Switch, selectedRowsAtom, selectedRowsAtom3, toggleAtom } from '../../../store/Layout/Layout'
 import RequestSearchFilter from './RequestSearchFilter'
 import RequestSelector from './RequestSelector'
 import { getAddNewDestination, storageValid } from './utils'
@@ -23,6 +23,7 @@ import { ShippingRequestFields, ShippingRequestFieldsCols } from '../fields/Ship
 import TableV2 from '../../Table/TableV2'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import { useNavigate } from 'react-router-dom'
+import { numberDeleteComma } from '../../../utils/utils'
 
 const initData = {
 	pageNum: 1,
@@ -33,9 +34,11 @@ const initData = {
 const Request = () => {
 	const navigate = useNavigate()
 	const auth = useAtomValue(authAtom)
+	const setSelectedRows2Switch = useSetAtom(selectedRows2Switch)
 	const { simpleAlert, simpleConfirm } = useAlert()
 
-	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
+	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom) // 테이블 선택 테이블 데이터
+	const [selectedRows3, setSelectedRows3] = useAtom(selectedRowsAtom3) // requestSelector 테이블 선택 테이블 데이터
 	const exFilterToggle = useAtomValue(toggleAtom)
 
 	const [param, setParam] = useState(initData)
@@ -79,11 +82,14 @@ const Request = () => {
 			return simpleAlert('제품을 선택해주세요.')
 		}
 		try {
-			const newSelectList = [...new Set([...selectorList, ...selectedRows])]
+			const newSelectList = [...new Set([...selectorList, ...selectedRows])].map((item, index) => ({
+				...item,
+				순번: index + 1,
+			}))
 			newSelectList.map((item) => {
 				Object.keys(item).forEach((key) => {
 					if (['길이', '중량'].includes(key)) {
-						return (item[key] = parseInt(item[key]?.replace(/,/g, '')))
+						return (item[key] = Number(numberDeleteComma(item[key])))
 					}
 				})
 			})
@@ -99,21 +105,22 @@ const Request = () => {
 				behavior: 'smooth',
 			})
 		} catch (error) {
-			simpleAlert(error.message)
+			simpleAlert(error?.message)
 		}
 	}
 
 	// 선별 목록 제거
 	const removeSelector = () => {
-		if (!selectedRows || selectedRows.length === 0) {
+		if (!selectedRows3 || selectedRows3.length === 0) {
 			return simpleAlert('제품을 선택해주세요.')
 		}
 		const key = '주문 고유 번호'
-		const deleteKeys = selectedRows.map((item) => item[key])
+		const deleteKeys = selectedRows3.map((item) => item[key])
 		const newSelectList = selectorList.filter((item) => !deleteKeys.includes(item[key]))
 
 		setSelectorList(newSelectList)
 		setSelectedRows([]) // 테이블 체크 목록 초기화
+		setSelectedRows3([]) // 테이블 체크 목록 초기화
 
 		if (newSelectList.length === 0) {
 			setDestinations(new Array(3))
@@ -171,12 +178,19 @@ const Request = () => {
 	useEffect(() => {
 		const list = serverData?.list
 		if (list && Array.isArray(list)) {
-			setRows(add_element_field(serverData?.list, ShippingRequestFields(auth)))
+			setRows(add_element_field(list, ShippingRequestFields(auth)))
 		}
 	}, [serverData])
 
 	useEffect(() => {
+		setSelectedRows2Switch(false) // 이중 테이블 작업
 		if (data) {
+			if (selectorList.length > 0) {
+				const selectorIds = selectorList.map((item) => item['주문 고유 번호'])
+				const newList = data?.list?.filter((item) => !selectorIds?.includes(item.orderUid))
+				setServerData({ ...data, list: newList })
+				return
+			}
 			setServerData(data)
 		}
 	}, [data])
