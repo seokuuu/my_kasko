@@ -15,6 +15,7 @@ import { FilterContianer } from '../../../modal/External/ExternalFilter'
 import styled from 'styled-components'
 import moment from 'moment'
 import html2pdf from 'html2pdf.js'
+import { useReactToPrint } from 'react-to-print'
 
 export default function ReceiptExcelV2() {
 	const { simpleAlert } = useAlert()
@@ -59,22 +60,30 @@ function ReceiptForm({ data, closeModal }) {
 		.reduce((acc, cur) => Number(acc) + Number(cur), 0)
 		.toLocaleString()
 
-	const handleExtract = () => {
-		const element = containerRef.current
-		html2pdf(element, {
-			filename: `수취서_${data[0].outNumber}.pdf`, // default : file.pdf
-			margin: [15, 0, 15, 0],
-			html2canvas: {
-				scrollY: 0, // 스크롤 이슈 때문에 필수,
-				scale: 3, // 캡처한 이미지의 크기를 조절, 값이 클수록 더 선명하다.
-			},
-			jsPDF: {
-				format: 'a2', // 종이 크기 형식
-				orientation: 'portrait', // or landscape : 가로
-			},
-			callback: closeModal(),
-		})
-	}
+	// const handleExtract = () => {
+	// 	const element = containerRef.current
+	// 	html2pdf(element, {
+	// 		filename: `수취서_${data[0].outNumber}.pdf`, // default : file.pdf
+	// 		margin: [15, 0, 15, 0],
+	// 		html2canvas: {
+	// 			scrollY: 0, // 스크롤 이슈 때문에 필수,
+	// 			scale: 3, // 캡처한 이미지의 크기를 조절, 값이 클수록 더 선명하다.
+	// 		},
+	// 		jsPDF: {
+	// 			format: 'a2', // 종이 크기 형식
+	// 			orientation: 'portrait', // or landscape : 가로
+	// 		},
+	// 		callback: closeModal(),
+	// 	})
+	// }
+
+	const handleExtract = useReactToPrint({
+		content: () => containerRef.current,
+		documentTitle: `수취서_${data[0].outNumber}.pdf`,
+		onAfterPrint: () => {
+			window.location.reload()
+		},
+	})
 
 	useEffect(() => {
 		handleExtract()

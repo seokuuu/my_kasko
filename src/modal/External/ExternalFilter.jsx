@@ -25,6 +25,11 @@ export const FilterHeader = styled.div`
 		letter-spacing: -0.48px;
 		font-style: normal;
 	}
+
+	@media print {
+		font-size: 8px;
+		width: 800px;
+	}
 `
 
 // 외부 필터 메인
