@@ -1,36 +1,71 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { MainSelect } from '../../../common/Option/Main'
 import { CustomerSearch, DateSearchSelect, DestinationSearch } from '../../../components/Search'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import { FilterLeft, PWRight, PartWrap, RowWrap, SearchContainer } from '../../../modal/External/ExternalFilter'
+import { useAtomValue } from 'jotai/index'
+import { authAtom } from '../../../store/Auth/auth'
+import { useDriverGetTransports } from '../../../api/driver'
 
 const StatusSearchFilter = ({ search, setSearch }) => {
+	const auth = useAtomValue(authAtom)
 	const { storageList } = useGlobalProductSearchFieldData()
+	const { data: transportData } = useDriverGetTransports()
+
+	const transportList = useMemo(() => {
+		if (transportData) {
+			return [{ label: '전체', value: '' }, ...transportData.map((item) => ({ label: item.label, value: item.label }))]
+		}
+		return [{ label: '전체', value: '' }]
+	}, [transportData])
+
 	const onChange = (key, value) => {
 		setSearch((p) => ({ ...p, [key]: value }))
 	}
+
 	return (
 		<SearchContainer>
 			<FilterLeft>
 				<RowWrap>
+					{auth?.role !== '창고' && (
+						<PartWrap first>
+							<h6>창고 구분</h6>
+							<PWRight>
+								<MainSelect
+									options={storageList}
+									// defaultValue={storageList[0]}
+									value={search.storage}
+									name="storage"
+									onChange={(e) => onChange('storage', e)}
+								/>
+							</PWRight>
+						</PartWrap>
+					)}
+					{auth?.role !== '운송사' && (
+						<PartWrap first>
+							<h6>운송사</h6>
+							<PWRight>
+								<MainSelect
+									options={transportList}
+									defaultValue={transportList[0]}
+									value={search.transportName}
+									name="transportName"
+									onChange={(e) => onChange('transportName', e)}
+								/>
+							</PWRight>
+						</PartWrap>
+					)}
+				</RowWrap>
+
+				<RowWrap>
 					<PartWrap first>
-						<h6>창고 구분</h6>
-						<PWRight>
-							<MainSelect
-								options={storageList}
-								// defaultValue={storageList[0]}
-								value={search.storage}
-								name="storage"
-								onChange={(e) => onChange('storage', e)}
-							/>
-						</PWRight>
+						<DestinationSearch
+							name={search.destinationName}
+							code={search.destinationCode}
+							setName={(value) => onChange('destinationName', value)}
+							setCode={(value) => onChange('destinationCode', value)}
+						/>
 					</PartWrap>
-					<DestinationSearch
-						name={search.destinationName}
-						code={search.destinationCode}
-						setName={(value) => onChange('destinationName', value)}
-						setCode={(value) => onChange('destinationCode', value)}
-					/>
 					<CustomerSearch search={search} setSearch={setSearch} />
 				</RowWrap>
 

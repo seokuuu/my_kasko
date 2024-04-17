@@ -42,6 +42,7 @@ const GlobalProductSearch = ({
 		return {
 			// storage: { label: '전체', value: '' }, // 창고 구분
 			storage: storageList[0], // 창고 구분
+			transportName: { label: '전체', value: '' }, // 창고 구분
 			keyword: '', // 검색어 (Search keyword)
 			status: '', // 상태값 (Status)
 			statusList: [], // 상태값 목록 (Status list)

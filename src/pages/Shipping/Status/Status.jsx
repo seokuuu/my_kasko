@@ -22,6 +22,7 @@ import useTableSelection from '../../../hooks/useTableSelection'
 import TableV2 from '../../Table/TableV2'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import ReceiptExcelV2 from './ReceiptExcelV2'
+import { authAtom } from '../../../store/Auth/auth'
 
 const initData = {
 	pageNum: 1,
@@ -30,6 +31,7 @@ const initData = {
 }
 
 const Status = () => {
+	const auth = useAtomValue(authAtom)
 	const { simpleAlert, simpleConfirm } = useAlert()
 	const navigate = useNavigate()
 	const selectedRows = useAtomValue(selectedRowsAtom)
@@ -149,7 +151,9 @@ const Status = () => {
 						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteRedBtn onClick={onShipmentCancel}>출고 취소</WhiteRedBtn>
+						{['카스코철강', '창고'].includes(auth?.role) && (
+							<WhiteRedBtn onClick={onShipmentCancel}>출고 취소</WhiteRedBtn>
+						)}
 					</div>
 				</TCSubContainer>
 				<TableV2
@@ -162,7 +166,9 @@ const Status = () => {
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteBlackBtn onClick={onShipmentCompletion}>운송 완료</WhiteBlackBtn>
+						{['카스코철강', '운송사'].includes(auth?.role) && (
+							<WhiteBlackBtn onClick={onShipmentCompletion}>운송 완료</WhiteBlackBtn>
+						)}
 						<ReceiptExcelV2 />
 					</div>
 				</TCSubContainer>

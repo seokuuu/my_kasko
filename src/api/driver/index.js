@@ -49,6 +49,16 @@ export function useDriverGetQuery(id) {
 	})
 }
 
+export function useDriverGetTransports() {
+	return useQuery({
+		queryKey: ['getTransports'],
+		queryFn: async function () {
+			const response = await client.get(`${DRIVER_URL}/transport`)
+			return response.data.data.map((item) => ({ label: item.name, value: item.uid }))
+		},
+	})
+}
+
 // 배차 차량 번호 valid
 export async function driverCarNumberValidQuery(number) {
 	try {

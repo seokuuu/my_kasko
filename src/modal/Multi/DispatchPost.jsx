@@ -13,22 +13,21 @@ import {
 	WhiteCloseBtn,
 } from '../Common/Common.Styled'
 import { BlackBtn } from '../../common/Button/Button'
-import { CustomSelect } from '../../common/Option/Main'
 import {
 	driverCarNumberValidQuery,
 	useDriverCreateMutation,
 	useDriverGetQuery,
+	useDriverGetTransports,
 	useDriverUpdateMutation,
 } from '../../api/driver'
-import useReactQuery from '../../hooks/useReactQuery'
-import { getStorageList } from '../../api/search'
 import { phoneRegex } from '../../common/Regex/Regex'
 import useAlert from '../../store/Alert/useAlert'
+import { CustomSelect } from '../../common/Option/Main'
 
 const DispatchPost = ({ setIsModalPost, id }) => {
 	const { simpleAlert } = useAlert()
 	const { data: driverData } = useDriverGetQuery(id)
-	const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
+	const { data: transportData } = useDriverGetTransports()
 	const { mutate: onCreateEvent } = useDriverCreateMutation()
 	const { mutate: onUpdateEvent } = useDriverUpdateMutation()
 
@@ -38,8 +37,8 @@ const DispatchPost = ({ setIsModalPost, id }) => {
 		carNumber: '',
 		isCarNumberValid: false,
 		carType: '',
-		storage: '',
 		memo: '',
+		transportUid: '',
 	})
 
 	const modalClose = () => setIsModalPost(false)
@@ -65,8 +64,8 @@ const DispatchPost = ({ setIsModalPost, id }) => {
 	}
 
 	const onSubmit = async () => {
-		if (!data.storage || data.storage === '전체') {
-			simpleAlert('창고를 선택해주세요.')
+		if (!data.transportUid) {
+			simpleAlert('운송사를 선택해주세요.')
 			return
 		}
 		if (!data.name) {
@@ -113,13 +112,14 @@ const DispatchPost = ({ setIsModalPost, id }) => {
 				<BlueSubContainer>
 					<div>
 						<BlueMainDiv style={{ border: 'none' }}>
-							<BlueOneDiv bor>
-								<h6>창고</h6>
+							<BlueOneDiv>
+								<h6>운송사 선택</h6>
 								<CustomSelect
 									name="storage"
-									value={storageList?.filter(({ label }) => label === data.storage)}
-									options={storageList}
-									onChange={(e) => setData((prev) => ({ ...prev, storage: e.label }))}
+									value={transportData?.filter(({ value }) => value === data.transportUid)}
+									options={transportData}
+									onChange={(e) => setData((prev) => ({ ...prev, transportUid: e.value }))}
+									isDisabled={!!id}
 								/>
 							</BlueOneDiv>
 							<BlueHalfDiv>

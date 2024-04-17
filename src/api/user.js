@@ -3,6 +3,7 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import { queryClient } from './query'
 import useAlert from '../store/Alert/useAlert'
 import { getUrlWithSearchParam } from '../utils/parameters'
+import useWishList from '../hooks/useWishList'
 
 export const USER_URL = {
 	get: '/user/signup',
@@ -31,28 +32,40 @@ export function getUser() {
  * @param {number} param.pageNum 페이지
  * @param {number} param.pageSize 페이지당 조회 갯수
  */
-export const useUserSingleProductListQuery = (param) =>
-	useQuery({
-		queryKey: ['user', 'single', param],
+export const useUserSingleProductListQuery = (param) => {
+	const { wishProdNums } = useWishList() // 관심상품 목록 데이터 조회 hook
+	const newParam = {
+		...param,
+		wishPackageNumbers: wishProdNums?.filter((item) => !item.includes('PK'))?.join(','),
+	}
+	return useQuery({
+		queryKey: ['user', 'single', newParam],
 		queryFn: async () => {
-			const { data } = await client.get(getUrlWithSearchParam(USER_URL.singleProductList, param))
+			const { data } = await client.get(getUrlWithSearchParam(USER_URL.singleProductList, newParam))
 			return data.data
 		},
 	})
+}
 
 /**
  * 상시판매 패키지 목록 API 쿼리
  * @param {number} param.pageNum 페이지
  * @param {number} param.pageSize 페이지당 조회 갯수
  */
-export const useUserPackageProductListQuery = (param) =>
-	useQuery({
-		queryKey: ['user', 'package', param],
+export const useUserPackageProductListQuery = (param) => {
+	const { wishProdNums } = useWishList() // 관심상품 목록 데이터 조회 hook
+	const newParam = {
+		...param,
+		wishPackageNumbers: wishProdNums?.filter((item) => item.includes('PK'))?.join(','),
+	}
+	return useQuery({
+		queryKey: ['user', 'package', newParam],
 		queryFn: async () => {
-			const { data } = await client.get(getUrlWithSearchParam(USER_URL.packageProductList, param))
+			const { data } = await client.get(getUrlWithSearchParam(USER_URL.packageProductList, newParam))
 			return data.data
 		},
 	})
+}
 
 /**
  * 상시판매 패키지 상세 목록 API 쿼리

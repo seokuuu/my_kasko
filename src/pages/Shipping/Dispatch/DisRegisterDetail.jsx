@@ -201,26 +201,36 @@ const DisRegisterDetail = ({ id }) => {
 						)}
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteRedBtn onClick={onListRemove}>목록 제거</WhiteRedBtn>
-						<WhiteSkyBtn onClick={addListModalOpen}>추가 등록</WhiteSkyBtn>
-						<WhiteRedBtn onClick={onRemoveDispatch}>배차 취소</WhiteRedBtn>
-						<WhiteSkyBtn onClick={onSetDispatch}>배차 등록</WhiteSkyBtn>
+						{['창고', '카스코철강'].includes(auth.role) && (
+							<>
+								<WhiteRedBtn onClick={onListRemove}>목록 제거</WhiteRedBtn>
+								<WhiteSkyBtn onClick={addListModalOpen}>추가 등록</WhiteSkyBtn>
+							</>
+						)}
+						{['운송사', '카스코철강'].includes(auth.role) && (
+							<>
+								<WhiteRedBtn onClick={onRemoveDispatch}>배차 취소</WhiteRedBtn>
+								<WhiteSkyBtn onClick={onSetDispatch}>배차 등록</WhiteSkyBtn>
+							</>
+						)}
 					</div>
 				</TCSubContainer>
 				<TableV2 loading={isLoading} getCol={ShippingDispatchDetailsFieldsCols} getRow={tableRowData} />
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteRedBtn onClick={onDeleteMerge}>선별 취소</WhiteRedBtn>
+						{['카스코철강', '창고'].includes(auth.role) && <WhiteRedBtn onClick={onDeleteMerge}>선별 취소</WhiteRedBtn>}
 					</div>
 				</TCSubContainer>
 				<BlueBarBtnWrap style={{ gap: '12px' }}>
 					<WhiteBtn fontSize={17} width={10} height={35} onClick={() => navigate(-1)}>
 						돌아가기
 					</WhiteBtn>
-					<BlackBtn fontSize={17} width={10} height={35} onClick={onUpdateMerge}>
-						{auth.role === '카스코철강' ? '저장' : '승인요청'}
-					</BlackBtn>
+					{['창고', '카스코철강'].includes(auth.role) && (
+						<BlackBtn fontSize={17} width={10} height={35} onClick={onUpdateMerge}>
+							{['카스코철강'].includes(auth.role) ? '저장' : '승인요청'}
+						</BlackBtn>
+					)}
 				</BlueBarBtnWrap>
 			</TableContianer>
 			{addModal && <RequestAddModal list={list} onListAdd={onListAdd} />}

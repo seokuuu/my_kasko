@@ -51,13 +51,14 @@ import { calculateOrderTotalPrice } from '../../../utils/orderPrice'
 const SellOrderDetail = () => {
 	const { simpleAlert, simpleConfirm } = useAlert()
 	const navigate = useNavigate()
-	const { id, status } = useParams()
+	const { id, status, packageNumber } = useParams()
 
 	const paramDataInit = {
 		pageNum: 1,
 		pageSize: 50,
 		auctionNumber: id,
 		saleStatus: status,
+		packageNumber: packageNumber === null ? null : packageNumber,
 	}
 
 	const contentDataInit = ['2024040558', '4,685,798', 'K00000', '30', '4,685,798', '54,685,798']
@@ -348,7 +349,12 @@ const SellOrderDetail = () => {
 					<div style={{ display: 'flex', gap: '10px' }}>
 						{/* 입금 확인 요청서 - uid 배열 전달*/}
 						<div style={{ display: 'flex', gap: '8px' }}>
-							<PrintDepositRequestButton auctionNumber={id} salesDeposit saleStatus={status} />
+							<PrintDepositRequestButton
+								auctionNumber={id}
+								salesDeposit
+								saleStatus={status}
+								packageNumber={packageNumber}
+							/>
 						</div>
 						{isPackage ? (
 							<WhiteRedBtn onClick={packageOrderCancelHandler} disabled={loadingOrderCancel}>

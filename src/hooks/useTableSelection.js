@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 import { selectedRowsAtom } from '../store/Layout/Layout'
 import { numberDeleteComma } from '../utils/utils'
@@ -22,7 +22,7 @@ export default function useTableSelection(param = {}) {
 	const { weightKey } = param
 
 	// 테이블 선택 항목
-	const selectedData = useAtomValue(selectedRowsAtom)
+	const [selectedData, setSelectedData] = useAtom(selectedRowsAtom)
 	// 선택 항목 총 갯수
 	const selectedCount = useMemo(() => selectedData?.length || 0, [selectedData])
 	// 선택 항목 총 중량
@@ -38,6 +38,7 @@ export default function useTableSelection(param = {}) {
 		selectedCount, // 선택 데이터 총 갯수
 		selectedCountStr: selectedCount.toLocaleString(), // 선택 데이터 총 갯수(localString)
 		hasSelected: selectedCount > 0, // 선택 여부
+		resetSelectData: () => setSelectedData([]),
 	}
 }
 

@@ -15,6 +15,7 @@ import { FilterContianer } from '../../../modal/External/ExternalFilter'
 import styled from 'styled-components'
 import moment from 'moment'
 import html2pdf from 'html2pdf.js'
+import { useReactToPrint } from 'react-to-print'
 
 export default function ReceiptExcelV2() {
 	const { simpleAlert } = useAlert()
@@ -59,22 +60,30 @@ function ReceiptForm({ data, closeModal }) {
 		.reduce((acc, cur) => Number(acc) + Number(cur), 0)
 		.toLocaleString()
 
-	const handleExtract = () => {
-		const element = containerRef.current
-		html2pdf(element, {
-			filename: `수취서_${data[0].outNumber}.pdf`, // default : file.pdf
-			margin: [15, 0, 15, 0],
-			html2canvas: {
-				scrollY: 0, // 스크롤 이슈 때문에 필수,
-				scale: 3, // 캡처한 이미지의 크기를 조절, 값이 클수록 더 선명하다.
-			},
-			jsPDF: {
-				format: 'a2', // 종이 크기 형식
-				orientation: 'portrait', // or landscape : 가로
-			},
-			callback: closeModal(),
-		})
-	}
+	// const handleExtract = () => {
+	// 	const element = containerRef.current
+	// 	html2pdf(element, {
+	// 		filename: `수취서_${data[0].outNumber}.pdf`, // default : file.pdf
+	// 		margin: [15, 0, 15, 0],
+	// 		html2canvas: {
+	// 			scrollY: 0, // 스크롤 이슈 때문에 필수,
+	// 			scale: 3, // 캡처한 이미지의 크기를 조절, 값이 클수록 더 선명하다.
+	// 		},
+	// 		jsPDF: {
+	// 			format: 'a2', // 종이 크기 형식
+	// 			orientation: 'portrait', // or landscape : 가로
+	// 		},
+	// 		callback: closeModal(),
+	// 	})
+	// }
+
+	const handleExtract = useReactToPrint({
+		content: () => containerRef.current,
+		documentTitle: `수취서_${data[0].outNumber}.pdf`,
+		onAfterPrint: () => {
+			window.location.reload()
+		},
+	})
 
 	useEffect(() => {
 		handleExtract()
@@ -102,7 +111,7 @@ function ReceiptForm({ data, closeModal }) {
 				</BlueBarHeader>
 				<Container ref={containerRef}>
 					{receiptMode.map((title, index) => (
-						<BlueSubContainer key={index} style={{ width: '100%', padding: '0px 30px' }}>
+						<BlueSubContainer2 key={index} style={{ width: '100%', padding: '0px 30px' }}>
 							<FilterContianer>
 								<FormTitle>
 									<b>{title}</b>
@@ -210,7 +219,7 @@ function ReceiptForm({ data, closeModal }) {
 								</MyTable>
 							</DepositRequestBottom>
 							{index !== receiptMode.length - 1 && <Bar />}
-						</BlueSubContainer>
+						</BlueSubContainer2>
 					))}
 				</Container>
 			</ModalContainer>
@@ -225,8 +234,17 @@ const Container = styled.div`
 	//overflow-y: scroll;
 	display: flex;
 	flex-direction: column;
-	gap: 120px;
+	/* gap: 120px; */
 	padding-bottom: 80px;
+
+	@page {
+		size: a4;
+	}
+
+	@media print {
+		min-height: 2000px;
+		size: a4;
+	}
 `
 
 const FormTitle = styled.h1`
@@ -275,4 +293,7 @@ const Bar = styled.div`
 	height: 1px;
 	background: #c8c8c8;
 	margin-top: 40px;
+`
+const BlueSubContainer2 = styled.div`
+	height: 1181px;
 `

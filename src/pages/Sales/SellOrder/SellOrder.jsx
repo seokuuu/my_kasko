@@ -53,8 +53,6 @@ const SellOrder = () => {
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
 		tableField: saleProductListResponseToTableRowMap,
 		serverData,
-		wish: { display: true, key: ['productNumber', 'packageNumber'] },
-		best: { display: true },
 	})
 
 	// 선택 항목
@@ -105,9 +103,9 @@ const SellOrder = () => {
 	const handleOnRowClicked = (row) => {
 		const uid = row.data.uid
 		const saleStatus = row.data['상시판매 상태']
-		console.log('row data', row.data)
+		const packageNumber = row.data['패키지번호'] ?? null
 
-		navigate(`/sales/order/${uid}/${saleStatus}`)
+		navigate(`/sales/order/${uid}/${saleStatus}/${packageNumber}`)
 	}
 
 	const orderCancelButtonOnClickHandler = () => {
@@ -119,6 +117,8 @@ const SellOrder = () => {
 		const requestList = checkBoxSelect.map((value) => ({
 			auctionNumber: value['상시판매 번호'],
 			saleType: '상시판매 대상재',
+			saleStatus: value['상시판매 상태'],
+			packageNumber: value['패키지번호'] ?? null,
 		}))
 
 		simpleConfirm('주문 취소하시겠습니까?', () => {
@@ -142,6 +142,13 @@ const SellOrder = () => {
 		const auctionNumbers = checkBoxSelect.map((value) => value['상시판매 번호'])
 		const saleStatus = checkBoxSelect.map((value) => value['상시판매 상태'])
 
+		// 주문 번호 , orderUid is null from server response.
+		const requestList = checkBoxSelect.map((value) => ({
+			auctionNumber: value['상시판매 번호'],
+			saleStatus: value['상시판매 상태'],
+			packageNumber: value['패키지번호'] ?? null,
+		}))
+
 		if (saleStatus.includes('주문 취소')) {
 			return simpleAlert('주문 취소된 주문건입니다.')
 		}
@@ -151,7 +158,7 @@ const SellOrder = () => {
 		}
 
 		simpleConfirm('입금확인 하시겠습니까?', () => {
-			mutateDepositOrderConfirm({ auctionNumbers })
+			mutateDepositOrderConfirm(requestList)
 		})
 	}
 
