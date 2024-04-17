@@ -56,13 +56,14 @@ const Winning = ({}) => {
 	const checkedArray = useAtom(selectedRowsAtom)[0]
 
 	// 낙찰 취소 관련
-	const keysToExtract = ['경매 번호', '창고', '고객사 목적지 고유 번호', '낙찰 상태']
+	const keysToExtract = ['경매 번호', '창고', '고객사 목적지 고유 번호', '낙찰 상태', '패키지 번호']
 
 	const keyMappings = {
 		'경매 번호': 'auctionNumber',
 		창고: 'storage',
 		'고객사 목적지 고유 번호': 'customerDestinationUid',
 		'낙찰 상태': 'biddingStatus',
+		'패키지 번호': 'packageNumber',
 	}
 
 	// 낙찰 취소에 사용될 array

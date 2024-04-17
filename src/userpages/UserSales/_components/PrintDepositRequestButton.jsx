@@ -106,6 +106,7 @@ export const PrintDepositRequestButton = ({
 	storage = '',
 	customerDestinationUid = '',
 	biddingStatus = '',
+	packagerNumber = '',
 	saleStatus = '',
 }) => {
 	const containerRef = useRef(null)
@@ -171,6 +172,7 @@ export const PrintDepositRequestButton = ({
 						storage: storage,
 						customerDestinationUid: customerDestinationUid,
 						biddingStatus: biddingStatus,
+						packageNumber: packagerNumber,
 				  })
 			return data.data
 		},
