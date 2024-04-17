@@ -144,12 +144,6 @@ export const PrintDepositRequestButton = ({
 	// 	})
 	// }
 
-	const handleExtract = useReactToPrint({
-		content: () => containerRef.current,
-		documentTitle: '파일 다운로드 시 저장되는 이름 작성',
-		// onAfterPrint: () => alert('파일 다운로드 후 알림창 생성 가능'),
-	})
-
 	// 경매|상시판매 번호
 	const oneAuctionNumber = useRef('')
 	// 입금요청서 발행 모드
@@ -222,6 +216,12 @@ export const PrintDepositRequestButton = ({
 		handlePrint(num)
 	}
 
+	const handleExtract = useReactToPrint({
+		content: () => containerRef.current,
+		documentTitle: `${salesDeposit ? '상시 판매 입금 요청서' : '경매 입금 요청서'}_${auctionDate}.pdf`,
+		// onAfterPrint: () => alert('파일 다운로드 후 알림창 생성 가능'),
+	})
+
 	return (
 		<>
 			<WhiteSkyBtn onClick={handlePrintClick}>입금 요청서 발행</WhiteSkyBtn>
@@ -251,10 +251,12 @@ export const PrintDepositRequestButton = ({
 									</FormTitle>
 									{/* 입금 정보 공지 */}
 									<FilterHeaderAlert>
-										<div style={{ display: 'flex' }}>
-											<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '15px' }}>
+										<FormContentMainWrap style={{ display: 'flex' }}>
+											<ImgWrap
+												style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '15px' }}
+											>
 												<img src="/img/notice.png" />
-											</div>
+											</ImgWrap>
 											<FormContentWrap>
 												<div>
 													<b>· 연락처 : </b>070-8889-3456{' '}
@@ -267,7 +269,7 @@ export const PrintDepositRequestButton = ({
 													<b>· 입금 기한 : </b> 경매일 익영업일 12시 限
 												</div>
 											</FormContentWrap>
-										</div>
+										</FormContentMainWrap>
 									</FilterHeaderAlert>
 									{/* 인사글 */}
 									<Text>
@@ -386,13 +388,16 @@ export const PrintDepositRequestButton = ({
 										</TableContianer>
 									)}
 								</FilterContianer>
+								<LogoDiv>
+									<img src="/img/logo.png" style={{ width: '50px', height: '35px', marginTop: '10px' }} />
+								</LogoDiv>
 							</BlueSubContainer>
 							<DepositRequestBottom>
 								<div></div>
 								<BlackBtn width={12} height={45} onClick={checkTypeOnClickHandler} style={{ cursor: 'pointer' }}>
 									출력하기
 								</BlackBtn>
-								<img src="/img/logo.png" style={{ width: '50px', height: '35px' }} />
+								<div></div>
 							</DepositRequestBottom>
 						</NewContainer>
 					</OutSideInner>
@@ -427,6 +432,11 @@ const FormContentWrap = styled.div`
 	flex-direction: column;
 	justify-content: center;
 	gap: 10px;
+	padding: 0px 20px;
+
+	@media print {
+		font-size: 12px;
+	}
 `
 
 const Text = styled.div`
@@ -452,6 +462,11 @@ const Table = styled.table`
 	min-width: 100%;
 	max-width: 100%;
 	font-size: 17px;
+
+	@media print {
+		font-size: 8px;
+		width: 800px;
+	}
 `
 
 const Th = styled.th`
@@ -518,4 +533,22 @@ const BlueBarHeader2 = styled.div`
 	padding: 20px;
 	color: white;
 	z-index: 9999;
+`
+
+const FormContentMainWrap = styled.div``
+
+const ImgWrap = styled.div`
+	@media print {
+		padding: 5px;
+	}
+`
+
+const LogoDiv = styled.div`
+	width: 100%;
+	display: flex;
+	flex-direction: row-reverse;
+
+	@media print {
+		width: 97%;
+	}
 `

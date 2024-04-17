@@ -15,6 +15,7 @@ import {
 import { FilterContianer, TableContianer } from '../../modal/External/ExternalFilter'
 import useAlert from '../../store/Alert/useAlert'
 import { formatWeight } from '../../utils/utils'
+import { useReactToPrint } from 'react-to-print'
 
 const ShippingInvoiceView = ({ customerCode, outNumber }) => {
 	const { simpleAlert } = useAlert()
@@ -113,24 +114,32 @@ const InvoiceView = ({ data, closeModal }) => {
 		return totalPrice + extraCost + extraFreightCost
 	}
 
-	const handleExtract = () => {
-		const element = containerRef.current
-		html2pdf(element, {
-			filename: `거래명세서_${data[0].outNumber}.pdf`, // default : file.pdf
-			margin: [15, 0, 15, 0],
-			html2canvas: {
-				scrollY: 0, // 스크롤 이슈 때문에 필수,
-				scale: 3, // 캡처한 이미지의 크기를 조절, 값이 클수록 더 선명하다.
-			},
-			jsPDF: {
-				format: 'a2', // 종이 크기 형식
-				orientation: 'portrait', // or landscape : 가로
-			},
-			callback: () => {
-			},
-		})
-		closeModal()
-	}
+	// const handleExtract = () => {
+	// 	const element = containerRef.current
+	// 	html2pdf(element, {
+	// 		filename: `거래명세서_${data[0].outNumber}.pdf`, // default : file.pdf
+	// 		margin: [15, 0, 15, 0],
+	// 		html2canvas: {
+	// 			scrollY: 0, // 스크롤 이슈 때문에 필수,
+	// 			scale: 3, // 캡처한 이미지의 크기를 조절, 값이 클수록 더 선명하다.
+	// 		},
+	// 		jsPDF: {
+	// 			format: 'a2', // 종이 크기 형식
+	// 			orientation: 'portrait', // or landscape : 가로
+	// 		},
+	// 		callback: () => {
+	// 		},
+	// 	})
+	// 	closeModal()
+	// }
+
+	const handleExtract = useReactToPrint({
+		content: () => containerRef.current,
+		documentTitle: `거래명세서_${data[0].outNumber}.pdf`,
+		onAfterPrint: () => {
+			window.location.reload()
+		},
+	})
 
 	useEffect(() => {
 		handleExtract()
@@ -154,7 +163,7 @@ const InvoiceView = ({ data, closeModal }) => {
 
 						<Text style={{ alignItems: 'normal', justifyContent: 'left' }}>
 							<div>
-								<b style={{ fontSize: '18px' }}>발행일자 : {moment(newDate).format('DD/MM/YY')}</b>
+								<b style={{ fontSize: '18px' }}>발행일자 : {moment(newDate).format('YY/MM/DD')}</b>
 							</div>
 						</Text>
 						<TableContianer>
@@ -172,7 +181,7 @@ const InvoiceView = ({ data, closeModal }) => {
 									<InvoiceIOHeadBodyWrap>
 										<InvoiceHead>성명</InvoiceHead>
 										<InvoiceBody>강대수</InvoiceBody>
-										<Seal style={{ minWidth: '150px', flex: '0' }}>
+										<Seal>
 											<img src="/img/seal.png" />
 										</Seal>
 									</InvoiceIOHeadBodyWrap>
@@ -294,8 +303,14 @@ const TableContainer = styled.div`
 
 const Table = styled.table`
 	border-collapse: collapse;
-	width: 100%;
+	min-width: 100%;
+	max-width: 100%;
 	font-size: 17px;
+
+	@media print {
+		font-size: 10px;
+		width: 800px;
+	}
 `
 
 const Th2 = styled.th`
@@ -306,7 +321,7 @@ const Th2 = styled.th`
 	font-weight: 500;
 	border: 1px solid #c8c8c8;
 	background-color: #dbe2f0;
-	min-width: 120px;
+	/* min-width: 120px; */
 `
 
 const Td = styled.td`
@@ -345,6 +360,10 @@ const InvoiceIOHeadBodyWrap = styled.div`
 	background-color: ${({ top }) => (top ? '#dbe2f0' : 'none')};
 	border-collapse: collapse;
 	flex: 1; /* 추가된 부분 */
+
+	@media print {
+		flex: 1 1 0;
+	}
 `
 
 const InvoiceHead = styled.div`
@@ -360,18 +379,25 @@ const InvoiceHead = styled.div`
 const InvoiceBody = styled.div`
 	display: flex;
 	height: 100%;
+	width: 100%;
 	padding: 0px 90px;
 	text-align: center;
 	justify-content: center;
 	align-items: center;
 	border: 1px solid #6363633c;
-	flex: 1 0 0;
+	/* flex: 1 0 0; */
+
+	@media print {
+		padding: 0px 10px;
+		font-size: 12px;
+		flex: 1 1 0;
+	}
 `
 
 const Seal = styled.div`
 	display: flex;
 	height: 100%;
-	padding: 0px 40px;
+	padding: 0px 20px;
 	text-align: center;
 	justify-content: center;
 	align-items: center;

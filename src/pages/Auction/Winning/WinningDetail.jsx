@@ -270,10 +270,7 @@ const WinningDetail = ({ setAucDetail }) => {
 
 	// 예외 처리
 	useEffect(() => {
-		if (isSuccess && resData === undefined && !detailRow)
-			simpleAlert('잘못된 접근입니다.', () => {
-				navigate('/auction/winning')
-			})
+		if (isSuccess && resData === undefined && !detailRow) navigate('/auction/winning')
 	}, [isSuccess, resData, detailRow])
 
 	const resPagination = data?.data?.data?.pagination
