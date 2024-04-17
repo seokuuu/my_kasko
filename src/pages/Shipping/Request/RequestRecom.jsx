@@ -144,14 +144,7 @@ const RequestRecom = () => {
 				</TCSubContainer>
 				<TableV2 getRow={tableRowData} loading={isLoading} getCol={RegisterFieldsCols(RegisterFields(auth))} />
 				<TCSubContainer style={{ paddingBottom: '0px' }}>
-					{auth.role === '카스코철강' ? (
-						<div>
-							합계 금액(매입/매출 운임비):
-							<span>{calculateTowDataTotal(serverData.list, 'outboundFreightAmount', 'inboundFreightAmount')}</span>(원)
-						</div>
-					) : (
-						<div></div>
-					)}
+					<div></div>
 					<div>
 						<WhiteBlackBtn onClick={addListModalOpen}>목록 추가</WhiteBlackBtn>
 					</div>
