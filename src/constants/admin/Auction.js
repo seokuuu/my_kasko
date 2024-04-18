@@ -29,7 +29,7 @@ const TOKEN_STORAGE_KEY = 'accessToken'
 const WISH_STORAGE_KEY = 'ksk_wish'
 const USER_WISH_STORAGE_KEY = (userId) => `${WISH_STORAGE_KEY}_${userId}`
 
-console.log('USER_WISH_STORAGE_KEY', USER_WISH_STORAGE_KEY)
+
 
 const LinkRenderer = (props) => {
 	const token = localStorage.getItem(TOKEN_STORAGE_KEY)
@@ -48,7 +48,7 @@ const LinkRenderer = (props) => {
 
 	const isValueInWishList = wishList.includes(props?.value)
 
-	console.log('wishList', wishList)
+
 
 	return (
 		<>
@@ -748,11 +748,11 @@ export const AuctionBiddingPackageFields = {
 // 패키지 응찰
 export const AuctionPackageBiddingFieldsCols = (selected) => {
 	const checkboxSelection2 = (params) => {
-		console.log('파람스', params?.data)
+
 		if (selected && selected.length > 0) {
 			const selectedUid = [...new Set(selected.map((item) => item['패키지 번호']))]
 
-			console.log('유아디', selectedUid)
+
 
 			if (selectedUid?.includes(params.data['패키지 번호'])) {
 				params.node.setSelected(true)
@@ -1168,11 +1168,11 @@ export const AuctionWinningDetailFields = {
 }
 
 export const AuctionWinningDetailFieldsCols = (selected) => {
-	console.log('셀렉티드', selected)
+
 	const checkboxSelection2 = (params) => {
 		if (selected && selected.length > 0) {
 			const selectedUid = selected?.map((item) => item['제품 번호'])
-			console.log('selectedUid', selectedUid)
+
 			if (selectedUid?.includes(params.data['제품 번호'])) {
 				params.node.setSelected(true)
 			}
@@ -1342,7 +1342,7 @@ export const UserAuctionWinningDetailFieldsCols = (selected) => {
 	const checkboxSelection2 = (params) => {
 		if (selected && selected.length > 0) {
 			const selectedUid = selected?.map((item) => item['제품 번호'])
-			console.log('selectedUid', selectedUid)
+	
 			if (selectedUid?.includes(params.data['제품 번호'])) {
 				params.node.setSelected(true)
 			}

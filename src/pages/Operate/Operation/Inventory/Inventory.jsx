@@ -61,7 +61,6 @@ const Inventory = () => {
 		}
 	}, [isSuccess, data])
 
-	console.log('겟로우 ', data?.data?.data?.list)
 
 	const [isRotated, setIsRotated] = useState(false)
 

@@ -134,7 +134,6 @@ const Winning = ({}) => {
 	const startOfDay = currentTime.startOf('day')
 	const endOfDay = currentTime.endOf('day')
 
-	console.log('endOfDay', endOfDay)
 
 	const paramData = {
 		pageNum: 1,

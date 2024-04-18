@@ -43,7 +43,6 @@ const UserBiddingSearchFields = ({
 
 	const [isUserPackBiddingSearch, setIsUserPackBiddingSearch] = useAtom(userPackBiddingSearch)
 
-	console.log('search', search)
 
 	const onChangeRadio = (key, value) => {
 		setSearch((p) => ({ ...p, [key]: value }))

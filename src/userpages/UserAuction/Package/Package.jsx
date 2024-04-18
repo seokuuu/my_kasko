@@ -52,6 +52,7 @@ import AddWishButton from '../../UserSales/_components/AddWishButton'
 import UserBiddingSearchFields from '../Single/UserBiddingSearchFields'
 import { wishProductNumbersAtom } from '../../../store/Product'
 import { jwtDecode } from 'jwt-decode'
+import useWishBiddingQuery from '../../../hooks/useWishBiddingQuery'
 
 const Package = ({}) => {
 	const checkWish = useAtomValue(wishProductNumbersAtom)
@@ -67,15 +68,6 @@ const Package = ({}) => {
 	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(userPageSingleDestiFindAtom)
 	const [agreementModal, setAgreementModal] = useAtom(biddingAgreementModal) // 입찰 동의서 모달
-
-	const TOKEN_STORAGE_KEY = 'accessToken'
-	const WISH_STORAGE_KEY = 'ksk_wish'
-	const USER_WISH_STORAGE_KEY = (userId) => `${WISH_STORAGE_KEY}_${userId}`
-
-	const token = localStorage.getItem(TOKEN_STORAGE_KEY)
-	const userId = jwtDecode(token)?.sub || ''
-	const wishListNum = USER_WISH_STORAGE_KEY(userId)
-	let wishList = JSON.parse(localStorage.getItem(wishListNum)) || [] // 기본값으로 빈 배열 설정
 
 	const [checkAgreement, setCheckAgreement] = useState({
 		auctionNumber: '',
@@ -126,7 +118,7 @@ const Package = ({}) => {
 
 	const paramData = {
 		pageNum: 1,
-		pageSize: 50,
+		pageSize: 3,
 		type: '패키지',
 	}
 	const [param, setParam] = useState(paramData)
@@ -135,7 +127,7 @@ const Package = ({}) => {
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
 
 	// 전체 GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding, nowAuction)
+	const { isLoading, isError, data, isSuccess, refetch } = useWishBiddingQuery(param, live, getBidding, nowAuction)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 	const originData = data?.data?.data
@@ -144,8 +136,6 @@ const Package = ({}) => {
 	const tableField = useMemo(() => {
 		return AuctionPackageBiddingFieldsCols(checkedArrayState)
 	}, [checkedArrayState])
-
-	console.log('tableField', tableField)
 
 	// 초기 목적지 GET
 	const { data: destiData } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
@@ -161,25 +151,6 @@ const Package = ({}) => {
 			auctionStartPrice: null,
 		})),
 	}
-	// useEffect(() => {
-	// 	let restrictOriginData =
-	// 		auth?.statusList?.auctionStatus === '시작가 제한' && aucCheck === 'START' ? restrictStartPriceData : originData
-	// 	const filteredAucNum = resData && resData.map((x) => x['auctionNumber'])
-	// 	const checkAgreeAucNum = filteredAucNum && filteredAucNum[0]
-	// 	if (!isSuccess && !resData) return
-	// 	if (Array.isArray(originData?.list)) {
-	// 		if (live) {
-	// 			setOridata(restrictOriginData)
-	// 			// setGetRow(add_element_field(getData, AuctionBiddingFields))
-	// 		}
-	// 		setTablePagination(resPagination)
-	// 		setRealAucNum(checkAgreeAucNum)
-	// 		setCheckAgreement((prev) => ({
-	// 			...prev,
-	// 			auctionNumber: checkAgreeAucNum,
-	// 		}))
-	// 	}
-	// }, [isSuccess, initDestiData, originData])
 
 	useEffect(() => {
 		let restrictOriginData =
@@ -189,14 +160,7 @@ const Package = ({}) => {
 		if (!isSuccess && !resData) return
 		if (Array.isArray(originData?.list)) {
 			if (live) {
-				// wishList에 있는 패키지부터 추출하여 정렬
-				const wishedItems = restrictOriginData.list.filter((item) => wishList.includes(item.packageNumber))
-				// wishList에 있는 패키지를 제외한 나머지 추출하여 정렬
-				const remainingItems = restrictOriginData.list.filter((item) => !wishList.includes(item.packageNumber))
-				// wishList에 있는 패키지를 먼저, 그 다음 나머지를 합쳐서 정렬된 리스트 생성
-
-				const sortedList = isUserPackBiddingSearch ? [...wishedItems] : [...wishedItems, ...remainingItems]
-				setOridata({ ...restrictOriginData, list: sortedList })
+				setOridata(restrictOriginData)
 			}
 			setTablePagination(resPagination)
 			setRealAucNum(checkAgreeAucNum)
@@ -206,35 +170,6 @@ const Package = ({}) => {
 			}))
 		}
 	}, [isSuccess, initDestiData, originData])
-
-	// 목적지 관련 rows 빈 값일 시 대표 목적지 자동 Mapping
-
-	// useEffect(() => {
-	// 	if (firstDestiData && originData) {
-	// 		const updatedResData = originData?.list?.map((item) => {
-	// 			if (
-	// 				!item.destinationCode ||
-	// 				!item.destinationName ||
-	// 				!item.customerDestinationName ||
-	// 				!item.customerDestinationAddress ||
-	// 				!item.customerDestinationPhone
-	// 			) {
-	// 				item.destinationCode = firstDestiData?.destinationCode
-	// 				item.destinationName = firstDestiData?.destinationName
-	// 				item.customerDestinationName = firstDestiData?.customerDestinationName
-	// 				item.customerDestinationAddress = firstDestiData?.address
-	// 				item.customerDestinationPhone = firstDestiData?.phone
-	// 			}
-
-	// 			return item
-	// 		})
-
-	// 		setOridata((prevData) => ({
-	// 			...prevData,
-	// 			list: updatedResData,
-	// 		}))
-	// 	}
-	// }, [firstDestiData, destiObject])
 
 	// 경매 번호 가져오기
 	const auctionNumber = checkedArrayState?.[0]?.['경매 번호']

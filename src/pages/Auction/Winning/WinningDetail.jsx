@@ -72,7 +72,6 @@ const WinningDetail = ({ setAucDetail }) => {
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [tablePagination, setTablePagination] = useState([])
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
-	console.log('destinationData', destinationData)
 	const [contentData, setContentData] = useState([])
 
 	const titleData = [
@@ -224,11 +223,9 @@ const WinningDetail = ({ setAucDetail }) => {
 	const resDestiData = inventoryDestination?.data?.data
 	const matchedDestination = resDestiData?.find((item) => item.uid === destinationData?.uid)
 
-	console.log('matchedDestination', matchedDestination)
 
 	const uids = checkedArray?.map((item) => item && item['주문 고유 번호'])
 
-	console.log('uids', uids)
 
 	// 목적지 적용 버튼 onClick Handler
 	const destiOnClickHandler = () => {
@@ -254,7 +251,6 @@ const WinningDetail = ({ setAucDetail }) => {
 			return item
 		})
 
-		console.log('updatedResData', updatedResData)
 
 		setOridata((prevData) => ({
 			...prevData,
@@ -262,7 +258,6 @@ const WinningDetail = ({ setAucDetail }) => {
 		}))
 	}
 
-	console.log('matchedDestination', matchedDestination)
 
 	useEffect(() => {
 		queryClient.invalidateQueries('getWinningDetail')
@@ -344,7 +339,6 @@ const WinningDetail = ({ setAucDetail }) => {
 	}
 
 	const onPageChange = (value) => {
-		console.log('value', value)
 		setParam((prevParam) => ({
 			...prevParam,
 			pageNum: Number(value),
