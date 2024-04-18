@@ -52,6 +52,7 @@ import AddWishButton from '../../UserSales/_components/AddWishButton'
 import UserBiddingSearchFields from '../Single/UserBiddingSearchFields'
 import { wishProductNumbersAtom } from '../../../store/Product'
 import { jwtDecode } from 'jwt-decode'
+import useWishBiddingQuery from '../../../hooks/useWishBiddingQuery'
 
 const Package = ({}) => {
 	const checkWish = useAtomValue(wishProductNumbersAtom)
@@ -126,7 +127,7 @@ const Package = ({}) => {
 
 	const paramData = {
 		pageNum: 1,
-		pageSize: 50,
+		pageSize: 3,
 		type: '패키지',
 	}
 	const [param, setParam] = useState(paramData)
@@ -135,7 +136,7 @@ const Package = ({}) => {
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
 
 	// 전체 GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding, nowAuction)
+	const { isLoading, isError, data, isSuccess, refetch } = useWishBiddingQuery(param, live, getBidding, nowAuction)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 	const originData = data?.data?.data

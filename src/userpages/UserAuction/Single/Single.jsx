@@ -28,6 +28,7 @@ import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constan
 import { PROD_COL_NAME } from '../../../constants/user/constantKey'
 import { useCheckAuction } from '../../../hooks/useCheckAuction'
 import useReactQuery from '../../../hooks/useReactQuery'
+import useWishBiddingQuery from '../../../hooks/useWishBiddingQuery'
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
 import Agreement from '../../../modal/Common/Agreement'
@@ -117,7 +118,7 @@ const Single = ({}) => {
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
 
 	// 전체 GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding, nowAuction)
+	const { isLoading, isError, data, isSuccess, refetch } = useWishBiddingQuery(param, live, getBidding, nowAuction)
 	const originData = data?.data?.data
 	const [oriData, setOridata] = useState()
 
