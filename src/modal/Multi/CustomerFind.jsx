@@ -32,7 +32,6 @@ const CustomerFind = ({ title, setSwitch, setModalData }) => {
 	const { isLoading, isError, data, isSuccess } = useReactQuery('', 'getCustomerFind', getCustomerFind)
 
 	const customerGetData = data?.data?.data
-	console.log('customerGetData', customerGetData)
 
 	const [isModal, setIsModal] = useAtom(blueModalAtom)
 	const [searchTerm, setSearchTerm] = useState('')
@@ -41,7 +40,6 @@ const CustomerFind = ({ title, setSwitch, setModalData }) => {
 	const [selectedUid, setSelectedUid] = useState(null)
 	const [selectedUids, setSelectedUids] = useState([])
 
-	console.log('result', result)
 
 	const modalClose = () => {
 		setSwitch(false)

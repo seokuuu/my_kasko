@@ -46,7 +46,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const [btnClick, setBtnClick] = useState(false)
 	const [newResData, setNewResData] = useState([])
 
-	console.log('newResData', newResData)
 
 	const [editData, setEditData] = useState({
 		type: types,
@@ -173,7 +172,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 				길이: parseInt(item.길이.replace(/,/g, ''), 10), // 콤마 제거 후 정수형 변환
 			}))
 
-			console.log('intUniqueData', intUniqueData)
 
 			setInitRow(newInitRow)
 			setGetRow([...intUniqueData, ...newInitRow])
@@ -184,10 +182,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 
 	const [outAddData, setOutAddData] = useState([])
 
-	console.log('newResData', newResData)
 
 	const onListAdd = (selectedData) => {
-		console.log('selectedData', selectedData)
 		try {
 			setSelectedRows([]) // 테이블 체크 목록 초기화
 			// setOutAddData((prev) => [...prev, ...selectedData.map((x) => x['uid'])])

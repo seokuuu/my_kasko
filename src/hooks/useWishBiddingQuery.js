@@ -7,7 +7,6 @@ import { useLocation } from 'react-router-dom'
 
 export default function useWishBiddingQuery(obj, key, api, auctionStatus) {
 	const { wishProdNums } = useWishList() // 관심상품 목록 데이터 조회 hook
-	console.log('wishProdNums', wishProdNums)
 	const location = useLocation()
 
 	// 사용자 - 경매 '단일' 응찰 페이지 관심제품 param 추가

@@ -102,7 +102,6 @@ const Single = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 
-	// console.log('checkedArrayState', checkedArrayState)
 
 	const uids = checkedArrayState?.map((item) => item && item['제품 고유 번호'])
 
@@ -130,7 +129,6 @@ const Single = ({}) => {
 	- 초기화 누르면
 	*/
 	const wishFilterData = oriData?.list.filter((item) => checkWish && checkWish?.includes(item?.productNumber))
-	// console.log('wishFilterData', wishFilterData)
 
 	const tableField = useMemo(() => {
 		return AuctionBiddingFieldsCols(checkedArrayState)
@@ -156,7 +154,6 @@ const Single = ({}) => {
 	// 		return hasWishedProductNumber || hasWishedPackageNumber
 	// 	})
 
-	// console.log('wishedProducts', wishedProducts)
 
 	const restrictStartPriceData = {
 		...originData,
