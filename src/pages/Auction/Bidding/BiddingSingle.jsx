@@ -47,7 +47,6 @@ import BiddingSearchFields from './BiddingSearchFields'
 const BiddingSingle = ({}) => {
 	const [aucCheck, setAucCheck] = useAtom(auctionStartAtom) // 경매 시작 atom
 	const auth = useAtomValue(authAtom) // 이거 auction.js에서 hook으로 바꾸기
-	console.log('auth', auth)
 	const nowAuction = useCheckAuction() // 현재 경매 여부 체크
 	const [live, setLive] = useState(true) // LIVE get 일시 중단
 	const navigate = useNavigate()
@@ -76,7 +75,6 @@ const BiddingSingle = ({}) => {
 
 	const { data: auctionDestination } = useReactQuery('', 'getAuctionDestination', getAuctionDestination)
 
-	console.log('auctionDestination', auctionDestination?.data?.data)
 
 	const [propsUid, setPropsUid] = useState(null)
 	const [destiObject, setDestiObject] = useState() //
@@ -96,7 +94,6 @@ const BiddingSingle = ({}) => {
 	// 사용자완 다르게 관리자엔 .value까지 붙어줘야 함.
 	const uids = checkedArrayState?.map((item) => item && item['제품 번호']?.value)
 
-	console.log('관리자 uids', uids)
 
 	const paramData = {
 		pageNum: 1,

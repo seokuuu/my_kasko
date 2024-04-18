@@ -260,7 +260,6 @@ const WinningCreate = ({}) => {
 
 	const successfulBidOnClick = () => {
 		// if (!isArray(checkedArray2) || !checkedArray2.length > 0) return simpleAlert('등록할 항목을 선택해주세요.')
-		console.log('winningCreateData : ', winningCreateData)
 		if (!destiObject) return simpleAlert('목적지 적용이 필요합니다.')
 		if (winningCreateData?.productList?.length === 0) {
 			return simpleAlert('제품을 추가해주세요.')

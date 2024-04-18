@@ -28,6 +28,7 @@ import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constan
 import { PROD_COL_NAME } from '../../../constants/user/constantKey'
 import { useCheckAuction } from '../../../hooks/useCheckAuction'
 import useReactQuery from '../../../hooks/useReactQuery'
+import useWishBiddingQuery from '../../../hooks/useWishBiddingQuery'
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
 import Agreement from '../../../modal/Common/Agreement'
@@ -101,7 +102,6 @@ const Single = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 
-	// console.log('checkedArrayState', checkedArrayState)
 
 	const uids = checkedArrayState?.map((item) => item && item['제품 고유 번호'])
 
@@ -117,7 +117,7 @@ const Single = ({}) => {
 	const { data: getAgreementData } = useReactQuery(realAucNum, 'getAgreement', getAgreement)
 
 	// 전체 GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, live, getBidding, nowAuction)
+	const { isLoading, isError, data, isSuccess, refetch } = useWishBiddingQuery(param, live, getBidding, nowAuction)
 	const originData = data?.data?.data
 	const [oriData, setOridata] = useState()
 
@@ -129,7 +129,6 @@ const Single = ({}) => {
 	- 초기화 누르면
 	*/
 	const wishFilterData = oriData?.list.filter((item) => checkWish && checkWish?.includes(item?.productNumber))
-	// console.log('wishFilterData', wishFilterData)
 
 	const tableField = useMemo(() => {
 		return AuctionBiddingFieldsCols(checkedArrayState)
@@ -155,7 +154,6 @@ const Single = ({}) => {
 	// 		return hasWishedProductNumber || hasWishedPackageNumber
 	// 	})
 
-	// console.log('wishedProducts', wishedProducts)
 
 	const restrictStartPriceData = {
 		...originData,

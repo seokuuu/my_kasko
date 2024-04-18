@@ -15,7 +15,6 @@ export function PackageNumCellRenderer({ data }) {
 
 	const [wishListState, setWishListState] = useAtom(wishListAtom)
 
-	console.log('패키지 데이터', data)
 	const wishProdNums = useAtomValue(wishProductNumbersAtom)
 
 	const TOKEN_STORAGE_KEY = 'accessToken'
@@ -31,7 +30,6 @@ export function PackageNumCellRenderer({ data }) {
 		setWishListState(wishList)
 	}, [])
 
-	console.log('wishList', wishList)
 
 	// 만약 wishList가 배열이 아닌 경우, 빈 배열로 초기화
 	if (!Array.isArray(wishList)) {

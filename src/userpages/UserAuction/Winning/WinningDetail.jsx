@@ -143,7 +143,6 @@ const WinningDetail = ({ setAucDetail }) => {
 	const [checkedArray, setCheckedArray] = useAtom(selectedRowsAtom)
 	const [tablePagination, setTablePagination] = useState([])
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
-	console.log('destinationData', destinationData)
 
 	const init = {
 		updateList: [],
@@ -177,12 +176,10 @@ const WinningDetail = ({ setAucDetail }) => {
 
 	const resDestiData = inventoryDestination?.data?.data
 
-	console.log('resDestiData', resDestiData)
 
 	// useEffect(() => {
 	// 	if (destinationData) {
 	// 		const filteredDestinationData = destinationData?.filter((item) => item.uid === destinationData?.uid)
-	// 		console.log('filteredDestinationData', filteredDestinationData)
 	// 	}
 	// }, [destinationData])
 

@@ -57,8 +57,6 @@ const CalendarModal = () => {
 
 	const resData = data?.data?.data?.list
 
-	console.log('경매 캘린더 ㅋㅋㅋㅋㅋㅋㅋ', resData)
-
 	const calAucNumber = resData?.map((x) => x.number)
 
 	const parseAuctionData = (auctionNumber) => {
