@@ -36,7 +36,7 @@ export const useUserSingleProductListQuery = (param) => {
 	const { wishProdNums } = useWishList() // 관심상품 목록 데이터 조회 hook
 	const newParam = {
 		...param,
-		wishPackageNumbers: wishProdNums?.filter((item) => !item.includes('PK'))?.join(','),
+		wishProductNumbers: wishProdNums?.filter((item) => !item.includes('PK'))?.join(','),
 	}
 	return useQuery({
 		queryKey: ['user', 'single', newParam],
