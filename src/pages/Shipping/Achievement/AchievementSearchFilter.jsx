@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { MainSelect } from '../../../common/Option/Main'
 import { CustomerSearch, DateSearchSelect, DestinationSearch } from '../../../components/Search'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
@@ -14,9 +14,22 @@ import {
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
+import { useAtomValue } from 'jotai/index'
+import { authAtom } from '../../../store/Auth/auth'
+import { useDriverGetTransports } from '../../../api/driver'
 
 const AchievementSearchFilter = ({ search, setSearch, commonNumInputHandler }) => {
+	const auth = useAtomValue(authAtom)
 	const { storageList, spartList } = useGlobalProductSearchFieldData()
+	const { data: transportData } = useDriverGetTransports()
+
+	const transportList = useMemo(() => {
+		if (transportData) {
+			return [{ label: '전체', value: '' }, ...transportData.map((item) => ({ label: item.label, value: item.label }))]
+		}
+		return [{ label: '전체', value: '' }]
+	}, [transportData])
+
 	const onChange = (key, value) => {
 		setSearch((p) => ({ ...p, [key]: value }))
 	}
@@ -24,18 +37,34 @@ const AchievementSearchFilter = ({ search, setSearch, commonNumInputHandler }) =
 		<SearchContainer>
 			<FilterLeft>
 				<RowWrap>
-					<PartWrap first>
-						<h6>창고 구분</h6>
-						<PWRight>
-							<MainSelect
-								options={storageList}
-								// defaultValue={storageList[0]}
-								value={search.storage}
-								name="storage"
-								onChange={(e) => onChange('storage', e)}
-							/>
-						</PWRight>
-					</PartWrap>
+					{auth?.role !== '창고' && (
+						<PartWrap first>
+							<h6>창고 구분</h6>
+							<PWRight>
+								<MainSelect
+									options={storageList}
+									// defaultValue={storageList[0]}
+									value={search.storage}
+									name="storage"
+									onChange={(e) => onChange('storage', e)}
+								/>
+							</PWRight>
+						</PartWrap>
+					)}
+					{auth?.role !== '운송사' && (
+						<PartWrap first>
+							<h6>운송사</h6>
+							<PWRight>
+								<MainSelect
+									options={transportList}
+									defaultValue={transportList[0]}
+									value={search.transportName}
+									name="transportName"
+									onChange={(e) => onChange('transportName', e)}
+								/>
+							</PWRight>
+						</PartWrap>
+					)}
 					<PartWrap>
 						<h6>구분</h6>
 						{/* 제품군 */}

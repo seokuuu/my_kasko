@@ -26,17 +26,20 @@ import { TxtInput } from '../../common/Input/Input'
 import { CustomSelect } from '../../common/Option/Main'
 
 import { BMDTitle } from './CustomerFind'
-
-import useReactQuery from '../../hooks/useReactQuery'
-import { driverCarNumberValidQuery, getSearchDriverByNameListQuery } from '../../api/driver'
-import { getStorageList } from '../../api/search'
+import { driverCarNumberValidQuery, getSearchDriverByNameListQuery, useDriverGetTransports } from '../../api/driver'
 import { phoneRegex } from '../../common/Regex/Regex'
 import { useSetDispatchMutation } from '../../api/shipment'
 import useAlert from '../../store/Alert/useAlert'
 
-const DispatchDetail = ({ id, setIsPostModal }) => {
+const DispatchDetail = ({ id, setIsPostModal, modalClose }) => {
 	const { simpleAlert, simpleConfirm } = useAlert()
-	const matchData = { name: '기사명', carNumber: '차량 번호', carType: '차량 종류', phone: '기사 연락처' }
+	const matchData = {
+		transportName: '운송사명',
+		name: '기사명',
+		carNumber: '차량 번호',
+		carType: '차량 종류',
+		phone: '기사 연락처',
+	}
 	const [mode, setMode] = useState('검색') // 등록 방식 - 검색 / 직접등록
 	const [search, setSearch] = useState('') // 검색어
 	const [result, setResult] = useState([]) // 검색 결과
@@ -47,13 +50,11 @@ const DispatchDetail = ({ id, setIsPostModal }) => {
 		carNumber: '',
 		isCarNumberValid: false,
 		carType: '',
-		storage: '',
 		memo: '',
+		transportUid: '',
 	})
 
 	const { mutate: setDispatch } = useSetDispatchMutation()
-
-	const modalClose = () => setIsPostModal(false)
 
 	const handleCellClick = (uid) => setSelectedUid(uid)
 
@@ -85,7 +86,7 @@ const DispatchDetail = ({ id, setIsPostModal }) => {
 	return (
 		<>
 			<FadeOverlay />
-			<ModalContainer width={530}>
+			<ModalContainer width={830}>
 				<BlueBarHeader>
 					<div>배차 기사 등록</div>
 					<WhiteCloseBtn onClick={modalClose} src="/svg/white_btn_close.svg" />
@@ -123,6 +124,7 @@ const DispatchDetail = ({ id, setIsPostModal }) => {
 										<>
 											<ResultHead>
 												<ResultCell>선택</ResultCell>
+												<ResultCell>{matchData.transportName}</ResultCell>
 												<ResultCell>{matchData.name}</ResultCell>
 												<ResultCell>{matchData.carNumber}</ResultCell>
 												<ResultCell>{matchData.carType}</ResultCell>
@@ -143,6 +145,7 @@ const DispatchDetail = ({ id, setIsPostModal }) => {
 															</RadioCircleDiv>
 														</RadioMainDiv>
 													</ResultCell>
+													<ResultCell>{item.transportName}</ResultCell>
 													<ResultCell>{item.name}</ResultCell>
 													<ResultCell>{item.carNumber}</ResultCell>
 													<ResultCell>{item.carType}</ResultCell>
@@ -168,7 +171,7 @@ const DispatchDetail = ({ id, setIsPostModal }) => {
 
 const DrvierPost = ({ id, data, setData, onSubmit, modalClose }) => {
 	const { simpleAlert } = useAlert()
-	const { data: storageList } = useReactQuery('', 'getStorageList', getStorageList)
+	const { data: transportData } = useDriverGetTransports()
 
 	const isNumber = (value) => /^\d*$/.test(value)
 
@@ -191,8 +194,8 @@ const DrvierPost = ({ id, data, setData, onSubmit, modalClose }) => {
 	}
 
 	const isPostValid = () => {
-		if (!data.storage || data.storage === '전체') {
-			throw new Error('창고를 선택해주세요.')
+		if (!data.transportUid) {
+			throw new Error('운송사를 선택해주세요.')
 		}
 		if (!data.name) {
 			throw new Error('기사명을 입력해주세요.')
@@ -224,13 +227,13 @@ const DrvierPost = ({ id, data, setData, onSubmit, modalClose }) => {
 	return (
 		<>
 			<BlueMainDiv style={{ border: 'none' }}>
-				<BlueOneDiv bor>
-					<h6>창고</h6>
+				<BlueOneDiv>
+					<h6>운송사 선택</h6>
 					<CustomSelect
 						name="storage"
-						value={storageList?.filter(({ label }) => label === data.storage)}
-						options={storageList}
-						onChange={(e) => setData((prev) => ({ ...prev, storage: e.label }))}
+						value={transportData?.filter(({ value }) => value === data.transportUid)}
+						options={transportData}
+						onChange={(e) => setData((prev) => ({ ...prev, transportUid: e.value }))}
 					/>
 				</BlueOneDiv>
 				<BlueHalfDiv>

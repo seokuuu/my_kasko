@@ -22,6 +22,7 @@ export const DispatchFields = {
 	연락처: 'phone',
 	'차량 종류': 'carType',
 	비고: 'memo',
+	운송사명: 'transportName',
 }
 
 export const DispatchFieldsCols = [
@@ -41,6 +42,7 @@ export const DispatchFieldsCols = [
 		field: '고유 번호',
 		minWidth: 100,
 	},
+	{ ...commonStyles, field: '운송사명', minWidth: 100 },
 	{ ...commonStyles, field: '이름', minWidth: 100 },
 	{ ...commonStyles, field: '차량 번호', minWidth: 100 },
 	{ ...commonStyles, field: '연락처', minWidth: 100 },

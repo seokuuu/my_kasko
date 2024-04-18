@@ -1,8 +1,6 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import { ShippingRegisterFieldsCols } from '../../../constants/admin/Shipping'
-import Table from '../../Table/Table'
 import { useShipmentMergeMutation } from '../../../api/shipment'
 import MergeHeader from './MergeHeader'
 import { calculateTotal } from './utils'
@@ -12,7 +10,16 @@ import { RegisterFields, RegisterFieldsCols } from '../fields/RegisterFields'
 import TableV2 from '../../Table/TableV2'
 import { useAtomValue } from 'jotai/index'
 import { authAtom } from '../../../store/Auth/auth'
-import useTableSelection from '../../../hooks/useTableSelection'
+import { selectedRowsAtom3 } from '../../../store/Layout/Layout'
+import { numberDeleteComma } from '../../../utils/utils'
+
+function getSumFromObjList(numKey, list) {
+	const sums = list.reduce((sum, item) => {
+		const num = numberDeleteComma(item[numKey]) || 0
+		return num ? sum + Number(num) : sum
+	}, 0)
+	return sums
+}
 
 const RequestSelector = ({ list, destinations, removeSelector }) => {
 	const auth = useAtomValue(authAtom)
@@ -20,12 +27,16 @@ const RequestSelector = ({ list, destinations, removeSelector }) => {
 	const [dockStatus, setDockStatus] = useState(false) // 상차도 여부
 	const [mergeCost, setMergeCost] = useState(0) // 합짐비
 
-	const { mutate: onCreateMerge, isLoading } = useShipmentMergeMutation()
+	const selectedData = useAtomValue(selectedRowsAtom3)
+	// 선택 항목 총 개수
+	const selected2Count = useMemo(() => selectedData?.length || 0, [selectedData])
+	// 선택 항목 총 중량
+	const selected2Weight = useMemo(
+		() => (!selectedData || '중량' === undefined ? 0 : getSumFromObjList('중량', selectedData || [])),
+		[selectedData],
+	)
 
-	// 선택 항목
-	const { selectedWeightStr, selectedCountStr } = useTableSelection({
-		weightKey: '중량',
-	})
+	const { mutate: onCreateMerge, isLoading } = useShipmentMergeMutation()
 
 	// 선별 등록
 	const onRegister = () => {
@@ -56,13 +67,13 @@ const RequestSelector = ({ list, destinations, removeSelector }) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						선택목록 (선택 <span>{selectedCountStr}</span> / {list?.length?.toLocaleString()}개 )
+						선택목록 (선택 <span>{selected2Count?.toLocaleString()}</span> / {list?.length?.toLocaleString()}개 )
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}></div>
 				</TCSubContainer>
 				<TCSubContainer>
 					<div>
-						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {calculateTotal(list, '중량')} kg
+						선택중량 <span> {selected2Weight?.toLocaleString()} </span> kg / 총 중량 {calculateTotal(list, '중량')} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteRedBtn onClick={removeSelector}>목록 제거</WhiteRedBtn>
@@ -70,7 +81,7 @@ const RequestSelector = ({ list, destinations, removeSelector }) => {
 					</div>
 				</TCSubContainer>
 
-				<TableV2 getRow={list} getCol={RegisterFieldsCols(RegisterFields(auth))} />
+				<TableV2 getRow={list} getCol={RegisterFieldsCols(RegisterFields(auth))} isMultiple={true} />
 			</TableContianer>
 		</>
 	)

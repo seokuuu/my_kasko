@@ -15,6 +15,7 @@ import {
 	selectedRows2Switch,
 	selectedRowsAtom,
 	selectedRowsAtom2,
+	selectedRowsAtom3,
 } from '../../store/Layout/Layout'
 import {
 	TABLE_TYPE,
@@ -132,6 +133,7 @@ const TableV2 = ({
 	dragAndDrop = false,
 	changeFn,
 	popupTable = false, // 팝업 테이블 여부
+	isMultiple = false,
 }) => {
 	// GRID
 	const gridRef = useRef()
@@ -154,6 +156,7 @@ const TableV2 = ({
 	const rowAtomSwitch = useAtomValue(selectedRows2Switch) // 이중테이블 여부
 	const setSelectedRows = useSetAtom(selectedRowsAtom) // 테이블1 선택데이터
 	const setSelectedRows2 = useSetAtom(selectedRowsAtom2) // 테이블2 선택데이터
+	const setSelectedRows3 = useSetAtom(selectedRowsAtom3) // 테이블2 선택데이터
 	const setDetailRow = useSetAtom(doubleClickedRowAtom) // 상세데이터 정보
 	const setHiddenColumn = useSetAtom(tableHiddenColumnAtom) // 테이블 칼럼 숨기기 처리
 	const showColumnId = useAtomValue(tableShowColumnAtom) // 테이블 노출 칼럼
@@ -194,6 +197,10 @@ const TableV2 = ({
 			// 이중으로 check 사용 시
 			if (rowAtomSwitch) {
 				setSelectedRows2(selectedData)
+			}
+			if (isMultiple) {
+				setSelectedRows([])
+				setSelectedRows3(selectedData)
 			}
 		}
 	}
@@ -305,6 +312,8 @@ const TableV2 = ({
 	// 페이지 이동시에 테이블 선택이 겹칠 수 있으므로 초기화
 	useEffect(() => {
 		setSelectedRows(null)
+		setSelectedRows2(null)
+		setSelectedRows3(null)
 	}, [location])
 
 	// 테이블 선택, 숨김항목 초기화
@@ -434,6 +443,7 @@ TableV2.propTypes = {
 	noRowsMessage: PropTypes.string,
 	loading: PropTypes.bool,
 	popupTable: PropTypes.bool,
+	isMultiple: PropTypes.bool,
 }
 
 // Default props (optional but recommended for optional props):
@@ -452,6 +462,7 @@ TableV2.defaultProps = {
 	noRowsMessage: '데이터가 존재하지 않습니다.', // Default message
 	loading: false, // Default to false
 	popupTable: false,
+	isMultiple: false,
 }
 
 export default memo(TableV2)

@@ -59,7 +59,7 @@ const DisRegister = () => {
 	})
 
 	// 선택 항목
-	const { selectedWeightStr, selectedCountStr } = useTableSelection({
+	const { selectedWeightStr, selectedCountStr, resetSelectData } = useTableSelection({
 		weightKey: '중량 합계',
 	})
 
@@ -77,7 +77,10 @@ const DisRegister = () => {
 		if (driverStatus === 'N') {
 			return simpleAlert('취소하기 전 배차를 등록해주세요.')
 		}
-		simpleConfirm('배차 취소를 하시겠습니까?', () => removeDispatch(selectItem['출고 고유번호']))
+		simpleConfirm('배차 취소를 하시겠습니까?', () => {
+			removeDispatch(selectItem['출고 고유번호'])
+			resetSelectData()
+		})
 	}
 
 	// 배차기사 등록
@@ -109,7 +112,10 @@ const DisRegister = () => {
 		if (!driverStatusArray.every((value) => value === 'Y')) {
 			return simpleAlert('출고 등록을 하려면 배차 등록은 필수입니다.')
 		}
-		simpleConfirm('출고 등록하시겠습니까?', () => shipmentStatusUpdate({ shipmentStatus, uids }))
+		simpleConfirm('출고 등록하시겠습니까?', () => {
+			shipmentStatusUpdate({ shipmentStatus, uids })
+			resetSelectData()
+		})
 	}
 
 	const handleTablePageSize = (event) => {
@@ -189,8 +195,12 @@ const DisRegister = () => {
 						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteRedBtn onClick={onRemoveDispatch}>배차 취소</WhiteRedBtn>
-						<WhiteSkyBtn onClick={onSetDispatch}>배차 등록</WhiteSkyBtn>
+						{['운송사', '카스코철강'].includes(auth.role) && (
+							<>
+								<WhiteRedBtn onClick={onRemoveDispatch}>배차 취소</WhiteRedBtn>
+								<WhiteSkyBtn onClick={onSetDispatch}>배차 등록</WhiteSkyBtn>
+							</>
+						)}
 					</div>
 				</TCSubContainer>
 				<TableV2
@@ -203,13 +213,20 @@ const DisRegister = () => {
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						{/*<WhiteBlackBtn onClick={getInvoicesHandler}>수취서 출력</WhiteBlackBtn>*/}
-						{/*<ReceiptExcel />*/}
 						{auth.role !== '운송사' && <WhiteBlackBtn onClick={onRegister}>출고 등록</WhiteBlackBtn>}
 					</div>
 				</TCSubContainer>
 			</TableContianer>
-			{isPostModal && <DispatchDetail id={id} setIsPostModal={setIsPostModal} />}
+			{isPostModal && (
+				<DispatchDetail
+					id={id}
+					setIsPostModal={setIsPostModal}
+					modalClose={() => {
+						setIsPostModal(false)
+						resetSelectData()
+					}}
+				/>
+			)}
 		</FilterContianer>
 	)
 }

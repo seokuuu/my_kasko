@@ -183,8 +183,12 @@ const Achievement = () => {
 						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteRedBtn onClick={onRemoveExtraCost}>추가비 및 공차비 삭제</WhiteRedBtn>
-						<WhiteSkyBtn onClick={openExtarCostModal}>추가비 및 공차비 추가</WhiteSkyBtn>
+						{auth?.role === '카스코철강' && (
+							<>
+								<WhiteRedBtn onClick={onRemoveExtraCost}>추가비 및 공차비 삭제</WhiteRedBtn>
+								<WhiteSkyBtn onClick={openExtarCostModal}>추가비 및 공차비 추가</WhiteSkyBtn>
+							</>
+						)}
 					</div>
 				</TCSubContainer>
 				<TableV2
@@ -197,7 +201,7 @@ const Achievement = () => {
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteBlackBtn onClick={toClaim}>클레임 등록</WhiteBlackBtn>
+						{auth?.role === '카스코철강' && <WhiteBlackBtn onClick={toClaim}>클레임 등록</WhiteBlackBtn>}
 						<WhiteSkyBtn onClick={toInvoice}>거래 명세서 보기</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
