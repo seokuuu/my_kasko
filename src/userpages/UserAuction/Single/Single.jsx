@@ -23,6 +23,7 @@ import { getAgreement, getBidding, postAgreement, postBidding } from '../../../a
 import { getAuctionDestination } from '../../../api/auction/winning'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
+import Excel from '../../../components/TableInner/Excel'
 import { AuctionBiddingFields, AuctionBiddingFieldsCols } from '../../../constants/admin/Auction'
 import { PROD_COL_NAME } from '../../../constants/user/constantKey'
 import { useCheckAuction } from '../../../hooks/useCheckAuction'
@@ -40,7 +41,6 @@ import { useLoading } from '../../../store/Loading/loadingAtom'
 import { wishProductNumbersAtom } from '../../../store/Product'
 import AddWishButton from '../../UserSales/_components/AddWishButton'
 import UserBiddingSearchFields from './UserBiddingSearchFields'
-import Excel from '../../../components/TableInner/Excel'
 
 const Single = ({}) => {
 	const checkWish = useAtomValue(wishProductNumbersAtom)
