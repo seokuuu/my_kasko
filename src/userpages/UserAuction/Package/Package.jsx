@@ -118,7 +118,7 @@ const Package = ({}) => {
 
 	const paramData = {
 		pageNum: 1,
-		pageSize: 3,
+		pageSize: 50,
 		type: '패키지',
 	}
 	const [param, setParam] = useState(paramData)
