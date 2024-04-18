@@ -107,8 +107,14 @@ const DestinationChange = ({ customerName, customerCode, value, onSubmit }) => {
 
 	return (
 		<>
-			<CustomInput readOnly placeholder="h50" width={60} value={destination ? destination.code : ''} />
-			<CustomInput readOnly placeholder="목적지명" width={120} value={destination ? destination.name : ''} />
+			<CustomInput readOnly placeholder="h50" width={60} height={32} value={destination ? destination.code : ''} />
+			<CustomInput
+				readOnly
+				placeholder="목적지명"
+				width={120}
+				height={32}
+				value={destination ? destination.name : ''}
+			/>
 			{/* 도착지 연락처에 바인딩할 데이터 불분명 */}
 			{/* <CustomInput readOnly placeholder="도착지 연락처" width={120} /> */}
 			<WhiteBlackBtn
