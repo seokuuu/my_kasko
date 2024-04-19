@@ -259,7 +259,7 @@ export const CalBtnWrap = styled.div`
 
 export const CloseBtnWrap = styled.div`
 	position: relative;
-	top: 120px;
+	top: 100px;
 	left: 30px;
 	height: 30%;
 `
