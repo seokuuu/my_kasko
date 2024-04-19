@@ -100,22 +100,24 @@ const CalendarModal = () => {
 
 	// 오늘의 일정
 	const renderPeriods = () => {
-		const sortedPeriods = ['오전 경매', '오후 경매', '추가 경매']?.filter((period) =>
-			todayPeriods?.some((item) => item.period === period),
-		)
-
-		return sortedPeriods?.map((period, index) => {
+		const sortedPeriods = ['오전 경매', '오후 경매', '추가 경매']
+		const renderedPeriods = sortedPeriods.map((period) => {
 			const matchingAuctions = todayPeriods?.filter((item) => item.period === period)
-			return (
-				<DotWrap style={{ marginTop: '5px' }} key={index}>
-					<Dot dotColor={getDotColor(period)} />
-					<p style={{ marginLeft: '5px', fontWeight: 'bolder', fontFamily: 'SUIT', fontSize: '18px' }}>
-						{period}
-						{matchingAuctions.length > 1 && ` + ${matchingAuctions.length}`}
-					</p>
-				</DotWrap>
-			)
+			if (matchingAuctions?.length > 0) {
+				return (
+					<DotWrap style={{ marginTop: '5px' }} key={period}>
+						<Dot dotColor={getDotColor(period)} />
+						<p style={{ marginLeft: '5px', fontWeight: 'bolder', fontFamily: 'SUIT', fontSize: '18px' }}>
+							{period}
+							{period === '추가 경매' && ` + ${matchingAuctions?.length}`}
+						</p>
+					</DotWrap>
+				)
+			}
+			return null
 		})
+
+		return renderedPeriods.filter((period) => period !== null) // null 값 제거
 	}
 
 	function customTileContent({ date, view }) {
@@ -123,36 +125,68 @@ const CalendarModal = () => {
 
 		const matchingAuctions = auctionData?.filter((auction) => auction.date === formattedDate)
 
-		if (view === 'month' && matchingAuctions?.length > 0) {
-			const isAdditionalAuction = matchingAuctions.some((auction) => auction.period === '추가 경매')
+		console.log('matchingAuctions', matchingAuctions)
 
+		// "추가 경매" 항목 개수 확인
+		const additionalAuctionCount = matchingAuctions?.filter((auction) => auction.period === '추가 경매').length
+
+		let filteredAuctions = []
+
+		// 추가 경매가 있는 경우
+		if (additionalAuctionCount > 0) {
+			// 추가 경매 항목들의 개수를 합쳐서 표시
+			const additionalAuctionString = `추가 경매 + ${additionalAuctionCount}`
+
+			// 추가 경매 항목이 있는 경우, 해당 항목을 제외한 나머지 경매 항목 필터링
+			filteredAuctions = matchingAuctions.filter((auction) => auction.period !== '추가 경매')
+
+			// 새로운 "추가 경매" 항목 추가
+			filteredAuctions.push({
+				date: matchingAuctions[0].date, // 첫 번째 항목의 날짜 사용
+				period: additionalAuctionString,
+			})
+		} else {
+			// 추가 경매가 없는 경우, 기존의 경매 항목을 그대로 유지
+			filteredAuctions = matchingAuctions
+		}
+
+		if (view === 'month' && matchingAuctions?.length > 0) {
 			return (
 				<>
-					<Today></Today>
 					<DotContainer>
-						{/* {isAdditionalAuction ? (
-							<DotWrap>
-								<Dot dotColor={getDotColor('추가 경매')}></Dot>
-								<p style={{ marginLeft: '5px', fontWeight: 'bolder', fontFamily: 'SUIT', fontSize: '17px' }}>
-									추가 경매{matchingAuctions.length > 1 && ` + ${matchingAuctions.length}`}
-								</p>
-							</DotWrap>
-						) : (
-							matchingAuctions
-								?.sort((a, b) => {
-									const order = { '오전 경매': 1, '오후 경매': 2, '추가 경매': 3 }
-									return order[a.period] - order[b.period]
-								})
-								.map((auction, index) => (
-									<DotWrap key={index}>
-										<Dot dotColor={getDotColor(auction?.period)}></Dot>
-										<p style={{ marginLeft: '5px', fontWeight: 'bolder', fontFamily: 'SUIT', fontSize: '17px' }}>
-											{auction?.period}
-										</p>
-									</DotWrap>
-								))
-						)} */}
-						{renderPeriods()}
+						{filteredAuctions
+							.sort((a, b) => {
+								const order = { '오전 경매': 1, '오후 경매': 2, '추가 경매': 3 }
+								return order[a.period] - order[b.period]
+							})
+							.map((auction, index) => (
+								<DotWrap key={index}>
+									<>
+										{auction?.period === '추가 경매' && index === 1 ? (
+											<>
+												<Dot dotColor={getDotColor(auction?.period)}></Dot>
+												<p style={{ marginLeft: '5px', fontWeight: 'bolder', fontFamily: 'SUIT', fontSize: '17px' }}>
+													{auction?.period} +{filteredAuctions?.filter((item) => item.period === '추가 경매').length}
+												</p>
+											</>
+										) : auction?.period !== '추가 경매' ? (
+											<>
+												<Dot dotColor={getDotColor(auction?.period)}></Dot>
+												<p style={{ marginLeft: '5px', fontWeight: 'bolder', fontFamily: 'SUIT', fontSize: '17px' }}>
+													{auction?.period}
+												</p>
+											</>
+										) : auction?.period === '추가 경매' && index !== 0 && index === 2 ? (
+											<>
+												<Dot dotColor={getDotColor(auction?.period)}></Dot>
+												<p style={{ marginLeft: '5px', fontWeight: 'bolder', fontFamily: 'SUIT', fontSize: '17px' }}>
+													{auction?.period} +{filteredAuctions?.filter((item) => item.period === '추가 경매').length}
+												</p>
+											</>
+										) : null}
+									</>
+								</DotWrap>
+							))}
 					</DotContainer>
 				</>
 			)
@@ -162,13 +196,14 @@ const CalendarModal = () => {
 	}
 
 	const getDotColor = (period) => {
+		if (period.includes('추가 경매')) {
+			return dotPlus
+		}
 		switch (period) {
 			case '오전 경매':
 				return dotAm
 			case '오후 경매':
 				return dotPm
-			case '추가 경매':
-				return dotPlus
 			default:
 				return null
 		}
