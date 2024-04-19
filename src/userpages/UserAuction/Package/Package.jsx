@@ -69,6 +69,15 @@ const Package = ({}) => {
 	const [destinationPopUp, setDestinationPopUp] = useAtom(userPageSingleDestiFindAtom)
 	const [agreementModal, setAgreementModal] = useAtom(biddingAgreementModal) // 입찰 동의서 모달
 
+	const TOKEN_STORAGE_KEY = 'accessToken'
+	const WISH_STORAGE_KEY = 'ksk_wish'
+	const USER_WISH_STORAGE_KEY = (userId) => `${WISH_STORAGE_KEY}_${userId}`
+
+	const token = localStorage.getItem(TOKEN_STORAGE_KEY)
+	const userId = jwtDecode(token)?.sub || ''
+	const wishListNum = USER_WISH_STORAGE_KEY(userId)
+	let wishList = JSON.parse(localStorage.getItem(wishListNum)) || [] // 기본값으로 빈 배열 설정
+
 	const [checkAgreement, setCheckAgreement] = useState({
 		auctionNumber: '',
 		agreement: '',
@@ -118,7 +127,7 @@ const Package = ({}) => {
 
 	const paramData = {
 		pageNum: 1,
-		pageSize: 50,
+		pageSize: 3,
 		type: '패키지',
 	}
 	const [param, setParam] = useState(paramData)
@@ -160,7 +169,16 @@ const Package = ({}) => {
 		if (!isSuccess && !resData) return
 		if (Array.isArray(originData?.list)) {
 			if (live) {
-				setOridata(restrictOriginData)
+				// wishList에 있는 패키지부터 추출하여 정렬
+				const wishedItems = restrictOriginData.list.filter((item) => wishList.includes(item.packageNumber))
+				// wishList에 있는 패키지를 제외한 나머지 추출하여 정렬
+				console.log('wishedItems', wishedItems)
+				const remainingItems = restrictOriginData.list.filter((item) => !wishList.includes(item.packageNumber))
+				// wishList에 있는 패키지를 먼저, 그 다음 나머지를 합쳐서 정렬된 리스트 생성
+				const sortedList = isUserPackBiddingSearch ? [...wishedItems] : [...wishedItems, ...remainingItems]
+				console.log('isUserPackBiddingSearch', isUserPackBiddingSearch)
+				setOridata({ ...restrictOriginData, list: sortedList })
+				// setOridata(restrictOriginData)
 			}
 			setTablePagination(resPagination)
 			setRealAucNum(checkAgreeAucNum)
