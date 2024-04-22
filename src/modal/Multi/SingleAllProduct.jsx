@@ -61,9 +61,9 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 		if (Array.isArray(singleList)) {
 			const savedIds = selectPr?.map((item) => item['제품 고유 번호'])
 			const newSingleList = singleList.filter((item) => !savedIds.includes(item.uid))
-			if (newSingleList.length === 0) {
-				setParam((prev) => ({ ...prev, pageNum: prev.pageNum + 1 }))
-			}
+			// if (newSingleList.length === 0) {
+			// 	setParam((prev) => ({ ...prev, pageNum: prev.pageNum + 1 }))
+			// }
 
 			setGetRow(add_element_field(newSingleList, singleDispatchFields))
 			setPagination(singleProductPage)
@@ -104,18 +104,29 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 				...item,
 				'패키지 번호': '',
 				'제품 고유 번호': item['고유 번호'],
-				'제품 창고': item['창고'],
-				'제품 매입처': item['매입처'],
-				'제품 제조사': item['제조사'],
-				'제품 경매 번호': item['제품 경매 번호'],
-				'제품 판매 유형': item['판매 유형'],
-				'제품 판매 구분': item['판매 구분'],
-				'제품 판매가 유형': item['판매가 유형'],
-				제품군: item['제품군명'],
+				창고: item['창고'],
+				매입처: item['매입처'],
+				제조사: item['제조사'],
+				'경매 번호': item['제품 경매 번호'],
+				판매유형: item['판매 유형'],
+				판매구분: item['판매 구분'],
+				판매가유형: item['판매가 유형'],
+				제품군: item['제품군'],
+				제품등급: item['제품 등급'],
+				정척여부: item['정척 여부'],
+				유찰횟수: item['유찰 횟수'],
 				'제품 중량': item['중량'],
 				공급가: item['운반비 공급가'],
 				부가세: item['운반비 부가세'],
-				'경매 시작가': item['경매 시장 단가'],
+				규격약호: item['규격 약호'],
+				재고상태: item['재고 상태'],
+				SI: item['Si'],
+				MN: item['Mn'],
+				S: item['S'],
+				여재원인: item['여재 원인'],
+				여재원인명: item['여재 원인명'],
+				용도코드: item['용도 코드'],
+				'경매 시작가': item['경매 시작 단가'],
 				'최종 수정자': item['최종 수정자'],
 				메모: item['메모'],
 				비고: item['비고'],
