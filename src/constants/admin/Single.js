@@ -21,7 +21,6 @@ export const singleDispatchFields = {
 	ProNo: 'productNoNumber',
 	'등록 일자': 'createDate',
 	'입고 상태': 'receiptStatus',
-	//매입구분 - 누락 추가
 	매입처: 'supplier',
 	제조사: 'maker',
 
@@ -84,14 +83,12 @@ export const singleDispatchFields = {
 	'클레임 진행 상태': 'claimStatus',
 	'최종 수정자': 'lastedUpdater',
 	'최종 수정 일자': 'updateDate',
-	// 아래는 "항목체크" 항목에 없음
+	// 아래는 이전에 있었으나 현재 "항목체크" 시트에 없음
 	// '아울렛 상태': 'outletStatus',
 	// '아울렛 가격': 'outletPrice',
 	// '추천 제품 여부': 'bestStatus',
 	// '노출 상태': 'viewStatus',
 	// '고유 번호': 'uid',
-
-	// 아래는 기존에 있었으나 사라짐
 	// '제품 상태': 'productStatus', // ?
 	// 입고일자: 'receiptDate', // ?
 }

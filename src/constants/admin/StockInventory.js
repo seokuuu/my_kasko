@@ -18,7 +18,6 @@ export const StockInventoryFields = {
 	등록일자: 'createDate',
 	'입고 상태': 'receiptStatus',
 	입고일자: 'receiptDate',
-	// 매입구분 - 누락 추가
 	매입처: 'supplier',
 	제조사: 'maker',
 	'경매 번호': 'auctionNumber',
@@ -98,12 +97,12 @@ export const StockInventoryFields = {
 	//최종수정일자 - 누락 추가
 
 	// ---- 밑에는 스프레드 시트 항목에 없는 것들. (기존 데이터) ---
-	창고: 'storageName',
-	수정일: 'updateDate',
-	'현대제철 주문번호': 'hsOrderNo',
-	'제품 고유 번호': 'uid',
-	'중량 판매 개수': 'splitCount',
-	시작가: 'auctionStartPrice',
+	// 창고: 'storageName',
+	// 수정일: 'updateDate',
+	// '현대제철 주문번호': 'hsOrderNo',
+	// '제품 고유 번호': 'uid',
+	// '중량 판매 개수': 'splitCount',
+	// 시작가: 'auctionStartPrice',
 }
 
 export const StockInventoryFieldCols = [
