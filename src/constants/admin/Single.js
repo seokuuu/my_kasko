@@ -21,9 +21,10 @@ export const singleDispatchFields = {
 	ProNo: 'productNoNumber',
 	'등록 일자': 'createDate',
 	'입고 상태': 'receiptStatus',
+	//매입구분 - 누락 추가
 	매입처: 'supplier',
 	제조사: 'maker',
-	입고일자: 'receiptDate',
+
 	'경매 등록 상태': 'registrationStatus',
 	'경매 번호': 'auctionNumber',
 	'판매 구분': 'saleCategory',
@@ -36,7 +37,7 @@ export const singleDispatchFields = {
 	매입가: 'price',
 	'경매 시작 단가': 'auctionStartPrice',
 	'낙찰 상태': 'biddingStatus',
-	'제품 사양': 'wdh',
+	'제품 사양': 'wdh', // ?
 	두께: 'thickness',
 	폭: 'width',
 	길이: 'length',
@@ -58,20 +59,20 @@ export const singleDispatchFields = {
 	'제품 낙찰 단가(원/톤)': 'productBiddingPrice',
 	'낙찰 총 단가(원/톤)': 'totalBiddingPrice',
 	'제품 공급가(원/톤)': 'orderPrice',
-	'제품 부가세': 'orderPriceVat',
+	'제품 부가세(원/톤)': 'orderPriceVat',
 	'제품금액 (VAT포함)': 'orderPriceVat',
-	'기본 운임 단가': 'freightFee',
-	'할증 운임 단가': 'extraUnitPrice',
+	'기본 운임 단가(원/톤)': 'freightFee',
+	'할증 운임 단가(원/톤)': 'extraUnitPrice',
 	'운임 총단가': 'totalFreightPrice',
-	'운반비 공급가': 'freightCost',
-	'운반비 부가세': 'freightCostVat',
+	'운반비 공급가(원/톤)': 'freightCost',
+	'운반비 부가세(원/톤)': 'freightCostVat',
 	'운반비 금액 (VAT포함)': 'totalFreightCost',
-	총공급가: 'totalPrice',
-	총부가세: 'totalPriceVat',
-	합계: 'total',
+	'총공급가(원/톤)': 'totalPrice',
+	'총부가세(원/톤)': 'totalPriceVat',
+	'합계금액(원/톤)': 'total',
 	목적지명: 'destinationName',
 	비고: 'note',
-	'제품 상태': 'productStatus',
+
 	'재고 상태': 'stockStatus',
 	'주문 상태': 'orderStatus',
 	'상시 판매가': 'salePrice',
@@ -81,13 +82,18 @@ export const singleDispatchFields = {
 	패키지번호: 'packageNumber',
 	'판매 제외 사유': 'excludeSaleReason',
 	'클레임 진행 상태': 'claimStatus',
-	'아울렛 상태': 'outletStatus',
-	'아울렛 가격': 'outletPrice',
-	'추천 제품 여부': 'bestStatus',
-	'노출 상태': 'viewStatus',
-	'고유 번호': 'uid',
 	'최종 수정자': 'lastedUpdater',
 	'최종 수정 일자': 'updateDate',
+	// 아래는 "항목체크" 항목에 없음
+	// '아울렛 상태': 'outletStatus',
+	// '아울렛 가격': 'outletPrice',
+	// '추천 제품 여부': 'bestStatus',
+	// '노출 상태': 'viewStatus',
+	// '고유 번호': 'uid',
+
+	// 아래는 기존에 있었으나 사라짐
+	// '제품 상태': 'productStatus', // ?
+	// 입고일자: 'receiptDate', // ?
 }
 
 export const SingleDispatchFieldsCols = () => [

@@ -1,9 +1,7 @@
-import { Route, Routes, createBrowserRouter, useBlocker, Outlet, Navigate } from 'react-router-dom'
+import { Route, Routes, createBrowserRouter } from 'react-router-dom'
 
 import CalendarModal from './modal/Calender/Calendar'
-import Test from './pages/Test/Test'
-import Test2 from './pages/Test/Test2'
-import Test3 from './pages/Test/Test3'
+
 import FindId from './pages/User/FindId/FindId'
 import Login from './pages/User/Login/Login'
 import ReissuePw from './pages/User/ReissuePw/ReissuePw'
@@ -104,8 +102,8 @@ import UNotice from './userpages/UserNotiDocs/Notice/NoticePage'
 import UAuctionPackage from './userpages/UserAuction/Package/PackagePage'
 import UAuctionSingle from './userpages/UserAuction/Single/SinglePage'
 import UAuctionStatus from './userpages/UserAuction/Status/StatusPage'
-import UAuctionWinning from './userpages/UserAuction/Winning/WinningPage'
 import UAuctionWinningDetail from './userpages/UserAuction/Winning/WinningDetailPage'
+import UAuctionWinning from './userpages/UserAuction/Winning/WinningPage'
 
 // 상시 판매
 import USalesCart from './userpages/UserSales/Cart/CartPage'
@@ -131,47 +129,33 @@ import UTerms from './userpages/UserCustomer/Terms/TermsPage'
 import UserMainPage from './userpages/MainPage'
 
 // test
-import Countdown from './components/Countdown/Countdown'
 import DestinationEditPage from './userpages/UserMyPage/Destination/DestinationEditPage'
 
 import TestPopup from './modal/Common/TestPopup'
 
-import DefaultBlueBar from './modal/Multi/DefaultBlueBar'
-
-import TableTest from './modal/Table/TableTest'
 import ClaimProductPage from './pages/Operate/Common/Claim/ClaimProductPage'
 import OperateClaimRegisterPage from './pages/Operate/Common/Claim/OperateClaimRegisterPage'
 import TestExcel from './pages/Test/TestExcel'
 
-import WinningCreate from './pages/Auction/Winning/WinningCreate'
 import NoticeDetailsPage from './pages/Operate/Common/Notice/NoticeDetailsPage'
 import NoticeBoardDetailsPage from './pages/Operate/Exposure/NoticeBoard/NoticeBoardDetailsPage'
 import ShipmentInvoicePage from './pages/Shipping/Achievement/ShipmentInvoicePage'
-import StatusPage from './pages/Shipping/Status/StatusPage'
 import DisRegisterDetailPage from './pages/Shipping/Dispatch/DisRegisterDetailPage'
+import StatusPage from './pages/Shipping/Status/StatusPage'
 // import StatusPage from './pages/Shipping/Status/StatusPage'
 // import ShipmentInvoicePage from './pages/Shipping/Achievement/ShipmentInvoicePage'
 // RoundAucProAdd
-import RoundAucProAdd from './pages/Auction/Round/RoundAucProAdd'
-import CarrierManage from './pages/UserManage/CarrierManage/CarrierManage'
-import SalesPackage from './modal/Multi/SalesPackage'
 import { useAtomValue } from 'jotai'
-import { authAtom } from './store/Auth/auth'
+import PrintType from './modal/Multi/PrintType'
+import BiddingPackagePage from './pages/Auction/Bidding/BiddingPackagePage'
+import WinningDetailPage from './pages/Auction/Winning/WinningDetailPage'
+import DuplicateLogin from './pages/DuplicateLogin'
 import Forbidden from './pages/Forbidden'
 import NotAuth from './pages/NotAuth'
-import useAuth from './store/Auth/useAuth'
-import PlusBtnUploader from './modal/Upload/components/PlusBtnUploader'
-import SingleRegiUploader from './modal/Upload/components/SingleRegiUploader'
-import PackageDetailModal from './modal/Multi/PackageDetailModal'
 import PopupComponent from './pages/Operate/Exposure/Popup/PopupComponent'
-import Agreement from './modal/Common/Agreement'
-import DuplicateLogin from './pages/DuplicateLogin'
-import Timeout from './pages/Timeout'
-import BiddingPackage from './pages/Auction/Bidding/BiddingPackage'
-import BiddingPackagePage from './pages/Auction/Bidding/BiddingPackagePage'
 import RequestRecomPage from './pages/Shipping/Request/RequestRecomPage'
-import WinningDetailPage from './pages/Auction/Winning/WinningDetailPage'
-import PrintType from './modal/Multi/PrintType'
+import Timeout from './pages/Timeout'
+import { authAtom } from './store/Auth/auth'
 
 const Router = () => {
 	const auth = useAtomValue(authAtom)
@@ -180,10 +164,7 @@ const Router = () => {
 			{/* 테스트 URL */}
 			<Route path="/popup2" element={<PopupComponent />} />
 			<Route path="/ppap" element={<PrintType />} />
-			<Route path="/TableTest" element={<TableTest />} />
-			<Route path="/test" element={<Test />} />
-			<Route path="/test2" element={<Test2 />} />
-			<Route path="/test3" element={<Test3 />} />
+
 			<Route path="/TransportModal" element={<TransportModal />} />
 			<Route path="/popup" element={<TestPopup />} />
 			<Route path="/excel" element={<TestExcel />} />
