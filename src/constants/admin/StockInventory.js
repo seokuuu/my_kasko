@@ -15,10 +15,10 @@ export const StockInventoryFields = {
 	'제품 번호': 'productNumber',
 	'출고 번호': 'outNumber',
 	// 창고 - 누락 추가
+	창고: 'storageName',
 	등록일자: 'createDate',
 	'입고 상태': 'receiptStatus',
 	입고일자: 'receiptDate',
-	// 매입구분 - 누락 추가
 	매입처: 'supplier',
 	제조사: 'maker',
 	'경매 번호': 'auctionNumber',
@@ -31,7 +31,9 @@ export const StockInventoryFields = {
 	'유찰 횟수': 'failCount',
 	매입가: 'price',
 	// 경매 시작 단가 - 누락 추가
+	'경매 시작 단가': 'auctionStartPrice',
 	// 낙찰가 - 누락 추가
+	낙찰가: 'productBiddingPrice',
 	고객사명: 'customerName',
 	'고객 코드': 'customerCode',
 
@@ -55,6 +57,7 @@ export const StockInventoryFields = {
 	'용도 코드': 'usageCode',
 	용도명: 'usageCodeName',
 	//메모 - 누락 추가
+	메모: 'memo',
 	'제품 낙찰 단가(원/톤)': 'productBiddingPrice',
 	'낙찰 총 단가(원/톤)': 'totalBiddingPrice',
 	'제품 공급가(원/톤)': 'orderPrice',
@@ -62,8 +65,10 @@ export const StockInventoryFields = {
 	'제품 금액(VAT 포함)': 'totalOrderPrice',
 	'기본 운임 단가(원/톤)': 'freightFee',
 	//할증율(%) - 누락 추가
+	'할증율(%)': 'extraUnitPrice',
 	'할증 운임 단가(원/톤)': 'extraUnitPrice',
 	//운임 총 단가 - 누락 추가
+	'운임 총 단가': 'totalbiddingprice',
 	'운반비 공급가(원/톤)': 'freightCost',
 
 	'운반비 부가세(원/톤)': 'freightCostVat',
@@ -71,39 +76,51 @@ export const StockInventoryFields = {
 	'총 공급가(원/톤)': 'totalSupplyPrice',
 	'총 부가세(원/톤)': 'totalVat',
 	//합계금액(원/톤) - 누락 추가
-	목적지명: 'destinationName',
+	'합계금액(원/톤)': 'totalPrice',
+
 	//확정전송 일자 - 누락 추가
-	'상시판매 번호': 'orderNumber',
+	'확정전송 일자': 'sendDate',
+
 	//목적지 명 - 누락 추가
+	목적지명: 'destinationName',
 	'확정 전송일자': 'sendDate',
 	//상시판매 번호 - 누락 추가
 	//상시판매가 - 누락 추가
 	//주문번호 - 누락 추가
+	'상시판매 번호': 'saleNumber',
+	상시판매가: 'salePrice',
+	주문번호: 'orderNumber',
 	패키지명: 'packageName',
 	'패키지 번호': 'packageNumber',
 	출고일자: 'outDate',
 	//출고번호 - 누락 추가
+	출고번호: 'outNumber',
 	'출하 상태': 'shipmentStatus',
 
 	//비고 - 누락 추가
+	비고: 'note',
 	'매입 운반비': 'inboundFreightAmount',
 	'매출 운반비': 'outboundFreightAmount',
 	'재고 상태': 'stockStatus',
 	//입찰고객명 - 누락 추가
 	//입찰고객코드 - 누락 추가
-	'현대제철 반품일자': 'hsReturnDate', // 이게 고객사 반품 일자로 변경됨. 백엔드 확인 필요 0416
+	입찰고객명: 'customerName',
+	입찰고객코드: 'customerCode',
+	'고객사 반품 일자': 'hsReturnDate', // 이게 고객사 반품 일자로 변경됨. 백엔드 확인 필요 0416
 	'카스코 반품일자': 'kaskoReturnDate',
 	'클레임 진행상태': 'claimStatus',
+	최종수정자: 'lastedUpdater',
+	최종수정일자: 'updateDate',
 	//최종수정자 - 누락 추가
 	//최종수정일자 - 누락 추가
 
 	// ---- 밑에는 스프레드 시트 항목에 없는 것들. (기존 데이터) ---
-	창고: 'storageName',
-	수정일: 'updateDate',
-	'현대제철 주문번호': 'hsOrderNo',
-	'제품 고유 번호': 'uid',
-	'중량 판매 개수': 'splitCount',
-	시작가: 'auctionStartPrice',
+	// 창고: 'storageName',
+	// 수정일: 'updateDate',
+	// '현대제철 주문번호': 'hsOrderNo',
+	// '제품 고유 번호': 'uid',
+	// '중량 판매 개수': 'splitCount',
+	// 시작가: 'auctionStartPrice',
 }
 
 export const StockInventoryFieldCols = [

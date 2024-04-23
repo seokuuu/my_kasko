@@ -24,7 +24,6 @@
 		"draftjs-to-html": "^0.9.1",
 		"env-cmd": "^10.1.0",
 		"fxjs": "^0.21.3",
-		"html2pdf.js": "^0.10.1",
 		"jotai": "^2.2.2",
 		"jwt-decode": "^4.0.0",
 		"lodash": "^4.17.21",
