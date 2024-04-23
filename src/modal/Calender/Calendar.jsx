@@ -125,8 +125,6 @@ const CalendarModal = () => {
 
 		const matchingAuctions = auctionData?.filter((auction) => auction.date === formattedDate)
 
-		console.log('matchingAuctions', matchingAuctions)
-
 		// "추가 경매" 항목 개수 확인
 		const additionalAuctionCount = matchingAuctions?.filter((auction) => auction.period === '추가 경매').length
 
