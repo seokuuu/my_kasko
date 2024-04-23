@@ -172,11 +172,11 @@ const Package = ({}) => {
 				// wishList에 있는 패키지부터 추출하여 정렬
 				const wishedItems = restrictOriginData.list.filter((item) => wishList.includes(item.packageNumber))
 				// wishList에 있는 패키지를 제외한 나머지 추출하여 정렬
-				console.log('wishedItems', wishedItems)
+
 				const remainingItems = restrictOriginData.list.filter((item) => !wishList.includes(item.packageNumber))
 				// wishList에 있는 패키지를 먼저, 그 다음 나머지를 합쳐서 정렬된 리스트 생성
 				const sortedList = isUserPackBiddingSearch ? [...wishedItems] : [...wishedItems, ...remainingItems]
-				console.log('isUserPackBiddingSearch', isUserPackBiddingSearch)
+
 				setOridata({ ...restrictOriginData, list: sortedList })
 				// setOridata(restrictOriginData)
 			}
