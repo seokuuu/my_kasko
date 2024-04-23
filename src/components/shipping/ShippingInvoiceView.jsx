@@ -1,6 +1,6 @@
-import html2pdf from 'html2pdf.js'
 import moment from 'moment'
 import React, { useEffect, useRef, useState } from 'react'
+import { useReactToPrint } from 'react-to-print'
 import styled from 'styled-components'
 import { useShipmentInvoiceListQuery } from '../../api/shipment'
 import { WhiteSkyBtn } from '../../common/Button/Button'
@@ -15,7 +15,6 @@ import {
 import { FilterContianer, TableContianer } from '../../modal/External/ExternalFilter'
 import useAlert from '../../store/Alert/useAlert'
 import { formatWeight } from '../../utils/utils'
-import { useReactToPrint } from 'react-to-print'
 
 const ShippingInvoiceView = ({ customerCode, outNumber }) => {
 	const { simpleAlert } = useAlert()
