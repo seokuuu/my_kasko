@@ -14,7 +14,6 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import { useAtom, useAtomValue } from 'jotai'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { useQueryClient } from '@tanstack/react-query'
 import { isArray, isEqual } from 'lodash'
@@ -34,8 +33,8 @@ import {
 } from '../../../modal/Common/Common.Styled'
 import useAlert from '../../../store/Alert/useAlert'
 import Table from '../../Table/Table'
-import RoundAucListEditFields from './RoundAucListEditFields'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import RoundAucListEditFields from './RoundAucListEditFields'
 
 // 경매 제품 추가(단일) 메인 컴포넌트
 // 경매 제품 추가 (패키지), 경매 목록 상세(종료된 경매)와 호환 가능
