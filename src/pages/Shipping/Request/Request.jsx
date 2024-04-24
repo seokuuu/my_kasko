@@ -138,7 +138,10 @@ const Request = () => {
 		const uids = selectedRows.map((item) => item['주문 고유 번호'])
 		const shipmentStatus = '출하 대기'
 
-		simpleConfirm('출하 취소하시겠습니까?', () => shipmentStatusUpdate({ shipmentStatus, uids }))
+		simpleConfirm('출하 취소하시겠습니까?', () => {
+			shipmentStatusUpdate({ shipmentStatus, uids })
+			setSelectedRows([]) // 테이블 체크 목록 초기화
+		})
 	}
 
 	const handleTablePageSize = (event) => {

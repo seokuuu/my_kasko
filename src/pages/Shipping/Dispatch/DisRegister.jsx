@@ -40,7 +40,7 @@ const DisRegister = () => {
 	const auth = useAtomValue(authAtom)
 	const navigate = useNavigate()
 	const { simpleAlert, simpleConfirm } = useAlert()
-	const selectedRows = useAtomValue(selectedRowsAtom)
+	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 	const exFilterToggle = useAtomValue(toggleAtom)
 	const [isPostModal, setIsPostModal] = useAtom(StandardDispatchDetailAtom)
 	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
@@ -59,7 +59,7 @@ const DisRegister = () => {
 	})
 
 	// 선택 항목
-	const { selectedWeightStr, selectedCountStr, resetSelectData } = useTableSelection({
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({
 		weightKey: '중량 합계',
 	})
 
@@ -79,7 +79,7 @@ const DisRegister = () => {
 		}
 		simpleConfirm('배차 취소를 하시겠습니까?', () => {
 			removeDispatch(selectItem['출고 고유번호'])
-			resetSelectData()
+			setSelectedRows([])
 		})
 	}
 
@@ -114,7 +114,7 @@ const DisRegister = () => {
 		}
 		simpleConfirm('출고 등록하시겠습니까?', () => {
 			shipmentStatusUpdate({ shipmentStatus, uids })
-			resetSelectData()
+			setSelectedRows([])
 		})
 	}
 
@@ -223,7 +223,7 @@ const DisRegister = () => {
 					setIsPostModal={setIsPostModal}
 					modalClose={() => {
 						setIsPostModal(false)
-						resetSelectData()
+						setSelectedRows([])
 					}}
 				/>
 			)}

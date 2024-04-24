@@ -34,7 +34,7 @@ const Status = () => {
 	const auth = useAtomValue(authAtom)
 	const { simpleAlert, simpleConfirm } = useAlert()
 	const navigate = useNavigate()
-	const selectedRows = useAtomValue(selectedRowsAtom)
+	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 	const exFilterToggle = useAtomValue(toggleAtom)
 	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
 
@@ -61,7 +61,10 @@ const Status = () => {
 		}
 		const shipmentStatus = '출고 취소'
 		const uids = selectedRows.map((item) => item['출고 고유번호'])
-		simpleConfirm('출고 취소하시겠습니까?', () => shipmentStatusUpdate({ shipmentStatus, uids }))
+		simpleConfirm('출고 취소하시겠습니까?', () => {
+			shipmentStatusUpdate({ shipmentStatus, uids })
+			setSelectedRows([])
+		})
 	}
 
 	// 운송 완료
@@ -71,7 +74,10 @@ const Status = () => {
 		}
 		const shipmentStatus = '운송 완료'
 		const uids = selectedRows.map((item) => item['출고 고유번호'])
-		simpleConfirm('운송 완료 처리하시겠습니까?', () => shipmentStatusUpdate({ shipmentStatus, uids }))
+		simpleConfirm('운송 완료 처리하시겠습니까?', () => {
+			shipmentStatusUpdate({ shipmentStatus, uids })
+			setSelectedRows([])
+		})
 	}
 
 	const handleTablePageSize = (event) => {
