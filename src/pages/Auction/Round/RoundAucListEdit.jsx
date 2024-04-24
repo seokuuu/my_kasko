@@ -46,7 +46,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const [btnClick, setBtnClick] = useState(false)
 	const [newResData, setNewResData] = useState([])
 
-
 	const [editData, setEditData] = useState({
 		type: types,
 		auctionNumber: auctionNum,
@@ -55,8 +54,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	})
 	const { simpleAlert, simpleConfirm } = useAlert()
 
-	// const [rows, setRows] = useState('')
-	// const [list, setList] = useState([])
 	const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -117,14 +114,14 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 
 		const updatedResData = resData.map((item) => {
 			if (uids.includes(item.productNumber)) {
-				item.auctionStartPrice = parseInt(item.auctionStartPrice) + parseInt(startPrice)
+				item.auctionStartPrice = parseInt(startPrice)
 			}
 			return item
 		})
 
 		const updatedNewResData = newResData.map((item) => {
 			if (uids.includes(item['제품 번호'])) {
-				item['시작가'] = parseInt(item['시작가']) + parseInt(startPrice)
+				item['시작가'] = parseInt(startPrice)
 			}
 
 			return item
@@ -172,7 +169,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 				길이: parseInt(item.길이.replace(/,/g, ''), 10), // 콤마 제거 후 정수형 변환
 			}))
 
-
 			setInitRow(newInitRow)
 			setGetRow([...intUniqueData, ...newInitRow])
 		}
@@ -181,7 +177,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const dupleUids = getRow && getRow?.map((item) => item['제품 고유 번호'] || item['고유 번호'])
 
 	const [outAddData, setOutAddData] = useState([])
-
 
 	const onListAdd = (selectedData) => {
 		try {

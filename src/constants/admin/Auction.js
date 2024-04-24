@@ -242,6 +242,49 @@ export const AuctionRoundExtraProductFields = {
 	폭: 'width',
 	길이: 'length',
 	중량: 'weight',
+	'제품 등급': 'grade',
+	'용도 코드': 'usageCode',
+	용도명: 'usageCodeName',
+	'c%': 'c',
+	si: 'si',
+	mn: 'mn',
+	p: 'p',
+	s: 's',
+	ts: 'ts',
+	yp: 'yp',
+	el: 'el',
+	제품군: 'spart',
+	품명: 'name',
+	'정척 여부': 'preferThickness', // (Y / N)
+	'여재 원인': 'causeCode',
+	'여재 원인명': 'causeCodeName',
+	'유찰 횟수': 'failCount',
+	'경매 등록 상태': 'registrationStatus', // (경매 등록 / 경매 등록 대기)
+	매입처: 'supplier', // (현대제철 / 카스코철강)
+	제조사: 'maker', // (현대제철 / 동은스틸)
+	'판매 구분': 'saleCategory', // (판매재 / 판매 제외재 / 판매 완료재)
+	'판매 제외 사유': 'excludeSaleReason',
+	'재고 상태': 'stockStatus', // (타사 재고 / 자사 재고)
+	'판매 유형': 'saleType', // (경매 대상재 / 상시 판매 대상재)
+	'판매가 유형': 'salePriceType', // (특가 / 일반)
+	생성일: 'createDate',
+	'경매시작단가(시작가)': 'auctionStartPrice',
+	패키지명: 'packageName',
+	'패키지 번호': 'packageNumber',
+	'Pro.No 번호': 'productNoNumber',
+	매입가: 'price',
+}
+
+// 경매 제품 추가 (패키지)
+export const AuctionRoundExtraProductPackageFields = {
+	'고유 번호': 'uid',
+	'제품 번호': 'number',
+	'규격 약호': 'spec',
+	창고: 'storageName',
+	두께: 'thickness',
+	폭: 'width',
+	길이: 'length',
+	중량: 'weight',
 	등급: 'grade',
 	'용도 코드': 'usageCode',
 	용도명: 'usageCodeName',
@@ -268,7 +311,7 @@ export const AuctionRoundExtraProductFields = {
 	'판매 유형': 'saleType', // (경매 대상재 / 상시 판매 대상재)
 	'판매가 유형': 'salePriceType', // (특가 / 일반)
 	생성일: 'createDate',
-	시작가: 'auctionStartPrice',
+	'경매시작단가(시작가)': 'auctionStartPrice',
 	패키지명: 'packageName',
 	'패키지 번호': 'packageNumber',
 	'Pro.No 번호': 'productNoNumber',
@@ -290,25 +333,21 @@ export const AuctionRoundExtraProductFieldsCols = [
 	{ ...commonStyles, field: '제품 번호' },
 	{ ...commonStyles, field: '창고' },
 	{ ...commonStyles, field: 'Pro.No 번호' },
-	{ ...commonStyles, field: '등록 일자' }, // 누락 추가
-	{ ...commonStyles, field: '고유 번호' },
-	{ ...commonStyles, field: '패키지명' },
-	{ ...commonStyles, field: '패키지 번호' },
-
-	// 경매 등록 일자
-
+	{ ...commonStyles, field: '등록 일자' },
+	{ ...commonStyles, field: '매입처' },
+	{ ...commonStyles, field: '제조사' },
 	{ ...commonStyles, field: '경매 등록 상태' },
-	// 경매 번호
+	{ ...commonStyles, field: '경매 번호' }, // 누락 추가
 	{ ...commonStyles, field: '판매 구분' },
+	{ ...commonStyles, field: '판매 제외 사유' },
 	{ ...commonStyles, field: '판매 유형' },
 	{ ...commonStyles, field: '판매가 유형' },
-
-	{ ...commonStyles, field: '등급' },
+	{ ...commonStyles, field: '제품군' },
+	{ ...commonStyles, field: '제품 등급' }, // 등급 -> 제품 등급으로 바꾸기
 	{ ...commonStyles, field: '정척 여부' },
 	{ ...commonStyles, field: '유찰 횟수' },
 	{ ...commonStyles, field: '매입가' },
-	{ ...commonStyles, field: '시작가' },
-
+	{ ...commonStyles, field: '경매시작단가(시작가)' }, // 시작가 -> 경매시작단가(시작가) 로 바꾸기
 	{ ...commonStyles, field: '두께' },
 	{ ...commonStyles, field: '폭' },
 	{ ...commonStyles, field: '길이' },
@@ -322,21 +361,87 @@ export const AuctionRoundExtraProductFieldsCols = [
 	{ ...commonStyles, field: 'mn' },
 	{ ...commonStyles, field: 'p' },
 	{ ...commonStyles, field: 's' },
-
-	{ ...commonStyles, field: '용도 코드' },
-	{ ...commonStyles, field: '용도명' },
-	// 메모
-	// 비고
-	{ ...commonStyles, field: '재고 상태' },
-	{ ...commonStyles, field: '판매 제외 사유' },
-
-	// 아래는 필드 항목에 없음
-	{ ...commonStyles, field: '제품군' },
-	{ ...commonStyles, field: '품명명' },
 	{ ...commonStyles, field: '여재 원인' },
 	{ ...commonStyles, field: '여재 원인명' },
+	{ ...commonStyles, field: '용도 코드' },
+	{ ...commonStyles, field: '용도명' },
+	{ ...commonStyles, field: '메모' }, // 누락 추가
+	{ ...commonStyles, field: '비고' }, // 누락 추가
+	{ ...commonStyles, field: '재고 상태' },
+	{ ...commonStyles, field: '최종수정자' }, // 누락 추가
+	{ ...commonStyles, field: '최종수정일시' }, // 누락 추가
+].map((col) => ({
+	...col,
+	minWidth: col.minWidth !== undefined ? col.minWidth : commonStyles.getFieldMinWidth(col.field),
+}))
+
+// 경매 제품 추가 (패키지)
+export const AuctionRoundExtraProductPackageFieldsCols = [
+	{
+		...commonStyles,
+		field: '',
+		maxWidth: 50,
+		checkboxSelection,
+		headerCheckboxSelection,
+		lockVisible: true,
+		lockPinned: true,
+	},
+	{ ...commonStyles, field: '순번' }, // 누락 추가
+	{ ...commonStyles, field: '제품 번호' },
+	{ ...commonStyles, field: '패키지명' },
+	{ ...commonStyles, field: '패키지 번호' },
+	{ ...commonStyles, field: 'Pro.No 번호' },
+	{ ...commonStyles, field: '등록 일자' }, // 누락 추가
+	{ ...commonStyles, field: '창고' },
+	{ ...commonStyles, field: '경매 등록 상태' },
+	{ ...commonStyles, field: '경매 번호 ' }, // 누락 추가
+	{ ...commonStyles, field: '판매 구분' },
+	{ ...commonStyles, field: '판매 제외 사유' },
+	{ ...commonStyles, field: '판매 유형' },
+	{ ...commonStyles, field: '판매가 유형' },
+	{ ...commonStyles, field: '등급' },
+	{ ...commonStyles, field: '정척 여부' },
+	{ ...commonStyles, field: '유찰 횟수' },
+	{ ...commonStyles, field: '매입가' },
+	{ ...commonStyles, field: '경매시작단가(시작가)' }, // 경매시작단가(시작가) 로 변경
+	{ ...commonStyles, field: '두께' },
+	{ ...commonStyles, field: '폭' },
+	{ ...commonStyles, field: '길이' },
+	{ ...commonStyles, field: '중량' },
+	{ ...commonStyles, field: '규격 약호' },
+	{ ...commonStyles, field: 'ts' },
+	{ ...commonStyles, field: 'yp' },
+	{ ...commonStyles, field: 'c%' },
+	{ ...commonStyles, field: 'el' },
+	{ ...commonStyles, field: 'si' },
+	{ ...commonStyles, field: 'mn' },
+	{ ...commonStyles, field: 'p' },
+	{ ...commonStyles, field: 's' },
+	{ ...commonStyles, field: '여재 원인' },
+	{ ...commonStyles, field: '여재 원인명' },
+	{ ...commonStyles, field: '용도 코드' },
+	{ ...commonStyles, field: '용도명' },
+	{ ...commonStyles, field: '메모' }, // 누락 추가
+	{ ...commonStyles, field: '비고' }, // 누락 추가
+	{ ...commonStyles, field: '제품군' },
 	{ ...commonStyles, field: '매입처' },
 	{ ...commonStyles, field: '제조사' },
+	{ ...commonStyles, field: '재고 상태' },
+	{ ...commonStyles, field: '최종수정자' }, // 누락 추가
+	{ ...commonStyles, field: '최종수정일시' }, // 누락 추가
+
+	// -----------
+
+	// { ...commonStyles, field: '고유 번호' },
+
+	// 경매 등록 일자
+
+	// 경매 번호
+
+	// 아래는 필드 항목에 없음
+
+	{ ...commonStyles, field: '품명명' },
+
 	{ ...commonStyles, field: '생성일' },
 ].map((col) => ({
 	...col,
