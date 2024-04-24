@@ -34,7 +34,7 @@ const Achievement = () => {
 	const { simpleAlert, redAlert } = useAlert()
 	const [addedModal, setAddedModal] = useAtom(achievementAddedAtom)
 	const exFilterToggle = useAtomValue(toggleAtom)
-	const selectedRows = useAtomValue(selectedRowsAtom)
+	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 
 	const [getRow, setGetRow] = useState([])
 	const [param, setParam] = useState(initData)
@@ -82,7 +82,10 @@ const Achievement = () => {
 			return simpleAlert('등록된 추가비 및 공차비가 존재하지 않습니다.')
 		}
 
-		redAlert('등록된 추가 및 공차비를 삭제하시겠습니까?', () => removeExtarCost(findData.orderUid))
+		redAlert('등록된 추가 및 공차비를 삭제하시겠습니까?', () => {
+			removeExtarCost(findData.orderUid)
+			setSelectedRows([])
+		})
 	}
 
 	const toInvoice = () => {
