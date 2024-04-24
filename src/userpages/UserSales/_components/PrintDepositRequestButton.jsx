@@ -1,17 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
-import html2pdf from 'html2pdf.js'
 import moment from 'moment/moment'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { client } from '../../../api'
 import { BlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
-import { BlueBarHeader, BlueSubContainer, WhiteCloseBtn } from '../../../modal/Common/Common.Styled'
+import { BlueSubContainer, WhiteCloseBtn } from '../../../modal/Common/Common.Styled'
 import { FilterContianer, FilterHeaderAlert, TableContianer } from '../../../modal/External/ExternalFilter'
 import { OutSide } from '../../../modal/Multi/SingleAllProduct'
 import useAlert from '../../../store/Alert/useAlert'
-import PrintType from '../../../modal/Multi/PrintType'
-import { numberDeleteComma } from '../../../utils/utils'
 import {
 	calculateOrderPrice,
 	calculateOrderRefundPrice,
@@ -19,6 +16,7 @@ import {
 	calculateProductSplitPrice,
 } from '../../../utils/orderPrice'
 import { useReactToPrint } from 'react-to-print'
+
 /**
  * @constant 입금요청서 요청 URL
  * @description auction:경매, salesDeposit:상시판매
