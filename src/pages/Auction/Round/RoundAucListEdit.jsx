@@ -177,6 +177,10 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const dupleUids = getRow && getRow?.map((item) => item['제품 고유 번호'] || item['고유 번호'])
 
 	const [outAddData, setOutAddData] = useState([])
+	const [outAddPrice, setOutAddPrice] = useState([])
+
+	console.log('outAddData 아웃', outAddData)
+	console.log('outAddPrice 아웃', outAddPrice)
 
 	const onListAdd = (selectedData) => {
 		try {
@@ -190,9 +194,9 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	// // input의 addAuctionProductList 값 채우기
 	// 수정 부분의 "추가" 바인딩
 	useEffect(() => {
-		const uniqueNumbers = outAddData?.map((item) => ({
+		const uniqueNumbers = outAddData?.map((item, index) => ({
 			productUid: item,
-			auctionStartPrice: realStartPrice,
+			auctionStartPrice: parseInt(outAddPrice[index]?.replace(/,/g, '')) || realStartPrice,
 		}))
 
 		setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
@@ -395,6 +399,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 						setOutAddData={setOutAddData}
 						auctionNumber={auctionNum}
 						dupleUids={dupleUids}
+						outAddPrice={outAddPrice}
+						setOutAddPrice={setOutAddPrice}
 					/>
 				)}
 				<NewBottomBtnWrap bottom={-5} borderTop={'none'}>
