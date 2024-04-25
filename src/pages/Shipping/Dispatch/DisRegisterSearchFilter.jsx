@@ -64,19 +64,19 @@ const DisRegisterSearchFilter = ({ search, setSearch }) => {
 					</PartWrap>
 				</RowWrap>
 				<RowWrap none>
+					{/*<PartWrap first>*/}
+					{/*	<h6>배차 여부</h6>*/}
+					{/*	<RadioSearchButton*/}
+					{/*		options={[*/}
+					{/*			{ label: '전체', value: '' },*/}
+					{/*			{ label: 'Y', value: 1 },*/}
+					{/*			{ label: 'N', value: 0 },*/}
+					{/*		]}*/}
+					{/*		value={search.driverStatus}*/}
+					{/*		onChange={(value) => onChange('driverStatus', value)}*/}
+					{/*	/>*/}
+					{/*</PartWrap>*/}
 					<PartWrap first>
-						<h6>배차 여부</h6>
-						<RadioSearchButton
-							options={[
-								{ label: '전체', value: '' },
-								{ label: 'Y', value: 1 },
-								{ label: 'N', value: 0 },
-							]}
-							value={search.driverStatus}
-							onChange={(value) => onChange('driverStatus', value)}
-						/>
-					</PartWrap>
-					<PartWrap>
 						<h6>상차도 여부</h6>
 						<RadioSearchButton
 							options={[

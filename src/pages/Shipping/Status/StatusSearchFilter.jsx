@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { MainSelect } from '../../../common/Option/Main'
-import { CustomerSearch, DateSearchSelect, DestinationSearch } from '../../../components/Search'
+import { CustomerSearch, DateSearchSelect, DestinationSearch, RadioSearchButton } from '../../../components/Search'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import { FilterLeft, PWRight, PartWrap, RowWrap, SearchContainer } from '../../../modal/External/ExternalFilter'
 import { useAtomValue } from 'jotai/index'
@@ -55,6 +55,18 @@ const StatusSearchFilter = ({ search, setSearch }) => {
 							</PWRight>
 						</PartWrap>
 					)}
+					<PartWrap>
+						<h6>배차 여부</h6>
+						<RadioSearchButton
+							options={[
+								{ label: '전체', value: '' },
+								{ label: 'Y', value: 1 },
+								{ label: 'N', value: 0 },
+							]}
+							value={search.driverStatus}
+							onChange={(value) => onChange('driverStatus', value)}
+						/>
+					</PartWrap>
 				</RowWrap>
 
 				<RowWrap>
@@ -87,13 +99,15 @@ const StatusSearchFilter = ({ search, setSearch }) => {
 					/>
 				</RowWrap>
 				<RowWrap none>
-					<DateSearchSelect
-						title={'출고 일자'}
-						startInitDate={search.shipmentStartDate}
-						endInitDate={search.shipmentEndDate}
-						startDateChange={(value) => onChange('shipmentStartDate', value)}
-						endDateChange={(value) => onChange('shipmentEndDate', value)}
-					/>
+					<PartWrap first>
+						<DateSearchSelect
+							title={'출고 일자'}
+							startInitDate={search.shipmentStartDate}
+							endInitDate={search.shipmentEndDate}
+							startDateChange={(value) => onChange('shipmentStartDate', value)}
+							endDateChange={(value) => onChange('shipmentEndDate', value)}
+						/>
+					</PartWrap>
 				</RowWrap>
 			</FilterLeft>
 		</SearchContainer>

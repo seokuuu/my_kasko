@@ -216,12 +216,12 @@ const DisRegisterDetail = ({ id }) => {
 								<WhiteSkyBtn onClick={addListModalOpen}>추가 등록</WhiteSkyBtn>
 							</>
 						)}
-						{['운송사', '카스코철강'].includes(auth.role) && (
-							<>
-								<WhiteRedBtn onClick={onRemoveDispatch}>배차 취소</WhiteRedBtn>
-								<WhiteSkyBtn onClick={onSetDispatch}>배차 등록</WhiteSkyBtn>
-							</>
-						)}
+						{/*{['운송사', '카스코철강'].includes(auth.role) && (*/}
+						{/*	<>*/}
+						{/*		<WhiteRedBtn onClick={onRemoveDispatch}>배차 취소</WhiteRedBtn>*/}
+						{/*		<WhiteSkyBtn onClick={onSetDispatch}>배차 등록</WhiteSkyBtn>*/}
+						{/*	</>*/}
+						{/*)}*/}
 					</div>
 				</TCSubContainer>
 				<TableV2 loading={isLoading} getCol={ShippingDispatchDetailsFieldsCols} getRow={tableRowData} />
