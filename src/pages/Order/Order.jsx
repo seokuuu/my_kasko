@@ -2,18 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { SkyBtn, WhiteRedBtn } from '../../common/Button/Button'
 import Excel from '../../components/TableInner/Excel'
 import HeaderToggle from '../../components/Toggle/HeaderToggle'
-import { invenCustomer, invenCustomerData, pageSort, selectedRowsAtom, toggleAtom } from '../../store/Layout/Layout'
+import { invenCustomer, selectedRowsAtom, toggleAtom } from '../../store/Layout/Layout'
 
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../modal/External/ExternalFilter'
 
 import { useAtom, useAtomValue } from 'jotai'
-import Hidden from '../../components/TableInner/Hidden'
 import PageDropdown from '../../components/TableInner/PageDropdown'
 import useReactQuery from '../../hooks/useReactQuery'
 import { add_element_field } from '../../lib/tableHelpers'
 import InventoryFind from '../../modal/Multi/InventoryFind'
 import { getCustomerFind } from '../../service/admin/Auction'
-import { getSPartList } from '../../api/search'
 import Table from '../Table/Table'
 import { orderFieldData, OrderManageFieldsCols } from '../../constants/admin/OrderManage'
 import { KilogramSum } from '../../utils/KilogramSum'
@@ -26,85 +24,29 @@ import useOrder from './useOrder'
 import { onSizeChange } from '../Operate/utils'
 import TableV2HiddenSection from '../Table/TableV2HiddenSection'
 
+const paramData = {
+	pageNum: 1,
+	pageSize: 50,
+}
+
 const Order = () => {
 	const { simpleAlert } = useAlert()
 	const { postCancelOrderAll, postDepositCancelOrderAll, postSuccessfulOrderAll } = useOrder()
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
-	const paramData = {
-		pageNum: 1,
-		pageSize: 50,
-	}
+	const [customerPopUp, setCustomerPopUp] = useAtom(invenCustomer) // 고객사 팝업 상태,객체
+
 	const [param, setParam] = useState(paramData)
 	const [orderPagination, setOrderPagination] = useState([])
 	const [orderListData, setOrderListData] = useState(null)
-	const [checkSalesStart, setCheckSalesStart] = useState('') // 경매일자 시작
-	const [checkSalesEnd, setCheckSalesEnd] = useState('') // 경매일자 끝
-	const [checkConfirmStart, setCheckConfirmStart] = useState('') // 확정 전송 시작
-	const [checkConfirmEnd, setCheckConfirmEnd] = useState('') // 확정 전송 끝
-	const [checkAllTimeStart, setCheckAllTimeStart] = useState('') // 경매일자 시작
-	const [checkAllTimeEnd, setCheckAllTimeEnd] = useState('') // 경매일자 끝
 
-	const { data: spartList } = useReactQuery('', 'getSPartList', getSPartList)
-
-	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
-
-	//checkSales
-	const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
-
-	//checkShips
-	const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
-
-	useEffect(() => {
-		// true에 해당되면, value를, false면 빈값을 반환
-		const updatedCheck = checkSales.map((value, index) => {
-			return check1[index] ? value : ''
-		})
-		// 빈값을 제외한 값이 filteredCheck에 담긴다.
-		const filteredCheck = updatedCheck.filter((item) => item !== '')
-		setCheckData1(filteredCheck)
-
-		// 전송용 input에 담을 때
-		// setInput({
-		//   ...input,
-		//   businessType: updatedCheck.filter(item => item !== ''),
-		// });
-	}, [check1])
-
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
-
-	// 토글 쓰기
-	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
-	const [toggleMsg, setToggleMsg] = useState('On')
-	const toggleBtnClick = () => {
-		setExfilterToggle((prev) => !prev)
-		if (exFilterToggle === true) {
-			setToggleMsg('Off')
-		} else {
-			setToggleMsg('On')
-		}
-	}
-	// const gridRef = useRef()
-	const [sortNum, setSortNum] = useAtom(pageSort)
-
-	const [getRow, setGetRow] = useState('')
-
-	const onPageChange = (value) => {
-		setParam((prevParam) => ({
-			...prevParam,
-			pageNum: Number(value),
-		}))
-	}
+	const { data: getOrderRes, isSuccess, refetch } = useReactQuery(param, 'getOrderList', getOrderList)
+	const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
 
 	/** 데이터 가져오는 부분 React-Query로 변경 */
 	const formatTableRowData = (orderRes) => {
 		return add_element_field(orderRes, orderFieldData)
 	}
-	const { data: getOrderRes, isSuccess, refetch } = useReactQuery(param, 'getOrderList', getOrderList)
+
 	useEffect(() => {
 		if (getOrderRes && getOrderRes.data && getOrderRes.data.list) {
 			setOrderListData(formatTableRowData(getOrderRes.data.list))
@@ -114,13 +56,6 @@ const Order = () => {
 
 	const totalWeight = getOrderRes?.data.pagination.totalWeight
 	const formattedTotalWeight = totalWeight && totalWeight?.toLocaleString()
-	const [selected, setSelected] = useState({ sPart: '' })
-
-	// 고객사 팝업 상태,객체
-	const [customerPopUp, setCustomerPopUp] = useAtom(invenCustomer)
-	const [customerData, setCustomerData] = useAtom(invenCustomerData)
-
-	const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
 
 	const makeRequest = (selectedRows) => {
 		if (!selectedRows) return []
@@ -132,8 +67,10 @@ const Order = () => {
 			customerDestinationUid: row['고객사 목적지 고유 번호'],
 			saleType: row['판매 유형'],
 			sendDate: row['확정 전송일'],
+			packageNumber: row['패키지 번호'] || null,
 		}))
 	}
+
 	/**
 	 * @description 주문 취소 핸들러
 	 */
@@ -150,7 +87,6 @@ const Order = () => {
 	/**
 	 * @description 입금 취소 핸들러
 	 */
-
 	const handleDepositCancel = () => {
 		const requestList = makeRequest(checkBoxSelect)
 
@@ -173,9 +109,25 @@ const Order = () => {
 		postSuccessfulOrderAll(requestList, 'getOrderList')
 	}
 
-	/**
-	 * @description 검색하는 부분
-	 */
+	// 토글 쓰기
+	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
+	const [toggleMsg, setToggleMsg] = useState('On')
+	const toggleBtnClick = () => {
+		setExfilterToggle((prev) => !prev)
+		if (exFilterToggle === true) {
+			setToggleMsg('Off')
+		} else {
+			setToggleMsg('On')
+		}
+	}
+
+	const onPageChange = (value) => {
+		setParam((prevParam) => ({
+			...prevParam,
+			pageNum: Number(value),
+		}))
+	}
+
 	const globalProductSearchOnClick = (userSearchParam) => {
 		setParam((prevParam) => {
 			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
@@ -207,16 +159,14 @@ const Order = () => {
 			</FilterHeader>
 
 			{exFilterToggle && (
-				<>
-					<GlobalProductSearch
-						param={param}
-						setParam={setParam}
-						isToggleSeparate={true}
-						renderCustomSearchFields={(props) => <OrderSearchFields {...props} />}
-						globalProductSearchOnClick={globalProductSearchOnClick}
-						globalProductResetOnClick={globalProductResetOnClick}
-					/>
-				</>
+				<GlobalProductSearch
+					param={param}
+					setParam={setParam}
+					isToggleSeparate={true}
+					renderCustomSearchFields={(props) => <OrderSearchFields {...props} />}
+					globalProductSearchOnClick={globalProductSearchOnClick}
+					globalProductResetOnClick={globalProductResetOnClick}
+				/>
 			)}
 			<TableContianer>
 				<TCSubContainer bor>
@@ -226,7 +176,7 @@ const Order = () => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
-						<Excel getRow={getRow} sheetName={'주문 관리'} />
+						<Excel getRow={orderListData} sheetName={'주문 관리'} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>

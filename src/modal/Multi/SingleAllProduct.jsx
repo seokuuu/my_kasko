@@ -103,6 +103,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 			return {
 				...item,
 				'패키지 번호': '',
+				'고유 번호': item['고유 번호'],
 				'제품 고유 번호': item['고유 번호'],
 				창고: item['창고'],
 				매입처: item['매입처'],
