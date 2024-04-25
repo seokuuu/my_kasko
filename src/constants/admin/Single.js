@@ -88,7 +88,7 @@ export const singleDispatchFields = {
 	// '아울렛 가격': 'outletPrice',
 	// '추천 제품 여부': 'bestStatus',
 	// '노출 상태': 'viewStatus',
-	// '고유 번호': 'uid',
+	'고유 번호': 'uid',
 	// '제품 상태': 'productStatus', // ?
 	// 입고일자: 'receiptDate', // ?
 }
