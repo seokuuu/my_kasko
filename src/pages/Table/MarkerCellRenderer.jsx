@@ -73,8 +73,9 @@ class MarkerCellRenderer {
 	init(params) {
 		const proNoKey = '프로넘(ProNo)';
 		const proNo = params.data[proNoKey];
+		const isAdminBiddingPage = ['/auction/biddingsingle', '/auction/biddingpackage'].includes(window.location.pathname)
 
-		this.isProNo = !!proNo;
+		this.isProNo = isAdminBiddingPage ? false : !!proNo;
 		this.cellValue = params.value;
 		this.cellWish = !!proNo ? false : Boolean(params?.wish);
 		this.cellBest = !!proNo ? false : !!params.data['추천 제품 여부'] || !!params.data['추천 여부'];

@@ -126,8 +126,6 @@ const RoundAucProAdd = ({
 		const findKey = selectedRows.map((item) => item[key])
 		const findPrice = selectedRows.map((item) => item[firstPriceKey])
 
-		console.log('findPrice 아웃 2', findPrice)
-
 		const addData = resData?.filter((item) => findKey.includes(item?.uid))
 		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
 		else {

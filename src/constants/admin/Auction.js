@@ -271,7 +271,7 @@ export const AuctionRoundExtraProductFields = {
 	'경매시작단가(시작가)': 'auctionStartPrice',
 	패키지명: 'packageName',
 	'패키지 번호': 'packageNumber',
-	'Pro.No 번호': 'productNoNumber',
+	ProNo: 'productNoNumber',
 	매입가: 'price',
 	메모: 'memo',
 	비고: 'note',
@@ -341,7 +341,7 @@ export const AuctionRoundExtraProductFieldsCols = [
 
 	{ ...commonStyles, field: '제품 번호' },
 	{ ...commonStyles, field: '창고' },
-	{ ...commonStyles, field: 'Pro.No 번호' },
+	{ ...commonStyles, field: 'ProNo' },
 	{ ...commonStyles, field: '등록 일자' },
 	{ ...commonStyles, field: '매입처' },
 	{ ...commonStyles, field: '제조사' },
@@ -399,7 +399,7 @@ export const AuctionRoundExtraProductPackageFieldsCols = [
 	{ ...commonStyles, field: '제품 번호' },
 	{ ...commonStyles, field: '패키지명' },
 	{ ...commonStyles, field: '패키지 번호' },
-	{ ...commonStyles, field: 'Pro.No 번호' },
+	{ ...commonStyles, field: 'ProNo' },
 	{ ...commonStyles, field: '등록 일자' }, // 누락 추가
 	{ ...commonStyles, field: '창고' },
 	{ ...commonStyles, field: '경매 등록 상태' },
@@ -587,7 +587,7 @@ export const AuctionBiddingFields = {
 	si: 'si',
 	el: 'el',
 	mn: 'mn',
-	상태: 'biddingStatus',
+	// 상태: 'biddingStatus',
 }
 
 // 단일 응찰
@@ -709,7 +709,6 @@ export const AuctionBiddingFieldsCols = (selected, checkAvailable) => {
 	 * 사용자의 경우 프로넘 번호가 존재시 제품 번호가 렌더되지 않아야 합니다.
 	 */
 	const location = useLocation()
-	// const checkAucURL = ['/auction/biddingsingle'].includes(location.pathname)
 	const packDetail = ['/auction/biddingpackage', '/userpage/auctionpackage'].includes(location.pathname)
 	const checkboxSelection2 = (params) => {
 		if (checkAvailable) return null
@@ -735,7 +734,7 @@ export const AuctionBiddingFieldsCols = (selected, checkAvailable) => {
 		},
 
 		{ ...commonStyles, field: '경매 상태', minWidth: 100 },
-		{ ...commonStyles, field: '상태', minWidth: 100 },
+		// { ...commonStyles, field: '상태', minWidth: 100 },
 		{ ...commonStyles, field: '경매 번호', minWidth: 100 },
 		{ ...commonStyles, field: '추천 여부', minWidth: 100, cellRenderer: (params) => (params.value ? 'O' : 'X') },
 		{
