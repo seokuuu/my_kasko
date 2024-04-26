@@ -47,14 +47,6 @@ export const columnDefs = [
 		cellRenderer: (params) => params.value || 'N',
 	},
 	{
-		headerName: '매입구분',
-		field: '매입 구분',
-		headerClass: 'custom-header-style',
-		cellStyle: { borderRight: '1px solid #c8c8c8', textAlign: 'center' },
-		width: 90,
-		cellRenderer: (params) => params.value || 'N',
-	},
-	{
 		headerName: '제품군',
 		field: '제품군',
 		headerClass: 'custom-header-style',

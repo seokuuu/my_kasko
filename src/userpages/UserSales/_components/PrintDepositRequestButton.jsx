@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import moment from 'moment/moment'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useReactToPrint } from 'react-to-print'
 import styled from 'styled-components'
 import { client } from '../../../api'
 import { BlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
@@ -15,7 +16,6 @@ import {
 	calculateOrderTotalPrice,
 	calculateProductSplitPrice,
 } from '../../../utils/orderPrice'
-import { useReactToPrint } from 'react-to-print'
 
 /**
  * @constant 입금요청서 요청 URL

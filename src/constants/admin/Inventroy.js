@@ -24,7 +24,6 @@ export const InventoryFieldsCols = [
 	{ ...commonStyles, field: '등록 일자', minWidth: 250 },
 	{ ...commonStyles, field: '입고 상태', minWidth: 150 },
 	{ ...commonStyles, field: '입고일자', minWidth: 150 },
-	{ ...commonStyles, field: '매입구분', minWidth: 150 }, // 누락 추가
 	{ ...commonStyles, field: '매입처', minWidth: 100 },
 	{ ...commonStyles, field: '제조사', minWidth: 100 },
 	{ ...commonStyles, field: '제품군', minWidth: 100 },
@@ -218,7 +217,6 @@ export const InvertoryFields = {
 	'판매 제외 사유': 'excludeSaleReason',
 
 	순번: '', //  누락 추가
-	매입구분: '', //  누락 추가
 	'운임 총 단가': '', //  누락 추가
 	'합계 금액(원/톤)': '', // 누락 추가
 	'제품 추가일자': '', // 누락 추가
