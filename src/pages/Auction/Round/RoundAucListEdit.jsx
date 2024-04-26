@@ -73,7 +73,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const [getRow, setGetRow] = useState('')
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 
-	console.log('selectedRows', selectedRows)
 
 	// const checkedArray = useAtom(selectedRowsAtom)[0]
 
@@ -142,7 +141,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 
 		setGetRow([...updatedNewResData, ...add_element_field(updatedResData, AuctionRoundDetailFields)])
 
-		console.log('updatedNewResData', updatedNewResData)
 
 		// 테이블 row 매핑 (기존 row)
 		if (selectedRows.some((row) => row['경매 등록 상태'] === '경매 등록')) {
@@ -153,7 +151,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 				auctionStartPrice: startPrice,
 			}))
 
-			console.log('업데이트 리스트', updateList)
 
 			setEditData((prev) => ({
 				...prev,
@@ -235,8 +232,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const [outAddData, setOutAddData] = useState([])
 	const [outAddPrice, setOutAddPrice] = useState([])
 
-	console.log('outAddData 아웃', outAddData)
-	console.log('outAddPrice 아웃', outAddPrice)
 
 	const onListAdd = (selectedData) => {
 		try {
