@@ -32,6 +32,9 @@ const LinkRenderer = (props) => {
 	if (data['확정 전송일'] !== null && data['확정 전송일'] !== 'null') {
 		queryParams.append('sendDate', data['확정 전송일'])
 	}
+	if (data['패키지 번호'] !== null && data['패키지 번호'] !== 'null') {
+		queryParams.append('packageNumber', data['패키지 번호'])
+	}
 
 	const url = `admin/order/detail?${queryParams}`
 

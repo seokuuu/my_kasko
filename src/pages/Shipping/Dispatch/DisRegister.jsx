@@ -40,7 +40,7 @@ const DisRegister = () => {
 	const auth = useAtomValue(authAtom)
 	const navigate = useNavigate()
 	const { simpleAlert, simpleConfirm } = useAlert()
-	const selectedRows = useAtomValue(selectedRowsAtom)
+	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 	const exFilterToggle = useAtomValue(toggleAtom)
 	const [isPostModal, setIsPostModal] = useAtom(StandardDispatchDetailAtom)
 	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
@@ -59,7 +59,7 @@ const DisRegister = () => {
 	})
 
 	// 선택 항목
-	const { selectedWeightStr, selectedCountStr, resetSelectData } = useTableSelection({
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({
 		weightKey: '중량 합계',
 	})
 
@@ -79,7 +79,7 @@ const DisRegister = () => {
 		}
 		simpleConfirm('배차 취소를 하시겠습니까?', () => {
 			removeDispatch(selectItem['출고 고유번호'])
-			resetSelectData()
+			setSelectedRows([])
 		})
 	}
 
@@ -104,17 +104,14 @@ const DisRegister = () => {
 		const shipmentStatus = '출고 등록'
 		const uids = selectedRows.map((item) => item['출고 고유번호'])
 		const outStatusArray = selectedRows.map((item) => item['승인 상태'])
-		const driverStatusArray = selectedRows.map((item) => item['배차 여부'])
 
 		if (!outStatusArray.every((value) => value === '승인')) {
 			return simpleAlert('출고 등록을 하려면 출고 상태를 승인 받아야 합니다.')
 		}
-		if (!driverStatusArray.every((value) => value === 'Y')) {
-			return simpleAlert('출고 등록을 하려면 배차 등록은 필수입니다.')
-		}
+
 		simpleConfirm('출고 등록하시겠습니까?', () => {
 			shipmentStatusUpdate({ shipmentStatus, uids })
-			resetSelectData()
+			setSelectedRows([])
 		})
 	}
 
@@ -194,14 +191,14 @@ const DisRegister = () => {
 					<div>
 						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
 					</div>
-					<div style={{ display: 'flex', gap: '10px' }}>
-						{['운송사', '카스코철강'].includes(auth.role) && (
-							<>
-								<WhiteRedBtn onClick={onRemoveDispatch}>배차 취소</WhiteRedBtn>
-								<WhiteSkyBtn onClick={onSetDispatch}>배차 등록</WhiteSkyBtn>
-							</>
-						)}
-					</div>
+					{/*<div style={{ display: 'flex', gap: '10px' }}>*/}
+					{/*	{['운송사', '카스코철강'].includes(auth.role) && (*/}
+					{/*		<>*/}
+					{/*			<WhiteRedBtn onClick={onRemoveDispatch}>배차 취소</WhiteRedBtn>*/}
+					{/*			<WhiteSkyBtn onClick={onSetDispatch}>배차 등록</WhiteSkyBtn>*/}
+					{/*		</>*/}
+					{/*	)}*/}
+					{/*</div>*/}
 				</TCSubContainer>
 				<TableV2
 					getRow={tableRowData}
@@ -223,7 +220,6 @@ const DisRegister = () => {
 					setIsPostModal={setIsPostModal}
 					modalClose={() => {
 						setIsPostModal(false)
-						resetSelectData()
 					}}
 				/>
 			)}

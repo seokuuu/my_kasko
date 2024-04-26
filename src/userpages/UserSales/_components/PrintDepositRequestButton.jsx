@@ -16,6 +16,7 @@ import {
 	calculateOrderTotalPrice,
 	calculateProductSplitPrice,
 } from '../../../utils/orderPrice'
+
 /**
  * @constant 입금요청서 요청 URL
  * @description auction:경매, salesDeposit:상시판매

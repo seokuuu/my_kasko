@@ -60,6 +60,7 @@ const AdminOrderDetail = () => {
 	const customerName = query.get('customerName')
 	const totalPrice = query.get('totalPrice')
 	const customerDestinationPhone = query.get('customerDestinationPhone')
+	const packageNumber = query.get('packageNumber')
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const paramData = {
 		pageNum: 1,
@@ -77,6 +78,7 @@ const AdminOrderDetail = () => {
 		customerName: customerName,
 		customerDestinationPhone: customerDestinationPhone,
 		totalPrice: totalPrice,
+		packageNumber: packageNumber,
 	}
 	const [isPackage, setIsPackage] = useState(false)
 	const [param, setParam] = useState(paramData)

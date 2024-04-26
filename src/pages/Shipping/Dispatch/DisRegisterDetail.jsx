@@ -95,7 +95,10 @@ const DisRegisterDetail = ({ id }) => {
 		if (driverStatus === 'N') {
 			return simpleAlert('취소하기 전 배차를 등록해주세요.')
 		}
-		simpleConfirm('배차 취소를 하시겠습니까?', () => removeDispatch(id))
+		simpleConfirm('배차 취소를 하시겠습니까?', () => {
+			removeDispatch(id)
+			setSelectedRows([]) // 테이블 체크 목록 초기화
+		})
 	}
 
 	// 배차 등록
@@ -116,7 +119,10 @@ const DisRegisterDetail = ({ id }) => {
 			productOutUid: id,
 			status: '반려',
 		}
-		simpleConfirm('반려하시겠습니까?', () => statusUpdateMerge(body))
+		simpleConfirm('반려하시겠습니까?', () => {
+			statusUpdateMerge(body)
+			setSelectedRows([]) // 테이블 체크 목록 초기화
+		})
 	}
 
 	// 요청 승인
@@ -125,7 +131,10 @@ const DisRegisterDetail = ({ id }) => {
 			productOutUid: id,
 			status: '승인',
 		}
-		simpleConfirm('승인하시겠습니까?', () => statusUpdateMerge(body))
+		simpleConfirm('승인하시겠습니까?', () => {
+			statusUpdateMerge(body)
+			setSelectedRows([]) // 테이블 체크 목록 초기화
+		})
 	}
 
 	// 선별 목록 수정
@@ -207,12 +216,12 @@ const DisRegisterDetail = ({ id }) => {
 								<WhiteSkyBtn onClick={addListModalOpen}>추가 등록</WhiteSkyBtn>
 							</>
 						)}
-						{['운송사', '카스코철강'].includes(auth.role) && (
-							<>
-								<WhiteRedBtn onClick={onRemoveDispatch}>배차 취소</WhiteRedBtn>
-								<WhiteSkyBtn onClick={onSetDispatch}>배차 등록</WhiteSkyBtn>
-							</>
-						)}
+						{/*{['운송사', '카스코철강'].includes(auth.role) && (*/}
+						{/*	<>*/}
+						{/*		<WhiteRedBtn onClick={onRemoveDispatch}>배차 취소</WhiteRedBtn>*/}
+						{/*		<WhiteSkyBtn onClick={onSetDispatch}>배차 등록</WhiteSkyBtn>*/}
+						{/*	</>*/}
+						{/*)}*/}
 					</div>
 				</TCSubContainer>
 				<TableV2 loading={isLoading} getCol={ShippingDispatchDetailsFieldsCols} getRow={tableRowData} />

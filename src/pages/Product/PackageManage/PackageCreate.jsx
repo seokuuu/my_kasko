@@ -296,7 +296,7 @@ const PackageCreate = () => {
 	useEffect(() => {
 		if (!select) return null
 
-		setSelectUid(() => select.map((i) => i['고유 번호']))
+		setSelectUid(() => select.map((i) => i['제품 고유 번호']))
 	}, [select])
 
 	// 기존 테이블에서 선택한 체크박스

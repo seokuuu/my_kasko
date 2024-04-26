@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Button'
-import { doubleClickedRowAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import {
+	doubleClickedRowAtom,
+	selectedRowsAtom,
+	StandardDispatchDetailAtom,
+	toggleAtom,
+} from '../../../store/Layout/Layout'
 
 import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 
@@ -8,7 +13,11 @@ import { useAtomValue } from 'jotai'
 import { useAtom } from 'jotai/index'
 import { isEqual } from 'lodash'
 import { useNavigate } from 'react-router-dom'
-import { useShipmentDispatchListQuery, useShipmentStatusUpdateMutation } from '../../../api/shipment'
+import {
+	useRemoveDispatchMutation,
+	useShipmentDispatchListQuery,
+	useShipmentStatusUpdateMutation,
+} from '../../../api/shipment'
 import { GlobalFilterHeader } from '../../../components/Filter'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Excel from '../../../components/TableInner/Excel'
@@ -23,6 +32,7 @@ import TableV2 from '../../Table/TableV2'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import ReceiptExcelV2 from './ReceiptExcelV2'
 import { authAtom } from '../../../store/Auth/auth'
+import DispatchDetail from '../../../modal/Multi/DispatchDetail'
 
 const initData = {
 	pageNum: 1,
@@ -34,15 +44,18 @@ const Status = () => {
 	const auth = useAtomValue(authAtom)
 	const { simpleAlert, simpleConfirm } = useAlert()
 	const navigate = useNavigate()
-	const selectedRows = useAtomValue(selectedRowsAtom)
+	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
 	const exFilterToggle = useAtomValue(toggleAtom)
 	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
+	const [isPostModal, setIsPostModal] = useAtom(StandardDispatchDetailAtom)
 
+	const [id, setId] = useState(null) // 체크 박스 선택한 id 값
 	const [param, setParam] = useState(initData)
 	const [rows, setGetRow] = useState([])
 
 	const { isLoading, data, refetch } = useShipmentDispatchListQuery(param)
 	const { mutate: shipmentStatusUpdate } = useShipmentStatusUpdateMutation() // 출고 상태 변경
+	const { mutate: removeDispatch } = useRemoveDispatchMutation() // 배차 취소
 
 	const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
 		tableField: ShippingStatusFields,
@@ -61,17 +74,63 @@ const Status = () => {
 		}
 		const shipmentStatus = '출고 취소'
 		const uids = selectedRows.map((item) => item['출고 고유번호'])
-		simpleConfirm('출고 취소하시겠습니까?', () => shipmentStatusUpdate({ shipmentStatus, uids }))
+
+		simpleConfirm('출고 취소하시겠습니까?', () => {
+			shipmentStatusUpdate({ shipmentStatus, uids })
+			setSelectedRows([])
+		})
+	}
+
+	// 배차기사 취소
+	const onRemoveDispatch = () => {
+		if (!selectedRows || selectedRows?.length === 0) {
+			return simpleAlert('배차 취소할 제품을 선택해주세요.')
+		}
+		if (!selectedRows || selectedRows?.length > 1) {
+			return simpleAlert('배차 취소는 하나만 가능합니다.')
+		}
+		const selectItem = selectedRows[0]
+		const driverStatus = selectItem['배차 여부']
+
+		if (driverStatus === 'N') {
+			return simpleAlert('취소하기 전 배차를 등록해주세요.')
+		}
+		simpleConfirm('배차 취소를 하시겠습니까?', () => {
+			removeDispatch(selectItem['출고 고유번호'])
+			setSelectedRows([])
+		})
+	}
+
+	// 배차기사 등록
+	const onSetDispatch = () => {
+		if (!selectedRows || selectedRows?.length === 0) {
+			return simpleAlert('배차 등록할 제품을 선택해주세요.')
+		}
+		if (!selectedRows || selectedRows?.length > 1) {
+			return simpleAlert('배차 등록은 하나만 가능합니다.')
+		}
+		const selectItem = selectedRows[0]
+		setId(selectItem['출고 고유번호'])
+		setIsPostModal(true)
 	}
 
 	// 운송 완료
 	const onShipmentCompletion = () => {
 		if (!selectedRows || selectedRows?.length === 0) {
-			return simpleAlert('출고 취소할 제품을 선택해주세요.')
+			return simpleAlert('제품을 선택해주세요.')
 		}
 		const shipmentStatus = '운송 완료'
 		const uids = selectedRows.map((item) => item['출고 고유번호'])
-		simpleConfirm('운송 완료 처리하시겠습니까?', () => shipmentStatusUpdate({ shipmentStatus, uids }))
+		const driverStatusList = selectedRows.map((item) => item[['배차 여부']])
+
+		if (!driverStatusList.every((value) => value === 'Y')) {
+			return simpleAlert('운송 완료 전 배차 기사를 등록해주세요.')
+		}
+
+		simpleConfirm('운송 완료 처리하시겠습니까?', () => {
+			shipmentStatusUpdate({ shipmentStatus, uids })
+			setSelectedRows([])
+		})
 	}
 
 	const handleTablePageSize = (event) => {
@@ -151,9 +210,8 @@ const Status = () => {
 						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						{['카스코철강', '창고'].includes(auth?.role) && (
-							<WhiteRedBtn onClick={onShipmentCancel}>출고 취소</WhiteRedBtn>
-						)}
+						<WhiteRedBtn onClick={onRemoveDispatch}>배차 취소</WhiteRedBtn>
+						<WhiteSkyBtn onClick={onSetDispatch}>배차 등록</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
 				<TableV2
@@ -166,6 +224,9 @@ const Status = () => {
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
+						{['카스코철강', '창고'].includes(auth?.role) && (
+							<WhiteRedBtn onClick={onShipmentCancel}>출고 취소</WhiteRedBtn>
+						)}
 						{['카스코철강', '운송사'].includes(auth?.role) && (
 							<WhiteBlackBtn onClick={onShipmentCompletion}>운송 완료</WhiteBlackBtn>
 						)}
@@ -173,6 +234,15 @@ const Status = () => {
 					</div>
 				</TCSubContainer>
 			</TableContianer>
+			{isPostModal && (
+				<DispatchDetail
+					id={id}
+					setIsPostModal={setIsPostModal}
+					modalClose={() => {
+						setIsPostModal(false)
+					}}
+				/>
+			)}
 		</FilterContianer>
 	)
 }
