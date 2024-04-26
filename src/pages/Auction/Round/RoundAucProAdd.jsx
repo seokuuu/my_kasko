@@ -14,7 +14,6 @@ import {
 } from '../../../modal/External/ExternalFilter'
 
 import { useAtom, useAtomValue } from 'jotai'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
 
 import { useQueryClient } from '@tanstack/react-query'
 import { isArray, isEqual } from 'lodash'
@@ -34,8 +33,8 @@ import {
 } from '../../../modal/Common/Common.Styled'
 import useAlert from '../../../store/Alert/useAlert'
 import Table from '../../Table/Table'
-import RoundAucListEditFields from './RoundAucListEditFields'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import RoundAucListEditFields from './RoundAucListEditFields'
 
 // 경매 제품 추가(단일) 메인 컴포넌트
 // 경매 제품 추가 (패키지), 경매 목록 상세(종료된 경매)와 호환 가능
@@ -53,6 +52,8 @@ const RoundAucProAdd = ({
 	auctionNumber,
 	dupleUids,
 	outAddData,
+	outAddPrice,
+	setOutAddPrice,
 }) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -121,7 +122,11 @@ const RoundAucProAdd = ({
 
 	const onAdd = () => {
 		const key = '고유 번호'
+		const firstPriceKey = '경매시작단가(시작가)'
 		const findKey = selectedRows.map((item) => item[key])
+		const findPrice = selectedRows.map((item) => item[firstPriceKey])
+
+		console.log('findPrice 아웃 2', findPrice)
 
 		const addData = resData?.filter((item) => findKey.includes(item?.uid))
 		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('선택해주세요!')
@@ -131,10 +136,17 @@ const RoundAucProAdd = ({
 					setNewResData((prevData) => [...prevData, item])
 					setAddModal(false)
 					onListAdd(addData)
-					setOutAddData((prevData) => {
-						const uniqueData = [...new Set([...prevData, ...findKey])]
+
+					// uid set
+					setOutAddData((prev) => {
+						const uniqueData = [...new Set([...prev, ...findKey])]
 						return uniqueData
 					})
+
+					// 시작가 set
+					const newData = [...outAddPrice]
+					newData.push(...findPrice)
+					setOutAddPrice(newData)
 				})
 			})
 		}
