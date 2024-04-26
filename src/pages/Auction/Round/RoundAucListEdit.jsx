@@ -50,8 +50,11 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 		type: types,
 		auctionNumber: auctionNum,
 		addAuctionProductList: [],
+		updateAuctionProductList: [],
 		deleteAuctionProductList: [],
 	})
+
+	const [totalAddList, setTotalAddList] = useState([])
 	const { simpleAlert, simpleConfirm } = useAlert()
 
 	const [addModal, setAddModal] = useAtom(aucProAddModalAtom)
@@ -69,6 +72,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 
 	const [getRow, setGetRow] = useState('')
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
+
+	console.log('selectedRows', selectedRows)
 
 	// const checkedArray = useAtom(selectedRowsAtom)[0]
 
@@ -104,36 +109,87 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const totalWeight = getRow && getRow?.map((x) => x['중량'])
 	const sum = totalWeight && totalWeight?.reduce((acc, curr) => acc + parseInt(curr), 0)
 
+	// 222
+
+	/**
+	 * @description
+	 * onClick 설명
+	 * 	newResData 한글로 된것들은 그대로두고,  resData는 필드항목 씌워서 setGetRow처리
+	 * 기존 데이터의 기본키는 '제품 번호' / 추가된 데이터의 기본키는 '제품 고유 번호'이다.
+	 */
 	const startPriceOnClickHandler = () => {
-		// resData는 영문이라 add_element_field 처리해야하고
-		// newResData는 한글이라 그냥 setGetRow 처리해야함
-
-		// resData는 item이 영문으로 넣어줘야하고
-		// newResData는 그냥 한글로 넣어주면 됨
-		// 다 한뒤에 mergedData 해주고, setGetRow 해주면 됨
-
-		const updatedResData = resData.map((item) => {
-			if (uids.includes(item.productNumber)) {
-				item.auctionStartPrice = parseInt(startPrice)
-			}
-			return item
-		})
-
-		const updatedNewResData = newResData.map((item) => {
-			if (uids.includes(item['제품 번호'])) {
-				item['시작가'] = parseInt(startPrice)
-			}
-
-			return item
-		})
-
 		if (selectedRows.some((row) => row.매입처 === '현대제철')) {
-			simpleAlert('현대제철(타사) 시작가 변경이 불가합니다.')
-		} else {
-			setRealStartPrice(startPrice)
-			setGetRow([...add_element_field(updatedResData, AuctionRoundDetailFields), ...updatedNewResData])
-			// setGetRow(add_element_field(updatedResData, AuctionRoundDetailFields))
-			//  newResData 한글로 된것들은 그대로두고,  resData는 필드항목 씌워서 setGetRow처리
+			return simpleAlert('현대제철(타사) 시작가 변경이 불가합니다.')
+		}
+		// 경매 등록 (기존 데이터) 인 경우
+
+		// 테이블 row 매핑 (기존 row)
+		const updatedResData = resData?.map((item) => {
+			if (uids.includes(item.productNumber)) {
+				item.auctionStartPrice = startPrice
+			}
+			return item
+		})
+
+		// 체크 된것만
+		// 테이블 row 매핑 (추가된 row)
+		const updatedNewResData = newResData?.map((item) => {
+			if (uids.includes(item['제품 번호'])) {
+				item['경매시작단가(시작가)'] = startPrice
+			}
+			return item
+		})
+
+		setGetRow([...updatedNewResData, ...add_element_field(updatedResData, AuctionRoundDetailFields)])
+
+		console.log('updatedNewResData', updatedNewResData)
+
+		// 테이블 row 매핑 (기존 row)
+		if (selectedRows.some((row) => row['경매 등록 상태'] === '경매 등록')) {
+			const registeredAuctions = selectedRows.filter((row) => row['경매 등록 상태'] === '경매 등록')
+
+			const updateList = registeredAuctions?.map((item) => ({
+				productUid: item['제품 고유 번호'],
+				auctionStartPrice: startPrice,
+			}))
+
+			console.log('업데이트 리스트', updateList)
+
+			setEditData((prev) => ({
+				...prev,
+				updateAuctionProductList: updateList,
+			}))
+		}
+
+		// 테이블 row 매핑 (추가된 row)
+
+		const replaceDuplicateProduct = (list, newItem) => {
+			const index = list.findIndex((item) => item.productUid === newItem.productUid)
+			if (index !== -1) {
+				// 중복된 객체가 존재하는 경우 해당 객체를 새로운 객체로 대체합니다.
+				list[index] = newItem
+			} else {
+				// 중복된 객체가 없는 경우 새로운 객체를 배열에 추가합니다.
+				list.push(newItem)
+			}
+			return list
+		}
+
+		if (selectedRows.some((row) => row['경매 등록 상태'] === '경매 등록 대기')) {
+			const pendingAuctions = selectedRows.filter((row) => row['경매 등록 상태'] === '경매 등록 대기')
+			const updateNewList = pendingAuctions?.map((item) => ({
+				productUid: item['고유 번호'],
+				auctionStartPrice: startPrice,
+			}))
+
+			// addAuctionProductList에 중복된 productUid를 가진 객체가 있다면 해당 객체를 대체합니다.
+			setEditData((prev) => ({
+				...prev,
+				addAuctionProductList: updateNewList.reduce(
+					(acc, cur) => replaceDuplicateProduct(acc, cur),
+					[...prev.addAuctionProductList],
+				),
+			}))
 		}
 	}
 
@@ -192,15 +248,21 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	}
 
 	// // input의 addAuctionProductList 값 채우기
-	// 수정 부분의 "추가" 바인딩
+	// 수정 부분의 "추가" 바인딩, 시작가는 기존 데이터 값으로 매핑된다.
 	useEffect(() => {
 		const uniqueNumbers = outAddData?.map((item, index) => ({
 			productUid: item,
-			auctionStartPrice: parseInt(outAddPrice[index]?.replace(/,/g, '')) || realStartPrice,
+			auctionStartPrice: parseInt(outAddPrice[index]?.replace(/,/g, '')),
+			//  || realStartPrice,
 		}))
 
-		setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
-	}, [outAddData, realStartPrice])
+		setEditData((prev) => ({
+			...prev,
+			addAuctionProductList: [...prev.addAuctionProductList, ...uniqueNumbers],
+		}))
+
+		// setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
+	}, [outAddData])
 
 	// 목록 제거
 	const onListRemove = () => {
@@ -360,7 +422,14 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 										setStartPrice(parseInt(e.target.value))
 									}}
 								/>
-								<TGreyBtn height={30} style={{ width: '50px' }} onClick={startPriceOnClickHandler}>
+								<TGreyBtn
+									height={30}
+									style={{ width: '50px' }}
+									onClick={() => {
+										// setRealStartPrice(startPrice)
+										startPriceOnClickHandler()
+									}}
+								>
 									적용
 								</TGreyBtn>
 								<BtnBound />

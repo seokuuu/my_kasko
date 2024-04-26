@@ -198,7 +198,7 @@ export const AuctionRoundDetailFields = {
 	등급: 'grade',
 	'정척 여부': 'preferThickness',
 	'유찰 횟수': 'failCount',
-	시작가: 'auctionStartPrice',
+	'경매시작단가(시작가)': 'auctionStartPrice',
 	두께: 'thickness',
 	폭: 'width',
 	길이: 'length',
@@ -273,6 +273,10 @@ export const AuctionRoundExtraProductFields = {
 	'패키지 번호': 'packageNumber',
 	'Pro.No 번호': 'productNoNumber',
 	매입가: 'price',
+	메모: 'memo',
+	비고: 'note',
+	최종수정자: 'updateMemberName',
+	최종수정일: 'updateDate',
 }
 
 // 경매 제품 추가 (패키지)
@@ -316,6 +320,10 @@ export const AuctionRoundExtraProductPackageFields = {
 	'패키지 번호': 'packageNumber',
 	'Pro.No 번호': 'productNoNumber',
 	매입가: 'price',
+	메모: 'memo',
+	비고: 'note',
+	최종수정자: 'updateMemberName',
+	최종수정일: 'updateDate',
 }
 
 // 경매 제품 추가 (단일)
@@ -330,6 +338,7 @@ export const AuctionRoundExtraProductFieldsCols = [
 		lockPinned: true,
 	},
 	{ ...commonStyles, field: '순번' }, // 누락 추가
+
 	{ ...commonStyles, field: '제품 번호' },
 	{ ...commonStyles, field: '창고' },
 	{ ...commonStyles, field: 'Pro.No 번호' },
@@ -337,7 +346,7 @@ export const AuctionRoundExtraProductFieldsCols = [
 	{ ...commonStyles, field: '매입처' },
 	{ ...commonStyles, field: '제조사' },
 	{ ...commonStyles, field: '경매 등록 상태' },
-	{ ...commonStyles, field: '경매 번호' }, // 누락 추가
+	// { ...commonStyles, field: '경매 번호' }, // 누락 추가 ??? 이게 왜 필요함
 	{ ...commonStyles, field: '판매 구분' },
 	{ ...commonStyles, field: '판매 제외 사유' },
 	{ ...commonStyles, field: '판매 유형' },
@@ -458,6 +467,7 @@ export const AuctionRoundDetailFieldsCols = [
 		lockVisible: true,
 		lockPinned: true,
 	},
+
 	{ ...commonStyles, field: '제품 번호' },
 	{ ...commonStyles, field: 'ProNo' },
 
@@ -486,7 +496,7 @@ export const AuctionRoundDetailFieldsCols = [
 	{ ...commonStyles, field: '정척 여부' },
 	{ ...commonStyles, field: '유찰 횟수' },
 	{ ...commonStyles, field: '매입가' },
-	{ ...commonStyles, field: '시작가' },
+	{ ...commonStyles, field: '경매시작단가(시작가)' },
 	{ ...commonStyles, field: '두께' },
 	{ ...commonStyles, field: '폭' },
 	{ ...commonStyles, field: '길이' },
