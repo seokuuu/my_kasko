@@ -29,7 +29,11 @@ import { editAuction, getDetailAuction } from '../../../api/auction/round'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-import { AuctionRoundDetailFields, AuctionRoundDetailFieldsCols } from '../../../constants/admin/Auction'
+import {
+	AuctionRoundDetailFields,
+	AuctionRoundDetailFieldsCols,
+	AuctionRoundDetailPackageFieldsCols,
+} from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
@@ -72,7 +76,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 
 	const [getRow, setGetRow] = useState('')
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
-
 
 	// const checkedArray = useAtom(selectedRowsAtom)[0]
 
@@ -141,7 +144,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 
 		setGetRow([...updatedNewResData, ...add_element_field(updatedResData, AuctionRoundDetailFields)])
 
-
 		// 테이블 row 매핑 (기존 row)
 		if (selectedRows.some((row) => row['경매 등록 상태'] === '경매 등록')) {
 			const registeredAuctions = selectedRows.filter((row) => row['경매 등록 상태'] === '경매 등록')
@@ -150,7 +152,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 				productUid: item['제품 고유 번호'],
 				auctionStartPrice: startPrice,
 			}))
-
 
 			setEditData((prev) => ({
 				...prev,
@@ -231,7 +232,6 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 
 	const [outAddData, setOutAddData] = useState([])
 	const [outAddPrice, setOutAddPrice] = useState([])
-
 
 	const onListAdd = (selectedData) => {
 		try {
@@ -439,7 +439,11 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 						</>
 					)}
 				</TCSubContainer>
-				<Table getCol={AuctionRoundDetailFieldsCols} getRow={getRow} loading={isLoading} />
+				<Table
+					getCol={types === '단일' ? AuctionRoundDetailFieldsCols : AuctionRoundDetailPackageFieldsCols}
+					getRow={getRow}
+					loading={isLoading}
+				/>
 				{auctionStatus !== '종료' && (
 					<>
 						<TCSubContainer>
