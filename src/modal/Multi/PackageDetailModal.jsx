@@ -35,7 +35,7 @@ export default function PackageDetailModal() {
 		packageNumber: select['패키지 번호'],
 	})
 
-	const titleData = ['패키지 명', '수량', select['판매 유형'] === '상시판매 대상재' ? '상시판매가' : '시작가']
+	const titleData = ['패키지 명', '수량', select['판매 유형'] === '상시판매 대상재' ? '상시판매가' : '시작가', '중량']
 	const tableField = useRef(packageDetailDispatchFieldsCols)
 	const getCol = tableField.current
 	const [getRow, setGetRow] = useState('')
@@ -122,6 +122,9 @@ export default function PackageDetailModal() {
 												<ClaimContent>
 													{detailList ? Number(detailList[0].packagePrice)?.toLocaleString() : null}
 												</ClaimContent>
+											)}
+											{title === '중량' && (
+												<ClaimContent>{tablePagination?.totalWeight?.toLocaleString()}</ClaimContent>
 											)}
 										</Fragment>
 									))}

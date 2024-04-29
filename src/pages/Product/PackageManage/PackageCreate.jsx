@@ -54,8 +54,8 @@ const PackageCreate = () => {
 
 	const setUpdateObj = useSetAtom(packageUpdateObjAtom)
 
-	const [packageName, setPackageName] = useState(prevData ? prevData['패키지 이름'] : packageObj?.packageName)
-	const [price, setPrice] = useState(prevData ? prevData['시작가/판매가'] : packageObj?.price)
+	const [packageName, setPackageName] = useState(prevData ? prevData['패키지명'] : packageObj?.packageName)
+	const [price, setPrice] = useState(prevData ? prevData['경매시작단가(시작가)'] : packageObj?.price)
 
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 	const [savedRadioValue, setSavedRadioValue] = useState('')
@@ -252,7 +252,7 @@ const PackageCreate = () => {
 					: savedRadioValue === '경매 대상재'
 					? '경매'
 					: '상시',
-			packageName: packageName ? packageName : prevData ? prevData['패키지 이름'] : '',
+			packageName: packageName ? packageName : prevData ? prevData['패키지명'] : '',
 		}))
 
 		setPackageObj(() => ({
@@ -391,7 +391,7 @@ const PackageCreate = () => {
 								</div>
 							</div>
 							<div>
-								<h6>패키지 명 지정</h6>
+								<h6>패키지 명</h6>
 								<div>
 									<Input name={'packageName'} value={packageName} onChange={handleChangePackName} />
 								</div>
