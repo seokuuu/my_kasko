@@ -19,7 +19,11 @@ import { useQueryClient } from '@tanstack/react-query'
 import { isArray, isEqual } from 'lodash'
 import { getExtraProductList } from '../../../api/auction/round'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import { AuctionRoundExtraProductFields, AuctionRoundExtraProductFieldsCols } from '../../../constants/admin/Auction'
+import {
+	AuctionRoundExtraProductFields,
+	AuctionRoundExtraProductFieldsCols,
+	AuctionRoundExtraProductPackageFieldsCols,
+} from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
@@ -84,7 +88,9 @@ const RoundAucProAdd = ({
 	}
 
 	const [getRow, setGetRow] = useState('')
-	const tableField = useRef(AuctionRoundExtraProductFieldsCols)
+	const tableField = useRef(
+		types === '단일' ? AuctionRoundExtraProductFieldsCols : AuctionRoundExtraProductPackageFieldsCols,
+	)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
 	const checkedArray = useAtom(selectedRowsAtom)[0]
@@ -260,7 +266,9 @@ const RoundAucProAdd = ({
 							<Table
 								hei2={exFilterToggle ? 250 : 520}
 								hei={100}
-								getCol={AuctionRoundExtraProductFieldsCols}
+								getCol={
+									types === '단일' ? AuctionRoundExtraProductFieldsCols : AuctionRoundExtraProductPackageFieldsCols
+								}
 								getRow={getRow}
 								isLoading={isLoading}
 								onPageChange={onPageChange}
