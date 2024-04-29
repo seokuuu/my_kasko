@@ -222,7 +222,7 @@ export const AuctionRoundDetailFields = {
 	매입가: 'price',
 	'고유 번호': 'uid',
 	패키지명: 'packageName',
-	패키지번호: 'packageNumber',
+	'패키지 번호': 'packageNumber',
 	메모: 'memo',
 	비고: 'note',
 	ProNo: 'productNoNumber',
