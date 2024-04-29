@@ -134,7 +134,6 @@ const Winning = ({}) => {
 	const startOfDay = currentTime.startOf('day')
 	const endOfDay = currentTime.endOf('day')
 
-
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
@@ -228,7 +227,7 @@ const Winning = ({}) => {
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{selectedCountStr}</span> / {totalCountStr}개 )
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {resData?.length}개 )
 						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
