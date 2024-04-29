@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue } from 'jotai'
-import { useMemo } from 'react'
-import { selectedRowsAtom } from '../store/Layout/Layout'
+import { useEffect, useMemo } from 'react'
+import { selectedRowsAtom, selectedRowsAtom2 } from '../store/Layout/Layout'
 import { numberDeleteComma } from '../utils/utils'
 
 /**
@@ -23,8 +23,19 @@ export default function useTableSelection(param = {}) {
 
 	// 테이블 선택 항목
 	const [selectedData, setSelectedData] = useAtom(selectedRowsAtom)
+	const [selectedData2, setSelectedData2] = useAtom(selectedRowsAtom2)
+
+	useEffect(() => {
+		setSelectedData([])
+		return () => {
+			setSelectedData([])
+		}
+	}, [])
 	// 선택 항목 총 갯수
 	const selectedCount = useMemo(() => selectedData?.length || 0, [selectedData])
+
+	const selectedCount2 = useMemo(() => selectedData2?.length || 0, [selectedData2])
+
 	// 선택 항목 총 중량
 	const selectedWeight = useMemo(
 		() => (!selectedData || weightKey === undefined ? 0 : getSumFromObjList(weightKey, selectedData || [])),
@@ -36,6 +47,7 @@ export default function useTableSelection(param = {}) {
 		selectedWeight, // 선택 데이터 총 중량
 		selectedWeightStr: selectedWeight.toLocaleString(), // 선택 데이터 총 중량 (localString)
 		selectedCount, // 선택 데이터 총 갯수
+		selectedCount2,
 		selectedCountStr: selectedCount.toLocaleString(), // 선택 데이터 총 갯수(localString)
 		hasSelected: selectedCount > 0, // 선택 여부
 		resetSelectData: () => setSelectedData([]),
