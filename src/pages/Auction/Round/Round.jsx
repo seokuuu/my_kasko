@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
@@ -35,6 +35,7 @@ import useAlert from '../../../store/Alert/useAlert'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import RoundAucListEdit from './RoundAucListEdit'
 import RoundSearchFields from './RoundSearchFields'
+import useTableSelection from '../../../hooks/useTableSelection'
 
 const Round = ({}) => {
 	const { simpleConfirm, simpleAlert } = useAlert()
@@ -60,7 +61,9 @@ const Round = ({}) => {
 	const tableField = useRef(AuctionRoundFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
-	const checkedArray = useAtom(selectedRowsAtom2)[0]
+	const checkedArray2 = useAtom(selectedRowsAtom2)[0]
+
+	const { selectedCount, selectedData } = useTableSelection()
 
 	const initialParamState = {
 		pageNum: 1,
@@ -127,17 +130,17 @@ const Round = ({}) => {
 	})
 
 	const handleRemoveBtn = useCallback(() => {
-		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('삭제할 항목을 선택해주세요.')
+		if (!isArray(checkedArray2) || !checkedArray2.length > 0) return simpleAlert('삭제할 항목을 선택해주세요.')
 
 		// 삭제할 수 없는 데이터들입니다.
-		const cannotRemoveOptions = checkedArray.some((data) => data['경매 상태'] === ('진행중' || '종료'))
+		const cannotRemoveOptions = checkedArray2.some((data) => data['경매 상태'] === ('진행중' || '종료'))
 		if (cannotRemoveOptions) return simpleAlert('진행중이거나 종료인 경매 상태는 삭제할 수 없습니다.')
 		simpleConfirm('선택한 항목을 삭제하시겠습니까?', () =>
-			checkedArray.forEach((item) => {
+			checkedArray2.forEach((item) => {
 				mutation.mutate(item['고유 번호']) //mutation.mutate로 api 인자 전해줌
 			}),
 		)
-	}, [checkedArray])
+	}, [checkedArray2])
 
 	useEffect(() => {
 		// 컴포넌트가 언마운트될 때 switchEdit을 재설정하는 정리 함수
@@ -208,7 +211,7 @@ const Round = ({}) => {
 					<TableContianer>
 						<TCSubContainer bor>
 							<div>
-								조회 목록 (선택 <span>{checkedArray?.length}</span> / {resData?.length}개 )
+								조회 목록 (선택 <span>{selectedCount}</span> / {resData?.length}개 )
 								<TableV2HiddenSection />
 							</div>
 							<div style={{ display: 'flex', gap: '10px' }}>
