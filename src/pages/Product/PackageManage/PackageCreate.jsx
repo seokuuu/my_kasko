@@ -368,7 +368,7 @@ const PackageCreate = () => {
 						</FilterTCTop>
 					)}
 					<FilterTCBottom>
-						<FilterTCBSub>
+						<FilterTCBSub style={{ gap: '100px' }}>
 							<div>
 								<h6>판매 유형</h6>
 								<div style={{ marginTop: '2px' }}>
@@ -402,6 +402,17 @@ const PackageCreate = () => {
 									<Input name={'price'} value={price?.toLocaleString()} onChange={handleChangePackName} />
 								</div>
 							</div>
+							<div>
+								<h6>총 중량</h6>
+								<div>
+									<Input
+										name={'price'}
+										value={calculateTotal(select, '제품 중량')}
+										onChange={handleChangePackName}
+										readOnly
+									/>
+								</div>
+							</div>
 						</FilterTCBSub>
 					</FilterTCBottom>
 				</FilterTopContainer>
@@ -420,7 +431,7 @@ const PackageCreate = () => {
 				</TCSubContainer>
 				<TCSubContainer bor>
 					<div>
-						선택 중량<span> {checkWeightSum} </span>kg / 총 중량 {calculateTotal(select, '제품 중량')} kg
+						선택 중량<span> {checkWeightSum ?? 0} </span>kg / 총 중량 {calculateTotal(select, '제품 중량')} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
 						<WhiteRedBtn onClick={handleRemoveItem}>목록 제거</WhiteRedBtn>
