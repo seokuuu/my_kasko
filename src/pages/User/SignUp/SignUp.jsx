@@ -838,13 +838,23 @@ const SignUp = () => {
 								</a>
 							</div>
 						</BottomItem>
-						{isNext ? (
-							<SignUpBtn isNext={true}>가입하기</SignUpBtn>
-						) : (
-							<SignUpBtn type="button" isNext={false}>
-								가입하기
+						<div>
+							<SignUpBtn
+								isNext={true}
+								onClick={() => {
+									navigate('/')
+								}}
+							>
+								돌아가기
 							</SignUpBtn>
-						)}
+							{isNext ? (
+								<SignUpBtn isNext={true}>가입하기</SignUpBtn>
+							) : (
+								<SignUpBtn type="button" isNext={false}>
+									가입하기
+								</SignUpBtn>
+							)}
+						</div>
 					</Bottom>
 				</form>
 			</SignupContainer>
