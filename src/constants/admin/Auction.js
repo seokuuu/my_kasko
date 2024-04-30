@@ -345,7 +345,6 @@ export const AuctionRoundExtraProductFieldsCols = [
 	{ ...commonStyles, field: '매입처' },
 	{ ...commonStyles, field: '제조사' },
 	{ ...commonStyles, field: '경매 등록 상태' },
-	// { ...commonStyles, field: '경매 번호' }, // 누락 추가 ??? 이게 왜 필요함
 	{ ...commonStyles, field: '판매 구분' },
 	{ ...commonStyles, field: '판매 제외 사유' },
 	{ ...commonStyles, field: '판매 유형' },
@@ -407,7 +406,7 @@ export const AuctionRoundExtraProductPackageFieldsCols = [
 	{ ...commonStyles, field: '판매 제외 사유' },
 	{ ...commonStyles, field: '판매 유형' },
 	{ ...commonStyles, field: '판매가 유형' },
-	{ ...commonStyles, field: '등급' },
+	{ ...commonStyles, field: '제품 등급' },
 	{ ...commonStyles, field: '정척 여부' },
 	{ ...commonStyles, field: '유찰 횟수' },
 	{ ...commonStyles, field: '매입가' },
@@ -439,18 +438,12 @@ export const AuctionRoundExtraProductPackageFieldsCols = [
 	{ ...commonStyles, field: '최종수정일시' }, // 누락 추가
 
 	// -----------
-
 	// { ...commonStyles, field: '고유 번호' },
-
 	// 경매 등록 일자
-
 	// 경매 번호
-
 	// 아래는 필드 항목에 없음
-
-	{ ...commonStyles, field: '품명명' },
-
-	{ ...commonStyles, field: '생성일' },
+	// { ...commonStyles, field: '품명명' },
+	// { ...commonStyles, field: '생성일' },
 ].map((col) => ({
 	...col,
 	minWidth: col.minWidth !== undefined ? col.minWidth : commonStyles.getFieldMinWidth(col.field),
@@ -653,7 +646,7 @@ export const AuctionBiddingFields = {
 	'나의 현재 응찰 가격': 'bestBiddingPrice',
 	'나의 최고 응찰 가격': 'memberBestBiddingPrice',
 	응찰가: 'memberBiddingPrice',
-	등급: 'grade',
+	'제품 등급': 'grade',
 	중량: 'weight',
 	두께: 'thickness',
 	폭: 'width',
@@ -811,7 +804,7 @@ export const AuctionBiddingFieldsCols = (selected, checkAvailable) => {
 			lockVisible: true,
 			lockPinned: true,
 		},
-
+		{ ...commonStyles, field: '순번', minWidth: 100 },
 		{ ...commonStyles, field: '경매 상태', minWidth: 100 },
 		// { ...commonStyles, field: '상태', minWidth: 100 },
 		{ ...commonStyles, field: '경매 번호', minWidth: 100 },
@@ -836,7 +829,7 @@ export const AuctionBiddingFieldsCols = (selected, checkAvailable) => {
 		{ ...commonStyles, field: '판매 유형', minWidth: 100 },
 		{ ...commonStyles, field: '판매가 유형', minWidth: 100 },
 		{ ...commonStyles, field: '제품군', minWidth: 100 },
-		{ ...commonStyles, field: '등급', minWidth: 100 },
+		{ ...commonStyles, field: '제품 등급', minWidth: 100 },
 		{ ...commonStyles, field: '시작가', minWidth: 100 },
 		{
 			...commonStyles,
@@ -874,11 +867,12 @@ export const AuctionBiddingFieldsCols = (selected, checkAvailable) => {
 		{ ...commonStyles, field: '나의 현재 응찰 가격', minWidth: 100 },
 		{ ...commonStyles, field: '나의 최고 응찰 가격', minWidth: 150 },
 		{ ...commonStyles, field: '응찰가', minWidth: 150 },
-		{ ...commonStyles, field: '하차지 명', minWidth: 100 },
+		{ ...commonStyles, field: '낙찰 여부', minWidth: 150 }, // 누락 추가
 		{ ...commonStyles, field: '목적지 명', minWidth: 100 },
 		{ ...commonStyles, field: '목적지 코드', minWidth: 100 },
 		{ ...commonStyles, field: '목적지 주소', minWidth: 100 },
 		{ ...commonStyles, field: '목적지 연락처(사무실)', minWidth: 100 },
+		{ ...commonStyles, field: '하차지 명', minWidth: 100 },
 		{ ...commonStyles, field: '두께', minWidth: 100 },
 		{ ...commonStyles, field: '폭', minWidth: 100 },
 		{ ...commonStyles, field: '길이', minWidth: 100 },
@@ -896,8 +890,9 @@ export const AuctionBiddingFieldsCols = (selected, checkAvailable) => {
 		{ ...commonStyles, field: '여재 원인명', minWidth: 100 },
 		{ ...commonStyles, field: '용도 코드', minWidth: 100 },
 		{ ...commonStyles, field: '용도명', minWidth: 100 },
-		{ ...commonStyles, field: '제품 고유 번호', minWidth: 100 },
 		{ ...commonStyles, field: '메모', minWidth: 100 },
+		{ ...commonStyles, field: '비고', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '제품 고유 번호', minWidth: 100 },
 	].map((col) => ({
 		...col,
 		minWidth: col.minWidth !== undefined ? col.minWidth : commonStyles.getFieldMinWidth(col.field),
@@ -956,7 +951,7 @@ export const AuctionPackageBiddingFieldsCols = (selected) => {
 	}
 	return [
 		{ ...commonStyles, field: '', minWidth: 50, checkboxSelection: checkboxSelection2, headerCheckboxSelection },
-
+		{ ...commonStyles, field: '순번' },
 		{ ...commonStyles, field: '경매 상태' },
 		{ ...commonStyles, field: '경매 고유 번호' },
 		{ ...commonStyles, field: '제품 고유 번호' },
