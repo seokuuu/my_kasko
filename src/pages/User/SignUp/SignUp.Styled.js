@@ -1,205 +1,205 @@
 import styled, { css } from 'styled-components'
 
 export const Container = styled.div`
-  width: 100%;
-  height: 30vw;
-  font-size: 14px;
-  text-align: left;
+	width: 100%;
+	height: 30vw;
+	font-size: 14px;
+	text-align: left;
 
-  h4 {
-    font-size: 17px;
-    margin-bottom: 5px;
-  }
+	h4 {
+		font-size: 17px;
+		margin-bottom: 5px;
+	}
 `
 
 export const Title = styled.div`
-  display: flex;
-  p {
-    position: relative;
-    top: 1px;
-    margin-left: 4px;
-  }
+	display: flex;
+	p {
+		position: relative;
+		top: 1px;
+		margin-left: 4px;
+	}
 `
 
 export const SignupContainer = styled.div`
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 55vw;
-  height: 90vw;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 55vw;
+	height: 90vw;
 `
 
 export const PartBlock = styled.div`
-  margin-bottom: 50px;
+	margin-bottom: 50px;
 `
 
 export const Part = styled.div`
-  margin-bottom: 20px;
+	margin-bottom: 20px;
 
-  width: fit-content;
+	width: fit-content;
 `
 
 export const ModalPart = styled.div`
-  margin: 10px 0px 30px 0px;
+	margin: 10px 0px 30px 0px;
 `
 
 export const Top = styled.div`
-  font-size: 40px;
-  font-weight: 500;
-  text-align: left;
-  width: 80%;
-  height: 180px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-top: 50px;
-  border-bottom: 1px solid black;
+	font-size: 40px;
+	font-weight: 500;
+	text-align: left;
+	width: 80%;
+	height: 180px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 50px;
+	border-bottom: 1px solid black;
 `
 
 export const Main = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 75%;
-  position: relative;
-  margin-top: 50px;
-  margin-left: auto;
-  margin-right: auto;
+	display: flex;
+	justify-content: space-between;
+	width: 75%;
+	position: relative;
+	margin-top: 50px;
+	margin-left: auto;
+	margin-right: auto;
 
-  @media (max-width: 1000px) {
-    display: block;
-    margin-left: 100px;
-    margin-right: 0px;
-  }
+	@media (max-width: 1000px) {
+		display: block;
+		margin-left: 100px;
+		margin-right: 0px;
+	}
 `
 
 export const Left = styled.div`
-  .div {
-    display: flex;
-  }
+	.div {
+		display: flex;
+	}
 `
 
 export const Right = styled.div``
 
 export const Bottom = styled.div`
-  width: 80%;
-  height: 200px;
-  margin-left: auto;
-  margin-right: auto;
-  border-top: 2px solid #d7d7d7;
-  padding-top: 30px;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
+	width: 80%;
+	height: 200px;
+	margin-left: auto;
+	margin-right: auto;
+	border-top: 2px solid #d7d7d7;
+	padding-top: 30px;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	padding: 5px;
 `
 
 export const BottomItem = styled.div`
-  flex-grow: 1;
-  width: 200px;
-  height: 150px;
-  padding: 10px;
-  font-size: 16px;
+	flex-grow: 1;
+	width: 200px;
+	height: 150px;
+	padding: 10px;
+	font-size: 16px;
 
-  > div {
-    display: flex;
-    margin-bottom: 10px;
-  }
+	> div {
+		display: flex;
+		margin-bottom: 10px;
+	}
 
-  a {
-    margin-left: 10px;
-    text-decoration: underline;
-    cursor: pointer;
-    color: #6b6b6b;
-  }
+	a {
+		margin-left: 10px;
+		text-decoration: underline;
+		cursor: pointer;
+		color: #6b6b6b;
+	}
 
-  h4,
-  p {
-    margin-left: 5px;
-  }
+	h4,
+	p {
+		margin-left: 5px;
+	}
 
-  span {
-    color: #d92f2f;
-  }
+	span {
+		color: #d92f2f;
+	}
 
-  button {
-    margin-top: 20px;
-    margin-left: 20px;
-    width: 200px;
-    height: 50px;
-    background-color: #6b6b6b;
-    color: white;
-  }
+	button {
+		margin-top: 20px;
+		margin-left: 20px;
+		width: 200px;
+		height: 50px;
+		background-color: #6b6b6b;
+		color: white;
+	}
 `
 export const SignUpBtn = styled.button`
-  margin-top: 20px;
-  margin-left: 20px;
-  width: 200px;
-  height: 50px;
-  background-color: ${(props) => (props.isNext ? '#061737' : '#D7D7D7')};
-  color: white;
+	margin-top: 20px;
+	margin-left: 20px;
+	width: 200px;
+	height: 50px;
+	background-color: ${(props) => (props.isNext ? '#061737' : '#D7D7D7')};
+	color: white;
 `
 
 export const TxtDiv = styled.div`
-  .btnStart {
-    display: flex;
-    width: 320px;
-    height: 40px;
-    border: 1px solid #c1c1c1c5;
+	.btnStart {
+		display: flex;
+		width: 320px;
+		height: 40px;
+		border: 1px solid #c1c1c1c5;
 
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-  p {
-    margin-left: 10px;
-  }
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+	}
+	p {
+		margin-left: 10px;
+	}
 `
 
 export const TxtDivNoborder = styled.div`
-  .btnStart {
-    display: flex;
-    width: 320px;
-    height: 40px;
-    border: none;
+	.btnStart {
+		display: flex;
+		width: 320px;
+		height: 40px;
+		border: none;
 
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-  p {
-    margin-left: 10px;
-  }
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+	}
+	p {
+		margin-left: 10px;
+	}
 `
 
 export const SDropDown = styled.div`
-  width: 100px;
-  height: 40px;
+	width: 100px;
+	height: 40px;
 `
 
 export const BottomP = styled.div`
-  margin-top: 5px;
-  display: flex;
-  justify-content: flex-end;
-  width: 320px;
+	margin-top: 5px;
+	display: flex;
+	justify-content: flex-end;
+	width: 320px;
 `
 
 export const CheckBtn = styled.button`
-  width: 95px;
-  height: 40px;
-  background-color: ${(props) => (props.disabled ? 'grey' : 'white')};
-  border: 1px solid ${(props) => (props.disabled ? 'grey' : '#6b6b6b')};
-  margin-left: 5px;
+	width: 95px;
+	height: 40px;
+	background-color: ${(props) => (props.disabled ? 'grey' : 'white')};
+	border: 1px solid ${(props) => (props.disabled ? 'grey' : '#6b6b6b')};
+	margin-left: 5px;
 `
 
 export const SubmitBtn = styled.button`
-  width: 320px;
-  height: 40px;
-  background-color: ${(props) => (props.disabled ? 'grey' : 'white')};
-  border: 1px solid ${(props) => (props.disabled ? 'grey' : '#6b6b6b')};
+	width: 320px;
+	height: 40px;
+	background-color: ${(props) => (props.disabled ? 'grey' : 'white')};
+	border: 1px solid ${(props) => (props.disabled ? 'grey' : '#6b6b6b')};
 `
 
 export const DropWrap = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 320px;
+	display: flex;
+	justify-content: space-between;
+	width: 320px;
 `
