@@ -141,6 +141,10 @@ const PackageDetailsModal = ({ packageNumber, action, onClose }) => {
 									))}
 								</ClaimRow>
 							))}
+							<ClaimRow>
+								<ClaimTitle>총 중량</ClaimTitle>
+								<ClaimContent>{totalWeightStr}</ClaimContent>
+							</ClaimRow>
 						</ClaimTable>
 						<TableContianer>
 							{/* 선택항목 정보 | 조회갯수 | 엑셀다운로드 */}
