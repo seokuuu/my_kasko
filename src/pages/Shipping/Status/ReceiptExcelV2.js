@@ -5,12 +5,7 @@ import { useReactToPrint } from 'react-to-print'
 import styled from 'styled-components'
 import { shipmentInvoiceAllListQuery } from '../../../api/shipment'
 import { WhiteSkyBtn } from '../../../common/Button/Button'
-import {
-	BlueBarHeader,
-	FadeOverlay,
-	ModalContainer,
-	WhiteCloseBtn
-} from '../../../modal/Common/Common.Styled'
+import { BlueBarHeader, FadeOverlay, ModalContainer, WhiteCloseBtn } from '../../../modal/Common/Common.Styled'
 import { FilterContianer } from '../../../modal/External/ExternalFilter'
 import useAlert from '../../../store/Alert/useAlert'
 import { selectedRowsAtom } from '../../../store/Layout/Layout'
@@ -163,39 +158,41 @@ function ReceiptForm({ data, closeModal }) {
 									<td colSpan={2}>{data[0].customerDestinationName || ''}</td>
 								</tr>
 							</MyTable>
-							<MyTable style={{ marginTop: '14px' }}>
-								<tr>
-									<th>NO.</th>
-									<th>주문번호</th>
-									<th>품명</th>
-									<th>제품번호</th>
-									<th>규격약호</th>
-									<th>등급</th>
-									<th>두께</th>
-									<th>폭</th>
-									<th>길이</th>
-									<th>중량</th>
-								</tr>
-								{data?.map((item, idx) => (
-									<tr key={idx}>
-										<td>{idx + 1}</td>
-										<td>{item.orderNumber}</td>
-										<td>{item.spart}</td>
-										<td>{item.productNumber}</td>
-										<td>{item.spec}</td>
-										<td>{item.grade}</td>
-										<td>{item.width}</td>
-										<td>{item.thickness}</td>
-										<td>{item.length}</td>
-										<td>{item.weight}</td>
+							<div style={{ height: '750px' }}>
+								<MyTable style={{ marginTop: '14px' }}>
+									<tr>
+										<th>NO.</th>
+										<th>주문번호</th>
+										<th>품명</th>
+										<th>제품번호</th>
+										<th>규격약호</th>
+										<th>등급</th>
+										<th>두께</th>
+										<th>폭</th>
+										<th>길이</th>
+										<th>중량</th>
 									</tr>
-								))}
-								<tr>
-									<th colSpan={2}>합계</th>
-									<td colSpan={7}></td>
-									<td>{totalWeight}</td>
-								</tr>
-							</MyTable>
+									{data?.map((item, idx) => (
+										<tr key={idx}>
+											<td>{idx + 1}</td>
+											<td>{item.orderNumber}</td>
+											<td>{item.spart}</td>
+											<td>{item.productNumber}</td>
+											<td>{item.spec}</td>
+											<td>{item.grade}</td>
+											<td>{item.width}</td>
+											<td>{item.thickness}</td>
+											<td>{item.length}</td>
+											<td>{item.weight}</td>
+										</tr>
+									))}
+									<tr>
+										<th colSpan={2}>합계</th>
+										<td colSpan={7}></td>
+										<td>{totalWeight}</td>
+									</tr>
+								</MyTable>
+							</div>
 
 							<DepositRequestBottom>
 								<div style={{ width: '33%' }}>
@@ -227,7 +224,7 @@ function ReceiptForm({ data, closeModal }) {
 
 const Container = styled.div`
 	width: 100%;
-	//height: 1000px;
+	/* height: 100%; */
 	//overflow: hidden;
 	//overflow-y: scroll;
 	display: flex;
@@ -276,7 +273,6 @@ const DepositRequestBottom = styled.div`
 	align-items: end;
 	z-index: 9999;
 	width: 100%;
-	margin-top: 300px;
 	height: 70px;
 `
 
@@ -293,5 +289,7 @@ const Bar = styled.div`
 	margin-top: 40px;
 `
 const BlueSubContainer2 = styled.div`
+	display: flex;
+	flex-direction: column;
 	height: 1181px;
 `
