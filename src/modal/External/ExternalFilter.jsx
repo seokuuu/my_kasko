@@ -363,7 +363,8 @@ export const TableContianer = styled.div`
 	@media print {
 		margin-left: auto;
 		margin-right: auto;
-		width: 96%;
+		width: 95%;
+		padding: 10px 10px;
 	}
 `
 
@@ -425,7 +426,8 @@ export const FilterHeaderAlert = styled.div`
 		border-right: 5px solid #c8c8c8; */
 		margin-left: auto;
 		margin-right: auto;
-		width: 96%;
+		padding: 10px 10px;
+		width: 95%;
 	}
 `
 
