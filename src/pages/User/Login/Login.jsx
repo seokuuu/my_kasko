@@ -51,7 +51,7 @@ const Login = () => {
 	const [bottomColor, setBottomColor] = useState('')
 	const [pwBottom, setPwBottom] = useState('')
 
-	const idRegex = /^[a-z0-9]{4,12}$/
+	const idRegex = /^[a-zA-Z0-9]{4,12}$/
 	// const passwordRegex = /^(?=.*[a-z])(?=.*[0-9])[a-z0-9]{4,12}$/;
 	const passwordRegex = /^[a-z0-9]{4,12}$/
 
@@ -227,6 +227,7 @@ const Login = () => {
 								borderColor={idPlaceholderColor}
 								onKeyUp={handleKeyPress}
 								style={{ color: id === '' ? idPlaceholderColor : 'black' }}
+								maxLength={12}
 							/>
 						</InputWrap>
 						{idBottom && <InputBtmWrap bottomColor={bottomColor}>{idBottom}</InputBtmWrap>}
@@ -242,6 +243,7 @@ const Login = () => {
 								borderColor={pwPlaceholderColor}
 								onKeyUp={handleKeyPress}
 								style={{ color: pw === '' ? pwPlaceholderColor : 'black' }}
+								maxLength={12}
 							/>
 						</InputWrap>
 						{pwBottom && <InputBtmWrap bottomColor={bottomColor}>{pwBottom}</InputBtmWrap>}

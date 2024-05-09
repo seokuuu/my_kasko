@@ -166,6 +166,9 @@ const SalesProduct = () => {
 
 	// 판매 유형
 	const handlechangeSaleType = () => {
+		if (parameter2?.saleType === '상시판매 대상재' && (!parameter2?.salePrice || parameter2.salePrice === '0')) {
+			return simpleAlert('상시판매가 입력해주세요.')
+		}
 		changeSaleType(parameter2, {
 			onSuccess: () => {
 				simpleAlert('변경되었습니다.', () => {

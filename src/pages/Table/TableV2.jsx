@@ -294,7 +294,18 @@ const TableV2 = ({
 					if (['순번', '고객 구분', '응찰가'].includes(key) || key.indexOf('번호') > -1) {
 						return (formattedItem[key] = item[key])
 					} else if (
-						['길이', '중량', '제품중량', '제품 중량', '총 중량', '총중량', '상시 판매가', '중량 합계'].includes(key)
+						[
+							'길이',
+							'중량',
+							'제품중량',
+							'제품 중량',
+							'총 중량',
+							'총중량',
+							'상시 판매가',
+							'중량 합계',
+							'패키지 상품 총 개수',
+							'패키지 상품 총 중량',
+						].includes(key)
 					) {
 						return (formattedItem[key] = customNumberFormatter({ value: Number(numberDeleteComma(item[key])) }))
 					} else {

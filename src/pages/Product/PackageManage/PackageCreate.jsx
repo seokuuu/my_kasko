@@ -54,8 +54,8 @@ const PackageCreate = () => {
 
 	const setUpdateObj = useSetAtom(packageUpdateObjAtom)
 
-	const [packageName, setPackageName] = useState(prevData ? prevData['패키지 이름'] : packageObj?.packageName)
-	const [price, setPrice] = useState(prevData ? prevData['시작가/판매가'] : packageObj?.price)
+	const [packageName, setPackageName] = useState(prevData ? prevData['패키지명'] : packageObj?.packageName)
+	const [price, setPrice] = useState(prevData ? prevData['경매시작단가(시작가)'] : packageObj?.price)
 
 	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
 	const [savedRadioValue, setSavedRadioValue] = useState('')
@@ -252,7 +252,7 @@ const PackageCreate = () => {
 					: savedRadioValue === '경매 대상재'
 					? '경매'
 					: '상시',
-			packageName: packageName ? packageName : prevData ? prevData['패키지 이름'] : '',
+			packageName: packageName ? packageName : prevData ? prevData['패키지명'] : '',
 		}))
 
 		setPackageObj(() => ({
@@ -368,7 +368,7 @@ const PackageCreate = () => {
 						</FilterTCTop>
 					)}
 					<FilterTCBottom>
-						<FilterTCBSub>
+						<FilterTCBSub style={{ gap: '100px' }}>
 							<div>
 								<h6>판매 유형</h6>
 								<div style={{ marginTop: '2px' }}>
@@ -391,7 +391,7 @@ const PackageCreate = () => {
 								</div>
 							</div>
 							<div>
-								<h6>패키지 명 지정</h6>
+								<h6>패키지 명</h6>
 								<div>
 									<Input name={'packageName'} value={packageName} onChange={handleChangePackName} />
 								</div>
@@ -400,6 +400,17 @@ const PackageCreate = () => {
 								<h6>시작가/판매가</h6>
 								<div>
 									<Input name={'price'} value={price?.toLocaleString()} onChange={handleChangePackName} />
+								</div>
+							</div>
+							<div>
+								<h6>총 중량</h6>
+								<div>
+									<Input
+										name={'price'}
+										value={calculateTotal(select, '제품 중량')}
+										onChange={handleChangePackName}
+										readOnly
+									/>
 								</div>
 							</div>
 						</FilterTCBSub>
@@ -420,7 +431,7 @@ const PackageCreate = () => {
 				</TCSubContainer>
 				<TCSubContainer bor>
 					<div>
-						선택 중량<span> {checkWeightSum} </span>kg / 총 중량 {calculateTotal(select, '제품 중량')} kg
+						선택 중량<span> {checkWeightSum ?? 0} </span>kg / 총 중량 {calculateTotal(select, '제품 중량')} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
 						<WhiteRedBtn onClick={handleRemoveItem}>목록 제거</WhiteRedBtn>
