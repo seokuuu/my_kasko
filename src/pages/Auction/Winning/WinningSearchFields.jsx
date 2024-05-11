@@ -1,11 +1,8 @@
 import { MainSelect } from '../../../common/Option/Main'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
-import { FilterLeft, FilterRight, PWRight, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
-
-import { useState } from 'react'
+import { FilterLeft, FilterRight, PartWrap, PWRight, RowWrap } from '../../../modal/External/ExternalFilter'
 import { CustomerSearch, DateSearchSelect, RadioSearchButton } from '../../../components/Search'
-import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
 
 const WinningSearchFields = ({
 	// prettier-ignore
@@ -15,29 +12,11 @@ const WinningSearchFields = ({
 	commonNumInputHandler,
 	onSpecHandler,
 }) => {
-	const {
-		// prettier-ignore
-		storageList,
-		supplierList,
-		spartList,
-		makerList,
-		stockStatusList,
-		gradeList,
-		preferThicknessList,
-	} = useGlobalProductSearchFieldData()
-
-	const init = {
-		customerCode: '',
-		customerName: '',
-		destinationCode: '',
-		destinationName: '',
-	}
+	const { storageList, spartList } = useGlobalProductSearchFieldData()
 
 	const onChange = (key, value) => {
 		setSearch((p) => ({ ...p, [key]: value }))
 	}
-
-	const [param, setParam] = useState(init)
 
 	return (
 		<>

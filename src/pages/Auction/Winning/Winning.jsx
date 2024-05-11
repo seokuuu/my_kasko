@@ -129,15 +129,16 @@ const Winning = ({}) => {
 	 * - 페이지 첫 렌더시
 	 * - 현재 시간 (00:00:00 ~ 23:59:59) 이 default.
 	 */
-
-	const currentTime = moment() // 현재 시간 가져오기
-	const startOfDay = currentTime.startOf('day')
-	const endOfDay = currentTime.endOf('day')
+	const currentTime = moment(new Date()) // 현재 시간 가져오기
+	const startOfDay = currentTime.startOf('day').format('YYYY-MM-DD HH:mm:ss')
+	const endOfDay = currentTime.endOf('day').format('YYYY-MM-DD HH:mm:ss')
 
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
 		orderType: '경매',
+		auctionStartDate: startOfDay,
+		auctionEndDate: endOfDay,
 	}
 
 	const [param, setParam] = useState(paramData)

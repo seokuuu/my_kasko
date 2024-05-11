@@ -17,6 +17,7 @@ import { filterisReset } from '../../store/Layout/Layout'
 
 const GlobalProductSearch = ({
 	// prettier-ignore
+	param,
 	setParam,
 	globalProductResetOnClick,
 	globalProductSearchOnClick,
@@ -105,10 +106,12 @@ const GlobalProductSearch = ({
 			packageStatus: false, // 패키지 상태여부 (Package status)
 			shipmentStatus: '', // 출하 상태 (Shipment status)
 			shipmentStatusList: [], // 출하 상태 목록 (Shipment status list)
-			auctionStartDate: '', // 경매 시작 일자 (Auction start date)
-			auctionEndDate: '', // 경매 종료 일자 (Auction end date)
-			orderStartDate: '', // 주문 시작 일자 (Order start date)
-			orderEndDate: '', // 주문 종료 일자 (Order end date)
+			auctionStartDate: param?.auctionStartDate || '', // 경매 시작 일자 (Auction start date)
+			auctionEndDate: param?.auctionEndDate || '', // 경매 종료 일자 (Auction end date)
+			orderStartDate: param?.orderStartDate || '', // 주문 시작 일자 (Order start date)
+			orderEndDate: param?.orderEndDate || '', // 주문 종료 일자 (Order end date)
+			depositStartDate: '', // 입금확인 일자
+			depositEndDate: '', // 입금확인 일자
 			shippingStartDate: '', // 출하 시작 일자 (Shipping start date)
 			shippingEndDate: '', // 출하 종료 일자 (Shipping end date)
 			shipmentRequestStartDate: '', // 출고 요청 시작 일자 (Shipment request start date)
