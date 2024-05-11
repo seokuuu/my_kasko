@@ -73,18 +73,18 @@ const WinningSearchFields = ({
 				</RowWrap>
 				<RowWrap style={{ borderBottom: '0px' }}>
 					<DateSearchSelect
+						title={'경매 일자'}
+						startInitDate={search.auctionStartDate}
+						endInitDate={search.auctionEndDate}
+						startDateChange={(value) => commonDropdownButtonHandler(value, 'auctionStartDate')}
+						endDateChange={(value) => commonDropdownButtonHandler(value, 'auctionEndDate')}
+					/>
+					<DateSearchSelect
 						title={'확정 전송 일자'}
 						startInitDate={search.startSendDate}
 						endInitDate={search.endSendDate}
 						startDateChange={(value) => commonDropdownButtonHandler(value, 'startSendDate')}
 						endDateChange={(value) => commonDropdownButtonHandler(value, 'endSendDate')}
-					/>
-					<DateSearchSelect
-						title={'경매일시'}
-						startInitDate={search.auctionStartDate}
-						endInitDate={search.auctionEndDate}
-						startDateChange={(value) => commonDropdownButtonHandler(value, 'auctionStartDate')}
-						endDateChange={(value) => commonDropdownButtonHandler(value, 'auctionEndDate')}
 					/>
 				</RowWrap>
 			</FilterLeft>
