@@ -1,47 +1,16 @@
-import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import { FilterLeft, FilterRight, PartWrap, RowWrap } from '../../../modal/External/ExternalFilter'
-
-import { useSetAtom } from 'jotai'
-import { useState } from 'react'
 import { DateSearchSelect, RadioSearchButton } from '../../../components/Search'
-import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
-import CustomCheckBox from '../../Operate/UI/CustomCheckBox/CustomCheckBox'
+import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
 
 const WinningDetailFields = ({
 	// prettier-ignore
 	search,
 	setSearch,
 	commonDropdownButtonHandler,
-	commonNumInputHandler,
-	onSpecHandler,
 }) => {
-	const {
-		// prettier-ignore
-		storageList,
-		supplierList,
-		spartList,
-		makerList,
-		stockStatusList,
-		gradeList,
-		preferThicknessList,
-	} = useGlobalProductSearchFieldData()
-
-	const init = {
-		customerCode: '',
-		customerName: '',
-		destinationCode: '',
-		destinationName: '',
-	}
-	const [param, setParam] = useState(init)
-	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value, pageNum: 1 }))
-
 	const onChangeRadio = (key, value) => {
 		setSearch((p) => ({ ...p, [key]: value }))
 	}
-
-
-
-	const setIsKyuModal = useSetAtom(kyuModalAtom)
 
 	return (
 		<>
@@ -77,7 +46,14 @@ const WinningDetailFields = ({
 				</RowWrap>
 			</FilterLeft>
 
-			<FilterRight></FilterRight>
+			<FilterRight>
+				<ProductNumber
+					initialValue={search.productNumberList}
+					setState={setSearch}
+					valueName={'productNumberList'}
+					height="100%"
+				/>
+			</FilterRight>
 		</>
 	)
 }

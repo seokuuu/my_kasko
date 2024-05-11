@@ -12,6 +12,7 @@ import {
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import {
+	aucProAddModalAtom,
 	invenDestination,
 	invenDestinationData,
 	selectedRowsAtom,
@@ -25,14 +26,13 @@ import {
 	FilterHeader,
 	FilterTCTop,
 	FilterTopContainer,
-	TCSubContainer,
 	TableContianer,
+	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 
 import { useAtom } from 'jotai'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import DefaultBlueBar from '../../../modal/Multi/DefaultBlueBar'
-import { aucProAddModalAtom } from '../../../store/Layout/Layout'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isEqual } from 'lodash'
@@ -47,7 +47,6 @@ import {
 	partDepositConfirm,
 	publishDepositForm,
 } from '../../../api/auction/winning'
-import { getCustomerDestinationByCustomerCode } from '../../../api/search'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle } from '../../../components/MapTable/MapTable'
 import { AuctionWinningDetailFields, AuctionWinningDetailFieldsCols } from '../../../constants/admin/Auction'
@@ -55,7 +54,6 @@ import useMutationQuery from '../../../hooks/useMutationQuery'
 import useReactQuery from '../../../hooks/useReactQuery'
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
-import { add_element_field } from '../../../lib/tableHelpers'
 import InventoryFind from '../../../modal/Multi/InventoryFind'
 import useAlert from '../../../store/Alert/useAlert'
 import PrintDepositRequestButton from '../../../userpages/UserSales/_components/PrintDepositRequestButton'
@@ -68,7 +66,7 @@ import WinningDetailFields from './WinningDetailFields'
 const WinningDetail = ({ setAucDetail }) => {
 	const navigate = useNavigate()
 	const [detailRow, setDetailRow] = useAtom(winningDetailAucNumAtom)
-	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
+	const { simpleAlert, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
 	const [tablePagination, setTablePagination] = useState([])
 	const [destinationData, setDestinationData] = useAtom(invenDestinationData)
@@ -103,18 +101,6 @@ const WinningDetail = ({ setAucDetail }) => {
 			setContentData(newContentData)
 		}
 	}, [detailRow])
-
-	// const contentData = [
-	// 	detailRow?.['경매 번호'],
-	// 	detailRow?.['고객사명'],
-	// 	detailRow?.['고객 코드'],
-	// 	detailRow?.['창고'],
-	// 	detailRow?.['수량'],
-	// 	detailRow?.['중량'],
-	// 	detailRow?.['제품 금액 (VAT 포함)'] + '원',
-	// 	detailRow?.['운반비 (VAT 포함)'] + '원',
-	// 	detailRow?.['입금 요청액'] + '원',
-	// ]
 
 	const matchingData = {
 		'경매 번호': 'auctionNumber',
@@ -223,9 +209,7 @@ const WinningDetail = ({ setAucDetail }) => {
 	const resDestiData = inventoryDestination?.data?.data
 	const matchedDestination = resDestiData?.find((item) => item.uid === destinationData?.uid)
 
-
 	const uids = checkedArray?.map((item) => item && item['주문 고유 번호'])
-
 
 	// 목적지 적용 버튼 onClick Handler
 	const destiOnClickHandler = () => {
@@ -251,13 +235,11 @@ const WinningDetail = ({ setAucDetail }) => {
 			return item
 		})
 
-
 		setOridata((prevData) => ({
 			...prevData,
 			list: updatedResData,
 		}))
 	}
-
 
 	useEffect(() => {
 		queryClient.invalidateQueries('getWinningDetail')
@@ -271,12 +253,11 @@ const WinningDetail = ({ setAucDetail }) => {
 	const resPagination = data?.data?.data?.pagination
 
 	useEffect(() => {
-		let getData = resData
+		let getData = originData || []
 		//타입, 리액트쿼리, 데이터 확인 후 실행
-		if (!isSuccess && !resData) return
-		if (Array.isArray(originData?.list)) {
-			setOridata(originData)
-			// setGetRow(add_element_field(getData, AuctionWinningDetailFields))
+		if (!isSuccess && !getData) return
+		if (Array.isArray(getData?.list)) {
+			setOridata(getData)
 			setTablePagination(resPagination)
 		}
 	}, [isSuccess, originData])
@@ -476,8 +457,6 @@ const WinningDetail = ({ setAucDetail }) => {
 	}
 
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
 		setParam(paramData)
 	}
 	// import
@@ -494,12 +473,11 @@ const WinningDetail = ({ setAucDetail }) => {
 		})
 	}
 
-	// getRow 이걸로 전부 바꾸기 TODO
-	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({
 		weightKey: '중량',
 	})
 
-	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
+	const { tableRowData, totalWeightStr, totalCountStr } = useTableData({
 		tableField: AuctionWinningDetailFields,
 		serverData: oriData,
 		wish: { display: true, key: ['productNumber', 'packageNumber'] },
@@ -525,7 +503,7 @@ const WinningDetail = ({ setAucDetail }) => {
 				{[0, 1, 2].map((index) => (
 					<ClaimRow key={index}>
 						{titleData.slice(index * 3, index * 3 + 3).map((title, idx) => (
-							<Fragment agmentkey={title}>
+							<Fragment key={title}>
 								<ClaimTitle>{title}</ClaimTitle>
 								<ClaimContent>{contentData[index * 3 + idx]}</ClaimContent>
 							</Fragment>
