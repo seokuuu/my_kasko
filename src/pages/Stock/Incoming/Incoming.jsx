@@ -8,7 +8,7 @@ import { selectedRowsAtom, singleProductModify, toggleAtom } from '../../../stor
 import { isEqual } from 'lodash'
 import { client } from '../../../api'
 import { deleteIncomeProduct, getInComingList, incomingConfirm, postExcelSubmitProduct } from '../../../api/stock'
-import { SwitchBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { BlueBtn, SkyBtn, SwitchBtn, WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { stockFields, StockIncomingFields } from '../../../constants/admin/StockIncoming'
@@ -212,7 +212,7 @@ const Incoming = ({}) => {
 							선택 중량<span>{KilogramSum(checkBoxSelect)}</span>kg / 총 {formattedTotalWeight}kg
 						</div>
 						<div style={{ display: 'flex', gap: '10px' }}>
-							<SwitchBtn onClick={handleConfirm}>입고 확정</SwitchBtn>
+							<SkyBtn onClick={handleConfirm}>입고 확정</SkyBtn>
 						</div>
 					</TCSubContainer>
 
