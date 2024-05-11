@@ -1,18 +1,7 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-import { GreyBtn } from '../../common/Button/Button'
+import { useAtomValue } from 'jotai'
 import { MainSelect } from '../../common/Option/Main'
 import useGlobalProductSearchFieldData from '../../hooks/useGlobalProductSearchFieldData'
-import {
-	ExInputsWrap,
-	FilterRight,
-	FilterLeft,
-	Input,
-	MiniInput,
-	PWRight,
-	PartWrap,
-	RowWrap,
-	Tilde,
-} from '../../modal/External/ExternalFilter'
+import { FilterLeft, FilterRight, PartWrap, PWRight, RowWrap } from '../../modal/External/ExternalFilter'
 import StandardFind from '../../modal/Multi/StandardFind'
 import ProductNumber from '../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import { kyuModalAtom } from '../../store/Layout/GlobalProductSearch'
@@ -36,8 +25,6 @@ const OrderSearchFields = ({
 		spartList,
 	} = useGlobalProductSearchFieldData()
 
-
-	const setIsKyuModal = useSetAtom(kyuModalAtom)
 	const onChange = (key, value) => {
 		setSearch((p) => ({ ...p, [key]: value }))
 	}
@@ -81,20 +68,40 @@ const OrderSearchFields = ({
 					</PartWrap>
 				</RowWrap>
 				<RowWrap>
-					<DateSearchSelect
-						title={'경매 일자'}
-						startInitDate={search.auctionStartDate}
-						endInitDate={search.auctionEndDate}
-						startDateChange={(value) => onChange('auctionStartDate', value)}
-						endDateChange={(value) => onChange('auctionEndDate', value)}
-					/>
-					<DateSearchSelect
-						title={'확정 전송 일자'}
-						startInitDate={search.startSendDate}
-						endInitDate={search.endSendDate}
-						startDateChange={(value) => onChange('startSendDate', value)}
-						endDateChange={(value) => onChange('endSendDate', value)}
-					/>
+					<PartWrap first>
+						<DateSearchSelect
+							title={'주문 일자'}
+							startInitDate={search.orderStartDate}
+							endInitDate={search.orderEndDate}
+							startDateChange={(value) => onChange('orderStartDate', value)}
+							endDateChange={(value) => onChange('orderEndDate', value)}
+						/>
+						<DateSearchSelect
+							title={'입금확인 일자'}
+							startInitDate={search.depositStartDate}
+							endInitDate={search.depositEndDate}
+							startDateChange={(value) => onChange('depositStartDate', value)}
+							endDateChange={(value) => onChange('depositEndDate', value)}
+						/>
+					</PartWrap>
+				</RowWrap>
+				<RowWrap>
+					<PartWrap first>
+						<DateSearchSelect
+							title={'경매 일자'}
+							startInitDate={search.auctionStartDate}
+							endInitDate={search.auctionEndDate}
+							startDateChange={(value) => onChange('auctionStartDate', value)}
+							endDateChange={(value) => onChange('auctionEndDate', value)}
+						/>
+						<DateSearchSelect
+							title={'확정전송 일자'}
+							startInitDate={search.startSendDate}
+							endInitDate={search.endSendDate}
+							startDateChange={(value) => onChange('startSendDate', value)}
+							endDateChange={(value) => onChange('endSendDate', value)}
+						/>
+					</PartWrap>
 				</RowWrap>
 				{/* 6 행 */}
 				<RowWrap none>

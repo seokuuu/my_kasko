@@ -3,14 +3,10 @@ import { SkyBtn, WhiteBlackBtn, WhiteRedBtn } from '../../../common/Button/Butto
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
 import { selectedRowsAtom, toggleAtom, winningDetailAucNumAtom, winningDetailModal } from '../../../store/Layout/Layout'
-
 import Table from '../../Table/Table'
-
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
-
 import { useAtom } from 'jotai'
 import { Link } from 'react-router-dom'
-
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isEqual } from 'lodash'
 import moment from 'moment'
@@ -30,11 +26,8 @@ import WinningSearchFields from './WinningSearchFields'
 
 // src\pages\Sales\Single\Single.jsx 참고해서 작업 !!!
 const Winning = ({}) => {
-	const [aucDetail, setAucDetail] = useAtom(winningDetailAucNumAtom) // 패키지 해당 row 값 저장
-	const [aucDetailModal, setAucDetailModal] = useAtom(winningDetailModal) // 패키지 모달
+	const { simpleAlert, showAlert } = useAlert()
 
-	const { simpleAlert, simpleConfirm, showAlert } = useAlert()
-	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const [tablePagination, setTablePagination] = useState([])
 
 	// 토글 쓰기
@@ -129,15 +122,16 @@ const Winning = ({}) => {
 	 * - 페이지 첫 렌더시
 	 * - 현재 시간 (00:00:00 ~ 23:59:59) 이 default.
 	 */
-
-	const currentTime = moment() // 현재 시간 가져오기
-	const startOfDay = currentTime.startOf('day')
-	const endOfDay = currentTime.endOf('day')
+	const currentTime = moment(new Date()) // 현재 시간 가져오기
+	const startOfDay = currentTime.startOf('day').format('YYYY-MM-DD HH:mm:ss')
+	const endOfDay = currentTime.endOf('day').format('YYYY-MM-DD HH:mm:ss')
 
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
 		orderType: '경매',
+		auctionStartDate: startOfDay,
+		auctionEndDate: endOfDay,
 	}
 
 	const [param, setParam] = useState(paramData)
@@ -149,15 +143,15 @@ const Winning = ({}) => {
 	}, [])
 
 	// GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getDetailProgress', getWinning)
+	const { isLoading, data, isSuccess, refetch } = useReactQuery(param, 'getDetailProgress', getWinning)
 
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
 	useEffect(() => {
-		let getData = resData
+		let getData = resData || []
 		//타입, 리액트쿼리, 데이터 확인 후 실행
-		if (!isSuccess && !resData) return
+		if (!isSuccess && !getData) return
 		if (Array.isArray(getData)) {
 			setGetRow(add_element_field(getData, AuctionWinningFields))
 			setTablePagination(resPagination)
@@ -172,8 +166,6 @@ const Winning = ({}) => {
 	}
 	// import
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
 		setParam(paramData)
 	}
 	// import
@@ -248,6 +240,7 @@ const Winning = ({}) => {
 				</TCSubContainer>
 
 				<Table
+					loading={isLoading}
 					getCol={getCol}
 					getRow={getRow}
 					tablePagination={tablePagination}

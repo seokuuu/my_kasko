@@ -53,11 +53,12 @@ const InventoryFind = ({
 	const handleSearch = () => {
 		const filteredResult = customerGetData?.filter((item) => {
 			const searchTermsLowerCase = searchTerm.toLowerCase()
-			return item.code.toLowerCase().includes(searchTermsLowerCase) ||
+
+			return (
+				item.code.toLowerCase().includes(searchTermsLowerCase) ||
 				item.name.toLowerCase().includes(searchTermsLowerCase) ||
-				getRole() === '카스코철강'
-				? item.businessNumber.toLowerCase().includes(searchTermsLowerCase)
-				: ''
+				(getRole() === '카스코철강' ? item.businessNumber.toLowerCase().includes(searchTermsLowerCase) : '')
+			)
 		})
 
 		// 검색어가 없을 때는 모든 데이터를 보여줌

@@ -72,10 +72,33 @@ export default function useWishList() {
 
 		saveWishList(mergedProdNums, userId)
 		setWishProdNums(mergedProdNums)
+
 		simpleAlert('관심상품으로 등록하였습니다.', () => {
+			resetSelect()
 			window.location.reload()
 		})
-		resetSelect()
+	}
+
+	/**
+	 * 위시리스트에 상품 해제 함수
+	 * @param {object[]} products 상품 목록
+	 * @param {string} prodNumKey 상품 object에서 productNumber를 가져올 수 있는 key
+	 */
+	function removeWishList(products = [], prodNumKey = 'number') {
+		if (!userId) {
+			thorwGuest()
+		}
+
+		const removeProdNums = products.map((v) => getProductNumber(v[prodNumKey])).filter((v) => v.length > 0)
+		const newWishProdNums = wishProdNums.filter((prodNum) => !removeProdNums.includes(prodNum))
+
+		saveWishList(newWishProdNums, userId)
+		setWishProdNums(newWishProdNums)
+
+		simpleAlert('해제하였습니다.', () => {
+			resetSelect()
+			window.location.reload()
+		})
 	}
 
 	// 로그인유저 관심상품목록 설정
@@ -93,6 +116,7 @@ export default function useWishList() {
 	return {
 		wishProdNums,
 		addWishList,
+		removeWishList,
 	}
 }
 
