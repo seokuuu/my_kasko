@@ -136,15 +136,15 @@ const InventorySearchFields = ({ search, setSearch, commonDropdownButtonHandler 
 						title={'주문 일자'}
 						startInitDate={search.orderStartDate}
 						endInitDate={search.orderEndDate}
-						startDateChange={(value) => commonDropdownButtonHandler(value, 'auctionStartDate')}
-						endDateChange={(value) => commonDropdownButtonHandler(value, 'auctionEndDate')}
+						startDateChange={(value) => commonDropdownButtonHandler(value, 'orderStartDate')}
+						endDateChange={(value) => commonDropdownButtonHandler(value, 'orderEndDate')}
 					/>
 					<DateSearchSelect
 						title={'출고 요청 일자'}
 						startInitDate={search.shipmentRequestStartDate}
 						endInitDate={search.shipmentRequestEndDate}
-						startDateChange={(value) => commonDropdownButtonHandler(value, 'auctionStartDate')}
-						endDateChange={(value) => commonDropdownButtonHandler(value, 'auctionEndDate')}
+						startDateChange={(value) => commonDropdownButtonHandler(value, 'shipmentRequestStartDate')}
+						endDateChange={(value) => commonDropdownButtonHandler(value, 'shipmentRequestEndDate')}
 					/>
 				</RowWrap>
 				<RowWrap>
@@ -152,15 +152,15 @@ const InventorySearchFields = ({ search, setSearch, commonDropdownButtonHandler 
 						title={'출고 지시 일자'}
 						startInitDate={search.shippingStartDate}
 						endInitDate={search.shippingEndDate}
-						startDateChange={(value) => commonDropdownButtonHandler(value, 'auctionStartDate')}
-						endDateChange={(value) => commonDropdownButtonHandler(value, 'auctionEndDate')}
+						startDateChange={(value) => commonDropdownButtonHandler(value, 'shippingStartDate')}
+						endDateChange={(value) => commonDropdownButtonHandler(value, 'shippingEndDate')}
 					/>
 					<DateSearchSelect
 						title={'출고 일자'}
 						startInitDate={search.shipmentStartDate}
 						endInitDate={search.shipmentEndDate}
-						startDateChange={(value) => commonDropdownButtonHandler(value, 'auctionStartDate')}
-						endDateChange={(value) => commonDropdownButtonHandler(value, 'auctionEndDate')}
+						startDateChange={(value) => commonDropdownButtonHandler(value, 'shipmentStartDate')}
+						endDateChange={(value) => commonDropdownButtonHandler(value, 'shipmentEndDate')}
 					/>
 				</RowWrap>
 			</FilterLeft>
