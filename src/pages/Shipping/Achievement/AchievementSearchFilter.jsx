@@ -88,6 +88,20 @@ const AchievementSearchFilter = ({ search, setSearch, commonNumInputHandler }) =
 					/>
 				</RowWrap>
 				<RowWrap>
+					<DestinationSearch
+						name={search.destinationName2}
+						code={search.destinationCode2}
+						setName={(value) => onChange('destinationName2', value)}
+						setCode={(value) => onChange('destinationCode2', value)}
+					/>
+					<DestinationSearch
+						name={search.destinationName3}
+						code={search.destinationCode3}
+						setName={(value) => onChange('destinationName3', value)}
+						setCode={(value) => onChange('destinationCode3', value)}
+					/>
+				</RowWrap>
+				<RowWrap>
 					<DateSearchSelect
 						title={'주문 일자'}
 						startInitDate={search.orderStartDate}

@@ -91,6 +91,10 @@ const GlobalProductSearch = ({
 			customerCode: '', // 고객 코드 (Customer code)
 			destinationCode: '', // 목적지 코드 (Destination code)
 			destinationName: '', // 목적지명 (Destination name)
+			destinationCode2: '', // 목적지 코드 (Destination code)
+			destinationName2: '', // 목적지명 (Destination name)
+			destinationCode3: '', // 목적지 코드 (Destination code)
+			destinationName3: '', // 목적지명 (Destination name)
 			customerDestinationUid: null, // 고객사 목적지 고유 번호 (Customer destination UID)
 			auctionNumber: '', // 경매 번호 (Auction number)
 			sendDate: '', // Send date

@@ -51,6 +51,8 @@ const Achievement = ({ setAddedModal, data }) => {
 		}
 		const body = {
 			orderUid: data?.orderUid,
+			outNumber: data?.outNumber,
+			customerDestinationUid: data?.customerDestinationUid,
 		}
 		if (param.extraType !== null) {
 			body.extraType = param.extraType

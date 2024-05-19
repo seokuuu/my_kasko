@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
-import { achievementAddedAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { achievementAddedAtom, doubleClickedRowAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import { useNavigate } from 'react-router-dom'
 import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import AchievementModal from '../../../modal/Multi/Achievement'
@@ -35,6 +35,7 @@ const Achievement = () => {
 	const [addedModal, setAddedModal] = useAtom(achievementAddedAtom)
 	const exFilterToggle = useAtomValue(toggleAtom)
 	const [selectedRows, setSelectedRows] = useAtom(selectedRowsAtom)
+	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
 
 	const [getRow, setGetRow] = useState([])
 	const [param, setParam] = useState(initData)
@@ -103,19 +104,6 @@ const Achievement = () => {
 		navigate(`/shipping/achievement/invoice?customerCode=${customerCode}&outNumber=${outNumber}`)
 	}
 
-	const toClaim = () => {
-		if (!selectedRows || selectedRows?.length === 0) {
-			return simpleAlert('클레임 등록할 제품을 선택해주세요.')
-		}
-		if (selectedRows.length > 1) {
-			return simpleAlert('하나의 제품만 선택해주세요.')
-		}
-		const selectedRow = selectedRows[0]
-		const copiedData = data.list
-		const findData = copiedData.find((item) => item.orderUid === selectedRow['주문 고유 번호'])
-		navigate(`/shipping/claim/register`, { state: findData })
-	}
-
 	const handleTablePageSize = (event) => {
 		setParam((prevParam) => ({
 			...prevParam,
@@ -156,6 +144,14 @@ const Achievement = () => {
 			setGetRow(add_element_field(list, ShippingRegisterFields))
 		}
 	}, [data])
+
+	useEffect(() => {
+		if (detailRow && detailRow['출고 번호']) {
+			console.log('detailRow : ', detailRow)
+			navigate(`/shipping/achievement/${detailRow['출고 번호']}/${detailRow['고객사 목적지 고유 번호']}`)
+		}
+		return () => setDetailRow(false)
+	}, [detailRow])
 
 	return (
 		<FilterContianer>
@@ -204,7 +200,6 @@ const Achievement = () => {
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						{auth?.role === '카스코철강' && <WhiteBlackBtn onClick={toClaim}>클레임 등록</WhiteBlackBtn>}
 						<WhiteSkyBtn onClick={toInvoice}>거래 명세서 보기</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
