@@ -1122,6 +1122,7 @@ export const AuctionProgressFieldsCols = [
 
 	{ ...commonStyles, field: '두께' },
 	{ ...commonStyles, field: '폭' },
+	{ ...commonStyles, field: '길이' },
 	{ ...commonStyles, field: '중량' },
 	{ ...commonStyles, field: '규격 약호' },
 	{ ...commonStyles, field: 'yp' },
@@ -1354,6 +1355,8 @@ export const AuctionWinningDetailFields = {
 	'카스코 낙찰가': 'confirmPrice',
 	//최종 수정자
 	수정일: 'updateDate',
+	'매입 운반비 적용 할증율': 'inboundFreightExtraRete',
+	'매출 운반비 적용 할증율': 'outboundFreightExtraRete',
 }
 
 export const AuctionWinningDetailFieldsCols = (selected) => {
@@ -1427,10 +1430,13 @@ export const AuctionWinningDetailFieldsCols = (selected) => {
 		{ ...commonStyles, field: '제품 공급가(원/톤)', minWidth: 100 },
 		{ ...commonStyles, field: '제품 부가세', minWidth: 100 },
 		{ ...commonStyles, field: '매출 기본 운임단가', minWidth: 100 },
+		{ ...commonStyles, field: '매출 운반비 적용 할증율', minWidth: 120 },
 		{ ...commonStyles, field: '매출 할증 운임단가', minWidth: 100 },
 		{ ...commonStyles, field: '매출 운송비 공급가', minWidth: 100 },
 		{ ...commonStyles, field: '매출 운송비 부가세', minWidth: 100 },
 		{ ...commonStyles, field: '매입 기본 운임단가', minWidth: 100 },
+		{ ...commonStyles, field: '매입 운반비 적용 할증율', minWidth: 120 },
+		{ ...commonStyles, field: '매입 할증 운임단가', minWidth: 100 },
 		{ ...commonStyles, field: '총부가세', minWidth: 100 },
 		{ ...commonStyles, field: '합계', minWidth: 100 },
 		{ ...commonStyles, field: '두께', minWidth: 100 },
@@ -1455,7 +1461,6 @@ export const AuctionWinningDetailFieldsCols = (selected) => {
 		{ ...commonStyles, field: '확정 전송일', minWidth: 100 },
 		{ ...commonStyles, field: '주문 번호', minWidth: 100 },
 		{ ...commonStyles, field: '비고', minWidth: 100 },
-		{ ...commonStyles, field: '매입 할증 운임단가', minWidth: 100 },
 		{ ...commonStyles, field: '매입 운반비 공급가(원/톤)', minWidth: 100 },
 		{ ...commonStyles, field: '매입 운송비 부가세', minWidth: 100 },
 		{ ...commonStyles, field: '재고 상태', minWidth: 100 },
@@ -1681,10 +1686,15 @@ export const AuctionWinningCreateFields = {
 	'판매 제외 사유': 'excludeSaleReason',
 	'재고 상태': 'stockStatus',
 	생성일: 'createDate',
-	패키지명: 'packageName',
-	'패키지 번호': 'packageNumber',
+	// 패키지명: 'packageName',
+	// '패키지 번호': 'packageNumber',
 
 	매입가: 'price',
+	'기본 운임 단가': 'freightFee',
+	'운임 할증': 'freightExtraRate',
+	'할증 운임단가': 'extraUnitPrice',
+	'낙찰 총 단가(원/톤)': 'totalBiddingPrice',
+	'확정 전송 낙찰 단가': 'totalSendBiddingPrice',
 }
 
 export const AuctionWinningCreateFieldsCols = [
