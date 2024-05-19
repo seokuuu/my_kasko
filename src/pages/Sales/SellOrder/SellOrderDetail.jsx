@@ -58,11 +58,18 @@ const SellOrderDetail = () => {
 		pageSize: 50,
 		auctionNumber: id,
 		saleStatus: status,
-		packageNumber: packageNumber === null ? null : packageNumber,
+		packageNumber: packageNumber === 'null' ? null : packageNumber,
 	}
 
 	const contentDataInit = ['2024040558', '4,685,798', 'K00000', '30', '4,685,798', '54,685,798']
-	const titleData = ['주문 번호', '고객사', '고객코드', '총 수량', '총 중량(KG)', '입금 요청 금액(원)']
+	const titleData = [
+		packageNumber === 'null' ? '주문 번호' : '패키지 번호',
+		'고객사',
+		'고객코드',
+		'총 수량',
+		'총 중량(KG)',
+		'입금 요청 금액(원)',
+	]
 
 	const checkBoxSelect = useAtomValue(selectedRowsAtom)
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
@@ -149,7 +156,7 @@ const SellOrderDetail = () => {
 
 				setServerData({ list, pagination })
 				setContentData([
-					auctionNumber,
+					packageNumber !== 'null' ? packageNumber : auctionNumber,
 					customerName,
 					customerCode,
 					listCount,
@@ -317,25 +324,27 @@ const SellOrderDetail = () => {
 					<div>
 						선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 					</div>
-					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-						<P>목적지</P>
-						<DestinationChange
-							customerCode={contentData[2]}
-							customerName={contentData[3]}
-							value={destination}
-							onSubmit={(d) => {
-								setDestination(d)
-							}}
-						/>
-						<TGreyBtn onClick={updateCustomerDestinationButtonOnClick}>적용</TGreyBtn>
-						{/*<BtnBound style={{ margin: '0px' }} />*/}
-						{/*<WhiteBlackBtn onClick={destinationRequestButtonOnClickHandler}>목적지 승인 요청</WhiteBlackBtn>*/}
-						<BtnBound style={{ margin: '0px' }} />
-						<WhiteRedBtn onClick={destinationChangeRejectButtonOnClickHandler}>목적지 변경 반려</WhiteRedBtn>
-						<WhiteSkyBtn str onClick={destinationChangeApproveButtonOnClickHandler}>
-							목적지 변경 승인
-						</WhiteSkyBtn>
-					</div>
+					{status !== '주문 확정' && (
+						<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+							<P>목적지</P>
+							<DestinationChange
+								customerCode={contentData[2]}
+								customerName={contentData[3]}
+								value={destination}
+								onSubmit={(d) => {
+									setDestination(d)
+								}}
+							/>
+							<TGreyBtn onClick={updateCustomerDestinationButtonOnClick}>적용</TGreyBtn>
+							{/*<BtnBound style={{ margin: '0px' }} />*/}
+							{/*<WhiteBlackBtn onClick={destinationRequestButtonOnClickHandler}>목적지 승인 요청</WhiteBlackBtn>*/}
+							<BtnBound style={{ margin: '0px' }} />
+							<WhiteRedBtn onClick={destinationChangeRejectButtonOnClickHandler}>목적지 변경 반려</WhiteRedBtn>
+							<WhiteSkyBtn str onClick={destinationChangeApproveButtonOnClickHandler}>
+								목적지 변경 승인
+							</WhiteSkyBtn>
+						</div>
+					)}
 				</TCSubContainer>
 				<TableV2
 					getRow={tableRowData}

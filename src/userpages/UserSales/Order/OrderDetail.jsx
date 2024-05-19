@@ -38,6 +38,8 @@ const initialSearchParams = {
  */
 const INFO_COLUMNS = ['주문 번호', '고객사', '고객코드', '총 수량', '총 중량(KG)', '입금 요청 금액(원)']
 
+const PACKAGE_INFO_COLUMNS = ['패키지 번호', '고객사', '고객코드', '총 수량', '총 중량(KG)', '입금 요청 금액(원)']
+
 /**
  * @constant 제품번호 한글 키
  */
@@ -48,8 +50,9 @@ const UID_KEY = '고유 번호'
  * @param {*} data 주문상세목록 데이터
  * @return {array<string>}
  */
-const getInfoRows = (data, salesNumber) => {
-	const initialData = [salesNumber, '-', '-', 0, 0, 0]
+const getInfoRows = (data, salesNumber, packageNumber) => {
+	const isPackage = packageNumber !== 'null'
+	const initialData = [isPackage ? packageNumber : salesNumber, '-', '-', 0, 0, 0]
 	if (data) {
 		initialData[1] = data[0]?.customerName || '-' // 고객사
 		initialData[2] = data[0]?.customerCode || '-' // 고객코드
@@ -72,13 +75,14 @@ const getInfoRows = (data, salesNumber) => {
  * @param {string} props.salesNumber 상시판매 번호(경매 번호)
  */
 const OrderDetail = ({ salesNumber, status, packageNumber }) => {
+	const isPackage = packageNumber !== 'null'
 	const navigate = useNavigate()
 	// API 파라미터
 	const { searchParams, handleParamsChange, handlePageSizeChange } = useTableSearchParams({
 		...initialSearchParams,
 		auctionNumber: salesNumber,
 		saleStatus: status,
-		packageNumber: packageNumber === null ? null : packageNumber,
+		packageNumber: isPackage ? packageNumber : null,
 	})
 	// API
 	const { data: orderData, isError, isLoading } = useUserOrderDetailsQuery(searchParams)
@@ -92,7 +96,10 @@ const OrderDetail = ({ salesNumber, status, packageNumber }) => {
 		best: { display: true },
 	})
 	// 인포테이블 데이터
-	const infoData = useMemo(() => getInfoRows(orderData?.list || [], salesNumber), [orderData, salesNumber])
+	const infoData = useMemo(
+		() => getInfoRows(orderData?.list || [], salesNumber, packageNumber),
+		[orderData, salesNumber, packageNumber],
+	)
 	// 선택항목 데이터
 	const { selectedData, selectedWeightStr, selectedCountStr, hasSelected } = useTableSelection({ weightKey: '중량' })
 	// 목적지 데이터 || 목적지 변경 항목 데이터
@@ -197,7 +204,7 @@ const OrderDetail = ({ salesNumber, status, packageNumber }) => {
 					<ClaimTable>
 						{[0, 1].map((index) => (
 							<ClaimRow key={index}>
-								{INFO_COLUMNS.slice(index * 3, index * 3 + 3).map((title, idx) => (
+								{(isPackage ? PACKAGE_INFO_COLUMNS : INFO_COLUMNS).slice(index * 3, index * 3 + 3).map((title, idx) => (
 									<Fragment key={title}>
 										<ClaimTitle>{title}</ClaimTitle>
 										<ClaimContent>{infoData[index * 3 + idx]}</ClaimContent>
@@ -230,22 +237,24 @@ const OrderDetail = ({ salesNumber, status, packageNumber }) => {
 					<div>
 						선택중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 					</div>
-					<div style={{ display: 'flex', gap: '10px' }}>
-						<P>목적지</P>
-						<DestinationChange
-							customerCode={infoData[2]}
-							customerName={infoData[1]}
-							value={destination}
-							onSubmit={(d) => {
-								setDestination(d)
-							}}
-						/>
-						<TGreyBtn onClick={handleDestinationApply}>적용</TGreyBtn>
-						<BtnBound />
-						<WhiteBlackBtn disabled={isRequstLoading} onClick={handleDestinationApprovalRequest}>
-							목적지 승인 요청
-						</WhiteBlackBtn>
-					</div>
+					{status !== '주문 확정' && (
+						<div style={{ display: 'flex', gap: '10px' }}>
+							<P>목적지</P>
+							<DestinationChange
+								customerCode={infoData[2]}
+								customerName={infoData[1]}
+								value={destination}
+								onSubmit={(d) => {
+									setDestination(d)
+								}}
+							/>
+							<TGreyBtn onClick={handleDestinationApply}>적용</TGreyBtn>
+							<BtnBound />
+							<WhiteBlackBtn disabled={isRequstLoading} onClick={handleDestinationApprovalRequest}>
+								목적지 승인 요청
+							</WhiteBlackBtn>
+						</div>
+					)}
 				</TCSubContainer>
 				{/* 테이블 */}
 				<TableV2
