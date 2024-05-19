@@ -79,34 +79,6 @@ const useGlobalProductSearchFieldData = () => {
 			label: '2등급',
 			value: 2,
 		},
-		// {
-		// 	label: '3',
-		// 	value: 3,
-		// },
-		// {
-		// 	label: '4',
-		// 	value: 4,
-		// },
-		// {
-		// 	label: '5',
-		// 	value: 5,
-		// },
-		// {
-		// 	label: '6',
-		// 	value: 6,
-		// },
-		// {
-		// 	label: '7',
-		// 	value: 7,
-		// },
-		// {
-		// 	label: '8',
-		// 	value: 8,
-		// },
-		// {
-		// 	label: '9',
-		// 	value: 9,
-		// },
 	]
 	// 정척 여부
 	const preferThicknessList = [
@@ -143,6 +115,20 @@ const useGlobalProductSearchFieldData = () => {
 	// 규격약호 목록
 	const { data: specList } = useReactQuery({}, 'getSpecList', getSpecList)
 
+	// 경매 등록 상태
+	const registrationStatusList = [
+		{
+			checked: false,
+			text: '경매 등록',
+			value: '경매 등록',
+		},
+		{
+			checked: false,
+			text: '경매 등록 대기',
+			value: '경매 등록 대기',
+		},
+	]
+
 	return {
 		storageList,
 		supplierList,
@@ -152,6 +138,7 @@ const useGlobalProductSearchFieldData = () => {
 		gradeList,
 		preferThicknessList,
 		specList,
+		registrationStatusList,
 		// inventoryDestination,
 		// inventoryCustomer,
 	}

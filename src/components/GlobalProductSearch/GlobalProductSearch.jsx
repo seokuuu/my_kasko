@@ -85,6 +85,7 @@ const GlobalProductSearch = ({
 			receiptStatus: '', // 입고 상태 (Receipt status)
 			receiptStatusList: [], // 입고 상태 목록 (Receipt status list)
 			registrationStatus: '', // 경매 등록 상태 (Auction registration status)
+			registrationStatusList: [], // 경매 등록 상태 (Auction registration status list)
 			orderStatus: '', // 주문 상태 (Order status)
 			orderStatusList: [], // 주문 상태 목록 (Order status list)
 			customerCode: '', // 고객 코드 (Customer code)
