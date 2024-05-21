@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { BlackBtn, NewBottomBtnWrap, WhiteBlackBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { selectedRowsAtom } from '../../../store/Layout/Layout'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -17,7 +17,8 @@ import { AchievementFields, AchievementFieldsCols } from '../fields/AchievementF
 import { authAtom } from '../../../store/Auth/auth'
 import TableV2 from '../../Table/TableV2'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
-import ShippingExtarCostBtn from './ShippingExtarCostBtn'
+import ShippingExtraCostBtn from './ShippingExtraCostBtn'
+import InvoiceDetailHeader from './InvoiceDetailHeader'
 
 const AchievementDetails = () => {
 	const { outNumber, customerDestinationUid } = useParams()
@@ -36,6 +37,7 @@ const AchievementDetails = () => {
 
 	const [getRow, setGetRow] = useState([])
 	const [param, setParam] = useState(initData)
+	const getCols = useMemo(() => AchievementFieldsCols(AchievementFields(auth)), [auth])
 
 	const { data, refetch, isLoading } = useShipmentListQuery(param)
 
@@ -106,6 +108,7 @@ const AchievementDetails = () => {
 	return (
 		<FilterContianer>
 			<GlobalFilterHeader title={'출고 실적 상세'} enableSearchFilters={false} />
+			<InvoiceDetailHeader data={data?.list} />
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
@@ -122,13 +125,13 @@ const AchievementDetails = () => {
 						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						{auth?.role === '카스코철강' && <ShippingExtarCostBtn data={data} />}
+						{auth?.role === '카스코철강' && <ShippingExtraCostBtn data={data} />}
 					</div>
 				</TCSubContainer>
 				<TableV2
 					getRow={tableRowData}
 					loading={isLoading}
-					getCol={AchievementFieldsCols(AchievementFields(auth))}
+					getCol={getCols}
 					tablePagination={paginationData}
 					onPageChange={onPageChange}
 				/>

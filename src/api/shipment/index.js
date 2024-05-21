@@ -233,7 +233,7 @@ export function useShipmentAddExtraCostMutation() {
 			return client.post(SHIPMENT_EXTRA_COST_URL, param)
 		},
 		onSuccess() {
-			simpleAlert('완료되었습니다.', () => window.location.reload())
+			simpleAlert('완료되었습니다.')
 			queryClient.invalidateQueries(QUERY_KEY.list)
 		},
 		onError(error) {
@@ -247,8 +247,8 @@ export function useShipmentRemoveExtraCostMutation() {
 	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: QUERY_KEY.removeExtraCost,
-		mutationFn: async function (id) {
-			return client.delete(`${SHIPMENT_EXTRA_COST_URL}/${id}`)
+		mutationFn: async function (params) {
+			return client.delete(`${SHIPMENT_EXTRA_COST_URL}/${params.outNumber}/${params.customerDestinationUid}`)
 		},
 		onSuccess() {
 			simpleAlert('완료되었습니다.')

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
 import { achievementAddedAtom, doubleClickedRowAtom, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 import { useNavigate } from 'react-router-dom'
@@ -38,6 +38,7 @@ const Achievement = () => {
 	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
 
 	const [getRow, setGetRow] = useState([])
+	const getCols = useMemo(() => AchievementFieldsCols(AchievementFields(auth)), [auth])
 	const [param, setParam] = useState(initData)
 
 	const { data, refetch, isLoading } = useShipmentListQuery(param)
@@ -147,7 +148,6 @@ const Achievement = () => {
 
 	useEffect(() => {
 		if (detailRow && detailRow['출고 번호']) {
-			console.log('detailRow : ', detailRow)
 			navigate(`/shipping/achievement/${detailRow['출고 번호']}/${detailRow['고객사 목적지 고유 번호']}`)
 		}
 		return () => setDetailRow(false)
@@ -181,19 +181,19 @@ const Achievement = () => {
 					<div>
 						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
 					</div>
-					<div style={{ display: 'flex', gap: '10px' }}>
-						{auth?.role === '카스코철강' && (
-							<>
-								<WhiteRedBtn onClick={onRemoveExtraCost}>추가비 및 공차비 삭제</WhiteRedBtn>
-								<WhiteSkyBtn onClick={openExtarCostModal}>추가비 및 공차비 추가</WhiteSkyBtn>
-							</>
-						)}
-					</div>
+					{/*<div style={{ display: 'flex', gap: '10px' }}>*/}
+					{/*	{auth?.role === '카스코철강' && (*/}
+					{/*		<>*/}
+					{/*			<WhiteRedBtn onClick={onRemoveExtraCost}>추가비 및 공차비 삭제</WhiteRedBtn>*/}
+					{/*			<WhiteSkyBtn onClick={openExtarCostModal}>추가비 및 공차비 추가</WhiteSkyBtn>*/}
+					{/*		</>*/}
+					{/*	)}*/}
+					{/*</div>*/}
 				</TCSubContainer>
 				<TableV2
 					getRow={tableRowData}
 					loading={isLoading}
-					getCol={AchievementFieldsCols(AchievementFields(auth))}
+					getCol={getCols}
 					tablePagination={paginationData}
 					onPageChange={onPageChange}
 				/>
