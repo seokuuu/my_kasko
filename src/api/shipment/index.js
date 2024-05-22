@@ -28,6 +28,7 @@ export const QUERY_KEY = {
 	addExtraCost: ['shipment', 'extra', 'add'],
 	removeExtraCost: ['shipment', 'extra', 'remove'],
 	invoice: ['shipment', 'invoice'],
+	invoiceV2: ['shipment', 'invoice', 'v2'],
 	invoiceAll: ['shipment', 'invoiceAll'],
 }
 
@@ -278,4 +279,13 @@ export function useShipmentInvoiceListQuery(params) {
 export async function shipmentInvoiceAllListQuery(param) {
 	const response = await client.get(`${SHIPMENT_ORDER_INVOICE_URL}/${param}`)
 	return response.data.data
+}
+
+// 출고실적 거래명세서 목록
+export async function shipmentInvoiceListQueryV2(params) {
+	const isEnabled = params.shipmentStartDate && params.shipmentEndDate && params.customerCode
+	if (isEnabled) {
+		const response = await client.get(SHIPMENT_ORDER_INVOICE_URL + '/v2', { params })
+		return response.data.data
+	}
 }
