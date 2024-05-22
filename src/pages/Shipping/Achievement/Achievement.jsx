@@ -200,7 +200,13 @@ const Achievement = () => {
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						<WhiteSkyBtn onClick={toInvoice}>거래 명세서 보기</WhiteSkyBtn>
+						<WhiteSkyBtn
+							onClick={() => {
+								navigate(`/shipping/achievement/invoice`)
+							}}
+						>
+							거래 명세서 보기
+						</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
 			</TableContianer>
