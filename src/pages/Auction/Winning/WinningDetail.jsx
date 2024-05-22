@@ -480,8 +480,8 @@ const WinningDetail = ({ setAucDetail }) => {
 	const { tableRowData, totalWeightStr, totalCountStr } = useTableData({
 		tableField: AuctionWinningDetailFields,
 		serverData: oriData,
-		wish: { display: true, key: ['productNumber', 'packageNumber'] },
-		best: { display: true },
+		// wish: { display: true, key: ['productNumber', 'packageNumber'] },
+		// best: { display: true },
 	})
 
 	return (
@@ -531,6 +531,7 @@ const WinningDetail = ({ setAucDetail }) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
+						{console.log('tableRowData  : ', tableRowData)}
 						<Excel getRow={tableRowData} sheetName="경매 낙찰 상세" />
 					</div>
 				</TCSubContainer>
