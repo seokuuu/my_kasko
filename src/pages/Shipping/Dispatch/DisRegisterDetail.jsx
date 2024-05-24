@@ -24,6 +24,7 @@ import useTableSelection from '../../../hooks/useTableSelection'
 import TableV2 from '../../Table/TableV2'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import { calculateTotal, storageValid } from '../Request/utils'
+import Excel from '../../../components/TableInner/Excel'
 
 const DisRegisterDetail = ({ id }) => {
 	const navigate = useNavigate()
@@ -192,7 +193,9 @@ const DisRegisterDetail = ({ id }) => {
 						조회 목록 (선택 <span>{selectedCountStr}</span> / {list?.length?.toLocaleString()}개 )
 						<TableV2HiddenSection />
 					</div>
-					<div></div>
+					<div>
+						<Excel getRow={tableRowData} sheetName={'배차 출고 등록 상세'} />
+					</div>
 				</TCSubContainer>
 				<TCSubContainer bor>
 					<div>
