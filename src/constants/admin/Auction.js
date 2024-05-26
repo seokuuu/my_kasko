@@ -7,6 +7,7 @@ import { ProNoCellRenderer } from '../../pages/Table/ProNoCellRenderer'
 import { auctionPackDetailModal, auctionPackDetailNumAtom } from '../../store/Layout/Layout'
 import { PROD_COL_NAME } from '../user/constantKey'
 import { PackageNumCellRenderer } from '../../pages/Table/PackageNumCellRenderer'
+import PackageNumberRecommendCell from '../../pages/Product/PackageManage/cellRender/packageNumberRender'
 
 var checkboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping
@@ -226,6 +227,8 @@ export const AuctionRoundDetailFields = {
 	메모: 'memo',
 	비고: 'note',
 	ProNo: 'productNoNumber',
+	'총 중량': 'packageTotalWeight',
+	'총 개수': 'packageTotalCount',
 }
 
 /* ===================================================================
@@ -242,6 +245,8 @@ export const AuctionRoundExtraProductFields = {
 	폭: 'width',
 	길이: 'length',
 	중량: 'weight',
+	'총 중량': 'packageTotalWeight',
+	'총 개수': 'packageTotalCount',
 	'제품 등급': 'grade',
 	'용도 코드': 'usageCode',
 	용도명: 'usageCodeName',
@@ -397,6 +402,8 @@ export const AuctionRoundExtraProductPackageFieldsCols = [
 	{ ...commonStyles, field: '제품 번호' },
 	{ ...commonStyles, field: '패키지명' }, // 누락 추가
 	{ ...commonStyles, field: '패키지 번호' }, // 누락 추가
+	{ ...commonStyles, field: '총 중량' }, // 누락 추가
+	{ ...commonStyles, field: '총 개수' }, // 누락 추가
 	{ ...commonStyles, field: 'ProNo' },
 	{ ...commonStyles, field: '등록 일자' }, // 누락 추가
 	{ ...commonStyles, field: '창고' },
@@ -543,7 +550,18 @@ export const AuctionRoundDetailPackageFieldsCols = [
 
 	// 단일일때 미노출
 	{ ...commonStyles, field: '패키지명' },
-	{ ...commonStyles, field: '패키지 번호' },
+	{
+		...commonStyles,
+		field: '패키지 번호',
+		cellRenderer: PackageNumberRecommendCell,
+		cellRendererParams: {
+			uidFieldName: '패키지 번호', // 해당 get의 uid (필수수)
+			editType: 'openDetailModal',
+			moveUrl: '/product/packageedit', // modal의 띄울 종류 (선택)
+		},
+	},
+	{ ...commonStyles, field: '총 중량' },
+	{ ...commonStyles, field: '총 개수' },
 
 	// 패키지 명
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
 	BlackBtn,
 	BtnBound,
@@ -10,7 +10,7 @@ import {
 } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { packageDetailModal, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import {
 	CustomInput,
@@ -44,11 +44,14 @@ import Table from '../../Table/Table'
 import RoundAucListEditFields from './RoundAucListEditFields'
 import RoundAucProAdd from './RoundAucProAdd'
 import { useLoading } from '../../../store/Loading/loadingAtom'
+import PackageDetailModal from '../../../modal/Multi/PackageDetailModal'
+import { useAtomValue } from 'jotai/index'
 
 //경매 목록 수정(단일)
 const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStatus, roundPageRefetch }) => {
 	const [btnClick, setBtnClick] = useState(false)
 	const [newResData, setNewResData] = useState([])
+	const detailModal = useAtomValue(packageDetailModal)
 
 	const [editData, setEditData] = useState({
 		type: types,
@@ -108,10 +111,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 
 	const uids = selectedRows?.map((item) => item['제품 번호'])
 
-	const totalWeight = getRow && getRow?.map((x) => x['중량'])
+	const totalWeight = getRow && getRow?.map((x) => x[types === '패키지' ? '총 중량' : '중량'])
 	const sum = totalWeight && totalWeight?.reduce((acc, curr) => acc + parseInt(curr), 0)
-
-	// 222
 
 	/**
 	 * @description
@@ -151,6 +152,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			const updateList = registeredAuctions?.map((item) => ({
 				productUid: item['제품 고유 번호'],
 				auctionStartPrice: startPrice,
+				packageNumber: item['패키지 번호'] || null,
 			}))
 
 			setEditData((prev) => ({
@@ -178,6 +180,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			const updateNewList = pendingAuctions?.map((item) => ({
 				productUid: item['고유 번호'],
 				auctionStartPrice: startPrice,
+				packageNumber: item['패키지 번호'] || null,
 			}))
 
 			// addAuctionProductList에 중복된 productUid를 가진 객체가 있다면 해당 객체를 대체합니다.
@@ -220,6 +223,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 			const intUniqueData = uniqueData.map((item) => ({
 				...item,
 				중량: parseInt(item.중량.replace(/,/g, ''), 10), // 콤마 제거 후 정수형 변환
+				'총 중량': parseInt(item['총 중량'].replace(/,/g, ''), 10), // 콤마 제거 후 정수형 변환
 				길이: parseInt(item.길이.replace(/,/g, ''), 10), // 콤마 제거 후 정수형 변환
 			}))
 
@@ -232,6 +236,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 
 	const [outAddData, setOutAddData] = useState([])
 	const [outAddPrice, setOutAddPrice] = useState([])
+	const [outAddPackage, setAddPackageData] = useState([])
 
 	const onListAdd = (selectedData) => {
 		try {
@@ -248,12 +253,12 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 		const uniqueNumbers = outAddData?.map((item, index) => ({
 			productUid: item,
 			auctionStartPrice: parseInt(outAddPrice[index]?.replace(/,/g, '')),
-			//  || realStartPrice,
+			packageNumber: outAddPackage[index],
 		}))
 
 		setEditData((prev) => ({
 			...prev,
-			addAuctionProductList: [...prev.addAuctionProductList, ...uniqueNumbers],
+			addAuctionProductList: uniqueNumbers,
 		}))
 
 		// setEditData({ ...editData, addAuctionProductList: uniqueNumbers })
@@ -278,6 +283,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 				.map((item) => ({
 					auctionProductUid: item['경매 제품 고유 번호'],
 					productUid: item['제품 고유 번호'],
+					packageNumber: item['패키지 번호'] || null,
 				}))
 
 			const updatedDelData = [...editData.deleteAuctionProductList, ...resultRemove]
@@ -351,7 +357,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const incomingCheck = selectedRows?.map((x) => x['매입처'])
 
 	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
-		weightKey: '중량',
+		weightKey: types === '패키지' ? '총 중량' : '중량',
 	})
 
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
@@ -444,6 +450,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 					getRow={getRow}
 					loading={isLoading}
 				/>
+				{detailModal && <PackageDetailModal />}
 				{auctionStatus !== '종료' && (
 					<>
 						<TCSubContainer>
@@ -469,6 +476,7 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 						dupleUids={dupleUids}
 						outAddPrice={outAddPrice}
 						setOutAddPrice={setOutAddPrice}
+						setAddPackageData={setAddPackageData}
 					/>
 				)}
 				<NewBottomBtnWrap bottom={-5} borderTop={'none'}>

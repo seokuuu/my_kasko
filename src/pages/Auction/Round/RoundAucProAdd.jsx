@@ -58,6 +58,7 @@ const RoundAucProAdd = ({
 	outAddData,
 	outAddPrice,
 	setOutAddPrice,
+	setAddPackageData,
 }) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
@@ -141,16 +142,25 @@ const RoundAucProAdd = ({
 					setAddModal(false)
 					onListAdd(addData)
 
+					// 패키지 번호 set
+					if (types === '패키지') {
+						setAddPackageData((prev) => {
+							const uniqueData = [...new Set([...prev, ...selectedRows.map((item) => item['패키지 번호'])])]
+							return uniqueData
+						})
+					}
+
+					// 시작가 set
+					setOutAddPrice((prev) => {
+						const uniqueData = [...new Set([...prev, ...findPrice])]
+						return uniqueData
+					})
+
 					// uid set
 					setOutAddData((prev) => {
 						const uniqueData = [...new Set([...prev, ...findKey])]
 						return uniqueData
 					})
-
-					// 시작가 set
-					const newData = [...outAddPrice]
-					newData.push(...findPrice)
-					setOutAddPrice(newData)
 				})
 			})
 		}
@@ -195,7 +205,7 @@ const RoundAucProAdd = ({
 	}
 
 	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
-		weightKey: '중량',
+		weightKey: types === '패키지' ? '총 중량' : '중량',
 	})
 
 	const { tableRowData, paginationData, totalWeightStr, totalCountStr, totalCount } = useTableData({
