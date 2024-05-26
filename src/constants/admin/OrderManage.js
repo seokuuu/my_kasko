@@ -213,6 +213,7 @@ export const OrderManageFieldsCols = [
 ]
 
 export const orderFieldData = {
+	순번: 'index',
 	'고객 코드': 'customerCode',
 	고객사명: 'customerName',
 	창고: 'storageName',

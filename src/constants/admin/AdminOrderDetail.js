@@ -340,6 +340,7 @@ export const AdminOrderManageFieldsCols = (toggleModal) => [
 ]
 
 export const DetailOrderFieldsManage = {
+	순번: 'index',
 	'주문 고유 번호': 'orderUid',
 	'제품 고유 번호': 'productUid',
 	'고객 코드': 'customerCode',

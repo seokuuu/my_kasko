@@ -46,8 +46,11 @@ const Order = () => {
 	const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
 
 	/** 데이터 가져오는 부분 React-Query로 변경 */
-	const formatTableRowData = (orderRes) => {
-		return add_element_field(orderRes, orderFieldData)
+	const formatTableRowData = (list) => {
+		return add_element_field(
+			list.map((item, index) => ({ index: index + 1, ...item })),
+			orderFieldData,
+		)
 	}
 
 	useEffect(() => {

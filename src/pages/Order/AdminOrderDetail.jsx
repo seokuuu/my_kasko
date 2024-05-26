@@ -82,8 +82,11 @@ const AdminOrderDetail = () => {
 	const [param, setParam] = useState(paramData)
 	const [detailOrderPagination, setDetailOrderPagination] = useState([])
 	const [detailOrderListData, setDetailOrderListData] = useState(null)
-	const formatTableRowData = (orderDetail) => {
-		return add_element_field(orderDetail, DetailOrderFieldsManage)
+	const formatTableRowData = (list) => {
+		return add_element_field(
+			list.map((item, index) => ({ index: index + 1, ...item })),
+			DetailOrderFieldsManage,
+		)
 	}
 	const { data: detailRes, isSuccess, refetch } = useReactQuery(param, 'getDetailOrderList', getDetailOrderList)
 	useEffect(() => {
