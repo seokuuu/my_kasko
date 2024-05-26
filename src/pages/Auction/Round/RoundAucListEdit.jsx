@@ -339,8 +339,8 @@ const RoundAucListEdit = ({ setEditPage, types, uidAtom, auctionNum, auctionStat
 	const { mutate: auctionEdit, isLoading: auctionEditLoading } = useMutation(editAuction, {
 		onSuccess: () => {
 			simpleAlert('수정 되었습니다.', () => {
-				setEditPage(false)
-				refetch()
+				// setEditPage(false)
+				// refetch()
 				roundPageRefetch()
 			})
 		},
