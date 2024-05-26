@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { SkyBtn, WhiteRedBtn } from '../../common/Button/Button'
 import Excel from '../../components/TableInner/Excel'
 import HeaderToggle from '../../components/Toggle/HeaderToggle'
@@ -150,6 +150,10 @@ const Order = () => {
 	useEffect(() => {
 		refetch()
 	}, [param])
+
+	useLayoutEffect(() => {
+		refetch()
+	}, [])
 
 	return (
 		<FilterContianer>
