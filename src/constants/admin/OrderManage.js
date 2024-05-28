@@ -157,6 +157,11 @@ export const OrderManageFieldsCols = [
 	},
 	{
 		...commonStyles,
+		field: '입금 확인일',
+		minWidth: 150,
+	},
+	{
+		...commonStyles,
 		field: '목적지명',
 		minWidth: 150,
 	},
@@ -208,6 +213,7 @@ export const OrderManageFieldsCols = [
 ]
 
 export const orderFieldData = {
+	순번: 'index',
 	'고객 코드': 'customerCode',
 	고객사명: 'customerName',
 	창고: 'storageName',
@@ -239,4 +245,6 @@ export const orderFieldData = {
 	'패키지 번호': 'packageNumber',
 	'확정 전송가': 'confirmPrice',
 	입금요청액: 'totalPrice',
+	주문일자: 'createDate',
+	'입금 확인일': 'depositDate',
 }

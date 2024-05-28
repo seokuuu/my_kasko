@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import React from 'react'
+import React, { useState } from 'react'
 import { GreyBtn } from '../../common/Button/Button'
 import { CustomInput, PartWrap } from '../../modal/External/ExternalFilter'
 import DestinationFind from '../../modal/Multi/DestinationFind'
@@ -14,7 +14,7 @@ import { invenDestination } from '../../store/Layout/Layout'
  * @param short 제목을 "목적지" 로 전달
  */
 const DestinationSearch = ({ name, code, setName, setCode, short }) => {
-	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
+	const [destinationPopUp, setDestinationPopUp] = useState(false)
 
 	const modalOpen = () => setDestinationPopUp(true)
 

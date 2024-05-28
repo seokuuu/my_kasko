@@ -427,8 +427,10 @@ export const ShippingStatusDetailsFieldsCols = [
 
 // 출고 거래명세서
 export const ShippingInvoiceFields = {
-	경매번호: 'auctionNumber',
-	상시판매번호: 'orderNumber',
+	출고번호: 'outNumber',
+	주문번호: 'orderNumber',
+	고객사명: 'customerName',
+	고객사코드: 'customerCode',
 	창고: 'storageName',
 	제품번호: 'productNumber',
 	등급: 'grade',

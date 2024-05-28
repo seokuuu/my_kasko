@@ -176,7 +176,6 @@ const WinningDetail = ({ setAucDetail }) => {
 
 	const resDestiData = inventoryDestination?.data?.data
 
-
 	// useEffect(() => {
 	// 	if (destinationData) {
 	// 		const filteredDestinationData = destinationData?.filter((item) => item.uid === destinationData?.uid)
@@ -293,7 +292,7 @@ const WinningDetail = ({ setAucDetail }) => {
 	const { mutate: destiApproveMutation } = useMutation(destiApproveReq, {
 		onSuccess() {
 			showAlert({
-				title: '목적지 승인이 완료되었습니다.',
+				title: '목적지 승인요청이 완료되었습니다.',
 				content: '',
 				func: () => {
 					refetch()
@@ -362,18 +361,18 @@ const WinningDetail = ({ setAucDetail }) => {
 					))}
 				</ClaimTable>
 			</div>
-			{exFilterToggle && (
-				<>
-					<GlobalProductSearch
-						param={param}
-						setParam={setParam}
-						isToggleSeparate={true}
-						renderCustomSearchFields={(props) => <WinningDetailFields {...props} />}
-						globalProductSearchOnClick={globalProductSearchOnClick}
-						globalProductResetOnClick={globalProductResetOnClick}
-					/>
-				</>
-			)}
+			{/*{exFilterToggle && (*/}
+			{/*	<>*/}
+			{/*		<GlobalProductSearch*/}
+			{/*			param={param}*/}
+			{/*			setParam={setParam}*/}
+			{/*			isToggleSeparate={true}*/}
+			{/*			renderCustomSearchFields={(props) => <WinningDetailFields {...props} />}*/}
+			{/*			globalProductSearchOnClick={globalProductSearchOnClick}*/}
+			{/*			globalProductResetOnClick={globalProductResetOnClick}*/}
+			{/*		/>*/}
+			{/*	</>*/}
+			{/*)}*/}
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>

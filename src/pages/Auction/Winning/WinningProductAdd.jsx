@@ -103,20 +103,6 @@ const WinningProductAdd = ({
 		}))
 	}
 
-	// const handleAddBtn = () => {
-	// 	if (isArray(checkedArray) && checkedArray.length > 0) {
-	// 		if (window.confirm('선택한 항목을 추가하시겠습니까?')) {
-	// 			checkedArray.forEach((item) => {
-
-	// 				setNewResData((prevData) => [...prevData, item])
-	// 			})
-	// 			setAddModal(false)
-	// 		}
-	// 	} else {
-	// 		alert('선택해주세요!')
-	// 	}
-	// }
-
 	// 제품 추가 시 낙찰가, 확정전송가 없는 object 체크
 	const hasNullOrUndefinedInCheckedArray = () => {
 		return checkedArray.some(
@@ -124,7 +110,9 @@ const WinningProductAdd = ({
 				item['낙찰가'] == null ||
 				item['확정전송가'] == null ||
 				typeof item['낙찰가'] === 'undefined' ||
-				typeof item['확정전송가'] === 'undefined',
+				typeof item['확정전송가'] === 'undefined' ||
+				!Number(item['낙찰가']) ||
+				!Number(item['확정전송가']),
 		)
 	}
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { WhiteGrnBtn } from '../../../common/Button/Button'
+import { WhiteGrnBtn, WhiteRedBtn } from '../../../common/Button/Button'
 import useWishList from '../../../hooks/useWishList'
 import useAlert from '../../../store/Alert/useAlert'
 
@@ -10,7 +10,7 @@ import useAlert from '../../../store/Alert/useAlert'
  * @returns
  */
 const AddWishButton = ({ products, productNumberKey }) => {
-	const { addWishList } = useWishList() // 관심상품 등록하기 hook
+	const { addWishList, removeWishList } = useWishList() // 관심상품 등록하기 hook
 	// ALERT
 	const { simpleAlert } = useAlert()
 
@@ -24,15 +24,29 @@ const AddWishButton = ({ products, productNumberKey }) => {
 		addWishList(products, productNumberKey)
 	}
 
+	function handleWishRemove(e) {
+		e.preventDefault()
+
+		if (products.length < 1) {
+			return simpleAlert('등록 해제할 상품을 선택해 주세요.')
+		}
+
+		removeWishList(products, productNumberKey)
+	}
+
 	return (
-		<>
+		<div style={{ display: 'flex', gap: '10px' }}>
 			<WhiteGrnBtn onClick={handleWishAdd} style={{ minWidth: '130px' }}>
 				<div>
 					<img src="/img/grnstar.png" alt="" />
 				</div>
 				관심상품 등록
 			</WhiteGrnBtn>
-		</>
+			<WhiteRedBtn onClick={handleWishRemove} style={{ minWidth: '130px' }}>
+				<img src="/img/redstar.png" alt="" />
+				관심상품 해제
+			</WhiteRedBtn>
+		</div>
 	)
 }
 

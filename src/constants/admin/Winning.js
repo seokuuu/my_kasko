@@ -84,7 +84,9 @@ export const AuctionWinningFields = {
 	'패키지 번호': 'packageNumber',
 	'카스코 낙찰가': 'confirmPrice',
 	'매입 운반비': 'inboundFreightAmount',
+	'매입 운반비 적용 할증율': 'inboundFreightExtraRete',
 	'매출 운반비': 'outboundFreightAmount',
+	'매출 운반비 적용 할증율': 'outboundFreightExtraRete',
 }
 
 export const AuctionWinningFieldsCols = [
@@ -128,7 +130,9 @@ export const AuctionWinningFieldsCols = [
 	{ ...commonStyles, field: '하차지 명', minWidth: 150 },
 	{ ...commonStyles, field: '주문 상태', minWidth: 120 },
 	// 비고
+	{ ...commonStyles, field: '매입 운반비 적용 할증율', minWidth: 120 },
 	{ ...commonStyles, field: '매입 운반비', minWidth: 120 },
+	{ ...commonStyles, field: '매출 운반비 적용 할증율', minWidth: 120 },
 	{ ...commonStyles, field: '매출 운반비', minWidth: 120 },
 	{ ...commonStyles, field: '카스코 낙찰가', minWidth: 120 },
 	{ ...commonStyles, field: '수정자', minWidth: 120 },

@@ -1,23 +1,9 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-import { GreyBtn } from '../../common/Button/Button'
-import { MainSelect } from '../../common/Option/Main'
-import useGlobalProductSearchFieldData from '../../hooks/useGlobalProductSearchFieldData'
-import {
-	ExInputsWrap,
-	FilterRight,
-	FilterLeft,
-	Input,
-	MiniInput,
-	PWRight,
-	PartWrap,
-	RowWrap,
-	Tilde,
-} from '../../modal/External/ExternalFilter'
+import { useAtomValue } from 'jotai'
+import { FilterLeft, FilterRight, PartWrap, RowWrap } from '../../modal/External/ExternalFilter'
 import StandardFind from '../../modal/Multi/StandardFind'
 import ProductNumber from '../../components/GlobalProductSearch/SearchFields/ProductNumber'
 import { kyuModalAtom } from '../../store/Layout/GlobalProductSearch'
 import { DateSearchSelect } from '../../components/Search'
-import CustomerSearch from '../../components/Search/CustomerSearch'
 import CustomCheckBox from '../Operate/UI/CustomCheckBox/CustomCheckBox'
 import React from 'react'
 
@@ -25,18 +11,8 @@ const OrderSearchFields = ({
 	// prettier-ignore
 	search,
 	setSearch,
-	commonDropdownButtonHandler,
-	commonNumInputHandler,
-	modalButtonClickHandler,
 	onSpecHandler,
 }) => {
-	const {
-		// prettier-ignore
-		storageList,
-		spartList,
-	} = useGlobalProductSearchFieldData()
-
-	const setIsKyuModal = useSetAtom(kyuModalAtom)
 	const onChange = (key, value) => {
 		setSearch((p) => ({ ...p, [key]: value }))
 	}

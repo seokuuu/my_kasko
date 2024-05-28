@@ -2,8 +2,27 @@ import { WhiteSkyBtn } from '../../../common/Button/Button'
 import { readExcelFile } from '../../../utils/ReadExcelFile'
 import useAlert from '../../../store/Alert/useAlert'
 
-const WinningProductCreateBtn = ({ newResData, setNewResData, values, setValues, setWinningCreateData }) => {
+const WinningProductCreateBtn = ({
+	newResData,
+	setNewResData,
+	values,
+	setValues,
+	setWinningCreateData,
+	customerData,
+	destiObject,
+}) => {
 	const { simpleAlert } = useAlert()
+
+	const onAdd = () => {
+		if (!customerData) {
+			return simpleAlert('제품 추가 전 고객사를 선택해주세요.')
+		}
+		if (!destiObject) {
+			return simpleAlert('제품 추가 전 목적지를 적용해주세요.')
+		}
+
+		document.getElementById('winning_product_create_btn').click()
+	}
 
 	const fileUpload = async (e) => {
 		const selectedFile = e.target.files
@@ -58,10 +77,10 @@ const WinningProductCreateBtn = ({ newResData, setNewResData, values, setValues,
 	}
 
 	return (
-		<label htmlFor="winning_product_create_btn">
+		<>
 			<input type="file" id="winning_product_create_btn" style={{ display: 'none' }} onChange={fileUpload} />
-			<WhiteSkyBtn>제품 대량 업로드</WhiteSkyBtn>
-		</label>
+			<WhiteSkyBtn onClick={onAdd}>제품 대량 업로드</WhiteSkyBtn>
+		</>
 	)
 }
 

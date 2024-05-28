@@ -15,10 +15,14 @@ const headerCheckboxSelection = function (params) {
 }
 
 export const AchievementFields = (auth) => {
-	const role = auth?.role
-	return role === '카스코철강'
+	return auth?.role === '카스코철강'
 		? {
 				순번: 'index',
+				'출고 번호': 'outNumber',
+				'출하 상태': 'shipmentStatus',
+				출하지시일자: 'shippingDate',
+				출고요청일자: 'shipmentRequestDate',
+				'출고 일자': 'outDate',
 				경매일자: 'auctionStartDate',
 				경매번호: 'auctionNumber',
 				입고일자: 'receiptDate',
@@ -27,11 +31,6 @@ export const AchievementFields = (auth) => {
 				'확정전송 일자': 'sendDate',
 				'주문 고유 번호': 'orderUid',
 				주문번호: 'orderNumber',
-				출하지시일자: 'shippingDate',
-				출고요청일자: 'shipmentRequestDate',
-				'출하 상태': 'shipmentStatus',
-				'출고 일자': 'outDate',
-				'출고 번호': 'outNumber',
 				'상차도 여부': 'dockStatus',
 				운송진행일자: 'outEndDate',
 				운송진행: 'outEndStatus',
@@ -57,6 +56,7 @@ export const AchievementFields = (auth) => {
 				매입가: 'price',
 				'목적지 코드': 'destinationCode',
 				'목적지 명': 'destinationName',
+				'고객사 목적지 고유 번호': 'customerDestinationUid',
 				'목적지 주소': 'customerDestinationAddress',
 				'목적지 연락처(사무실)': 'customerDestinationPhone',
 				'목적지담당자 연락처 (휴대폰)': 'customerDestinationManagerPhone',
@@ -121,6 +121,11 @@ export const AchievementFields = (auth) => {
 		  }
 		: {
 				순번: 'index',
+				'출고 번호': 'outNumber',
+				'출하 상태': 'shipmentStatus',
+				출하지시일자: 'shippingDate',
+				출고요청일자: 'shipmentRequestDate',
+				'출고 일자': 'outDate',
 				경매일자: 'auctionStartDate',
 				경매번호: 'auctionNumber',
 				입고일자: 'receiptDate',
@@ -129,11 +134,6 @@ export const AchievementFields = (auth) => {
 				'확정전송 일자': 'sendDate',
 				'주문 고유 번호': 'orderUid',
 				주문번호: 'orderNumber',
-				출하지시일자: 'shippingDate',
-				출고요청일자: 'shipmentRequestDate',
-				'출하 상태': 'shipmentStatus',
-				'출고 일자': 'outDate',
-				'출고 번호': 'outNumber',
 				'상차도 여부': 'dockStatus',
 				운송진행일자: 'outEndDate',
 				운송진행: 'outEndStatus',
@@ -155,6 +155,7 @@ export const AchievementFields = (auth) => {
 				제품군: 'spart',
 				'목적지 코드': 'destinationCode',
 				'목적지 명': 'destinationName',
+				'고객사 목적지 고유 번호': 'customerDestinationUid',
 				'목적지 주소': 'customerDestinationAddress',
 				'목적지 연락처(사무실)': 'customerDestinationPhone',
 				'목적지담당자 연락처 (휴대폰)': 'customerDestinationManagerPhone',

@@ -17,6 +17,7 @@ import { filterisReset } from '../../store/Layout/Layout'
 
 const GlobalProductSearch = ({
 	// prettier-ignore
+	param,
 	setParam,
 	globalProductResetOnClick,
 	globalProductSearchOnClick,
@@ -84,11 +85,16 @@ const GlobalProductSearch = ({
 			receiptStatus: '', // 입고 상태 (Receipt status)
 			receiptStatusList: [], // 입고 상태 목록 (Receipt status list)
 			registrationStatus: '', // 경매 등록 상태 (Auction registration status)
+			registrationStatusList: [], // 경매 등록 상태 (Auction registration status list)
 			orderStatus: '', // 주문 상태 (Order status)
 			orderStatusList: [], // 주문 상태 목록 (Order status list)
 			customerCode: '', // 고객 코드 (Customer code)
 			destinationCode: '', // 목적지 코드 (Destination code)
 			destinationName: '', // 목적지명 (Destination name)
+			destinationCode2: '', // 목적지 코드 (Destination code)
+			destinationName2: '', // 목적지명 (Destination name)
+			destinationCode3: '', // 목적지 코드 (Destination code)
+			destinationName3: '', // 목적지명 (Destination name)
 			customerDestinationUid: null, // 고객사 목적지 고유 번호 (Customer destination UID)
 			auctionNumber: '', // 경매 번호 (Auction number)
 			sendDate: '', // Send date
@@ -105,10 +111,12 @@ const GlobalProductSearch = ({
 			packageStatus: false, // 패키지 상태여부 (Package status)
 			shipmentStatus: '', // 출하 상태 (Shipment status)
 			shipmentStatusList: [], // 출하 상태 목록 (Shipment status list)
-			auctionStartDate: '', // 경매 시작 일자 (Auction start date)
-			auctionEndDate: '', // 경매 종료 일자 (Auction end date)
-			orderStartDate: '', // 주문 시작 일자 (Order start date)
-			orderEndDate: '', // 주문 종료 일자 (Order end date)
+			auctionStartDate: param?.auctionStartDate || '', // 경매 시작 일자 (Auction start date)
+			auctionEndDate: param?.auctionEndDate || '', // 경매 종료 일자 (Auction end date)
+			orderStartDate: param?.orderStartDate || '', // 주문 시작 일자 (Order start date)
+			orderEndDate: param?.orderEndDate || '', // 주문 종료 일자 (Order end date)
+			depositStartDate: '', // 입금확인 일자
+			depositEndDate: '', // 입금확인 일자
 			shippingStartDate: '', // 출하 시작 일자 (Shipping start date)
 			shippingEndDate: '', // 출하 종료 일자 (Shipping end date)
 			shipmentRequestStartDate: '', // 출고 요청 시작 일자 (Shipment request start date)

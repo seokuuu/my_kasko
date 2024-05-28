@@ -7,6 +7,7 @@ import { ProNoCellRenderer } from '../../pages/Table/ProNoCellRenderer'
 import { auctionPackDetailModal, auctionPackDetailNumAtom } from '../../store/Layout/Layout'
 import { PROD_COL_NAME } from '../user/constantKey'
 import { PackageNumCellRenderer } from '../../pages/Table/PackageNumCellRenderer'
+import PackageNumberRecommendCell from '../../pages/Product/PackageManage/cellRender/packageNumberRender'
 
 var checkboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping
@@ -226,6 +227,8 @@ export const AuctionRoundDetailFields = {
 	메모: 'memo',
 	비고: 'note',
 	ProNo: 'productNoNumber',
+	'총 중량': 'packageTotalWeight',
+	'총 개수': 'packageTotalCount',
 }
 
 /* ===================================================================
@@ -242,6 +245,8 @@ export const AuctionRoundExtraProductFields = {
 	폭: 'width',
 	길이: 'length',
 	중량: 'weight',
+	'총 중량': 'packageTotalWeight',
+	'총 개수': 'packageTotalCount',
 	'제품 등급': 'grade',
 	'용도 코드': 'usageCode',
 	용도명: 'usageCodeName',
@@ -397,6 +402,8 @@ export const AuctionRoundExtraProductPackageFieldsCols = [
 	{ ...commonStyles, field: '제품 번호' },
 	{ ...commonStyles, field: '패키지명' }, // 누락 추가
 	{ ...commonStyles, field: '패키지 번호' }, // 누락 추가
+	{ ...commonStyles, field: '총 중량' }, // 누락 추가
+	{ ...commonStyles, field: '총 개수' }, // 누락 추가
 	{ ...commonStyles, field: 'ProNo' },
 	{ ...commonStyles, field: '등록 일자' }, // 누락 추가
 	{ ...commonStyles, field: '창고' },
@@ -543,7 +550,18 @@ export const AuctionRoundDetailPackageFieldsCols = [
 
 	// 단일일때 미노출
 	{ ...commonStyles, field: '패키지명' },
-	{ ...commonStyles, field: '패키지 번호' },
+	{
+		...commonStyles,
+		field: '패키지 번호',
+		cellRenderer: PackageNumberRecommendCell,
+		cellRendererParams: {
+			uidFieldName: '패키지 번호', // 해당 get의 uid (필수수)
+			editType: 'openDetailModal',
+			moveUrl: '/product/packageedit', // modal의 띄울 종류 (선택)
+		},
+	},
+	{ ...commonStyles, field: '총 중량' },
+	{ ...commonStyles, field: '총 개수' },
 
 	// 패키지 명
 
@@ -1122,6 +1140,7 @@ export const AuctionProgressFieldsCols = [
 
 	{ ...commonStyles, field: '두께' },
 	{ ...commonStyles, field: '폭' },
+	{ ...commonStyles, field: '길이' },
 	{ ...commonStyles, field: '중량' },
 	{ ...commonStyles, field: '규격 약호' },
 	{ ...commonStyles, field: 'yp' },
@@ -1354,6 +1373,8 @@ export const AuctionWinningDetailFields = {
 	'카스코 낙찰가': 'confirmPrice',
 	//최종 수정자
 	수정일: 'updateDate',
+	'매입 운반비 적용 할증율': 'inboundFreightExtraRete',
+	'매출 운반비 적용 할증율': 'outboundFreightExtraRete',
 }
 
 export const AuctionWinningDetailFieldsCols = (selected) => {
@@ -1397,8 +1418,8 @@ export const AuctionWinningDetailFieldsCols = (selected) => {
 			field: PROD_COL_NAME.productNumber,
 			minWidth: 150,
 			// cellRenderer: MarkerCellRenderer,
-			cellRendererParams: (params) => params?.data[params.column.colId] || '',
-			valueGetter: (v) => v.data[v.column.colId]?.value || '',
+			// cellRendererParams: (params) => params?.data[params.column.colId] || '',
+			// valueGetter: (v) => v.data[v.column.colId]?.value || '',
 		},
 		{ ...commonStyles, field: '프로넘(ProNo)', minWidth: 100 },
 		{ ...commonStyles, field: '창고', minWidth: 100 },
@@ -1427,10 +1448,13 @@ export const AuctionWinningDetailFieldsCols = (selected) => {
 		{ ...commonStyles, field: '제품 공급가(원/톤)', minWidth: 100 },
 		{ ...commonStyles, field: '제품 부가세', minWidth: 100 },
 		{ ...commonStyles, field: '매출 기본 운임단가', minWidth: 100 },
+		{ ...commonStyles, field: '매출 운반비 적용 할증율', minWidth: 120 },
 		{ ...commonStyles, field: '매출 할증 운임단가', minWidth: 100 },
 		{ ...commonStyles, field: '매출 운송비 공급가', minWidth: 100 },
 		{ ...commonStyles, field: '매출 운송비 부가세', minWidth: 100 },
 		{ ...commonStyles, field: '매입 기본 운임단가', minWidth: 100 },
+		{ ...commonStyles, field: '매입 운반비 적용 할증율', minWidth: 120 },
+		{ ...commonStyles, field: '매입 할증 운임단가', minWidth: 100 },
 		{ ...commonStyles, field: '총부가세', minWidth: 100 },
 		{ ...commonStyles, field: '합계', minWidth: 100 },
 		{ ...commonStyles, field: '두께', minWidth: 100 },
@@ -1455,7 +1479,6 @@ export const AuctionWinningDetailFieldsCols = (selected) => {
 		{ ...commonStyles, field: '확정 전송일', minWidth: 100 },
 		{ ...commonStyles, field: '주문 번호', minWidth: 100 },
 		{ ...commonStyles, field: '비고', minWidth: 100 },
-		{ ...commonStyles, field: '매입 할증 운임단가', minWidth: 100 },
 		{ ...commonStyles, field: '매입 운반비 공급가(원/톤)', minWidth: 100 },
 		{ ...commonStyles, field: '매입 운송비 부가세', minWidth: 100 },
 		{ ...commonStyles, field: '재고 상태', minWidth: 100 },
@@ -1681,10 +1704,15 @@ export const AuctionWinningCreateFields = {
 	'판매 제외 사유': 'excludeSaleReason',
 	'재고 상태': 'stockStatus',
 	생성일: 'createDate',
-	패키지명: 'packageName',
-	'패키지 번호': 'packageNumber',
+	// 패키지명: 'packageName',
+	// '패키지 번호': 'packageNumber',
 
 	매입가: 'price',
+	'기본 운임 단가': 'freightFee',
+	'운임 할증': 'freightExtraRate',
+	'할증 운임단가': 'extraUnitPrice',
+	'낙찰 총 단가(원/톤)': 'totalBiddingPrice',
+	'확정 전송 낙찰 단가': 'totalSendBiddingPrice',
 }
 
 export const AuctionWinningCreateFieldsCols = [

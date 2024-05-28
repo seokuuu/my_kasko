@@ -36,8 +36,8 @@ const InventoryFind = ({
 	const { getRole } = useAuth()
 	const matchData =
 		getRole() === '카스코철강'
-			? { name: '고객명', code: '고객사 코드', businessNumber: '사업자번호' }
-			: { name: '고객명', code: '고객사 코드' }
+			? { name: '고객명', code: '고객사 코드', companyName: '회사명', businessNumber: '사업자번호' }
+			: { name: '고객명', code: '고객사 코드', companyName: '회사명' }
 	const destinationData = { name: '목적지', code: '목적지 코드', address: '목적지 주소' }
 	const customerGetData = data?.data?.data
 
@@ -53,11 +53,13 @@ const InventoryFind = ({
 	const handleSearch = () => {
 		const filteredResult = customerGetData?.filter((item) => {
 			const searchTermsLowerCase = searchTerm.toLowerCase()
-			return item.code.toLowerCase().includes(searchTermsLowerCase) ||
+
+			return (
+				item.code.toLowerCase().includes(searchTermsLowerCase) ||
 				item.name.toLowerCase().includes(searchTermsLowerCase) ||
-				getRole() === '카스코철강'
-				? item.businessNumber.toLowerCase().includes(searchTermsLowerCase)
-				: ''
+				item.companyName.toLowerCase().includes(searchTermsLowerCase) ||
+				(getRole() === '카스코철강' ? item.businessNumber.toLowerCase().includes(searchTermsLowerCase) : '')
+			)
 		})
 
 		// 검색어가 없을 때는 모든 데이터를 보여줌
@@ -136,6 +138,7 @@ const InventoryFind = ({
 									{title === '고객사 찾기' && (
 										<>
 											<ResultCell wid={100}>{matchData.name}</ResultCell>
+											<ResultCell wid={130}>{matchData.companyName}</ResultCell>
 											<ResultCell wid={100}>{matchData.code}</ResultCell>
 											{getRole() === '카스코철강' && <ResultCell wid={130}>{matchData.businessNumber}</ResultCell>}
 										</>
@@ -190,13 +193,13 @@ const InventoryFind = ({
 												</RadioMainDiv>
 											</ResultCell>
 											<ResultCell wid={title === '목적지 찾기' ? 300 : 100}>{item.name}</ResultCell>
+											{title === '고객사 찾기' && <ResultCell>{item.companyName}</ResultCell>}
 											<ResultCell>{item.code}</ResultCell>
 											{title === '목적지 찾기' && (
 												<>
 													<ResultCell wid={300}>{item.address}</ResultCell>
 												</>
 											)}
-
 											{title === '고객사 찾기' && getRole() === '카스코철강' && (
 												<>
 													<ResultCell wid={130}>{item.businessNumber}</ResultCell>

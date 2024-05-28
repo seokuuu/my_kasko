@@ -1,87 +1,114 @@
-import React from 'react'
 import { MainSelect } from '../../../common/Option/Main'
 import ProductNumber from '../../../components/GlobalProductSearch/SearchFields/ProductNumber'
-import { CustomerSearch, DateSearchSelect, DestinationSearch } from '../../../components/Search'
 import useGlobalProductSearchFieldData from '../../../hooks/useGlobalProductSearchFieldData'
 import {
+	ExInputsWrap,
 	FilterLeft,
 	FilterRight,
-	PWRight,
-	PartWrap,
-	RowWrap,
-	SearchContainer,
-	ExInputsWrap,
+	Input,
 	MiniInput,
+	PartWrap,
+	PWRight,
+	RowWrap,
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
 
-const RegisterSearchFilter = ({ search, setSearch, commonNumInputHandler }) => {
-	const { storageList, spartList } = useGlobalProductSearchFieldData()
-	const onChange = (key, value) => {
-		setSearch((p) => ({ ...p, [key]: value }))
-	}
+import { useAtomValue, useSetAtom } from 'jotai'
+import { GreyBtn } from '../../../common/Button/Button'
+import { CustomerSearch, DateSearchSelect } from '../../../components/Search'
+import StandardFind from '../../../modal/Multi/StandardFind'
+import { kyuModalAtom } from '../../../store/Layout/GlobalProductSearch'
+
+const DetailProgressSearchFields = ({
+	// prettier-ignore
+	search,
+	setSearch,
+	commonDropdownButtonHandler,
+	commonNumInputHandler,
+	onSpecHandler,
+}) => {
+	const {
+		// prettier-ignore
+		storageList,
+		spartList,
+		gradeList,
+	} = useGlobalProductSearchFieldData()
+
+	const setIsKyuModal = useSetAtom(kyuModalAtom)
+
 	return (
-		<SearchContainer>
+		<>
 			<FilterLeft>
 				<RowWrap none>
+					{/* 창고 구분 */}
 					<PartWrap first>
-						<h6>창고 구분</h6>
+						<h6>창고 구분 </h6>
 						<PWRight>
 							<MainSelect
 								options={storageList}
 								// defaultValue={storageList[0]}
 								value={search.storage}
 								name="storage"
-								onChange={(e) => onChange('storage', e)}
+								onChange={(e) => commonDropdownButtonHandler(e, 'storage')}
 							/>
 						</PWRight>
 					</PartWrap>
+					<PartWrap>
+						<h6>규격 약호</h6>
+						<Input readOnly={true} value={search.spec} />
+						<GreyBtn
+							style={{ width: '70px' }}
+							height={35}
+							margin={10}
+							fontSize={17}
+							onClick={() => setIsKyuModal(true)}
+						>
+							찾기
+						</GreyBtn>
+					</PartWrap>
+
+					{/* 규격약호 */}
+				</RowWrap>
+				<RowWrap>
 					<CustomerSearch search={search} setSearch={setSearch} />
 				</RowWrap>
+				{/* 2행 */}
 				<RowWrap>
-					<DestinationSearch
-						name={search.destinationName}
-						code={search.destinationCode}
-						setName={(value) => onChange('destinationName', value)}
-						setCode={(value) => onChange('destinationCode', value)}
-					/>
-					<DestinationSearch
-						name={search.destinationName2}
-						code={search.destinationCode2}
-						setName={(value) => onChange('destinationName2', value)}
-						setCode={(value) => onChange('destinationCode2', value)}
-					/>
-				</RowWrap>
-				<RowWrap>
-					<DestinationSearch
-						name={search.destinationName3}
-						code={search.destinationCode3}
-						setName={(value) => onChange('destinationName3', value)}
-						setCode={(value) => onChange('destinationCode3', value)}
-					/>
-				</RowWrap>
-				<RowWrap>
-					<DateSearchSelect
-						title={'주문 일자'}
-						startInitDate={search.orderStartDate}
-						endInitDate={search.orderEndDate}
-						startDateChange={(value) => onChange('orderStartDate', value)}
-						endDateChange={(value) => onChange('orderEndDate', value)}
-					/>
-					<PartWrap>
+					{/* 구분 */}
+					<PartWrap first>
 						<h6>구분</h6>
 						{/* 제품군 */}
-						<MainSelect
-							options={spartList}
-							defaultValue={spartList[0]}
-							value={search.spart}
-							name="spart"
-							onChange={(e) => onChange('spart', e)}
-						/>
+						<PWRight>
+							<MainSelect
+								options={spartList}
+								defaultValue={spartList[0]}
+								value={search.spart}
+								name="spart"
+								onChange={(e) => commonDropdownButtonHandler(e, 'spart')}
+							/>
+							<MainSelect
+								options={gradeList}
+								defaultValue={gradeList[0]}
+								value={search.grade}
+								name="grade"
+								onChange={(e) => commonDropdownButtonHandler(e, 'grade')}
+							/>
+						</PWRight>
 					</PartWrap>
 				</RowWrap>
-				<RowWrap none>
-					{/* 두깨 */}
+
+				<RowWrap>
+					<DateSearchSelect
+						title={'경매일시'}
+						startInitDate={search.auctionStartDate}
+						endInitDate={search.auctionEndDate}
+						startDateChange={(value) => commonDropdownButtonHandler(value, 'auctionStartDate')}
+						endDateChange={(value) => commonDropdownButtonHandler(value, 'auctionEndDate')}
+					/>
+				</RowWrap>
+
+				<RowWrap>
+					{/* 두께 */}
 					<PartWrap first>
 						<h6>두께(MM)</h6>
 						<ExInputsWrap>
@@ -146,6 +173,7 @@ const RegisterSearchFilter = ({ search, setSearch, commonNumInputHandler }) => {
 					</PartWrap>
 				</RowWrap>
 			</FilterLeft>
+			{useAtomValue(kyuModalAtom) === true && <StandardFind closeFn={onSpecHandler} />}
 			<FilterRight>
 				<ProductNumber
 					initialValue={search.productNumberList}
@@ -154,8 +182,8 @@ const RegisterSearchFilter = ({ search, setSearch, commonNumInputHandler }) => {
 					height="100%"
 				/>
 			</FilterRight>
-		</SearchContainer>
+		</>
 	)
 }
 
-export default RegisterSearchFilter
+export default DetailProgressSearchFields

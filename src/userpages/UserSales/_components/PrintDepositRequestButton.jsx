@@ -368,14 +368,18 @@ export const PrintDepositRequestButton = ({
 															<Td>{totalData.sumCostVat}</Td>
 															<Td>{calculateOrderPrice(infoData?.list)?.toLocaleString()}</Td>
 														</tr>
-														<tr style={{ border: '2px solid #c8c8c8' }}>
-															<Th colSpan="4">절단비</Th>
-															<Td colSpan="8">{calculateProductSplitPrice(infoData?.list)?.toLocaleString()}</Td>
-														</tr>
-														<tr style={{ border: '2px solid #c8c8c8' }}>
-															<Th colSpan="4">환불비</Th>
-															<Td colSpan="8">- {calculateOrderRefundPrice(infoData?.list)?.toLocaleString()}</Td>
-														</tr>
+														{calculateProductSplitPrice(infoData?.list) > 0 && (
+															<tr style={{ border: '2px solid #c8c8c8' }}>
+																<Th colSpan="4">절단비</Th>
+																<Td colSpan="8">{calculateProductSplitPrice(infoData?.list)?.toLocaleString()}</Td>
+															</tr>
+														)}
+														{calculateOrderRefundPrice(infoData?.list) > 0 && (
+															<tr style={{ border: '2px solid #c8c8c8' }}>
+																<Th colSpan="4">환불비</Th>
+																<Td colSpan="8">- {calculateOrderRefundPrice(infoData?.list)?.toLocaleString()}</Td>
+															</tr>
+														)}
 														<tr style={{ border: '2px solid #c8c8c8' }}>
 															<Th colSpan="4">총 금액</Th>
 															<Td colSpan="8">{calculateOrderTotalPrice(infoData?.list).toLocaleString()}</Td>

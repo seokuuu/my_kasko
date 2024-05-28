@@ -36,13 +36,15 @@ import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import RoundAucListEdit from './RoundAucListEdit'
 import RoundSearchFields from './RoundSearchFields'
 import useTableSelection from '../../../hooks/useTableSelection'
+import { useSearchParams } from 'react-router-dom'
 
 const Round = ({}) => {
 	const { simpleConfirm, simpleAlert } = useAlert()
+	const [searchParam, setSearchParam] = useSearchParams()
 	const [uidAtom, setUidAtom] = useAtom(btnCellUidAtom)
 	const [roundModal, setRoundModal] = useAtom(roundPostModalAtom)
 	const [editPage, setEditPage] = useAtom(auctionRoundEditPageAtom)
-	const [types, setTypes] = useState('단일')
+	const [types, setTypes] = useState(searchParam.get('type') || '단일')
 
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
@@ -177,7 +179,7 @@ const Round = ({}) => {
 					uidAtom={uidAtom}
 					auctionNum={auctionNum}
 					auctionStatus={auctionStatus}
-					roundPageRefetch={refetch}
+					roundPageRefetch={() => window.location.reload()}
 				/>
 			) : (
 				<FilterContianer>
@@ -185,10 +187,22 @@ const Round = ({}) => {
 						<div style={{ display: 'flex' }}>
 							<h1>경매 회차 관리</h1>
 							<SubTitle>
-								<StyledHeading isActive={types === '단일'} onClick={() => setTypes('단일')}>
+								<StyledHeading
+									isActive={types === '단일'}
+									onClick={() => {
+										setSearchParam({ type: '단일' })
+										setTypes('단일')
+									}}
+								>
 									단일
 								</StyledHeading>
-								<StyledSubHeading isActive={types === '패키지'} onClick={() => setTypes('패키지')}>
+								<StyledSubHeading
+									isActive={types === '패키지'}
+									onClick={() => {
+										setSearchParam({ type: '패키지' })
+										setTypes('패키지')
+									}}
+								>
 									패키지
 								</StyledSubHeading>
 							</SubTitle>

@@ -11,29 +11,47 @@ const ClientPostModal = ({ setEditModal, id }) => {
 	return (
 		<>
 			<ModalOverlayC />
-			<Container>
-				<MainTitleC style={{ fontSize: '18px' }}>
+			<CC>
+				<MainTitleCV2>
 					<div>사용자 {id ? '수정' : '등록'}</div>
 					<WhiteCloseBtn onClick={closeModal} src="/svg/white_btn_close.svg" />
-				</MainTitleC>
-				<UserPostCommon id={id} closeModal={closeModal} />
-			</Container>
+				</MainTitleCV2>
+				<Container>
+					<UserPostCommon id={id} closeModal={closeModal} />
+				</Container>
+			</CC>
 		</>
 	)
 }
 
 export default ClientPostModal
 
-const Container = styled.div`
-	border-radius: 10px;
-	position: fixed;
-	top: 50%;
+const CC = styled.div`
+	position: absolute;
+	top: 48%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	background-color: white;
+	width: 1200px;
 	height: 90vh;
 	z-index: 999;
+	border-radius: 10px;
 	border: 1px solid black;
+`
+
+const MainTitleCV2 = styled.div`
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	padding: 20px 24px;
+	background: #061737;
+	color: white;
+	font-size: 18px;
+`
+
+const Container = styled.div`
+	background-color: white;
+	width: 100%;
+	height: 100%;
 	overflow: hidden;
 	overflow-y: auto;
 `

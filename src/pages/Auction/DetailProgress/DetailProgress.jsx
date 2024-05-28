@@ -2,13 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import Excel from '../../../components/TableInner/Excel'
 
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
-
-import Hidden from '../../../components/TableInner/Hidden'
+import { toggleAtom } from '../../../store/Layout/Layout'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-
-import { useQueryClient } from '@tanstack/react-query'
-import { useAtom } from 'jotai'
 import { isEqual } from 'lodash'
 import { getDetailProgress } from '../../../api/auction/detailprogress'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
@@ -17,41 +12,14 @@ import useReactQuery from '../../../hooks/useReactQuery'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import Table from '../../Table/Table'
-import ProgressSearchFields from '../Progress/ProgressSearchFields'
 import { onSizeChange } from '../../Operate/utils'
 import useTableSelection from '../../../hooks/useTableSelection'
 import useTableData from '../../../hooks/useTableData'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import DetailProgressSearchFields from './DetailProgressSearchFields'
+import moment from 'moment/moment'
 
 const DetailProgress = ({}) => {
-	const radioDummy = ['전체', '미진행', '진행중', '종료']
-	const [checkRadio, setCheckRadio] = useState(Array.from({ length: radioDummy.length }, (_, index) => index === 0))
-
-	const [savedRadioValue, setSavedRadioValue] = useState('')
-	useEffect(() => {
-		const checkedIndex = checkRadio.findIndex((isChecked, index) => isChecked && index < radioDummy.length)
-
-		// 찾지 못하면 -1을 반환하므로, -1이 아닌 경우(찾은 경우)
-		// if (checkedIndex !== -1) {
-		//   const selectedValue = radioDummy[checkedIndex];
-		//   setSavedRadioValue(selectedValue); //내 state에 반환
-		//   setInput({ ...input, type: selectedValue }); //서버 전송용 input에 반환
-		// }
-	}, [checkRadio])
-
-	const handleSelectChange = (selectedOption, name) => {
-		// setInput(prevState => ({
-		//   ...prevState,
-		//   [name]: selectedOption.label,
-		// }));
-	}
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
-
 	// 토글 쓰기
 	const [exFilterToggle, setExfilterToggle] = useState(toggleAtom)
 	const [toggleMsg, setToggleMsg] = useState('On')
@@ -69,19 +37,23 @@ const DetailProgress = ({}) => {
 	const [getRow, setGetRow] = useState('')
 	const tableField = useRef(AuctionDetailProgressFieldsCols)
 	const getCol = tableField.current
-	const queryClient = useQueryClient()
-	const checkedArray = useAtom(selectedRowsAtom)[0]
+
+	const currentTime = moment(new Date()) // 현재 시간 가져오기
+	const startOfDay = currentTime.startOf('day').format('YYYY-MM-DD HH:mm:ss')
+	const endOfDay = currentTime.endOf('day').format('YYYY-MM-DD HH:mm:ss')
 
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
+		auctionStartDate: startOfDay,
+		auctionEndDate: endOfDay,
 	}
 	const [param, setParam] = useState(paramData)
 
 	const [liveStatus, setLiveStatus] = useState('LIVEgetDetailProgress')
 
 	// GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getDetailProgress)
+	const { isLoading, data, isSuccess, refetch } = useReactQuery(param, liveStatus, getDetailProgress)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
@@ -103,8 +75,6 @@ const DetailProgress = ({}) => {
 	}
 
 	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
 		setParam(paramData)
 	}
 	// import
@@ -146,7 +116,7 @@ const DetailProgress = ({}) => {
 						param={param}
 						setParam={setParam}
 						isToggleSeparate={true}
-						renderCustomSearchFields={(props) => <ProgressSearchFields {...props} />}
+						renderCustomSearchFields={(props) => <DetailProgressSearchFields {...props} />}
 						globalProductSearchOnClick={globalProductSearchOnClick}
 						globalProductResetOnClick={globalProductResetOnClick}
 					/>
@@ -168,7 +138,13 @@ const DetailProgress = ({}) => {
 						선택 중량 <span> {selectedWeightStr} </span> (kg) / 총 중량 {totalWeightStr} (kg)
 					</div>
 				</TCSubContainer>
-				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
+				<Table
+					loading={isLoading}
+					getCol={getCol}
+					getRow={getRow}
+					tablePagination={tablePagination}
+					onPageChange={onPageChange}
+				/>
 			</TableContianer>
 		</FilterContianer>
 	)

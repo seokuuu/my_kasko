@@ -7,7 +7,6 @@ import { NewBottomBtnWrap, SkyBtn, WhiteBtn, WhiteRedBtn } from '../../common/Bu
 import GlobalProductSearch from '../../components/GlobalProductSearch/GlobalProductSearch'
 import { ClaimContent, ClaimRow, ClaimTable, ClaimTitle, TableWrap } from '../../components/MapTable/MapTable'
 import Excel from '../../components/TableInner/Excel'
-import Hidden from '../../components/TableInner/Hidden'
 import PageDropdown from '../../components/TableInner/PageDropdown'
 import { AdminOrderManageFieldsCols, DetailOrderFieldsManage } from '../../constants/admin/AdminOrderDetail'
 import useReactQuery from '../../hooks/useReactQuery'
@@ -16,8 +15,8 @@ import {
 	FilterContianer,
 	FilterHeader,
 	FilterTCTop,
-	TCSubContainer,
 	TableContianer,
+	TCSubContainer,
 } from '../../modal/External/ExternalFilter'
 import useAlert from '../../store/Alert/useAlert'
 import { onClickCheckAtom, selectedRowsAtom, toggleAtom } from '../../store/Layout/Layout'
@@ -43,7 +42,6 @@ const AdminOrderDetail = () => {
 		postSuccessfulOrder,
 	} = useOrder()
 	const navigate = useNavigate()
-	const [getRow, setGetRow] = useState([])
 	const [productNumberOut, setProductNumberOut] = useState([])
 
 	// 쿼리 스트링에서 값 추출
@@ -61,7 +59,7 @@ const AdminOrderDetail = () => {
 	const totalPrice = query.get('totalPrice')
 	const customerDestinationPhone = query.get('customerDestinationPhone')
 	const packageNumber = query.get('packageNumber')
-	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
+
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
@@ -84,8 +82,11 @@ const AdminOrderDetail = () => {
 	const [param, setParam] = useState(paramData)
 	const [detailOrderPagination, setDetailOrderPagination] = useState([])
 	const [detailOrderListData, setDetailOrderListData] = useState(null)
-	const formatTableRowData = (orderDetail) => {
-		return add_element_field(orderDetail, DetailOrderFieldsManage)
+	const formatTableRowData = (list) => {
+		return add_element_field(
+			list.map((item, index) => ({ index: index + 1, ...item })),
+			DetailOrderFieldsManage,
+		)
 	}
 	const { data: detailRes, isSuccess, refetch } = useReactQuery(param, 'getDetailOrderList', getDetailOrderList)
 	useEffect(() => {
@@ -108,28 +109,7 @@ const AdminOrderDetail = () => {
 			pageNum: Number(value),
 		}))
 	}
-	//checkSales
-	const [check1, setCheck1] = useState(Array.from({ length: checkSales.length }, () => false))
 
-	//checkShips
-	const [checkData1, setCheckData1] = useState(Array.from({ length: checkSales.length }, () => ''))
-
-	useEffect(() => {
-		// true에 해당되면, value를, false면 빈값을 반환
-		const updatedCheck = checkSales.map((value, index) => {
-			return check1[index] ? value : ''
-		})
-		// 빈값을 제외한 진짜배기 값이 filteredCheck에 담긴다.
-		const filteredCheck = updatedCheck.filter((item) => item !== '')
-		setCheckData1(filteredCheck)
-	}, [check1])
-
-	const [isRotated, setIsRotated] = useState(false)
-
-	// Function to handle image click and toggle rotation
-	const handleImageClick = () => {
-		setIsRotated((prevIsRotated) => !prevIsRotated)
-	}
 	// 토글 쓰기
 	const titleData = [
 		'판매 유형',
@@ -285,16 +265,14 @@ const AdminOrderDetail = () => {
 				</TableWrap>
 
 				{exFilterToggle && (
-					<>
-						<GlobalProductSearch
-							param={param}
-							setParam={setParam}
-							isToggleSeparate={true}
-							renderCustomSearchFields={(props) => <OrderDetailSearchFields {...props} />}
-							globalProductSearchOnClick={globalProductSearchOnClick}
-							globalProductResetOnClick={globalProductResetOnClick}
-						/>
-					</>
+					<GlobalProductSearch
+						param={param}
+						setParam={setParam}
+						isToggleSeparate={true}
+						renderCustomSearchFields={(props) => <OrderDetailSearchFields {...props} />}
+						globalProductSearchOnClick={globalProductSearchOnClick}
+						globalProductResetOnClick={globalProductResetOnClick}
+					/>
 				)}
 				<TableContianer>
 					<TCSubContainer bor>
@@ -306,7 +284,7 @@ const AdminOrderDetail = () => {
 						<div style={{ display: 'flex', gap: '10px' }}>
 							{/*<PageDropdown />*/}
 							<PageDropdown handleDropdown={(e) => onSizeChange(e, setParam)} />
-							<Excel getRow={getRow} sheetName="주문 관리 상세" />
+							<Excel getRow={detailOrderListData} sheetName="주문 관리 상세" />
 						</div>
 					</TCSubContainer>
 					<TCSubContainer>

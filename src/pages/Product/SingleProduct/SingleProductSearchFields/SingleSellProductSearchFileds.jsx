@@ -33,12 +33,11 @@ const SingleSellProductSearchFields = ({
 	const {
 		// prettier-ignore
 		storageList,
-		supplierList,
 		spartList,
-		makerList,
 		stockStatusList,
 		gradeList,
 		preferThicknessList,
+		registrationStatusList,
 	} = useGlobalProductSearchFieldData()
 
 	const setIsKyuModal = useSetAtom(kyuModalAtom)
@@ -220,6 +219,14 @@ const SingleSellProductSearchFields = ({
 							setState={setSearch}
 							stateKey="salePriceTypeList"
 							stateType={'object'}
+						/>
+					</PartWrap>
+					<PartWrap>
+						<h6>경매 등록 상태</h6>
+						<CustomCheckBox
+							initOptions={registrationStatusList}
+							setState={setSearch}
+							stateKey="registrationStatusList"
 						/>
 					</PartWrap>
 				</RowWrap>

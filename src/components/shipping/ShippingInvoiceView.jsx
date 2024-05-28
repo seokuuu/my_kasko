@@ -32,7 +32,9 @@ const ShippingInvoiceView = ({ customerCode, outNumber }) => {
 
 	return (
 		<div style={{ display: 'flex', gap: '10px' }}>
-			<WhiteSkyBtn onClick={openInvoice}>거래 명세서 출력</WhiteSkyBtn>
+			<WhiteSkyBtn className={'shipment_invoice'} onClick={openInvoice}>
+				거래 명세서 출력
+			</WhiteSkyBtn>
 			{open && <InvoiceView data={data} closeModal={() => setOpen(false)} />}
 		</div>
 	)

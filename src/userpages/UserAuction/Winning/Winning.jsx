@@ -1,12 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { toggleAtom } from '../../../store/Layout/Layout'
 
 import { FilterContianer, FilterHeader, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
-
-import { useQueryClient } from '@tanstack/react-query'
-import { useAtom } from 'jotai'
 import { isEqual } from 'lodash'
 import { getWinning } from '../../../api/auction/winning'
 import { CAUTION_CATEGORY, CautionBox } from '../../../components/CautionBox'
@@ -43,14 +40,16 @@ const Winning = ({}) => {
 	 * - 페이지 첫 렌더시
 	 * - 현재 시간 (00:00:00 ~ 23:59:59)이 default.
 	 */
-	const currentTime = moment() // 현재 시간 가져오기
-	const startOfDay = currentTime.startOf('day')
-	const endOfDay = currentTime.endOf('day')
+	const currentTime = moment(new Date()) // 현재 시간 가져오기
+	const startOfDay = currentTime.startOf('day').format('YYYY-MM-DD HH:mm:ss')
+	const endOfDay = currentTime.endOf('day').format('YYYY-MM-DD HH:mm:ss')
 
 	const paramData = {
 		pageNum: 1,
 		pageSize: 50,
 		orderType: '경매',
+		auctionStartDate: startOfDay,
+		auctionEndDate: endOfDay,
 	}
 
 	const [param, setParam] = useState(paramData)
@@ -66,12 +65,12 @@ const Winning = ({}) => {
 	const getCol = tableField.current
 
 	// GET
-	const { isLoading, isError, data, isSuccess, refetch } = useReactQuery(param, 'getDetailProgress', getWinning)
+	const { isLoading, data, isSuccess, refetch } = useReactQuery(param, 'getDetailProgress', getWinning)
 	const resData = data?.data?.data?.list
 	const resPagination = data?.data?.data?.pagination
 
 	useEffect(() => {
-		let getData = resData
+		let getData = resData || []
 		//타입, 리액트쿼리, 데이터 확인 후 실행
 		if (!isSuccess && !resData) return
 		if (Array.isArray(getData)) {
@@ -166,6 +165,7 @@ const Winning = ({}) => {
 					<div style={{ display: 'flex', gap: '10px' }}></div>
 				</TCSubContainer>
 				<Table
+					loading={isLoading}
 					getCol={getCol}
 					getRow={getRow}
 					tablePagination={tablePagination}

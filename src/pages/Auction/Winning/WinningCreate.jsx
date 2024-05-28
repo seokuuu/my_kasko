@@ -30,16 +30,17 @@ import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { InputContainer } from '../../../common/Input/Input'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { isArray, isEqual } from 'lodash'
 import {
 	getAuctionDetailDestination,
 	getAuctionNumber,
 	successfulBid,
+	useGetWinningCreateBiddingProducts,
 	useGetWinningCreateBiddingTotalPrice,
 } from '../../../api/auction/winning'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import { AuctionWinningCreateFieldsCols } from '../../../constants/admin/Auction'
+import { AuctionWinningCreateFields, AuctionWinningCreateFieldsCols } from '../../../constants/admin/Auction'
 import useReactQuery from '../../../hooks/useReactQuery'
 import CustomerCodeFind from '../../../modal/Multi/CustomerCodeFind'
 import CustomerFind from '../../../modal/Multi/CustomerFind'
@@ -51,20 +52,14 @@ import WinningProductAdd from './WinningProductAdd'
 import useTableSelection from '../../../hooks/useTableSelection'
 import WinningProductCreateBtn from './WinningProductCreateBtn'
 import { numberDeleteComma } from '../../../utils/utils'
+import { add_element_field } from '../../../lib/tableHelpers'
+import { AuctionWinningFields } from '../../../constants/admin/Winning'
 
-const WinningCreate = ({}) => {
+const WinningCreate = () => {
 	const [values, setValues] = useState([]) // 배열 형태로 초기화
 	const navigate = useNavigate()
 	const { simpleConfirm, simpleAlert, showAlert } = useAlert()
 	const [destinationPopUp, setDestinationPopUp] = useAtom(invenDestination)
-	const [destinationData, setDestinationData] = useAtom(winningDestiData)
-
-	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
-	const [editData, setEditData] = useState({
-		auctionNumber: '',
-		addProductUids: [],
-		deleteAuctionProductList: [],
-	})
 
 	const init = {
 		auctionNumber: '',
@@ -111,10 +106,39 @@ const WinningCreate = ({}) => {
 	const [propsUid, setPropsUid] = useState(null) // CustomerCodeFind에서 찾아온 uid
 	const [destiObject, setDestiObject] = useState()
 
-	// 낙찰가 총액
+	// 낙찰가 총액 정보
 	const [totalBiddingPriceRequestData, setTotalBiddingPriceRequestData] = useState(null)
+
 	// prettier-ignore
-	const { data: totalBiddingPriceData, isFetching: totalBiddingPriceLoading } = useGetWinningCreateBiddingTotalPrice(totalBiddingPriceRequestData)
+	const { data: newTableData } = useGetWinningCreateBiddingProducts(totalBiddingPriceRequestData)
+	const [totalBiddingPriceData, setTotalBiddingPriceData] = useState({
+		totalBiddingPrice: 0,
+		totalSendBiddingPrice: 0,
+	})
+
+	const [tableRowsData, setTableRowsData] = useState([])
+
+	useEffect(() => {
+		if (Array.isArray(newTableData)) {
+			if (newTableData.length === 0) {
+				return simpleAlert('추가한 제품들은 존재하지 않습니다.')
+			}
+
+			setTableRowsData(add_element_field(newTableData, AuctionWinningCreateFields))
+
+			const totalBiddingPrice = newTableData
+				.map((item) => item?.totalBiddingPrice)
+				.reduce((acc, cur) => Number(acc) + Number(cur), 0)
+				.toLocaleString()
+
+			const totalSendBiddingPrice = newTableData
+				.map((item) => item?.totalSendBiddingPrice)
+				.reduce((acc, cur) => Number(acc) + Number(cur), 0)
+				.toLocaleString()
+
+			setTotalBiddingPriceData({ totalBiddingPrice, totalSendBiddingPrice })
+		}
+	}, [newTableData])
 
 	// 목적지 찾기 및 목적지 uid, auctionNumber set //
 	useEffect(() => {
@@ -133,38 +157,17 @@ const WinningCreate = ({}) => {
 
 	const [tablePagination, setTablePagination] = useState([])
 
-	const [getRow, setGetRow] = useState('')
-
 	const tableField = useRef(AuctionWinningCreateFieldsCols)
 	const getCol = tableField.current
 	const queryClient = useQueryClient()
 
-	const [checkedArray2, setCheckedArray2] = useAtom(selectedRowsAtom2)
-
-	const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
-	const [totalWon, setTotalWon] = useState({
-		biddingPrice: null,
-		confirmPrice: null,
-	})
+	const checkedArray2 = useAtomValue(selectedRowsAtom2)
 
 	useEffect(() => {
-		// const updatedProductList = checkedArray2?.map((item) => ({
-		// 	productUid: item['제품 번호'],
-		// 	biddingPrice: winningCreateInput.biddingPrice,
-		// 	confirmPrice: winningCreateInput.confirmPrice,
-		// 	// 여기에 다른 필요한 속성을 추가할 수 있습니다.
-		// }))
-
 		// winningCreateData를 업데이트하여 productList를 갱신
 		setWinningCreateData((prevData) => ({
 			...prevData,
 			productList: values,
-		}))
-
-		setTotalWon((prevData) => ({
-			...prevData,
-			biddingPrice: winningCreateInput?.biddingPrice * (checkedArray2?.length || 0),
-			confirmPrice: winningCreateInput?.confirmPrice * (checkedArray2?.length || 0),
 		}))
 	}, [checkedArray2, winningCreateInput, addProdModal])
 
@@ -181,22 +184,6 @@ const WinningCreate = ({}) => {
 	const [newResData, setNewResData] = useState([])
 
 	useEffect(() => {
-		//타입, 리액트쿼리, 데이터 확인 후 실행
-		if (Array.isArray(newResData)) {
-			const combinedData = [...newResData]
-
-			const intUniqueData = combinedData.map((item) => ({
-				...item,
-				중량: parseInt(numberDeleteComma(item['중량'])), // 콤마 제거 후 정수형 변환
-				길이: parseInt(numberDeleteComma(item['길이'])), // 콤마 제거 후 정수형 변환
-			}))
-
-			setGetRow(intUniqueData)
-			// setTablePagination(resPagination)
-		}
-	}, [newResData])
-
-	useEffect(() => {
 		if (newResData?.length > 0 && destiObject) {
 			const requestData = newResData.map((item) => ({
 				productNumber: item['제품 번호'],
@@ -208,12 +195,12 @@ const WinningCreate = ({}) => {
 		}
 	}, [newResData, destiObject])
 
-	const dupleUids = getRow && getRow?.map((item) => item['제품 번호'])
+	const dupleUids = tableRowsData && tableRowsData?.map((item) => item['제품 번호'])
 
 	const handleRemoveBtn = useCallback(() => {
 		if (!isArray(checkedArray2) || !checkedArray2.length > 0) return simpleAlert('추가할 항목을 선택해주세요.')
 
-		simpleConfirm('선택한 항목을 삭제 목록에 추가하시겠습니까?', () => {
+		simpleConfirm('선택한 항목을 목록에서 제거하시겠습니까?', () => {
 			const filteredArray = newResData.filter(
 				(item) => !checkedArray2.some((checkedItem) => checkedItem['제품 번호'] === item['제품 번호']),
 			)
@@ -259,7 +246,6 @@ const WinningCreate = ({}) => {
 	})
 
 	const successfulBidOnClick = () => {
-		// if (!isArray(checkedArray2) || !checkedArray2.length > 0) return simpleAlert('등록할 항목을 선택해주세요.')
 		if (!destiObject) return simpleAlert('목적지 적용이 필요합니다.')
 		if (winningCreateData?.productList?.length === 0) {
 			return simpleAlert('제품을 추가해주세요.')
@@ -267,33 +253,20 @@ const WinningCreate = ({}) => {
 		successfulBidMutation(winningCreateData)
 	}
 
-	const globalProductResetOnClick = () => {
-		// if resetting the search field shouldn't rerender table
-		// then we need to create paramData object to reset the search fields.
-		setParam(paramData)
-	}
-	// import
-	const globalProductSearchOnClick = (userSearchParam) => {
-		setParam((prevParam) => {
-			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				// refetch()
-				return prevParam
-			}
-			return {
-				...prevParam,
-				...userSearchParam,
-			}
-		})
-	}
-
-	const { selectedData, selectedWeightStr, selectedWeight, selectedCountStr } = useTableSelection({
+	const { selectedWeightStr, selectedCountStr } = useTableSelection({
 		weightKey: '중량',
 	})
 
-	const totalWeight = getRow && getRow?.map((x) => x['중량'])
+	const totalWeight = tableRowsData && tableRowsData?.map((x) => x['중량'])
 	const sum = totalWeight && totalWeight?.reduce((acc, curr) => acc + parseInt(curr), 0)
 
 	const productAddOnClickHandler = () => {
+		if (!customerData) {
+			return simpleAlert('제품 추가 전 고객사를 선택해주세요.')
+		}
+		if (!destiObject) {
+			return simpleAlert('제품 추가 전 목적지를 적용해주세요.')
+		}
 		setAddProdModal(true)
 	}
 
@@ -303,8 +276,8 @@ const WinningCreate = ({}) => {
 				<div style={{ display: 'flex' }}>
 					<h1>낙찰 생성</h1>
 				</div>
-				{/* 토글 쓰기 */}
-				<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />
+				{/*/!* 토글 쓰기 *!/*/}
+				{/*<HeaderToggle exFilterToggle={exFilterToggle} toggleBtnClick={toggleBtnClick} toggleMsg={toggleMsg} />*/}
 			</FilterHeader>
 
 			<FilterTopContainer>
@@ -376,53 +349,37 @@ const WinningCreate = ({}) => {
 					<FilterTCBSubdiv>
 						<div style={{ marginRight: '10px' }}>
 							<h6 style={{ fontSize: '18px' }}>낙찰가 총액 (공급가)</h6>
-							{totalBiddingPriceLoading ? (
-								<InputContainer>데이터 로딩 중...</InputContainer>
-							) : totalBiddingPriceData ? (
-								<InputContainer>{totalBiddingPriceData?.totalBiddingPrice?.toLocaleString() + '원'}</InputContainer>
-							) : (
-								<InputContainer>0</InputContainer>
-							)}
+							<InputContainer>{totalBiddingPriceData?.totalBiddingPrice?.toLocaleString() + '원'}</InputContainer>
 						</div>
-						{/* <div style={{ marginRight: '10px' }}>
-                  <h6 style={{ fontSize: '17px' }}>총 중량</h6>
-                  <Input />
-                </div> */}
 
 						<div style={{ marginRight: '10px' }}>
 							<h6 style={{ fontSize: '17px' }}>확정전송액 (공급가)</h6>
-							{totalBiddingPriceLoading ? (
-								<InputContainer>데이터 로딩 중...</InputContainer>
-							) : totalBiddingPriceData ? (
-								<InputContainer>{totalBiddingPriceData?.totalSendBiddingPrice?.toLocaleString() + '원'}</InputContainer>
-							) : (
-								<InputContainer>0</InputContainer>
-							)}
+							<InputContainer>{totalBiddingPriceData?.totalSendBiddingPrice?.toLocaleString() + '원'}</InputContainer>
 						</div>
 					</FilterTCBSubdiv>
 				</FilterTCBottom>
 			</FilterTopContainer>
-			{exFilterToggle && (
-				<>
-					<GlobalProductSearch
-						param={param}
-						setParam={setParam}
-						isToggleSeparate={true}
-						renderCustomSearchFields={(props) => <BiddingSearchFields type={'낙찰 생성'} {...props} />} // 만들어야함 -> WinningSearchFields
-						globalProductSearchOnClick={globalProductSearchOnClick} // import
-						globalProductResetOnClick={globalProductResetOnClick} // import
-					/>
-				</>
-			)}
+			{/*{exFilterToggle && (*/}
+			{/*	<>*/}
+			{/*		<GlobalProductSearch*/}
+			{/*			param={param}*/}
+			{/*			setParam={setParam}*/}
+			{/*			isToggleSeparate={true}*/}
+			{/*			renderCustomSearchFields={(props) => <BiddingSearchFields type={'낙찰 생성'} {...props} />} // 만들어야함 -> WinningSearchFields*/}
+			{/*			globalProductSearchOnClick={globalProductSearchOnClick} // import*/}
+			{/*			globalProductResetOnClick={globalProductResetOnClick} // import*/}
+			{/*		/>*/}
+			{/*	</>*/}
+			{/*)}*/}
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
-						조회 목록 (선택 <span>{selectedCountStr}</span> / {getRow?.length}개 )
+						조회 목록 (선택 <span>{selectedCountStr}</span> / {tableRowsData?.length}개 )
 						<TableV2HiddenSection />
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						<Excel getRow={getRow} sheetName="낙찰 생성" />
+						<Excel getRow={tableRowsData} sheetName="낙찰 생성" />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
@@ -437,11 +394,13 @@ const WinningCreate = ({}) => {
 							values={values}
 							setValues={setValues}
 							setWinningCreateData={setWinningCreateData}
+							customerData={customerData}
+							destiObject={destiObject}
 						/>
 						<SkyBtn onClick={productAddOnClickHandler}>제품 추가</SkyBtn>
 					</div>
 				</TCSubContainer>
-				<Table getCol={getCol} getRow={getRow} tablePagination={tablePagination} onPageChange={onPageChange} />
+				<Table getCol={getCol} getRow={tableRowsData} tablePagination={tablePagination} onPageChange={onPageChange} />
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>

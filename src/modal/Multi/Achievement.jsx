@@ -20,6 +20,7 @@ import { RadioSearchButton } from '../../components/Search'
 
 import { getAdminTransportation } from '../../service/admin/Standard'
 import { formatWeight } from '../../utils/utils'
+import useAlert from '../../store/Alert/useAlert'
 
 const initData = {
 	orderUid: '',
@@ -27,15 +28,20 @@ const initData = {
 	extraCost: 0,
 	extraContents: '',
 	isFreightCost: false,
+	extraWeight: 0,
 	transportationCost: 0,
 	extraFreightCost: 0,
 }
 
 const isNumber = (value) => /^\d*$/.test(value)
+const EXTRA_DEFAULT_WEIGHT = 25000
 
-const Achievement = ({ setAddedModal, data }) => {
+const Achievement = ({ setAddedModal, data, totalWeight }) => {
+	const { simpleAlert } = useAlert()
 	const [param, setParam] = useState(initData)
+
 	const onChange = (key, value) => setParam((prev) => ({ ...prev, [key]: value }))
+
 	const onNumberChange = (key, value) => {
 		let newValue = value.replace(/,/g, '')
 		if (!isNumber(newValue)) newValue = ''
@@ -47,17 +53,19 @@ const Achievement = ({ setAddedModal, data }) => {
 	// 추가비 및 공차비 추가
 	const onAddExtraCost = () => {
 		if (param.extraType === null && !param.isFreightCost) {
-			return window.alert('추가할 내용을 입력해주세요.')
+			return simpleAlert('추가할 내용을 입력해주세요.')
 		}
 		const body = {
 			orderUid: data?.orderUid,
+			outNumber: data?.outNumber,
+			customerDestinationUid: data?.customerDestinationUid,
 		}
 		if (param.extraType !== null) {
 			body.extraType = param.extraType
 			body.extraCost = Number(param.extraCost)
 			body.extraContents = param.extraType
 		}
-		if (!!param.isFreightCost) {
+		if (param.isFreightCost) {
 			body.extraFreightCost = param.extraFreightCost
 		}
 		addExtraCost(body)
@@ -76,10 +84,14 @@ const Achievement = ({ setAddedModal, data }) => {
 			destinationCode: data.destinationCode,
 		}
 		const response = await getAdminTransportation(paramData)
+
 		const transportationCost = response?.data?.data?.list[0].effectCost ?? 0
-		const weight = data?.weight ?? 0
+		const extraWeight = EXTRA_DEFAULT_WEIGHT - totalWeight ?? 0
+		const extraFreightCost = Math.floor(extraWeight * transportationCost) / 1000
+
+		onChange('extraWeight', extraWeight)
 		onChange('transportationCost', transportationCost)
-		onChange('extraFreightCost', Math.floor(weight * transportationCost) / 1000)
+		onChange('extraFreightCost', extraFreightCost)
 	}
 
 	useEffect(() => {
@@ -113,6 +125,12 @@ const Achievement = ({ setAddedModal, data }) => {
 								<p>{data?.customerName ?? '-'}</p>
 							</BlueSubDiv>
 						</BlueMainDiv>
+						<BlueMainDiv>
+							<BlueSubDiv style={{ height: '30px', margin: 0 }}>
+								<h6>제품 총 중량</h6>
+								<p>{totalWeight?.toLocaleString() ?? '-'} kg</p>
+							</BlueSubDiv>
+						</BlueMainDiv>
 						<Bar width={90} color="#c8c8c8" top={15} />
 						<BlueMainDiv style={{ border: 'none' }}>
 							<BlueSubDiv style={{ height: '50px' }}>
@@ -137,36 +155,40 @@ const Achievement = ({ setAddedModal, data }) => {
 							)}
 						</BlueMainDiv>
 
-						<BlueRadioWrap style={{ marginLeft: '20px' }}>
-							<RadioSearchButton
-								title={'공차비'}
-								options={[
-									{ label: '미포함', value: false },
-									{ label: '포함', value: true },
-								]}
-								value={param.isFreightCost}
-								onChange={(value) => onChange('isFreightCost', value)}
-							/>
-						</BlueRadioWrap>
-						{param.isFreightCost && (
-							<BlueMainDiv style={{ border: 'none' }}>
-								<div style={{ display: 'flex', gap: '20px' }}>
-									<InputColWrap>
-										<p>제품 중량</p>
-										<BlueInput value={formatWeight(Number(data?.weight))} readOnly />
-										<AbsoluteDiv>*</AbsoluteDiv>
-									</InputColWrap>
-									<InputColWrap>
-										<p>운반비 단가</p>
-										<BlueInput value={formatWeight(Number(param?.transportationCost))} readOnly />
-										<AbsoluteDiv>=</AbsoluteDiv>
-									</InputColWrap>
-									<InputColWrap>
-										<p>공차비</p>
-										<BlueInput value={formatWeight(Number(param?.extraFreightCost))} readOnly />
-									</InputColWrap>
-								</div>
-							</BlueMainDiv>
+						{param?.extraFreightCost > 0 && (
+							<>
+								<BlueRadioWrap style={{ marginLeft: '20px' }}>
+									<RadioSearchButton
+										title={'공차비'}
+										options={[
+											{ label: '미포함', value: false },
+											{ label: '포함', value: true },
+										]}
+										value={param.isFreightCost}
+										onChange={(value) => onChange('isFreightCost', value)}
+									/>
+								</BlueRadioWrap>
+								{param.isFreightCost && (
+									<BlueMainDiv style={{ border: 'none' }}>
+										<div style={{ display: 'flex', gap: '20px' }}>
+											<InputColWrap>
+												<p>공차 중량</p>
+												<BlueInput value={formatWeight(Number(param?.extraWeight))} readOnly />
+												<AbsoluteDiv>*</AbsoluteDiv>
+											</InputColWrap>
+											<InputColWrap>
+												<p>운반비 단가</p>
+												<BlueInput value={formatWeight(Number(param?.transportationCost))} readOnly />
+												<AbsoluteDiv>=</AbsoluteDiv>
+											</InputColWrap>
+											<InputColWrap>
+												<p>공차비</p>
+												<BlueInput value={formatWeight(Number(param?.extraFreightCost))} readOnly />
+											</InputColWrap>
+										</div>
+									</BlueMainDiv>
+								)}
+							</>
 						)}
 					</div>
 					<BlueBtnWrap>

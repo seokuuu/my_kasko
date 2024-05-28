@@ -28,6 +28,7 @@ export const QUERY_KEY = {
 	addExtraCost: ['shipment', 'extra', 'add'],
 	removeExtraCost: ['shipment', 'extra', 'remove'],
 	invoice: ['shipment', 'invoice'],
+	invoiceV2: ['shipment', 'invoice', 'v2'],
 	invoiceAll: ['shipment', 'invoiceAll'],
 }
 
@@ -233,7 +234,7 @@ export function useShipmentAddExtraCostMutation() {
 			return client.post(SHIPMENT_EXTRA_COST_URL, param)
 		},
 		onSuccess() {
-			simpleAlert('완료되었습니다.', () => window.location.reload())
+			simpleAlert('완료되었습니다.')
 			queryClient.invalidateQueries(QUERY_KEY.list)
 		},
 		onError(error) {
@@ -247,8 +248,8 @@ export function useShipmentRemoveExtraCostMutation() {
 	const { simpleAlert } = useAlert()
 	return useMutation({
 		mutationKey: QUERY_KEY.removeExtraCost,
-		mutationFn: async function (id) {
-			return client.delete(`${SHIPMENT_EXTRA_COST_URL}/${id}`)
+		mutationFn: async function (params) {
+			return client.delete(`${SHIPMENT_EXTRA_COST_URL}/${params.outNumber}/${params.customerDestinationUid}`)
 		},
 		onSuccess() {
 			simpleAlert('완료되었습니다.')
@@ -278,4 +279,13 @@ export function useShipmentInvoiceListQuery(params) {
 export async function shipmentInvoiceAllListQuery(param) {
 	const response = await client.get(`${SHIPMENT_ORDER_INVOICE_URL}/${param}`)
 	return response.data.data
+}
+
+// 출고실적 거래명세서 목록
+export async function shipmentInvoiceListQueryV2(params) {
+	const isEnabled = params.shipmentStartDate && params.shipmentEndDate && params.customerCode
+	if (isEnabled) {
+		const response = await client.get(SHIPMENT_ORDER_INVOICE_URL + '/v2', { params })
+		return response.data.data
+	}
 }

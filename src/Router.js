@@ -141,6 +141,7 @@ import NoticeDetailsPage from './pages/Operate/Common/Notice/NoticeDetailsPage'
 import NoticeBoardDetailsPage from './pages/Operate/Exposure/NoticeBoard/NoticeBoardDetailsPage'
 import ShipmentInvoicePage from './pages/Shipping/Achievement/ShipmentInvoicePage'
 import DisRegisterDetailPage from './pages/Shipping/Dispatch/DisRegisterDetailPage'
+import AchievementDetailsPage from './pages/Shipping/Achievement/AchievementDetailsPage'
 import StatusPage from './pages/Shipping/Status/StatusPage'
 // import StatusPage from './pages/Shipping/Status/StatusPage'
 // import ShipmentInvoicePage from './pages/Shipping/Achievement/ShipmentInvoicePage'
@@ -156,6 +157,7 @@ import PopupComponent from './pages/Operate/Exposure/Popup/PopupComponent'
 import RequestRecomPage from './pages/Shipping/Request/RequestRecomPage'
 import Timeout from './pages/Timeout'
 import { authAtom } from './store/Auth/auth'
+import NewShipmentInvoicePage from './pages/Shipping/Achievement/NewShipmentInvoicePage'
 
 const Router = () => {
 	const auth = useAtomValue(authAtom)
@@ -231,7 +233,9 @@ const Router = () => {
 				<Route path="/shipping/status" element={<StatusPage />} />
 				<Route path="/shipping/status/:id" element={<StatusDetailPage />} />
 				<Route path="/shipping/achievement" element={<AchievementPage />} />
-				<Route path="/shipping/achievement/invoice" element={<ShipmentInvoicePage />} />
+				<Route path="/shipping/achievement/:outNumber/:customerDestinationUid" element={<AchievementDetailsPage />} />
+				{/*<Route path="/shipping/achievement/invoice" element={<ShipmentInvoicePage />} />*/}
+				<Route path="/shipping/achievement/invoice" element={<NewShipmentInvoicePage />} />
 				<Route path="/shipping/claim/register" element={<ClaimRegisterPage />} />
 			</Route>
 			{/* 기준 관리 */}

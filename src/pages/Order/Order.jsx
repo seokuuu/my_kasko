@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { SkyBtn, WhiteRedBtn } from '../../common/Button/Button'
 import Excel from '../../components/TableInner/Excel'
 import HeaderToggle from '../../components/Toggle/HeaderToggle'
@@ -23,10 +23,13 @@ import useAlert from '../../store/Alert/useAlert'
 import useOrder from './useOrder'
 import { onSizeChange } from '../Operate/utils'
 import TableV2HiddenSection from '../Table/TableV2HiddenSection'
+import moment from 'moment/moment'
 
 const paramData = {
 	pageNum: 1,
 	pageSize: 50,
+	// orderStartDate: moment(new Date()).startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+	// orderEndDate: moment(new Date()).endOf('day').format('YYYY-MM-DD HH:mm:ss'),
 }
 
 const Order = () => {
@@ -43,8 +46,11 @@ const Order = () => {
 	const { data: inventoryCustomer } = useReactQuery('', 'getCustomerFind', getCustomerFind)
 
 	/** 데이터 가져오는 부분 React-Query로 변경 */
-	const formatTableRowData = (orderRes) => {
-		return add_element_field(orderRes, orderFieldData)
+	const formatTableRowData = (list) => {
+		return add_element_field(
+			list.map((item, index) => ({ index: index + 1, ...item })),
+			orderFieldData,
+		)
 	}
 
 	useEffect(() => {
@@ -147,6 +153,10 @@ const Order = () => {
 	useEffect(() => {
 		refetch()
 	}, [param])
+
+	useLayoutEffect(() => {
+		refetch()
+	}, [])
 
 	return (
 		<FilterContianer>

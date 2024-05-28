@@ -118,3 +118,14 @@ export function useGetWinningCreateBiddingTotalPrice(data) {
 		enabled: data !== null,
 	})
 }
+
+export function useGetWinningCreateBiddingProducts(data) {
+	return useQuery({
+		queryKey: ['winning', 'createbiddingProducts', data],
+		queryFn: async function () {
+			const response = await client.post('/auction/successfulBid/createBiddingProduct', data)
+			return response.data.data
+		},
+		enabled: data !== null,
+	})
+}
