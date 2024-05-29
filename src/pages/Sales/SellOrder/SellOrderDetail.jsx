@@ -251,7 +251,7 @@ const SellOrderDetail = () => {
 	// 목적지 변경 승인 버튼
 	const destinationChangeApproveButtonOnClickHandler = () => {
 		handleButtonClick(
-			'목적지 변경 승일할 제품을 선택해 주세요.',
+			'목적지 변경 승인할 제품을 선택해 주세요.',
 			'선택한 제품의 목적지 변경을 승인하시겠습니까?',
 			(value) => ({ uid: value['주문번호'], requestCustomerDestinationUid: value['변경 목적지 번호'] }),
 			mutateAuctionSuccessfulBidApprove,

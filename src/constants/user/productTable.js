@@ -81,24 +81,24 @@ export const userPackageDetailsField = {
 	'패키지 명': 'packageName',
 	[PROD_COL_NAME.packageNumber]: 'packageNumber',
 	수량: 'quantity',
-	'총 중량': 'totalWeight',
+	중량: 'totalWeight',
 	'제품 번호': 'productNumber',
 	'제품 고유 번호': 'productUid',
 	'제품 창고 명': 'storage',
 	'제품 매입처': 'supplier',
 	'제품 제조사': 'maker',
 	'제품 경매 번호': 'auctionNumber',
-	'제품 판매 유형': 'saleType',
-	'제품 판매 구분': 'saleCategory',
-	'제품 판매가 유형': 'saleTypePrice',
+	'판매 유형': 'saleType',
+	'판매 구분': 'saleCategory',
+	'판매가 유형': 'saleTypePrice',
 	제품군: 'spart',
 	'제품 중량': 'weight',
-	'제품 메모': 'memo',
-	'제품 비고': 'note',
-	'제품 낙찰 단가(원/톤)': 'productBiddingPrice',
+	메모: 'memo',
+	비고: 'note',
+	'제품 단가(원/톤)': 'productBiddingPrice',
 	'낙찰 총 단가(원/톤)': 'totalBiddingPrice',
 	'제품 공급가(원/톤)': 'orderPrice',
-	'제품 부가세': 'orderPriceVat',
+	'제품 부가세(원/톤)': 'orderPriceVat',
 	'경매 시작가': 'auctionStartPrice',
 	'최종 수정자': 'updater',
 	'최종 수정일자': 'updateDate',
@@ -210,25 +210,52 @@ export const userPackageDetailsFieldsCols = () =>
 			valueGetter: (v) => v.data[v.column.colId].value,
 		},
 		{ field: '제품 번호' },
-		{ field: '수량' },
-		{ field: '총 중량' },
-		{ field: '제품 고유 번호' },
-		{ field: '제품 창고 명' },
-		{ field: '제품 매입처' },
-		{ field: '제품 제조사' },
-		{ field: '제품 경매 번호' },
-		{ field: '제품 판매 유형' },
-		{ field: '제품 판매 구분' },
-		{ field: '제품 판매가 유형' },
+		{ field: '프로넘 (ProNo.)' }, // 누락 추가
+		{ field: '창고' }, // 누락 추가
+		{ field: '매입처' }, // 누락 추가
+		{ field: '제조사' }, // 누락 추가
+		{ field: '상시판매 상태' }, // 누락 추가
+		{ field: '상시판매가' }, // 누락 추가
+		{ field: '판매 구분' },
+		{ field: '판매 유형' },
+		{ field: '판매가 유형' },
 		{ field: '제품군' },
-		{ field: '제품 중량' },
-		{ field: '제품 메모' },
-		{ field: '제품 비고' },
-		{ field: '제품 낙찰 단가(원/톤)' },
-		{ field: '낙찰 총 단가(원/톤)' },
+		{ field: '제품 등급' }, // 누락 추가
+		{ field: '정척 여부' }, // 누락 추가
+		{ field: '유찰 횟수' }, // 누락 추가
+		{ field: '두께' }, // 누락 추가
+		{ field: '폭' }, // 누락 추가
+		{ field: '길이' }, // 누락 추가
+		{ field: '중량' },
+		{ field: '규격 약호' }, // 누락 추가
+		{ field: 'TS' }, // 누락 추가
+		{ field: 'YP' }, // 누락 추가
+		{ field: 'C%' }, // 누락 추가
+		{ field: 'EL' }, // 누락 추가
+		{ field: 'SI' }, // 누락 추가
+		{ field: 'MN' }, // 누락 추가
+		{ field: 'P' }, // 누락 추가
+		{ field: 'S' }, // 누락 추가
+		{ field: '여재원인' }, // 누락 추가
+		{ field: '여재원인명' }, // 누락 추가
+		{ field: '용도코드' }, // 누락
+		{ field: '용도명' }, // 누락 추가
+		{ field: '제품 단가(원/톤)' },
 		{ field: '제품 공급가(원/톤)' },
-		{ field: '제품 부가세' },
-		{ field: '경매 시작가' },
+		{ field: '제품 부가세(원/톤)' },
+		{ field: '제품 금액(VAT포함)' }, // 누락 추가
+		{ field: '메모' },
+		{ field: '비고' },
 		{ field: '최종 수정자' },
 		{ field: '최종 수정일자' },
+
+		// { field: '수량' },
+		// { field: '제품 고유 번호' },
+		// { field: '제품 창고 명' },
+		// { field: '제품 매입처' },
+		// { field: '제품 제조사' },
+		// { field: '제품 경매 번호' },
+		// { field: '제품 중량' },
+		// { field: '낙찰 총 단가(원/톤)' },
+		// { field: '경매 시작가' },
 	])

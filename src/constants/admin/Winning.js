@@ -64,8 +64,8 @@ export const AuctionWinningFields = {
 	'판매 구분': 'saleCategory',
 	'판매 유형': 'saleType',
 	'판매가 유형': 'salePriceType',
-	수량: 'productCount',
-	중량: 'weight',
+	'제품 수량': 'productCount',
+	'중량 합계': 'weight',
 	'제품 금액 (VAT 포함)': 'orderAmount',
 	'운반비 (VAT 포함)': 'freightAmount',
 	'목적지 고유 번호': 'destinationUid',
@@ -75,8 +75,8 @@ export const AuctionWinningFields = {
 	'목적지 담당자 연락처(휴대폰)': 'destinationManagerPhone',
 	'하차지 명': 'customerDestinationName',
 	'승인 상태': 'requestStatus',
-	수정자: 'updateMemberName',
-	수정일: 'updateDate',
+	최종수정자: 'updateMemberName',
+	최종수정일시: 'updateDate',
 	'주문 상태': 'orderStatus',
 	'입금 요청액': 'amount',
 	'낙찰 상태': 'biddingStatus',
@@ -99,6 +99,7 @@ export const AuctionWinningFieldsCols = [
 		lockVisible: true,
 		lockPinned: true,
 	},
+	// 순번 추가
 	{
 		headerName: '경매 번호',
 		field: '경매 번호',
@@ -118,8 +119,8 @@ export const AuctionWinningFieldsCols = [
 	{ ...commonStyles, field: '판매 유형', minWidth: 120 },
 	{ ...commonStyles, field: '판매가 유형', minWidth: 120 },
 	{ ...commonStyles, field: '제품군', minWidth: 100 },
-	{ ...commonStyles, field: '수량', minWidth: 100 },
-	{ ...commonStyles, field: '중량', minWidth: 100 },
+	{ ...commonStyles, field: '제품 수량', minWidth: 100 },
+	{ ...commonStyles, field: '중량 합계', minWidth: 100 },
 	{ ...commonStyles, field: '제품 금액 (VAT 포함)', minWidth: 120 },
 	{ ...commonStyles, field: '운반비 (VAT 포함)', minWidth: 120 },
 	{ ...commonStyles, field: '입금 요청액', minWidth: 120 },
@@ -129,14 +130,14 @@ export const AuctionWinningFieldsCols = [
 	{ ...commonStyles, field: '목적지 담당자 연락처(휴대폰)', minWidth: 150 },
 	{ ...commonStyles, field: '하차지 명', minWidth: 150 },
 	{ ...commonStyles, field: '주문 상태', minWidth: 120 },
-	// 비고
-	{ ...commonStyles, field: '매입 운반비 적용 할증율', minWidth: 120 },
+	{ ...commonStyles, field: '확정전송 일자', minWidth: 120 }, // 누락 추가
+	{ ...commonStyles, field: '주문번호', minWidth: 120 }, // 누락 추가
+	{ ...commonStyles, field: '비고', minWidth: 120 }, // 누락 추가
 	{ ...commonStyles, field: '매입 운반비', minWidth: 120 },
-	{ ...commonStyles, field: '매출 운반비 적용 할증율', minWidth: 120 },
 	{ ...commonStyles, field: '매출 운반비', minWidth: 120 },
 	{ ...commonStyles, field: '카스코 낙찰가', minWidth: 120 },
-	{ ...commonStyles, field: '수정자', minWidth: 120 },
-	{ ...commonStyles, field: '수정일', minWidth: 120 },
+	{ ...commonStyles, field: '최종수정자', minWidth: 120 },
+	{ ...commonStyles, field: '최종수정일시', minWidth: 120 },
 ]
 
 export const UserAuctionWinningFieldsCols = [
