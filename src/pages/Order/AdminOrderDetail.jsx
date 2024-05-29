@@ -126,7 +126,7 @@ const AdminOrderDetail = () => {
 		saleType,
 		customerCode,
 		customerName,
-		weight,
+		totalWeight?.toLocaleString(),
 		totalPrice,
 		customerDestinationName,
 		customerDestinationAddress,

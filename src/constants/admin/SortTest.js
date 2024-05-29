@@ -1,16 +1,3 @@
-// 상시 판매 관리 > 단일
-import { commonStyles } from '../commonCellStyle'
-
-var checkboxSelection = function (params) {
-	// we put checkbox on the name if we are not doing grouping
-	return params.columnApi.getRowGroupColumns().length === 0
-}
-
-var headerCheckboxSelection = function (params) {
-	// we put checkbox on the name if we are not doing grouping
-	return params.columnApi.getRowGroupColumns().length === 0
-}
-
 export const responseToTableRowMap = {
 	순번: 'index',
 	제품번호: 'number', // 제품 번호
@@ -82,34 +69,3 @@ export const responseToTableRowMap = {
 	// 목적지명: 'destinationName', // 목적지명
 	// '낙찰 상태': 'biddingStatus', // 낙찰 상태
 }
-
-
-export const singleProductListFieldCols = [
-	{
-		...commonStyles,
-		maxWidth: 50,
-		minWidth: 100,
-		checkboxSelection: checkboxSelection,
-		headerCheckboxSelection: headerCheckboxSelection,
-	},
-	{ ...commonStyles, field: '순번', minWidth: 80 },
-	...Object.keys(responseToTableRowMap)
-		.slice(1)
-		.map((item) => ({
-			...commonStyles,
-			field: item,
-			minWidth: item === '메모' || item === '비고' ? 200 : 150,
-			cellRenderer: (params) => {
-				if (item === '메모' || item === '비고') {
-					return params.value
-				}
-				if (typeof params.value === 'boolean') {
-					return params.value ? 'Y' : 'N'
-				} else if (item === '노출여부') {
-					return params.value ? '노출' : '비노출'
-				} else {
-					return params.value
-				}
-			},
-		})),
-]

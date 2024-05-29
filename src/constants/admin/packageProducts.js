@@ -30,6 +30,9 @@ export const packageResponseToTableRowMap = {
 	'패키지 고유번호': 'uid',
 	최종수정자: 'updater',
 	최종수정일시: 'updateDate',
+	판매가유형: '???',
+	매입가: '???',
+	재고상태: '???',
 }
 
 export const packageFieldsCols = (numberClickHandler = undefined) =>
@@ -55,20 +58,25 @@ export const packageFieldsCols = (numberClickHandler = undefined) =>
 		{ ...commonStyles, field: '등록일자', minWidth: 200 },
 		{ ...commonStyles, field: '판매구분', minWidth: 100 },
 		{ ...commonStyles, field: '판매유형', minWidth: 100 },
+		{ ...commonStyles, field: '판매가유형', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '매입가', minWidth: 100 }, // 누락 추가
 		{ ...commonStyles, field: '상시판매 번호', minWidth: 200 },
 		{ ...commonStyles, field: '상시판매가', minWidth: 200 },
 		{ ...commonStyles, field: '상시판매 상태', minWidth: 200 },
 		{ ...commonStyles, field: '상시판매 주문일자', minWidth: 200 },
-		{ ...commonStyles, field: '판매가', minWidth: 100 },
+		// { ...commonStyles, field: '판매가', minWidth: 100 },
 		{ ...commonStyles, field: '중량', minWidth: 100 },
-		{ ...commonStyles, field: '메모', minWidth: 100 },
-		{ ...commonStyles, field: '비고', minWidth: 100 },
 		{
 			...commonStyles,
 			field: '노출 여부',
 			minWidth: 100,
 			cellRenderer: (params) => (params.value ? '노출' : '비노출'),
 		},
+		{ ...commonStyles, field: '메모', minWidth: 100 },
+		{ ...commonStyles, field: '비고', minWidth: 100 },
+		{ ...commonStyles, field: '재고상태', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '최종수정자', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '최종수정일시', minWidth: 100 }, // 누락 추가
 		{ ...commonStyles, field: '패키지 고유번호', minWidth: 100 },
 		{ ...commonStyles, field: '최종수정자', minWidth: 100 },
 		{ ...commonStyles, field: '최종수정일시', minWidth: 100 },

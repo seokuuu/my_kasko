@@ -87,12 +87,17 @@ export const OrderManageFieldsCols = [
 	},
 	{
 		...commonStyles,
-		field: '확정 전송일',
+		field: '확정 전송일자',
 		minWidth: 107,
 	},
 	{
 		...commonStyles,
 		field: '주문 번호',
+		minWidth: 110,
+	},
+	{
+		...commonStyles,
+		field: '현대제철 주문 번호',
 		minWidth: 110,
 	},
 	{
@@ -137,7 +142,7 @@ export const OrderManageFieldsCols = [
 	},
 	{
 		...commonStyles,
-		field: '중량',
+		field: '중량 합계',
 		minWidth: 150,
 	},
 	{
@@ -157,9 +162,14 @@ export const OrderManageFieldsCols = [
 	},
 	{
 		...commonStyles,
-		field: '입금 확인일',
+		field: '입금 확인일자',
 		minWidth: 150,
 	},
+	{
+		...commonStyles,
+		field: '목적지 코드',
+		minWidth: 150,
+	}, // 누락 추가
 	{
 		...commonStyles,
 		field: '목적지명',
@@ -207,7 +217,7 @@ export const OrderManageFieldsCols = [
 	},
 	{
 		...commonStyles,
-		field: '최종 수정일',
+		field: '최종 수정일시',
 		minWidth: 150,
 	},
 ]
@@ -223,7 +233,7 @@ export const orderFieldData = {
 	'판매 유형': 'saleType',
 	'판매가 유형': 'salePriceType',
 	'경매 번호': 'auctionNumber',
-	중량: 'weight',
+	'중량 합계': 'weight',
 	'제품금액 (VAT포함)': 'orderPriceVat',
 	'운반비금액 (VAT포함)': 'freightCostVat',
 	'목적지 코드': 'destinationCode',
@@ -234,7 +244,7 @@ export const orderFieldData = {
 	'목적지 담당자 연락처(휴대폰)': 'customerDestinationManagerPhone',
 	하차지명: 'customerDestinationName',
 	'최종 수정자': 'updateMemberName',
-	'최종 수정일': 'updateDate',
+	'최종 수정일시': 'updateDate',
 	'주문 상태': 'status',
 	'확정 전송일': 'sendDate',
 	메모: 'memo',
@@ -246,5 +256,5 @@ export const orderFieldData = {
 	'확정 전송가': 'confirmPrice',
 	입금요청액: 'totalPrice',
 	주문일자: 'createDate',
-	'입금 확인일': 'depositDate',
+	'입금 확인일자': 'depositDate',
 }

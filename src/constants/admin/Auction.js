@@ -970,10 +970,8 @@ export const AuctionPackageBiddingFieldsCols = (selected) => {
 	return [
 		{ ...commonStyles, field: '', minWidth: 50, checkboxSelection: checkboxSelection2, headerCheckboxSelection },
 		{ ...commonStyles, field: '순번' },
-		{ ...commonStyles, field: '경매 상태' },
-		{ ...commonStyles, field: '경매 고유 번호' },
-		{ ...commonStyles, field: '제품 고유 번호' },
-		{ ...commonStyles, field: '경매 번호' },
+		{ ...commonStyles, field: '경매 상태' }, // 이게 낙찰 여부?
+
 		{ ...commonStyles, field: '패키지 명' },
 		{
 			...commonStyles,
@@ -982,8 +980,20 @@ export const AuctionPackageBiddingFieldsCols = (selected) => {
 			// cellRendererParams: (params) => params?.data[params.column.colId] || '',
 			// valueGetter: (v) => v.data[v.column.colId]?.value || '',
 		},
+		// 관심 제품 누락 추가
+		// 제품 번호 누락 추가 (어떤게 제품 번호?)
+		// 프로넘 누락 추가
+		// 창고 누락 누락 추가
+		// 판매 유형 누락 추가
+		// 판매가 유형 누락 추가
+		// 제품군 누락 추가
+		// 제품 등급 누락 추가
+
+		{ ...commonStyles, field: '경매 번호' },
+		{ ...commonStyles, field: '제품 고유 번호' },
+
 		{ ...commonStyles, field: '추천 여부', cellRenderer: (params) => (params.value ? 'O' : 'X') },
-		{ ...commonStyles, field: '시작가' },
+		{ ...commonStyles, field: '시작가' }, // TODO : 시작가 -> 경매시작단가 (시작가) 로 변경 예정.
 		{
 			...commonStyles,
 			headerName: '현재 최고 가격',
@@ -1020,17 +1030,35 @@ export const AuctionPackageBiddingFieldsCols = (selected) => {
 		},
 		{ ...commonStyles, field: '나의 현재 응찰 가격' },
 		{ ...commonStyles, field: '나의 최고 응찰 가격', minWidth: 150 },
-		{ ...commonStyles, field: '응찰가', minWidth: 150 },
-		{ ...commonStyles, field: '하차지 명' },
+		{ ...commonStyles, field: '응찰가', minWidth: 150 }, // 응찰가격(원/kg) 으로 변경
+
+		// 낙찰 여부 누락 추가
 		{ ...commonStyles, field: '목적지 명' },
 		{ ...commonStyles, field: '목적지 코드' },
 		{ ...commonStyles, field: '목적지 주소' },
 		{ ...commonStyles, field: '목적지 연락처(사무실)' },
+		{ ...commonStyles, field: '하차지 명' },
+		// 두께 누락 추가
+		// 폭 누락 추가
+		// 길이 누락 추가
+		{ ...commonStyles, field: '총 중량' }, // 중량으로 변경
+		// 규격 약호 누락 추가
+		// TS 누락 추가
+		// YP 누락 추가
+		// C% 누락 추가
+		// EL 누락 추가
+		// SI 누락 추가
+		// MN 누락 추가
+		// P 누락 추가
+		// S 누락 추가
+		// 여재원인 누락 추가
+		// 여재원인명 누락 추가
+		// 용도코드 누락 추가
+		// 용도명 누락 추가
+
 		{ ...commonStyles, field: '메모' },
 		{ ...commonStyles, field: '비고' },
-		{ ...commonStyles, field: '총 중량' },
-		{ ...commonStyles, field: '등록일' },
-		{ ...commonStyles, field: '수정일' },
+		{ ...commonStyles, field: '경매 고유 번호' }, //  경매 고유 번호 어디로?
 	].map((col) => ({
 		...col,
 		minWidth: col.minWidth !== undefined ? col.minWidth : commonStyles.getFieldMinWidth(col.field),
@@ -1083,11 +1111,11 @@ export const AuctionProgressFields = {
 	'목적지 주소': 'customerDestinationAddress',
 	'목적지 연락처(사무실)': 'customerDestinationPhone',
 	하차지명: 'customerDestinationName',
-	'입찰 순번': 'biddingRank',
-	'입찰 고객명': 'biddingCustomerName',
-	'입찰 고객 코드': 'biddingCustomerCode',
-	'입찰자 ID': 'biddingMemberId',
-	입찰일시: 'biddingTime',
+	'응찰 순번': 'biddingRank',
+	'응찰 고객명': 'biddingCustomerName',
+	'응찰 고객 코드': 'biddingCustomerCode',
+	'응찰자 ID': 'biddingMemberId',
+	응찰일시: 'biddingTime',
 }
 
 export const AuctionProgressFieldsCols = [
@@ -1176,7 +1204,7 @@ export const AuctionDetailProgressFields = {
 	'경매 번호': 'auctionNumber',
 	'제품 번호': 'productNumber',
 	'ProNo 번호': 'productNoNumber',
-	등급: 'grade',
+	제품등급: 'grade',
 	응찰가: 'biddingPrice',
 	두께: 'thickness',
 	폭: 'width',
@@ -1186,17 +1214,17 @@ export const AuctionDetailProgressFields = {
 	패키지명: 'packageName',
 	'패키지 번호': 'packageNumber',
 	'낙찰 상태': 'biddingStatus',
-	사유: 'reason',
+	취소사유: 'reason',
 	목적지명: 'destinationName',
 	'목적지 코드': 'destinationCode',
 	'목적지 주소': 'customerDestinationAddress',
 	'목적지 연락처(사무실)': 'customerDestinationPhone',
 	하차지명: 'customerDestinationName',
-	'입찰 순번': 'biddingRank',
-	'입찰 고객명': 'biddingCustomerName',
-	'입찰 고객 코드': 'biddingCustomerCode',
-	'입찰자 ID': 'biddingMemberId',
-	입찰일시: 'biddingTime',
+	'응찰 순번': 'biddingRank',
+	'응찰 고객명': 'biddingCustomerName',
+	'응찰 고객 코드': 'biddingCustomerCode',
+	'응찰자 ID': 'biddingMemberId',
+	응찰일시: 'biddingTime',
 	사유: 'reason',
 	yp: 'yp',
 	ts: 'ts',
@@ -1323,24 +1351,24 @@ export const AuctionWinningDetailFields = {
 	'판매 유형': 'saleType',
 	'판매가 유형': 'salePriceType',
 	제품군: 'spart',
-	등급: 'grade',
+	제품등급: 'grade',
 	정척여부: 'preferThickness',
 	유찰횟수: 'failCount',
 	'제품 낙찰 단가(원/톤)': 'productBiddingPrice',
 	'낙찰 총 단가(원/톤)': 'totalBiddingPrice',
 	'제품 공급가(원/톤)': 'orderPrice',
-	'제품 부가세': 'orderPriceVat',
+	'제품 부가세(원/톤)': 'orderPriceVat',
 	// 제품 금액
-	'매출 기본 운임단가': 'freightFee',
-	'매출 할증 운임단가': 'extraUnitPrice',
+	'매출 기본 운임단가(원/톤)': 'freightFee',
+	'매출 할증 운임단가(원/톤)': 'extraUnitPrice',
 	'매출 운송비 공급가': 'freightCost',
 	'매출 운송비 부가세': 'freightCostVat',
 	'매입 기본 운임단가': 'inboundFreightFee',
 
 	// 운반비 금액
-	총공급가: 'totalPrice',
-	총부가세: 'totalPriceVat',
-	합계: 'total',
+	'총 공급가(원/톤)': 'totalPrice',
+	'총 부가세(원/톤)': 'totalPriceVat',
+	'합계 금액(원/톤)': 'total',
 	두께: 'thickness',
 	폭: 'width',
 	길이: 'length',
@@ -1360,19 +1388,19 @@ export const AuctionWinningDetailFields = {
 	용도명: 'usageCodeName',
 	메모: 'memo',
 	'주문 상태': 'orderStatus',
-	'확정 전송일': 'sendDate',
+	'확정 전송일자': 'sendDate',
 	'주문 번호': 'hsOrderNo',
 	비고: 'note',
-	'매입 할증 운임단가': 'inboundExtraUnitPrice',
+	'매입 할증 운임단가(원/톤)': 'inboundExtraUnitPrice',
 	'매입 운반비 공급가(원/톤)': 'inboundFreightCost',
-	'매입 운송비 부가세': 'inboundFreightCostVat',
+	'매입 운반비 부가세(원/톤)': 'inboundFreightCostVat',
 	// 매입 운반비 금액
 	// 매입 운반비
 	// 매출 운반비
 	'재고 상태': 'stockStatus',
 	'카스코 낙찰가': 'confirmPrice',
 	//최종 수정자
-	수정일: 'updateDate',
+	최종수정일시: 'updateDate',
 	'매입 운반비 적용 할증율': 'inboundFreightExtraRete',
 	'매출 운반비 적용 할증율': 'outboundFreightExtraRete',
 }
@@ -1399,14 +1427,12 @@ export const AuctionWinningDetailFieldsCols = (selected) => {
 			lockVisible: true,
 			lockPinned: true,
 		},
+		{ ...commonStyles, field: '순번', minWidth: 100 }, // 누락 추가
 		{ ...commonStyles, field: '경매 번호', minWidth: 100 },
-		{ ...commonStyles, field: '주문 고유 번호', minWidth: 100 },
-		{ ...commonStyles, field: '고객사 목적지 고유 번호', minWidth: 100 },
-		{ ...commonStyles, field: '목적지 고유 번호', minWidth: 100 },
 		{ ...commonStyles, field: '패키지 명', minWidth: 100 },
 		{
 			...commonStyles,
-			field: PROD_COL_NAME.packageNumber,
+			field: PROD_COL_NAME.packageNumber, // 패키지 번호
 			minWidth: 150,
 			cellRendererParams: (params) => params?.data[params.column.colId] || '',
 			valueGetter: (v) => v.data[v.column.colId]?.value || '',
@@ -1415,7 +1441,7 @@ export const AuctionWinningDetailFieldsCols = (selected) => {
 		{ ...commonStyles, field: '고객 코드', minWidth: 100 },
 		{
 			...commonStyles,
-			field: PROD_COL_NAME.productNumber,
+			field: PROD_COL_NAME.productNumber, // 제품 번호
 			minWidth: 150,
 			// cellRenderer: MarkerCellRenderer,
 			// cellRendererParams: (params) => params?.data[params.column.colId] || '',
@@ -1424,7 +1450,7 @@ export const AuctionWinningDetailFieldsCols = (selected) => {
 		{ ...commonStyles, field: '프로넘(ProNo)', minWidth: 100 },
 		{ ...commonStyles, field: '창고', minWidth: 100 },
 		{ ...commonStyles, field: '낙찰 상태', minWidth: 100 },
-		{ ...commonStyles, field: '낙찰가', minWidth: 100 },
+		{ ...commonStyles, field: '낙찰가', minWidth: 100 }, // 낙찰가(원/kg) 으로 변경
 		{ ...commonStyles, field: '승인 상태', minWidth: 100 },
 		{ ...commonStyles, field: '목적지 코드', minWidth: 100 },
 		{ ...commonStyles, field: '목적지 명', minWidth: 100 },
@@ -1440,23 +1466,32 @@ export const AuctionWinningDetailFieldsCols = (selected) => {
 		{ ...commonStyles, field: '판매 유형', minWidth: 100 },
 		{ ...commonStyles, field: '판매가 유형', minWidth: 100 },
 		{ ...commonStyles, field: '제품군', minWidth: 100 },
-		{ ...commonStyles, ...commonStyles, field: '등급', minWidth: 100 },
+		{ ...commonStyles, field: '제품등급', minWidth: 100 },
 		{ ...commonStyles, field: '정척여부', minWidth: 100 },
 		{ ...commonStyles, field: '유찰횟수', minWidth: 100 },
 		{ ...commonStyles, field: '제품 낙찰 단가(원/톤)', minWidth: 100 },
 		{ ...commonStyles, field: '낙찰 총 단가(원/톤)', minWidth: 100 },
 		{ ...commonStyles, field: '제품 공급가(원/톤)', minWidth: 100 },
-		{ ...commonStyles, field: '제품 부가세', minWidth: 100 },
-		{ ...commonStyles, field: '매출 기본 운임단가', minWidth: 100 },
-		{ ...commonStyles, field: '매출 운반비 적용 할증율', minWidth: 120 },
-		{ ...commonStyles, field: '매출 할증 운임단가', minWidth: 100 },
-		{ ...commonStyles, field: '매출 운송비 공급가', minWidth: 100 },
-		{ ...commonStyles, field: '매출 운송비 부가세', minWidth: 100 },
-		{ ...commonStyles, field: '매입 기본 운임단가', minWidth: 100 },
-		{ ...commonStyles, field: '매입 운반비 적용 할증율', minWidth: 120 },
-		{ ...commonStyles, field: '매입 할증 운임단가', minWidth: 100 },
-		{ ...commonStyles, field: '총부가세', minWidth: 100 },
-		{ ...commonStyles, field: '합계', minWidth: 100 },
+		{ ...commonStyles, field: '제품 부가세(원/톤)', minWidth: 100 },
+		{ ...commonStyles, field: '제품 금액(VAT포함)', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '기본 운임 단가(원/톤)', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '할증 운임 단가(원/톤', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '할증율', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '운임 총 단가', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '운반비 공급가(원/톤)', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '운반비 부가세(원/톤)', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '운반비 금액(VAT포함)', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '총 공급가(원/톤)', minWidth: 100 },
+		{ ...commonStyles, field: '총 부가세(원/톤)', minWidth: 100 },
+		{ ...commonStyles, field: '합계 금액(원/톤)', minWidth: 100 },
+
+		// { ...commonStyles, field: '매출 운반비 적용 할증율', minWidth: 120 },
+		// { ...commonStyles, field: '매출 할증 운임단가(원/톤)', minWidth: 100 },
+		// { ...commonStyles, field: '매출 운송비 공급가', minWidth: 100 },
+		// { ...commonStyles, field: '매출 운송비 부가세', minWidth: 100 },
+		// { ...commonStyles, field: '매입 기본 운임단가', minWidth: 100 },
+		// { ...commonStyles, field: '매입 운반비 적용 할증율', minWidth: 120 },
+
 		{ ...commonStyles, field: '두께', minWidth: 100 },
 		{ ...commonStyles, field: '폭', minWidth: 100 },
 		{ ...commonStyles, field: '길이', minWidth: 100 },
@@ -1472,18 +1507,28 @@ export const AuctionWinningDetailFieldsCols = (selected) => {
 		{ ...commonStyles, field: 's', minWidth: 100 },
 		{ ...commonStyles, field: '여재 원인', minWidth: 100 },
 		{ ...commonStyles, field: '여재 원인명', minWidth: 100 },
-		{ ...commonStyles, field: '여재 원인명', minWidth: 100 },
 		{ ...commonStyles, field: '용도명', minWidth: 100 },
 		{ ...commonStyles, field: '메모', minWidth: 100 },
 		{ ...commonStyles, field: '주문 상태', minWidth: 100 },
-		{ ...commonStyles, field: '확정 전송일', minWidth: 100 },
+		{ ...commonStyles, field: '확정 전송일자', minWidth: 100 },
 		{ ...commonStyles, field: '주문 번호', minWidth: 100 },
 		{ ...commonStyles, field: '비고', minWidth: 100 },
+		{ ...commonStyles, field: '매출 기본 운임단가(원/톤)', minWidth: 100 },
+		{ ...commonStyles, field: '매입 할증 운임단가(원/톤)', minWidth: 100 },
+		{ ...commonStyles, field: '매입 할증율', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '매입 운임 총단가', minWidth: 100 }, // 누락 추가
 		{ ...commonStyles, field: '매입 운반비 공급가(원/톤)', minWidth: 100 },
-		{ ...commonStyles, field: '매입 운송비 부가세', minWidth: 100 },
+		{ ...commonStyles, field: '매입 운반비 부가세(원/톤)', minWidth: 100 },
+		{ ...commonStyles, field: '매입 은반비 금액(VAT 포함)', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '매입 운반비', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '매출 운반비', minWidth: 100 }, // 누락 추가
 		{ ...commonStyles, field: '재고 상태', minWidth: 100 },
 		{ ...commonStyles, field: '카스코 낙찰가', minWidth: 100 },
-		{ ...commonStyles, field: '수정일', minWidth: 100 },
+		{ ...commonStyles, field: '최종수정자', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '최종수정일시', minWidth: 100 }, // 누락 추가
+		{ ...commonStyles, field: '주문 고유 번호', minWidth: 100 },
+		{ ...commonStyles, field: '고객사 목적지 고유 번호', minWidth: 100 },
+		{ ...commonStyles, field: '목적지 고유 번호', minWidth: 100 },
 	]
 }
 

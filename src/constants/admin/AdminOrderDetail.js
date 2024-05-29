@@ -67,7 +67,7 @@ export const AdminOrderManageFieldsCols = (toggleModal) => [
 	},
 	{
 		...commonStyles,
-		field: '확정 전송일',
+		field: '확정 전송일자',
 		minWidth: 107,
 	},
 	{
@@ -75,6 +75,16 @@ export const AdminOrderManageFieldsCols = (toggleModal) => [
 		field: '입금 확인일',
 		minWidth: 107,
 	},
+	{
+		...commonStyles,
+		field: '주문 번호',
+		minWidth: 107,
+	}, // 누락 추가
+	{
+		...commonStyles,
+		field: '현대제철 주문 번호',
+		minWidth: 107,
+	}, // 누락 추가
 	{
 		...commonStyles,
 		field: '고객사명',
@@ -104,6 +114,11 @@ export const AdminOrderManageFieldsCols = (toggleModal) => [
 	},
 	{
 		...commonStyles,
+		field: '판매 구분',
+		minWidth: 150,
+	},
+	{
+		...commonStyles,
 		field: '판매 유형',
 		minWidth: 150,
 	},
@@ -119,7 +134,7 @@ export const AdminOrderManageFieldsCols = (toggleModal) => [
 	},
 	{
 		...commonStyles,
-		field: '등급',
+		field: '제품 등급',
 		minWidth: 150,
 	},
 	{
@@ -149,7 +164,7 @@ export const AdminOrderManageFieldsCols = (toggleModal) => [
 	},
 	{
 		...commonStyles,
-		field: '제품 부가세',
+		field: '제품 부가세(원/톤)',
 		minWidth: 150,
 	},
 	{
@@ -169,12 +184,22 @@ export const AdminOrderManageFieldsCols = (toggleModal) => [
 	},
 	{
 		...commonStyles,
-		field: '운반비 공급가',
+		field: '할증율',
+		minWidth: 150,
+	}, // 누락 추가
+	{
+		...commonStyles,
+		field: '운임 총 단가',
+		minWidth: 150,
+	}, // 누락 추가
+	{
+		...commonStyles,
+		field: '운반비 공급가(원/톤)',
 		minWidth: 150,
 	},
 	{
 		...commonStyles,
-		field: '운반비 부가세',
+		field: '운반비 부가세(원/톤)',
 		minWidth: 150,
 	},
 	{
@@ -194,9 +219,10 @@ export const AdminOrderManageFieldsCols = (toggleModal) => [
 	},
 	{
 		...commonStyles,
-		field: '합계 금액',
+		field: '합계 금액(원/톤)',
 		minWidth: 150,
 	},
+
 	{
 		...commonStyles,
 		field: '목적지 코드',
@@ -264,7 +290,7 @@ export const AdminOrderManageFieldsCols = (toggleModal) => [
 	},
 	{
 		...commonStyles,
-		field: 'C',
+		field: 'C%',
 		minWidth: 150,
 	},
 	{
@@ -329,12 +355,17 @@ export const AdminOrderManageFieldsCols = (toggleModal) => [
 	},
 	{
 		...commonStyles,
+		field: '카스코 낙찰가',
+		minWidth: 150,
+	}, // 누락 추가
+	{
+		...commonStyles,
 		field: '최종 수정자',
 		minWidth: 150,
 	},
 	{
 		...commonStyles,
-		field: '최종 수정일',
+		field: '최종 수정일자',
 		minWidth: 150,
 	},
 ]
@@ -363,10 +394,10 @@ export const DetailOrderFieldsManage = {
 	'할증 운임단가(원/톤)': 'extraUnitPrice',
 	'낙찰 총 단가(원/톤)': 'totalBiddingPrice',
 	'제품 공급가(원/톤)': 'orderPrice',
-	'운반비 공급가': 'freightCost',
+	'운반비 공급가(원/톤)': 'freightCost',
 	'총 공급가(원/톤)': 'totalSupplyPrice',
 	'제품 부가세': 'orderPriceVat',
-	'운반비 부가세': 'freightCostVat',
+	'운반비 부가세(원/톤)': 'freightCostVat',
 	'총 부가세(원/톤)': 'totalVat',
 	'제품 금액 (VAT포함)': 'totalOrderPrice',
 	'운반비 금액 (VAT포함)': 'totalFreightCost',
@@ -382,7 +413,7 @@ export const DetailOrderFieldsManage = {
 	'변경 요청 목적지 주소': 'requestCustomerDestinationAddress',
 	'변경 요청 목적지 연락처': 'requestCustomerDestinationPhone',
 	'최종 수정자': 'updateMemberName',
-	'최종 수정일': 'updateDate',
+	'최종 수정일자': 'updateDate',
 	'주문 상태': 'status',
 	'확정 전송일': 'sendDate',
 	'입금 확인일': 'depositDate',
@@ -393,7 +424,7 @@ export const DetailOrderFieldsManage = {
 	'패키지 번호': 'packageNumber',
 	'판매 구분': 'saleCategory',
 	'현대제철 주문번호': 'hsOrderNo',
-	등급: 'grade',
+	'제품 등급': 'grade',
 	중량: 'weight',
 	두께: 'thickness',
 	폭: 'width',
@@ -402,7 +433,7 @@ export const DetailOrderFieldsManage = {
 	'유찰 횟수': 'failCount',
 	YP: 'yp',
 	TS: 'ts',
-	C: 'c',
+	'C%': 'c',
 	P: 'p',
 	S: 's',
 	SI: 'si',
