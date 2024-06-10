@@ -2,7 +2,7 @@ import moment from 'moment'
 import React, { useEffect, useRef, useState } from 'react'
 import { useReactToPrint } from 'react-to-print'
 import styled from 'styled-components'
-import { useShipmentInvoiceListQuery } from '../../api/shipment'
+import { shipmentInvoiceListOutNumberQueryV2, useShipmentInvoiceListQuery } from '../../api/shipment'
 import { WhiteSkyBtn } from '../../common/Button/Button'
 import useTableSelection from '../../hooks/useTableSelection'
 import {
@@ -20,11 +20,13 @@ const ShippingInvoiceView = ({ customerCode, outNumber }) => {
 	const { simpleAlert } = useAlert()
 
 	const [open, setOpen] = useState(false)
-	const { data } = useShipmentInvoiceListQuery({ customerCode, outNumber })
+	const [data, setData] = useState([])
 
 	const openInvoice = () => {
 		if (customerCode && outNumber) {
 			setOpen(true)
+			const get = async () => await shipmentInvoiceListOutNumberQueryV2({ customerCode, outNumber })
+			get().then((data) => setData(data))
 		} else {
 			simpleAlert('출력할 항목을 선택해주세요.')
 		}
@@ -35,7 +37,7 @@ const ShippingInvoiceView = ({ customerCode, outNumber }) => {
 			<WhiteSkyBtn className={'shipment_invoice'} onClick={openInvoice}>
 				거래 명세서 출력
 			</WhiteSkyBtn>
-			{open && <InvoiceView data={data} closeModal={() => setOpen(false)} />}
+			{open && data?.length > 0 && <InvoiceView data={data} closeModal={() => setOpen(false)} />}
 		</div>
 	)
 }
@@ -46,13 +48,8 @@ export const ShippingInvoiceUserView = () => {
 		weightKey: '중량',
 	})
 
-	const [param, setParam] = useState({
-		customerCode: null,
-		outNumber: null,
-	})
 	const [open, setOpen] = useState(false)
-
-	const { data } = useShipmentInvoiceListQuery(param)
+	const [data, setData] = useState([])
 
 	const openInvoice = () => {
 		if (!hasSelected) {
@@ -68,18 +65,20 @@ export const ShippingInvoiceUserView = () => {
 			return
 		}
 
-		const newParam = { customerCode: customerCodes[0], outNumber: outNumbers[0] }
-		setParam(newParam)
-
 		setTimeout(() => {
 			setOpen(true)
+			const get = async () =>
+				await shipmentInvoiceListOutNumberQueryV2({ customerCode: customerCodes[0], outNumber: outNumbers[0] })
+			get().then((data) => setData(data))
 		}, [500])
 	}
 
 	return (
 		<div style={{ display: 'flex', gap: '10px' }}>
-			<WhiteSkyBtn onClick={openInvoice}>거래 명세서 출력</WhiteSkyBtn>
-			{open && <InvoiceView data={data} closeModal={() => setOpen(false)} />}
+			<WhiteSkyBtn className={`shipment_invoice_user`} onClick={openInvoice}>
+				거래 명세서 출력
+			</WhiteSkyBtn>
+			{open && data?.length > 0 && <InvoiceView data={data} closeModal={() => setOpen(false)} />}
 		</div>
 	)
 }
@@ -138,7 +137,7 @@ const InvoiceView = ({ data, closeModal }) => {
 		content: () => containerRef.current,
 		documentTitle: `거래명세서_${data[0].outNumber}.pdf`,
 		onAfterPrint: () => {
-			window.location.reload()
+			// window.location.reload()
 		},
 	})
 
