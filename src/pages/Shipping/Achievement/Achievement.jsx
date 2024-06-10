@@ -148,7 +148,7 @@ const Achievement = () => {
 
 	useEffect(() => {
 		if (detailRow && detailRow['출고 번호']) {
-			navigate(`/shipping/achievement/${detailRow['출고 번호']}/${detailRow['고객사 목적지 고유 번호']}`)
+			navigate(`/shipping/achievement/${detailRow['출고 번호']}`)
 		}
 		return () => setDetailRow(false)
 	}, [detailRow])

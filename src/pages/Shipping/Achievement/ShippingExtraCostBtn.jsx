@@ -24,17 +24,31 @@ const ShippingExtraCostBtn = ({ data }) => {
 			return simpleAlert('등록된 추가비 및 공차비가 존재하지 않습니다.')
 		}
 		redAlert('등록된 추가 및 공차비를 삭제하시겠습니까?', () => {
-			removeExtraCost({ outNumber: copiedData.outNumber, customerDestinationUid: copiedData.customerDestinationUid })
+			removeExtraCost({ outNumber: copiedData.outNumber, customerCode: copiedData.customerCode })
 		})
 	}
 
 	const totalWeight = data?.list.map((item) => item.weight).reduce((acc, cur) => Number(acc) + Number(cur), 0)
+	const customers = Array.from(new Set(data?.list?.map((item) => item.customerCode))).map((uniqueCode) => {
+		const item = data.list.find((i) => i.customerCode === uniqueCode)
+		return {
+			value: item.customerCode,
+			label: item.customerName,
+		}
+	})
 
 	return (
 		<>
 			<WhiteRedBtn onClick={onRemoveExtraCost}>추가비 및 공차비 삭제</WhiteRedBtn>
 			<WhiteSkyBtn onClick={openExtraCostModal}>추가비 및 공차비 추가</WhiteSkyBtn>
-			{addedModal && <AchievementModal setAddedModal={setAddedModal} data={data?.list[0]} totalWeight={totalWeight} />}
+			{addedModal && (
+				<AchievementModal
+					setAddedModal={setAddedModal}
+					data={data?.list[0]}
+					totalWeight={totalWeight}
+					customers={customers}
+				/>
+			)}
 		</>
 	)
 }

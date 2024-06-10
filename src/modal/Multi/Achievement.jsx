@@ -21,9 +21,11 @@ import { RadioSearchButton } from '../../components/Search'
 import { getAdminTransportation } from '../../service/admin/Standard'
 import { formatWeight } from '../../utils/utils'
 import useAlert from '../../store/Alert/useAlert'
+import { MainSelect } from '../../common/Option/Main'
 
 const initData = {
 	orderUid: '',
+	customerCode: '',
 	extraType: null,
 	extraCost: 0,
 	extraContents: '',
@@ -36,7 +38,7 @@ const initData = {
 const isNumber = (value) => /^\d*$/.test(value)
 const EXTRA_DEFAULT_WEIGHT = 25000
 
-const Achievement = ({ setAddedModal, data, totalWeight }) => {
+const Achievement = ({ setAddedModal, data, totalWeight, customers }) => {
 	const { simpleAlert } = useAlert()
 	const [param, setParam] = useState(initData)
 
@@ -58,7 +60,7 @@ const Achievement = ({ setAddedModal, data, totalWeight }) => {
 		const body = {
 			orderUid: data?.orderUid,
 			outNumber: data?.outNumber,
-			customerDestinationUid: data?.customerDestinationUid,
+			customerCode: data?.customerCode,
 		}
 		if (param.extraType !== null) {
 			body.extraType = param.extraType
@@ -69,6 +71,7 @@ const Achievement = ({ setAddedModal, data, totalWeight }) => {
 			body.extraFreightCost = param.extraFreightCost
 		}
 		addExtraCost(body)
+		modalClose()
 	}
 
 	const modalClose = () => setAddedModal(false)
@@ -122,7 +125,12 @@ const Achievement = ({ setAddedModal, data, totalWeight }) => {
 						<BlueMainDiv>
 							<BlueSubDiv style={{ height: '30px', margin: 0 }}>
 								<h6>고객사</h6>
-								<p>{data?.customerName ?? '-'}</p>
+								<MainSelect
+									options={customers}
+									value={param.customerCode}
+									name="customerCode"
+									onChange={(e) => onChange('customerCode', e)}
+								/>
 							</BlueSubDiv>
 						</BlueMainDiv>
 						<BlueMainDiv>
