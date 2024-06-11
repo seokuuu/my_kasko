@@ -15,6 +15,16 @@ import styled from 'styled-components'
 
 const initData = {}
 
+const calculationNumber = (key) => {
+	const tableCols = document.querySelectorAll(`.${key}`)
+	if (tableCols.length > 0) {
+		const values = Array.from(tableCols).map((element) => {
+			return parseInt(element.textContent.replace(/,/g, ''))
+		})
+		return values.reduce((acc, cur) => Number(acc) + Number(cur), 0).toLocaleString()
+	}
+}
+
 const NewShipmentInvoice = () => {
 	const navigate = useNavigate()
 
@@ -53,7 +63,9 @@ const NewShipmentInvoice = () => {
 		}
 		get()
 			.then((res) => {
-				res && setData(groupedData(res))
+				if (res) {
+					setData(groupedData(res))
+				}
 			})
 			.catch((e) => console.error(e))
 	}, [param])
@@ -77,7 +89,7 @@ const NewShipmentInvoice = () => {
 						<th>출고번호</th>
 						<th>주문번호</th>
 						<th>고객사명</th>
-						<th>고객사코드</th>
+						{/*<th>고객사코드</th>*/}
 						<th>창고</th>
 						<th>제품번호</th>
 						<th>등급</th>
@@ -91,18 +103,24 @@ const NewShipmentInvoice = () => {
 						<th>제품부가세</th>
 						<th>운임비공급가</th>
 						<th>운임비부가세</th>
+						<th>총합계금액</th>
 					</tr>
 					{data &&
 						Object.keys(data).map((key, index) => {
 							return (
 								<React.Fragment key={index}>
 									{data[key].map((item, index) => {
+										const totalAmount =
+											Number(item.orderPrice) +
+											Number(item.orderPriceVat) +
+											Number(item.freightCost) +
+											Number(item.freightCostVat)
 										return (
 											<tr key={index}>
 												<td>{item.outNumber || ''}</td>
 												<td>{item.orderNumber || ''}</td>
 												<td>{item.customerName || ''}</td>
-												<td>{item.customerCode || ''}</td>
+												{/*<td>{item.customerCode || ''}</td>*/}
 												<td>{item.storageName || ''}</td>
 												<td>{item.productNumber || ''}</td>
 												<td>{item.grade || ''}</td>
@@ -112,20 +130,42 @@ const NewShipmentInvoice = () => {
 												<td>{formatWeight(Number(item.length)) || ''}</td>
 												<td>{item.spec || ''}</td>
 												<td>{formatWeight(Number(item.biddingPrice)) || ''}</td>
-												<td>{formatWeight(Number(item.orderPrice)) || ''}</td>
-												<td>{formatWeight(Number(item.orderPriceVat)) || ''}</td>
-												<td>{formatWeight(Number(item.freightCost)) || ''}</td>
-												<td>{formatWeight(Number(item.freightCostVat)) || ''}</td>
+												<td className={'orderPrice'}>{formatWeight(Number(item.orderPrice)) || ''}</td>
+												<td className={'orderPriceVat'}>{formatWeight(Number(item.orderPriceVat)) || ''}</td>
+												<td className={'freightCost'}>{formatWeight(Number(item.freightCost)) || ''}</td>
+												<td className={'freightCostVat'}>{formatWeight(Number(item.freightCostVat)) || ''}</td>
+												<td className={'totalAmount'}>{formatWeight(totalAmount)}</td>
 											</tr>
 										)
 									})}
-									{data[key][0]?.extraCost && data[key][0]?.extraFreightCost && (
+									{data[key][0]?.extraCost && (
 										<tr>
-											<td colSpan={9}>추가비 + 공차비</td>
-											<td colSpan={8}>
-												{data[key][0]?.extraType === '추가' ? '+' : '-'}
-												{formatWeight(data[key][0]?.extraCost + data[key][0]?.extraFreightCost)}
+											<td colSpan={10}></td>
+											<td>추가비</td>
+											<td></td>
+											<td></td>
+											<td></td>
+											<td className={'freightCost'}>
+												{data[key][0]?.extraType === '추가' ? '' : '-'}
+												{formatWeight(data[key][0]?.extraCost)}
 											</td>
+											<td className={'freightCostVat'}>
+												{data[key][0]?.extraType === '추가' ? '' : '-'}
+												{formatWeight(data[key][0]?.extraCost * 0.1)}
+											</td>
+											<td></td>
+										</tr>
+									)}
+									{data[key][0]?.extraFreightCost && (
+										<tr>
+											<td colSpan={10}></td>
+											<td>공차비</td>
+											<td></td>
+											<td></td>
+											<td></td>
+											<td className={'freightCost'}>{formatWeight(data[key][0]?.extraFreightCost)}</td>
+											<td className={'freightCostVat'}>{formatWeight(data[key][0]?.extraFreightCost * 0.1)}</td>
+											<td></td>
 										</tr>
 									)}
 									<div style={{ display: 'none' }}>
@@ -134,6 +174,14 @@ const NewShipmentInvoice = () => {
 								</React.Fragment>
 							)
 						})}
+					<tr>
+						<td colSpan={12}></td>
+						<td>{calculationNumber('orderPrice')}</td>
+						<td>{calculationNumber('orderPriceVat')}</td>
+						<td>{calculationNumber('freightCost')}</td>
+						<td>{calculationNumber('freightCostVat')}</td>
+						<td>{calculationNumber('totalAmount')}</td>
+					</tr>
 				</MyTable>
 			</TableContianer>
 			<NewBottomBtnWrap style={{ margin: '48px 0', border: 0 }}>
