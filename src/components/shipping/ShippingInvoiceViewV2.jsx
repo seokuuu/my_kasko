@@ -2,9 +2,7 @@ import moment from 'moment'
 import React, { useEffect, useRef, useState } from 'react'
 import { useReactToPrint } from 'react-to-print'
 import styled from 'styled-components'
-import { shipmentInvoiceListOutNumberQueryV2 } from '../../api/shipment'
 import { WhiteSkyBtn } from '../../common/Button/Button'
-import useTableSelection from '../../hooks/useTableSelection'
 import {
 	BlueBarHeader,
 	BlueSubContainer,
@@ -34,47 +32,6 @@ const ShippingInvoiceViewV2 = ({ list }) => {
 	return (
 		<div style={{ display: 'flex', gap: '10px' }}>
 			<WhiteSkyBtn className={'shipment_invoice'} onClick={openInvoice}>
-				거래 명세서 출력
-			</WhiteSkyBtn>
-			{open && data?.length > 0 && <InvoiceView data={data} closeModal={() => setOpen(false)} />}
-		</div>
-	)
-}
-
-export const ShippingInvoiceUserViewV2 = () => {
-	const { simpleAlert } = useAlert()
-	const { selectedData, hasSelected } = useTableSelection({
-		weightKey: '중량',
-	})
-
-	const [open, setOpen] = useState(false)
-	const [data, setData] = useState([])
-
-	const openInvoice = () => {
-		if (!hasSelected) {
-			simpleAlert('출력할 항목을 선택해주세요.')
-			return
-		}
-
-		const customerCodes = [...new Set(selectedData.map((item) => item['고객코드']))]
-		const outNumbers = [...new Set(selectedData.map((item) => item['출고 번호']))]
-
-		if (outNumbers?.length > 1) {
-			simpleAlert('거래명세서는 하나의 출고번호만 출력가능합니다.')
-			return
-		}
-
-		setTimeout(() => {
-			setOpen(true)
-			const get = async () =>
-				await shipmentInvoiceListOutNumberQueryV2({ customerCode: customerCodes[0], outNumber: outNumbers[0] })
-			get().then((data) => setData(data))
-		}, [500])
-	}
-
-	return (
-		<div style={{ display: 'flex', gap: '10px' }}>
-			<WhiteSkyBtn className={`shipment_invoice_user`} onClick={openInvoice}>
 				거래 명세서 출력
 			</WhiteSkyBtn>
 			{open && data?.length > 0 && <InvoiceView data={data} closeModal={() => setOpen(false)} />}

@@ -1,40 +1,36 @@
 import React, { useEffect, useState } from 'react'
-import Excel from '../../../components/TableInner/Excel'
-import { doubleClickedRowAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { BlackBtn, NewBottomBtnWrap, WhiteSkyBtn } from '../../../common/Button/Button'
+import { useNavigate, useParams } from 'react-router-dom'
 import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
-import PageDropdown from '../../../components/TableInner/PageDropdown'
+import { shipmentInvoiceListQueryV2, useShipmentListQuery } from '../../../api/shipment'
 import { ShippingRegisterFields } from '../../../constants/admin/Shipping'
-import { useAtomValue } from 'jotai'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { GlobalFilterHeader } from '../../../components/Filter'
-import { useShipmentListQuery } from '../../../api/shipment'
-import UserPerformanceFilter from './UserPerformanceFilter'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import { isEqual } from 'lodash'
+import PageDropdown from '../../../components/TableInner/PageDropdown'
+import Excel from '../../../components/TableInner/Excel'
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
+import ShippingInvoiceViewV2 from '../../../components/shipping/ShippingInvoiceViewV2'
+import DetailHeader from './DetailHeader'
 import TableV2 from '../../../pages/Table/TableV2'
 import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import { UserPerformanceFields, UserPerformanceFieldsCols } from './UserPerformanceFields'
-import { ShippingInvoiceUserView } from '../../../components/shipping/ShippingInvoiceView'
-import { useNavigate } from 'react-router-dom'
-import { useAtom } from 'jotai/index'
-import { WhiteSkyBtn } from '../../../common/Button/Button'
 
-const initData = {
-	pageNum: 1,
-	pageSize: 50,
-	shipmentStatus: '운송 완료',
-}
+const UserPerformanceDetails = () => {
+	const { outNumber } = useParams()
+	const initData = {
+		pageNum: 1,
+		pageSize: 50,
+		shipmentStatus: '운송 완료',
+		outNumber,
+	}
 
-const UserPerformance = () => {
 	const navigate = useNavigate()
-	const exFilterToggle = useAtomValue(toggleAtom)
-	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
 
-	const [rows, setRows] = useState([])
-
+	const [invoiceData, setInvoiceData] = useState([]) // 거래명세서 데이터
+	const [getRow, setGetRow] = useState([])
 	const [param, setParam] = useState(initData)
+
 	const { data, refetch, isLoading } = useShipmentListQuery(param)
 
 	const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
@@ -62,23 +58,6 @@ const UserPerformance = () => {
 		}))
 	}
 
-	const resetOnClick = () => {
-		setParam(initData)
-	}
-
-	const searchOnClick = (userSearchParam) => {
-		setParam((prevParam) => {
-			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				return prevParam
-			}
-			return {
-				...prevParam,
-				...userSearchParam,
-				pageNum: 1,
-			}
-		})
-	}
-
 	useEffect(() => {
 		refetch()
 	}, [param])
@@ -86,30 +65,37 @@ const UserPerformance = () => {
 	useEffect(() => {
 		const list = data?.list
 		if (list && Array.isArray(list)) {
-			setRows(add_element_field(list, ShippingRegisterFields))
+			setGetRow(add_element_field(list, ShippingRegisterFields))
 		}
 	}, [data])
 
 	useEffect(() => {
-		if (detailRow && detailRow['출고 번호']) {
-			navigate(`/userpage/performance/${detailRow['출고 번호']}`)
+		const get = async () => {
+			return await shipmentInvoiceListQueryV2(param)
 		}
-		return () => setDetailRow(false)
-	}, [detailRow])
+		const groupedData = (data, getKey) => {
+			return data?.reduce((acc, item) => {
+				const key = getKey(item)
+				if (!acc[key]) {
+					acc[key] = []
+				}
+				acc[key].push(item)
+				return acc
+			}, {})
+		}
+		get()
+			.then((data) => {
+				if (data) {
+					setInvoiceData(groupedData(data, (item) => `${item.customerCode}`))
+				}
+			})
+			.catch((e) => console.error(e))
+	}, [param])
 
 	return (
 		<FilterContianer>
-			<GlobalFilterHeader title={'출고 실적 조회'} />
-			{exFilterToggle && (
-				<GlobalProductSearch
-					param={param}
-					setParam={setParam}
-					isToggleSeparate={true}
-					globalProductSearchOnClick={searchOnClick}
-					globalProductResetOnClick={resetOnClick}
-					renderCustomSearchFields={(props) => <UserPerformanceFilter {...props} />}
-				/>
-			)}
+			<GlobalFilterHeader title={'출고 실적 상세'} enableSearchFilters={false} />
+			<DetailHeader data={data?.list} />
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
@@ -118,14 +104,13 @@ const UserPerformance = () => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						<Excel getRow={rows} sheetName={'출고 실적'} />
+						<Excel getRow={getRow} sheetName={'출고실적'} />
 					</div>
 				</TCSubContainer>
-				<TCSubContainer bor>
+				<TCSubContainer>
 					<div>
 						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
 					</div>
-					<div></div>
 				</TCSubContainer>
 				<TableV2
 					getRow={tableRowData}
@@ -137,18 +122,44 @@ const UserPerformance = () => {
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
+						{invoiceData &&
+							Object.keys(invoiceData).map((key, index) => {
+								return (
+									<div style={{ display: 'none' }} key={index}>
+										<ShippingInvoiceViewV2 list={invoiceData[key]} />
+									</div>
+								)
+							})}
 						<WhiteSkyBtn
-							onClick={() => {
-								navigate(`/userpage/performance/invoice`)
+							className={'shipment_invoice'}
+							onClick={async () => {
+								const buttons = document.querySelectorAll('.shipment_invoice')
+								for (const element of buttons) {
+									await new Promise((resolve) => {
+										element.click()
+										setTimeout(resolve, 3000)
+									})
+								}
 							}}
 						>
-							거래 명세서 보기
+							거래 명세서 출력
 						</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
 			</TableContianer>
+			<NewBottomBtnWrap>
+				<BlackBtn
+					width={13}
+					height={40}
+					onClick={() => {
+						navigate('/userpage/performance')
+					}}
+				>
+					돌아가기
+				</BlackBtn>
+			</NewBottomBtnWrap>
 		</FilterContianer>
 	)
 }
 
-export default UserPerformance
+export default UserPerformanceDetails

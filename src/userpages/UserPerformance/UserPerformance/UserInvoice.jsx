@@ -5,13 +5,13 @@ import { FilterContianer, TableContianer } from '../../../modal/External/Externa
 import { useAtomValue } from 'jotai/index'
 import { toggleAtom } from '../../../store/Layout/Layout'
 import { isEqual } from 'lodash'
-import ShipmentInvoiceSearchFilter from './ShipmentInvoiceSearchFilter'
 import { BlackBtn, NewBottomBtnWrap } from '../../../common/Button/Button'
 import { useNavigate } from 'react-router-dom'
 import { shipmentInvoiceListQueryV2 } from '../../../api/shipment'
 import { delay, formatWeight } from '../../../utils/utils'
 import styled from 'styled-components'
 import ShippingInvoiceViewV2 from '../../../components/shipping/ShippingInvoiceViewV2'
+import UserInvoiceSearchFilter from './UserInvoiceSearchFilter'
 
 const initData = {}
 
@@ -25,7 +25,7 @@ const calculationNumber = (key) => {
 	}
 }
 
-const NewShipmentInvoice = () => {
+const UserInvoice = () => {
 	const navigate = useNavigate()
 
 	const exFilterToggle = useAtomValue(toggleAtom)
@@ -51,7 +51,7 @@ const NewShipmentInvoice = () => {
 
 	useEffect(() => {
 		const get = async () => {
-			const isEnabled = (param.shipmentStartDate && param.shipmentEndDate) || param.customerCode
+			const isEnabled = param.shipmentStartDate && param.shipmentEndDate
 
 			if (!isEnabled) return
 
@@ -72,8 +72,8 @@ const NewShipmentInvoice = () => {
 		get()
 			.then((data) => {
 				if (data) {
-					setData(groupedData(data, (item) => `${item.outNumber}_${item.customerCode}`))
-					setInvoiceData(groupedData(data, (item) => `${item.customerCode}`))
+					setData(groupedData(data, (item) => `${item.outNumber}`))
+					setInvoiceData(data)
 				}
 			})
 			.catch((e) => console.error(e))
@@ -89,15 +89,13 @@ const NewShipmentInvoice = () => {
 					isToggleSeparate={true}
 					globalProductSearchOnClick={searchOnClick}
 					globalProductResetOnClick={resetOnClick}
-					renderCustomSearchFields={(props) => <ShipmentInvoiceSearchFilter {...props} />}
+					renderCustomSearchFields={(props) => <UserInvoiceSearchFilter {...props} />}
 				/>
 			)}
 			<TableContianer>
 				<MyTable>
 					<tr>
 						<th>경매번호</th>
-						<th>출고번호</th>
-						<th>주문번호</th>
 						<th>고객사명</th>
 						{/*<th>고객사코드</th>*/}
 						<th>창고</th>
@@ -131,8 +129,6 @@ const NewShipmentInvoice = () => {
 										return (
 											<tr key={index}>
 												<td>{item.auctionNumber || ''}</td>
-												<td>{item.outNumber || ''}</td>
-												<td>{item.orderNumber || ''}</td>
 												<td>{item.customerName || ''}</td>
 												{/*<td>{item.customerCode || ''}</td>*/}
 												<td>{item.storageName || ''}</td>
@@ -152,34 +148,37 @@ const NewShipmentInvoice = () => {
 											</tr>
 										)
 									})}
-									{data[key][0]?.extraCost && (
+									{/* prettier-ignore */}
+									{(data[key][0]?.extraCost || data[key][0]?.extraFreightCost) && (
 										<tr>
-											<td colSpan={11}></td>
-											<td>추가비</td>
+											<td colSpan={9}></td>
+											<td>추가운임비</td>
 											<td></td>
 											<td></td>
 											<td></td>
 											<td className={'freightCost'}>
-												{data[key][0]?.extraType === '추가' ? '' : '-'}
-												{formatWeight(data[key][0]?.extraCost)}
+												{data[key][0]?.extraType === '추가'
+													? formatWeight(Number(data[key][0]?.extraFreightCost) + Number(data[key][0]?.extraCost))
+													: formatWeight(Number(data[key][0]?.extraFreightCost) - Number(data[key][0]?.extraCost))}
 											</td>
 											<td className={'freightCostVat'}>
-												{data[key][0]?.extraType === '추가' ? '' : '-'}
-												{formatWeight(data[key][0]?.extraCost * 0.1)}
+												{data[key][0]?.extraType === '추가'
+													? formatWeight(
+															Number(data[key][0]?.extraFreightCost * 0.1) + Number(data[key][0]?.extraCost * 0.1),
+													  )
+													: formatWeight(
+															Number(data[key][0]?.extraFreightCost * 0.1) - Number(data[key][0]?.extraCost * 0.1),
+													  )}
 											</td>
-											<td className={'totalAmount'}>{formatWeight(data[key][0]?.extraCost * 1.1)}</td>
-										</tr>
-									)}
-									{data[key][0]?.extraFreightCost && (
-										<tr>
-											<td colSpan={11}></td>
-											<td>공차비</td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td className={'freightCost'}>{formatWeight(data[key][0]?.extraFreightCost)}</td>
-											<td className={'freightCostVat'}>{formatWeight(data[key][0]?.extraFreightCost * 0.1)}</td>
-											<td className={'totalAmount'}>{formatWeight(data[key][0]?.extraFreightCost * 1.1)}</td>
+											<td className={'totalAmount'}>
+												{data[key][0]?.extraType === '추가'
+													? formatWeight(
+															Number(data[key][0]?.extraFreightCost) * 1.1 + Number(data[key][0]?.extraCost * 1.1),
+													  )
+													: formatWeight(
+															Number(data[key][0]?.extraFreightCost) * 1.1 - Number(data[key][0]?.extraCost * 1.1),
+													  )}
+											</td>
 										</tr>
 									)}
 								</React.Fragment>
@@ -187,7 +186,7 @@ const NewShipmentInvoice = () => {
 						})}
 					{data && Object.keys(data)?.length > 0 && theEnd && (
 						<tr>
-							<td colSpan={13}>총 금액</td>
+							<td colSpan={11}>총 금액</td>
 							<td>{calculationNumber('orderPrice')}</td>
 							<td>{calculationNumber('orderPriceVat')}</td>
 							<td>{calculationNumber('freightCost')}</td>
@@ -197,14 +196,11 @@ const NewShipmentInvoice = () => {
 					)}
 				</MyTable>
 			</TableContianer>
-			{invoiceData &&
-				Object.keys(invoiceData).map((key, index) => {
-					return (
-						<div style={{ display: 'none' }} key={index}>
-							<ShippingInvoiceViewV2 list={invoiceData[key]} />
-						</div>
-					)
-				})}
+			{invoiceData && (
+				<div style={{ display: 'none' }}>
+					<ShippingInvoiceViewV2 list={invoiceData} />
+				</div>
+			)}
 			<NewBottomBtnWrap style={{ margin: '48px 0', border: 0 }}>
 				<BlackBtn
 					width={13}
@@ -255,4 +251,4 @@ const MyTable = styled.table`
 	}
 `
 
-export default NewShipmentInvoice
+export default UserInvoice
