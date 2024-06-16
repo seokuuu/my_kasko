@@ -78,3 +78,6 @@ export function calculateWeight(thickness, width, length) {
 
 	return Math.ceil(weight / 1000000)
 }
+
+// 딜레이
+export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))

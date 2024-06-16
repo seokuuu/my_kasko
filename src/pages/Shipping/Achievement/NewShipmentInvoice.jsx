@@ -10,7 +10,7 @@ import { BlackBtn, NewBottomBtnWrap } from '../../../common/Button/Button'
 import { useNavigate } from 'react-router-dom'
 import ShippingInvoiceView from '../../../components/shipping/ShippingInvoiceView'
 import { shipmentInvoiceListQueryV2 } from '../../../api/shipment'
-import { formatWeight } from '../../../utils/utils'
+import { delay, formatWeight } from '../../../utils/utils'
 import styled from 'styled-components'
 
 const initData = {}
@@ -32,6 +32,7 @@ const NewShipmentInvoice = () => {
 
 	const [param, setParam] = useState(initData)
 	const [data, setData] = useState([])
+	const [theEnd, setTheEnd] = useState(false)
 
 	const resetOnClick = () => setParam(initData)
 
@@ -49,6 +50,12 @@ const NewShipmentInvoice = () => {
 
 	useEffect(() => {
 		const get = async () => {
+			const isEnabled = (param.shipmentStartDate && param.shipmentEndDate) || param.customerCode
+
+			if (!isEnabled) return
+
+			setTheEnd(false)
+
 			return await shipmentInvoiceListQueryV2(param)
 		}
 		const groupedData = (data) => {
@@ -86,6 +93,7 @@ const NewShipmentInvoice = () => {
 			<TableContianer>
 				<MyTable>
 					<tr>
+						<th>경매번호</th>
 						<th>출고번호</th>
 						<th>주문번호</th>
 						<th>고객사명</th>
@@ -107,9 +115,13 @@ const NewShipmentInvoice = () => {
 					</tr>
 					{data &&
 						Object.keys(data).map((key, index) => {
+							if (index === Object.keys(data).length - 1) {
+								delay(300).then(() => setTheEnd(true))
+							}
 							return (
 								<React.Fragment key={index}>
 									{data[key].map((item, index) => {
+										console.log('item : ', item)
 										const totalAmount =
 											Number(item.orderPrice) +
 											Number(item.orderPriceVat) +
@@ -117,6 +129,7 @@ const NewShipmentInvoice = () => {
 											Number(item.freightCostVat)
 										return (
 											<tr key={index}>
+												<td>{item.auctionNumber || ''}</td>
 												<td>{item.outNumber || ''}</td>
 												<td>{item.orderNumber || ''}</td>
 												<td>{item.customerName || ''}</td>
@@ -129,7 +142,7 @@ const NewShipmentInvoice = () => {
 												<td>{formatWeight(Number(item.width)) || ''}</td>
 												<td>{formatWeight(Number(item.length)) || ''}</td>
 												<td>{item.spec || ''}</td>
-												<td>{formatWeight(Number(item.biddingPrice)) || ''}</td>
+												<td>{formatWeight(Number(item.biddingPrice) / 1000) || ''}</td>
 												<td className={'orderPrice'}>{formatWeight(Number(item.orderPrice)) || ''}</td>
 												<td className={'orderPriceVat'}>{formatWeight(Number(item.orderPriceVat)) || ''}</td>
 												<td className={'freightCost'}>{formatWeight(Number(item.freightCost)) || ''}</td>
@@ -140,7 +153,7 @@ const NewShipmentInvoice = () => {
 									})}
 									{data[key][0]?.extraCost && (
 										<tr>
-											<td colSpan={10}></td>
+											<td colSpan={11}></td>
 											<td>추가비</td>
 											<td></td>
 											<td></td>
@@ -158,7 +171,7 @@ const NewShipmentInvoice = () => {
 									)}
 									{data[key][0]?.extraFreightCost && (
 										<tr>
-											<td colSpan={10}></td>
+											<td colSpan={11}></td>
 											<td>공차비</td>
 											<td></td>
 											<td></td>
@@ -174,14 +187,16 @@ const NewShipmentInvoice = () => {
 								</React.Fragment>
 							)
 						})}
-					<tr>
-						<td colSpan={12}></td>
-						<td>{calculationNumber('orderPrice')}</td>
-						<td>{calculationNumber('orderPriceVat')}</td>
-						<td>{calculationNumber('freightCost')}</td>
-						<td>{calculationNumber('freightCostVat')}</td>
-						<td>{calculationNumber('totalAmount')}</td>
-					</tr>
+					{data && Object.keys(data)?.length > 0 && theEnd && (
+						<tr>
+							<td colSpan={13}>총 금액</td>
+							<td>{calculationNumber('orderPrice')}</td>
+							<td>{calculationNumber('orderPriceVat')}</td>
+							<td>{calculationNumber('freightCost')}</td>
+							<td>{calculationNumber('freightCostVat')}</td>
+							<td>{calculationNumber('totalAmount')}</td>
+						</tr>
+					)}
 				</MyTable>
 			</TableContianer>
 			<NewBottomBtnWrap style={{ margin: '48px 0', border: 0 }}>
@@ -198,9 +213,9 @@ const NewShipmentInvoice = () => {
 					height={40}
 					onClick={async () => {
 						const buttons = document.querySelectorAll('.shipment_invoice')
-						for (let i = 0; i < buttons.length; i++) {
+						for (const element of buttons) {
 							await new Promise((resolve) => {
-								buttons[i].click()
+								element.click()
 								setTimeout(resolve, 3000)
 							})
 						}
