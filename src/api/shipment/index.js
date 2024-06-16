@@ -274,7 +274,7 @@ export async function useShipmentInvoiceListQuery(params) {
 	})
 }
 
-// 출고 거래명세서 출력
+// 출고 수취서 거래명세서 출력
 export async function shipmentInvoiceAllListQuery(param) {
 	const response = await client.get(`${SHIPMENT_ORDER_INVOICE_URL}/${param}`)
 	return response.data.data

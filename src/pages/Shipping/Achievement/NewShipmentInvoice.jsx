@@ -8,10 +8,10 @@ import { isEqual } from 'lodash'
 import ShipmentInvoiceSearchFilter from './ShipmentInvoiceSearchFilter'
 import { BlackBtn, NewBottomBtnWrap } from '../../../common/Button/Button'
 import { useNavigate } from 'react-router-dom'
-import ShippingInvoiceView from '../../../components/shipping/ShippingInvoiceView'
 import { shipmentInvoiceListQueryV2 } from '../../../api/shipment'
 import { delay, formatWeight } from '../../../utils/utils'
 import styled from 'styled-components'
+import ShippingInvoiceViewV2 from '../../../components/shipping/ShippingInvoiceViewV2'
 
 const initData = {}
 
@@ -31,7 +31,8 @@ const NewShipmentInvoice = () => {
 	const exFilterToggle = useAtomValue(toggleAtom)
 
 	const [param, setParam] = useState(initData)
-	const [data, setData] = useState([])
+	const [data, setData] = useState([]) // 묶음 데이터
+	const [invoiceData, setInvoiceData] = useState([]) // 원본데이터
 	const [theEnd, setTheEnd] = useState(false)
 
 	const resetOnClick = () => setParam(initData)
@@ -58,9 +59,9 @@ const NewShipmentInvoice = () => {
 
 			return await shipmentInvoiceListQueryV2(param)
 		}
-		const groupedData = (data) => {
+		const groupedData = (data, getKey) => {
 			return data?.reduce((acc, item) => {
-				const key = `${item.outNumber}_${item.customerCode}`
+				const key = getKey(item)
 				if (!acc[key]) {
 					acc[key] = []
 				}
@@ -69,9 +70,10 @@ const NewShipmentInvoice = () => {
 			}, {})
 		}
 		get()
-			.then((res) => {
-				if (res) {
-					setData(groupedData(res))
+			.then((data) => {
+				if (data) {
+					setData(groupedData(data, (item) => `${item.outNumber}_${item.customerCode}`))
+					setInvoiceData(groupedData(data, (item) => `${item.customerCode}`))
 				}
 			})
 			.catch((e) => console.error(e))
@@ -121,7 +123,6 @@ const NewShipmentInvoice = () => {
 							return (
 								<React.Fragment key={index}>
 									{data[key].map((item, index) => {
-										console.log('item : ', item)
 										const totalAmount =
 											Number(item.orderPrice) +
 											Number(item.orderPriceVat) +
@@ -181,9 +182,6 @@ const NewShipmentInvoice = () => {
 											<td></td>
 										</tr>
 									)}
-									<div style={{ display: 'none' }}>
-										<ShippingInvoiceView customerCode={data[key][0].customerCode} outNumber={data[key][0].outNumber} />
-									</div>
 								</React.Fragment>
 							)
 						})}
@@ -199,6 +197,14 @@ const NewShipmentInvoice = () => {
 					)}
 				</MyTable>
 			</TableContianer>
+			{invoiceData &&
+				Object.keys(invoiceData).map((key, index) => {
+					return (
+						<div style={{ display: 'none' }} key={index}>
+							<ShippingInvoiceViewV2 list={invoiceData[key]} />
+						</div>
+					)
+				})}
 			<NewBottomBtnWrap style={{ margin: '48px 0', border: 0 }}>
 				<BlackBtn
 					width={13}
