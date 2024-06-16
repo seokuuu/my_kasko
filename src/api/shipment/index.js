@@ -282,11 +282,8 @@ export async function shipmentInvoiceAllListQuery(param) {
 
 // 출고실적 거래명세서 목록
 export async function shipmentInvoiceListQueryV2(params) {
-	const isEnabled = (params.shipmentStartDate && params.shipmentEndDate) || params.customerCode
-	if (isEnabled) {
-		const response = await client.get(SHIPMENT_ORDER_INVOICE_URL + '/v2', { params })
-		return response.data.data
-	}
+	const response = await client.get(SHIPMENT_ORDER_INVOICE_URL + '/v2', { params })
+	return response.data.data
 }
 
 export async function shipmentInvoiceListOutNumberQueryV2(params) {
