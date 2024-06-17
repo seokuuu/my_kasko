@@ -72,7 +72,7 @@ const RoundSearchFields = ({
 						<h6>진행 상태</h6>
 						<RadioSearchButton
 							options={[
-								{ label: '전체', value: '' },
+								{ label: '전체', value: '전체' },
 								{ label: '대기', value: '대기' },
 								{ label: '진행중', value: '진행중' },
 								{ label: '종료', value: '종료' },
