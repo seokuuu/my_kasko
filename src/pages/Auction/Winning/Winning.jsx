@@ -130,8 +130,8 @@ const Winning = ({}) => {
 		pageNum: 1,
 		pageSize: 50,
 		orderType: '경매',
-		auctionStartDate: startOfDay,
-		auctionEndDate: endOfDay,
+		// auctionStartDate: startOfDay,
+		// auctionEndDate: endOfDay,
 	}
 
 	const [param, setParam] = useState(paramData)

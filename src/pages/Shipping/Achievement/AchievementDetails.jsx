@@ -21,13 +21,12 @@ import ShippingExtraCostBtn from './ShippingExtraCostBtn'
 import InvoiceDetailHeader from './InvoiceDetailHeader'
 
 const AchievementDetails = () => {
-	const { outNumber, customerDestinationUid } = useParams()
+	const { outNumber } = useParams()
 	const initData = {
 		pageNum: 1,
 		pageSize: 50,
 		shipmentStatus: '운송 완료',
 		outNumber,
-		customerDestinationUid,
 	}
 
 	const auth = useAtomValue(authAtom)

@@ -233,7 +233,7 @@ const Router = () => {
 				<Route path="/shipping/status" element={<StatusPage />} />
 				<Route path="/shipping/status/:id" element={<StatusDetailPage />} />
 				<Route path="/shipping/achievement" element={<AchievementPage />} />
-				<Route path="/shipping/achievement/:outNumber/:customerDestinationUid" element={<AchievementDetailsPage />} />
+				<Route path="/shipping/achievement/:outNumber" element={<AchievementDetailsPage />} />
 				{/*<Route path="/shipping/achievement/invoice" element={<ShipmentInvoicePage />} />*/}
 				<Route path="/shipping/achievement/invoice" element={<NewShipmentInvoicePage />} />
 				<Route path="/shipping/claim/register" element={<ClaimRegisterPage />} />

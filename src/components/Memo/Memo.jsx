@@ -1,28 +1,28 @@
 import { useMutation } from '@tanstack/react-query'
 import React, { useEffect, useState } from 'react'
-import { postingMemoAndNote } from '../../../api/SellProduct'
-import { BlackBtn } from '../../../common/Button/Button'
-import { CustomInput } from '../../../common/Input/Input'
-import useAlert from '../../../store/Alert/useAlert'
-import { ReactComponent as Pencil } from './Modify.svg'
+import { BlackBtn } from '../../common/Button/Button'
+import { CustomInput } from '../../common/Input/Input'
+import { ReactComponent as Pencil } from '../../pages/Shipping/Request/Modify.svg'
 import { useAtomValue } from 'jotai'
-import { authAtom } from '../../../store/Auth/auth'
+import { authAtom } from '../../store/Auth/auth'
+import useAlert from '../../store/Alert/useAlert'
+import { postingMemoAndNote } from '../../api/SellProduct'
 /**
  * @description
  * 비고란 작성 컴포넌트입니다.
  * @param props.data 행 데이터입니다. 해당 행의 모든 필드 데이터를 조회가능합니다.
  */
-const Note = (props) => {
+const MemoCellRenderer = (props) => {
 	const { data } = props
 	const auth = useAtomValue(authAtom)
 
 	const { simpleAlert } = useAlert()
 
 	const productNumber = data['제품번호']
-	const memo = data['메모']
+	const note = data['비고']
 
 	// 메모 상태값입니다.
-	const [note, setNote] = useState('')
+	const [memo, setMemo] = useState('')
 
 	// 수정모드 여부에 대한 상태값입니다.
 	const [isUpdateMode, setIsUpdateMode] = useState(false)
@@ -48,8 +48,8 @@ const Note = (props) => {
 
 	// 초기 비고값을 업데이트해줍니다.
 	useEffect(() => {
-		if (data && data['비고']) {
-			setNote(data['비고'])
+		if (data && data['메모']) {
+			setMemo(data['메모'])
 		}
 	}, [data])
 
@@ -62,13 +62,13 @@ const Note = (props) => {
 						width: '80%',
 						minWidth: '200px',
 					}}
-					value={note}
+					value={memo}
 					width={200}
-					onChange={(e) => setNote(e.target.value)}
+					onChange={(e) => setMemo(e.target.value)}
 				/>
 			) : (
 				<div>
-					<span>{note}</span>
+					<span>{memo}</span>
 					{auth.role === '카스코철강' && (
 						<button
 							style={{
@@ -78,7 +78,7 @@ const Note = (props) => {
 							}}
 							onClick={() => {
 								setIsUpdateMode(true)
-								const column = props.columnApi.getAllColumns().find((col) => col.getColId() === '비고')
+								const column = props.columnApi.getAllColumns().find((col) => col.getColId() === '메모')
 								if (column) {
 									const currentWidth = column.getActualWidth()
 									if (currentWidth < 500) {
@@ -113,4 +113,4 @@ const Note = (props) => {
 	)
 }
 
-export default Note
+export default MemoCellRenderer

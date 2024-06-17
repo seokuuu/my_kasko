@@ -3,6 +3,8 @@ import BtnCellRenderer from '../../pages/Table/BtnCellRenderer.jsx'
 import InputCellRenderer from '../../pages/Table/InputCellRenderer.jsx'
 import { commonStyles } from '../commonCellStyle.js'
 import { recommendCell } from '../../pages/Product/SingleProduct/cellRender/RecommendCellRender.jsx'
+import MemoCellRenderer from '../../components/Memo/Memo'
+import Note from '../../pages/Shipping/Request/Note'
 
 var checkboxSelection = function (params) {
 	// we put checkbox on the name if we are not doing grouping
@@ -108,22 +110,32 @@ export const SingleDispatchFieldsCols = () => [
 	{ ...commonStyles, field: '제품 번호', minWidth: 200, cellRenderer: recommendCell },
 	...Object.keys(singleDispatchFields)
 		.slice(2)
-		.map((item) => ({
-			...commonStyles,
-			field: item,
-			editable: item === '메모' || item === '비고' ? true : false,
-			minWidth: item === '메모' || item === '비고' ? 200 : 150,
-			cellRenderer: (params) => {
-				if (item === '메모' || item === '비고') {
-					return params.value
+		.map((item) => {
+			if (item === '메모') {
+				return {
+					...commonStyles,
+					field: '메모',
+					minWidth: 300,
+					cellRenderer: MemoCellRenderer,
 				}
-				if (typeof params.value === 'boolean') {
-					return params.value ? 'Y' : 'N'
-				} else {
-					return params.value
-				}
-			},
-		})),
+			}
+			return {
+				...commonStyles,
+				field: item,
+				editable: item === '메모' || item === '비고' ? true : false,
+				minWidth: item === '메모' || item === '비고' ? 200 : 150,
+				cellRenderer: (params) => {
+					if (item === '메모' || item === '비고') {
+						return params.value
+					}
+					if (typeof params.value === 'boolean') {
+						return params.value ? 'Y' : 'N'
+					} else {
+						return params.value
+					}
+				},
+			}
+		}),
 ]
 
 export const SingleSalesDispatchFieldsCols = (isUpdate = false) => [
@@ -141,22 +153,32 @@ export const SingleSalesDispatchFieldsCols = (isUpdate = false) => [
 	{ ...commonStyles, field: '제품 번호', minWidth: 200, cellRenderer: recommendCell },
 	...Object.keys(singleDispatchFields)
 		.slice(2)
-		.map((item) => ({
-			...commonStyles,
-			field: item,
-			editable: item === '메모' || item === '비고' ? true : false,
-			minWidth: item === '메모' || item === '비고' ? 200 : 150,
-			cellRenderer: (params) => {
-				if (item === '메모' || item === '비고') {
-					return params.value
+		.map((item) => {
+			if (item === '메모') {
+				return {
+					...commonStyles,
+					field: '메모',
+					minWidth: 300,
+					cellRenderer: MemoCellRenderer,
 				}
-				if (typeof params.value === 'boolean') {
-					return params.value ? 'Y' : 'N'
-				} else {
-					return params.value
-				}
-			},
-		})),
+			}
+			return {
+				...commonStyles,
+				field: item,
+				editable: item === '메모' || item === '비고' ? true : false,
+				minWidth: item === '메모' || item === '비고' ? 200 : 150,
+				cellRenderer: (params) => {
+					if (item === '메모' || item === '비고') {
+						return params.value
+					}
+					if (typeof params.value === 'boolean') {
+						return params.value ? 'Y' : 'N'
+					} else {
+						return params.value
+					}
+				},
+			}
+		}),
 ]
 
 var optionFn = function (key) {

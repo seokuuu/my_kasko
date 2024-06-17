@@ -181,8 +181,8 @@ export const ShippingDispatchFields = {
 	'상차도 여부': 'dockStatus',
 	'배차 여부': 'driverStatus',
 	'출하 상태': 'shipmentStatus',
-	'고객사명': 'customerName',
-	'고객코드': 'customerCode',
+	고객사명: 'customerName',
+	고객코드: 'customerCode',
 	창고: 'storageName',
 	운전기사명: 'driverName',
 	'운전기사 연락처': 'driverPhone',
@@ -244,7 +244,7 @@ export const ShippingDispatchFieldsCols = [
 	{ ...commonStyles, field: '목적지 연락처(사무실) 1/2/3', minWidth: 180 },
 	{ ...commonStyles, field: '목적지담당자 연락처 (휴대폰) 1/2/3', minWidth: 180 },
 	{ ...commonStyles, field: '하차지명 1/2/3', minWidth: 180 },
-	{ ...commonStyles, field: '비고', minWidth: 100 },
+	{ ...commonStyles, field: '비고', minWidth: 100, cellRenderer: Note },
 	{ ...commonStyles, field: '회차 여부', minWidth: 100 },
 	{ ...commonStyles, field: '회차 일자', minWidth: 180 },
 	{ ...commonStyles, field: '최종수정자', minWidth: 100 },
@@ -364,11 +364,21 @@ export const ShippingStatusFieldsCols = [
 	{ ...commonStyles, field: '순번', minWidth: 80 },
 	...Object.keys(ShippingStatusFields)
 		.slice(1)
-		.map((item) => ({
-			...commonStyles,
-			field: item,
-			minWidth: 180,
-		})),
+		.map((item) => {
+			if (item === '비고') {
+				return {
+					...commonStyles,
+					field: '비고',
+					minWidth: 300,
+					cellRenderer: Note,
+				}
+			}
+			return {
+				...commonStyles,
+				field: item,
+				minWidth: 180,
+			}
+		}),
 ]
 
 // 출고현황 목록

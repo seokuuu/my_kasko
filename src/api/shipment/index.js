@@ -262,11 +262,10 @@ export function useShipmentRemoveExtraCostMutation() {
 }
 
 // 출고 거래명세서 출력
-export function useShipmentInvoiceListQuery(params) {
+export async function useShipmentInvoiceListQuery(params) {
 	const isEnabled = params.outNumber !== null && params.customerCode != null
-
 	return useQuery({
-		queryKey: QUERY_KEY.invoice,
+		queryKey: [QUERY_KEY.invoice, params.outNumber, params.customerCode],
 		queryFn: async function () {
 			const response = await client.get(SHIPMENT_ORDER_INVOICE_URL, { params })
 			return response.data.data
@@ -287,5 +286,15 @@ export async function shipmentInvoiceListQueryV2(params) {
 	if (isEnabled) {
 		const response = await client.get(SHIPMENT_ORDER_INVOICE_URL + '/v2', { params })
 		return response.data.data
+	}
+}
+
+export async function shipmentInvoiceListOutNumberQueryV2(params) {
+	const isEnabled = params.outNumber !== null && params.customerCode != null
+	if (isEnabled) {
+		const response = await client.get(SHIPMENT_ORDER_INVOICE_URL, { params })
+		return response.data.data
+	} else {
+		return []
 	}
 }

@@ -64,6 +64,9 @@ const PickerWrap = styled.div`
 	left: ${(props) => props.left}px;
 	background-color: ${(props) => (props.bgColor ? `${props.bgColor}` : 'white')};
 	align-items: center;
+	.react-datepicker-popper {
+		z-index: 999 !important;
+	}
 `
 
 const SDatePicker = styled(DatePicker)`

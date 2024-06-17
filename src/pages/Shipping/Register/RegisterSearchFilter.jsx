@@ -14,9 +14,12 @@ import {
 	MiniInput,
 	Tilde,
 } from '../../../modal/External/ExternalFilter'
+import { useAtomValue } from 'jotai/index'
+import { authAtom } from '../../../store/Auth/auth'
 
 const RegisterSearchFilter = ({ search, setSearch, commonNumInputHandler }) => {
 	const { storageList, spartList } = useGlobalProductSearchFieldData()
+	const auth = useAtomValue(authAtom)
 	const onChange = (key, value) => {
 		setSearch((p) => ({ ...p, [key]: value }))
 	}
@@ -24,18 +27,20 @@ const RegisterSearchFilter = ({ search, setSearch, commonNumInputHandler }) => {
 		<SearchContainer>
 			<FilterLeft>
 				<RowWrap none>
-					<PartWrap first>
-						<h6>창고 구분</h6>
-						<PWRight>
-							<MainSelect
-								options={storageList}
-								// defaultValue={storageList[0]}
-								value={search.storage}
-								name="storage"
-								onChange={(e) => onChange('storage', e)}
-							/>
-						</PWRight>
-					</PartWrap>
+					{auth.role === '카스코철강' && (
+						<PartWrap first>
+							<h6>창고 구분</h6>
+							<PWRight>
+								<MainSelect
+									options={storageList}
+									// defaultValue={storageList[0]}
+									value={search.storage}
+									name="storage"
+									onChange={(e) => onChange('storage', e)}
+								/>
+							</PWRight>
+						</PartWrap>
+					)}
 					<CustomerSearch search={search} setSearch={setSearch} />
 				</RowWrap>
 				<RowWrap>

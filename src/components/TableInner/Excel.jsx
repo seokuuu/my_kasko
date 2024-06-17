@@ -54,7 +54,7 @@ const Excel = ({ getRow, sheetName = 'kasko' }) => {
 		}
 
 		const keys = Object.keys(jsonData[0])
-		const data = [keys].concat(jsonData.map((item) => keys.map((key) => item[key])))
+		const data = [keys].concat(jsonData.map((item) => keys.map((key) => item[key]?.value ?? item[key])))
 
 		const ws_name = sheetName
 		const ws_data = data
