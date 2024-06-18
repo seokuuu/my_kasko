@@ -62,7 +62,9 @@ const AchievementDetails = () => {
 		const selectedRow = selectedRows[0]
 		const copiedData = data.list
 		const findData = copiedData.find((item) => item.orderUid === selectedRow['주문 고유 번호'])
-		navigate(`/shipping/claim/register`, { state: findData })
+		navigate(`/shipping/claim/register`, {
+			state: { ...findData, auctionNumber: findData.auctionNumber || findData.saleNumber },
+		})
 	}
 
 	const handleTablePageSize = (event) => {
