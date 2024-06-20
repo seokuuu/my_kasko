@@ -823,7 +823,62 @@ export const AuctionBiddingFieldsCols = (selected, checkAvailable) => {
 			lockPinned: true,
 		},
 		{ ...commonStyles, field: '순번', minWidth: 100 },
-		{ ...commonStyles, field: '경매 상태', minWidth: 100 },
+		// { ...commonStyles, field: '경매 상태', minWidth: 100 },
+		// { ...commonStyles, field: '응찰 상태', minWidth: 150 },
+		{
+			...commonStyles,
+			headerName: '경매 상태',
+			field: '경매 상태',
+			headerClass: 'custom-header-style',
+			cellStyle: function (params) {
+				let lost = params.data['응찰 상태'] === '응찰 실패'
+				let win = params.data['응찰 상태'] === '응찰' || params.data['응찰 상태'] === null
+				if (params.data['응찰가'] === 0) {
+					return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' }
+				}
+				if (lost) {
+					return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // dodgerblue
+				} else if (win) {
+					const memberBestBiddingPrice = parseInt(params.data['나의 최고 응찰 가격']?.replace(/,/g, ''))
+					const biddingPrice = parseInt(params.data['현재 최고 가격']?.replace(/,/g, ''))
+
+					if (memberBestBiddingPrice < biddingPrice) {
+						return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // dodgerblue
+					} else if (memberBestBiddingPrice >= biddingPrice) {
+						return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // red
+					} else {
+						return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' }
+					}
+				} else {
+					return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' }
+				}
+			},
+			minWidth: 150,
+			cellRenderer: (params) => {
+				let lost = params.data['응찰 상태'] === '응찰 실패'
+				let win = params.data['응찰 상태'] === '응찰' || params.data['응찰 상태'] === null
+				if (params.data['응찰가'] === 0) {
+					return '미응찰'
+				}
+				if (lost) {
+					return '응찰 실패'
+				} else if (win) {
+					const memberBestBiddingPrice = parseInt(params.data['나의 최고 응찰 가격']?.replace(/,/g, ''))
+					const biddingPrice = parseInt(params.data['현재 최고 가격']?.replace(/,/g, ''))
+
+					if (memberBestBiddingPrice < biddingPrice) {
+						return '응찰 실패'
+					} else if (memberBestBiddingPrice >= biddingPrice) {
+						return '응찰'
+					} else {
+						return '미응찰'
+					}
+				} else {
+					return '미응찰'
+				}
+			},
+		},
+
 		// { ...commonStyles, field: '상태', minWidth: 100 },
 		{ ...commonStyles, field: '경매 번호', minWidth: 100 },
 		{ ...commonStyles, field: '추천 여부', minWidth: 100, cellRenderer: (params) => (params.value ? 'O' : 'X') },
@@ -970,7 +1025,59 @@ export const AuctionPackageBiddingFieldsCols = (selected) => {
 	return [
 		{ ...commonStyles, field: '', minWidth: 50, checkboxSelection: checkboxSelection2, headerCheckboxSelection },
 		{ ...commonStyles, field: '순번' },
-		{ ...commonStyles, field: '경매 상태' }, // 이게 낙찰 여부?
+		{
+			...commonStyles,
+			headerName: '경매 상태',
+			field: '경매 상태',
+			headerClass: 'custom-header-style',
+			cellStyle: function (params) {
+				let lost = params.data['응찰 상태'] === '응찰 실패'
+				let win = params.data['응찰 상태'] === '응찰' || params.data['응찰 상태'] === null
+				if (params.data['응찰가'] === 0) {
+					return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' }
+				}
+				if (lost) {
+					return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // dodgerblue
+				} else if (win) {
+					const memberBestBiddingPrice = parseInt(params.data['나의 최고 응찰 가격']?.replace(/,/g, ''))
+					const biddingPrice = parseInt(params.data['현재 최고 가격']?.replace(/,/g, ''))
+
+					if (memberBestBiddingPrice < biddingPrice) {
+						return { color: 'dodgerblue', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // dodgerblue
+					} else if (memberBestBiddingPrice >= biddingPrice) {
+						return { color: 'red', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' } // red
+					} else {
+						return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' }
+					}
+				} else {
+					return { color: 'black', fontWeight: 'bolder', textAlign: 'center', borderRight: '1px solid #C8C8C8' }
+				}
+			},
+			minWidth: 150,
+			cellRenderer: (params) => {
+				let lost = params.data['응찰 상태'] === '응찰 실패'
+				let win = params.data['응찰 상태'] === '응찰' || params.data['응찰 상태'] === null
+				if (params.data['응찰가'] === 0) {
+					return '미응찰'
+				}
+				if (lost) {
+					return '응찰 실패'
+				} else if (win) {
+					const memberBestBiddingPrice = parseInt(params.data['나의 최고 응찰 가격']?.replace(/,/g, ''))
+					const biddingPrice = parseInt(params.data['현재 최고 가격']?.replace(/,/g, ''))
+
+					if (memberBestBiddingPrice < biddingPrice) {
+						return '응찰 실패'
+					} else if (memberBestBiddingPrice >= biddingPrice) {
+						return '응찰'
+					} else {
+						return '미응찰'
+					}
+				} else {
+					return '미응찰'
+				}
+			},
+		},
 
 		{ ...commonStyles, field: '패키지 명' },
 		{
