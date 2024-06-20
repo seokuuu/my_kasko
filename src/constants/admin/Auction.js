@@ -869,7 +869,7 @@ export const AuctionBiddingFieldsCols = (selected, checkAvailable) => {
 					if (memberBestBiddingPrice < biddingPrice) {
 						return '응찰 실패'
 					} else if (memberBestBiddingPrice >= biddingPrice) {
-						return '응찰 성공'
+						return '응찰'
 					} else {
 						return '미응찰'
 					}
@@ -1069,7 +1069,7 @@ export const AuctionPackageBiddingFieldsCols = (selected) => {
 					if (memberBestBiddingPrice < biddingPrice) {
 						return '응찰 실패'
 					} else if (memberBestBiddingPrice >= biddingPrice) {
-						return '응찰 성공'
+						return '응찰'
 					} else {
 						return '미응찰'
 					}
