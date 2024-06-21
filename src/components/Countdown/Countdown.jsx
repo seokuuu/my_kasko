@@ -82,7 +82,7 @@ const Countdown = () => {
 						{data?.type === 'END' && <CountText>경매 종료까지 남은 시간 </CountText>}
 						<FlipClockCountdown
 							to={data?.date}
-							renderMap={[false, true, true, true]}
+							renderMap={[true, true, true, true]}
 							showLabels={false}
 							digitBlockStyle={{ width: 20, height: 28, fontSize: 18 }}
 							separatorStyle={{ color: 'black', size: '4px' }}
