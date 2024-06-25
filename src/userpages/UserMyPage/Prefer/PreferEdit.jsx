@@ -140,6 +140,17 @@ const PreferEdit = ({ setSwtichEdit, uidAtom }) => {
 			setIsModal(false)
 		}
 	}
+
+	function onSpecResetHandler() {
+		setSubmitData({
+			...submitData,
+			spec: {
+				text: '',
+				uid: null,
+			},
+		})
+	}
+
 	return (
 		<OnePageContainer>
 			<MainTitle>선호제품 수정</MainTitle>
@@ -165,10 +176,23 @@ const PreferEdit = ({ setSwtichEdit, uidAtom }) => {
 								<h4>규격 약호</h4>
 								<p></p>
 							</Title>
-							<CustomInput readOnly={true} value={submitData.spec.text} disabled />
-							<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17} onClick={modalOpen}>
-								찾기
-							</GreyBtn>
+							<div
+								style={{
+									width: '100%',
+									display: 'flex',
+									justifyContent: 'space-between',
+									alignItems: 'center',
+									gap: 8,
+								}}
+							>
+								<CustomInput readOnly={true} value={submitData.spec.text} disabled />
+								<GreyBtn style={{ width: '70px' }} height={35} fontSize={17} onClick={modalOpen}>
+									찾기
+								</GreyBtn>
+								<GreyBtn style={{ width: '70px' }} height={35} fontSize={17} onClick={onSpecResetHandler}>
+									삭제
+								</GreyBtn>
+							</div>
 						</Part>
 
 						<Part style={{ marginTop: '35px' }}>
