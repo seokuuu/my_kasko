@@ -131,6 +131,7 @@ const SingleAllProduct = ({ setSelectPr, selectPr, isUpdate }) => {
 				'최종 수정자': item['최종 수정자'],
 				메모: item['메모'],
 				비고: item['비고'],
+				상시판매가: item['상시 판매가'],
 			}
 		})
 		setSelectPr((prev) => [...prev, ...newSelects])

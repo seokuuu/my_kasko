@@ -29,10 +29,10 @@ const FavoriteProduct = () => {
 
 	useEffect(() => {
 		if (data) {
-			const list = data?.favoriteProductList
+			const list = data?.favoriteNameList
 			if (list && Array.isArray(list)) {
 				const tabs = list?.map((item, i) => ({
-					name: item?.favoriteName,
+					name: item,
 					isCheck: i === 0,
 				}))
 				setTabList(tabs)

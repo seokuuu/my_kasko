@@ -102,7 +102,6 @@ const Single = ({}) => {
 	const [tablePagination, setTablePagination] = useState([])
 	const [checkedArrayState, setCheckedArrayState] = useAtom(selectedRowsAtom)
 
-
 	const uids = checkedArrayState?.map((item) => item && item['제품 고유 번호'])
 
 	const paramData = {
@@ -153,7 +152,6 @@ const Single = ({}) => {
 	// 		const hasWishedPackageNumber = product['패키지 번호']?.wish
 	// 		return hasWishedProductNumber || hasWishedPackageNumber
 	// 	})
-
 
 	const restrictStartPriceData = {
 		...originData,
@@ -600,7 +598,7 @@ const Single = ({}) => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						{!nowAuction && <Excel getRow={tableRowData} sheetName="경매 응찰" />}
+						{/*{!nowAuction && <Excel getRow={tableRowData} sheetName="경매 응찰" />}*/}
 						<AddWishButton products={selectedData} productNumberKey={PROD_COL_NAME.productNumber} />
 					</div>
 				</TCSubContainer>

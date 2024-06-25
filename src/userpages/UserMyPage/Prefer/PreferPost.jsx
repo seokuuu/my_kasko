@@ -114,6 +114,16 @@ const PreferPost = ({ setChoiceComponent }) => {
 		}
 	}
 
+	function onSpecResetHandler() {
+		setSubmitData({
+			...submitData,
+			spec: {
+				text: '',
+				uid: null,
+			},
+		})
+	}
+
 	// 처음 폼과 이전 폼을 비교한 값입니다.
 	const blockCondition = useMemo(() => !isEqual(init, submitData), [submitData])
 
@@ -155,10 +165,23 @@ const PreferPost = ({ setChoiceComponent }) => {
 								<h4>규격 약호</h4>
 								<p></p>
 							</Title>
-							<CustomInput readOnly={true} value={submitData.spec.text} disabled />
-							<GreyBtn style={{ width: '70px' }} height={35} margin={10} fontSize={17} onClick={modalOpen}>
-								찾기
-							</GreyBtn>
+							<div
+								style={{
+									width: '100%',
+									display: 'flex',
+									justifyContent: 'space-between',
+									alignItems: 'center',
+									gap: 8,
+								}}
+							>
+								<CustomInput readOnly={true} value={submitData.spec.text} disabled />
+								<GreyBtn style={{ width: '70px' }} height={35} fontSize={17} onClick={modalOpen}>
+									찾기
+								</GreyBtn>
+								<GreyBtn style={{ width: '70px' }} height={35} fontSize={17} onClick={onSpecResetHandler}>
+									삭제
+								</GreyBtn>
+							</div>
 						</Part>
 
 						<Part style={{ marginTop: '35px' }}>
