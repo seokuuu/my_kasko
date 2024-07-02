@@ -165,8 +165,9 @@ export const useUserDelCartMutaion = () => {
 			await client.delete(`${USER_URL.cartRequest}/${cartParam}`)
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['user', 'cart', 'single', 'package'] })
-			simpleAlert('장바구니에서 삭제하였습니다.')
+			simpleAlert('장바구니에서 삭제하였습니다.', () => {
+				window.location.reload()
+			})
 		},
 		onError: (error) => {
 			simpleAlert(error?.data?.message || '장바구니 삭제에 실패하였습니다.')
