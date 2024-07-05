@@ -180,7 +180,7 @@ export const ShippingDispatchFields = {
 	'승인 상태': 'outStatus',
 	'상차도 여부': 'dockStatus',
 	'배차 여부': 'driverStatus',
-	'출하 상태': 'shipmentStatus',
+	// '출하 상태': 'shipmentStatus',
 	고객사명: 'customerName',
 	고객코드: 'customerCode',
 	창고: 'storageName',
@@ -222,7 +222,7 @@ export const ShippingDispatchFieldsCols = [
 	{ ...commonStyles, field: '출하요청번호', minWidth: 180 }, // 누락 추가
 	{ ...commonStyles, field: '제품추가 일자', minWidth: 180 },
 	{ ...commonStyles, field: '승인 상태', minWidth: 100 },
-	{ ...commonStyles, field: '출하 상태', minWidth: 100 },
+	// { ...commonStyles, field: '출하 상태', minWidth: 100 },
 	{ ...commonStyles, field: '출고 일자', minWidth: 100 }, // 누락 추가
 	{ ...commonStyles, field: '출고 번호', minWidth: 100 }, // 누락 추가
 	{ ...commonStyles, field: '배차 여부', minWidth: 100 },
@@ -267,7 +267,7 @@ export const ShippingDispatchDetailsFields = {
 	출고요청일자: 'shipmentRequestDate',
 	'출고 고유번호': 'outUid',
 	'제품추가 일자': 'outCreateDate',
-	'출하 상태': 'shipmentStatus',
+	// '출하 상태': 'shipmentStatus',
 	'출고 일자': 'outDate',
 	'출고 번호': 'outNumber',
 	'승인 상태': 'outStatus',
