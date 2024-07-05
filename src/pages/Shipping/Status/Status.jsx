@@ -33,6 +33,7 @@ import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import ReceiptExcelV2 from './ReceiptExcelV2'
 import { authAtom } from '../../../store/Auth/auth'
 import DispatchDetail from '../../../modal/Multi/DispatchDetail'
+import OutCancelModel from './OutCancelModel'
 
 const initData = {
 	pageNum: 1,
@@ -52,6 +53,7 @@ const Status = () => {
 	const [id, setId] = useState(null) // 체크 박스 선택한 id 값
 	const [param, setParam] = useState(initData)
 	const [rows, setGetRow] = useState([])
+	const [isCancelModal, setIsCancelModal] = useState(false)
 
 	const { isLoading, data, refetch } = useShipmentDispatchListQuery(param)
 	const { mutate: shipmentStatusUpdate } = useShipmentStatusUpdateMutation() // 출고 상태 변경
@@ -68,7 +70,7 @@ const Status = () => {
 	})
 
 	// 출고 취소
-	const onShipmentCancel = () => {
+	const onShipmentCancel = (value) => {
 		if (!selectedRows || selectedRows?.length === 0) {
 			return simpleAlert('출고 취소할 제품을 선택해주세요.')
 		}
@@ -76,8 +78,9 @@ const Status = () => {
 		const uids = selectedRows.map((item) => item['출고 고유번호'])
 
 		simpleConfirm('출고 취소하시겠습니까?', () => {
-			shipmentStatusUpdate({ shipmentStatus, uids })
+			shipmentStatusUpdate({ shipmentStatus, uids, cancelReason: value })
 			setSelectedRows([])
+			setIsCancelModal(false)
 		})
 	}
 
@@ -225,7 +228,16 @@ const Status = () => {
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						{['카스코철강', '창고'].includes(auth?.role) && (
-							<WhiteRedBtn onClick={onShipmentCancel}>출고 취소</WhiteRedBtn>
+							<WhiteRedBtn
+								onClick={() => {
+									if (!selectedRows || selectedRows?.length === 0) {
+										return simpleAlert('출고 취소할 제품을 선택해주세요.')
+									}
+									setIsCancelModal(true)
+								}}
+							>
+								출고 취소
+							</WhiteRedBtn>
 						)}
 						{['카스코철강', '운송사'].includes(auth?.role) && (
 							<WhiteBlackBtn onClick={onShipmentCompletion}>운송 완료</WhiteBlackBtn>
@@ -242,6 +254,9 @@ const Status = () => {
 						setIsPostModal(false)
 					}}
 				/>
+			)}
+			{isCancelModal && (
+				<OutCancelModel auctionFn={(value) => onShipmentCancel(value)} closeFn={() => setIsCancelModal(false)} />
 			)}
 		</FilterContianer>
 	)

@@ -201,6 +201,7 @@ export const ShippingDispatchFields = {
 	비고: 'outNote',
 	'회차 여부': 'outCancelStatus',
 	'회차 일자': 'outCancelDate', //(출고 취소된 일자)
+	'출고 취소 사유': 'cancelReason',
 	'출고 고유번호': 'outUid',
 	최종수정자: 'updater',
 	최종수정일시자: 'updateDate',
@@ -247,6 +248,7 @@ export const ShippingDispatchFieldsCols = [
 	{ ...commonStyles, field: '비고', minWidth: 100, cellRenderer: Note },
 	{ ...commonStyles, field: '회차 여부', minWidth: 100 },
 	{ ...commonStyles, field: '회차 일자', minWidth: 180 },
+	{ ...commonStyles, field: '출고 취소 사유', minWidth: 180 },
 	{ ...commonStyles, field: '최종수정자', minWidth: 100 },
 	{ ...commonStyles, field: '최종수정일시', minWidth: 180 },
 	{ ...commonStyles, field: '출고 고유번호', minWidth: 100 },
@@ -300,6 +302,7 @@ export const ShippingDispatchDetailsFields = {
 	'주문 고유 번호': 'orderUid',
 	'회차 여부': 'outCancelStatus',
 	'회차 일자': 'outCancelDate', //(출고 취소된 일자)
+	'출고 취소 사유': 'cancelReason',
 	최종수정자: 'updater',
 	최종수정일시자: 'updateDate',
 
