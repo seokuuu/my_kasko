@@ -116,7 +116,7 @@ const RequestRecom = () => {
 			<GlobalFilterHeader
 				title={'선별 추천 목록'}
 				enableSearchFilters={false}
-				subTitle={<Subtitle2 onClick={() => navigate('/shipping/request')}>출고 요청</Subtitle2>}
+				subTitle={<Subtitle2 onClick={() => navigate('/shipping/request')}>출하 지시 등록</Subtitle2>}
 			/>
 			<MergeHeader
 				list={serverData.list}
@@ -139,7 +139,7 @@ const RequestRecom = () => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<WhiteRedBtn onClick={onListRemove}>목록 제거</WhiteRedBtn>
-						<WhiteSkyBtn onClick={onRegister}>선별 등록</WhiteSkyBtn>
+						<WhiteSkyBtn onClick={onRegister}>{auth?.role === '카스코철강' ? '선별 등록' : '출하 지시'}</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
 				<TableV2 getRow={tableRowData} loading={isLoading} getCol={RegisterFieldsCols(RegisterFields(auth))} />

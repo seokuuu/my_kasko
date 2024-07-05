@@ -64,7 +64,7 @@ const DisRegisterSearchFilter = ({ search, setSearch }) => {
 				</RowWrap>
 				<RowWrap>
 					<DateSearchSelect
-						title={'출고 요청 일자'}
+						title="선별 등록 일자"
 						startInitDate={search.shipmentRequestStartDate}
 						endInitDate={search.shipmentRequestEndDate}
 						startDateChange={(value) => onChange('shipmentRequestStartDate', value)}

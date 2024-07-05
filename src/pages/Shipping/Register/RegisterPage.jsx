@@ -8,7 +8,7 @@ import Register from './Register'
 import { useState } from 'react'
 
 const RegisterPage = () => {
-	const depth2Color = '출하 지시 등록'
+	const depth2Color = '출하 가능 목록'
 	const [expanded, setExpanded] = useState('출고 관리')
 	return (
 		<>

@@ -69,8 +69,8 @@ const data = [
 	{
 		depth1: '출고 관리',
 		depth2: [
-			{ title: '출하 지시 등록', link: 'shipping/register' },
-			{ title: '출고 요청', link: 'shipping/request' },
+			{ title: '출하 가능 목록', link: 'shipping/register' },
+			{ title: '출하 지시 등록', link: 'shipping/request' },
 			{ title: '배차/출고 등록', link: 'shipping/dispatch/register' },
 			{ title: '출고 현황', link: 'shipping/status' },
 			{ title: '출고 실적', link: 'shipping/achievement' },
@@ -177,12 +177,12 @@ const SideBar = ({ expanded, setExpanded, depth2Color }) => {
 						<StyledAccordionDetails>
 							<Typography>
 								{item.depth2.map((subItem, subIndex) => {
-									if (authData?.role === '창고' && ['출하 지시 등록'].includes(subItem.title)) {
+									if (authData?.role === '창고' && ['출하 가능 목록'].includes(subItem.title)) {
 										return
 									}
 									if (
 										authData?.role === '운송사' &&
-										['출하 지시 등록', '출고 요청', '배차/출고 등록'].includes(subItem.title)
+										['출하 가능 목록', '출하 지시 등록', '배차/출고 등록'].includes(subItem.title)
 									) {
 										return
 									}

@@ -57,7 +57,7 @@ const Register = () => {
 		}
 		const uids = selectedRows.map((item) => item['주문 고유 번호'])
 		const shipmentStatus = '출하 지시'
-		simpleConfirm('출하 지시 등록하시겠습니까?', () => {
+		simpleConfirm('"출하 지시 등록" 페이지로 등록하시겠습니까?', () => {
 			shipmentStatusUpdate({ shipmentStatus, uids })
 			setSelectedRows([])
 		})
@@ -107,7 +107,7 @@ const Register = () => {
 
 	return (
 		<FilterContianer>
-			<GlobalFilterHeader title={'출하지시 등록'} />
+			<GlobalFilterHeader title={'출하 가능 목록'} />
 			{exFilterToggle && (
 				<GlobalProductSearch
 					param={param}
@@ -141,7 +141,7 @@ const Register = () => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						<Excel getRow={rows} sheetName={'출하_지시_등록'} />
+						<Excel getRow={rows} sheetName={'출하_가능_목록'} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>
@@ -149,7 +149,7 @@ const Register = () => {
 						선택중량 <span> {selectedWeightStr} </span> kg / 총 중량 {totalWeight?.toLocaleString()} kg
 					</div>
 					<div>
-						<WhiteSkyBtn onClick={onRegister}>출하 지시</WhiteSkyBtn>
+						<WhiteSkyBtn onClick={onRegister}>확인</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
 				<TableV2

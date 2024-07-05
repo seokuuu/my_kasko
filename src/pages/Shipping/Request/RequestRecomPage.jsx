@@ -6,7 +6,7 @@ import SubHeader from '../../../components/Header/SubHeader'
 import RequestRecom from './RequestRecom'
 
 const RequestRecomPage = () => {
-	const depth2Color = '출고 요청'
+	const depth2Color = '출하 지시 등록'
 	const [expanded, setExpanded] = useState('출고 관리')
 
 	return (
