@@ -70,6 +70,7 @@ export function useShipmentStatusUpdateMutation() {
 		},
 		onError(error) {
 			simpleAlert(error?.message ?? '실패하였습니다.')
+			window.location.reload()
 		},
 	})
 }

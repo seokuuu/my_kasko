@@ -1,5 +1,6 @@
 import Note from '../../pages/Shipping/Request/Note'
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
+import React from 'react'
 
 const checkboxSelection = (params) => {
 	return params.columnApi.getRowGroupColumns().length === 0
@@ -338,6 +339,9 @@ export const ShippingStatusFields = {
 	'상차도 여부': 'dockStatus',
 	// 운송진행일자: 'outEndDate',
 	// 운송진행: 'outEndStatus',
+	'상차 일자': 'outLoadDate',
+	'하차 예정 일자': 'outUnLoadDate',
+	'취소 사유': 'cancelReason',
 	고객사명: 'customerName',
 	고객코드: 'customerCode',
 	창고: 'storageName',
@@ -376,6 +380,18 @@ export const ShippingStatusFieldsCols = [
 					cellRenderer: Note,
 				}
 			}
+			if (item === '출하 상태') {
+				return {
+					...commonStyles,
+					field: '출하 상태',
+					minWidth: 300,
+					cellRenderer: (props) => {
+						const { data } = props
+						const status = data['출하 상태' || '출고 상태']
+						return <div>{status === '출고 요청' ? '출고 취소' : status}</div>
+					},
+				}
+			}
 			return {
 				...commonStyles,
 				field: item,
@@ -396,8 +412,10 @@ export const ShippingStatusDetailsFields = {
 	'출고 고유번호': 'outUid',
 	'출고 일자': 'outDate',
 	'출고 번호': 'outNumber',
-	운송진행일자: 'outEndDate',
-	운송진행: 'outEndStatus',
+	// 운송진행일자: 'outEndDate',
+	// 운송진행: 'outEndStatus',
+	'상차 일자': 'outLoadDate',
+	'하차 예정 일자': 'outUnLoadDate',
 	고객사명: 'customerName',
 	고객코드: 'customerCode',
 	운전기사명: 'driverName',
@@ -435,11 +453,25 @@ export const ShippingStatusDetailsFieldsCols = [
 	{ ...commonStyles, field: '순번', minWidth: 80 },
 	...Object.keys(ShippingStatusDetailsFields)
 		.slice(1)
-		.map((item) => ({
-			...commonStyles,
-			field: item,
-			minWidth: 180,
-		})),
+		.map((item) => {
+			if (item === '출하 상태') {
+				return {
+					...commonStyles,
+					field: '출하 상태',
+					minWidth: 300,
+					cellRenderer: (props) => {
+						const { data } = props
+						const status = data['출하 상태' || '출고 상태']
+						return <div>{status === '출고 요청' ? '출고 취소' : status}</div>
+					},
+				}
+			}
+			return {
+				...commonStyles,
+				field: item,
+				minWidth: 180,
+			}
+		}),
 ]
 
 // 출고 거래명세서
