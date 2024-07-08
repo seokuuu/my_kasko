@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { WhiteBlackBtn, WhiteRedBtn, WhiteSkyBtn } from '../../../common/Button/Button'
+import { WhiteBlackBtn } from '../../../common/Button/Button'
 import {
 	doubleClickedRowAtom,
 	selectedRowsAtom,
@@ -99,17 +99,17 @@ const DisRegister = () => {
 	// 출고 등록
 	const onRegister = () => {
 		if (!selectedRows || selectedRows?.length === 0) {
-			return simpleAlert('출고 등록할 제품을 선택해주세요.')
+			return simpleAlert('제품을 선택해주세요.')
 		}
 		const shipmentStatus = '출고 등록'
 		const uids = selectedRows.map((item) => item['출고 고유번호'])
 		const outStatusArray = selectedRows.map((item) => item['승인 상태'])
 
 		if (!outStatusArray.every((value) => value === '승인')) {
-			return simpleAlert('출고 등록을 하려면 출고 상태를 승인 받아야 합니다.')
+			return simpleAlert('선별 완료를 하려면 출고 상태를 승인 받아야 합니다.')
 		}
 
-		simpleConfirm('출고 등록하시겠습니까?', () => {
+		simpleConfirm('선별 완료 처리하시겠습니까?', () => {
 			shipmentStatusUpdate({ shipmentStatus, uids })
 			setSelectedRows([])
 		})
@@ -210,7 +210,7 @@ const DisRegister = () => {
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
-						{auth.role !== '운송사' && <WhiteBlackBtn onClick={onRegister}>출고 등록</WhiteBlackBtn>}
+						{auth.role !== '운송사' && <WhiteBlackBtn onClick={onRegister}>선별 완료</WhiteBlackBtn>}
 					</div>
 				</TCSubContainer>
 			</TableContianer>

@@ -158,6 +158,8 @@ import RequestRecomPage from './pages/Shipping/Request/RequestRecomPage'
 import Timeout from './pages/Timeout'
 import { authAtom } from './store/Auth/auth'
 import NewShipmentInvoicePage from './pages/Shipping/Achievement/NewShipmentInvoicePage'
+import UserPerformanceDetailsPage from './userpages/UserPerformance/UserPerformance/UserPerformanceDetailsPage'
+import UserInvoicePage from './userpages/UserPerformance/UserPerformance/UserInvoicePage'
 
 const Router = () => {
 	const auth = useAtomValue(authAtom)
@@ -335,6 +337,8 @@ const Router = () => {
 
 				{/* 출고 실적 조회 */}
 				<Route path="/userpage/performance" element={<UPerformance />}></Route>
+				<Route path="/userpage/performance/:outNumber" element={<UserPerformanceDetailsPage />} />
+				<Route path="/userpage/performance/invoice" element={<UserInvoicePage />} />
 
 				{/* 마이 페이지 */}
 				{/* <Route path="/userpage/usermanage" element={<UUserManage />}></Route> */}

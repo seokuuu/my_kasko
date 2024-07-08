@@ -33,7 +33,7 @@ const ClaimRegister = () => {
 	const [form, setForm] = useState({
 		content: '',
 		productUid: data.productUid,
-		auctionNumber: data.orderNumber,
+		auctionNumber: data.auctionNumber,
 		claimStatus: '진행중',
 
 		requestDate: '',
@@ -51,6 +51,8 @@ const ClaimRegister = () => {
 	const onSubmit = () => {
 		const param = {
 			...form,
+			productUid: data.productUid,
+			auctionNumber: data.auctionNumber,
 			requestDate: form.requestDate && moment(form.requestDate).format('YYYY-MM-DD HH:mm:ss'),
 			registrationDate: form.registrationDate && moment(form.registrationDate).format('YYYY-MM-DD HH:mm:ss'),
 			kaskoReturnDate: form.kaskoReturnDate && moment(form.kaskoReturnDate).format('YYYY-MM-DD HH:mm:ss'),

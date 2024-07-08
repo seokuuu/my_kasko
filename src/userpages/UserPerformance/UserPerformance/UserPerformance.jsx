@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Excel from '../../../components/TableInner/Excel'
-import { toggleAtom } from '../../../store/Layout/Layout'
+import { doubleClickedRowAtom, toggleAtom } from '../../../store/Layout/Layout'
 import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import { ShippingRegisterFields } from '../../../constants/admin/Shipping'
@@ -17,6 +17,9 @@ import TableV2 from '../../../pages/Table/TableV2'
 import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
 import { UserPerformanceFields, UserPerformanceFieldsCols } from './UserPerformanceFields'
 import { ShippingInvoiceUserView } from '../../../components/shipping/ShippingInvoiceView'
+import { useNavigate } from 'react-router-dom'
+import { useAtom } from 'jotai/index'
+import { WhiteSkyBtn } from '../../../common/Button/Button'
 
 const initData = {
 	pageNum: 1,
@@ -25,7 +28,9 @@ const initData = {
 }
 
 const UserPerformance = () => {
+	const navigate = useNavigate()
 	const exFilterToggle = useAtomValue(toggleAtom)
+	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
 
 	const [rows, setRows] = useState([])
 
@@ -85,6 +90,13 @@ const UserPerformance = () => {
 		}
 	}, [data])
 
+	useEffect(() => {
+		if (detailRow && detailRow['출고 번호']) {
+			navigate(`/userpage/performance/${detailRow['출고 번호']}`)
+		}
+		return () => setDetailRow(false)
+	}, [detailRow])
+
 	return (
 		<FilterContianer>
 			<GlobalFilterHeader title={'출고 실적 조회'} />
@@ -124,7 +136,15 @@ const UserPerformance = () => {
 				/>
 				<TCSubContainer>
 					<div></div>
-					<ShippingInvoiceUserView />
+					<div style={{ display: 'flex', gap: '10px' }}>
+						<WhiteSkyBtn
+							onClick={() => {
+								navigate(`/userpage/performance/invoice`)
+							}}
+						>
+							거래 명세서 보기
+						</WhiteSkyBtn>
+					</div>
 				</TCSubContainer>
 			</TableContianer>
 		</FilterContianer>

@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom'
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
 import MarkerCellRenderer from '../../pages/Table/MarkerCellRenderer'
 import { ProNoCellRenderer } from '../../pages/Table/ProNoCellRenderer'
-import { auctionPackDetailModal, auctionPackDetailNumAtom } from '../../store/Layout/Layout'
+import { auctionPackDetailModal, auctionPackDetailNumAtom, selectedRowsAtom } from '../../store/Layout/Layout'
 import { PROD_COL_NAME } from '../user/constantKey'
 import { PackageNumCellRenderer } from '../../pages/Table/PackageNumCellRenderer'
 import PackageNumberRecommendCell from '../../pages/Product/PackageManage/cellRender/packageNumberRender'
@@ -1874,6 +1874,8 @@ export const AuctionWinningCreateFieldsCols = [
 		maxWidth: 50,
 		checkboxSelection,
 		headerCheckboxSelection,
+		pinned: 'left',
+		showDisabledCheckboxes: true,
 		lockVisible: true,
 		lockPinned: true,
 	},

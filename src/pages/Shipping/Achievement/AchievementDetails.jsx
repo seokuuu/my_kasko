@@ -3,8 +3,8 @@ import { BlackBtn, NewBottomBtnWrap, WhiteBlackBtn, WhiteSkyBtn } from '../../..
 import { selectedRowsAtom } from '../../../store/Layout/Layout'
 import { useNavigate, useParams } from 'react-router-dom'
 import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
-import { useAtom, useAtomValue } from 'jotai'
-import { useShipmentListQuery } from '../../../api/shipment'
+import { useAtomValue } from 'jotai'
+import { shipmentInvoiceListQueryV2, useShipmentListQuery } from '../../../api/shipment'
 import { ShippingRegisterFields } from '../../../constants/admin/Shipping'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { GlobalFilterHeader } from '../../../components/Filter'
@@ -19,6 +19,7 @@ import TableV2 from '../../Table/TableV2'
 import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import ShippingExtraCostBtn from './ShippingExtraCostBtn'
 import InvoiceDetailHeader from './InvoiceDetailHeader'
+import ShippingInvoiceViewV2 from '../../../components/shipping/ShippingInvoiceViewV2'
 
 const AchievementDetails = () => {
 	const { outNumber } = useParams()
@@ -34,6 +35,7 @@ const AchievementDetails = () => {
 	const { simpleAlert } = useAlert()
 	const selectedRows = useAtomValue(selectedRowsAtom)
 
+	const [invoiceData, setInvoiceData] = useState([]) // 거래명세서 데이터
 	const [getRow, setGetRow] = useState([])
 	const [param, setParam] = useState(initData)
 	const getCols = useMemo(() => AchievementFieldsCols(AchievementFields(auth)), [auth])
@@ -50,21 +52,6 @@ const AchievementDetails = () => {
 		weightKey: '중량',
 	})
 
-	const toInvoice = () => {
-		if (!selectedRows || selectedRows?.length === 0) {
-			return simpleAlert('제품을 선택해주세요.')
-		}
-		const findNumbers = [...new Set(selectedRows.map((item) => `${item['고객코드']}/${item['출고 번호']}`))]
-
-		if (findNumbers.length > 1) {
-			return simpleAlert('거래명세서는 하나의 출고번호와 고객사으로 확인할 수 있습니다.')
-		}
-		const findData = findNumbers[0]?.split('/')
-		const customerCode = findData[0]
-		const outNumber = findData[1]
-		navigate(`/shipping/achievement/invoice?customerCode=${customerCode}&outNumber=${outNumber}`)
-	}
-
 	const toClaim = () => {
 		if (!selectedRows || selectedRows?.length === 0) {
 			return simpleAlert('클레임 등록할 제품을 선택해주세요.')
@@ -75,7 +62,9 @@ const AchievementDetails = () => {
 		const selectedRow = selectedRows[0]
 		const copiedData = data.list
 		const findData = copiedData.find((item) => item.orderUid === selectedRow['주문 고유 번호'])
-		navigate(`/shipping/claim/register`, { state: findData })
+		navigate(`/shipping/claim/register`, {
+			state: { ...findData, auctionNumber: findData.auctionNumber || findData.saleNumber },
+		})
 	}
 
 	const handleTablePageSize = (event) => {
@@ -103,6 +92,29 @@ const AchievementDetails = () => {
 			setGetRow(add_element_field(list, ShippingRegisterFields))
 		}
 	}, [data])
+
+	useEffect(() => {
+		const get = async () => {
+			return await shipmentInvoiceListQueryV2(param)
+		}
+		const groupedData = (data, getKey) => {
+			return data?.reduce((acc, item) => {
+				const key = getKey(item)
+				if (!acc[key]) {
+					acc[key] = []
+				}
+				acc[key].push(item)
+				return acc
+			}, {})
+		}
+		get()
+			.then((data) => {
+				if (data) {
+					setInvoiceData(groupedData(data, (item) => `${item.customerCode}`))
+				}
+			})
+			.catch((e) => console.error(e))
+	}, [param])
 
 	return (
 		<FilterContianer>
@@ -138,7 +150,28 @@ const AchievementDetails = () => {
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						{auth?.role === '카스코철강' && <WhiteBlackBtn onClick={toClaim}>클레임 등록</WhiteBlackBtn>}
-						<WhiteSkyBtn onClick={toInvoice}>거래 명세서 보기</WhiteSkyBtn>
+						{invoiceData &&
+							Object.keys(invoiceData).map((key, index) => {
+								return (
+									<div style={{ display: 'none' }} key={index}>
+										<ShippingInvoiceViewV2 list={invoiceData[key]} />
+									</div>
+								)
+							})}
+						<WhiteSkyBtn
+							className={'shipment_invoice'}
+							onClick={async () => {
+								const buttons = document.querySelectorAll('.shipment_invoice')
+								for (const element of buttons) {
+									await new Promise((resolve) => {
+										element.click()
+										setTimeout(resolve, 3000)
+									})
+								}
+							}}
+						>
+							거래 명세서 출력
+						</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
 			</TableContianer>

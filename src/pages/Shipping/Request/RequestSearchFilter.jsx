@@ -74,7 +74,7 @@ const RequestSearchFilter = ({ search, setSearch, commonNumInputHandler }) => {
 						endDateChange={(value) => onChange('auctionEndDate', value)}
 					/>
 					<DateSearchSelect
-						title={'출하 지시 일자'}
+						title={'출하 가능 확인 일자'}
 						startInitDate={search.shippingStartDate}
 						endInitDate={search.shippingEndDate}
 						startDateChange={(value) => onChange('shippingStartDate', value)}

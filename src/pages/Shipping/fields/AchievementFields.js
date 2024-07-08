@@ -114,6 +114,8 @@ export const AchievementFields = (auth) => {
 				'카스코 낙찰가': 'confirmPrice',
 				'회차 여부': 'outCancelStatus',
 				'회차 일자': 'outCancelDate', //(출고 취소된 일자)
+				'클레임 여부': 'isClaim',
+				'클레임 상태': 'claimStatus',
 				'현대제철 반품일자': 'hsReturnDate',
 				'카스코 반품일자': 'kaskoReturnDate',
 				최종수정자: 'updateMemberName',
@@ -189,6 +191,8 @@ export const AchievementFields = (auth) => {
 				패키지번호: 'packageNumber',
 				'회차 여부': 'outCancelStatus',
 				'회차 일자': 'outCancelDate', //(출고 취소된 일자)
+				'클레임 여부': 'isClaim',
+				'클레임 상태': 'claimStatus',
 				'현대제철 반품일자': 'hsReturnDate',
 				'카스코 반품일자': 'kaskoReturnDate',
 				최종수정자: 'updateMemberName',

@@ -2,23 +2,18 @@ import { useEffect, useRef, useState } from 'react'
 import { BlackBtn, BtnBound, TGreyBtn } from '../../../common/Button/Button'
 import Excel from '../../../components/TableInner/Excel'
 import HeaderToggle from '../../../components/Toggle/HeaderToggle'
-import { selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
+import { selectedRows2Switch, selectedRowsAtom, toggleAtom } from '../../../store/Layout/Layout'
 
 import {
 	CustomInput,
 	FilterContianer,
 	FilterHeader,
-	FilterTCTop,
-	FilterTopContainer,
 	TableContianer,
 	TCSubContainer,
 } from '../../../modal/External/ExternalFilter'
 
 import { useAtom } from 'jotai'
-import Hidden from '../../../components/TableInner/Hidden'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
-
-import { useQueryClient } from '@tanstack/react-query'
 import { isArray, isEqual } from 'lodash'
 import { getWinningCreate } from '../../../api/auction/winning'
 import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
@@ -33,7 +28,6 @@ import {
 	WhiteCloseBtn,
 } from '../../../modal/Common/Common.Styled'
 import useAlert from '../../../store/Alert/useAlert'
-import { selectedRows2Switch } from '../../../store/Layout/Layout'
 import Table from '../../Table/Table'
 import WinningCreateSearchFields from './WinningCreateSearchFields'
 import useTableData from '../../../hooks/useTableData'
@@ -54,8 +48,9 @@ const WinningProductAdd = ({
 	const originalValues = useRef(values) // 원본 값
 
 	const { simpleConfirm, simpleAlert } = useAlert()
-	const checkSales = ['전체', '확정 전송', '확정 전송 대기']
 	const [rowAtomSwitch, setRowAtomSwitch] = useAtom(selectedRows2Switch)
+	const [checkedArray, setCheckedArray] = useAtom(selectedRowsAtom)
+	const checkUid = checkedArray?.map((x) => x['제품 고유 번호'])
 
 	const [tablePagination, setTablePagination] = useState([])
 	const paramData = {
@@ -65,22 +60,17 @@ const WinningProductAdd = ({
 		registrationStatus: '경매 등록 대기',
 	}
 	const [param, setParam] = useState(paramData)
-	//checkSales
 
-	const [getRow, setGetRow] = useState('')
-	const tableField = useRef(AuctionWinningCreateFieldsCols)
-	const getCol = tableField.current
-	const queryClient = useQueryClient()
+	const [getRow, setGetRow] = useState([])
 
-	const [checkedArray, setCheckedArray] = useAtom(selectedRowsAtom)
-
-	const checkUid = checkedArray?.map((x) => x['제품 고유 번호'])
+	const getCol = useRef(AuctionWinningCreateFieldsCols)
+	const tableField = getCol.current
 
 	const [biddingValue, setBiddingValue] = useState('')
 	const [confirmValue, setConfirmValue] = useState('')
 
 	// GET
-	const { isLoading, isError, data, isSuccess } = useReactQuery(param, 'getWinningCreate', getWinningCreate)
+	const { data, isSuccess } = useReactQuery(param, 'getWinningCreate', getWinningCreate)
 	const resData = data?.data?.data?.list
 
 	const resPagination = data?.data?.data?.pagination
@@ -210,6 +200,8 @@ const WinningProductAdd = ({
 	// 낙찰가 일괄 변경 적용 버튼
 	const biddingOnClickHandler = () => {
 		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('항목을 선택해주세요.')
+		if (!biddingValue) return
+
 		const updatedValues = checkUid.map((uid) => {
 			const existingItem = values.find((item) => item.productUid === uid)
 			const findItem = checkedArray.find((item) => item['제품 고유 번호'] === uid)
@@ -243,12 +235,12 @@ const WinningProductAdd = ({
 		})
 
 		setGetRow(updatedResData)
-		setCheckedArray([])
 	}
 
 	// 확정전송가 일괄 변경 적용 버튼
 	const confirmOnClickHandler = () => {
 		if (!isArray(checkedArray) || !checkedArray.length > 0) return simpleAlert('항목을 선택해주세요.')
+		if (!confirmValue) return
 		const updatedValues = checkUid.map((uid) => {
 			const existingItem = values.find((item) => item.productUid === uid)
 			const findItem = checkedArray.find((item) => item['제품 고유 번호'] === uid)
@@ -282,7 +274,6 @@ const WinningProductAdd = ({
 		})
 
 		setGetRow(updatedResData)
-		setCheckedArray([])
 	}
 
 	/**
@@ -414,7 +405,7 @@ const WinningProductAdd = ({
 								</div>
 							</TCSubContainer>
 							<Table
-								getCol={getCol}
+								getCol={tableField}
 								getRow={getRow}
 								hei2={exFilterToggle ? 250 : 500}
 								tablePagination={tablePagination}

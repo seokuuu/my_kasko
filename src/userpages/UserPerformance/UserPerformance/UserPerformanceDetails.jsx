@@ -1,45 +1,40 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import { WhiteSkyBtn } from '../../../common/Button/Button'
-import { doubleClickedRowAtom, toggleAtom } from '../../../store/Layout/Layout'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { BlackBtn, NewBottomBtnWrap, WhiteSkyBtn } from '../../../common/Button/Button'
+import { useNavigate, useParams } from 'react-router-dom'
 import { FilterContianer, TableContianer, TCSubContainer } from '../../../modal/External/ExternalFilter'
-import { useAtom, useAtomValue } from 'jotai'
-import { useShipmentListQuery } from '../../../api/shipment'
+import { shipmentInvoiceListQueryV2, useShipmentListQuery } from '../../../api/shipment'
 import { ShippingRegisterFields } from '../../../constants/admin/Shipping'
 import { add_element_field } from '../../../lib/tableHelpers'
 import { GlobalFilterHeader } from '../../../components/Filter'
 import PageDropdown from '../../../components/TableInner/PageDropdown'
 import Excel from '../../../components/TableInner/Excel'
-import GlobalProductSearch from '../../../components/GlobalProductSearch/GlobalProductSearch'
-import AchievementSearchFilter from './AchievementSearchFilter'
-import { isEqual } from 'lodash'
 import useTableData from '../../../hooks/useTableData'
 import useTableSelection from '../../../hooks/useTableSelection'
-import { AchievementFields, AchievementFieldsCols } from '../fields/AchievementFields'
-import { authAtom } from '../../../store/Auth/auth'
-import TableV2 from '../../Table/TableV2'
-import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
+import ShippingInvoiceViewV2 from '../../../components/shipping/ShippingInvoiceViewV2'
+import DetailHeader from './DetailHeader'
+import TableV2 from '../../../pages/Table/TableV2'
+import TableV2HiddenSection from '../../../pages/Table/TableV2HiddenSection'
+import { UserPerformanceFields, UserPerformanceFieldsCols } from './UserPerformanceFields'
 
-const initData = {
-	pageNum: 1,
-	pageSize: 50,
-	shipmentStatus: '운송 완료',
-}
+const UserPerformanceDetails = () => {
+	const { outNumber } = useParams()
+	const initData = {
+		pageNum: 1,
+		pageSize: 50,
+		shipmentStatus: '운송 완료',
+		outNumber,
+	}
 
-const Achievement = () => {
-	const auth = useAtomValue(authAtom)
 	const navigate = useNavigate()
-	const exFilterToggle = useAtomValue(toggleAtom)
-	const [detailRow, setDetailRow] = useAtom(doubleClickedRowAtom)
 
+	const [invoiceData, setInvoiceData] = useState([]) // 거래명세서 데이터
 	const [getRow, setGetRow] = useState([])
-	const getCols = useMemo(() => AchievementFieldsCols(AchievementFields(auth)), [auth])
 	const [param, setParam] = useState(initData)
 
 	const { data, refetch, isLoading } = useShipmentListQuery(param)
 
 	const { tableRowData, paginationData, totalWeight, totalCount } = useTableData({
-		tableField: AchievementFields(auth),
+		tableField: UserPerformanceFields,
 		serverData: data,
 	})
 
@@ -63,21 +58,6 @@ const Achievement = () => {
 		}))
 	}
 
-	const resetOnClick = () => setParam(initData)
-
-	const searchOnClick = (userSearchParam) => {
-		setParam((prevParam) => {
-			if (isEqual(prevParam, { ...prevParam, ...userSearchParam })) {
-				return prevParam
-			}
-			return {
-				...prevParam,
-				...userSearchParam,
-				pageNum: 1,
-			}
-		})
-	}
-
 	useEffect(() => {
 		refetch()
 	}, [param])
@@ -90,25 +70,32 @@ const Achievement = () => {
 	}, [data])
 
 	useEffect(() => {
-		if (detailRow && detailRow['출고 번호']) {
-			navigate(`/shipping/achievement/${detailRow['출고 번호']}`)
+		const get = async () => {
+			return await shipmentInvoiceListQueryV2(param)
 		}
-		return () => setDetailRow(false)
-	}, [detailRow])
+		const groupedData = (data, getKey) => {
+			return data?.reduce((acc, item) => {
+				const key = getKey(item)
+				if (!acc[key]) {
+					acc[key] = []
+				}
+				acc[key].push(item)
+				return acc
+			}, {})
+		}
+		get()
+			.then((data) => {
+				if (data) {
+					setInvoiceData(groupedData(data, (item) => `${item.customerCode}`))
+				}
+			})
+			.catch((e) => console.error(e))
+	}, [param])
 
 	return (
 		<FilterContianer>
-			<GlobalFilterHeader title={'출고 실적'} />
-			{exFilterToggle && (
-				<GlobalProductSearch
-					param={param}
-					setParam={setParam}
-					isToggleSeparate={true}
-					globalProductSearchOnClick={searchOnClick}
-					globalProductResetOnClick={resetOnClick}
-					renderCustomSearchFields={(props) => <AchievementSearchFilter {...props} />}
-				/>
-			)}
+			<GlobalFilterHeader title={'출고 실적 상세'} enableSearchFilters={false} />
+			<DetailHeader data={data?.list} />
 			<TableContianer>
 				<TCSubContainer bor>
 					<div>
@@ -128,25 +115,51 @@ const Achievement = () => {
 				<TableV2
 					getRow={tableRowData}
 					loading={isLoading}
-					getCol={getCols}
+					getCol={UserPerformanceFieldsCols}
 					tablePagination={paginationData}
 					onPageChange={onPageChange}
 				/>
 				<TCSubContainer>
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
+						{invoiceData &&
+							Object.keys(invoiceData).map((key, index) => {
+								return (
+									<div style={{ display: 'none' }} key={index}>
+										<ShippingInvoiceViewV2 list={invoiceData[key]} />
+									</div>
+								)
+							})}
 						<WhiteSkyBtn
-							onClick={() => {
-								navigate(`/shipping/achievement/invoice`)
+							className={'shipment_invoice'}
+							onClick={async () => {
+								const buttons = document.querySelectorAll('.shipment_invoice')
+								for (const element of buttons) {
+									await new Promise((resolve) => {
+										element.click()
+										setTimeout(resolve, 3000)
+									})
+								}
 							}}
 						>
-							거래 명세서 보기
+							거래 명세서 출력
 						</WhiteSkyBtn>
 					</div>
 				</TCSubContainer>
 			</TableContianer>
+			<NewBottomBtnWrap>
+				<BlackBtn
+					width={13}
+					height={40}
+					onClick={() => {
+						navigate('/userpage/performance')
+					}}
+				>
+					돌아가기
+				</BlackBtn>
+			</NewBottomBtnWrap>
 		</FilterContianer>
 	)
 }
 
-export default Achievement
+export default UserPerformanceDetails

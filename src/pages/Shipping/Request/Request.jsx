@@ -201,7 +201,7 @@ const Request = () => {
 	return (
 		<FilterContianer>
 			<GlobalFilterHeader
-				title={'출고 요청'}
+				title={'출하 지시 등록'}
 				subTitle={<Subtitle2 onClick={() => navigate('/shipping/request/recom')}>선별 추천</Subtitle2>}
 			/>
 			{exFilterToggle && (
@@ -222,7 +222,7 @@ const Request = () => {
 					</div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						<PageDropdown handleDropdown={handleTablePageSize} />
-						<Excel getRow={rows} sheetName={'출하요청'} />
+						<Excel getRow={rows} sheetName={'출하 지시 등록'} />
 					</div>
 				</TCSubContainer>
 				<TCSubContainer>

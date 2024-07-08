@@ -21,6 +21,17 @@ export default function ReceiptExcelV2() {
 		return await shipmentInvoiceAllListQuery(outUid)
 	}
 
+	const groupedData = (data, getKey) => {
+		return data?.reduce((acc, item) => {
+			const key = getKey(item)
+			if (!acc[key]) {
+				acc[key] = []
+			}
+			acc[key].push(item)
+			return acc
+		}, {})
+	}
+
 	const handleClick = async () => {
 		if (!selectedRows || selectedRows?.length === 0) {
 			return simpleAlert('출력할 제품을 선택해주세요.')
@@ -32,7 +43,7 @@ export default function ReceiptExcelV2() {
 		const outUid = selectItem['출고 고유번호']
 
 		const rawData = await getData(outUid)
-		setData(rawData)
+		setData(groupedData(rawData, (item) => `${item.customerCode}`))
 		setOpen(true)
 	}
 
@@ -48,31 +59,9 @@ function ReceiptForm({ data, closeModal }) {
 	const containerRef = useRef(null)
 	const receiptMode = ['물품수취서', '거래명세서', '거래명세서', '인수증']
 
-	const totalWeight = data
-		.map((item) => item.weight)
-		.reduce((acc, cur) => Number(acc) + Number(cur), 0)
-		.toLocaleString()
-
-	// const handleExtract = () => {
-	// 	const element = containerRef.current
-	// 	html2pdf(element, {
-	// 		filename: `수취서_${data[0].outNumber}.pdf`, // default : file.pdf
-	// 		margin: [15, 0, 15, 0],
-	// 		html2canvas: {
-	// 			scrollY: 0, // 스크롤 이슈 때문에 필수,
-	// 			scale: 3, // 캡처한 이미지의 크기를 조절, 값이 클수록 더 선명하다.
-	// 		},
-	// 		jsPDF: {
-	// 			format: 'a2', // 종이 크기 형식
-	// 			orientation: 'portrait', // or landscape : 가로
-	// 		},
-	// 		callback: closeModal(),
-	// 	})
-	// }
-
 	const handleExtract = useReactToPrint({
 		content: () => containerRef.current,
-		documentTitle: `수취서_${data[0].outNumber}.pdf`,
+		documentTitle: `수취서_${data[Object.keys(data)[0]][0].outNumber}.pdf`,
 		onAfterPrint: () => {
 			window.location.reload()
 		},
@@ -87,10 +76,10 @@ function ReceiptForm({ data, closeModal }) {
 			<FadeOverlay />
 			<ModalContainer
 				style={{
-					width: '1200px',
+					width: '1600px',
 					opacity: 0,
-					maxHeight: '90vh',
-					minHeight: 740,
+					// maxHeight: '90vh',
+					height: 740,
 					background: '#eef3fb',
 					flexDirection: 'column',
 					alignItems: 'flex-end',
@@ -103,119 +92,126 @@ function ReceiptForm({ data, closeModal }) {
 					</div>
 				</BlueBarHeader>
 				<Container ref={containerRef}>
-					{receiptMode.map((title, index) => (
-						<BlueSubContainer2 key={index} style={{ width: '100%', padding: '0px 30px' }}>
-							<FilterContianer>
-								<FormTitle>
-									<b>{title}</b>
-								</FormTitle>
-							</FilterContianer>
-							<MyTable>
-								<tr>
-									<th>창고명</th>
-									<td>{data[0].storageName}</td>
-								</tr>
-								<tr>
-									<th>일련번호</th>
-									<td>{data[0].outNumber}</td>
-									<td colSpan={4} style={{ border: 0, background: '#fff' }}></td>
-									{title === '거래명세서' && index === 1 && <td>정문회수용</td>}
-									{title === '거래명세서' && index === 2 && <td>공급받는자용</td>}
-									{title === '인수증' && <td>회수용</td>}
-								</tr>
-								<tr>
-									<th>출고일자</th>
-									<th>거래처</th>
-									<th>인도조건</th>
-									<th>차량번호</th>
-									<th>도착지</th>
-									<th>도착지 전화번호</th>
-									<th>담당자연락처</th>
-								</tr>
-								<tr>
-									<td>{moment(data[0].outDate).format('YYYY-MM-DD') || ''}</td>
-									<td>{data[0].customerName || ''}</td>
-									<td>도착도</td>
-									<td>{data[0].carNumber}</td>
-									<td>{data[0].destinationName}</td>
-									<td>{data[0].customerDestinationPhone}</td>
-									<td>{data[0].customerDestinationManagerPhone}</td>
-								</tr>
-								<tr>
-									<th>도착지상세주소</th>
-									<td colSpan={6}>
-										{data[0].customerDestinationAddress || ''}
-										{'   '}
-										{data[0].customerDestinationAddressDetails || ''}
-									</td>
-								</tr>
-								<tr>
-									<th>상차중량(Kg)</th>
-									<td>{totalWeight}</td>
-									<th>총수량</th>
-									<td>{data?.length || 0}</td>
-									<th>도착지명</th>
-									<td colSpan={2}>{data[0].customerDestinationName || ''}</td>
-								</tr>
-							</MyTable>
-							<div style={{ height: '750px' }}>
-								<MyTable style={{ marginTop: '14px' }}>
-									<tr>
-										<th>NO.</th>
-										<th>주문번호</th>
-										<th>품명</th>
-										<th>제품번호</th>
-										<th>규격약호</th>
-										<th>등급</th>
-										<th>두께</th>
-										<th>폭</th>
-										<th>길이</th>
-										<th>중량</th>
-									</tr>
-									{data?.map((item, idx) => (
-										<tr key={idx}>
-											<td>{idx + 1}</td>
-											<td>{item.orderNumber}</td>
-											<td>{item.spart}</td>
-											<td>{item.productNumber}</td>
-											<td>{item.spec}</td>
-											<td>{item.grade}</td>
-											<td>{item.width}</td>
-											<td>{item.thickness}</td>
-											<td>{item.length}</td>
-											<td>{item.weight}</td>
+					{data &&
+						Object.keys(data).map((key) => {
+							const list = data[key]
+							const totalWeight = list
+								.map((item) => item.weight)
+								.reduce((acc, cur) => Number(acc) + Number(cur), 0)
+								.toLocaleString()
+							return receiptMode.map((title, index) => (
+								<BlueSubContainer2 key={index}>
+									<FilterContianer>
+										<FormTitle>
+											<b>{title}</b>
+										</FormTitle>
+									</FilterContianer>
+									<MyTable>
+										<tr>
+											<th>창고명</th>
+											<td>{list[0].storageName}</td>
 										</tr>
-									))}
-									<tr>
-										<th colSpan={2}>합계</th>
-										<td colSpan={7}></td>
-										<td>{totalWeight}</td>
-									</tr>
-								</MyTable>
-							</div>
+										<tr>
+											<th>일련번호</th>
+											<td>{list[0].outNumber}</td>
+											<td colSpan={4} style={{ border: 0, background: '#fff' }}></td>
+											{title === '거래명세서' && index === 1 && <td>정문회수용</td>}
+											{title === '거래명세서' && index === 2 && <td>공급받는자용</td>}
+											{title === '인수증' && <td>회수용</td>}
+										</tr>
+										<tr>
+											<th>출고일자</th>
+											<th>거래처</th>
+											<th>인도조건</th>
+											<th>차량번호</th>
+											<th>도착지</th>
+											<th>도착지 전화번호</th>
+											<th>담당자연락처</th>
+										</tr>
+										<tr>
+											<td>{moment(list[0].outDate).format('YYYY-MM-DD') || ''}</td>
+											<td>{list[0].customerName || ''}</td>
+											<td>도착도</td>
+											<td>{list[0].carNumber}</td>
+											<td>{list[0].destinationName}</td>
+											<td>{list[0].customerDestinationPhone}</td>
+											<td>{list[0].customerDestinationManagerPhone}</td>
+										</tr>
+										<tr>
+											<th>도착지상세주소</th>
+											<td colSpan={6}>
+												{list[0].customerDestinationAddress || ''}
+												{'   '}
+												{list[0].customerDestinationAddressDetails || ''}
+											</td>
+										</tr>
+										<tr>
+											<th>상차중량(Kg)</th>
+											<td>{totalWeight}</td>
+											<th>총수량</th>
+											<td>{list?.length || 0}</td>
+											<th>도착지명</th>
+											<td colSpan={2}>{list[0].customerDestinationName || ''}</td>
+										</tr>
+									</MyTable>
+									<div style={{ height: '750px' }}>
+										<MyTable style={{ marginTop: '14px' }}>
+											<tr>
+												<th>NO.</th>
+												<th>주문번호</th>
+												<th>품명</th>
+												<th>제품번호</th>
+												<th>규격약호</th>
+												<th>등급</th>
+												<th>두께</th>
+												<th>폭</th>
+												<th>길이</th>
+												<th>중량</th>
+											</tr>
+											{list?.map((item, idx) => (
+												<tr key={idx}>
+													<td>{idx + 1}</td>
+													<td>{item.orderNumber}</td>
+													<td>{item.spart}</td>
+													<td>{item.productNumber}</td>
+													<td>{item.spec}</td>
+													<td>{item.grade}</td>
+													<td>{item.width}</td>
+													<td>{item.thickness}</td>
+													<td>{item.length}</td>
+													<td>{item.weight}</td>
+												</tr>
+											))}
+											<tr>
+												<th colSpan={2}>합계</th>
+												<td colSpan={7}></td>
+												<td>{totalWeight}</td>
+											</tr>
+										</MyTable>
+									</div>
 
-							<DepositRequestBottom>
-								<div style={{ width: '33%' }}>
-									<img src="/img/logo.png" width={48} height={40} />
-								</div>
-								<PageText>
-									{index + 1} / {receiptMode.length}
-								</PageText>
-								<MyTable style={{ marginTop: '14px', width: '400px' }}>
-									<tr>
-										<th rowSpan={2}>인수확인</th>
-										<td>
-											월 {'    '} 일 {'    '} (인)
-										</td>
-									</tr>
-									<tr>
-										<td>도착제품이 이상없을 확인합니다.</td>
-									</tr>
-								</MyTable>
-							</DepositRequestBottom>
-							{index !== receiptMode.length - 1 && <Bar />}
-						</BlueSubContainer2>
-					))}
+									<DepositRequestBottom>
+										<div style={{ width: '33%' }}>
+											<img src="/img/logo.png" width={48} height={40} />
+										</div>
+										<PageText>
+											{index + 1} / {receiptMode.length}
+										</PageText>
+										<MyTable style={{ marginTop: '14px', width: '400px' }}>
+											<tr>
+												<th rowSpan={2}>인수확인</th>
+												<td>
+													월 {'    '} 일 {'    '} (인)
+												</td>
+											</tr>
+											<tr>
+												<td>도착제품이 이상없을 확인합니다.</td>
+											</tr>
+										</MyTable>
+									</DepositRequestBottom>
+								</BlueSubContainer2>
+							))
+						})}
 				</Container>
 			</ModalContainer>
 		</>
@@ -224,21 +220,22 @@ function ReceiptForm({ data, closeModal }) {
 
 const Container = styled.div`
 	width: 100%;
-	/* height: 100%; */
-	//overflow: hidden;
-	//overflow-y: scroll;
+	height: 100%;
 	display: flex;
 	flex-direction: column;
-	/* gap: 120px; */
-	padding-bottom: 80px;
-
-	@page {
-		size: a4;
-	}
+	margin: 0;
 
 	@media print {
-		min-height: 2000px;
-		size: a4;
+		@page {
+			size: A4;
+			margin: 0;
+		}
+		body {
+			margin: 0;
+			padding: 0;
+			width: 210mm;
+			height: 297mm;
+		}
 	}
 `
 
@@ -282,14 +279,11 @@ const PageText = styled.div`
 	font-size: 18px;
 	font-weight: 500;
 `
-const Bar = styled.div`
-	display: flex;
-	height: 1px;
-	background: #c8c8c8;
-	margin-top: 40px;
-`
+
 const BlueSubContainer2 = styled.div`
 	display: flex;
 	flex-direction: column;
-	height: 1181px;
+	padding: 0 30px;
+	width: 210mm;
+	height: 297mm;
 `

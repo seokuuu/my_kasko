@@ -1,5 +1,6 @@
 import Note from '../../pages/Shipping/Request/Note'
 import BtnCellRenderer from '../../pages/Table/BtnCellRenderer'
+import React from 'react'
 
 const checkboxSelection = (params) => {
 	return params.columnApi.getRowGroupColumns().length === 0
@@ -66,7 +67,7 @@ export const ShippingRegisterFields = {
 	입고일자: 'receiptDate',
 	주문상태: 'orderStatus',
 	'확정전송 일자': 'sendDate',
-	주문번호: 'orderNumber',
+	주문번호: 'hsOrderNo',
 	출하지시일자: 'shippingDate',
 	'출하 상태': 'shipmentStatus',
 	고객사명: 'customerName',
@@ -176,11 +177,12 @@ export const ShippingRegisterFieldsCols = [
 export const ShippingDispatchFields = {
 	순번: 'index',
 	출고요청일자: 'shipmentRequestDate',
+	출하지시일자: 'shipmentOrderDate',
 	'제품추가 일자': 'outCreateDate',
 	'승인 상태': 'outStatus',
 	'상차도 여부': 'dockStatus',
 	'배차 여부': 'driverStatus',
-	'출하 상태': 'shipmentStatus',
+	// '출하 상태': 'shipmentStatus',
 	고객사명: 'customerName',
 	고객코드: 'customerCode',
 	창고: 'storageName',
@@ -200,10 +202,10 @@ export const ShippingDispatchFields = {
 	비고: 'outNote',
 	'회차 여부': 'outCancelStatus',
 	'회차 일자': 'outCancelDate', //(출고 취소된 일자)
+	'출고 취소 사유': 'cancelReason',
 	'출고 고유번호': 'outUid',
 	최종수정자: 'updater',
 	최종수정일시자: 'updateDate',
-	// 출하지시일자: 'shippingDate',
 	// '출고 번호': 'outNumber',
 	// '출고 일자': 'outDate',
 	// 경매번호: 'auctionNumber',
@@ -218,11 +220,11 @@ export const ShippingDispatchFields = {
 export const ShippingDispatchFieldsCols = [
 	{ ...commonStyles, field: '', minWidth: 50, checkboxSelection, headerCheckboxSelection },
 	{ ...commonStyles, field: '순번', minWidth: 80 },
-	{ ...commonStyles, field: '출고요청일자', minWidth: 180 },
-	{ ...commonStyles, field: '출하요청번호', minWidth: 180 }, // 누락 추가
+	{ ...commonStyles, field: '출하지시일자', minWidth: 180 },
+	// { ...commonStyles, field: '출하요청번호', minWidth: 180 }, // 누락 추가
 	{ ...commonStyles, field: '제품추가 일자', minWidth: 180 },
 	{ ...commonStyles, field: '승인 상태', minWidth: 100 },
-	{ ...commonStyles, field: '출하 상태', minWidth: 100 },
+	// { ...commonStyles, field: '출하 상태', minWidth: 100 },
 	{ ...commonStyles, field: '출고 일자', minWidth: 100 }, // 누락 추가
 	{ ...commonStyles, field: '출고 번호', minWidth: 100 }, // 누락 추가
 	{ ...commonStyles, field: '배차 여부', minWidth: 100 },
@@ -247,6 +249,7 @@ export const ShippingDispatchFieldsCols = [
 	{ ...commonStyles, field: '비고', minWidth: 100, cellRenderer: Note },
 	{ ...commonStyles, field: '회차 여부', minWidth: 100 },
 	{ ...commonStyles, field: '회차 일자', minWidth: 180 },
+	{ ...commonStyles, field: '출고 취소 사유', minWidth: 180 },
 	{ ...commonStyles, field: '최종수정자', minWidth: 100 },
 	{ ...commonStyles, field: '최종수정일시', minWidth: 180 },
 	{ ...commonStyles, field: '출고 고유번호', minWidth: 100 },
@@ -262,12 +265,12 @@ export const ShippingDispatchDetailsFields = {
 	순번: 'index',
 	경매번호: 'auctionNumber',
 	'확정전송 일자': 'sendDate',
-	주문번호: 'orderNumber',
-	출하지시일자: 'shippingDate',
+	주문번호: 'hsOrderNo',
+	출하지시일자: 'shipmentOrderDate',
 	출고요청일자: 'shipmentRequestDate',
 	'출고 고유번호': 'outUid',
 	'제품추가 일자': 'outCreateDate',
-	'출하 상태': 'shipmentStatus',
+	// '출하 상태': 'shipmentStatus',
 	'출고 일자': 'outDate',
 	'출고 번호': 'outNumber',
 	'승인 상태': 'outStatus',
@@ -300,6 +303,7 @@ export const ShippingDispatchDetailsFields = {
 	'주문 고유 번호': 'orderUid',
 	'회차 여부': 'outCancelStatus',
 	'회차 일자': 'outCancelDate', //(출고 취소된 일자)
+	'출고 취소 사유': 'cancelReason',
 	최종수정자: 'updater',
 	최종수정일시자: 'updateDate',
 
@@ -325,16 +329,19 @@ export const ShippingStatusFields = {
 	경매번호: 'auctionNumber',
 	'확정전송 일자': 'sendDate',
 	// '주문 고유 번호': 'orderUid',
-	주문번호: 'orderNumber',
-	출하지시일자: 'shippingDate',
+	주문번호: 'hsOrderNo',
+	출하지시일자: 'shipmentOrderDate',
 	출고요청일자: 'shipmentRequestDate',
 	'출하 상태': 'shipmentStatus',
 	'출고 고유번호': 'outUid',
 	'출고 일자': 'outDate',
 	'출고 번호': 'outNumber',
 	'상차도 여부': 'dockStatus',
-	운송진행일자: 'outEndDate',
-	운송진행: 'outEndStatus',
+	// 운송진행일자: 'outEndDate',
+	// 운송진행: 'outEndStatus',
+	'상차 일자': 'outLoadDate',
+	'하차 예정 일자': 'outUnLoadDate',
+	'취소 사유': 'cancelReason',
 	고객사명: 'customerName',
 	고객코드: 'customerCode',
 	창고: 'storageName',
@@ -373,6 +380,18 @@ export const ShippingStatusFieldsCols = [
 					cellRenderer: Note,
 				}
 			}
+			if (item === '출하 상태') {
+				return {
+					...commonStyles,
+					field: '출하 상태',
+					minWidth: 300,
+					cellRenderer: (props) => {
+						const { data } = props
+						const status = data['출하 상태' || '출고 상태']
+						return <div>{status === '출고 요청' ? '출고 취소' : status}</div>
+					},
+				}
+			}
 			return {
 				...commonStyles,
 				field: item,
@@ -386,15 +405,17 @@ export const ShippingStatusDetailsFields = {
 	순번: 'index',
 	경매번호: 'auctionNumber',
 	'확정전송 일자': 'sendDate',
-	주문번호: 'orderNumber',
-	출하지시일자: 'shippingDate',
+	주문번호: 'hsOrderNo',
+	출하지시일자: 'shipmentOrderDate',
 	출고요청일자: 'shipmentRequestDate',
 	'출하 상태': 'shipmentStatus',
 	'출고 고유번호': 'outUid',
 	'출고 일자': 'outDate',
 	'출고 번호': 'outNumber',
-	운송진행일자: 'outEndDate',
-	운송진행: 'outEndStatus',
+	// 운송진행일자: 'outEndDate',
+	// 운송진행: 'outEndStatus',
+	'상차 일자': 'outLoadDate',
+	'하차 예정 일자': 'outUnLoadDate',
 	고객사명: 'customerName',
 	고객코드: 'customerCode',
 	운전기사명: 'driverName',
@@ -432,11 +453,25 @@ export const ShippingStatusDetailsFieldsCols = [
 	{ ...commonStyles, field: '순번', minWidth: 80 },
 	...Object.keys(ShippingStatusDetailsFields)
 		.slice(1)
-		.map((item) => ({
-			...commonStyles,
-			field: item,
-			minWidth: 180,
-		})),
+		.map((item) => {
+			if (item === '출하 상태') {
+				return {
+					...commonStyles,
+					field: '출하 상태',
+					minWidth: 300,
+					cellRenderer: (props) => {
+						const { data } = props
+						const status = data['출하 상태' || '출고 상태']
+						return <div>{status === '출고 요청' ? '출고 취소' : status}</div>
+					},
+				}
+			}
+			return {
+				...commonStyles,
+				field: item,
+				minWidth: 180,
+			}
+		}),
 ]
 
 // 출고 거래명세서

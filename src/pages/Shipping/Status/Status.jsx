@@ -33,6 +33,8 @@ import TableV2HiddenSection from '../../Table/TableV2HiddenSection'
 import ReceiptExcelV2 from './ReceiptExcelV2'
 import { authAtom } from '../../../store/Auth/auth'
 import DispatchDetail from '../../../modal/Multi/DispatchDetail'
+import OutCancelModel from './OutCancelModel'
+import TransportationProgressModal from './TransportationProgressModal'
 
 const initData = {
 	pageNum: 1,
@@ -52,6 +54,8 @@ const Status = () => {
 	const [id, setId] = useState(null) // 체크 박스 선택한 id 값
 	const [param, setParam] = useState(initData)
 	const [rows, setGetRow] = useState([])
+	const [isCancelModal, setIsCancelModal] = useState(false)
+	const [isTransportationProgressModal, setIsTransportationProgressModal] = useState(false)
 
 	const { isLoading, data, refetch } = useShipmentDispatchListQuery(param)
 	const { mutate: shipmentStatusUpdate } = useShipmentStatusUpdateMutation() // 출고 상태 변경
@@ -68,7 +72,7 @@ const Status = () => {
 	})
 
 	// 출고 취소
-	const onShipmentCancel = () => {
+	const onShipmentCancel = (value) => {
 		if (!selectedRows || selectedRows?.length === 0) {
 			return simpleAlert('출고 취소할 제품을 선택해주세요.')
 		}
@@ -76,8 +80,9 @@ const Status = () => {
 		const uids = selectedRows.map((item) => item['출고 고유번호'])
 
 		simpleConfirm('출고 취소하시겠습니까?', () => {
-			shipmentStatusUpdate({ shipmentStatus, uids })
+			shipmentStatusUpdate({ shipmentStatus, uids, cancelReason: value })
 			setSelectedRows([])
+			setIsCancelModal(false)
 		})
 	}
 
@@ -112,6 +117,26 @@ const Status = () => {
 		const selectItem = selectedRows[0]
 		setId(selectItem['출고 고유번호'])
 		setIsPostModal(true)
+	}
+
+	// 운송 진행
+	const onTransportationProgress = (outLoadDate, outUnLoadDate) => {
+		if (!selectedRows || selectedRows?.length === 0) {
+			return simpleAlert('제품을 선택해주세요.')
+		}
+		const shipmentStatus = '운송 진행'
+		const uids = selectedRows.map((item) => item['출고 고유번호'])
+		const driverStatusList = selectedRows.map((item) => item[['배차 여부']])
+
+		if (!driverStatusList.every((value) => value === 'Y')) {
+			return simpleAlert('운송 진행 전 배차 기사를 등록해주세요.')
+		}
+
+		simpleConfirm('운송 진행하시겠습니까?', () => {
+			shipmentStatusUpdate({ shipmentStatus, uids, outLoadDate, outUnLoadDate })
+			setSelectedRows([])
+			setIsTransportationProgressModal(false)
+		})
 	}
 
 	// 운송 완료
@@ -215,8 +240,8 @@ const Status = () => {
 					</div>
 				</TCSubContainer>
 				<TableV2
-					getRow={tableRowData}
 					loading={isLoading}
+					getRow={tableRowData}
 					getCol={ShippingStatusFieldsCols}
 					tablePagination={paginationData}
 					onPageChange={onPageChange}
@@ -225,7 +250,32 @@ const Status = () => {
 					<div></div>
 					<div style={{ display: 'flex', gap: '10px' }}>
 						{['카스코철강', '창고'].includes(auth?.role) && (
-							<WhiteRedBtn onClick={onShipmentCancel}>출고 취소</WhiteRedBtn>
+							<WhiteRedBtn
+								onClick={() => {
+									if (!selectedRows || selectedRows?.length === 0) {
+										return simpleAlert('출고 취소할 제품을 선택해주세요.')
+									}
+									setIsCancelModal(true)
+								}}
+							>
+								출고 취소
+							</WhiteRedBtn>
+						)}
+						{['카스코철강', '운송사'].includes(auth?.role) && (
+							<WhiteBlackBtn
+								onClick={() => {
+									if (!selectedRows || selectedRows?.length === 0) {
+										return simpleAlert('제품을 선택해주세요.')
+									}
+									const driverStatusList = selectedRows.map((item) => item[['배차 여부']])
+									if (!driverStatusList.every((value) => value === 'Y')) {
+										return simpleAlert('운송 진행 전 배차 기사를 등록해주세요.')
+									}
+									setIsTransportationProgressModal(true)
+								}}
+							>
+								운송 진행
+							</WhiteBlackBtn>
 						)}
 						{['카스코철강', '운송사'].includes(auth?.role) && (
 							<WhiteBlackBtn onClick={onShipmentCompletion}>운송 완료</WhiteBlackBtn>
@@ -241,6 +291,15 @@ const Status = () => {
 					modalClose={() => {
 						setIsPostModal(false)
 					}}
+				/>
+			)}
+			{isCancelModal && (
+				<OutCancelModel auctionFn={(value) => onShipmentCancel(value)} closeFn={() => setIsCancelModal(false)} />
+			)}
+			{isTransportationProgressModal && (
+				<TransportationProgressModal
+					auctionFn={(outLoadDate, outUnLoadDate) => onTransportationProgress(outLoadDate, outUnLoadDate)}
+					closeFn={() => setIsTransportationProgressModal(false)}
 				/>
 			)}
 		</FilterContianer>
