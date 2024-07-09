@@ -17,13 +17,21 @@ export const commonStyles = {
 }
 
 export const DispatchFields = {
-	'고유 번호': 'uid',
-	이름: 'name',
-	'차량 번호': 'carNumber',
-	연락처: 'phone',
+	// '고유 번호': 'uid',
+	// 이름: 'name',
+	// '차량 번호': 'carNumber',
+	// 연락처: 'phone',
+	// 비고: 'memo',
+
+	순번: 'index',
+	운송사명: 'transportName',
+	운전기사명: 'driverName',
+	'운전기사 연락처': 'driverPhone',
+	차량번호: 'carNumber',
 	'차량 종류': 'carType',
 	비고: 'memo',
-	운송사명: 'transportName',
+	최종수정자: 'updater',
+	최종수정일시: 'updateDate',
 }
 
 export const DispatchFieldsCols = [
@@ -268,12 +276,14 @@ export const ShippingDispatchDetailsFields = {
 	주문번호: 'hsOrderNo',
 	출하지시일자: 'shipmentOrderDate',
 	출고요청일자: 'shipmentRequestDate',
-	'출고 고유번호': 'outUid',
+	'출하요청 번호 ': 'outUid', // 이전 출고 고유번호
+	'승인 상태': 'outStatus',
 	'제품추가 일자': 'outCreateDate',
-	// '출하 상태': 'shipmentStatus',
+	'출하 상태': 'shipmentStatus',
 	'출고 일자': 'outDate',
 	'출고 번호': 'outNumber',
-	'승인 상태': 'outStatus',
+	// 상차도 여부 누락 추가
+	// 운송 진행 누락 추가
 	'배차 여부': 'driverStatus',
 	운전기사명: 'driverName',
 	'운전기사 연락처': 'driverPhone',
@@ -299,11 +309,11 @@ export const ShippingDispatchDetailsFields = {
 	길이: 'length',
 	중량: 'weight',
 	규격약호: 'spec',
-	'제품 비고': 'productNote',
-	'주문 고유 번호': 'orderUid',
+	비고: 'productNote',
+	// '주문 고유 번호': 'orderUid',
 	'회차 여부': 'outCancelStatus',
 	'회차 일자': 'outCancelDate', //(출고 취소된 일자)
-	'출고 취소 사유': 'cancelReason',
+	// '출고 취소 사유': 'cancelReason',
 	최종수정자: 'updater',
 	최종수정일시자: 'updateDate',
 
@@ -326,31 +336,27 @@ export const ShippingDispatchDetailsFieldsCols = [
 // 출고현황 목록
 export const ShippingStatusFields = {
 	순번: 'index',
-	경매번호: 'auctionNumber',
+	'출고 번호': 'outNumber',
 	'확정전송 일자': 'sendDate',
-	// '주문 고유 번호': 'orderUid',
 	주문번호: 'hsOrderNo',
 	출하지시일자: 'shipmentOrderDate',
 	출고요청일자: 'shipmentRequestDate',
+	// 출하요청 번호 추가
+
 	'출하 상태': 'shipmentStatus',
-	'출고 고유번호': 'outUid',
 	'출고 일자': 'outDate',
-	'출고 번호': 'outNumber',
 	'상차도 여부': 'dockStatus',
-	// 운송진행일자: 'outEndDate',
-	// 운송진행: 'outEndStatus',
-	'상차 일자': 'outLoadDate',
-	'하차 예정 일자': 'outUnLoadDate',
-	'취소 사유': 'cancelReason',
+	운송진행일자: 'outEndDate',
+	운송진행: 'outEndStatus',
 	고객사명: 'customerName',
 	고객코드: 'customerCode',
 	창고: 'storageName',
 	'배차 여부': 'driverStatus',
+	운송사명: 'transportName',
 	운전기사명: 'driverName',
 	'운전기사 연락처': 'driverPhone',
 	차량번호: 'carNumber',
 	'차량 종류': 'carType',
-	운송사명: 'transportName',
 	'제품 수량': 'quantity',
 	'중량 합계': 'totalWeight',
 	'목적지 코드': 'destinationCode',
@@ -364,6 +370,13 @@ export const ShippingStatusFields = {
 	'회차 일자': 'outCancelDate', //(출고 취소된 일자)
 	최종수정자: 'updater',
 	최종수정일시자: 'updateDate',
+
+	// 경매번호: 'auctionNumber',
+	// '주문 고유 번호': 'orderUid',
+	// '출고 고유번호': 'outUid',
+	// '상차 일자': 'outLoadDate',
+	// '하차 예정 일자': 'outUnLoadDate',
+	// '취소 사유': 'cancelReason',
 }
 
 export const ShippingStatusFieldsCols = [
@@ -408,26 +421,27 @@ export const ShippingStatusDetailsFields = {
 	주문번호: 'hsOrderNo',
 	출하지시일자: 'shipmentOrderDate',
 	출고요청일자: 'shipmentRequestDate',
+	// 출하 요청 번호 추가
 	'출하 상태': 'shipmentStatus',
 	'출고 고유번호': 'outUid',
 	'출고 일자': 'outDate',
 	'출고 번호': 'outNumber',
-	// 운송진행일자: 'outEndDate',
-	// 운송진행: 'outEndStatus',
-	'상차 일자': 'outLoadDate',
-	'하차 예정 일자': 'outUnLoadDate',
+	운송진행일자: 'outEndDate',
+	운송진행: 'outEndStatus',
 	고객사명: 'customerName',
 	고객코드: 'customerCode',
-	운전기사명: 'driverName',
-	'운전기사 연락처': 'driverPhone',
-	차량번호: 'carNumber',
-	'차량 종류': 'carType',
-	운송사명: 'transportName',
 	제품번호: 'productNumber',
 	창고: 'storageName',
 	'판매 구분': 'saleCategory',
 	'판매 유형': 'saleType',
 	제품군: 'spart',
+	운송사명: 'transportName',
+	운전기사명: 'driverName',
+	'운전기사 연락처': 'driverPhone',
+	차량번호: 'carNumber',
+	'차량 종류': 'carType',
+	'제품 수량': 'quantity',
+	'중량 합계': 'totalWeight',
 	'목적지 코드': 'destinationCode',
 	'목적지 명': 'destinationName',
 	'목적지 주소': 'customerDestinationAddress',
@@ -446,6 +460,9 @@ export const ShippingStatusDetailsFields = {
 	'회차 일자': 'outCancelDate', //(출고 취소된 일자)
 	최종수정자: 'updater',
 	최종수정일시자: 'updateDate',
+
+	// '상차 일자': 'outLoadDate',
+	// '하차 예정 일자': 'outUnLoadDate',
 }
 
 export const ShippingStatusDetailsFieldsCols = [

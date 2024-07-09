@@ -14,18 +14,30 @@ var headerCheckboxSelection = function (params) {
 // 사용자 관리 (고객사 관리)
 export const UserManageCustomerManageFields = {
 	순번: 'uid',
-	'고객 구분': 'memberUid',
+	// '고객 구분': 'memberUid',
 	'사용자 구분': 'role',
+	'승인 여부': 'approvalStatus',
 	'회원 상태': 'status',
+	'회원 제한': 'auctionStatus',
+	'사업자 구분': 'businessType', // 누락 추가
+
 	'고객사 아이디': 'id',
-	'고객 코드': 'code',
+	'고객사 코드': 'code',
 	'고객사 명': 'name',
 	사업자번호: 'businessNumber',
 	대표자: 'ceoName',
-	고객사유형: 'businessType',
+
+	// 추가 시작
+	대표연락처: 'ceoPhone',
+	팩스: 'fax',
+	주소: 'address',
+	업태: 'businessType',
+	경매담당자: 'auctionManager',
 	연락처: 'phone',
-	'승인 여부': 'approvalStatus',
-	'회원 제한 상태': 'auctionStatus',
+	입출고담당자: 'inOutManager',
+	연락처: 'phone',
+	최종수정자: 'updater',
+	최종수정일시: 'updateDate',
 }
 //고객사 관리 cols
 export const UserManageCustomerManageFieldsCols = [
@@ -113,9 +125,10 @@ export const UserManageCustomerManageFieldsCols = [
 
 // 사용자 목적지 관리 fields
 export const UserManageCustomerDestinationManageFields = {
-	'목적지 고유 번호': 'uid',
-	'대표 목적지 여부': 'represent',
-	고객명: 'customerName',
+	// '목적지 고유 번호': 'uid',
+	승인여부: 'status',
+	// '대표 목적지 여부': 'represent',
+	'고객사 명': 'customerName',
 	'고객 코드': 'customerCode',
 	'목적지 명': 'destinationName',
 	'목적지 코드': 'destinationCode',
@@ -126,7 +139,7 @@ export const UserManageCustomerDestinationManageFields = {
 	'하차지 연락처': 'phone',
 	하차지담당자: 'managerName',
 	'하차지담당자 연락처': 'managerPhone',
-	승인여부: 'status',
+
 	최종수정자: 'updater',
 	최종수정일자: 'updateDate',
 }

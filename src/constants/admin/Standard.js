@@ -18,7 +18,7 @@ const headerCheckboxSelection = function (params) {
 // 기준관리 - 목적지관리 Modal fields
 export const StandardDestinaionFields = {
 	순번: 'index',
-	'목적지 고유 번호': 'uid',
+	// '목적지 고유 번호': 'uid',
 	'목적지 코드': 'code',
 	'목적지 명': 'name',
 	'특별목적지 여부': 'isSpecialAddress',
@@ -28,9 +28,9 @@ export const StandardDestinaionFields = {
 	수정일: 'updateDate',
 	비고: 'note',
 	'매입운반비 목적지': 'inDestinationName',
-	매입운반비: 'inEffectCost',
+	'매입운반비 단가': 'inEffectCost',
 	'매출운반비 목적지': 'outDestinationName',
-	매출운반비: 'outEffectCost',
+	'매출운반비 단가': 'outEffectCost',
 }
 
 // 기준관리 - 목적지관리 Modal post
@@ -110,16 +110,16 @@ export const StandardDestinaionFieldsCols = [
 // 기준관리 - 운반비 관리 fields
 export const StandardTransportationFields = {
 	순번: 'index',
-	'운반비 고유 번호': 'uid',
-	창고: 'storage',
+	// '운반비 고유 번호': 'uid',
+	// 창고: 'storage',
 	목적지코드: 'destinationCode',
 	목적지명: 'destinationName',
 	제품군: 'spart',
 	적용일: 'effectDate',
-	'단가 적용일': 'effectDate',
+	// '단가 적용일': 'effectDate',
 	이전단가: 'previousCost',
 	적용단가: 'effectCost',
-	수정자: 'updateMember',
+	// 수정자: 'updateMember',
 }
 
 // 기준 관리 - 운반비 관리 post
@@ -280,10 +280,10 @@ export const StandardSurchargeEdit = {
 
 export const StandardConsolidationFields = {
 	순번: 'index',
-	'합짐비 고유 번호': 'uid',
-	착: 'land',
-	'동일 시군 가격': 'inAreaPrice',
-	'타 시군 가격': 'outAreaPrice',
+	착지: 'land',
+	// '합짐비 고유 번호': 'uid',
+	'동일 시군': 'inAreaPrice',
+	'타 시군': 'outAreaPrice',
 }
 
 export const StandardConsolidationFieldsCols = [
